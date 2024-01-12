@@ -1,0 +1,5 @@
+{
+    "hostName": "service-postgres:5432",
+    "password": "postgresDB",
+    "username": "postgresDB"
+}
