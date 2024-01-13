@@ -8,18 +8,21 @@
 package main
 
 import (
+	"OWEApp/types"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"models"
+	"net"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
-	"types"
 
-	db "db"
-	log "logger"
+	"OWEApp/db"
+	log "OWEApp/logger"
+	models "OWEApp/models"
 
+	"github.com/google/uuid"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
@@ -144,16 +147,6 @@ func init() {
 		log.ConfDebugTrace(0, "Database Configuration fatched Successfully from file.")
 	}
 
-	/* Init DB Connection */
-	/* If Connection from DB gets failed then abort the application */
-	var dbNames []string
-	dbNames = append(dbNames, db.OWEDB)
-	err = db.SetupDBConnection(dbNames)
-	if err != nil {
-		log.ConfErrorTrace(0, "Failed to connect to DB error = %+v", err)
-		return
-	}
-
 	/* Init postgre DB from the config and save handler, Create initial connection */
 	/* In case of intentional service restart and MNO wants config to be read from files*/
 	/* Read configuration and initialize the service*/
@@ -166,8 +159,18 @@ func init() {
 		return
 	}
 
+	/* Init DB Connection */
+	/* If Connection from DB gets failed then abort the application */
+	var dbNames []string
+	dbNames = append(dbNames, db.OWEDB)
+	err = db.SetupDBConnection(dbNames, types.CommGlbCfg)
+	if err != nil {
+		log.ConfErrorTrace(0, "Failed to connect to DB error = %+v", err)
+		return
+	}
+
 	types.ExitChan = make(chan error)
-	types.CommGlbCfg.SelfInstanceId = 123
+	types.CommGlbCfg.SelfInstanceId = uuid.New().String()
 
 	PrintSvcGlbConfig(types.CommGlbCfg)
 
@@ -197,22 +200,21 @@ func handleDynamicHttpConf(resp http.ResponseWriter, req *http.Request) {
 func InitSrvDefaultConfig() {
 	log.EnterFn(0, "InitSrvDefaultConfig")
 
-	types.CommGlbCfg.NrfAddr = types.UtilsGetString("NRF_ADDR", "")
-	types.CommGlbCfg.ValidateOAuthReq = types.UtilsGetString("OAUTH2_SUPPORT", "NO")
-	types.CommGlbCfg.OpenStdHTTPPort = types.UtilsGetStringBool(types.UtilsGetString("OPEN_HTTP_STD_PORT", "NO"), false)
-	types.CommGlbCfg.SrvHttpCfg.HttpsSupport = types.UtilsGetString("HTTPS_SUPPORT", "NO")
-	types.CommGlbCfg.SrvHttpCfg.Addr = ":8080"
-	types.CommGlbCfg.SrvHttpCfg.SslAddr = ":10443"
-	types.CommGlbCfg.SrvHttpCfg.AddrStd = ":8080"
-	types.CommGlbCfg.SrvHttpCfg.SslAddrStd = ":443"
-	types.CommGlbCfg.SrvHttpCfg.ServerCertFile = types.UtilsGetString("HTTPS_SERVER_CERT", "")
-	types.CommGlbCfg.SrvHttpCfg.ServerKeyFile = types.UtilsGetString("HTTPS_SERVER_KEY", "")
-	types.CommGlbCfg.SrvHttpCfg.ClientAuthType = types.UtilsGetString("HTTPS_CLIENT_AUTH_TYPE", "NO_CLIENT_CERT")
-	types.CommGlbCfg.SrvHttpCfg.ClientCAFile = types.UtilsGetStringTocken("HTTPS_CLIENT_CA_CERT", ",", nil)
-	types.CommGlbCfg.SrvHttpCfg.ClientCertFile = types.UtilsGetStringTocken("HTTPS_CLI_CERT", ",", nil)
-	types.CommGlbCfg.SrvHttpCfg.ClientKeyFile = types.UtilsGetStringTocken("HTTPS_CLI_KEY", ",", nil)
-	types.CommGlbCfg.SrvHttpCfg.ReadHeaderTimeout, _ = types.UtilsGetInt("HTTP_READ_HEADER_TIMEOUT", 10)
-	types.CommGlbCfg.SrvHttpCfg.MaxHeaderBytes, _ = types.UtilsGetInt("HTTP_MAX_HEADER_BYTES ", http.DefaultMaxHeaderBytes)
+	types.CommGlbCfg.SvcSrvCfg.ValidateOAuthReq = types.UtilsGetString("OAUTH2_SUPPORT", "NO")
+	types.CommGlbCfg.SvcSrvCfg.OpenStdHTTPPort = types.UtilsGetStringBool(types.UtilsGetString("OPEN_HTTP_STD_PORT", "NO"), false)
+	types.CommGlbCfg.SvcSrvCfg.SrvHttpCfg.HttpsSupport = types.UtilsGetString("HTTPS_SUPPORT", "NO")
+	types.CommGlbCfg.SvcSrvCfg.SrvHttpCfg.Addr = ":8080"
+	types.CommGlbCfg.SvcSrvCfg.SrvHttpCfg.SslAddr = ":10443"
+	types.CommGlbCfg.SvcSrvCfg.SrvHttpCfg.AddrStd = ":8080"
+	types.CommGlbCfg.SvcSrvCfg.SrvHttpCfg.SslAddrStd = ":443"
+	types.CommGlbCfg.SvcSrvCfg.SrvHttpCfg.ServerCertFile = types.UtilsGetString("HTTPS_SERVER_CERT", "")
+	types.CommGlbCfg.SvcSrvCfg.SrvHttpCfg.ServerKeyFile = types.UtilsGetString("HTTPS_SERVER_KEY", "")
+	types.CommGlbCfg.SvcSrvCfg.SrvHttpCfg.ClientAuthType = types.UtilsGetString("HTTPS_CLIENT_AUTH_TYPE", "NO_CLIENT_CERT")
+	types.CommGlbCfg.SvcSrvCfg.SrvHttpCfg.ClientCAFile = types.UtilsGetStringTocken("HTTPS_CLIENT_CA_CERT", ",", nil)
+	types.CommGlbCfg.SvcSrvCfg.SrvHttpCfg.ClientCertFile = types.UtilsGetStringTocken("HTTPS_CLI_CERT", ",", nil)
+	types.CommGlbCfg.SvcSrvCfg.SrvHttpCfg.ClientKeyFile = types.UtilsGetStringTocken("HTTPS_CLI_KEY", ",", nil)
+	types.CommGlbCfg.SvcSrvCfg.SrvHttpCfg.ReadHeaderTimeout, _ = types.UtilsGetInt("HTTP_READ_HEADER_TIMEOUT", 10)
+	types.CommGlbCfg.SvcSrvCfg.SrvHttpCfg.MaxHeaderBytes, _ = types.UtilsGetInt("HTTP_MAX_HEADER_BYTES ", http.DefaultMaxHeaderBytes)
 
 	/*Initialize config file default paths and instance id*/
 	InitCfgPaths()
@@ -263,7 +265,7 @@ func InitCfgPaths() {
 
 	/*set config file paths*/
 	gCfgFilePaths.CfgJsonDir = types.UtilsGetString("SELF_CFG_PATH", "json/")
-	gCfgFilePaths.LoggingConfJsonPath = gCfgFilePaths.CfgJsonDir + "loggingConfig.json"
+	gCfgFilePaths.LoggingConfJsonPath = gCfgFilePaths.CfgJsonDir + "logConfig.json"
 	gCfgFilePaths.DbConfJsonPath = gCfgFilePaths.CfgJsonDir + "sqlDbConfig.json"
 	gCfgFilePaths.HTTPConfJsonPath = gCfgFilePaths.CfgJsonDir + "httpConfig.json"
 
@@ -380,4 +382,88 @@ func PrintSvcGlbConfig(cfg models.SvcConfig) {
 	log.EnterFn(0, "PrintSvcGlbConfig")
 	log.SysConfTrace(0, "Commissions Service Configuration: %+v", cfg)
 	log.ExitFn(0, "PrintSvcGlbConfig", nil)
+}
+
+/******************************************************************************
+ * FUNCTION:        UpdateSrvConfiguration
+ *
+ * DESCRIPTION:   function is used to update the server config structure
+ * INPUT:        N/A
+ * RETURNS:      N/A
+ ******************************************************************************/
+func UpdateSrvConfiguration() {
+	log.EnterFn(0, "UpdateSrvConfiguration")
+
+	if strings.Contains(types.CommGlbCfg.SelfAddr, ":") {
+		ipPort := strings.Split(types.CommGlbCfg.SelfAddr, ":")
+		if len(ipPort) == 2 {
+			port, _ := strconv.Atoi(ipPort[1])
+			if port != 0 {
+				if nil == net.ParseIP(ipPort[0]) {
+					types.CommGlbCfg.SvcSrvCfg.SrvHttpCfg.Addr = fmt.Sprintf(":%v", port)
+					types.CommGlbCfg.SvcSrvCfg.SrvHttpCfg.SslAddr = fmt.Sprintf(":%v", port+1)
+				} else {
+					types.CommGlbCfg.SvcSrvCfg.SrvHttpCfg.Addr = fmt.Sprintf("%v:%v", ipPort[0], port)
+					types.CommGlbCfg.SvcSrvCfg.SrvHttpCfg.SslAddr = fmt.Sprintf("%v:%v", ipPort[0], port+1)
+					types.CommGlbCfg.SvcSrvCfg.SrvHttpCfg.AddrStd = fmt.Sprintf("%v:%v", ipPort[0], 80)
+					types.CommGlbCfg.SvcSrvCfg.SrvHttpCfg.SslAddrStd = fmt.Sprintf("%v:%v", ipPort[0], 443)
+				}
+			}
+		}
+	}
+	types.CommGlbCfg.SvcSrvCfg.SrvHttpCfg.ReadTimeout = int(types.CommGlbCfg.HTTPCfg.HTTPReadTimeOut)
+	types.CommGlbCfg.SvcSrvCfg.SrvHttpCfg.WriteTimeout = int(types.CommGlbCfg.HTTPCfg.HTTPWriteTimeOut)
+	types.CommGlbCfg.SvcSrvCfg.SrvHttpCfg.IdleTimeout = int(types.CommGlbCfg.HTTPCfg.HTTPIdleTimeOut)
+
+	log.ExitFn(0, "UpdateSrvConfiguration", nil)
+}
+
+/******************************************************************************
+ * FUNCTION:       HandleDynamicLoggingConf
+ *
+ * DESCRIPTION:    function to get handle logging configuration
+ *                       recieved at run time through an external entity
+ * INPUT:
+ * RETURNS:
+ ******************************************************************************/
+func HandleDynamicLoggingConf(resp http.ResponseWriter, req *http.Request) models.LoggingCfg {
+	var err error
+	var logCfg models.LoggingCfg
+
+	log.EnterFn(0, "HandleDynamicLoggingConf")
+	defer func() { log.ExitFn(0, "HandleDynamicLoggingConf", err) }()
+
+	log.ConfDebugTrace(0, "Processing loggingConf api recieved from external peer.")
+	bVal, _ := ioutil.ReadAll(req.Body)
+	err = json.Unmarshal(bVal, &logCfg)
+	if err == nil {
+		/* Update the New Config in DB */
+		types.CommGlbCfg.LogCfg = logCfg
+		resp.WriteHeader(http.StatusOK)
+	} else {
+		log.ConfErrorTrace(0, "Failed to decode json data of loggingconf api.")
+		resp.WriteHeader(http.StatusBadRequest)
+	}
+	return logCfg
+}
+
+func HandleDynamicHttpConf(resp http.ResponseWriter, req *http.Request) models.HTTPConfig {
+	var err error
+	var httpCfg models.HTTPConfig
+
+	log.EnterFn(0, "HandleDynamicHttpConf")
+	defer func() { log.ExitFn(0, "HandleDynamicHttpConf", err) }()
+
+	log.ConfDebugTrace(0, "Processing httpConf api recieved from external peer.")
+	bVal, _ := ioutil.ReadAll(req.Body)
+	err = json.Unmarshal(bVal, &httpCfg)
+	if err == nil {
+		/* Update the new config in DB */
+		types.CommGlbCfg.HTTPCfg = httpCfg
+		resp.WriteHeader(http.StatusOK)
+	} else {
+		log.ConfErrorTrace(0, "Failed to decode json data of httpConf api.")
+		resp.WriteHeader(http.StatusBadRequest)
+	}
+	return httpCfg
 }

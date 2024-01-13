@@ -8,7 +8,7 @@
 package types
 
 import (
-	CfgModels "config/configModels"
+	CfgModels "OWEApp/models"
 )
 
 var (

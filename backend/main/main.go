@@ -8,6 +8,7 @@
 package main
 
 import (
+	"OWEApp/types"
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
@@ -16,9 +17,8 @@ import (
 	"os"
 	"os/signal"
 	"time"
-	"types"
 
-	log "logger"
+	log "OWEApp/logger"
 
 	"github.com/gorilla/mux"
 	"golang.org/x/net/http2"

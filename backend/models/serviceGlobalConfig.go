@@ -4,7 +4,7 @@
  *      DATE            : 11-Jan-2024
  **************************************************************************/
 
-package ConfigModels
+package models
 
 type SrvHttpConf struct {
 	HttpsSupport      string
@@ -38,6 +38,6 @@ type SvcConfig struct {
 	HTTPTimerCallBackPath string
 	HTTPCfg               HTTPConfig
 	LogCfg                LoggingCfg
-	DbConfInfo            DatabaseCfg
+	DbConfInfo            DBCustersCfg
 	SvcSrvCfg             SrvConf
 }

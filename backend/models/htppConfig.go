@@ -3,7 +3,7 @@
  *      DESCRIPTION     : contains structure for HTTP configuration
  *      DATE            : 11-Jan-2024
  **************************************************************************/
-package ConfigModels
+package models
 
 type HTTPConfig struct {
 	HTTPDialRetryCount    int32 `json:"httpDialRetryCount,omitempty"`

@@ -2,7 +2,7 @@
  *      File            : dbFunctions.go
  *      DESCRIPTION     : This file contains DB wrapper functions like
 						  insert, Delete, Update etc
- *      DATE            : 11-Jan-2024
+ *      DATE            : 02-July-2023
  **************************************************************************/
 
 package db
@@ -11,7 +11,7 @@ import (
 	"fmt"
 	"strings"
 
-	log "logger"
+	log "OWEApp/logger"
 )
 
 /*
@@ -444,15 +444,12 @@ func RemoveDataWithWhereQuery(dbName string, tableName string, whereQuery string
 	return nil
 }
 
-/*
-*****************************************************************************
+/******************************************************************************
   - FUNCTION:       AlterTTLValueDbTable
   - DESCRIPTION:    This function will remove data from Database
   - INPUT:			dbName, tableName, ttlValue
   - RETURNS:		err
-
-*****************************************************************************
-*/
+******************************************************************************/
 func AlterTTLValueDbTable(dbName string, tableName string, ttlValue int32) (err error) {
 	var (
 		query string

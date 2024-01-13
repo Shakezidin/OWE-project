@@ -3,7 +3,7 @@
  *      DESCRIPTION     : contains structure for logging configuration
  *      DATE            : 11-Jan-2024
  **************************************************************************/
-package ConfigModels
+package models
 
 type LoggingCfg struct {
 	LogEnv          string `json:"logEnv"`

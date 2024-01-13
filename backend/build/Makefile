@@ -7,7 +7,7 @@ GOBUILD=go build -gcflags "-N -l" -v
 
 # Exporting service specific variables
 #GOGETFILES=golang.org/x/oauth2 golang.org/x/net github.com/gorilla/mux github.com/antihax
-SERVICE_NAME=commissions
+SERVICE_NAME=backend
 APP_DIR=main
 
 SERVICE_PATH=${PWD}/../../$(SERVICE_NAME)

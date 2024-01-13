@@ -2,7 +2,7 @@
  *      File            : dbSupport.go
  *      DESCRIPTION     : This file contains common structures and functions
 						  used for DB all over NRFGateway
- *      DATE            : 11-Jan-2024
+ *      DATE            : 02-July-2023
  **************************************************************************/
 
 package db
@@ -11,8 +11,8 @@ import (
 	"fmt"
 	"time"
 
-	log "logger"
-	CfgModels "models"
+	log "OWEApp/logger"
+	CfgModels "OWEApp/models"
 )
 
 const (

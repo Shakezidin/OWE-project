@@ -1,13 +1,13 @@
 /**************************************************************************
  *      File        : test.go
  *      DESCRIPTION : This file contains UT for DB Initialization
- *      DATE        : 11-Jan-2024
+ *      DATE        : 22-June-2023
  **************************************************************************/
 
 package db
 
 import (
-	CfgModels "models"
+	CfgModels "OWEApp/models"
 
 	"testing"
 )

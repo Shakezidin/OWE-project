@@ -1,14 +1,15 @@
 /**************************************************************************
  *      File    	: init.go
  *      DESCRIPTION : This file contains DB initialize functions
- *      DATE        : 11-Jan-2024
+ *      DATE        : 20-June-2023
  **************************************************************************/
 
 package db
 
 import (
-	log "logger"
-	CfgModels "models"
+	CfgModels "OWEApp/models"
+	log "OWEApp/logger"
+	"OWEApp/types"
 
 	"database/sql"
 	"fmt"
