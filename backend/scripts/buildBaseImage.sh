@@ -1,6 +1,8 @@
 #!/bin/bash
 #set -x
 
+export BASE_OS="rhel"
+
 if [ "X$GOPATH" = "X" ]; then
     echo "Please set GOPATH and try again."
     exit
