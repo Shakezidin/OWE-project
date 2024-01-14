@@ -12,7 +12,7 @@ interface CustomBoxProps {
 const CustomBox = (props: CustomBoxProps) => {
   const { icon, title, description, onClick } = props;
   return (
-    <div className="boxContainer">
+    <div className="boxContainer" onClick={onClick}>
       <div className="boxUpperView">
         <img src={icon} alt={"icon"} />
       </div>

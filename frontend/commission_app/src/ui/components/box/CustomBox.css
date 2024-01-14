@@ -8,6 +8,10 @@
   flex-direction: column;
 }
 
+.boxContainer :hover {
+  cursor: pointer;
+}
+
 .boxUpperView {
   height: 100px;
   align-items: center;
