@@ -26,7 +26,7 @@ var (
  * RETURNS:         error
  ******************************************************************************/
 func loggerBackupConsoleLog() (err error) {
-	if gOutFdCopy == -1 {
+	/*if gOutFdCopy == -1 {
 		gOutFdCopy, err = syscall.Dup(gOutFd)
 		if err != nil {
 			LoggerPrintError(FUNCTIONAL, nil, "Backup stdout failed :: err=%v", err)
@@ -37,7 +37,7 @@ func loggerBackupConsoleLog() (err error) {
 		if err != nil {
 			LoggerPrintError(FUNCTIONAL, nil, "Backup stderr failed :: err=%v", err)
 		}
-	}
+	}*/
 	return
 }
 
@@ -49,7 +49,7 @@ func loggerBackupConsoleLog() (err error) {
  * RETURNS:         error
  ******************************************************************************/
 func loggerRevertConsoleLog() (err error) {
-	if gOutFdCopy != -1 {
+	/*if gOutFdCopy != -1 {
 		err = syscall.Dup3(gOutFdCopy, gOutFd, 0)
 		if err != nil {
 			LoggerPrintError(FUNCTIONAL, nil, "Revert stdout failed :: err=%v", err)
@@ -70,7 +70,7 @@ func loggerRevertConsoleLog() (err error) {
 			LoggerPrintError(FUNCTIONAL, nil, "Close stderr failed :: err=%v", err)
 		}
 		gErrFdCopy = -1
-	}
+	}*/
 	return
 }
 
@@ -100,13 +100,13 @@ func loggerChangeConsoleLog(logEnv, logFile string) {
 			LoggerPrintError(FUNCTIONAL, nil, "Console log file close failed :: err=%v", err)
 		}
 	}()
-	err = syscall.Dup3(int(fp.Fd()), gOutFd, 0)
+	/*err = syscall.Dup3(int(fp.Fd()), gOutFd, 0)
 	if err != nil {
 		LoggerPrintError(FUNCTIONAL, nil, "Redirect stdout failed :: err=%v", err)
 	}
 	err = syscall.Dup3(int(fp.Fd()), gErrFd, 0)
 	if err != nil {
 		LoggerPrintError(FUNCTIONAL, nil, "Redirect stdout failed :: err=%v", err)
-	}
+	}*/
 	return
 }
