@@ -1,0 +1,111 @@
+.welcomeMainContainer {
+  flex: 1;
+  border-radius: var(--HDIP, 16px);
+  border: 2px solid #dfdfdf;
+  background: #fff;
+  display: flex;
+}
+
+.welcomeBannerView {
+  height: 500px;
+  background: url("../../../resources/assets/banner.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  border: 2px;
+  border-radius: 16px;
+  width: 100%;
+}
+
+.welcomeInnerBannerView {
+  margin: 0px 116px;
+  flex: 1;
+  display: flex;
+}
+
+.welcome-left-view {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.welcome-right-view {
+  flex: 1.3;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.welcome-logo {
+  width: "274px";
+  height: "74px";
+}
+
+.welcome-text-view {
+  align-items: flex-start;
+  display: flex;
+}
+
+.welcome-text-black {
+  color: #000;
+  font-family: Poppins;
+  font-size: 40px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 60px; /* 150% */
+  text-align: left;
+  margin-top: 53px;
+}
+
+.welcome-text-blue {
+  color: var(--primary-color, #04a5e8);
+  font-family: Poppins;
+  font-size: 40px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 60px;
+}
+
+.welcome-text-green {
+  color: var(--Secondary-Green, #8fcd00);
+  font-family: Poppins;
+  font-size: 40px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 60px;
+}
+.welcome-sub-text {
+  color: var(--Gray-1, #333);
+  font-family: Poppins;
+  font-size: 33px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 60px;
+  text-transform: capitalize;
+}
+.welcome-phone-view {
+  height: 20px;
+  padding: 1rem;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  border-radius: 16px;
+  background: var(--primary-color, #04a5e8);
+  margin-top: 10px;
+  display: flex;
+}
+
+.welcome-phone-text {
+  color: var(--Gray-6, #f2f2f2);
+  font-family: Poppins;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 60px; /* 428.571% */
+}
+
+.welcome-laptop-image {
+  margin-top: 10px;
+  align-self: flex-start;
+}

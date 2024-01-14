@@ -8,8 +8,6 @@
 
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from "react-redux";
-import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import {RenderRoutes} from "./navigation/RootNavigation";
 import store from "./redux/store/Store";
