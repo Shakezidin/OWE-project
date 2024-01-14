@@ -1,18 +1,19 @@
 # Exporting GO system Variable
 
-CPATH=${PWD}
-export SERVICE_ROOT=$CPATH/../
+SERVICE_ROOT=${PWD}/../
+
 GOFMT=gofmt -w
 GOBUILD=go build -gcflags "-N -l" -v
 
 # Exporting service specific variables
 #GOGETFILES=golang.org/x/oauth2 golang.org/x/net github.com/gorilla/mux github.com/antihax
 SERVICE_NAME=backend
+APP_NAME=commissions.bin
 APP_DIR=main
 
 SERVICE_PATH=${PWD}/../../$(SERVICE_NAME)
 
-APPTARGET=$(SERVICE_PATH)/bin/$(SERVICE_NAME)
+APPTARGET=$(SERVICE_PATH)/bin/$(APP_NAME)
 
 all: service 
 	@echo "GOPATH: $(GOPATH)"
@@ -42,9 +43,9 @@ clean: ## Remove previous build
 	
 
 docker: ## Create Docker Image
-	@echo "Building commissions Docker Image"
-		cd $(SERVICE_PATH)/ || exit 1 ; \
-		docker build -f docker/Dockerfile -t commissions:v1 .; 
+	@echo "Building commissions Docker Image $SERVICE_ROOT"
+		cd $(SERVICE_ROOT)/ || exit 1 ; \
+		docker build -f docker/Dockerfile-Owe-App -t commissions:v1 .; 
 		
 dockerpush: ## Create Docker Image
 	@echo "Build and push commissions Docker Image"

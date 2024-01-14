@@ -15,7 +15,7 @@ services:
       - '5432:5432'
     networks:
       owe_net:
-        ipv4_address: 172.20.0.211
+        ipv4_address: 172.30.0.211
 
 ###############Commissions#####################
 #  service-commissions:
@@ -25,7 +25,7 @@ services:
    container_name: commissions_1
    networks:
      owe_net:
-       ipv4_address: 172.20.0.201
+       ipv4_address: 172.30.0.201
    ports:
      - "31020:8080"
    environment:
@@ -36,7 +36,7 @@ services:
      HTTPS_SUPPORT: "NO"
      HTTP_READ_HEADER_TIMEOUT: "10"
    volumes:
-     - /var/log/commision/:/var/log/commision/
+     - /var/log/owe/:/var/log/owe/
    privileged: true
 
 networks:
@@ -45,4 +45,4 @@ networks:
     ipam:
       driver: default
       config:
-      - subnet: 172.20.0.1/24
+      - subnet: 172.30.0.1/24
