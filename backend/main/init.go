@@ -21,6 +21,7 @@ import (
 	"OWEApp/db"
 	log "OWEApp/logger"
 	models "OWEApp/models"
+	apiHandler "OWEApp/services"
 
 	"github.com/google/uuid"
 	"gopkg.in/natefinch/lumberjack.v2"
@@ -63,6 +64,11 @@ var apiRoutes = ApiRoutes{
 		"/owe-commisions-service/v1/httpconf",
 		handleDynamicHttpConf,
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/login",
+		apiHandler.HandleLoginRequest,
+	},
 }
 
 /******************************************************************************
@@ -86,7 +92,7 @@ func initLogger(svcName log.Nametype, instId log.InstanceIdtype, tnId log.Tenant
 	}
 	err := log.InitLogger(logCfg)
 	if err != nil {
-		fmt.Println("Error in initializing logger from logpackage")
+		fmt.Println("Error in initializing logger from logpackage err: %v\n", err)
 		panic(err)
 
 	}

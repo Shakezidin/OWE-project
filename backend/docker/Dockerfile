@@ -31,6 +31,6 @@ ADD bin /app/bin
 ADD json /app/bin/json
 WORKDIR /app/bin/
 RUN cd /app/bin/
-RUN chmod +x /app/bin/commissionApp
-CMD ./commissionApp
+RUN chmod +x /app/bin/backend
+CMD ./backend
 

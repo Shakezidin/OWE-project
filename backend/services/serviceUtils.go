@@ -1,18 +1,8 @@
-package ApiHandler
+package services
 
 import (
-	"encoding/json"
-	"fmt"
 	"math/rand"
-	"net/http"
-	"os"
-	"strings"
 	"time"
-	"types"
-
-	"db"
-	log "logger"
-	CfgModels "models"
 )
 
 func Contains(slice []string, item string) bool {

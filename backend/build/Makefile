@@ -44,13 +44,13 @@ clean: ## Remove previous build
 docker: ## Create Docker Image
 	@echo "Building commissions Docker Image"
 		cd $(SERVICE_PATH)/ || exit 1 ; \
-		docker build -f Docker/Dockerfile -t commissions:v1 .; 
+		docker build -f docker/Dockerfile -t commissions:v1 .; 
 		
 dockerpush: ## Create Docker Image
 	@echo "Build and push commissions Docker Image"
 	@echo "Registry Name $(DOCKER_REGISTRY)"
 		cd $(SERVICE_PATH)/ || exit 1 ; \
-		docker build -f Docker/Dockerfile -t commissions:v1 .; \
+		docker build -f docker/Dockerfile -t commissions:v1 .; \
         docker push commissions:v1 ; 
 
 dockerpushclean: ## Create Docker Image
