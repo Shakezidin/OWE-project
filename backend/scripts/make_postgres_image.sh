@@ -3,9 +3,9 @@
 rm -rf /var/postgres/*
 
 #Generate initial data to insert in DB first
-SharedRepo=`pwd`/..
-echo "SharedRepo: $SharedRepo"
+Repo=`pwd`/..
+echo "Repo: $Repo"
 
-cd $SharedRepo/scripts/
-docker build -f ../Docker/Dockerfile-postgress -t timescale_pg14_custom:v1 .;
+cd $Repo/scripts/
+docker build -f ../docker/Dockerfile-postgress -t postgres_pg14_custom:v1 .;
 
