@@ -3,8 +3,8 @@
         {
             "DbDetails": {
                 "hostName": "service-postgres:5432",
-                "password": "postgresDB",
-                "username": "postgresDB"
+                "password": "OwePostgres",
+                "username": "OwePostgres"
             },
             "opId": {
                 "serviceID": "service1",

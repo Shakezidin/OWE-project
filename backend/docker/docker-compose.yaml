@@ -3,12 +3,12 @@ services:
 
 ##############DATABASE#####################
  service-postgres:
-    image: postgres_pg14_custom:v1
-    container_name: postgres_pg14_custom_1
+    image: postgres_db_latest:v1
+    container_name: postgres_db_latest_1
     restart: always
     environment:
-      - POSTGRES_USER=postgresDB
-      - POSTGRES_PASSWORD=postgresDB
+      - POSTGRES_USER=OwePostgres
+      - POSTGRES_PASSWORD=OwePostgres
     volumes:
       - /var/postgresql/data/:/var/lib/postgresql/data
     ports:
