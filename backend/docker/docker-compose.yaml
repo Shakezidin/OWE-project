@@ -1,0 +1,48 @@
+version: '3.0'
+services:
+
+##############DATABASE#####################
+ service-postgres:
+    image: postgres_pg14_custom:v1
+    container_name: postgres_pg14_custom_1
+    restart: always
+    environment:
+      - POSTGRES_USER=postgresDB
+      - POSTGRES_PASSWORD=postgresDB
+    volumes:
+      - /var/postgresql/data/:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    networks:
+      owe_net:
+        ipv4_address: 172.20.0.211
+
+###############Commissions#####################
+#  service-commissions:
+ service-commissions:
+   restart: always
+   image: commissions:v1
+   container_name: commissions_1
+   networks:
+     owe_net:
+       ipv4_address: 172.20.0.201
+   ports:
+     - "31020:8080"
+   environment:
+     SELF_CFG_PATH: "json/"
+     ANLF_SVC_ADDR: 
+     OAUTH2_SUPPORT: "NO"
+     OPEN_HTTP_STD_PORT: "NO"
+     HTTPS_SUPPORT: "NO"
+     HTTP_READ_HEADER_TIMEOUT: "10"
+   volumes:
+     - /var/log/commision/:/var/log/commision/
+   privileged: true
+
+networks:
+  owe_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.20.0.1/24
