@@ -4,7 +4,7 @@
 }
 
 .welcomeBannerView {
-  height: 500px;
+  height: 440px;
   background: url("../../../resources/assets/banner.jpg");
   background-repeat: no-repeat;
   background-size: cover;
@@ -117,7 +117,6 @@
   margin: 0px 116px;
   display: flex;
   flex-direction: column;
-  background-color: green;
   flex: 1;
 }
 
@@ -134,4 +133,5 @@
 .welcomeBoxView {
   display: flex;
   justify-content: space-around;
+  margin-top: 10px;
 }

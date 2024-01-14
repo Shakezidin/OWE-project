@@ -13,6 +13,10 @@ import LogoImage from "../../../resources/assets/logo.png";
 import LaptopImage from "../../../resources/assets/laptop.png";
 import { ReactComponent as CallIcon } from "../../../resources/assets/phone-fill.svg";
 import CustomBox from "../../components/box/CustomBox";
+import CommissionIcon from "../../../resources/assets/commission.svg";
+import OweIcon from "../../../resources/assets/OWE.svg";
+import ContractorIcon from "../../../resources/assets/contractor.svg";
+import pandoIcon from "../../../resources/assets/pando.svg";
 
 export const WelcomePage = () => {
   return (
@@ -49,13 +53,33 @@ export const WelcomePage = () => {
       </div>
       <div className="welcomeApplicationView">
         <div className="welcomeInnerApplicationView">
-          <h1 className="welcome-our-text">Our Applications</h1>
+          <span className="welcome-our-text">Our Applications</span>
 
           <div className="welcomeBoxView">
-            <CustomBox />
-            <CustomBox />
-            <CustomBox />
-            <CustomBox />
+            <CustomBox
+              icon={CommissionIcon}
+              title="Commission App"
+              description="More than that, you can have any amount of layers attached "
+              onClick={() => {}}
+            />
+            <CustomBox
+              icon={OweIcon}
+              title="OWE ChatBot"
+              description="More than that, you can have any amount of layers attached "
+              onClick={() => {}}
+            />
+            <CustomBox
+              icon={ContractorIcon}
+              title="Sub Contractor Hub"
+              description="More than that, you can have any amount of layers attached "
+              onClick={() => {}}
+            />
+            <CustomBox
+              icon={pandoIcon}
+              title="Pando"
+              description="More than that, you can have any amount of layers attached "
+              onClick={() => {}}
+            />
           </div>
         </div>
       </div>
