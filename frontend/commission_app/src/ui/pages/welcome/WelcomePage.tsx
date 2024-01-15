@@ -20,6 +20,12 @@ import pandoIcon from "../../../resources/assets/pando.svg";
 import AboutUsBig from "../../../resources/assets/aboutUsBig.png";
 import AboutUsSmall from "../../../resources/assets/aboutUsSmall.png";
 import { Link } from "react-router-dom";
+import ImageLayout from "../../components/imageLayout/ImageLayout";
+import Grid_1 from "../../../resources/assets/grid_1.png";
+import Grid_2 from "../../../resources/assets/grid_2.png";
+import Grid_3 from "../../../resources/assets/grid_3.png";
+import Grid_4 from "../../../resources/assets/grid_4.png";
+import Grid_5 from "../../../resources/assets/grid_5.png";
 
 export const WelcomePage = () => {
   return (
@@ -121,6 +127,10 @@ export const WelcomePage = () => {
             the path curvature and have X, Y and Rotation offsets.
           </p>
         </div>
+      </div>
+      <div className="welcomeWorkEaseView">
+        <span className="welcomeWorkEaseTitle">We Make Your Work Easy</span>
+        <ImageLayout images={[Grid_1, Grid_2, Grid_3, Grid_4, Grid_5]} />
       </div>
     </div>
   );
