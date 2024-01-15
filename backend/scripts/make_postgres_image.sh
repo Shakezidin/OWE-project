@@ -1,6 +1,6 @@
 #!/bin/bash
 
-rm -rf /var/postgres/*
+rm -rf /var/postgresql/*
 
 #Generate initial data to insert in DB first
 Repo=`pwd`/..

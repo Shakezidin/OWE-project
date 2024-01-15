@@ -167,9 +167,7 @@ func init() {
 
 	/* Init DB Connection */
 	/* If Connection from DB gets failed then abort the application */
-	var dbNames []string
-	dbNames = append(dbNames, db.OWEDB)
-	err = db.SetupDBConnection(dbNames, types.CommGlbCfg)
+	err = db.InitDBConnection()
 	if err != nil {
 		log.ConfErrorTrace(0, "Failed to connect to DB error = %+v", err)
 		return
@@ -348,7 +346,7 @@ func FetchDbCfg() (err error) {
 	log.EnterFn(0, "FetchDbCfg")
 	defer func() { log.ExitFn(0, "FetchDbCfg", err) }()
 
-	var dbCfg models.DBCustersCfg
+	var dbCfg models.DbConfInfo
 	log.ConfDebugTrace(0, "Reading DB Config for from: %+v", gCfgFilePaths.DbConfJsonPath)
 	file, err := os.Open(gCfgFilePaths.DbConfJsonPath)
 	if err != nil {

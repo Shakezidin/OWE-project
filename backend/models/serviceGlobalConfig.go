@@ -38,6 +38,6 @@ type SvcConfig struct {
 	HTTPTimerCallBackPath string
 	HTTPCfg               HTTPConfig
 	LogCfg                LoggingCfg
-	DbConfInfo            DBCustersCfg
+	DbConfInfo            DbConfInfo
 	SvcSrvCfg             SrvConf
 }

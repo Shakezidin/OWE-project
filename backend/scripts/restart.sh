@@ -1,6 +1,4 @@
 
-rm -rf /var/postgresql/data/
-
 ./stop_svc.sh 
 rm -rf /var/log/owe/*
 

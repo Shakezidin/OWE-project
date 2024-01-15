@@ -1,15 +1,5 @@
 {
-    "DBClusterConfig": [
-        {
-            "DbDetails": {
-                "hostName": "service-postgres:5432",
-                "password": "OwePostgres",
-                "username": "OwePostgres"
-            },
-            "opId": {
-                "serviceID": "service1",
-                "tenantId": "tenant1"
-            }
-        }
-    ]
+    "hostName": "service-postgres:5432",
+    "username": "OwePostgres",
+    "password": "OwePostgres"
 }
