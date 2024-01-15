@@ -6,7 +6,7 @@
  * Path: src/ui/pages/welcome
  */
 
-import React from "react";
+import React, { useState } from "react";
 // import { useNavigate } from "react-router-dom";
 import "./WelcomePage.css";
 import LogoImage from "../../../resources/assets/logo.png";
@@ -26,8 +26,42 @@ import Grid_2 from "../../../resources/assets/grid_2.png";
 import Grid_3 from "../../../resources/assets/grid_3.png";
 import Grid_4 from "../../../resources/assets/grid_4.png";
 import Grid_5 from "../../../resources/assets/grid_5.png";
+import TabBar from "../../components/tabBar/TabBar";
 
 export const WelcomePage = () => {
+  const [activeTab, setActiveTab] = useState("tab1");
+
+  const handleTabClick = (tabName: string) => {
+    setActiveTab(tabName);
+  };
+
+  const data = [
+    {
+      id: 1,
+      title: "Site Survey",
+      step: "Step 1",
+      time: "Timeline: 1-5 Days",
+      description:
+        "Our Site Technician will visit to measure, examine, and approve our previously discussed plans.",
+    },
+    {
+      id: 2,
+      title: "Blueprints",
+      step: "Step 2",
+      time: "Timeline: 1-2 Days",
+      description:
+        "Our Site Technician will visit to measure, examine, and approve our previously discussed plans.",
+    },
+    {
+      id: 3,
+      title: "Permitting",
+      step: "Step 3",
+      time: "Timeline: 2-6 Days",
+      description:
+        "Our Site Technician will visit to measure, examine, and approve our previously discussed plans.",
+    },
+  ];
+
   return (
     <div className="welcomeMainContainer">
       <div className="welcomeBannerView">
@@ -132,6 +166,46 @@ export const WelcomePage = () => {
         <span className="welcomeWorkEaseTitle">We Make Your Work Easy</span>
         <ImageLayout images={[Grid_1, Grid_2, Grid_3, Grid_4, Grid_5]} />
       </div>
+      <div className="welcomeOverProcess">
+        <span className="welcomeOverProcessTitle">Our Process</span>
+
+        <div className="welcomeTabView">
+          <TabBar
+            title={[
+              "Phase 1 – Preparation",
+              "Phase 2 – Construction",
+              "Phase 3 – Final Inspections",
+            ]}
+            activeTab={activeTab}
+            handleTabClick={(e) => handleTabClick(e)}
+          />
+        </div>
+        <br />
+        <div>
+          <table>
+            <tbody>
+              <tr>
+                {data.map((item) => (
+                  <td key={item.id}>
+                    <div className="table-box">
+                      <div className="welcomeRowTitle">{item.title}</div>
+                      <div>
+                        <span className="welcomeRowStep">{item.step}</span>{" "}
+                        <span className="welcomeRowTime">{item.time}</span>
+                      </div>
+                      <div className="welcomeRowDescription">
+                        {item.description}
+                      </div>
+                    </div>
+                  </td>
+                ))}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div className="welcomeFooterView"></div>
     </div>
   );
 };

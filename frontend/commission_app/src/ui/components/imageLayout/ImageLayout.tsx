@@ -18,7 +18,7 @@ const ImageLayout: React.FC<ImageLayoutProps> = ({ images }) => {
           />
         ))}
       </div>
-      <div className="center">
+      <div className="centerView">
         <img src={images[2]} alt="Center Image" />
       </div>
       <div className="rightView">
