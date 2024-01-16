@@ -1,0 +1,43 @@
+.boxContainer {
+  width: 272px;
+  height: 200px;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.boxContainer :hover {
+  cursor: pointer;
+}
+
+.boxUpperView {
+  height: 100px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+
+.boxBelowView {
+  height: 100px;
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
+.boxCommissionText {
+  color: #222;
+  font-family: Poppins;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+}
+
+.boxCommissionSubText {
+  color: #222;
+  text-align: center;
+  font-family: Poppins;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+}

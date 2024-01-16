@@ -1,0 +1,40 @@
+.grid-container {
+  grid-template-columns: repeat(5, 1fr); /* Five columns */
+  grid-gap: 10px; /* Gap between grid items */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.grid-container > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.left,
+.right {
+  grid-column: span 2; /* Each spans two columns */
+}
+
+.center {
+  width: 320px;
+  height: 536px;
+}
+
+/* img {
+  max-width: 100%;
+  height: auto;
+} */
+.leftView {
+  width: 320px;
+  height: 260px;
+  margin: 5px;
+}
+
+.rightView {
+  width: 320px;
+  height: 260px;
+  margin: 5px;
+}
