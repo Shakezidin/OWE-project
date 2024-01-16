@@ -1,18 +1,12 @@
-package ApiHandler
+package services
 
 import (
-	"encoding/json"
-	"fmt"
+	log "OWEApp/logger"
 	"math/rand"
 	"net/http"
-	"os"
-	"strings"
 	"time"
-	"types"
 
-	"db"
-	log "logger"
-	CfgModels "models"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func Contains(slice []string, item string) bool {
@@ -27,4 +21,28 @@ func Contains(slice []string, item string) bool {
 func GenerateRandomNumInRange(low, hi int) int {
 	rand.Seed(time.Now().UnixNano())
 	return low + rand.Intn(hi-low)
+}
+
+func GenerateHashPassword(value string) (hashedValue []byte, err error) {
+	log.EnterFn(0, "GenerateHashPassword")
+	defer func() { log.ExitFn(0, "GenerateHashPassword", err) }()
+
+	hashedValue, err = bcrypt.GenerateFromPassword([]byte(value), bcrypt.DefaultCost)
+	return hashedValue, err
+}
+
+func CompareHashPassword(hashPassword string, password string) (err error) {
+	log.EnterFn(0, "CompareHashPassword")
+	defer func() { log.ExitFn(0, "CompareHashPassword", err) }()
+
+	err = bcrypt.CompareHashAndPassword([]byte(hashPassword), []byte(password))
+	return err
+}
+
+func FormAndSendHttpResp(httpResp http.ResponseWriter, reqBody string, httpStatusCode int) {
+	log.EnterFn(0, "FormAndSendHttpResp")
+	httpResp.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	httpResp.WriteHeader(httpStatusCode)
+	httpResp.Write([]byte(reqBody))
+	log.ExitFn(0, "FormAndSendHttpResp", nil)
 }

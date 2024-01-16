@@ -12,7 +12,7 @@ import (
 	"sync"
 	"time"
 
-	log "logger"
+	log "OWEApp/logger"
 )
 
 /* Initialize Operator id in main()

@@ -3,16 +3,16 @@
 
 export BASE_OS="rhel"
 
-if [ "X$GOPATH" = "X" ]; then
-    echo "Please set GOPATH and try again."
-    exit
-fi
+#if [ "X$GOPATH" = "X" ]; then
+#    echo "Please set GOPATH and try again."
+#    exit
+#fi
 
 CUSTOM_DIR=$PWD
 
-source $CUSTOM_DIR/init.env
+export BASE_OS="rhel"
 
-DOCKER_DIR=$CUSTOM_DIR/../Docker
+DOCKER_DIR=$CUSTOM_DIR/../docker
 DOCKER_FILE="$DOCKER_DIR/Dockerfile-Owe-$BASE_OS"
 
 #Build ViNGC base docker image
@@ -21,6 +21,6 @@ if [ ! -f $DOCKER_FILE ];then
     exit
 fi
 echo "Building docker image for $DOCKER_FILE"
-docker build --network=host -t Owe_base_os:v1 -f $DOCKER_FILE $DOCKER_DIR/
+docker build --network=host -t owe_base_os:v1 -f $DOCKER_FILE $DOCKER_DIR/
 
 

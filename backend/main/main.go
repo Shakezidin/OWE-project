@@ -33,6 +33,7 @@ import (
  * RETURNS:
  ******************************************************************************/
 func main() {
+	fmt.Printf("sjhfkjdsfhkjsdjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj")
 	log.EnterFn(0, "main")
 	router := createApiRouter()
 

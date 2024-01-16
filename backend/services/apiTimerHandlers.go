@@ -4,11 +4,10 @@
  * DATE            : 11-Jan-2024
  **************************************************************************/
 
-package ApiHandler
+package services
 
 import (
-	log "logger"
-	timer "timer"
+	log "OWEApp/logger"
 )
 
 /******************************************************************************
@@ -26,10 +25,10 @@ func ServiceTimerHandler(timerType int32, ctx interface{}) {
 	defer func() { log.ExitFn(0, "ServiceTimerHandler", err) }()
 
 	switch timerType {
-	case timer.SampleTime:
+	/*case timer.SampleTime:
 		{
 			log.FuncDebugTrace(0, "Processing data Notification timer expired timerType = %v", timerType)
-		}
+		}*/
 	default:
 		{
 			log.FuncDebugTrace(0, "Unknown timer expired timer Type = ", timerType)
