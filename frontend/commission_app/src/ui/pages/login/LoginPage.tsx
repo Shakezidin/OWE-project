@@ -16,12 +16,14 @@ const label = { inputProps: { 'aria-label': 'Switch demo' } };
 
 export const LoginPage = () => {
 
-    
+
     return (
         <div className={'container'}>
             <div className={'overlay'}/>
             <div className={'loginBox'}>
-               <span id="loginNormalText">{'Our World Revolves Around'} 
+               <span id="loginNormalText">{'Our World Revolves'} 
+                    <br/>
+                    Around
                     <span id="loginColorText" >
                          {' Powering '}
                     </span> 
@@ -58,7 +60,6 @@ export const LoginPage = () => {
                         <Switch {...label} defaultChecked/>
                         <label className={'labelPwd'}>{'Recover Password'}</label>
                     </div>    
-                    <br/>
                     <br/>
                     <button className={'loginButton'}>Log In</button>
                 </div>
