@@ -7,16 +7,63 @@
  */
 
 import React  from "react";
-import {useNavigate} from "react-router-dom";
+import Switch from '@mui/material/Switch';
+import './LoginPage.css';
+import { ICONS } from "../../icons/Icons";
+
+const label = { inputProps: { 'aria-label': 'Switch demo' } };
 
 
 export const LoginPage = () => {
-    const navigate = useNavigate();
+
 
     return (
-        <div>
-            <h1>Welcome to Login Page</h1>
-            <button onClick={() => navigate('/home')}>Login</button>
+        <div className={'container'}>
+            <div className={'overlay'}/>
+            <div className={'loginBox'}>
+               <span id="loginNormalText">{'Our World Revolves'} 
+                    <br/>
+                    Around
+                    <span id="loginColorText" >
+                         {' Powering '}
+                    </span> 
+                    Yours
+                </span>
+                <div className={'hrLine'}></div>
+                <span className={'loginNormalTextDescription'}>{'YOUR TRUSTED SOLAR EXPERTS'}</span> 
+            </div>
+
+            <div className={'loginBox2'}>
+                <div className="loginTextView">
+                    <img src={ICONS.LOGO} />
+                    <br/>
+                    <br/>
+                    <span className={'loginHeader'}>{'Log In Your Account'}</span>
+                    <br/>
+                    <span className={'loginSubtitle'}>
+                        {'Enter below details to acces your'}
+                        <span className={'loginSubtitleColor'}>{' Commission App '}</span>
+                        {'account'}
+                    </span>
+                    <br/>
+                    <br/>
+                    <input className={'inputField'} placeholder="Commission App" />
+                    <br/>
+                    <br/>
+                    <input className={'inputField'} placeholder="Enter Email"/>
+                    <br/>
+                    <br/>
+                    <input className={'inputField'} placeholder="Enter Password" type="password" />
+                    <br/>
+                    <br/>
+                    <div className="pwd">
+                        <Switch {...label} defaultChecked/>
+                        <label className={'labelPwd'}>{'Recover Password'}</label>
+                    </div>    
+                    <br/>
+                    <button className={'loginButton'}>Log In</button>
+                </div>
+            </div>
         </div>
     );
 }
