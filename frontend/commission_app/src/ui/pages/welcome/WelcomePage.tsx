@@ -71,7 +71,7 @@ export const WelcomePage = () => {
 
   return (
     <div className="welcomeMainContainer">
-      <div className="welcomeBannerView">
+      <header className="welcomeBannerView">
         <div className="welcomeInnerBannerView">
           <div className="welcome-left-view">
             <div>
@@ -100,8 +100,8 @@ export const WelcomePage = () => {
             />
           </div>
         </div>
-      </div>
-      <div className="welcomeApplicationView">
+      </header>
+      <section className="welcomeApplicationView">
         <div className="welcomeInnerApplicationView">
           <span className="welcome-our-text">Our Applications</span>
 
@@ -140,8 +140,8 @@ export const WelcomePage = () => {
             />
           </div>
         </div>
-      </div>
-      <div className="welcomeAboutUsView">
+      </section>
+      <section className="welcomeAboutUsView">
         <div className="welcomeAboutUsLeftView">
           <img className="welcomeAboutUsBig" src={AboutUsBig} alt="Icon" />
           <img className="welcomeAboutUsSmall" src={AboutUsSmall} alt="Icon" />
@@ -168,12 +168,12 @@ export const WelcomePage = () => {
             the path curvature and have X, Y and Rotation offsets.
           </p>
         </div>
-      </div>
-      <div className="welcomeWorkEaseView">
+      </section>
+      <section className="welcomeWorkEaseView">
         <span className="welcomeWorkEaseTitle">We Make Your Work Easy</span>
         <ImageLayout images={[Grid_1, Grid_2, Grid_3, Grid_4, Grid_5]} />
-      </div>
-      <div className="welcomeOverProcess">
+      </section>
+      <section className="welcomeOverProcess">
         <span className="welcomeOverProcessTitle">Our Process</span>
 
         <div className="welcomeTabView">
@@ -210,7 +210,7 @@ export const WelcomePage = () => {
             </tbody>
           </table>
         </div>
-      </div>
+      </section>
       <footer className="welcomeFooterView">
         <div className="welcomeInnerView">
           <div id="welcomeFooterUpperView">
