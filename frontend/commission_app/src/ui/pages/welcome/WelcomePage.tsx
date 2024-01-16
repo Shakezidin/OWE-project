@@ -7,7 +7,7 @@
  */
 
 import React, { useState } from "react";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./WelcomePage.css";
 import LogoImage from "../../../resources/assets/logo.png";
 import LaptopImage from "../../../resources/assets/laptop.png";
@@ -34,8 +34,10 @@ import { ReactComponent as Twitter } from "../../../resources/assets/twitter.svg
 import { ReactComponent as YouTube } from "../../../resources/assets/youTube.svg";
 import { ReactComponent as Instagram } from "../../../resources/assets/Instagram.svg";
 import BusinessLogo from "../../../resources/assets/business_logo.png";
+import { ROUTES } from "../../../navigation/Routes";
 
 export const WelcomePage = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("tab1");
 
   const handleTabClick = (tabName: string) => {
@@ -111,7 +113,7 @@ export const WelcomePage = () => {
               title="Commission App"
               description="More than that, you can have any amount of layers attached "
               onClick={() => {
-                alert("Commission");
+                 navigate(ROUTES.LOGIN);
               }}
             />
             <CustomBox

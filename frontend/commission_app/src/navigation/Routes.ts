@@ -5,3 +5,8 @@
  * Project Name: commission_app
  * Path: src/navigation
  */
+
+
+export const ROUTES = {
+    LOGIN: '/login'
+}
