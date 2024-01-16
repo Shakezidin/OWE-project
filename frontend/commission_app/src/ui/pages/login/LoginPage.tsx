@@ -7,8 +7,11 @@
  */
 
 import React  from "react";
+import Switch from '@mui/material/Switch';
 import './LoginPage.css';
 import { ICONS } from "../../icons/Icons";
+
+const label = { inputProps: { 'aria-label': 'Switch demo' } };
 
 
 export const LoginPage = () => {
@@ -50,9 +53,10 @@ export const LoginPage = () => {
                     <input className={'inputField'} placeholder="Enter Password" type="password" />
                     <br/>
                     <br/>
-                    <div>
-                        <input type="switch" />
-                    </div>
+                    <div className="pwd">
+                        <Switch {...label} defaultChecked/>
+                        <label className={'labelPwd'}>{'Recover Password'}</label>
+                    </div>    
                     <br/>
                     <br/>
                     <button className={'loginButton'}>Log In</button>
