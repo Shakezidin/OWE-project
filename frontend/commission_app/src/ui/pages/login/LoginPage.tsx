@@ -7,25 +7,20 @@
  */
 
 import React  from "react";
-import {useNavigate} from "react-router-dom";
+import './LoginPage.css';
 
 
 export const LoginPage = () => {
-    const navigate = useNavigate();
 
     return (
-        <div style={{
-            // backgroundImage: `url(${backgroundImage})`,
-            // backgroundSize: 'cover',
-            // backgroundPosition: 'center',
-            // backgroundRepeat: 'no-repeat',
-        }}>
-            <h1>Welcome to Login Page</h1>
-            <div>
-
+        <div className={'container'}>
+            <div className={'box1'}>
+                <p>Our World Resolves</p>
+                
             </div>
-            <div>
 
+            <div className={'box2'}>
+                <p>Around Powering Yours</p>
             </div>
         </div>
     );

@@ -1,0 +1,40 @@
+.container {
+    background-image: url("../../../resources/assets/background.png");
+    /* height: 59vh;
+
+    background-size: cover;
+    padding: 12rem; */
+    background-position: center;
+    width: 100%;
+    background-size: cover;
+    height: 100vh;
+    z-index: 1;
+    background-repeat: no-repeat;
+    /* position: relative; */
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex: 1;
+
+    /* display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 20em; */
+}
+
+
+.box1 {
+    background: white;
+    /* flex: 1; */
+    border-radius: 16px;
+    display: flex;
+    width: 100px;
+}
+
+
+.box2 {
+    background: white;
+    /* flex: 1; */
+    border-radius: 16px;
+    display: flex;
+    width: 100px;
+}
