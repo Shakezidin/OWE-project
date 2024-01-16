@@ -38,3 +38,47 @@
   height: 260px;
   margin: 5px;
 }
+
+.bottamTextView {
+  position: absolute;
+  bottom: 3%;
+  width: 100%;
+}
+
+.bottamTextView div {
+  border-radius: 0px 0px 16px 16px;
+  background: rgba(0, 0, 0, 0.63);
+  margin-left: 4px;
+  margin-right: 4px;
+}
+
+.bottamTextView div span {
+  color: #fff;
+  text-align: center;
+  font-family: Poppins;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 32px; /* 177.778% */
+}
+
+.centerTextView {
+  position: absolute;
+  bottom: 0%;
+  width: 100%;
+}
+
+.centerTextView div {
+  border-radius: 0px 0px 16px 16px;
+  background: rgba(0, 0, 0, 0.63);
+}
+
+.centerTextView div span {
+  color: #fff;
+  text-align: center;
+  font-family: Poppins;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 32px; /* 177.778% */
+}

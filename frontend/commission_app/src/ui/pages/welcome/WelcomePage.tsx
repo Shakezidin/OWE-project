@@ -19,7 +19,7 @@ import ContractorIcon from "../../../resources/assets/contractor.svg";
 import pandoIcon from "../../../resources/assets/pando.svg";
 import AboutUsBig from "../../../resources/assets/aboutUsBig.png";
 import AboutUsSmall from "../../../resources/assets/aboutUsSmall.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ImageLayout from "../../components/imageLayout/ImageLayout";
 import Grid_1 from "../../../resources/assets/grid_1.png";
 import Grid_2 from "../../../resources/assets/grid_2.png";
@@ -36,6 +36,7 @@ import { ReactComponent as Instagram } from "../../../resources/assets/Instagram
 import BusinessLogo from "../../../resources/assets/business_logo.png";
 
 export const WelcomePage = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("tab1");
 
   const handleTabClick = (tabName: string) => {
@@ -111,7 +112,7 @@ export const WelcomePage = () => {
               title="Commission App"
               description="More than that, you can have any amount of layers attached "
               onClick={() => {
-                alert("Commission");
+                navigate("/login");
               }}
             />
             <CustomBox
