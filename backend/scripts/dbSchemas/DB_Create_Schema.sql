@@ -69,11 +69,11 @@ CREATE TABLE zipcodes (
     zipcode character varying,
     city character varying,
     state_id INT,
-    lat numeric(15,10),
-    lon numeric(15,10),
+    lat PRECISION,
+    lon PRECISION,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    FOREIGN KEY (state_id) REFERENCES states(state_id)
+    FOREIGN KEY (state_id) REFERENCES states(state_id),
     PRIMARY KEY (id)
 );
 
@@ -146,7 +146,7 @@ CREATE TABLE source (
     PRIMARY KEY (id)
 );
 
-CREATE TABLE marketting_fees (
+CREATE TABLE marketing_fees (
     id serial NOT NULL,
     source_id INT,
     dba character varying,
@@ -215,7 +215,7 @@ CREATE TABLE tier_loan_fee (
     dealer_tier INT,
     installer_id INT,
     state_id INT,
-    finance_type_name INT,
+    finance_type INT,
     owe_cost character varying,
     dlr_mu character varying,
     dlr_cost character varying,
@@ -226,7 +226,7 @@ CREATE TABLE tier_loan_fee (
     FOREIGN KEY (dealer_tier) REFERENCES tier(id),
     FOREIGN KEY (installer_id) REFERENCES partners(partner_id),
     FOREIGN KEY (state_id) REFERENCES states(state_id),
-    FOREIGN KEY (finance_type_name) REFERENCES loan_type(finance_type_name),
+    FOREIGN KEY (finance_type) REFERENCES loan_type(id),
 
     PRIMARY KEY (id)
 );
