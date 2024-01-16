@@ -27,6 +27,13 @@ import Grid_3 from "../../../resources/assets/grid_3.png";
 import Grid_4 from "../../../resources/assets/grid_4.png";
 import Grid_5 from "../../../resources/assets/grid_5.png";
 import TabBar from "../../components/tabBar/TabBar";
+import WhiteLogo from "../../../resources/assets/white-image-logo.png";
+import { ReactComponent as Facebook } from "../../../resources/assets/facebook.svg";
+import { ReactComponent as Linkedin } from "../../../resources/assets/linkedin.svg";
+import { ReactComponent as Twitter } from "../../../resources/assets/twitter.svg";
+import { ReactComponent as YouTube } from "../../../resources/assets/youTube.svg";
+import { ReactComponent as Instagram } from "../../../resources/assets/Instagram.svg";
+import BusinessLogo from "../../../resources/assets/business_logo.png";
 
 export const WelcomePage = () => {
   const [activeTab, setActiveTab] = useState("tab1");
@@ -204,8 +211,34 @@ export const WelcomePage = () => {
           </table>
         </div>
       </div>
-
-      <div className="welcomeFooterView"></div>
+      <footer className="welcomeFooterView">
+        <div className="welcomeInnerView">
+          <div id="welcomeFooterUpperView">
+            <img id="welcomeWhiteLogo" src={WhiteLogo} alt="logo" />
+            <div id="welcomeSocialMedia">
+              <Facebook />
+              <Linkedin />
+              <Twitter />
+              <YouTube />
+              <Instagram />
+            </div>
+            <div id="welcomeContact">
+              <span className="welcomeContactText">About</span>
+              <span className="welcomeContactText">Solar Resources</span>
+              <span className="welcomeContactText">Our Process</span>
+              <span className="welcomeContactText">Locations</span>
+              <span className="welcomeContactText">Contact</span>
+            </div>
+          </div>
+          <div id="welcomeUnderLine"></div>
+          <div id="welcomeFooterLowerView">
+            <img src={BusinessLogo} alt="logo" />
+            <div className="footer-text">
+              © 2024 BY OUR WORLD ENERGY. ALL RIGHTS RESERVED.{" "}
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };

@@ -294,6 +294,88 @@
   height: 241px;
   flex-shrink: 0;
   background: #0e0e0e;
-
   display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.welcomeInnerView {
+  display: flex;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+#welcomeFooterUpperView {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#welcomeWhiteLogo {
+  width: 151px;
+  height: 37px;
+  flex-shrink: 0;
+}
+
+#welcomeSocialMedia {
+  width: 200px;
+  flex-shrink: 0;
+  justify-content: space-around;
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+}
+#welcomeSocialMedia :hover {
+  cursor: pointer;
+}
+
+#welcomeContact {
+  flex-shrink: 0;
+  justify-content: space-between;
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+  color: white;
+}
+
+#welcomeContact span {
+  color: #ccc;
+  font-family: Poppins;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  margin-right: 20px;
+}
+
+.welcomeContactText :hover {
+  cursor: pointer;
+}
+
+#welcomeFooterLowerView {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  margin: 0px 116px;
+  justify-content: space-between;
+}
+
+.footer-text {
+  color: #ccc;
+  font-family: Poppins;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  flex-grow: 1;
+  margin-left: -100px;
+}
+
+#welcomeUnderLine {
+  height: 1px;
+  width: 100%;
+  background-color: grey;
 }
