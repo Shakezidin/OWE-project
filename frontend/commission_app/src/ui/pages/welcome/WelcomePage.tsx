@@ -19,7 +19,7 @@ import ContractorIcon from "../../../resources/assets/contractor.svg";
 import pandoIcon from "../../../resources/assets/pando.svg";
 import AboutUsBig from "../../../resources/assets/aboutUsBig.png";
 import AboutUsSmall from "../../../resources/assets/aboutUsSmall.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ImageLayout from "../../components/imageLayout/ImageLayout";
 import Grid_1 from "../../../resources/assets/grid_1.png";
 import Grid_2 from "../../../resources/assets/grid_2.png";
