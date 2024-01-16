@@ -14,13 +14,16 @@ export const LoginPage = () => {
 
     return (
         <div className={'container'}>
-            <div className={'box1'}>
-                <p>Our World Resolves</p>
+            <div className={'loginBox'}>
+               <span id="loginNormalText" >Our World Revolves Around <span id="loginColorText" >Powering</span> Yours</span>
                 
             </div>
 
-            <div className={'box2'}>
-                <p>Around Powering Yours</p>
+            <div className={'loginBox2'}>
+                <div className="loginTextView">
+                    
+
+                </div>
             </div>
         </div>
     );
