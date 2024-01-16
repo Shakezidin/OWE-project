@@ -7,7 +7,6 @@
  */
 
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import "./WelcomePage.css";
 import LogoImage from "../../../resources/assets/logo.png";
 import LaptopImage from "../../../resources/assets/laptop.png";
