@@ -23,13 +23,6 @@ CREATE TABLE IF NOT EXISTS user_auth(
     FOREIGN KEY (role_id) REFERENCES user_roles(role_id)
 );
 
-/* Add a default Admin User to Login tables */
-INSERT INTO user_roles	( role_name) VALUES ( 'admin' );
-INSERT INTO "public".user_auth ( email_id, "password", passwordChangeRequired, role_id)
-VALUES ( 'admin@test.com', '$2a$10$5DPnnf5GqDE1dI8L/fM79OsY7XjzmLbw3rkSVONPz.92CqHUkXYHC', true, 1 );
-/******************************************************************************************/
-
-
 
 /***************************** SETTINGS DB TABLE START  ************************************************/
 /*Table to store the teams information for appointment setters*/
@@ -129,10 +122,10 @@ CREATE TABLE v_dealer (
 CREATE TABLE v_reps (
     id serial NOT NULL,
     rep_code character varying,
-    rep_fname character varying,
-    rep_lname character varying,
+    rep_fname character varying NOT NULL,
+    rep_lname character varying NOT NULL,
     asssigned_dealer INT,
-    rep_status character varying,
+    rep_status character varying NOT NULL,
     description character varying,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
@@ -205,7 +198,7 @@ CREATE TABLE loan_type (
 
 CREATE TABLE tier (
     id serial NOT NULL,
-    tier character varying,
+    tier_name character varying,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     PRIMARY KEY (id)
@@ -278,7 +271,18 @@ CREATE TABLE timeline_sla (
     PRIMARY KEY (id)
 );
 
-\copy teams(tier) FROM '/docker-entrypoint-initdb.d/tier.csv' DELIMITER ',' CSV;
+
+/* Add a default Admin User to Login tables */
+INSERT INTO user_roles	( role_name) VALUES ( 'admin' );
+INSERT INTO "public".user_auth ( email_id, "password", passwordChangeRequired, role_id)
+VALUES ( 'admin@test.com', '$2a$10$5DPnnf5GqDE1dI8L/fM79OsY7XjzmLbw3rkSVONPz.92CqHUkXYHC', true, 1 );
+/******************************************************************************************/
+
+
+/* Insert Default Data in all the rquried tables */
+
+\copy v_reps(rep_code,rep_fname,rep_lname,asssigned_dealer,rep_status,description) FROM '/docker-entrypoint-initdb.d/v_reps.csv' DELIMITER ',' CSV;
+\copy tier(tier_name) FROM '/docker-entrypoint-initdb.d/tier.csv' DELIMITER ',' CSV;
 \copy teams(team_name) FROM '/docker-entrypoint-initdb.d/teams.csv' DELIMITER ',' CSV;
 \copy appointment_setters(setters_id, team_id, first_name, last_name, pay_rate, start_date, end_date) FROM '/docker-entrypoint-initdb.d/appointment_setters.csv' DELIMITER ',' CSV;
 

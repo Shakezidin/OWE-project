@@ -10,6 +10,7 @@ FROM postgres:latest
 EXPOSE 5432
 
 COPY ./dbSchemas/DB_Create_Schema.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/v_reps.csv /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/tier.csv /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/teams.csv /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/appointment_setters.csv /docker-entrypoint-initdb.d/
