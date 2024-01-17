@@ -126,6 +126,20 @@ CREATE TABLE v_dealer (
     PRIMARY KEY (id)
 );
 
+CREATE TABLE v_reps (
+    id serial NOT NULL,
+    rep_code character varying,
+    rep_fname character varying,
+    rep_lname character varying,
+    asssigned_dealer INT,
+    rep_status character varying,
+    description character varying,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
+    FOREIGN KEY (asssigned_dealer) REFERENCES v_dealer(id),
+    PRIMARY KEY (id)
+);
+
 CREATE TABLE dealer_override (
     id serial NOT NULL,
     sub_dealer character varying,
