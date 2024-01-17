@@ -7,12 +7,12 @@
  */
 
 
-export const HTTP_HEADERS_DEFAULT: Record<string, string> = {
+export const HttpHeadersDefault: Record<string, string> = {
     'Content-Type': 'application/json'
 }
 
 
-export const AuthorizationHeader = async (): Promise<Record<string, string>> => {
+export const getAuthorizationHeader = async (): Promise<Record<string, string>> => {
     //ToDo:- Return Authorization
     return {}
 }
