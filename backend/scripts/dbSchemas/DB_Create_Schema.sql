@@ -88,6 +88,15 @@ CREATE TABLE sale_type (
     PRIMARY KEY (id)
 );
 
+CREATE TABLE project_status (
+    id serial NOT NULL,
+    status character varying,
+    description character varying,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
+    PRIMARY KEY (id)
+);
+
 CREATE TABLE commission_rates (
     id serial NOT NULL,
     partner_id INT,
@@ -95,7 +104,7 @@ CREATE TABLE commission_rates (
     state_id INT,
     sale_type_id INT,
     sale_price character varying,
-    rep_type character varying,
+    rep_type INT,
     rl character varying,
     rate character varying,
     start_date character varying NOT NULL,
@@ -106,6 +115,8 @@ CREATE TABLE commission_rates (
     FOREIGN KEY (partner_id) REFERENCES partners(partner_id),
     FOREIGN KEY (installer_id) REFERENCES partners(partner_id),
     FOREIGN KEY (sale_type_id) REFERENCES sale_type(id),
+    FOREIGN KEY (rep_type) REFERENCES rep_type(id),
+
     PRIMARY KEY (id)
 );
 
@@ -116,6 +127,12 @@ CREATE TABLE v_dealer (
     description character varying,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE rep_type (
+    id serial NOT NULL,
+    rep_type character varying NOT NULL,
     PRIMARY KEY (id)
 );
 
@@ -210,8 +227,8 @@ CREATE TABLE dealer_tier (
     tier_id INT,
     start_date character varying NOT NULL,
     end_date character varying,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
     FOREIGN KEY (tier_id) REFERENCES tier(id),
     FOREIGN KEY (dealer_id) REFERENCES v_dealer(id),
     PRIMARY KEY (id)
@@ -228,8 +245,8 @@ CREATE TABLE tier_loan_fee (
     dlr_cost character varying,
     start_date character varying NOT NULL,
     end_date character varying,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
     FOREIGN KEY (dealer_tier) REFERENCES tier(id),
     FOREIGN KEY (installer_id) REFERENCES partners(partner_id),
     FOREIGN KEY (state_id) REFERENCES states(state_id),
@@ -240,7 +257,7 @@ CREATE TABLE tier_loan_fee (
 
 CREATE TABLE payment_schedule (
     id serial NOT NULL,
-    rep_name character varying,
+    rep_name INT,
     partner_id INT,
     installer_id INT,
     sale_type_id INT, 
@@ -251,10 +268,13 @@ CREATE TABLE payment_schedule (
     rep_draw character varying,
     rep_draw_max character varying,
     rep_pay character varying,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
     FOREIGN KEY (state_id) REFERENCES states(state_id),
     FOREIGN KEY (sale_type_id) REFERENCES sale_type(id),
     FOREIGN KEY (installer_id) REFERENCES partners(partner_id),
     FOREIGN KEY (partner_id) REFERENCES partners(partner_id),
+    FOREIGN KEY (rep_name) REFERENCES v_reps(id),
     PRIMARY KEY (id)
 );
 
@@ -265,8 +285,8 @@ CREATE TABLE timeline_sla (
     days integer,
     start_date character varying NOT NULL,
     end_date character varying,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
     FOREIGN KEY (state_id) REFERENCES states(state_id),
     PRIMARY KEY (id)
 );
@@ -280,9 +300,13 @@ VALUES ( 'admin@test.com', '$2a$10$5DPnnf5GqDE1dI8L/fM79OsY7XjzmLbw3rkSVONPz.92C
 
 
 /* Insert Default Data in all the rquried tables */
-
+\copy partners(partner_name) FROM '/docker-entrypoint-initdb.d/partners.csv' DELIMITER ',' CSV;
+\copy v_dealer(dealer_name,description) FROM '/docker-entrypoint-initdb.d/v_dealer.csv' DELIMITER ',' CSV;
+\copy rep_type(rep_type) FROM '/docker-entrypoint-initdb.d/rep_type.csv' DELIMITER ',' CSV;
+\copy sale_type(type_name) FROM '/docker-entrypoint-initdb.d/sale_type.csv' DELIMITER ',' CSV;
 \copy v_reps(rep_code,rep_fname,rep_lname,asssigned_dealer,rep_status,description) FROM '/docker-entrypoint-initdb.d/v_reps.csv' DELIMITER ',' CSV;
 \copy tier(tier_name) FROM '/docker-entrypoint-initdb.d/tier.csv' DELIMITER ',' CSV;
+\copy project_status(status) FROM '/docker-entrypoint-initdb.d/project_status.csv' DELIMITER ',' CSV;
 \copy teams(team_name) FROM '/docker-entrypoint-initdb.d/teams.csv' DELIMITER ',' CSV;
 \copy appointment_setters(setters_id, team_id, first_name, last_name, pay_rate, start_date, end_date) FROM '/docker-entrypoint-initdb.d/appointment_setters.csv' DELIMITER ',' CSV;
 
