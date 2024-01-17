@@ -49,8 +49,8 @@ CREATE TABLE appointment_setters (
     start_date character varying NOT NULL,
     end_date character varying,
     description character varying,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
     PRIMARY KEY (setters_id),
     FOREIGN KEY (team_id) REFERENCES teams_settters(team_id)
 );
@@ -59,20 +59,20 @@ CREATE TABLE states (
     state_id bigint NOT NULL,
     abbr character varying(2),
     name character varying,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
     PRIMARY KEY (state_id)
 );
 
 CREATE TABLE zipcodes (
-    id bigint NOT NULL,
+    id serial NOT NULL,
     zipcode character varying,
     city character varying,
     state_id INT,
     lat PRECISION,
     lon PRECISION,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
     FOREIGN KEY (state_id) REFERENCES states(state_id),
     PRIMARY KEY (id)
 );
@@ -81,8 +81,8 @@ CREATE TABLE partners (
     partner_id serial NOT NULL,
     partner_name character varying,
     description character varying,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
     PRIMARY KEY (partner_id)
 );
 
@@ -90,8 +90,8 @@ CREATE TABLE sale_type (
     id serial NOT NULL,
     name character varying,
     description character varying,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
     PRIMARY KEY (id)
 );
 
@@ -107,8 +107,8 @@ CREATE TABLE commission_rates (
     rate character varying,
     start_date character varying NOT NULL,
     end_date character varying,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
     FOREIGN KEY (state_id) REFERENCES states(state_id),
     FOREIGN KEY (partner_id) REFERENCES partners(partner_id),
     FOREIGN KEY (installer_id) REFERENCES partners(partner_id),
@@ -121,8 +121,8 @@ CREATE TABLE v_dealer (
     dealer_code character varying,
     dealer_name character varying,
     description character varying,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
     PRIMARY KEY (id)
 );
 
@@ -133,16 +133,16 @@ CREATE TABLE dealer_override (
     pay_rate character varying,
     start_date character varying NOT NULL,
     end_date character varying,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
     FOREIGN KEY (dealer_id) REFERENCES v_dealer(id),
     PRIMARY KEY (id)
 );
 CREATE TABLE source (
     id serial NOT NULL,
     name character varying,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
     PRIMARY KEY (id)
 );
 
@@ -157,8 +157,8 @@ CREATE TABLE marketing_fees (
     start_date character varying NOT NULL,
     end_date character varying,
     description character varying,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
     FOREIGN KEY (state_id) REFERENCES states(state_id),
     FOREIGN KEY (source_id) REFERENCES source(id),
     PRIMARY KEY (id)
@@ -172,8 +172,8 @@ CREATE TABLE v_adders (
     price_amount character varying,
     active integer,
     description character varying,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
     PRIMARY KEY (id)
 );
 
@@ -183,8 +183,8 @@ CREATE TABLE loan_type (
     active integer,
     adder integer,
     description character varying,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
     PRIMARY KEY (id)
 );
 
@@ -192,8 +192,8 @@ CREATE TABLE loan_type (
 CREATE TABLE tier (
     id serial NOT NULL,
     tier character varying,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
     PRIMARY KEY (id)
 );
 
