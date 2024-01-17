@@ -33,7 +33,7 @@ VALUES ( 'admin@test.com', '$2a$10$5DPnnf5GqDE1dI8L/fM79OsY7XjzmLbw3rkSVONPz.92C
 
 /***************************** SETTINGS DB TABLE START  ************************************************/
 /*Table to store the teams information for appointment setters*/
-CREATE TABLE teams_settters (
+CREATE TABLE teams (
     team_id serial NOT NULL,
     team_name character varying,
     PRIMARY KEY (team_id)
@@ -52,7 +52,7 @@ CREATE TABLE appointment_setters (
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     PRIMARY KEY (setters_id),
-    FOREIGN KEY (team_id) REFERENCES teams_settters(team_id)
+    FOREIGN KEY (team_id) REFERENCES teams(team_id)
 );
 
 CREATE TABLE states (
@@ -265,7 +265,7 @@ CREATE TABLE timeline_sla (
 );
 
 
-\copy teams_settters(team_id, team_name) FROM '/docker-entrypoint-initdb.d/teams_settters.csv' DELIMITER ',' CSV;
+\copy teams(team_id, team_name) FROM '/docker-entrypoint-initdb.d/teams.csv' DELIMITER ',' CSV;
 \copy appointment_setters(setters_id, team_id, first_name, last_name, pay_rate, start_date, end_date) FROM '/docker-entrypoint-initdb.d/appointment_setters.csv' DELIMITER ',' CSV;
 
 /******************************SETTINGS DB TABLE END  ***********************************************/
