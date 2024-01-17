@@ -265,7 +265,7 @@ CREATE TABLE timeline_sla (
 );
 
 
-\copy teams(team_id, team_name) FROM '/docker-entrypoint-initdb.d/teams.csv' DELIMITER ',' CSV;
+\copy teams(team_name) FROM '/docker-entrypoint-initdb.d/teams.csv' DELIMITER ',' CSV;
 \copy appointment_setters(setters_id, team_id, first_name, last_name, pay_rate, start_date, end_date) FROM '/docker-entrypoint-initdb.d/appointment_setters.csv' DELIMITER ',' CSV;
 
 /******************************SETTINGS DB TABLE END  ***********************************************/
