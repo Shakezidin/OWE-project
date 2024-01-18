@@ -335,7 +335,6 @@ CREATE TABLE sale_info (
     FOREIGN KEY (source) REFERENCES source(id),
     FOREIGN KEY (sale_type_id) REFERENCES sale_type(id),
     FOREIGN KEY (loan_type) REFERENCES loan_type(id),
-    FOREIGN KEY (city) REFERENCES zipcodes(id),
     FOREIGN KEY (state) REFERENCES states(state_id),
     FOREIGN KEY (zipcode) REFERENCES zipcodes(id),
     FOREIGN KEY (rep_1) REFERENCES v_reps(id),
