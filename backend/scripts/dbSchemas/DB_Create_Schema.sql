@@ -165,6 +165,7 @@ CREATE TABLE dealer_override (
 CREATE TABLE source (
     id serial NOT NULL,
     name character varying,
+    description character varying,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     PRIMARY KEY (id)
@@ -280,7 +281,7 @@ CREATE TABLE payment_schedule (
 
 CREATE TABLE timeline_sla (
     id serial NOT NULL,
-    type  character varying,
+    type_m2m  character varying,
     state_id INT,
     days integer,
     start_date character varying NOT NULL,
@@ -300,8 +301,11 @@ VALUES ( 'admin@test.com', '$2a$10$5DPnnf5GqDE1dI8L/fM79OsY7XjzmLbw3rkSVONPz.92C
 
 
 /* Insert Default Data in all the rquried tables */
+\copy timeline_sla(type_m2m,state_id,days,start_date) FROM '/docker-entrypoint-initdb.d/timeline_sla.csv' DELIMITER ',' CSV;
+\copy source(name,description) FROM '/docker-entrypoint-initdb.d/source.csv' DELIMITER ',' CSV;
 \copy partners(partner_name) FROM '/docker-entrypoint-initdb.d/partners.csv' DELIMITER ',' CSV;
 \copy v_dealer(dealer_name,description) FROM '/docker-entrypoint-initdb.d/v_dealer.csv' DELIMITER ',' CSV;
+\copy states(abbr,name) FROM '/docker-entrypoint-initdb.d/states.csv' DELIMITER ',' CSV;
 \copy rep_type(rep_type) FROM '/docker-entrypoint-initdb.d/rep_type.csv' DELIMITER ',' CSV;
 \copy sale_type(type_name) FROM '/docker-entrypoint-initdb.d/sale_type.csv' DELIMITER ',' CSV;
 \copy v_reps(rep_code,rep_fname,rep_lname,asssigned_dealer,rep_status,description) FROM '/docker-entrypoint-initdb.d/v_reps.csv' DELIMITER ',' CSV;

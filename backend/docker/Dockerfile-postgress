@@ -11,8 +11,11 @@ EXPOSE 5432
 
 COPY ./dbSchemas/DB_Create_Schema.sql /docker-entrypoint-initdb.d/
 
+COPY ./dbSchemas/timeline_sla.csv /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/source.csv /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/partners.csv /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/v_dealer.csv /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/states.csv /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/rep_type.csv /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/sale_type.csv /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/v_reps.csv /docker-entrypoint-initdb.d/
