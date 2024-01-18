@@ -292,6 +292,60 @@ CREATE TABLE timeline_sla (
     PRIMARY KEY (id)
 );
 
+CREATE TABLE sale_info (
+    id serial NOT NULL,
+    dealer INT,
+    partner INT,
+    installer INT,
+    source INT,
+    sale_type_id INT
+    loan_type INT,
+    project_id character varying,
+    home_owner	character varying,
+    street_address character varying,
+    city INT,
+    state INT,
+    zipcode INT,
+    email character varying,
+    phone_number character varying,
+    rep_1 INT,
+    rep_2 INT,
+    appt_setter	INT,
+    sys_size character varying,
+    kwh	 DOUBLE PRECISION,
+    contract DOUBLE PRECISION,
+    epc DOUBLE PRECISION,
+    created_date character varying,
+    contract_date character varying,
+    site_survey_date character varying,
+    ntp_date character varying,
+    perm_sub_date character varying,	
+    perm_app_date character varying,	
+    ic_sub_date character varying,	
+    ic_app_date character varying,	
+    proj_status_crm INT,
+    cancel_date	character varying,
+    pv_install_date	character varying,
+    elec_Install_date character varying,
+    fin_date character varying,
+    pto_date character varying,
+    FOREIGN KEY (dealer) REFERENCES v_dealer(id),
+    FOREIGN KEY (partner) REFERENCES partners(partner_id),
+    FOREIGN KEY (installer) REFERENCES partners(partner_id),
+    FOREIGN KEY (source) REFERENCES source(id),
+    FOREIGN KEY (sale_type_id) REFERENCES sale_type(id),
+    FOREIGN KEY (loan_type) REFERENCES loan_type(id),
+    FOREIGN KEY (city) REFERENCES zipcodes(id),
+    FOREIGN KEY (state) REFERENCES states(state_id),
+    FOREIGN KEY (zipcode) REFERENCES zipcodes(id),
+    FOREIGN KEY (rep_1) REFERENCES v_reps(id),
+    FOREIGN KEY (rep_2) REFERENCES v_reps(id),
+    FOREIGN KEY (appt_setter) REFERENCES appointment_setters(setters_id),
+    FOREIGN KEY (proj_status_crm) REFERENCES  project_status(1),
+    PRIMARY KEY (id)
+);
+
+
 
 /* Add a default Admin User to Login tables */
 INSERT INTO user_roles	( role_name) VALUES ( 'admin' );
