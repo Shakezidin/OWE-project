@@ -23,6 +23,7 @@ COPY ./dbSchemas/tier.csv /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/teams.csv /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/appointment_setters.csv /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/project_status.csv /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/adder_type.csv /docker-entrypoint-initdb.d/
  
 RUN chmod +x /docker-entrypoint-initdb.d/DB_Create_Schema.sql
 

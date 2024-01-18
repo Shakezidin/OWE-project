@@ -299,7 +299,7 @@ CREATE TABLE sale_info (
     source INT,
     sale_type_id INT,
     loan_type INT,
-    project_id character varying,
+    unique_id character varying,
     home_owner	character varying,
     street_address character varying,
     city INT,
@@ -343,6 +343,27 @@ CREATE TABLE sale_info (
     PRIMARY KEY (id)
 );
 
+CREATE TABLE adder_type (
+    id serial NOT NULL,
+    adder_type character varying,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE sale_adders (
+    id serial NOT NULL,
+    sale_info_id INT,
+    date character varying,
+    adder_type INT,
+    gc character varying,
+    extact_amt DOUBLE PRECISION,
+    per_kw_amt DOUBLE PRECISION,
+    rep_percent integer,
+    description character varying,
+    FOREIGN KEY (sale_info_id) REFERENCES  sale_info(id),
+    FOREIGN KEY (adder_type) REFERENCES  adder_type(id),
+    PRIMARY KEY (id)
+);
+
 /* Add a default Admin User to Login tables */
 INSERT INTO user_roles	( role_name) VALUES ( 'admin' );
 INSERT INTO "public".user_auth ( email_id, "password", passwordChangeRequired, role_id)
@@ -351,6 +372,7 @@ VALUES ( 'admin@test.com', '$2a$10$5DPnnf5GqDE1dI8L/fM79OsY7XjzmLbw3rkSVONPz.92C
 
 
 /* Insert Default Data in all the rquried tables */
+\copy adder_type(adder_type) FROM '/docker-entrypoint-initdb.d/adder_type.csv' DELIMITER ',' CSV;
 \copy states(abbr,name) FROM '/docker-entrypoint-initdb.d/states.csv' DELIMITER ',' CSV;
 \copy project_status(status) FROM '/docker-entrypoint-initdb.d/project_status.csv' DELIMITER ',' CSV;
 \copy teams(team_name) FROM '/docker-entrypoint-initdb.d/teams.csv' DELIMITER ',' CSV;
