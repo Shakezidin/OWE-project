@@ -48,7 +48,7 @@ CREATE TABLE appointment_setters (
 );
 
 CREATE TABLE states (
-    state_id bigint NOT NULL,
+    state_id SERIAL NOT NULL,
     abbr character varying(2),
     name character varying,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
@@ -80,7 +80,7 @@ CREATE TABLE partners (
 
 CREATE TABLE sale_type (
     id serial NOT NULL,
-    name character varying,
+    type_name character varying,
     description character varying,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
@@ -93,6 +93,12 @@ CREATE TABLE project_status (
     description character varying,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE rep_type (
+    id serial NOT NULL,
+    rep_type character varying NOT NULL,
     PRIMARY KEY (id)
 );
 
@@ -126,12 +132,6 @@ CREATE TABLE v_dealer (
     description character varying,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
-    PRIMARY KEY (id)
-);
-
-CREATE TABLE rep_type (
-    id serial NOT NULL,
-    rep_type character varying NOT NULL,
     PRIMARY KEY (id)
 );
 
@@ -297,7 +297,7 @@ CREATE TABLE sale_info (
     partner INT,
     installer INT,
     source INT,
-    sale_type_id INT
+    sale_type_id INT,
     loan_type INT,
     project_id character varying,
     home_owner	character varying,
@@ -339,11 +339,9 @@ CREATE TABLE sale_info (
     FOREIGN KEY (rep_1) REFERENCES v_reps(id),
     FOREIGN KEY (rep_2) REFERENCES v_reps(id),
     FOREIGN KEY (appt_setter) REFERENCES appointment_setters(setters_id),
-    FOREIGN KEY (proj_status_crm) REFERENCES  project_status(1),
+    FOREIGN KEY (proj_status_crm) REFERENCES  project_status(id),
     PRIMARY KEY (id)
 );
-
-
 
 /* Add a default Admin User to Login tables */
 INSERT INTO user_roles	( role_name) VALUES ( 'admin' );
@@ -353,17 +351,17 @@ VALUES ( 'admin@test.com', '$2a$10$5DPnnf5GqDE1dI8L/fM79OsY7XjzmLbw3rkSVONPz.92C
 
 
 /* Insert Default Data in all the rquried tables */
-\copy timeline_sla(type_m2m,state_id,days,start_date) FROM '/docker-entrypoint-initdb.d/timeline_sla.csv' DELIMITER ',' CSV;
-\copy source(name,description) FROM '/docker-entrypoint-initdb.d/source.csv' DELIMITER ',' CSV;
-\copy partners(partner_name) FROM '/docker-entrypoint-initdb.d/partners.csv' DELIMITER ',' CSV;
-\copy v_dealer(dealer_name,description) FROM '/docker-entrypoint-initdb.d/v_dealer.csv' DELIMITER ',' CSV;
 \copy states(abbr,name) FROM '/docker-entrypoint-initdb.d/states.csv' DELIMITER ',' CSV;
-\copy rep_type(rep_type) FROM '/docker-entrypoint-initdb.d/rep_type.csv' DELIMITER ',' CSV;
-\copy sale_type(type_name) FROM '/docker-entrypoint-initdb.d/sale_type.csv' DELIMITER ',' CSV;
-\copy v_reps(rep_code,rep_fname,rep_lname,asssigned_dealer,rep_status,description) FROM '/docker-entrypoint-initdb.d/v_reps.csv' DELIMITER ',' CSV;
-\copy tier(tier_name) FROM '/docker-entrypoint-initdb.d/tier.csv' DELIMITER ',' CSV;
 \copy project_status(status) FROM '/docker-entrypoint-initdb.d/project_status.csv' DELIMITER ',' CSV;
 \copy teams(team_name) FROM '/docker-entrypoint-initdb.d/teams.csv' DELIMITER ',' CSV;
+\copy rep_type(rep_type) FROM '/docker-entrypoint-initdb.d/rep_type.csv' DELIMITER ',' CSV;
+\copy sale_type(type_name) FROM '/docker-entrypoint-initdb.d/sale_type.csv' DELIMITER ',' CSV;
+\copy source(name,description) FROM '/docker-entrypoint-initdb.d/source.csv' DELIMITER ',' CSV;
+\copy v_dealer(dealer_name,description) FROM '/docker-entrypoint-initdb.d/v_dealer.csv' DELIMITER ',' CSV;
+\copy partners(partner_name) FROM '/docker-entrypoint-initdb.d/partners.csv' DELIMITER ',' CSV;
+\copy timeline_sla(type_m2m,state_id,days,start_date) FROM '/docker-entrypoint-initdb.d/timeline_sla.csv' DELIMITER ',' CSV;
+\copy v_reps(rep_code,rep_fname,rep_lname,asssigned_dealer,rep_status,description) FROM '/docker-entrypoint-initdb.d/v_reps.csv' DELIMITER ',' CSV;
+\copy tier(tier_name) FROM '/docker-entrypoint-initdb.d/tier.csv' DELIMITER ',' CSV;
 \copy appointment_setters(setters_id, team_id, first_name, last_name, pay_rate, start_date, end_date) FROM '/docker-entrypoint-initdb.d/appointment_setters.csv' DELIMITER ',' CSV;
 
 /******************************SETTINGS DB TABLE END  ***********************************************/
