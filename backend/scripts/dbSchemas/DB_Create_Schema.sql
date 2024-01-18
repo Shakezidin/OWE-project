@@ -23,7 +23,6 @@ CREATE TABLE IF NOT EXISTS user_auth(
     FOREIGN KEY (role_id) REFERENCES user_roles(role_id)
 );
 
-
 /***************************** SETTINGS DB TABLE START  ************************************************/
 /*Table to store the teams information for appointment setters*/
 CREATE TABLE teams (
