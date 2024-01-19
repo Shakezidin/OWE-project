@@ -1,0 +1,4 @@
+{
+  "env_name": "local",
+  "api_base_url": "https://domain-local.com/api/v1"
+}

@@ -16,6 +16,7 @@ const label = { inputProps: { 'aria-label': 'Switch demo' } };
 
 export const LoginPage = () => {
 
+    const configValue = process.env.API_BASE_URL;
 
     return (
         <div className={'container'}>
@@ -47,7 +48,7 @@ export const LoginPage = () => {
                     </span>
                     <br/>
                     <br/>
-                    <input className={'inputField'} placeholder="Commission App" />
+                    <input className={'inputField'} placeholder="Commission App" value={configValue}/>
                     <br/>
                     <br/>
                     <input className={'inputField'} placeholder="Enter Email"/>
