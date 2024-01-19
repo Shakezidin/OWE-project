@@ -19,6 +19,7 @@ import (
 	"time"
 
 	log "OWEApp/logger"
+	apiHandler "OWEApp/services"
 
 	"github.com/gorilla/mux"
 	"golang.org/x/net/http2"
@@ -33,7 +34,6 @@ import (
  * RETURNS:
  ******************************************************************************/
 func main() {
-	fmt.Printf("sjhfkjdsfhkjsdjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj")
 	log.EnterFn(0, "main")
 	router := createApiRouter()
 
@@ -181,6 +181,12 @@ func createApiRouter() *mux.Router {
 	router := mux.NewRouter().StrictSlash(true)
 	for _, route := range apiRoutes {
 		var handler http.Handler = route.Handler
+
+		/* If API required authorization then add middleware in it */
+		if route.IsAuthReq {
+			handler = apiHandler.AuthorizeAPIAccess(route.RolesAllowedAccess, handler)
+		}
+
 		if types.CommGlbCfg.SvcSrvCfg.ValidateOAuthReq == "YES" {
 			//handler = OAuth2ReqValidatePlugin(handler)
 		}

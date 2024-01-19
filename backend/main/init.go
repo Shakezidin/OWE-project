@@ -46,9 +46,11 @@ const (
 *  service names, methods, patterns and
 *  handler function*/
 type ServiceApiRoute struct {
-	Method  string
-	Pattern string
-	Handler http.HandlerFunc
+	Method             string
+	Pattern            string
+	Handler            http.HandlerFunc
+	IsAuthReq          bool
+	RolesAllowedAccess []types.UserRoles
 }
 
 type ApiRoutes []ServiceApiRoute
@@ -58,16 +60,31 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/loggingconf",
 		handleDynamicLoggingConf,
+		false,
+		[]types.UserRoles{},
 	},
 	{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/httpconf",
 		handleDynamicHttpConf,
+		false,
+		[]types.UserRoles{},
 	},
 	{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/login",
 		apiHandler.HandleLoginRequest,
+		false,
+		[]types.UserRoles{},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/change_password",
+		apiHandler.HandleChnagePassRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
 	},
 }
 

@@ -384,12 +384,12 @@ CREATE TABLE customer_rebates (
 	sale_info_id INT,
 	date character varying,
 	type INT,	
-	item character varying,	 
+	item_id INT,	 
 	amount  double precision,	
 	rep_percent  integer,
 	description character varying,
 	FOREIGN KEY (sale_info_id) REFERENCES  sale_info(id),
-	FOREIGN KEY (item) REFERENCES  rebate_items(id),
+	FOREIGN KEY (item_id) REFERENCES  rebate_items(id),
     PRIMARY KEY (id)
 );
 
@@ -426,6 +426,7 @@ CREATE TABLE referral_bonus (
 );
 
 /* Add a default Admin User to Login tables */
+/* Default Admin Password is 1234 for Development purpose */
 INSERT INTO user_roles	( role_name) VALUES ( 'admin' );
 INSERT INTO "public".user_auth ( email_id, "password", passwordChangeRequired, role_id)
 VALUES ( 'admin@test.com', '$2a$10$5DPnnf5GqDE1dI8L/fM79OsY7XjzmLbw3rkSVONPz.92CqHUkXYHC', true, 1 );

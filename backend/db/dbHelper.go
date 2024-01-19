@@ -16,8 +16,8 @@ import (
 func ReteriveFromDB(query string,
 	whereEleList []interface{}) (outData []map[string]interface{}, err error) {
 
-	defer func() { log.ExitFn(0, "ReteriveFromDB", err) }()
 	log.EnterFn(0, "ReteriveFromDB")
+	defer func() { log.ExitFn(0, "ReteriveFromDB", err) }()
 
 	log.FuncDebugTrace(0, "ReteriveData Query %v whereParams %+v", query, whereEleList)
 
@@ -61,4 +61,43 @@ func ReteriveFromDB(query string,
 	}
 
 	return outData, err
+}
+
+func UpdateDataInDB(query string, whereEleList []interface{}) (err error) {
+
+	log.EnterFn(0, "UpdateDataInDB")
+	defer func() { log.ExitFn(0, "UpdateDataInDB", err) }()
+
+	log.FuncDebugTrace(0, "UpdateDataInDB Query %v whereParams %+v", query, whereEleList)
+
+	con, err := getDBConnection(OWEDB)
+	if err != nil {
+		log.FuncErrorTrace(0, "UpdateDataInDB Failed to get %v Connection with err = %v", OWEDB, err)
+		return err
+	}
+
+	stmtIns, err := con.CtxH.Prepare(query)
+	if err != nil {
+		log.FuncErrorTrace(0, "UpdateDataInDB Prepare Failed with error = %v", err)
+		return err
+	}
+
+	res, err := stmtIns.Exec(whereEleList...)
+	if err != nil {
+		log.FuncErrorTrace(0, "UpdateDataInDB Exec Failed with error = %v", err)
+		return err
+	}
+
+	if stmtIns != nil {
+		defer stmtIns.Close()
+	}
+
+	rows, err := res.RowsAffected()
+	if err != nil {
+		log.FuncErrorTrace(0, "UpdateDataInDB Failed to get the RowsAffected error = %v", err)
+	} else {
+		log.FuncDebugTrace(0, "UpdateDataInDB Update the rows = %v", rows)
+	}
+
+	return err
 }
