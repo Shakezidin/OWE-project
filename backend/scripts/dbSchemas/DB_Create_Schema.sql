@@ -31,7 +31,7 @@ CREATE TABLE teams (
     PRIMARY KEY (team_id)
 );
 
-/*Table to store the appointment setters oon  boarding information*/
+/*Table to store the appointment setters on  boarding information*/
 CREATE TABLE appointment_setters (
     setters_id serial NOT NULL,
     team_id INT,
@@ -393,16 +393,35 @@ CREATE TABLE customer_rebates (
     PRIMARY KEY (id)
 );
 
+CREATE TABLE referrer_details (
+    referrer_id character varying NOT NULL,
+    referrer_name character varying,
+    street_address character varying,
+    city INT,
+    state INT,
+    zipcode INT,
+    email character varying,
+    phone_num character varying,
+    entity_type character varying,
+    account_type character varying,
+    routing_num character varying,
+    account_num character varying,
+    FOREIGN KEY (zipcode) REFERENCES zipcodes(id),
+    FOREIGN KEY (state) REFERENCES states(state_id),
+    PRIMARY KEY (referrer_id)
+);
+
+
 CREATE TABLE referral_bonus (
 	id serial NOT NULL,
 	sale_info_id INT,
-	referrer_s character varying,
-	referrer_name character varying,
+	referrer_id INT,
 	date character varying,	 
 	amount character varying,	
 	rep_percent  integer,
 	description character varying,	
 	FOREIGN KEY (sale_info_id) REFERENCES  sale_info(id),
+    FOREIGN KEY (referrer_id) REFERENCES  referrer_details(referrer_id),
 	PRIMARY KEY (id)
 );
 
