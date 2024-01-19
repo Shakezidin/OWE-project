@@ -52,6 +52,12 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
     9. Setup / Configure Redux. <Done>
 
 
+### Build Configurations
+    1. Config -> Config.ts -> configJSON: dev, stage, qa, local, prod
+    2. 
+
+
+
 ## Learn More
 
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
