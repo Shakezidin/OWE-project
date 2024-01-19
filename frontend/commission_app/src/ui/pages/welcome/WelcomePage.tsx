@@ -74,31 +74,37 @@ export const WelcomePage = () => {
     <div className="welcomeMainContainer">
       <header className="welcomeBannerView">
         <div className="welcomeInnerBannerView">
-          <div className="welcome-left-view">
+          <br />
+          <div className="welcomeHeaderView">
             <div>
-              <img className="welcome-logo" src={LogoImage} alt={"laptop"} />
+              <img src={LogoImage} alt={"Logo"} />
             </div>
-
-            <h1 className="welcome-text-black">
-              Our <span className="welcome-text-blue">World</span> Revolves
-              <br />
-              Around <span className="welcome-text-green">Powering</span> Yours
-              <br />
-              <span className="welcome-sub-text">
-                Your Trusted Solar Expert
-              </span>
-            </h1>
-          </div>
-          <div className="welcome-right-view">
             <div className="welcome-phone-view">
               <CallIcon />
               <h3 className="welcome-phone-text">Call Us (623) 850-5700</h3>
             </div>
-            <img
-              className="welcome-laptop-image"
-              src={LaptopImage}
-              alt="laptop"
-            />
+          </div>
+
+          <div style={{ display: "flex", marginTop: "25px" }}>
+            <div className="welcome-left-view">
+              <h1 className="welcome-text-black">
+                Our <span className="welcome-text-blue">World</span> Revolves
+                <br />
+                Around <span className="welcome-text-green">Powering</span>{" "}
+                Yours
+                <br />
+                <span className="welcome-sub-text">
+                  Your Trusted Solar Expert
+                </span>
+              </h1>
+            </div>
+            <div className="welcome-right-view">
+              <img
+                className="welcome-laptop-image"
+                src={LaptopImage}
+                alt="laptop"
+              />
+            </div>
           </div>
         </div>
       </header>
@@ -112,7 +118,7 @@ export const WelcomePage = () => {
               title="Commission App"
               description="More than that, you can have any amount of layers attached "
               onClick={() => {
-                 navigate(ROUTES.LOGIN);
+                navigate(ROUTES.LOGIN);
               }}
             />
             <CustomBox
@@ -172,6 +178,7 @@ export const WelcomePage = () => {
       </section>
       <section className="welcomeWorkEaseView">
         <span className="welcomeWorkEaseTitle">We Make Your Work Easy</span>
+        <br />
         <ImageLayout images={[Grid_1, Grid_2, Grid_3, Grid_4, Grid_5]} />
       </section>
       <section className="welcomeOverProcess">

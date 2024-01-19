@@ -349,6 +349,20 @@ CREATE TABLE adder_type (
     PRIMARY KEY (id)
 );
 
+CREATE TABLE rebate_type (
+    id serial NOT NULL,
+    rebate_type character varying,
+    PRIMARY KEY (id)
+);
+
+
+CREATE TABLE rebate_items (
+    id serial NOT NULL,
+    item character varying,
+    PRIMARY KEY (id)
+);
+
+
 CREATE TABLE sale_adders (
     id serial NOT NULL,
     sale_info_id INT,
@@ -364,6 +378,34 @@ CREATE TABLE sale_adders (
     PRIMARY KEY (id)
 );
 
+
+CREATE TABLE customer_rebates (
+	id serial NOT NULL,
+	sale_info_id INT,
+	date character varying,
+	type INT,	
+	item_id INT,	 
+	amount  double precision,	
+	rep_percent  integer,
+	description character varying,
+	FOREIGN KEY (sale_info_id) REFERENCES  sale_info(id),
+	FOREIGN KEY (item_id) REFERENCES  rebate_items(id),
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE referral_bonus (
+	id serial NOT NULL,
+	sale_info_id INT,
+	referrer_s character varying,
+	referrer_name character varying,
+	date character varying,	 
+	amount character varying,	
+	rep_percent  integer,
+	description character varying,	
+	FOREIGN KEY (sale_info_id) REFERENCES  sale_info(id),
+	PRIMARY KEY (id)
+);
+
 /* Add a default Admin User to Login tables */
 INSERT INTO user_roles	( role_name) VALUES ( 'admin' );
 INSERT INTO "public".user_auth ( email_id, "password", passwordChangeRequired, role_id)
@@ -372,6 +414,8 @@ VALUES ( 'admin@test.com', '$2a$10$5DPnnf5GqDE1dI8L/fM79OsY7XjzmLbw3rkSVONPz.92C
 
 
 /* Insert Default Data in all the rquried tables */
+\copy rebate_items(item) FROM '/docker-entrypoint-initdb.d/rebate_items.csv' DELIMITER ',' CSV;
+\copy rebate_type(rebate_type) FROM '/docker-entrypoint-initdb.d/rebate_type.csv' DELIMITER ',' CSV;
 \copy adder_type(adder_type) FROM '/docker-entrypoint-initdb.d/adder_type.csv' DELIMITER ',' CSV;
 \copy states(abbr,name) FROM '/docker-entrypoint-initdb.d/states.csv' DELIMITER ',' CSV;
 \copy project_status(status) FROM '/docker-entrypoint-initdb.d/project_status.csv' DELIMITER ',' CSV;

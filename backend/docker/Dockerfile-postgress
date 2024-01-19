@@ -11,6 +11,8 @@ EXPOSE 5432
 
 COPY ./dbSchemas/DB_Create_Schema.sql /docker-entrypoint-initdb.d/
 
+COPY ./dbSchemas/rebate_items.csv /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/rebate_type.csv /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/timeline_sla.csv /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/source.csv /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/partners.csv /docker-entrypoint-initdb.d/
