@@ -2,6 +2,9 @@ package services
 
 import (
 	log "OWEApp/logger"
+	types "OWEApp/types"
+	"encoding/json"
+
 	"math/rand"
 	"net/http"
 	"time"
@@ -39,10 +42,25 @@ func CompareHashPassword(hashPassword string, password string) (err error) {
 	return err
 }
 
-func FormAndSendHttpResp(httpResp http.ResponseWriter, reqBody string, httpStatusCode int) {
+func FormAndSendHttpResp(httpResp http.ResponseWriter, message string, httpStatusCode int, data types.Data) {
 	log.EnterFn(0, "FormAndSendHttpResp")
-	httpResp.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	httpResp.WriteHeader(httpStatusCode)
-	httpResp.Write([]byte(reqBody))
-	log.ExitFn(0, "FormAndSendHttpResp", nil)
+	defer func() { log.ExitFn(0, "FormAndSendHttpResp", nil) }()
+
+	response := types.ApiResponse{
+		Status:  httpStatusCode,
+		Message: message,
+		Data:    data,
+	}
+
+	jsonResp, err := json.Marshal(response)
+	if err != nil {
+		httpResp.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		httpResp.WriteHeader(http.StatusInternalServerError)
+		httpResp.Write([]byte("Error marshaling response"))
+		return
+	} else {
+		httpResp.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		httpResp.WriteHeader(httpStatusCode)
+		httpResp.Write([]byte(jsonResp))
+	}
 }

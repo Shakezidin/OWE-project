@@ -407,6 +407,7 @@ CREATE TABLE referral_bonus (
 );
 
 /* Add a default Admin User to Login tables */
+/* Default Admin Password is 1234 for Development purpose */
 INSERT INTO user_roles	( role_name) VALUES ( 'admin' );
 INSERT INTO "public".user_auth ( email_id, "password", passwordChangeRequired, role_id)
 VALUES ( 'admin@test.com', '$2a$10$5DPnnf5GqDE1dI8L/fM79OsY7XjzmLbw3rkSVONPz.92CqHUkXYHC', true, 1 );
