@@ -384,12 +384,12 @@ CREATE TABLE customer_rebates (
 	sale_info_id INT,
 	date character varying,
 	type INT,	
-	item character varying,	 
+	item_id INT,	 
 	amount  double precision,	
 	rep_percent  integer,
 	description character varying,
 	FOREIGN KEY (sale_info_id) REFERENCES  sale_info(id),
-	FOREIGN KEY (item) REFERENCES  rebate_items(id),
+	FOREIGN KEY (item_id) REFERENCES  rebate_items(id),
     PRIMARY KEY (id)
 );
 
