@@ -406,19 +406,6 @@ CREATE TABLE referral_bonus (
 	PRIMARY KEY (id)
 );
 
-CREATE TABLE referral_bonus (
-	id serial NOT NULL,
-	sale_info_id INT,
-	referrer character varying,	 
-	referrer_name character varying,
-	date character varying,	 
-	amount character varying,	
-	rep_percent  integer,
-	description character varying,	
-	FOREIGN KEY (sale_info_id) REFERENCES  sale_info(id),
-	PRIMARY KEY (id)
-);
-
 /* Add a default Admin User to Login tables */
 INSERT INTO user_roles	( role_name) VALUES ( 'admin' );
 INSERT INTO "public".user_auth ( email_id, "password", passwordChangeRequired, role_id)
