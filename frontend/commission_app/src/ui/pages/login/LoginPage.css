@@ -11,12 +11,12 @@
 }
 
 .overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(to right, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.9));
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.9));
 }
 
 .loginBox {
@@ -37,15 +37,13 @@
   font-weight: 600;
   line-height: 50px;
   text-align: center;
-  margin-left: 24%;
-  margin-right: 24%;
 }
 
 #loginNormalText1 {
-    color: white;
-    font-family: Poppins;
-    font-size: 24px;
-    font-style: normal;
+  color: white;
+  font-family: Poppins;
+  font-size: 24px;
+  font-style: normal;
 }
 
 #loginColorText {
@@ -74,91 +72,86 @@
   /* display: flex;
   flex: 1; */
 
-  width: 450px;
-  height: 500px;
   flex-shrink: 0;
-  padding-top: 4%;
+  padding: 4%;
 }
 
 .hrLine {
-    margin-top: 10px;
-    width: 36%;
-    height: 0;
-    border: 0.5px white solid;
+  margin-top: 10px;
+  width: 36%;
+  height: 0;
+  border: 0.5px white solid;
 }
 
-
 .loginNormalTextDescription {
-    color: white;
-    font-size: 24;
-    font-family: 'Poppins';
-    font-weight: '500';
-    line-height: 5;
-    word-wrap: 'break-word'
+  color: white;
+  font-size: 24;
+  font-family: "Poppins";
+  font-weight: "500";
+  line-height: 5;
+  word-wrap: "break-word";
 }
 
 .loginHeader {
-    color: black;
-    font-size: 28px;
-    font-family: 'Poppins';
-    font-weight: 'bold';
-    word-wrap: 'break-word'
+  color: black;
+  font-size: 28px;
+  font-family: "Poppins";
+  font-weight: "bold";
+  word-wrap: "break-word";
 }
 
 .loginSubtitle {
-    color: #444444;
-    font-size: 8;
-    font-family: 'Poppins';
-    font-weight: '300';
-    word-wrap: 'break-word'
+  color: #444444;
+  font-size: 8;
+  font-family: "Poppins";
+  font-weight: "300";
+  word-wrap: "break-word";
 }
 
-
 .loginSubtitleColor {
-    color: #0493CE;
-    font-size: 8;
-    font-family: 'Poppins';
-    font-weight: '300';
-    word-wrap: 'break-word'
+  color: #0493ce;
+  font-size: 8;
+  font-family: "Poppins";
+  font-weight: "300";
+  word-wrap: "break-word";
 }
 
 .inputField {
-    background-color: transparent;
-    width: 84%;
-    height: 48px;
-    border: 1px #D9D9D9 solid;
-    padding-left: 10px;
-    padding-right: 10px;
-    border-radius: 8px;
-    border: 1px solid #D9D9D9;
-    background: #FFF;
+  background-color: transparent;
+  width: 84%;
+  height: 48px;
+  border: 1px #d9d9d9 solid;
+  /* padding-left: 10px;
+  padding-right: 10px; */
+  border-radius: 8px;
+  border: 1px solid #d9d9d9;
+  background: #fff;
 }
 
-
 .loginButton {
-    width: 400px;
-    height: 48px;
-    flex-shrink: 0;
-    background-color: #0493CE;
-    border-radius: 8px;
-    border-color: transparent;
-    color: white;
+  width: 400px;
+  height: 48px;
+  flex-shrink: 0;
+  background-color: #0493ce;
+  border-radius: 8px;
+  border-color: transparent;
+  color: white;
 }
 
 .pwd {
-    display: flex;
-    flex: 1;
-    justify-content: space-between;
-    align-items: center;
-    margin-left: 20px;
-    margin-right: 20px;
+  display: flex;
+  flex: 1;
+  justify-content: space-between;
+  align-items: center;
+  margin-left: 20px;
+  margin-right: 20px;
 }
 
 .labelPwd {
-    color: #D93F21;
-    font-family: Poppins;
-    font-size: 12px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 20px; /* 166.667% */
+  color: #d93f21;
+  font-family: Poppins;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px; /* 166.667% */
 }

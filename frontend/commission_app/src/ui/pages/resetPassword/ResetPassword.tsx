@@ -1,26 +1,13 @@
-/**
- * Created by satishazad on 13/01/24
- * File Name: LoginPage
- * Product Name: WebStorm
- * Project Name: owe_web_app
- * Path: src/ui/pages
- */
-
 import React from "react";
-import Switch from "@mui/material/Switch";
-import "./LoginPage.css";
+import "./ResetPassword.css";
+import { Switch } from "@mui/material";
 import { ICONS } from "../../icons/Icons";
-import { useNavigate } from "react-router-dom";
-import { ROUTES } from "../../../navigation/Routes";
 
-const label = { inputProps: { "aria-label": "Switch demo" } };
-
-export const LoginPage = () => {
-  const navigate = useNavigate();
-
+const ResetPassword = () => {
   return (
     <div className={"container"}>
       <div className={"overlay"} />
+
       <div className={"loginBox"}>
         <span id="loginNormalText">
           {"Our World Revolves"}
@@ -34,7 +21,6 @@ export const LoginPage = () => {
           {"YOUR TRUSTED SOLAR EXPERTS"}
         </span>
       </div>
-
       <div className={"loginBox2"}>
         <div className="loginTextView">
           <img src={ICONS.LOGO} />
@@ -49,34 +35,21 @@ export const LoginPage = () => {
           </span>
           <br />
           <br />
-          <input className={"inputField"} placeholder="Commission App" />
-          <br />
-          <br />
           <input className={"inputField"} placeholder="Enter Email" />
           <br />
-          <br />
-          <input
-            className={"inputField"}
-            placeholder="Enter Password"
-            type="password"
-          />
-          <br />
-          <br />
-          <div className="pwd">
-            <Switch {...label} defaultChecked />
-            <label className={"labelPwd"}>{"Recover Password"}</label>
-          </div>
           <br />
           <button
             className={"loginButton"}
             onClick={() => {
-              navigate(ROUTES.RESET_PASSWORD);
+              // navigat(ROUTES.RESET_PASSWORD);
             }}
           >
-            Log In
+            Reset Password
           </button>
         </div>
       </div>
     </div>
   );
 };
+
+export default ResetPassword;
