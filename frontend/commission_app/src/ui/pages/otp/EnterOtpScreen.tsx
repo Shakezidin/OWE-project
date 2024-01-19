@@ -1,12 +1,8 @@
 import React from "react";
-import "./ResetPassword.css";
-import { Switch } from "@mui/material";
+import "./EnterOtpScreen.css";
 import { ICONS } from "../../icons/Icons";
-import { ROUTES } from "../../../navigation/Routes";
-import { useNavigate } from "react-router-dom";
 
-const ResetPassword = () => {
-  const navigate = useNavigate();
+const EnterOtpScreen = () => {
   return (
     <div className={"container"}>
       <div className={"overlay"} />
@@ -38,13 +34,19 @@ const ResetPassword = () => {
           </span>
           <br />
           <br />
-          <input className={"inputField"} placeholder="Enter Email" />
+          <input className={"inputField"} placeholder="Enter OTP" />
+          <br />
+          <br />
+          <input className={"inputField"} placeholder="New Password" />
+          <br />
+          <br />
+          <input className={"inputField"} placeholder="Confirm Password" />
           <br />
           <br />
           <button
             className={"loginButton"}
             onClick={() => {
-              navigate(ROUTES.ENTER_OTP);
+              // navigat(ROUTES.RESET_PASSWORD);
             }}
           >
             Reset Password
@@ -55,4 +57,4 @@ const ResetPassword = () => {
   );
 };
 
-export default ResetPassword;
+export default EnterOtpScreen;

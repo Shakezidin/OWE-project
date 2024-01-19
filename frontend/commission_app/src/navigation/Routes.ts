@@ -9,5 +9,6 @@
 
 export const ROUTES = {
     LOGIN: '/login',
-    RESET_PASSWORD:'/resetPassword'
+    RESET_PASSWORD:'/resetPassword',
+    ENTER_OTP:'/otp'
 }

@@ -12,6 +12,7 @@ import { LoginPage } from "../ui/pages/login/LoginPage";
 import { WelcomePage } from "../ui/pages/welcome/WelcomePage";
 import { ROUTES } from "./Routes";
 import ResetPassword from "../ui/pages/resetPassword/ResetPassword";
+import EnterOtpScreen from "../ui/pages/otp/EnterOtpScreen";
 
 export interface NavigationRouteModel {
   name: string;
@@ -49,5 +50,12 @@ export const NavigationRoutes: NavigationRouteModel[] = [
     isMenu: true,
     isPrivate: false,
     element: <ResetPassword />,
+  },
+  {
+    name: "OTP Screen",
+    path: ROUTES.ENTER_OTP,
+    isMenu: true,
+    isPrivate: false,
+    element: <EnterOtpScreen />,
   },
 ];
