@@ -1,56 +1,67 @@
 import React from "react";
 import "./EnterOtpScreen.css";
 import { ICONS } from "../../icons/Icons";
+import { ReactComponent as LOGO_SMALL } from "../../../resources/assets/commisson_small_logo.svg";
+import { ReactComponent as UNDER_LINE } from "../../../resources/assets/BlueAndGreenUnderline.svg";
+import Input from "../../components/text_input/Input";
+import { ActionButton } from "../../components/button/ActionButton";
 
 const EnterOtpScreen = () => {
   return (
-    <div className={"container"}>
+    <div className="mainContainer">
       <div className={"overlay"} />
-
-      <div className={"loginBox"}>
-        <span id="loginNormalText">
-          {"Our World Revolves"}
-          <br />
-          Around
-          <span id="loginColorText">{" Powering "}</span>
-          Yours
-        </span>
-        <div className={"hrLine"}></div>
-        <span className={"loginNormalTextDescription"}>
-          {"YOUR TRUSTED SOLAR EXPERTS"}
-        </span>
-      </div>
-      <div className={"loginBox2"}>
-        <div className="loginTextView">
-          <img src={ICONS.LOGO} />
-          <br />
-          <br />
-          <span className={"loginHeader"}>{"Log In Your Account"}</span>
-          <br />
-          <span className={"loginSubtitle"}>
-            {"Enter below details to acces your"}
-            <span className={"loginSubtitleColor"}>{" Commission App "}</span>
-            {"account"}
+      <div className={"container"}>
+        <div className={"loginBox"}>
+          <span id="loginNormalText">
+            {"Our World Revolves"}
+            <br />
+            Around
+            <span id="loginColorText">{" Powering "}</span>
+            Yours
           </span>
-          <br />
-          <br />
-          <input className={"inputField"} placeholder="Enter OTP" />
-          <br />
-          <br />
-          <input className={"inputField"} placeholder="New Password" />
-          <br />
-          <br />
-          <input className={"inputField"} placeholder="Confirm Password" />
-          <br />
-          <br />
-          <button
-            className={"loginButton"}
-            onClick={() => {
-              // navigat(ROUTES.RESET_PASSWORD);
-            }}
-          >
-            Reset Password
-          </button>
+          <div className={"hrLine"}></div>
+          <span className={"loginNormalTextDescription"}>
+            {"YOUR TRUSTED SOLAR EXPERTS"}
+          </span>
+        </div>
+
+        <div className={"loginBox2"}>
+          <div className="loginTextView">
+            <img className="loginImageLogo" src={ICONS.LOGO} />
+            <br />
+            <div className="loginLogowithText">
+              <LOGO_SMALL />
+              <span className={"loginHeader"}> Commission App</span>
+            </div>
+            <div className="loginUnderLine">
+              <UNDER_LINE />
+            </div>
+            <span className="loginLogText">Reset Password</span>
+
+            <Input
+              type={"text"}
+              value={""}
+              placeholder={"Enter OTP"}
+              onChange={() => {}}
+            />
+
+            <Input
+              type={"password"}
+              value={""}
+              placeholder={"New Password"}
+              onChange={() => {}}
+            />
+
+            <Input
+              type={"password"}
+              value={""}
+              placeholder={"Confirm Password"}
+              onChange={() => {}}
+            />
+
+            <br />
+            <ActionButton title="Submit" onClick={() => {}} />
+          </div>
         </div>
       </div>
     </div>
