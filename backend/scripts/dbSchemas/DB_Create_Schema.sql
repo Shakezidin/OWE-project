@@ -37,7 +37,7 @@ CREATE TABLE appointment_setters (
     team_id INT,
     first_name character varying,
     last_name character varying,
-    pay_rate  character varying,
+    pay_rate  integer,
     start_date character varying NOT NULL,
     end_date character varying,
     description character varying,
@@ -99,6 +99,7 @@ CREATE TABLE project_status (
 CREATE TABLE rep_type (
     id serial NOT NULL,
     rep_type character varying NOT NULL,
+    description character varying,
     PRIMARY KEY (id)
 );
 
