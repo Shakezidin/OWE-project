@@ -1,28 +1,12 @@
-/**
- * Created by satishazad on 13/01/24
- * File Name: LoginPage
- * Product Name: WebStorm
- * Project Name: owe_web_app
- * Path: src/ui/pages
- */
-
 import React from "react";
-import Switch from "@mui/material/Switch";
-import "./LoginPage.css";
+import "./EnterOtpScreen.css";
 import { ICONS } from "../../icons/Icons";
-import { useNavigate } from "react-router-dom";
 import { ReactComponent as LOGO_SMALL } from "../../../resources/assets/commisson_small_logo.svg";
 import { ReactComponent as UNDER_LINE } from "../../../resources/assets/BlueAndGreenUnderline.svg";
 import Input from "../../components/text_input/Input";
-import Button from "@mui/material/Button";
 import { ActionButton } from "../../components/button/ActionButton";
-import { ROUTES } from "../../../navigation/Routes";
 
-const label = { inputProps: { "aria-label": "Switch demo" } };
-
-export const LoginPage = () => {
-  const navigate = useNavigate();
-
+const EnterOtpScreen = () => {
   return (
     <div className="mainContainer">
       <div className={"overlay"} />
@@ -52,59 +36,36 @@ export const LoginPage = () => {
             <div className="loginUnderLine">
               <UNDER_LINE />
             </div>
-            <span className="loginLogText">Log In</span>
-
-            <Input
-              type={"text"}
-              value={"Commission App"}
-              placeholder={"Commission App"}
-              onChange={() => {}}
-            />
+            <span className="loginLogText">Reset Password</span>
 
             <Input
               type={"text"}
               value={""}
-              placeholder={"Enter Email"}
+              placeholder={"Enter OTP"}
               onChange={() => {}}
             />
 
             <Input
-              type={"text"}
+              type={"password"}
               value={""}
-              placeholder={"Enter Password"}
+              placeholder={"New Password"}
               onChange={() => {}}
             />
-            <br />
-            <div className="loginSwitchView">
-              <div className="loginSwitchInnerView">
-                <Switch {...label} defaultChecked />
-                <div className="loginRBM">Remember Me</div>
-              </div>
-              <Button
-                style={{
-                  color: "#d93f21",
-                  fontFamily: "Poppins",
-                  fontSize: "12px",
-                  fontWeight: 400,
-                }}
-                size="small"
-                onClick={() => {
-                  navigate(ROUTES.RESET_PASSWORD);
-                }}
-              >
-                Recover Password
-              </Button>
-            </div>
-            <br />
-            <ActionButton
-              title="Log In"
-              onClick={() => {
-                alert("clicked");
-              }}
+
+            <Input
+              type={"password"}
+              value={""}
+              placeholder={"Confirm Password"}
+              onChange={() => {}}
             />
+
+            <br />
+            <ActionButton title="Submit" onClick={() => {}} />
           </div>
         </div>
       </div>
     </div>
   );
 };
+
+export default EnterOtpScreen;
