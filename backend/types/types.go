@@ -1,8 +1,8 @@
 /**************************************************************************
- *      File            : types.go
- *      DESCRIPTION     : This file contains common structures used across all packages in
+ *	File            : types.go
+ * 	DESCRIPTION     : This file contains common structures used across all packages in
  *							 service
- *      DATE            : 11-Jan-2024
+ *	DATE            : 11-Jan-2024
  **************************************************************************/
 
 package types

@@ -8,6 +8,7 @@ package services
 
 import (
 	log "OWEApp/logger"
+	models "OWEApp/models"
 	types "OWEApp/types"
 
 	"encoding/json"
@@ -18,13 +19,6 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 )
-
-type LoginResp struct {
-	EmailId                  string `json:"emailid"`
-	RoleName                 string `json:"rolename"`
-	IsPasswordChangeRequired bool   `json:"ispasswordchangerequired"`
-	JwtToken                 string `json:"jwttoken"`
-}
 
 /******************************************************************************
  * FUNCTION:		HandleLoginRequest
@@ -38,8 +32,8 @@ func HandleLoginRequest(resp http.ResponseWriter, req *http.Request) {
 		emailId                string
 		roleName               string
 		passwordChangeRequired bool
-		creds                  Credentials
-		loginResp              LoginResp
+		creds                  models.Credentials
+		loginResp              models.LoginResp
 	)
 
 	log.EnterFn(0, "HandleLoginRequest")
@@ -47,33 +41,35 @@ func HandleLoginRequest(resp http.ResponseWriter, req *http.Request) {
 
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in Login request")
+		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		err = fmt.Errorf("Failed to read HTTP Request body from Login request")
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from Login request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &creds)
 	if err != nil {
-		err = fmt.Errorf("Failed to unmarshal Login request")
+		log.FuncErrorTrace(0, "Failed to unmarshal Login request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to unmarshal Login request", http.StatusBadRequest, nil)
 		return
 	}
 
 	if (len(creds.Password) <= 0) || (len(creds.EmailId) <= 0) {
 		err = fmt.Errorf("empty emailId or password received in login request")
+		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty emailId or password", http.StatusBadRequest, nil)
 		return
 	}
 
 	emailId, roleName, passwordChangeRequired, err = ValidateUser(creds)
 	if (err != nil) || (len(emailId) <= 0) || (len(roleName) <= 0) {
-		err = fmt.Errorf("Failed to Validate User Unauthorize access")
+		log.FuncErrorTrace(0, "Failed to Validate User Unauthorize access err: %v", err)
 		FormAndSendHttpResp(resp, "Unauthorize access", http.StatusUnauthorized, nil)
 		return
 	}
@@ -89,7 +85,7 @@ func HandleLoginRequest(resp http.ResponseWriter, req *http.Request) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString(types.JwtKey)
 	if err != nil {
-		err = fmt.Errorf("Failed to generate JWT token for Login")
+		log.FuncErrorTrace(0, "Failed to generate JWT token for Login err: %v", err)
 		FormAndSendHttpResp(resp, "Unauthorize access", http.StatusInternalServerError, nil)
 		return
 	}

@@ -1,51 +1,47 @@
 /**************************************************************************
  * File       	   : apiChangePassword.go
- * DESCRIPTION     : This file contains functions for chnage password handler
+ * DESCRIPTION     : This file contains functions for change password handler
  * DATE            : 19-Jan-2024
  **************************************************************************/
 
 package services
 
 import (
-	db "OWEApp/db"
 	log "OWEApp/logger"
-	"encoding/json"
+	models "OWEApp/models"
 
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 )
 
-type ChangePasswordReq struct {
-	CurrentPassword string `json:"currentpassword"`
-	NewPassword     string `json:"newpassword"`
-}
-
 /******************************************************************************
- * FUNCTION:		HandleChnagePassRequest
- * DESCRIPTION:     handler for chnage password request
+ * FUNCTION:		HandleChangePassRequest
+ * DESCRIPTION:     handler for change password request
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
-func HandleChnagePassRequest(resp http.ResponseWriter, req *http.Request) {
+func HandleChangePassRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err               error
 		userEmailId       string
-		changePasswordReq ChangePasswordReq
+		changePasswordReq models.ChangePasswordReq
 	)
 
-	log.EnterFn(0, "HandleChnagePassRequest")
-	defer func() { log.ExitFn(0, "HandleChnagePassRequest", err) }()
+	log.EnterFn(0, "HandleChangePassRequest")
+	defer func() { log.ExitFn(0, "HandleChangePassRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in chnage password request")
+		err = fmt.Errorf("HTTP Request body is null in change password request")
+		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
 	}
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from chnage password request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from change password request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
@@ -58,7 +54,8 @@ func HandleChnagePassRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	if (len(changePasswordReq.CurrentPassword) <= 0) || (len(changePasswordReq.NewPassword) <= 0) {
-		err = fmt.Errorf("empty new or old password")
+		err = fmt.Errorf("Empty New or Current Password")
+		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty New or Old Password Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
@@ -66,10 +63,13 @@ func HandleChnagePassRequest(resp http.ResponseWriter, req *http.Request) {
 	userEmailId = req.Context().Value("emailid").(string)
 
 	/* Validate the current credentials for user before update */
-	creds := Credentials{userEmailId, changePasswordReq.CurrentPassword}
+	creds := models.Credentials{
+		EmailId:  userEmailId,
+		Password: changePasswordReq.CurrentPassword,
+	}
 	_, _, _, err = ValidateUser(creds)
 	if err != nil {
-		err = fmt.Errorf("Invalid Current Password")
+		log.FuncErrorTrace(0, "Invalid Current Password err: %v", err)
 		FormAndSendHttpResp(resp, "Invalid Current Password", http.StatusUnauthorized, nil)
 		return
 	}
@@ -77,38 +77,10 @@ func HandleChnagePassRequest(resp http.ResponseWriter, req *http.Request) {
 	/* Now Update the new password in DB */
 	err = UpdatePassword(changePasswordReq.NewPassword, userEmailId)
 	if err != nil {
-		err = fmt.Errorf("Failed to update the new password")
+		log.FuncErrorTrace(0, "Failed to update the new password err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to update the new password", http.StatusInternalServerError, nil)
 		return
 	}
 
 	FormAndSendHttpResp(resp, "Password Updated Sucessfully", http.StatusOK, nil)
-}
-
-func UpdatePassword(newPassword string, userEmailId string) (err error) {
-	var (
-		query        string
-		whereEleList []interface{}
-	)
-
-	log.EnterFn(0, "UpdatePassword")
-	defer func() { log.ExitFn(0, "UpdatePassword", err) }()
-
-	hashedPassBytes, err := GenerateHashPassword(newPassword)
-	if err != nil || hashedPassBytes == nil {
-		log.FuncErrorTrace(0, "Failed to hash the new password err: %v", err)
-		return err
-	}
-
-	query = "UPDATE user_auth SET password = $1 where email_id = LOWER($2)"
-	whereEleList = append(whereEleList, string(hashedPassBytes))
-	whereEleList = append(whereEleList, userEmailId)
-
-	err = db.UpdateDataInDB(query, whereEleList)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to update the new password err: %v", err)
-		return err
-	}
-
-	return nil
 }

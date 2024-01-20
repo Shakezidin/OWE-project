@@ -1,7 +1,7 @@
 /**************************************************************************
- *      Function        : dbConfig.go
- *      DESCRIPTION     : structure to contains the information about DB
- *      DATE            : 5-May-2023
+ *	Function        : dbConfig.go
+ *  DESCRIPTION     : structure to contains the information about DB
+ *  DATE            : 5-May-2023
  **************************************************************************/
 
 package models

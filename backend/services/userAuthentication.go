@@ -9,6 +9,7 @@ package services
 import (
 	db "OWEApp/db"
 	log "OWEApp/logger"
+	models "OWEApp/models"
 
 	"fmt"
 
@@ -19,11 +20,6 @@ const (
 	logginSessionTimeMin = 50
 )
 
-type Credentials struct {
-	EmailId  string `json:"emailid"`
-	Password string `json:"password"`
-}
-
 type Claims struct {
 	EmailId  string `json:"emailid"`
 	RoleName string `json:"rolename"`
@@ -33,50 +29,29 @@ type Claims struct {
 /******************************************************************************
  * FUNCTION:		ValidateUser
  * DESCRIPTION:     Validate the User Credentials from DB
- * INPUT:			emailId, roleName, passwordChangeRequired, err
- * RETURNS:    		void
+ * INPUT:			credentials
+ * RETURNS:    		emailId, roleName, passwordChangeRequired, err
  ******************************************************************************/
-func ValidateUser(cread Credentials) (emailId string, roleName string,
+func ValidateUser(cread models.Credentials) (emailId string, roleName string,
 	passwordChangeRequired bool, err error) {
-	var (
-		whereEleList []interface{}
-	)
 
-	log.EnterFn(0, "ValidateUser")
-	defer func() { log.ExitFn(0, "ValidateUser", err) }()
-
-	query := `
-		SELECT u.user_id, u.email_id, u.password, u.passwordChangeRequired, u.role_id, r.role_name
-		FROM user_auth u
-		JOIN user_roles r ON u.role_id = r.role_id
-		`
-
-	if len(cread.EmailId) > 0 {
-		query += "WHERE LOWER(u.email_id) = LOWER($1)"
-		whereEleList = append(whereEleList, cread.EmailId)
-	} else {
-		log.FuncErrorTrace(0, "Empty EmailId Received")
-		err = fmt.Errorf("empty emailid received")
-		return emailId, roleName, passwordChangeRequired, err
-	}
-
-	data, err := db.ReteriveFromDB(query, whereEleList)
+	data, err := GetUserInfo(cread.EmailId)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to reterieve user login details from DB err: %v", err)
+		log.FuncErrorTrace(0, "Failed to reterieve user login details err: %v", err)
 		return emailId, roleName, passwordChangeRequired, err
 	}
 
 	if (data == nil) || (len(data) <= 0) {
-		log.FuncErrorTrace(0, "Empty user info reterived from db data: %v", data)
-		err = fmt.Errorf("empty user info reterived")
+		err = fmt.Errorf("Empty User Info Reterived")
+		log.FuncErrorTrace(0, "%v", err)
 		return emailId, roleName, passwordChangeRequired, err
 	}
 
 	reterivedPassword := data[0]["password"].(string)
 	err = CompareHashPassword(reterivedPassword, cread.Password)
 	if err != nil {
-		log.FuncErrorTrace(0, "Invalid password, did not matched with DB: %v", data)
-		err = fmt.Errorf("invalid password, did not matched with db")
+		err = fmt.Errorf("Invalid password, did not matched with DB: ")
+		log.FuncErrorTrace(0, "%v", err)
 		return emailId, roleName, passwordChangeRequired, err
 	}
 
@@ -90,4 +65,82 @@ func ValidateUser(cread Credentials) (emailId string, roleName string,
 	}
 
 	return emailId, roleName, passwordChangeRequired, err
+}
+
+/******************************************************************************
+ * FUNCTION:		UpdatePassword
+ * DESCRIPTION:     Update the user password in DB
+ * INPUT:			emailId, roleName, passwordChangeRequired, err
+ * RETURNS:    		err
+ ******************************************************************************/
+func UpdatePassword(newPassword string, userEmailId string) (err error) {
+	var (
+		query        string
+		whereEleList []interface{}
+	)
+
+	log.EnterFn(0, "UpdatePassword")
+	defer func() { log.ExitFn(0, "UpdatePassword", err) }()
+
+	hashedPassBytes, err := GenerateHashPassword(newPassword)
+	if err != nil || hashedPassBytes == nil {
+		log.FuncErrorTrace(0, "Failed to hash the new password err: %v", err)
+		return err
+	}
+
+	query = "UPDATE user_auth SET password = $1 where email_id = LOWER($2)"
+	whereEleList = append(whereEleList, string(hashedPassBytes))
+	whereEleList = append(whereEleList, userEmailId)
+
+	err = db.UpdateDataInDB(query, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to update the new password err: %v", err)
+		return err
+	}
+
+	return nil
+}
+
+/******************************************************************************
+ * FUNCTION:		GetUserInfo
+ * DESCRIPTION:     Reterive the User Infor from DB
+ * INPUT:			emailId
+ * RETURNS:    		true if exists, false otherwise
+ ******************************************************************************/
+func GetUserInfo(emailId string) (data []map[string]interface{}, err error) {
+	var (
+		whereEleList []interface{}
+	)
+
+	log.EnterFn(0, "GetUserInfo")
+	defer func() { log.ExitFn(0, "GetUserInfo", err) }()
+
+	query := `
+		SELECT u.user_id, u.email_id, u.password, u.passwordChangeRequired, u.role_id, r.role_name
+		FROM user_auth u
+		JOIN user_roles r ON u.role_id = r.role_id
+		`
+
+	if len(emailId) > 0 {
+		query += "WHERE LOWER(u.email_id) = LOWER($1)"
+		whereEleList = append(whereEleList, emailId)
+	} else {
+		err = fmt.Errorf("Empty EmailId Received")
+		log.FuncErrorTrace(0, "%v", err)
+		return nil, err
+	}
+
+	data, err = db.ReteriveFromDB(query, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to reterieve user login details from DB err: %v", err)
+		return nil, err
+	}
+
+	if (data == nil) || (len(data) <= 0) {
+		err = fmt.Errorf("Empty User Info Reterived")
+		log.FuncErrorTrace(0, "%v", err)
+		return nil, err
+	}
+
+	return data, nil
 }

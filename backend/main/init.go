@@ -79,8 +79,15 @@ var apiRoutes = ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/forgot_password",
+		apiHandler.HandleForgotPassRequest,
+		false,
+		[]types.UserRoles{},
+	},
+	{
+		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/change_password",
-		apiHandler.HandleChnagePassRequest,
+		apiHandler.HandleChangePassRequest,
 		true,
 		[]types.UserRoles{
 			types.RoleAdmin,
@@ -198,6 +205,8 @@ func init() {
 	/*Initialize logger package again with new configuraion*/
 	initLogger("COMM", log.InstanceIdtype(types.CommGlbCfg.SelfInstanceId), "-", log.LogLeveltype(types.CommGlbCfg.LogCfg.LogLevel), types.CommGlbCfg.LogCfg.LogEnv, types.CommGlbCfg.LogCfg.LogFile, int(types.CommGlbCfg.LogCfg.LogFileSize), int(types.CommGlbCfg.LogCfg.LogFileAge), int(types.CommGlbCfg.LogCfg.LogFileBackup))
 
+	/* Initialize OTP Services */
+	apiHandler.InitializeOTPServices()
 }
 
 func handleDynamicLoggingConf(resp http.ResponseWriter, req *http.Request) {
