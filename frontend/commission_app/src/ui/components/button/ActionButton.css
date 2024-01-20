@@ -12,6 +12,6 @@
   line-height: 11.962px; /* 85.446% */
 }
 
-.loginButton :hover {
+.loginButton:hover {
   cursor: pointer;
 }
