@@ -31,13 +31,13 @@ CREATE TABLE teams (
     PRIMARY KEY (team_id)
 );
 
-/*Table to store the appointment setters oon  boarding information*/
+/*Table to store the appointment setters on  boarding information*/
 CREATE TABLE appointment_setters (
     setters_id serial NOT NULL,
     team_id INT,
     first_name character varying,
     last_name character varying,
-    pay_rate  character varying,
+    pay_rate  double precision,
     start_date character varying NOT NULL,
     end_date character varying,
     description character varying,
@@ -99,6 +99,7 @@ CREATE TABLE project_status (
 CREATE TABLE rep_type (
     id serial NOT NULL,
     rep_type character varying NOT NULL,
+    description character varying,
     PRIMARY KEY (id)
 );
 
@@ -108,10 +109,10 @@ CREATE TABLE commission_rates (
     installer_id INT,
     state_id INT,
     sale_type_id INT,
-    sale_price character varying,
+    sale_price double precision,
     rep_type INT,
-    rl character varying,
-    rate character varying,
+    rl double precision,
+    rate double precision,
     start_date character varying NOT NULL,
     end_date character varying,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
@@ -393,20 +394,40 @@ CREATE TABLE customer_rebates (
     PRIMARY KEY (id)
 );
 
+CREATE TABLE referrer_details (
+    referrer_id character varying NOT NULL,
+    referrer_name character varying,
+    street_address character varying,
+    city INT,
+    state INT,
+    zipcode INT,
+    email character varying,
+    phone_num character varying,
+    entity_type character varying,
+    account_type character varying,
+    routing_num character varying,
+    account_num character varying,
+    FOREIGN KEY (zipcode) REFERENCES zipcodes(id),
+    FOREIGN KEY (state) REFERENCES states(state_id),
+    PRIMARY KEY (referrer_id)
+);
+
+
 CREATE TABLE referral_bonus (
 	id serial NOT NULL,
 	sale_info_id INT,
-	referrer_s character varying,
-	referrer_name character varying,
+	referrer_id INT,
 	date character varying,	 
 	amount character varying,	
 	rep_percent  integer,
 	description character varying,	
 	FOREIGN KEY (sale_info_id) REFERENCES  sale_info(id),
+    FOREIGN KEY (referrer_id) REFERENCES  referrer_details(referrer_id),
 	PRIMARY KEY (id)
 );
 
 /* Add a default Admin User to Login tables */
+/* Default Admin Password is 1234 for Development purpose */
 INSERT INTO user_roles	( role_name) VALUES ( 'admin' );
 INSERT INTO "public".user_auth ( email_id, "password", passwordChangeRequired, role_id)
 VALUES ( 'admin@test.com', '$2a$10$5DPnnf5GqDE1dI8L/fM79OsY7XjzmLbw3rkSVONPz.92CqHUkXYHC', true, 1 );

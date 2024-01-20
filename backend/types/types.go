@@ -11,7 +11,23 @@ import (
 	CfgModels "OWEApp/models"
 )
 
+type UserRoles string
+
+const (
+	RoleAdmin UserRoles = "admin"
+)
+
 var (
 	CommGlbCfg CfgModels.SvcConfig
 	ExitChan   chan error
+	JwtKey     = []byte("9B$Vw#pLX6aY)0~[<l4?NjT+-yS=%s?bP/3C{m1G*!KQ]nJ`u>E)Dh]l;1Rx6Y`#X=[<k^C~Y}R-*b~K_ym0K&N=JVtnzRf@9z=c%B>Xt`ya9Ug(Uj")
 )
+
+type Data interface {
+}
+
+type ApiResponse struct {
+	Status  int    `json:"status"`
+	Message string `json:"message"`
+	Data    Data   `json:"data"`
+}
