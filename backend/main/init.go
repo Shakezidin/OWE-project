@@ -46,9 +46,11 @@ const (
 *  service names, methods, patterns and
 *  handler function*/
 type ServiceApiRoute struct {
-	Method  string
-	Pattern string
-	Handler http.HandlerFunc
+	Method             string
+	Pattern            string
+	Handler            http.HandlerFunc
+	IsAuthReq          bool
+	RolesAllowedAccess []types.UserRoles
 }
 
 type ApiRoutes []ServiceApiRoute
@@ -58,16 +60,47 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/loggingconf",
 		handleDynamicLoggingConf,
+		false,
+		[]types.UserRoles{},
 	},
 	{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/httpconf",
 		handleDynamicHttpConf,
+		false,
+		[]types.UserRoles{},
 	},
 	{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/login",
 		apiHandler.HandleLoginRequest,
+		false,
+		[]types.UserRoles{},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/forgot_password",
+		apiHandler.HandleForgotPassRequest,
+		false,
+		[]types.UserRoles{},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/change_password",
+		apiHandler.HandleChangePassRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/create_user",
+		apiHandler.HandleCreateUserRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
 	},
 }
 
@@ -181,6 +214,8 @@ func init() {
 	/*Initialize logger package again with new configuraion*/
 	initLogger("COMM", log.InstanceIdtype(types.CommGlbCfg.SelfInstanceId), "-", log.LogLeveltype(types.CommGlbCfg.LogCfg.LogLevel), types.CommGlbCfg.LogCfg.LogEnv, types.CommGlbCfg.LogCfg.LogFile, int(types.CommGlbCfg.LogCfg.LogFileSize), int(types.CommGlbCfg.LogCfg.LogFileAge), int(types.CommGlbCfg.LogCfg.LogFileBackup))
 
+	/* Initialize OTP Services */
+	apiHandler.InitializeOTPServices()
 }
 
 func handleDynamicLoggingConf(resp http.ResponseWriter, req *http.Request) {

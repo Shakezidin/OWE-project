@@ -9,5 +9,7 @@
 
 export const ROUTES = {
     LOGIN: '/login',
-    HOME: '/home'
+    HOME: '/home',
+    RESET_PASSWORD:'/resetPassword',
+    ENTER_OTP:'/otp'
 }

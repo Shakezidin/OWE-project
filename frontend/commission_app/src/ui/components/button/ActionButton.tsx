@@ -7,17 +7,17 @@
  */
 
 import React from "react";
-
+import "./ActionButton.css";
 
 interface ActionButtonProps {
-
+  title: string;
+  onClick: () => void;
 }
 
 export const ActionButton = (props: ActionButtonProps) => {
-
-    return (
-        <button className={'loginButton'}>Log In</button>
-    )
-}
-
-
+  return (
+    <button className="loginButton" onClick={props.onClick}>
+      {props.title}
+    </button>
+  );
+};

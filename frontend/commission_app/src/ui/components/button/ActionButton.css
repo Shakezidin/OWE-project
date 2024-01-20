@@ -1,0 +1,17 @@
+.loginButton {
+  height: 3rem;
+  flex-shrink: 0;
+  background-color: #0493ce;
+  border: none;
+  border-radius: 1rem;
+  color: #fff;
+  font-family: Poppins;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 11.962px; /* 85.446% */
+}
+
+.loginButton:hover {
+  cursor: pointer;
+}
