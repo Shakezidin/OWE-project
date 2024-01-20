@@ -1,7 +1,17 @@
 .welcomeMainContainer {
-  flex: 1;
   background: #fff;
   position: relative;
+}
+
+.welcomeContainer {
+  display: flex;
+  justify-content: center;
+  flex: 1;
+  position: relative;
+}
+
+.welcomeSubView {
+  width: 1440px;
 }
 
 .welcomeBannerView {
@@ -98,7 +108,7 @@
   border-radius: 16px;
   background: var(--primary-color, #04a5e8);
   display: inline-flex;
-  height: 38px;
+  height: 30px;
   padding: 16px;
 }
 
@@ -309,7 +319,6 @@
   display: flex;
   flex: 1;
   flex-direction: column;
-  margin-top: 59px;
 }
 
 .welcomeInnerView {
