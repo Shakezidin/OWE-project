@@ -15,6 +15,9 @@ CREATE TABLE  IF NOT EXISTS user_roles (
 
 CREATE TABLE IF NOT EXISTS user_auth(
     user_id SERIAL,
+    first_name VARCHAR(255) NOT NULL,
+    last_name VARCHAR(255) NOT NULL,
+    mobile_number VARCHAR(20) NOT NULL,
     email_id VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     passwordChangeRequired BOOLEAN,
@@ -429,8 +432,8 @@ CREATE TABLE referral_bonus (
 /* Add a default Admin User to Login tables */
 /* Default Admin Password is 1234 for Development purpose */
 INSERT INTO user_roles	( role_name) VALUES ( 'admin' );
-INSERT INTO "public".user_auth ( email_id, "password", passwordChangeRequired, role_id)
-VALUES ( 'shushank22@gmail.com', '$2a$10$5DPnnf5GqDE1dI8L/fM79OsY7XjzmLbw3rkSVONPz.92CqHUkXYHC', true, 1 );
+INSERT INTO "public".user_auth ( first_name, last_name, mobile_number, email_id, "password", passwordChangeRequired, role_id)
+VALUES ( 'UserFirstName', 'UserLastName', '0987654321', 'shushank22@gmail.com', '$2a$10$5DPnnf5GqDE1dI8L/fM79OsY7XjzmLbw3rkSVONPz.92CqHUkXYHC', true, 1 );
 /******************************************************************************************/
 
 
