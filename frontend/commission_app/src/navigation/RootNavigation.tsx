@@ -8,6 +8,7 @@
 
 import { Link, Route, Routes } from 'react-router-dom';
 import {NavigationRouteModel, NavigationRoutes} from "./NavigationRoutes";
+import {LoginPage} from "../ui/pages/login/LoginPage";
 
 
 export const RenderRoutes = () => {
