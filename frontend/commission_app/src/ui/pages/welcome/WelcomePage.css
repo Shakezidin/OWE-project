@@ -98,7 +98,7 @@
   border-radius: 16px;
   background: var(--primary-color, #04a5e8);
   display: inline-flex;
-  height: 42px;
+  height: 38px;
   padding: 16px;
 }
 
@@ -117,7 +117,7 @@
   height: 350px;
   border-radius: 40px 40px 0px 0px;
   /* opacity: 0.2; */
-  background: linear-gradient(180deg, #167ee6 0%, rgba(121, 187, 227, 0) 100%);
+  background: linear-gradient(180deg, #a9d0f8 0%, rgba(121, 187, 227, 0) 100%);
   display: flex;
   margin-top: -10px;
   position: relative;

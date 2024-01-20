@@ -1,6 +1,6 @@
 import React from "react";
 import "./ResetPassword.css";
-import { Switch } from "@mui/material";
+
 import { ICONS } from "../../icons/Icons";
 import { ROUTES } from "../../../navigation/Routes";
 import { useNavigate } from "react-router-dom";
