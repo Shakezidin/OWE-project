@@ -10,6 +10,8 @@ import React  from "react";
 import Switch from '@mui/material/Switch';
 import './LoginPage.css';
 import { ICONS } from "../../icons/Icons";
+import {useNavigate} from "react-router-dom";
+import {ROUTES} from "../../../navigation/Routes";
 
 const label = { inputProps: { 'aria-label': 'Switch demo' } };
 
@@ -18,20 +20,22 @@ export const LoginPage = () => {
 
     const configValue = process.env.API_BASE_URL;
 
+    let navigate = useNavigate();
+
     return (
         <div className={'container'}>
             <div className={'overlay'}/>
             <div className={'loginBox'}>
-               <span id="loginNormalText">{'Our World Revolves'} 
+               <span id="loginNormalText">{'Our World Revolves'}
                     <br/>
                     Around
                     <span id="loginColorText" >
                          {' Powering '}
-                    </span> 
+                    </span>
                     Yours
                 </span>
                 <div className={'hrLine'}></div>
-                <span className={'loginNormalTextDescription'}>{'YOUR TRUSTED SOLAR EXPERTS'}</span> 
+                <span className={'loginNormalTextDescription'}>{'YOUR TRUSTED SOLAR EXPERTS'}</span>
             </div>
 
             <div className={'loginBox2'}>
@@ -60,9 +64,9 @@ export const LoginPage = () => {
                     <div className="pwd">
                         <Switch {...label} defaultChecked/>
                         <label className={'labelPwd'}>{'Recover Password'}</label>
-                    </div>    
+                    </div>
                     <br/>
-                    <button className={'loginButton'}>Log In</button>
+                    <button className={'loginButton'} onClick={() => navigate(ROUTES.HOME)}>Log In</button>
                 </div>
             </div>
         </div>

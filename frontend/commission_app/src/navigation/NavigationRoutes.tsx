@@ -10,6 +10,7 @@ import React from "react";
 import {HomePage} from "../ui/pages/home/HomePage";
 import {LoginPage} from "../ui/pages/login/LoginPage";
 import {WelcomePage} from "../ui/pages/welcome/WelcomePage";
+import SideDrawerPage from "../ui/pages/drawer/SideDrawerPage";
 
 
 
@@ -42,7 +43,7 @@ export const NavigationRoutes: NavigationRouteModel[] = [
         path: '/home',
         isMenu: true,
         isPrivate: false,
-        element: <HomePage />
+        element: <SideDrawerPage />
     }
 ]
 
