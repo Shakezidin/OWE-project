@@ -75,6 +75,16 @@
   text-align: left;
   margin-top: 3.2rem;
   position: relative;
+  animation: slide-in 2s ease forwards;
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 
 .welcome-text-blue {
@@ -114,6 +124,9 @@
   height: 2rem;
   padding: 1rem;
 }
+.welcome-phone-view:hover {
+  cursor: pointer;
+}
 
 .welcome-phone-text {
   color: var(--Gray-6, #f2f2f2);
@@ -122,6 +135,12 @@
   font-style: normal;
   font-weight: 600;
   line-height: 60px; /* 428.571% */
+  transition: transform 2s; /* Add a transition for smooth flip animation */
+  transform-style: preserve-3d;
+}
+
+.welcome-phone-text:hover {
+  transform: rotateY(360deg);
 }
 
 /** Our application view Csss*/
@@ -194,6 +213,16 @@
   flex-direction: column;
   justify-content: center;
   position: relative;
+  animation: slide-out 2s ease-in-out forwards;
+}
+
+@keyframes slide-out {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 
 .welcomeAboutUsText {

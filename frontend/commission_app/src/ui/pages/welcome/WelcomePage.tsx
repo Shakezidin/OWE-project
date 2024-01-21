@@ -34,6 +34,7 @@ import { ReactComponent as YouTube } from "../../../resources/assets/youTube.svg
 import { ReactComponent as Instagram } from "../../../resources/assets/Instagram.svg";
 import BusinessLogo from "../../../resources/assets/business_logo.png";
 import { ROUTES } from "../../../navigation/Routes";
+import Typewriter from "../../components/animation/Typewriter";
 
 export const WelcomePage = () => {
   const navigate = useNavigate();
@@ -164,25 +165,36 @@ export const WelcomePage = () => {
             <div className="welcomeAboutUsRightView">
               <span className="welcomeAboutUsText">Know About Us</span>
               <p className="welcomeAboutPara">
-                You can have any amount of paths for any layer properties. More
+                <Typewriter
+                  text="You can have any amount of paths for any layer properties. More
                 than that, you can have any amount of layers attached to one
-                path.
+                path."
+                  delay={10}
+                />
               </p>
+
               <p className="welcomeAboutPara">
-                First, let's talk a little about what tool we will use. You can
-                use <Link to="/">presets animation</Link>, keyframes animation,
-                paths animation or <Link to="/">link animation</Link> for layer
+                <Typewriter
+                  text="First, let's talk a little about what tool we will use. You can
+                use presets animation, keyframes animation,
+                paths animation orlink animation for layer
                 properties. We will work with paths. First, let's talk a little
-                about what tool we will use. You can use{" "}
-                <Link to="/">presets animation</Link>, keyframes animation,
-                paths animation or <Link to="/">link animation</Link> for layer
-                properties. We will work with paths.
+                about what tool we will use. You can use
+                presets animation, keyframes animation,
+                paths animation or link animation for layer
+                properties. We will work with paths."
+                  delay={10}
+                />
               </p>
               <p className="welcomeAboutPara">
-                You can animate objects along the path. They can rotate
-                according to the path curvature and
-                have X, Y and Rotation offsets.
+                <Typewriter
+                  text=" You can animate objects along the path. They can rotate
+                  according to the path curvature and
+                  have X, Y and Rotation offsets."
+                  delay={10}
+                />
               </p>
+            
             </div>
           </div>
         </section>
@@ -193,41 +205,41 @@ export const WelcomePage = () => {
         </section>
         <section className="welcomeOverProcessContainer">
           <div className="welcomeOverProcess">
-          <span className="welcomeOverProcessTitle">Our Process</span>
-          <div className="welcomeTabView">
-            <TabBar
-              title={[
-                "Phase 1 – Preparation",
-                "Phase 2 – Construction",
-                "Phase 3 – Final Inspections",
-              ]}
-              activeTab={activeTab}
-              handleTabClick={(e) => handleTabClick(e)}
-            />
-          </div>
-          <br />
-          <div>
-            <table>
-              <tbody>
-                <tr>
-                  {data.map((item) => (
-                    <td key={item.id}>
-                      <div className="table-box">
-                        <div className="welcomeRowTitle">{item.title}</div>
-                        <div>
-                          <span className="welcomeRowStep">{item.step}</span>{" "}
-                          <span className="welcomeRowTime">{item.time}</span>
+            <span className="welcomeOverProcessTitle">Our Process</span>
+            <div className="welcomeTabView">
+              <TabBar
+                title={[
+                  "Phase 1 – Preparation",
+                  "Phase 2 – Construction",
+                  "Phase 3 – Final Inspections",
+                ]}
+                activeTab={activeTab}
+                handleTabClick={(e) => handleTabClick(e)}
+              />
+            </div>
+            <br />
+            <div>
+              <table>
+                <tbody>
+                  <tr>
+                    {data.map((item) => (
+                      <td key={item.id}>
+                        <div className="table-box">
+                          <div className="welcomeRowTitle">{item.title}</div>
+                          <div>
+                            <span className="welcomeRowStep">{item.step}</span>{" "}
+                            <span className="welcomeRowTime">{item.time}</span>
+                          </div>
+                          <div className="welcomeRowDescription">
+                            {item.description}
+                          </div>
                         </div>
-                        <div className="welcomeRowDescription">
-                          {item.description}
-                        </div>
-                      </div>
-                    </td>
-                  ))}
-                </tr>
-              </tbody>
-            </table>
-          </div>
+                      </td>
+                    ))}
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </section>
       </div>
