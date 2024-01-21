@@ -99,7 +99,7 @@ export const LoginPage = () => {
             <ActionButton
               title="Log In"
               onClick={() => {
-                alert("clicked");
+                navigate(ROUTES.HOME);
               }}
             />
           </div>

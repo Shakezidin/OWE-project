@@ -13,6 +13,7 @@ import { WelcomePage } from "../ui/pages/welcome/WelcomePage";
 import { ROUTES } from "./Routes";
 import ResetPassword from "../ui/pages/resetPassword/ResetPassword";
 import EnterOtpScreen from "../ui/pages/otp/EnterOtpScreen";
+import SideDrawerPage from "../ui/pages/drawer/SideDrawerPage";
 
 export interface NavigationRouteModel {
   name: string;
@@ -42,7 +43,7 @@ export const NavigationRoutes: NavigationRouteModel[] = [
     path: "/home",
     isMenu: true,
     isPrivate: false,
-    element: <HomePage />,
+    element: <SideDrawerPage />,
   },
   {
     name: "Reset Password",

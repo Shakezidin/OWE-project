@@ -14,7 +14,8 @@ import store from "./redux/store/Store";
 
 
 function App() {
-  return (
+
+    return (
     <div className="App">
       <Provider store={store}>
           <BrowserRouter>
