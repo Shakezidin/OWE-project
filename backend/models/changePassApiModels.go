@@ -7,6 +7,6 @@
 package models
 
 type ChangePasswordReq struct {
-	CurrentPassword string `json:"currentpassword"`
-	NewPassword     string `json:"newpassword"`
+	CurrentPassword string `json:"current_password"`
+	NewPassword     string `json:"new_password"`
 }

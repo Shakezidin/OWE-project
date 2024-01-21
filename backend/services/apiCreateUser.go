@@ -7,6 +7,7 @@
 package services
 
 import (
+	"OWEApp/db"
 	log "OWEApp/logger"
 	models "OWEApp/models"
 
@@ -24,8 +25,9 @@ import (
  ******************************************************************************/
 func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err           error
-		createUserReq models.CreateUserReq
+		err             error
+		createUserReq   models.CreateUserReq
+		queryParameters []interface{}
 	)
 
 	log.EnterFn(0, "HandleCreateUserRequest")
@@ -53,10 +55,36 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	if (len(createUserReq.FirstName) <= 0) || (len(createUserReq.LastName) <= 0) ||
-		(len(createUserReq.EmailId) <= 0) || (len(createUserReq.MobileNumber) <= 0) {
-		err = fmt.Errorf("Empty Input Name/Mobile/Email Not Allowed")
+		(len(createUserReq.EmailId) <= 0) || (len(createUserReq.MobileNumber) <= 0) ||
+		(len(createUserReq.Password) <= 0) || (len(createUserReq.Designation) <= 0) ||
+		(len(createUserReq.AssignedDealerName) <= 0) || (len(createUserReq.RoleName) <= 0) {
+		err = fmt.Errorf("Empty Input Fields API Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Name/Mobile/Email Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Empty Input Fields API Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
+
+	hashedPassBytes, err := GenerateHashPassword(createUserReq.Password)
+	if err != nil || hashedPassBytes == nil {
+		log.FuncErrorTrace(0, "Failed to hash the password err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to process the password", http.StatusInternalServerError, nil)
+		return
+	}
+
+	queryParameters = append(queryParameters, createUserReq.FirstName)
+	queryParameters = append(queryParameters, createUserReq.LastName)
+	queryParameters = append(queryParameters, createUserReq.MobileNumber)
+	queryParameters = append(queryParameters, createUserReq.EmailId)
+	queryParameters = append(queryParameters, string(hashedPassBytes))
+	queryParameters = append(queryParameters, createUserReq.Designation)
+	queryParameters = append(queryParameters, createUserReq.AssignedDealerName)
+	queryParameters = append(queryParameters, createUserReq.RoleName)
+	_, err = db.CallDBFunction(db.CreateUserFunction, queryParameters)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to Add User in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to Create User", http.StatusInternalServerError, nil)
+		return
+	}
+
+	FormAndSendHttpResp(resp, "User Created Sucessfully", http.StatusOK, nil)
 }

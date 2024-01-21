@@ -111,8 +111,8 @@ CREATE TABLE commission_rates (
 
 CREATE TABLE v_dealer (
     id serial NOT NULL,
-    dealer_code character varying,
-    dealer_name character varying,
+    dealer_code character varying UNIQUE,
+    dealer_name character varying UNIQUE,
     description character varying,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
@@ -429,7 +429,7 @@ CREATE TABLE IF NOT EXISTS user_auth(
     role_id INT,
     PRIMARY KEY (user_id),
     FOREIGN KEY (role_id) REFERENCES user_roles(role_id),
-    FOREIGN KEY (asssigned_dealer) REFERENCES v_dealer(id),
+    FOREIGN KEY (asssigned_dealer) REFERENCES v_dealer(id)
 );
 
 /* Add a default Admin User to Login tables */

@@ -21,8 +21,9 @@ var (
 )
 
 const (
-	OWEDB        string = "owe_db"
-	dbDriverName string = "postgres"
+	OWEDB              string = "owe_db"
+	dbDriverName       string = "postgres"
+	CreateUserFunction string = "create_new_user"
 )
 
 /******************************************************************************

@@ -130,7 +130,7 @@ func CallDBFunction(functionName string, parameters []interface{}) (outData []in
 	log.EnterFn(0, "CallDBFunction")
 	defer func() { log.ExitFn(0, "CallDBFunction", err) }()
 
-	log.FuncDebugTrace(0, "CallDBFunction functionName %v parameters %+v", functionName, parameters)
+	log.FuncDebugTrace(0, "CallDBFunction functionName: %v parameters: %+v", functionName, parameters)
 
 	con, err := getDBConnection(OWEDB)
 	if err != nil {
@@ -144,6 +144,7 @@ func CallDBFunction(functionName string, parameters []interface{}) (outData []in
 	}
 
 	query := fmt.Sprintf("SELECT %s(%s) AS result", functionName, strings.Join(args, ", "))
+	log.FuncDebugTrace(0, "CallDBFunction query: %v parameters: %+v", query, parameters)
 
 	rows, err := con.CtxH.Query(query, parameters...)
 	if err != nil {
@@ -184,7 +185,7 @@ func CallDBFunction(functionName string, parameters []interface{}) (outData []in
 
 			convertedValue, err := convertToType(*value.(*interface{}), columnType)
 			if err != nil {
-				log.FuncErrorTrace(0, "CallDBFunction failed convert data error = %v", err)
+				log.FuncErrorTrace(0, "CallDBFunction failed convert data columnType: %v error: %v", columnType, err)
 				return nil, err
 			}
 
@@ -205,7 +206,7 @@ func CallDBFunction(functionName string, parameters []interface{}) (outData []in
  ******************************************************************************/
 func convertToType(value interface{}, columnType *sql.ColumnType) (interface{}, error) {
 	switch columnType.ScanType().Kind() {
-	case reflect.Int, reflect.Int64:
+	case reflect.Int, reflect.Int64, reflect.Int32, reflect.Int8:
 		return value.(int64), nil
 	case reflect.Float64:
 		return value.(float64), nil
