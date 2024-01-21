@@ -7,7 +7,7 @@
  */
 import {ConfigurationModel, creatConfigModelFromJSON} from "../core/models/data_models/ConfigurationModel";
 
-const configJSON = require('./env_dev.json')
+const configJSON = require('./env_local.json');
 
 class Config {
 

@@ -8,12 +8,16 @@
 import {HTTP_STATUS, RequestModel} from "../../../core/models/api_models/RequestModel";
 import Config from "../../../config/Config";
 import {getAuthorizationHeader, HttpHeadersDefault} from "./RequestConstants";
+import {ResponseModel} from "../../../core/models/api_models/ResponseModel";
 
 
-export const httpRequest = async (req: RequestModel) => {
+export const httpRequest = async <T>(req: RequestModel): Promise<ResponseModel<T>> => {
+    console.log('API REQUEST:: ', req);
 
     //---- API URL ----
-    let url = new URL(req.endPoint, Config.instance.config.apiBaseUrl)
+    console.log('Config:: ', Config.instance.config);
+    let urlStr = Config.instance.config.apiBaseUrl + req.endPoint;
+    let url = urlStr; //new URL('', urlStr);
 
     //---- Headers ----
     let headers = new Headers();
@@ -39,15 +43,29 @@ export const httpRequest = async (req: RequestModel) => {
 
     //---- Make Request ----
     let res = await fetch(url, {
-        headers: headers,
+        headers: defaultHeaders,
+        method: req.method,
         body: req.body
     });
+
+
+    console.log('API RESPONSE:: ', res);
+    console.log('API RESULT:: ', await res.json());
 
     if (res.status === HTTP_STATUS.OK) {
         //Success
         let json = await res.json();
+
         console.log('API RESULT:: ' + url, json)
-        return json
+        if (json.status === HTTP_STATUS.OK) {
+            return {
+                status: json.status,
+                message: json.message,
+                data: json.data as T
+            };
+        } else {
+            throw new Error('Error ' + json.status + ' : ' + json.message);
+        }
     }
 
     if (res.status === HTTP_STATUS.UN_AUTHORIZED) {
