@@ -5,11 +5,9 @@
  * Project Name: commission_app
  * Path: src/core/models/api_models
  */
-import {JSONData} from "../../common/CustomDataTypes";
 
-
-export interface ResponseModel {
-    status: boolean
+export interface ResponseModel<T> {
+    status: number
     message: string
-    data: JSONData
+    data: T
 }

@@ -17,10 +17,12 @@ import Input from "../../components/text_input/Input";
 import Button from "@mui/material/Button";
 import { ActionButton } from "../../components/button/ActionButton";
 import { ROUTES } from "../../../navigation/Routes";
+import {loginAPI} from "../../../infrastructure/web_api/services/AuthService";
 
 const label = { inputProps: { "aria-label": "Switch demo" } };
 
 export const LoginPage = () => {
+
   const navigate = useNavigate();
 
   return (
@@ -99,7 +101,14 @@ export const LoginPage = () => {
             <ActionButton
               title="Log In"
               onClick={() => {
-                navigate(ROUTES.HOME);
+                //navigate(ROUTES.HOME);
+                loginAPI({
+                  username: 'admin@test.com', password: '1234'
+                }).then((res) => {
+
+                }).catch((e: unknown) => {
+                  console.log('ERROR: ', e);
+                })
               }}
             />
           </div>
