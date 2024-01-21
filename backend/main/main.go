@@ -180,7 +180,11 @@ func createApiRouter() *mux.Router {
 	defer func() { log.ExitFn(0, "createApiRouter", nil) }()
 
 	router := mux.NewRouter().StrictSlash(true)
-	corsMiddleware := cors.Default().Handler
+	corsMiddleware := cors.New(cors.Options{
+		AllowedOrigins: []string{"*"},
+		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE"},
+		AllowedHeaders: []string{"User-Agent", "Referer", "Content-Type", "Authorization", "Access-Control-Allow-Credentials", "Access-Control-Allow-Origin"},
+	}).Handler
 
 	for _, route := range apiRoutes {
 		var handler http.Handler = route.Handler
@@ -198,6 +202,11 @@ func createApiRouter() *mux.Router {
 
 		router.
 			Methods(route.Method).
+			Path(route.Pattern).
+			Handler(handler)
+
+		router.
+			Methods(http.MethodOptions).
 			Path(route.Pattern).
 			Handler(handler)
 	}
