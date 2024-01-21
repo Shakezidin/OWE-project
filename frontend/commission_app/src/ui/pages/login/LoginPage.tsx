@@ -6,7 +6,7 @@
  * Path: src/ui/pages
  */
 
-import React from "react";
+import React, {useCallback, useState} from "react";
 import Switch from "@mui/material/Switch";
 import "./LoginPage.css";
 import { ICONS } from "../../icons/Icons";
@@ -18,12 +18,26 @@ import Button from "@mui/material/Button";
 import { ActionButton } from "../../components/button/ActionButton";
 import { ROUTES } from "../../../navigation/Routes";
 import {loginAPI} from "../../../infrastructure/web_api/services/AuthService";
+import {AuthData} from "../../../redux/context/AuthWrapper";
+import {Credentials} from "../../../core/models/api_models/AuthModel";
 
 const label = { inputProps: { "aria-label": "Switch demo" } };
 
 export const LoginPage = () => {
 
   const navigate = useNavigate();
+  const { login } = AuthData();
+  const [ credential, setCredential ] = useState<Credentials>({ username: '', password: ''});
+
+  const doLogin = useCallback(() => {
+      if (login) {
+          login(credential.username, credential.password).then(() => {
+              navigate(ROUTES.HOME);
+          }).catch((e: unknown) => {
+              console.log('ERROR: ', e);
+          });
+      }
+  }, []);
 
   return (
     <div className="mainContainer">
@@ -37,10 +51,8 @@ export const LoginPage = () => {
             <span id="loginColorText">{" Powering "}</span>
             Yours
           </span>
-          <div className={"hrLine"}></div>
-          <span className={"loginNormalTextDescription"}>
-            {"YOUR TRUSTED SOLAR EXPERTS"}
-          </span>
+          <div className={"hrLine"}/>
+          <span className={"loginNormalTextDescription"}>{"YOUR TRUSTED SOLAR EXPERTS"}</span>
         </div>
 
         <div className={"loginBox2"}>
@@ -56,34 +68,28 @@ export const LoginPage = () => {
             </div>
             <span className="loginLogText">Log In</span>
 
-            <Input
-              type={"text"}
-              value={"Commission App"}
-              placeholder={"Commission App"}
-              onChange={() => {}}
-            />
+            <Input type={"text"} value={"Commission App"} placeholder={"Commission App"} onChange={() => {} }/>
 
             <Input
-              type={"text"}
-              value={""}
-              placeholder={"Enter Email"}
-              onChange={() => {}}
-            />
+                type={"text"}
+                value={credential.username}
+                placeholder={"Enter Email"}
+                onChange={(e) => setCredential({ ...credential, username: e.target.value}) }/>
 
             <Input
-              type={"text"}
-              value={""}
-              placeholder={"Enter Password"}
-              onChange={() => {}}
-            />
+                type={"password"}
+                value={credential.password}
+                placeholder={"Enter Password"}
+                onChange={(e) => setCredential({ ...credential, password: e.target.value})}/>
+
             <br />
+
             <div className="loginSwitchView">
               <div className="loginSwitchInnerView">
                 <Switch {...label} defaultChecked />
                 <div className="loginRBM">Remember Me</div>
               </div>
-              <Button
-                style={{
+              <Button style={{
                   color: "#d93f21",
                   fontFamily: "Poppins",
                   fontSize: "12px",
@@ -92,8 +98,7 @@ export const LoginPage = () => {
                 size="small"
                 onClick={() => {
                   navigate(ROUTES.RESET_PASSWORD);
-                }}
-              >
+                }}>
                 Recover Password
               </Button>
             </div>
@@ -101,14 +106,7 @@ export const LoginPage = () => {
             <ActionButton
               title="Log In"
               onClick={() => {
-                //navigate(ROUTES.HOME);
-                loginAPI({
-                  username: 'admin@test.com', password: '1234'
-                }).then((res) => {
-
-                }).catch((e: unknown) => {
-                  console.log('ERROR: ', e);
-                })
+                  doLogin()
               }}
             />
           </div>

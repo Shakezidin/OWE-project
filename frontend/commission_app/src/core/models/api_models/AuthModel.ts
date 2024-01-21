@@ -13,3 +13,16 @@ export interface AuthModel {
     isPasswordChangeRequired: boolean
     accessToken: string
 }
+
+
+export interface Credentials {
+    username: string
+    password: string
+}
+
+
+export interface AuthContextDataModel {
+    auth: AuthModel | null
+    login?: (username: string, password: string) => Promise<void>
+    logout?: () => Promise<void>
+}

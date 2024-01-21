@@ -48,7 +48,6 @@ export const httpRequest = async <T>(req: RequestModel): Promise<ResponseModel<T
         body: req.body
     });
 
-
     console.log('API RESPONSE:: ', res);
     console.log('API RESULT:: ', await res.json());
 

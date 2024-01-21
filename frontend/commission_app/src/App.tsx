@@ -11,6 +11,7 @@ import { Provider } from "react-redux";
 import './App.css';
 import {RenderRoutes} from "./navigation/RootNavigation";
 import store from "./redux/store/Store";
+import {AuthWrapper} from "./redux/context/AuthWrapper";
 
 
 function App() {
@@ -19,7 +20,7 @@ function App() {
     <div className="App">
       <Provider store={store}>
           <BrowserRouter>
-              <RenderRoutes/>
+              <AuthWrapper />
           </BrowserRouter>
       </Provider>
     </div>
