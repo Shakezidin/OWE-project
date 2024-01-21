@@ -57,7 +57,7 @@ func ValidateUser(cread models.Credentials) (emailId string, roleName string,
 
 	emailId = data[0]["email_id"].(string)
 	roleName = data[0]["role_name"].(string)
-	if val, ok := data[0]["passwordchangerequired"].(bool); ok {
+	if val, ok := data[0]["password_change_required"].(bool); ok {
 		passwordChangeRequired = val
 	} else {
 		/* if not able to read value then set default false */
@@ -77,6 +77,9 @@ func UpdatePassword(newPassword string, userEmailId string) (err error) {
 	var (
 		query        string
 		whereEleList []interface{}
+
+		/* When update password then mark this always false */
+		isPasswordChnageReq bool = false
 	)
 
 	log.EnterFn(0, "UpdatePassword")
@@ -88,8 +91,9 @@ func UpdatePassword(newPassword string, userEmailId string) (err error) {
 		return err
 	}
 
-	query = "UPDATE user_auth SET password = $1 where email_id = LOWER($2)"
+	query = "UPDATE user_auth SET password = $1, password_change_required =$2 where email_id = LOWER($3)"
 	whereEleList = append(whereEleList, string(hashedPassBytes))
+	whereEleList = append(whereEleList, isPasswordChnageReq)
 	whereEleList = append(whereEleList, userEmailId)
 
 	err = db.UpdateDataInDB(query, whereEleList)
@@ -116,7 +120,7 @@ func GetUserInfo(emailId string) (data []map[string]interface{}, err error) {
 	defer func() { log.ExitFn(0, "GetUserInfo", err) }()
 
 	query := `
-		SELECT u.user_id, u.email_id, u.password, u.passwordChangeRequired, u.role_id, r.role_name
+		SELECT u.user_id, u.email_id, u.password, u.password_change_required, u.role_id, r.role_name
 		FROM user_auth u
 		JOIN user_roles r ON u.role_id = r.role_id
 		`

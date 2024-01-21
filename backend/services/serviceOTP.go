@@ -17,8 +17,8 @@ import (
 const (
 	ForgotPasswordOTPLen     = 8
 	ForgotPassOtpExpireInMin = 5
-	FromEmailId              = "developg5gsystem@gmail.com"
-	FromPassword             = "abcd@1234"
+	FromEmailId              = "ourworldenergy17@gmail.com"
+	FromPassword             = "Corp@123"
 )
 
 type OtpInfo struct {

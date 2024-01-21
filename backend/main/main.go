@@ -22,6 +22,7 @@ import (
 	apiHandler "OWEApp/services"
 
 	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 )
@@ -179,6 +180,8 @@ func createApiRouter() *mux.Router {
 	defer func() { log.ExitFn(0, "createApiRouter", nil) }()
 
 	router := mux.NewRouter().StrictSlash(true)
+	corsMiddleware := cors.Default().Handler
+
 	for _, route := range apiRoutes {
 		var handler http.Handler = route.Handler
 
@@ -190,6 +193,8 @@ func createApiRouter() *mux.Router {
 		if types.CommGlbCfg.SvcSrvCfg.ValidateOAuthReq == "YES" {
 			//handler = OAuth2ReqValidatePlugin(handler)
 		}
+
+		handler = corsMiddleware(handler)
 
 		router.
 			Methods(route.Method).

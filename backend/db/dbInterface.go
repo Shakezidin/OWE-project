@@ -25,6 +25,12 @@ const (
 	dbDriverName string = "postgres"
 )
 
+/******************************************************************************
+ * FUNCTION:        InitDBConnection
+ * DESCRIPTION:     This function will try to initalize DB Connection
+ * INPUT:			None
+ * RETURNS:    		err
+ ******************************************************************************/
 func InitDBConnection() (err error) {
 	log.EnterFn(0, "InitDBConnection")
 	defer func() { log.ExitFn(0, "InitDBConnection", err) }()

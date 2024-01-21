@@ -6,26 +6,6 @@ create database owe_db;
 
 \c owe_db;
 
-/* Tables for User Authentication */
-CREATE TABLE  IF NOT EXISTS user_roles (
-    role_id SERIAL,
-    role_name VARCHAR(50) NOT NULL UNIQUE,
-    PRIMARY KEY (role_id)
-);
-
-CREATE TABLE IF NOT EXISTS user_auth(
-    user_id SERIAL,
-    first_name VARCHAR(255) NOT NULL,
-    last_name VARCHAR(255) NOT NULL,
-    mobile_number VARCHAR(20) NOT NULL,
-    email_id VARCHAR(255) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    passwordChangeRequired BOOLEAN,
-    role_id INT,
-    PRIMARY KEY (user_id),
-    FOREIGN KEY (role_id) REFERENCES user_roles(role_id)
-);
-
 /***************************** SETTINGS DB TABLE START  ************************************************/
 /*Table to store the teams information for appointment setters*/
 CREATE TABLE teams (
@@ -429,10 +409,33 @@ CREATE TABLE referral_bonus (
 	PRIMARY KEY (id)
 );
 
+/* Tables for User Authentication */
+CREATE TABLE  IF NOT EXISTS user_roles (
+    role_id SERIAL,
+    role_name VARCHAR(50) NOT NULL UNIQUE,
+    PRIMARY KEY (role_id)
+);
+
+CREATE TABLE IF NOT EXISTS user_auth(
+    user_id SERIAL,
+    first_name VARCHAR(255) NOT NULL,
+    last_name VARCHAR(255) NOT NULL,
+    mobile_number VARCHAR(20) NOT NULL UNIQUE,
+    email_id VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    password_change_required BOOLEAN,
+    designation VARCHAR(255),
+    asssigned_dealer INT,
+    role_id INT,
+    PRIMARY KEY (user_id),
+    FOREIGN KEY (role_id) REFERENCES user_roles(role_id),
+    FOREIGN KEY (asssigned_dealer) REFERENCES v_dealer(id),
+);
+
 /* Add a default Admin User to Login tables */
 /* Default Admin Password is 1234 for Development purpose */
 INSERT INTO user_roles	( role_name) VALUES ( 'admin' );
-INSERT INTO "public".user_auth ( first_name, last_name, mobile_number, email_id, "password", passwordChangeRequired, role_id)
+INSERT INTO "public".user_auth ( first_name, last_name, mobile_number, email_id, "password", password_change_required, role_id)
 VALUES ( 'UserFirstName', 'UserLastName', '0987654321', 'shushank22@gmail.com', '$2a$10$5DPnnf5GqDE1dI8L/fM79OsY7XjzmLbw3rkSVONPz.92CqHUkXYHC', true, 1 );
 /******************************************************************************************/
 
