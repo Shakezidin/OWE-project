@@ -18,7 +18,7 @@ import Button from "@mui/material/Button";
 import { ActionButton } from "../../components/button/ActionButton";
 import { ROUTES } from "../../../navigation/Routes";
 import {loginAPI} from "../../../infrastructure/web_api/services/AuthService";
-import {AuthData} from "../../../redux/context/AuthWrapper";
+import {useAuthData} from "../../../redux/context/AuthWrapper";
 import {Credentials} from "../../../core/models/api_models/AuthModel";
 
 const label = { inputProps: { "aria-label": "Switch demo" } };
@@ -26,7 +26,7 @@ const label = { inputProps: { "aria-label": "Switch demo" } };
 export const LoginPage = () => {
 
   const navigate = useNavigate();
-  const { login } = AuthData();
+  const { login } = useAuthData();
   const [ credential, setCredential ] = useState<Credentials>({ username: '', password: ''});
 
   const doLogin = useCallback(() => {

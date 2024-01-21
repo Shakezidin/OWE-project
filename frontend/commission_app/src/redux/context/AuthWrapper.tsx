@@ -12,8 +12,8 @@ import {loginAPI} from "../../infrastructure/web_api/services/AuthService";
 import {RenderRoutes} from "../../navigation/RootNavigation";
 
 
-const AuthContext = createContext<AuthContextDataModel>({auth: null, login: undefined, logout: undefined });
-export const AuthData = () => useContext<AuthContextDataModel>(AuthContext);
+const AuthContext = createContext<AuthContextDataModel>({auth: null, login: undefined, logout: undefined});
+export const useAuthData = () => useContext<AuthContextDataModel>(AuthContext);
 
 
 export const AuthWrapper = () => {
