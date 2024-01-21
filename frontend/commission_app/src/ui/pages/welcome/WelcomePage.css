@@ -53,6 +53,7 @@
 .welcome-laptop-image {
   margin-top: 10px;
   align-self: flex-end;
+  animation: slide-out 2s ease forwards;
 }
 
 .welcome-logo {
