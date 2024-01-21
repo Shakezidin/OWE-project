@@ -455,3 +455,7 @@ VALUES ( 'UserFirstName', 'UserLastName', '0987654321', 'shushank22@gmail.com', 
 \copy appointment_setters(setters_id, team_id, first_name, last_name, pay_rate, start_date, end_date) FROM '/docker-entrypoint-initdb.d/appointment_setters.csv' DELIMITER ',' CSV;
 
 /******************************SETTINGS DB TABLE END  ***********************************************/
+
+
+/******************************* Adding All Stored Procedures ***********************************/
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewUser.sql';
