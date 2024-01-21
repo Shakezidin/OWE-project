@@ -73,87 +73,85 @@ export const WelcomePage = () => {
   return (
     <div className="welcomeMainContainer">
       <div className="welcomeContainer">
-        <div className="welcomeSubView">
-          <header className="welcomeBannerView">
-            <div className="welcomeInnerBannerView">
-              <br />
-              <div className="welcomeHeaderView">
-                <div>
-                  <img src={LogoImage} alt={"Logo"} />
-                </div>
-                <div className="welcome-phone-view">
-                  <CallIcon />
-                  <h3 className="welcome-phone-text">Call Us (623) 850-5700</h3>
-                </div>
+        <header className="welcomeBannerView">
+          <div className="welcomeInnerBannerView">
+            <br />
+            <div className="welcomeHeaderView">
+              <div>
+                <img src={LogoImage} alt={"Logo"} />
               </div>
-
-              <div style={{ display: "flex", marginTop: "25px" }}>
-                <div className="welcome-left-view">
-                  <h1 className="welcome-text-black">
-                    Our <span className="welcome-text-blue">World</span>{" "}
-                    Revolves
-                    <br />
-                    Around <span className="welcome-text-green">
-                      Powering
-                    </span>{" "}
-                    Yours
-                    <br />
-                    <span className="welcome-sub-text">
-                      Your Trusted Solar Expert
-                    </span>
-                  </h1>
-                </div>
-                <div className="welcome-right-view">
-                  <img
-                    className="welcome-laptop-image"
-                    src={LaptopImage}
-                    alt="laptop"
-                  />
-                </div>
+              <div className="welcome-phone-view">
+                <CallIcon />
+                <h3 className="welcome-phone-text">Call Us (623) 850-5700</h3>
               </div>
             </div>
-          </header>
-          <section className="welcomeApplicationView">
-            <div className="welcomeInnerApplicationView">
-              <span className="welcome-our-text">Our Applications</span>
 
-              <div className="welcomeBoxView">
-                <CustomBox
-                  icon={CommissionIcon}
-                  title="Commission App"
-                  description="More than that, you can have any amount of layers attached "
-                  onClick={() => {
-                    navigate(ROUTES.LOGIN);
-                  }}
-                />
-                <CustomBox
-                  icon={OweIcon}
-                  title="OWE ChatBot"
-                  description="More than that, you can have any amount of layers attached "
-                  onClick={() => {
-                    alert("Owe");
-                  }}
-                />
-                <CustomBox
-                  icon={ContractorIcon}
-                  title="Sub Contractor Hub"
-                  description="More than that, you can have any amount of layers attached "
-                  onClick={() => {
-                    alert("Sub Hub");
-                  }}
-                />
-                <CustomBox
-                  icon={pandoIcon}
-                  title="Pando"
-                  description="More than that, you can have any amount of layers attached "
-                  onClick={() => {
-                    alert("Pando");
-                  }}
+            <div style={{ display: "flex", marginTop: "1.5rem" }}>
+              <div className="welcome-left-view">
+                <h1 className="welcome-text-black">
+                  Our <span className="welcome-text-blue">World</span> Revolves
+                  <br />
+                  Around <span className="welcome-text-green">
+                    Powering
+                  </span>{" "}
+                  Yours
+                  <br />
+                  <span className="welcome-sub-text">
+                    Your Trusted Solar Expert
+                  </span>
+                </h1>
+              </div>
+              <div className="welcome-right-view">
+                <img
+                  className="welcome-laptop-image"
+                  src={LaptopImage}
+                  alt="laptop"
                 />
               </div>
             </div>
-          </section>
-          <section className="welcomeAboutUsView">
+          </div>
+        </header>
+        <section className="welcomeApplicationView">
+          <div className="welcomeInnerApplicationView">
+            <span className="welcome-our-text">Our Applications</span>
+            <div className="welcomeBoxView">
+              <CustomBox
+                icon={CommissionIcon}
+                title="Commission App"
+                description="More than that, you can have any amount of layers attached "
+                onClick={() => {
+                  navigate(ROUTES.LOGIN);
+                }}
+              />
+              <CustomBox
+                icon={OweIcon}
+                title="OWE ChatBot"
+                description="More than that, you can have any amount of layers attached "
+                onClick={() => {
+                  alert("Owe");
+                }}
+              />
+              <CustomBox
+                icon={ContractorIcon}
+                title="Sub Contractor Hub"
+                description="More than that, you can have any amount of layers attached "
+                onClick={() => {
+                  window.open("https://subcontractorhub.com/");
+                }}
+              />
+              <CustomBox
+                icon={pandoIcon}
+                title="Pando"
+                description="More than that, you can have any amount of layers attached "
+                onClick={() => {
+                  window.open("https://www.pando.com/");
+                }}
+              />
+            </div>
+          </div>
+        </section>
+        <section className="welcomeAboutUsContainer">
+          <div className="welcomeAboutUsView">
             <div className="welcomeAboutUsLeftView">
               <img className="welcomeAboutUsBig" src={AboutUsBig} alt="Icon" />
               <img
@@ -186,51 +184,52 @@ export const WelcomePage = () => {
                 have X, Y and Rotation offsets.
               </p>
             </div>
-          </section>
-          <section className="welcomeWorkEaseView">
-            <span className="welcomeWorkEaseTitle">We Make Your Work Easy</span>
-            <br />
-            <ImageLayout images={[Grid_1, Grid_2, Grid_3, Grid_4, Grid_5]} />
-          </section>
-          <section className="welcomeOverProcess">
-            <span className="welcomeOverProcessTitle">Our Process</span>
-
-            <div className="welcomeTabView">
-              <TabBar
-                title={[
-                  "Phase 1 – Preparation",
-                  "Phase 2 – Construction",
-                  "Phase 3 – Final Inspections",
-                ]}
-                activeTab={activeTab}
-                handleTabClick={(e) => handleTabClick(e)}
-              />
-            </div>
-            <br />
-            <div>
-              <table>
-                <tbody>
-                  <tr>
-                    {data.map((item) => (
-                      <td key={item.id}>
-                        <div className="table-box">
-                          <div className="welcomeRowTitle">{item.title}</div>
-                          <div>
-                            <span className="welcomeRowStep">{item.step}</span>{" "}
-                            <span className="welcomeRowTime">{item.time}</span>
-                          </div>
-                          <div className="welcomeRowDescription">
-                            {item.description}
-                          </div>
+          </div>
+        </section>
+        <section className="welcomeWorkEaseView">
+          <span className="welcomeWorkEaseTitle">We Make Your Work Easy</span>
+          <br />
+          <ImageLayout images={[Grid_1, Grid_2, Grid_3, Grid_4, Grid_5]} />
+        </section>
+        <section className="welcomeOverProcessContainer">
+          <div className="welcomeOverProcess">
+          <span className="welcomeOverProcessTitle">Our Process</span>
+          <div className="welcomeTabView">
+            <TabBar
+              title={[
+                "Phase 1 – Preparation",
+                "Phase 2 – Construction",
+                "Phase 3 – Final Inspections",
+              ]}
+              activeTab={activeTab}
+              handleTabClick={(e) => handleTabClick(e)}
+            />
+          </div>
+          <br />
+          <div>
+            <table>
+              <tbody>
+                <tr>
+                  {data.map((item) => (
+                    <td key={item.id}>
+                      <div className="table-box">
+                        <div className="welcomeRowTitle">{item.title}</div>
+                        <div>
+                          <span className="welcomeRowStep">{item.step}</span>{" "}
+                          <span className="welcomeRowTime">{item.time}</span>
                         </div>
-                      </td>
-                    ))}
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </section>
-        </div>
+                        <div className="welcomeRowDescription">
+                          {item.description}
+                        </div>
+                      </div>
+                    </td>
+                  ))}
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          </div>
+        </section>
       </div>
       <footer className="welcomeFooterView">
         <div className="welcomeInnerView">
