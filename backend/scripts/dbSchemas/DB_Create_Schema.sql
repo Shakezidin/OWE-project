@@ -462,3 +462,4 @@ VALUES ( 'UserFirstName', 'UserLastName', '0987654321', 'shushank22@gmail.com', 
 
 /******************************* Adding All Stored Procedures ***********************************/
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewUser.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewTeam.sql';
