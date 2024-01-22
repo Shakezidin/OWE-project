@@ -10,6 +10,7 @@
   font-style: normal;
   font-weight: 500;
   line-height: 11.962px; /* 85.446% */
+  min-width: 280px;
 }
 
 .loginButton:hover {
