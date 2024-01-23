@@ -26,6 +26,10 @@ import { ReactComponent as LOGO_SMALL } from "../../../resources/assets/commisso
 import { ReactComponent as MAIL_White } from "../../../resources/assets/mail_white.svg";
 import { ReactComponent as PROFILE_White } from "../../../resources/assets/profile_white.svg";
 import CreateUserProfile from "../create_profile/CreateUserProfile";
+import {MenuItemModel} from "../../../core/models/data_models/MenuItemModel";
+import {getMenuList} from "../../../resources/static_data/StaticData";
+import {useState} from "react";
+import {DashboardPage} from "../dashboard/DashboardPage";
 
 const drawerWidth = 240;
 
@@ -37,25 +41,29 @@ interface Props {
   window?: () => Window;
 }
 
+const menuList = getMenuList();
+
+
 export default function SideDrawerPage(props: Props) {
-  const { window } = props;
-  const [mobileOpen, setMobileOpen] = React.useState(false);
-  const [isClosing, setIsClosing] = React.useState(false);
+    const { window } = props;
+    const [mobileOpen, setMobileOpen] = React.useState(false);
+    const [isClosing, setIsClosing] = React.useState(false);
+    const [selectedMenu, setSelectedMenu] = useState(menuList[0]);
 
-  const handleDrawerClose = () => {
-    setIsClosing(true);
-    setMobileOpen(false);
-  };
+    const handleDrawerClose = () => {
+        setIsClosing(true);
+        setMobileOpen(false);
+    };
 
-  const handleDrawerTransitionEnd = () => {
-    setIsClosing(false);
-  };
+    const handleDrawerTransitionEnd = () => {
+        setIsClosing(false);
+    };
 
-  const handleDrawerToggle = () => {
-    if (!isClosing) {
-      setMobileOpen(!mobileOpen);
-    }
-  };
+    const handleDrawerToggle = () => {
+        if (!isClosing) {
+            setMobileOpen(!mobileOpen);
+        }
+    };
 
   const drawer = (
     <div className="drawerSideMenuContainer">
@@ -64,19 +72,20 @@ export default function SideDrawerPage(props: Props) {
         <p className="drawerAppTitle"> Commission App</p>
       </div>
       <List>
-        {["Dashboard", "Profile", "Setting", "Drafts"].map((text, index) => (
+        {menuList.map((item: MenuItemModel, index: number) => (
           <ListItem
-            key={text}
+            key={item.label}
             disablePadding
             onClick={() => {
-              alert(index);
+              // alert(index);
+                setSelectedMenu(item);
             }}
           >
             <ListItemButton>
               <ListItemIcon>
                 {index % 2 === 0 ? <MAIL_White /> : <PROFILE_White />}
               </ListItemIcon>
-              <ListItemText primary={text} />
+              <ListItemText primary={item.label} />
             </ListItemButton>
           </ListItem>
         ))}
@@ -99,7 +108,7 @@ export default function SideDrawerPage(props: Props) {
             width: { sm: `calc(100% - ${drawerWidth}px)` },
             ml: { sm: `${drawerWidth}px` },
           }}
-        ></AppBar>
+        />
         <Box
           component="nav"
           sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
@@ -138,7 +147,7 @@ export default function SideDrawerPage(props: Props) {
           >
             {drawer}
           </Drawer>
-          <CreateUserProfile />
+          {/*<CreateUserProfile />*/}
         </Box>
         <Box
           component="main"
@@ -147,7 +156,13 @@ export default function SideDrawerPage(props: Props) {
             p: 3,
             width: { sm: `calc(100% - ${drawerWidth}px)` },
           }}
-        ></Box>
+        />
+
+          <div>
+              {(selectedMenu.name === 'dashboard') && <DashboardPage />}
+              {(selectedMenu.name !== 'dashboard') && <div> {selectedMenu.name} </div>}
+          </div>
+
       </Box>
     </div>
   );

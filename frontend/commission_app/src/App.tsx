@@ -8,20 +8,23 @@
 
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from "react-redux";
+import AuthProvider from "react-auth-kit";
 import './App.css';
+import {store, authStore} from "./redux/store/Store";
 import {RenderRoutes} from "./navigation/RootNavigation";
-import store from "./redux/store/Store";
 
 
 function App() {
 
     return (
     <div className="App">
-      <Provider store={store}>
-          <BrowserRouter>
-              <RenderRoutes/>
-          </BrowserRouter>
-      </Provider>
+        <AuthProvider store={authStore}>
+            <Provider store={store}>
+              <BrowserRouter>
+                  <RenderRoutes/>
+              </BrowserRouter>
+            </Provider>
+        </AuthProvider>
     </div>
   );
 }

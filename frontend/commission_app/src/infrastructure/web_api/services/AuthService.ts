@@ -6,10 +6,11 @@
  * Path: src/infrastructure/web_api/services
  */
 
-import {HTTP_METHOD, RequestModel} from "../../../core/models/api_models/RequestModel";
+import {HTTP_METHOD, HTTP_STATUS, RequestModel} from "../../../core/models/api_models/RequestModel";
 import {httpRequest} from "../api_client/APIClient";
 import {AuthModel} from "../../../core/models/api_models/AuthModel";
 import {EndPoints} from "../api_client/EndPoints";
+import {JSONObject} from "../../../core/common/CustomDataTypes";
 
 
 /**
@@ -20,13 +21,18 @@ export const loginAPI = async (credential: { username: string, password: string 
         endPoint: EndPoints.AUTH.LOGIN,
         method: HTTP_METHOD.POST,
         body: JSON.stringify({
-            emailid: credential.username,
+            email_id: credential.username,
             password: credential.password
         })
     }
 
-    let result = await httpRequest<AuthModel>(request);
+    let result = await httpRequest(request);
 
     console.log('loginAPI:: ', result);
-    return result.data;
+    return {
+        accessToken: result.data.access_token,
+        role: result.data.role_name,
+        isPasswordChangeRequired: result.data.is_password_change_required,
+        emailId: result.data.email_id
+    };
 }
