@@ -23,6 +23,8 @@ import MailIcon from '@mui/icons-material/Mail';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import {MenuItemModel} from "../../../core/models/data_models/MenuItemModel";
+import {getMenuList} from "../../../resources/static_data/StaticData";
 
 const drawerWidth = 240;
 
@@ -54,35 +56,37 @@ export default function SideDrawerPage(props: Props) {
         }
     };
 
+    let menuList = getMenuList();
+
     const drawer = (
         <div>
             <Toolbar />
             <Divider />
             <List>
-                {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                    <ListItem key={text} disablePadding>
+                {menuList.map((item: MenuItemModel, index: number) => (
+                    <ListItem key={item.label} disablePadding>
                         <ListItemButton>
                             <ListItemIcon>
                                 {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
                             </ListItemIcon>
-                            <ListItemText primary={text} />
+                            <ListItemText primary={item.label} />
                         </ListItemButton>
                     </ListItem>
                 ))}
             </List>
-            <Divider />
-            <List>
-                {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                    <ListItem key={text} disablePadding>
-                        <ListItemButton>
-                            <ListItemIcon>
-                                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                            </ListItemIcon>
-                            <ListItemText primary={text} />
-                        </ListItemButton>
-                    </ListItem>
-                ))}
-            </List>
+            {/*<Divider />*/}
+            {/*<List>*/}
+            {/*    {['All mail', 'Trash', 'Spam'].map((text, index) => (*/}
+            {/*        <ListItem key={text} disablePadding>*/}
+            {/*            <ListItemButton>*/}
+            {/*                <ListItemIcon>*/}
+            {/*                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}*/}
+            {/*                </ListItemIcon>*/}
+            {/*                <ListItemText primary={text} />*/}
+            {/*            </ListItemButton>*/}
+            {/*        </ListItem>*/}
+            {/*    ))}*/}
+            {/*</List>*/}
         </div>
     );
 
@@ -110,7 +114,7 @@ export default function SideDrawerPage(props: Props) {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" noWrap component="div">
-                        Responsive drawer
+                        {'Dashboard Container'}
                     </Typography>
                 </Toolbar>
             </AppBar>
