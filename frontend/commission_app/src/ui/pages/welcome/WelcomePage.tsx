@@ -18,7 +18,7 @@ import ContractorIcon from "../../../resources/assets/contractor.svg";
 import pandoIcon from "../../../resources/assets/pando.svg";
 import AboutUsBig from "../../../resources/assets/aboutUsBig.png";
 import AboutUsSmall from "../../../resources/assets/aboutUsSmall.png";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ImageLayout from "../../components/imageLayout/ImageLayout";
 import Grid_1 from "../../../resources/assets/grid_1.png";
 import Grid_2 from "../../../resources/assets/grid_2.png";
@@ -34,6 +34,7 @@ import { ReactComponent as YouTube } from "../../../resources/assets/youTube.svg
 import { ReactComponent as Instagram } from "../../../resources/assets/Instagram.svg";
 import BusinessLogo from "../../../resources/assets/business_logo.png";
 import { ROUTES } from "../../../navigation/Routes";
+import Typewriter from "../../components/animation/Typewriter";
 
 export const WelcomePage = () => {
   const navigate = useNavigate();
@@ -73,87 +74,85 @@ export const WelcomePage = () => {
   return (
     <div className="welcomeMainContainer">
       <div className="welcomeContainer">
-        <div className="welcomeSubView">
-          <header className="welcomeBannerView">
-            <div className="welcomeInnerBannerView">
-              <br />
-              <div className="welcomeHeaderView">
-                <div>
-                  <img src={LogoImage} alt={"Logo"} />
-                </div>
-                <div className="welcome-phone-view">
-                  <CallIcon />
-                  <h3 className="welcome-phone-text">Call Us (623) 850-5700</h3>
-                </div>
+        <header className="welcomeBannerView">
+          <div className="welcomeInnerBannerView">
+            <br />
+            <div className="welcomeHeaderView">
+              <div>
+                <img src={LogoImage} alt={"Logo"} />
               </div>
-
-              <div style={{ display: "flex", marginTop: "25px" }}>
-                <div className="welcome-left-view">
-                  <h1 className="welcome-text-black">
-                    Our <span className="welcome-text-blue">World</span>{" "}
-                    Revolves
-                    <br />
-                    Around <span className="welcome-text-green">
-                      Powering
-                    </span>{" "}
-                    Yours
-                    <br />
-                    <span className="welcome-sub-text">
-                      Your Trusted Solar Expert
-                    </span>
-                  </h1>
-                </div>
-                <div className="welcome-right-view">
-                  <img
-                    className="welcome-laptop-image"
-                    src={LaptopImage}
-                    alt="laptop"
-                  />
-                </div>
+              <div className="welcome-phone-view">
+                <CallIcon />
+                <h3 className="welcome-phone-text">Call Us (623) 850-5700</h3>
               </div>
             </div>
-          </header>
-          <section className="welcomeApplicationView">
-            <div className="welcomeInnerApplicationView">
-              <span className="welcome-our-text">Our Applications</span>
 
-              <div className="welcomeBoxView">
-                <CustomBox
-                  icon={CommissionIcon}
-                  title="Commission App"
-                  description="More than that, you can have any amount of layers attached "
-                  onClick={() => {
-                    navigate(ROUTES.LOGIN);
-                  }}
-                />
-                <CustomBox
-                  icon={OweIcon}
-                  title="OWE ChatBot"
-                  description="More than that, you can have any amount of layers attached "
-                  onClick={() => {
-                    alert("Owe");
-                  }}
-                />
-                <CustomBox
-                  icon={ContractorIcon}
-                  title="Sub Contractor Hub"
-                  description="More than that, you can have any amount of layers attached "
-                  onClick={() => {
-                    alert("Sub Hub");
-                  }}
-                />
-                <CustomBox
-                  icon={pandoIcon}
-                  title="Pando"
-                  description="More than that, you can have any amount of layers attached "
-                  onClick={() => {
-                    alert("Pando");
-                  }}
+            <div style={{ display: "flex", marginTop: "1.5rem" }}>
+              <div className="welcome-left-view">
+                <h1 className="welcome-text-black">
+                  Our <span className="welcome-text-blue">World</span> Revolves
+                  <br />
+                  Around <span className="welcome-text-green">
+                    Powering
+                  </span>{" "}
+                  Yours
+                  <br />
+                  <span className="welcome-sub-text">
+                    Your Trusted Solar Expert
+                  </span>
+                </h1>
+              </div>
+              <div className="welcome-right-view">
+                <img
+                  className="welcome-laptop-image"
+                  src={LaptopImage}
+                  alt="laptop"
                 />
               </div>
             </div>
-          </section>
-          <section className="welcomeAboutUsView">
+          </div>
+        </header>
+        <section className="welcomeApplicationView">
+          <div className="welcomeInnerApplicationView">
+            <span className="welcome-our-text">Our Applications</span>
+            <div className="welcomeBoxView">
+              <CustomBox
+                icon={CommissionIcon}
+                title="Commission App"
+                description="More than that, you can have any amount of layers attached "
+                onClick={() => {
+                  navigate(ROUTES.LOGIN);
+                }}
+              />
+              <CustomBox
+                icon={OweIcon}
+                title="OWE ChatBot"
+                description="More than that, you can have any amount of layers attached "
+                onClick={() => {
+                  alert("Owe");
+                }}
+              />
+              <CustomBox
+                icon={ContractorIcon}
+                title="Sub Contractor Hub"
+                description="More than that, you can have any amount of layers attached "
+                onClick={() => {
+                  window.open("https://subcontractorhub.com/");
+                }}
+              />
+              <CustomBox
+                icon={pandoIcon}
+                title="Pando"
+                description="More than that, you can have any amount of layers attached "
+                onClick={() => {
+                  window.open("https://www.pando.com/");
+                }}
+              />
+            </div>
+          </div>
+        </section>
+        <section className="welcomeAboutUsContainer">
+          <div className="welcomeAboutUsView">
             <div className="welcomeAboutUsLeftView">
               <img className="welcomeAboutUsBig" src={AboutUsBig} alt="Icon" />
               <img
@@ -166,35 +165,47 @@ export const WelcomePage = () => {
             <div className="welcomeAboutUsRightView">
               <span className="welcomeAboutUsText">Know About Us</span>
               <p className="welcomeAboutPara">
-                You can have any amount of paths for any layer properties. More
+                <Typewriter
+                  text="You can have any amount of paths for any layer properties. More
                 than that, you can have any amount of layers attached to one
-                path.
+                path."
+                  delay={10}
+                />
               </p>
-              <p className="welcomeAboutPara">
-                First, let's talk a little about what tool we will use. You can
-                use <Link to="/">presets animation</Link>, keyframes animation,
-                paths animation or <Link to="/">link animation</Link> for layer
-                properties. We will work with paths. First, let's talk a little
-                about what tool we will use. You can use{" "}
-                <Link to="/">presets animation</Link>, keyframes animation,
-                paths animation or <Link to="/">link animation</Link> for layer
-                properties. We will work with paths.
-              </p>
-              <p className="welcomeAboutPara">
-                You can animate objects along the path. They can rotate
-                according to the path curvature and
-                have X, Y and Rotation offsets.
-              </p>
-            </div>
-          </section>
-          <section className="welcomeWorkEaseView">
-            <span className="welcomeWorkEaseTitle">We Make Your Work Easy</span>
-            <br />
-            <ImageLayout images={[Grid_1, Grid_2, Grid_3, Grid_4, Grid_5]} />
-          </section>
-          <section className="welcomeOverProcess">
-            <span className="welcomeOverProcessTitle">Our Process</span>
 
+              <p className="welcomeAboutPara">
+                <Typewriter
+                  text="First, let's talk a little about what tool we will use. You can
+                use presets animation, keyframes animation,
+                paths animation orlink animation for layer
+                properties. We will work with paths. First, let's talk a little
+                about what tool we will use. You can use
+                presets animation, keyframes animation,
+                paths animation or link animation for layer
+                properties. We will work with paths."
+                  delay={10}
+                />
+              </p>
+              <p className="welcomeAboutPara">
+                <Typewriter
+                  text=" You can animate objects along the path. They can rotate
+                  according to the path curvature and
+                  have X, Y and Rotation offsets."
+                  delay={10}
+                />
+              </p>
+            
+            </div>
+          </div>
+        </section>
+        <section className="welcomeWorkEaseView">
+          <span className="welcomeWorkEaseTitle">We Make Your Work Easy</span>
+          <br />
+          <ImageLayout images={[Grid_1, Grid_2, Grid_3, Grid_4, Grid_5]} />
+        </section>
+        <section className="welcomeOverProcessContainer">
+          <div className="welcomeOverProcess">
+            <span className="welcomeOverProcessTitle">Our Process</span>
             <div className="welcomeTabView">
               <TabBar
                 title={[
@@ -229,8 +240,8 @@ export const WelcomePage = () => {
                 </tbody>
               </table>
             </div>
-          </section>
-        </div>
+          </div>
+        </section>
       </div>
       <footer className="welcomeFooterView">
         <div className="welcomeInnerView">

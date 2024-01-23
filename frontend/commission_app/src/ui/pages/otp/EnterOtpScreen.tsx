@@ -37,21 +37,21 @@ const EnterOtpScreen = () => {
               <UNDER_LINE />
             </div>
             <span className="loginLogText">Reset Password</span>
-
+            <br />
             <Input
               type={"text"}
               value={""}
               placeholder={"Enter OTP"}
               onChange={() => {}}
             />
-
+            <br />
             <Input
               type={"password"}
               value={""}
               placeholder={"New Password"}
               onChange={() => {}}
             />
-
+            <br />
             <Input
               type={"password"}
               value={""}

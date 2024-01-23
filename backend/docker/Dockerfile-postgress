@@ -11,21 +11,25 @@ EXPOSE 5432
 
 COPY ./dbSchemas/DB_Create_Schema.sql /docker-entrypoint-initdb.d/
 
-COPY ./dbSchemas/rebate_items.csv /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/rebate_type.csv /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/timeline_sla.csv /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/source.csv /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/partners.csv /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/v_dealer.csv /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/states.csv /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/rep_type.csv /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/sale_type.csv /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/v_reps.csv /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/tier.csv /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/teams.csv /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/appointment_setters.csv /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/project_status.csv /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/adder_type.csv /docker-entrypoint-initdb.d/
- 
+COPY ./dbSchemas/rawData/rebate_items.csv /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/rawData/rebate_type.csv /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/rawData/timeline_sla.csv /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/rawData/source.csv /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/rawData/partners.csv /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/rawData/v_dealer.csv /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/rawData/states.csv /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/rawData/rep_type.csv /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/rawData/sale_type.csv /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/rawData/v_reps.csv /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/rawData/tier.csv /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/rawData/teams.csv /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/rawData/appointment_setters.csv /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/rawData/project_status.csv /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/rawData/adder_type.csv /docker-entrypoint-initdb.d/
+
+COPY ./dbSchemas/DB_ProcCreateNewUser.sql /docker-entrypoint-initdb.d/ 
+COPY ./dbSchemas/DB_ProcCreateNewTeam.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcCreateAptSetter.sql /docker-entrypoint-initdb.d/
+
 RUN chmod +x /docker-entrypoint-initdb.d/DB_Create_Schema.sql
 

@@ -93,7 +93,7 @@ func HandleLoginRequest(resp http.ResponseWriter, req *http.Request) {
 	loginResp.EmailId = emailId
 	loginResp.RoleName = roleName
 	loginResp.IsPasswordChangeRequired = passwordChangeRequired
-	loginResp.JwtToken = tokenString
+	loginResp.AccessToken = tokenString
 
 	log.FuncInfoTrace(0, "Login Sucessfull for User : %v", creds.EmailId)
 	FormAndSendHttpResp(resp, "Login Sucessfull", http.StatusOK, loginResp)

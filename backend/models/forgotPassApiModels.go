@@ -7,7 +7,7 @@
 package models
 
 type ForgotPasswordReq struct {
-	EmailId     string `json:"emailid"`
+	EmailId     string `json:"email_id"`
 	Otp         string `json:"otp"`
-	NewPassword string `json:"newpassword"`
+	NewPassword string `json:"new_password"`
 }

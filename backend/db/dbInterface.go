@@ -21,10 +21,19 @@ var (
 )
 
 const (
-	OWEDB        string = "owe_db"
-	dbDriverName string = "postgres"
+	OWEDB                   string = "owe_db"
+	dbDriverName            string = "postgres"
+	CreateUserFunction      string = "create_new_user"
+	CreateTeamFunction      string = "create_new_team"
+	CreateApiSetterFunction string = "create_appointment_setter"
 )
 
+/******************************************************************************
+ * FUNCTION:        InitDBConnection
+ * DESCRIPTION:     This function will try to initalize DB Connection
+ * INPUT:			None
+ * RETURNS:    		err
+ ******************************************************************************/
 func InitDBConnection() (err error) {
 	log.EnterFn(0, "InitDBConnection")
 	defer func() { log.ExitFn(0, "InitDBConnection", err) }()

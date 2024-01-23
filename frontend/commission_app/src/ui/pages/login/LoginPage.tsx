@@ -40,11 +40,12 @@ export const LoginPage = () => {
               type: 'Bearer'
           },
           userState: {
-              email_id: result.email_id,
+              email_id: result.emailId,
               role: result.role,
               isPasswordChangeRequired: result.isPasswordChangeRequired
           }
       });
+      navigate(ROUTES.HOME);
       // login(credential.username, credential.password).then(() => {
       //     navigate(ROUTES.HOME);
       // }).catch((e: unknown) => {
@@ -80,15 +81,15 @@ export const LoginPage = () => {
               <UNDER_LINE />
             </div>
             <span className="loginLogText">Log In</span>
-
+            <br />
             <Input type={"text"} value={"Commission App"} placeholder={"Commission App"} onChange={() => {} }/>
-
+            <br />
             <Input
                 type={"text"}
                 value={credential.username}
                 placeholder={"Enter Email"}
                 onChange={(e) => setCredential({ ...credential, username: e.target.value}) }/>
-
+            <br />
             <Input
                 type={"password"}
                 value={credential.password}
@@ -96,7 +97,6 @@ export const LoginPage = () => {
                 onChange={(e) => setCredential({ ...credential, password: e.target.value})}/>
 
             <br />
-
             <div className="loginSwitchView">
               <div className="loginSwitchInnerView">
                 <Switch {...label} defaultChecked />
@@ -120,7 +120,7 @@ export const LoginPage = () => {
               title="Log In"
               onClick={() => {
                   doLogin()
-                  navigate(ROUTES.HOME);
+
               }}
             />
           </div>

@@ -9,10 +9,21 @@ package db
 
 import (
 	log "OWEApp/logger"
+	"database/sql"
+	"reflect"
+
+	"fmt"
+	"strings"
 
 	_ "github.com/lib/pq"
 )
 
+/******************************************************************************
+ * FUNCTION:        ReteriveFromDB
+ * DESCRIPTION:     This function will reterive data from DB
+ * INPUT:			query, whereEleList
+ * RETURNS:    		outData, err
+ ******************************************************************************/
 func ReteriveFromDB(query string,
 	whereEleList []interface{}) (outData []map[string]interface{}, err error) {
 
@@ -63,6 +74,12 @@ func ReteriveFromDB(query string,
 	return outData, err
 }
 
+/******************************************************************************
+ * FUNCTION:        UpdateDataInDB
+ * DESCRIPTION:     This function will update data in DB
+ * INPUT:			query, whereEleList
+ * RETURNS:    		err
+ ******************************************************************************/
 func UpdateDataInDB(query string, whereEleList []interface{}) (err error) {
 
 	log.EnterFn(0, "UpdateDataInDB")
@@ -100,4 +117,103 @@ func UpdateDataInDB(query string, whereEleList []interface{}) (err error) {
 	}
 
 	return err
+}
+
+/******************************************************************************
+ * FUNCTION:        CallDBFunction
+ * DESCRIPTION:     This function will Call the function in DB
+ * INPUT:			query, parameters
+ * RETURNS:    		err
+ ******************************************************************************/
+func CallDBFunction(functionName string, parameters []interface{}) (outData []interface{}, err error) {
+
+	log.EnterFn(0, "CallDBFunction")
+	defer func() { log.ExitFn(0, "CallDBFunction", err) }()
+
+	log.FuncDebugTrace(0, "CallDBFunction functionName: %v parameters: %+v", functionName, parameters)
+
+	con, err := getDBConnection(OWEDB)
+	if err != nil {
+		log.FuncErrorTrace(0, "CallDBFunction Failed to get %v Connection with err = %v", OWEDB, err)
+		return nil, err
+	}
+
+	var args []string
+	for i := range parameters {
+		args = append(args, fmt.Sprintf("$%d", i+1))
+	}
+
+	query := fmt.Sprintf("SELECT %s(%s) AS result", functionName, strings.Join(args, ", "))
+	log.FuncDebugTrace(0, "CallDBFunction query: %v parameters: %+v", query, parameters)
+
+	rows, err := con.CtxH.Query(query, parameters...)
+	if err != nil {
+		log.FuncErrorTrace(0, "CallDBFunction Query Failed with error = %v", err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	columns, err := rows.Columns()
+	if err != nil {
+		log.FuncErrorTrace(0, "CallDBFunction No columns found error = %v", err)
+		return nil, err
+	}
+
+	types, err := rows.ColumnTypes()
+	if err != nil {
+		log.FuncErrorTrace(0, "CallDBFunction failed to get Column Type error = %v", err)
+		return nil, err
+	}
+
+	resultSlice := make([]interface{}, len(columns))
+	for i := range resultSlice {
+		resultSlice[i] = new(interface{})
+	}
+
+	for rows.Next() {
+		err := rows.Scan(resultSlice...)
+		if err != nil {
+			log.FuncErrorTrace(0, "CallDBFunction failed to get row data error = %v", err)
+			return nil, err
+		}
+
+		rowData := make(map[string]interface{})
+
+		for i, value := range resultSlice {
+			columnName := columns[i]
+			columnType := types[i]
+
+			convertedValue, err := convertToType(*value.(*interface{}), columnType)
+			if err != nil {
+				log.FuncErrorTrace(0, "CallDBFunction failed convert data columnType: %v error: %v", columnType, err)
+				return nil, err
+			}
+
+			rowData[columnName] = convertedValue
+		}
+
+		outData = append(outData, rowData)
+	}
+
+	return outData, nil
+}
+
+/******************************************************************************
+ * FUNCTION:        convertToType
+ * DESCRIPTION:     This function will convert value data type
+ * INPUT:			value, columnType
+ * RETURNS:    		outData, err
+ ******************************************************************************/
+func convertToType(value interface{}, columnType *sql.ColumnType) (interface{}, error) {
+	switch columnType.ScanType().Kind() {
+	case reflect.Int, reflect.Int64, reflect.Int32, reflect.Int8:
+		return value.(int64), nil
+	case reflect.Float64:
+		return value.(float64), nil
+	case reflect.String:
+		return value.(string), nil
+	// Add more cases for other types as needed
+	default:
+		return nil, fmt.Errorf("unsupported column type: %v", columnType.ScanType().Kind())
+	}
 }

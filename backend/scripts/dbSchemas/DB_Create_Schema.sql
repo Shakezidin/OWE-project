@@ -6,31 +6,11 @@ create database owe_db;
 
 \c owe_db;
 
-/* Tables for User Authentication */
-CREATE TABLE  IF NOT EXISTS user_roles (
-    role_id SERIAL,
-    role_name VARCHAR(50) NOT NULL UNIQUE,
-    PRIMARY KEY (role_id)
-);
-
-CREATE TABLE IF NOT EXISTS user_auth(
-    user_id SERIAL,
-    first_name VARCHAR(255) NOT NULL,
-    last_name VARCHAR(255) NOT NULL,
-    mobile_number VARCHAR(20) NOT NULL,
-    email_id VARCHAR(255) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    passwordChangeRequired BOOLEAN,
-    role_id INT,
-    PRIMARY KEY (user_id),
-    FOREIGN KEY (role_id) REFERENCES user_roles(role_id)
-);
-
 /***************************** SETTINGS DB TABLE START  ************************************************/
 /*Table to store the teams information for appointment setters*/
 CREATE TABLE teams (
     team_id serial NOT NULL,
-    team_name character varying,
+    team_name character varying UNIQUE,
     PRIMARY KEY (team_id)
 );
 
@@ -131,8 +111,8 @@ CREATE TABLE commission_rates (
 
 CREATE TABLE v_dealer (
     id serial NOT NULL,
-    dealer_code character varying,
-    dealer_name character varying,
+    dealer_code character varying UNIQUE,
+    dealer_name character varying UNIQUE,
     description character varying,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
@@ -429,10 +409,33 @@ CREATE TABLE referral_bonus (
 	PRIMARY KEY (id)
 );
 
+/* Tables for User Authentication */
+CREATE TABLE  IF NOT EXISTS user_roles (
+    role_id SERIAL,
+    role_name VARCHAR(50) NOT NULL UNIQUE,
+    PRIMARY KEY (role_id)
+);
+
+CREATE TABLE IF NOT EXISTS user_auth(
+    user_id SERIAL,
+    first_name VARCHAR(255) NOT NULL,
+    last_name VARCHAR(255) NOT NULL,
+    mobile_number VARCHAR(20) NOT NULL UNIQUE,
+    email_id VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    password_change_required BOOLEAN,
+    designation VARCHAR(255),
+    asssigned_dealer INT,
+    role_id INT,
+    PRIMARY KEY (user_id),
+    FOREIGN KEY (role_id) REFERENCES user_roles(role_id),
+    FOREIGN KEY (asssigned_dealer) REFERENCES v_dealer(id)
+);
+
 /* Add a default Admin User to Login tables */
 /* Default Admin Password is 1234 for Development purpose */
 INSERT INTO user_roles	( role_name) VALUES ( 'admin' );
-INSERT INTO "public".user_auth ( first_name, last_name, mobile_number, email_id, "password", passwordChangeRequired, role_id)
+INSERT INTO "public".user_auth ( first_name, last_name, mobile_number, email_id, "password", password_change_required, role_id)
 VALUES ( 'UserFirstName', 'UserLastName', '0987654321', 'shushank22@gmail.com', '$2a$10$5DPnnf5GqDE1dI8L/fM79OsY7XjzmLbw3rkSVONPz.92CqHUkXYHC', true, 1 );
 /******************************************************************************************/
 
@@ -452,6 +455,12 @@ VALUES ( 'UserFirstName', 'UserLastName', '0987654321', 'shushank22@gmail.com', 
 \copy timeline_sla(type_m2m,state_id,days,start_date) FROM '/docker-entrypoint-initdb.d/timeline_sla.csv' DELIMITER ',' CSV;
 \copy v_reps(rep_code,rep_fname,rep_lname,asssigned_dealer,rep_status,description) FROM '/docker-entrypoint-initdb.d/v_reps.csv' DELIMITER ',' CSV;
 \copy tier(tier_name) FROM '/docker-entrypoint-initdb.d/tier.csv' DELIMITER ',' CSV;
-\copy appointment_setters(setters_id, team_id, first_name, last_name, pay_rate, start_date, end_date) FROM '/docker-entrypoint-initdb.d/appointment_setters.csv' DELIMITER ',' CSV;
+\copy appointment_setters(team_id, first_name, last_name, pay_rate, start_date, end_date) FROM '/docker-entrypoint-initdb.d/appointment_setters.csv' DELIMITER ',' CSV;
 
 /******************************SETTINGS DB TABLE END  ***********************************************/
+
+
+/******************************* Adding All Stored Procedures ***********************************/
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewUser.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewTeam.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateAptSetter.sql';

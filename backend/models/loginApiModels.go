@@ -7,13 +7,13 @@
 package models
 
 type Credentials struct {
-	EmailId  string `json:"emailid"`
+	EmailId  string `json:"email_id"`
 	Password string `json:"password"`
 }
 
 type LoginResp struct {
-	EmailId                  string `json:"emailid"`
-	RoleName                 string `json:"rolename"`
-	IsPasswordChangeRequired bool   `json:"ispasswordchangerequired"`
-	JwtToken                 string `json:"jwttoken"`
+	EmailId                  string `json:"email_id"`
+	RoleName                 string `json:"role_name"`
+	IsPasswordChangeRequired bool   `json:"is_password_change_required"`
+	AccessToken              string `json:"access_token"`
 }
