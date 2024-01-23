@@ -30,7 +30,7 @@ export const LoginPage = () => {
   const navigate = useNavigate();
   // const { login } = useAuthData();
   const signIn = useSignIn();
-  const [ credential, setCredential ] = useState<Credentials>({ username: '', password: ''});
+  const [ credential, setCredential ] = useState<Credentials>({ username: 'shushank22@gmail.com', password: '1234'});
 
   const doLogin = useCallback(async () => {
       let result = await loginAPI(credential);
@@ -119,7 +119,7 @@ export const LoginPage = () => {
             <ActionButton
               title="Log In"
               onClick={() => {
-                  //doLogin()
+                  doLogin()
                   navigate(ROUTES.HOME);
               }}
             />
