@@ -1,0 +1,22 @@
+.drawerSideMenuContainer {
+  background-color: #0d0d0d;
+  flex: 1;
+  color: white;
+}
+.drawerLogo {
+  border-radius: 0px 0px 32px 32px;
+  background: #212121;
+  height: 82px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.drawerAppTitle {
+  color: #fff;
+  font-family: Poppins;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  padding-left: 10px;
+}
