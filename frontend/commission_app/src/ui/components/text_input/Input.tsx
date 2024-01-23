@@ -6,6 +6,7 @@ interface InputProps {
   type: "text" | "number" | "email" | "password";
   value: string | number;
   placeholder: string;
+  label?: string;
   error?: boolean;
   disabled?: boolean;
   name?: string;
@@ -20,10 +21,12 @@ const Input: FC<InputProps> = ({
   error,
   disabled,
   name,
+  label,
   onChange,
 }) => {
   return (
     <div className="input-wrapper">
+      {label && <p className="inputLabel">{label}</p>}
       <div className="input-inner-view">
         <input
           type={type}
