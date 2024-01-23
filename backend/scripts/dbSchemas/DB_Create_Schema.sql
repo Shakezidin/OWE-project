@@ -275,7 +275,7 @@ CREATE TABLE timeline_sla (
     PRIMARY KEY (id)
 );
 
-CREATE TABLE sale_info (
+CREATE TABLE dealer_pay_export (
     id serial NOT NULL,
     dealer INT,
     partner INT,
@@ -349,7 +349,7 @@ CREATE TABLE rebate_items (
 
 CREATE TABLE sale_adders (
     id serial NOT NULL,
-    sale_info_id INT,
+    dealer_pay_export_id INT,
     date character varying,
     adder_type INT,
     gc character varying,
@@ -357,7 +357,7 @@ CREATE TABLE sale_adders (
     per_kw_amt DOUBLE PRECISION,
     rep_percent integer,
     description character varying,
-    FOREIGN KEY (sale_info_id) REFERENCES  sale_info(id),
+    FOREIGN KEY (dealer_pay_export_id) REFERENCES  dealer_pay_export(id),
     FOREIGN KEY (adder_type) REFERENCES  adder_type(id),
     PRIMARY KEY (id)
 );
@@ -365,14 +365,14 @@ CREATE TABLE sale_adders (
 
 CREATE TABLE customer_rebates (
 	id serial NOT NULL,
-	sale_info_id INT,
+	dealer_pay_export_id INT,
 	date character varying,
 	type INT,	
 	item_id INT,	 
 	amount  double precision,	
 	rep_percent  integer,
 	description character varying,
-	FOREIGN KEY (sale_info_id) REFERENCES  sale_info(id),
+	FOREIGN KEY (dealer_pay_export_id) REFERENCES  dealer_pay_export(id),
 	FOREIGN KEY (item_id) REFERENCES  rebate_items(id),
     PRIMARY KEY (id)
 );
@@ -398,13 +398,13 @@ CREATE TABLE referrer_details (
 
 CREATE TABLE referral_bonus (
 	id serial NOT NULL,
-	sale_info_id INT,
+	dealer_pay_export_id INT,
 	referrer_id character varying,
 	date character varying,	 
 	amount character varying,	
 	rep_percent  integer,
 	description character varying,	
-	FOREIGN KEY (sale_info_id) REFERENCES  sale_info(id),
+	FOREIGN KEY (dealer_pay_export_id) REFERENCES  dealer_pay_export(id),
     FOREIGN KEY (referrer_id) REFERENCES  referrer_details(referrer_id),
 	PRIMARY KEY (id)
 );
