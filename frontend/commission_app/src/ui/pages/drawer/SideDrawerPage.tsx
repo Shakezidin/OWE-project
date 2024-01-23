@@ -28,6 +28,8 @@ import { ReactComponent as PROFILE_White } from "../../../resources/assets/profi
 import CreateUserProfile from "../create_profile/CreateUserProfile";
 import {MenuItemModel} from "../../../core/models/data_models/MenuItemModel";
 import {getMenuList} from "../../../resources/static_data/StaticData";
+import {useState} from "react";
+import {DashboardPage} from "../dashboard/DashboardPage";
 
 const drawerWidth = 240;
 
@@ -39,10 +41,14 @@ interface Props {
   window?: () => Window;
 }
 
+const menuList = getMenuList();
+
+
 export default function SideDrawerPage(props: Props) {
     const { window } = props;
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const [isClosing, setIsClosing] = React.useState(false);
+    const [selectedMenu, setSelectedMenu] = useState(menuList[0]);
 
     const handleDrawerClose = () => {
         setIsClosing(true);
@@ -58,7 +64,7 @@ export default function SideDrawerPage(props: Props) {
             setMobileOpen(!mobileOpen);
         }
     };
-  let menuList = getMenuList();
+
   const drawer = (
     <div className="drawerSideMenuContainer">
       <div className="drawerLogo">
@@ -71,7 +77,8 @@ export default function SideDrawerPage(props: Props) {
             key={item.label}
             disablePadding
             onClick={() => {
-              alert(index);
+              // alert(index);
+                setSelectedMenu(item);
             }}
           >
             <ListItemButton>
@@ -140,7 +147,7 @@ export default function SideDrawerPage(props: Props) {
           >
             {drawer}
           </Drawer>
-          <CreateUserProfile />
+          {/*<CreateUserProfile />*/}
         </Box>
         <Box
           component="main"
@@ -149,7 +156,13 @@ export default function SideDrawerPage(props: Props) {
             p: 3,
             width: { sm: `calc(100% - ${drawerWidth}px)` },
           }}
-        ></Box>
+        />
+
+          <div>
+              {(selectedMenu.name === 'dashboard') && <DashboardPage />}
+              {(selectedMenu.name !== 'dashboard') && <div> {selectedMenu.name} </div>}
+          </div>
+
       </Box>
     </div>
   );
