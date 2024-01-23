@@ -40,7 +40,7 @@ export const AuthWrapper = () => {
     return (
         <AuthContext.Provider value={{ auth, login, logout }}>
             <>
-                <RenderRoutes/>
+                {/*<RenderRoutes/>*/}
             </>
         </AuthContext.Provider>
     )

@@ -7,12 +7,26 @@
  */
 
 import {configureStore} from "@reduxjs/toolkit";
+import createStore from "react-auth-kit/createStore";
 import rootReducer from "./RootReducer";
 
 
-const store = configureStore({
+/**
+ * Auth Store: created by Auth-Store-Kit
+ * */
+export const authStore = createStore<object>({
+    authName: '_auth',
+    authType: 'localstorage',
+    cookieDomain: window.location.hostname,
+    cookieSecure: window.location.protocol === 'https:'
+});
+
+
+/**
+ * App Store: Global State Management
+ * */
+export const store = configureStore({
     reducer: rootReducer,
     // middleware: [thunk]
 })
 
-export default store;

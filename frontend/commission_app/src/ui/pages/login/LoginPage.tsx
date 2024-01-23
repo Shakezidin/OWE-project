@@ -20,23 +20,36 @@ import { ROUTES } from "../../../navigation/Routes";
 import {loginAPI} from "../../../infrastructure/web_api/services/AuthService";
 import {useAuthData} from "../../../redux/context/AuthWrapper";
 import {Credentials} from "../../../core/models/api_models/AuthModel";
+import useSignIn from 'react-auth-kit/hooks/useSignIn'
+
 
 const label = { inputProps: { "aria-label": "Switch demo" } };
 
 export const LoginPage = () => {
 
   const navigate = useNavigate();
-  const { login } = useAuthData();
+  // const { login } = useAuthData();
+  const signIn = useSignIn();
   const [ credential, setCredential ] = useState<Credentials>({ username: '', password: ''});
 
-  const doLogin = useCallback(() => {
-      if (login) {
-          login(credential.username, credential.password).then(() => {
-              navigate(ROUTES.HOME);
-          }).catch((e: unknown) => {
-              console.log('ERROR: ', e);
-          });
-      }
+  const doLogin = useCallback(async () => {
+      let result = await loginAPI(credential);
+      signIn({
+          auth: {
+              token: result.accessToken,
+              type: 'Bearer'
+          },
+          userState: {
+              email_id: result.email_id,
+              role: result.role,
+              isPasswordChangeRequired: result.isPasswordChangeRequired
+          }
+      });
+      // login(credential.username, credential.password).then(() => {
+      //     navigate(ROUTES.HOME);
+      // }).catch((e: unknown) => {
+      //     console.log('ERROR: ', e);
+      // });
   }, []);
 
   return (
