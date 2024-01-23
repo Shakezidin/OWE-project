@@ -55,9 +55,9 @@ func HandleCreateTeamRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	if len(createTeamReq.TeamName) <= 0 {
-		err = fmt.Errorf("Empty Input Fields API Not Allowed")
+		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields API Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 

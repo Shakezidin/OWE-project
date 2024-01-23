@@ -58,9 +58,9 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		(len(createUserReq.EmailId) <= 0) || (len(createUserReq.MobileNumber) <= 0) ||
 		(len(createUserReq.Password) <= 0) || (len(createUserReq.Designation) <= 0) ||
 		(len(createUserReq.AssignedDealerName) <= 0) || (len(createUserReq.RoleName) <= 0) {
-		err = fmt.Errorf("Empty Input Fields API Not Allowed")
+		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields API Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 

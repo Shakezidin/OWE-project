@@ -10,7 +10,7 @@ create database owe_db;
 /*Table to store the teams information for appointment setters*/
 CREATE TABLE teams (
     team_id serial NOT NULL,
-    team_name character varying,
+    team_name character varying UNIQUE,
     PRIMARY KEY (team_id)
 );
 
@@ -455,7 +455,7 @@ VALUES ( 'UserFirstName', 'UserLastName', '0987654321', 'shushank22@gmail.com', 
 \copy timeline_sla(type_m2m,state_id,days,start_date) FROM '/docker-entrypoint-initdb.d/timeline_sla.csv' DELIMITER ',' CSV;
 \copy v_reps(rep_code,rep_fname,rep_lname,asssigned_dealer,rep_status,description) FROM '/docker-entrypoint-initdb.d/v_reps.csv' DELIMITER ',' CSV;
 \copy tier(tier_name) FROM '/docker-entrypoint-initdb.d/tier.csv' DELIMITER ',' CSV;
-\copy appointment_setters(setters_id, team_id, first_name, last_name, pay_rate, start_date, end_date) FROM '/docker-entrypoint-initdb.d/appointment_setters.csv' DELIMITER ',' CSV;
+\copy appointment_setters(team_id, first_name, last_name, pay_rate, start_date, end_date) FROM '/docker-entrypoint-initdb.d/appointment_setters.csv' DELIMITER ',' CSV;
 
 /******************************SETTINGS DB TABLE END  ***********************************************/
 
@@ -463,3 +463,4 @@ VALUES ( 'UserFirstName', 'UserLastName', '0987654321', 'shushank22@gmail.com', 
 /******************************* Adding All Stored Procedures ***********************************/
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewUser.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewTeam.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateAptSetter.sql';
