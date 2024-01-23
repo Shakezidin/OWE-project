@@ -4,6 +4,7 @@ import { ReactComponent as PROFILE_BACKGROUND } from "../../../resources/assets/
 import { ActionButton } from "../../components/button/ActionButton";
 import Input from "../../components/text_input/Input";
 import { ReactComponent as CROSS_BUTTON } from "../../../resources/assets/cross_button.svg";
+import DropdownButton from "../../components/dropdown/DropdownButton";
 
 const CreateUserProfile = () => {
   return (
@@ -61,25 +62,18 @@ const CreateUserProfile = () => {
               </div>
 
               <div style={{ display: "flex", gap: "20px" }}>
-                <Input
-                  type={"text"}
-                  label="Select Role*"
-                  value={""}
-                  placeholder={"Enter Email"}
-                  onChange={() => {}}
+                <DropdownButton
+                  label="Select Role"
+                  options={["Option 1", "Option 2", "Option 3"]}
                 />
-                <Input
-                  type={"text"}
-                  label="Assign Dealer*"
-                  value={""}
-                  placeholder={"Enter Email"}
-                  onChange={() => {}}
+                <DropdownButton
+                  label="Assign Dealer"
+                  options={["Option 1", "Option 2", "Option 3"]}
                 />
               </div>
               <br />
               <div className="createUserActionButton">
                 <ActionButton title={"Create"} onClick={() => {}} />
-                <br />
               </div>
             </div>
           </div>

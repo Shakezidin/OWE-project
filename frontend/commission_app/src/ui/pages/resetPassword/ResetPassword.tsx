@@ -40,7 +40,7 @@ const ResetPassword = () => {
               <UNDER_LINE />
             </div>
             <span className="loginLogText">Enter Your Email Address</span>
-
+            <br />
             <Input
               type={"text"}
               value={""}
@@ -52,7 +52,7 @@ const ResetPassword = () => {
             <ActionButton
               title="Request  Reset Link"
               onClick={() => {
-                navigate(ROUTES.ENTER_OTP)
+                navigate(ROUTES.ENTER_OTP);
               }}
             />
           </div>
