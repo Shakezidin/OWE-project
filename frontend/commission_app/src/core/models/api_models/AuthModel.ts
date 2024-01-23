@@ -8,7 +8,7 @@
 
 
 export interface AuthModel {
-    email_id: string
+    emailId: string
     role: string
     isPasswordChangeRequired: boolean
     accessToken: string

@@ -8,10 +8,10 @@
 import {HTTP_STATUS, RequestModel} from "../../../core/models/api_models/RequestModel";
 import Config from "../../../config/Config";
 import {getAuthorizationHeader, HttpHeadersDefault} from "./RequestConstants";
-import {ResponseModel} from "../../../core/models/api_models/ResponseModel";
+import {JSONObject} from "../../../core/common/CustomDataTypes";
 
 
-export const httpRequest = async <T>(req: RequestModel): Promise<ResponseModel<T>> => {
+export const httpRequest = async (req: RequestModel): Promise<JSONObject> => {
     console.log('API REQUEST:: ', req);
 
     //---- API URL ----
@@ -49,7 +49,7 @@ export const httpRequest = async <T>(req: RequestModel): Promise<ResponseModel<T
     });
 
     console.log('API RESPONSE:: ', res);
-    console.log('API RESULT:: ', await res.json());
+    //console.log('API RESULT:: ', await res.json());
 
     if (res.status === HTTP_STATUS.OK) {
         //Success
@@ -60,7 +60,7 @@ export const httpRequest = async <T>(req: RequestModel): Promise<ResponseModel<T
             return {
                 status: json.status,
                 message: json.message,
-                data: json.data as T
+                data: json.data
             };
         } else {
             throw new Error('Error ' + json.status + ' : ' + json.message);
