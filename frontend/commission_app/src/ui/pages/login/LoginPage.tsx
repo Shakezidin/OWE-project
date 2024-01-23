@@ -53,21 +53,21 @@ export const LoginPage = () => {
               <UNDER_LINE />
             </div>
             <span className="loginLogText">Log In</span>
-
+            <br />
             <Input
               type={"text"}
               value={"Commission App"}
               placeholder={"Commission App"}
               onChange={() => {}}
             />
-
+            <br />
             <Input
               type={"text"}
               value={""}
               placeholder={"Enter Email"}
               onChange={() => {}}
             />
-
+            <br />
             <Input
               type={"text"}
               value={""}
