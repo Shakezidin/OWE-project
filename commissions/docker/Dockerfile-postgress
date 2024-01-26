@@ -30,6 +30,9 @@ COPY ./dbSchemas/rawData/adder_type.csv /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcCreateNewUser.sql /docker-entrypoint-initdb.d/ 
 COPY ./dbSchemas/DB_ProcCreateNewTeam.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcCreateAptSetter.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcSmallSysSizeCalc.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcCommisionTypeCalc.sql  /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcCreateDealerPayExport.sql /docker-entrypoint-initdb.d/
 
 RUN chmod +x /docker-entrypoint-initdb.d/DB_Create_Schema.sql
 

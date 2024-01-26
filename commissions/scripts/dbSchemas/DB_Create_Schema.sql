@@ -294,7 +294,7 @@ CREATE TABLE dealer_pay_export (
     rep_1 INT,
     rep_2 INT,
     appt_setter	INT,
-    sys_size character varying,
+    sys_size DOUBLE PRECISION,
     kwh	 DOUBLE PRECISION,
     contract DOUBLE PRECISION,
     epc DOUBLE PRECISION,
@@ -312,6 +312,7 @@ CREATE TABLE dealer_pay_export (
     elec_Install_date character varying,
     fin_date character varying,
     pto_date character varying,
+    small_system_size VARCHAR(20),
     FOREIGN KEY (dealer) REFERENCES v_dealer(id),
     FOREIGN KEY (partner) REFERENCES partners(partner_id),
     FOREIGN KEY (installer) REFERENCES partners(partner_id),
@@ -464,3 +465,6 @@ VALUES ( 'UserFirstName', 'UserLastName', '0987654321', 'shushank22@gmail.com', 
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewUser.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewTeam.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateAptSetter.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcSmallSysSizeCalc.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcCommisionTypeCalc.sql'
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateDealerPayExport.sql';
