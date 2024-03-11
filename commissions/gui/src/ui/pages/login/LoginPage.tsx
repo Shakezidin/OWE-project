@@ -33,19 +33,19 @@ export const LoginPage = () => {
   const [ credential, setCredential ] = useState<Credentials>({ username: 'shushank22@gmail.com', password: '1234'});
 
   const doLogin = useCallback(async () => {
-      let result = await loginAPI(credential);
-      signIn({
-          auth: {
-              token: result.accessToken,
-              type: 'Bearer'
-          },
-          userState: {
-              email_id: result.emailId,
-              role: result.role,
-              isPasswordChangeRequired: result.isPasswordChangeRequired
-          }
-      });
-      navigate(ROUTES.HOME);
+      // let result = await loginAPI(credential);
+      // signIn({
+      //     auth: {
+      //         token: result.accessToken,
+      //         type: 'Bearer'
+      //     },
+      //     userState: {
+      //         email_id: result.emailId,
+      //         role: result.role,
+      //         isPasswordChangeRequired: result.isPasswordChangeRequired
+      //     }
+      // });
+      navigate('/dashboard');
       // login(credential.username, credential.password).then(() => {
       //     navigate(ROUTES.HOME);
       // }).catch((e: unknown) => {
@@ -71,7 +71,7 @@ export const LoginPage = () => {
 
         <div className={"loginBox2"}>
           <div className="loginTextView">
-            <img className="loginImageLogo" src={ICONS.LOGO} />
+            <img className="loginImageLogo" src={ICONS.LOGO} alt=""/>
             <br />
             <div className="loginLogowithText">
               <LOGO_SMALL />

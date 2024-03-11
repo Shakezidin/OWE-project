@@ -38,13 +38,7 @@ export const NavigationRoutes: NavigationRouteModel[] = [
     isPrivate: false,
     element: <LoginPage />,
   },
-  {
-    name: "Home",
-    path: "/home",
-    isMenu: true,
-    isPrivate: false,
-    element: <SideDrawerPage />,
-  },
+ 
   {
     name: "Reset Password",
     path: ROUTES.RESET_PASSWORD,

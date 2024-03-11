@@ -25,19 +25,30 @@ const modalStyle = {
 };
 
 
-export const DashboardPage = () => {
+export const DashboardPage: React.FC = () => {
 
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
     return (
+        <div className="admin-dashboard">
+        <div className="dashboard-head">
+          <h4>Admin Dashboard</h4>
+          <button className='user-btn'  onClick={handleOpen}>Create User</button>
+        </div>
+        <div className="admin-card-container">
+          <div className="admin-card-content">
+  
+          </div>
+        </div>
+        <div className="user-list-container">
+          <div className="user-list">
+  user list
+          </div>
+        </div>
         <div>
-            <h1>Welcome to Dashboard Page</h1>
-            <button
-                onClick={() => {
-                    setOpen(true)
-                }}>Create User</button>
+          
 
             <Modal
                 open={open}
@@ -45,8 +56,10 @@ export const DashboardPage = () => {
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
-                <CreateUserProfile />
+                <CreateUserProfile  />
             </Modal>
         </div>
+      </div>
+       
     )
 }

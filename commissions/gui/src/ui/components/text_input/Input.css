@@ -11,7 +11,7 @@ input {
   flex: 1;
   height: 3rem;
   color: #000;
-  font-family: Poppins;
+
   line-height: 14.5px; /* 103.571% */
   border: none;
   outline: 0;
@@ -29,7 +29,7 @@ input {
 
 input::placeholder {
   color: #5a5a5a;
-  font-family: Poppins;
+  
   font-size: 14px;
   font-style: normal;
   font-weight: 400;
@@ -38,7 +38,7 @@ input::placeholder {
 
 .inputLabel {
   color: #000;
-  font-family: Poppins;
+ 
   font-size: 12px;
   font-style: normal;
   font-weight: 400;

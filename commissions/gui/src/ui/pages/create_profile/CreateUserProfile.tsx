@@ -6,7 +6,7 @@ import Input from "../../components/text_input/Input";
 import { ReactComponent as CROSS_BUTTON } from "../../../resources/assets/cross_button.svg";
 import DropdownButton from "../../components/dropdown/DropdownButton";
 
-const CreateUserProfile = () => {
+const CreateUserProfile: React.FC = () => {
   return (
     <div className="transparent-model">
       <div className="modal">
