@@ -1,0 +1,16 @@
+
+
+.user-list-container{
+    display: flex;
+   
+    justify-content: space-between;
+    gap: 1rem;
+    background-color: white;
+    height: 340px;
+    padding: 1rem;
+    border-radius: 1.5rem;
+  margin-top: 1rem;
+}
+.user-list{
+    padding: .5rem;
+}
