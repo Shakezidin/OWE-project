@@ -75,7 +75,7 @@ const MarketingFees: React.FC = () => {
 
     <div className='TableContainer'>
         <table>
-            <thead style={{ background: "#FCFCFD" }}>
+            <thead style={{ background: "#FCFCFD"  }}>
                 <tr>
                     <th><input value="test" type="checkbox" /></th>
                     <th>Source <img src={arrowDown} alt="" /> </th>
