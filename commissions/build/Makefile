@@ -7,11 +7,10 @@ GOBUILD=go build -gcflags "-N -l" -v
 
 # Exporting service specific variables
 #GOGETFILES=golang.org/x/oauth2 golang.org/x/net github.com/gorilla/mux github.com/antihax
-SERVICE_NAME=backend
 APP_NAME=commissions.bin
 APP_DIR=main
 
-SERVICE_PATH=${PWD}/../../$(SERVICE_NAME)
+SERVICE_PATH=${PWD}/../
 
 APPTARGET=$(SERVICE_PATH)/bin/$(APP_NAME)
 
@@ -37,7 +36,7 @@ service:
 clean: ## Remove previous build
 	@echo "Clean previous build"
 	rm -fv $(APPTARGET)
-	echo "Clean in module $(SERVICE_NAME)" ; 
+	echo "Clean in module" ; 
 	#cd $(SERVICE_PATH)/ || exit 1 ; \
 	#make clean; 
 	
