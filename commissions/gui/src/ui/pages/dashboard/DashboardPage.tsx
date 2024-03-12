@@ -27,7 +27,7 @@ const modalStyle = {
 
 export const DashboardPage: React.FC = () => {
 
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = React.useState<boolean>(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
@@ -56,7 +56,7 @@ export const DashboardPage: React.FC = () => {
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
-                <CreateUserProfile  />
+                <CreateUserProfile handleClose={handleClose}  />
             </Modal>
         </div>
       </div>

@@ -97,4 +97,5 @@
   justify-content: flex-end;
   display: flex;
   padding: 10px;
+  cursor: pointer;
 }

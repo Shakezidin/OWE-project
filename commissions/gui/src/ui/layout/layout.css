@@ -97,7 +97,8 @@ height: 52px;
 .search-input{
     width: 100%;
     border: 1px solid #D5D5D5;
-    padding: .5rem;
+    height: 2.4rem;
+    padding: .4rem .5rem .4rem .5rem !important;
     outline: none;
     font-size: 1rem;
     background-color:#F3F3F3;

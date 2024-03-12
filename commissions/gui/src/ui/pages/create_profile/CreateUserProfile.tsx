@@ -5,12 +5,14 @@ import { ActionButton } from "../../components/button/ActionButton";
 import Input from "../../components/text_input/Input";
 import { ReactComponent as CROSS_BUTTON } from "../../../resources/assets/cross_button.svg";
 import DropdownButton from "../../components/dropdown/DropdownButton";
-
-const CreateUserProfile: React.FC = () => {
+type ButtonProps ={
+  handleClose:()=>void
+}
+const CreateUserProfile = (props:ButtonProps) => {
   return (
     <div className="transparent-model">
       <div className="modal">
-        <div className="createUserCrossButton">
+        <div className="createUserCrossButton" onClick={props.handleClose}>
           <CROSS_BUTTON />
         </div>
         <div className="createUserContainer">
