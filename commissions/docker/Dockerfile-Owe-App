@@ -1,14 +1,30 @@
 FROM owe_base_os:v1
 
-ARG GOLANG_VERSION=1.17.5
-
 #we need the go version installed from apk to bootstrap the custom version built from source
 #RUN apk update && apk add go gcc bash musl-dev openssl-dev ca-certificates && update-ca-certificates
-RUN yum -y update && yum -y install go gcc bash tar gzip sudo tcpdump net-tools gdb vim file musl-dev openssl-dev wget rpm-devel
-#ca-certificates && update-ca-certificates
+#FROM ubuntu:latest
+LABEL maintainer="OWE_TEAM"
 
+RUN apt-get update \
+    && apt-get install -y golang \
+                           gcc \
+                           bash \
+                           tar \
+                           gzip \
+                           sudo \
+                           tcpdump \
+                           net-tools \
+                           gdb \
+                           vim \
+                           file \
+                           libssl-dev \
+                           wget \
+                           rpm \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+ARG GOLANG_VERSION=1.17.5
 RUN wget https://dl.google.com/go/go$GOLANG_VERSION.linux-amd64.tar.gz
-
 RUN rm -rf /usr/local/go && tar -C /usr/local -xzf go$GOLANG_VERSION.linux-amd64.tar.gz
 
 #RUN cd /usr/local/go/src

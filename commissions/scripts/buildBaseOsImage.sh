@@ -1,8 +1,6 @@
 #!/bin/bash
 #set -x
 
-export BASE_OS="rhel"
-
 #if [ "X$GOPATH" = "X" ]; then
 #    echo "Please set GOPATH and try again."
 #    exit
@@ -10,7 +8,8 @@ export BASE_OS="rhel"
 
 CUSTOM_DIR=$PWD
 
-export BASE_OS="rhel"
+#export BASE_OS="rhel"
+export BASE_OS="ubuntu"
 
 DOCKER_DIR=$CUSTOM_DIR/../docker
 DOCKER_FILE="$DOCKER_DIR/Dockerfile-Owe-$BASE_OS"
