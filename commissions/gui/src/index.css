@@ -33,7 +33,9 @@ li {
 
 
 
-
+.admin-dashboard{
+  background-color: white !important;
+}
 .admin-card-container{
   display: flex;
   align-items: center;
@@ -46,7 +48,7 @@ li {
   margin-top: .5rem;
 }
 .admin-card-content{
-  background-color: #F1E6FF;
+  background-color: #F1E6FF !important;
   height: 110px;
   width: 25%;
   border-radius: 1rem;

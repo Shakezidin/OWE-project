@@ -19,33 +19,14 @@ const DealerOverRides: React.FC = () => {
       edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />
 
     },
-    {
-      united: "United Wholesales",
-      Markting: "Markting",
-      dollar: "$10",
-      startDate: "10/10/1000",
-      endDate: "99/99/99990",
-      delete: <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />,
-      edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />
-
-    },
-    {
-      united: "United Wholesales",
-      Markting: "Markting",
-      dollar: "$10",
-      startDate: "10/10/1000",
-      endDate: "99/99/99990",
-      delete: <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />,
-      edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />
-
-    },
+   
   ]
   return (
     <div className='comm'>
       <div className='commissionContainer'>
         <TableHeaderLayout />
         <div className='TableContainer'>
-          <table>
+         <table>
             <thead >
               <tr>
                 <th>
@@ -55,32 +36,51 @@ const DealerOverRides: React.FC = () => {
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Sub Dealer</p> <img src={arrowDown} alt="" />
+                  Sub Dealer
+                    <div className="">
+                    <img src={arrowDown} alt="" className='' />
+                    </div>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Dealer</p> <img src={arrowDown} alt="" />
+                  Dealer
+                    <div className="">
+                    <img src={arrowDown} alt="" className='' />
+                    </div>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Pay Rate</p> <img src={arrowDown} alt="" />
+                  Pay Rate
+                    <div className="">
+                    <img src={arrowDown} alt="" className='' />
+                    </div>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Start Date</p> <img src={arrowDown} alt="" />
+                  Start Date
+                    <div className="">
+                    <img src={arrowDown} alt="" className='' />
+                    </div>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>End Date</p> <img src={arrowDown} alt="" />
+                  End Date
+                    <div className="">
+                    <img src={arrowDown} alt="" className='' />
+                    </div>
                   </div>
                 </th>
+              
                 <th>
                   <div className="table-header">
-                    <p>Action</p> <img src={arrowDown} alt="" />
+                    Action
+                    <div className="">
+                    <img src={arrowDown} alt="" className='' />
+                    </div>
                   </div>
                 </th>
 
@@ -96,6 +96,8 @@ const DealerOverRides: React.FC = () => {
                     <td>{el.dollar}</td>
                     <td>{el.startDate}</td>
                     <td>{el.endDate}</td>
+                 
+                    {/* <td>{el.endDate}</td> */}
                     <td>
                       <div className="action-icon">
                         <div className="" style={{ cursor: "pointer" }}>
@@ -114,7 +116,7 @@ const DealerOverRides: React.FC = () => {
 
             </tbody>
           </table>
-        </div>
+          </div>
       </div>
     </div>
 

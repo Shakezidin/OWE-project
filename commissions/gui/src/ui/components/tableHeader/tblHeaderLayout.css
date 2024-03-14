@@ -1,79 +1,73 @@
 .comm {
-    background: #f3f3f3;
-    width: 100%;
-    height: 80vh;
-    border-radius: 1rem;
-  }
-  .commissionContainer {
-    background-color: white;
-    justify-content: space-between;
-    border-radius: 1rem;
-  overflow: hidden;
- 
-  }
-  
-  .commissionSection {
- display: flex;
- align-items: center;
- padding: 1rem;
- justify-content: space-between;
- border-bottom: 1px solid #EAECF0;
-  }
-  .iconContainer {
-    display: flex;
-    justify-content: space-between;
-    gap: 1.5rem;
-  }
-  .rateSection{
-    display: flex;
-    flex-direction: column;
-    gap: .2rem;
-  }
-  .rateSection h2{
-    font-size: 18px;
+  background: #f3f3f3;
+  width: 100%;
+  /* height: 80vh; */
+  border-radius: 1rem;
+}
 
-  }
-  .iconsSection {
-    display: flex;
-    align-items: center;
-  }
-  .iconsSection button {
-    display: flex;
-    align-items: center;
-    font-size: 1rem;
-    border: none;
-    color: #344054;
-    font-weight: 500;
-    background-color: white;
-    gap: .5rem;
-  }
-  
-  .iconsSection2 {
-    display: flex;
-    border: none;
-  }
-  
-  .iconsSection2 button {
-    display: flex;
-    justify-content: space-between;
-    justify-content: center;
-    align-items: center;
-    gap: 0.5rem;
-    border: none;
-    background-color: white;
-    padding: 8px 20px;
-    text-align: center;
-    text-decoration: none;
-    /* display: inline-block; */
-    border: 1px solid  #D0D5DD;
-    font-size: 16px;
-    border-radius: 8px;
-   
-    font-size: 1rem;
-    font-weight: 600;
-    line-height: 20px;
-    letter-spacing: 0em;
-    text-align: left;
-    color: #344054;
-    cursor: pointer;
-  }
+.commissionContainer {
+  background-color: white;
+  justify-content: space-between;
+  border-radius: 1rem;
+  overflow: hidden;
+
+}
+
+.commissionSection {
+  display: flex;
+  align-items: center;
+  padding:1rem;
+  justify-content: space-between;
+  border-bottom: 1px solid #EAECF0;
+}
+
+.iconContainer {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+.rateSection{
+  display: flex;
+  gap: .3rem;
+  flex-direction: column;
+}
+.rateSection h2 {
+  font-size: 18px;
+}
+
+.iconsSection {
+  display: flex;
+  align-items: center;
+}
+
+.iconsSection button {
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  border: none;
+  color: #344054;
+  font-weight: 500;
+  background-color: white;
+  gap: .5rem;
+}
+
+.iconsSection2 {
+  display: flex;
+  border: none;
+}
+
+.iconsSection2 button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  border: none;
+  background-color: white;
+  padding: .5rem;
+  border: 1px solid #D0D5DD;
+  font-size: 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  color: #344054;
+  cursor: pointer;
+}

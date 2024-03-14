@@ -19,26 +19,7 @@ const CommissionRate: React.FC = () => {
       edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />
 
     },
-    {
-      united: "United Wholesales",
-      Markting: "Markting",
-      dollar: "$10",
-      startDate: "10/10/1000",
-      endDate: "99/99/99990",
-      delete: <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />,
-      edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />
-
-    },
-    {
-      united: "United Wholesales",
-      Markting: "Markting",
-      dollar: "$10",
-      startDate: "10/10/1000",
-      endDate: "99/99/99990",
-      delete: <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />,
-      edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />
-
-    },
+    
   ]
   return (
     <div className='comm'>
@@ -46,7 +27,6 @@ const CommissionRate: React.FC = () => {
         <TableHeaderLayout />
         <div className='TableContainer'>
           <table>
-        
             <thead >
               <tr>
                 <th>
@@ -56,42 +36,66 @@ const CommissionRate: React.FC = () => {
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Partner</p> <img src={arrowDown} alt="" />
+                    Partner
+                    <div className="">
+                    <img src={arrowDown} alt="" className='' />
+                    </div>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Installer</p> <img src={arrowDown} alt="" />
+                    Installer
+                    <div className="">
+                    <img src={arrowDown} alt="" className='' />
+                    </div>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>State</p> <img src={arrowDown} alt="" />
+                    State
+                    <div className="">
+                    <img src={arrowDown} alt="" className='' />
+                    </div>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>State Type</p> <img src={arrowDown} alt="" />
+                    State Type
+                    <div className="">
+                    <img src={arrowDown} alt="" className='' />
+                    </div>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Sale Price</p> <img src={arrowDown} alt="" />
+                    Sale Price
+                    <div className="">
+                    <img src={arrowDown} alt="" className='' />
+                    </div>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Rep Type</p> <img src={arrowDown} alt="" />
+                    Rep Type 
+                    <div className="">
+                    <img src={arrowDown} alt="" className='' />
+                    </div>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Rate List</p> <img src={arrowDown} alt="" />
+                    Rate List 
+                    <div className="">
+                    <img src={arrowDown} alt="" className='' />
+                    </div>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Action</p> <img src={arrowDown} alt="" />
+                    Action
+                    <div className="">
+                    <img src={arrowDown} alt="" className='' />
+                    </div>
                   </div>
                 </th>
 

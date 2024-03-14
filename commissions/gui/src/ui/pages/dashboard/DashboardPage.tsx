@@ -8,9 +8,9 @@ import React from "react";
  * Path: src/ui/pages/dashboard
  */
 
-import Modal from '@mui/material/Modal';
-import CreateUserProfile from "../create_profile/CreateUserProfile";
 
+import CreateUserProfile from "../create_profile/CreateUserProfile";
+import '../dashboard/dasboard.css'
 
 const modalStyle = {
     position: 'absolute' as 'absolute',
@@ -50,14 +50,14 @@ export const DashboardPage: React.FC = () => {
         <div>
           
 
-            <Modal
+            {/* <Modal
                 open={open}
                 onClose={handleClose}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
                 <CreateUserProfile handleClose={handleClose}  />
-            </Modal>
+            </Modal> */}
         </div>
       </div>
        
