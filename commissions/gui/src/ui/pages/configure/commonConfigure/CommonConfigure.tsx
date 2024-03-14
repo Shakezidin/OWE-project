@@ -2,14 +2,13 @@ import React from 'react'
 import '../commonConfigure/commonConfigure.css'
 import { useState } from 'react'
 const CommonConfigure: React.FC = () => {
-    const [activeCard,setActiveCard] = useState(0)
+    // const [activeCard,setActiveCard] = useState(0)
     return (
         <div className="">
-
             <div className="common-card">
                 <h4>Common Configuration</h4>
                 <div className="common-card-content">
-                    <div className={`admin-card-content ${activeCard===0 ? 'active-card':""}`} onClick={()=>setActiveCard(0)}>
+                    <div className="admin-card-content" >
                         <div className="">
                         <h3>85</h3>
                         <p>Team</p>
@@ -17,7 +16,7 @@ const CommonConfigure: React.FC = () => {
                         <div className="team-circle"></div>
                     </div>
                 </div>
-                <div className="common-card-table" hidden={activeCard!==0}>
+                <div className="common-card-table" >
                <div className="dashboard-head">
                <div className="teams-head">
                <h4>TEAMS</h4>

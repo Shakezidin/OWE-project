@@ -1,8 +1,8 @@
 import React from 'react'
-import logo from '../../resources/assets/logo.png'
-import './layout.css'
-import btnlogo from '../../resources/assets/apps-fill.png'
-import userImg from '../../resources/assets/user.png'
+import logo from '../../../resources/assets/logo.png'
+import '../layout/layout.css'
+import btnlogo from '../../../resources/assets/apps-fill.png'
+import userImg from '../../../resources/assets/user.png'
 import { FaBell } from "react-icons/fa";
 import { MdKeyboardArrowDown } from "react-icons/md";
 const Header: React.FC = () => {

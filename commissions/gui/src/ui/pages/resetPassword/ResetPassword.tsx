@@ -3,7 +3,7 @@ import "./ResetPassword.css";
 import { ReactComponent as LOGO_SMALL } from "../../../resources/assets/commisson_small_logo.svg";
 import { ReactComponent as UNDER_LINE } from "../../../resources/assets/BlueAndGreenUnderline.svg";
 import { ICONS } from "../../icons/Icons";
-import { ROUTES } from "../../../navigation/Routes";
+
 import { useNavigate } from "react-router-dom";
 import Input from "../../components/text_input/Input";
 import { ActionButton } from "../../components/button/ActionButton";
@@ -30,7 +30,7 @@ const ResetPassword = () => {
 
         <div className={"loginBox2"}>
           <div className="loginTextView">
-            <img className="loginImageLogo" src={ICONS.LOGO} />
+            <img className="loginImageLogo" src={ICONS.LOGO} alt="" />
             <br />
             <div className="loginLogowithText">
               <LOGO_SMALL />
@@ -52,7 +52,7 @@ const ResetPassword = () => {
             <ActionButton
               title="Request  Reset Link"
               onClick={() => {
-                navigate(ROUTES.ENTER_OTP);
+                navigate('/otp');
               }}
             />
           </div>

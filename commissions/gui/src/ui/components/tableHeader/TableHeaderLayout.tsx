@@ -5,7 +5,7 @@ import { MdFilterList } from "react-icons/md";
 import { IoAddSharp } from "react-icons/io5";
 import imgExport from '../../../resources/assets/export.png'
 import imgimport from '../../../resources/assets/import.png'
-import Modal from '@mui/material/Modal';
+
 
 import CreateDealer from '../../pages/configure/dealerOverrides/CreateDealer';
 
@@ -37,14 +37,11 @@ const TableHeaderLayout:React.FC = () => {
         <button type='button' style={{ background: "black", color: "white" }} onClick={handleOpen}>  <IoAddSharp /> Add New</button>
       </div>
     </div>
-    <Modal
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
-        >
-            <CreateDealer handleClose={handleClose}  />
-        </Modal>
+   
+           {
+            open && (<CreateDealer handleClose={handleClose}  />)
+           }
+    
   </div>
   )
 }

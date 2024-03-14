@@ -33,7 +33,7 @@ import { ReactComponent as Twitter } from "../../../resources/assets/twitter.svg
 import { ReactComponent as YouTube } from "../../../resources/assets/youTube.svg";
 import { ReactComponent as Instagram } from "../../../resources/assets/Instagram.svg";
 import BusinessLogo from "../../../resources/assets/business_logo.png";
-import { ROUTES } from "../../../navigation/Routes";
+
 import Typewriter from "../../components/animation/Typewriter";
 
 export const WelcomePage = () => {
@@ -121,7 +121,7 @@ export const WelcomePage = () => {
                 title="Commission App"
                 description="More than that, you can have any amount of layers attached "
                 onClick={() => {
-                  navigate(ROUTES.LOGIN);
+                  navigate('/login');
                 }}
               />
               <CustomBox
