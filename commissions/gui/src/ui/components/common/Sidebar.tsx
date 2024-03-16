@@ -1,5 +1,5 @@
 
-// import commissionLogo from '../../../resources/assets/b'
+import commissionLogo from '../../../resources/assets/commisson_small_logo.svg'
 
 import SidebarItem from "./SidebarItem";
 import SidebarItemCollapse from "./SidebarItemCollapse";
@@ -7,12 +7,16 @@ import sizeConfig from "../../../config/sizeConfig";
 import colorConfig from "../../../config/colorConfig";
 import appRoutes from "../../../routes/appRoutes";
 import '../layout/layout.css'
+interface Toggleprops{
+  toggleOpen:boolean;
+  setToggleOpen:React.Dispatch<React.SetStateAction<boolean>>;
+ }
+const Sidebar: React.FC<Toggleprops> = ({toggleOpen,setToggleOpen})=> {
 
-const Sidebar = () => {
   return (
-    <div className="side-bar-container">
-    <div className="side-bar-logo">
-{/* <img src={commissionLogo} alt="" /> */}
+    <div className={`side-bar-container ${toggleOpen?'side-bar-active':""}`}>
+    <div className="side-bar-logo" onClick={()=>setToggleOpen(false)}>
+<img src={commissionLogo} alt="" />
     <h3>Commission App</h3>
     </div>
     <div className="side-bar-content">
