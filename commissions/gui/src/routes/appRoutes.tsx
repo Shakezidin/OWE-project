@@ -10,6 +10,8 @@ import DealerOverRides from "../ui/pages/configure/dealerOverrides/DealerOverRid
 import RepPayScale from "../ui/pages/configure/repPayScale/RepPayScale";
 import PaymentSchedule from "../ui/pages/configure/payment/PaymentSchedule";
 import TierLoanFee from "../ui/pages/configure/tierLoanfee/TierLoanFee";
+import TimeLine from "../ui/pages/configure/timeline/TimeLine";
+import DealerTier from "../ui/pages/configure/dealerTier/DealerTier";
 const appRoutes: RouteType[] = [
  
  
@@ -85,6 +87,22 @@ const appRoutes: RouteType[] = [
         state:"configuration.tier_loan_fee",
         sidebarProps:{
           displayText:"Tier Loan fee"
+        }
+      },
+      {
+        path:"/dashboard/configuration/timeLine",
+        element:<TimeLine/>,
+        state:"configuration.timeLine",
+        sidebarProps:{
+          displayText:"TimeLine"
+        }
+      },
+      {
+        path:"/dashboard/configuration/dealer_tier",
+        element:<DealerTier/>,
+        state:"configuration.dealer_tier",
+        sidebarProps:{
+          displayText:"Dealer Tier"
         }
       },
 
