@@ -6,7 +6,6 @@
  * Path: /
  */
 
-
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import WelcomePage from "./ui/pages/welcome/WelcomePage";
@@ -16,15 +15,14 @@ import { routes } from "./routes";
 import MainLayout from "./ui/components/layout/MainLayout";
 import EnterOtpScreen from "./ui/pages/otp/EnterOtpScreen";
 
-
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-      <Route path='/' element={<WelcomePage/>} />
-<Route path='/login' element={<LoginPage />} />
-<Route path='/resetPassword' element={<ResetPassword />} />
-<Route path='/otp' element={<EnterOtpScreen/>} />
+        <Route path="/" element={<WelcomePage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/resetPassword" element={<ResetPassword />} />
+        <Route path="/otp" element={<EnterOtpScreen />} />
         <Route path="/dashboard" element={<MainLayout />}>
           {routes}
         </Route>

@@ -7,6 +7,9 @@ import CommissionRate from "../ui/pages/configure/commissionRate/CommissionRate"
 import CommonConfigure from "../ui/pages/configure/commonConfigure/CommonConfigure";
 import MarketingFees from "../ui/pages/configure/marketingFees/MarketingFees";
 import DealerOverRides from "../ui/pages/configure/dealerOverrides/DealerOverRides";
+import RepPayScale from "../ui/pages/configure/repPayScale/RepPayScale";
+import PaymentSchedule from "../ui/pages/configure/payment/PaymentSchedule";
+import TierLoanFee from "../ui/pages/configure/tierLoanfee/TierLoanFee";
 const appRoutes: RouteType[] = [
  
  
@@ -59,7 +62,32 @@ const appRoutes: RouteType[] = [
         sidebarProps:{
           displayText:"Common Configuration"
         }
-      }
+      },
+      {
+        path:"/dashboard/configuration/rep_pay_scale",
+        element:<RepPayScale/>,
+        state:"configuration.rep_pay_scale",
+        sidebarProps:{
+          displayText:"Rep Pay Scale"
+        }
+      },
+      {
+        path:"/dashboard/configuration/payment_schedule",
+        element:<PaymentSchedule/>,
+        state:"configuration.payment_schedule",
+        sidebarProps:{
+          displayText:"Payment Schedule"
+        }
+      },
+      {
+        path:"/dashboard/configuration/tier_loan_fee",
+        element:<TierLoanFee/>,
+        state:"configuration.tier_loan_fee",
+        sidebarProps:{
+          displayText:"Tier Loan fee"
+        }
+      },
+
     ]
   },
  
