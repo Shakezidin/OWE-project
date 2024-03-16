@@ -1,9 +1,19 @@
 import React from 'react'
-import TableHeaderLayout from '../../../components/tableHeader/TableHeaderLayout'
+
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { CiEdit } from "react-icons/ci";
+
+
+import { MdFilterList } from "react-icons/md";
+import { IoAddSharp } from "react-icons/io5";
+import imgExport from '../../../../resources/assets/export.png'
+import imgimport from '../../../../resources/assets/import.png'
 import arrowDown from '../../../../resources/assets/arrow-down.png'
+import CreateDealer from '../dealerOverrides/CreateDealer';
 const DealerTier = () => {
+  const [open, setOpen] = React.useState<boolean>(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
     const dealerTierData = [
         {
             dn: "Voltaic Power",
@@ -41,7 +51,35 @@ const DealerTier = () => {
   return (
     <div className='comm'>
     <div className='commissionContainer'>
-      <TableHeaderLayout />
+    <div className='commissionSection'>
+    <div className='rateSection'>
+      <h2>Dealer Overrides</h2>
+      <p style={{ color: "#667085",fontSize:"14px" }}>You can view and edit these data as per your requirement</p>
+    </div>
+    <div className="iconContainer">
+      <div className='iconsSection'>
+        <button type='button'> <RiDeleteBin5Line /> Delete</button>
+      </div>
+      <div className='iconsSection'>
+        <button type='button'>  <MdFilterList /> Filter</button>
+      </div>
+      <div className='iconsSection2'>
+        <button type='button'> <img src={imgimport} alt='' /> Import</button>
+      </div>
+      <div className='iconsSection2'>
+        <button type='button'> <img src={imgExport} alt='' />Export</button>
+      </div>
+      <div className='iconsSection2'>
+
+        <button type='button' style={{ background: "black", color: "white" }} onClick={handleOpen}>  <IoAddSharp /> Add New</button>
+      </div>
+    </div>
+   
+           {
+            open && (<CreateDealer handleClose={handleClose}  />)
+           }
+    
+  </div>
       <div className='TableContainer'>
         <table>
       
