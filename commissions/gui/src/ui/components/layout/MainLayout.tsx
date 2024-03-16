@@ -1,18 +1,20 @@
+import React,{useState} from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "../common/Sidebar";
 import sizeConfig from "../../../config/sizeConfig";
 import Header from "./Header";
 import './layout.css'
+
 const MainLayout = () => {
+  const [toggleOpen,setToggleOpen] = useState<boolean>(false)
   return (
     <div className='main-container'>
     <div className="side-header">
-        <Sidebar/>
-       <div style={{width: `calc(100% - ${sizeConfig.sidebar.width})`,flexGrow:1}}>
-       <Header/>
+        <Sidebar toggleOpen={toggleOpen} setToggleOpen={setToggleOpen}/>
+       <div className="header-width" >
+       <Header  toggleOpen={toggleOpen} setToggleOpen={setToggleOpen}/>
         <div className='children-container'>
          <Outlet/>
-          
            </div>
        </div>
     </div>
