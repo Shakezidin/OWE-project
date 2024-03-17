@@ -16,11 +16,10 @@ COPY ./dbSchemas/rawData/rebate_type.csv /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/rawData/timeline_sla.csv /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/rawData/source.csv /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/rawData/partners.csv /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/rawData/v_dealer.csv /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/rawData/states.csv /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/rawData/rep_type.csv /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/rawData/sale_type.csv /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/rawData/v_reps.csv /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/rawData/v_user_details.csv /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/rawData/tier.csv /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/rawData/teams.csv /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/rawData/appointment_setters.csv /docker-entrypoint-initdb.d/

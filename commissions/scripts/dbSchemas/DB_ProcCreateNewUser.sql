@@ -6,7 +6,6 @@ CREATE OR REPLACE FUNCTION create_new_user(
     p_email_id VARCHAR(255),
     p_password VARCHAR(255),
     p_designation VARCHAR(255),
-    p_asssigned_dealer_name character varying,
     p_role_name VARCHAR(50),
     OUT v_user_id INT
 )
@@ -14,8 +13,8 @@ RETURNS INT
 AS $$
 DECLARE
     v_role_id INT;
-    v_dealer_id INT;
-BEGIN
+    v_user_details_id INT;
+ BEGIN
     -- Get the role_id based on the provided role_name
     SELECT role_id INTO v_role_id
     FROM user_roles
@@ -27,15 +26,15 @@ BEGIN
     END IF;
 
     -- Get the dealer_id based on the provided dealer_name
-    SELECT id INTO v_dealer_id
-    FROM v_dealer
-    WHERE dealer_name = p_asssigned_dealer_name;
+    SELECT id INTO v_user_details_id
+    FROM v_user_details
+    WHERE dealer_name = p_first_name;
 
     -- Check if the dealer exists
     IF NOT FOUND THEN
-        RAISE EXCEPTION 'Invalid Dealer % not found', p_asssigned_dealer_name;
+        RAISE EXCEPTION 'Invalid Dealer % not found', p_manager_name;
     END IF;
-
+    
     -- Insert a new user into user_auth table
     INSERT INTO user_auth (
         first_name,
@@ -45,8 +44,8 @@ BEGIN
         password,
         password_change_required,
         designation,
-        asssigned_dealer,
-        role_id
+        role_id,
+        user_details_id
     )
     VALUES (
         p_first_name,
@@ -54,10 +53,10 @@ BEGIN
         p_mobile_number,
         p_email_id,
         p_password,
-        TRUE, -- Set password_change_required to TRUE by default
+        TRUE,           -- Set password_change_required to TRUE by default
         p_designation,
-        v_dealer_id,
-        v_role_id
+        v_role_id,
+        v_user_details_id
     )
     RETURNING user_id INTO v_user_id;
 

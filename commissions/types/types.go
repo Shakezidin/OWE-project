@@ -14,7 +14,11 @@ import (
 type UserRoles string
 
 const (
-	RoleAdmin UserRoles = "admin"
+	RoleAdmin           UserRoles = "Admin"
+	RoleDealer          UserRoles = "Dealer"
+	RoleRegionalManager UserRoles = "RegionalManager"
+	RoleSalesManager    UserRoles = "SalesManager"
+	RoleSalesRep        UserRoles = "SalesRep"
 )
 
 var (
