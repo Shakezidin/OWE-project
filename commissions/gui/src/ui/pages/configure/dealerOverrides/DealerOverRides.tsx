@@ -27,6 +27,39 @@ const DealerOverRides: React.FC = () => {
       ),
       edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />,
     },
+    {
+      united: "United Wholesales",
+      Markting: "Markting",
+      dollar: "$10",
+      startDate: "10/10/1000",
+      endDate: "99/99/99990",
+      delete: (
+        <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />
+      ),
+      edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />,
+    },
+    {
+      united: "United Wholesales",
+      Markting: "Markting",
+      dollar: "$10",
+      startDate: "10/10/1000",
+      endDate: "99/99/99990",
+      delete: (
+        <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />
+      ),
+      edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />,
+    },
+    {
+      united: "United Wholesales",
+      Markting: "Markting",
+      dollar: "$10",
+      startDate: "10/10/1000",
+      endDate: "99/99/99990",
+      delete: (
+        <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />
+      ),
+      edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />,
+    },
   ];
   return (
     <div className="comm">
@@ -80,64 +113,47 @@ const DealerOverRides: React.FC = () => {
         </div>
         <div className="TableContainer">
           <table>
-            <thead>
+          <thead >
               <tr>
                 <th>
                   <div>
-                    <input value="test" type="checkbox" className="check-box" />
+                    <input value="test" type="checkbox" className='check-box' />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    Sub Dealer
-                    <div className="">
-                      <img src={arrowDown} alt="" className="" />
-                    </div>
+                    <p>Sub Dealer</p> <img src={arrowDown} alt="" />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    Dealer
-                    <div className="">
-                      <img src={arrowDown} alt="" className="" />
-                    </div>
+                    <p>Dealer</p> <img src={arrowDown} alt="" />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    Pay Rate
-                    <div className="">
-                      <img src={arrowDown} alt="" className="" />
-                    </div>
+                    <p>Pay Rate</p> <img src={arrowDown} alt="" />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    Start Date
-                    <div className="">
-                      <img src={arrowDown} alt="" className="" />
-                    </div>
+                    <p>Start Date</p> <img src={arrowDown} alt="" />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    End Date
-                    <div className="">
-                      <img src={arrowDown} alt="" className="" />
-                    </div>
+                    <p>End Date</p> <img src={arrowDown} alt="" />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>Action</p> <img src={arrowDown} alt="" />
                   </div>
                 </th>
 
-                <th>
-                  <div className="table-header">
-                    Action
-                    <div className="">
-                      <img src={arrowDown} alt="" className="" />
-                    </div>
-                  </div>
-                </th>
               </tr>
             </thead>
+          
             <tbody>
               {DealerOverData.map((el, i) => (
                 <tr key={i}>
