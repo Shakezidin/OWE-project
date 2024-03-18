@@ -8,10 +8,14 @@ import CommonConfigure from "../ui/pages/configure/commonConfigure/CommonConfigu
 import MarketingFees from "../ui/pages/configure/marketingFees/MarketingFees";
 import DealerOverRides from "../ui/pages/configure/dealerOverrides/DealerOverRides";
 import RepPayScale from "../ui/pages/configure/repPayScale/RepPayScale";
-import PaymentSchedule from "../ui/pages/configure/payment/PaymentSchedule";
+import PaymentSchedule from "../ui/pages/configure/paymentValidation/PaymentSchedule";
 import TierLoanFee from "../ui/pages/configure/tierLoanfee/TierLoanFee";
 import TimeLine from "../ui/pages/configure/timeline/TimeLine";
 import DealerTier from "../ui/pages/configure/dealerTier/DealerTier";
+import AdderValidation from "../ui/pages/configure/adderValidation/AdderValidation";
+import PaymentValidation from "../ui/pages/configure/paymentValidation/PaymentValidation";
+import DealeronBoarding from "../ui/pages/configure/dealeronBoarding/DealeronBoarding";
+import AppointmentSetters from "../ui/pages/configure/appointmentSetters/AppointmentSetters";
 const appRoutes: RouteType[] = [
  
  
@@ -105,6 +109,40 @@ const appRoutes: RouteType[] = [
           displayText:"Dealer Tier"
         }
       },
+      {
+        path:"/dashboard/configuration/adder_validation",
+        element:<AdderValidation/>,
+        state:"configuration.adder_validation",
+        sidebarProps:{
+          displayText:"Adder Validation"
+        }
+      },
+      {
+        path:"/dashboard/configuration/payment_validation",
+        element:<PaymentValidation/>,
+        state:"configuration.payment_validation",
+        sidebarProps:{
+          displayText:"Payment Validation"
+        }
+      },
+      {
+        path:"/dashboard/configuration/dealer_on_boarding",
+        element:<DealeronBoarding/>,
+        state:"configuration.dealer_on_boarding",
+        sidebarProps:{
+          displayText:"Dealer On Boarding"
+        }
+      },
+
+      {
+        path:"/dashboard/configuration/appointment_setters",
+        element:<AppointmentSetters/>,
+        state:"configuration.appointment_setters",
+        sidebarProps:{
+          displayText:"Appointment Setters"
+        }
+      },
+      
 
     ]
   },

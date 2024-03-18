@@ -1,32 +1,59 @@
 import React from "react";
 import { RiDeleteBin5Line } from "react-icons/ri";
-
-import arrowDown from "../../../../resources/assets/arrow-down.png";
 import "../configure.css";
-import { CiEdit } from "react-icons/ci";
-
 import { MdFilterList } from "react-icons/md";
 import { IoAddSharp } from "react-icons/io5";
 import imgExport from "../../../../resources/assets/export.png";
 import imgimport from "../../../../resources/assets/import.png";
-import CreateDealer from "./CreateDealer";
+import CreateDealer from "../dealerOverrides/CreateDealer";
+import { CiEdit } from "react-icons/ci";
+import arrowDown from "../../../../resources/assets/arrow-down.png";
 
-const DealerOverRides: React.FC = () => {
+const AdderValidation = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const DealerOverData = [
+  const adderValidationData = [
     {
-      united: "United Wholesales",
-      Markting: "Markting",
-      dollar: "$10",
-      startDate: "10/10/1000",
-      endDate: "99/99/99990",
-      delete: (
-        <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />
-      ),
-      edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />,
+      an: "Load Side / Line Side Tap",
+      at: "Additional Products",
+      pt: "Fixed",
+      saletype: "Loan",
+      pa: "$3002",
+      det: "Substitute for MPU the is less ",
+      create: "03-01-22",
+      action: "$2000.00",
     },
+    {
+        an: "Load Side / Line Side Tap",
+        at: "Additional Products",
+        pt: "Fixed",
+        saletype: "Loan",
+        pa: "$3002",
+        det: "Substitute for MPU the is less ",
+        create: "03-01-22",
+        action: "$2000.00",
+      },
+      {
+        an: "Load Side / Line Side Tap",
+        at: "Additional Products",
+        pt: "Fixed",
+        saletype: "Loan",
+        pa: "$3002",
+        det: "Substitute for MPU the is less ",
+        create: "03-01-22",
+        action: "$2000.00",
+      },
+      {
+        an: "Load Side / Line Side Tap",
+        at: "Additional Products",
+        pt: "Fixed",
+        saletype: "Loan",
+        pa: "$3002",
+        det: "Substitute for MPU the is less ",
+        create: "03-01-22",
+        action: "$2000.00",
+      },
   ];
   return (
     <div className="comm">
@@ -75,91 +102,72 @@ const DealerOverRides: React.FC = () => {
               </button>
             </div>
           </div>
-
           {open && <CreateDealer handleClose={handleClose} />}
         </div>
         <div className="TableContainer">
           <table>
-            <thead>
+          <thead >
               <tr>
                 <th>
                   <div>
-                    <input value="test" type="checkbox" className="check-box" />
+                    <input value="test" type="checkbox" className='check-box' />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    Sub Dealer
-                    <div className="">
-                      <img src={arrowDown} alt="" className="" />
-                    </div>
+                    <p>Adder Name</p> <img src={arrowDown} alt="" />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    Dealer
-                    <div className="">
-                      <img src={arrowDown} alt="" className="" />
-                    </div>
+                    <p>Adder Type</p> <img src={arrowDown} alt="" />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    Pay Rate
-                    <div className="">
-                      <img src={arrowDown} alt="" className="" />
-                    </div>
+                    <p>Price Type</p> <img src={arrowDown} alt="" />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    Start Date
-                    <div className="">
-                      <img src={arrowDown} alt="" className="" />
-                    </div>
+                    <p>Price Amount</p> <img src={arrowDown} alt="" />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    End Date
-                    <div className="">
-                      <img src={arrowDown} alt="" className="" />
-                    </div>
+                    <p>Details</p> <img src={arrowDown} alt="" />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>Created On</p> <img src={arrowDown} alt="" />
+                  </div>
+                </th>
+               <th>
+                  <div className="table-header">
+                    <p>Action</p> <img src={arrowDown} alt="" />
                   </div>
                 </th>
 
-                <th>
-                  <div className="table-header">
-                    Action
-                    <div className="">
-                      <img src={arrowDown} alt="" className="" />
-                    </div>
-                  </div>
-                </th>
               </tr>
             </thead>
-            <tbody>
-              {DealerOverData.map((el, i) => (
+            <tbody >  {adderValidationData.map((el, i) => (
                 <tr key={i}>
                   <td>
                     <input value="test" type="checkbox" className="check-box" />
                   </td>
-                  <td style={{ fontWeight: "600" }}>{el.united}</td>
-                  <td>{el.Markting}</td>
-                  <td>{el.dollar}</td>
-                  <td>{el.startDate}</td>
-                  <td>{el.endDate}</td>
+                  <td style={{ fontWeight: "600" }}>{el.an}</td>
+                  <td>{el.at}</td>
+                  <td>{el.pt}</td>
+                  <td>{el.pa}</td>
+                  <td>{el.det}</td>
+                  <td>{el.create}</td>
 
-                  {/* <td>{el.endDate}</td> */}
-                  <td>
-                    <div className="action-icon">
-                      <div className="" style={{ cursor: "pointer" }}>
-                        {el.delete}
-                      </div>
-                      <div className="" style={{ cursor: "pointer" }}>
-                        {el.edit}
-                      </div>
-                    </div>
+                  <td style={{ display: "flex", gap: "1rem" }}>
+                    <RiDeleteBin5Line
+                      style={{ fontSize: "1.5rem", color: "#344054" }}
+                    />
+                    <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />
                   </td>
                 </tr>
               ))}
@@ -171,4 +179,4 @@ const DealerOverRides: React.FC = () => {
   );
 };
 
-export default DealerOverRides;
+export default AdderValidation;
