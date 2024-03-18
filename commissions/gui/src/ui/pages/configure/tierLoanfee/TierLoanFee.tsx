@@ -8,6 +8,7 @@ import { IoAddSharp } from "react-icons/io5";
 import imgExport from '../../../../resources/assets/export.png'
 import imgimport from '../../../../resources/assets/import.png'
 import CreateDealer from "../dealerOverrides/CreateDealer";
+import arrowDown from "../../../../resources/assets/arrow-down.png";
 
 const TierLoanFee = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -68,7 +69,7 @@ const TierLoanFee = () => {
       <div className="commissionContainer">
       <div className='commissionSection'>
     <div className='rateSection'>
-      <h2>Dealer Overrides</h2>
+      <h2>Tier Loan Fee</h2>
       <p style={{ color: "#667085",fontSize:"14px" }}>You can view and edit these data as per your requirement</p>
     </div>
     <div className="iconContainer">
@@ -96,21 +97,54 @@ const TierLoanFee = () => {
   </div>
         <div className="TableContainer">
           <table>
-            <thead>
+          <thead >
               <tr>
                 <th>
                   <div>
-                    <input value="test" type="checkbox" className="check-box" />
+                    <input value="test" type="checkbox" className='check-box' />
                   </div>
                 </th>
-                <th> Name</th>
-                <th>State</th>
-                <th>Pay Scale</th>
-                <th>Position</th>
-                <th>BE</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th>Action</th>
+                <th>
+                  <div className="table-header">
+                    <p>Partner Name</p> <img src={arrowDown} alt="" />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>Partner</p> <img src={arrowDown} alt="" />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>Installer</p> <img src={arrowDown} alt="" />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>Sale Type</p> <img src={arrowDown} alt="" />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>ST</p> <img src={arrowDown} alt="" />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>Rate List</p> <img src={arrowDown} alt="" />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>Draw %</p> <img src={arrowDown} alt="" />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>Draw Max</p> <img src={arrowDown} alt="" />
+                  </div>
+                </th>
+
               </tr>
             </thead>
             <tbody>

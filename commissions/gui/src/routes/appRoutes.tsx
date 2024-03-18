@@ -16,6 +16,8 @@ import AdderValidation from "../ui/pages/configure/adderValidation/AdderValidati
 import PaymentValidation from "../ui/pages/configure/paymentValidation/PaymentValidation";
 import DealeronBoarding from "../ui/pages/configure/dealeronBoarding/DealeronBoarding";
 import AppointmentSetters from "../ui/pages/configure/appointmentSetters/AppointmentSetters";
+import SaleType from "../ui/pages/configure/saleType/SaleType";
+import LoanType from "../ui/pages/configure/loanType/LoanType";
 const appRoutes: RouteType[] = [
  
  
@@ -140,6 +142,22 @@ const appRoutes: RouteType[] = [
         state:"configuration.appointment_setters",
         sidebarProps:{
           displayText:"Appointment Setters"
+        }
+      },
+      {
+        path:"/dashboard/configuration/sale_type",
+        element:<SaleType/>,
+        state:"configuration.sale_type",
+        sidebarProps:{
+          displayText:"Sale Type"
+        }
+      },
+      {
+        path:"/dashboard/configuration/loan_type",
+        element:<LoanType/>,
+        state:"configuration.loan_type",
+        sidebarProps:{
+          displayText:"Loan Type"
         }
       },
       

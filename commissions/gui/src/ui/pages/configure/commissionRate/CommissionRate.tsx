@@ -24,6 +24,36 @@ const CommissionRate: React.FC = () => {
       edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />
 
     },
+    {
+      united: "United Wholesales",
+      Markting: "Markting",
+      dollar: "$10",
+      startDate: "10/10/1000",
+      endDate: "99/99/99990",
+      delete: <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />,
+      edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />
+
+    },
+    {
+      united: "United Wholesales",
+      Markting: "Markting",
+      dollar: "$10",
+      startDate: "10/10/1000",
+      endDate: "99/99/99990",
+      delete: <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />,
+      edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />
+
+    },
+    {
+      united: "United Wholesales",
+      Markting: "Markting",
+      dollar: "$10",
+      startDate: "10/10/1000",
+      endDate: "99/99/99990",
+      delete: <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />,
+      edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />
+
+    },
     
   ]
   return (
@@ -31,7 +61,7 @@ const CommissionRate: React.FC = () => {
       <div className='commissionContainer'>
       <div className='commissionSection'>
     <div className='rateSection'>
-      <h2>Dealer Overrides</h2>
+      <h2>Commission Rate</h2>
       <p style={{ color: "#667085",fontSize:"14px" }}>You can view and edit these data as per your requirement</p>
     </div>
     <div className="iconContainer">
@@ -60,7 +90,7 @@ const CommissionRate: React.FC = () => {
   </div>
         <div className='TableContainer'>
           <table>
-            <thead >
+          <thead >
               <tr>
                 <th>
                   <div>
@@ -69,71 +99,43 @@ const CommissionRate: React.FC = () => {
                 </th>
                 <th>
                   <div className="table-header">
-                    Partner
-                    <div className="">
-                    <img src={arrowDown} alt="" className='' />
-                    </div>
+                    <p>Partner</p> <img src={arrowDown} alt="" />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    Installer
-                    <div className="">
-                    <img src={arrowDown} alt="" className='' />
-                    </div>
+                    <p>Installer</p> <img src={arrowDown} alt="" />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    State
-                    <div className="">
-                    <img src={arrowDown} alt="" className='' />
-                    </div>
+                    <p>State</p> <img src={arrowDown} alt="" />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    State Type
-                    <div className="">
-                    <img src={arrowDown} alt="" className='' />
-                    </div>
+                    <p>Sales Type</p> <img src={arrowDown} alt="" />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    Sale Price
-                    <div className="">
-                    <img src={arrowDown} alt="" className='' />
-                    </div>
+                    <p>Sales Price</p> <img src={arrowDown} alt="" />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    Rep Type 
-                    <div className="">
-                    <img src={arrowDown} alt="" className='' />
-                    </div>
+                    <p>Rep. Type</p> <img src={arrowDown} alt="" />
                   </div>
                 </th>
-                <th>
+               <th>
                   <div className="table-header">
-                    Rate List 
-                    <div className="">
-                    <img src={arrowDown} alt="" className='' />
-                    </div>
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    Action
-                    <div className="">
-                    <img src={arrowDown} alt="" className='' />
-                    </div>
+                    <p>Rate List</p> <img src={arrowDown} alt="" />
                   </div>
                 </th>
 
               </tr>
             </thead>
+          
             <tbody >
               {
                 DealerOverData.map((el, i) => (
@@ -147,16 +149,7 @@ const CommissionRate: React.FC = () => {
                     <td>{el.endDate}</td>
                     <td>{el.endDate}</td>
                     {/* <td>{el.endDate}</td> */}
-                    <td>
-                      <div className="action-icon">
-                        <div className="" style={{ cursor: "pointer" }}>
-                          {el.delete}
-                        </div>
-                        <div className="" style={{ cursor: "pointer" }}>
-                          {el.edit}
-                        </div>
-                      </div>
-                    </td>
+                  
 
 
                   </tr>

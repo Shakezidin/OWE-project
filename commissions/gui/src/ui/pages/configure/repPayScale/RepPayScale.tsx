@@ -70,7 +70,7 @@ const RepPayScale:React.FC = () => {
       <div className='commissionContainer'>
       <div className='commissionSection'>
     <div className='rateSection'>
-      <h2>Dealer Overrides</h2>
+      <h2>Rep Pay Scale</h2>
       <p style={{ color: "#667085",fontSize:"14px" }}>You can view and edit these data as per your requirement</p>
     </div>
     <div className="iconContainer">

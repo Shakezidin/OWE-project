@@ -6,6 +6,8 @@ import imgExport from '../../../../resources/assets/export.png'
 import imgimport from '../../../../resources/assets/import.png'
 import CreateDealer from '../dealerOverrides/CreateDealer';
 import { RiDeleteBin5Line } from "react-icons/ri";
+import arrowDown from "../../../../resources/assets/arrow-down.png";
+
 const PaymentSchedule = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
@@ -76,7 +78,7 @@ const PaymentSchedule = () => {
       <div className='commissionContainer'>
       <div className='commissionSection'>
     <div className='rateSection'>
-      <h2>Dealer Overrides</h2>
+      <h2>Payment Schedule</h2>
       <p style={{ color: "#667085",fontSize:"14px" }}>You can view and edit these data as per your requirement</p>
     </div>
     <div className="iconContainer">
@@ -106,7 +108,7 @@ const PaymentSchedule = () => {
         <div className='TableContainer'>
           <table>
         
-            <thead >
+          <thead >
               <tr>
                 <th>
                   <div>
@@ -115,60 +117,45 @@ const PaymentSchedule = () => {
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Partner Name</p> 
+                    <p>Partner Name</p> <img src={arrowDown} alt="" />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Partner</p> 
+                    <p>Partner</p> <img src={arrowDown} alt="" />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Installer</p> 
+                    <p>Installer</p> <img src={arrowDown} alt="" />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Sale Type</p> 
+                    <p>Sale Type</p> <img src={arrowDown} alt="" />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>ST</p> 
+                    <p>ST</p> <img src={arrowDown} alt="" />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Rate List</p> 
+                    <p>Rate List</p> <img src={arrowDown} alt="" />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Draw %</p> 
+                    <p>Draw %</p> <img src={arrowDown} alt="" />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Draw Max</p> 
+                    <p>Draw Max</p> <img src={arrowDown} alt="" />
                   </div>
                 </th>
-                <th>
-                  <div className="table-header">
-                    <p>Rep Draw %</p> 
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Rep Max Draw %</p> 
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Rep Pay</p> 
-                  </div>
-                </th>
-            
+
               </tr>
             </thead>
             <tbody >
@@ -184,9 +171,7 @@ const PaymentSchedule = () => {
                     <td>{el.rl}</td>
                     <td>{el.draw}</td>
                     <td>{el.dm}</td>
-                    <td>{el.rw}</td>
-                    <td>{el.rmw}</td>
-                    <td>{el.rp}</td>
+                
                    
                   </tr>
                 ))
