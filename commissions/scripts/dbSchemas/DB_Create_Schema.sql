@@ -466,5 +466,6 @@ VALUES ( 'UserFirstName', 'UserLastName', '0987654321', 'shushank22@gmail.com', 
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewTeam.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateAptSetter.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcSmallSysSizeCalc.sql';
-\i '/docker-entrypoint-initdb.d/DB_ProcCommisionTypeCalc.sql'
+\i '/docker-entrypoint-initdb.d/DB_ProcCommisionTypeCalc.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateDealerPayExport.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewCommission.sql';

@@ -1,11 +1,14 @@
 /**************************************************************************
  *	Function	: createUserApiModels.go
- *	DESCRIPTION : Files contains struct for create user API
+ *	DESCRIPTION : Files contains struct for create team get team user models
  *	DATE        : 20-Jan-2024
  **************************************************************************/
 
 package models
 
-type CreateTeamReq struct {
+type TeamData struct {
 	TeamName string `json:"team_name"`
+}
+type TeamsList struct {
+	TeamsList []TeamData `json:"teams_list"`
 }

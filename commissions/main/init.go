@@ -120,6 +120,33 @@ var apiRoutes = ApiRoutes{
 			types.RoleAdmin,
 		},
 	},
+	{
+		strings.ToUpper("GET"),
+		"/owe-commisions-service/v1/get_teams",
+		apiHandler.HandleGetTeamDataRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/create_commissions",
+		apiHandler.HandleCreateCommissionRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("GET"),
+		"/owe-commisions-service/v1/get_commissions",
+		apiHandler.HandleGetCommissionsDataRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
 }
 
 /******************************************************************************
