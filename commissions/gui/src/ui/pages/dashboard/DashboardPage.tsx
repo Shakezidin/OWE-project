@@ -13,13 +13,8 @@ import CreateUserProfile from "../create_profile/CreateUserProfile";
 import AccountSettings from "../accountSettings/AccountSettings";
 import UserManagement from "../userManagement/UserManagement";
 import '../dashboard/dasboard.css'
-import { httpRequest } from "../../../infrastructure/web_api/api_client/APIClient";
 import { DashboardUserModel } from "../../../core/models/data_models/DashboardUserModel";
 import apiCaller from "../../../infrastructure/web_api/api_client/apiUrl";
-
-
-
-
 export const DashboardPage: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [todos, setTodos] = useState<DashboardUserModel[]>([]);
@@ -52,7 +47,7 @@ export const DashboardPage: React.FC = () => {
 
 
 
-        <div className="admin-card-container">
+        {/* <div className="admin-card-container">
         {
             todos.map((el,i)=>(
               <div className="admin-card-content" key={i}>
@@ -61,22 +56,14 @@ export const DashboardPage: React.FC = () => {
             ))
            }
        
-        </div>
+        </div> */}
 
         <div className="admin-card-container accountcol">
         <AccountSettings />
         </div>
 
 
-        <div className="user-list-container">
-          <div className="user-list">
-  user list
-          </div>
-        </div>
         <div>
-          
-
-          
                {
                 open && ( <CreateUserProfile handleClose={handleClose}  />)
                }
