@@ -11,6 +11,7 @@ const CommonConfigure: React.FC = () => {
         <h4>Common Configuration</h4>
         <div className="common-card-content">
           <div className="admin-card-content">
+            <div className="bubble"></div>
             <div className="">
               <h3>85</h3>
               <p>Team</p>
