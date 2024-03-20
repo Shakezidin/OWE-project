@@ -20,7 +20,6 @@ import SaleType from "../ui/pages/configure/saleType/SaleType";
 import LoanType from "../ui/pages/configure/loanType/LoanType";
 const appRoutes: RouteType[] = [
  
- 
   {
     path: "/dashboard",
     element: <DashboardPage/>,

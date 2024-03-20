@@ -100,12 +100,7 @@ export const LoginPage = () => {
                 {/* <Switch {...label} defaultChecked /> */}
                 <div className="loginRBM">Remember Me</div>
               </div>
-              <button style={{
-                  color: "#d93f21",
-                  fontFamily: "Poppins",
-                  fontSize: "12px",
-                  fontWeight: 400,
-                }}
+              <button 
                
                 onClick={() => {
                   navigate('/resetPassword');

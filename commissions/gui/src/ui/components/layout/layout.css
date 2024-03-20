@@ -6,8 +6,9 @@
 .side-bar-container {
     width: 220px;
     background-color: #0D0D0D;
-    height: 100vh;
+    /* height: 100vh; */
     display: flex;
+    /* overflow-y: scroll; */
     flex-direction: column;
     gap: 1rem;
 }
