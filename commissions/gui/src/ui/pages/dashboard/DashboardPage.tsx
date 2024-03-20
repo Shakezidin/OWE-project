@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 /**
  * Created by satishazad on 23/01/24
@@ -8,28 +8,35 @@ import React from "react";
  * Path: src/ui/pages/dashboard
  */
 
-import Modal from '@mui/material/Modal';
+
 import CreateUserProfile from "../create_profile/CreateUserProfile";
 import AccountSettings from "../accountSettings/AccountSettings";
 import UserManagement from "../userManagement/UserManagement";
+import '../dashboard/dasboard.css'
+import { httpRequest } from "../../../infrastructure/web_api/api_client/APIClient";
+import { DashboardUserModel } from "../../../core/models/data_models/DashboardUserModel";
+import apiCaller from "../../../infrastructure/web_api/api_client/apiUrl";
 
 
-const modalStyle = {
-    position: 'absolute' as 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
-};
 
 
 export const DashboardPage: React.FC = () => {
+  const [open, setOpen] = React.useState<boolean>(false);
+  const [todos, setTodos] = useState<DashboardUserModel[]>([]);
 
-    const [open, setOpen] = React.useState(false);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await apiCaller<DashboardUserModel[]>('get', '/users');
+        setTodos(response.data);
+      } catch (error) {
+        console.error('Error fetching todos:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+    
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
@@ -46,9 +53,14 @@ export const DashboardPage: React.FC = () => {
 
 
         <div className="admin-card-container">
-          <div className="admin-card-content">
-  
-          </div>
+        {
+            todos.map((el,i)=>(
+              <div className="admin-card-content" key={i}>
+                 {el.name}
+              </div>
+            ))
+           }
+       
         </div>
 
         <div className="admin-card-container accountcol">
@@ -64,14 +76,11 @@ export const DashboardPage: React.FC = () => {
         <div>
           
 
-            <Modal
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-            >
-                <CreateUserProfile  />
-            </Modal>
+          
+               {
+                open && ( <CreateUserProfile handleClose={handleClose}  />)
+               }
+          
         </div>
       </div>
        

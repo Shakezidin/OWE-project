@@ -9,7 +9,7 @@
 import {createContext, useContext, useState} from "react";
 import {AuthContextDataModel, AuthModel} from "../../core/models/api_models/AuthModel";
 import {loginAPI} from "../../infrastructure/web_api/services/AuthService";
-import {RenderRoutes} from "../../navigation/RootNavigation";
+
 
 
 const AuthContext = createContext<AuthContextDataModel>({auth: null, login: undefined, logout: undefined});

@@ -4,6 +4,7 @@
   left: 0;
   width: 100%;
   height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
   /*background-color: rgba(0, 0, 0, 0.9);*/
   display: flex;
   justify-content: center;
@@ -24,77 +25,4 @@
   padding: 0px 39px;
 }
 
-.createProfileText {
-  text-align: left;
-  color: #000;
- 
-  font-size: 1.9rem;
-  font-style: normal;
-  font-weight: 600;
-  line-height: 44px; /* 157.143% */
-}
 
-.createProfileSubText {
-  color: #444;
-
-  font-size: 12px;
-  font-style: normal;
-  font-weight: 300;
-  line-height: 10.9px; /* 90.837% */
-  text-align: left;
-}
-
-.createProfileInputView {
-  display: flex;
-  flex: 1;
-}
-
-.createProfileTextView {
-  flex: 1;
-  padding-left: 1.3rem;
-  padding-right: 1.3rem;
-}
-.uploadImageView {
-  flex: 0.5;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 3.5rem;
-}
-
-.uploadImageView button {
-  display: flex;
-  width: 113px;
-  padding: 12px 12px;
-  justify-content: space-between;
-  align-items: center;
-  border-radius: 8px;
-  background: #0493ce;
-  color: white;
-  border: none;
-}
-
-.uploadImageView button:hover {
-  cursor: pointer;
-}
-
-.createUserActionButton {
-  flex: 1;
-  display: flex;
-  margin-bottom: 30px;
-  justify-content: space-between;
-}
-
-.createUserLine {
-  width: 1px;
-  height: 300px;
-  background: #d9d9d9;
-  margin-top: 30px;
-  margin-right: 30px;
-}
-
-.createUserCrossButton {
-  justify-content: flex-end;
-  display: flex;
-  padding: 10px;
-}

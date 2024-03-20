@@ -5,12 +5,24 @@ import btnlogo from '../../resources/assets/appicon.png'
 import userImg from '../../resources/assets/user.png'
 import notificationImg from '../../resources/assets/notification.png'
 import searchIcon from '../../resources/assets/search.png'   
+import '../layout/layout.css'
+import { FaBell } from "react-icons/fa";
 import { MdKeyboardArrowDown } from "react-icons/md";
-const Header: React.FC = () => {
+import { MdOutlineMenu } from "react-icons/md";
+import { ICONS } from '../../icons/Icons'
+ interface Toggleprops{
+  toggleOpen:boolean;
+  setToggleOpen:React.Dispatch<React.SetStateAction<boolean>>;
+ }
+
+const Header: React.FC<Toggleprops> = ({toggleOpen,setToggleOpen}) => {
   return (
     <div className="header-content">
     <div className="header-logo">
       <img src={logo} alt="" />
+    </div>
+    <div className="menu-icon" onClick={()=>setToggleOpen(true)}>
+    <MdOutlineMenu className='icon' />
     </div>
     <div className="search-container">
       <div className="search-input-field"> <img src={searchIcon} alt="" className='searchicon' />

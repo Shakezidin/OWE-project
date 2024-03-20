@@ -7,18 +7,16 @@
  */
 
 import React, {useCallback, useState} from "react";
-import Switch from "@mui/material/Switch";
+
 import "./LoginPage.css";
 import { ICONS } from "../../icons/Icons";
 import { useNavigate } from "react-router-dom";
 import { ReactComponent as LOGO_SMALL } from "../../../resources/assets/commisson_small_logo.svg";
 import { ReactComponent as UNDER_LINE } from "../../../resources/assets/BlueAndGreenUnderline.svg";
 import Input from "../../components/text_input/Input";
-import Button from "@mui/material/Button";
+
 import { ActionButton } from "../../components/button/ActionButton";
-import { ROUTES } from "../../../navigation/Routes";
-import {loginAPI} from "../../../infrastructure/web_api/services/AuthService";
-import {useAuthData} from "../../../redux/context/AuthWrapper";
+
 import {Credentials} from "../../../core/models/api_models/AuthModel";
 import useSignIn from 'react-auth-kit/hooks/useSignIn'
 
@@ -29,7 +27,7 @@ export const LoginPage = () => {
 
   const navigate = useNavigate();
   // const { login } = useAuthData();
-  const signIn = useSignIn();
+  // const signIn = useSignIn();
   const [ credential, setCredential ] = useState<Credentials>({ username: 'shushank22@gmail.com', password: '1234'});
 
   const doLogin = useCallback(async () => {
@@ -99,21 +97,16 @@ export const LoginPage = () => {
             <br />
             <div className="loginSwitchView">
               <div className="loginSwitchInnerView">
-                <Switch {...label} defaultChecked />
+                {/* <Switch {...label} defaultChecked /> */}
                 <div className="loginRBM">Remember Me</div>
               </div>
-              <Button style={{
-                  color: "#d93f21",
-                  fontFamily: "Poppins",
-                  fontSize: "12px",
-                  fontWeight: 400,
-                }}
-                size="small"
+              <button 
+               
                 onClick={() => {
-                  navigate(ROUTES.RESET_PASSWORD);
+                  navigate('/resetPassword');
                 }}>
                 Recover Password
-              </Button>
+              </button>
             </div>
             <br />
             <ActionButton

@@ -77,7 +77,6 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	queryParameters = append(queryParameters, createUserReq.EmailId)
 	queryParameters = append(queryParameters, string(hashedPassBytes))
 	queryParameters = append(queryParameters, createUserReq.Designation)
-	queryParameters = append(queryParameters, createUserReq.AssignedDealerName)
 	queryParameters = append(queryParameters, createUserReq.RoleName)
 	_, err = db.CallDBFunction(db.CreateUserFunction, queryParameters)
 	if err != nil {

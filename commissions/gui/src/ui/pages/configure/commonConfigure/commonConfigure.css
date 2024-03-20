@@ -5,7 +5,8 @@
     /* margin-top: .5rem; */
 }
 .common-card-content{
-    display: flex;
+    display: flex !important;
+    position: relative;
     align-items: center;
     justify-content: space-between;
     margin-top: .5rem;

@@ -17,7 +17,7 @@ import (
 )
 
 const (
-	logginSessionTimeMin = 50
+	logginSessionTimeMin = 120
 )
 
 type Claims struct {

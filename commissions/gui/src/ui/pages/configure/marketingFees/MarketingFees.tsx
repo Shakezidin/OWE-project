@@ -1,122 +1,170 @@
-import React from 'react'
+import React from "react";
 import { RiDeleteBin5Line } from "react-icons/ri";
+
+import arrowDown from "../../../../resources/assets/arrow-down.png";
+import "../configure.css";
+import { CiEdit } from "react-icons/ci";
 import { MdFilterList } from "react-icons/md";
 import { IoAddSharp } from "react-icons/io5";
-import imgExport from '../../../../resources/assets/export.png'
-import imgimport from '../../../../resources/assets/import.png'
-import arrowDown from '../../../../resources/assets/arrow-down.png'
-import '../configure.css'
+import imgExport from "../../../../resources/assets/export.png";
+import imgimport from "../../../../resources/assets/import.png";
+import CreateDealer from "../dealerOverrides/CreateDealer";
+import img from "../../../../resources/assets/checkbox-circle-line.png";
 const MarketingFees: React.FC = () => {
-    const MarketingData = [
-        {
-            checkIcon: "../../../resources/assets/checkbox-circle-line.png",
-            soeb: "SOEB Settle",
-            plug: "Plug PV",
-            Text: "Regular Text Column",
-            Dollar: "$45853",
-            img: "../../../resources/assets/Vector.png",
-            loan: "Loan Type",
-            regular: "Regular Type"
-        },
-
-        {
-            checkIcon: "../../../resources/assets/checkbox-circle-line.png",
-            soeb: "SOEB Settle",
-            plug: "Plug PV",
-            Text: "Regular Text Column",
-            Dollar: "$45853",
-            img: "../../../resources/assets/Vector.png",
-            loan: "Loan Type",
-            regular: "Regular Type"
-        },
-        {
-            checkIcon: "../../../resources/assets/checkbox-circle-line.png",
-            soeb: "SOEB Settle",
-            plug: "Plug PV",
-            Text: "Regular Text Column",
-            Dollar: "$45853",
-            img: "../../../resources/assets/Vector.png",
-            loan: "Loan Type",
-            regular: "Regular Type"
-        },
-    ]
+  const [open, setOpen] = React.useState<boolean>(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const marketingFeeData = [
+    {
+      united: "SOEB Settler",
+      Markting: "Plug PV",
+      dollar: "Regular text column",
+      startDate: "$9802",
+      endDate: "Loan Type",
+      note: "Regular text column",
+    },
+    {
+      united: "SOEB Settler",
+      Markting: "Plug PV",
+      dollar: "Regular text column",
+      startDate: "$9802",
+      endDate: "Loan Type",
+      note: "Regular text column",
+    },
+    {
+      united: "SOEB Settler",
+      Markting: "Plug PV",
+      dollar: "Regular text column",
+      startDate: "$9802",
+      endDate: "Loan Type",
+      note: "Regular text column",
+    },
+  ];
   return (
-    <div className='comm'>
-    <div className='commissionContainer'>
-        <div className='commissionSection'>
-            <div className='rateSection'>
-                <h3>Marketing Fees</h3>
-                <h6 style={{ color: "#667085" }}>You can view and edit these data as per your requirement</h6>
+    <div className="comm">
+      <div className="commissionContainer">
+        <div className="commissionSection">
+          <div className="rateSection">
+            <h2>Marketing Fees</h2>
+            <p style={{ color: "#667085", fontSize: "14px" }}>
+              You can view and edit these data as per your requirement
+            </p>
+          </div>
+          <div className="iconContainer">
+            <div className="iconsSection">
+              <button type="button">
+                {" "}
+                <RiDeleteBin5Line /> Delete
+              </button>
             </div>
-            <div className="iconContainer">
-                <div className='iconsSection'>
-                    <button type='button'>   <h3><RiDeleteBin5Line /></h3> Delete</button>
-                </div>
-                <div className='iconsSection'>
-                    <button type='button'>    <h3><MdFilterList /></h3>  Filter</button>
-                </div>
-                <div className='iconsSection2'>
-                    <button type='button'> <img src={imgimport} alt='' /> Import</button>
-                </div>
-                <div className='iconsSection2'>
-                    <button type='button'> <img src={imgExport} alt='' />Export</button>
-                </div>
-                <div className='iconsSection2'>
-
-                    <button type='button' style={{ background: "black", color: "white" }}>  <h2><IoAddSharp /></h2>  Add New</button>
-                </div>
+            <div className="iconsSection">
+              <button type="button">
+                {" "}
+                <MdFilterList /> Filter
+              </button>
             </div>
+            <div className="iconsSection2">
+              <button type="button">
+                {" "}
+                <img src={imgimport} alt="" /> Import
+              </button>
+            </div>
+            <div className="iconsSection2">
+              <button type="button">
+                {" "}
+                <img src={imgExport} alt="" />
+                Export
+              </button>
+            </div>
+            <div className="iconsSection2">
+              <button
+                type="button"
+                style={{ background: "black", color: "white" }}
+                onClick={handleOpen}
+              >
+                {" "}
+                <IoAddSharp /> Add New
+              </button>
+            </div>
+          </div>
 
+          {open && <CreateDealer handleClose={handleClose} />}
         </div>
 
-    </div>
-
-    {/* <hr style={{ border: "1px solid #EAECF0" }} /> */}
-
-    <div className='TableContainer'>
-        <table>
-            <thead style={{ background: "#FCFCFD" }}>
-                <tr>
-                    <th><input value="test" type="checkbox" /></th>
-                    <th>Source <img src={arrowDown} alt="" /> </th>
-                    <th>DBA <img src={arrowDown} alt="" /></th>
-                    <th>State <img src={arrowDown} alt="" /></th>
-                    <th>Fees Rate <img src={arrowDown} alt="" /></th>
-                    <th>Chg Dlr <img src={arrowDown} alt="" /></th>
-                    <th>Play Source<img src={arrowDown} alt="" /></th>
-                    <th>Note<img src={arrowDown} alt="" /></th>
-                </tr>
+        <div className="TableContainer">
+          <table>
+            <thead>
+              <tr>
+                <th>
+                  <div>
+                    <input value="test" type="checkbox" className="check-box" />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>Source</p> <img src={arrowDown} alt="" />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>DBA</p> <img src={arrowDown} alt="" />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>State</p> <img src={arrowDown} alt="" />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>Fee Rate</p> <img src={arrowDown} alt="" />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>Chg Dlr</p> <img src={arrowDown} alt="" />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>Pay Soucre</p> <img src={arrowDown} alt="" />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>Note</p> <img src={arrowDown} alt="" />
+                  </div>
+                </th>
+              </tr>
             </thead>
-            <tbody style={{ alignItems: "center" }}>
-                {
-                    MarketingData.map((el, i) => (
-                        <tr key={i}>
-                            <td><input value="test" type="checkbox" /></td>
-                            <td style={{ fontWeight: "600" }}>{el.soeb}</td>
-                            <td>{el.plug}</td>
-                            <td>{el.Text}</td>
-                            <td>{el.Dollar}</td>
-                            <td>
-                                <img src={el.img} alt=" " />
-                            </td>
-                            <td>{el.loan}</td>
-                            <td>{el.regular} </td>
 
-                        </tr>
-                    ))
-                }
+            <tbody>
+              {marketingFeeData.map((el, i) => (
+                <tr key={i}>
+                  <td>
+                    <input value="test" type="checkbox" className="check-box" />
+                  </td>
+                  <td style={{ fontWeight: "600" }}>{el.united}</td>
+                  <td>{el.Markting}</td>
+                  <td>{el.dollar}</td>
 
+                  <td>{el.startDate}</td>
+                  <td>
+                    <div className="">
+                      <img src={img} alt="" />
+                    </div>
+                  </td>
+                  <td>{el.endDate}</td>
 
-
+                  <td>{el.note}</td>
+                </tr>
+              ))}
             </tbody>
-
-
-        </table>
+          </table>
+        </div>
+      </div>
     </div>
+  );
+};
 
-
-</div>
-  )
-}
-
-export default MarketingFees
+export default MarketingFees;

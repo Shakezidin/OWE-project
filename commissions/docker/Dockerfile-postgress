@@ -10,17 +10,15 @@ FROM postgres:latest
 EXPOSE 5432
 
 COPY ./dbSchemas/DB_Create_Schema.sql /docker-entrypoint-initdb.d/
-
 COPY ./dbSchemas/rawData/rebate_items.csv /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/rawData/rebate_type.csv /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/rawData/timeline_sla.csv /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/rawData/source.csv /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/rawData/partners.csv /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/rawData/v_dealer.csv /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/rawData/states.csv /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/rawData/rep_type.csv /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/rawData/sale_type.csv /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/rawData/v_reps.csv /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/rawData/v_user_details.csv /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/rawData/tier.csv /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/rawData/teams.csv /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/rawData/appointment_setters.csv /docker-entrypoint-initdb.d/
@@ -33,6 +31,7 @@ COPY ./dbSchemas/DB_ProcCreateAptSetter.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcSmallSysSizeCalc.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcCommisionTypeCalc.sql  /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcCreateDealerPayExport.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcCreateNewCommission.sql /docker-entrypoint-initdb.d/
 
 RUN chmod +x /docker-entrypoint-initdb.d/DB_Create_Schema.sql
 

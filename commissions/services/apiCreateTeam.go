@@ -26,7 +26,7 @@ import (
 func HandleCreateTeamRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err             error
-		createTeamReq   models.CreateTeamReq
+		TeamData   models.TeamData
 		queryParameters []interface{}
 	)
 
@@ -47,21 +47,21 @@ func HandleCreateTeamRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	err = json.Unmarshal(reqBody, &createTeamReq)
+	err = json.Unmarshal(reqBody, &TeamData)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal create team request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to unmarshal create team request", http.StatusBadRequest, nil)
 		return
 	}
 
-	if len(createTeamReq.TeamName) <= 0 {
+	if len(TeamData.TeamName) <= 0 {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
-	queryParameters = append(queryParameters, createTeamReq.TeamName)
+	queryParameters = append(queryParameters, TeamData.TeamName)
 	_, err = db.CallDBFunction(db.CreateTeamFunction, queryParameters)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to Add Team in DB with err: %v", err)
