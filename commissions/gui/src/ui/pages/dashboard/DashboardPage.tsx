@@ -10,6 +10,8 @@ import React, { useEffect, useState } from "react";
 
 
 import CreateUserProfile from "../create_profile/CreateUserProfile";
+import AccountSettings from "../accountSettings/AccountSettings";
+import UserManagement from "../userManagement/UserManagement";
 import '../dashboard/dasboard.css'
 import { DashboardUserModel } from "../../../core/models/data_models/DashboardUserModel";
 import apiCaller from "../../../infrastructure/web_api/api_client/apiUrl";
@@ -35,11 +37,17 @@ export const DashboardPage: React.FC = () => {
 
     return (
         <div className="admin-dashboard">
+          <UserManagement />
         <div className="dashboard-head">
           <h4>Admin Dashboard</h4>
+         
           <button className='user-btn'  onClick={handleOpen}>Create User</button>
         </div>
-        <div className="admin-card-container">
+
+
+
+
+        {/* <div className="admin-card-container">
         {
             todos.map((el,i)=>(
               <div className="admin-card-content" key={i}>
@@ -48,16 +56,14 @@ export const DashboardPage: React.FC = () => {
             ))
            }
        
-        </div>
-        <div className="user-list-container">
-          <div className="user-list">
-  user list
-          </div>
-        </div>
-        <div>
-          
+        </div> */}
 
-          
+        <div className="admin-card-container accountcol">
+        <AccountSettings />
+        </div>
+
+
+        <div>
                {
                 open && ( <CreateUserProfile handleClose={handleClose}  />)
                }

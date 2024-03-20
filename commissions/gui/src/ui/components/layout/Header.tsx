@@ -1,12 +1,15 @@
 import React from 'react'
 import logo from '../../../resources/assets/logo.png'
-import '../layout/layout.css'
-import btnlogo from '../../../resources/assets/apps-fill.png'
+import './layout.css'
+import btnlogo from '../../../resources/assets/appicon.png'
 import userImg from '../../../resources/assets/user.png'
-import { FaBell } from "react-icons/fa";
+import notificationImg from '../../../resources/assets/notification.png'
+import searchIcon from '../../../resources/assets/search.png'   
+import '../layout/layout.css'
+
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { MdOutlineMenu } from "react-icons/md";
-import { ICONS } from '../../icons/Icons'
+
  interface Toggleprops{
   toggleOpen:boolean;
   setToggleOpen:React.Dispatch<React.SetStateAction<boolean>>;
@@ -25,15 +28,15 @@ const Header: React.FC<Toggleprops> = ({toggleOpen,setToggleOpen}) => {
   
    </div>
     <div className="search-container">
-      <div className="search-input-field">
+      <div className="search-input-field"> <img src={searchIcon} alt="" className='searchicon' />
       <input type="search" name="" id="" placeholder='Search' className='search-input' />
       </div>
      <div className="user-container">
      <button className='app-btn'>
       <img src={btnlogo} alt="" />
       App</button>
-      <div className="">
-      <FaBell style={{fontSize:"1.5rem",color:"#04A5E8"}} />
+      <div className="notification">
+      <img src={notificationImg} alt="" />
       </div>
       <div className="user-img-container">
         <div className="user-img">
