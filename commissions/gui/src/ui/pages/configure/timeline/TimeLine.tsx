@@ -57,7 +57,7 @@ const TimeLine = () => {
     <div className='commissionContainer'>
     <div className='commissionSection'>
     <div className='rateSection'>
-      <h2>Dealer Overrides</h2>
+      <h2>Timeline SLA</h2>
       <p style={{ color: "#667085",fontSize:"14px" }}>You can view and edit these data as per your requirement</p>
     </div>
     <div className="iconContainer">
@@ -86,64 +86,47 @@ const TimeLine = () => {
   </div>
       <div className='TableContainer'>
         <table>
-          <thead >
-            <tr>
-              <th>
-                <div>
-                  <input value="test" type="checkbox" className='check-box' />
-                </div>
-              </th>
-              <th>
-                <div className="table-header">
-                  TYPE / M2M
-                  <div className="">
-                  <img src={arrowDown} alt="" className='' />
+        <thead >
+              <tr>
+                <th>
+                  <div>
+                    <input value="test" type="checkbox" className='check-box' />
                   </div>
-                </div>
-              </th>
-              <th>
-                <div className="table-header">
-                  State
-                  <div className="">
-                  <img src={arrowDown} alt="" className='' />
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>TYPE / M2M</p> <img src={arrowDown} alt="" />
                   </div>
-                </div>
-              </th>
-              <th>
-                <div className="table-header">
-                 Days
-                  <div className="">
-                  <img src={arrowDown} alt="" className='' />
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>State</p> <img src={arrowDown} alt="" />
                   </div>
-                </div>
-              </th>
-              <th>
-                <div className="table-header">
-                 Start Date
-                  <div className="">
-                  <img src={arrowDown} alt="" className='' />
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>Days</p> <img src={arrowDown} alt="" />
                   </div>
-                </div>
-              </th>
-              <th>
-                <div className="table-header">
-                 End Date
-                  <div className="">
-                  <img src={arrowDown} alt="" className='' />
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>Start Date</p> <img src={arrowDown} alt="" />
                   </div>
-                </div>
-              </th>
-              <th>
-                <div className="table-header">
-                  Action
-                  <div className="">
-                  <img src={arrowDown} alt="" className='' />
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>End Date</p> <img src={arrowDown} alt="" />
                   </div>
-                </div>
-              </th>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>Action</p> <img src={arrowDown} alt="" />
+                  </div>
+                </th>
+               
 
-            </tr>
-          </thead>
+              </tr>
+            </thead>
           <tbody >
             {
               timeLineData.map((el, i) => (

@@ -39,7 +39,7 @@ const PaymentValidation = () => {
     <div className="commissionContainer">
       <div className="commissionSection">
         <div className="rateSection">
-          <h2>Payment Validation</h2>
+          <h2>Partner Validation</h2>
           <p style={{ color: "#667085", fontSize: "14px" }}>
             You can view and edit these data as per your requirement
           </p>

@@ -17,40 +17,45 @@ const DealeronBoarding = () => {
 
     const dealeronBoardingData = [
         {
-            united: "Voltaic Power",
-            Markting: "Voltaic Power LLC",
-            des: "Implementing solar system commission settings for efficient energy",
-            delete: (
-              <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />
-            ),
-            edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />,
+            united: "Regional Manager",
+            dc: "323223",
+            name:"Hanery",
+            email:"hanery@gmail.com",
+            pn:"+1 9393020303",
+            dn:"Voltaic Power LLC",
+
+            des: "Implementing solar system commission ",
+          
           },
           {
-            united: "Voltaic Power",
-            Markting: "Voltaic Power LLC",
-            des: "Implementing solar system commission settings for efficient energy",
-            delete: (
-              <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />
-            ),
-            edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />,
+            united: "Regional Manager",
+            dc: "323223",
+            name:"Hanery",
+            email:"hanery@gmail.com",
+            pn:"+1 9393020303",
+            dn:"Voltaic Power LLC",
+
+            des: "Implementing solar system commission ",
           },
           {
-            united: "Voltaic Power",
-            Markting: "Voltaic Power LLC",
-            des: "Implementing solar system commission settings for efficient energy",
-            delete: (
-              <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />
-            ),
-            edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />,
+            united: "Regional Manager",
+            dc: "323223",
+            name:"Hanery",
+            email:"hanery@gmail.com",
+            pn:"+1 9393020303",
+            dn:"Voltaic Power LLC",
+
+            des: "Implementing solar system commission ",
           },
           {
-            united: "Voltaic Power",
-            Markting: "Voltaic Power LLC",
-            des: "Implementing solar system commission settings for efficient energy",
-            delete: (
-              <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />
-            ),
-            edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />,
+            united: "Regional Manager",
+            dc: "323223",
+            name:"Hanery",
+            email:"hanery@gmail.com",
+            pn:"+1 9393020303",
+            dn:"Voltaic Power LLC",
+
+            des: "Implementing solar system commission ",
           },
     ]
   return (
@@ -58,7 +63,7 @@ const DealeronBoarding = () => {
     <div className="commissionContainer">
       <div className="commissionSection">
         <div className="rateSection">
-          <h2>Dealer On Boarding</h2>
+          <h2>User Onboarding</h2>
           <p style={{ color: "#667085", fontSize: "14px" }}>
             You can view and edit these data as per your requirement
           </p>
@@ -114,26 +119,45 @@ const DealeronBoarding = () => {
               </th>
               <th>
                 <div className="table-header">
-                  <p>Dealer Code</p> <img src={arrowDown} alt="" />
+                  <p>Designation</p> <img src={arrowDown} alt="" />
                 </div>
               </th>
              
               <th>
                 <div className="table-header">
-                  <p>Dealer Name</p> <img src={arrowDown} alt="" />
+                  <p>Dealer Code</p> <img src={arrowDown} alt="" />
                 </div>
               </th>
               <th>
                 <div className="table-header">
-                  <p>Descriptions</p> <img src={arrowDown} alt="" />
+                  <p>Name</p> <img src={arrowDown} alt="" />
                 </div>
               </th>
             
              <th>
                 <div className="table-header">
-                  <p>Action</p> <img src={arrowDown} alt="" />
+                  <p>Email ID</p> <img src={arrowDown} alt="" />
                 </div>
               </th>
+                
+             <th>
+                <div className="table-header">
+                  <p>Phone Number</p> <img src={arrowDown} alt="" />
+                </div>
+              </th>
+                
+             <th>
+                <div className="table-header">
+                  <p>Dealer Name</p> <img src={arrowDown} alt="" />
+                </div>
+              </th>
+                
+             <th>
+                <div className="table-header">
+                  <p>Descriptions</p> <img src={arrowDown} alt="" />
+                </div>
+              </th>
+
 
             </tr>
           </thead>
@@ -144,19 +168,13 @@ const DealeronBoarding = () => {
                   <input value="test" type="checkbox" className="check-box" />
                 </td>
                 <td style={{ fontWeight: "600" }}>{el.united}</td>
-                <td>{el.Markting}</td>
+                <td>{el.dc}</td>
+                <td>{el.name}</td>
+                <td>{el.email}</td>
+                <td>{el.pn}</td>
+                <td>{el.dc}</td>
                 <td>{el.des}</td>
-        
-                <td>
-                  <div className="action-icon">
-                    <div className="" style={{ cursor: "pointer" }}>
-                      {el.delete}
-                    </div>
-                    <div className="" style={{ cursor: "pointer" }}>
-                      {el.edit}
-                    </div>
-                  </div>
-                </td>
+               
               </tr>
             ))}
           </tbody>

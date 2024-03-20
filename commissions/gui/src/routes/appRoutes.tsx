@@ -124,7 +124,7 @@ const appRoutes: RouteType[] = [
         element:<PaymentValidation/>,
         state:"configuration.payment_validation",
         sidebarProps:{
-          displayText:"Payment Validation"
+          displayText:"Partner Validation"
         }
       },
       {
@@ -132,7 +132,7 @@ const appRoutes: RouteType[] = [
         element:<DealeronBoarding/>,
         state:"configuration.dealer_on_boarding",
         sidebarProps:{
-          displayText:"Dealer On Boarding"
+          displayText:"User Onboarding"
         }
       },
 
