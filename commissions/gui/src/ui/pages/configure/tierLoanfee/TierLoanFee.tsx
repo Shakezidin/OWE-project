@@ -16,52 +16,48 @@ const TierLoanFee = () => {
   const handleClose = () => setOpen(false);
     const tierloandata = [
         {
-            name: "Zach Rogers",
+            name: "TIER 000001",
+            inst:"OWE",
             state: "AZ",
-            ps: "REP 80/20",
-            pos:"ADJ-000",
-            be:"--",
-            startDate: "10/10/1000",
-            endDate: "99/99/99990",
-            delete: <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />,
-            edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />
+            ftn: "LF-CON-FLEX-20Y-1.49",
+            oc:"22.99%",
+            be:"00.3%",
+            dlr: "25.99%",
+            sd: "99/99/99990"
+         
       
           },
           {
-            name: "Zach Rogers",
+            name: "TIER 000001",
+            inst:"OWE",
             state: "AZ",
-            ps: "REP 80/20",
-            pos:"ADJ-000",
-            be:"--",
-            startDate: "10/10/1000",
-            endDate: "99/99/99990",
-            delete: <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />,
-            edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />
+            ftn: "LF-CON-FLEX-20Y-1.49",
+            oc:"22.99%",
+            be:"00.3%",
+            dlr: "25.99%",
+            sd: "99/99/99990"
       
           },
           {
-            name: "Zach Rogers",
+            name: "TIER 000001",
+            inst:"OWE",
             state: "AZ",
-            ps: "REP 80/20",
-            pos:"ADJ-000",
-            be:"--",
-            startDate: "10/10/1000",
-            endDate: "99/99/99990",
-            delete: <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />,
-            edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />
+            ftn: "LF-CON-FLEX-20Y-1.49",
+            oc:"22.99%",
+            be:"00.3%",
+            dlr: "25.99%",
+            sd: "99/99/99990"
       
           },
           {
-            name: "Zach Rogers",
+            name: "TIER 000001",
+            inst:"OWE",
             state: "AZ",
-            ps: "REP 80/20",
-            pos:"ADJ-000",
-            be:"--",
-            startDate: "10/10/1000",
-            endDate: "99/99/99990",
-            delete: <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />,
-            edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />
-      
+            ftn: "LF-CON-FLEX-20Y-1.49",
+            oc:"22.99%",
+            be:"00.3%",
+            dlr: "25.99%",
+            sd: "99/99/99990"
           },
     ]
   return (
@@ -82,7 +78,7 @@ const TierLoanFee = () => {
       <div className='iconsSection2'>
         <button type='button'> <img src={imgimport} alt='' /> Import</button>
       </div>
-      <div className='iconsSection2'>
+      <div className='iconsSection2'>c
         <button type='button'> <img src={imgExport} alt='' />Export</button>
       </div>
       <div className='iconsSection2'>
@@ -106,12 +102,7 @@ const TierLoanFee = () => {
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Partner Name</p> <img src={arrowDown} alt="" />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Partner</p> <img src={arrowDown} alt="" />
+                    <p>Dealer Tier</p> <img src={arrowDown} alt="" />
                   </div>
                 </th>
                 <th>
@@ -121,27 +112,32 @@ const TierLoanFee = () => {
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Sale Type</p> <img src={arrowDown} alt="" />
+                    <p>State</p> <img src={arrowDown} alt="" />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>ST</p> <img src={arrowDown} alt="" />
+                    <p>Finance Type Name</p> <img src={arrowDown} alt="" />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Rate List</p> <img src={arrowDown} alt="" />
+                    <p>OWE Cost</p> <img src={arrowDown} alt="" />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Draw %</p> <img src={arrowDown} alt="" />
+                    <p>DLR MU</p> <img src={arrowDown} alt="" />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Draw Max</p> <img src={arrowDown} alt="" />
+                    <p>DLR Cost</p> <img src={arrowDown} alt="" />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>Start Date</p> <img src={arrowDown} alt="" />
                   </div>
                 </th>
 
@@ -154,23 +150,14 @@ const TierLoanFee = () => {
                     <input value="test" type="checkbox" className="check-box" />
                   </td>
                   <td style={{ fontWeight: "600" }}>{el.name}</td>
+                  <td>{el.inst}</td>
                   <td>{el.state}</td>
-                  <td>{el.ps}</td>
-                  <td>{el.pos}</td>
+                  <td>{el.ftn}</td>
+                  <td>{el.oc}</td>
                   <td>{el.be}</td>
-                  <td>{el.startDate}</td>
-                  <td>{el.endDate}</td>
+                  <td>{el.dlr}</td>
+                  <td>{el.sd}</td>
                 
-                  <td>
-                    <div className="action-icon">
-                      <div className="" style={{ cursor: "pointer" }}>
-                        {el.delete}
-                      </div>
-                      <div className="" style={{ cursor: "pointer" }}>
-                        {el.edit}
-                      </div>
-                    </div>
-                  </td>
                 </tr>
               ))}
             </tbody>

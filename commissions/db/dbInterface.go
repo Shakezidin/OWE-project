@@ -21,11 +21,14 @@ var (
 )
 
 const (
-	OWEDB                   string = "owe_db"
-	dbDriverName            string = "postgres"
-	CreateUserFunction      string = "create_new_user"
-	CreateTeamFunction      string = "create_new_team"
-	CreateApiSetterFunction string = "create_appointment_setter"
+	OWEDB                      string = "owe_db"
+	dbDriverName               string = "postgres"
+	CreateUserFunction         string = "create_new_user"
+	CreateTeamFunction         string = "create_new_team"
+	CreateApiSetterFunction    string = "create_appointment_setter"
+	CreateCommissionFunction   string = "create_new_commission"
+	TableName_teams            string = "teams"
+	TableName_commission_rates string = "commission_rates"
 )
 
 /******************************************************************************
