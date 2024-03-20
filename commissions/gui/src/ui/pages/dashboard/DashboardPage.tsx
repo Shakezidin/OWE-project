@@ -11,13 +11,8 @@ import React, { useEffect, useState } from "react";
 
 import CreateUserProfile from "../create_profile/CreateUserProfile";
 import '../dashboard/dasboard.css'
-import { httpRequest } from "../../../infrastructure/web_api/api_client/APIClient";
 import { DashboardUserModel } from "../../../core/models/data_models/DashboardUserModel";
 import apiCaller from "../../../infrastructure/web_api/api_client/apiUrl";
-
-
-
-
 export const DashboardPage: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [todos, setTodos] = useState<DashboardUserModel[]>([]);

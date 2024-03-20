@@ -15,12 +15,15 @@ import { ICONS } from '../../icons/Icons'
 const Header: React.FC<Toggleprops> = ({toggleOpen,setToggleOpen}) => {
   return (
     <div className="header-content">
-    <div className="header-logo">
-      <img src={logo} alt="" />
-    </div>
-    <div className="menu-icon" onClick={()=>setToggleOpen(true)}>
+   <div className="header-icon">
+   <div className="menu-icon" onClick={()=>setToggleOpen(true)}>
     <MdOutlineMenu className='icon' />
     </div>
+   <div className="header-logo">
+      <img src={logo} alt="" />
+    </div>
+  
+   </div>
     <div className="search-container">
       <div className="search-input-field">
       <input type="search" name="" id="" placeholder='Search' className='search-input' />

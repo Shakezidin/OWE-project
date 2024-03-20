@@ -3,7 +3,7 @@ import "./Input.css";
 import { ReactComponent as EYE_ICON } from "../../../resources/assets/eye-icon.svg";
 
 interface InputProps {
-  type: "text" | "number" | "email" | "password";
+  type: "text" | "number" | "email" | "password" | "date";
   value: string | number;
   placeholder: string;
   label?: string;
@@ -26,7 +26,7 @@ const Input: FC<InputProps> = ({
 }) => {
   return (
     <div className="input-wrapper">
-      {label && <p className="inputLabel">{label}</p>}
+      {label && <label className="inputLabel">{label}</label>}
       <div className="input-inner-view">
         <input
           type={type}
@@ -38,7 +38,6 @@ const Input: FC<InputProps> = ({
         />
         {type === "password" ? <EYE_ICON className="eyeIcon" /> : <></>}
       </div>
-
       {error && <p className="error">Input filed can't be empty!</p>}
     </div>
   );

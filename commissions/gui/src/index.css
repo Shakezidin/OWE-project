@@ -84,3 +84,70 @@ li {
   margin-left:6rem;
   margin-bottom: -13px;
 }
+
+/* modal style  */
+.transparent-model {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  /*background-color: rgba(0, 0, 0, 0.9);*/
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  width: 900px;
+}
+
+.createUserCrossButton{
+  display: flex;
+  align-items:flex-end;
+  justify-content: flex-end;
+  padding: 10px 10px 0 0px;
+  cursor: pointer;
+
+}
+.createUserContainer {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+
+}
+.createProfileText{
+  font-size: 28px;
+  margin-left: 39px;
+  font-weight:600;
+}
+.createProfileTextView{
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+   padding: 0 39px 0px 39px;
+}
+.createProfileInputView{
+  margin-top: 2rem;
+  
+}
+.create-input-container{
+  display: flex;
+  gap: 20px;
+  /* justify-content: space-between; */
+}
+.createUserActionButton{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top: 1px solid #d0d5dd;
+  margin-top: 32px;
+  padding:24px 0 24px 0;
+}
+.create-input-field{
+  width: 31.5%;
+}
