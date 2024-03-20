@@ -10,6 +10,8 @@ import React from "react";
 
 import Modal from '@mui/material/Modal';
 import CreateUserProfile from "../create_profile/CreateUserProfile";
+import AccountSettings from "../accountSettings/AccountSettings";
+import UserManagement from "../userManagement/UserManagement";
 
 
 const modalStyle = {
@@ -33,15 +35,27 @@ export const DashboardPage: React.FC = () => {
 
     return (
         <div className="admin-dashboard">
+          <UserManagement />
         <div className="dashboard-head">
           <h4>Admin Dashboard</h4>
+         
           <button className='user-btn'  onClick={handleOpen}>Create User</button>
         </div>
+
+
+
+
         <div className="admin-card-container">
           <div className="admin-card-content">
   
           </div>
         </div>
+
+        <div className="admin-card-container accountcol">
+        <AccountSettings />
+        </div>
+
+
         <div className="user-list-container">
           <div className="user-list">
   user list
