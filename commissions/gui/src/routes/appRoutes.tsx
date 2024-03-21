@@ -23,6 +23,7 @@ import UserOnboarding from "../ui/pages/onboarding/useronboarding/UserOnboarding
 import Project from "../ui/pages/project/Project";
 import Report from "../ui/pages/report/Report";
 import DatabaseController from "../ui/pages/databaseController/DatabaseController";
+import { ICONS } from "../ui/icons/Icons";
 const appRoutes: RouteType[] = [
  
   {
@@ -31,7 +32,7 @@ const appRoutes: RouteType[] = [
     state: "dashboard",
     sidebarProps: {
       displayText: "Dashboard",
-      icon: <MdOutlineDashboard style={{fontSize:"1.4rem",color:"white"}} />
+      icon:<img src={ICONS.dashboardIcon} className="icon-image" alt=""/>
     },
   },
   {
@@ -40,7 +41,7 @@ const appRoutes: RouteType[] = [
     state: "configuration",
     sidebarProps: {
       displayText: "Configuration",
-      icon:<MdOutlineSettings style={{fontSize:"1.4rem",color:"white"}}/>
+      icon:<img src={ICONS.confige} className="icon-image" alt=""/>
     },
     child:[
       {
@@ -168,32 +169,14 @@ const appRoutes: RouteType[] = [
 
     ]
   },
-  {
-    path: "/dashboard/onboarding",
-    element: <Onboarding/>,
-    state: "onboarding",
-    sidebarProps: {
-      displayText: "Onboarding",
-      icon:<MdOutlineSettings style={{fontSize:"1.4rem",color:"white"}}/>
-    },
-    child:[
-      {
-        path:"/dashboard/onboarding/useronboarding",
-        element:<UserOnboarding/>,
-        state:"dashboard.onboarding.useronboarding",
-        sidebarProps:{
-          displayText:"User Onboarding"
-        }
-      },
-    ]
-  },
+ 
   {
     path: "/dashboard/project",
     element: <Project/>,
     state: "project",
     sidebarProps: {
       displayText: "Project",
-      icon:<MdOutlineSettings style={{fontSize:"1.4rem",color:"white"}}/>
+      icon:<img src={ICONS.projectIcon} className="icon-image" alt=""/>
     },
    
   },
@@ -203,7 +186,7 @@ const appRoutes: RouteType[] = [
     state: "report",
     sidebarProps: {
       displayText: "Report",
-      icon:<MdOutlineSettings style={{fontSize:"1.4rem",color:"white"}}/>
+      icon:<img src={ICONS.reportIcon} className="icon-image" alt=""/>
     },
   },
   {
@@ -212,7 +195,7 @@ const appRoutes: RouteType[] = [
     state: "databasecontroller",
     sidebarProps: {
       displayText: "DatabaseController",
-      icon:<MdOutlineSettings style={{fontSize:"1.4rem",color:"white"}}/>
+      icon:<img src={ICONS.dbIcon} className="icon-image" alt=""/>
     },
   },
   {
@@ -221,7 +204,7 @@ const appRoutes: RouteType[] = [
     state: "usermanagement",
     sidebarProps: {
       displayText: "UserManagement",
-      icon:<MdOutlineSettings style={{fontSize:"1.4rem",color:"white"}}/>
+      icon:<img src={ICONS.umIcon} className="icon-image" alt="" />
     },
   },
   {
@@ -230,7 +213,7 @@ const appRoutes: RouteType[] = [
     state: "control",
     sidebarProps: {
       displayText: "Control/Support",
-      icon:<MdOutlineSettings style={{fontSize:"1.4rem",color:"white"}}/>
+      icon:<img src={ICONS.supportIcon} className="icon-image" alt=""/>
     },
   },
   {
@@ -239,7 +222,7 @@ const appRoutes: RouteType[] = [
     state: "myaccount",
     sidebarProps: {
       displayText: "My Account",
-      icon:<MdOutlineSettings style={{fontSize:"1.4rem",color:"white"}}/>
+      icon:<img src={ICONS.myAccountIcon} className="icon-image" alt=""/>
     },
   },
   {
@@ -248,7 +231,7 @@ const appRoutes: RouteType[] = [
     state: "logout",
     sidebarProps: {
       displayText: "Logout",
-      icon:<MdOutlineSettings style={{fontSize:"1.4rem",color:"white"}}/>
+      icon:<img src={ICONS.logoutIcon} className="icon-image" alt=""/>
     },
   },
 ];

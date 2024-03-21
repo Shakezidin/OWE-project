@@ -16,6 +16,11 @@ a {
 li {
   list-style: none;
 }
+/* image icon srtyle  */
+.icon-image{
+  width: 17px;
+  height: 17px;
+}
 .user-btn{
   background-color: #04A5E8;
   outline: none;

@@ -10,4 +10,14 @@ export const ICONS = {
   BACKGROUND: require("../../resources/assets/background.png"),
   LOGO: require("../../resources/assets/logo.png"),
   MENU_1: require("../../resources/assets/menu_1.png"),
+  dashboardIcon:require('../../resources/assets/dash.png'),
+  confige:require('../../resources/assets/config.png'),
+  projectIcon:require('../../resources/assets/project.png'),
+  reportIcon:require('../../resources/assets/reportIcon.png'),
+  dbIcon:require('../../resources/assets/dbIcon.png'),
+  umIcon:require('../../resources/assets/umIcon.png'),
+  supportIcon:require('../../resources/assets/contact.png'),
+  myAccountIcon:require('../../resources/assets/myAccountIcon.png'),
+  logoutIcon:require('../../resources/assets/logout1.png')
+
 };
