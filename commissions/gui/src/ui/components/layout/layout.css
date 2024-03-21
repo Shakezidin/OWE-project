@@ -29,7 +29,7 @@
 .children-container {
     background-color: #F3F3F3;
     padding: 1.5rem;
-    height: 100vh;
+    /* height: 100vh; */
 }
 
 /* sidebar style  */
@@ -86,8 +86,10 @@
     border-radius: 1rem;
     padding: 1rem 0rem 1rem .5rem;
     background-color: #0D0D0D;
+
     /* padding: 1rem; */
 }
+
 
 .active-side {
     color: #04A5E8;
