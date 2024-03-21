@@ -37,7 +37,7 @@ export const DashboardPage: React.FC = () => {
 
     return (
         <div className="admin-dashboard">
-          <UserManagement />
+          {/* <UserManagement /> */}
         <div className="dashboard-head">
           <h4>Admin Dashboard</h4>
          
