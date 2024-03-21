@@ -5,6 +5,7 @@ export type RouteType = {
   state: string,
   index?: boolean,
   path?: string,
+  icon?:any,
   child?: RouteType[],
   sidebarProps?: {
     displayText: string,

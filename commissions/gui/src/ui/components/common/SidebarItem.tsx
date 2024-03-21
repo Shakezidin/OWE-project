@@ -17,9 +17,9 @@ const SidebarItem = ({ item }: Props) => {
   return (
     item.sidebarProps && item.path ? (
    <div className="side-icon-container">
-     <div className="">
+  
      {item.sidebarProps.icon && item.sidebarProps.icon}
-     </div>
+   
        <Link
         to={item.path}
         className="tablink"
