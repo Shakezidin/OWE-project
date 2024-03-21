@@ -69,43 +69,43 @@ const appRoutes: RouteType[] = [
         }
       },
       {
-        path:"/dashboard/configuration/common_configuration",
-        element:<CommonConfigure/>,
-        state:"configuration.common_configuration",
+        path:"/dashboard/configuration/adder_validation",
+        element:<AdderValidation/>,
+        state:"configuration.adder_validation",
         sidebarProps:{
-          displayText:"Common Configuration"
+          displayText:"Adder Validation"
         }
       },
       {
-        path:"/dashboard/configuration/rep_pay_scale",
-        element:<RepPayScale/>,
-        state:"configuration.rep_pay_scale",
+        path:"/dashboard/configuration/sale_type",
+        element:<SaleType/>,
+        state:"configuration.sale_type",
         sidebarProps:{
-          displayText:"Rep Pay Scale"
+          displayText:"Sales Type"
         }
       },
-      {
-        path:"/dashboard/configuration/payment_schedule",
-        element:<PaymentSchedule/>,
-        state:"configuration.payment_schedule",
-        sidebarProps:{
-          displayText:"Payment Schedule"
-        }
-      },
+      // {
+      //   path:"/dashboard/configuration/common_configuration",
+      //   element:<CommonConfigure/>,
+      //   state:"configuration.common_configuration",
+      //   sidebarProps:{
+      //     displayText:"Common Configuration"
+      //   }
+      // },
+      // {
+      //   path:"/dashboard/configuration/rep_pay_scale",
+      //   element:<RepPayScale/>,
+      //   state:"configuration.rep_pay_scale",
+      //   sidebarProps:{
+      //     displayText:"Rep Pay Scale"
+      //   }
+      // },
       {
         path:"/dashboard/configuration/tier_loan_fee",
         element:<TierLoanFee/>,
         state:"configuration.tier_loan_fee",
         sidebarProps:{
-          displayText:"Tier Loan fee"
-        }
-      },
-      {
-        path:"/dashboard/configuration/timeLine",
-        element:<TimeLine/>,
-        state:"configuration.timeLine",
-        sidebarProps:{
-          displayText:"TimeLine"
+          displayText:"Tier Loan fees"
         }
       },
       {
@@ -117,46 +117,50 @@ const appRoutes: RouteType[] = [
         }
       },
       {
-        path:"/dashboard/configuration/adder_validation",
-        element:<AdderValidation/>,
-        state:"configuration.adder_validation",
+        path:"/dashboard/configuration/payment_schedule",
+        element:<PaymentSchedule/>,
+        state:"configuration.payment_schedule",
         sidebarProps:{
-          displayText:"Adder Validation"
+          displayText:"Pay Schedule"
         }
       },
+    
       {
-        path:"/dashboard/configuration/payment_validation",
-        element:<PaymentValidation/>,
-        state:"configuration.payment_validation",
+        path:"/dashboard/configuration/timeLine",
+        element:<TimeLine/>,
+        state:"configuration.timeLine",
         sidebarProps:{
-          displayText:"Partner Validation"
+          displayText:"TimeLine SLA"
         }
       },
-      {
-        path:"/dashboard/configuration/dealer_on_boarding",
-        element:<DealeronBoarding/>,
-        state:"configuration.dealer_on_boarding",
-        sidebarProps:{
-          displayText:"User Onboarding"
-        }
-      },
+    
+     
+      // {
+      //   path:"/dashboard/configuration/payment_validation",
+      //   element:<PaymentValidation/>,
+      //   state:"configuration.payment_validation",
+      //   sidebarProps:{
+      //     displayText:"Partner Validation"
+      //   }
+      // },
+      // {
+      //   path:"/dashboard/configuration/dealer_on_boarding",
+      //   element:<DealeronBoarding/>,
+      //   state:"configuration.dealer_on_boarding",
+      //   sidebarProps:{
+      //     displayText:"User Onboarding"
+      //   }
+      // },
 
-      {
-        path:"/dashboard/configuration/appointment_setters",
-        element:<AppointmentSetters/>,
-        state:"configuration.appointment_setters",
-        sidebarProps:{
-          displayText:"Appointment Setters"
-        }
-      },
-      {
-        path:"/dashboard/configuration/sale_type",
-        element:<SaleType/>,
-        state:"configuration.sale_type",
-        sidebarProps:{
-          displayText:"Sale Type"
-        }
-      },
+      // {
+      //   path:"/dashboard/configuration/appointment_setters",
+      //   element:<AppointmentSetters/>,
+      //   state:"configuration.appointment_setters",
+      //   sidebarProps:{
+      //     displayText:"Appointment Setters"
+      //   }
+      // },
+    
       {
         path:"/dashboard/configuration/loan_type",
         element:<LoanType/>,
