@@ -56,7 +56,7 @@ BEGIN
         p_mobile_number,
         p_email_id,
         p_password,
-        p_password_change_req,
+        TRUE,           -- Set password_change_required to TRUE by default
         p_designation,
         v_role_id,
         p_reporting_manager,
