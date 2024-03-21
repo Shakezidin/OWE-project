@@ -1,17 +1,66 @@
-
-
-.user-list-container{
-    display: flex;
-   
-    justify-content: space-between;
-    gap: 1rem;
-    background-color: white;
-    height: 340px;
-    padding: 1rem;
-    border-radius: 1.5rem;
+.Dashboard-container {
+}
+.Dashboard-wel h6 {
+  width: 128px;
+  height: 18px;
+  top: 84px;
+  left: 270px;
+  gap: 0px;
+  opacity: 0px;
+}
+.Dashboard-wel h3 {
+  width: 166px;
+  height: 30px;
+  top: 101px;
+  left: 270px;
+  gap: 0px;
+  opacity: 0px;
+}
+.commission-section-dash {
+  display: flex;
+  justify-content: space-between;
   margin-top: 1rem;
 }
-.user-list{
-    padding: .5rem;
+.total-commisstion {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+border-radius: 16px;
+padding: 1rem 4rem 1rem 1rem;
+width: 620px;
+height: 110px;
+
 }
-.accountcol{ height: auto;}
+
+.total-section h4 {
+  font-family: Poppins;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 28px;
+  text-align: left;
+}
+.total-section p {
+  font-family: Poppins;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 28px;
+  text-align: left;
+  color: #747782;
+}
+.teamImg {
+  background: #c6f4de;
+  width: 60px;
+  height: 60px;
+  text-align: center;
+  padding: 0.5rem;
+  border-radius: 50%;
+}
+.teamImg img {
+  margin-top: 5px;
+  width: 34px;
+  height: 34px;
+  /* padding: 1px 2.83px 0.67px 2.83px;  */
+
+  
+}

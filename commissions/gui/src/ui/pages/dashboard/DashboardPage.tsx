@@ -15,6 +15,7 @@ import UserManagement from "../userManagement/UserManagement";
 import '../dashboard/dasboard.css'
 import { DashboardUserModel } from "../../../core/models/data_models/DashboardUserModel";
 import apiCaller from "../../../infrastructure/web_api/api_client/apiUrl";
+import DashboardTotal from "./DashboardTotal";
 export const DashboardPage: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [todos, setTodos] = useState<DashboardUserModel[]>([]);
@@ -36,40 +37,15 @@ export const DashboardPage: React.FC = () => {
     const handleClose = () => setOpen(false);
 
     return (
-        <div className="admin-dashboard">
-          {/* <UserManagement /> */}
-        <div className="dashboard-head">
-          <h4>Admin Dashboard</h4>
-         
-          <button className='user-btn'  onClick={handleOpen}>Create User</button>
+      <>
+      <div className="Dashboard-container">
+        <div className="Dashboard-wel">
+          <h6>Welcome back, Colten</h6>
+          <h3>Your Dashboard</h3>
         </div>
-
-
-
-
-        {/* <div className="admin-card-container">
-        {
-            todos.map((el,i)=>(
-              <div className="admin-card-content" key={i}>
-                 {el.name}
-              </div>
-            ))
-           }
-       
-        </div> */}
-
-        <div className="admin-card-container accountcol">
-       
-        </div>
-
-
-        <div>
-               {
-                open && ( <CreateUserProfile handleClose={handleClose}  />)
-               }
-          
-        </div>
+       <DashboardTotal/>
       </div>
+      </>
        
     )
 }
