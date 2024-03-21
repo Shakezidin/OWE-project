@@ -28,7 +28,7 @@ const Header: React.FC<Toggleprops> = ({toggleOpen,setToggleOpen}) => {
   
    </div>
     <div className="search-container">
-      <div className="search-input-field"> <img src={searchIcon} alt="" className='searchicon' />
+      <div className="search-input-field"> 
       <input type="search" name="" id="" placeholder='Search' className='search-input' />
       </div>
      <div className="user-container">
