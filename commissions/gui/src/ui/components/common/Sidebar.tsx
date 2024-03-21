@@ -1,31 +1,28 @@
-
-import commissionLogo from '../../../resources/assets/commisson_small_logo.svg'
-
+import React,{useState} from "react";
 import SidebarItem from "./SidebarItem";
 import SidebarItemCollapse from "./SidebarItemCollapse";
-import sizeConfig from "../../../config/sizeConfig";
-import colorConfig from "../../../config/colorConfig";
 import appRoutes from "../../../routes/appRoutes";
 import '../layout/layout.css'
+import { ICONS } from "../../icons/Icons";
 interface Toggleprops{
   toggleOpen:boolean;
   setToggleOpen:React.Dispatch<React.SetStateAction<boolean>>;
  }
 const Sidebar: React.FC<Toggleprops> = ({toggleOpen,setToggleOpen})=> {
-
+ 
   return (
     <div className={`side-bar-container ${toggleOpen?'side-bar-active':""}`}>
     <div className="side-bar-logo" onClick={()=>setToggleOpen(false)}>
-<img src={commissionLogo} alt="" />
+<img src={ICONS.sidebarLogo} alt="" />
     <h3>Commission App</h3>
     </div>
     <div className="side-bar-content">
    {appRoutes.map((route, index) => (
         route.sidebarProps ? (
           route.child ? (
-            <SidebarItemCollapse item={route} key={index} />
+            <SidebarItemCollapse  setToggleOpen={setToggleOpen} item={route} key={index} />
           ) : (
-            <SidebarItem item={route} key={index} />
+            <SidebarItem  setToggleOpen={setToggleOpen} item={route} key={index} />
           )
         ) : null
       ))}

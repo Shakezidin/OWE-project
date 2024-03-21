@@ -1,9 +1,2 @@
-table{ border: none; border-collapse: collapse;}
-.iconContainer svg{ font-size: 20px;}
-.rateSection h3{ font-size: 18px;}
-.rateSection h6{ font-weight: 500;}
-.iconContainer h3{ display: flex; align-items: center;}
-.TableContainer input[type=checkbox]{ width: 18px; height: 18px;}
-.TableContainer tr td{ padding: 10px 0; border-bottom: 1px solid #EAECF0;}
-.TableContainer tr th{ padding: 10px 0; background-color: #fafafa;}
+
 

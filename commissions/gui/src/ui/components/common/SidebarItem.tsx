@@ -9,9 +9,10 @@ import colorConfig from "../../../config/colorConfig";
 
 type Props = {
   item: RouteType;
+  setToggleOpen:React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const SidebarItem = ({ item }: Props) => {
+const SidebarItem = ({ item,setToggleOpen }: Props) => {
   const { appState } = useSelector((state: RootState) => state.appState);
 
   return (

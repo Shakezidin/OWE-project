@@ -33,18 +33,21 @@
 
 /* sidebar style  */
 .side-bar-logo {
-    background-color: #212121;
-    padding: 1.5rem 1rem 1.5rem 1rem;
+    background-color: #263747;
+    padding: 1rem;
     display: flex;
     gap: .4rem;
     align-items: center;
-    border-bottom-left-radius: 2rem;
-    border-bottom-right-radius: 2rem;
+}
+.side-bar-logo img{
+    width: 31px;
+    height: 31px;
 }
 
 .side-bar-logo h3 {
     color: white;
-    font-size: 1rem;
+    font-weight: 600;
+    font-size:16px;
 }
 
 .side-bar-content {
@@ -84,13 +87,13 @@
     /* background-color: #212121; */
     border-radius: 1rem;
     padding: 1rem 0rem 1rem .5rem;
-    background-color: #0D0D0D;
+    background-color:#263747;
 
     /* padding: 1rem; */
 }
 
 
-.active-side {
+.active-side{
     color: #04A5E8;
 }
 
