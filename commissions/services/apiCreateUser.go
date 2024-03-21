@@ -54,10 +54,11 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if (len(createUserReq.FirstName) <= 0) || (len(createUserReq.LastName) <= 0) ||
-		(len(createUserReq.EmailId) <= 0) || (len(createUserReq.MobileNumber) <= 0) ||
-		(len(createUserReq.Password) <= 0) || (len(createUserReq.Designation) <= 0) ||
-		(len(createUserReq.AssignedDealerName) <= 0) || (len(createUserReq.RoleName) <= 0) {
+	if (len(createUserReq.Name) <= 0) || (len(createUserReq.EmailId) <= 0) ||
+		(len(createUserReq.MobileNumber) <= 0) || (len(createUserReq.Password) <= 0) ||
+		(len(createUserReq.Designation) <= 0) || (len(createUserReq.RoleName) <= 0) ||
+		(len(createUserReq.UserCode) <= 0) || (len(createUserReq.ReportingManager) <= 0) ||
+		(len(createUserReq.UserStatus) <= 0) || (len(createUserReq.Description) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
@@ -71,13 +72,16 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	queryParameters = append(queryParameters, createUserReq.FirstName)
-	queryParameters = append(queryParameters, createUserReq.LastName)
-	queryParameters = append(queryParameters, createUserReq.MobileNumber)
+	queryParameters = append(queryParameters, createUserReq.Name)
 	queryParameters = append(queryParameters, createUserReq.EmailId)
+	queryParameters = append(queryParameters, createUserReq.MobileNumber)
 	queryParameters = append(queryParameters, string(hashedPassBytes))
 	queryParameters = append(queryParameters, createUserReq.Designation)
 	queryParameters = append(queryParameters, createUserReq.RoleName)
+	queryParameters = append(queryParameters, createUserReq.UserCode)
+	queryParameters = append(queryParameters, createUserReq.ReportingManager)
+	queryParameters = append(queryParameters, createUserReq.UserStatus)
+	queryParameters = append(queryParameters, createUserReq.Description)
 	_, err = db.CallDBFunction(db.CreateUserFunction, queryParameters)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to Add User in DB with err: %v", err)

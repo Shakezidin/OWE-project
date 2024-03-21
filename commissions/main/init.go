@@ -147,6 +147,15 @@ var apiRoutes = ApiRoutes{
 			types.RoleAdmin,
 		},
 	},
+	{
+		strings.ToUpper("GET"),
+		"/owe-commisions-service/v1/get_users",
+		apiHandler.HandleGetUsersDataRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
 }
 
 /******************************************************************************

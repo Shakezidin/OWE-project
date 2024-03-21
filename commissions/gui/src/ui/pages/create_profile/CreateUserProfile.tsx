@@ -9,6 +9,9 @@ type ButtonProps ={
   handleClose:()=>void
 }
 const CreateUserProfile = (props:ButtonProps) => {
+  const handleFormChange=()=>{
+
+  }
   return (
     <div className="transparent-model">
       <div className="modal">
@@ -64,16 +67,21 @@ const CreateUserProfile = (props:ButtonProps) => {
               </div>
 
               <div style={{ display: "flex", gap: "20px" }}>
+              <DropdownButton
+        id="selectField1"
+        label="Select Field 1"
+        value={"formData.selectField1"}
+        options={['Option 1', 'Option 2', 'Option 3']}
+        onChange={handleFormChange}
+      />
                 <DropdownButton
-                  label="Select Role"
-                  options={["Option 1", "Option 2", "Option 3"]}
-                />
-                <DropdownButton
-                  label="Assign Dealer"
-                  options={["Option 1", "Option 2", "Option 3"]}
-                />
+                   id="selectField1"
+                   label="Select Field 1"
+                   value={""}
+                   options={['Option 1', 'Option 2', 'Option 3']}
+                   onChange={handleFormChange}
+              />
               </div>
-              <br />
               <div className="createUserActionButton">
                 <ActionButton title={"Create"} onClick={() => {}} />
               </div>

@@ -9,6 +9,7 @@ import { IoAddSharp } from "react-icons/io5";
 import imgExport from '../../../../resources/assets/export.png'
 import imgimport from '../../../../resources/assets/import.png'
 import CreateUserProfile from '../../create_profile/CreateUserProfile';
+import CreateCommissionRate from './CreateCommissionRate';
 const CommissionRate: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
@@ -83,7 +84,7 @@ const CommissionRate: React.FC = () => {
     </div>
    
            {
-            open && (<CreateUserProfile handleClose={handleClose}  />)
+            open && (<CreateCommissionRate handleClose={handleClose}  />)
            }
     
   </div>

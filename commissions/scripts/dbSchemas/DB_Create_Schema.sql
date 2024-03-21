@@ -109,19 +109,31 @@ CREATE TABLE commission_rates (
     PRIMARY KEY (id)
 );
 
-CREATE TABLE v_user_details (
-    id serial NOT NULL,
-    user_code character varying,
-    user_fname character varying NOT NULL,
-    user_lname character varying NOT NULL,
+/* Tables for User Authentication */
+CREATE TABLE  IF NOT EXISTS user_roles (
+    role_id SERIAL,
+    role_name VARCHAR(50) NOT NULL UNIQUE,
+    PRIMARY KEY (role_id)
+);
+
+CREATE TABLE IF NOT EXISTS user_details(
+    user_id SERIAL,
+    name VARCHAR(255) NOT NULL,
+    user_code VARCHAR(255),
+    mobile_number VARCHAR(20) NOT NULL UNIQUE,
+    email_id VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    password_change_required BOOLEAN,
     reporting_manager INT,
-    user_status character varying NOT NULL,
+    role_id INT,
+    user_status VARCHAR(255) NOT NULL,
     user_designation VARCHAR(255),
-    description character varying,
+    description VARCHAR(255),
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
-    FOREIGN KEY (reporting_manager) REFERENCES v_user_details(id),
-    PRIMARY KEY (id)
+    FOREIGN KEY (reporting_manager) REFERENCES user_details(user_id),
+    FOREIGN KEY (role_id) REFERENCES user_roles(role_id),
+	PRIMARY KEY (user_id)
 );
 
 CREATE TABLE dealer_override (
@@ -133,7 +145,7 @@ CREATE TABLE dealer_override (
     end_date character varying,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
-    FOREIGN KEY (dealer_id) REFERENCES v_user_details(id),
+    FOREIGN KEY (dealer_id) REFERENCES user_details(user_id),
     PRIMARY KEY (id)
 );
 CREATE TABLE source (
@@ -205,7 +217,7 @@ CREATE TABLE dealer_tier (
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     FOREIGN KEY (tier_id) REFERENCES tier(id),
-    FOREIGN KEY (dealer_id) REFERENCES v_user_details(id),
+    FOREIGN KEY (dealer_id) REFERENCES user_details(user_id),
     PRIMARY KEY (id)
 );
 
@@ -249,7 +261,7 @@ CREATE TABLE payment_schedule (
     FOREIGN KEY (sale_type_id) REFERENCES sale_type(id),
     FOREIGN KEY (installer_id) REFERENCES partners(partner_id),
     FOREIGN KEY (partner_id) REFERENCES partners(partner_id),
-    FOREIGN KEY (rep_id) REFERENCES v_user_details(id),
+    FOREIGN KEY (rep_id) REFERENCES user_details(user_id),
     PRIMARY KEY (id)
 );
 
@@ -304,7 +316,7 @@ CREATE TABLE dealer_pay_export (
     fin_date character varying,
     pto_date character varying,
     small_system_size VARCHAR(20),
-    FOREIGN KEY (dealer) REFERENCES v_user_details(id),
+    FOREIGN KEY (dealer) REFERENCES user_details(user_id),
     FOREIGN KEY (partner) REFERENCES partners(partner_id),
     FOREIGN KEY (installer) REFERENCES partners(partner_id),
     FOREIGN KEY (source) REFERENCES source(id),
@@ -312,8 +324,8 @@ CREATE TABLE dealer_pay_export (
     FOREIGN KEY (loan_type) REFERENCES loan_type(id),
     FOREIGN KEY (state) REFERENCES states(state_id),
     FOREIGN KEY (zipcode) REFERENCES zipcodes(id),
-    FOREIGN KEY (rep_1) REFERENCES v_user_details(id),
-    FOREIGN KEY (rep_2) REFERENCES v_user_details(id),
+    FOREIGN KEY (rep_1) REFERENCES user_details(user_id),
+    FOREIGN KEY (rep_2) REFERENCES user_details(user_id),
     FOREIGN KEY (appt_setter) REFERENCES appointment_setters(setters_id),
     FOREIGN KEY (proj_status_crm) REFERENCES  project_status(id),
     PRIMARY KEY (id)
@@ -401,34 +413,15 @@ CREATE TABLE referral_bonus (
 	PRIMARY KEY (id)
 );
 
-/* Tables for User Authentication */
-CREATE TABLE  IF NOT EXISTS user_roles (
-    role_id SERIAL,
-    role_name VARCHAR(50) NOT NULL UNIQUE,
-    PRIMARY KEY (role_id)
-);
-
-CREATE TABLE IF NOT EXISTS user_auth(
-    user_id SERIAL,
-    first_name VARCHAR(255) NOT NULL,
-    last_name VARCHAR(255) NOT NULL,
-    mobile_number VARCHAR(20) NOT NULL UNIQUE,
-    email_id VARCHAR(255) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    password_change_required BOOLEAN,
-    role_id INT,
-    user_details_id INT,
-    FOREIGN KEY (user_details_id) REFERENCES v_user_details(id),
-    PRIMARY KEY (user_id)
-);
-
 /* Add a default Admin User to Login tables */
 /* Default Admin Password is 1234 for Development purpose */
-INSERT INTO user_roles	( role_name) VALUES ( 'Admin' );
-INSERT INTO "public".user_auth ( first_name, last_name, mobile_number, email_id, "password", password_change_required, role_id)
-VALUES ( 'UserFirstName', 'UserLastName', '0987654321', 'shushank22@gmail.com', '$2a$10$5DPnnf5GqDE1dI8L/fM79OsY7XjzmLbw3rkSVONPz.92CqHUkXYHC', true, 1 );
-/******************************************************************************************/
+-- Insert default role 'Admin' into user_roles table
+INSERT INTO user_roles (role_name) VALUES ('Admin');
+INSERT INTO user_details (name, user_code, mobile_number, email_id, password, password_change_required, reporting_manager, role_id, user_status, user_designation, description) VALUES ('Shushank Sharma', 'OWE001', '0987654321', 'shushank22@gmail.com', '$2a$10$5DPnnf5GqDE1dI8L/fM79OsY7XjzmLbw3rkSVONPz.92CqHUkXYHC', false, NULL, 1, 'Active', 'CTO', 'Chief Technical Officer');
+INSERT INTO user_details (name, user_code, mobile_number, email_id, password, password_change_required, reporting_manager, role_id, user_status, user_designation, description) VALUES ('Jaitunjai Singh', 'OWE002', '0987654322', 'Jai22@gmail.com', '$2a$10$5DPnnf5GqDE1dI8L/fM79OsY7XjzmLbw3rkSVONPz.92CqHUkXYHC', false, 1, 1, 'Active', 'Software Engineer', 'SE');
+INSERT INTO user_details (name, user_code, mobile_number, email_id, password, password_change_required, reporting_manager, role_id, user_status, user_designation, description) VALUES ('M Asif', 'OWE003', '0987654323', 'asif22@gmail.com', '$2a$10$5DPnnf5GqDE1dI8L/fM79OsY7XjzmLbw3rkSVONPz.92CqHUkXYHC', false, 2, 1, 'Active', 'CEO', 'Chief Exec Officer');
 
+/******************************************************************************************/
 
 /* Insert Default Data in all the rquried tables */
 \copy rebate_items(item) FROM '/docker-entrypoint-initdb.d/rebate_items.csv' DELIMITER ',' CSV;
@@ -442,7 +435,6 @@ VALUES ( 'UserFirstName', 'UserLastName', '0987654321', 'shushank22@gmail.com', 
 \copy source(name,description) FROM '/docker-entrypoint-initdb.d/source.csv' DELIMITER ',' CSV;
 \copy partners(partner_name) FROM '/docker-entrypoint-initdb.d/partners.csv' DELIMITER ',' CSV;
 \copy timeline_sla(type_m2m,state_id,days,start_date) FROM '/docker-entrypoint-initdb.d/timeline_sla.csv' DELIMITER ',' CSV;
-\copy v_user_details(user_code,user_fname,user_lname,reporting_manager,user_status,description) FROM '/docker-entrypoint-initdb.d/v_user_details.csv' DELIMITER ',' CSV;
 \copy tier(tier_name) FROM '/docker-entrypoint-initdb.d/tier.csv' DELIMITER ',' CSV;
 \copy appointment_setters(team_id, first_name, last_name, pay_rate, start_date, end_date) FROM '/docker-entrypoint-initdb.d/appointment_setters.csv' DELIMITER ',' CSV;
 
