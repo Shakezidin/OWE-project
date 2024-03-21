@@ -21,7 +21,7 @@ import (
 
 /******************************************************************************
  * FUNCTION:		HandleCreateTeamRequest
- * DESCRIPTION:     handler for  get teams datarequest
+ * DESCRIPTION:     handler for get commissions data request
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
@@ -113,7 +113,7 @@ func HandleGetCommissionsDataRequest(resp http.ResponseWriter, req *http.Request
 
 	// Send the response
 	log.FuncInfoTrace(0, "Number of commissions List fetched : %v teamlist %+v", len(commissionsList.CommissionsList), commissionsList)
-	FormAndSendHttpResp(resp, "commissions data", http.StatusOK, commissionsList)
+	FormAndSendHttpResp(resp, "Commissions Data", http.StatusOK, commissionsList)
 }
 
 /******************************************************************************

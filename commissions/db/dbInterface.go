@@ -29,6 +29,7 @@ const (
 	CreateCommissionFunction   string = "create_new_commission"
 	TableName_teams            string = "teams"
 	TableName_commission_rates string = "commission_rates"
+	TableName_users_details    string = "user_details"
 )
 
 /******************************************************************************

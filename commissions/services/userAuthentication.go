@@ -91,7 +91,7 @@ func UpdatePassword(newPassword string, userEmailId string) (err error) {
 		return err
 	}
 
-	query = "UPDATE user_auth SET password = $1, password_change_required =$2 where email_id = LOWER($3)"
+	query = "UPDATE user_details SET password = $1, password_change_required =$2 where email_id = LOWER($3)"
 	whereEleList = append(whereEleList, string(hashedPassBytes))
 	whereEleList = append(whereEleList, isPasswordChnageReq)
 	whereEleList = append(whereEleList, userEmailId)
@@ -121,7 +121,7 @@ func GetUserInfo(emailId string) (data []map[string]interface{}, err error) {
 
 	query := `
 		SELECT u.user_id, u.email_id, u.password, u.password_change_required, u.role_id, r.role_name
-		FROM user_auth u
+		FROM user_details u
 		JOIN user_roles r ON u.role_id = r.role_id
 		`
 
