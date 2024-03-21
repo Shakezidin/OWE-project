@@ -97,11 +97,14 @@ export const LoginPage = () => {
             <br />
             <div className="loginSwitchView">
               <div className="loginSwitchInnerView">
-                {/* <Switch {...label} defaultChecked /> */}
+              <label className="switch">
+  <input type="checkbox"/>
+  <span className="slider round"></span>
+</label>
                 <div className="loginRBM">Remember Me</div>
               </div>
               <button 
-               
+               className="reset-password"
                 onClick={() => {
                   navigate('/resetPassword');
                 }}>

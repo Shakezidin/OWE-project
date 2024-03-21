@@ -8,7 +8,7 @@
     background-color:#32404F;
     /* height: 100%; */
     display: flex;
-    height: 100vh;
+    height: auto;
     /* overflow-y: scroll; */
     /* overflow: hidden; */
     flex-direction: column;
@@ -29,7 +29,7 @@
 .children-container {
     background-color: #F3F3F3;
     padding: 1.5rem;
-    /* height: 100%; */
+    height: 100vh;
 }
 
 /* sidebar style  */
@@ -72,7 +72,7 @@
 }
 .side-icon-container{
     display: flex;
-    align-items: center;
+    /* align-items: center; */
     gap: .5rem;
     /* justify-content: space-between; */
 }
@@ -141,7 +141,6 @@
     font-size: 1rem;
     background-color: #F3F3F3;
     border-radius: .25rem;
-
 }
 
 .user-container {
@@ -172,10 +171,10 @@
 .app-btn {
     border: 1px solid #0D0D0D;
     height: 2.4rem;
-    padding: .4rem .5rem .4rem .5rem !important;
+    padding: .4rem 1rem .4rem 1rem !important;
     outline: none;
     background-color: white;
-    border-radius: .25rem;
+    border-radius: .5rem;
     cursor: pointer;
     font-size: 1rem;
     display: flex;

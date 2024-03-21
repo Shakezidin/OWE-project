@@ -1,7 +1,7 @@
 import React from 'react'
 import logo from '../../../resources/assets/logo.png'
 import './layout.css'
-import btnlogo from '../../../resources/assets/appicon.png'
+import btnlogo from '../../../resources/assets/user1.png'
 import userImg from '../../../resources/assets/user.png'
 import notificationImg from '../../../resources/assets/notification.png'
 import searchIcon from '../../../resources/assets/search.png'   
