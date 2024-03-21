@@ -95,6 +95,7 @@ const CommissionRate: React.FC = () => {
                 <th>
                   <div>
                     <input value="test" type="checkbox" className='check-box' />
+                   
                   </div>
                 </th>
                 <th>
