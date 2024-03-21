@@ -15,7 +15,7 @@ const CommissionRate: React.FC = () => {
   const handleClose = () => setOpen(false);
   const commissionRateData = [
     {
-      pt: "Nova",
+      pt: "Sova",
       inst: "Plug PV",
       state: "Regular text column",
       st: "Loan Type",
@@ -25,7 +25,7 @@ const CommissionRate: React.FC = () => {
 
     },
     {
-      pt: "Nova",
+      pt: "Sova",
       inst: "Plug PV",
       state: "Regular text column",
       st: "Loan Type",
@@ -35,7 +35,7 @@ const CommissionRate: React.FC = () => {
 
     },
     {
-      pt: "Nova",
+      pt: "Sova",
       inst: "Plug PV",
       state: "Regular text column",
       st: "Loan Type",
@@ -45,7 +45,7 @@ const CommissionRate: React.FC = () => {
 
     },
     {
-      pt: "Nova",
+      pt: "Sova",
       inst: "Plug PV",
       state: "Regular text column",
       st: "Loan Type",
