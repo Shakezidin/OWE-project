@@ -1,45 +1,26 @@
-import React, { useState } from "react";
-import "./DropdownButton.css"; // Import your CSS file
-import { ReactComponent as DROPDOWN_BUTTON } from "../../../resources/assets/dropdown_Button.svg";
-
-interface DropdownButtonProps {
+import React from 'react';
+import '../dropdown/drop.css'
+interface SelectFieldProps {
+  id: string;
+  label: string;
+  value: string;
   options: string[];
-  label?: string;
+  onChange: (id: string, value: string) => void;
 }
 
-const DropdownButton: React.FC<DropdownButtonProps> = ({ options, label }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
-
-  const handleButtonClick = () => {
-    setIsOpen(!isOpen);
-  };
-
-  const handleOptionClick = (option: string) => {
-    setSelectedOption(option);
-    setIsOpen(false);
-  };
-
+const DropdownButton: React.FC<SelectFieldProps> = ({ id, label, value, options, onChange }) => {
   return (
-    <div className="dropdown">
-      <div className="dropdownContainer">
-        {label && <p className="inputLabel">{label}</p>}
-        <div className="dropdown-button-view">
-          <button className="dropdown-button" onClick={handleButtonClick}>
-            {selectedOption || "Select an option"}
-          </button>
-          <DROPDOWN_BUTTON />
-        </div>
-      </div>
-      {isOpen && (
-        <ul className="dropdown-list">
-          {options.map((option, index) => (
-            <li key={index} onClick={() => handleOptionClick(option)}>
-              {option}
-            </li>
-          ))}
-        </ul>
-      )}
+    <div className="input-wrapper">
+  {label && <p className="inputLabel">{label}</p>}
+  <div className="input-inner-view">
+     <select id={id} value={value} onChange={(e) => onChange(id, e.target.value)}>
+        {options.map((option, index) => (
+          <option key={index} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
+     </div>
     </div>
   );
 };

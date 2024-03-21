@@ -9,50 +9,50 @@ import { IoAddSharp } from "react-icons/io5";
 import imgExport from '../../../../resources/assets/export.png'
 import imgimport from '../../../../resources/assets/import.png'
 import CreateUserProfile from '../../create_profile/CreateUserProfile';
+import CreateCommissionRate from './CreateCommissionRate';
 const CommissionRate: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const DealerOverData = [
+  const commissionRateData = [
     {
-      united: "United Wholesales",
-      Markting: "Markting",
-      dollar: "$10",
-      startDate: "10/10/1000",
-      endDate: "99/99/99990",
-      delete: <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />,
-      edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />
+      pt: "Nova",
+      inst: "Plug PV",
+      state: "Regular text column",
+      st: "Loan Type",
+      sp: "$9802",
+     rep:"Loan Type",
+     rl:"Regular text column"
 
     },
     {
-      united: "United Wholesales",
-      Markting: "Markting",
-      dollar: "$10",
-      startDate: "10/10/1000",
-      endDate: "99/99/99990",
-      delete: <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />,
-      edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />
+      pt: "Nova",
+      inst: "Plug PV",
+      state: "Regular text column",
+      st: "Loan Type",
+      sp: "$9802",
+     rep:"Loan Type",
+     rl:"Regular text column"
 
     },
     {
-      united: "United Wholesales",
-      Markting: "Markting",
-      dollar: "$10",
-      startDate: "10/10/1000",
-      endDate: "99/99/99990",
-      delete: <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />,
-      edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />
+      pt: "Nova",
+      inst: "Plug PV",
+      state: "Regular text column",
+      st: "Loan Type",
+      sp: "$9802",
+     rep:"Loan Type",
+     rl:"Regular text column"
 
     },
     {
-      united: "United Wholesales",
-      Markting: "Markting",
-      dollar: "$10",
-      startDate: "10/10/1000",
-      endDate: "99/99/99990",
-      delete: <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />,
-      edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />
-
+      pt: "Nova",
+      inst: "Plug PV",
+      state: "Regular text column",
+      st: "Loan Type",
+      sp: "$9802",
+     rep:"Loan Type",
+     rl:"Regular text column"
     },
     
   ]
@@ -84,7 +84,7 @@ const CommissionRate: React.FC = () => {
     </div>
    
            {
-            open && (<CreateUserProfile handleClose={handleClose}  />)
+            open && (<CreateCommissionRate handleClose={handleClose}  />)
            }
     
   </div>
@@ -138,16 +138,16 @@ const CommissionRate: React.FC = () => {
           
             <tbody >
               {
-                DealerOverData.map((el, i) => (
+                commissionRateData.map((el, i) => (
                   <tr key={i}>
                     <td ><input value="test" type="checkbox" className='check-box' /></td>
-                    <td style={{ fontWeight: "600" }}>{el.united}</td>
-                    <td>{el.Markting}</td>
-                    <td>{el.dollar}</td>
-                    <td>{el.startDate}</td>
-                    <td>{el.endDate}</td>
-                    <td>{el.endDate}</td>
-                    <td>{el.endDate}</td>
+                    <td style={{ fontWeight: "600" }}>{el.pt}</td>
+                    <td>{el.inst}</td>
+                    <td>{el.state}</td>
+                    <td>{el.st}</td>
+                    <td>{el.sp}</td>
+                    <td>{el.rep}</td>
+                    <td>{el.rl}</td>
                     {/* <td>{el.endDate}</td> */}
                   
 

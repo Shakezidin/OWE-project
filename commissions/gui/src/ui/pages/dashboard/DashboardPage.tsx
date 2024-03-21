@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 /**
  * Created by satishazad on 23/01/24
@@ -10,54 +10,64 @@ import React from "react";
 
 
 import CreateUserProfile from "../create_profile/CreateUserProfile";
+import AccountSettings from "../accountSettings/AccountSettings";
+import UserManagement from "../userManagement/UserManagement";
 import '../dashboard/dasboard.css'
-
-const modalStyle = {
-    position: 'absolute' as 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
-};
-
-
+import { DashboardUserModel } from "../../../core/models/data_models/DashboardUserModel";
+import apiCaller from "../../../infrastructure/web_api/api_client/apiUrl";
 export const DashboardPage: React.FC = () => {
+  const [open, setOpen] = React.useState<boolean>(false);
+  const [todos, setTodos] = useState<DashboardUserModel[]>([]);
 
-    const [open, setOpen] = React.useState<boolean>(false);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await apiCaller<DashboardUserModel[]>('get', '/users');
+        setTodos(response.data);
+      } catch (error) {
+        console.error('Error fetching todos:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+    
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
     return (
         <div className="admin-dashboard">
+          <UserManagement />
         <div className="dashboard-head">
           <h4>Admin Dashboard</h4>
+         
           <button className='user-btn'  onClick={handleOpen}>Create User</button>
         </div>
-        <div className="admin-card-container">
-          <div className="admin-card-content">
-  
-          </div>
-        </div>
-        <div className="user-list-container">
-          <div className="user-list">
-  user list
-          </div>
-        </div>
-        <div>
-          
 
-            {/* <Modal
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-            >
-                <CreateUserProfile handleClose={handleClose}  />
-            </Modal> */}
+
+
+
+        {/* <div className="admin-card-container">
+        {
+            todos.map((el,i)=>(
+              <div className="admin-card-content" key={i}>
+                 {el.name}
+              </div>
+            ))
+           }
+       
+        </div> */}
+
+        <div className="admin-card-container accountcol">
+        <AccountSettings />
+        </div>
+
+
+        <div>
+               {
+                open && ( <CreateUserProfile handleClose={handleClose}  />)
+               }
+          
         </div>
       </div>
        

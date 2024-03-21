@@ -29,13 +29,17 @@ const SidebarItemCollapse = ({ item }: Props) => {
     item.sidebarProps ? (
       <>
        <div className="side-accordian" onClick={() => setOpen(!open)} style={{cursor:"pointer"}}>
-       <div className="">
+      <div className="side-icon-container">
+      <div className="">
      {item.sidebarProps.icon && item.sidebarProps.icon}
      </div>
      <p className='tablink' >
      {item.sidebarProps.displayText}
         </p>
-        <MdKeyboardArrowDown style={{fontSize:"1.5rem",color:"white"}} />
+      </div>
+    <div className="">
+    <MdKeyboardArrowDown style={{fontSize:"1.5rem",color:"white"}} />
+    </div>
      </div>
         {
           open &&   <div className="side-accordian-item">

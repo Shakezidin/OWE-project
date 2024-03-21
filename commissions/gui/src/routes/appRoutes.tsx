@@ -18,8 +18,12 @@ import DealeronBoarding from "../ui/pages/configure/dealeronBoarding/DealeronBoa
 import AppointmentSetters from "../ui/pages/configure/appointmentSetters/AppointmentSetters";
 import SaleType from "../ui/pages/configure/saleType/SaleType";
 import LoanType from "../ui/pages/configure/loanType/LoanType";
+import Onboarding from "../ui/pages/onboarding/Onboarding";
+import UserOnboarding from "../ui/pages/onboarding/useronboarding/UserOnboarding";
+import Project from "../ui/pages/project/Project";
+import Report from "../ui/pages/report/Report";
+import DatabaseController from "../ui/pages/databaseController/DatabaseController";
 const appRoutes: RouteType[] = [
- 
  
   {
     path: "/dashboard",
@@ -124,7 +128,7 @@ const appRoutes: RouteType[] = [
         element:<PaymentValidation/>,
         state:"configuration.payment_validation",
         sidebarProps:{
-          displayText:"Payment Validation"
+          displayText:"Partner Validation"
         }
       },
       {
@@ -132,7 +136,7 @@ const appRoutes: RouteType[] = [
         element:<DealeronBoarding/>,
         state:"configuration.dealer_on_boarding",
         sidebarProps:{
-          displayText:"Dealer On Boarding"
+          displayText:"User Onboarding"
         }
       },
 
@@ -164,8 +168,89 @@ const appRoutes: RouteType[] = [
 
     ]
   },
- 
-
+  {
+    path: "/dashboard/onboarding",
+    element: <Onboarding/>,
+    state: "onboarding",
+    sidebarProps: {
+      displayText: "Onboarding",
+      icon:<MdOutlineSettings style={{fontSize:"1.4rem",color:"white"}}/>
+    },
+    child:[
+      {
+        path:"/dashboard/onboarding/useronboarding",
+        element:<UserOnboarding/>,
+        state:"dashboard.onboarding.useronboarding",
+        sidebarProps:{
+          displayText:"User Onboarding"
+        }
+      },
+    ]
+  },
+  {
+    path: "/dashboard/project",
+    element: <Project/>,
+    state: "project",
+    sidebarProps: {
+      displayText: "Project",
+      icon:<MdOutlineSettings style={{fontSize:"1.4rem",color:"white"}}/>
+    },
+   
+  },
+  {
+    path: "/dashboard/report",
+    element: <Report/>,
+    state: "report",
+    sidebarProps: {
+      displayText: "Report",
+      icon:<MdOutlineSettings style={{fontSize:"1.4rem",color:"white"}}/>
+    },
+  },
+  {
+    path: "/dashboard/databasecontroller",
+    element: <DatabaseController/>,
+    state: "databasecontroller",
+    sidebarProps: {
+      displayText: "DatabaseController",
+      icon:<MdOutlineSettings style={{fontSize:"1.4rem",color:"white"}}/>
+    },
+  },
+  {
+    path: "/dashboard/usermanagement",
+    element: <DatabaseController/>,
+    state: "usermanagement",
+    sidebarProps: {
+      displayText: "UserManagement",
+      icon:<MdOutlineSettings style={{fontSize:"1.4rem",color:"white"}}/>
+    },
+  },
+  {
+    path: "/dashboard/control",
+    element: <DatabaseController/>,
+    state: "control",
+    sidebarProps: {
+      displayText: "Control/Support",
+      icon:<MdOutlineSettings style={{fontSize:"1.4rem",color:"white"}}/>
+    },
+  },
+  {
+    path: "/dashboard/myaccount",
+    element: <DatabaseController/>,
+    state: "myaccount",
+    sidebarProps: {
+      displayText: "My Account",
+      icon:<MdOutlineSettings style={{fontSize:"1.4rem",color:"white"}}/>
+    },
+  },
+  {
+    path: "/dashboard/logout",
+    element: <DatabaseController/>,
+    state: "logout",
+    sidebarProps: {
+      displayText: "Logout",
+      icon:<MdOutlineSettings style={{fontSize:"1.4rem",color:"white"}}/>
+    },
+  },
 ];
 
 export default appRoutes;
