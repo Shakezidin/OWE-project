@@ -36,7 +36,7 @@ const Input: FC<InputProps> = ({
           onChange={onChange}
           disabled={disabled}
         />
-        {type === "password" ? <EYE_ICON className="eyeIcon" /> : <></>}
+        {type === "password" ? <EYE_ICON className="eyeIcon" style={{marginRight:".5rem"}}/> : <></>}
       </div>
       {error && <p className="error">Input filed can't be empty!</p>}
     </div>
