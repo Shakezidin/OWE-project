@@ -59,7 +59,7 @@ export const DashboardPage: React.FC = () => {
         </div> */}
 
         <div className="admin-card-container accountcol">
-        <AccountSettings />
+       
         </div>
 
 

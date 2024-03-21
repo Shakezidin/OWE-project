@@ -24,6 +24,7 @@ import Project from "../ui/pages/project/Project";
 import Report from "../ui/pages/report/Report";
 import DatabaseController from "../ui/pages/databaseController/DatabaseController";
 import { ICONS } from "../ui/icons/Icons";
+import AccountSettings from "../ui/pages/accountSettings/AccountSettings";
 const appRoutes: RouteType[] = [
  
   {
@@ -36,7 +37,7 @@ const appRoutes: RouteType[] = [
     },
   },
   {
-    path: "/dashboard/configuration",
+    path: "/configuration",
     element: <Configuration/>,
     state: "configuration",
     sidebarProps: {
@@ -45,23 +46,23 @@ const appRoutes: RouteType[] = [
     },
     child:[
       {
-        path:"/dashboard/configuration/commission_rate",
+        path:"/configuration/commission_rate",
         element:<CommissionRate/>,
-        state:"dashboard.configuration.commission_rate",
+        state:"configuration.commission_rate",
         sidebarProps:{
           displayText:"Commission Rate"
         }
       },
       {
-        path:"/dashboard/configuration/dealer_override",
+        path:"/configuration/dealer_override",
         element:<DealerOverRides/>,
-        state:"dashboard.configuration.dealer_override",
+        state:"configuration.dealer_override",
         sidebarProps:{
           displayText:"Dealer OverRides"
         }
       },
       {
-        path:"/dashboard/configuration/marketing_fees",
+        path:"/configuration/marketing_fees",
         element:<MarketingFees/>,
         state:"configuration.marketing_fees",
         sidebarProps:{
@@ -69,7 +70,7 @@ const appRoutes: RouteType[] = [
         }
       },
       {
-        path:"/dashboard/configuration/adder_validation",
+        path:"/configuration/adder_validation",
         element:<AdderValidation/>,
         state:"configuration.adder_validation",
         sidebarProps:{
@@ -77,7 +78,7 @@ const appRoutes: RouteType[] = [
         }
       },
       {
-        path:"/dashboard/configuration/sale_type",
+        path:"/configuration/sale_type",
         element:<SaleType/>,
         state:"configuration.sale_type",
         sidebarProps:{
@@ -101,7 +102,7 @@ const appRoutes: RouteType[] = [
       //   }
       // },
       {
-        path:"/dashboard/configuration/tier_loan_fee",
+        path:"/configuration/tier_loan_fee",
         element:<TierLoanFee/>,
         state:"configuration.tier_loan_fee",
         sidebarProps:{
@@ -109,7 +110,7 @@ const appRoutes: RouteType[] = [
         }
       },
       {
-        path:"/dashboard/configuration/dealer_tier",
+        path:"/configuration/dealer_tier",
         element:<DealerTier/>,
         state:"configuration.dealer_tier",
         sidebarProps:{
@@ -117,7 +118,7 @@ const appRoutes: RouteType[] = [
         }
       },
       {
-        path:"/dashboard/configuration/payment_schedule",
+        path:"/configuration/payment_schedule",
         element:<PaymentSchedule/>,
         state:"configuration.payment_schedule",
         sidebarProps:{
@@ -126,7 +127,7 @@ const appRoutes: RouteType[] = [
       },
     
       {
-        path:"/dashboard/configuration/timeLine",
+        path:"/configuration/timeLine",
         element:<TimeLine/>,
         state:"configuration.timeLine",
         sidebarProps:{
@@ -162,7 +163,7 @@ const appRoutes: RouteType[] = [
       // },
     
       {
-        path:"/dashboard/configuration/loan_type",
+        path:"/configuration/loan_type",
         element:<LoanType/>,
         state:"configuration.loan_type",
         sidebarProps:{
@@ -175,7 +176,7 @@ const appRoutes: RouteType[] = [
   },
  
   {
-    path: "/dashboard/project",
+    path: "/project",
     element: <Project/>,
     state: "project",
     sidebarProps: {
@@ -185,7 +186,7 @@ const appRoutes: RouteType[] = [
    
   },
   {
-    path: "/dashboard/report",
+    path: "/report",
     element: <Report/>,
     state: "report",
     sidebarProps: {
@@ -194,7 +195,7 @@ const appRoutes: RouteType[] = [
     },
   },
   {
-    path: "/dashboard/databasecontroller",
+    path: "/databasecontroller",
     element: <DatabaseController/>,
     state: "databasecontroller",
     sidebarProps: {
@@ -203,7 +204,7 @@ const appRoutes: RouteType[] = [
     },
   },
   {
-    path: "/dashboard/usermanagement",
+    path: "/usermanagement",
     element: <DatabaseController/>,
     state: "usermanagement",
     sidebarProps: {
@@ -212,7 +213,7 @@ const appRoutes: RouteType[] = [
     },
   },
   {
-    path: "/dashboard/control",
+    path: "/control",
     element: <DatabaseController/>,
     state: "control",
     sidebarProps: {
@@ -221,8 +222,8 @@ const appRoutes: RouteType[] = [
     },
   },
   {
-    path: "/dashboard/myaccount",
-    element: <DatabaseController/>,
+    path: "/myaccount",
+    element: <AccountSettings/>,
     state: "myaccount",
     sidebarProps: {
       displayText: "My Account",
@@ -230,7 +231,7 @@ const appRoutes: RouteType[] = [
     },
   },
   {
-    path: "/dashboard/logout",
+    path: "/",
     element: <DatabaseController/>,
     state: "logout",
     sidebarProps: {
