@@ -125,7 +125,7 @@ const CommissionRate: React.FC = () => {
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Rep. Type</p> <img src={arrowDown} alt="" />
+                    <p>Rep.Type</p> <img src={arrowDown} alt="" />
                   </div>
                 </th>
                <th>
@@ -133,7 +133,26 @@ const CommissionRate: React.FC = () => {
                     <p>Rate List</p> <img src={arrowDown} alt="" />
                   </div>
                 </th>
-
+                {/* <th>
+                  <div className="table-header">
+                    <p>Rate</p> <img src={arrowDown} alt="" />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>Start Dt.</p> <img src={arrowDown} alt="" />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>End Dt.</p> <img src={arrowDown} alt="" />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>Action</p> <img src={arrowDown} alt="" />
+                  </div>
+                </th> */}
               </tr>
             </thead>
           

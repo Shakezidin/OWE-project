@@ -10,6 +10,7 @@ export const ICONS = {
   BACKGROUND: require("../../resources/assets/background.png"),
   LOGO: require("../../resources/assets/logo.png"),
   MENU_1: require("../../resources/assets/menu_1.png"),
+  sidebarLogo:require('../../resources/assets/comissionlogo.png'),
   dashboardIcon:require('../../resources/assets/dash.png'),
   confige:require('../../resources/assets/config.png'),
   projectIcon:require('../../resources/assets/project.png'),

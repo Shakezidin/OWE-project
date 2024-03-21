@@ -25,6 +25,7 @@ import Report from "../ui/pages/report/Report";
 import DatabaseController from "../ui/pages/databaseController/DatabaseController";
 import { ICONS } from "../ui/icons/Icons";
 import AccountSettings from "../ui/pages/accountSettings/AccountSettings";
+import colorConfig from "../config/colorConfig";
 const appRoutes: RouteType[] = [
  
   {
@@ -50,7 +51,8 @@ const appRoutes: RouteType[] = [
         element:<CommissionRate/>,
         state:"configuration.commission_rate",
         sidebarProps:{
-          displayText:"Commission Rate"
+          displayText:"Commission Rate",
+          icon:<div className="ellipse" style={{backgroundColor:colorConfig.commissionColor}}></div>
         }
       },
       {
@@ -58,7 +60,8 @@ const appRoutes: RouteType[] = [
         element:<DealerOverRides/>,
         state:"configuration.dealer_override",
         sidebarProps:{
-          displayText:"Dealer OverRides"
+          displayText:"Dealer OverRides",
+          icon:<div className="ellipse" style={{backgroundColor:colorConfig.commissionColor}}></div>
         }
       },
       {
@@ -66,7 +69,8 @@ const appRoutes: RouteType[] = [
         element:<MarketingFees/>,
         state:"configuration.marketing_fees",
         sidebarProps:{
-          displayText:"Marketing Fees"
+          displayText:"Marketing Fees",
+          icon:<div className="ellipse" style={{backgroundColor:colorConfig.marketColor}}></div>
         }
       },
       {
@@ -74,7 +78,8 @@ const appRoutes: RouteType[] = [
         element:<AdderValidation/>,
         state:"configuration.adder_validation",
         sidebarProps:{
-          displayText:"Adder Validation"
+          displayText:"Adder Validation",
+          icon:<div className="ellipse" style={{backgroundColor:colorConfig.adderColor}}></div>
         }
       },
       {
@@ -82,7 +87,8 @@ const appRoutes: RouteType[] = [
         element:<SaleType/>,
         state:"configuration.sale_type",
         sidebarProps:{
-          displayText:"Sales Type"
+          displayText:"Sales Type",
+          icon:<div className="ellipse" style={{backgroundColor:colorConfig.salesColor}}></div>
         }
       },
       // {
@@ -106,7 +112,8 @@ const appRoutes: RouteType[] = [
         element:<TierLoanFee/>,
         state:"configuration.tier_loan_fee",
         sidebarProps:{
-          displayText:"Tier Loan fees"
+          displayText:"Tier Loan fees",
+          icon:<div className="ellipse" style={{backgroundColor:colorConfig.tierColor}}></div>
         }
       },
       {
@@ -114,7 +121,8 @@ const appRoutes: RouteType[] = [
         element:<DealerTier/>,
         state:"configuration.dealer_tier",
         sidebarProps:{
-          displayText:"Dealer Tier"
+          displayText:"Dealer Tier",
+          icon:<div className="ellipse" style={{backgroundColor:colorConfig.dealerTierColor}}></div>
         }
       },
       {
@@ -122,7 +130,8 @@ const appRoutes: RouteType[] = [
         element:<PaymentSchedule/>,
         state:"configuration.payment_schedule",
         sidebarProps:{
-          displayText:"Pay Schedule"
+          displayText:"Pay Schedule",
+          icon:<div className="ellipse" style={{backgroundColor:colorConfig.payColor}}></div>
         }
       },
     
@@ -131,7 +140,8 @@ const appRoutes: RouteType[] = [
         element:<TimeLine/>,
         state:"configuration.timeLine",
         sidebarProps:{
-          displayText:"TimeLine SLA"
+          displayText:"TimeLine SLA",
+          icon:<div className="ellipse" style={{backgroundColor:colorConfig.timeLineColor}}></div>
         }
       },
     
@@ -167,7 +177,8 @@ const appRoutes: RouteType[] = [
         element:<LoanType/>,
         state:"configuration.loan_type",
         sidebarProps:{
-          displayText:"Loan Type"
+          displayText:"Loan Type",
+          icon:<div className="ellipse" style={{backgroundColor:colorConfig.loanTypeColor}}></div>
         }
       },
       

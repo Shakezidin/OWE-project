@@ -7,15 +7,17 @@ import { RootState } from "../../../redux/store";
 import { RouteType } from "../../../routes/config";
 import colorConfig from "../../../config/colorConfig";
 import { Link } from "react-router-dom";
-import { MdKeyboardArrowDown } from "react-icons/md";
+import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
 
 
 type Props = {
   item: RouteType;
+  setToggleOpen:React.Dispatch<React.SetStateAction<boolean>>;
+
 };
 
-const SidebarItemCollapse = ({ item }: Props) => {
-  const [open, setOpen] = useState(false);
+const SidebarItemCollapse = ({ item,setToggleOpen }: Props) => {
+const [open,setOpen] = useState<boolean>(false)
 
   const { appState } = useSelector((state: RootState) => state.appState);
 
@@ -33,22 +35,22 @@ const SidebarItemCollapse = ({ item }: Props) => {
 
      {item.sidebarProps.icon && item.sidebarProps.icon}
    
-     <p className='tablink' >
+     <p className={`tablink ${open ? "active-side":""}`}>
      {item.sidebarProps.displayText}
         </p>
       </div>
-   
-    <MdKeyboardArrowDown style={{fontSize:"1.5rem",color:"white"}} />
- 
+    {
+      open?<MdKeyboardArrowUp style={{fontSize:"1.5rem",color:colorConfig.sidebar.activeBg}} />:<MdKeyboardArrowDown style={{fontSize:"1.5rem",color:"white"}} />
+    }
      </div>
         {
           open &&   <div className="side-accordian-item">
           {item.child?.map((route, index) => (
             route.sidebarProps ? (
               route.child ? (
-                <SidebarItemCollapse item={route} key={index} />
+                <SidebarItemCollapse  setToggleOpen={setToggleOpen} item={route} key={index} />
               ) : (
-                <SidebarItem item={route} key={index} />
+                <SidebarItem  setToggleOpen={setToggleOpen} item={route} key={index} />
               )
             ) : null
           ))}

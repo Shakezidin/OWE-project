@@ -32,7 +32,8 @@
   flex-direction: column;
 }
 .rateSection h2 {
-  font-size: 18px;
+  font-size: 18px !important;
+  font-weight:600;
 }
 
 .iconsSection {
@@ -72,6 +73,9 @@
   cursor: pointer;
 }
 /* table style  */
+.TableContainer{
+  overflow-x: auto;
+}
   table {
     width: 100%;
     background-color: white;
@@ -81,14 +85,14 @@
  
    table thead tr {
     border-bottom: 1px solid #EAECF0;
-    background-color: #F5F5F5;
-    border-left: 1px solid white;
-    border-right: 1px solid white;
+   
+    /* background-color: #F5F5F5; */
+   
   }
   table thead tr th{
     text-align: left;
     font-size: 16px;
-    font-weight: 600;
+    font-weight:600;
     cursor: pointer;
     padding: .8rem 1rem .8rem 1rem;
     /* line-height: 18px; */
