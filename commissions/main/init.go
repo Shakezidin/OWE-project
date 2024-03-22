@@ -156,6 +156,42 @@ var apiRoutes = ApiRoutes{
 			types.RoleAdmin,
 		},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/create_dealer",
+		apiHandler.HandleCreateDealerRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("GET"),
+		"/owe-commisions-service/v1/get_dealers",
+		apiHandler.HandleGetDealersDataRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/create_marketingfee",
+		apiHandler.HandleCreateMarketingFeesRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("GET"),
+		"/owe-commisions-service/v1/get_marketingfee",
+		apiHandler.HandleGetMarketingFeesDataRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
 }
 
 /******************************************************************************

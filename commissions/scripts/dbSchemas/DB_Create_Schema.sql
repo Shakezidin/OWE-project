@@ -449,3 +449,5 @@ INSERT INTO user_details (name, user_code, mobile_number, email_id, password, pa
 \i '/docker-entrypoint-initdb.d/DB_ProcCommisionTypeCalc.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateDealerPayExport.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewCommission.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewDealer.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewMarketingFees.sql';

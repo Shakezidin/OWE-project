@@ -21,15 +21,19 @@ var (
 )
 
 const (
-	OWEDB                      string = "owe_db"
-	dbDriverName               string = "postgres"
-	CreateUserFunction         string = "create_new_user"
-	CreateTeamFunction         string = "create_new_team"
-	CreateApiSetterFunction    string = "create_appointment_setter"
-	CreateCommissionFunction   string = "create_new_commission"
-	TableName_teams            string = "teams"
-	TableName_commission_rates string = "commission_rates"
-	TableName_users_details    string = "user_details"
+	OWEDB                       string = "owe_db"
+	dbDriverName                string = "postgres"
+	CreateUserFunction          string = "create_new_user"
+	CreateTeamFunction          string = "create_new_team"
+	CreateApiSetterFunction     string = "create_appointment_setter"
+	CreateCommissionFunction    string = "create_new_commission"
+	CreateDealerFunction        string = "create_new_dealer"
+	CreateMarketingFeesFunction string = "create_new_marketing_fees"
+	TableName_teams             string = "teams"
+	TableName_commission_rates  string = "commission_rates"
+	TableName_users_details     string = "user_details"
+	TableName_dealer_override   string = "dealer_override"
+	TableName_marketing_fees   string = "marketing_fees"
 )
 
 /******************************************************************************

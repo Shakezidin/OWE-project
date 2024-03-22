@@ -1,6 +1,6 @@
 /**************************************************************************
  *	Function	: createUserApiModels.go
- *	DESCRIPTION : Files contains struct for create team get team user models
+ *	DESCRIPTION : Files contains struct for create team user models
  *	DATE        : 20-Jan-2024
  **************************************************************************/
 
