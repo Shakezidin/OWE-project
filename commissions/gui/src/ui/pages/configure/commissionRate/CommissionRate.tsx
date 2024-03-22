@@ -1,9 +1,8 @@
 import React from 'react'
 import { RiDeleteBin5Line } from "react-icons/ri";
-import arrowDown from '../../../../resources/assets/arrow-down.png'
 import '../configure.css'
 import { CiEdit } from "react-icons/ci";
-
+import arrowDown from "../../../../resources/assets/arrow-down.png";
 import { MdFilterList } from "react-icons/md";
 import { IoAddSharp } from "react-icons/io5";
 import imgExport from '../../../../resources/assets/export.png'
@@ -22,7 +21,14 @@ const CommissionRate: React.FC = () => {
       st: "Loan Type",
       sp: "$9802",
      rep:"Loan Type",
-     rl:"Regular text column"
+     rl:"Regular text column",
+     rate:"$654123",
+     sd:"20-04-2024",
+     ed:"20-04-2024",
+     delete: (
+      <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />
+    ),
+    edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />,
 
     },
     {
@@ -32,7 +38,14 @@ const CommissionRate: React.FC = () => {
       st: "Loan Type",
       sp: "$9802",
      rep:"Loan Type",
-     rl:"Regular text column"
+     rl:"Regular text column",
+     rate:"$654123",
+     sd:"20-04-2024",
+     ed:"20-04-2024",
+     delete: (
+      <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />
+    ),
+    edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />,
 
     },
     {
@@ -42,9 +55,15 @@ const CommissionRate: React.FC = () => {
       st: "Loan Type",
       sp: "$9802",
      rep:"Loan Type",
-     rl:"Regular text column"
-
-    },
+     rl:"Regular text column",
+     rate:"$654123",
+     sd:"20-04-2024",
+     ed:"20-04-2024",
+     delete: (
+      <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />
+    ),
+    edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />,
+},
     {
       pt: "Sova",
       inst: "Plug PV",
@@ -52,9 +71,16 @@ const CommissionRate: React.FC = () => {
       st: "Loan Type",
       sp: "$9802",
      rep:"Loan Type",
-     rl:"Regular text column"
-    },
-    
+     rl:"Regular text column",
+     rate:"$654123",
+     sd:"20-04-2024",
+     ed:"20-04-2024",
+     delete: (
+      <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />
+    ),
+    edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />,
+  },
+ 
   ]
   return (
     <div className='comm'>
@@ -133,7 +159,7 @@ const CommissionRate: React.FC = () => {
                     <p>Rate List</p> <img src={arrowDown} alt="" />
                   </div>
                 </th>
-                {/* <th>
+                <th>
                   <div className="table-header">
                     <p>Rate</p> <img src={arrowDown} alt="" />
                   </div>
@@ -152,7 +178,7 @@ const CommissionRate: React.FC = () => {
                   <div className="table-header">
                     <p>Action</p> <img src={arrowDown} alt="" />
                   </div>
-                </th> */}
+                </th>
               </tr>
             </thead>
           
@@ -168,7 +194,19 @@ const CommissionRate: React.FC = () => {
                     <td>{el.sp}</td>
                     <td>{el.rep}</td>
                     <td>{el.rl}</td>
-                    {/* <td>{el.endDate}</td> */}
+                    <td>{el.rate}</td>
+                    <td>{el.sd}</td>
+                    <td>{el.ed}</td>
+                    <td>
+                    <div className="action-icon">
+                      <div className="" style={{ cursor: "pointer" }}>
+                        {el.delete}
+                      </div>
+                      <div className="" style={{ cursor: "pointer" }}>
+                        {el.edit}
+                      </div>
+                    </div>
+                  </td>
                   
 
 
