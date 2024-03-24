@@ -1,10 +1,13 @@
 import { configureStore} from "@reduxjs/toolkit";
 import appStateSlice from "./features/appStateSlice";
 import authReducer from './features/authSlice'
+import commissionReducer from './features/commissionSlice'
+
 export const store = configureStore({
   reducer: {
     appState: appStateSlice,
-    auth:authReducer
+    auth:authReducer,
+    comm:commissionReducer
 
   }
 });
