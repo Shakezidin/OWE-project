@@ -24,17 +24,17 @@ export const login = async (credentials: Credentials): Promise<{data: LoginRespo
   }
 };
 
-export const getCaller = async (endpoint: string) => {
+export const getCaller = async (endpoint: string,data:any) => {
   const response = await fetch(`${BASE_URL}/${endpoint}`, {
     method:HTTP_METHOD.GET,
     headers: {
       Authorization: `${localStorage.getItem('token')}`,
       'Content-Type': 'application/json',
     },
-    // body:JSON.stringify(data)
+    body:JSON.stringify(data)
   });
-  const data = await response.json();
-    return data;
+  const result = await response.json();
+    return result;
 };
 
 export const postCaller = async (endpoint: string, data: any) => {
