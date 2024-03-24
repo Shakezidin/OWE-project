@@ -91,13 +91,13 @@ const CommissionRate: React.FC = () => {
   ]
   const dispatch = useAppDispatch()
   // const getData = useAppSelector(state=>state.comm.data)
-//   const pageNumber = {
-//     "page_number": 1,
-//     "page_size": 2
-// }
+  const pageNumber = {
+    "page_number": 1,
+    "page_size": 2
+}
 const getData = async()=>{
  try{
-  const res = await  getCaller('/get_commissions')
+  const res = await  getCaller('get_commissions',pageNumber)
  }
  catch(error:any){
   console.log(error)
