@@ -1,5 +1,5 @@
 /**************************************************************************
- * File       	   : apiGetSaleTypesData.go.go
+ * File       	   : apiGetSaleTypesData.go
  * DESCRIPTION     : This file contains functions for get sale type data handler
  * DATE            : 22-Jan-2024
  **************************************************************************/
