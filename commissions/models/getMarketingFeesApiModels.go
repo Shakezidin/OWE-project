@@ -1,5 +1,5 @@
 /**************************************************************************
- *	Function	: getMarketingFeesApiModels.go.go
+ *	Function	: getMarketingFeesApiModels.go
  *	DESCRIPTION : Files contains struct for get Marketing Fees user models
  *	DATE        : 20-Jan-2024
  **************************************************************************/
@@ -19,5 +19,5 @@ type GetMarketingFeesData struct {
 }
 
 type GetMarketingFeesList struct {
-	MarketingFeesList []GetMarketingFeesData `json:"Marketing_fees_list"`
+	MarketingFeesList []GetMarketingFeesData `json:"marketing_fees_list"`
 }

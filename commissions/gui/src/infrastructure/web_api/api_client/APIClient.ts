@@ -6,17 +6,14 @@
  * Path: src/infrastructure/web_api/api_client
  */
 import {HTTP_STATUS, RequestModel} from "../../../core/models/api_models/RequestModel";
-import Config from "../../../config/Config";
 import {getAuthorizationHeader, HttpHeadersDefault} from "./RequestConstants";
 import {JSONObject} from "../../../core/common/CustomDataTypes";
-
 
 export const httpRequest = async (req: RequestModel): Promise<JSONObject> => {
     console.log('API REQUEST:: ', req);
 
     //---- API URL ----
-    console.log('Config:: ', Config.instance.config);
-    let urlStr = Config.instance.config.apiBaseUrl + req.endPoint;
+    let urlStr = `${process.env.REACT_APP_BASE_URL}` + req.endPoint;
     let url = urlStr; //new URL('', urlStr);
 
     //---- Headers ----

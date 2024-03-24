@@ -16,6 +16,8 @@ import { MdOutlineMenu } from "react-icons/md";
  }
 
 const Header: React.FC<Toggleprops> = ({toggleOpen,setToggleOpen}) => {
+  const userRole = localStorage.getItem("role")
+  const userEmail = localStorage.getItem('emailId')
   return (
     <div className="header-content">
    <div className="header-icon">
@@ -44,13 +46,13 @@ const Header: React.FC<Toggleprops> = ({toggleOpen,setToggleOpen}) => {
         </div>
         <div className="user-name">
          <div className="down-arrow">
-         <h4>Caleb Antonucci</h4>
+         <h4>{userEmail}</h4>
        <div className="down-circle">
        <MdKeyboardArrowDown style={{fontSize:"1.5rem"}} />
        </div>
          </div>
          
-          <p>Admin</p>
+          <p>{userRole}</p>
         </div>
       </div>
      </div>

@@ -1,4 +1,4 @@
 {
   "env_name": "local",
-  "api_base_url": "http://localhost:8080/owe-commisions-service/v1"
+  "api_base_url": "http://155.138.239.170:31020/owe-commisions-service/v1"
 }
