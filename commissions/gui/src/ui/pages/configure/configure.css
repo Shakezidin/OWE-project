@@ -102,6 +102,8 @@
     display: flex;
     align-items: center;
     gap: .3rem;
+    width: 180px;
+    /* background-color: #344054; */
   }
   table tbody tr {
     border-bottom: 1px solid #EAECF0;
@@ -109,6 +111,8 @@
   table tbody tr td{
     padding: .8rem 1rem .8rem 1rem;
     font-size: 14px;
+    width: auto;
+
   }
   table tbody tr:last-child{
     border: 0;

@@ -133,7 +133,7 @@ const TierLoanFee = () => {
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Finance Type Name</p> <img src={arrowDown} alt="" />
+                    <p>Finance Type </p> <img src={arrowDown} alt="" />
                   </div>
                 </th>
                 <th>
