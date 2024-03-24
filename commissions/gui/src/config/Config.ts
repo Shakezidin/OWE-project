@@ -10,10 +10,8 @@ import {ConfigurationModel, creatConfigModelFromJSON} from "../core/models/data_
 const configJSON = require('./env_local.json');
 
 class Config {
-
     static instance = new Config();
     config: ConfigurationModel;
-
     constructor() {
         this.config = creatConfigModelFromJSON(configJSON);
     }

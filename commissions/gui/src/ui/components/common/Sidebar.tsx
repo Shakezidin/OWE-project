@@ -4,12 +4,20 @@ import SidebarItemCollapse from "./SidebarItemCollapse";
 import appRoutes from "../../../routes/appRoutes";
 import '../layout/layout.css'
 import { ICONS } from "../../icons/Icons";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from 'react-redux';
+import { logout } from '../../../redux/features/authSlice';
 interface Toggleprops{
   toggleOpen:boolean;
   setToggleOpen:React.Dispatch<React.SetStateAction<boolean>>;
  }
 const Sidebar: React.FC<Toggleprops> = ({toggleOpen,setToggleOpen})=> {
- 
+  const dispatch = useDispatch();
+const navigate = useNavigate()
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate('/')
+  };
   return (
     <div className={`side-bar-container ${toggleOpen?'side-bar-active':""}`}>
     <div className="side-bar-logo" onClick={()=>setToggleOpen(false)}>
@@ -27,7 +35,19 @@ const Sidebar: React.FC<Toggleprops> = ({toggleOpen,setToggleOpen})=> {
         ) : null
       ))}
 
-   
+<div className="side-icon-container">
+<img src={ICONS.logoutIcon} className="icon-image" alt=""/>
+    <div
+     onClick={handleLogout}
+     className="tablink"
+     style={{
+       color: "white",
+     }}
+   >
+    logout
+   </div>
+ 
+</div>
     </div>
   </div>
     // <div

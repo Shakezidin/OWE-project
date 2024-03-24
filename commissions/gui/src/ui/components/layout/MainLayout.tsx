@@ -1,13 +1,18 @@
 import React,{useState} from "react";
-import { Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import Sidebar from "../common/Sidebar";
 import sizeConfig from "../../../config/sizeConfig";
 import Header from "./Header";
 import './layout.css'
+import { useSelector } from 'react-redux';
+import { RootState } from "../../../redux/store";
 
 const MainLayout = () => {
   const [toggleOpen,setToggleOpen] = useState<boolean>(false)
+  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+
   return (
+    isAuthenticated ?
     <div className='main-container'>
     <div className="side-header">
         <Sidebar toggleOpen={toggleOpen} setToggleOpen={setToggleOpen}/>
@@ -18,33 +23,8 @@ const MainLayout = () => {
            </div>
        </div>
     </div>
-            
-   
-    
-</div>
-    // <div style={{ display: "flex" }}>
-    
-    //   <div
-    //     style={{
-    //       width: sizeConfig.sidebar.width,
-    //       flexShrink: 0
-    //     }}
-    //   >
-    //     <Sidebar/>
-    //   </div>
-    //   <div
-    //     style={{
-    //       flexGrow: 1,
-    //       padding: 3,
-    //       width: `calc(100% - ${sizeConfig.sidebar.width})`,
-    //       minHeight: "100vh",
-    //       backgroundColor: colorConfig.mainBg
-    //     }}
-    //   >
-    //      <Topbar />
-    //     <Outlet />
-    //   </div>
-    // </div>
+</div>:<Navigate to={'/login'} replace/>
+
   );
 };
 

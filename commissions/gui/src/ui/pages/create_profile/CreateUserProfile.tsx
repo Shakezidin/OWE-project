@@ -37,6 +37,7 @@ const CreateUserProfile = (props:ButtonProps) => {
                   type={"text"}
                   label="First Name*"
                   value={""}
+                  name=""
                   placeholder={"Enter First Name"}
                   onChange={() => {}}
                 />
@@ -44,6 +45,7 @@ const CreateUserProfile = (props:ButtonProps) => {
                   type={"text"}
                   label="Last Name*"
                   value={""}
+                  name=""
                   placeholder={"Enter Last Name"}
                   onChange={() => {}}
                 />
@@ -54,6 +56,7 @@ const CreateUserProfile = (props:ButtonProps) => {
                   type={"text"}
                   label="Email ID*"
                   value={""}
+                  name=""
                   placeholder={"Enter Email ID"}
                   onChange={() => {}}
                 />
@@ -61,6 +64,7 @@ const CreateUserProfile = (props:ButtonProps) => {
                   type={"text"}
                   label="Phone Number*"
                   value={""}
+                  name=""
                   placeholder={"Enter Phone Number"}
                   onChange={() => {}}
                 />
@@ -83,7 +87,8 @@ const CreateUserProfile = (props:ButtonProps) => {
               />
               </div>
               <div className="createUserActionButton">
-                <ActionButton title={"Create"} onClick={() => {}} />
+                <ActionButton title={"Create"}  type="submit"
+              onClick={()=>{}} />
               </div>
             </div>
           </div>

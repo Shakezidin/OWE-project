@@ -63,6 +63,7 @@
     font-size: 15px;
     text-transform: capitalize;
     text-decoration: none;
+    cursor: pointer;
 }
 
 .side-accordian {
@@ -238,7 +239,7 @@
         transition: .4s all linear;
     }
 .header-logo{
-    width: 100%;
+ /* width: 50%; */
 }
     .menu-icon {
         display: block;
@@ -251,20 +252,28 @@
     .header-width {
         width: 100%;
         flex-grow: 1;
-
+        
     }
 
     .header-content {
         width: 100%;
-        flex-direction: row-reverse;
+        /* flex-direction: row-reverse; */
         /* justify-content: space-between; */
     }
 
     .children-container {
         width: 100%;
     }
-
+.search-input-field{
+    display: none;
+}
+.app-btn{
+    display: none;
+}
+.notification{
+    display: none;
+}
     .search-container {
-        display: none;
+        /* display: none; */
     }
 }
