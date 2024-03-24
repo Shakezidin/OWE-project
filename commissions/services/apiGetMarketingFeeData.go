@@ -20,7 +20,7 @@ import (
 
 /******************************************************************************
  * FUNCTION:		HandleGetMarketingFeesDataRequest
- * DESCRIPTION:     handler for get Dealer data request
+ * DESCRIPTION:     handler for get marketing fee data request
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
