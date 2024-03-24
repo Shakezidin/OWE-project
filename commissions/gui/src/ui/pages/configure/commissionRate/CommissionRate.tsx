@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { RiDeleteBin5Line } from "react-icons/ri";
 import '../configure.css'
 import { CiEdit } from "react-icons/ci";
@@ -9,10 +9,17 @@ import imgExport from '../../../../resources/assets/export.png'
 import imgimport from '../../../../resources/assets/import.png'
 import CreateUserProfile from '../../create_profile/CreateUserProfile';
 import CreateCommissionRate from './CreateCommissionRate';
+import { useAppDispatch, useAppSelector } from '../../../../redux/features/hooks';
+import { getCommission } from '../../../../redux/features/commissionSlice';
+import { getCaller } from '../../../../infrastructure/web_api/services/apiUrl';
+
+
+
 const CommissionRate: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
   const commissionRateData = [
     {
       pt: "Sova",
@@ -82,6 +89,25 @@ const CommissionRate: React.FC = () => {
   },
  
   ]
+  const dispatch = useAppDispatch()
+  // const getData = useAppSelector(state=>state.comm.data)
+//   const pageNumber = {
+//     "page_number": 1,
+//     "page_size": 2
+// }
+const getData = async()=>{
+ try{
+  const res = await  getCaller('/get_commissions')
+ }
+ catch(error:any){
+  console.log(error)
+ }
+}
+
+  useEffect(()=>{
+   getData()
+  },[])
+ 
   return (
     <div className='comm'>
       <div className='commissionContainer'>

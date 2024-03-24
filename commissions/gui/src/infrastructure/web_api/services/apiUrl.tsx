@@ -11,12 +11,13 @@ export interface LoginResponse {
   email_id: string;
   role_name: string;
   access_token: string;
+  status:number
 }
+
 
 export const login = async (credentials: Credentials): Promise<{data: LoginResponse}> => {
   try {
     const response = await axios.post<{ data: LoginResponse }>(`${BASE_URL}/login`, credentials);
- 
     return response.data;
   } catch (error) {
     throw new Error('Login failed. Please check your credentials.');
@@ -27,12 +28,13 @@ export const getCaller = async (endpoint: string) => {
   const response = await fetch(`${BASE_URL}/${endpoint}`, {
     method:HTTP_METHOD.GET,
     headers: {
-      Authorization: `Bearer ${localStorage.getItem('token')}`,
+      Authorization: `${localStorage.getItem('token')}`,
       'Content-Type': 'application/json',
     },
     // body:JSON.stringify(data)
   });
-  return response.json();
+  const data = await response.json();
+    return data;
 };
 
 export const postCaller = async (endpoint: string, data: any) => {

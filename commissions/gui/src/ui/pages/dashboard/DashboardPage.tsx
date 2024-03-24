@@ -18,21 +18,7 @@ import DashboardTotal from "./DashboardTotal";
 import { getCaller } from "../../../infrastructure/web_api/services/apiUrl";
 export const DashboardPage: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
-  const [todos, setTodos] = useState<DashboardUserModel[]>([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = "hello"
-      try {
-        const response = await getCaller('get_commissions');
-        setTodos(response);
-      } catch (error) {
-        console.error('Error fetching todos:', error);
-      }
-    };
-
-    fetchData();
-  }, []);
+ 
     
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);

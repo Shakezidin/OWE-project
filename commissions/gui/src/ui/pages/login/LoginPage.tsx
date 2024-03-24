@@ -19,6 +19,7 @@ import { loginSuccess } from '../../../redux/features/authSlice';
 import { login } from "../../../infrastructure/web_api/services/apiUrl";
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from "../../../redux/store";
+import { HTTP_STATUS } from "../../../core/models/api_models/RequestModel";
 export const LoginPage = () => {
   const navigate = useNavigate();
   const [credentials, setCredentials] = useState<Credentials>({ email_id: '', password: '' });
@@ -45,41 +46,18 @@ export const LoginPage = () => {
       localStorage.setItem('role', role_name);
       localStorage.setItem('token', access_token);
       dispatch(loginSuccess({ email_id, role_name, access_token }));
+      if(response.data.status===HTTP_STATUS.OK){
+        alert("Login Successfully")
+      }
       navigate('/dashboard');
     } catch (error) {
       setError('Login failed. Please check your credentials.');
     }
   };
 
- 
-
-  // Redirect to dashboard if already authenticated
   if (isAuthenticated) {
     navigate('/dashboard');
   }
-
-
-  //  const handleSubmit=async(e: React.FormEvent<HTMLFormElement>)=>{
-  //   e.preventDefault()
-  //  const res = await loginAPI(credentials)
-  //  if(res.status===HTTP_STATUS.OK){
-  //   alert(HTTP_STATUS.OK)
-  //   navigate('/dashboard')
-  //  }
-  //  else{
-  //   alert(HTTP_STATUS.BAD_REQUEST)
-  //  }
-  //  }
-
-  //  useEffect(()=>{
-  //  if(localStorage.getItem('token')){
-  //   navigate('/dashboard')
-  //  }
-  //  },[])
-
-
-
-
   return (
     <div className="mainContainer">
       <div className={"overlay"} />
