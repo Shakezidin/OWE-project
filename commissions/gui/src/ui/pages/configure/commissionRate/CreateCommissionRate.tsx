@@ -57,6 +57,7 @@ const CreateCommissionRate = (props:ButtonProps) => {
                   type={"text"}
                   label="Sales Type"
                   value={""}
+                  name=""
                   placeholder={"Sales Type"}
                   onChange={() => {}}
                 />
@@ -66,6 +67,7 @@ const CreateCommissionRate = (props:ButtonProps) => {
                   type={"text"}
                   label="Sales Price"
                   value={""}
+                  name=""
                   placeholder={"Sales Price"}
                   onChange={() => {}}
                 />
@@ -75,6 +77,7 @@ const CreateCommissionRate = (props:ButtonProps) => {
                   type={"text"}
                   label="Representative Type"
                   value={""}
+                  name=""
                   placeholder={"Representative Type"}
                   onChange={() => {}}
                 />
@@ -86,6 +89,7 @@ const CreateCommissionRate = (props:ButtonProps) => {
                   type={"text"}
                   label="Rate List"
                   value={""}
+                  name=""
                   placeholder={"Rate List"}
                   onChange={() => {}}
                 />
@@ -95,6 +99,7 @@ const CreateCommissionRate = (props:ButtonProps) => {
                   type={"date"}
                   label="Start Date"
                   value={""}
+                  name=""
                   placeholder={"1/04/2004"}
                   onChange={() => {}}
                 />
@@ -104,6 +109,7 @@ const CreateCommissionRate = (props:ButtonProps) => {
                   type={"date"}
                   label="End Date"
                   value={""}
+                  name=""
                   placeholder={"10/04/2004"}
                   onChange={() => {}}
                 />
@@ -111,7 +117,8 @@ const CreateCommissionRate = (props:ButtonProps) => {
               </div>
               </div>
               <div className="createUserActionButton">
-                <ActionButton title={"Create"} onClick={() => {}} />
+                <ActionButton title={"Create"}  type="submit"
+              onClick={()=>{}} />
               </div>
           
           </div>
