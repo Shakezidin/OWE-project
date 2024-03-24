@@ -131,7 +131,7 @@ var apiRoutes = ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/create_commissions",
+		"/owe-commisions-service/v1/create_commission",
 		apiHandler.HandleCreateCommissionRequest,
 		true,
 		[]types.UserRoles{
@@ -187,6 +187,42 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("GET"),
 		"/owe-commisions-service/v1/get_marketingfee",
 		apiHandler.HandleGetMarketingFeesDataRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/create_vadder",
+		apiHandler.HandleCreateVAddersRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("GET"),
+		"/owe-commisions-service/v1/get_vadders",
+		apiHandler.HandleGetVAdderDataRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/create_saletype",
+		apiHandler.HandleCreateSaleTypeRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("GET"),
+		"/owe-commisions-service/v1/get_saletypes",
+		apiHandler.HandleGetSaleTypeDataRequest,
 		true,
 		[]types.UserRoles{
 			types.RoleAdmin,
