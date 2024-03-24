@@ -457,3 +457,4 @@ INSERT INTO loan_type (product_code,active,adder,description) VALUES ('P123',1,1
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewVAdders.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewSaleType.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewTierLoanFee.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewDealerTier.sql';

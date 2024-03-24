@@ -246,6 +246,24 @@ var apiRoutes = ApiRoutes{
 			types.RoleAdmin,
 		},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/create_dealertier",
+		apiHandler.HandleCreateDealerTierRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("GET"),
+		"/owe-commisions-service/v1/get_dealerstier",
+		apiHandler.HandleGetDealersTierDataRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
 }
 
 /******************************************************************************

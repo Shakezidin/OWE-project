@@ -19,7 +19,7 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:		HandleCreateAptSetterRequest
+ * FUNCTION:		HandleCreateDealerRequest
  * DESCRIPTION:     handler for create Dealers request
  * INPUT:			resp, req
  * RETURNS:    		void

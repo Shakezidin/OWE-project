@@ -32,6 +32,7 @@ const (
 	CreateMarketingFeesFunction string = "create_new_marketing_fees"
 	CreateSaleTypeFunction      string = "create_new_sale_type"
 	CreateTierLoanFeeFunction   string = "create_tier_loan_fee_type"
+	CreateDealerTierFunction    string = "create_new_dealer_tier"
 	TableName_teams             string = "teams"
 	TableName_commission_rates  string = "commission_rates"
 	TableName_users_details     string = "user_details"
@@ -40,6 +41,7 @@ const (
 	TableName_v_adders          string = "v_adders"
 	TableName_sale_type         string = "sale_type"
 	TableName_tier_loan_fee     string = "tier_loan_fee"
+	TableName_dealer_tier       string = "dealer_tier"
 )
 
 /******************************************************************************
