@@ -23,9 +23,12 @@ const TierLoanFee = () => {
             oc:"22.99%",
             be:"00.3%",
             dlr: "25.99%",
-            sd: "99/99/99990"
-         
-      
+            sd: "99/99/99990",
+            ed: "99/99/99990",
+            delete: (
+              <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />
+            ),
+            edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />,
           },
           {
             name: "TIER 000001",
@@ -35,8 +38,12 @@ const TierLoanFee = () => {
             oc:"22.99%",
             be:"00.3%",
             dlr: "25.99%",
-            sd: "99/99/99990"
-      
+            sd: "99/99/99990",
+            ed: "99/99/99990",
+            delete: (
+              <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />
+            ),
+            edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />,
           },
           {
             name: "TIER 000001",
@@ -46,8 +53,12 @@ const TierLoanFee = () => {
             oc:"22.99%",
             be:"00.3%",
             dlr: "25.99%",
-            sd: "99/99/99990"
-      
+            sd: "99/99/99990",
+            ed: "99/99/99990",
+            delete: (
+              <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />
+            ),
+            edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />,
           },
           {
             name: "TIER 000001",
@@ -57,7 +68,12 @@ const TierLoanFee = () => {
             oc:"22.99%",
             be:"00.3%",
             dlr: "25.99%",
-            sd: "99/99/99990"
+            sd: "99/99/99990",
+            ed: "99/99/99990",
+            delete: (
+              <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />
+            ),
+            edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />,
           },
     ]
   return (
@@ -140,6 +156,16 @@ const TierLoanFee = () => {
                     <p>Start Date</p> <img src={arrowDown} alt="" />
                   </div>
                 </th>
+                <th>
+                  <div className="table-header">
+                    <p>End Date</p> <img src={arrowDown} alt="" />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>Action</p> <img src={arrowDown} alt="" />
+                  </div>
+                </th>
 
               </tr>
             </thead>
@@ -157,6 +183,17 @@ const TierLoanFee = () => {
                   <td>{el.be}</td>
                   <td>{el.dlr}</td>
                   <td>{el.sd}</td>
+                  <td>{el.ed}</td>
+                  <td>
+                    <div className="action-icon">
+                      <div className="" style={{ cursor: "pointer" }}>
+                        {el.delete}
+                      </div>
+                      <div className="" style={{ cursor: "pointer" }}>
+                        {el.edit}
+                      </div>
+                    </div>
+                  </td>
                 
                 </tr>
               ))}

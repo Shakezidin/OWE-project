@@ -78,7 +78,7 @@ const appRoutes: RouteType[] = [
         element:<AdderValidation/>,
         state:"configuration.adder_validation",
         sidebarProps:{
-          displayText:"Adder Validation",
+          displayText:"Adder",
           icon:<div className="ellipse" style={{backgroundColor:colorConfig.adderColor}}></div>
         }
       },
