@@ -19,7 +19,7 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:		HandleCreateTeamRequest
+ * FUNCTION:		HandleGetCommissionsDataRequest
  * DESCRIPTION:     handler for get commissions data request
  * INPUT:			resp, req
  * RETURNS:    		void

@@ -264,6 +264,24 @@ var apiRoutes = ApiRoutes{
 			types.RoleAdmin,
 		},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/create_paymentschedule",
+		apiHandler.HandleCreatePaymentScheduleRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("GET"),
+		"/owe-commisions-service/v1/get_paymentschedules",
+		apiHandler.HandleGetPaymentSchedulesDataRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
 }
 
 /******************************************************************************
