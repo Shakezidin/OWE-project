@@ -6,9 +6,15 @@
  * Path: src/infrastructure/web_api/api_client
  */
 
+// endpoints.ts
 
-export const EndPoints = {
-    AUTH: {
-        LOGIN: '/login'
-    }
+
+interface Endpoints {
+  login: string;
 }
+
+export const EndPoints: Endpoints = {
+  login: `/login`,
+
+};
+

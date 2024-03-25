@@ -11,12 +11,13 @@ import "./ActionButton.css";
 
 interface ActionButtonProps {
   title: string;
+  type:"submit"|"button"|"reset",
   onClick: () => void;
 }
 
 export const ActionButton = (props: ActionButtonProps) => {
   return (
-    <button className="loginButton" onClick={props.onClick}>
+    <button className="loginButton" onClick={props.onClick} type={props.type}>
       {props.title}
     </button>
   );

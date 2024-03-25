@@ -31,6 +31,7 @@ const CreateDealer = (props:ButtonProps) => {
                   type={"text"}
                   label="First Name*"
                   value={""}
+                  name=""
                   placeholder={"Enter First Name"}
                   onChange={() => {}}
                 />
@@ -39,6 +40,7 @@ const CreateDealer = (props:ButtonProps) => {
                 <Input
                   type={"text"}
                   label="Last Name*"
+                  name=""
                   value={""}
                   placeholder={"Enter Last Name"}
                   onChange={() => {}}
@@ -48,6 +50,7 @@ const CreateDealer = (props:ButtonProps) => {
                  <Input
                   type={"text"}
                   label="Last Name*"
+                  name=""
                   value={""}
                   placeholder={"Enter Last Name"}
                   onChange={() => {}}
@@ -61,6 +64,7 @@ const CreateDealer = (props:ButtonProps) => {
                   type={"date"}
                   label="Start Date"
                   value={""}
+                  name=""
                   placeholder={"Enter Email ID"}
                   onChange={() => {}}
                 />
@@ -69,6 +73,7 @@ const CreateDealer = (props:ButtonProps) => {
                 <Input
                   type={"date"}
                   label="End Date"
+                  name=""
                   value={""}
                   placeholder={"Enter Phone Number"}
                   onChange={() => {}}
@@ -79,7 +84,8 @@ const CreateDealer = (props:ButtonProps) => {
               </div>
               </div>
               <div className="createUserActionButton">
-                <ActionButton title={"Create"} onClick={() => {}} />
+                <ActionButton title={"Create"}  type="submit"
+              onClick={()=>{}} />
               </div>
           
           </div>

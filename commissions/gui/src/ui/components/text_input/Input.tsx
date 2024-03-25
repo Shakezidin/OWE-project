@@ -7,10 +7,10 @@ interface InputProps {
   value: string | number;
   placeholder: string;
   label?: string;
+  name: string;
   error?: boolean;
   disabled?: boolean;
-  name?: string;
-  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onClickEyeIcon?: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -28,14 +28,13 @@ const Input: FC<InputProps> = ({
     <div className="input-wrapper">
       {label && <label className="inputLabel">{label}</label>}
       <div className="input-inner-view">
-        <input
-          type={type}
-          id={name}
-          value={value}
-          placeholder={placeholder}
-          onChange={onChange}
-          disabled={disabled}
-        />
+      <input
+      type={type}
+      name={name}
+      placeholder={placeholder}
+      value={value}
+      onChange={onChange}
+    />
         {type === "password" ? <EYE_ICON className="eyeIcon" style={{marginRight:".5rem"}}/> : <></>}
       </div>
       {error && <p className="error">Input filed can't be empty!</p>}

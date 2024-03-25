@@ -1,12 +1,32 @@
-import React from "react";
+import React, { useState } from "react";
 import "./EnterOtpScreen.css";
 import { ICONS } from "../../icons/Icons";
 import { ReactComponent as LOGO_SMALL } from "../../../resources/assets/commisson_small_logo.svg";
 import { ReactComponent as UNDER_LINE } from "../../../resources/assets/BlueAndGreenUnderline.svg";
 import Input from "../../components/text_input/Input";
 import { ActionButton } from "../../components/button/ActionButton";
+import { otpModel } from "../../../core/models/api_models/AuthModel";
+import { useNavigate } from "react-router-dom";
 
 const EnterOtpScreen = () => {
+  const navigate = useNavigate()
+  const[otpCred,setOtpCred] = useState<otpModel>({
+    email_id:"",
+    otp:"",
+    new_password:""
+  })
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setOtpCred(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
+  const handleOtpSubmit=(e:React.FormEvent<HTMLFormElement>)=>{
+ e.preventDefault()
+ console.log(otpCred)
+
+  }
   return (
     <div className="mainContainer">
       <div className={"overlay"} />
@@ -26,8 +46,9 @@ const EnterOtpScreen = () => {
         </div>
 
         <div className={"loginBox2"}>
-          <div className="loginTextView">
-            <img className="loginImageLogo" src={ICONS.LOGO} />
+         <form onSubmit={(e)=>handleOtpSubmit(e)}>
+         <div className="loginTextView">
+            <img className="loginImageLogo" src={ICONS.LOGO} alt="" />
             <br />
             <div className="loginLogowithText">
               <LOGO_SMALL />
@@ -40,28 +61,33 @@ const EnterOtpScreen = () => {
             <br />
             <Input
               type={"text"}
-              value={""}
+              name="otp"
+              value={otpCred.otp}
               placeholder={"Enter OTP"}
-              onChange={() => {}}
+              onChange={handleInputChange}
             />
             <br />
             <Input
               type={"password"}
-              value={""}
+              value={otpCred.new_password}
+              name="new_password"
               placeholder={"New Password"}
-              onChange={() => {}}
+              onChange={handleInputChange}
             />
             <br />
             <Input
               type={"password"}
               value={""}
+              name=""
               placeholder={"Confirm Password"}
-              onChange={() => {}}
+              onChange={handleInputChange}
             />
 
             <br />
-            <ActionButton title="Submit" onClick={() => {}} />
+            <ActionButton title="Submit"  type="submit"
+              onClick={()=>{}} />
           </div>
+         </form>
         </div>
       </div>
     </div>
