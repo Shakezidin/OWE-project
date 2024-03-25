@@ -255,6 +255,8 @@ CREATE TABLE payment_schedule (
     rep_draw character varying,
     rep_draw_max character varying,
     rep_pay character varying,
+    start_date character varying NOT NULL,
+    end_date character varying,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     FOREIGN KEY (state_id) REFERENCES states(state_id),
@@ -458,3 +460,4 @@ INSERT INTO loan_type (product_code,active,adder,description) VALUES ('P123',1,1
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewSaleType.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewTierLoanFee.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewDealerTier.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewPaymentSchedule.sql';
