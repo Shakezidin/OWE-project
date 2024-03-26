@@ -1,112 +1,40 @@
 import React, { useEffect } from 'react'
-import { RiDeleteBin5Line } from "react-icons/ri";
+
 import '../configure.css'
-import { CiEdit } from "react-icons/ci";
 import arrowDown from "../../../../resources/assets/arrow-down.png";
-import { MdFilterList } from "react-icons/md";
 import { IoAddSharp } from "react-icons/io5";
 import imgExport from '../../../../resources/assets/export.png'
 import imgimport from '../../../../resources/assets/import.png'
-import CreateUserProfile from '../../create_profile/CreateUserProfile';
+
 import CreateCommissionRate from './CreateCommissionRate';
 import { useAppDispatch, useAppSelector } from '../../../../redux/features/hooks';
 import { getCommission } from '../../../../redux/features/commissionSlice';
-import { getCaller } from '../../../../infrastructure/web_api/services/apiUrl';
-
-
-
 const CommissionRate: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
-  const commissionRateData = [
-    {
-      pt: "Sova",
-      inst: "Plug PV",
-      state: "Regular text column",
-      st: "Loan Type",
-      sp: "$9802",
-     rep:"Loan Type",
-     rl:"Regular text column",
-     rate:"$654123",
-     sd:"20-04-2024",
-     ed:"20-04-2024",
-     delete: (
-      <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />
-    ),
-    edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />,
-
-    },
-    {
-      pt: "Sova",
-      inst: "Plug PV",
-      state: "Regular text column",
-      st: "Loan Type",
-      sp: "$9802",
-     rep:"Loan Type",
-     rl:"Regular text column",
-     rate:"$654123",
-     sd:"20-04-2024",
-     ed:"20-04-2024",
-     delete: (
-      <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />
-    ),
-    edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />,
-
-    },
-    {
-      pt: "Sova",
-      inst: "Plug PV",
-      state: "Regular text column",
-      st: "Loan Type",
-      sp: "$9802",
-     rep:"Loan Type",
-     rl:"Regular text column",
-     rate:"$654123",
-     sd:"20-04-2024",
-     ed:"20-04-2024",
-     delete: (
-      <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />
-    ),
-    edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />,
-},
-    {
-      pt: "Sova",
-      inst: "Plug PV",
-      state: "Regular text column",
-      st: "Loan Type",
-      sp: "$9802",
-     rep:"Loan Type",
-     rl:"Regular text column",
-     rate:"$654123",
-     sd:"20-04-2024",
-     ed:"20-04-2024",
-     delete: (
-      <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />
-    ),
-    edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />,
-  },
- 
-  ]
   const dispatch = useAppDispatch()
   // const getData = useAppSelector(state=>state.comm.data)
-  const pageNumber = {
-    "page_number": 1,
-    "page_size": 2
-}
-const getData = async()=>{
- try{
-  const res = await  getCaller('get_commissions',pageNumber)
- }
- catch(error:any){
-  console.log(error)
- }
-}
+  
+  const commissionList = useAppSelector(state=>state.comm.data);
+  const loading = useAppSelector(state=>state.comm.loading);
+  const error = useAppSelector(state=>state.comm.error);
 
-  useEffect(()=>{
-   getData()
-  },[])
+  useEffect(() => {
+    const pageNumber = {
+      "page_number": 1,
+      "page_size": 2
+  }
+    dispatch(getCommission(pageNumber));
+  }, []);
+  console.log(commissionList)
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
  
   return (
     <div className='comm'>
@@ -117,11 +45,14 @@ const getData = async()=>{
       <p style={{ color: "#667085",fontSize:"14px" }}>You can view and edit these data as per your requirement</p>
     </div>
     <div className="iconContainer">
-      <div className='iconsSection'>
-        <button type='button'> <RiDeleteBin5Line /> Delete</button>
+    <div className='iconsSection2'>
+        <button type='button'> <img src={imgExport} alt='' />View Archive</button>
       </div>
-      <div className='iconsSection'>
-        <button type='button'>  <MdFilterList /> Filter</button>
+      <div className='iconsSection-filter'>
+        <button type='button'> <img src={imgExport} alt='' /></button>
+      </div>
+      <div className='iconsSection2'>
+        <button type='button'> <img src={imgExport} alt='' />Archive</button>
       </div>
       <div className='iconsSection2'>
         <button type='button'> <img src={imgimport} alt='' /> Import</button>
@@ -130,8 +61,7 @@ const getData = async()=>{
         <button type='button'> <img src={imgExport} alt='' />Export</button>
       </div>
       <div className='iconsSection2'>
-
-        <button type='button' style={{ background: "black", color: "white" }} onClick={handleOpen}>  <IoAddSharp /> Add New</button>
+        <button type='button' style={{ background: "black", color: "white",border:"1px solid black" }} onClick={handleOpen}>  <IoAddSharp /> Add New</button>
       </div>
     </div>
    
@@ -140,14 +70,13 @@ const getData = async()=>{
            }
     
   </div>
-        <div className='TableContainer'>
+        <div className='TableContainer' style={{overflowX:"auto",whiteSpace:"nowrap"}}>
           <table>
           <thead >
               <tr>
                 <th>
                   <div>
                     <input value="test" type="checkbox" className='check-box' />
-                   
                   </div>
                 </th>
                 <th>
@@ -210,35 +139,36 @@ const getData = async()=>{
           
             <tbody >
               {
-                commissionRateData.map((el, i) => (
+                commissionList?.commissions_list?.length>0 ?commissionList?.commissions_list?.map((el:any,i:any)=>(
                   <tr key={i}>
-                    <td ><input value="test" type="checkbox" className='check-box' /></td>
-                    <td style={{ fontWeight: "600" }}>{el.pt}</td>
-                    <td>{el.inst}</td>
-                    <td>{el.state}</td>
-                    <td>{el.st}</td>
-                    <td>{el.sp}</td>
-                    <td>{el.rep}</td>
-                    <td>{el.rl}</td>
-                    <td>{el.rate}</td>
-                    <td>{el.sd}</td>
-                    <td>{el.ed}</td>
-                    <td>
-                    <div className="action-icon">
-                      <div className="" style={{ cursor: "pointer" }}>
-                        {el.delete}
-                      </div>
-                      <div className="" style={{ cursor: "pointer" }}>
-                        {el.edit}
-                      </div>
+                  <td ><input value="test" type="checkbox" className='check-box' /></td>
+                  <td style={{ fontWeight: "500",color:"black" }}>{el.partner}</td>
+                  <td>{el.installer}</td>
+                  <td>{el.state}</td>
+                  <td>{el.sale_type}</td>
+                  <td>{el.sale_price}</td>
+                  <td>{el.rep_type}</td>
+                  <td>{el.rl}</td>
+                  <td>{el.rate}</td>
+                  <td>{el.start_date}</td>
+                  <td>{el.end_date}</td>
+                  <td>
+                  <div className="action-icon">
+                    <div className="" style={{ cursor: "pointer" }}>
+                      {el.delete}
                     </div>
-                  </td>
-                  
+                    <div className="" style={{ cursor: "pointer" }}>
+                      {el.edit}
+                    </div>
+                  </div>
+                </td>
+                
 
 
-                  </tr>
-                ))
+                </tr>
+                )):null
               }
+              
 
             </tbody>
           </table>

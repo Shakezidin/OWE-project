@@ -6,9 +6,25 @@
   padding: 0;
   box-sizing: border-box;
   font-family: "Poppins", sans-serif !important;
-  /* font-size: 12px; */
 }
-
+/* color config */
+:root{
+  --sidebar-bg-color:#32404F;
+  --children-bg-color: #F3F3F3;
+  --side-logo-bg-color:#263747;
+  --primary-text-color:white;
+  --secondary-text-color:#565656;
+  --active-text-color:#04A5E8;
+  --input-border-color:#D5D5D5;
+  --black-color:#0D0D0D;
+  --danger-color:#d93f21;
+  --check-color:#2196F3;
+  --green-color:#8fcd00;
+  --table-border-color:#EAECF0;
+  --coloumn-text-color:#747782;
+  --button-border-color:#D0D5DD;
+  --para-color:#393851;
+}
 a {
   text-decoration: none;
 }
@@ -62,41 +78,14 @@ li {
   border-radius: 1.5rem;
   margin-top: .5rem;
 }
-/* .admin-card-content{
-  background-color: #F1E6FF !important;
-  height: 110px;
-  width: 25%;
-  border-radius: 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-  padding: 0 1rem 0 1rem;
-} */
-
-
-.admin-card-content, .bubble {
-  position: relative;
-  width: 25%;
-  height:110px;
-  background-color: #F1E6FF;
-  border-radius: 1rem;
-  /* overflow: hidden; */
+::-webkit-scrollbar {
+  display: none;
 }
-.admin-card-container.accountcol{ height: auto;}
 
-.bubble::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  width: 0;
-  height: 0;
-  border: 13px solid transparent;
-  border-top-color: #F1E6FF;
-  border-bottom: 0;
-  margin-left:6rem;
-  margin-bottom: -13px;
+/* Hide scrollbar for IE, Edge and Firefox */
+::-webkit-scrollbar{
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
 
 /* modal style  */

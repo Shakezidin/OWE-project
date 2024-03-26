@@ -66,45 +66,28 @@ const AdderValidation = () => {
             </p>
           </div>
           <div className="iconContainer">
-            <div className="iconsSection">
-              <button type="button">
-                {" "}
-                <RiDeleteBin5Line /> Delete
-              </button>
-            </div>
-            <div className="iconsSection">
-              <button type="button">
-                {" "}
-                <MdFilterList /> Filter
-              </button>
-            </div>
-            <div className="iconsSection2">
-              <button type="button">
-                {" "}
-                <img src={imgimport} alt="" /> Import
-              </button>
-            </div>
-            <div className="iconsSection2">
-              <button type="button">
-                {" "}
-                <img src={imgExport} alt="" />
-                Export
-              </button>
-            </div>
-            <div className="iconsSection2">
-              <button
-                type="button"
-                style={{ background: "black", color: "white" }}
-                onClick={handleOpen}
-              >
-                {" "}
-                <IoAddSharp /> Add New
-              </button>
-            </div>
-          </div>
+    <div className='iconsSection2'>
+        <button type='button'> <img src={imgExport} alt='' />View Archive</button>
+      </div>
+      <div className='iconsSection-filter'>
+        <button type='button'> <img src={imgExport} alt='' /></button>
+      </div>
+      <div className='iconsSection2'>
+        <button type='button'> <img src={imgExport} alt='' />Archive</button>
+      </div>
+      <div className='iconsSection2'>
+        <button type='button'> <img src={imgimport} alt='' /> Import</button>
+      </div>
+      <div className='iconsSection2'>
+        <button type='button'> <img src={imgExport} alt='' />Export</button>
+      </div>
+      <div className='iconsSection2'>
+        <button type='button' style={{ background: "black", color: "white",border:"1px solid black" }} onClick={handleOpen}>  <IoAddSharp /> Add New</button>
+      </div>
+    </div>
           {open && <CreateDealer handleClose={handleClose} />}
         </div>
-        <div className="TableContainer">
+        <div className="TableContainer" style={{overflowX:"auto",whiteSpace:"nowrap"}}>
           <table>
           <thead >
               <tr>
@@ -156,7 +139,7 @@ const AdderValidation = () => {
                   <td>
                     <input value="test" type="checkbox" className="check-box" />
                   </td>
-                  <td style={{ fontWeight: "600" }}>{el.an}</td>
+                  <td style={{ fontWeight: "500",color:"black" }}>{el.an}</td>
                   <td>{el.at}</td>
                   <td>{el.pt}</td>
                   <td>{el.pa}</td>

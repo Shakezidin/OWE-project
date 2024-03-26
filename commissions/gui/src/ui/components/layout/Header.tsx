@@ -4,7 +4,7 @@ import "./layout.css";
 import btnlogo from "../../../resources/assets/appicon.png";
 import userImg from "../../../resources/assets/user.png";
 import notificationImg from "../../../resources/assets/notification.png";
-import searchIcon from "../../../resources/assets/search.png";
+
 import "../layout/layout.css";
 import { GoSearch } from "react-icons/go";
 
@@ -31,8 +31,8 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       </div>
       <div className="search-container">
        <div className="search-icon-img">
-        {/* <img src={searchIcon}></img> */}
-          <input type="text" name="search" placeholder="Search..." />
+          <GoSearch style={{fontSize:"1.5rem",color:"gray"}}/>
+          <input type="text" name="search" placeholder="Search..." className="search-input" />
           </div>
         <div className="user-container">
           <button className="app-btn">

@@ -32,7 +32,7 @@
   z-index: 4;
 }
 .reset-password{
-  color: #d93f21;
+  color: var(--danger-color);
   border: none;
   outline: none;
   background-color: transparent;
@@ -71,17 +71,17 @@
   width: 16px;
   left: 4px;
   bottom: 3px;
-  background-color: white;
+  background-color:var(--primary-text-color);
   -webkit-transition: .4s;
   transition: .4s;
 }
 
 input:checked + .slider {
-  background-color: #2196F3;
+  background-color: var(--check-color);
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
+  box-shadow: 0 0 1px var(--check-color);
 }
 
 input:checked + .slider:before {
@@ -99,8 +99,7 @@ input:checked + .slider:before {
   border-radius: 50%;
 }
 #loginNormalText {
-  color: white;
-  font-family: Poppins;
+  color: var(--primary-text-color);
   font-size: 40px;
   font-style: normal;
   font-weight: 600;
@@ -109,15 +108,13 @@ input:checked + .slider:before {
 }
 
 #loginNormalText1 {
-  color: white;
-  font-family: Poppins;
+  color: var(--primary-text-color);
   font-size: 24px;
   font-style: normal;
 }
 
 #loginColorText {
-  color: var(--Secondary-Green, #8fcd00);
-  font-family: Poppins;
+  color:var(--green-color);
   font-size: 40px;
   font-style: normal;
   font-weight: 600;
@@ -127,13 +124,13 @@ input:checked + .slider:before {
 .hrLine {
   margin-top: 1rem;
   width: 22.5rem;
-  border: 0.5px white solid;
+  border: 1px solid var(--primary-text-color);
 }
 
 .loginNormalTextDescription {
-  color: #fff;
+  color: var(--primary-text-color);
   text-align: center;
-  font-family: Poppins;
+
   font-size: 24px;
   font-style: normal;
   font-weight: 500;
@@ -155,15 +152,14 @@ input:checked + .slider:before {
   flex-direction: column;
   position: relative;
   border-radius: 1rem;
-  background: #fff;
+  background: var(--primary-text-color);
   flex-shrink: 0;
   padding: 2.5rem;
   width: 450px;
 }
 
 .loginHeader {
-  color: #000;
-  font-family: Poppins;
+  color: var(--black-color);
   font-size: 1.5rem;
   font-style: normal;
   font-weight: 700;
@@ -190,9 +186,9 @@ input:checked + .slider:before {
   margin-top: 10px;
 }
 .loginLogText {
-  color: #000;
+  color:var(--black-color);
   text-align: center;
-  font-family: Poppins;
+ 
   font-size: 24px;
   font-style: normal;
   font-weight: 400;
@@ -213,8 +209,8 @@ input:checked + .slider:before {
 }
 
 .loginRecoverPwd {
-  color: #d93f21;
-  font-family: Poppins;
+  color:var(--danger-color);
+
   font-size: 12px;
   font-style: normal;
   font-weight: 400;
@@ -226,8 +222,7 @@ input:checked + .slider:before {
 }
 
 .loginRBM {
-  color: #1a1a1a;
-  font-feature-settings: "clig" off, "liga" off;
+  color:var(--black-color);
 
   font-size: 12px;
   font-style: normal;
