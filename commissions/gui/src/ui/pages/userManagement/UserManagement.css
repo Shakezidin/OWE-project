@@ -1,2 +1,103 @@
+/*  Header CSS */
+.user-name h4{white-space: pre;font-weight: 500;}
+body .search-input{padding: .5rem 1rem !important;}
+.app-btn{color: #2E7CE2;border: 1px solid #2E7CE2 !important;}
+.user-name p{color: #2E7CE2 !important;}
+.userboard-wel{ padding: 0 0 20px; }
+.userboard-wel h6{ font-weight: 400; font-size: 0.8rem;}
+.onboardrow{ display: flex; gap: 30px; padding-bottom: 30px;}
+.onboardcol{ padding: 30px; text-align: center; background-color: #fff; border-radius: 10px; width: 33%;}
+.onboardcol button{ background: none; padding: 0; border: none; cursor: pointer;}
+.onboardcol button span{width: 50px;
+    height: 50px; margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    border-radius: 50%;}
+.btnone span{background-color: #D2E5FF; color: #2E7CE2;}
+.txt{ padding: 10px 0 0;}
+.boldtxt{ font-size:18px; font-weight:600;}
+.btnone .txt{ color: #2E7CE2;}
+.btnone .boldtxt{ color: #2E7CE2;}
+
+.btntwo span{background-color: #C9F7F7; color: #30AFAF;}
+  
+.btntwo .txt{ color: #30AFAF;}
+.btntwo .boldtxt{ color: #30AFAF;}
 
 
+.btnthree span{background-color: #FEE6CF; color: #F36B1E;}
+ 
+.btnthree .txt{ color: #F36B1E;}
+.btnthree .boldtxt{ color: #F36B1E;}
+.modal{ text-align: left;}.inputLabel{ font-weight: 400;}
+.commissionContainer{border-radius: 1rem 1rem 0 0; font-size: 12px;}
+table thead tr th{padding: 0 10px; background-color: #F5F5F5; font-size: 12px;}
+table tbody tr td {
+    padding: 0 10px;
+    font-size: 12px;
+}
+.iconsSection2 button{padding: 7px 15px; font-size: 14px;}
+.iconsSection2 button h2{ display: flex;}
+input[type='checkbox']{ width: 15px; border: 2px solid #0493CE !important; border-radius: 10px !important;}
+.side-bar-container{ height: auto !important;}
+.rateSection h3{ font-size: 20px; font-weight: 600;}
+.rateSection{ gap: 0;}.rateSection h6{ font-size: 12px; font-weight: 400;}
+.graphbar{ padding:30px; background-color: #fff; border-radius: 10px; margin-bottom: 30px;}
+.barline{ min-height:70px;
+    margin: 0 auto;
+    background-color: #99CDF4;
+    width: 80px;
+    border-radius: 10px 10px 0 0;
+    color: #fff;
+    font-size: 11px;
+    line-height: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;}
+.charbarrow{ position: relative;
+    padding: 0 0 0 50px;
+    display: flex;
+    justify-content: space-around;
+    min-height: 300px;
+    align-items: end;}
+.cbars h6{ font-weight: 400; margin: 7px 0 -5px;}
+.gline{ position: absolute; left: 0; right: 0; font-size: 12px;}
+.zero{ bottom: 3%;}
+.twenty{ bottom: 18%;}
+.fourty{ bottom: 35%;}
+.sixty{ bottom: 52%;}
+.eighty{ bottom: 68%;}
+.hundred{ bottom:85%;}
+.cbars{ width: 120px; text-align: center; position: relative; z-index: 2;}
+.gline::after{ position: absolute; left: 30px ;right: 0; background-color: #eee; height: 1px; content: ""; bottom: 8px;}
+.manager{ height: 80%;}
+.auser{ height:220px; background-color: #2554A8;}
+.manager{ height:100px; background-color: #2462C6;}
+.repre{ height:90px; background-color: #2E7CE2;}
+.dealer{ height:170px; background-color: #2E7CE2;}
+.transparent-model{ z-index: 99;}
+select {
+    font-size: 0.8rem;}
+.textarea label{ display: block; padding: 0 0 5px;}
+.textarea textarea{ display: block;
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: #000;
+    padding: 15px 14px;
+    border: 0;
+    border-radius: 0;
+    width: 95%;
+    border: 1px solid #ddd;
+    outline: 0; min-height: 100px;
+    border-radius: 10px;}
+.textarea{    padding: 10px 0 0 39px;
+    font-size: 15px;}
+.createUserActionButton button:nth-child(2){ background-color: #0493CE;}
+.createUserActionButton button:nth-child(1){ background-color: #fff; border: 1px solid #0493CE; color: #0493CE;}.createUserActionButton button{ border-radius: 6px; margin: 0 10px;}
+.loginButton{min-width: 180px;}
+.createUserActionButton{padding: 0px 0 24px 0 !important; border: none !important;}
+.userselect select{border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 0 20px;}

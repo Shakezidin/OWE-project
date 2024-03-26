@@ -26,6 +26,7 @@ import DatabaseController from "../ui/pages/databaseController/DatabaseControlle
 import { ICONS } from "../ui/icons/Icons";
 import AccountSettings from "../ui/pages/accountSettings/AccountSettings";
 import colorConfig from "../config/colorConfig";
+import UserManamement from "../ui/pages/userManagement/UserManagement";
 const appRoutes: RouteType[] = [
  
   {
@@ -216,7 +217,7 @@ const appRoutes: RouteType[] = [
   },
   {
     path: "/usermanagement",
-    element: <DatabaseController/>,
+    element: <UserManamement/>,
     state: "usermanagement",
     sidebarProps: {
       displayText: "UserManagement",

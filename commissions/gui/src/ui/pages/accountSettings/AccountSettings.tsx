@@ -3,25 +3,24 @@ import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
  import "./AccountSettings.css";
  import userImg from '../../../resources/assets/user.png'
  import editicon from '../../../resources/assets/edit-line.png'  
-
+ import accountIcon from '../../../resources/assets/settings-line.png'
  
  
 
 const AccountSettings  = () => {
-  return (
+  return ( <> 
+    <div className="titlehed"> <span><img src={accountIcon} alt="" /></span> Account Setting </div>
     <div className="TabsContainer">
     <Tabs className="Tabs">
       <TabList>
         <Tab> <span> My Profile</span></Tab>
-        <Tab> <span>Security </span> </Tab>
-        <Tab> <span>Setting</span></Tab>
-        <Tab> <span> Delete Account</span></Tab>
+        <Tab> <span>Reset Password </span> </Tab> 
         <Tab> <span> Log Out</span></Tab>
       </TabList> 
       <dl className="tabrow">
 <TabPanel >
    
-   <h4 className="titlefour">My Profile</h4>
+   <h4 className="titlefour"> My Profile</h4>
 
 <div className="flex pad15 border radius6 justifycnt">
 
@@ -130,7 +129,7 @@ const AccountSettings  = () => {
     <h4>Log Out</h4>
       </TabPanel></dl>
     </Tabs></div>
- 
+    </>
 
   );
 };
