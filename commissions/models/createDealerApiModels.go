@@ -10,6 +10,6 @@ type CreateDealer struct {
 	SubDealer string `json:"sub_dealer"`
 	Dealer    string `json:"dealer"`
 	PayRate   string `json:"pay_rate"`
-	StartDate string `json:"start_date" sql:"NOT NULL"`
+	StartDate string `json:"start_date"`
 	EndDate   string `json:"end_date"`
 }

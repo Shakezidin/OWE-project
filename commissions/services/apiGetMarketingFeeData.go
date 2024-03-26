@@ -20,7 +20,7 @@ import (
 
 /******************************************************************************
  * FUNCTION:		HandleGetMarketingFeesDataRequest
- * DESCRIPTION:     handler for get Dealer data request
+ * DESCRIPTION:     handler for get marketing fee data request
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
@@ -108,7 +108,7 @@ func HandleGetMarketingFeesDataRequest(resp http.ResponseWriter, req *http.Reque
 		marketingFeesList.MarketingFeesList = append(marketingFeesList.MarketingFeesList, marketingFeesData)
 	}
 	// Send the response
-	log.FuncInfoTrace(0, "Number of Marketing fee List fetched : %v teamlist %+v", len(marketingFeesList.MarketingFeesList), marketingFeesList)
+	log.FuncInfoTrace(0, "Number of Marketing fee List fetched : %v list %+v", len(marketingFeesList.MarketingFeesList), marketingFeesList)
 	FormAndSendHttpResp(resp, "Marketing fee Data", http.StatusOK, marketingFeesList)
 }
 

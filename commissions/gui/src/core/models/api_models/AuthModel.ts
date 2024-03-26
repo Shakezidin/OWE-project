@@ -8,7 +8,8 @@
 
 
 export interface AuthModel {
-    emailId: string
+    status:any,
+    email_id: string
     role: string
     isPasswordChangeRequired: boolean
     accessToken: string
@@ -16,13 +17,21 @@ export interface AuthModel {
 
 
 export interface Credentials {
-    username: string
+    email_id: string
     password: string
+}
+export interface resetPassword {
+    email_id: string
+}
+export interface otpModel {
+    email_id:string,
+    otp:string,
+    new_password:string
 }
 
 
 export interface AuthContextDataModel {
     auth: AuthModel | null
-    login?: (username: string, password: string) => Promise<void>
+    login?: (email_id: string, password: string) => Promise<void>
     logout?: () => Promise<void>
 }

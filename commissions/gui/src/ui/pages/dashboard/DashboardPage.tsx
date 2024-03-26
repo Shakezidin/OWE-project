@@ -14,24 +14,11 @@ import AccountSettings from "../accountSettings/AccountSettings";
 import UserManagement from "../userManagement/UserManagement";
 import '../dashboard/dasboard.css'
 import { DashboardUserModel } from "../../../core/models/data_models/DashboardUserModel";
-import apiCaller from "../../../infrastructure/web_api/api_client/apiUrl";
 import DashboardTotal from "./DashboardTotal";
+import { getCaller } from "../../../infrastructure/web_api/services/apiUrl";
 export const DashboardPage: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
-  const [todos, setTodos] = useState<DashboardUserModel[]>([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await apiCaller<DashboardUserModel[]>('get', '/users');
-        setTodos(response.data);
-      } catch (error) {
-        console.error('Error fetching todos:', error);
-      }
-    };
-
-    fetchData();
-  }, []);
+ 
     
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);

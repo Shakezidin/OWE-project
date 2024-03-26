@@ -16,28 +16,34 @@ const MarketingFees: React.FC = () => {
   const handleClose = () => setOpen(false);
   const marketingFeeData = [
     {
-      united: "SOEB Settler",
-      Markting: "Plug PV",
-      dollar: "Regular text column",
-      startDate: "$9802",
-      endDate: "Loan Type",
+      sou: "SOEB Settler",
+      dba: "Plug PV",
+      state: "Regular text column",
+      fee: "$9802",
+      play:"loan Type",
       note: "Regular text column",
+      ed:"20-04-2024",
+      sd:"20-04-2024"
     },
     {
-      united: "SOEB Settler",
-      Markting: "Plug PV",
-      dollar: "Regular text column",
-      startDate: "$9802",
-      endDate: "Loan Type",
+      sou: "SOEB Settler",
+      dba: "Plug PV",
+      state: "Regular text column",
+      fee: "$9802",
+      play:"loan Type",
       note: "Regular text column",
+      ed:"20-04-2024",
+      sd:"20-04-2024"
     },
     {
-      united: "SOEB Settler",
-      Markting: "Plug PV",
-      dollar: "Regular text column",
-      startDate: "$9802",
-      endDate: "Loan Type",
+      sou: "SOEB Settler",
+      dba: "Plug PV",
+      state: "Regular text column",
+      fee: "$9802",
+      play:"loan Type",
       note: "Regular text column",
+      ed:"20-04-2024",
+      sd:"20-04-2024"
     },
   ];
   return (
@@ -135,6 +141,16 @@ const MarketingFees: React.FC = () => {
                     <p>Note</p> <img src={arrowDown} alt="" />
                   </div>
                 </th>
+                <th>
+                  <div className="table-header">
+                    <p>Start Dt.</p> <img src={arrowDown} alt="" />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>End Dt.</p> <img src={arrowDown} alt="" />
+                  </div>
+                </th>
               </tr>
             </thead>
 
@@ -144,19 +160,19 @@ const MarketingFees: React.FC = () => {
                   <td>
                     <input value="test" type="checkbox" className="check-box" />
                   </td>
-                  <td style={{ fontWeight: "600" }}>{el.united}</td>
-                  <td>{el.Markting}</td>
-                  <td>{el.dollar}</td>
-
-                  <td>{el.startDate}</td>
+                  <td style={{ fontWeight: "600" }}>{el.sou}</td>
+                  <td>{el.dba}</td>
+                  <td>{el.state}</td>
+                  <td>{el.fee}</td>
                   <td>
                     <div className="">
                       <img src={img} alt="" />
                     </div>
                   </td>
-                  <td>{el.endDate}</td>
-
+               <td>{el.play}</td>
                   <td>{el.note}</td>
+                  <td>{el.ed}</td>
+                  <td>{el.sd}</td>
                 </tr>
               ))}
             </tbody>

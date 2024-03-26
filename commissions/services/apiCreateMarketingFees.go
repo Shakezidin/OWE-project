@@ -19,7 +19,7 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:		HandleCreateAptSetterRequest
+ * FUNCTION:		HandleCreateMarketingFeesRequest
  * DESCRIPTION:     handler for create Marketing Fees request
  * INPUT:			resp, req
  * RETURNS:    		void

@@ -97,7 +97,7 @@ func HandleGetDealersDataRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	// Send the response
-	log.FuncInfoTrace(0, "Number of dealers List fetched : %v teamlist %+v", len(dealersList.DealersList), dealersList)
+	log.FuncInfoTrace(0, "Number of dealers List fetched : %v list %+v", len(dealersList.DealersList), dealersList)
 	FormAndSendHttpResp(resp, "dealers Data", http.StatusOK, dealersList)
 }
 

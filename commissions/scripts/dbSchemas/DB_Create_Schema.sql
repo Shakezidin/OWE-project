@@ -255,6 +255,8 @@ CREATE TABLE payment_schedule (
     rep_draw character varying,
     rep_draw_max character varying,
     rep_pay character varying,
+    start_date character varying NOT NULL,
+    end_date character varying,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     FOREIGN KEY (state_id) REFERENCES states(state_id),
@@ -420,6 +422,9 @@ INSERT INTO user_roles (role_name) VALUES ('Admin');
 INSERT INTO user_details (name, user_code, mobile_number, email_id, password, password_change_required, reporting_manager, role_id, user_status, user_designation, description) VALUES ('Shushank Sharma', 'OWE001', '0987654321', 'shushank22@gmail.com', '$2a$10$5DPnnf5GqDE1dI8L/fM79OsY7XjzmLbw3rkSVONPz.92CqHUkXYHC', false, NULL, 1, 'Active', 'CTO', 'Chief Technical Officer');
 INSERT INTO user_details (name, user_code, mobile_number, email_id, password, password_change_required, reporting_manager, role_id, user_status, user_designation, description) VALUES ('Jaitunjai Singh', 'OWE002', '0987654322', 'Jai22@gmail.com', '$2a$10$5DPnnf5GqDE1dI8L/fM79OsY7XjzmLbw3rkSVONPz.92CqHUkXYHC', false, 1, 1, 'Active', 'Software Engineer', 'SE');
 INSERT INTO user_details (name, user_code, mobile_number, email_id, password, password_change_required, reporting_manager, role_id, user_status, user_designation, description) VALUES ('M Asif', 'OWE003', '0987654323', 'asif22@gmail.com', '$2a$10$5DPnnf5GqDE1dI8L/fM79OsY7XjzmLbw3rkSVONPz.92CqHUkXYHC', false, 2, 1, 'Active', 'CEO', 'Chief Exec Officer');
+INSERT INTO partners (partner_name,description) VALUES ('PartnerABC','Example Partner Description');
+INSERT INTO tier (tier_name) VALUES ('TierName123');
+INSERT INTO loan_type (product_code,active,adder,description) VALUES ('P123',1,10,'Example Loan Type Description');
 
 /******************************************************************************************/
 
@@ -451,3 +456,9 @@ INSERT INTO user_details (name, user_code, mobile_number, email_id, password, pa
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewCommission.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewDealer.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewMarketingFees.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewVAdders.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewSaleType.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewTierLoanFee.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewDealerTier.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewPaymentSchedule.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewTimelineSla.sql';

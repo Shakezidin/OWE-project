@@ -10,7 +10,6 @@ import (
 	"OWEApp/db"
 	log "OWEApp/logger"
 	models "OWEApp/models"
-	"strconv"
 	"strings"
 
 	"encoding/json"
@@ -20,7 +19,7 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:		HandleCreateTeamRequest
+ * FUNCTION:		HandleGetCommissionsDataRequest
  * DESCRIPTION:     handler for get commissions data request
  * INPUT:			resp, req
  * RETURNS:    		void
@@ -61,7 +60,7 @@ func HandleGetCommissionsDataRequest(resp http.ResponseWriter, req *http.Request
 
 	tableName := db.TableName_commission_rates
 	query = `
-	SELECT pt1.partner_name, pt2.partner_name, st.name, sl.type_name, cr.sale_price, cr.rep_type, cr.rl, cr.rate, cr.start_date, cr.end_date
+	SELECT pt1.partner_name as partner_name, pt2.partner_name as installer_name, st.name as state_name, sl.type_name as sale_type, cr.sale_price, rp.rep_type, cr.rl, cr.rate, cr.start_date, cr.end_date
 	FROM commission_rates cr
 	JOIN states st ON st.state_id = cr.state_id
 	JOIN partners pt1 ON pt1.partner_id = cr.partner_id
@@ -84,14 +83,14 @@ func HandleGetCommissionsDataRequest(resp http.ResponseWriter, req *http.Request
 	commissionsList := models.GetCommissionsList{}
 
 	for _, item := range data {
-		Partner := item["partner"].(string)
-		Installer := item["installer"].(string)
-		State := item["state"].(string)
+		Partner := item["partner_name"].(string)
+		Installer := item["installer_name"].(string)
+		State := item["state_name"].(string)
 		SaleType := item["sale_type"].(string)
-		SalePrice, _ := strconv.ParseFloat(item["sale_price"].(string), 64)
+		SalePrice := item["sale_price"].(float64)
 		RepType := item["rep_type"].(string)
-		RL, _ := strconv.ParseFloat(item["rl"].(string), 64)
-		Rate, _ := strconv.ParseFloat(item["rate"].(string), 64)
+		RL, _ := item["rl"].(float64)
+		Rate, _ := item["rate"].(float64)
 		StartDate := item["start_date"].(string)
 		EndDate := item["end_date"].(string)
 
@@ -110,9 +109,8 @@ func HandleGetCommissionsDataRequest(resp http.ResponseWriter, req *http.Request
 
 		commissionsList.CommissionsList = append(commissionsList.CommissionsList, commissionData)
 	}
-
 	// Send the response
-	log.FuncInfoTrace(0, "Number of commissions List fetched : %v teamlist %+v", len(commissionsList.CommissionsList), commissionsList)
+	log.FuncInfoTrace(0, "Number of commissions List fetched : %v list %+v", len(commissionsList.CommissionsList), commissionsList)
 	FormAndSendHttpResp(resp, "Commissions Data", http.StatusOK, commissionsList)
 }
 

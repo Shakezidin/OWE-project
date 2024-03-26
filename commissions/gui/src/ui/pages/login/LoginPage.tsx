@@ -6,51 +6,58 @@
  * Path: src/ui/pages
  */
 
-import React, {useCallback, useState} from "react";
-
+import React, { useCallback, useEffect, useState } from "react";
 import "./LoginPage.css";
 import { ICONS } from "../../icons/Icons";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { ReactComponent as LOGO_SMALL } from "../../../resources/assets/commisson_small_logo.svg";
 import { ReactComponent as UNDER_LINE } from "../../../resources/assets/BlueAndGreenUnderline.svg";
 import Input from "../../components/text_input/Input";
-
 import { ActionButton } from "../../components/button/ActionButton";
-
-import {Credentials} from "../../../core/models/api_models/AuthModel";
-import useSignIn from 'react-auth-kit/hooks/useSignIn'
-
-
-const label = { inputProps: { "aria-label": "Switch demo" } };
-
+import { Credentials } from "../../../core/models/api_models/AuthModel";
+import { loginSuccess } from '../../../redux/features/authSlice';
+import { login } from "../../../infrastructure/web_api/services/apiUrl";
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from "../../../redux/store";
+import { HTTP_STATUS } from "../../../core/models/api_models/RequestModel";
 export const LoginPage = () => {
-
   const navigate = useNavigate();
-  // const { login } = useAuthData();
-  // const signIn = useSignIn();
-  const [ credential, setCredential ] = useState<Credentials>({ username: 'shushank22@gmail.com', password: '1234'});
+  const [credentials, setCredentials] = useState<Credentials>({ email_id: '', password: '' });
+  const [error, setError] = useState<string>('');
+  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+  const dispatch = useDispatch();
 
-  const doLogin = useCallback(async () => {
-      // let result = await loginAPI(credential);
-      // signIn({
-      //     auth: {
-      //         token: result.accessToken,
-      //         type: 'Bearer'
-      //     },
-      //     userState: {
-      //         email_id: result.emailId,
-      //         role: result.role,
-      //         isPasswordChangeRequired: result.isPasswordChangeRequired
-      //     }
-      // });
+ 
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setCredentials(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
+
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    try {
+      e.preventDefault()
+      const response = await login(credentials);
+      const { email_id, role_name, access_token } = response.data;
+      localStorage.setItem('email', email_id);
+      localStorage.setItem('role', role_name);
+      localStorage.setItem('token', access_token);
+      dispatch(loginSuccess({ email_id, role_name, access_token }));
+      if(response.data.status===HTTP_STATUS.OK){
+        alert("Login Successfully")
+      }
       navigate('/dashboard');
-      // login(credential.username, credential.password).then(() => {
-      //     navigate(ROUTES.HOME);
-      // }).catch((e: unknown) => {
-      //     console.log('ERROR: ', e);
-      // });
-  }, []);
+    } catch (error) {
+      setError('Login failed. Please check your credentials.');
+    }
+  };
 
+  if (isAuthenticated) {
+    navigate('/dashboard');
+  }
   return (
     <div className="mainContainer">
       <div className={"overlay"} />
@@ -63,63 +70,68 @@ export const LoginPage = () => {
             <span id="loginColorText">{" Powering "}</span>
             Yours
           </span>
-          <div className={"hrLine"}/>
+          <div className={"hrLine"} />
           <span className={"loginNormalTextDescription"}>{"YOUR TRUSTED SOLAR EXPERTS"}</span>
         </div>
 
         <div className={"loginBox2"}>
-          <div className="loginTextView">
-            <img className="loginImageLogo" src={ICONS.LOGO} alt=""/>
-            <br />
-            <div className="loginLogowithText">
-              <LOGO_SMALL />
-              <span className={"loginHeader"}> Commission App</span>
-            </div>
-            <div className="loginUnderLine">
-              <UNDER_LINE />
-            </div>
-            <span className="loginLogText">Log In</span>
-            <br />
-            <Input type={"text"} value={"Commission App"} placeholder={"Commission App"} onChange={() => {} }/>
-            <br />
-            <Input
-                type={"text"}
-                value={credential.username}
-                placeholder={"Enter Email"}
-                onChange={(e) => setCredential({ ...credential, username: e.target.value}) }/>
-            <br />
-            <Input
-                type={"password"}
-                value={credential.password}
-                placeholder={"Enter Password"}
-                onChange={(e) => setCredential({ ...credential, password: e.target.value})}/>
+          <form onSubmit={(e) => handleLogin(e)}>
+            <div className="loginTextView">
 
-            <br />
-            <div className="loginSwitchView">
-              <div className="loginSwitchInnerView">
-              <label className="switch">
-  <input type="checkbox"/>
-  <span className="slider round"></span>
-</label>
-                <div className="loginRBM">Remember Me</div>
+              <img className="loginImageLogo" src={ICONS.LOGO} alt="" />
+              <br />
+              <div className="loginLogowithText">
+                <LOGO_SMALL />
+                <span className={"loginHeader"}> Commission App</span>
               </div>
-              <button 
-               className="reset-password"
-                onClick={() => {
-                  navigate('/resetPassword');
-                }}>
-                Recover Password
-              </button>
-            </div>
-            <br />
-            <ActionButton
-              title="Log In"
-              onClick={() => {
-                  doLogin()
+              <div className="loginUnderLine">
+                <UNDER_LINE />
+              </div>
+              <span className="loginLogText">Log In</span>
+              <br />
+              <Input type={"text"} name="commission" value={"Commission App"} placeholder={"Commission App"} onChange={() => { }} />
+              <br />
+              <Input
+                type={"text"}
+                name={"email_id"}
+                value={credentials.email_id}
+                placeholder={"Enter Email"}
+                onChange={handleInputChange} />
+              <br />
+              <Input
+                type={"password"}
+                value={credentials.password}
+                name={"password"}
+                placeholder={"Enter Password"}
+                onChange={handleInputChange} />
 
-              }}
-            />
-          </div>
+              <br />
+              <div className="loginSwitchView">
+                <div className="loginSwitchInnerView">
+                  <label className="switch">
+                    <input type="checkbox" />
+                    <span className="slider round"></span>
+                  </label>
+                  <div className="loginRBM">Remember Me</div>
+                </div>
+                <button
+                  className="reset-password"
+                  onClick={() => {
+                    navigate('/resetPassword');
+                  }}>
+                  Recover Password
+                </button>
+              </div>
+              <br />
+              <ActionButton
+                title="Log In"
+                type="submit"
+                onClick={()=>{}}
+
+                
+              />
+            </div>
+          </form>
         </div>
       </div>
     </div>

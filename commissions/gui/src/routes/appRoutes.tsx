@@ -39,7 +39,7 @@ const appRoutes: RouteType[] = [
     },
   },
   {
-    path: "/configuration",
+    path: "/dashboard/configuration",
     element: <Configuration/>,
     state: "configuration",
     sidebarProps: {
@@ -48,7 +48,7 @@ const appRoutes: RouteType[] = [
     },
     child:[
       {
-        path:"/configuration/commission_rate",
+        path:"/dashboard/configuration/commission_rate",
         element:<CommissionRate/>,
         state:"configuration.commission_rate",
         sidebarProps:{
@@ -57,7 +57,7 @@ const appRoutes: RouteType[] = [
         }
       },
       {
-        path:"/configuration/dealer_override",
+        path:"/dashboard/configuration/dealer_override",
         element:<DealerOverRides/>,
         state:"configuration.dealer_override",
         sidebarProps:{
@@ -66,7 +66,7 @@ const appRoutes: RouteType[] = [
         }
       },
       {
-        path:"/configuration/marketing_fees",
+        path:"/dashboard/configuration/marketing_fees",
         element:<MarketingFees/>,
         state:"configuration.marketing_fees",
         sidebarProps:{
@@ -75,16 +75,16 @@ const appRoutes: RouteType[] = [
         }
       },
       {
-        path:"/configuration/adder_validation",
+        path:"/dashboard/configuration/adder_validation",
         element:<AdderValidation/>,
         state:"configuration.adder_validation",
         sidebarProps:{
-          displayText:"Adder Validation",
+          displayText:"Adder",
           icon:<div className="ellipse" style={{backgroundColor:colorConfig.adderColor}}></div>
         }
       },
       {
-        path:"/configuration/sale_type",
+        path:"/dashboard/configuration/sale_type",
         element:<SaleType/>,
         state:"configuration.sale_type",
         sidebarProps:{
@@ -109,7 +109,7 @@ const appRoutes: RouteType[] = [
       //   }
       // },
       {
-        path:"/configuration/tier_loan_fee",
+        path:"/dashboard/configuration/tier_loan_fee",
         element:<TierLoanFee/>,
         state:"configuration.tier_loan_fee",
         sidebarProps:{
@@ -118,7 +118,7 @@ const appRoutes: RouteType[] = [
         }
       },
       {
-        path:"/configuration/dealer_tier",
+        path:"/dashboard/configuration/dealer_tier",
         element:<DealerTier/>,
         state:"configuration.dealer_tier",
         sidebarProps:{
@@ -127,7 +127,7 @@ const appRoutes: RouteType[] = [
         }
       },
       {
-        path:"/configuration/payment_schedule",
+        path:"/dashboard/configuration/payment_schedule",
         element:<PaymentSchedule/>,
         state:"configuration.payment_schedule",
         sidebarProps:{
@@ -137,7 +137,7 @@ const appRoutes: RouteType[] = [
       },
     
       {
-        path:"/configuration/timeLine",
+        path:"/dashboard/configuration/timeLine",
         element:<TimeLine/>,
         state:"configuration.timeLine",
         sidebarProps:{
@@ -174,7 +174,7 @@ const appRoutes: RouteType[] = [
       // },
     
       {
-        path:"/configuration/loan_type",
+        path:"/dashboard/configuration/loan_type",
         element:<LoanType/>,
         state:"configuration.loan_type",
         sidebarProps:{
@@ -188,7 +188,7 @@ const appRoutes: RouteType[] = [
   },
  
   {
-    path: "/project",
+    path: "/dashboard/project",
     element: <Project/>,
     state: "project",
     sidebarProps: {
@@ -198,7 +198,7 @@ const appRoutes: RouteType[] = [
    
   },
   {
-    path: "/report",
+    path: "/dashboard/report",
     element: <Report/>,
     state: "report",
     sidebarProps: {
@@ -207,7 +207,7 @@ const appRoutes: RouteType[] = [
     },
   },
   {
-    path: "/databasecontroller",
+    path: "/dashboard/databasecontroller",
     element: <DatabaseController/>,
     state: "databasecontroller",
     sidebarProps: {
@@ -225,7 +225,7 @@ const appRoutes: RouteType[] = [
     },
   },
   {
-    path: "/control",
+    path: "/dashboard/control",
     element: <DatabaseController/>,
     state: "control",
     sidebarProps: {
@@ -234,7 +234,7 @@ const appRoutes: RouteType[] = [
     },
   },
   {
-    path: "/myaccount",
+    path: "/dashboard/myaccount",
     element: <AccountSettings/>,
     state: "myaccount",
     sidebarProps: {
@@ -242,15 +242,7 @@ const appRoutes: RouteType[] = [
       icon:<img src={ICONS.myAccountIcon} className="icon-image" alt=""/>
     },
   },
-  {
-    path: "/",
-    element: <DatabaseController/>,
-    state: "logout",
-    sidebarProps: {
-      displayText: "Logout",
-      icon:<img src={ICONS.logoutIcon} className="icon-image" alt=""/>
-    },
-  },
+
 ];
 
 export default appRoutes;
