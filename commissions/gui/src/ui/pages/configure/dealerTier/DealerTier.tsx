@@ -57,11 +57,14 @@ const DealerTier = () => {
       <p style={{ color: "#667085",fontSize:"14px" }}>You can view and edit these data as per your requirement</p>
     </div>
     <div className="iconContainer">
-      <div className='iconsSection'>
-        <button type='button'> <RiDeleteBin5Line /> Delete</button>
+    <div className='iconsSection2'>
+        <button type='button'> <img src={imgExport} alt='' />View Archive</button>
       </div>
-      <div className='iconsSection'>
-        <button type='button'>  <MdFilterList /> Filter</button>
+      <div className='iconsSection-filter'>
+        <button type='button'> <img src={imgExport} alt='' /></button>
+      </div>
+      <div className='iconsSection2'>
+        <button type='button'> <img src={imgExport} alt='' />Archive</button>
       </div>
       <div className='iconsSection2'>
         <button type='button'> <img src={imgimport} alt='' /> Import</button>
@@ -70,8 +73,7 @@ const DealerTier = () => {
         <button type='button'> <img src={imgExport} alt='' />Export</button>
       </div>
       <div className='iconsSection2'>
-
-        <button type='button' style={{ background: "black", color: "white" }} onClick={handleOpen}>  <IoAddSharp /> Add New</button>
+        <button type='button' style={{ background: "black", color: "white",border:"1px solid black" }} onClick={handleOpen}>  <IoAddSharp /> Add New</button>
       </div>
     </div>
    
@@ -80,7 +82,7 @@ const DealerTier = () => {
            }
     
   </div>
-      <div className='TableContainer'>
+      <div className='TableContainer' style={{overflowX:"auto",whiteSpace:"nowrap"}}>
         <table>
       
           <thead >
@@ -123,7 +125,7 @@ const DealerTier = () => {
               dealerTierData.map((el, i) => (
                 <tr key={i}>
                   <td ><input value="test" type="checkbox" className='check-box' /></td>
-                  <td style={{ fontWeight: "600" }}>{el.dn}</td>
+                  <td style={{ fontWeight: "500",color:"black" }}>{el.dn}</td>
                   <td>{el.tier}</td>
                   <td>{el.startDate}</td>
                   <td>{el.endDate}</td>

@@ -24,14 +24,13 @@ export const login = async (credentials: Credentials): Promise<{data: LoginRespo
   }
 };
 
-export const getCaller = async (endpoint: string,data:any) => {
+export const getCaller = async (endpoint: string) => {
   const response = await fetch(`${BASE_URL}/${endpoint}`, {
     method:HTTP_METHOD.GET,
     headers: {
       Authorization: `${localStorage.getItem('token')}`,
       'Content-Type': 'application/json',
-    },
-    body:JSON.stringify(data)
+    }
   });
   const result = await response.json();
     return result;
@@ -41,7 +40,7 @@ export const postCaller = async (endpoint: string, data: any) => {
   const response = await fetch(`${BASE_URL}/${endpoint}`, {
     method:HTTP_METHOD.POST,
     headers: {
-      Authorization: `Bearer ${localStorage.getItem('token')}`,
+      Authorization: `${localStorage.getItem('token')}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(data),
@@ -53,7 +52,7 @@ export const putCaller = async (endpoint: string, data: any) => {
   const response = await fetch(`${BASE_URL}/${endpoint}`, {
     method:HTTP_METHOD.PUT,
     headers: {
-      Authorization: `Bearer ${localStorage.getItem('token')}`,
+      Authorization: ` ${localStorage.getItem('token')}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(data),

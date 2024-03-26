@@ -19,6 +19,10 @@ export const ICONS = {
   umIcon:require('../../resources/assets/umIcon.png'),
   supportIcon:require('../../resources/assets/contact.png'),
   myAccountIcon:require('../../resources/assets/myAccountIcon.png'),
-  logoutIcon:require('../../resources/assets/logout1.png')
+  logoutIcon:require('../../resources/assets/logout1.png'),
+  //  addIcon:require('../../resources/assets/addIcon.png'),
+  //  addIcon2:require('../../resources/assets/Frame (1).png'),
+  //  addIcon3:require('../../resources/assets/Frame (2).png'),
+
 
 };

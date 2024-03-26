@@ -100,7 +100,7 @@ const DealerOverRides: React.FC = () => {
             <div className="iconsSection2">
               <button
                 type="button"
-                style={{ background: "black", color: "white" }}
+                style={{ background: "black", color: "white",border:"1px solid black" }}
                 onClick={handleOpen}
               >
                 {" "}
@@ -111,7 +111,7 @@ const DealerOverRides: React.FC = () => {
 
           {open && <CreateDealer handleClose={handleClose} />}
         </div>
-        <div className="TableContainer">
+        <div className="TableContainer" style={{overflowX:"auto",whiteSpace:"nowrap"}}>
           <table>
           <thead >
               <tr>
@@ -160,7 +160,7 @@ const DealerOverRides: React.FC = () => {
                   <td>
                     <input value="test" type="checkbox" className="check-box" />
                   </td>
-                  <td style={{ fontWeight: "600" }}>{el.united}</td>
+                  <td style={{ fontWeight: "500",color:"black" }}>{el.united}</td>
                   <td>{el.Markting}</td>
                   <td>{el.dollar}</td>
                   <td>{el.startDate}</td>

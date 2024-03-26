@@ -3,7 +3,7 @@ import { ReactComponent as CROSS_BUTTON } from "../../../resources/assets/cross_
 import Input from "../../components/text_input/Input";
 import DropdownButton from "../../components/dropdown/DropdownButton";
 import { ActionButton } from "../../components/button/ActionButton";
-
+import '../userManagement/user.css'
 type ButtonProps = {
   handleClose: () => void;
 };

@@ -11,10 +11,12 @@
 
 interface Endpoints {
   login: string;
+  commission:string;
 }
 
 export const EndPoints: Endpoints = {
   login: `/login`,
+  commission:"get_commissions",
 
 };
 
