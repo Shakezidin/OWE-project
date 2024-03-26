@@ -35,6 +35,7 @@ const (
 	CreateDealerTierFunction      string = "create_new_dealer_tier"
 	CreatePaymentScheduleFunction string = "create_new_payment_schedule"
 	CreateTimelineSlaFunction     string = "create_new_timeline_sla"
+	CreatePartnerFunction         string = "create_new_partner"
 	TableName_teams               string = "teams"
 	TableName_commission_rates    string = "commission_rates"
 	TableName_users_details       string = "user_details"
@@ -46,6 +47,7 @@ const (
 	TableName_dealer_tier         string = "dealer_tier"
 	TableName_payment_schedule    string = "payment_schedule"
 	TableName_timeline_sla        string = "timeline_sla"
+	TableName_partners            string = "partners"
 )
 
 /******************************************************************************

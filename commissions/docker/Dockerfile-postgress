@@ -40,6 +40,7 @@ COPY ./dbSchemas/DB_ProcCreateNewTierLoanFee.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcCreateNewDealerTier.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcCreateNewPaymentSchedule.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcCreateNewTimelineSla.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcCreateNewPartner.sql /docker-entrypoint-initdb.d/
 
 RUN chmod +x /docker-entrypoint-initdb.d/DB_Create_Schema.sql
 
