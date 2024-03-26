@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react'
-
+import { CiEdit } from "react-icons/ci";
 import '../configure.css'
 import arrowDown from "../../../../resources/assets/arrow-down.png";
 import { IoAddSharp } from "react-icons/io5";
 import imgExport from '../../../../resources/assets/export.png'
 import imgimport from '../../../../resources/assets/import.png'
-
+import { RiDeleteBin5Line } from "react-icons/ri";
 import CreateCommissionRate from './CreateCommissionRate';
 import { useAppDispatch, useAppSelector } from '../../../../redux/features/hooks';
 import { getCommission } from '../../../../redux/features/commissionSlice';
@@ -154,13 +154,13 @@ const CommissionRate: React.FC = () => {
                   <td>{el.end_date}</td>
                   <td>
                   <div className="action-icon">
-                    <div className="" style={{ cursor: "pointer" }}>
-                      {el.delete}
+                      <div className="" style={{ cursor: "pointer" }}>
+                      <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />
+                      </div>
+                      <div className="" style={{ cursor: "pointer" }}>
+                      <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />
+                      </div>
                     </div>
-                    <div className="" style={{ cursor: "pointer" }}>
-                      {el.edit}
-                    </div>
-                  </div>
                 </td>
                 
 

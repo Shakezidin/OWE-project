@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { RiDeleteBin5Line } from "react-icons/ri";
 
 import arrowDown from "../../../../resources/assets/arrow-down.png";
@@ -10,42 +10,35 @@ import imgExport from "../../../../resources/assets/export.png";
 import imgimport from "../../../../resources/assets/import.png";
 import CreateDealer from "../dealerOverrides/CreateDealer";
 import img from "../../../../resources/assets/checkbox-circle-line.png";
+import { useAppDispatch, useAppSelector } from '../../../../redux/features/hooks';
+import { getMarketingFees } from "../../../../redux/features/marketingSlice";
+
 const MarketingFees: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const marketingFeeData = [
-    {
-      sou: "SOEB Settler",
-      dba: "Plug PV",
-      state: "Regular text column",
-      fee: "$9802",
-      play:"loan Type",
-      note: "Regular text column",
-      ed:"20-04-2024",
-      sd:"20-04-2024"
-    },
-    {
-      sou: "SOEB Settler",
-      dba: "Plug PV",
-      state: "Regular text column",
-      fee: "$9802",
-      play:"loan Type",
-      note: "Regular text column",
-      ed:"20-04-2024",
-      sd:"20-04-2024"
-    },
-    {
-      sou: "SOEB Settler",
-      dba: "Plug PV",
-      state: "Regular text column",
-      fee: "$9802",
-      play:"loan Type",
-      note: "Regular text column",
-      ed:"20-04-2024",
-      sd:"20-04-2024"
-    },
-  ];
+  const dispatch = useAppDispatch()
+  // const getData = useAppSelector(state=>state.comm.data)
+  
+  const marketingFeesList = useAppSelector(state=>state.marketing.data);
+  const loading = useAppSelector(state=>state.marketing.loading);
+  const error = useAppSelector(state=>state.marketing.error);
+
+  useEffect(() => {
+    const pageNumber = {
+      "page_number": 1,
+      "page_size": 2
+  }
+    dispatch(getMarketingFees(pageNumber));
+  }, []);
+  console.log(marketingFeesList)
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
   return (
     <div className="comm">
       <div className="commissionContainer">
@@ -138,26 +131,29 @@ const MarketingFees: React.FC = () => {
             </thead>
 
             <tbody>
-              {marketingFeeData.map((el, i) => (
+            {
+                marketingFeesList?.marketing_fees_list?.length>0 ?marketingFeesList?.marketing_fees_list?.map((el:any,i:any)=>(
                 <tr key={i}>
                   <td>
                     <input value="test" type="checkbox" className="check-box" />
                   </td>
-                  <td style={{ fontWeight: "500",color:"black" }}>{el.sou}</td>
+                  <td style={{ fontWeight: "500",color:"black" }}>{el.source}</td>
                   <td>{el.dba}</td>
                   <td>{el.state}</td>
-                  <td>{el.fee}</td>
+                  <td>{el.fee_rate}</td>
                   <td>
-                    <div className="">
+                    {el.chg_dlr}
+                    {/* <div className="">
                       <img src={img} alt="" />
-                    </div>
+                    </div> */}
                   </td>
-               <td>{el.play}</td>
-                  <td>{el.note}</td>
-                  <td>{el.ed}</td>
-                  <td>{el.sd}</td>
+               <td>{el.pay_src}</td>
+                  <td>{el.description}</td>
+                  <td>{el.start_date}</td>
+                  <td>{el.end_date}</td>
                 </tr>
-              ))}
+              )):null
+            }
             </tbody>
           </table>
         </div>

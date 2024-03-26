@@ -2,37 +2,37 @@ import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { postCaller } from "../../infrastructure/web_api/services/apiUrl";
 import { EndPoints } from "../../infrastructure/web_api/api_client/EndPoints";
 
-export interface commissionData{
+export interface dealerData{
     data:any | null,
     loading:boolean,
     error : string | null,
 }
 
-export const getCommission = createAsyncThunk('commission',async(data:any)=>{
-const response  = await postCaller(EndPoints.commission,data)
+export const getMarketingFees = createAsyncThunk('marketing',async(data:any)=>{
+const response  = await postCaller(EndPoints.marketing,data)
 return response.data
 })
-const initialState:commissionData={
+const initialState:dealerData={
     data:[],
     loading:false,
     error:""
 }
-export const commissionSlice = createSlice({
-    name:"commission",
+export const marketingSlice = createSlice({
+    name:"marketing",
     initialState,
     reducers:{},
     extraReducers(builder){
         builder
-        .addCase(getCommission.pending,(state)=>{
+        .addCase(getMarketingFees.pending,(state)=>{
             state.loading = true
         })
-        .addCase(getCommission.fulfilled,(state,action)=>{
+        .addCase(getMarketingFees.fulfilled,(state,action)=>{
             state.loading = false;
             state.error = null;
             state.data = action.payload;
             
         })
-        .addCase(getCommission.rejected,(state,action:PayloadAction<any>)=>{
+        .addCase(getMarketingFees.rejected,(state,action:PayloadAction<any>)=>{
             state.loading = false;
             state.error = action.payload;
             state.data = []
@@ -40,4 +40,4 @@ export const commissionSlice = createSlice({
 
     }
 })
-export default commissionSlice.reducer
+export default marketingSlice.reducer
