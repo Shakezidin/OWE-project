@@ -15,7 +15,7 @@ import { routes } from "./routes";
 import MainLayout from "./ui/components/layout/MainLayout";
 import EnterOtpScreen from "./ui/pages/otp/EnterOtpScreen";
 import { useEffect } from "react";
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./redux/store";
 import { initializeAuth } from "./redux/features/authSlice";
 
@@ -25,13 +25,25 @@ function App() {
   useEffect(() => {
     dispatch(initializeAuth());
   }, [dispatch]);
-  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.auth.isAuthenticated
+  );
 
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<WelcomePage />} />
-        <Route path="/login" element={ isAuthenticated?<Navigate to={'/dashboard'}/>: <LoginPage/> }/>
+        <Route
+          path="/"
+          element={
+            isAuthenticated ? <Navigate to={"/dashboard"} /> : <WelcomePage />
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            isAuthenticated ? <Navigate to={"/dashboard"} /> : <LoginPage />
+          }
+        />
         <Route path="/resetPassword" element={<ResetPassword />} />
         <Route path="/otp" element={<EnterOtpScreen />} />
         <Route path="/dashboard" element={<MainLayout />}>
