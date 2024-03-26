@@ -15,7 +15,7 @@ type GetCommissionData struct {
 	RepType   string  `json:"rep_type"`
 	RL        float64 `json:"rl"`
 	Rate      float64 `json:"rate"`
-	StartDate string  `json:"start_date" sql:"NOT NULL"`
+	StartDate string  `json:"start_date"`
 	EndDate   string  `json:"end_date"`
 }
 

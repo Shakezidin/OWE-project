@@ -110,7 +110,7 @@ func HandleGetPaymentSchedulesDataRequest(resp http.ResponseWriter, req *http.Re
 		paymentScheduleList.PaymentScheduleList = append(paymentScheduleList.PaymentScheduleList, paySchData)
 	}
 	// Send the response
-	log.FuncInfoTrace(0, "Number of payment schedules List fetched : %v teamlist %+v", len(paymentScheduleList.PaymentScheduleList), paymentScheduleList)
+	log.FuncInfoTrace(0, "Number of payment schedules List fetched : %v list %+v", len(paymentScheduleList.PaymentScheduleList), paymentScheduleList)
 	FormAndSendHttpResp(resp, "Payment Schedules Data", http.StatusOK, paymentScheduleList)
 }
 

@@ -18,6 +18,6 @@ type CreatePaymentSchedule struct {
 	RepDraw       string `json:"rep_draw"`
 	RepDrawMax    string `json:"rep_draw_max"`
 	RepPay        string `json:"rep_pay"`
-	StartDate     string `json:"start_date" sql:"NOT NULL"`
+	StartDate     string `json:"start_date"`
 	EndDate       string `json:"end_date"`
 }

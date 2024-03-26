@@ -81,6 +81,6 @@ func HandleGetTeamDataRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	// Send the response
-	log.FuncInfoTrace(0, "Number of Teams list fetched : %v teamlist %+v", len(teamsList.TeamsList), teamsList)
+	log.FuncInfoTrace(0, "Number of Teams list fetched : %v list %+v", len(teamsList.TeamsList), teamsList)
 	FormAndSendHttpResp(resp, "Teams data", http.StatusOK, teamsList)
 }

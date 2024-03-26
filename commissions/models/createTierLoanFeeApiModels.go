@@ -14,6 +14,6 @@ type CreateTierLoanFee struct {
 	OweCost     string `json:"owe_cost"`
 	DlrMu       string `json:"dlr_mu"`
 	DlrCost     string `json:"dlr_cost"`
-	StartDate   string `json:"start_date" sql:"NOT NULL"`
+	StartDate   string `json:"start_date"`
 	EndDate     string `json:"end_date"`
 }

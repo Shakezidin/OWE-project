@@ -1,5 +1,5 @@
 /**************************************************************************
- * File       	   : apiGetTierLoanFeesData.go.go
+ * File       	   : apiGetTimelineSlaData.go
  * DESCRIPTION     : This file contains functions for get v adder data handler
  * DATE            : 22-Jan-2024
  **************************************************************************/
@@ -111,7 +111,7 @@ func HandleGetTierLoanFeesDataRequest(resp http.ResponseWriter, req *http.Reques
 		tierLoanFeeList.TierLoanFeeList = append(tierLoanFeeList.TierLoanFeeList, vaddersData)
 	}
 	// Send the response
-	log.FuncInfoTrace(0, "Number of tier loan fee List fetched : %v teamlist %+v", len(tierLoanFeeList.TierLoanFeeList), tierLoanFeeList)
+	log.FuncInfoTrace(0, "Number of tier loan fee List fetched : %v list %+v", len(tierLoanFeeList.TierLoanFeeList), tierLoanFeeList)
 	FormAndSendHttpResp(resp, "tier loan fee Data", http.StatusOK, tierLoanFeeList)
 }
 

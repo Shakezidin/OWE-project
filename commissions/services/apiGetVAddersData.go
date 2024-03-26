@@ -99,6 +99,6 @@ func HandleGetVAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 		vaddersList.VAddersList = append(vaddersList.VAddersList, vaddersData)
 	}
 	// Send the response
-	log.FuncInfoTrace(0, "Number of v adders List fetched : %v teamlist %+v", len(vaddersList.VAddersList), vaddersList)
+	log.FuncInfoTrace(0, "Number of v adders List fetched : %v list %+v", len(vaddersList.VAddersList), vaddersList)
 	FormAndSendHttpResp(resp, "v adders Data", http.StatusOK, vaddersList)
 }
