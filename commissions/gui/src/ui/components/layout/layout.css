@@ -168,7 +168,6 @@
 }
 
 .down-arrow {
-  display: flex;
   align-items: center;
   gap: 0.5rem;
 }
@@ -207,6 +206,7 @@
   display: flex;
   align-items: center;
   gap: 1rem;
+  background-color: "red";
 }
 
 .user-img {
@@ -221,7 +221,10 @@
   height: 3rem;
   border-radius: 50%;
 }
-
+.user-name {
+  flex-direction: "row";
+  display: flex;
+}
 .user-name h4 {
   font-size: 0.9rem;
   font-weight: normal;

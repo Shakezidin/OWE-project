@@ -30,10 +30,10 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
         </div>
       </div>
       <div className="search-container">
-       <div className="search-icon-img">
-        {/* <img src={searchIcon}></img> */}
+        <div className="search-icon-img">
+          {/* <img src={searchIcon}></img> */}
           <input type="text" name="search" placeholder="Search..." />
-          </div>
+        </div>
         <div className="user-container">
           <button className="app-btn">
             <img src={btnlogo} alt="" />
@@ -49,12 +49,11 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
             <div className="user-name">
               <div className="down-arrow">
                 <h4>{userEmail}</h4>
-                <div className="down-circle">
-                  <MdKeyboardArrowDown style={{ fontSize: "1.5rem" }} />
-                </div>
+                <p>{userRole}</p>
               </div>
-
-              <p>{userRole}</p>
+              <div className="down-circle">
+                <MdKeyboardArrowDown style={{ fontSize: "1.5rem" }} />
+              </div>
             </div>
           </div>
         </div>
