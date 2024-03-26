@@ -8,8 +8,8 @@ export interface commissionData{
     error : string | null,
 }
 
-export const getCommission = createAsyncThunk('commission',async(data:any)=>{
-const response  = await postCaller(EndPoints.commission,data)
+export const getAdderV = createAsyncThunk('adderV',async(data:any)=>{
+const response  = await postCaller(EndPoints.adderV,data)
 return response.data
 })
 const initialState:commissionData={
@@ -17,22 +17,22 @@ const initialState:commissionData={
     loading:false,
     error:""
 }
-export const commissionSlice = createSlice({
-    name:"commission",
+export const adderVSlice = createSlice({
+    name:"adderV",
     initialState,
     reducers:{},
     extraReducers(builder){
         builder
-        .addCase(getCommission.pending,(state)=>{
+        .addCase(getAdderV.pending,(state)=>{
             state.loading = true
         })
-        .addCase(getCommission.fulfilled,(state,action)=>{
+        .addCase(getAdderV.fulfilled,(state,action)=>{
             state.loading = false;
             state.error = null;
             state.data = action.payload;
             
         })
-        .addCase(getCommission.rejected,(state,action:PayloadAction<any>)=>{
+        .addCase(getAdderV.rejected,(state,action:PayloadAction<any>)=>{
             state.loading = false;
             state.error = action.payload;
             state.data = []
@@ -40,4 +40,4 @@ export const commissionSlice = createSlice({
 
     }
 })
-export default commissionSlice.reducer
+export default adderVSlice.reducer
