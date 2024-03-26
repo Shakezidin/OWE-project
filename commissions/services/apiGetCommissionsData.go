@@ -110,7 +110,7 @@ func HandleGetCommissionsDataRequest(resp http.ResponseWriter, req *http.Request
 		commissionsList.CommissionsList = append(commissionsList.CommissionsList, commissionData)
 	}
 	// Send the response
-	log.FuncInfoTrace(0, "Number of commissions List fetched : %v teamlist %+v", len(commissionsList.CommissionsList), commissionsList)
+	log.FuncInfoTrace(0, "Number of commissions List fetched : %v list %+v", len(commissionsList.CommissionsList), commissionsList)
 	FormAndSendHttpResp(resp, "Commissions Data", http.StatusOK, commissionsList)
 }
 

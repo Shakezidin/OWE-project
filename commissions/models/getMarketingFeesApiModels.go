@@ -13,7 +13,7 @@ type GetMarketingFeesData struct {
 	FeeRate     string `json:"fee_rate"`
 	ChgDlr      int    `json:"chg_dlr"`
 	PaySrc      int    `json:"pay_src"`
-	StartDate   string `json:"start_date" sql:"NOT NULL"`
+	StartDate   string `json:"start_date"`
 	EndDate     string `json:"end_date"`
 	Description string `json:"description"`
 }

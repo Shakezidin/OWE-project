@@ -34,6 +34,7 @@ const (
 	CreateTierLoanFeeFunction     string = "create_tier_loan_fee_type"
 	CreateDealerTierFunction      string = "create_new_dealer_tier"
 	CreatePaymentScheduleFunction string = "create_new_payment_schedule"
+	CreateTimelineSlaFunction     string = "create_new_timeline_sla"
 	TableName_teams               string = "teams"
 	TableName_commission_rates    string = "commission_rates"
 	TableName_users_details       string = "user_details"
@@ -44,6 +45,7 @@ const (
 	TableName_tier_loan_fee       string = "tier_loan_fee"
 	TableName_dealer_tier         string = "dealer_tier"
 	TableName_payment_schedule    string = "payment_schedule"
+	TableName_timeline_sla        string = "timeline_sla"
 )
 
 /******************************************************************************

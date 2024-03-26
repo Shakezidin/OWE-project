@@ -96,7 +96,7 @@ func HandleGetDealersTierDataRequest(resp http.ResponseWriter, req *http.Request
 	}
 
 	// Send the response
-	log.FuncInfoTrace(0, "Number of Dealers Tier List fetched : %v teamlist %+v", len(dealersTierList.DealersTierList), dealersTierList)
+	log.FuncInfoTrace(0, "Number of Dealers Tier List fetched : %v list %+v", len(dealersTierList.DealersTierList), dealersTierList)
 	FormAndSendHttpResp(resp, "Dealers Tier Data", http.StatusOK, dealersTierList)
 }
 

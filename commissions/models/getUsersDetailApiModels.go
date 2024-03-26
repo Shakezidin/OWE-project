@@ -17,7 +17,7 @@ type GetUsersData struct {
 	ReportingManager  string `json:"reporting_manager"`
 	UserStatus        string `json:"user_status"`
 	Description       string `json:"description"`
-	CreatedDate       string `json:"created_date" sql:"NOT NULL"`
+	CreatedDate       string `json:"created_date"`
 	UpdatedDate       string `json:"updated_date"`
 }
 
