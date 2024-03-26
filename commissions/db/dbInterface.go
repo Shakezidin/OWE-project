@@ -36,6 +36,7 @@ const (
 	CreatePaymentScheduleFunction string = "create_new_payment_schedule"
 	CreateTimelineSlaFunction     string = "create_new_timeline_sla"
 	CreatePartnerFunction         string = "create_new_partner"
+	CreateStateFunction         string = "create_new_state"
 	TableName_teams               string = "teams"
 	TableName_commission_rates    string = "commission_rates"
 	TableName_users_details       string = "user_details"
@@ -48,6 +49,7 @@ const (
 	TableName_payment_schedule    string = "payment_schedule"
 	TableName_timeline_sla        string = "timeline_sla"
 	TableName_partners            string = "partners"
+	TableName_states              string = "states"
 )
 
 /******************************************************************************
