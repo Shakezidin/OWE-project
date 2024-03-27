@@ -80,11 +80,31 @@ func HandleGetDealersTierDataRequest(resp http.ResponseWriter, req *http.Request
 	dealersTierList := models.GetDealersTierList{}
 
 	for _, item := range data {
-		DealerName := item["dealer_name"].(string)
-		Tier := item["tier"].(string)
-		StartDate := item["start_date"].(string)
-		EndDate := item["end_date"].(string)
+		DealerName, nameOk := item["dealer_name"].(string)
+		if !nameOk {
+			log.FuncErrorTrace(0, "Failed to get dealer name. Item: %+v\n", item)
+			continue
+		}
 
+		Tier, tierOk := item["tier"].(string)
+		if !tierOk {
+			log.FuncErrorTrace(0, "Failed to get tier. Item: %+v\n", item)
+			continue
+		}
+
+		StartDate, startOk := item["start_date"].(string)
+		if !startOk {
+			log.FuncErrorTrace(0, "Failed to get start date. Item: %+v\n", item)
+			continue
+		}
+
+		EndDate, endOk := item["end_date"].(string)
+		if !endOk {
+			log.FuncErrorTrace(0, "Failed to get end date. Item: %+v\n", item)
+			continue
+		}
+
+		// Create a new GetDealerTierData object
 		dealerTierData := models.GetDealerTierData{
 			DealerName: DealerName,
 			Tier:       Tier,
@@ -92,6 +112,7 @@ func HandleGetDealersTierDataRequest(resp http.ResponseWriter, req *http.Request
 			EndDate:    EndDate,
 		}
 
+		// Append the new dealerTierData to the DealersTierList
 		dealersTierList.DealersTierList = append(dealersTierList.DealersTierList, dealerTierData)
 	}
 

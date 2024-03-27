@@ -163,7 +163,6 @@ scrollbar-width: none;  /* Firefox */
 }
 
 .down-arrow {
-  display: flex;
   align-items: center;
   gap: .5rem;
 }
@@ -198,6 +197,7 @@ scrollbar-width: none;  /* Firefox */
   display: flex;
   align-items: center;
   gap: 1rem;
+  background-color: "red";
 }
 
 .user-img {
@@ -212,7 +212,10 @@ scrollbar-width: none;  /* Firefox */
   height: 3rem;
   border-radius: 50%;
 }
-
+.user-name {
+  flex-direction: "row";
+  display: flex;
+}
 .user-name h4 {
   font-size: .9rem;
   font-weight: normal;

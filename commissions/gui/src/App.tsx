@@ -17,7 +17,7 @@ import EnterOtpScreen from "./ui/pages/otp/EnterOtpScreen";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./redux/store";
-import { initializeAuth } from "./redux/features/authSlice";
+import { initializeAuth } from "./redux/apiSlice/authSlice";
 
 function App() {
   const dispatch = useDispatch();

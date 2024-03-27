@@ -78,14 +78,44 @@ func HandleGetVAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	// Assuming you have data as a slice of maps, as in your previous code
 	for _, item := range data {
-		AdderName := item["adder_name"].(string)
-		AdderType := item["adder_type"].(string)
-		PriceType := item["price_type"].(string)
-		PriceAmount := item["price_amount"].(string)
-		Active := int(item["active"].(int64))
-		Description := item["description"].(string)
+		AdderName, ok := item["adder_name"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get adder name. Item: %+v\n", item)
+			continue
+		}
 
-		// Create a new GetMarketingFeesData object
+		AdderType, ok := item["adder_type"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get adder type. Item: %+v\n", item)
+			continue
+		}
+
+		PriceType, ok := item["price_type"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get price type. Item: %+v\n", item)
+			continue
+		}
+
+		PriceAmount, ok := item["price_amount"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get price amount. Item: %+v\n", item)
+			continue
+		}
+
+		ActiveVal, ok := item["active"].(int64)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get active. Item: %+v\n", item)
+			continue
+		}
+		Active := int(ActiveVal)
+
+		Description, ok := item["description"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get description. Item: %+v\n", item)
+			continue
+		}
+
+		// Create a new GetVAdderData object
 		vaddersData := models.GetVAdderData{
 			AdderName:   AdderName,
 			AdderType:   AdderType,
@@ -95,9 +125,10 @@ func HandleGetVAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 			Description: Description,
 		}
 
-		// Append the new vaddersData to the marketingFeesList
+		// Append the new vaddersData to the vaddersList
 		vaddersList.VAddersList = append(vaddersList.VAddersList, vaddersData)
 	}
+
 	// Send the response
 	log.FuncInfoTrace(0, "Number of v adders List fetched : %v list %+v", len(vaddersList.VAddersList), vaddersList)
 	FormAndSendHttpResp(resp, "v adders Data", http.StatusOK, vaddersList)

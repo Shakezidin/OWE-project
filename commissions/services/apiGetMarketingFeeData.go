@@ -81,15 +81,61 @@ func HandleGetMarketingFeesDataRequest(resp http.ResponseWriter, req *http.Reque
 
 	// Assuming you have data as a slice of maps, as in your previous code
 	for _, item := range data {
-		Source := item["source_name"].(string)
-		Dba := item["dba"].(string)
-		State := item["state_name"].(string)
-		FeeRate := item["fee_rate"].(string)
-		ChgDlr := int(item["chg_dlr"].(int64))
-		PaySrc := int(item["pay_src"].(int64))
-		StartDate := item["start_date"].(string)
-		EndDate := item["end_date"].(string)
-		Description := item["description"].(string)
+		Source, ok := item["source_name"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get source name. Item: %+v\n", item)
+			continue
+		}
+
+		Dba, ok := item["dba"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get dba. Item: %+v\n", item)
+			continue
+		}
+
+		State, ok := item["state_name"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get state name. Item: %+v\n", item)
+			continue
+		}
+
+		FeeRate, ok := item["fee_rate"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get fee rate. Item: %+v\n", item)
+			continue
+		}
+
+		ChgDlrVal, ok := item["chg_dlr"].(int64)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get chg_dlr. Item: %+v\n", item)
+			continue
+		}
+		ChgDlr := int(ChgDlrVal)
+
+		PaySrcVal, ok := item["pay_src"].(int64)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get pay_src. Item: %+v\n", item)
+			continue
+		}
+		PaySrc := int(PaySrcVal)
+
+		StartDate, ok := item["start_date"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get start date. Item: %+v\n", item)
+			continue
+		}
+
+		EndDate, ok := item["end_date"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get end date. Item: %+v\n", item)
+			continue
+		}
+
+		Description, ok := item["description"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get description. Item: %+v\n", item)
+			continue
+		}
 
 		// Create a new GetMarketingFeesData object
 		marketingFeesData := models.GetMarketingFeesData{
@@ -107,6 +153,7 @@ func HandleGetMarketingFeesDataRequest(resp http.ResponseWriter, req *http.Reque
 		// Append the new marketingFeesData to the marketingFeesList
 		marketingFeesList.MarketingFeesList = append(marketingFeesList.MarketingFeesList, marketingFeesData)
 	}
+
 	// Send the response
 	log.FuncInfoTrace(0, "Number of Marketing fee List fetched : %v list %+v", len(marketingFeesList.MarketingFeesList), marketingFeesList)
 	FormAndSendHttpResp(resp, "Marketing fee Data", http.StatusOK, marketingFeesList)

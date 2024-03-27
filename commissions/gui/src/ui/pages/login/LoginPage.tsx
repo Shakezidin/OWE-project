@@ -15,7 +15,7 @@ import { ReactComponent as UNDER_LINE } from "../../../resources/assets/BlueAndG
 import Input from "../../components/text_input/Input";
 import { ActionButton } from "../../components/button/ActionButton";
 import { Credentials } from "../../../core/models/api_models/AuthModel";
-import { loginSuccess } from '../../../redux/features/authSlice';
+import { loginSuccess } from '../../../redux/apiSlice/authSlice';
 import { login } from "../../../infrastructure/web_api/services/apiUrl";
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from "../../../redux/store";

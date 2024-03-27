@@ -36,7 +36,7 @@ export const getCaller = async (endpoint: string) => {
     return result;
 };
 
-export const postCaller = async (endpoint: string, data: any) => {
+export const postCaller= async (endpoint: string, data: any,) => {
   const response = await fetch(`${BASE_URL}/${endpoint}`, {
     method:HTTP_METHOD.POST,
     headers: {

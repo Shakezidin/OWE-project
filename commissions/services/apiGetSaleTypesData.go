@@ -23,7 +23,7 @@ import (
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
- func HandleGetSaleTypeDataRequest(resp http.ResponseWriter, req *http.Request) {
+func HandleGetSaleTypeDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err          error
 		dataReq      models.DataRequestBody
@@ -79,13 +79,15 @@ import (
 	// Assuming you have data as a slice of maps, as in your previous code
 	for _, item := range data {
 		typeName, typeOk := item["type_name"].(string)
-		if !typeOk || typeName == "" {
-			typeName = "" 
+		if !typeOk {
+			log.FuncErrorTrace(0, "Failed to get type name. Item: %+v\n", item)
+			continue
 		}
-	
+
 		description, descOk := item["description"].(string)
-		if !descOk || description == "" {
-			description = ""
+		if !descOk {
+			log.FuncErrorTrace(0, "Failed to get description. Item: %+v\n", item)
+			continue
 		}
 
 		// Create a new GetSaleTypeData object
@@ -96,6 +98,7 @@ import (
 
 		saleTypeList.SaleTypeList = append(saleTypeList.SaleTypeList, saleTypeData)
 	}
+
 	// Send the response
 	log.FuncInfoTrace(0, "Number of sale type List fetched : %v salelist %+v", len(saleTypeList.SaleTypeList), saleTypeList)
 	FormAndSendHttpResp(resp, "sale type Data", http.StatusOK, saleTypeList)
