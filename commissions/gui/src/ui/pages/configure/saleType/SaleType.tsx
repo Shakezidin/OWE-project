@@ -8,6 +8,7 @@ import imgimport from "../../../../resources/assets/import.png";
 import CreateDealer from "../dealerOverrides/CreateDealer";
 import { CiEdit } from "react-icons/ci";
 import arrowDown from "../../../../resources/assets/arrow-down.png";
+import CreateSaleType from './CreateSaleType';
 const SaleType = () => {
     const [open, setOpen] = React.useState<boolean>(false);
     const handleOpen = () => setOpen(true);
@@ -64,7 +65,7 @@ const SaleType = () => {
         <button type='button' style={{ background: "black", color: "white",border:"1px solid black" }} onClick={handleOpen}>  <IoAddSharp /> Add New</button>
       </div>
     </div>
-        {open && <CreateDealer handleClose={handleClose} />}
+        {open && <CreateSaleType handleClose={handleClose} />}
       </div>
       <div className="TableContainer" style={{overflowX:"auto",whiteSpace:"nowrap"}}>
         <table>

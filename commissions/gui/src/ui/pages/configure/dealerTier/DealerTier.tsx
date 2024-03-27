@@ -10,6 +10,7 @@ import imgExport from '../../../../resources/assets/export.png'
 import imgimport from '../../../../resources/assets/import.png'
 import arrowDown from '../../../../resources/assets/arrow-down.png'
 import CreateDealer from '../dealerOverrides/CreateDealer';
+import CreateDealerTier from './CreateDealerTier';
 const DealerTier = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
@@ -78,7 +79,7 @@ const DealerTier = () => {
     </div>
    
            {
-            open && (<CreateDealer handleClose={handleClose}  />)
+            open && (<CreateDealerTier handleClose={handleClose}  />)
            }
     
   </div>

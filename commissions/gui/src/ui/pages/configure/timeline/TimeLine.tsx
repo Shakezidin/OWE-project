@@ -10,6 +10,7 @@ import { IoAddSharp } from "react-icons/io5";
 import imgExport from '../../../../resources/assets/export.png'
 import imgimport from '../../../../resources/assets/import.png'
 import arrowDown from '../../../../resources/assets/arrow-down.png'
+import CreateTimeLine from './CreateTimeLine';
 const TimeLine = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
@@ -82,7 +83,7 @@ const TimeLine = () => {
     </div>
    
            {
-            open && (<CreateDealer handleClose={handleClose}  />)
+            open && (<CreateTimeLine handleClose={handleClose}  />)
            }
     
   </div>

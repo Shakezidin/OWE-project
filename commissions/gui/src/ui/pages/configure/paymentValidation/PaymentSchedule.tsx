@@ -8,6 +8,7 @@ import CreateDealer from "../dealerOverrides/CreateDealer";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import arrowDown from "../../../../resources/assets/arrow-down.png";
 import { CiEdit } from "react-icons/ci";
+import CreatePaymentSchedule from "./CreatePaymentSchedule";
 
 const PaymentSchedule = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -124,7 +125,7 @@ const PaymentSchedule = () => {
       </div>
     </div>
 
-            {open && <CreateDealer handleClose={handleClose} />}
+            {open && <CreatePaymentSchedule handleClose={handleClose} />}
           </div>
           <div className="TableContainer" style={{overflowX:"auto",whiteSpace:"nowrap"}}>
             <table>

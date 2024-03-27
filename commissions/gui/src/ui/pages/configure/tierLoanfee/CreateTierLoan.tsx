@@ -11,7 +11,7 @@ type ButtonProps = {
     handleClose: () => void
 }
 
-const CreateMarketingFees = (props: ButtonProps) => {
+const CreateTierLoan = (props: ButtonProps) => {
     const handleFormChange = () => {
 
     }
@@ -24,61 +24,79 @@ const CreateMarketingFees = (props: ButtonProps) => {
 
                 </div>
                 <div className="createUserContainer">
-                    <h3 className="createProfileText">Marketing Fees</h3>
+                    <h3 className="createProfileText">Tier Loan Fee</h3>
                     <div className="createProfileInputView">
                         <div className="createProfileTextView">
                             <div className="create-input-container">
-                                <div className="create-input-field">
-                                    <DropdownButton id="selectField1"
-                                        label="Source"
-                                        value={""}
-                                        options={['Option 1', 'Option 2', 'Option 3']}
-                                        onChange={handleFormChange} />
-                                </div>
-                                <div className="create-input-field">
-                                    <DropdownButton id="selectField1"
-                                        label="DBA"
-                                        value={""}
-                                        options={['Option 1', 'Option 2', 'Option 3']}
-                                        onChange={handleFormChange} />
-                                </div>
                                  <div className="create-input-field">
                                     <Input
                                         type={"text"}
-                                        label="State"
+                                        label="Dealer Tier"
                                         value={""}
                                         name=""
-                                        placeholder={"State"}
+                                        placeholder={"Dealer Tier"}
                                         onChange={() => { }}
                                     />
+                                </div>
+                                <div className="create-input-field">
+                                    <Input
+                                        type={"text"}
+                                        label="Installer"
+                                        value={""}
+                                        name=""
+                                        placeholder={"Installer"}
+                                        onChange={() => { }}
+                                    />
+                                </div>
+                                <div className="create-input-field">
+                                    <DropdownButton id="selectField1"
+                                        label="State"
+                                        value={""}
+                                        options={['Option 1', 'Option 2', 'Option 3']}
+                                        onChange={handleFormChange} />
                                 </div>
                             </div>
 
                             <div className="create-input-container">
+                            <div className="create-input-field">
+                                    <DropdownButton id="selectField1"
+                                        label="Finance Type Name"
+                                        value={""}
+                                        options={['Option 1', 'Option 2', 'Option 3']}
+                                        onChange={handleFormChange} />
+                                </div>
                                 <div className="create-input-field">
                                     <Input
                                         type={"text"}
-                                        label="Fee Rate"
+                                        label="OWE Cost"
                                         value={""}
                                         name=""
-                                        placeholder={"Fee Rate"}
+                                        placeholder={"OWE Cost"}
                                         onChange={() => { }}
                                     />
                                 </div>
                                 <div className="create-input-field">
                                     <Input
                                         type={"text"}
-                                        label="Note"
+                                        label="DLR MU"
                                         value={""}
                                         name=""
-                                        placeholder={"Note"}
+                                        placeholder={"DLR MU"}
                                         onChange={() => { }}
                                     />
                                 </div>
-                               
                             </div>
                             <div className="create-input-container">
-                               
+                                <div className="create-input-field">
+                                    <Input
+                                        type={"text"}
+                                        label="DLR Cost"
+                                        value={""}
+                                        name=""
+                                        placeholder={"DLR Cost"}
+                                        onChange={() => { }}
+                                    />
+                                </div>
                                 <div className="create-input-field">
                                     <Input
                                         type={"date"}
@@ -113,4 +131,4 @@ const CreateMarketingFees = (props: ButtonProps) => {
     );
 };
 
-export default CreateMarketingFees;
+export default CreateTierLoan;

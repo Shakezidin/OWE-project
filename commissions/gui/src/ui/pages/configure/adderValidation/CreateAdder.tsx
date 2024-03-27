@@ -1,16 +1,13 @@
 import React from "react";
 import "../../create_profile/CreateUserProfile.css";
-import { ReactComponent as PROFILE_BACKGROUND } from "../../../../resources/assets/Profile_background.svg";
-
 import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cross_button.svg";
 import Input from "../../../components/text_input/Input";
 import DropdownButton from "../../../components/dropdown/DropdownButton";
 import { ActionButton } from "../../../components/button/ActionButton";
 
-type ButtonProps = {
-    handleClose: () => void
-}
-
+type ButtonProps ={
+    handleClose:()=>void
+  }
 const CreateAdder = (props: ButtonProps) => {
     const handleFormChange = () => {
 
@@ -24,7 +21,7 @@ const CreateAdder = (props: ButtonProps) => {
 
                 </div>
                 <div className="createUserContainer">
-                    <h3 className="createProfileText">Adder Validation</h3>
+                    <h3 className="createProfileText">Adder</h3>
                     <div className="createProfileInputView">
                         <div className="createProfileTextView">
                             <div className="create-input-container">
@@ -34,7 +31,7 @@ const CreateAdder = (props: ButtonProps) => {
                                         label="Adder Name"
                                         value={""}
                                         name=""
-                                        placeholder={"Rate List"}
+                                        placeholder={"Adder Name"}
                                         onChange={() => { }}
                                     />
                                 </div>
@@ -61,7 +58,7 @@ const CreateAdder = (props: ButtonProps) => {
                                         label="Price Amount"
                                         value={""}
                                         name=""
-                                        placeholder={"Sales Type"}
+                                        placeholder={"Amount"}
                                         onChange={() => { }}
                                     />
                                 </div>
@@ -71,35 +68,23 @@ const CreateAdder = (props: ButtonProps) => {
                                         label="Details"
                                         value={""}
                                         name=""
-                                        placeholder={"Sales Price"}
+                                        placeholder={"Details"}
                                         onChange={() => { }}
                                     />
                                 </div>
-                               
-                            </div>
-                            <div className="create-input-container">
-                               
                                 <div className="create-input-field">
                                     <Input
                                         type={"date"}
-                                        label="Start Date"
+                                        label="Created On"
                                         value={""}
                                         name=""
                                         placeholder={"1/04/2004"}
                                         onChange={() => { }}
                                     />
                                 </div>
-                                <div className="create-input-field">
-                                    <Input
-                                        type={"date"}
-                                        label="End Date"
-                                        value={""}
-                                        name=""
-                                        placeholder={"10/04/2004"}
-                                        onChange={() => { }}
-                                    />
-                                </div>
+                               
                             </div>
+
                         </div>
                         <div className="createUserActionButton">
                             <ActionButton title={"Create"} type="submit"

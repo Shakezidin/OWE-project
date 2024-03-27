@@ -26,35 +26,35 @@ const AdderValidation = () => {
       action: "$2000.00",
     },
     {
-        an: "Load Side / Line Side Tap",
-        at: "Additional Products",
-        pt: "Fixed",
-        saletype: "Loan",
-        pa: "$3002",
-        det: "Substitute for MPU the is less ",
-        create: "03-01-22",
-        action: "$2000.00",
-      },
-      {
-        an: "Load Side / Line Side Tap",
-        at: "Additional Products",
-        pt: "Fixed",
-        saletype: "Loan",
-        pa: "$3002",
-        det: "Substitute for MPU the is less ",
-        create: "03-01-22",
-        action: "$2000.00",
-      },
-      {
-        an: "Load Side / Line Side Tap",
-        at: "Additional Products",
-        pt: "Fixed",
-        saletype: "Loan",
-        pa: "$3002",
-        det: "Substitute for MPU the is less ",
-        create: "03-01-22",
-        action: "$2000.00",
-      },
+      an: "Load Side / Line Side Tap",
+      at: "Additional Products",
+      pt: "Fixed",
+      saletype: "Loan",
+      pa: "$3002",
+      det: "Substitute for MPU the is less ",
+      create: "03-01-22",
+      action: "$2000.00",
+    },
+    {
+      an: "Load Side / Line Side Tap",
+      at: "Additional Products",
+      pt: "Fixed",
+      saletype: "Loan",
+      pa: "$3002",
+      det: "Substitute for MPU the is less ",
+      create: "03-01-22",
+      action: "$2000.00",
+    },
+    {
+      an: "Load Side / Line Side Tap",
+      at: "Additional Products",
+      pt: "Fixed",
+      saletype: "Loan",
+      pa: "$3002",
+      det: "Substitute for MPU the is less ",
+      create: "03-01-22",
+      action: "$2000.00",
+    },
   ];
   return (
     <div className="comm">
@@ -67,30 +67,30 @@ const AdderValidation = () => {
             </p>
           </div>
           <div className="iconContainer">
-    <div className='iconsSection2'>
-        <button type='button'> <img src={imgExport} alt='' />View Archive</button>
-      </div>
-      <div className='iconsSection-filter'>
-        <button type='button'> <img src={imgExport} alt='' /></button>
-      </div>
-      <div className='iconsSection2'>
-        <button type='button'> <img src={imgExport} alt='' />Archive</button>
-      </div>
-      <div className='iconsSection2'>
-        <button type='button'> <img src={imgimport} alt='' /> Import</button>
-      </div>
-      <div className='iconsSection2'>
-        <button type='button'> <img src={imgExport} alt='' />Export</button>
-      </div>
-      <div className='iconsSection2'>
-        <button type='button' style={{ background: "black", color: "white",border:"1px solid black" }} onClick={handleOpen}>  <IoAddSharp /> Add New</button>
-      </div>
-    </div>
+            <div className='iconsSection2'>
+              <button type='button'> <img src={imgExport} alt='' />View Archive</button>
+            </div>
+            <div className='iconsSection-filter'>
+              <button type='button'> <img src={imgExport} alt='' /></button>
+            </div>
+            <div className='iconsSection2'>
+              <button type='button'> <img src={imgExport} alt='' />Archive</button>
+            </div>
+            <div className='iconsSection2'>
+              <button type='button'> <img src={imgimport} alt='' /> Import</button>
+            </div>
+            <div className='iconsSection2'>
+              <button type='button'> <img src={imgExport} alt='' />Export</button>
+            </div>
+            <div className='iconsSection2'>
+              <button type='button' style={{ background: "black", color: "white", border: "1px solid black" }} onClick={handleOpen}>  <IoAddSharp /> Add New</button>
+            </div>
+          </div>
           {open && <CreateAdder handleClose={handleClose} />}
         </div>
-        <div className="TableContainer" style={{overflowX:"auto",whiteSpace:"nowrap"}}>
+        <div className="TableContainer" style={{ overflowX: "auto", whiteSpace: "nowrap" }}>
           <table>
-          <thead >
+            <thead >
               <tr>
                 <th>
                   <div>
@@ -127,7 +127,7 @@ const AdderValidation = () => {
                     <p>Created On</p> <img src={arrowDown} alt="" />
                   </div>
                 </th>
-               <th>
+                <th>
                   <div className="table-header">
                     <p>Action</p> <img src={arrowDown} alt="" />
                   </div>
@@ -136,25 +136,25 @@ const AdderValidation = () => {
               </tr>
             </thead>
             <tbody >  {adderValidationData.map((el, i) => (
-                <tr key={i}>
-                  <td>
-                    <input value="test" type="checkbox" className="check-box" />
-                  </td>
-                  <td style={{ fontWeight: "500",color:"black" }}>{el.an}</td>
-                  <td>{el.at}</td>
-                  <td>{el.pt}</td>
-                  <td>{el.pa}</td>
-                  <td>{el.det}</td>
-                  <td>{el.create}</td>
+              <tr key={i}>
+                <td>
+                  <input value="test" type="checkbox" className="check-box" />
+                </td>
+                <td style={{ fontWeight: "500", color: "black" }}>{el.an}</td>
+                <td>{el.at}</td>
+                <td>{el.pt}</td>
+                <td>{el.pa}</td>
+                <td>{el.det}</td>
+                <td>{el.create}</td>
 
-                  <td style={{ display: "flex", gap: "1rem" }}>
-                    <RiDeleteBin5Line
-                      style={{ fontSize: "1.5rem", color: "#344054" }}
-                    />
-                    <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />
-                  </td>
-                </tr>
-              ))}
+                <td style={{ display: "flex", gap: "1rem" }}>
+                  <RiDeleteBin5Line
+                    style={{ fontSize: "1.5rem", color: "#344054" }}
+                  />
+                  <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />
+                </td>
+              </tr>
+            ))}
             </tbody>
           </table>
         </div>

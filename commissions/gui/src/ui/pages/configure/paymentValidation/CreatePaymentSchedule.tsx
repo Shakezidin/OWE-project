@@ -11,7 +11,7 @@ type ButtonProps = {
     handleClose: () => void
 }
 
-const CreateMarketingFees = (props: ButtonProps) => {
+const CreatePaymentSchedule = (props: ButtonProps) => {
     const handleFormChange = () => {
 
     }
@@ -24,61 +24,122 @@ const CreateMarketingFees = (props: ButtonProps) => {
 
                 </div>
                 <div className="createUserContainer">
-                    <h3 className="createProfileText">Marketing Fees</h3>
+                    <h3 className="createProfileText">Payment Schedule</h3>
                     <div className="createProfileInputView">
                         <div className="createProfileTextView">
                             <div className="create-input-container">
                                 <div className="create-input-field">
+                                    <Input
+                                        type={"text"}
+                                        label="Partner Name"
+                                        value={""}
+                                        name=""
+                                        placeholder={"Partner Name"}
+                                        onChange={() => { }}
+                                    />
+                                </div>
+                                <div className="create-input-field">
                                     <DropdownButton id="selectField1"
-                                        label="Source"
+                                        label="Partner"
                                         value={""}
                                         options={['Option 1', 'Option 2', 'Option 3']}
                                         onChange={handleFormChange} />
                                 </div>
                                 <div className="create-input-field">
                                     <DropdownButton id="selectField1"
-                                        label="DBA"
+                                        label="Installer"
                                         value={""}
                                         options={['Option 1', 'Option 2', 'Option 3']}
                                         onChange={handleFormChange} />
-                                </div>
-                                 <div className="create-input-field">
-                                    <Input
-                                        type={"text"}
-                                        label="State"
-                                        value={""}
-                                        name=""
-                                        placeholder={"State"}
-                                        onChange={() => { }}
-                                    />
                                 </div>
                             </div>
 
                             <div className="create-input-container">
                                 <div className="create-input-field">
+                                    <DropdownButton id="selectField1"
+                                        label="Sale Type"
+                                        value={""}
+                                        options={['Option 1', 'Option 2', 'Option 3']}
+                                        onChange={handleFormChange} />
+                                </div>
+                                <div className="create-input-field">
                                     <Input
                                         type={"text"}
-                                        label="Fee Rate"
+                                        label="ST"
                                         value={""}
                                         name=""
-                                        placeholder={"Fee Rate"}
+                                        placeholder={"ST"}
                                         onChange={() => { }}
                                     />
                                 </div>
                                 <div className="create-input-field">
                                     <Input
                                         type={"text"}
-                                        label="Note"
+                                        label="Rate List"
                                         value={""}
                                         name=""
-                                        placeholder={"Note"}
+                                        placeholder={"Rate List"}
                                         onChange={() => { }}
                                     />
                                 </div>
-                               
                             </div>
                             <div className="create-input-container">
-                               
+                                <div className="create-input-field">
+                                    <Input
+                                        type={"text"}
+                                        label="Draw"
+                                        value={""}
+                                        name=""
+                                        placeholder={"Draw"}
+                                        onChange={() => { }}
+                                    />
+                                </div>
+                                <div className="create-input-field">
+                                    <Input
+                                        type={"text"}
+                                        label="Draw Max"
+                                        value={""}
+                                        name=""
+                                        placeholder={"Draw Max"}
+                                        onChange={() => { }}
+                                    />
+                                </div>
+                                <div className="create-input-field">
+                                    <Input
+                                        type={"text"}
+                                        label="Rep Draw"
+                                        value={""}
+                                        name=""
+                                        placeholder={" Rep Draw"}
+                                        onChange={() => { }}
+                                    />
+                                </div>
+
+
+                            </div>
+                            <div className="create-input-container">
+                                <div className="create-input-field">
+                                    <Input
+                                        type={"text"}
+                                        label="Rep Max Draw"
+                                        value={""}
+                                        name=""
+                                        placeholder={"Rep Max Draw"}
+                                        onChange={() => { }}
+                                    />
+                                </div>
+
+                                <div className="create-input-field">
+                                    <Input
+                                        type={"text"}
+                                        label="Rep Pay"
+                                        value={""}
+                                        name=""
+                                        placeholder={"Rep Pay"}
+                                        onChange={() => { }}
+                                    />
+                                </div>
+
                                 <div className="create-input-field">
                                     <Input
                                         type={"date"}
@@ -89,13 +150,16 @@ const CreateMarketingFees = (props: ButtonProps) => {
                                         onChange={() => { }}
                                     />
                                 </div>
-                                <div className="create-input-field">
+                               
+                            </div>
+                            <div className="create-input-container">
+                            <div className="create-input-field">
                                     <Input
                                         type={"date"}
                                         label="End Date"
                                         value={""}
                                         name=""
-                                        placeholder={"10/04/2004"}
+                                        placeholder={"1/04/2004"}
                                         onChange={() => { }}
                                     />
                                 </div>
@@ -113,4 +177,4 @@ const CreateMarketingFees = (props: ButtonProps) => {
     );
 };
 
-export default CreateMarketingFees;
+export default CreatePaymentSchedule;

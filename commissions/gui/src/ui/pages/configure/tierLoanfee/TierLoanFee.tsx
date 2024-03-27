@@ -9,6 +9,7 @@ import imgExport from '../../../../resources/assets/export.png'
 import imgimport from '../../../../resources/assets/import.png'
 import CreateDealer from "../dealerOverrides/CreateDealer";
 import arrowDown from "../../../../resources/assets/arrow-down.png";
+import CreateTierLoan from "./CreateTierLoan";
 
 const TierLoanFee = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -105,7 +106,7 @@ const TierLoanFee = () => {
       </div>
     </div>
            {
-            open && (<CreateDealer handleClose={handleClose}  />)
+            open && (<CreateTierLoan handleClose={handleClose}  />)
            }
     
   </div>

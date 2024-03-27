@@ -11,7 +11,7 @@ type ButtonProps = {
     handleClose: () => void
 }
 
-const CreateMarketingFees = (props: ButtonProps) => {
+const CreateTimeLine = (props: ButtonProps) => {
     const handleFormChange = () => {
 
     }
@@ -24,59 +24,36 @@ const CreateMarketingFees = (props: ButtonProps) => {
 
                 </div>
                 <div className="createUserContainer">
-                    <h3 className="createProfileText">Marketing Fees</h3>
+                    <h3 className="createProfileText">TimeLine SLA</h3>
                     <div className="createProfileInputView">
                         <div className="createProfileTextView">
                             <div className="create-input-container">
                                 <div className="create-input-field">
                                     <DropdownButton id="selectField1"
-                                        label="Source"
+                                        label="Type/M2M"
                                         value={""}
                                         options={['Option 1', 'Option 2', 'Option 3']}
                                         onChange={handleFormChange} />
                                 </div>
                                 <div className="create-input-field">
                                     <DropdownButton id="selectField1"
-                                        label="DBA"
+                                        label="State"
                                         value={""}
                                         options={['Option 1', 'Option 2', 'Option 3']}
                                         onChange={handleFormChange} />
                                 </div>
-                                 <div className="create-input-field">
+                                <div className="create-input-field">
                                     <Input
                                         type={"text"}
-                                        label="State"
+                                        label="Days"
                                         value={""}
                                         name=""
-                                        placeholder={"State"}
+                                        placeholder={"Days"}
                                         onChange={() => { }}
                                     />
                                 </div>
                             </div>
 
-                            <div className="create-input-container">
-                                <div className="create-input-field">
-                                    <Input
-                                        type={"text"}
-                                        label="Fee Rate"
-                                        value={""}
-                                        name=""
-                                        placeholder={"Fee Rate"}
-                                        onChange={() => { }}
-                                    />
-                                </div>
-                                <div className="create-input-field">
-                                    <Input
-                                        type={"text"}
-                                        label="Note"
-                                        value={""}
-                                        name=""
-                                        placeholder={"Note"}
-                                        onChange={() => { }}
-                                    />
-                                </div>
-                               
-                            </div>
                             <div className="create-input-container">
                                
                                 <div className="create-input-field">
@@ -113,4 +90,4 @@ const CreateMarketingFees = (props: ButtonProps) => {
     );
 };
 
-export default CreateMarketingFees;
+export default CreateTimeLine;
