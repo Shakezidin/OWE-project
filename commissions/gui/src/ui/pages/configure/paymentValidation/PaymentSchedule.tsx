@@ -43,7 +43,7 @@ const PaymentSchedule = () => {
      { payScheduleList?.length > 0?
       <div className="commissionContainer">
         <TableHeader
-          title="Marketing Fees"
+          title="Payment Scheduler"
           onPressViewArchive={() => {}}
           onPressArchive={() => {}}
           onPressFilter={() => {}}

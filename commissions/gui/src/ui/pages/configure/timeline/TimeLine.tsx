@@ -42,7 +42,7 @@ const TimeLine = () => {
       
       <div className="commissionContainer">
         <TableHeader
-          title="Time Line"
+          title="Time Line SLA"
           onPressViewArchive={() => {}}
           onPressArchive={() => {}}
           onPressFilter={() => {}}

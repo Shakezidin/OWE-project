@@ -75,10 +75,6 @@ const CreateMarketingFees = (props: ButtonProps) => {
                                         onChange={() => { }}
                                     />
                                 </div>
-                               
-                            </div>
-                            <div className="create-input-container">
-                               
                                 <div className="create-input-field">
                                     <Input
                                         type={"date"}
@@ -89,6 +85,11 @@ const CreateMarketingFees = (props: ButtonProps) => {
                                         onChange={() => { }}
                                     />
                                 </div>
+                               
+                            </div>
+                            <div className="create-input-container">
+                               
+                            
                                 <div className="create-input-field">
                                     <Input
                                         type={"date"}
