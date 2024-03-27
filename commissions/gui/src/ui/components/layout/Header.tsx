@@ -1,15 +1,10 @@
 import React from "react";
-import logo from "../../../resources/assets/logo.png";
 import "./layout.css";
-import btnlogo from "../../../resources/assets/appicon.png";
-import userImg from "../../../resources/assets/user.png";
-import notificationImg from "../../../resources/assets/notification.png";
-import searchIcon from "../../../resources/assets/search.png";
 import "../layout/layout.css";
 import { GoSearch } from "react-icons/go";
-
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { MdOutlineMenu } from "react-icons/md";
+import { ICONS } from "../../icons/Icons";
 
 interface Toggleprops {
   toggleOpen: boolean;
@@ -26,35 +21,39 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           <MdOutlineMenu className="icon" />
         </div>
         <div className="header-logo">
-          <img src={logo} alt="" />
+          <img src={ICONS.LOGO} alt="" />
         </div>
       </div>
       <div className="search-container">
-       <div className="search-icon-img">
-        {/* <img src={searchIcon}></img> */}
-          <input type="text" name="search" placeholder="Search..." />
-          </div>
+        <div className="search-icon-img">
+          <GoSearch style={{ fontSize: "1.5rem", color: "gray" }} />
+          <input
+            type="text"
+            name="search"
+            placeholder="Search..."
+            className="search-input"
+          />
+        </div>
         <div className="user-container">
           <button className="app-btn">
-            <img src={btnlogo} alt="" />
+            <img src={ICONS.APPICON} alt="" />
             App
           </button>
           <div className="notification">
-            <img src={notificationImg} alt="" />
+            <img src={ICONS.NOTIFICATION} alt="" />
           </div>
           <div className="user-img-container">
             <div className="user-img">
-              <img src={userImg} alt="" />
+              <img src={ICONS.USER_IMAGE} alt="" />
             </div>
             <div className="user-name">
               <div className="down-arrow">
                 <h4>{userEmail}</h4>
-                <div className="down-circle">
-                  <MdKeyboardArrowDown style={{ fontSize: "1.5rem" }} />
-                </div>
+                <p>{userRole}</p>
               </div>
-
-              <p>{userRole}</p>
+              <div className="down-circle">
+                <MdKeyboardArrowDown style={{ fontSize: "1.5rem" }} />
+              </div>
             </div>
           </div>
         </div>

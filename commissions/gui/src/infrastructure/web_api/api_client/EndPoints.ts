@@ -11,10 +11,18 @@
 
 interface Endpoints {
   login: string;
+  commission:string;
+  dealer:string,
+  marketing:string,
+  adderV:string,
 }
 
 export const EndPoints: Endpoints = {
   login: `/login`,
+  commission:"get_commissions",
+  dealer:'get_dealers',
+  marketing:'get_marketingfee',
+  adderV:"get_vadders"
 
 };
 
