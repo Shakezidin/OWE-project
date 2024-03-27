@@ -1,38 +1,40 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import "../configure.css";
 import { CiEdit } from "react-icons/ci";
 import { ICONS } from "../../../icons/Icons";
+import {
+  useAppDispatch,
+  useAppSelector,
+} from "../../../../redux/apiSlice/hooks";
 import TableHeader from "../../../components/tableHeader/TableHeader";
+import { fetchSalesType } from "../../../../redux/apiSlice/salesSlice";
 const SaleType = () => {
-  const [open, setOpen] = React.useState<boolean>(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-  const saleTypeData = [
-    {
-      an: "LEASE 0.0",
-      des: "Customer paying OWE Directly ",
-      action: "",
-    },
-    {
-      an: "LEASE 0.0",
-      des: "Customer paying OWE Directly ",
-      action: "",
-    },
-    {
-      an: "LEASE 0.0",
-      des: "Customer paying OWE Directly ",
-      action: "",
-    },
-    {
-      an: "LEASE 0.0",
-      des: "Customer paying OWE Directly ",
-      action: "",
-    },
-  ];
+
+  const dispatch = useAppDispatch();
+  const salesTypeList = useAppSelector((state) => state.salesType.saletype_list);
+  const loading = useAppSelector((state) => state.salesType.loading);
+  const error = useAppSelector((state) => state.salesType.error);
+
+  useEffect(() => {
+    const pageNumber = {
+      page_number: 1,
+      page_size: 2,
+    };
+    dispatch(fetchSalesType(pageNumber));
+  }, [dispatch]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
   return (
     <div className="comm">
-      <div className="commissionContainer">
+      {
+        salesTypeList?.length>0 ?  <div className="commissionContainer">
         <TableHeader
           title="Sale Types"
           onPressViewArchive={() => {}}
@@ -74,27 +76,28 @@ const SaleType = () => {
               </tr>
             </thead>
             <tbody>
-              {saleTypeData.map((el, i) => (
+              { salesTypeList?.length> 0 ? salesTypeList?.map((el, i) => (
                 <tr key={i}>
                   <td>
                     <input value="test" type="checkbox" className="check-box" />
                   </td>
-                  <td style={{ fontWeight: "500", color: "black" }}>{el.an}</td>
+                  <td style={{ fontWeight: "500", color: "black" }}>{el.type_name}</td>
 
-                  <td>{el.des}</td>
+                  <td>{el.type_name}</td>
 
-                  <td style={{ display: "flex", gap: "1rem" }}>
-                    <RiDeleteBin5Line
-                      style={{ fontSize: "1.5rem", color: "#344054" }}
-                    />
+                  <td style={{ display: "flex", gap: "1rem",alignItems:"center" }}>
+                  <img src={ICONS.ARCHIVE} alt="" />
                     <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />
                   </td>
                 </tr>
-              ))}
+              )):null
+            }
             </tbody>
           </table>
         </div>
-      </div>
+      </div>:<div>No Data Found</div>
+      }
+    
     </div>
   );
 };

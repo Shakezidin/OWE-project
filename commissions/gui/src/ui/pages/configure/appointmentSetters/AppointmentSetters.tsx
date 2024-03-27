@@ -112,9 +112,7 @@ const AppointmentSetters = () => {
                   <td>{el.ed}</td>
 
                   <td style={{ display: "flex", gap: "1rem" }}>
-                    <RiDeleteBin5Line
-                      style={{ fontSize: "1.5rem", color: "#344054" }}
-                    />
+                  <img src={ICONS.ARCHIVE} alt="" />
                     <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />
                   </td>
                 </tr>

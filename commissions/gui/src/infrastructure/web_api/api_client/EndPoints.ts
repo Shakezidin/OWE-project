@@ -15,6 +15,12 @@ interface Endpoints {
   dealer:string,
   marketing:string,
   adderV:string,
+  salesType:string,
+  tierLoan:string,
+  dealerTier:string,
+  paySchedule:string,
+  timeLineSla:string,
+  loanType:string
 }
 
 export const EndPoints: Endpoints = {
@@ -22,7 +28,13 @@ export const EndPoints: Endpoints = {
   commission:"get_commissions",
   dealer:'get_dealers',
   marketing:'get_marketingfee',
-  adderV:"get_vadders"
+  adderV:"get_vadders",
+  salesType:"get_saletypes",
+  tierLoan:"get_tierloanfees",
+  dealerTier:"get_dealerstier",
+  paySchedule:"get_paymentschedules",
+  timeLineSla:"get_timelineslas",
+  loanType:"get_loantypes"
 
 };
 

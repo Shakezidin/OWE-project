@@ -1,95 +1,41 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "../configure.css";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { CiEdit } from "react-icons/ci";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { ICONS } from "../../../icons/Icons";
-
+import {
+  useAppDispatch,
+  useAppSelector,
+} from "../../../../redux/apiSlice/hooks";
+import { fetchPaySchedule } from "../../../../redux/apiSlice/payScheduleSlice";
 const PaymentSchedule = () => {
-  const [open, setOpen] = React.useState<boolean>(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-  const paymentData = [
-    {
-      pn: "Gray Horse Group",
-      pat: "Concert",
-      inst: "OWE",
-      saletype: "Loan",
-      ST: "AZ",
-      rl: "$40.00",
-      draw: "50%",
-      dm: "$2000.00",
-      rw: "$2000.00",
-      rmw: "$2000.00",
-      rp: "No",
-      st: "20-4-2004",
-      ed: "20-4-2004",
-      delete: (
-        <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />
-      ),
-      edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />,
-    },
-    {
-      pn: "Gray Horse Group",
-      pat: "Concert",
-      inst: "OWE",
-      saletype: "Loan",
-      ST: "AZ",
-      rl: "$40.00",
-      draw: "50%",
-      dm: "$2000.00",
-      rw: "$2000.00",
-      rmw: "$2000.00",
-      rp: "No",
-      st: "20-4-2004",
-      ed: "20-4-2004",
-      delete: (
-        <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />
-      ),
-      edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />,
-    },
-    {
-      pn: "Gray Horse Group",
-      pat: "Concert",
-      inst: "OWE",
-      saletype: "Loan",
-      ST: "AZ",
-      rl: "$40.00",
-      draw: "50%",
-      dm: "$2000.00",
-      rw: "$2000.00",
-      rmw: "$2000.00",
-      rp: "No",
-      st: "20-4-2004",
-      ed: "20-4-2004",
-      delete: (
-        <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />
-      ),
-      edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />,
-    },
-    {
-      pn: "Gray Horse Group",
-      pat: "Concert",
-      inst: "OWE",
-      saletype: "Loan",
-      ST: "AZ",
-      rl: "$40.00",
-      draw: "50%",
-      dm: "$2000.00",
-      rw: "$2000.00",
-      rmw: "$2000.00",
-      rp: "No",
-      st: "20-4-2004",
-      ed: "20-4-2004",
-      delete: (
-        <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />
-      ),
-      edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />,
-    },
-  ];
+  const dispatch = useAppDispatch();
+  // const getData = useAppSelector(state=>state.comm.data)
+
+  const payScheduleList = useAppSelector((state) => state.paySchedule.payment_schedule_list);
+  const loading = useAppSelector((state) => state.paySchedule.loading);
+  const error = useAppSelector((state) => state.paySchedule.error);
+
+  useEffect(() => {
+    const pageNumber = {
+      page_number: 1,
+      page_size: 2,
+    };
+    dispatch(fetchPaySchedule(pageNumber));
+  }, []);
+  console.log(payScheduleList);
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <div className="comm">
+     { payScheduleList?.length > 0?
       <div className="commissionContainer">
         <TableHeader
           title="Payment Schedule"
@@ -185,40 +131,38 @@ const PaymentSchedule = () => {
               </tr>
             </thead>
             <tbody>
-              {paymentData.map((el, i) => (
+            {payScheduleList?.length > 0
+                ? payScheduleList?.map(
+                    (el, i) => (
                 <tr key={i}>
                   <td>
                     <input value="test" type="checkbox" className="check-box" />
                   </td>
-                  <td style={{ fontWeight: "600" }}>{el.pn}</td>
-                  <td>{el.pat}</td>
-                  <td>{el.inst}</td>
-                  <td>{el.saletype}</td>
-                  <td>{el.ST}</td>
+                  <td style={{ fontWeight: "600" }}>{el.partner_name}</td>
+                  <td>{el.partner}</td>
+                  <td>{el.installer_name}</td>
+                  <td>{el.sale_type}</td>
+                  <td>{el.state}</td>
                   <td>{el.rl}</td>
                   <td>{el.draw}</td>
-                  <td>{el.dm}</td>
-                  <td>{el.rw}</td>
-                  <td>{el.rmw}</td>
-                  <td>{el.rp}</td>
-                  <td>{el.st}</td>
-                  <td>{el.ed}</td>
-                  <td>
-                    <div className="action-icon">
-                      <div className="" style={{ cursor: "pointer" }}>
-                        {el.delete}
-                      </div>
-                      <div className="" style={{ cursor: "pointer" }}>
-                        {el.edit}
-                      </div>
-                    </div>
+                  <td>{el.draw_max}</td>
+                  <td>{el.rep_draw}</td>
+                  <td>{el.rep_draw_max}</td>
+                  <td>{el.rep_pay}</td>
+                  <td>{el.start_date}</td>
+                  <td>{el.end_date}</td>
+                  <td style={{ display: "flex", gap: "1rem",alignItems:"center" }}>
+                  <img src={ICONS.ARCHIVE} alt="" />
+                    <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />
                   </td>
                 </tr>
-              ))}
+              )):null
+            }
             </tbody>
           </table>
         </div>
-      </div>
+      </div>:<div>No Data Found</div>
+}
     </div>
   );
 };

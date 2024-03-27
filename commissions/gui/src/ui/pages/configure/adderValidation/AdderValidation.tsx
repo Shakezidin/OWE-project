@@ -5,11 +5,11 @@ import "../configure.css";
 import { IoAddSharp } from "react-icons/io5";
 import CreateDealer from "../dealerOverrides/CreateDealer";
 import { CiEdit } from "react-icons/ci";
-import { getAdderV } from "../../../../redux/features/adderVSlice";
+import { fetchAdderV } from "../../../../redux/apiSlice/adderVSlice";
 import {
   useAppDispatch,
   useAppSelector,
-} from "../../../../redux/features/hooks";
+} from "../../../../redux/apiSlice/hooks";
 import { ICONS } from "../../../icons/Icons";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 const AdderValidation = () => {
@@ -19,7 +19,7 @@ const AdderValidation = () => {
   const dispatch = useAppDispatch();
   // const getData = useAppSelector(state=>state.comm.data)
 
-  const adderVList = useAppSelector((state) => state.adderV.data);
+  const adderVList = useAppSelector((state) => state.adderV.VAdders_list);
   const loading = useAppSelector((state) => state.adderV.loading);
   const error = useAppSelector((state) => state.adderV.error);
 
@@ -28,7 +28,7 @@ const AdderValidation = () => {
       page_number: 1,
       page_size: 2,
     };
-    dispatch(getAdderV(pageNumber));
+    dispatch(fetchAdderV(pageNumber));
   }, []);
   console.log(adderVList);
   if (loading) {
@@ -40,7 +40,8 @@ const AdderValidation = () => {
   }
   return (
     <div className="comm">
-      <div className="commissionContainer">
+      {
+        adderVList?.length > 0?   <div className="commissionContainer">
         <TableHeader
           title="Adder validation"
           onPressViewArchive={() => {}}
@@ -100,8 +101,8 @@ const AdderValidation = () => {
               </tr>
             </thead>
             <tbody>
-              {adderVList?.VAdders_list?.length > 0
-                ? adderVList?.VAdders_list?.map((el: any, i: any) => (
+              {adderVList?.length > 0
+                ? adderVList?.map((el, i) => (
                     <tr key={i}>
                       <td>
                         <input
@@ -117,14 +118,12 @@ const AdderValidation = () => {
                       <td>{el.price_type}</td>
                       <td>{el.price_amount}</td>
                       <td>{el.description}</td>
-                      <td>{el.create}</td>
+                      <td>{el.active}</td>
 
                       <td>
                         <div className="action-icon">
                           <div className="" style={{ cursor: "pointer" }}>
-                            <RiDeleteBin5Line
-                              style={{ fontSize: "1.5rem", color: "#344054" }}
-                            />
+                          <img src={ICONS.ARCHIVE} alt="" />
                           </div>
                           <div className="" style={{ cursor: "pointer" }}>
                             <CiEdit
@@ -139,7 +138,9 @@ const AdderValidation = () => {
             </tbody>
           </table>
         </div>
-      </div>
+      </div>:<div>No Data Found</div>
+      }
+   
     </div>
   );
 };
