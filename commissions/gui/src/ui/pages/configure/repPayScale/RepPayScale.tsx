@@ -2,10 +2,12 @@ import React from "react";
 
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { CiEdit } from "react-icons/ci";
+
 import "../configure.css";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { ICONS } from "../../../icons/Icons";
 const RepPayScale: React.FC = () => {
+
   const [open, setOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -64,6 +66,7 @@ const RepPayScale: React.FC = () => {
     },
   ];
   return (
+
     <div className="comm">
       <div className="commissionContainer">
         <TableHeader
@@ -79,6 +82,7 @@ const RepPayScale: React.FC = () => {
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
         >
+
           <table>
             <thead>
               <tr>

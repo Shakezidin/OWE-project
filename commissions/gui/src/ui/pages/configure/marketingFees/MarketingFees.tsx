@@ -150,6 +150,7 @@ const MarketingFees: React.FC = () => {
                     )
                   )
                 : null}
+
             </tbody>
           </table>
         </div>

@@ -23,6 +23,7 @@ const TimeLine = () => {
     dispatch(fetchTimeLineSla(pageNumber));
   }, [dispatch]);
 
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -48,6 +49,7 @@ const TimeLine = () => {
         <div className="TableContainer">
           <table>
             <thead>
+
               <tr>
                 <th>
                   <div>

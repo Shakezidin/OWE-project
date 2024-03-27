@@ -54,6 +54,7 @@ const DealerOverRides: React.FC = () => {
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
         >
+
           <table>
             <thead>
               <tr>

@@ -16,6 +16,7 @@ const CommissionRate: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
   const dispatch = useAppDispatch();
   const commissionList = useAppSelector((state) => state.comm.commissionsList);
   const loading = useAppSelector((state) => state.comm.loading);

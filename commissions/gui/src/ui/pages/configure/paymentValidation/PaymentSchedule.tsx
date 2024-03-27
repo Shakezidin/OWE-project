@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import "../configure.css";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { CiEdit } from "react-icons/ci";
+
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { ICONS } from "../../../icons/Icons";
 import {
@@ -9,6 +10,7 @@ import {
   useAppSelector,
 } from "../../../../redux/apiSlice/hooks";
 import { fetchPaySchedule } from "../../../../redux/apiSlice/payScheduleSlice";
+
 const PaymentSchedule = () => {
   const dispatch = useAppDispatch();
   // const getData = useAppSelector(state=>state.comm.data)
@@ -155,6 +157,7 @@ const PaymentSchedule = () => {
                   <img src={ICONS.ARCHIVE} alt="" />
                     <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />
                   </td>
+
                 </tr>
               )):null
             }

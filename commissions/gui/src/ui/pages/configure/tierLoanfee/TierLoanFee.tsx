@@ -15,6 +15,7 @@ const TierLoanFee = () => {
   const loading = useAppSelector((state) => state.tierLoan.loading);
   const error = useAppSelector((state) => state.tierLoan.error);
 
+
   useEffect(() => {
     const pageNumber = {
       page_number: 1,
@@ -22,6 +23,7 @@ const TierLoanFee = () => {
     };
     dispatch(fetchTearLoan(pageNumber));
   }, [dispatch]);
+
 
   if (loading) {
     return <div>Loading...</div>;
@@ -35,6 +37,7 @@ const TierLoanFee = () => {
     <div className="comm">
       {tierloanList?.length> 0 ?
       <div className="commissionContainer">
+
         <TableHeader
           title="Tier Loan Fee"
           onPressViewArchive={() => {}}
@@ -48,6 +51,7 @@ const TierLoanFee = () => {
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
         >
+
           <table>
             <thead>
               <tr>

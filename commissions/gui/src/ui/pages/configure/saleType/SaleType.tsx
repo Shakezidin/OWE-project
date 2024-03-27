@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import "../configure.css";
 import { CiEdit } from "react-icons/ci";
+
 import { ICONS } from "../../../icons/Icons";
 import {
   useAppDispatch,
@@ -9,6 +10,7 @@ import {
 } from "../../../../redux/apiSlice/hooks";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { fetchSalesType } from "../../../../redux/apiSlice/salesSlice";
+
 const SaleType = () => {
 
   const dispatch = useAppDispatch();
@@ -33,6 +35,7 @@ const SaleType = () => {
   }
   return (
     <div className="comm">
+
       {
         salesTypeList?.length>0 ?  <div className="commissionContainer">
         <TableHeader
@@ -61,6 +64,7 @@ const SaleType = () => {
                     <p> Name</p> <img src={ICONS.DOWN_ARROW} alt="" />
                   </div>
                 </th>
+
 
                 <th>
                   <div className="table-header">

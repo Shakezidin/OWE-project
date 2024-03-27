@@ -9,6 +9,7 @@ import {
   useAppSelector,
 } from "../../../../redux/apiSlice/hooks";
 import { fetchLoanType } from "../../../../redux/apiSlice/loanTypeSlice";
+
 const LoanType = () => {
   const dispatch = useAppDispatch();
   // const getData = useAppSelector(state=>state.comm.data)
@@ -48,6 +49,7 @@ const LoanType = () => {
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
         >
+
           <table>
             <thead>
               <tr>

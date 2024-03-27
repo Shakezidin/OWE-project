@@ -1,6 +1,6 @@
 import React from "react";
 import { Bar } from "react-chartjs-2";
-import '../userManagement/user.css'
+import "../userManagement/user.css";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -36,8 +36,8 @@ const BarChart: React.FC = () => {
       {
         label: "Onboarding",
         backgroundColor: "#2554A8",
-        color:"red",
-        borderTopLeftRadius:"",
+        color: "red",
+        borderTopLeftRadius: "",
         borderColor: "rgba(75, 192, 192, 1)",
         borderWidth: 1,
         data: [89, 38, 32, 45, 60, 40, 35],

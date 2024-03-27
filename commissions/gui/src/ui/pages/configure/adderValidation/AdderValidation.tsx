@@ -12,10 +12,12 @@ import {
 } from "../../../../redux/apiSlice/hooks";
 import { ICONS } from "../../../icons/Icons";
 import TableHeader from "../../../components/tableHeader/TableHeader";
+
 const AdderValidation = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
   const dispatch = useAppDispatch();
   // const getData = useAppSelector(state=>state.comm.data)
 
