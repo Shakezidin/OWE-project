@@ -79,11 +79,35 @@ func HandleGetDealersDataRequest(resp http.ResponseWriter, req *http.Request) {
 	dealersList := models.GetDealersList{}
 
 	for _, item := range data {
-		SubDealer := item["sub_dealer"].(string)
-		Dealer := item["name"].(string)
-		PayRate := item["pay_rate"].(string)
-		StartDate := item["start_date"].(string)
-		EndDate := item["end_date"].(string)
+		SubDealer, ok := item["sub_dealer"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get sub dealer. Item: %+v\n", item)
+			continue
+		}
+
+		Dealer, ok := item["name"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get dealer name. Item: %+v\n", item)
+			continue
+		}
+
+		PayRate, ok := item["pay_rate"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get pay rate. Item: %+v\n", item)
+			continue
+		}
+
+		StartDate, ok := item["start_date"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get start date. Item: %+v\n", item)
+			continue
+		}
+
+		EndDate, ok := item["end_date"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get end date. Item: %+v\n", item)
+			continue
+		}
 
 		dealerData := models.GetDealerData{
 			SubDealer: SubDealer,

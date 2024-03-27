@@ -84,17 +84,61 @@ func HandleGetTierLoanFeesDataRequest(resp http.ResponseWriter, req *http.Reques
 
 	// Assuming you have data as a slice of maps, as in your previous code
 	for _, item := range data {
-		DealerTierName := item["dealer_tier"].(string)
-		PartnerName := item["installer"].(string)
-		State := item["state"].(string)
-		FinanceType := item["finance_type"].(string)
-		OweCost := item["owe_cost"].(string)
-		DlrMu := item["dlr_mu"].(string)
-		DlrCost := item["dlr_cost"].(string)
-		StartDate := item["start_date"].(string)
-		EndDate := item["end_date"].(string)
+		DealerTierName, tierOk := item["dealer_tier"].(string)
+		if !tierOk {
+			log.FuncErrorTrace(0, "Failed to get dealer tier. Item: %+v\n", item)
+			continue
+		}
 
-		// Create a new GetMarketingFeesData object
+		PartnerName, partnerOk := item["installer"].(string)
+		if !partnerOk {
+			log.FuncErrorTrace(0, "Failed to get partner name. Item: %+v\n", item)
+			continue
+		}
+
+		State, stateOk := item["state"].(string)
+		if !stateOk {
+			log.FuncErrorTrace(0, "Failed to get state. Item: %+v\n", item)
+			continue
+		}
+
+		FinanceType, financeOk := item["finance_type"].(string)
+		if !financeOk {
+			log.FuncErrorTrace(0, "Failed to get finance type. Item: %+v\n", item)
+			continue
+		}
+
+		OweCost, oweOk := item["owe_cost"].(string)
+		if !oweOk {
+			log.FuncErrorTrace(0, "Failed to get owe cost. Item: %+v\n", item)
+			continue
+		}
+
+		DlrMu, muOk := item["dlr_mu"].(string)
+		if !muOk {
+			log.FuncErrorTrace(0, "Failed to get dlr_mu. Item: %+v\n", item)
+			continue
+		}
+
+		DlrCost, costOk := item["dlr_cost"].(string)
+		if !costOk {
+			log.FuncErrorTrace(0, "Failed to get dlr cost. Item: %+v\n", item)
+			continue
+		}
+
+		StartDate, startOk := item["start_date"].(string)
+		if !startOk {
+			log.FuncErrorTrace(0, "Failed to get start date. Item: %+v\n", item)
+			continue
+		}
+
+		EndDate, endOk := item["end_date"].(string)
+		if !endOk {
+			log.FuncErrorTrace(0, "Failed to get end date. Item: %+v\n", item)
+			continue
+		}
+
+		// Create a new GetTierLoanFeeData object
 		vaddersData := models.GetTierLoanFeeData{
 			DealerTier:  DealerTierName,
 			Installer:   PartnerName,
@@ -107,9 +151,10 @@ func HandleGetTierLoanFeesDataRequest(resp http.ResponseWriter, req *http.Reques
 			EndDate:     EndDate,
 		}
 
-		// Append the new vaddersData to the marketingFeesList
+		// Append the new vaddersData to the TierLoanFeeList
 		tierLoanFeeList.TierLoanFeeList = append(tierLoanFeeList.TierLoanFeeList, vaddersData)
 	}
+
 	// Send the response
 	log.FuncInfoTrace(0, "Number of tier loan fee List fetched : %v list %+v", len(tierLoanFeeList.TierLoanFeeList), tierLoanFeeList)
 	FormAndSendHttpResp(resp, "tier loan fee Data", http.StatusOK, tierLoanFeeList)

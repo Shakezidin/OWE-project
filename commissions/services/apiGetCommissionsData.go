@@ -83,16 +83,65 @@ func HandleGetCommissionsDataRequest(resp http.ResponseWriter, req *http.Request
 	commissionsList := models.GetCommissionsList{}
 
 	for _, item := range data {
-		Partner := item["partner_name"].(string)
-		Installer := item["installer_name"].(string)
-		State := item["state_name"].(string)
-		SaleType := item["sale_type"].(string)
-		SalePrice := item["sale_price"].(float64)
-		RepType := item["rep_type"].(string)
-		RL, _ := item["rl"].(float64)
-		Rate, _ := item["rate"].(float64)
-		StartDate := item["start_date"].(string)
-		EndDate := item["end_date"].(string)
+		Partner, ok := item["partner_name"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get partner name. Item: %+v\n", item)
+			continue
+		}
+
+		Installer, ok := item["installer_name"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get installer name. Item: %+v\n", item)
+			continue
+		}
+
+		State, ok := item["state_name"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get state name. Item: %+v\n", item)
+			continue
+		}
+
+		SaleType, ok := item["sale_type"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get sale type. Item: %+v\n", item)
+			continue
+		}
+
+		SalePrice, ok := item["sale_price"].(float64)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get sale price. Item: %+v\n", item)
+			continue
+		}
+
+		RepType, ok := item["rep_type"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get rep type. Item: %+v\n", item)
+			continue
+		}
+
+		RL, ok := item["rl"].(float64)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get rl. Item: %+v\n", item)
+			continue
+		}
+
+		Rate, ok := item["rate"].(float64)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get rate. Item: %+v\n", item)
+			continue
+		}
+
+		StartDate, ok := item["start_date"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get start date. Item: %+v\n", item)
+			continue
+		}
+
+		EndDate, ok := item["end_date"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get end date. Item: %+v\n", item)
+			continue
+		}
 
 		commissionData := models.GetCommissionData{
 			Partner:   Partner,
@@ -109,6 +158,7 @@ func HandleGetCommissionsDataRequest(resp http.ResponseWriter, req *http.Request
 
 		commissionsList.CommissionsList = append(commissionsList.CommissionsList, commissionData)
 	}
+
 	// Send the response
 	log.FuncInfoTrace(0, "Number of commissions List fetched : %v list %+v", len(commissionsList.CommissionsList), commissionsList)
 	FormAndSendHttpResp(resp, "Commissions Data", http.StatusOK, commissionsList)
