@@ -5,19 +5,18 @@ import CreateDealer from "../dealerOverrides/CreateDealer";
 import {
   useAppDispatch,
   useAppSelector,
-} from "../../../../redux/features/hooks";
-import { getMarketingFees } from "../../../../redux/features/marketingSlice";
+} from "../../../../redux/apiSlice/hooks";
+
 import { ICONS } from "../../../icons/Icons";
 import TableHeader from "../../../components/tableHeader/TableHeader";
+import { fetchmarketingFees } from "../../../../redux/apiSlice/marketingSlice";
+import { CiEdit } from "react-icons/ci";
 
 const MarketingFees: React.FC = () => {
-  const [open, setOpen] = React.useState<boolean>(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
   const dispatch = useAppDispatch();
   // const getData = useAppSelector(state=>state.comm.data)
 
-  const marketingFeesList = useAppSelector((state) => state.marketing.data);
+  const marketingFeesList = useAppSelector((state) => state.marketing.marketing_fees_list);
   const loading = useAppSelector((state) => state.marketing.loading);
   const error = useAppSelector((state) => state.marketing.error);
 
@@ -26,7 +25,7 @@ const MarketingFees: React.FC = () => {
       page_number: 1,
       page_size: 2,
     };
-    dispatch(getMarketingFees(pageNumber));
+    dispatch(fetchmarketingFees(pageNumber));
   }, []);
   console.log(marketingFeesList);
   if (loading) {
@@ -38,7 +37,8 @@ const MarketingFees: React.FC = () => {
   }
   return (
     <div className="comm">
-      <div className="commissionContainer">
+      {
+        marketingFeesList?.length > 0?  <div className="commissionContainer">
         <TableHeader
           title="Marketing Fees"
           onPressViewArchive={() => {}}
@@ -106,13 +106,18 @@ const MarketingFees: React.FC = () => {
                     <p>End Dt.</p> <img src={ICONS.DOWN_ARROW} alt="" />
                   </div>
                 </th>
+                <th>
+                  <div className="table-header">
+                    <p>Action</p>
+                  </div>
+                </th>
               </tr>
             </thead>
 
             <tbody>
-              {marketingFeesList?.marketing_fees_list?.length > 0
-                ? marketingFeesList?.marketing_fees_list?.map(
-                    (el: any, i: any) => (
+              {marketingFeesList?.length > 0
+                ? marketingFeesList?.map(
+                    (el, i) => (
                       <tr key={i}>
                         <td>
                           <input
@@ -137,6 +142,10 @@ const MarketingFees: React.FC = () => {
                         <td>{el.description}</td>
                         <td>{el.start_date}</td>
                         <td>{el.end_date}</td>
+                        <td style={{ display: "flex", gap: "1rem",alignItems:"center" }}>
+                  <img src={ICONS.ARCHIVE} alt="" />
+                    <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />
+                  </td>
                       </tr>
                     )
                   )
@@ -144,7 +153,9 @@ const MarketingFees: React.FC = () => {
             </tbody>
           </table>
         </div>
-      </div>
+      </div>:<div>No Data Found</div>
+      }
+    
     </div>
   );
 };

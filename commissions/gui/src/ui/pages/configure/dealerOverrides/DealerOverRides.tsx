@@ -6,17 +6,18 @@ import CreateDealer from "./CreateDealer";
 import {
   useAppDispatch,
   useAppSelector,
-} from "../../../../redux/features/hooks";
-import { getDealer } from "../../../../redux/features/dealerSlice";
+} from "../../../../redux/apiSlice/hooks";
+
 import { ICONS } from "../../../icons/Icons";
 import TableHeader from "../../../components/tableHeader/TableHeader";
+import { fetchDealer } from "../../../../redux/apiSlice/dealerSlice";
 
 const DealerOverRides: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const dispatch = useAppDispatch();
-  const dealerList = useAppSelector((state) => state.dealer.data);
+  const dealerList = useAppSelector((state) => state.dealer.Dealers_list);
   const loading = useAppSelector((state) => state.dealer.loading);
   const error = useAppSelector((state) => state.dealer.error);
 
@@ -25,7 +26,7 @@ const DealerOverRides: React.FC = () => {
       page_number: 1,
       page_size: 2,
     };
-    dispatch(getDealer(pageNumber));
+    dispatch(fetchDealer(pageNumber));
   }, []);
   console.log(dealerList);
   if (loading) {
@@ -37,7 +38,8 @@ const DealerOverRides: React.FC = () => {
   }
   return (
     <div className="comm">
-      <div className="commissionContainer">
+      {
+        dealerList?.length > 0? <div className="commissionContainer">
         <TableHeader
           title="Dealer OverRides"
           onPressViewArchive={() => {}}
@@ -94,8 +96,8 @@ const DealerOverRides: React.FC = () => {
             </thead>
 
             <tbody>
-              {dealerList?.Dealers_list?.length > 0
-                ? dealerList?.Dealers_list?.map((el: any, i: any) => (
+              {dealerList?.length > 0
+                ? dealerList?.map((el, i) => (
                     <tr key={i}>
                       <td>
                         <input
@@ -116,9 +118,7 @@ const DealerOverRides: React.FC = () => {
                       <td>
                         <div className="action-icon">
                           <div className="" style={{ cursor: "pointer" }}>
-                            <RiDeleteBin5Line
-                              style={{ fontSize: "1.5rem", color: "#344054" }}
-                            />
+                          <img src={ICONS.ARCHIVE} alt="" />
                           </div>
                           <div className="" style={{ cursor: "pointer" }}>
                             <CiEdit
@@ -133,7 +133,9 @@ const DealerOverRides: React.FC = () => {
             </tbody>
           </table>
         </div>
-      </div>
+      </div>:<div>No Data Found</div>
+      }
+     
     </div>
   );
 };

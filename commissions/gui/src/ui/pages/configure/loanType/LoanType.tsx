@@ -1,35 +1,37 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import "../configure.css";
 import { CiEdit } from "react-icons/ci";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { ICONS } from "../../../icons/Icons";
+import {
+  useAppDispatch,
+  useAppSelector,
+} from "../../../../redux/apiSlice/hooks";
+import { fetchLoanType } from "../../../../redux/apiSlice/loanTypeSlice";
 const LoanType = () => {
-  const [open, setOpen] = React.useState<boolean>(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-  const loanTypeDAta = [
-    {
-      pc: " LF-CON-FLEX-20Y-1.49",
-      des: "Customer paying OWE Directly ",
-      action: "",
-    },
-    {
-      pc: " LF-CON-FLEX-20Y-1.49",
-      des: "Customer paying OWE Directly ",
-      action: "",
-    },
-    {
-      pc: " LF-CON-FLEX-20Y-1.49",
-      des: "Customer paying OWE Directly ",
-      action: "",
-    },
-    {
-      pc: " LF-CON-FLEX-20Y-1.49",
-      des: "Customer paying OWE Directly ",
-      action: "",
-    },
-  ];
+  const dispatch = useAppDispatch();
+  // const getData = useAppSelector(state=>state.comm.data)
+
+  const loanTypeList = useAppSelector((state) => state.loanType.loantype_list);
+  const loading = useAppSelector((state) => state.loanType.loading);
+  const error = useAppSelector((state) => state.loanType.error);
+
+  useEffect(() => {
+    const pageNumber = {
+      page_number: 1,
+      page_size: 2,
+    };
+    dispatch(fetchLoanType(pageNumber));
+  }, []);
+  console.log(loanTypeList);
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
   return (
     <div className="comm">
       <div className="commissionContainer">
@@ -84,39 +86,28 @@ const LoanType = () => {
               </tr>
             </thead>
             <tbody>
-              {loanTypeDAta.map((el, i) => (
+            {loanTypeList?.length > 0
+                ? loanTypeList?.map(
+                    (el, i) => (
                 <tr key={i}>
                   <td>
                     <input value="test" type="checkbox" className="check-box" />
                   </td>
-                  <td style={{ fontWeight: "500", color: "black" }}>{el.pc}</td>
+                  <td style={{ fontWeight: "500", color: "black" }}>{el.product_code}</td>
                   <td>
-                    <input value="test" type="checkbox" className="check-box" />
+                    <input value={el.active} type="checkbox"  className="check-box" />
                   </td>
                   <td>
-                    <div
-                      className=""
-                      style={{
-                        border: "1px solid #979797",
-                        width: "40px",
-                        height: "24px",
-                        top: "232px",
-                        left: "763px",
-                        gap: "0px",
-                        borderRadius: "8px",
-                        opacity: "0px",
-                      }}
-                    ></div>
+                   <input type="text" value={el.adder} name="" id="" className="adder-input" />
                   </td>
-                  <td>{el.des}</td>
-                  <td style={{ display: "flex", gap: "1rem" }}>
-                    <RiDeleteBin5Line
-                      style={{ fontSize: "1.5rem", color: "#344054" }}
-                    />
+                  <td>{el.description}</td>
+                  <td style={{ display: "flex", gap: "1rem",alignItems:"center" }}>
+                  <img src={ICONS.ARCHIVE} alt="" />
                     <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />
                   </td>
                 </tr>
-              ))}
+              )):null
+            }
             </tbody>
           </table>
         </div>
