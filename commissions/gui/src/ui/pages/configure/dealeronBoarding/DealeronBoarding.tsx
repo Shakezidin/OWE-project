@@ -108,7 +108,7 @@ const DealeronBoarding = () => {
 
         {open && <CreateDealer handleClose={handleClose} />}
       </div>
-      <div className="TableContainer">
+      <div className="TableContainer" style={{overflowX:"auto",whiteSpace:"nowrap"}}>
         <table>
         <thead >
             <tr>
@@ -167,7 +167,7 @@ const DealeronBoarding = () => {
                 <td>
                   <input value="test" type="checkbox" className="check-box" />
                 </td>
-                <td style={{ fontWeight: "600" }}>{el.united}</td>
+                <td style={{ fontWeight: "500",color:"black" }}>{el.united}</td>
                 <td>{el.dc}</td>
                 <td>{el.name}</td>
                 <td>{el.email}</td>

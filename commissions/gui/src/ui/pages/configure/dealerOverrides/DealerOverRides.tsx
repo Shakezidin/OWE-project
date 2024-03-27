@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { RiDeleteBin5Line } from "react-icons/ri";
 
 import arrowDown from "../../../../resources/assets/arrow-down.png";
@@ -10,57 +10,33 @@ import { IoAddSharp } from "react-icons/io5";
 import imgExport from "../../../../resources/assets/export.png";
 import imgimport from "../../../../resources/assets/import.png";
 import CreateDealer from "./CreateDealer";
+import { useAppDispatch, useAppSelector } from '../../../../redux/features/hooks';
 
+import { getDealer } from "../../../../redux/features/dealerSlice";
 const DealerOverRides: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const DealerOverData = [
-    {
-      united: "United Wholesales",
-      Markting: "Markting",
-      dollar: "$10",
-      startDate: "10/10/1000",
-      endDate: "99/99/99990",
-      delete: (
-        <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />
-      ),
-      edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />,
-    },
-    {
-      united: "United Wholesales",
-      Markting: "Markting",
-      dollar: "$10",
-      startDate: "10/10/1000",
-      endDate: "99/99/99990",
-      delete: (
-        <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />
-      ),
-      edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />,
-    },
-    {
-      united: "United Wholesales",
-      Markting: "Markting",
-      dollar: "$10",
-      startDate: "10/10/1000",
-      endDate: "99/99/99990",
-      delete: (
-        <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />
-      ),
-      edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />,
-    },
-    {
-      united: "United Wholesales",
-      Markting: "Markting",
-      dollar: "$10",
-      startDate: "10/10/1000",
-      endDate: "99/99/99990",
-      delete: (
-        <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />
-      ),
-      edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />,
-    },
-  ];
+const dispatch = useAppDispatch()
+const dealerList = useAppSelector(state=>state.dealer.data);
+const loading = useAppSelector(state=>state.dealer.loading);
+const error = useAppSelector(state=>state.dealer.error);
+
+useEffect(() => {
+  const pageNumber = {
+    "page_number": 1,
+    "page_size": 2
+}
+  dispatch(getDealer(pageNumber));
+}, []);
+console.log(dealerList)
+if (loading) {
+  return <div>Loading...</div>;
+}
+
+if (error) {
+  return <div>Error: {error}</div>;
+}
   return (
     <div className="comm">
       <div className="commissionContainer">
@@ -100,7 +76,7 @@ const DealerOverRides: React.FC = () => {
             <div className="iconsSection2">
               <button
                 type="button"
-                style={{ background: "black", color: "white" }}
+                style={{ background: "black", color: "white",border:"1px solid black" }}
                 onClick={handleOpen}
               >
                 {" "}
@@ -111,7 +87,7 @@ const DealerOverRides: React.FC = () => {
 
           {open && <CreateDealer handleClose={handleClose} />}
         </div>
-        <div className="TableContainer">
+        <div className="TableContainer" style={{overflowX:"auto",whiteSpace:"nowrap"}}>
           <table>
           <thead >
               <tr>
@@ -155,30 +131,32 @@ const DealerOverRides: React.FC = () => {
             </thead>
           
             <tbody>
-              {DealerOverData.map((el, i) => (
+            {
+                dealerList?.Dealers_list?.length>0 ? dealerList?.Dealers_list?.map((el:any,i:any)=>(
                 <tr key={i}>
                   <td>
                     <input value="test" type="checkbox" className="check-box" />
                   </td>
-                  <td style={{ fontWeight: "600" }}>{el.united}</td>
-                  <td>{el.Markting}</td>
-                  <td>{el.dollar}</td>
-                  <td>{el.startDate}</td>
-                  <td>{el.endDate}</td>
+                  <td style={{ fontWeight: "500",color:"black" }}>{el.sub_dealer}</td>
+                  <td>{el.dealer}</td>
+                  <td>{el.pay_rate}</td>
+                  <td>{el.start_date}</td>
+                  <td>{el.end_date}</td>
 
                   {/* <td>{el.endDate}</td> */}
                   <td>
                     <div className="action-icon">
                       <div className="" style={{ cursor: "pointer" }}>
-                        {el.delete}
+                      <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />
                       </div>
                       <div className="" style={{ cursor: "pointer" }}>
-                        {el.edit}
+                      <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />
                       </div>
                     </div>
                   </td>
                 </tr>
-              ))}
+              )):null
+            }
             </tbody>
           </table>
         </div>

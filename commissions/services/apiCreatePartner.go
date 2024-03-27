@@ -1,5 +1,5 @@
 /**************************************************************************
-* File			: apiCreatePartnerType.go
+* File			: apiCreatePartner.go
 * DESCRIPTION	: This file contains functions for create partner type
 						handler
 * DATE			: 23-Jan-2024

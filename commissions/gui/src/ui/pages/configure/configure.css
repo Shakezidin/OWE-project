@@ -63,13 +63,28 @@
   align-items: center;
   gap: 0.5rem;
   border: none;
-  background-color: white;
-  padding: .5rem;
-  border: 1px solid #D0D5DD;
-  font-size: 1rem;
+  background-color: var(--primary-text-color);
+  padding: .4rem 1rem .4rem 1rem;
+  border: 2px solid var(--button-border-color);
+  font-size: 15px;
   border-radius: 8px;
-  font-weight: 600;
+  font-weight:500;
   color: #344054;
+  cursor: pointer;
+}
+.iconsSection-filter button{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  border: none;
+  background-color: var(--primary-text-color);
+  padding:.5rem;
+  border: 2px solid var(--button-border-color);
+  font-size: 15px;
+  border-radius: 8px;
+  font-weight:500;
+  color: var(--coloumn-text-color);
   cursor: pointer;
 }
 /* table style  */
@@ -78,15 +93,13 @@
 }
   table {
     width: 100%;
-    background-color: white;
+    background-color:var(--primary-text-color);
     border-collapse: collapse;
     
   }
  
    table thead tr {
-    border-bottom: 1px solid #EAECF0;
-   
-    /* background-color: #F5F5F5; */
+    border-bottom: 1px solid var( --table-border-color);
    
   }
   table thead tr th{
@@ -102,18 +115,18 @@
     display: flex;
     align-items: center;
     gap: .3rem;
-    width: 180px;
-    /* background-color: #344054; */
   }
   table tbody tr {
-    border-bottom: 1px solid #EAECF0;
+    border-bottom: 1px solid var(--table-border-color);
   }
   table tbody tr td{
     padding: .8rem 1rem .8rem 1rem;
-    font-size: 14px;
+    font-size: 16px;
     width: auto;
+    color: var(--coloumn-text-color) ;
 
   }
+
   table tbody tr:last-child{
     border: 0;
   }
@@ -121,6 +134,7 @@
     width: 1.4rem;
     height: 1.4rem;
     border-radius: 6px;
+    margin-top: .5rem;
     
 
   }

@@ -318,6 +318,24 @@ var apiRoutes = ApiRoutes{
 			types.RoleAdmin,
 		},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/create_state",
+		apiHandler.HandleCreateStateRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_states",
+		apiHandler.HandleGetStatesDataRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
 }
 
 /******************************************************************************
