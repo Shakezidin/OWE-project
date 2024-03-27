@@ -1,10 +1,8 @@
 import React, { useEffect } from "react";
 import { CiEdit } from "react-icons/ci";
 import "../configure.css";
-import arrowDown from "../../../../resources/assets/arrow-down.png";
 import { IoAddSharp } from "react-icons/io5";
-import imgExport from "../../../../resources/assets/export.png";
-import imgimport from "../../../../resources/assets/import.png";
+
 import { RiDeleteBin5Line } from "react-icons/ri";
 import CreateCommissionRate from "./CreateCommissionRate";
 import {
@@ -12,6 +10,9 @@ import {
   useAppSelector,
 } from "../../../../redux/features/hooks";
 import { getCommission } from "../../../../redux/features/commissionSlice";
+import { ICONS } from "../../../icons/Icons";
+import TableHeader from "../../../components/tableHeader/TableHeader";
+
 const CommissionRate: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
@@ -31,6 +32,7 @@ const CommissionRate: React.FC = () => {
     dispatch(getCommission(pageNumber));
   }, []);
   console.log(commissionList);
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -42,65 +44,16 @@ const CommissionRate: React.FC = () => {
   return (
     <div className="comm">
       <div className="commissionContainer">
-        <div className="commissionSection">
-          <div className="rateSection">
-            <h2>Commission Rate</h2>
-            <p style={{ color: "#667085", fontSize: "14px" }}>
-              You can view and edit these data as per your requirement
-            </p>
-          </div>
-          <div className="iconContainer">
-            <div className="iconsSection2">
-              <button type="button">
-                {" "}
-                <img src={imgExport} alt="" />
-                View Archive
-              </button>
-            </div>
-            <div className="iconsSection-filter">
-              <button type="button">
-                {" "}
-                <img src={imgExport} alt="" />
-              </button>
-            </div>
-            <div className="iconsSection2">
-              <button type="button">
-                {" "}
-                <img src={imgExport} alt="" />
-                Archive
-              </button>
-            </div>
-            <div className="iconsSection2">
-              <button type="button">
-                {" "}
-                <img src={imgimport} alt="" /> Import
-              </button>
-            </div>
-            <div className="iconsSection2">
-              <button type="button">
-                {" "}
-                <img src={imgExport} alt="" />
-                Export
-              </button>
-            </div>
-            <div className="iconsSection2">
-              <button
-                type="button"
-                style={{
-                  background: "black",
-                  color: "white",
-                  border: "1px solid black",
-                }}
-                onClick={handleOpen}
-              >
-                {" "}
-                <IoAddSharp /> Add New
-              </button>
-            </div>
-          </div>
-
-          {open && <CreateCommissionRate handleClose={handleClose} />}
-        </div>
+        <TableHeader
+          title="Commisstion Rate"
+          onPressViewArchive={() => {}}
+          onPressArchive={() => {}}
+          onPressFilter={() => {}}
+          onPressImport={() => {}}
+          onpressExport={() => {}}
+          onpressAddNew={() => handleOpen()}
+        />
+        {open && <CreateCommissionRate handleClose={handleClose} />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
@@ -115,57 +68,57 @@ const CommissionRate: React.FC = () => {
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Partner</p> <img src={arrowDown} alt="" />
+                    <p>Partner</p> <img src={ICONS.DOWN_ARROW} alt="" />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Installer</p> <img src={arrowDown} alt="" />
+                    <p>Installer</p> <img src={ICONS.DOWN_ARROW} alt="" />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>State</p> <img src={arrowDown} alt="" />
+                    <p>State</p> <img src={ICONS.DOWN_ARROW} alt="" />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Sales Type</p> <img src={arrowDown} alt="" />
+                    <p>Sales Type</p> <img src={ICONS.DOWN_ARROW} alt="" />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Sales Price</p> <img src={arrowDown} alt="" />
+                    <p>Sales Price</p> <img src={ICONS.DOWN_ARROW} alt="" />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Rep.Type</p> <img src={arrowDown} alt="" />
+                    <p>Rep.Type</p> <img src={ICONS.DOWN_ARROW} alt="" />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Rate List</p> <img src={arrowDown} alt="" />
+                    <p>Rate List</p> <img src={ICONS.DOWN_ARROW} alt="" />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Rate</p> <img src={arrowDown} alt="" />
+                    <p>Rate</p> <img src={ICONS.DOWN_ARROW} alt="" />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Start Dt.</p> <img src={arrowDown} alt="" />
+                    <p>Start Dt.</p> <img src={ICONS.DOWN_ARROW} alt="" />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>End Dt.</p> <img src={arrowDown} alt="" />
+                    <p>End Dt.</p> <img src={ICONS.DOWN_ARROW} alt="" />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Action</p> <img src={arrowDown} alt="" />
+                    <p>Action</p> <img src={ICONS.DOWN_ARROW} alt="" />
                   </div>
                 </th>
               </tr>
