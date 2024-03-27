@@ -1,13 +1,7 @@
 import React from "react";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import "../configure.css";
-import { MdFilterList } from "react-icons/md";
-import { IoAddSharp } from "react-icons/io5";
-import imgExport from "../../../../resources/assets/export.png";
-import imgimport from "../../../../resources/assets/import.png";
-import CreateDealer from "../dealerOverrides/CreateDealer";
 import { CiEdit } from "react-icons/ci";
-import arrowDown from "../../../../resources/assets/arrow-down.png";
 import { ICONS } from "../../../icons/Icons";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 const SaleType = () => {
@@ -62,19 +56,19 @@ const SaleType = () => {
                 </th>
                 <th>
                   <div className="table-header">
-                    <p> Name</p> <img src={arrowDown} alt="" />
+                    <p> Name</p> <img src={ICONS.DOWN_ARROW} alt="" />
                   </div>
                 </th>
 
                 <th>
                   <div className="table-header">
-                    <p>Description</p> <img src={arrowDown} alt="" />
+                    <p>Description</p> <img src={ICONS.DOWN_ARROW} alt="" />
                   </div>
                 </th>
 
                 <th>
                   <div className="table-header">
-                    <p>Action</p> <img src={arrowDown} alt="" />
+                    <p>Action</p> <img src={ICONS.DOWN_ARROW} alt="" />
                   </div>
                 </th>
               </tr>

@@ -29,4 +29,8 @@ export const ICONS = {
   VIEW_ARCHIVE: require("../../resources/assets/view_archive.png"),
   FILTER: require("../../resources/assets/filter.png"),
   ARCHIVE: require("../../resources/assets/archive.png"),
+  APPICON: require("../../resources/assets/appicon.png"),
+  USER_IMAGE: require("../../resources/assets/user.png"),
+  NOTIFICATION: require("../../resources/assets/notification.png"),
+  SETTING_LINE: require("../../resources/assets/settings-line.png"),
 };

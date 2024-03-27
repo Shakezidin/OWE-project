@@ -1,135 +1,120 @@
-import React from 'react'
+import React from "react";
 
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { CiEdit } from "react-icons/ci";
-
-
-import { MdFilterList } from "react-icons/md";
 import { IoAddSharp } from "react-icons/io5";
-import imgExport from '../../../../resources/assets/export.png'
-import imgimport from '../../../../resources/assets/import.png'
-import arrowDown from '../../../../resources/assets/arrow-down.png'
-import CreateDealer from '../dealerOverrides/CreateDealer';
+
+import CreateDealer from "../dealerOverrides/CreateDealer";
+import TableHeader from "../../../components/tableHeader/TableHeader";
+import { ICONS } from "../../../icons/Icons";
 const DealerTier = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-    const dealerTierData = [
-        {
-            dn: "Voltaic Power",
-            tier: "Tier 1",
-            startDate: "10/10/1000",
-            endDate: "99/99/99990",
-            delete: <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />,
-            edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />
-        },
-        {
-            dn: "Voltaic Power",
-            tier: "Tier 1",
-            startDate: "10/10/1000",
-            endDate: "99/99/99990",
-            delete: <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />,
-            edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />
-        },
-        {
-            dn: "Voltaic Power",
-            tier: "Tier 1",
-            startDate: "10/10/1000",
-            endDate: "99/99/99990",
-            delete: <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />,
-            edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />
-        },
-        {
-            dn: "Voltaic Power",
-            tier: "Tier 1",
-            startDate: "10/10/1000",
-            endDate: "99/99/99990",
-            delete: <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />,
-            edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />
-        },
-    ]
+  const dealerTierData = [
+    {
+      dn: "Voltaic Power",
+      tier: "Tier 1",
+      startDate: "10/10/1000",
+      endDate: "99/99/99990",
+      delete: (
+        <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />
+      ),
+      edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />,
+    },
+    {
+      dn: "Voltaic Power",
+      tier: "Tier 1",
+      startDate: "10/10/1000",
+      endDate: "99/99/99990",
+      delete: (
+        <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />
+      ),
+      edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />,
+    },
+    {
+      dn: "Voltaic Power",
+      tier: "Tier 1",
+      startDate: "10/10/1000",
+      endDate: "99/99/99990",
+      delete: (
+        <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />
+      ),
+      edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />,
+    },
+    {
+      dn: "Voltaic Power",
+      tier: "Tier 1",
+      startDate: "10/10/1000",
+      endDate: "99/99/99990",
+      delete: (
+        <RiDeleteBin5Line style={{ fontSize: "1.5rem", color: "#344054" }} />
+      ),
+      edit: <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />,
+    },
+  ];
   return (
-    <div className='comm'>
-    <div className='commissionContainer'>
-    <div className='commissionSection'>
-    <div className='rateSection'>
-      <h2>Dealer Tier</h2>
-      <p style={{ color: "#667085",fontSize:"14px" }}>You can view and edit these data as per your requirement</p>
-    </div>
-    <div className="iconContainer">
-    <div className='iconsSection2'>
-        <button type='button'> <img src={imgExport} alt='' />View Archive</button>
-      </div>
-      <div className='iconsSection-filter'>
-        <button type='button'> <img src={imgExport} alt='' /></button>
-      </div>
-      <div className='iconsSection2'>
-        <button type='button'> <img src={imgExport} alt='' />Archive</button>
-      </div>
-      <div className='iconsSection2'>
-        <button type='button'> <img src={imgimport} alt='' /> Import</button>
-      </div>
-      <div className='iconsSection2'>
-        <button type='button'> <img src={imgExport} alt='' />Export</button>
-      </div>
-      <div className='iconsSection2'>
-        <button type='button' style={{ background: "black", color: "white",border:"1px solid black" }} onClick={handleOpen}>  <IoAddSharp /> Add New</button>
-      </div>
-    </div>
-   
-           {
-            open && (<CreateDealer handleClose={handleClose}  />)
-           }
-    
-  </div>
-      <div className='TableContainer' style={{overflowX:"auto",whiteSpace:"nowrap"}}>
-        <table>
-      
-          <thead >
-            <tr>
-              <th>
-                <div>
-                  <input value="test" type="checkbox" className='check-box' />
-                </div>
-              </th>
-              <th>
-                <div className="table-header">
-                  <p>Dealer Name</p> <img src={arrowDown} alt="" />
-                </div>
-              </th>
-              <th>
-                <div className="table-header">
-                  <p>Tier</p> <img src={arrowDown} alt="" />
-                </div>
-              </th>
-             <th>
-                <div className="table-header">
-                  <p>Start Date</p> <img src={arrowDown} alt="" />
-                </div>
-              </th>
-              <th>
-                <div className="table-header">
-                  <p>End Date</p> <img src={arrowDown} alt="" />
-                </div>
-              </th>
-              <th>
-                <div className="table-header">
-                  <p>Action</p> <img src={arrowDown} alt="" />
-                </div>
-              </th>
-
-            </tr>
-          </thead>
-          <tbody >
-            {
-              dealerTierData.map((el, i) => (
+    <div className="comm">
+      <div className="commissionContainer">
+        <TableHeader
+          title="Dealer Tier"
+          onPressViewArchive={() => {}}
+          onPressArchive={() => {}}
+          onPressFilter={() => {}}
+          onPressImport={() => {}}
+          onpressExport={() => {}}
+          onpressAddNew={() => {}}
+        />
+        <div
+          className="TableContainer"
+          style={{ overflowX: "auto", whiteSpace: "nowrap" }}
+        >
+          <table>
+            <thead>
+              <tr>
+                <th>
+                  <div>
+                    <input value="test" type="checkbox" className="check-box" />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>Dealer Name</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>Tier</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>Start Date</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>End Date</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>Action</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                  </div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {dealerTierData.map((el, i) => (
                 <tr key={i}>
-                  <td ><input value="test" type="checkbox" className='check-box' /></td>
-                  <td style={{ fontWeight: "500",color:"black" }}>{el.dn}</td>
+                  <td>
+                    <input value="test" type="checkbox" className="check-box" />
+                  </td>
+                  <td style={{ fontWeight: "500", color: "black" }}>{el.dn}</td>
                   <td>{el.tier}</td>
                   <td>{el.startDate}</td>
                   <td>{el.endDate}</td>
-                 
+
                   <td>
                     <div className="action-icon">
                       <div className="" style={{ cursor: "pointer" }}>
@@ -140,18 +125,14 @@ const DealerTier = () => {
                       </div>
                     </div>
                   </td>
-
-
                 </tr>
-              ))
-            }
-
-          </tbody>
-        </table>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
-  </div>
-  )
-}
+  );
+};
 
-export default DealerTier
+export default DealerTier;

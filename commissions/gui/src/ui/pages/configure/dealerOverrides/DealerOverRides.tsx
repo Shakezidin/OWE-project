@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import "../configure.css";
 import { CiEdit } from "react-icons/ci";
-import { IoAddSharp } from "react-icons/io5";
 import CreateDealer from "./CreateDealer";
 import {
   useAppDispatch,
