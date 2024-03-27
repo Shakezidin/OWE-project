@@ -9,7 +9,11 @@ import {
   useAppSelector,
 } from "../../../../redux/apiSlice/hooks";
 import { fetchTimeLineSla } from "../../../../redux/apiSlice/timeLineSlice";
+import CreateTimeLine from "./CreateTimeLine";
 const TimeLine = () => {
+  const [open, setOpen] = React.useState<boolean>(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   const dispatch = useAppDispatch();
   const timelinesla_list = useAppSelector((state) => state.timelineSla.timelinesla_list);
   const loading = useAppSelector((state) => state.timelineSla.loading);
@@ -44,8 +48,11 @@ const TimeLine = () => {
           onPressFilter={() => {}}
           onPressImport={() => {}}
           onpressExport={() => {}}
-          onpressAddNew={() => {}}
+          onpressAddNew={() =>handleOpen()}
         />
+        {
+          open && (<CreateTimeLine handleClose={handleClose}/>)
+        }
         <div className="TableContainer">
           <table>
             <thead>

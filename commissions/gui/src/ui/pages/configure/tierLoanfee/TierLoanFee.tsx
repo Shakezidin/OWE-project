@@ -9,12 +9,15 @@ import {
   useAppSelector,
 } from "../../../../redux/apiSlice/hooks";
 import { fetchTearLoan } from "../../../../redux/apiSlice/tearLoanSlice";
+import CreateTierLoan from "./CreateTierLoan";
 const TierLoanFee = () => {
   const dispatch = useAppDispatch();
   const tierloanList = useAppSelector((state) => state.tierLoan.tier_loan_fee_list);
   const loading = useAppSelector((state) => state.tierLoan.loading);
   const error = useAppSelector((state) => state.tierLoan.error);
-
+  const [open, setOpen] = React.useState<boolean>(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   useEffect(() => {
     const pageNumber = {
@@ -45,8 +48,9 @@ const TierLoanFee = () => {
           onPressFilter={() => {}}
           onPressImport={() => {}}
           onpressExport={() => {}}
-          onpressAddNew={() => {}}
+          onpressAddNew={() => handleOpen()}
         />
+  { open && (<CreateTierLoan handleClose={handleClose}/>)}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}

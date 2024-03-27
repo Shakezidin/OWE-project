@@ -10,9 +10,12 @@ import {
 } from "../../../../redux/apiSlice/hooks";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { fetchSalesType } from "../../../../redux/apiSlice/salesSlice";
+import CreateSaleType from "./CreateSaleType";
 
 const SaleType = () => {
-
+  const [open, setOpen] = React.useState<boolean>(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   const dispatch = useAppDispatch();
   const salesTypeList = useAppSelector((state) => state.salesType.saletype_list);
   const loading = useAppSelector((state) => state.salesType.loading);
@@ -45,8 +48,9 @@ const SaleType = () => {
           onPressFilter={() => {}}
           onPressImport={() => {}}
           onpressExport={() => {}}
-          onpressAddNew={() => {}}
+          onpressAddNew={() => handleClose()}
         />
+        {open && (<CreateSaleType handleClose={handleClose}/>)}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}

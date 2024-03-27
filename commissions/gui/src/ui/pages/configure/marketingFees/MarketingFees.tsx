@@ -11,11 +11,14 @@ import { ICONS } from "../../../icons/Icons";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { fetchmarketingFees } from "../../../../redux/apiSlice/marketingSlice";
 import { CiEdit } from "react-icons/ci";
+import CreateMarketingFees from "./CreateMarketungFees";
 
 const MarketingFees: React.FC = () => {
   const dispatch = useAppDispatch();
   // const getData = useAppSelector(state=>state.comm.data)
-
+  const [open, setOpen] = React.useState<boolean>(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   const marketingFeesList = useAppSelector((state) => state.marketing.marketing_fees_list);
   const loading = useAppSelector((state) => state.marketing.loading);
   const error = useAppSelector((state) => state.marketing.error);
@@ -46,9 +49,9 @@ const MarketingFees: React.FC = () => {
           onPressFilter={() => {}}
           onPressImport={() => {}}
           onpressExport={() => {}}
-          onpressAddNew={() => {}}
+          onpressAddNew={() => handleOpen()}
         />
-
+{open && (<CreateMarketingFees handleClose={handleClose}/>)}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
