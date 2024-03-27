@@ -8,6 +8,7 @@ import imgimport from "../../../../resources/assets/import.png";
 import CreateDealer from "../dealerOverrides/CreateDealer";
 import { CiEdit } from "react-icons/ci";
 import arrowDown from "../../../../resources/assets/arrow-down.png";
+import CreateAdder from "./CreateAdder";
 
 const AdderValidation = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -85,7 +86,7 @@ const AdderValidation = () => {
         <button type='button' style={{ background: "black", color: "white",border:"1px solid black" }} onClick={handleOpen}>  <IoAddSharp /> Add New</button>
       </div>
     </div>
-          {open && <CreateDealer handleClose={handleClose} />}
+          {open && <CreateAdder handleClose={handleClose} />}
         </div>
         <div className="TableContainer" style={{overflowX:"auto",whiteSpace:"nowrap"}}>
           <table>

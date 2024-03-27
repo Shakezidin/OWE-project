@@ -9,6 +9,7 @@ import { IoAddSharp } from "react-icons/io5";
 import imgExport from '../../../../resources/assets/export.png'
 import imgimport from '../../../../resources/assets/import.png'
 import CreateDealer from '../dealerOverrides/CreateDealer';
+import CreateRepPayScale from './CreateRepPayScale';
 const RepPayScale:React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
@@ -95,7 +96,7 @@ const RepPayScale:React.FC = () => {
     </div>
    
            {
-            open && (<CreateDealer handleClose={handleClose}  />)
+            open && (<CreateRepPayScale handleClose={handleClose}  />)
            }
     
   </div>

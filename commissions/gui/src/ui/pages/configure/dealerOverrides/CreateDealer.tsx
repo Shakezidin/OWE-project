@@ -29,7 +29,7 @@ const CreateDealer = (props:ButtonProps) => {
                <div className="create-input-field">
                <Input
                   type={"text"}
-                  label="First Name*"
+                  label="Sub Dealer"
                   value={""}
                   name=""
                   placeholder={"Enter First Name"}
@@ -39,7 +39,7 @@ const CreateDealer = (props:ButtonProps) => {
                <div className="create-input-field">
                 <Input
                   type={"text"}
-                  label="Last Name*"
+                  label="Dealer"
                   name=""
                   value={""}
                   placeholder={"Enter Last Name"}
@@ -49,7 +49,7 @@ const CreateDealer = (props:ButtonProps) => {
                 <div className="create-input-field">
                  <Input
                   type={"text"}
-                  label="Last Name*"
+                  label="Pay Rate"
                   name=""
                   value={""}
                   placeholder={"Enter Last Name"}

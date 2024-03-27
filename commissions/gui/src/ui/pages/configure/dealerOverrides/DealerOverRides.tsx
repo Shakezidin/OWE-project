@@ -64,52 +64,36 @@ const DealerOverRides: React.FC = () => {
   return (
     <div className="comm">
       <div className="commissionContainer">
-        <div className="commissionSection">
-          <div className="rateSection">
-            <h2>Dealer Overrides</h2>
-            <p style={{ color: "#667085", fontSize: "14px" }}>
-              You can view and edit these data as per your requirement
-            </p>
+      <div className='commissionSection'>
+          <div className='rateSection'>
+            <h2>Dealer OverRides</h2>
+            <p style={{ color: "#667085", fontSize: "14px" }}>You can view and edit these data as per your requirement</p>
           </div>
           <div className="iconContainer">
-            <div className="iconsSection">
-              <button type="button">
-                {" "}
-                <RiDeleteBin5Line /> Delete
-              </button>
+            <div className='iconsSection2'>
+              <button type='button'> <img src={imgExport} alt='' />View Archive</button>
             </div>
-            <div className="iconsSection">
-              <button type="button">
-                {" "}
-                <MdFilterList /> Filter
-              </button>
+            <div className='iconsSection-filter'>
+              <button type='button'> <img src={imgExport} alt='' /></button>
             </div>
-            <div className="iconsSection2">
-              <button type="button">
-                {" "}
-                <img src={imgimport} alt="" /> Import
-              </button>
+            <div className='iconsSection2'>
+              <button type='button'> <img src={imgExport} alt='' />Archive</button>
             </div>
-            <div className="iconsSection2">
-              <button type="button">
-                {" "}
-                <img src={imgExport} alt="" />
-                Export
-              </button>
+            <div className='iconsSection2'>
+              <button type='button'> <img src={imgimport} alt='' /> Import</button>
             </div>
-            <div className="iconsSection2">
-              <button
-                type="button"
-                style={{ background: "black", color: "white",border:"1px solid black" }}
-                onClick={handleOpen}
-              >
-                {" "}
-                <IoAddSharp /> Add New
-              </button>
+            <div className='iconsSection2'>
+              <button type='button'> <img src={imgExport} alt='' />Export</button>
+            </div>
+            <div className='iconsSection2'>
+              <button type='button' style={{ background: "black", color: "white", border: "1px solid black" }} onClick={handleOpen}>  <IoAddSharp /> Add New</button>
             </div>
           </div>
 
-          {open && <CreateDealer handleClose={handleClose} />}
+          {
+            open && (<CreateDealer handleClose={handleClose} />)
+          }
+
         </div>
         <div className="TableContainer" style={{overflowX:"auto",whiteSpace:"nowrap"}}>
           <table>

@@ -10,6 +10,7 @@ import imgExport from "../../../../resources/assets/export.png";
 import imgimport from "../../../../resources/assets/import.png";
 import CreateDealer from "../dealerOverrides/CreateDealer";
 import img from "../../../../resources/assets/checkbox-circle-line.png";
+import CreateMarketingFees from "./CreateMarketungFees";
 const MarketingFees: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
@@ -20,30 +21,30 @@ const MarketingFees: React.FC = () => {
       dba: "Plug PV",
       state: "Regular text column",
       fee: "$9802",
-      play:"loan Type",
+      play: "loan Type",
       note: "Regular text column",
-      ed:"20-04-2024",
-      sd:"20-04-2024"
+      ed: "20-04-2024",
+      sd: "20-04-2024",
     },
     {
       sou: "SOEB Settler",
       dba: "Plug PV",
       state: "Regular text column",
       fee: "$9802",
-      play:"loan Type",
+      play: "loan Type",
       note: "Regular text column",
-      ed:"20-04-2024",
-      sd:"20-04-2024"
+      ed: "20-04-2024",
+      sd: "20-04-2024",
     },
     {
       sou: "SOEB Settler",
       dba: "Plug PV",
       state: "Regular text column",
       fee: "$9802",
-      play:"loan Type",
+      play: "loan Type",
       note: "Regular text column",
-      ed:"20-04-2024",
-      sd:"20-04-2024"
+      ed: "20-04-2024",
+      sd: "20-04-2024",
     },
   ];
   return (
@@ -57,30 +58,62 @@ const MarketingFees: React.FC = () => {
             </p>
           </div>
           <div className="iconContainer">
-    <div className='iconsSection2'>
-        <button type='button'> <img src={imgExport} alt='' />View Archive</button>
-      </div>
-      <div className='iconsSection-filter'>
-        <button type='button'> <img src={imgExport} alt='' /></button>
-      </div>
-      <div className='iconsSection2'>
-        <button type='button'> <img src={imgExport} alt='' />Archive</button>
-      </div>
-      <div className='iconsSection2'>
-        <button type='button'> <img src={imgimport} alt='' /> Import</button>
-      </div>
-      <div className='iconsSection2'>
-        <button type='button'> <img src={imgExport} alt='' />Export</button>
-      </div>
-      <div className='iconsSection2'>
-        <button type='button' style={{ background: "black", color: "white",border:"1px solid black" }} onClick={handleOpen}>  <IoAddSharp /> Add New</button>
-      </div>
-    </div>
+            <div className="iconsSection2">
+              <button type="button">
+                {" "}
+                <img src={imgExport} alt="" />
+                View Archive
+              </button>
+            </div>
+            <div className="iconsSection-filter">
+              <button type="button">
+                {" "}
+                <img src={imgExport} alt="" />
+              </button>
+            </div>
+            <div className="iconsSection2">
+              <button type="button">
+                {" "}
+                <img src={imgExport} alt="" />
+                Archive
+              </button>
+            </div>
+            <div className="iconsSection2">
+              <button type="button">
+                {" "}
+                <img src={imgimport} alt="" /> Import
+              </button>
+            </div>
+            <div className="iconsSection2">
+              <button type="button">
+                {" "}
+                <img src={imgExport} alt="" />
+                Export
+              </button>
+            </div>
+            <div className="iconsSection2">
+              <button
+                type="button"
+                style={{
+                  background: "black",
+                  color: "white",
+                  border: "1px solid black",
+                }}
+                onClick={handleOpen}
+              >
+                {" "}
+                <IoAddSharp /> Add New
+              </button>
+            </div>
+          </div>
 
-          {open && <CreateDealer handleClose={handleClose} />}
+          {open && <CreateMarketingFees handleClose={handleClose} />}
         </div>
 
-        <div className="TableContainer" style={{overflowX:"auto",whiteSpace:"nowrap"}}>
+        <div
+          className="TableContainer"
+          style={{ overflowX: "auto", whiteSpace: "nowrap" }}
+        >
           <table>
             <thead>
               <tr>
@@ -143,7 +176,9 @@ const MarketingFees: React.FC = () => {
                   <td>
                     <input value="test" type="checkbox" className="check-box" />
                   </td>
-                  <td style={{ fontWeight: "500",color:"black" }}>{el.sou}</td>
+                  <td style={{ fontWeight: "500", color: "black" }}>
+                    {el.sou}
+                  </td>
                   <td>{el.dba}</td>
                   <td>{el.state}</td>
                   <td>{el.fee}</td>
@@ -152,7 +187,11 @@ const MarketingFees: React.FC = () => {
                       <img src={img} alt="" />
                     </div>
                   </td>
-               <td>{el.play}</td>
+                  <td>
+                    <div className="">
+                      <img src={img} alt="" />
+                    </div>
+                  </td>
                   <td>{el.note}</td>
                   <td>{el.ed}</td>
                   <td>{el.sd}</td>
