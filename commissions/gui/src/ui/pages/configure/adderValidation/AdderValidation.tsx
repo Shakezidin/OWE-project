@@ -12,6 +12,7 @@ import {
 } from "../../../../redux/apiSlice/hooks";
 import { ICONS } from "../../../icons/Icons";
 import TableHeader from "../../../components/tableHeader/TableHeader";
+import CreateAdder from "./CreateAdder";
 
 const AdderValidation = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -51,8 +52,11 @@ const AdderValidation = () => {
           onPressFilter={() => {}}
           onPressImport={() => {}}
           onpressExport={() => {}}
-          onpressAddNew={() => {}}
+          onpressAddNew={() => handleOpen()}
         />
+        {
+          open && (<CreateAdder handleClose={handleClose}/>)
+        }
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}

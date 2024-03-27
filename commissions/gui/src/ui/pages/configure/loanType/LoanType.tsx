@@ -9,12 +9,15 @@ import {
   useAppSelector,
 } from "../../../../redux/apiSlice/hooks";
 import { fetchLoanType } from "../../../../redux/apiSlice/loanTypeSlice";
+import CreateLoanType from "./CreateLoanType";
 
 const LoanType = () => {
   const dispatch = useAppDispatch();
   // const getData = useAppSelector(state=>state.comm.data)
-
-  const loanTypeList = useAppSelector((state) => state.loanType.loantype_list);
+  const [open, setOpen] = React.useState<boolean>(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const loanTypeList = useAppSelector((state) => state?.loanType?.loantype_list);
   const loading = useAppSelector((state) => state.loanType.loading);
   const error = useAppSelector((state) => state.loanType.error);
 
@@ -25,7 +28,7 @@ const LoanType = () => {
     };
     dispatch(fetchLoanType(pageNumber));
   }, []);
-  console.log(loanTypeList);
+ 
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -35,6 +38,8 @@ const LoanType = () => {
   }
   return (
     <div className="comm">
+      {
+        loanTypeList?.length>0 ?
       <div className="commissionContainer">
         <TableHeader
           title="Loan Type"
@@ -43,8 +48,11 @@ const LoanType = () => {
           onPressFilter={() => {}}
           onPressImport={() => {}}
           onpressExport={() => {}}
-          onpressAddNew={() => {}}
+          onpressAddNew={() => handleOpen()}
         />
+        {
+          open && (<CreateLoanType handleClose={handleClose}/>)
+        }
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
@@ -100,7 +108,7 @@ const LoanType = () => {
                     <input value={el.active} type="checkbox"  className="check-box" />
                   </td>
                   <td>
-                   <input type="text" value={el.adder} name="" id="" className="adder-input" />
+                   <input type="text" defaultValue={el.adder} name="" id="" className="adder-input" />
                   </td>
                   <td>{el.description}</td>
                   <td style={{ display: "flex", gap: "1rem",alignItems:"center" }}>
@@ -113,7 +121,8 @@ const LoanType = () => {
             </tbody>
           </table>
         </div>
-      </div>
+      </div>:<div>No Data Found</div>
+}
     </div>
   );
 };

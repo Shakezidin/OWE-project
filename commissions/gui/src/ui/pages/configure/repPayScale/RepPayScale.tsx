@@ -6,6 +6,7 @@ import { CiEdit } from "react-icons/ci";
 import "../configure.css";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { ICONS } from "../../../icons/Icons";
+import CreateRepPayScale from "./CreateRepPayScale";
 const RepPayScale: React.FC = () => {
 
   const [open, setOpen] = React.useState<boolean>(false);
@@ -76,8 +77,9 @@ const RepPayScale: React.FC = () => {
           onPressFilter={() => {}}
           onPressImport={() => {}}
           onpressExport={() => {}}
-          onpressAddNew={() => {}}
+          onpressAddNew={() =>handleOpen()}
         />
+        {open &&(<CreateRepPayScale handleClose={handleClose}/>)}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}

@@ -37,6 +37,7 @@ export const getCaller = async (endpoint: string) => {
 };
 
 export const postCaller= async (endpoint: string, data: any,) => {
+try{
   const response = await fetch(`${BASE_URL}/${endpoint}`, {
     method:HTTP_METHOD.POST,
     headers: {
@@ -46,6 +47,9 @@ export const postCaller= async (endpoint: string, data: any,) => {
     body: JSON.stringify(data),
   });
   return response.json();
+}catch(error){
+console.log(error)
+}
 };
 
 export const putCaller = async (endpoint: string, data: any) => {

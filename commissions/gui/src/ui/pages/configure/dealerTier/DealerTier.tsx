@@ -11,10 +11,13 @@ import {
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { ICONS } from "../../../icons/Icons";
 import { fetchDealerTier } from "../../../../redux/apiSlice/dealerTierSlice";
+import CreateDealerTier from "./CreateDealerTier";
 const DealerTier = () => {
   const dispatch = useAppDispatch();
   // const getData = useAppSelector(state=>state.comm.data)
-
+  const [open, setOpen] = React.useState<boolean>(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   const dealerTierList = useAppSelector((state) => state.dealerTier.dealers_tier_list);
   const loading = useAppSelector((state) => state.dealerTier.loading);
   const error = useAppSelector((state) => state.dealerTier.error);
@@ -44,8 +47,11 @@ const DealerTier = () => {
           onPressFilter={() => {}}
           onPressImport={() => {}}
           onpressExport={() => {}}
-          onpressAddNew={() => {}}
+          onpressAddNew={() =>handleOpen()}
         />
+        {
+          open && (<CreateDealerTier handleClose={handleClose}/>)
+        }
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}

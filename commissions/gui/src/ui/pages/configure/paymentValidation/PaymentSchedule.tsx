@@ -10,11 +10,14 @@ import {
   useAppSelector,
 } from "../../../../redux/apiSlice/hooks";
 import { fetchPaySchedule } from "../../../../redux/apiSlice/payScheduleSlice";
+import CreatePaymentSchedule from "./CreatePaymentSchedule";
 
 const PaymentSchedule = () => {
   const dispatch = useAppDispatch();
   // const getData = useAppSelector(state=>state.comm.data)
-
+  const [open, setOpen] = React.useState<boolean>(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   const payScheduleList = useAppSelector((state) => state.paySchedule.payment_schedule_list);
   const loading = useAppSelector((state) => state.paySchedule.loading);
   const error = useAppSelector((state) => state.paySchedule.error);
@@ -40,14 +43,15 @@ const PaymentSchedule = () => {
      { payScheduleList?.length > 0?
       <div className="commissionContainer">
         <TableHeader
-          title="Payment Schedule"
+          title="Marketing Fees"
           onPressViewArchive={() => {}}
           onPressArchive={() => {}}
           onPressFilter={() => {}}
           onPressImport={() => {}}
           onpressExport={() => {}}
-          onpressAddNew={() => {}}
+          onpressAddNew={() => handleOpen()}
         />
+{open && (<CreatePaymentSchedule handleClose={handleClose}/>)}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
