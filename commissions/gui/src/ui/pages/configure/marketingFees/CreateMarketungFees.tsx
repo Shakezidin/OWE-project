@@ -42,15 +42,12 @@ const CreateMarketingFees = (props: ButtonProps) => {
                                         options={['Option 1', 'Option 2', 'Option 3']}
                                         onChange={handleFormChange} />
                                 </div>
-                                 <div className="create-input-field">
-                                    <Input
-                                        type={"text"}
+                                <div className="create-input-field">
+                                    <DropdownButton id="selectField1"
                                         label="State"
                                         value={""}
-                                        name=""
-                                        placeholder={"State"}
-                                        onChange={() => { }}
-                                    />
+                                        options={['Option 1', 'Option 2', 'Option 3']}
+                                        onChange={handleFormChange} />
                                 </div>
                             </div>
 
@@ -61,24 +58,31 @@ const CreateMarketingFees = (props: ButtonProps) => {
                                         label="Fee Rate"
                                         value={""}
                                         name=""
-                                        placeholder={"Fee Rate"}
+                                        placeholder={"Enter"}
                                         onChange={() => { }}
                                     />
                                 </div>
                                 <div className="create-input-field">
+                                    <DropdownButton id="selectField1"
+                                        label="Chl DLR"
+                                        value={""}
+                                        options={['Option 1', 'Option 2', 'Option 3']}
+                                        onChange={handleFormChange} />
+                                </div>
+                                <div className="create-input-field">
                                     <Input
                                         type={"text"}
-                                        label="Note"
+                                        label="Pay Src"
                                         value={""}
                                         name=""
-                                        placeholder={"Note"}
+                                        placeholder={"Enter"}
                                         onChange={() => { }}
                                     />
                                 </div>
-                               
+
+
                             </div>
                             <div className="create-input-container">
-                               
                                 <div className="create-input-field">
                                     <Input
                                         type={"date"}
@@ -89,6 +93,7 @@ const CreateMarketingFees = (props: ButtonProps) => {
                                         onChange={() => { }}
                                     />
                                 </div>
+
                                 <div className="create-input-field">
                                     <Input
                                         type={"date"}
@@ -100,9 +105,21 @@ const CreateMarketingFees = (props: ButtonProps) => {
                                     />
                                 </div>
                             </div>
+                            <div className="create-input-container">
+                                <div className="create-input-field-note">
+                                    <Input
+                                        type={"text"}
+                                        label="Note"
+                                        value={""}
+                                        name=""
+                                        placeholder={"Enter"}
+                                        onChange={() => { }}
+                                    />
+                                </div>
+                            </div>
                         </div>
                         <div className="createUserActionButton">
-                            <ActionButton title={"Create"} type="submit"
+                            <ActionButton title={"Save"} type="submit"
                                 onClick={() => { }} />
                         </div>
 

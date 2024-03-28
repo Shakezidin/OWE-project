@@ -11,13 +11,20 @@ import {
 import { ICONS } from "../../../icons/Icons";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { fetchCommissions } from "../../../../redux/apiSlice/commissionSlice";
+
+import FilterCommission from "./FilterCommission";
+
 import CheckBox from "../../../components/chekbox/CheckBox";
 import { toggleAllRows, toggleRowSelection } from "../../../components/chekbox/checkHelper";
 
+
 const CommissionRate: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
+  const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const filter = () => setFilterOpen(true);
+  const filterClose = () => setFilterOpen(false);
 
   const dispatch = useAppDispatch();
   const commissionList = useAppSelector((state) => state.comm.commissionsList);
@@ -50,6 +57,7 @@ const isAllRowsSelected = selectedRows.size === commissionList.length;
 
   return (
     <div className="comm">
+
        <div className="commissionContainer">
       <TableHeader
         title="Commisstion Rate"
@@ -60,6 +68,7 @@ const isAllRowsSelected = selectedRows.size === commissionList.length;
         onpressExport={() => {}}
         onpressAddNew={() => handleOpen()}
       />
+         {filterOPen && <FilterCommission handleClose={filterClose}/>}
       {open && <CreateCommissionRate handleClose={handleClose} />}
       <div
         className="TableContainer"
@@ -176,7 +185,7 @@ const isAllRowsSelected = selectedRows.size === commissionList.length;
         </table>
       </div>
     </div>
-   
+  
     </div>
   );
 };

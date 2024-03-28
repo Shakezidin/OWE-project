@@ -46,13 +46,15 @@ const TimeLine = () => {
     <div className="comm">
       <div className="commissionContainer">
         <TableHeader
-          title="Time Line"
-          onPressViewArchive={() => { }}
-          onPressArchive={() => { }}
-          onPressFilter={() => { }}
-          onPressImport={() => { }}
-          onpressExport={() => { }}
-          onpressAddNew={() => handleOpen()}
+
+          title="Time Line SLA"
+          onPressViewArchive={() => {}}
+          onPressArchive={() => {}}
+          onPressFilter={() => {}}
+          onPressImport={() => {}}
+          onpressExport={() => {}}
+          onpressAddNew={() =>handleOpen()}
+
         />
         {
           open && (<CreateTimeLine handleClose={handleClose} />)

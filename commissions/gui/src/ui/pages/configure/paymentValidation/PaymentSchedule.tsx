@@ -49,7 +49,7 @@ const PaymentSchedule = () => {
     <div className="comm">
       <div className="commissionContainer">
         <TableHeader
-          title="Marketing Fees"
+          title="Payment Scheduler"
           onPressViewArchive={() => {}}
           onPressArchive={() => {}}
           onPressFilter={() => {}}

@@ -1,14 +1,17 @@
 import React from "react";
 import "../../create_profile/CreateUserProfile.css";
+import { ReactComponent as PROFILE_BACKGROUND } from "../../../../resources/assets/Profile_background.svg";
+
 import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cross_button.svg";
 import Input from "../../../components/text_input/Input";
 import DropdownButton from "../../../components/dropdown/DropdownButton";
 import { ActionButton } from "../../../components/button/ActionButton";
 
-type ButtonProps ={
-    handleClose:()=>void
-  }
-const CreateAdder = (props: ButtonProps) => {
+type ButtonProps = {
+    handleClose: () => void
+}
+
+const FilterCommission = (props: ButtonProps) => {
     const handleFormChange = () => {
 
     }
@@ -21,74 +24,53 @@ const CreateAdder = (props: ButtonProps) => {
 
                 </div>
                 <div className="createUserContainer">
-                    <h3 className="createProfileText">Adder</h3>
+                    <h3 className="createProfileText">Apply Filter</h3>
                     <div className="createProfileInputView">
                         <div className="createProfileTextView">
                             <div className="create-input-container">
-                            <div className="create-input-field">
-                                    <Input
-                                        type={"text"}
-                                        label="Adder Name"
-                                        value={""}
-                                        name=""
-                                        placeholder={"Enter"}
-                                        onChange={() => { }}
-                                    />
-                                </div>
                                 <div className="create-input-field">
                                     <DropdownButton id="selectField1"
-                                        label="Adder Type"
+                                        label="Partner"
                                         value={""}
                                         options={['Option 1', 'Option 2', 'Option 3']}
                                         onChange={handleFormChange} />
                                 </div>
                                 <div className="create-input-field">
                                     <DropdownButton id="selectField1"
-                                        label="Price Type"
+                                        label="Installer"
                                         value={""}
                                         options={['Option 1', 'Option 2', 'Option 3']}
                                         onChange={handleFormChange} />
                                 </div>
-                            </div>
 
-                            <div className="create-input-container">
                                 <div className="create-input-field">
                                     <Input
                                         type={"text"}
-                                        label="Price Amount"
+                                        label="Sales Type"
                                         value={""}
                                         name=""
-                                        placeholder={"Amount"}
-                                        onChange={() => { }}
-                                    />
-                                </div>
-                               
-                               
-                            </div>
-                            <div className="create-input-container">
-                                <div className="create-input-field-note">
-                                    <Input
-                                        type={"text"}
-                                        label="Detail"
-                                        value={""}
-                                        name=""
-                                        placeholder={"Enter"}
+                                        placeholder={"Sales Type"}
                                         onChange={() => { }}
                                     />
                                 </div>
                             </div>
 
-                        </div>
-                        <div className="createUserActionButton">
-                            <ActionButton title={"Save"} type="submit"
-                                onClick={() => { }} />
-                        </div>
 
+                        </div>
                     </div>
+                    <div className="createUserActionButton" style={{gap:"2rem"}}>
+                        <ActionButton title={"Save"} type="submit"
+                            onClick={() => { }} />
+
+                        <ActionButton title={"cancel"} type="submit"
+                            onClick={() => { }} />
+                    </div>
+
                 </div>
             </div>
         </div>
+
     );
 };
 
-export default CreateAdder;
+export default FilterCommission;
