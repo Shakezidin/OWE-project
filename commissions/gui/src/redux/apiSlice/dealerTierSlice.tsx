@@ -42,7 +42,11 @@ const dealerTierSlice = createSlice({
             .addCase(fetchDealerTier.fulfilled, (state, action) => {
                 state.loading = false;
                 state.error = null;
-                state.dealers_tier_list = action.payload.data.dealers_tier_list;
+                if (action.payload && action.payload.data && action.payload.data.dealers_tier_list) {
+                    state.dealers_tier_list = action.payload.data.dealers_tier_list;
+                  } else {
+                    state.dealers_tier_list = [];
+                  }
             })
             .addCase(fetchDealerTier.rejected, (state, action) => {
                 state.loading = false;

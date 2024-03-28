@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "../configure.css";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { CiEdit } from "react-icons/ci";
@@ -11,6 +11,8 @@ import {
 } from "../../../../redux/apiSlice/hooks";
 import { fetchPaySchedule } from "../../../../redux/apiSlice/payScheduleSlice";
 import CreatePaymentSchedule from "./CreatePaymentSchedule";
+import CheckBox from "../../../components/chekbox/CheckBox";
+import { toggleAllRows, toggleRowSelection } from "../../../components/chekbox/checkHelper";
 
 const PaymentSchedule = () => {
   const dispatch = useAppDispatch();
@@ -21,7 +23,8 @@ const PaymentSchedule = () => {
   const payScheduleList = useAppSelector((state) => state.paySchedule.payment_schedule_list);
   const loading = useAppSelector((state) => state.paySchedule.loading);
   const error = useAppSelector((state) => state.paySchedule.error);
-
+  const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
+  const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   useEffect(() => {
     const pageNumber = {
       page_number: 1,
@@ -37,10 +40,13 @@ const PaymentSchedule = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
-
+  if (!payScheduleList===null || payScheduleList.length === 0) {
+    return <div>Data not found</div>;
+  }
+  const isAnyRowSelected = selectedRows.size > 0;
+  const isAllRowsSelected = selectedRows.size === payScheduleList.length;
   return (
     <div className="comm">
-     { payScheduleList?.length > 0?
       <div className="commissionContainer">
         <TableHeader
           title="Marketing Fees"
@@ -61,7 +67,11 @@ const PaymentSchedule = () => {
               <tr>
                 <th>
                   <div>
-                    <input value="test" type="checkbox" className="check-box" />
+                  <CheckBox
+                      checked={selectAllChecked}
+                      onChange={()=>toggleAllRows(selectedRows,payScheduleList,setSelectedRows,setSelectAllChecked)}
+                      indeterminate={isAnyRowSelected && !isAllRowsSelected}
+                    />
                   </div>
                 </th>
                 <th>
@@ -142,7 +152,10 @@ const PaymentSchedule = () => {
                     (el, i) => (
                 <tr key={i}>
                   <td>
-                    <input value="test" type="checkbox" className="check-box" />
+                  <CheckBox
+                      checked={selectedRows.has(i)}
+                      onChange={() => toggleRowSelection(i,selectedRows,setSelectedRows,setSelectAllChecked)}
+                    />
                   </td>
                   <td style={{ fontWeight: "600" }}>{el.partner_name}</td>
                   <td>{el.partner}</td>
@@ -168,8 +181,7 @@ const PaymentSchedule = () => {
             </tbody>
           </table>
         </div>
-      </div>:<div>No Data Found</div>
-}
+      </div>
     </div>
   );
 };

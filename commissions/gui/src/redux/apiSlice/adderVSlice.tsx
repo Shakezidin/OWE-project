@@ -18,7 +18,7 @@ interface AdderVState {
   error: string | null;
 }
 const initialState: AdderVState = {
-  VAdders_list: [],
+  VAdders_list: [] ,
   loading: false,
   error: null,
 };
@@ -27,6 +27,7 @@ export const fetchAdderV = createAsyncThunk(
   'adderV/fetchAdderV',
   async (data:any) => {
     const response = await postCaller(EndPoints.adderV,data);
+ 
     return response;
   }
 );
@@ -44,7 +45,11 @@ const adderSlice = createSlice({
       .addCase(fetchAdderV.fulfilled, (state, action) => {
         state.loading = false;
         state.error = null;
-        state.VAdders_list = action.payload.data.VAdders_list;
+        if (action.payload && action.payload.data && action.payload.data.VAdders_list) {
+          state.VAdders_list = action.payload.data.VAdders_list;
+        } else {
+          state.VAdders_list = [];
+        };
       })
       .addCase(fetchAdderV.rejected, (state, action) => {
         state.loading = false;

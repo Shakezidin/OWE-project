@@ -30,6 +30,7 @@ export const fetchmarketingFees = createAsyncThunk(
     'marketing/fetchmarketingFees',
     async (data: any) => {
         const response = await postCaller(EndPoints.marketing, data);
+   
         return response;
     }
 );
@@ -47,7 +48,11 @@ const marketingSlice = createSlice({
             .addCase(fetchmarketingFees.fulfilled, (state, action) => {
                 state.loading = false;
                 state.error = null;
-                state.marketing_fees_list = action.payload.data.marketing_fees_list;
+                if (action.payload && action.payload.data && action.payload.data.marketing_fees_list) {
+                    state.marketing_fees_list = action.payload.data.marketing_fees_list;
+                  } else {
+                    state.marketing_fees_list = [];
+                  }
             })
             .addCase(fetchmarketingFees.rejected, (state, action) => {
                 state.loading = false;

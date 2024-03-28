@@ -30,6 +30,7 @@ export const fetchTearLoan = createAsyncThunk(
     'tierLoan/fetchTearLoan',
     async (data: any) => {
         const response = await postCaller(EndPoints.tierLoan, data);
+    
         return response;
     }
 );
@@ -47,7 +48,11 @@ const tearLoanSlice = createSlice({
             .addCase(fetchTearLoan.fulfilled, (state, action) => {
                 state.loading = false;
                 state.error = null;
-                state.tier_loan_fee_list = action.payload.data.tier_loan_fee_list;
+                if (action.payload && action.payload.data && action.payload.data.tier_loan_fee_list) {
+                    state.tier_loan_fee_list = action.payload.data.tier_loan_fee_list;
+                  } else {
+                    state.tier_loan_fee_list = [];
+                  }
             })
             .addCase(fetchTearLoan.rejected, (state, action) => {
                 state.loading = false;

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import "../configure.css";
 import { CiEdit } from "react-icons/ci";
@@ -11,6 +11,8 @@ import {
 import { ICONS } from "../../../icons/Icons";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { fetchDealer } from "../../../../redux/apiSlice/dealerSlice";
+import CheckBox from "../../../components/chekbox/CheckBox";
+import { toggleAllRows, toggleRowSelection } from "../../../components/chekbox/checkHelper";
 
 const DealerOverRides: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -20,7 +22,8 @@ const DealerOverRides: React.FC = () => {
   const dealerList = useAppSelector((state) => state.dealer.Dealers_list);
   const loading = useAppSelector((state) => state.dealer.loading);
   const error = useAppSelector((state) => state.dealer.error);
-
+  const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
+    const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   useEffect(() => {
     const pageNumber = {
       page_number: 1,
@@ -28,7 +31,9 @@ const DealerOverRides: React.FC = () => {
     };
     dispatch(fetchDealer(pageNumber));
   }, []);
-  console.log(dealerList);
+  
+const isAnyRowSelected = selectedRows.size > 0;
+const isAllRowsSelected = selectedRows.size === dealerList.length;
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -36,10 +41,12 @@ const DealerOverRides: React.FC = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
+  if (!dealerList===null || dealerList.length === 0) {
+    return <div>Data not found</div>;
+  }
   return (
     <div className="comm">
-      {
-        dealerList?.length > 0? <div className="commissionContainer">
+   <div className="commissionContainer">
         <TableHeader
           title="Dealer OverRides"
           onPressViewArchive={() => {}}
@@ -60,7 +67,11 @@ const DealerOverRides: React.FC = () => {
               <tr>
                 <th>
                   <div>
-                    <input value="test" type="checkbox" className="check-box" />
+                  <CheckBox
+                      checked={selectAllChecked}
+                      onChange={()=>toggleAllRows(selectedRows,dealerList,setSelectedRows,setSelectAllChecked)}
+                      indeterminate={isAnyRowSelected && !isAllRowsSelected}
+                    />
                   </div>
                 </th>
                 <th>
@@ -101,11 +112,10 @@ const DealerOverRides: React.FC = () => {
                 ? dealerList?.map((el, i) => (
                     <tr key={i}>
                       <td>
-                        <input
-                          value="test"
-                          type="checkbox"
-                          className="check-box"
-                        />
+                      <CheckBox
+                      checked={selectedRows.has(i)}
+                      onChange={() => toggleRowSelection(i,selectedRows,setSelectedRows,setSelectAllChecked)}
+                    />
                       </td>
                       <td style={{ fontWeight: "500", color: "black" }}>
                         {el.sub_dealer}
@@ -134,8 +144,7 @@ const DealerOverRides: React.FC = () => {
             </tbody>
           </table>
         </div>
-      </div>:<div>No Data Found</div>
-      }
+      </div>
      
     </div>
   );

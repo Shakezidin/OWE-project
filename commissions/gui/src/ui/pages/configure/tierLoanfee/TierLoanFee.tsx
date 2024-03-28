@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { CiEdit } from "react-icons/ci";
@@ -10,6 +10,8 @@ import {
 } from "../../../../redux/apiSlice/hooks";
 import { fetchTearLoan } from "../../../../redux/apiSlice/tearLoanSlice";
 import CreateTierLoan from "./CreateTierLoan";
+import CheckBox from "../../../components/chekbox/CheckBox";
+import { toggleAllRows, toggleRowSelection } from "../../../components/chekbox/checkHelper";
 const TierLoanFee = () => {
   const dispatch = useAppDispatch();
   const tierloanList = useAppSelector((state) => state.tierLoan.tier_loan_fee_list);
@@ -18,7 +20,8 @@ const TierLoanFee = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
+  const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
+  const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   useEffect(() => {
     const pageNumber = {
       page_number: 1,
@@ -35,10 +38,14 @@ const TierLoanFee = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
+  if (!tierloanList===null || tierloanList.length === 0) {
+    return <div>Data not found</div>;
+  }
+  const isAnyRowSelected = selectedRows.size > 0;
+  const isAllRowsSelected = selectedRows.size === tierloanList.length;
  
   return (
     <div className="comm">
-      {tierloanList?.length> 0 ?
       <div className="commissionContainer">
 
         <TableHeader
@@ -61,7 +68,11 @@ const TierLoanFee = () => {
               <tr>
                 <th>
                   <div>
-                    <input value="test" type="checkbox" className="check-box" />
+                  <CheckBox
+                      checked={selectAllChecked}
+                      onChange={()=>toggleAllRows(selectedRows,tierloanList,setSelectedRows,setSelectAllChecked)}
+                      indeterminate={isAnyRowSelected && !isAllRowsSelected}
+                    />
                   </div>
                 </th>
                 <th>
@@ -120,7 +131,10 @@ const TierLoanFee = () => {
             { tierloanList?.length> 0 ? tierloanList?.map((el, i) => (
                 <tr key={i}>
                   <td>
-                    <input value="test" type="checkbox" className="check-box" />
+                  <CheckBox
+                      checked={selectedRows.has(i)}
+                      onChange={() => toggleRowSelection(i,selectedRows,setSelectedRows,setSelectAllChecked)}
+                    />
                   </td>
                   <td style={{ fontWeight: "500", color: "black" }}>
                     {el.dealer_tier}
@@ -143,8 +157,7 @@ const TierLoanFee = () => {
             </tbody>
           </table>
         </div>
-      </div>:<div>No Data Found</div>
-}
+      </div>
     </div>
   );
 };

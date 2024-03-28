@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "../configure.css";
 import { IoAddSharp } from "react-icons/io5";
 import CreateDealer from "../dealerOverrides/CreateDealer";
@@ -12,6 +12,8 @@ import TableHeader from "../../../components/tableHeader/TableHeader";
 import { fetchmarketingFees } from "../../../../redux/apiSlice/marketingSlice";
 import { CiEdit } from "react-icons/ci";
 import CreateMarketingFees from "./CreateMarketungFees";
+import CheckBox from "../../../components/chekbox/CheckBox";
+import { toggleAllRows, toggleRowSelection } from "../../../components/chekbox/checkHelper";
 
 const MarketingFees: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -22,7 +24,8 @@ const MarketingFees: React.FC = () => {
   const marketingFeesList = useAppSelector((state) => state.marketing.marketing_fees_list);
   const loading = useAppSelector((state) => state.marketing.loading);
   const error = useAppSelector((state) => state.marketing.error);
-
+  const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
+    const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   useEffect(() => {
     const pageNumber = {
       page_number: 1,
@@ -30,7 +33,8 @@ const MarketingFees: React.FC = () => {
     };
     dispatch(fetchmarketingFees(pageNumber));
   }, []);
-  console.log(marketingFeesList);
+  const isAnyRowSelected = selectedRows.size > 0;
+  const isAllRowsSelected = selectedRows.size === marketingFeesList.length;
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -38,10 +42,12 @@ const MarketingFees: React.FC = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
+  if (!marketingFeesList===null || marketingFeesList.length === 0) {
+    return <div>Data not found</div>;
+  }
   return (
     <div className="comm">
-      {
-        marketingFeesList?.length > 0?  <div className="commissionContainer">
+      <div className="commissionContainer">
         <TableHeader
           title="Marketing Fees"
           onPressViewArchive={() => {}}
@@ -61,7 +67,11 @@ const MarketingFees: React.FC = () => {
               <tr>
                 <th>
                   <div>
-                    <input value="test" type="checkbox" className="check-box" />
+                  <CheckBox
+                      checked={selectAllChecked}
+                      onChange={()=>toggleAllRows(selectedRows,marketingFeesList,setSelectedRows,setSelectAllChecked)}
+                      indeterminate={isAnyRowSelected && !isAllRowsSelected}
+                    />
                   </div>
                 </th>
                 <th>
@@ -123,11 +133,10 @@ const MarketingFees: React.FC = () => {
                     (el, i) => (
                       <tr key={i}>
                         <td>
-                          <input
-                            value="test"
-                            type="checkbox"
-                            className="check-box"
-                          />
+                        <CheckBox
+                      checked={selectedRows.has(i)}
+                      onChange={() => toggleRowSelection(i,selectedRows,setSelectedRows,setSelectAllChecked)}
+                    />
                         </td>
                         <td style={{ fontWeight: "500", color: "black" }}>
                           {el.source}
@@ -157,8 +166,7 @@ const MarketingFees: React.FC = () => {
             </tbody>
           </table>
         </div>
-      </div>:<div>No Data Found</div>
-      }
+      </div>
     
     </div>
   );
