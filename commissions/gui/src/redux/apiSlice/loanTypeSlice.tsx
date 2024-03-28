@@ -25,6 +25,7 @@ export const fetchLoanType = createAsyncThunk(
     'loanType/fetchLoanType',
     async (data: any) => {
         const response = await postCaller(EndPoints.loanType, data);
+     
         return response;
     }
 );
@@ -42,7 +43,11 @@ const loanTypeSlice = createSlice({
             .addCase(fetchLoanType.fulfilled, (state, action) => {
                 state.loading = false;
                 state.error = null;
-                state.loantype_list = action.payload.data.loantype_list;
+                if (action.payload && action.payload.data && action.payload.data.loantype_list) {
+                    state.loantype_list = action.payload.data.loantype_list;
+                  } else {
+                    state.loantype_list = [];
+                  }
             })
             .addCase(fetchLoanType.rejected, (state, action) => {
                 state.loading = false;

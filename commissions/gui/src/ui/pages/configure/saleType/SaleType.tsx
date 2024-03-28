@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import "../configure.css";
 import { CiEdit } from "react-icons/ci";
@@ -11,6 +11,8 @@ import {
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { fetchSalesType } from "../../../../redux/apiSlice/salesSlice";
 import CreateSaleType from "./CreateSaleType";
+import CheckBox from "../../../components/chekbox/CheckBox";
+import { toggleAllRows, toggleRowSelection } from "../../../components/chekbox/checkHelper";
 
 const SaleType = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -20,7 +22,8 @@ const SaleType = () => {
   const salesTypeList = useAppSelector((state) => state.salesType.saletype_list);
   const loading = useAppSelector((state) => state.salesType.loading);
   const error = useAppSelector((state) => state.salesType.error);
-
+  const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
+  const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   useEffect(() => {
     const pageNumber = {
       page_number: 1,
@@ -36,11 +39,14 @@ const SaleType = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
+  if (!salesTypeList===null || salesTypeList.length === 0) {
+    return <div>Data not found</div>;
+  }
+  const isAnyRowSelected = selectedRows.size > 0;
+  const isAllRowsSelected = selectedRows.size === salesTypeList.length;
   return (
     <div className="comm">
-
-      {
-        salesTypeList?.length>0 ?  <div className="commissionContainer">
+  <div className="commissionContainer">
         <TableHeader
           title="Sale Types"
           onPressViewArchive={() => {}}
@@ -60,7 +66,11 @@ const SaleType = () => {
               <tr>
                 <th>
                   <div>
-                    <input value="test" type="checkbox" className="check-box" />
+                  <CheckBox
+                      checked={selectAllChecked}
+                      onChange={()=>toggleAllRows(selectedRows,salesTypeList,setSelectedRows,setSelectAllChecked)}
+                      indeterminate={isAnyRowSelected && !isAllRowsSelected}
+                    />
                   </div>
                 </th>
                 <th>
@@ -87,7 +97,10 @@ const SaleType = () => {
               { salesTypeList?.length> 0 ? salesTypeList?.map((el, i) => (
                 <tr key={i}>
                   <td>
-                    <input value="test" type="checkbox" className="check-box" />
+                  <CheckBox
+                      checked={selectedRows.has(i)}
+                      onChange={() => toggleRowSelection(i,selectedRows,setSelectedRows,setSelectAllChecked)}
+                    />
                   </td>
                   <td style={{ fontWeight: "500", color: "black" }}>{el.type_name}</td>
 
@@ -103,9 +116,7 @@ const SaleType = () => {
             </tbody>
           </table>
         </div>
-      </div>:<div>No Data Found</div>
-      }
-    
+      </div>
     </div>
   );
 };

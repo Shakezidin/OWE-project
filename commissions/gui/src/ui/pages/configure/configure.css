@@ -140,14 +140,9 @@
   table tbody tr:last-child{
     border: 0;
   }
-  .check-box{
-    width: 1.4rem;
-    height: 1.4rem;
-    border-radius: 6px;
-    margin-top: .5rem;
-    
-
-  }
+ .selected{
+  background-color: var(--children-bg-color);
+ }
   .action-icon{
     display: flex;
     align-items: center;

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import "../configure.css";
 import { CiEdit } from "react-icons/ci";
@@ -10,6 +10,8 @@ import {
 } from "../../../../redux/apiSlice/hooks";
 import { fetchLoanType } from "../../../../redux/apiSlice/loanTypeSlice";
 import CreateLoanType from "./CreateLoanType";
+import CheckBox from "../../../components/chekbox/CheckBox";
+import { toggleAllRows, toggleRowSelection } from "../../../components/chekbox/checkHelper";
 
 const LoanType = () => {
   const dispatch = useAppDispatch();
@@ -20,7 +22,8 @@ const LoanType = () => {
   const loanTypeList = useAppSelector((state) => state?.loanType?.loantype_list);
   const loading = useAppSelector((state) => state.loanType.loading);
   const error = useAppSelector((state) => state.loanType.error);
-
+  const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
+  const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   useEffect(() => {
     const pageNumber = {
       page_number: 1,
@@ -36,10 +39,14 @@ const LoanType = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
+  if (!loanTypeList===null || loanTypeList.length === 0) {
+    return <div>Data not found</div>;
+  }
+  const isAnyRowSelected = selectedRows.size > 0;
+  const isAllRowsSelected = selectedRows.size === loanTypeList.length;
   return (
     <div className="comm">
-      {
-        loanTypeList?.length>0 ?
+    
       <div className="commissionContainer">
         <TableHeader
           title="Loan Type"
@@ -63,7 +70,11 @@ const LoanType = () => {
               <tr>
                 <th>
                   <div>
-                    <input value="test" type="checkbox" className="check-box" />
+                  <CheckBox
+                      checked={selectAllChecked}
+                      onChange={()=>toggleAllRows(selectedRows,loanTypeList,setSelectedRows,setSelectAllChecked)}
+                      indeterminate={isAnyRowSelected && !isAllRowsSelected}
+                    />
                   </div>
                 </th>
                 <th>
@@ -101,7 +112,10 @@ const LoanType = () => {
                     (el, i) => (
                 <tr key={i}>
                   <td>
-                    <input value="test" type="checkbox" className="check-box" />
+                  <CheckBox
+                      checked={selectedRows.has(i)}
+                      onChange={() => toggleRowSelection(i,selectedRows,setSelectedRows,setSelectAllChecked)}
+                    />
                   </td>
                   <td style={{ fontWeight: "500", color: "black" }}>{el.product_code}</td>
                   <td>
@@ -121,8 +135,7 @@ const LoanType = () => {
             </tbody>
           </table>
         </div>
-      </div>:<div>No Data Found</div>
-}
+      </div>
     </div>
   );
 };

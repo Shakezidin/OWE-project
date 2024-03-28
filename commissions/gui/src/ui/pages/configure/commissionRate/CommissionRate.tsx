@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import "../configure.css";
 import { RiDeleteBin5Line } from "react-icons/ri";
@@ -11,6 +11,8 @@ import {
 import { ICONS } from "../../../icons/Icons";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { fetchCommissions } from "../../../../redux/apiSlice/commissionSlice";
+import CheckBox from "../../../components/chekbox/CheckBox";
+import { toggleAllRows, toggleRowSelection } from "../../../components/chekbox/checkHelper";
 
 const CommissionRate: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -21,7 +23,8 @@ const CommissionRate: React.FC = () => {
   const commissionList = useAppSelector((state) => state.comm.commissionsList);
   const loading = useAppSelector((state) => state.comm.loading);
   const error = useAppSelector((state) => state.comm.error);
-
+  const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
+    const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   useEffect(() => {
     const pageNumber = {
       page_number: 1,
@@ -37,11 +40,17 @@ const CommissionRate: React.FC = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
+  if (!commissionList===null || commissionList.length === 0) {
+    return <div>Data not found</div>;
+  }
+ 
+const isAnyRowSelected = selectedRows.size > 0;
+const isAllRowsSelected = selectedRows.size === commissionList.length;
+
 
   return (
     <div className="comm">
-      {
-      commissionList?.length > 0 ?   <div className="commissionContainer">
+       <div className="commissionContainer">
       <TableHeader
         title="Commisstion Rate"
         onPressViewArchive={() => {}}
@@ -61,7 +70,11 @@ const CommissionRate: React.FC = () => {
             <tr>
               <th>
                 <div>
-                  <input value="test" type="checkbox" className="check-box" />
+                <CheckBox
+                      checked={selectAllChecked}
+                      onChange={()=>toggleAllRows(selectedRows,commissionList,setSelectedRows,setSelectAllChecked)}
+                      indeterminate={isAnyRowSelected && !isAllRowsSelected}
+                    />
                 </div>
               </th>
               <th>
@@ -125,13 +138,12 @@ const CommissionRate: React.FC = () => {
           <tbody>
             {commissionList?.length > 0
               ? commissionList?.map((el, i) => (
-                  <tr key={i}>
+                  <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
                     <td>
-                      <input
-                        value="test"
-                        type="checkbox"
-                        className="check-box"
-                      />
+                    <CheckBox
+                      checked={selectedRows.has(i)}
+                      onChange={() => toggleRowSelection(i,selectedRows,setSelectedRows,setSelectAllChecked)}
+                    />
                     </td>
                     <td style={{ fontWeight: "500", color: "black" }}>
                       {el.partner}
@@ -163,8 +175,7 @@ const CommissionRate: React.FC = () => {
           </tbody>
         </table>
       </div>
-    </div>:<div> No Data Found</div>
-      }
+    </div>
    
     </div>
   );
