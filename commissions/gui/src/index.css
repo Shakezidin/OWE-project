@@ -154,3 +154,9 @@ li {
 .create-input-field{
   width: 31.5%;
 }
+.create-input-field-note{
+  width: 100%;
+}
+.create-input-field-note input {
+  height: 15vh;
+}

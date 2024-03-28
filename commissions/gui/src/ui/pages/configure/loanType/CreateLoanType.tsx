@@ -28,9 +28,19 @@ const CreateLoanType = (props: ButtonProps) => {
                     <div className="createProfileInputView">
                         <div className="createProfileTextView">
                             <div className="create-input-container">
+                            <div className="create-input-field">
+                                    <Input
+                                        type={"text"}
+                                        label="Product Code"
+                                        value={""}
+                                        name=""
+                                        placeholder={"Enter"}
+                                        onChange={() => { }}
+                                    />
+                                </div>
                                 <div className="create-input-field">
                                     <DropdownButton id="selectField1"
-                                        label="Product Code"
+                                        label="Active"
                                         value={""}
                                         options={['Option 1', 'Option 2', 'Option 3']}
                                         onChange={handleFormChange} />
@@ -39,10 +49,22 @@ const CreateLoanType = (props: ButtonProps) => {
                                 <div className="create-input-field">
                                     <Input
                                         type={"text"}
-                                        label="Description"
+                                        label="Adder"
                                         value={""}
                                         name=""
-                                        placeholder={"Description"}
+                                        placeholder={"Enter"}
+                                        onChange={() => { }}
+                                    />
+                                </div>
+                            </div>
+                            <div className="create-input-container">
+                                <div className="create-input-field-note">
+                                    <Input
+                                        type={"text"}
+                                        label="Detail"
+                                        value={""}
+                                        name=""
+                                        placeholder={"Enter"}
                                         onChange={() => { }}
                                     />
                                 </div>
@@ -50,7 +72,7 @@ const CreateLoanType = (props: ButtonProps) => {
 
                         </div>
                         <div className="createUserActionButton">
-                            <ActionButton title={"Create"} type="submit"
+                            <ActionButton title={"Save"} type="submit"
                                 onClick={() => { }} />
                         </div>
 

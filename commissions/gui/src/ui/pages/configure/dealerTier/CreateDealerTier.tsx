@@ -34,19 +34,16 @@ const CreateDealerTier = (props: ButtonProps) => {
                                         label="Dealer Name"
                                         value={""}
                                         name=""
-                                        placeholder={"Dealer Name"}
+                                        placeholder={"Enter"}
                                         onChange={() => { }}
                                     />
                                 </div>
                                 <div className="create-input-field">
-                                    <Input
-                                        type={"text"}
+                                    <DropdownButton id="selectField1"
                                         label="Tier"
                                         value={""}
-                                        name=""
-                                        placeholder={"Tier"}
-                                        onChange={() => { }}
-                                    />
+                                        options={['Option 1', 'Option 2', 'Option 3']}
+                                        onChange={handleFormChange} />
                                 </div>
                                 <div className="create-input-field">
                                     <Input
@@ -78,7 +75,7 @@ const CreateDealerTier = (props: ButtonProps) => {
                             </div>
                         </div>
                         <div className="createUserActionButton">
-                            <ActionButton title={"Create"} type="submit"
+                            <ActionButton title={"Save"} type="submit"
                                 onClick={() => { }} />
                         </div>
 

@@ -34,7 +34,7 @@ const CreatePaymentSchedule = (props: ButtonProps) => {
                                         label="Partner Name"
                                         value={""}
                                         name=""
-                                        placeholder={"Partner Name"}
+                                        placeholder={"Enter"}
                                         onChange={() => { }}
                                     />
                                 </div>
@@ -63,14 +63,11 @@ const CreatePaymentSchedule = (props: ButtonProps) => {
                                         onChange={handleFormChange} />
                                 </div>
                                 <div className="create-input-field">
-                                    <Input
-                                        type={"text"}
-                                        label="ST"
+                                    <DropdownButton id="selectField1"
+                                        label="Sale Type"
                                         value={""}
-                                        name=""
-                                        placeholder={"ST"}
-                                        onChange={() => { }}
-                                    />
+                                        options={['Option 1', 'Option 2', 'Option 3']}
+                                        onChange={handleFormChange} />
                                 </div>
                                 <div className="create-input-field">
                                     <Input
@@ -78,7 +75,7 @@ const CreatePaymentSchedule = (props: ButtonProps) => {
                                         label="Rate List"
                                         value={""}
                                         name=""
-                                        placeholder={"Rate List"}
+                                        placeholder={"Enter"}
                                         onChange={() => { }}
                                     />
                                 </div>
@@ -90,7 +87,7 @@ const CreatePaymentSchedule = (props: ButtonProps) => {
                                         label="Draw"
                                         value={""}
                                         name=""
-                                        placeholder={"Draw"}
+                                        placeholder={"Enter"}
                                         onChange={() => { }}
                                     />
                                 </div>
@@ -100,17 +97,17 @@ const CreatePaymentSchedule = (props: ButtonProps) => {
                                         label="Draw Max"
                                         value={""}
                                         name=""
-                                        placeholder={"Draw Max"}
+                                        placeholder={"Enter"}
                                         onChange={() => { }}
                                     />
                                 </div>
                                 <div className="create-input-field">
                                     <Input
                                         type={"text"}
-                                        label="Rep Draw"
+                                        label="Rep. Draw"
                                         value={""}
                                         name=""
-                                        placeholder={" Rep Draw"}
+                                        placeholder={"Enter"}
                                         onChange={() => { }}
                                     />
                                 </div>
@@ -121,10 +118,10 @@ const CreatePaymentSchedule = (props: ButtonProps) => {
                                 <div className="create-input-field">
                                     <Input
                                         type={"text"}
-                                        label="Rep Max Draw"
+                                        label="Rep. Max Draw"
                                         value={""}
                                         name=""
-                                        placeholder={"Rep Max Draw"}
+                                        placeholder={"Enter"}
                                         onChange={() => { }}
                                     />
                                 </div>
@@ -132,10 +129,10 @@ const CreatePaymentSchedule = (props: ButtonProps) => {
                                 <div className="create-input-field">
                                     <Input
                                         type={"text"}
-                                        label="Rep Pay"
+                                        label="Rep. Pay"
                                         value={""}
                                         name=""
-                                        placeholder={"Rep Pay"}
+                                        placeholder={"Enter"}
                                         onChange={() => { }}
                                     />
                                 </div>
@@ -166,7 +163,7 @@ const CreatePaymentSchedule = (props: ButtonProps) => {
                             </div>
                         </div>
                         <div className="createUserActionButton">
-                            <ActionButton title={"Create"} type="submit"
+                            <ActionButton title={"Save"} type="submit"
                                 onClick={() => { }} />
                         </div>
 

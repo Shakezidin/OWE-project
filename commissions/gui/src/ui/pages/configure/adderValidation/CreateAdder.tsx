@@ -31,7 +31,7 @@ const CreateAdder = (props: ButtonProps) => {
                                         label="Adder Name"
                                         value={""}
                                         name=""
-                                        placeholder={"Adder Name"}
+                                        placeholder={"Enter"}
                                         onChange={() => { }}
                                     />
                                 </div>
@@ -62,32 +62,25 @@ const CreateAdder = (props: ButtonProps) => {
                                         onChange={() => { }}
                                     />
                                 </div>
-                                <div className="create-input-field">
+                               
+                               
+                            </div>
+                            <div className="create-input-container">
+                                <div className="create-input-field-note">
                                     <Input
                                         type={"text"}
-                                        label="Details"
+                                        label="Detail"
                                         value={""}
                                         name=""
-                                        placeholder={"Details"}
+                                        placeholder={"Enter"}
                                         onChange={() => { }}
                                     />
                                 </div>
-                                <div className="create-input-field">
-                                    <Input
-                                        type={"date"}
-                                        label="Created On"
-                                        value={""}
-                                        name=""
-                                        placeholder={"1/04/2004"}
-                                        onChange={() => { }}
-                                    />
-                                </div>
-                               
                             </div>
 
                         </div>
                         <div className="createUserActionButton">
-                            <ActionButton title={"Create"} type="submit"
+                            <ActionButton title={"Save"} type="submit"
                                 onClick={() => { }} />
                         </div>
 

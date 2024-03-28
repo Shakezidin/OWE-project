@@ -28,12 +28,15 @@ const CreateTimeLine = (props: ButtonProps) => {
                     <div className="createProfileInputView">
                         <div className="createProfileTextView">
                             <div className="create-input-container">
-                                <div className="create-input-field">
-                                    <DropdownButton id="selectField1"
+                            <div className="create-input-field">
+                                    <Input
+                                        type={"text"}
                                         label="Type/M2M"
                                         value={""}
-                                        options={['Option 1', 'Option 2', 'Option 3']}
-                                        onChange={handleFormChange} />
+                                        name=""
+                                        placeholder={"Enter"}
+                                        onChange={() => { }}
+                                    />
                                 </div>
                                 <div className="create-input-field">
                                     <DropdownButton id="selectField1"
@@ -48,7 +51,7 @@ const CreateTimeLine = (props: ButtonProps) => {
                                         label="Days"
                                         value={""}
                                         name=""
-                                        placeholder={"Days"}
+                                        placeholder={"Enter"}
                                         onChange={() => { }}
                                     />
                                 </div>
@@ -79,7 +82,7 @@ const CreateTimeLine = (props: ButtonProps) => {
                             </div>
                         </div>
                         <div className="createUserActionButton">
-                            <ActionButton title={"Create"} type="submit"
+                            <ActionButton title={"Save"} type="submit"
                                 onClick={() => { }} />
                         </div>
 

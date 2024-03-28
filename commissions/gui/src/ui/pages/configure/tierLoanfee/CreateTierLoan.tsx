@@ -34,19 +34,16 @@ const CreateTierLoan = (props: ButtonProps) => {
                                         label="Dealer Tier"
                                         value={""}
                                         name=""
-                                        placeholder={"Dealer Tier"}
+                                        placeholder={"Enter"}
                                         onChange={() => { }}
                                     />
                                 </div>
                                 <div className="create-input-field">
-                                    <Input
-                                        type={"text"}
+                                    <DropdownButton id="selectField1"
                                         label="Installer"
                                         value={""}
-                                        name=""
-                                        placeholder={"Installer"}
-                                        onChange={() => { }}
-                                    />
+                                        options={['Option 1', 'Option 2', 'Option 3']}
+                                        onChange={handleFormChange} />
                                 </div>
                                 <div className="create-input-field">
                                     <DropdownButton id="selectField1"
@@ -59,8 +56,18 @@ const CreateTierLoan = (props: ButtonProps) => {
 
                             <div className="create-input-container">
                             <div className="create-input-field">
-                                    <DropdownButton id="selectField1"
+                                    <Input
+                                        type={"text"}
                                         label="Finance Type Name"
+                                        value={""}
+                                        name=""
+                                        placeholder={"Enter"}
+                                        onChange={() => { }}
+                                    />
+                                </div>
+                                <div className="create-input-field">
+                                    <DropdownButton id="selectField1"
+                                        label="OWE Cost"
                                         value={""}
                                         options={['Option 1', 'Option 2', 'Option 3']}
                                         onChange={handleFormChange} />
@@ -68,20 +75,10 @@ const CreateTierLoan = (props: ButtonProps) => {
                                 <div className="create-input-field">
                                     <Input
                                         type={"text"}
-                                        label="OWE Cost"
+                                        label="Dealer MU"
                                         value={""}
                                         name=""
-                                        placeholder={"OWE Cost"}
-                                        onChange={() => { }}
-                                    />
-                                </div>
-                                <div className="create-input-field">
-                                    <Input
-                                        type={"text"}
-                                        label="DLR MU"
-                                        value={""}
-                                        name=""
-                                        placeholder={"DLR MU"}
+                                        placeholder={"Enter"}
                                         onChange={() => { }}
                                     />
                                 </div>
@@ -90,10 +87,10 @@ const CreateTierLoan = (props: ButtonProps) => {
                                 <div className="create-input-field">
                                     <Input
                                         type={"text"}
-                                        label="DLR Cost"
+                                        label="Dealer Cost"
                                         value={""}
                                         name=""
-                                        placeholder={"DLR Cost"}
+                                        placeholder={"Enter"}
                                         onChange={() => { }}
                                     />
                                 </div>
@@ -120,7 +117,7 @@ const CreateTierLoan = (props: ButtonProps) => {
                             </div>
                         </div>
                         <div className="createUserActionButton">
-                            <ActionButton title={"Create"} type="submit"
+                            <ActionButton title={"Save"} type="submit"
                                 onClick={() => { }} />
                         </div>
 

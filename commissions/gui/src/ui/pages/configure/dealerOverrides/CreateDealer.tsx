@@ -12,6 +12,9 @@ type ButtonProps = {
 }
 
 const CreateDealer = (props: ButtonProps) => {
+  const handleFormChange = () => {
+
+  }
 
   return (
     <div className="transparent-model">
@@ -26,25 +29,19 @@ const CreateDealer = (props: ButtonProps) => {
           <div className="createProfileInputView">
             <div className="createProfileTextView">
               <div className="create-input-container">
-                <div className="create-input-field">
-                  <Input
-                    type={"text"}
+              <div className="create-input-field">
+                  <DropdownButton id="selectField1"
                     label="Sub Dealer"
                     value={""}
-                    name=""
-                    placeholder={"Sub Dealer"}
-                    onChange={() => { }}
-                  />
+                    options={['Option 1', 'Option 2', 'Option 3']}
+                    onChange={handleFormChange} />
                 </div>
                 <div className="create-input-field">
-                  <Input
-                    type={"text"}
+                  <DropdownButton id="selectField1"
                     label="Dealer"
-                    name=""
                     value={""}
-                    placeholder={"Dealer"}
-                    onChange={() => { }}
-                  />
+                    options={['Option 1', 'Option 2', 'Option 3']}
+                    onChange={handleFormChange} />
                 </div>
                 <div className="create-input-field">
                   <Input
@@ -52,7 +49,7 @@ const CreateDealer = (props: ButtonProps) => {
                     label="Pay Rate"
                     name=""
                     value={""}
-                    placeholder={"Pay Rate"}
+                    placeholder={"Enter"}
                     onChange={() => { }}
                   />
                 </div>

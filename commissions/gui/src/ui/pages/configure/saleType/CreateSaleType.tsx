@@ -40,17 +40,19 @@ const CreateSaleType = (props: ButtonProps) => {
                                         onChange={() => { }}
                                     />
                                 </div>
-                                <div className="create-input-field">
+                        
+                            </div>
+                            <div className="create-input-container">
+                                <div className="create-input-field-note">
                                     <Input
                                         type={"text"}
-                                        label="Description"
+                                        label="Detail"
                                         value={""}
                                         name=""
-                                        placeholder={"Description"}
+                                        placeholder={"Enter"}
                                         onChange={() => { }}
                                     />
                                 </div>
-                        
                             </div>
                            
                         </div>
