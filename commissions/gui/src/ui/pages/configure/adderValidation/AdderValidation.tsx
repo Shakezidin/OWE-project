@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import "../configure.css";
 
@@ -13,12 +13,15 @@ import {
 import { ICONS } from "../../../icons/Icons";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import CreateAdder from "./CreateAdder";
+import CheckBox from "../../../components/chekbox/CheckBox";
+import { toggleAllRows, toggleRowSelection } from "../../../components/chekbox/checkHelper";
 
 const AdderValidation = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
+  const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
+    const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   // const getData = useAppSelector(state=>state.comm.data)
 
@@ -33,7 +36,7 @@ const AdderValidation = () => {
     };
     dispatch(fetchAdderV(pageNumber));
   }, []);
-  console.log(adderVList);
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -41,10 +44,14 @@ const AdderValidation = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
+  if (!adderVList===null || adderVList.length === 0) {
+    return <div>Data not found</div>;
+  }
+  const isAnyRowSelected = selectedRows.size > 0;
+  const isAllRowsSelected = selectedRows.size === adderVList.length;
   return (
     <div className="comm">
-      {
-        adderVList?.length > 0?   <div className="commissionContainer">
+        <div className="commissionContainer">
         <TableHeader
           title="Adder validation"
           onPressViewArchive={() => {}}
@@ -66,7 +73,11 @@ const AdderValidation = () => {
               <tr>
                 <th>
                   <div>
-                    <input value="test" type="checkbox" className="check-box" />
+                  <CheckBox
+                      checked={selectAllChecked}
+                      onChange={()=>toggleAllRows(selectedRows,adderVList,setSelectedRows,setSelectAllChecked)}
+                      indeterminate={isAnyRowSelected && !isAllRowsSelected}
+                    />
                   </div>
                 </th>
                 <th>
@@ -111,11 +122,10 @@ const AdderValidation = () => {
                 ? adderVList?.map((el, i) => (
                     <tr key={i}>
                       <td>
-                        <input
-                          value="test"
-                          type="checkbox"
-                          className="check-box"
-                        />
+                      <CheckBox
+                      checked={selectedRows.has(i)}
+                      onChange={() => toggleRowSelection(i,selectedRows,setSelectedRows,setSelectAllChecked)}
+                    />
                       </td>
                       <td style={{ fontWeight: "500", color: "black" }}>
                         {el.adder_name}
@@ -144,8 +154,7 @@ const AdderValidation = () => {
             </tbody>
           </table>
         </div>
-      </div>:<div>No Data Found</div>
-      }
+      </div>
    
     </div>
   );

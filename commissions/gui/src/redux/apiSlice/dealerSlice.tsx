@@ -26,6 +26,7 @@ export const fetchDealer = createAsyncThunk(
   'dealer/fetchDealer',
   async (data:any) => {
     const response = await postCaller(EndPoints.dealer,data);
+
     return response;
   }
 );
@@ -43,6 +44,11 @@ const dealerSlice = createSlice({
       .addCase(fetchDealer.fulfilled, (state, action) => {
         state.loading = false;
         state.error = null;
+        if (action.payload && action.payload.data && action.payload.data.Dealers_list) {
+          state.Dealers_list = action.payload.data.Dealers_list;
+        } else {
+          state.Dealers_list = [];
+        }
         state.Dealers_list = action.payload.data.Dealers_list;
       })
       .addCase(fetchDealer.rejected, (state, action) => {

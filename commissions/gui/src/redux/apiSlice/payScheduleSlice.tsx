@@ -34,6 +34,7 @@ export const fetchPaySchedule = createAsyncThunk(
     'paySchedule/fetchPaySchedule',
     async (data: any) => {
         const response = await postCaller(EndPoints.paySchedule, data);
+ 
         return response;
     }
 );
@@ -51,7 +52,11 @@ const payScheduleSlice = createSlice({
             .addCase(fetchPaySchedule.fulfilled, (state, action) => {
                 state.loading = false;
                 state.error = null;
-                state.payment_schedule_list = action.payload.data.payment_schedule_list;
+                if (action.payload && action.payload.data && action.payload.data.payment_schedule_list) {
+                    state.payment_schedule_list = action.payload.data.payment_schedule_list;
+                  } else {
+                    state.payment_schedule_list = [];
+                  }
             })
             .addCase(fetchPaySchedule.rejected, (state, action) => {
                 state.loading = false;

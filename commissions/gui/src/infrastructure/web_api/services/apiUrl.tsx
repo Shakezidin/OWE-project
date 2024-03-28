@@ -46,6 +46,7 @@ try{
     },
     body: JSON.stringify(data),
   });
+  
   return response.json();
 }catch(error){
 console.log(error)

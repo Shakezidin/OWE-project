@@ -1,23 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { postCaller } from "../../infrastructure/web_api/services/apiUrl";
 import { EndPoints } from "../../infrastructure/web_api/api_client/EndPoints";
+import { CommissionModel } from "../../core/models/configuration/CommissionModel";
 
-
-interface Commission {
-  partner: string;
-  installer: string;
-  state: string;
-  sale_type: string;
-  sale_price: number;
-  rep_type: string;
-  rl: number;
-  rate: number;
-  start_date: string;
-  end_date: string;
-}
 
 interface CommissionsState {
-  commissionsList: Commission[];
+  commissionsList: CommissionModel[];
   loading: boolean;
   error: string | null;
 }
@@ -48,7 +36,11 @@ const commissionSlice = createSlice({
       .addCase(fetchCommissions.fulfilled, (state, action) => {
         state.loading = false;
         state.error = null;
-        state.commissionsList = action.payload.data.commissions_list;
+        if (action.payload && action.payload.data && action.payload.data.commissions_list) {
+          state.commissionsList = action.payload.data.commissions_list;
+        } else {
+          state.commissionsList = [];
+        }
       })
       .addCase(fetchCommissions.rejected, (state, action) => {
         state.loading = false;

@@ -26,6 +26,7 @@ export const fetchTimeLineSla = createAsyncThunk(
     'timeLineSla/fetchTimeLineSla',
     async (data: any) => {
         const response = await postCaller(EndPoints.timeLineSla, data);
+  
         return response;
     }
 );
@@ -43,7 +44,11 @@ const timeLineSlice = createSlice({
             .addCase(fetchTimeLineSla.fulfilled, (state, action) => {
                 state.loading = false;
                 state.error = null;
-                state.timelinesla_list = action.payload.data.timelinesla_list;
+                if (action.payload && action.payload.data && action.payload.data.timelinesla_list) {
+                    state.timelinesla_list = action.payload.data.timelinesla_list;
+                  } else {
+                    state.timelinesla_list = [];
+                  }
             })
             .addCase(fetchTimeLineSla.rejected, (state, action) => {
                 state.loading = false;

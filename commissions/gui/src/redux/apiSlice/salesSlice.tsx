@@ -23,6 +23,7 @@ export const fetchSalesType = createAsyncThunk(
     'salesType/fetchSalesType',
     async (data: any) => {
         const response = await postCaller(EndPoints.salesType, data);
+     
         return response;
     }
 );
@@ -40,7 +41,11 @@ const salesSlice = createSlice({
             .addCase(fetchSalesType.fulfilled, (state, action) => {
                 state.loading = false;
                 state.error = null;
-                state.saletype_list = action.payload.data.saletype_list;
+                if (action.payload && action.payload.data && action.payload.data.saletype_list) {
+                    state.saletype_list = action.payload.data.saletype_list;
+                  } else {
+                    state.saletype_list = [];
+                  }
             })
             .addCase(fetchSalesType.rejected, (state, action) => {
                 state.loading = false;
