@@ -106,17 +106,15 @@ const CreateMarketingFees = (props: ButtonProps) => {
                                 </div>
                             </div>
                             <div className="create-input-container">
-                                <div className="create-input-field-note">
-                                    <Input
-                                        type={"text"}
-                                        label="Note"
-                                        value={""}
-                                        name=""
-                                        placeholder={"Enter"}
-                                        onChange={() => { }}
-                                    />
+                                <div className="create-input-field">
+                                    <label className="textareaContainer">
+                                        <p>Note</p>
+                                    </label>
+                                    <textarea rows={4} cols={137}
+                                        placeholder={"Type"} />
                                 </div>
                             </div>
+
                         </div>
                         <div className="createUserActionButton">
                             <ActionButton title={"Save"} type="submit"

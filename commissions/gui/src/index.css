@@ -1,5 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
 * {
   margin: 0;
@@ -8,22 +7,22 @@
   font-family: "Poppins", sans-serif !important;
 }
 /* color config */
-:root{
-  --sidebar-bg-color:#32404F;
-  --children-bg-color: #F3F3F3;
-  --side-logo-bg-color:#263747;
-  --primary-text-color:white;
-  --secondary-text-color:#565656;
-  --active-text-color:#04A5E8;
-  --input-border-color:#D5D5D5;
-  --black-color:#0D0D0D;
-  --danger-color:#d93f21;
-  --check-color:#2196F3;
-  --green-color:#8fcd00;
-  --table-border-color:#EAECF0;
-  --coloumn-text-color:#747782;
-  --button-border-color:#979797;
-  --para-color:#393851;
+:root {
+  --sidebar-bg-color: #32404f;
+  --children-bg-color: #f3f3f3;
+  --side-logo-bg-color: #263747;
+  --primary-text-color: white;
+  --secondary-text-color: #565656;
+  --active-text-color: #04a5e8;
+  --input-border-color: #d5d5d5;
+  --black-color: #0d0d0d;
+  --danger-color: #d93f21;
+  --check-color: #2196f3;
+  --green-color: #8fcd00;
+  --table-border-color: #eaecf0;
+  --coloumn-text-color: #747782;
+  --button-border-color: #979797;
+  --para-color: #393851;
 }
 a {
   text-decoration: none;
@@ -33,41 +32,39 @@ li {
   list-style: none;
 }
 /* image icon srtyle  */
-.icon-image{
+.icon-image {
   width: 17px;
   height: 17px;
 }
 /* circle style  */
-.ellipse{
+.ellipse {
   width: 9px;
   height: 9px;
   border-radius: 50%;
 }
 
-.user-btn{
-  background-color: #04A5E8;
+.user-btn {
+  background-color: #04a5e8;
   outline: none;
   border: none;
-  font-size: .85rem;
+  font-size: 0.85rem;
   color: white;
-  padding: .5rem;
+  padding: 0.5rem;
   cursor: pointer;
-  border-radius: .5rem;
+  border-radius: 0.5rem;
 }
-.dashboard-head{
+.dashboard-head {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-
-
-.admin-dashboard{
+.admin-dashboard {
   background-color: white !important;
   border-radius: 1rem;
   padding: 1rem;
 }
-.admin-card-container{
+.admin-card-container {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -76,16 +73,16 @@ li {
   height: 178px;
   /* padding: 1rem; */
   border-radius: 1.5rem;
-  margin-top: .5rem;
+  margin-top: 0.5rem;
 }
 ::-webkit-scrollbar {
   display: none;
 }
 
 /* Hide scrollbar for IE, Edge and Firefox */
-::-webkit-scrollbar{
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+::-webkit-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 /* modal style  */
@@ -109,56 +106,60 @@ li {
   width: 900px;
 }
 
-.createUserCrossButton{
+.createUserCrossButton {
   display: flex;
-  align-items:flex-end;
+  align-items: flex-end;
   justify-content: flex-end;
   padding: 10px 10px 0 0px;
   cursor: pointer;
-
 }
 .createUserContainer {
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-
 }
-.createProfileText{
+.createProfileText {
   font-size: 28px;
   margin-left: 39px;
-  font-weight:600;
+  font-weight: 600;
 }
-.createProfileTextView{
+.createProfileTextView {
   display: flex;
   flex-direction: column;
   gap: 20px;
-   padding: 0 39px 0px 39px;
+  padding: 0 39px 0px 39px;
 }
-.createProfileInputView{
+.createProfileInputView {
   margin-top: 2rem;
-  
 }
-.create-input-container{
+.create-input-container {
   display: flex;
   gap: 20px;
   /* justify-content: space-between; */
 }
-.createUserActionButton{
+.createUserActionButton {
   display: flex;
   justify-content: center;
   align-items: center;
   border-top: 1px solid #d0d5dd;
   margin-top: 32px;
-  padding:24px 0 24px 0;
+  padding: 24px 0 24px 0;
 }
-.create-input-field{
+.create-input-field {
   width: 31.5%;
 }
 
-.create-input-field-note{
-  width: 100%;
-}
-.create-input-field-note input {
-  height: 20vh;
-}
+.textareaContainer p{
+font-size: 14px;
+font-weight: 500;
 
+}
+textarea {
+
+font-size: 12px;
+font-weight: 400;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid #d9d9d9;
+}

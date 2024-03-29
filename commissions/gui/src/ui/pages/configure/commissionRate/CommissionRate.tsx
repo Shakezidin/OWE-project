@@ -63,7 +63,7 @@ const isAllRowsSelected = selectedRows.size === commissionList.length;
         title="Commisstion Rate"
         onPressViewArchive={() => {}}
         onPressArchive={() => {}}
-        onPressFilter={() => {}}
+        onPressFilter={() => filter()}
         onPressImport={() => {}}
         onpressExport={() => {}}
         onpressAddNew={() => handleOpen()}
