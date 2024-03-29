@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { postCaller } from "../../../infrastructure/web_api/services/apiUrl";
 import { EndPoints } from "../../../infrastructure/web_api/api_client/EndPoints";
-import { stat } from "fs";
 
 interface resetPasswordState {
   email: string;
@@ -43,7 +42,6 @@ const resetPasswordSlice = createSlice({
     builder.addCase(generateOTP.fulfilled, (state, action) => {
       state.loading = false;
       state.error = null;
-      state.email = action.payload
       state.message = action.payload.message;
     });
     builder.addCase(generateOTP.rejected, (state, action) => {

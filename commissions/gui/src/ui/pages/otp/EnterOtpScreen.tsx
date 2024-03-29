@@ -48,6 +48,7 @@ const EnterOtpScreen = () => {
       };
 
       dispatch(generateOTP(data));
+      alert("Password reset successfully..");
       navigate("/login");
     }
   };
