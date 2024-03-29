@@ -20,12 +20,15 @@ import { login } from "../../../infrastructure/web_api/services/apiUrl";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { HTTP_STATUS } from "../../../core/models/api_models/RequestModel";
+
 export const LoginPage = () => {
   const navigate = useNavigate();
   const [credentials, setCredentials] = useState<Credentials>({
     email_id: "",
     password: "",
   });
+
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string>("");
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated
@@ -125,11 +128,15 @@ export const LoginPage = () => {
               />
               <br />
               <Input
-                type={"password"}
+                type={showPassword ? "text" : "password"}
                 value={credentials.password}
                 name={"password"}
                 placeholder={"Enter Password"}
                 onChange={handleInputChange}
+                isTypePassword={true}
+                onClickEyeIcon={() => {
+                  setShowPassword(!showPassword);
+                }}
               />
 
               <br />
