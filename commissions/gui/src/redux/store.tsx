@@ -11,10 +11,12 @@ import dealerTierReducer from "./apiSlice/configSlice/dealerTierSlice";
 import payScheduleReducer from "./apiSlice/configSlice/payScheduleSlice";
 import timeLineSlaReducer from "./apiSlice/configSlice/timeLineSlice";
 import loanTypeReducer from "./apiSlice/configSlice/loanTypeSlice";
+import resetPasswordSlice from "./apiSlice/authSlice/resetPasswordSlice";
 export const store = configureStore({
   reducer: {
     appState: appStateSlice,
     auth: authReducer,
+    resetPassword: resetPasswordSlice,
     comm: commissionReducer,
     dealer: dealerReducer,
     marketing: marketingReducer,

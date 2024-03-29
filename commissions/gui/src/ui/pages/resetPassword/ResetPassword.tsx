@@ -8,22 +8,32 @@ import { useNavigate } from "react-router-dom";
 import Input from "../../components/text_input/Input";
 import { ActionButton } from "../../components/button/ActionButton";
 import { resetPassword } from "../../../core/models/api_models/AuthModel";
+import { useAppDispatch } from "../../../redux/hooks";
+import { generateOTP } from "../../../redux/apiSlice/authSlice/resetPasswordSlice";
 
 const ResetPassword = () => {
   const navigate = useNavigate();
-  const [credentials, setCredentials] = useState<resetPassword>({ email_id: '' });
+  const dispatch = useAppDispatch();
+  const [credentials, setCredentials] = useState<resetPassword>({
+    email_id: "",
+  });
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setCredentials(prevState => ({
+    setCredentials((prevState) => ({
       ...prevState,
-      [name]: value
+      [name]: value,
     }));
   };
-  const handleEmailSubmit=(e:React.FormEvent<HTMLFormElement>)=>{
- e.preventDefault()
- console.log(credentials.email_id)
- navigate('/otp')
-  }
+  const handleEmailSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (credentials.email_id.length === 0) {
+      alert("Please enter email Id.");
+    } else {
+      dispatch(generateOTP({ email_id: credentials.email_id }));
+      navigate("/otp");
+    }
+  };
   return (
     <div className="mainContainer">
       <div className={"overlay"} />
@@ -43,35 +53,35 @@ const ResetPassword = () => {
         </div>
 
         <div className={"loginBox2"}>
-         <form onSubmit={(e)=>handleEmailSubmit(e)}>
-         <div className="loginTextView">
-            <img className="loginImageLogo" src={ICONS.LOGO} alt="" />
-            <br />
-            <div className="loginLogowithText">
-              <LOGO_SMALL />
-              <span className={"loginHeader"}> Commission App</span>
-            </div>
-            <div className="loginUnderLine">
-              <UNDER_LINE />
-            </div>
-            <span className="loginLogText">Enter Your Email Address</span>
-            <br />
-            <Input
-              type={"text"}
-              value={credentials.email_id}
-              name="email_id"
-              placeholder={"Enter Email"}
-              onChange={handleInputChange}
-            />
+          <form onSubmit={(e) => handleEmailSubmit(e)}>
+            <div className="loginTextView">
+              <img className="loginImageLogo" src={ICONS.LOGO} alt="" />
+              <br />
+              <div className="loginLogowithText">
+                <LOGO_SMALL />
+                <span className={"loginHeader"}> Commission App</span>
+              </div>
+              <div className="loginUnderLine">
+                <UNDER_LINE />
+              </div>
+              <span className="loginLogText">Enter Your Email Address</span>
+              <br />
+              <Input
+                type={"text"}
+                value={credentials.email_id}
+                name="email_id"
+                placeholder={"Enter Email"}
+                onChange={handleInputChange}
+              />
 
-            <br />
-            <ActionButton
-              title="Request  Reset Link"
-              type="submit"
-              onClick={()=>{}}
-            />
-          </div>
-         </form>
+              <br />
+              <ActionButton
+                title="Request Reset Link"
+                type="submit"
+                onClick={() => {}}
+              />
+            </div>
+          </form>
         </div>
       </div>
     </div>
