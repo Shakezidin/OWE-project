@@ -4,14 +4,14 @@ import "../configure.css";
 import { CiEdit } from "react-icons/ci";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { ICONS } from "../../../icons/Icons";
-import {
-  useAppDispatch,
-  useAppSelector,
-} from "../../../../redux/apiSlice/hooks";
-import { fetchLoanType } from "../../../../redux/apiSlice/loanTypeSlice";
+import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
+import { fetchLoanType } from "../../../../redux/apiSlice/configSlice/loanTypeSlice";
 import CreateLoanType from "./CreateLoanType";
 import CheckBox from "../../../components/chekbox/CheckBox";
-import { toggleAllRows, toggleRowSelection } from "../../../components/chekbox/checkHelper";
+import {
+  toggleAllRows,
+  toggleRowSelection,
+} from "../../../components/chekbox/checkHelper";
 
 const LoanType = () => {
   const dispatch = useAppDispatch();
@@ -19,7 +19,9 @@ const LoanType = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const loanTypeList = useAppSelector((state) => state?.loanType?.loantype_list);
+  const loanTypeList = useAppSelector(
+    (state) => state?.loanType?.loantype_list
+  );
   const loading = useAppSelector((state) => state.loanType.loading);
   const error = useAppSelector((state) => state.loanType.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
@@ -31,7 +33,7 @@ const LoanType = () => {
     };
     dispatch(fetchLoanType(pageNumber));
   }, []);
- 
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -39,14 +41,13 @@ const LoanType = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
-  if (!loanTypeList===null || loanTypeList.length === 0) {
+  if (!loanTypeList === null || loanTypeList.length === 0) {
     return <div>Data not found</div>;
   }
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === loanTypeList.length;
   return (
     <div className="comm">
-    
       <div className="commissionContainer">
         <TableHeader
           title="Loan Type"
@@ -57,22 +58,26 @@ const LoanType = () => {
           onpressExport={() => {}}
           onpressAddNew={() => handleOpen()}
         />
-        {
-          open && (<CreateLoanType handleClose={handleClose}/>)
-        }
+        {open && <CreateLoanType handleClose={handleClose} />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
         >
-
           <table>
             <thead>
               <tr>
                 <th>
                   <div>
-                  <CheckBox
+                    <CheckBox
                       checked={selectAllChecked}
-                      onChange={()=>toggleAllRows(selectedRows,loanTypeList,setSelectedRows,setSelectAllChecked)}
+                      onChange={() =>
+                        toggleAllRows(
+                          selectedRows,
+                          loanTypeList,
+                          setSelectedRows,
+                          setSelectAllChecked
+                        )
+                      }
                       indeterminate={isAnyRowSelected && !isAllRowsSelected}
                     />
                   </div>
@@ -107,31 +112,57 @@ const LoanType = () => {
               </tr>
             </thead>
             <tbody>
-            {loanTypeList?.length > 0
-                ? loanTypeList?.map(
-                    (el, i) => (
-                <tr key={i}>
-                  <td>
-                  <CheckBox
-                      checked={selectedRows.has(i)}
-                      onChange={() => toggleRowSelection(i,selectedRows,setSelectedRows,setSelectAllChecked)}
-                    />
-                  </td>
-                  <td style={{ fontWeight: "500", color: "black" }}>{el.product_code}</td>
-                  <td>
-                    <input value={el.active} type="checkbox"  className="check-box" />
-                  </td>
-                  <td>
-                   <input type="text" defaultValue={el.adder} name="" id="" className="adder-input" />
-                  </td>
-                  <td>{el.description}</td>
-                  <td style={{ display: "flex", gap: "1rem",alignItems:"center" }}>
-                  <img src={ICONS.ARCHIVE} alt="" />
-                    <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />
-                  </td>
-                </tr>
-              )):null
-            }
+              {loanTypeList?.length > 0
+                ? loanTypeList?.map((el, i) => (
+                    <tr key={i}>
+                      <td>
+                        <CheckBox
+                          checked={selectedRows.has(i)}
+                          onChange={() =>
+                            toggleRowSelection(
+                              i,
+                              selectedRows,
+                              setSelectedRows,
+                              setSelectAllChecked
+                            )
+                          }
+                        />
+                      </td>
+                      <td style={{ fontWeight: "500", color: "black" }}>
+                        {el.product_code}
+                      </td>
+                      <td>
+                        <input
+                          value={el.active}
+                          type="checkbox"
+                          className="check-box"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          defaultValue={el.adder}
+                          name=""
+                          id=""
+                          className="adder-input"
+                        />
+                      </td>
+                      <td>{el.description}</td>
+                      <td
+                        style={{
+                          display: "flex",
+                          gap: "1rem",
+                          alignItems: "center",
+                        }}
+                      >
+                        <img src={ICONS.ARCHIVE} alt="" />
+                        <CiEdit
+                          style={{ fontSize: "1.5rem", color: "#344054" }}
+                        />
+                      </td>
+                    </tr>
+                  ))
+                : null}
             </tbody>
           </table>
         </div>

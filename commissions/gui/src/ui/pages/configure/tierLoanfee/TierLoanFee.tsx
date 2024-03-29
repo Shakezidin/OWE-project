@@ -4,17 +4,19 @@ import { RiDeleteBin5Line } from "react-icons/ri";
 import { CiEdit } from "react-icons/ci";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { ICONS } from "../../../icons/Icons";
-import {
-  useAppDispatch,
-  useAppSelector,
-} from "../../../../redux/apiSlice/hooks";
-import { fetchTearLoan } from "../../../../redux/apiSlice/tearLoanSlice";
+import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
+import { fetchTearLoan } from "../../../../redux/apiSlice/configSlice/tearLoanSlice";
 import CreateTierLoan from "./CreateTierLoan";
 import CheckBox from "../../../components/chekbox/CheckBox";
-import { toggleAllRows, toggleRowSelection } from "../../../components/chekbox/checkHelper";
+import {
+  toggleAllRows,
+  toggleRowSelection,
+} from "../../../components/chekbox/checkHelper";
 const TierLoanFee = () => {
   const dispatch = useAppDispatch();
-  const tierloanList = useAppSelector((state) => state.tierLoan.tier_loan_fee_list);
+  const tierloanList = useAppSelector(
+    (state) => state.tierLoan.tier_loan_fee_list
+  );
   const loading = useAppSelector((state) => state.tierLoan.loading);
   const error = useAppSelector((state) => state.tierLoan.error);
   const [open, setOpen] = React.useState<boolean>(false);
@@ -30,7 +32,6 @@ const TierLoanFee = () => {
     dispatch(fetchTearLoan(pageNumber));
   }, [dispatch]);
 
-
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -38,16 +39,15 @@ const TierLoanFee = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
-  if (!tierloanList===null || tierloanList.length === 0) {
+  if (!tierloanList === null || tierloanList.length === 0) {
     return <div>Data not found</div>;
   }
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === tierloanList.length;
- 
+
   return (
     <div className="comm">
       <div className="commissionContainer">
-
         <TableHeader
           title="Tier Loan Fee"
           onPressViewArchive={() => {}}
@@ -57,20 +57,26 @@ const TierLoanFee = () => {
           onpressExport={() => {}}
           onpressAddNew={() => handleOpen()}
         />
-  { open && (<CreateTierLoan handleClose={handleClose}/>)}
+        {open && <CreateTierLoan handleClose={handleClose} />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
         >
-
           <table>
             <thead>
               <tr>
                 <th>
                   <div>
-                  <CheckBox
+                    <CheckBox
                       checked={selectAllChecked}
-                      onChange={()=>toggleAllRows(selectedRows,tierloanList,setSelectedRows,setSelectAllChecked)}
+                      onChange={() =>
+                        toggleAllRows(
+                          selectedRows,
+                          tierloanList,
+                          setSelectedRows,
+                          setSelectAllChecked
+                        )
+                      }
                       indeterminate={isAnyRowSelected && !isAllRowsSelected}
                     />
                   </div>
@@ -128,32 +134,48 @@ const TierLoanFee = () => {
               </tr>
             </thead>
             <tbody>
-            { tierloanList?.length> 0 ? tierloanList?.map((el, i) => (
-                <tr key={i}>
-                  <td>
-                  <CheckBox
-                      checked={selectedRows.has(i)}
-                      onChange={() => toggleRowSelection(i,selectedRows,setSelectedRows,setSelectAllChecked)}
-                    />
-                  </td>
-                  <td style={{ fontWeight: "500", color: "black" }}>
-                    {el.dealer_tier}
-                  </td>
-                  <td>{el.installer}</td>
-                  <td>{el.state}</td>
-                  <td>{el.finance_type}</td>
-                  <td>{el.owe_cost}</td>
-                  <td>{el.dlr_mu}</td>
-                  <td>{el.dlr_cost}</td>
-                  <td>{el.start_date}</td>
-                  <td>{el.end_date}</td>
-                  <td style={{ display: "flex", gap: "1rem",alignItems:"center" }}>
-                  <img src={ICONS.ARCHIVE} alt="" />
-                    <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />
-                  </td>
-                </tr>
-              )):null
-            }
+              {tierloanList?.length > 0
+                ? tierloanList?.map((el, i) => (
+                    <tr key={i}>
+                      <td>
+                        <CheckBox
+                          checked={selectedRows.has(i)}
+                          onChange={() =>
+                            toggleRowSelection(
+                              i,
+                              selectedRows,
+                              setSelectedRows,
+                              setSelectAllChecked
+                            )
+                          }
+                        />
+                      </td>
+                      <td style={{ fontWeight: "500", color: "black" }}>
+                        {el.dealer_tier}
+                      </td>
+                      <td>{el.installer}</td>
+                      <td>{el.state}</td>
+                      <td>{el.finance_type}</td>
+                      <td>{el.owe_cost}</td>
+                      <td>{el.dlr_mu}</td>
+                      <td>{el.dlr_cost}</td>
+                      <td>{el.start_date}</td>
+                      <td>{el.end_date}</td>
+                      <td
+                        style={{
+                          display: "flex",
+                          gap: "1rem",
+                          alignItems: "center",
+                        }}
+                      >
+                        <img src={ICONS.ARCHIVE} alt="" />
+                        <CiEdit
+                          style={{ fontSize: "1.5rem", color: "#344054" }}
+                        />
+                      </td>
+                    </tr>
+                  ))
+                : null}
             </tbody>
           </table>
         </div>
