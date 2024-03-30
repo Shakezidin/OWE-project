@@ -5,7 +5,7 @@ import { CiEdit } from "react-icons/ci";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { ICONS } from "../../../icons/Icons";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-import { fetchLoanType } from "../../../../redux/apiSlice/configSlice/loanTypeSlice";
+import { fetchLoanType } from "../../../../redux/apiSlice/configSlice/config_get_slice/loanTypeSlice";
 import CreateLoanType from "./CreateLoanType";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import {
@@ -29,10 +29,10 @@ const LoanType = () => {
   useEffect(() => {
     const pageNumber = {
       page_number: 1,
-      page_size: 2,
+      page_size: 10,
     };
     dispatch(fetchLoanType(pageNumber));
-  }, []);
+  }, [dispatch]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -51,11 +51,11 @@ const LoanType = () => {
       <div className="commissionContainer">
         <TableHeader
           title="Loan Type"
-          onPressViewArchive={() => {}}
-          onPressArchive={() => {}}
-          onPressFilter={() => {}}
-          onPressImport={() => {}}
-          onpressExport={() => {}}
+          onPressViewArchive={() => { }}
+          onPressArchive={() => { }}
+          onPressFilter={() => { }}
+          onPressImport={() => { }}
+          onpressExport={() => { }}
           onpressAddNew={() => handleOpen()}
         />
         {open && <CreateLoanType handleClose={handleClose} />}
@@ -114,54 +114,49 @@ const LoanType = () => {
             <tbody>
               {loanTypeList?.length > 0
                 ? loanTypeList?.map((el, i) => (
-                    <tr key={i}>
-                      <td>
-                        <CheckBox
-                          checked={selectedRows.has(i)}
-                          onChange={() =>
-                            toggleRowSelection(
-                              i,
-                              selectedRows,
-                              setSelectedRows,
-                              setSelectAllChecked
-                            )
-                          }
-                        />
-                      </td>
-                      <td style={{ fontWeight: "500", color: "black" }}>
-                        {el.product_code}
-                      </td>
-                      <td>
-                        <input
-                          value={el.active}
-                          type="checkbox"
-                          className="check-box"
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="text"
-                          defaultValue={el.adder}
-                          name=""
-                          id=""
-                          className="adder-input"
-                        />
-                      </td>
-                      <td>{el.description}</td>
-                      <td
-                        style={{
-                          display: "flex",
-                          gap: "1rem",
-                          alignItems: "center",
-                        }}
-                      >
-                        <img src={ICONS.ARCHIVE} alt="" />
-                        <CiEdit
-                          style={{ fontSize: "1.5rem", color: "#344054" }}
-                        />
-                      </td>
-                    </tr>
-                  ))
+                  <tr key={i}>
+                    <td>
+                      <CheckBox
+                        checked={selectedRows.has(i)}
+                        onChange={() =>
+                          toggleRowSelection(
+                            i,
+                            selectedRows,
+                            setSelectedRows,
+                            setSelectAllChecked
+                          )
+                        }
+                      />
+                    </td>
+                    <td style={{ fontWeight: "500", color: "black" }}>
+                      {el.product_code}
+                    </td>
+                    <td>
+                      <input
+                        value={el.active}
+                        type="checkbox"
+                        checked={el.active===1}
+                        className="check-box"
+                      />
+                    </td>
+                    <td>
+                      {el.adder}
+                    </td>
+                    <td>{el.description}</td>
+                    <td
+                      style={{
+                        display: "flex",
+                        gap: "1rem",
+                        alignItems: "center",
+                      }}
+                    >
+                      <img src={ICONS.ARCHIVE} alt="" />
+                      <CiEdit
+                        style={{ fontSize: "1.5rem", color: "#344054" }}
+                      />
+                    </td>
+                  </tr>
+                ))
                 : null}
             </tbody>
           </table>

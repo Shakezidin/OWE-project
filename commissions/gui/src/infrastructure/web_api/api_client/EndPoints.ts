@@ -11,6 +11,7 @@
 interface Endpoints {
   login: string;
   resetPassword: string;
+  // get config
   commission: string;
   dealer: string;
   marketing: string;
@@ -21,11 +22,23 @@ interface Endpoints {
   paySchedule: string;
   timeLineSla: string;
   loanType: string;
+  // post config 
+  create_commission:string,
+  create_dealer:string,
+  create_dealertier:string,
+  create_marketingfee:string,
+  create_paymentschedule:string,
+  create_vadder:string,
+  create_saletype:string,
+  create_tierloanfees:string,
+  create_timelinesla:string,
+  create_loantype:string,
 }
 
 export const EndPoints: Endpoints = {
   login: `/login`,
   resetPassword: "forgot_password",
+  // get config endpoints 
   commission: "get_commissions",
   dealer: "get_dealers",
   marketing: "get_marketingfee",
@@ -36,4 +49,16 @@ export const EndPoints: Endpoints = {
   paySchedule: "get_paymentschedules",
   timeLineSla: "get_timelineslas",
   loanType: "get_loantypes",
+  // post config endpoint 
+  create_commission:"create_commission",
+  create_dealer:"create_dealer",
+  create_dealertier:"create_dealertier",
+  create_loantype:"create_loantype",
+  create_marketingfee:"create_marketingfee",
+  create_paymentschedule:"create_paymentschedule",
+  create_saletype:"create_saletype",
+  create_tierloanfees:"create_tierloanfees",
+  create_vadder:"create_vadder",
+  create_timelinesla:"create_timelinesla"
+
 };

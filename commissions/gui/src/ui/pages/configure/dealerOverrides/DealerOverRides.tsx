@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 
 import { ICONS } from "../../../icons/Icons";
 import TableHeader from "../../../components/tableHeader/TableHeader";
-import { fetchDealer } from "../../../../redux/apiSlice/configSlice/dealerSlice";
+import { fetchDealer } from "../../../../redux/apiSlice/configSlice/config_get_slice/dealerSlice";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import {
   toggleAllRows,
@@ -27,10 +27,10 @@ const DealerOverRides: React.FC = () => {
   useEffect(() => {
     const pageNumber = {
       page_number: 1,
-      page_size: 2,
+      page_size: 10,
     };
     dispatch(fetchDealer(pageNumber));
-  }, []);
+  }, [dispatch]);
 
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === dealerList.length;

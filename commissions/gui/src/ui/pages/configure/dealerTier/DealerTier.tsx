@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { ICONS } from "../../../icons/Icons";
-import { fetchDealerTier } from "../../../../redux/apiSlice/configSlice/dealerTierSlice";
+import { fetchDealerTier } from "../../../../redux/apiSlice/configSlice/config_get_slice/dealerTierSlice";
 import CreateDealerTier from "./CreateDealerTier";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import {
@@ -30,7 +30,7 @@ const DealerTier = () => {
   useEffect(() => {
     const pageNumber = {
       page_number: 1,
-      page_size: 2,
+      page_size: 10,
     };
     dispatch(fetchDealerTier(pageNumber));
   }, [dispatch]);

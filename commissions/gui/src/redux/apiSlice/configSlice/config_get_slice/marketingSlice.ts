@@ -1,21 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { postCaller } from "../../../infrastructure/web_api/services/apiUrl";
-import { EndPoints } from "../../../infrastructure/web_api/api_client/EndPoints";
+import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
+import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
+import { MarketingFeeModel } from "../../../../core/models/configuration/MarketingFeeModel";
 
-interface MarketingFees {
-  source: string;
-  dba: string;
-  state: string;
-  fee_rate: string;
-  chg_dlr: number;
-  pay_src: number;
-  description: string;
-  start_date: string;
-  end_date: string;
-}
+
 
 interface MarketingState {
-  marketing_fees_list: MarketingFees[];
+  marketing_fees_list: MarketingFeeModel[];
   loading: boolean;
   error: string | null;
 }

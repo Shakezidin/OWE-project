@@ -1,19 +1,13 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { postCaller } from "../../../infrastructure/web_api/services/apiUrl";
-import { EndPoints } from "../../../infrastructure/web_api/api_client/EndPoints";
+import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
+import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
+import { AdderVModel } from "../../../../core/models/configuration/AdderVModel";
 
 
-interface AdderV {
-active: boolean,
-adder_name:string,
-adder_type:string,
-description:string,
-price_amount: string,
-price_type: string
-}
+
 
 interface AdderVState {
-  VAdders_list: AdderV[];
+  VAdders_list: AdderVModel[];
   loading: boolean;
   error: string | null;
 }

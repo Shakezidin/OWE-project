@@ -6,7 +6,7 @@ import { CiEdit } from "react-icons/ci";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { ICONS } from "../../../icons/Icons";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-import { fetchPaySchedule } from "../../../../redux/apiSlice/configSlice/payScheduleSlice";
+import { fetchPaySchedule } from "../../../../redux/apiSlice/configSlice/config_get_slice/payScheduleSlice";
 import CreatePaymentSchedule from "./CreatePaymentSchedule";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import {
@@ -30,10 +30,10 @@ const PaymentSchedule = () => {
   useEffect(() => {
     const pageNumber = {
       page_number: 1,
-      page_size: 2,
+      page_size: 10,
     };
     dispatch(fetchPaySchedule(pageNumber));
-  }, []);
+  }, [dispatch]);
   console.log(payScheduleList);
   if (loading) {
     return <div>Loading...</div>;

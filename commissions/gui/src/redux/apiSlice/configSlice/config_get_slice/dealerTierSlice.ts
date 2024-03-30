@@ -1,16 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { postCaller } from "../../../infrastructure/web_api/services/apiUrl";
-import { EndPoints } from "../../../infrastructure/web_api/api_client/EndPoints";
+import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
+import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
+import { DealerTierModel } from "../../../../core/models/configuration/DealerTierModel";
 
-interface ApiState {
-  dealer_name: string;
-  tier: string;
-  start_date: string;
-  end_date: string;
-}
+
 
 interface DealerTierState {
-  dealers_tier_list: ApiState[];
+  dealers_tier_list: DealerTierModel[];
   loading: boolean;
   error: string | null;
 }
@@ -53,7 +49,7 @@ const dealerTierSlice = createSlice({
       })
       .addCase(fetchDealerTier.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message ?? "Failed to fetch ApiState data";
+        state.error = action.error.message ?? "Failed to fetch DealerTierModel data";
       });
   },
 });

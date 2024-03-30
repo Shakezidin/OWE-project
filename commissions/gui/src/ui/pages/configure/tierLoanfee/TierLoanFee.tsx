@@ -5,7 +5,7 @@ import { CiEdit } from "react-icons/ci";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { ICONS } from "../../../icons/Icons";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-import { fetchTearLoan } from "../../../../redux/apiSlice/configSlice/tearLoanSlice";
+import { fetchTearLoan } from "../../../../redux/apiSlice/configSlice/config_get_slice/tearLoanSlice";
 import CreateTierLoan from "./CreateTierLoan";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import {
@@ -27,7 +27,7 @@ const TierLoanFee = () => {
   useEffect(() => {
     const pageNumber = {
       page_number: 1,
-      page_size: 2,
+      page_size: 10,
     };
     dispatch(fetchTearLoan(pageNumber));
   }, [dispatch]);

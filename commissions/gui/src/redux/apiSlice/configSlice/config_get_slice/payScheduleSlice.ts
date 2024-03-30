@@ -1,25 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { postCaller } from "../../../infrastructure/web_api/services/apiUrl";
-import { EndPoints } from "../../../infrastructure/web_api/api_client/EndPoints";
+import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
+import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
+import { PayScheduleModel } from "../../../../core/models/configuration/PayScheduleModel";
 
-interface payScheduleData {
-  partner: string;
-  partner_name: string;
-  installer_name: string;
-  sale_type: string;
-  state: string;
-  rl: string;
-  draw: string;
-  draw_max: string;
-  rep_draw: string;
-  rep_draw_max: string;
-  rep_pay: string;
-  start_date: string;
-  end_date: string;
-}
 
 interface payScheduleState {
-  payment_schedule_list: payScheduleData[];
+  payment_schedule_list: PayScheduleModel[];
   loading: boolean;
   error: string | null;
 }
@@ -65,7 +51,7 @@ const payScheduleSlice = createSlice({
       .addCase(fetchPaySchedule.rejected, (state, action) => {
         state.loading = false;
         state.error =
-          action.error.message ?? "Failed to fetch payScheduleData data";
+          action.error.message ?? "Failed to fetch PayScheduleModel data";
       });
   },
 });
