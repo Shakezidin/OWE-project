@@ -28,7 +28,7 @@ const FilterCommission = (props: ButtonProps) => {
                 <div className="createUserContainer">
                     <div className="" style={{ display: "flex", justifyContent: "space-between", padding: "1rem 2rem 0rem 2rem" }}>
                         <div className="">
-                            <h2>Apply Filter</h2>
+                            <h4>Apply Filter</h4>
                         </div>
                         <div className="iconsSection2">
                             <button

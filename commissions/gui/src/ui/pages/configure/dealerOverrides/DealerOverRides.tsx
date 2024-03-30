@@ -3,16 +3,16 @@ import { RiDeleteBin5Line } from "react-icons/ri";
 import "../configure.css";
 import { CiEdit } from "react-icons/ci";
 import CreateDealer from "./CreateDealer";
-import {
-  useAppDispatch,
-  useAppSelector,
-} from "../../../../redux/apiSlice/hooks";
+import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 
 import { ICONS } from "../../../icons/Icons";
 import TableHeader from "../../../components/tableHeader/TableHeader";
-import { fetchDealer } from "../../../../redux/apiSlice/dealerSlice";
+import { fetchDealer } from "../../../../redux/apiSlice/configSlice/dealerSlice";
 import CheckBox from "../../../components/chekbox/CheckBox";
-import { toggleAllRows, toggleRowSelection } from "../../../components/chekbox/checkHelper";
+import {
+  toggleAllRows,
+  toggleRowSelection,
+} from "../../../components/chekbox/checkHelper";
 
 const DealerOverRides: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -23,7 +23,7 @@ const DealerOverRides: React.FC = () => {
   const loading = useAppSelector((state) => state.dealer.loading);
   const error = useAppSelector((state) => state.dealer.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
-    const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
+  const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   useEffect(() => {
     const pageNumber = {
       page_number: 1,
@@ -31,9 +31,9 @@ const DealerOverRides: React.FC = () => {
     };
     dispatch(fetchDealer(pageNumber));
   }, []);
-  
-const isAnyRowSelected = selectedRows.size > 0;
-const isAllRowsSelected = selectedRows.size === dealerList.length;
+
+  const isAnyRowSelected = selectedRows.size > 0;
+  const isAllRowsSelected = selectedRows.size === dealerList.length;
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -41,12 +41,12 @@ const isAllRowsSelected = selectedRows.size === dealerList.length;
   if (error) {
     return <div>Error: {error}</div>;
   }
-  if (!dealerList===null || dealerList.length === 0) {
+  if (!dealerList === null || dealerList.length === 0) {
     return <div>Data not found</div>;
   }
   return (
     <div className="comm">
-   <div className="commissionContainer">
+      <div className="commissionContainer">
         <TableHeader
           title="Dealer OverRides"
           onPressViewArchive={() => {}}
@@ -61,15 +61,21 @@ const isAllRowsSelected = selectedRows.size === dealerList.length;
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
         >
-
           <table>
             <thead>
               <tr>
                 <th>
                   <div>
-                  <CheckBox
+                    <CheckBox
                       checked={selectAllChecked}
-                      onChange={()=>toggleAllRows(selectedRows,dealerList,setSelectedRows,setSelectAllChecked)}
+                      onChange={() =>
+                        toggleAllRows(
+                          selectedRows,
+                          dealerList,
+                          setSelectedRows,
+                          setSelectAllChecked
+                        )
+                      }
                       indeterminate={isAnyRowSelected && !isAllRowsSelected}
                     />
                   </div>
@@ -112,10 +118,17 @@ const isAllRowsSelected = selectedRows.size === dealerList.length;
                 ? dealerList?.map((el, i) => (
                     <tr key={i}>
                       <td>
-                      <CheckBox
-                      checked={selectedRows.has(i)}
-                      onChange={() => toggleRowSelection(i,selectedRows,setSelectedRows,setSelectAllChecked)}
-                    />
+                        <CheckBox
+                          checked={selectedRows.has(i)}
+                          onChange={() =>
+                            toggleRowSelection(
+                              i,
+                              selectedRows,
+                              setSelectedRows,
+                              setSelectAllChecked
+                            )
+                          }
+                        />
                       </td>
                       <td style={{ fontWeight: "500", color: "black" }}>
                         {el.sub_dealer}
@@ -129,7 +142,7 @@ const isAllRowsSelected = selectedRows.size === dealerList.length;
                       <td>
                         <div className="action-icon">
                           <div className="" style={{ cursor: "pointer" }}>
-                          <img src={ICONS.ARCHIVE} alt="" />
+                            <img src={ICONS.ARCHIVE} alt="" />
                           </div>
                           <div className="" style={{ cursor: "pointer" }}>
                             <CiEdit
@@ -145,7 +158,6 @@ const isAllRowsSelected = selectedRows.size === dealerList.length;
           </table>
         </div>
       </div>
-     
     </div>
   );
 };

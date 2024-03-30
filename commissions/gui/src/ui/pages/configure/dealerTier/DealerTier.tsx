@@ -3,24 +3,26 @@ import React, { useEffect, useState } from "react";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { CiEdit } from "react-icons/ci";
 import { IoAddSharp } from "react-icons/io5";
-import {
-  useAppDispatch,
-  useAppSelector,
-} from "../../../../redux/apiSlice/hooks";
+import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { ICONS } from "../../../icons/Icons";
-import { fetchDealerTier } from "../../../../redux/apiSlice/dealerTierSlice";
+import { fetchDealerTier } from "../../../../redux/apiSlice/configSlice/dealerTierSlice";
 import CreateDealerTier from "./CreateDealerTier";
 import CheckBox from "../../../components/chekbox/CheckBox";
-import { toggleAllRows, toggleRowSelection } from "../../../components/chekbox/checkHelper";
+import {
+  toggleAllRows,
+  toggleRowSelection,
+} from "../../../components/chekbox/checkHelper";
 const DealerTier = () => {
   const dispatch = useAppDispatch();
   // const getData = useAppSelector(state=>state.comm.data)
   const [open, setOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const dealerTierList = useAppSelector((state) => state.dealerTier.dealers_tier_list);
+  const dealerTierList = useAppSelector(
+    (state) => state.dealerTier.dealers_tier_list
+  );
   const loading = useAppSelector((state) => state.dealerTier.loading);
   const error = useAppSelector((state) => state.dealerTier.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
@@ -40,7 +42,7 @@ const DealerTier = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
-  if (!dealerTierList===null || dealerTierList.length === 0) {
+  if (!dealerTierList === null || dealerTierList.length === 0) {
     return <div>Data not found</div>;
   }
   const isAnyRowSelected = selectedRows.size > 0;
@@ -55,11 +57,9 @@ const DealerTier = () => {
           onPressFilter={() => {}}
           onPressImport={() => {}}
           onpressExport={() => {}}
-          onpressAddNew={() =>handleOpen()}
+          onpressAddNew={() => handleOpen()}
         />
-        {
-          open && (<CreateDealerTier handleClose={handleClose}/>)
-        }
+        {open && <CreateDealerTier handleClose={handleClose} />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
@@ -69,9 +69,16 @@ const DealerTier = () => {
               <tr>
                 <th>
                   <div>
-                  <CheckBox
+                    <CheckBox
                       checked={selectAllChecked}
-                      onChange={()=>toggleAllRows(selectedRows,dealerTierList,setSelectedRows,setSelectAllChecked)}
+                      onChange={() =>
+                        toggleAllRows(
+                          selectedRows,
+                          dealerTierList,
+                          setSelectedRows,
+                          setSelectAllChecked
+                        )
+                      }
                       indeterminate={isAnyRowSelected && !isAllRowsSelected}
                     />
                   </div>
@@ -104,27 +111,43 @@ const DealerTier = () => {
               </tr>
             </thead>
             <tbody>
-            {dealerTierList?.length > 0
-                ? dealerTierList?.map(
-                    (el, i) => (
-                <tr key={i}>
-                  <td>
-                  <CheckBox
-                      checked={selectedRows.has(i)}
-                      onChange={() => toggleRowSelection(i,selectedRows,setSelectedRows,setSelectAllChecked)}
-                    />
-                  </td>
-                  <td style={{ fontWeight: "500", color: "black" }}>{el.dealer_name}</td>
-                  <td>{el.tier}</td>
-                  <td>{el.start_date}</td>
-                  <td>{el.end_date}</td>
-                  <td style={{ display: "flex", gap: "1rem",alignItems:"center" }}>
-                  <img src={ICONS.ARCHIVE} alt="" />
-                    <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />
-                  </td>
-                </tr>
-              )):null
-            }
+              {dealerTierList?.length > 0
+                ? dealerTierList?.map((el, i) => (
+                    <tr key={i}>
+                      <td>
+                        <CheckBox
+                          checked={selectedRows.has(i)}
+                          onChange={() =>
+                            toggleRowSelection(
+                              i,
+                              selectedRows,
+                              setSelectedRows,
+                              setSelectAllChecked
+                            )
+                          }
+                        />
+                      </td>
+                      <td style={{ fontWeight: "500", color: "black" }}>
+                        {el.dealer_name}
+                      </td>
+                      <td>{el.tier}</td>
+                      <td>{el.start_date}</td>
+                      <td>{el.end_date}</td>
+                      <td
+                        style={{
+                          display: "flex",
+                          gap: "1rem",
+                          alignItems: "center",
+                        }}
+                      >
+                        <img src={ICONS.ARCHIVE} alt="" />
+                        <CiEdit
+                          style={{ fontSize: "1.5rem", color: "#344054" }}
+                        />
+                      </td>
+                    </tr>
+                  ))
+                : null}
             </tbody>
           </table>
         </div>

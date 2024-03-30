@@ -4,22 +4,24 @@ import "../configure.css";
 import { CiEdit } from "react-icons/ci";
 
 import { ICONS } from "../../../icons/Icons";
-import {
-  useAppDispatch,
-  useAppSelector,
-} from "../../../../redux/apiSlice/hooks";
+import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import TableHeader from "../../../components/tableHeader/TableHeader";
-import { fetchSalesType } from "../../../../redux/apiSlice/salesSlice";
+import { fetchSalesType } from "../../../../redux/apiSlice/configSlice/salesSlice";
 import CreateSaleType from "./CreateSaleType";
 import CheckBox from "../../../components/chekbox/CheckBox";
-import { toggleAllRows, toggleRowSelection } from "../../../components/chekbox/checkHelper";
+import {
+  toggleAllRows,
+  toggleRowSelection,
+} from "../../../components/chekbox/checkHelper";
 
 const SaleType = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const dispatch = useAppDispatch();
-  const salesTypeList = useAppSelector((state) => state.salesType.saletype_list);
+  const salesTypeList = useAppSelector(
+    (state) => state.salesType.saletype_list
+  );
   const loading = useAppSelector((state) => state.salesType.loading);
   const error = useAppSelector((state) => state.salesType.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
@@ -39,14 +41,14 @@ const SaleType = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
-  if (!salesTypeList===null || salesTypeList.length === 0) {
+  if (!salesTypeList === null || salesTypeList.length === 0) {
     return <div>Data not found</div>;
   }
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === salesTypeList.length;
   return (
     <div className="comm">
-  <div className="commissionContainer">
+      <div className="commissionContainer">
         <TableHeader
           title="Sale Types"
           onPressViewArchive={() => {}}
@@ -56,7 +58,7 @@ const SaleType = () => {
           onpressExport={() => {}}
           onpressAddNew={() => handleClose()}
         />
-        {open && (<CreateSaleType handleClose={handleClose}/>)}
+        {open && <CreateSaleType handleClose={handleClose} />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
@@ -66,9 +68,16 @@ const SaleType = () => {
               <tr>
                 <th>
                   <div>
-                  <CheckBox
+                    <CheckBox
                       checked={selectAllChecked}
-                      onChange={()=>toggleAllRows(selectedRows,salesTypeList,setSelectedRows,setSelectAllChecked)}
+                      onChange={() =>
+                        toggleAllRows(
+                          selectedRows,
+                          salesTypeList,
+                          setSelectedRows,
+                          setSelectAllChecked
+                        )
+                      }
                       indeterminate={isAnyRowSelected && !isAllRowsSelected}
                     />
                   </div>
@@ -78,7 +87,6 @@ const SaleType = () => {
                     <p> Name</p> <img src={ICONS.DOWN_ARROW} alt="" />
                   </div>
                 </th>
-
 
                 <th>
                   <div className="table-header">
@@ -94,25 +102,43 @@ const SaleType = () => {
               </tr>
             </thead>
             <tbody>
-              { salesTypeList?.length> 0 ? salesTypeList?.map((el, i) => (
-                <tr key={i}>
-                  <td>
-                  <CheckBox
-                      checked={selectedRows.has(i)}
-                      onChange={() => toggleRowSelection(i,selectedRows,setSelectedRows,setSelectAllChecked)}
-                    />
-                  </td>
-                  <td style={{ fontWeight: "500", color: "black" }}>{el.type_name}</td>
+              {salesTypeList?.length > 0
+                ? salesTypeList?.map((el, i) => (
+                    <tr key={i}>
+                      <td>
+                        <CheckBox
+                          checked={selectedRows.has(i)}
+                          onChange={() =>
+                            toggleRowSelection(
+                              i,
+                              selectedRows,
+                              setSelectedRows,
+                              setSelectAllChecked
+                            )
+                          }
+                        />
+                      </td>
+                      <td style={{ fontWeight: "500", color: "black" }}>
+                        {el.type_name}
+                      </td>
 
-                  <td>{el.type_name}</td>
+                      <td>{el.type_name}</td>
 
-                  <td style={{ display: "flex", gap: "1rem",alignItems:"center" }}>
-                  <img src={ICONS.ARCHIVE} alt="" />
-                    <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />
-                  </td>
-                </tr>
-              )):null
-            }
+                      <td
+                        style={{
+                          display: "flex",
+                          gap: "1rem",
+                          alignItems: "center",
+                        }}
+                      >
+                        <img src={ICONS.ARCHIVE} alt="" />
+                        <CiEdit
+                          style={{ fontSize: "1.5rem", color: "#344054" }}
+                        />
+                      </td>
+                    </tr>
+                  ))
+                : null}
             </tbody>
           </table>
         </div>

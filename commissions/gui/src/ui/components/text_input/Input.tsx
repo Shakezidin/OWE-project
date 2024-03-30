@@ -12,7 +12,8 @@ interface InputProps {
   disabled?: boolean;
 
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onClickEyeIcon?: (e: ChangeEvent<HTMLInputElement>) => void;
+  onClickEyeIcon?: () => void;
+  isTypePassword?: boolean;
 }
 
 const Input: FC<InputProps> = ({
@@ -24,21 +25,29 @@ const Input: FC<InputProps> = ({
   name,
   label,
   onChange,
-
+  onClickEyeIcon,
+  isTypePassword,
 }) => {
   return (
     <div className="input-wrapper">
       {label && <label className="inputLabel">{label}</label>}
       <div className="input-inner-view">
-      <input
-      type={type}
-      name={name}
-      placeholder={placeholder}
-      value={value}
-      onChange={onChange}
-      
-    />
-        {type === "password" ? <EYE_ICON className="eyeIcon" style={{marginRight:".5rem"}}/> : <></>}
+        <input
+          type={type}
+          name={name}
+          placeholder={placeholder}
+          value={value}
+          onChange={onChange}
+        />
+        {isTypePassword ? (
+          <EYE_ICON
+            className="eyeIcon"
+            style={{ marginRight: ".5rem" }}
+            onClick={onClickEyeIcon}
+          />
+        ) : (
+          <></>
+        )}
       </div>
       {error && <p className="error">Input filed can't be empty!</p>}
     </div>

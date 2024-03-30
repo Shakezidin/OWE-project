@@ -6,7 +6,7 @@ import "../layout/layout.css";
 import { ICONS } from "../../icons/Icons";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { logout } from "../../../redux/apiSlice/authSlice";
+import { logout } from "../../../redux/apiSlice/authSlice/authSlice";
 interface Toggleprops {
   toggleOpen: boolean;
   setToggleOpen: React.Dispatch<React.SetStateAction<boolean>>;

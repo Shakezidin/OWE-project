@@ -5,14 +5,14 @@ import { CiEdit } from "react-icons/ci";
 
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { ICONS } from "../../../icons/Icons";
-import {
-  useAppDispatch,
-  useAppSelector,
-} from "../../../../redux/apiSlice/hooks";
-import { fetchPaySchedule } from "../../../../redux/apiSlice/payScheduleSlice";
+import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
+import { fetchPaySchedule } from "../../../../redux/apiSlice/configSlice/payScheduleSlice";
 import CreatePaymentSchedule from "./CreatePaymentSchedule";
 import CheckBox from "../../../components/chekbox/CheckBox";
-import { toggleAllRows, toggleRowSelection } from "../../../components/chekbox/checkHelper";
+import {
+  toggleAllRows,
+  toggleRowSelection,
+} from "../../../components/chekbox/checkHelper";
 
 const PaymentSchedule = () => {
   const dispatch = useAppDispatch();
@@ -20,7 +20,9 @@ const PaymentSchedule = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const payScheduleList = useAppSelector((state) => state.paySchedule.payment_schedule_list);
+  const payScheduleList = useAppSelector(
+    (state) => state.paySchedule.payment_schedule_list
+  );
   const loading = useAppSelector((state) => state.paySchedule.loading);
   const error = useAppSelector((state) => state.paySchedule.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
@@ -40,7 +42,7 @@ const PaymentSchedule = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
-  if (!payScheduleList===null || payScheduleList.length === 0) {
+  if (!payScheduleList === null || payScheduleList.length === 0) {
     return <div>Data not found</div>;
   }
   const isAnyRowSelected = selectedRows.size > 0;
@@ -57,7 +59,7 @@ const PaymentSchedule = () => {
           onpressExport={() => {}}
           onpressAddNew={() => handleOpen()}
         />
-{open && (<CreatePaymentSchedule handleClose={handleClose}/>)}
+        {open && <CreatePaymentSchedule handleClose={handleClose} />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
@@ -67,9 +69,16 @@ const PaymentSchedule = () => {
               <tr>
                 <th>
                   <div>
-                  <CheckBox
+                    <CheckBox
                       checked={selectAllChecked}
-                      onChange={()=>toggleAllRows(selectedRows,payScheduleList,setSelectedRows,setSelectAllChecked)}
+                      onChange={() =>
+                        toggleAllRows(
+                          selectedRows,
+                          payScheduleList,
+                          setSelectedRows,
+                          setSelectAllChecked
+                        )
+                      }
                       indeterminate={isAnyRowSelected && !isAllRowsSelected}
                     />
                   </div>
@@ -147,37 +156,50 @@ const PaymentSchedule = () => {
               </tr>
             </thead>
             <tbody>
-            {payScheduleList?.length > 0
-                ? payScheduleList?.map(
-                    (el, i) => (
-                <tr key={i}>
-                  <td>
-                  <CheckBox
-                      checked={selectedRows.has(i)}
-                      onChange={() => toggleRowSelection(i,selectedRows,setSelectedRows,setSelectAllChecked)}
-                    />
-                  </td>
-                  <td style={{ fontWeight: "600" }}>{el.partner_name}</td>
-                  <td>{el.partner}</td>
-                  <td>{el.installer_name}</td>
-                  <td>{el.sale_type}</td>
-                  <td>{el.state}</td>
-                  <td>{el.rl}</td>
-                  <td>{el.draw}</td>
-                  <td>{el.draw_max}</td>
-                  <td>{el.rep_draw}</td>
-                  <td>{el.rep_draw_max}</td>
-                  <td>{el.rep_pay}</td>
-                  <td>{el.start_date}</td>
-                  <td>{el.end_date}</td>
-                  <td style={{ display: "flex", gap: "1rem",alignItems:"center" }}>
-                  <img src={ICONS.ARCHIVE} alt="" />
-                    <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />
-                  </td>
-
-                </tr>
-              )):null
-            }
+              {payScheduleList?.length > 0
+                ? payScheduleList?.map((el, i) => (
+                    <tr key={i}>
+                      <td>
+                        <CheckBox
+                          checked={selectedRows.has(i)}
+                          onChange={() =>
+                            toggleRowSelection(
+                              i,
+                              selectedRows,
+                              setSelectedRows,
+                              setSelectAllChecked
+                            )
+                          }
+                        />
+                      </td>
+                      <td style={{ fontWeight: "600" }}>{el.partner_name}</td>
+                      <td>{el.partner}</td>
+                      <td>{el.installer_name}</td>
+                      <td>{el.sale_type}</td>
+                      <td>{el.state}</td>
+                      <td>{el.rl}</td>
+                      <td>{el.draw}</td>
+                      <td>{el.draw_max}</td>
+                      <td>{el.rep_draw}</td>
+                      <td>{el.rep_draw_max}</td>
+                      <td>{el.rep_pay}</td>
+                      <td>{el.start_date}</td>
+                      <td>{el.end_date}</td>
+                      <td
+                        style={{
+                          display: "flex",
+                          gap: "1rem",
+                          alignItems: "center",
+                        }}
+                      >
+                        <img src={ICONS.ARCHIVE} alt="" />
+                        <CiEdit
+                          style={{ fontSize: "1.5rem", color: "#344054" }}
+                        />
+                      </td>
+                    </tr>
+                  ))
+                : null}
             </tbody>
           </table>
         </div>

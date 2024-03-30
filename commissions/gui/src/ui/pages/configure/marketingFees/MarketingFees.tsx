@@ -2,18 +2,18 @@ import React, { useEffect, useState } from "react";
 import "../configure.css";
 import { IoAddSharp } from "react-icons/io5";
 import CreateDealer from "../dealerOverrides/CreateDealer";
-import {
-  useAppDispatch,
-  useAppSelector,
-} from "../../../../redux/apiSlice/hooks";
+import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 
 import { ICONS } from "../../../icons/Icons";
 import TableHeader from "../../../components/tableHeader/TableHeader";
-import { fetchmarketingFees } from "../../../../redux/apiSlice/marketingSlice";
+import { fetchmarketingFees } from "../../../../redux/apiSlice/configSlice/marketingSlice";
 import { CiEdit } from "react-icons/ci";
 import CreateMarketingFees from "./CreateMarketungFees";
 import CheckBox from "../../../components/chekbox/CheckBox";
-import { toggleAllRows, toggleRowSelection } from "../../../components/chekbox/checkHelper";
+import {
+  toggleAllRows,
+  toggleRowSelection,
+} from "../../../components/chekbox/checkHelper";
 
 const MarketingFees: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -21,11 +21,13 @@ const MarketingFees: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const marketingFeesList = useAppSelector((state) => state.marketing.marketing_fees_list);
+  const marketingFeesList = useAppSelector(
+    (state) => state.marketing.marketing_fees_list
+  );
   const loading = useAppSelector((state) => state.marketing.loading);
   const error = useAppSelector((state) => state.marketing.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
-    const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
+  const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   useEffect(() => {
     const pageNumber = {
       page_number: 1,
@@ -42,7 +44,7 @@ const MarketingFees: React.FC = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
-  if (!marketingFeesList===null || marketingFeesList.length === 0) {
+  if (!marketingFeesList === null || marketingFeesList.length === 0) {
     return <div>Data not found</div>;
   }
   return (
@@ -57,7 +59,7 @@ const MarketingFees: React.FC = () => {
           onpressExport={() => {}}
           onpressAddNew={() => handleOpen()}
         />
-{open && (<CreateMarketingFees handleClose={handleClose}/>)}
+        {open && <CreateMarketingFees handleClose={handleClose} />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
@@ -67,9 +69,16 @@ const MarketingFees: React.FC = () => {
               <tr>
                 <th>
                   <div>
-                  <CheckBox
+                    <CheckBox
                       checked={selectAllChecked}
-                      onChange={()=>toggleAllRows(selectedRows,marketingFeesList,setSelectedRows,setSelectAllChecked)}
+                      onChange={() =>
+                        toggleAllRows(
+                          selectedRows,
+                          marketingFeesList,
+                          setSelectedRows,
+                          setSelectAllChecked
+                        )
+                      }
                       indeterminate={isAnyRowSelected && !isAllRowsSelected}
                     />
                   </div>
@@ -129,45 +138,56 @@ const MarketingFees: React.FC = () => {
 
             <tbody>
               {marketingFeesList?.length > 0
-                ? marketingFeesList?.map(
-                    (el, i) => (
-                      <tr key={i}>
-                        <td>
+                ? marketingFeesList?.map((el, i) => (
+                    <tr key={i}>
+                      <td>
                         <CheckBox
-                      checked={selectedRows.has(i)}
-                      onChange={() => toggleRowSelection(i,selectedRows,setSelectedRows,setSelectAllChecked)}
-                    />
-                        </td>
-                        <td style={{ fontWeight: "500", color: "black" }}>
-                          {el.source}
-                        </td>
-                        <td>{el.dba}</td>
-                        <td>{el.state}</td>
-                        <td>{el.fee_rate}</td>
-                        <td>
-                          {el.chg_dlr}
-                          {/* <div className="">
+                          checked={selectedRows.has(i)}
+                          onChange={() =>
+                            toggleRowSelection(
+                              i,
+                              selectedRows,
+                              setSelectedRows,
+                              setSelectAllChecked
+                            )
+                          }
+                        />
+                      </td>
+                      <td style={{ fontWeight: "500", color: "black" }}>
+                        {el.source}
+                      </td>
+                      <td>{el.dba}</td>
+                      <td>{el.state}</td>
+                      <td>{el.fee_rate}</td>
+                      <td>
+                        {el.chg_dlr}
+                        {/* <div className="">
                       <img src={img} alt="" />
                     </div> */}
-                        </td>
-                        <td>{el.pay_src}</td>
-                        <td>{el.description}</td>
-                        <td>{el.start_date}</td>
-                        <td>{el.end_date}</td>
-                        <td style={{ display: "flex", gap: "1rem",alignItems:"center" }}>
-                  <img src={ICONS.ARCHIVE} alt="" />
-                    <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />
-                  </td>
-                      </tr>
-                    )
-                  )
+                      </td>
+                      <td>{el.pay_src}</td>
+                      <td>{el.description}</td>
+                      <td>{el.start_date}</td>
+                      <td>{el.end_date}</td>
+                      <td
+                        style={{
+                          display: "flex",
+                          gap: "1rem",
+                          alignItems: "center",
+                        }}
+                      >
+                        <img src={ICONS.ARCHIVE} alt="" />
+                        <CiEdit
+                          style={{ fontSize: "1.5rem", color: "#344054" }}
+                        />
+                      </td>
+                    </tr>
+                  ))
                 : null}
-
             </tbody>
           </table>
         </div>
       </div>
-    
     </div>
   );
 };

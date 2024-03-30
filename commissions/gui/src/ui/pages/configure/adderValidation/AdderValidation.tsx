@@ -5,23 +5,23 @@ import "../configure.css";
 import { IoAddSharp } from "react-icons/io5";
 import CreateDealer from "../dealerOverrides/CreateDealer";
 import { CiEdit } from "react-icons/ci";
-import { fetchAdderV } from "../../../../redux/apiSlice/adderVSlice";
-import {
-  useAppDispatch,
-  useAppSelector,
-} from "../../../../redux/apiSlice/hooks";
+import { fetchAdderV } from "../../../../redux/apiSlice/configSlice/adderVSlice";
+import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import { ICONS } from "../../../icons/Icons";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import CreateAdder from "./CreateAdder";
 import CheckBox from "../../../components/chekbox/CheckBox";
-import { toggleAllRows, toggleRowSelection } from "../../../components/chekbox/checkHelper";
+import {
+  toggleAllRows,
+  toggleRowSelection,
+} from "../../../components/chekbox/checkHelper";
 
 const AdderValidation = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
-    const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
+  const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   // const getData = useAppSelector(state=>state.comm.data)
 
@@ -44,14 +44,14 @@ const AdderValidation = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
-  if (!adderVList===null || adderVList.length === 0) {
+  if (!adderVList === null || adderVList.length === 0) {
     return <div>Data not found</div>;
   }
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === adderVList.length;
   return (
     <div className="comm">
-        <div className="commissionContainer">
+      <div className="commissionContainer">
         <TableHeader
           title="Adder validation"
           onPressViewArchive={() => {}}
@@ -61,9 +61,7 @@ const AdderValidation = () => {
           onpressExport={() => {}}
           onpressAddNew={() => handleOpen()}
         />
-        {
-          open && (<CreateAdder handleClose={handleClose}/>)
-        }
+        {open && <CreateAdder handleClose={handleClose} />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
@@ -73,9 +71,16 @@ const AdderValidation = () => {
               <tr>
                 <th>
                   <div>
-                  <CheckBox
+                    <CheckBox
                       checked={selectAllChecked}
-                      onChange={()=>toggleAllRows(selectedRows,adderVList,setSelectedRows,setSelectAllChecked)}
+                      onChange={() =>
+                        toggleAllRows(
+                          selectedRows,
+                          adderVList,
+                          setSelectedRows,
+                          setSelectAllChecked
+                        )
+                      }
                       indeterminate={isAnyRowSelected && !isAllRowsSelected}
                     />
                   </div>
@@ -122,10 +127,17 @@ const AdderValidation = () => {
                 ? adderVList?.map((el, i) => (
                     <tr key={i}>
                       <td>
-                      <CheckBox
-                      checked={selectedRows.has(i)}
-                      onChange={() => toggleRowSelection(i,selectedRows,setSelectedRows,setSelectAllChecked)}
-                    />
+                        <CheckBox
+                          checked={selectedRows.has(i)}
+                          onChange={() =>
+                            toggleRowSelection(
+                              i,
+                              selectedRows,
+                              setSelectedRows,
+                              setSelectAllChecked
+                            )
+                          }
+                        />
                       </td>
                       <td style={{ fontWeight: "500", color: "black" }}>
                         {el.adder_name}
@@ -139,7 +151,7 @@ const AdderValidation = () => {
                       <td>
                         <div className="action-icon">
                           <div className="" style={{ cursor: "pointer" }}>
-                          <img src={ICONS.ARCHIVE} alt="" />
+                            <img src={ICONS.ARCHIVE} alt="" />
                           </div>
                           <div className="" style={{ cursor: "pointer" }}>
                             <CiEdit
@@ -155,7 +167,6 @@ const AdderValidation = () => {
           </table>
         </div>
       </div>
-   
     </div>
   );
 };
