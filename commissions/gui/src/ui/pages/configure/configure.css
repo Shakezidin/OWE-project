@@ -107,6 +107,11 @@
     border-collapse: collapse;
     
   }
+  table tbody{
+    width: 100%;
+    min-height: 430px !important;
+    overflow-y: auto;
+  }
  
    table thead tr {
     border-bottom: 1px solid var( --table-border-color);

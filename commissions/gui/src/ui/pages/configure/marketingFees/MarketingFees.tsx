@@ -6,9 +6,9 @@ import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 
 import { ICONS } from "../../../icons/Icons";
 import TableHeader from "../../../components/tableHeader/TableHeader";
-import { fetchmarketingFees } from "../../../../redux/apiSlice/configSlice/marketingSlice";
+import { fetchmarketingFees } from "../../../../redux/apiSlice/configSlice/config_get_slice/marketingSlice";
 import { CiEdit } from "react-icons/ci";
-import CreateMarketingFees from "./CreateMarketungFees";
+import CreateMarketingFees from "./CreateMarketingFees";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import {
   toggleAllRows,
@@ -31,10 +31,10 @@ const MarketingFees: React.FC = () => {
   useEffect(() => {
     const pageNumber = {
       page_number: 1,
-      page_size: 2,
+      page_size: 10,
     };
     dispatch(fetchmarketingFees(pageNumber));
-  }, []);
+  }, [dispatch]);
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === marketingFeesList.length;
   if (loading) {

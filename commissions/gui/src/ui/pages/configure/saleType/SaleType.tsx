@@ -6,7 +6,7 @@ import { CiEdit } from "react-icons/ci";
 import { ICONS } from "../../../icons/Icons";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import TableHeader from "../../../components/tableHeader/TableHeader";
-import { fetchSalesType } from "../../../../redux/apiSlice/configSlice/salesSlice";
+import { fetchSalesType } from "../../../../redux/apiSlice/configSlice/config_get_slice/salesSlice";
 import CreateSaleType from "./CreateSaleType";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import {
@@ -29,7 +29,7 @@ const SaleType = () => {
   useEffect(() => {
     const pageNumber = {
       page_number: 1,
-      page_size: 2,
+      page_size: 10,
     };
     dispatch(fetchSalesType(pageNumber));
   }, [dispatch]);
@@ -56,7 +56,7 @@ const SaleType = () => {
           onPressFilter={() => {}}
           onPressImport={() => {}}
           onpressExport={() => {}}
-          onpressAddNew={() => handleClose()}
+          onpressAddNew={() => handleOpen()}
         />
         {open && <CreateSaleType handleClose={handleClose} />}
         <div

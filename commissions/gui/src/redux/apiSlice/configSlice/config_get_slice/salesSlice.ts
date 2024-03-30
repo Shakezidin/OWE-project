@@ -1,14 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { postCaller } from "../../../infrastructure/web_api/services/apiUrl";
-import { EndPoints } from "../../../infrastructure/web_api/api_client/EndPoints";
+import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
+import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
+import { SalesTypeModel } from "../../../../core/models/configuration/SalesTypeModel";
 
-interface SalesType {
-  type_name: string;
-  description: string;
-}
+
 
 interface SalesTypeState {
-  saletype_list: SalesType[];
+  saletype_list: SalesTypeModel[];
   loading: boolean;
   error: string | null;
 }

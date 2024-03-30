@@ -1,17 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { postCaller } from "../../../infrastructure/web_api/services/apiUrl";
-import { EndPoints } from "../../../infrastructure/web_api/api_client/EndPoints";
+import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
+import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
+import { DealerModel } from "../../../../core/models/configuration/DealerModel";
 
-interface Dealer {
-  sub_dealer: string;
-  dealer: string;
-  pay_rate: string;
-  start_date: string;
-  end_date: string;
-}
+
 
 interface DealerState {
-  Dealers_list: Dealer[];
+  Dealers_list: DealerModel[];
   loading: boolean;
   error: string | null;
 }

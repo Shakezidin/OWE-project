@@ -7,8 +7,9 @@
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
-    width: 1rem !important;
-    height: 1.4rem !important;
+ 
+    width: 20px !important;
+    height:24px !important;
     border-radius: 7px !important;
     /* margin-top: .5rem; */
     border: 1px solid #ccc;

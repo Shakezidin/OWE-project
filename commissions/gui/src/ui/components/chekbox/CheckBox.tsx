@@ -20,6 +20,7 @@ const CheckBox: React.FC<CheckboxProps> = ({ checked, onChange, indeterminate })
             <input
                 type="checkbox"
                 checked={checked}
+                
                 onChange={onChange}
                 className={getClassNames()}
             />

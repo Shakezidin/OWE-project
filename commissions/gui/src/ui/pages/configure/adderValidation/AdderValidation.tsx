@@ -5,7 +5,7 @@ import "../configure.css";
 import { IoAddSharp } from "react-icons/io5";
 import CreateDealer from "../dealerOverrides/CreateDealer";
 import { CiEdit } from "react-icons/ci";
-import { fetchAdderV } from "../../../../redux/apiSlice/configSlice/adderVSlice";
+import { fetchAdderV } from "../../../../redux/apiSlice/configSlice/config_get_slice/adderVSlice";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import { ICONS } from "../../../icons/Icons";
 import TableHeader from "../../../components/tableHeader/TableHeader";
@@ -32,10 +32,10 @@ const AdderValidation = () => {
   useEffect(() => {
     const pageNumber = {
       page_number: 1,
-      page_size: 2,
+      page_size: 10,
     };
     dispatch(fetchAdderV(pageNumber));
-  }, []);
+  }, [dispatch]);
 
   if (loading) {
     return <div>Loading...</div>;
