@@ -12,13 +12,18 @@ import {
   toggleAllRows,
   toggleRowSelection,
 } from "../../../components/chekbox/checkHelper";
+import FilterLoanType from "./FilterLoanType";
 
 const LoanType = () => {
   const dispatch = useAppDispatch();
   // const getData = useAppSelector(state=>state.comm.data)
   const [open, setOpen] = React.useState<boolean>(false);
+  const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const filter = () => setFilterOpen(true);
+  const filterClose = () => setFilterOpen(false);
   const loanTypeList = useAppSelector(
     (state) => state?.loanType?.loantype_list
   );
@@ -53,11 +58,12 @@ const LoanType = () => {
           title="Loan Type"
           onPressViewArchive={() => { }}
           onPressArchive={() => { }}
-          onPressFilter={() => { }}
+          onPressFilter={() => filter()}
           onPressImport={() => { }}
           onpressExport={() => { }}
           onpressAddNew={() => handleOpen()}
         />
+        {filterOPen && <FilterLoanType handleClose={filterClose} />}
         {open && <CreateLoanType handleClose={handleClose} />}
         <div
           className="TableContainer"

@@ -25,7 +25,7 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
         </div>
       </div>
       <div className="search-container">
-        <div className="search-icon-img">
+        {/* <div className="search-icon-img">
           <GoSearch style={{ fontSize: "1.5rem", color: "gray" }} />
           <input
             type="text"
@@ -33,12 +33,12 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
             placeholder="Search..."
             className="search-input"
           />
-        </div>
+        </div> */}
         <div className="user-container">
-          <button className="app-btn">
+          {/* <button className="app-btn">
             <img src={ICONS.APPICON} alt="" />
             App
-          </button>
+          </button> */}
           <div className="notification">
             <img src={ICONS.NOTIFICATION} alt="" />
           </div>

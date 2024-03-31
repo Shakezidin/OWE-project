@@ -14,10 +14,15 @@ import {
 } from "../../../components/chekbox/checkHelper";
 import Pagination from "../../../components/pagination/Pagination";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
+import FilterTimeLine from "./FilterTimeLine";
 const TimeLine = () => {
   const [open, setOpen] = React.useState<boolean>(false);
+  const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const filter = () => setFilterOpen(true);
+  const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const timelinesla_list = useAppSelector(
     (state) => state.timelineSla.timelinesla_list
@@ -75,11 +80,12 @@ const TimeLine = () => {
           title="Time Line SLA"
           onPressViewArchive={() => { }}
           onPressArchive={() => { }}
-          onPressFilter={() => { }}
+          onPressFilter={() => filter()}
           onPressImport={() => { }}
           onpressExport={() => { }}
           onpressAddNew={() => handleOpen()}
         />
+        {filterOPen && <FilterTimeLine handleClose={filterClose} />}
         {open && <CreateTimeLine handleClose={handleClose} />}
 
           <table  style={{ overflowX: "auto", whiteSpace: "nowrap" }}>

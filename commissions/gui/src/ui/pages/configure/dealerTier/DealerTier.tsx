@@ -14,12 +14,17 @@ import {
   toggleAllRows,
   toggleRowSelection,
 } from "../../../components/chekbox/checkHelper";
+import FilterDealerTier from "./FilterDealerTier";
 const DealerTier = () => {
   const dispatch = useAppDispatch();
   // const getData = useAppSelector(state=>state.comm.data)
   const [open, setOpen] = React.useState<boolean>(false);
+  const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const filter = () => setFilterOpen(true);
+  const filterClose = () => setFilterOpen(false);
   const dealerTierList = useAppSelector(
     (state) => state.dealerTier.dealers_tier_list
   );
@@ -54,11 +59,12 @@ const DealerTier = () => {
           title="Dealer Tier"
           onPressViewArchive={() => {}}
           onPressArchive={() => {}}
-          onPressFilter={() => {}}
+          onPressFilter={() => filter()}
           onPressImport={() => {}}
           onpressExport={() => {}}
           onpressAddNew={() => handleOpen()}
         />
+        {filterOPen && <FilterDealerTier handleClose={filterClose} />}
         {open && <CreateDealerTier handleClose={handleClose} />}
         <div
           className="TableContainer"

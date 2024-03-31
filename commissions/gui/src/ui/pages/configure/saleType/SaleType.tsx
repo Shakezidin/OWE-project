@@ -13,11 +13,16 @@ import {
   toggleAllRows,
   toggleRowSelection,
 } from "../../../components/chekbox/checkHelper";
+import FilterSale from "./FilterSale";
 
 const SaleType = () => {
   const [open, setOpen] = React.useState<boolean>(false);
+  const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const filter = () => setFilterOpen(true);
+  const filterClose = () => setFilterOpen(true);
   const dispatch = useAppDispatch();
   const salesTypeList = useAppSelector(
     (state) => state.salesType.saletype_list
@@ -53,11 +58,12 @@ const SaleType = () => {
           title="Sale Types"
           onPressViewArchive={() => {}}
           onPressArchive={() => {}}
-          onPressFilter={() => {}}
+          onPressFilter={() => filter()}
           onPressImport={() => {}}
           onpressExport={() => {}}
           onpressAddNew={() => handleOpen()}
         />
+        {filterOPen && <FilterSale handleClose={filterClose}/>}
         {open && <CreateSaleType handleClose={handleClose} />}
         <div
           className="TableContainer"

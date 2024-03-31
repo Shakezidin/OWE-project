@@ -13,7 +13,7 @@ type ButtonProps = {
     handleClose: () => void
 }
 
-const FilterCommission = (props: ButtonProps) => {
+const FilterLoanType = (props: ButtonProps) => {
     const handleFormChange = () => {
 
     }
@@ -21,10 +21,10 @@ const FilterCommission = (props: ButtonProps) => {
         <div className="transparent-model">
             <div className="modal">
 
-                <div className="createUserCrossButton" onClick={props.handleClose}>
+                {/* <div className="createUserCrossButton" onClick={props.handleClose}>
                     <CROSS_BUTTON />
 
-                </div>
+                </div> */}
                 <div className="createUserContainer">
                     <div className="" style={{ display: "flex", justifyContent: "space-between", padding: "1rem 2rem 0rem 2rem" }}>
                         <div className="">
@@ -93,4 +93,4 @@ const FilterCommission = (props: ButtonProps) => {
     );
 };
 
-export default FilterCommission;
+export default FilterLoanType;

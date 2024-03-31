@@ -15,11 +15,16 @@ import {
   toggleAllRows,
   toggleRowSelection,
 } from "../../../components/chekbox/checkHelper";
+import FilterAdder from "./FilterAdder";
 
 const AdderValidation = () => {
   const [open, setOpen] = React.useState<boolean>(false);
+  const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const filter = () => setFilterOpen(true);
+  const filterClose = () => setFilterOpen(false);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const dispatch = useAppDispatch();
@@ -56,11 +61,12 @@ const AdderValidation = () => {
           title="Adder validation"
           onPressViewArchive={() => {}}
           onPressArchive={() => {}}
-          onPressFilter={() => {}}
+          onPressFilter={() => filter()}
           onPressImport={() => {}}
           onpressExport={() => {}}
           onpressAddNew={() => handleOpen()}
         />
+        {filterOPen && <FilterAdder handleClose={filterClose}/>}
         {open && <CreateAdder handleClose={handleClose} />}
         <div
           className="TableContainer"
