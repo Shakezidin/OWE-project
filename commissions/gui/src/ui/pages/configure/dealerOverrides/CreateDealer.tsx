@@ -82,6 +82,17 @@ const CreateDealer = (props: ButtonProps) => {
               <label className="inputLabel">Sub Dealer</label>
               <Select
                       options={subDealer}
+                      styles={{
+                        control: (baseStyles, state) => ({
+                          ...baseStyles,
+                          marginTop:"4.5px",
+                          borderRadius:"8px",
+                          outline:"none",
+                          height:"2.8rem",
+                          border:"1px solid #d0d5dd"
+                          
+                        }),
+                      }}
                       isSearchable
                       onChange={(newValue) => handleChange(newValue, 'sub_dealer')}
                       value={subDealer.find((option) => option.value ===createDealer.sub_dealer )}
@@ -91,6 +102,17 @@ const CreateDealer = (props: ButtonProps) => {
                 <label className="inputLabel">Dealer</label>
                 <Select
                       options={dealer}
+                      styles={{
+                        control: (baseStyles, state) => ({
+                          ...baseStyles,
+                          marginTop:"4.5px",
+                          borderRadius:"8px",
+                          outline:"none",
+                          height:"2.8rem",
+                          border:"1px solid #d0d5dd"
+                          
+                        }),
+                      }}
                       isSearchable
                       onChange={(newValue) => handleChange(newValue, 'dealer')}
                       value={dealer.find((option) => option.value === createDealer.dealer)}

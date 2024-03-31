@@ -24,7 +24,7 @@ const CommissionRate: React.FC = () => {
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const filter = () => setFilterOpen(true);
+ 
   const filterClose = () => setFilterOpen(false);
 
   const dispatch = useAppDispatch();
@@ -170,7 +170,6 @@ const CommissionRate: React.FC = () => {
                 </th>
               </tr>
             </thead>
-
             <tbody>
               {currentPageData?.length > 0
                 ? currentPageData?.map((el, i) => (

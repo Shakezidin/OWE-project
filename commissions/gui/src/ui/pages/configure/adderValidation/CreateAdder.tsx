@@ -90,6 +90,17 @@ const CreateAdder = (props: ButtonProps) => {
                                         <Select
                                             options={adderTypeData}
                                             isSearchable
+                                            styles={{
+                                                control: (baseStyles, state) => ({
+                                                  ...baseStyles,
+                                                  marginTop:"4.5px",
+                                                  borderRadius:"8px",
+                                                  outline:"none",
+                                                  height:"2.8rem",
+                                                  border:"1px solid #d0d5dd"
+                                                  
+                                                }),
+                                              }}
                                             onChange={(newValue) => handleChange(newValue, 'adder_type')}
                                             value={adderTypeData.find((option) => option.value === createAdderV.adder_type)}
                                         />
@@ -105,6 +116,7 @@ const CreateAdder = (props: ButtonProps) => {
                                             label="Price Amount"
                                             value={createAdderV.price_amount}
                                             name="price_amount"
+
                                             placeholder={"Amount"}
                                             onChange={(e) => handleAdderChange(e)}
                                         />
@@ -114,6 +126,17 @@ const CreateAdder = (props: ButtonProps) => {
                                         <Select
                                             options={priceTypeData}
                                             isSearchable
+                                            styles={{
+                                                control: (baseStyles, state) => ({
+                                                  ...baseStyles,
+                                                  marginTop:"4.5px",
+                                                  borderRadius:"8px",
+                                                  outline:"none",
+                                                  height:"2.8rem",
+                                                  border:"1px solid #d0d5dd"
+                                                  
+                                                }),
+                                              }}
                                             onChange={(newValue) => handleChange(newValue, 'price_type')}
                                             value={priceTypeData.find((option) => option.value === createAdderV.price_type)}
                                         />

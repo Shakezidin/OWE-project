@@ -85,6 +85,17 @@ const CreateMarketingFees = (props: ButtonProps) => {
               <label className="inputLabel">Source</label>
               <Select
                       options={sourceData}
+                      styles={{
+                        control: (baseStyles, state) => ({
+                          ...baseStyles,
+                          marginTop:"4.5px",
+                          borderRadius:"8px",
+                          outline:"none",
+                          height:"2.8rem",
+                          border:"1px solid #d0d5dd"
+                          
+                        }),
+                      }}
                       isSearchable
                       onChange={(newValue) => handleChange(newValue, 'source')}
                       value={sourceData.find((option) => option.value ===createMarketing.source )}
@@ -94,6 +105,17 @@ const CreateMarketingFees = (props: ButtonProps) => {
               <label className="inputLabel">DBA</label>
               <Select
                       options={dbaData}
+                      styles={{
+                        control: (baseStyles, state) => ({
+                          ...baseStyles,
+                          marginTop:"4.5px",
+                          borderRadius:"8px",
+                          outline:"none",
+                          height:"2.8rem",
+                          border:"1px solid #d0d5dd"
+                          
+                        }),
+                      }}
                       isSearchable
                       onChange={(newValue) => handleChange(newValue, 'dba')}
                       value={dbaData.find((option) => option.value ===createMarketing.dba )}
@@ -103,6 +125,17 @@ const CreateMarketingFees = (props: ButtonProps) => {
               <label className="inputLabel">State</label>
               <Select
                       options={stateData}
+                      styles={{
+                        control: (baseStyles, state) => ({
+                          ...baseStyles,
+                          marginTop:"4.5px",
+                          borderRadius:"8px",
+                          outline:"none",
+                          height:"2.8rem",
+                          border:"1px solid #d0d5dd"
+                          
+                        }),
+                      }}
                       isSearchable
                       onChange={(newValue) => handleChange(newValue, 'state')}
                       value={stateData.find((option) => option.value ===createMarketing.state )}
@@ -125,6 +158,17 @@ const CreateMarketingFees = (props: ButtonProps) => {
               <label className="inputLabel">Chg DLR</label>
               <Select
                       options={chldlrData}
+                      styles={{
+                        control: (baseStyles, state) => ({
+                          ...baseStyles,
+                          marginTop:"4.5px",
+                          borderRadius:"8px",
+                          outline:"none",
+                          height:"2.8rem",
+                          border:"1px solid #d0d5dd"
+                          
+                        }),
+                      }}
                       isSearchable
                       onChange={(newValue) => handleChange(newValue, 'chg_dlr')}
                       value={chldlrData.find((option) => option.value ===createMarketing.chg_dlr )}

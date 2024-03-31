@@ -109,8 +109,6 @@
   }
   table tbody{
     width: 100%;
-    min-height: 430px !important;
-    overflow-y: auto;
   }
  
    table thead tr {
