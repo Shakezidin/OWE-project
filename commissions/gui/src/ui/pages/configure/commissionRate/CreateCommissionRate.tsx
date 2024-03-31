@@ -113,7 +113,7 @@ const CreateCommissionRate = (props: ButtonProps) => {
                   </div>
                   <div className="create-input-field">
                     <label className="inputLabel">Installer</label>
-                    <div className="" style={customStyle.select}>
+                    <div className="">
                       <Select
                         options={installers}
                         styles={{

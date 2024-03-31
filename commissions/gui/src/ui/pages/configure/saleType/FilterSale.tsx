@@ -7,7 +7,7 @@ import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cro
 import Input from "../../../components/text_input/Input";
 import DropdownButton from "../../../components/dropdown/DropdownButton";
 import { ActionButton } from "../../../components/button/ActionButton";
-import { Button } from "@adobe/react-spectrum";
+
 
 type ButtonProps = {
     handleClose: () => void
@@ -21,10 +21,10 @@ const FilterSale = (props: ButtonProps) => {
         <div className="transparent-model">
             <div className="modal">
 
-                {/* <div className="createUserCrossButton" onClick={props.handleClose}>
+                <div className="createUserCrossButton" onClick={props.handleClose}>
                     <CROSS_BUTTON />
 
-                </div> */}
+                </div>
                 <div className="createUserContainer">
                     <div className="" style={{ display: "flex", justifyContent: "space-between", padding: "1rem 2rem 0rem 2rem" }}>
                         <div className="">
@@ -48,19 +48,15 @@ const FilterSale = (props: ButtonProps) => {
                     <div className="createProfileInputView">
                         <div className="createProfileTextView">
                             <div className="create-input-container">
-                                <div className="create-input-field">
-                                    <DropdownButton id="selectField1"
-                                        label="Partner"
+                            <div className="create-input-field">
+                                    <Input
+                                        type={"text"}
+                                        label="Sales Type"
                                         value={""}
-                                        options={['Option 1', 'Option 2', 'Option 3']}
-                                        onChange={handleFormChange} />
-                                </div>
-                                <div className="create-input-field">
-                                    <DropdownButton id="selectField1"
-                                        label="Installer"
-                                        value={""}
-                                        options={['Option 1', 'Option 2', 'Option 3']}
-                                        onChange={handleFormChange} />
+                                        name=""
+                                        placeholder={"Sales Type"}
+                                        onChange={() => { }}
+                                    />
                                 </div>
 
                                 <div className="create-input-field">
