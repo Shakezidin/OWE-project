@@ -20,19 +20,45 @@
   color: var(--side-logo-bg-color);
 }
 .user-new-button {
- display: flex;
- align-items: center;
+  display: flex;
+  align-items: center;
 }
-.user-new-button button{
+.user-new-button button {
   border: none;
   background-color: var(--active-text-color);
   color: var(--primary-text-color);
-  padding: .5rem;
+  padding: 0.5rem;
   border-radius: 8px;
   font-size: 16px;
   margin-bottom: 1rem;
-
 }
 .add {
   font-size: 20px;
+}
+.ManagerUser-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  margin-top: 1rem;
+  border-radius: 16px 16px 0px 0px;
+  padding: 1rem;
+}
+.admin-user {
+  /* padding: 1rem; */
+}
+
+.delete-icon-container {
+  display: flex;
+  /* justify-content: space-between; */
+  align-items: center;
+  gap: 5rem;
+}
+.iconsSection-delete button{
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border: 16px;
+  color: #344054;
+background: white;
 }
