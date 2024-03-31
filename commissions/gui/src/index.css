@@ -84,7 +84,9 @@ li {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
-
+.react-select-container{
+  height: 1rem !important;
+}
 /* modal style  */
 .transparent-model {
   position: fixed;
@@ -96,9 +98,15 @@ li {
   /*background-color: rgba(0, 0, 0, 0.9);*/
   display: flex;
   justify-content: center;
+  z-index: 2;
   align-items: center;
 }
-
+.sales-modal{
+  width: 400px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
 .modal {
   background-color: white;
   border-radius: 8px;
@@ -129,8 +137,9 @@ li {
   gap: 20px;
   padding: 0 39px 0px 39px;
 }
-.createProfileInputView {
-  margin-top: 2rem;
+.createProfileInputView{
+  margin-top: 1rem;
+  
 }
 .create-input-container {
   display: flex;
@@ -145,21 +154,52 @@ li {
   margin-top: 32px;
   padding: 24px 0 24px 0;
 }
-.create-input-field {
+.rate-input-container{
+display: flex;
+width: 31.5%;
+justify-content: space-between;
+}
+.start-input-container{
+  display: flex;
+  width: 65.5%;
+justify-content: space-between;
+}
+.rate-input-field{
+  width: 48.5%;
+}
+.create-input-field{
   width: 31.5%;
-}
-
-.textareaContainer p{
-font-size: 14px;
-font-weight: 500;
 
 }
-textarea {
-
-font-size: 12px;
-font-weight: 400;
-  padding: 0.5rem;
-  margin-top: 0.5rem;
-  border-radius: 8px;
-  border: 1px solid #d9d9d9;
+.radio-container{
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  /* justify-content: space-between; */
+}
+.radio-content{
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  margin-top: .3rem;
+  /* width: 23%; */
+}
+.radio-content input{
+  cursor: pointer;
+  width: 30px;
+}
+.create-input-field-note{
+  width: 100%;
+}
+.create-input-field-note textarea{
+  width: 100%;
+  border: 1px solid #d0d5dd;
+  outline: none;
+  padding: .5rem;
+  border-radius: .5rem;
+}
+.check-box{
+  width: 20px !important;
+  height:20px !important;
+  background-color:var(--border-color);
 }

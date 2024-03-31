@@ -7,19 +7,24 @@ import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { ICONS } from "../../../icons/Icons";
-import { fetchDealerTier } from "../../../../redux/apiSlice/configSlice/dealerTierSlice";
+import { fetchDealerTier } from "../../../../redux/apiSlice/configSlice/config_get_slice/dealerTierSlice";
 import CreateDealerTier from "./CreateDealerTier";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import {
   toggleAllRows,
   toggleRowSelection,
 } from "../../../components/chekbox/checkHelper";
+import FilterDealerTier from "./FilterDealerTier";
 const DealerTier = () => {
   const dispatch = useAppDispatch();
   // const getData = useAppSelector(state=>state.comm.data)
   const [open, setOpen] = React.useState<boolean>(false);
+  const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const filter = () => setFilterOpen(true);
+  const filterClose = () => setFilterOpen(false);
   const dealerTierList = useAppSelector(
     (state) => state.dealerTier.dealers_tier_list
   );
@@ -30,7 +35,7 @@ const DealerTier = () => {
   useEffect(() => {
     const pageNumber = {
       page_number: 1,
-      page_size: 2,
+      page_size: 10,
     };
     dispatch(fetchDealerTier(pageNumber));
   }, [dispatch]);
@@ -54,11 +59,12 @@ const DealerTier = () => {
           title="Dealer Tier"
           onPressViewArchive={() => {}}
           onPressArchive={() => {}}
-          onPressFilter={() => {}}
+          onPressFilter={() => filter()}
           onPressImport={() => {}}
           onpressExport={() => {}}
           onpressAddNew={() => handleOpen()}
         />
+        {filterOPen && <FilterDealerTier handleClose={filterClose} />}
         {open && <CreateDealerTier handleClose={handleClose} />}
         <div
           className="TableContainer"

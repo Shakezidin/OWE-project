@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 
 import { ICONS } from "../../../icons/Icons";
 import TableHeader from "../../../components/tableHeader/TableHeader";
-import { fetchCommissions } from "../../../../redux/apiSlice/configSlice/commissionSlice";
+import { fetchCommissions } from "../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice";
 
 import FilterCommission from "./FilterCommission";
 
@@ -16,6 +16,8 @@ import {
   toggleAllRows,
   toggleRowSelection,
 } from "../../../components/chekbox/checkHelper";
+import Pagination from "../../../components/pagination/Pagination";
+import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 
 const CommissionRate: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -31,13 +33,33 @@ const CommissionRate: React.FC = () => {
   const error = useAppSelector((state) => state.comm.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
+  const itemsPerPage = 5;
+  const currentPage = useAppSelector((state) => state.paginationType.currentPage);
   useEffect(() => {
     const pageNumber = {
-      page_number: 1,
-      page_size: 2,
+      page_number: currentPage,
+      page_size: itemsPerPage,
     };
     dispatch(fetchCommissions(pageNumber));
-  }, [dispatch]);
+  }, [dispatch,currentPage]);
+
+  const paginate = (pageNumber: number) => {
+    dispatch(setCurrentPage(pageNumber));
+  };
+
+  const goToNextPage = () => {
+    dispatch(setCurrentPage(currentPage + 1));
+  };
+
+  const goToPrevPage = () => {
+    dispatch(setCurrentPage(currentPage - 1));
+  };
+  const totalPages = Math.ceil(commissionList?.length / itemsPerPage);
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+
+
 
   if (loading) {
     return <div>Loading...</div>;
@@ -49,6 +71,7 @@ const CommissionRate: React.FC = () => {
   if (!commissionList === null || commissionList.length === 0) {
     return <div>Data not found</div>;
   }
+  const currentPageData = commissionList?.slice(startIndex, endIndex);
 
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === commissionList.length;
@@ -149,8 +172,8 @@ const CommissionRate: React.FC = () => {
             </thead>
 
             <tbody>
-              {commissionList?.length > 0
-                ? commissionList?.map((el, i) => (
+              {currentPageData?.length > 0
+                ? currentPageData?.map((el, i) => (
                     <tr
                       key={i}
                       className={selectedRows.has(i) ? "selected" : ""}
@@ -199,6 +222,13 @@ const CommissionRate: React.FC = () => {
           </table>
         </div>
       </div>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages} // You need to calculate total pages
+        paginate={paginate}
+        goToNextPage={goToNextPage}
+        goToPrevPage={goToPrevPage}
+      />
     </div>
   );
 };

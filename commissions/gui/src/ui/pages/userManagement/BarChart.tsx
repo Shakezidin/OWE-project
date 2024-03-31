@@ -1,62 +1,92 @@
 import React from "react";
-import { Bar } from "react-chartjs-2";
-import "../userManagement/user.css";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarController,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
+import "./barchart.css";
+import { PieChart } from "recharts";
+import { Pie } from "recharts";
 
-ChartJS.register(
-  Title,
-  Tooltip,
-  Legend,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  BarController
-);
 const BarChart: React.FC = () => {
-  const data = {
-    labels: [
-      "Admin Users",
-      "Sales Manager",
-      "Sales Representative",
-      "Dealer",
-      "Regional Manager",
-      "Partner",
-      "App Setter",
-    ],
-    datasets: [
-      {
-        label: "Onboarding",
-        backgroundColor: "#2554A8",
-        color: "red",
-        borderTopLeftRadius: "",
-        borderColor: "rgba(75, 192, 192, 1)",
-        borderWidth: 1,
-        data: [89, 38, 32, 45, 60, 40, 35],
-      },
-    ],
-  };
-
-  const options = {
-    scales: {
-      y: {
-        beginAtZero: false,
-      },
+  const data01 = [
+    {
+      name: "Group A",
+      value: 400,
     },
-  };
+    {
+      name: "Group B",
+      value: 300,
+    },
+    {
+      name: "Group C",
+      value: 300,
+    },
+    {
+      name: "Group D",
+      value: 200,
+    },
+    {
+      name: "Group E",
+      value: 278,
+    },
+    {
+      name: "Group F",
+      value: 189,
+    },
+  ];
+  const data02 = [
+    {
+      name: "Group A",
+      value: 2400,
+    },
+    {
+      name: "Group B",
+      value: 4567,
+    },
+    {
+      name: "Group C",
+      value: 1398,
+    },
+    {
+      name: "Group D",
+      value: 9800,
+    },
+    {
+      name: "Group E",
+      value: 3908,
+    },
+    {
+      name: "Group F",
+      value: 4800,
+    },
+  ];
   return (
     <>
-      <div className="BarChart-Container">
-        <h2>Onboarding Detail</h2>
-        <Bar data={data} options={options} />
+    <div className="PieChart-container">
+      <div className="pieChart-section">
+        <p>Onboarding Detail</p>
+        <PieChart width={550} height={350}>
+          <Pie
+            data={data01}
+            dataKey="value"
+            nameKey="name"
+            cx="50%"
+            cy="50%"
+            outerRadius={150}
+            fill="#8884d8"
+          />
+        </PieChart>
+      </div>
+      <div className="pieChart-section">
+        <p>Performance</p>
+        <PieChart width={550} height={350}>
+          <Pie
+            data={data01}
+            dataKey="value"
+            nameKey="name"
+            cx="50%"
+            cy="50%"
+            outerRadius={150}
+            fill="#8884d8"
+          />
+        </PieChart>
+      </div>
       </div>
     </>
   );

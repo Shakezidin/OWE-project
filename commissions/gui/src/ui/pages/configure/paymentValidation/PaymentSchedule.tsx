@@ -6,20 +6,25 @@ import { CiEdit } from "react-icons/ci";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { ICONS } from "../../../icons/Icons";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-import { fetchPaySchedule } from "../../../../redux/apiSlice/configSlice/payScheduleSlice";
+import { fetchPaySchedule } from "../../../../redux/apiSlice/configSlice/config_get_slice/payScheduleSlice";
 import CreatePaymentSchedule from "./CreatePaymentSchedule";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import {
   toggleAllRows,
   toggleRowSelection,
 } from "../../../components/chekbox/checkHelper";
+import FilterPayment from "./FilterPayment";
 
 const PaymentSchedule = () => {
   const dispatch = useAppDispatch();
   // const getData = useAppSelector(state=>state.comm.data)
   const [open, setOpen] = React.useState<boolean>(false);
+  const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const filter = () => setFilterOpen(true);
+  const filterClose = () => setFilterOpen(false);
   const payScheduleList = useAppSelector(
     (state) => state.paySchedule.payment_schedule_list
   );
@@ -30,10 +35,10 @@ const PaymentSchedule = () => {
   useEffect(() => {
     const pageNumber = {
       page_number: 1,
-      page_size: 2,
+      page_size: 10,
     };
     dispatch(fetchPaySchedule(pageNumber));
-  }, []);
+  }, [dispatch]);
   console.log(payScheduleList);
   if (loading) {
     return <div>Loading...</div>;
@@ -54,11 +59,12 @@ const PaymentSchedule = () => {
           title="Payment Scheduler"
           onPressViewArchive={() => {}}
           onPressArchive={() => {}}
-          onPressFilter={() => {}}
+          onPressFilter={() => filter()}
           onPressImport={() => {}}
           onpressExport={() => {}}
           onpressAddNew={() => handleOpen()}
         />
+        {filterOPen && <FilterPayment handleClose={filterClose} />}
         {open && <CreatePaymentSchedule handleClose={handleClose} />}
         <div
           className="TableContainer"

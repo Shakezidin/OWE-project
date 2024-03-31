@@ -6,18 +6,23 @@ import { CiEdit } from "react-icons/ci";
 import { ICONS } from "../../../icons/Icons";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import TableHeader from "../../../components/tableHeader/TableHeader";
-import { fetchSalesType } from "../../../../redux/apiSlice/configSlice/salesSlice";
+import { fetchSalesType } from "../../../../redux/apiSlice/configSlice/config_get_slice/salesSlice";
 import CreateSaleType from "./CreateSaleType";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import {
   toggleAllRows,
   toggleRowSelection,
 } from "../../../components/chekbox/checkHelper";
+import FilterSale from "./FilterSale";
 
 const SaleType = () => {
   const [open, setOpen] = React.useState<boolean>(false);
+  const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const filter = () => setFilterOpen(true);
+  const filterClose = () => setFilterOpen(true);
   const dispatch = useAppDispatch();
   const salesTypeList = useAppSelector(
     (state) => state.salesType.saletype_list
@@ -29,7 +34,7 @@ const SaleType = () => {
   useEffect(() => {
     const pageNumber = {
       page_number: 1,
-      page_size: 2,
+      page_size: 10,
     };
     dispatch(fetchSalesType(pageNumber));
   }, [dispatch]);
@@ -53,11 +58,12 @@ const SaleType = () => {
           title="Sale Types"
           onPressViewArchive={() => {}}
           onPressArchive={() => {}}
-          onPressFilter={() => {}}
+          onPressFilter={() => filter()}
           onPressImport={() => {}}
           onpressExport={() => {}}
-          onpressAddNew={() => handleClose()}
+          onpressAddNew={() => handleOpen()}
         />
+        {filterOPen && <FilterSale handleClose={filterClose}/>}
         {open && <CreateSaleType handleClose={handleClose} />}
         <div
           className="TableContainer"

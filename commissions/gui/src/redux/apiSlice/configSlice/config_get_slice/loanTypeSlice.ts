@@ -1,16 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { postCaller } from "../../../infrastructure/web_api/services/apiUrl";
-import { EndPoints } from "../../../infrastructure/web_api/api_client/EndPoints";
+import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
+import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
+import { LoanTypeModel } from "../../../../core/models/configuration/LoanTypeModel";
 
-interface loanTypeData {
-  product_code: string;
-  active: number;
-  adder: number;
-  description: string;
-}
+
 
 interface loanTypeState {
-  loantype_list: loanTypeData[];
+  loantype_list: LoanTypeModel[];
   loading: boolean;
   error: string | null;
 }
@@ -55,7 +51,7 @@ const loanTypeSlice = createSlice({
       .addCase(fetchLoanType.rejected, (state, action) => {
         state.loading = false;
         state.error =
-          action.error.message ?? "Failed to fetch loanTypeData data";
+          action.error.message ?? "Failed to fetch LoanTypeModel data";
       });
   },
 });

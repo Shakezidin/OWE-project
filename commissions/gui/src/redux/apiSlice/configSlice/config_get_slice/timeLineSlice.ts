@@ -1,17 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { postCaller } from "../../../infrastructure/web_api/services/apiUrl";
-import { EndPoints } from "../../../infrastructure/web_api/api_client/EndPoints";
+import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
+import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
+import { TimeLineSlaModel } from "../../../../core/models/configuration/TimeLineSlaModel";
 
-interface timeLineData {
-  type_m2m: string;
-  state: string;
-  days: string;
-  start_date: string;
-  end_date: string;
-}
+
 
 interface timeLineState {
-  timelinesla_list: timeLineData[];
+  timelinesla_list: TimeLineSlaModel[];
   loading: boolean;
   error: string | null;
 }
@@ -56,7 +51,7 @@ const timeLineSlice = createSlice({
       .addCase(fetchTimeLineSla.rejected, (state, action) => {
         state.loading = false;
         state.error =
-          action.error.message ?? "Failed to fetch timeLineData data";
+          action.error.message ?? "Failed to fetch TimeLineSlaModel data";
       });
   },
 });

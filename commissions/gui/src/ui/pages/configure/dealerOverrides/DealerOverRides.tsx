@@ -7,17 +7,22 @@ import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 
 import { ICONS } from "../../../icons/Icons";
 import TableHeader from "../../../components/tableHeader/TableHeader";
-import { fetchDealer } from "../../../../redux/apiSlice/configSlice/dealerSlice";
+import { fetchDealer } from "../../../../redux/apiSlice/configSlice/config_get_slice/dealerSlice";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import {
   toggleAllRows,
   toggleRowSelection,
 } from "../../../components/chekbox/checkHelper";
+import FilterDealer from "./FilterDealer";
 
 const DealerOverRides: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
+  const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const filter = () => setFilterOpen(true);
+  const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const dealerList = useAppSelector((state) => state.dealer.Dealers_list);
   const loading = useAppSelector((state) => state.dealer.loading);
@@ -27,10 +32,10 @@ const DealerOverRides: React.FC = () => {
   useEffect(() => {
     const pageNumber = {
       page_number: 1,
-      page_size: 2,
+      page_size: 10,
     };
     dispatch(fetchDealer(pageNumber));
-  }, []);
+  }, [dispatch]);
 
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === dealerList.length;
@@ -51,11 +56,12 @@ const DealerOverRides: React.FC = () => {
           title="Dealer OverRides"
           onPressViewArchive={() => {}}
           onPressArchive={() => {}}
-          onPressFilter={() => {}}
+          onPressFilter={() => filter()}
           onPressImport={() => {}}
           onpressExport={() => {}}
           onpressAddNew={() => handleOpen()}
         />
+        {filterOPen && <FilterDealer handleClose={filterClose} />}
         {open && <CreateDealer handleClose={handleClose} />}
         <div
           className="TableContainer"

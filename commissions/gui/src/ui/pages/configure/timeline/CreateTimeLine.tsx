@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "../../create_profile/CreateUserProfile.css";
 import { ReactComponent as PROFILE_BACKGROUND } from "../../../../resources/assets/Profile_background.svg";
 
@@ -6,15 +6,63 @@ import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cro
 import Input from "../../../components/text_input/Input";
 import DropdownButton from "../../../components/dropdown/DropdownButton";
 import { ActionButton } from "../../../components/button/ActionButton";
-
+import { updateTimeLineForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createTimeLineSlaSlice";
+import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
+import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
+import { TimeLineSlaModel } from "../../../../core/models/configuration/TimeLineSlaModel";
+import { useDispatch } from "react-redux";
+import Select from 'react-select';
+import { stateData } from "../../../../core/models/data_models/SelectDataModel";
 type ButtonProps = {
     handleClose: () => void
 }
 
 const CreateTimeLine = (props: ButtonProps) => {
-    const handleFormChange = () => {
+    const dispatch = useDispatch();
 
-    }
+    const [createPayData, setCreatePayData] = useState<TimeLineSlaModel>(
+        {
+            type_m2m: "YourTypeM2MValue2",
+            state: "Alabama",
+            days: "10",
+            start_date: "2024-04-01",
+            end_date: "2024-04-10"
+        }
+    )
+
+
+
+    const handleChange = (newValue: any, fieldName: string) => {
+        setCreatePayData((prevData) => ({
+            ...prevData,
+            [fieldName]: newValue ? newValue.value : '',
+        }));
+    };
+    const handleTimeLineInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setCreatePayData((prevData) => ({
+            ...prevData,
+            [name]: value,
+        }));
+    };
+
+    const submitTimeLineSla = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        try {
+            dispatch(updateTimeLineForm(createPayData));
+            const res = await postCaller(EndPoints.create_timelinesla, createPayData);
+            if (res?.status === 200) {
+                alert(res.message)
+                props.handleClose()
+                window.location.reload()
+            }
+            else {
+                alert(res.message)
+            }
+        } catch (error) {
+            console.error('Error submitting form:', error);
+        }
+    };
     return (
         <div className="transparent-model">
             <div className="modal">
@@ -25,34 +73,37 @@ const CreateTimeLine = (props: ButtonProps) => {
                 </div>
                 <div className="createUserContainer">
                     <h3 className="createProfileText">TimeLine SLA</h3>
-                    <div className="createProfileInputView">
+                <form onSubmit={(e)=>submitTimeLineSla(e)}>
+                <div className="createProfileInputView">
                         <div className="createProfileTextView">
                             <div className="create-input-container">
                             <div className="create-input-field">
                                     <Input
                                         type={"text"}
                                         label="Type/M2M"
-                                        value={""}
-                                        name=""
+                                        value={createPayData.type_m2m}
+                                        name="type_m2m"
                                         placeholder={"Enter"}
-                                        onChange={() => { }}
+                                        onChange={(e) => handleTimeLineInput(e)}
                                     />
                                 </div>
                                 <div className="create-input-field">
-                                    <DropdownButton id="selectField1"
-                                        label="State"
-                                        value={""}
-                                        options={['Option 1', 'Option 2', 'Option 3']}
-                                        onChange={handleFormChange} />
+                                <label className="inputLabel">ST</label>
+                                    <Select
+                                        options={stateData}
+                                        isSearchable
+                                        onChange={(newValue) => handleChange(newValue, 'state')}
+                                        value={stateData.find((option) => option.value === createPayData.state)}
+                                    />
                                 </div>
                                 <div className="create-input-field">
                                     <Input
                                         type={"text"}
                                         label="Days"
-                                        value={""}
-                                        name=""
+                                        value={createPayData.days}
+                                        name="days"
                                         placeholder={"Enter"}
-                                        onChange={() => { }}
+                                        onChange={(e) => handleTimeLineInput(e)}
                                     />
                                 </div>
                             </div>
@@ -63,20 +114,20 @@ const CreateTimeLine = (props: ButtonProps) => {
                                     <Input
                                         type={"date"}
                                         label="Start Date"
-                                        value={""}
-                                        name=""
+                                        value={createPayData.start_date}
+                                        name="start_date"
                                         placeholder={"1/04/2004"}
-                                        onChange={() => { }}
+                                        onChange={(e) => handleTimeLineInput(e)}
                                     />
                                 </div>
                                 <div className="create-input-field">
                                     <Input
                                         type={"date"}
                                         label="End Date"
-                                        value={""}
-                                        name=""
+                                        value={createPayData.end_date}
+                                        name="end_date"
                                         placeholder={"10/04/2004"}
-                                        onChange={() => { }}
+                                        onChange={(e) => handleTimeLineInput(e)}
                                     />
                                 </div>
                             </div>
@@ -87,6 +138,7 @@ const CreateTimeLine = (props: ButtonProps) => {
                         </div>
 
                     </div>
+                </form>
                 </div>
             </div>
         </div>

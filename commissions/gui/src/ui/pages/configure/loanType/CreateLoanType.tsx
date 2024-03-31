@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "../../create_profile/CreateUserProfile.css";
 import { ReactComponent as PROFILE_BACKGROUND } from "../../../../resources/assets/Profile_background.svg";
 
@@ -6,15 +6,62 @@ import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cro
 import Input from "../../../components/text_input/Input";
 import DropdownButton from "../../../components/dropdown/DropdownButton";
 import { ActionButton } from "../../../components/button/ActionButton";
+import { updateLoanTypeForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createLoanTypeSlice";
+import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
+import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
+import { LoanTypeModel } from "../../../../core/models/configuration/LoanTypeModel";
+import { useDispatch } from "react-redux";
 
 type ButtonProps = {
     handleClose: () => void
 }
 
 const CreateLoanType = (props: ButtonProps) => {
-    const handleFormChange = () => {
+    const dispatch = useDispatch();
 
-    }
+    const [createLoanTypeData, setCreateLoanTypeData] = useState<LoanTypeModel>(
+        {
+            product_code: "Prd2",
+            active: 1,
+            adder: 2,
+            description: "description"
+        }
+    )
+
+
+    const handleOptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { value } = e.target;
+        setCreateLoanTypeData((prevData) => ({
+          ...prevData,
+          active: parseInt(value),
+        }));
+      };
+  
+    const handleloanTypeChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
+        setCreateLoanTypeData((prevData) => ({
+            ...prevData,
+            [name]: value,
+        }));
+    };
+
+    const submitLoanType = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        try {
+            dispatch(updateLoanTypeForm(createLoanTypeData));
+            const res = await postCaller(EndPoints.create_loantype, createLoanTypeData);
+            if (res.status === 200) {
+                alert(res.message)
+                props.handleClose()
+                window.location.reload()
+            }
+            else {
+                alert(res.message)
+            }
+        } catch (error) {
+            console.error('Error submitting form:', error);
+        }
+    };
     return (
         <div className="transparent-model">
             <div className="modal">
@@ -25,46 +72,64 @@ const CreateLoanType = (props: ButtonProps) => {
                 </div>
                 <div className="createUserContainer">
                     <h3 className="createProfileText">Loan Type</h3>
-                    <div className="createProfileInputView">
+                  <form onSubmit={(e)=>submitLoanType(e)}>
+                  <div className="createProfileInputView">
                         <div className="createProfileTextView">
                             <div className="create-input-container">
-                            <div className="create-input-field">
+                                <div className="create-input-field">
                                     <Input
                                         type={"text"}
                                         label="Product Code"
-                                        value={""}
-                                        name=""
+                                        value={createLoanTypeData.product_code}
+                                        name="product_code"
                                         placeholder={"Enter"}
-                                        onChange={() => { }}
+                                        onChange={(e) => handleloanTypeChange(e)}
                                     />
                                 </div>
-                                <div className="create-input-field">
-                                    <DropdownButton id="selectField1"
-                                        label="Active"
-                                        value={""}
-                                        options={['Option 1', 'Option 2', 'Option 3']}
-                                        onChange={handleFormChange} />
+                                {/* Radio buttons for Yes/No */}
+                             <div className="create-input-field">
+                             <label className="inputLabel">Active</label>
+                                <div className="radio-container">
+                              <div className="radio-content">
+                                        <input
+                                            type="radio"
+                                            name="active"
+                                            value={"1"}
+                                            checked={createLoanTypeData.active === 1}
+                                            onChange={handleOptionChange}
+                                        />
+                                        Yes
+                                    </div>
+                                    <div className="radio-content">
+                                        <input
+                                            type="radio"
+                                            name="active"
+                                            value={"0"}
+                                            checked={createLoanTypeData.active === 0}
+                                            onChange={(e)=>handleOptionChange(e)}
+                                        />
+                                        No
+                                    </div>
+                            
                                 </div>
+                             </div>
 
                                 <div className="create-input-field">
                                     <Input
                                         type={"text"}
                                         label="Adder"
-                                        value={""}
-                                        name=""
+                                        value={createLoanTypeData.adder}
+                                        name="adder"
                                         placeholder={"Enter"}
-                                        onChange={() => { }}
+                                        onChange={(e) => handleloanTypeChange(e)}
                                     />
                                 </div>
                             </div>
-                            <div className="create-input-container">
-                                <div className="create-input-field">
-                                    <label className="textareaContainer">
-                                        <p>Note</p>
-                                    </label>
-                                    <textarea rows={4} cols={137}
-                                        placeholder={"Type"} />
-                                </div>
+                            <div className="create-input-field-note">
+                                <label htmlFor="" className="inputLabel">Note</label> <br />
+                                <textarea name="description" id="" rows={4}
+                                    onChange={(e) => handleloanTypeChange(e)}
+                                    value={createLoanTypeData.description} placeholder="Type"></textarea>
                             </div>
 
                         </div>
@@ -74,6 +139,7 @@ const CreateLoanType = (props: ButtonProps) => {
                         </div>
 
                     </div>
+                  </form>
                 </div>
             </div>
         </div>

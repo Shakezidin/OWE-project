@@ -5,7 +5,7 @@ import "../configure.css";
 import { IoAddSharp } from "react-icons/io5";
 import CreateDealer from "../dealerOverrides/CreateDealer";
 import { CiEdit } from "react-icons/ci";
-import { fetchAdderV } from "../../../../redux/apiSlice/configSlice/adderVSlice";
+import { fetchAdderV } from "../../../../redux/apiSlice/configSlice/config_get_slice/adderVSlice";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import { ICONS } from "../../../icons/Icons";
 import TableHeader from "../../../components/tableHeader/TableHeader";
@@ -15,11 +15,16 @@ import {
   toggleAllRows,
   toggleRowSelection,
 } from "../../../components/chekbox/checkHelper";
+import FilterAdder from "./FilterAdder";
 
 const AdderValidation = () => {
   const [open, setOpen] = React.useState<boolean>(false);
+  const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const filter = () => setFilterOpen(true);
+  const filterClose = () => setFilterOpen(false);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const dispatch = useAppDispatch();
@@ -32,10 +37,10 @@ const AdderValidation = () => {
   useEffect(() => {
     const pageNumber = {
       page_number: 1,
-      page_size: 2,
+      page_size: 10,
     };
     dispatch(fetchAdderV(pageNumber));
-  }, []);
+  }, [dispatch]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -56,11 +61,12 @@ const AdderValidation = () => {
           title="Adder validation"
           onPressViewArchive={() => {}}
           onPressArchive={() => {}}
-          onPressFilter={() => {}}
+          onPressFilter={() => filter()}
           onPressImport={() => {}}
           onpressExport={() => {}}
           onpressAddNew={() => handleOpen()}
         />
+        {filterOPen && <FilterAdder handleClose={filterClose}/>}
         {open && <CreateAdder handleClose={handleClose} />}
         <div
           className="TableContainer"

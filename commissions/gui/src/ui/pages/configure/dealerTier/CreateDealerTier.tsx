@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "../../create_profile/CreateUserProfile.css";
 import { ReactComponent as PROFILE_BACKGROUND } from "../../../../resources/assets/Profile_background.svg";
 
@@ -6,15 +6,62 @@ import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cro
 import Input from "../../../components/text_input/Input";
 import DropdownButton from "../../../components/dropdown/DropdownButton";
 import { ActionButton } from "../../../components/button/ActionButton";
-
+import { updateDealerTierForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createDealerTierSlice";
+import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
+import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
+import { DealerTierModel } from "../../../../core/models/configuration/DealerTierModel";
+import { useDispatch } from "react-redux";
+import { dealerTierData } from "../../../../core/models/data_models/SelectDataModel";
+import Select from 'react-select';
 type ButtonProps = {
     handleClose: () => void
 }
 
 const CreateDealerTier = (props: ButtonProps) => {
-    const handleFormChange = () => {
+    const dispatch = useDispatch();
 
-    }
+    const [createDealerTierData, setCreateDealerTierData] = useState<DealerTierModel>(
+        {
+            dealer_name: "Shushank Sharma",
+            tier: "TierName123",
+            start_date: "2024-04-01",
+            end_date: "2024-04-30"
+        }
+    )
+
+
+
+    const handleChange = (newValue: any, fieldName: string) => {
+        setCreateDealerTierData((prevData) => ({
+            ...prevData,
+            [fieldName]: newValue ? newValue.value : '',
+        }));
+    };
+    const handleTierChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setCreateDealerTierData((prevData) => ({
+            ...prevData,
+            [name]: value,
+        }));
+    };
+
+    const submitTierLoan = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        try {
+            dispatch(updateDealerTierForm(createDealerTierData));
+            const res = await postCaller(EndPoints.create_dealertier, createDealerTierData);
+            if (res?.status === 200) {
+                alert(res.message)
+                props.handleClose()
+                window.location.reload()
+            }
+            else {
+                alert(res.message)
+            }
+        } catch (error) {
+            console.error('Error submitting form:', error);
+        }
+    };
     return (
         <div className="transparent-model">
             <div className="modal">
@@ -25,51 +72,49 @@ const CreateDealerTier = (props: ButtonProps) => {
                 </div>
                 <div className="createUserContainer">
                     <h3 className="createProfileText">Dealer Tier</h3>
-                    <div className="createProfileInputView">
+                   <form onSubmit={(e)=>submitTierLoan(e)}>
+                   <div className="createProfileInputView">
                         <div className="createProfileTextView">
                             <div className="create-input-container">
                                 <div className="create-input-field">
                                     <Input
                                         type={"text"}
                                         label="Dealer Name"
-                                        value={""}
-                                        name=""
+                                        value={createDealerTierData.dealer_name}
+                                        name="dealer_name"
                                         placeholder={"Enter"}
-                                        onChange={() => { }}
+                                        onChange={(e) => handleTierChange(e)}
                                     />
                                 </div>
                                 <div className="create-input-field">
-                                    <DropdownButton id="selectField1"
-                                        label="Tier"
-                                        value={""}
-                                        options={['Option 1', 'Option 2', 'Option 3']}
-                                        onChange={handleFormChange} />
+                                    <label className="inputLabel">Installer</label>
+                                    <Select
+                                        options={dealerTierData}
+                                        isSearchable
+                                        onChange={(newValue) => handleChange(newValue, 'tier')}
+                                        value={dealerTierData.find((option) => option.value === createDealerTierData.tier)}
+                                    />
                                 </div>
                                 <div className="create-input-field">
                                     <Input
                                         type={"date"}
                                         label="Start Date"
-                                        value={""}
-                                        name=""
+                                        value={createDealerTierData.start_date}
+                                        name="start_date"
                                         placeholder={"1/04/2004"}
-                                        onChange={() => { }}
+                                        onChange={(e) => handleTierChange(e)}
                                     />
                                 </div>
-
                             </div>
-
-
                             <div className="create-input-container">
-
-
                                 <div className="create-input-field">
                                     <Input
                                         type={"date"}
                                         label="End Date"
-                                        value={""}
-                                        name=""
+                                        value={createDealerTierData.end_date}
+                                        name="end_date"
                                         placeholder={"10/04/2004"}
-                                        onChange={() => { }}
+                                        onChange={(e) => handleTierChange(e)}
                                     />
                                 </div>
                             </div>
@@ -80,6 +125,7 @@ const CreateDealerTier = (props: ButtonProps) => {
                         </div>
 
                     </div>
+                   </form>
                 </div>
             </div>
         </div>
