@@ -7,8 +7,7 @@
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
- 
-    width: 20px !important;
+    width: 24px !important;
     height:24px !important;
     border-radius: 7px !important;
     /* margin-top: .5rem; */
@@ -42,7 +41,7 @@
 .checkbox:checked::after {
     content: '';
     position: absolute;
-    left: 9px;
+    left: 8px;
     top: 3px;
     width: 6px;
     height: 10px;

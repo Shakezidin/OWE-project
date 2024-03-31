@@ -96,6 +96,17 @@ const CreateTierLoan = (props: ButtonProps) => {
               <Select
                       options={tierInstallerData}
                       isSearchable
+                      styles={{
+                        control: (baseStyles, state) => ({
+                          ...baseStyles,
+                          marginTop:"4.5px",
+                          borderRadius:"8px",
+                          outline:"none",
+                          height:"2.8rem",
+                          border:"1px solid #d0d5dd"
+                          
+                        }),
+                      }}
                       onChange={(newValue) => handleChange(newValue, 'installer')}
                       value={tierInstallerData.find((option) => option.value === createTier.installer )}
                     />
@@ -105,6 +116,17 @@ const CreateTierLoan = (props: ButtonProps) => {
               <Select
                       options={tierState}
                       isSearchable
+                      styles={{
+                        control: (baseStyles, state) => ({
+                          ...baseStyles,
+                          marginTop:"4.5px",
+                          borderRadius:"8px",
+                          outline:"none",
+                          height:"2.8rem",
+                          border:"1px solid #d0d5dd"
+                          
+                        }),
+                      }}
                       onChange={(newValue) => handleChange(newValue, 'state')}
                       value={tierState.find((option) => option.value === createTier.state )}
                     />
@@ -126,6 +148,17 @@ const CreateTierLoan = (props: ButtonProps) => {
                                 <label className="inputLabel">OWE Cost</label>
               <Select
                       options={oweCost}
+                      styles={{
+                        control: (baseStyles, state) => ({
+                          ...baseStyles,
+                          marginTop:"4.5px",
+                          borderRadius:"8px",
+                          outline:"none",
+                          height:"2.8rem",
+                          border:"1px solid #d0d5dd"
+                          
+                        }),
+                      }}
                       isSearchable
                       onChange={(newValue) => handleChange(newValue, 'owe_cost')}
                       value={oweCost.find((option) => option.value === createTier.owe_cost )}

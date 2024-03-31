@@ -22,7 +22,7 @@ const SaleType = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const filter = () => setFilterOpen(true);
-  const filterClose = () => setFilterOpen(true);
+  const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const salesTypeList = useAppSelector(
     (state) => state.salesType.saletype_list

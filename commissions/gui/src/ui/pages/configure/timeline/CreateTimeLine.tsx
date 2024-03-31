@@ -92,6 +92,17 @@ const CreateTimeLine = (props: ButtonProps) => {
                                     <Select
                                         options={stateData}
                                         isSearchable
+                                        styles={{
+                                            control: (baseStyles, state) => ({
+                                              ...baseStyles,
+                                              marginTop:"4.5px",
+                                              borderRadius:"8px",
+                                              outline:"none",
+                                              height:"2.8rem",
+                                              border:"1px solid #d0d5dd"
+                                              
+                                            }),
+                                          }}
                                         onChange={(newValue) => handleChange(newValue, 'state')}
                                         value={stateData.find((option) => option.value === createPayData.state)}
                                     />

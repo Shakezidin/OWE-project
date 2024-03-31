@@ -38,6 +38,7 @@ const Input: FC<InputProps> = ({
           placeholder={placeholder}
           value={value}
           onChange={onChange}
+          className="input"
         />
         {isTypePassword ? (
           <EYE_ICON

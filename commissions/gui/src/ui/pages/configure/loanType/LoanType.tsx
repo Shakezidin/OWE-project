@@ -138,11 +138,11 @@ const LoanType = () => {
                       {el.product_code}
                     </td>
                     <td>
-                      <input
-                        value={el.active}
-                        type="checkbox"
+                    <CheckBox
                         checked={el.active===1}
-                        className="check-box"
+                        onChange={() =>
+                          {}
+                        }
                       />
                     </td>
                     <td>

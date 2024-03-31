@@ -65,10 +65,9 @@ export const LoginPage = () => {
         localStorage.setItem("role", role_name);
         localStorage.setItem("token", access_token);
         dispatch(loginSuccess({ email_id, role_name, access_token }));
-        if (response.data.status === HTTP_STATUS.OK) {
-          alert("Login Successfully");
-        }
-        navigate("/dashboard");
+          navigate("/dashboard");
+        
+
       } catch (error) {
         setError("Login failed. Please check your credentials.");
         alert("Please enter vaild credentails.");

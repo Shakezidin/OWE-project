@@ -1,7 +1,7 @@
 // api.ts
 
 import axios from "axios";
-import { HTTP_METHOD } from "../../../core/models/api_models/RequestModel";
+import { HTTP_METHOD, HTTP_STATUS } from "../../../core/models/api_models/RequestModel";
 import { Credentials } from "../../../core/models/api_models/AuthModel";
 
 const BASE_URL = `${process.env.REACT_APP_BASE_URL}`;
@@ -11,13 +11,17 @@ export interface LoginResponse {
   email_id: string;
   role_name: string;
   access_token: string;
-  status:number
+  status:number,
+  message:string,
 }
 
 
 export const login = async (credentials: Credentials): Promise<{data: LoginResponse}> => {
   try {
     const response = await axios.post<{ data: LoginResponse }>(`${BASE_URL}/login`, credentials);
+    if(response.status===HTTP_STATUS.OK){
+      alert("login Successfully")
+    }
     return response.data;
   } catch (error) {
     throw new Error('Login failed. Please check your credentials.');

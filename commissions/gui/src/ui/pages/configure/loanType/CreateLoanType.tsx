@@ -93,6 +93,7 @@ const CreateLoanType = (props: ButtonProps) => {
                               <div className="radio-content">
                                         <input
                                             type="radio"
+                                            className="radio"
                                             name="active"
                                             value={"1"}
                                             checked={createLoanTypeData.active === 1}
@@ -104,6 +105,7 @@ const CreateLoanType = (props: ButtonProps) => {
                                         <input
                                             type="radio"
                                             name="active"
+                                            className="radio"
                                             value={"0"}
                                             checked={createLoanTypeData.active === 0}
                                             onChange={(e)=>handleOptionChange(e)}

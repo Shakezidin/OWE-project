@@ -7,8 +7,9 @@ import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cro
 import Input from "../../../components/text_input/Input";
 import DropdownButton from "../../../components/dropdown/DropdownButton";
 import { ActionButton } from "../../../components/button/ActionButton";
-import { Button } from "@adobe/react-spectrum";
 
+import Select from 'react-select';
+import { adderTypeData, priceTypeData } from "../../../../core/models/data_models/SelectDataModel";
 type ButtonProps = {
     handleClose: () => void
 }
@@ -48,20 +49,48 @@ const FilterAdder = (props: ButtonProps) => {
                     <div className="createProfileInputView">
                         <div className="createProfileTextView">
                             <div className="create-input-container">
-                                <div className="create-input-field">
-                                    <DropdownButton id="selectField1"
-                                        label="Partner"
-                                        value={""}
-                                        options={['Option 1', 'Option 2', 'Option 3']}
-                                        onChange={handleFormChange} />
-                                </div>
-                                <div className="create-input-field">
-                                    <DropdownButton id="selectField1"
-                                        label="Installer"
-                                        value={""}
-                                        options={['Option 1', 'Option 2', 'Option 3']}
-                                        onChange={handleFormChange} />
-                                </div>
+                            <div className="create-input-field">
+                    <label className="inputLabel">Adder Type</label>
+                    <div className="">
+                      <Select
+                        options={adderTypeData}
+                        styles={{
+                          control: (baseStyles, state) => ({
+                            ...baseStyles,
+                            marginTop:"4.5px",
+                            borderRadius:"8px",
+                            outline:"none",
+                            height:"2.8rem",
+                            border:"1px solid #d0d5dd"
+                            
+                          }),
+                        }}
+                    
+                        value={adderTypeData.find((option) => option.value ==='adder')}
+                      />
+                    </div>
+                  </div>
+                  <div className="create-input-field">
+                    <label className="inputLabel">Price Type</label>
+                    <div className="">
+                      <Select
+                        options={priceTypeData}
+                        styles={{
+                          control: (baseStyles, state) => ({
+                            ...baseStyles,
+                            marginTop:"4.5px",
+                            borderRadius:"8px",
+                            outline:"none",
+                            height:"2.8rem",
+                            border:"1px solid #d0d5dd"
+                            
+                          }),
+                        }}
+                    
+                        value={priceTypeData.find((option) => option.value ==='price')}
+                      />
+                    </div>
+                  </div>
 
                                 <div className="create-input-field">
                                     <Input

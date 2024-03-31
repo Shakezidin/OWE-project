@@ -91,6 +91,17 @@ const CreateDealerTier = (props: ButtonProps) => {
                                     <Select
                                         options={dealerTierData}
                                         isSearchable
+                                        styles={{
+                                            control: (baseStyles, state) => ({
+                                              ...baseStyles,
+                                              marginTop:"4.5px",
+                                              borderRadius:"8px",
+                                              outline:"none",
+                                              height:"2.8rem",
+                                              border:"1px solid #d0d5dd"
+                                              
+                                            }),
+                                          }}
                                         onChange={(newValue) => handleChange(newValue, 'tier')}
                                         value={dealerTierData.find((option) => option.value === createDealerTierData.tier)}
                                     />

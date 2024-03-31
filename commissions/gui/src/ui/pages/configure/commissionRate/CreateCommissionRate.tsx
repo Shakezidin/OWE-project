@@ -13,14 +13,12 @@ import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import Select from 'react-select';
 import { installers, partners, respTypeData, statData } from "../../../../core/models/data_models/SelectDataModel";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
-import { useNavigate } from "react-router-dom";
 type ButtonProps = {
   handleClose: () => void
 }
 
 const CreateCommissionRate = (props: ButtonProps) => {
   const dispatch = useDispatch();
-const navigate = useNavigate()
   const [createCommission, setCreateCommission] = useState<CommissionModel>(
     {
       partner: "OWE",
@@ -100,14 +98,35 @@ const navigate = useNavigate()
                       defaultValue={partners[0]}
                       onChange={(newValue) => handleChange(newValue, 'partner')}
                       value={partners.find((option) => option.value === createCommission.partner)}
+                      styles={{
+                        control: (baseStyles, state) => ({
+                          ...baseStyles,
+                          marginTop:"4.5px",
+                          borderRadius:"8px",
+                          outline:"none",
+                          height:"2.8rem",
+                          border:"1px solid #d0d5dd"
+                          
+                        }),
+                      }}
                     />
                   </div>
                   <div className="create-input-field">
                     <label className="inputLabel">Installer</label>
-                    <div className="" style={customStyle.select}>
+                    <div className="">
                       <Select
                         options={installers}
-
+                        styles={{
+                          control: (baseStyles, state) => ({
+                            ...baseStyles,
+                            marginTop:"4.5px",
+                            borderRadius:"8px",
+                            outline:"none",
+                            height:"2.8rem",
+                            border:"1px solid #d0d5dd"
+                            
+                          }),
+                        }}
                         onChange={(newValue) => handleChange(newValue, 'installer')}
                         value={installers.find((option) => option.value === createCommission.installer)}
                       />
@@ -117,7 +136,17 @@ const navigate = useNavigate()
                     <label className="inputLabel">Partner</label>
                     <Select
                       options={statData}
-
+                      styles={{
+                        control: (baseStyles, state) => ({
+                          ...baseStyles,
+                          marginTop:"4.5px",
+                          borderRadius:"8px",
+                          outline:"none",
+                          height:"2.8rem",
+                          border:"1px solid #d0d5dd"
+                          
+                        }),
+                      }}
                       isSearchable
                       // options={statData}
                       onChange={(newValue) => handleChange(newValue, 'state')}
@@ -152,6 +181,17 @@ const navigate = useNavigate()
                     <Select
                       options={respTypeData}
                       isSearchable
+                      styles={{
+                        control: (baseStyles, state) => ({
+                          ...baseStyles,
+                          marginTop:"4.5px",
+                          borderRadius:"8px",
+                          outline:"none",
+                          height:"2.8rem",
+                          border:"1px solid #d0d5dd"
+                          
+                        }),
+                      }}
                       // options={partners}
                       onChange={(newValue) => handleChange(newValue, 'rep_type')}
                       value={respTypeData.find((option) => option.value === createCommission.rep_type)}

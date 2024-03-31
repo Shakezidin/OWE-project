@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "../configure.css";
-import { IoAddSharp } from "react-icons/io5";
-import CreateDealer from "../dealerOverrides/CreateDealer";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 
 import { ICONS } from "../../../icons/Icons";

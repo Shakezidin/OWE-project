@@ -99,6 +99,17 @@ const CreatePaymentSchedule = (props: ButtonProps) => {
                                 <label className="inputLabel">Partner</label>
                                     <Select
                                         options={payPartnerData}
+                                        styles={{
+                                            control: (baseStyles, state) => ({
+                                              ...baseStyles,
+                                              marginTop:"4.5px",
+                                              borderRadius:"8px",
+                                              outline:"none",
+                                              height:"2.8rem",
+                                              border:"1px solid #d0d5dd"
+                                              
+                                            }),
+                                          }}
                                         isSearchable
                                         onChange={(newValue) => handleChange(newValue, 'partner')}
                                         value={payPartnerData.find((option) => option.value === createPayData.partner)}
@@ -109,6 +120,17 @@ const CreatePaymentSchedule = (props: ButtonProps) => {
                                     <Select
                                         options={payInstallerNameData}
                                         isSearchable
+                                        styles={{
+                                            control: (baseStyles, state) => ({
+                                              ...baseStyles,
+                                              marginTop:"4.5px",
+                                              borderRadius:"8px",
+                                              outline:"none",
+                                              height:"2.8rem",
+                                              border:"1px solid #d0d5dd"
+                                              
+                                            }),
+                                          }}
                                         onChange={(newValue) => handleChange(newValue, 'installer_name')}
                                         value={payInstallerNameData.find((option) => option.value === createPayData.installer_name)}
                                     />
@@ -121,6 +143,17 @@ const CreatePaymentSchedule = (props: ButtonProps) => {
                                     <Select
                                         options={paySaleTypeData}
                                         isSearchable
+                                        styles={{
+                                            control: (baseStyles, state) => ({
+                                              ...baseStyles,
+                                              marginTop:"4.5px",
+                                              borderRadius:"8px",
+                                              outline:"none",
+                                              height:"2.8rem",
+                                              border:"1px solid #d0d5dd"
+                                              
+                                            }),
+                                          }}
                                         onChange={(newValue) => handleChange(newValue, 'sale_type')}
                                         value={paySaleTypeData.find((option) => option.value === createPayData.sale_type)}
                                     />
@@ -129,6 +162,17 @@ const CreatePaymentSchedule = (props: ButtonProps) => {
                                 <label className="inputLabel">ST</label>
                                     <Select
                                         options={stateData}
+                                        styles={{
+                                            control: (baseStyles, state) => ({
+                                              ...baseStyles,
+                                              marginTop:"4.5px",
+                                              borderRadius:"8px",
+                                              outline:"none",
+                                              height:"2.8rem",
+                                              border:"1px solid #d0d5dd"
+                                              
+                                            }),
+                                          }}
                                         isSearchable
                                         onChange={(newValue) => handleChange(newValue, 'state')}
                                         value={stateData.find((option) => option.value === createPayData.state)}
