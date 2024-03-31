@@ -14,13 +14,18 @@ import {
   toggleAllRows,
   toggleRowSelection,
 } from "../../../components/chekbox/checkHelper";
+import FilterMarketing from "./FilterMarketing";
 
 const MarketingFees: React.FC = () => {
   const dispatch = useAppDispatch();
   // const getData = useAppSelector(state=>state.comm.data)
   const [open, setOpen] = React.useState<boolean>(false);
+  const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const filter = () => setFilterOpen(true);
+  const filterClose = () => setFilterOpen(false);
   const marketingFeesList = useAppSelector(
     (state) => state.marketing.marketing_fees_list
   );
@@ -54,11 +59,12 @@ const MarketingFees: React.FC = () => {
           title="Marketing Fees"
           onPressViewArchive={() => {}}
           onPressArchive={() => {}}
-          onPressFilter={() => {}}
+          onPressFilter={() => filter()}
           onPressImport={() => {}}
           onpressExport={() => {}}
           onpressAddNew={() => handleOpen()}
         />
+        {filterOPen && <FilterMarketing handleClose={filterClose} />}
         {open && <CreateMarketingFees handleClose={handleClose} />}
         <div
           className="TableContainer"

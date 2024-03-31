@@ -13,7 +13,7 @@ type ButtonProps = {
     handleClose: () => void
 }
 
-const FilterCommission = (props: ButtonProps) => {
+const FilterDealer = (props: ButtonProps) => {
     const handleFormChange = () => {
 
     }
@@ -93,4 +93,4 @@ const FilterCommission = (props: ButtonProps) => {
     );
 };
 
-export default FilterCommission;
+export default FilterDealer;

@@ -12,6 +12,7 @@ import {
   toggleAllRows,
   toggleRowSelection,
 } from "../../../components/chekbox/checkHelper";
+import FilterTierLoan from "./filterTierLoan";
 const TierLoanFee = () => {
   const dispatch = useAppDispatch();
   const tierloanList = useAppSelector(
@@ -20,8 +21,12 @@ const TierLoanFee = () => {
   const loading = useAppSelector((state) => state.tierLoan.loading);
   const error = useAppSelector((state) => state.tierLoan.error);
   const [open, setOpen] = React.useState<boolean>(false);
+  const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const filter = () => setFilterOpen(true);
+  const filterClose = () => setFilterOpen(false);
+  
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   useEffect(() => {
@@ -52,11 +57,12 @@ const TierLoanFee = () => {
           title="Tier Loan Fee"
           onPressViewArchive={() => {}}
           onPressArchive={() => {}}
-          onPressFilter={() => {}}
+          onPressFilter={() => filter()}
           onPressImport={() => {}}
           onpressExport={() => {}}
           onpressAddNew={() => handleOpen()}
         />
+        {filterOPen && <FilterTierLoan handleClose={filterClose}/>}
         {open && <CreateTierLoan handleClose={handleClose} />}
         <div
           className="TableContainer"
