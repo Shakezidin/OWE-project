@@ -79,20 +79,45 @@ func HandleGetTimelineSlasDataRequest(resp http.ResponseWriter, req *http.Reques
 
 	timelineSlaList := models.GetTimelineSlaList{}
 
-	// Assuming you have data as a slice of maps, as in your previous code
+	// Iterate through each item in the data
 	for _, item := range data {
-		TypeM2M := item["type_m2m"].(string)
-		State := item["state"].(string)
-		Days := "1" //strconv.Itoa(int(item["days"].(int64)))
-		StartDate := item["start_date"].(string)
-		EndDate := func() string {
-			if val, ok := item["end_date"].(string); ok {
-				return val
-			}
-			return ""
-		}()
+		// TypeM2M
+		TypeM2M, ok := item["type_m2m"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get TypeM2M. Item: %+v\n", item)
+			continue
+		}
 
-		// Create a new GetMarketingFeesData object
+		// State
+		State, ok := item["state"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get State. Item: %+v\n", item)
+			continue
+		}
+
+		// Days
+		DaysVal, ok := item["days"].(int64)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get Days. Item: %+v\n", item)
+			continue
+		}
+		Days := int(DaysVal)
+
+		// StartDate
+		StartDate, ok := item["start_date"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get StartDate. Item: %+v\n", item)
+			continue
+		}
+
+		// EndDate
+		EndDate, ok := item["end_date"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get EndDate. Item: %+v\n", item)
+			continue
+		}
+
+		// Create a new GetTimelineSlaData object
 		tlsData := models.GetTimelineSlaData{
 			TypeM2M:   TypeM2M,
 			State:     State,
@@ -101,9 +126,10 @@ func HandleGetTimelineSlasDataRequest(resp http.ResponseWriter, req *http.Reques
 			EndDate:   EndDate,
 		}
 
-		// Append the new vaddersData to the marketingFeesList
+		// Append the new tlsData to the timelineSlaList
 		timelineSlaList.TimelineSlaList = append(timelineSlaList.TimelineSlaList, tlsData)
 	}
+
 	// Send the response
 	log.FuncInfoTrace(0, "Number of timeline sla List fetched : %v list %+v", len(timelineSlaList.TimelineSlaList), timelineSlaList)
 	FormAndSendHttpResp(resp, "timeline sla Data", http.StatusOK, timelineSlaList)

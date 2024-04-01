@@ -6,7 +6,7 @@
 
 package models
 
-// Filter represents a single filter with key, operation, and data
+// Filter represents a single filter with Column, operation, and data
 type Filter struct {
 	Column    string `json:"Column"`
 	Operation string `json:"operation"`
@@ -19,3 +19,4 @@ type DataRequestBody struct {
 	PageSize   int      `json:"page_size"`
 	Filters    []Filter `json:"filters"`
 }
+

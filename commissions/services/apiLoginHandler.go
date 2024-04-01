@@ -94,7 +94,8 @@ func HandleLoginRequest(resp http.ResponseWriter, req *http.Request) {
 	loginResp.RoleName = roleName
 	loginResp.IsPasswordChangeRequired = passwordChangeRequired
 	loginResp.AccessToken = tokenString
+	loginResp.TimeToExpire = logginSessionTimeMin
 
-	log.FuncInfoTrace(0, "Login Sucessfull for User : %v", creds.EmailId)
-	FormAndSendHttpResp(resp, "Login Sucessfull", http.StatusOK, loginResp)
+	log.FuncInfoTrace(0, "Login Successful for User : %v", creds.EmailId)
+	FormAndSendHttpResp(resp, "Login Successful", http.StatusOK, loginResp)
 }

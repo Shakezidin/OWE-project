@@ -51,7 +51,9 @@ const (
 	TableName_timeline_sla        string = "timeline_sla"
 	TableName_partners            string = "partners"
 	TableName_states              string = "states"
-	TableName_loan_type              string = "loan_type"
+	TableName_loan_type           string = "loan_type"
+	TableName_source              string = "source"
+	TableName_adder_type  string = "adder_type"
 )
 
 /******************************************************************************
