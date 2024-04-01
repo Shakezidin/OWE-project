@@ -1,29 +1,34 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../../create_profile/CreateUserProfile.css";
 import { ReactComponent as PROFILE_BACKGROUND } from "../../../../resources/assets/Profile_background.svg";
 
 import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cross_button.svg";
 import Input from "../../../components/text_input/Input";
-import DropdownButton from "../../../components/dropdown/DropdownButton";
+
 import { ActionButton } from "../../../components/button/ActionButton";
 import { CommissionModel } from "../../../../core/models/configuration/CommissionModel";
 import { useDispatch, useSelector } from 'react-redux';
 import { updateForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createCommissionSlice";
-import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
+import { getCaller, postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import Select from 'react-select';
-import { installers, partners, respTypeData, statData } from "../../../../core/models/data_models/SelectDataModel";
+import { installerOption, partnerOption, repTypeOption, stateOption } from "../../../../core/models/data_models/SelectDataModel";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
+import { respTypeData } from "../../../../resources/static_data/StaticData";
 type ButtonProps = {
   handleClose: () => void
+}
+interface Option {
+  value: string;
+  label: string;
 }
 
 const CreateCommissionRate = (props: ButtonProps) => {
   const dispatch = useDispatch();
   const [createCommission, setCreateCommission] = useState<CommissionModel>(
     {
-      partner: "OWE",
-      installer: "OWE",
-      state: "Alaska",
+      partner: "",
+      installer: "",
+      state: "",
       sale_type: "BATTERY",
       sale_price: 1500.0,
       rep_type: "EMPLOYEE",
@@ -33,13 +38,18 @@ const CreateCommissionRate = (props: ButtonProps) => {
       end_date: "2024-06-30"
     }
   )
-
-  const customStyle = {
-    select: {
-      // padding:".5rem",
-      height: 10
-    }
+  const [newFormData,setNewFormData] = useState<any>([])
+  const tableData = {
+    tableNames: ["partners", "states","installers","rep_type"]
   }
+ const getNewFormData=async()=>{
+  const res = await postCaller(EndPoints.get_newFormData,tableData)
+  setNewFormData(res.data)
+  
+ }
+ useEffect(()=>{
+getNewFormData()
+ },[])
 
   const handleChange = (newValue: any, fieldName: string) => {
     setCreateCommission((prevData) => ({
@@ -74,7 +84,8 @@ const CreateCommissionRate = (props: ButtonProps) => {
       console.error('Error submitting form:', error);
     }
   };
-  console.log(typeof createCommission.rl)
+  
+  const staticData = repTypeOption(newFormData) || repTypeOption
 
   return (
     <div className="transparent-model">
@@ -93,11 +104,10 @@ const CreateCommissionRate = (props: ButtonProps) => {
                   <div className="create-input-field">
                     <label className="inputLabel">Partner</label>
                     <Select
-                      options={partners}
+                      options={partnerOption(newFormData)}
                       isSearchable
-                      defaultValue={partners[0]}
                       onChange={(newValue) => handleChange(newValue, 'partner')}
-                      value={partners.find((option) => option.value === createCommission.partner)}
+                      value={partnerOption(newFormData)?.find((option) => option?.value === createCommission.partner)}
                       styles={{
                         control: (baseStyles, state) => ({
                           ...baseStyles,
@@ -115,7 +125,7 @@ const CreateCommissionRate = (props: ButtonProps) => {
                     <label className="inputLabel">Installer</label>
                     <div className="">
                       <Select
-                        options={installers}
+                        options={installerOption(newFormData)}
                         styles={{
                           control: (baseStyles, state) => ({
                             ...baseStyles,
@@ -128,14 +138,14 @@ const CreateCommissionRate = (props: ButtonProps) => {
                           }),
                         }}
                         onChange={(newValue) => handleChange(newValue, 'installer')}
-                        value={installers.find((option) => option.value === createCommission.installer)}
+                        value={installerOption(newFormData)?.find((option) => option.value === createCommission.installer)}
                       />
                     </div>
                   </div>
                   <div className="create-input-field">
-                    <label className="inputLabel">Partner</label>
+                    <label className="inputLabel">State</label>
                     <Select
-                      options={statData}
+                      options={stateOption(newFormData)}
                       styles={{
                         control: (baseStyles, state) => ({
                           ...baseStyles,
@@ -150,7 +160,7 @@ const CreateCommissionRate = (props: ButtonProps) => {
                       isSearchable
                       // options={statData}
                       onChange={(newValue) => handleChange(newValue, 'state')}
-                      value={statData.find((option) => option.value === createCommission.state)}
+                      value={stateOption(newFormData)?.find((option) => option.value === createCommission.state)}
                     />
                   </div>
                 </div>
@@ -179,7 +189,7 @@ const CreateCommissionRate = (props: ButtonProps) => {
                   <div className="create-input-field">
                     <label className="inputLabel">Representative Type</label>
                     <Select
-                      options={respTypeData}
+                      options={repTypeOption(newFormData) ||respTypeData}
                       isSearchable
                       styles={{
                         control: (baseStyles, state) => ({
@@ -194,7 +204,7 @@ const CreateCommissionRate = (props: ButtonProps) => {
                       }}
                       // options={partners}
                       onChange={(newValue) => handleChange(newValue, 'rep_type')}
-                      value={respTypeData.find((option) => option.value === createCommission.rep_type)}
+                      value={repTypeOption(newFormData)||respTypeData?.find((option) => option.value === createCommission.rep_type)}
                     />
                   </div>
                 </div>

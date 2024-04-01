@@ -27,7 +27,7 @@ const CreateLoanType = (props: ButtonProps) => {
             description: "description"
         }
     )
-
+   
 
     const handleOptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;

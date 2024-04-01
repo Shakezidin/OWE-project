@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "../../create_profile/CreateUserProfile.css";
 import { ReactComponent as PROFILE_BACKGROUND } from "../../../../resources/assets/Profile_background.svg";
 import { IoAddSharp } from "react-icons/io5";
@@ -8,16 +8,28 @@ import Input from "../../../components/text_input/Input";
 import DropdownButton from "../../../components/dropdown/DropdownButton";
 import { ActionButton } from "../../../components/button/ActionButton";
 import Select from 'react-select';
-import { dealer, subDealer } from "../../../../core/models/data_models/SelectDataModel";
+import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
+import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
+import { dealerOption, subDealerOption } from "../../../../core/models/data_models/SelectDataModel";
+
 
 type ButtonProps = {
     handleClose: () => void
 }
 
 const FilterDealer = (props: ButtonProps) => {
-    const handleFormChange = () => {
-
-    }
+    const [newFormData,setNewFormData] = useState<any>([])
+  const tableData = {
+    tableNames: ["sub_dealer","dealer"]
+  }
+ const getNewFormData=async()=>{
+  const res = await postCaller(EndPoints.get_newFormData,tableData)
+  setNewFormData(res.data)
+  
+ }
+ useEffect(()=>{
+getNewFormData()
+ },[])
     return (
         <div className="transparent-model">
             <div className="modal">
@@ -53,7 +65,7 @@ const FilterDealer = (props: ButtonProps) => {
                     <label className="inputLabel">Sub Dealer</label>
                     <div className="">
                       <Select
-                        options={subDealer}
+                        options={subDealerOption(newFormData)}
                         styles={{
                           control: (baseStyles, state) => ({
                             ...baseStyles,
@@ -66,7 +78,7 @@ const FilterDealer = (props: ButtonProps) => {
                           }),
                         }}
                     
-                        value={subDealer.find((option) => option.value ==='subDealer')}
+                        value={subDealerOption(newFormData).find((option) => option.value ==='sub_dealer')}
                       />
                     </div>
                   </div>
@@ -74,7 +86,7 @@ const FilterDealer = (props: ButtonProps) => {
                     <label className="inputLabel">Dealer</label>
                     <div className="">
                       <Select
-                        options={dealer}
+                        options={dealerOption(newFormData)}
                         styles={{
                           control: (baseStyles, state) => ({
                             ...baseStyles,
@@ -87,7 +99,7 @@ const FilterDealer = (props: ButtonProps) => {
                           }),
                         }}
                     
-                        value={dealer.find((option) => option.value ==='dealer')}
+                        value={dealerOption(newFormData).find((option) => option.value ==='dealer')}
                       />
                     </div>
                   </div>

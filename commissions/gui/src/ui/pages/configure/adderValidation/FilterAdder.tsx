@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "../../create_profile/CreateUserProfile.css";
 import { ReactComponent as PROFILE_BACKGROUND } from "../../../../resources/assets/Profile_background.svg";
 import { IoAddSharp } from "react-icons/io5";
@@ -9,15 +9,28 @@ import DropdownButton from "../../../components/dropdown/DropdownButton";
 import { ActionButton } from "../../../components/button/ActionButton";
 
 import Select from 'react-select';
-import { adderTypeData, priceTypeData } from "../../../../core/models/data_models/SelectDataModel";
+import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
+import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
+import { adderTypeOption, priceTypeOption } from "../../../../core/models/data_models/SelectDataModel";
+
 type ButtonProps = {
     handleClose: () => void
 }
 
 const FilterAdder = (props: ButtonProps) => {
-    const handleFormChange = () => {
-
+    const [newFormData,setNewFormData] = useState<any>([])
+    const tableData = {
+      tableNames: ["partners", "states","installers","sale_price","rep_type","source","dba","owe","chg_dlr","sub_dealer","dealer","adder_type","price_type","tier","sale_type"]
     }
+   const getNewFormData=async()=>{
+    const res = await postCaller(EndPoints.get_newFormData,tableData)
+    setNewFormData(res.data)
+    
+   }
+   useEffect(()=>{
+  getNewFormData()
+   },[])
+
     return (
         <div className="transparent-model">
             <div className="modal">
@@ -53,7 +66,7 @@ const FilterAdder = (props: ButtonProps) => {
                     <label className="inputLabel">Adder Type</label>
                     <div className="">
                       <Select
-                        options={adderTypeData}
+                        options={adderTypeOption(newFormData)}
                         styles={{
                           control: (baseStyles, state) => ({
                             ...baseStyles,
@@ -66,7 +79,7 @@ const FilterAdder = (props: ButtonProps) => {
                           }),
                         }}
                     
-                        value={adderTypeData.find((option) => option.value ==='adder')}
+                        value={adderTypeOption(newFormData).find((option) => option.value ==='adder')}
                       />
                     </div>
                   </div>
@@ -74,7 +87,7 @@ const FilterAdder = (props: ButtonProps) => {
                     <label className="inputLabel">Price Type</label>
                     <div className="">
                       <Select
-                        options={priceTypeData}
+                        options={priceTypeOption(newFormData)}
                         styles={{
                           control: (baseStyles, state) => ({
                             ...baseStyles,
@@ -87,7 +100,7 @@ const FilterAdder = (props: ButtonProps) => {
                           }),
                         }}
                     
-                        value={priceTypeData.find((option) => option.value ==='price')}
+                        value={priceTypeOption(newFormData).find((option) => option.value ==='price')}
                       />
                     </div>
                   </div>

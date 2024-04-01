@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../../create_profile/CreateUserProfile.css";
 import { ReactComponent as PROFILE_BACKGROUND } from "../../../../resources/assets/Profile_background.svg";
 
@@ -11,8 +11,9 @@ import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
 import { useDispatch } from "react-redux";
 import { PayScheduleModel } from "../../../../core/models/configuration/PayScheduleModel";
-import { payInstallerNameData, payPartnerData, paySaleTypeData, stateData, } from "../../../../core/models/data_models/SelectDataModel";
+import { installerOption, partnerOption, salesTypeOption, stateOption, } from "../../../../core/models/data_models/SelectDataModel";
 import Select from 'react-select';
+import { partners, paySaleTypeData } from "../../../../resources/static_data/StaticData";
 type ButtonProps = {
     handleClose: () => void
 }
@@ -24,9 +25,9 @@ const CreatePaymentSchedule = (props: ButtonProps) => {
         {
             partner: "Shushank Sharma",
             partner_name: "FFS",
-            installer_name: "OWE",
+            installer_name: "",
             sale_type: "BATTERY",
-            state: "Alabama",
+            state: "",
             rl: "40",
             draw: "50%",
             draw_max: "50%",
@@ -37,7 +38,19 @@ const CreatePaymentSchedule = (props: ButtonProps) => {
             end_date: "2024-04-30"
           }
     )
-
+    const [newFormData,setNewFormData] = useState<any>([])
+   
+    const tableData = {
+      tableNames: ["partners", "states","installers","sale_type"]
+    }
+   const getNewFormData=async()=>{
+    const res = await postCaller(EndPoints.get_newFormData,tableData)
+    setNewFormData(res.data)
+    
+   }
+   useEffect(()=>{
+  getNewFormData()
+   },[])
 
 
     const handleChange = (newValue: any, fieldName: string) => {
@@ -98,7 +111,7 @@ const CreatePaymentSchedule = (props: ButtonProps) => {
                                 <div className="create-input-field">
                                 <label className="inputLabel">Partner</label>
                                     <Select
-                                        options={payPartnerData}
+                                        options={partnerOption(newFormData)}
                                         styles={{
                                             control: (baseStyles, state) => ({
                                               ...baseStyles,
@@ -112,13 +125,13 @@ const CreatePaymentSchedule = (props: ButtonProps) => {
                                           }}
                                         isSearchable
                                         onChange={(newValue) => handleChange(newValue, 'partner')}
-                                        value={payPartnerData.find((option) => option.value === createPayData.partner)}
+                                        value={partnerOption(newFormData)?.find((option) => option.value === createPayData.partner)}
                                     />
                                 </div>
                                 <div className="create-input-field">
                                 <label className="inputLabel">Installer</label>
                                     <Select
-                                        options={payInstallerNameData}
+                                        options={installerOption(newFormData)}
                                         isSearchable
                                         styles={{
                                             control: (baseStyles, state) => ({
@@ -132,7 +145,7 @@ const CreatePaymentSchedule = (props: ButtonProps) => {
                                             }),
                                           }}
                                         onChange={(newValue) => handleChange(newValue, 'installer_name')}
-                                        value={payInstallerNameData.find((option) => option.value === createPayData.installer_name)}
+                                        value={installerOption(newFormData)?.find((option) => option.value === createPayData.installer_name)}
                                     />
                                 </div>
                             </div>
@@ -141,7 +154,7 @@ const CreatePaymentSchedule = (props: ButtonProps) => {
                                 <div className="create-input-field">
                                 <label className="inputLabel">Sales Type</label>
                                     <Select
-                                        options={paySaleTypeData}
+                                        options={salesTypeOption(newFormData)||paySaleTypeData}
                                         isSearchable
                                         styles={{
                                             control: (baseStyles, state) => ({
@@ -155,13 +168,13 @@ const CreatePaymentSchedule = (props: ButtonProps) => {
                                             }),
                                           }}
                                         onChange={(newValue) => handleChange(newValue, 'sale_type')}
-                                        value={paySaleTypeData.find((option) => option.value === createPayData.sale_type)}
+                                        value={salesTypeOption(newFormData)||paySaleTypeData?.find((option) => option.value === createPayData.sale_type)}
                                     />
                                 </div>
                                 <div className="create-input-field">
                                 <label className="inputLabel">ST</label>
                                     <Select
-                                        options={stateData}
+                                        options={stateOption(newFormData)}
                                         styles={{
                                             control: (baseStyles, state) => ({
                                               ...baseStyles,
@@ -175,7 +188,7 @@ const CreatePaymentSchedule = (props: ButtonProps) => {
                                           }}
                                         isSearchable
                                         onChange={(newValue) => handleChange(newValue, 'state')}
-                                        value={stateData.find((option) => option.value === createPayData.state)}
+                                        value={stateOption(newFormData)?.find((option) => option.value === createPayData.state)}
                                     />
                                 </div>
                                 <div className="create-input-field">

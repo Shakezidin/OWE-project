@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../../create_profile/CreateUserProfile.css";
 import { ReactComponent as PROFILE_BACKGROUND } from "../../../../resources/assets/Profile_background.svg";
 
@@ -11,8 +11,9 @@ import { DealerModel } from "../../../../core/models/configuration/DealerModel";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import Select from 'react-select';
-import { dealer, subDealer } from "../../../../core/models/data_models/SelectDataModel";
+import { dealerOption, subDealerOption } from "../../../../core/models/data_models/SelectDataModel";
 import { updateDealerForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createDealerSlice";
+import { dealer, subDealer } from "../../../../resources/static_data/StaticData";
 
 type ButtonProps = {
   handleClose: () => void
@@ -30,7 +31,18 @@ const CreateDealer = (props: ButtonProps) => {
       end_date: "2024-04-30"
   }
   )
-
+  const [newFormData,setNewFormData] = useState<any>([])
+  const tableData = {
+    tableNames: ["sub_dealer","dealer"]
+  }
+ const getNewFormData=async()=>{
+  const res = await postCaller(EndPoints.get_newFormData,tableData)
+  setNewFormData(res.data)
+  
+ }
+ useEffect(()=>{
+getNewFormData()
+ },[])
  
 
   const handleChange = (newValue: any, fieldName: string) => {
@@ -81,7 +93,7 @@ const CreateDealer = (props: ButtonProps) => {
               <div className="create-input-field">
               <label className="inputLabel">Sub Dealer</label>
               <Select
-                      options={subDealer}
+                      options={subDealerOption(newFormData)||subDealer}
                       styles={{
                         control: (baseStyles, state) => ({
                           ...baseStyles,
@@ -95,13 +107,13 @@ const CreateDealer = (props: ButtonProps) => {
                       }}
                       isSearchable
                       onChange={(newValue) => handleChange(newValue, 'sub_dealer')}
-                      value={subDealer.find((option) => option.value ===createDealer.sub_dealer )}
+                      value={subDealerOption(newFormData)||subDealer?.find((option) => option.value ===createDealer.sub_dealer )}
                     />
                 </div>
                 <div className="create-input-field">
                 <label className="inputLabel">Dealer</label>
                 <Select
-                      options={dealer}
+                      options={dealerOption(newFormData)||dealer}
                       styles={{
                         control: (baseStyles, state) => ({
                           ...baseStyles,
@@ -115,7 +127,7 @@ const CreateDealer = (props: ButtonProps) => {
                       }}
                       isSearchable
                       onChange={(newValue) => handleChange(newValue, 'dealer')}
-                      value={dealer.find((option) => option.value === createDealer.dealer)}
+                      value={dealerOption(newFormData)||dealer?.find((option) => option.value === createDealer.dealer)}
                     />
                 </div>
                 <div className="create-input-field">
