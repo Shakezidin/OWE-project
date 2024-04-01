@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../../create_profile/CreateUserProfile.css";
 import { ReactComponent as PROFILE_BACKGROUND } from "../../../../resources/assets/Profile_background.svg";
 
@@ -11,8 +11,9 @@ import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
 import { DealerTierModel } from "../../../../core/models/configuration/DealerTierModel";
 import { useDispatch } from "react-redux";
-import { dealerTierData } from "../../../../core/models/data_models/SelectDataModel";
+import { dealertierOption } from "../../../../core/models/data_models/SelectDataModel";
 import Select from 'react-select';
+import { dealerTierData, tierState } from "../../../../resources/static_data/StaticData";
 type ButtonProps = {
     handleClose: () => void
 }
@@ -28,6 +29,18 @@ const CreateDealerTier = (props: ButtonProps) => {
             end_date: "2024-04-30"
         }
     )
+    const [newFormData,setNewFormData] = useState<any>([])
+    const tableData = {
+      tableNames: ["tier"]
+    }
+   const getNewFormData=async()=>{
+    const res = await postCaller(EndPoints.get_newFormData,tableData)
+    setNewFormData(res.data)
+    
+   }
+   useEffect(()=>{
+  getNewFormData()
+   },[])
 
 
 
@@ -87,9 +100,9 @@ const CreateDealerTier = (props: ButtonProps) => {
                                     />
                                 </div>
                                 <div className="create-input-field">
-                                    <label className="inputLabel">Installer</label>
+                                    <label className="inputLabel">Tier</label>
                                     <Select
-                                        options={dealerTierData}
+                                        options={dealertierOption(newFormData)||dealerTierData}
                                         isSearchable
                                         styles={{
                                             control: (baseStyles, state) => ({
@@ -103,7 +116,7 @@ const CreateDealerTier = (props: ButtonProps) => {
                                             }),
                                           }}
                                         onChange={(newValue) => handleChange(newValue, 'tier')}
-                                        value={dealerTierData.find((option) => option.value === createDealerTierData.tier)}
+                                        value={dealertierOption(newFormData)||dealerTierData?.find((option) => option.value === createDealerTierData.tier)}
                                     />
                                 </div>
                                 <div className="create-input-field">

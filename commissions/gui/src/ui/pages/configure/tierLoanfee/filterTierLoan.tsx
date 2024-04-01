@@ -7,7 +7,7 @@ import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cro
 import Input from "../../../components/text_input/Input";
 import DropdownButton from "../../../components/dropdown/DropdownButton";
 import { ActionButton } from "../../../components/button/ActionButton";
-import { dealerTierData, installers } from "../../../../core/models/data_models/SelectDataModel";
+// import { dealerTierData} from "../../../../core/models/data_models/SelectDataModel";
 
 import Select from 'react-select';
 
@@ -54,7 +54,7 @@ const FilterTierLoan = (props: ButtonProps) => {
                     <label className="inputLabel">Dealer Tier</label>
                     <div className="">
                       <Select
-                        options={dealerTierData}
+                        // options={dealerTierData}
                         styles={{
                           control: (baseStyles, state) => ({
                             ...baseStyles,
@@ -67,7 +67,7 @@ const FilterTierLoan = (props: ButtonProps) => {
                           }),
                         }}
                     
-                        value={dealerTierData.find((option) => option.value ==='dealer')}
+                        // value={dealerTierData.find((option) => option.value ==='dealer')}
                       />
                     </div>
                   </div>
@@ -75,7 +75,7 @@ const FilterTierLoan = (props: ButtonProps) => {
                     <label className="inputLabel">Installer</label>
                     <div className="">
                       <Select
-                        options={installers}
+                        // options={dealerTierData}
                         styles={{
                           control: (baseStyles, state) => ({
                             ...baseStyles,
@@ -88,7 +88,7 @@ const FilterTierLoan = (props: ButtonProps) => {
                           }),
                         }}
                     
-                        value={installers.find((option) => option.value ==='installer')}
+                        // value={dealerTierData.find((option) => option.value ==='installer')}
                       />
                     </div>
                   </div>

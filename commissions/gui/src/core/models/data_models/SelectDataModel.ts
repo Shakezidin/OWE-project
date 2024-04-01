@@ -1,63 +1,72 @@
-export const partners = [
-    { value: 'OWE', label: 'OWE' },
-  ];
-  
-  export const installers = [
-    { value: 'OWE', label: 'OWE' },
-  ];
-  export const statData = [
-    { value: 'Alaska', label: 'Alaska' },
-  ]
-  
-  export const respTypeData = [
-    { value: 'EMPLOYEE', label: 'EMPLOYEE' },
-  ]
-  export const subDealer = [
-    { value: 'Sub Dealer Name1', label: 'Sub Dealer Name1' },
-  ]
-  export const dealer = [
-    { value: 'Shushank Sharma', label: 'Shushank Sharma' },
-  ]
-  export const sourceData = [
-    { value: 'PRINT', label: 'PRINT' },
-  ]
-  export const dbaData = [
-    { value: 'Marketing DBA Name1', label: 'Marketing DBA Name1' },
-  ]
 
-  export const stateData = [
-    { value: 'Alabama', label: 'Alabama' },
-  ]
-  export const chldlrData = [
-    { value:  100, label: 'chld' },
-  ]
-  export const adderTypeData = [
-    { value:"Type A", label: 'Type A' },
-  ]
-  export const priceTypeData = [
-    { value:"Type X", label: 'Type X' },
-  ]
-  export const tierInstallerData = [
-    { value:"PartnerABC", label: 'PartnerABC' },
-  ]
-  export const tierState = [
-    { value:"Alabama", label: 'Alabama' },
-  ]
-  export const oweCost = [
-    { value:"1000", label: 'owe' },
-  ]
-  export const dealerTierData = [
-    { value:"TierName123", label: 'owe' },
-  ]
+  interface Option {
+    value: string;
+    label: string;
+  }
 
-
-  export const payPartnerData = [
-    { value:"Shushank Sharma", label: 'Shushank Sharma' },
-  ]
-  export const payInstallerNameData = [
-    { value:"OWE", label: 'OWE' },
-  ]
-  export const paySaleTypeData = [
-    { value:"BATTERY", label: 'BATTERY' },
-  ]
+  export const partnerOption=(newFormData:any): Option[] => newFormData.partners?.map((value:string)=>({
+    value,
+    label:value
+  })) 
+  export const installerOption=(newFormData:any): Option[] => newFormData?.installers?.map((value:string)=>({
+    value,
+    label:value
+  })) 
+  export const salesPriceOption=(newFormData:any): Option[] => newFormData?.sale_price?.map((value:string)=>({
+    value,
+    label:value
+  })) 
+  export const repTypeOption=(newFormData:any): Option[] => newFormData?.rep_type?.map((value:string)=>({
+    value,
+    label:value
+  })) 
   
+  export const stateOption=(newFormData:any): Option[] => newFormData?.states?.map((value:string)=>({
+    value,
+    label:value
+  })) 
+  export const subDealerOption=(newFormData:any): Option[] => newFormData?.sub_dealer?.map((value:string)=>({
+    value,
+    label:value
+  })) 
+  export const dealerOption=(newFormData:any): Option[] => newFormData?.dealer?.map((value:string)=>({
+    value,
+    label:value
+  })) 
+  export const adderTypeOption=(newFormData:any): Option[] => newFormData?.adder_type?.map((value:string)=>({
+    value,
+    label:value
+  })) 
+  export const priceTypeOption=(newFormData:any): Option[] => newFormData?.price_type?.map((value:string)=>({
+    value,
+    label:value
+  })) 
+  export const sourceOption=(newFormData:any): Option[] => newFormData?.source?.map((value:string)=>({
+    value,
+    label:value
+  })) 
+  export const dbaOption=(newFormData:any): Option[] => newFormData?.dba?.map((value:string)=>({
+    value,
+    label:value
+  })) 
+  export const chg_dlrOption=(newFormData:any): Option[] => newFormData?.chg_dlr?.map((value:string)=>({
+    value,
+    label:value
+  })) 
+  export const dealertierOption=(newFormData:any): Option[] => newFormData?.tier?.map((value:string)=>({
+    value,
+    label:value
+  })) 
+  export const salesTypeOption=(newFormData:any): Option[] => newFormData?.sale_type?.map((value:string)=>({
+    value,
+    label:value
+  })) 
+ 
+  export const teamsOption=(newFormData:any): Option[] => newFormData?.teams?.map((value:string)=>({
+    value,
+    label:value
+  })) 
+  export const oweCostOption=(newFormData:any): Option[] => newFormData?.owe_cost?.map((value:string)=>({
+    value,
+    label:value
+  })) 

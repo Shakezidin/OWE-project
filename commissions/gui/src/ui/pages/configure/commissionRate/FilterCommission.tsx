@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "../../create_profile/CreateUserProfile.css";
 import { ReactComponent as PROFILE_BACKGROUND } from "../../../../resources/assets/Profile_background.svg";
 import { IoAddSharp } from "react-icons/io5";
@@ -7,7 +7,10 @@ import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cro
 import Input from "../../../components/text_input/Input";
 
 import { ActionButton } from "../../../components/button/ActionButton";
-import { installers, partners } from "../../../../core/models/data_models/SelectDataModel";
+import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
+import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
+import { installerOption, partnerOption } from "../../../../core/models/data_models/SelectDataModel";
+
 
 
 type ButtonProps = {
@@ -18,6 +21,18 @@ const FilterCommission = (props: ButtonProps) => {
     const handleFormChange = () => {
 
     }
+    const [newFormData,setNewFormData] = useState<any>([])
+    const tableData = {
+      tableNames: ["partners","installers",]
+    }
+   const getNewFormData=async()=>{
+    const res = await postCaller(EndPoints.get_newFormData,tableData)
+    setNewFormData(res.data)
+    
+   }
+   useEffect(()=>{
+  getNewFormData()
+   },[])
     return (
         <div className="transparent-model">
             <div className="modal">
@@ -52,7 +67,7 @@ const FilterCommission = (props: ButtonProps) => {
                     <label className="inputLabel">Partner</label>
                     <div className="">
                       <Select
-                        options={partners}
+                        options={partnerOption(newFormData)}
                         styles={{
                           control: (baseStyles, state) => ({
                             ...baseStyles,
@@ -65,7 +80,7 @@ const FilterCommission = (props: ButtonProps) => {
                           }),
                         }}
                         
-                        value={partners.find((option) => option.value === "Partners")}
+                        value={partnerOption(newFormData).find((option) => option.value === "Partners")}
                       />
                     </div>
                   </div>
@@ -73,7 +88,7 @@ const FilterCommission = (props: ButtonProps) => {
                     <label className="inputLabel">Installer</label>
                     <div className="">
                       <Select
-                        options={installers}
+                        options={installerOption(newFormData)}
                         styles={{
                           control: (baseStyles, state) => ({
                             ...baseStyles,
@@ -86,7 +101,7 @@ const FilterCommission = (props: ButtonProps) => {
                           }),
                         }}
                     
-                        value={installers.find((option) => option.value ==='installer')}
+                        value={installerOption(newFormData).find((option) => option.value ==='installer')}
                       />
                     </div>
                   </div>

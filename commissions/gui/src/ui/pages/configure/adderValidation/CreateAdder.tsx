@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../../create_profile/CreateUserProfile.css";
 import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cross_button.svg";
 import Input from "../../../components/text_input/Input";
@@ -10,7 +10,8 @@ import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
 import { useDispatch } from "react-redux";
 import { AdderVModel } from "../../../../core/models/configuration/AdderVModel";
-import { adderTypeData, priceTypeData } from "../../../../core/models/data_models/SelectDataModel";
+import { adderTypeOption, priceTypeOption } from "../../../../core/models/data_models/SelectDataModel";
+import { adderTypeData, priceTypeData } from "../../../../resources/static_data/StaticData";
 type ButtonProps = {
     handleClose: () => void
 }
@@ -28,7 +29,18 @@ const CreateAdder = (props: ButtonProps) => {
         }
     )
 
-
+    const [newFormData,setNewFormData] = useState<any>([])
+    const tableData = {
+      tableNames: ["adder_type","price_type",]
+    }
+   const getNewFormData=async()=>{
+    const res = await postCaller(EndPoints.get_newFormData,tableData)
+    setNewFormData(res.data)
+    
+   }
+   useEffect(()=>{
+  getNewFormData()
+   },[])
 
     const handleChange = (newValue: any, fieldName: string) => {
         setCreateAdderV((prevData) => ({
@@ -88,7 +100,7 @@ const CreateAdder = (props: ButtonProps) => {
                                     <div className=" rate-input-field">
                                         <label className="inputLabel">Adder Type</label>
                                         <Select
-                                            options={adderTypeData}
+                                            options={adderTypeOption(newFormData)||adderTypeData}
                                             isSearchable
                                             styles={{
                                                 control: (baseStyles, state) => ({
@@ -102,7 +114,7 @@ const CreateAdder = (props: ButtonProps) => {
                                                 }),
                                               }}
                                             onChange={(newValue) => handleChange(newValue, 'adder_type')}
-                                            value={adderTypeData.find((option) => option.value === createAdderV.adder_type)}
+                                            value={adderTypeOption(newFormData)||adderTypeData?.find((option) => option.value === createAdderV.adder_type)}
                                         />
                                     </div>
 
@@ -124,7 +136,7 @@ const CreateAdder = (props: ButtonProps) => {
                                     <div className=" rate-input-field">
                                         <label className="inputLabel">Price Type</label>
                                         <Select
-                                            options={priceTypeData}
+                                            options={priceTypeOption(newFormData)||priceTypeData}
                                             isSearchable
                                             styles={{
                                                 control: (baseStyles, state) => ({
@@ -138,7 +150,7 @@ const CreateAdder = (props: ButtonProps) => {
                                                 }),
                                               }}
                                             onChange={(newValue) => handleChange(newValue, 'price_type')}
-                                            value={priceTypeData.find((option) => option.value === createAdderV.price_type)}
+                                            value={priceTypeOption(newFormData)||priceTypeData?.find((option) => option.value === createAdderV.price_type)}
                                         />
                                     </div>
 

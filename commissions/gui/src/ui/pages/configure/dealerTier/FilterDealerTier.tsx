@@ -9,7 +9,7 @@ import DropdownButton from "../../../components/dropdown/DropdownButton";
 import { ActionButton } from "../../../components/button/ActionButton";
 
 import Select from 'react-select';
-import { dealer, installers } from "../../../../core/models/data_models/SelectDataModel";
+
 
 type ButtonProps = {
     handleClose: () => void
@@ -54,7 +54,7 @@ const FilterDealerTier = (props: ButtonProps) => {
                     <label className="inputLabel">Dealer</label>
                     <div className="">
                       <Select
-                        options={dealer}
+                        // options={dealer}
                         styles={{
                           control: (baseStyles, state) => ({
                             ...baseStyles,
@@ -67,7 +67,7 @@ const FilterDealerTier = (props: ButtonProps) => {
                           }),
                         }}
                     
-                        value={dealer.find((option) => option.value ==='dealer')}
+                        // value={dealer.find((option) => option.value ==='dealer')}
                       />
                     </div>
                   </div>
@@ -75,7 +75,7 @@ const FilterDealerTier = (props: ButtonProps) => {
                     <label className="inputLabel">Installer</label>
                     <div className="">
                       <Select
-                        options={installers}
+                        // options={installers}
                         styles={{
                           control: (baseStyles, state) => ({
                             ...baseStyles,
@@ -88,7 +88,7 @@ const FilterDealerTier = (props: ButtonProps) => {
                           }),
                         }}
                     
-                        value={installers.find((option) => option.value ==='installer')}
+                        // value={installers.find((option) => option.value ==='installer')}
                       />
                     </div>
                   </div>
