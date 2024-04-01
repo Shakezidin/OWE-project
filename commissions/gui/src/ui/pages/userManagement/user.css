@@ -40,25 +40,46 @@
   justify-content: space-between;
   align-items: center;
   background-color: white;
-  margin-top: 1rem;
+  margin-top: 1.5rem;
   border-radius: 16px 16px 0px 0px;
   padding: 1rem;
 }
-.admin-user {
-  /* padding: 1rem; */
+.admin-user p{
+  font-family: Poppins;
+font-size: 18px;
+font-weight: 600;
+line-height: 28px;
+text-align: left;
+
+}
+
+.User-drop-down select {
+  width: Fixed (180px)px;
+height: Fixed (36px)px;
+padding: 6px 16px 6px 6px;
+gap: 46px;
+border-radius: 8px;
+border: 1px 0px 0px 0px;
+opacity: 0px;
+
+
 }
 
 .delete-icon-container {
   display: flex;
-  /* justify-content: space-between; */
+  justify-content: space-between;
   align-items: center;
-  gap: 5rem;
+  gap: 1rem;
 }
-.iconsSection-delete button{
+.iconsSection-delete {
+  margin-left: 3rem;
+}
+.iconsSection-delete button {
   display: flex;
   gap: 0.5rem;
   padding: 0.5rem;
-  border: 16px;
+  border: none;
+  cursor: pointer;
   color: #344054;
-background: white;
+  background: white;
 }
