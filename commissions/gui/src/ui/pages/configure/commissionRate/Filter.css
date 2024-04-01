@@ -1,0 +1,15 @@
+.filter-section {
+display: flex;
+justify-content: space-between;
+align-items: center;
+  padding: 1rem;
+  /* padding: "1rem 2rem 0rem 2rem"; */
+
+}
+.apply p {
+font-size: 14px;
+font-weight: 600;
+line-height: 14.5px;
+text-align: left;
+
+}
