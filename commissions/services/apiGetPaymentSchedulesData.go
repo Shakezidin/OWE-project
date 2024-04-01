@@ -83,16 +83,56 @@ func HandleGetPaymentSchedulesDataRequest(resp http.ResponseWriter, req *http.Re
 	paymentScheduleList := models.GetPaymentScheduleList{}
 
 	for _, item := range data {
-		Partner := item["partner"].(string)
-		PartnerName := item["partner_name"].(string)
-		Installer := item["installer_name"].(string)
-		State := item["state"].(string)
-		Sale := item["sale_type"].(string)
-		Rl := item["rl"].(string)
-		Draw, _ := item["draw"].(string)
-		DrawMax, _ := item["draw_max"].(string)
-		RepDraw := item["rep_draw"].(string)
-		RepPay := item["rep_pay"].(string)
+		Partner, ok := item["partner"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get Partner. Item: %+v\n", item)
+			continue
+		}
+		PartnerName, ok := item["partner_name"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get Partner Name. Item: %+v\n", item)
+			continue
+		}
+		Installer, ok := item["installer_name"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get Installer. Item: %+v\n", item)
+			continue
+		}
+		State, ok := item["state"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get State. Item: %+v\n", item)
+			continue
+		}
+		Sale, ok := item["sale_type"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get Sale. Item: %+v\n", item)
+			continue
+		}
+		Rl, ok := item["rl"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get Rl. Item: %+v\n", item)
+			continue
+		}
+		Draw, ok := item["draw"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get Draw. Item: %+v\n", item)
+			continue
+		}
+		DrawMax, ok := item["draw_max"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get DrawMax. Item: %+v\n", item)
+			continue
+		}
+		RepDraw, ok := item["rep_draw"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get RepDraw. Item: %+v\n", item)
+			continue
+		}
+		RepPay, ok := item["rep_pay"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get RepPay. Item: %+v\n", item)
+			continue
+		}
 
 		paySchData := models.GetPaymentScheduleData{
 			Partner:       Partner,

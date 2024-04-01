@@ -96,6 +96,6 @@ func HandleGetStatesDataRequest(resp http.ResponseWriter, req *http.Request) {
 		statesList.StatesList = append(statesList.StatesList, statesData)
 	}
 	// Send the response
-	log.FuncInfoTrace(0, "Number of states List fetched : %v salelist %+v", len(statesList.StatesList), statesList)
+	log.FuncInfoTrace(0, "Number of states List fetched : %v list %+v", len(statesList.StatesList), statesList)
 	FormAndSendHttpResp(resp, "states Data", http.StatusOK, statesList)
 }

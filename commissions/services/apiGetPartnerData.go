@@ -97,6 +97,6 @@ func HandleGetPartnerDataRequest(resp http.ResponseWriter, req *http.Request) {
 		partnerList.PartnersList = append(partnerList.PartnersList, partnerData)
 	}
 	// Send the response
-	log.FuncInfoTrace(0, "Number of partner List fetched : %v salelist %+v", len(partnerList.PartnersList), partnerList)
+	log.FuncInfoTrace(0, "Number of partner List fetched : %v list %+v", len(partnerList.PartnersList), partnerList)
 	FormAndSendHttpResp(resp, "Partner Data", http.StatusOK, partnerList)
 }

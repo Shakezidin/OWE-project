@@ -57,11 +57,16 @@ func HandleCreateTimelineSlaRequest(resp http.ResponseWriter, req *http.Request)
 	}
 
 	if (len(createTimelineSla.TypeM2M) <= 0) || (len(createTimelineSla.State) <= 0) ||
-		(len(createTimelineSla.Days) <= 0) || (len(createTimelineSla.StartDate) <= 0) ||
-		(len(createTimelineSla.EndDate) <= 0) {
+		(len(createTimelineSla.StartDate) <= 0) || (len(createTimelineSla.EndDate) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if createTimelineSla.Days <= 0 {
+		err = fmt.Errorf("Invalid Sla days Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Sla days Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 	// Populate query parameters in the correct order

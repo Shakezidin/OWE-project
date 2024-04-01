@@ -123,6 +123,6 @@ func HandleGetLoanTypesDataRequest(resp http.ResponseWriter, req *http.Request) 
 		loansList.LoanTypeList = append(loansList.LoanTypeList, loanType)
 	}
 	// Send the response
-	log.FuncInfoTrace(0, "Number of loan List fetched : %v salelist %+v", len(loansList.LoanTypeList), loansList)
+	log.FuncInfoTrace(0, "Number of loan List fetched : %v list %+v", len(loansList.LoanTypeList), loansList)
 	FormAndSendHttpResp(resp, "Loan Data", http.StatusOK, loansList)
 }

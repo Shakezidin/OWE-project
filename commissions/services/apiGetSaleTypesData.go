@@ -100,6 +100,6 @@ func HandleGetSaleTypeDataRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	// Send the response
-	log.FuncInfoTrace(0, "Number of sale type List fetched : %v salelist %+v", len(saleTypeList.SaleTypeList), saleTypeList)
+	log.FuncInfoTrace(0, "Number of sale type List fetched : %v list %+v", len(saleTypeList.SaleTypeList), saleTypeList)
 	FormAndSendHttpResp(resp, "sale type Data", http.StatusOK, saleTypeList)
 }

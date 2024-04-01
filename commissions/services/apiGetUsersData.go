@@ -25,7 +25,7 @@ import (
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
-func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
+ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err          error
 		dataReq      models.DataRequestBody
@@ -61,7 +61,6 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	tableName := db.TableName_users_details
 	query = `
-
 	SELECT ud.name, ud.user_code, ud.mobile_number, ud.email_id, ud.password_change_required, ud.created_at,
     ud.updated_at, ud1.name AS reporting_manager, ur.role_name, ud.user_status, ud.user_designation, ud.description
 	FROM user_details ud
@@ -83,16 +82,75 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 	usersDetailsList := models.GetUsersDataList{}
 
 	for _, item := range data {
-		Name, _ := item["name"].(string)
-		EmailID, _ := item["email_id"].(string)
-		MobileNumber, _ := item["mobile_number"].(string)
-		Designation, _ := item["user_designation"].(string)
-		RoleName, _ := item["role_name"].(string)
-		UserCode, _ := item["user_code"].(string)
-		PasswordChangeReq, _ := item["password_change_required"].(bool)
-		ReportingManager, _ := item["reporting_manager"].(string)
-		UserStatus, _ := item["user_status"].(string)
-		Description, _ := item["description"].(string)
+		// Name
+		Name, ok := item["name"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get Name. Item: %+v\n", item)
+			continue
+		}
+
+		// EmailID
+		EmailID, ok := item["email_id"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get EmailID. Item: %+v\n", item)
+			continue
+		}
+
+		// MobileNumber
+		MobileNumber, ok := item["mobile_number"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get MobileNumber. Item: %+v\n", item)
+			continue
+		}
+
+		// Designation
+		Designation, ok := item["user_designation"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get Designation. Item: %+v\n", item)
+			continue
+		}
+
+		// RoleName
+		RoleName, ok := item["role_name"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get RoleName. Item: %+v\n", item)
+			continue
+		}
+
+		// UserCode
+		UserCode, ok := item["user_code"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get UserCode. Item: %+v\n", item)
+			continue
+		}
+
+		// PasswordChangeReq
+		PasswordChangeReq, ok := item["password_change_required"].(bool)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get PasswordChangeReq. Item: %+v\n", item)
+			continue
+		}
+
+		// ReportingManager
+		ReportingManager, ok := item["reporting_manager"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get ReportingManager. Item: %+v\n", item)
+			continue
+		}
+
+		// UserStatus
+		UserStatus, ok := item["user_status"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get UserStatus. Item: %+v\n", item)
+			continue
+		}
+
+		// Description
+		Description, ok := item["description"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get Description. Item: %+v\n", item)
+			continue
+		}
 
 		var CreatedDate, UpdatedDate string
 		if createdDateVal, ok := item["created_at"].(time.Time); ok {
@@ -125,6 +183,7 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 	FormAndSendHttpResp(resp, "Users Data", http.StatusOK, usersDetailsList)
 }
 
+
 /******************************************************************************
  * FUNCTION:		PrepareUsersDetailFilters
  * DESCRIPTION:     handler for prepare filter
@@ -148,7 +207,6 @@ func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBo
 			column := filter.Column
 			switch column {
 			case "ReportingManager":
-				//JAITUNJAI to clear this
 				filtersBuilder.WriteString(fmt.Sprintf("ud1.name %s $%d", filter.Operation, len(whereEleList)+1))
 			case "RoleName":
 				filtersBuilder.WriteString(fmt.Sprintf("ur.role_name %s $%d", filter.Operation, len(whereEleList)+1))
