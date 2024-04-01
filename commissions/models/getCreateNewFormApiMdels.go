@@ -10,11 +10,12 @@ type CreateNewFormDataRequest struct {
 	TableNames []string `json:"tableNames"`
 }
 
-type DataLists struct {
-	FormDataLists []TableDataList `json:"FormDataLists"`
+// NewFormData holds the data for each category
+type NewFormData struct {
+	Categories map[string][]string `json:"categories"`
 }
 
-type TableDataList struct {
-	Type  string      `json:"Type"`
-	Items interface{} `json:"Items"`
+// NewFormDataResponse holds the response format for new form data
+type NewFormDataResponse struct {
+	Data NewFormData `json:"data"`
 }

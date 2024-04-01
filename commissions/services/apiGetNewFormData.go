@@ -25,13 +25,11 @@ import (
  ******************************************************************************/
 func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err             error
-		newFormDataReq  models.CreateNewFormDataRequest
-		whereEleList    []interface{}
-		data            []map[string]interface{}
-		query           string
-		tableData       models.TableDataList
-		newFormDataList models.DataLists
+		err            error
+		newFormDataReq models.CreateNewFormDataRequest
+		whereEleList   []interface{}
+		data           []map[string]interface{}
+		query          string
 	)
 
 	log.EnterFn(0, "HandleGetNewFormDataRequest")
@@ -59,14 +57,19 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if len(newFormDataReq.TableNames) == 0 {
+	if len(newFormDataReq.TableNames) <= 0 {
 		log.FuncErrorTrace(0, "Table name list is empty", nil)
 		FormAndSendHttpResp(resp, "Table Name list is empty", http.StatusBadRequest, nil)
 		return
 	}
 
+	// Prepare the response data
+	responseData := make(map[string]interface{})
+
 	// Iterate through table names
 	for _, tableName := range newFormDataReq.TableNames {
+		var items []string
+
 		switch tableName {
 		case "partners":
 			query = "SELECT partner_name as data FROM " + db.TableName_partners
@@ -90,11 +93,7 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 		default:
 			log.FuncErrorTrace(0, "Invalid table name provided: %v", tableName)
 			// Add table data with unsupported message
-			tableData = models.TableDataList{
-				Type:  tableName,
-				Items: []string{"This table data is not supported"},
-			}
-			newFormDataList.FormDataLists = append(newFormDataList.FormDataLists, tableData)
+			responseData[tableName] = nil
 			continue
 		}
 
@@ -105,17 +104,18 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		tableData.Type = tableName
-		tableData.Items = []string{}
 		for _, item := range data {
-			name, _ := item["data"].(string)
-			tableData.Items = append(tableData.Items.([]string), name)
+			name, ok := item["data"].(string)
+			if !ok {
+				log.FuncErrorTrace(0, "Failed to get data item. Item: %+v\n", item)
+				continue
+			}
+			items = append(items, name)
 		}
-
-		newFormDataList.FormDataLists = append(newFormDataList.FormDataLists, tableData)
+		responseData[tableName] = items
 	}
 
 	// Send the response
-	log.FuncInfoTrace(0, "Number of new for data List fetched : %v userlist %+v", len(newFormDataList.FormDataLists), newFormDataList)
-	FormAndSendHttpResp(resp, "New Form Data", http.StatusOK, newFormDataList)
+	log.FuncInfoTrace(0, "Number of new form data List fetched : %v userlist %+v", len(responseData), responseData)
+	FormAndSendHttpResp(resp, "New Form Data", http.StatusOK, responseData)
 }
