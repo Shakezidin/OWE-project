@@ -11,6 +11,7 @@ interface TableProps {
   onPressImport: () => void;
   onpressExport: () => void;
   onpressAddNew: () => void;
+ 
 }
 
 const TableHeader = (props: TableProps) => {
@@ -22,6 +23,7 @@ const TableHeader = (props: TableProps) => {
     onPressViewArchive,
     onpressExport,
     onpressAddNew,
+  
   } = props;
   return (
     <div className="commissionSection">

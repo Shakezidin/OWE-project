@@ -79,7 +79,7 @@ const FilterAdder = (props: ButtonProps) => {
                           }),
                         }}
                     
-                        value={adderTypeOption(newFormData).find((option) => option.value ==='adder')}
+                        value={adderTypeOption(newFormData)?.find((option) => option.value ==='adder')}
                       />
                     </div>
                   </div>
@@ -100,7 +100,7 @@ const FilterAdder = (props: ButtonProps) => {
                           }),
                         }}
                     
-                        value={priceTypeOption(newFormData).find((option) => option.value ==='price')}
+                        value={priceTypeOption(newFormData)?.find((option) => option.value ==='price')}
                       />
                     </div>
                   </div>
