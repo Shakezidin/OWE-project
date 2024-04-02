@@ -72,8 +72,19 @@ opacity: 0px;
   gap: 1rem;
 }
 .iconsSection-delete {
-  margin-left: 3rem;
+  margin-left: 1rem;
+  background: #344054;
+
 }
+.iconsSection-delete h4 {
+
+font-size: 14px;
+font-weight: 500;
+line-height: 20px;
+text-align: left;
+
+}
+
 .iconsSection-delete button {
   display: flex;
   gap: 0.5rem;

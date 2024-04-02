@@ -23,10 +23,10 @@ const FilterTierLoan = (props: ButtonProps) => {
         <div className="transparent-model">
             <div className="modal">
 
-                <div className="createUserCrossButton" onClick={props.handleClose}>
+                {/* <div className="createUserCrossButton" onClick={props.handleClose}>
                     <CROSS_BUTTON />
 
-                </div>
+                </div> */}
                 <div className="createUserContainer">
                     <div className="" style={{ display: "flex", justifyContent: "space-between", padding: "1rem 2rem 0rem 2rem" }}>
                         <div className="">
@@ -51,7 +51,7 @@ const FilterTierLoan = (props: ButtonProps) => {
                         <div className="createProfileTextView">
                             <div className="create-input-container">
                             <div className="create-input-field">
-                    <label className="inputLabel">Dealer Tier</label>
+                    <label className="inputLabel">Column Name</label>
                     <div className="">
                       <Select
                         // options={dealerTierData}
@@ -72,7 +72,7 @@ const FilterTierLoan = (props: ButtonProps) => {
                     </div>
                   </div>
                   <div className="create-input-field">
-                    <label className="inputLabel">Installer</label>
+                    <label className="inputLabel">Operation</label>
                     <div className="">
                       <Select
                         // options={dealerTierData}
@@ -96,10 +96,10 @@ const FilterTierLoan = (props: ButtonProps) => {
                                 <div className="create-input-field">
                                     <Input
                                         type={"text"}
-                                        label="Sales Type"
+                                        label="Value"
                                         value={""}
                                         name=""
-                                        placeholder={"Sales Type"}
+                                        placeholder={"Enter"}
                                         onChange={() => { }}
                                     />
                                 </div>
@@ -113,7 +113,7 @@ const FilterTierLoan = (props: ButtonProps) => {
                             onClick={() => { }} />
 
                         <ActionButton title={"cancel"} type="submit"
-                            onClick={() => { }} />
+                          onClick={props.handleClose} />
                     </div>
 
                 </div>

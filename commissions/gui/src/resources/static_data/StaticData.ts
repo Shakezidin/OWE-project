@@ -62,4 +62,15 @@ export const paySaleTypeData = [
 ]
 export const userSelectData = [
   { value: "Admin User", label: 'Admin User' },
+  { value: "Appointment Setter", label: 'Appointment Setter' },
+  { value: "Partner", label: 'Partner' },
+  { value: "Regional Manager", label: 'Regional Manager' },
+  { value: "Dealer Owner", label: 'Dealer Owner' },
+  { value: "Sales Representative", label: 'Sales Representative' },
+  { value: "Sales Manager", label: 'Sales Manager' },
+
+]
+export const userAppointment = [
+  { value: "Appointment Setter", label: 'Appointment Setter' },
+  { value: "Appointment Setter", label: 'Appointment Setter' }
 ]
