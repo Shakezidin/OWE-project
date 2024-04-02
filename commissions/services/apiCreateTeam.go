@@ -26,7 +26,7 @@ import (
 func HandleCreateTeamRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err             error
-		TeamData   models.TeamData
+		TeamData        models.TeamData
 		queryParameters []interface{}
 	)
 
@@ -69,5 +69,5 @@ func HandleCreateTeamRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	FormAndSendHttpResp(resp, "Team Created Sucessfully", http.StatusOK, nil)
+	FormAndSendHttpResp(resp, "Team Created Successfully", http.StatusOK, nil)
 }

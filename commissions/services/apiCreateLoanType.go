@@ -91,5 +91,5 @@ func HandleCreateLoanTypeRequest(resp http.ResponseWriter, req *http.Request) {
 	data := result[0].(map[string]interface{})
 
 	log.DBTransDebugTrace(0, "Loan type created with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "Loan type Created Sucessfully", http.StatusOK, nil)
+	FormAndSendHttpResp(resp, "Loan type Created Successfully", http.StatusOK, nil)
 }

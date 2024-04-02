@@ -95,5 +95,5 @@ func HandleCreatePaymentScheduleRequest(resp http.ResponseWriter, req *http.Requ
 	data := result[0].(map[string]interface{})
 
 	log.DBTransDebugTrace(0, "Payment Schedule created with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "Payment Schedule Created Sucessfully", http.StatusOK, nil)
+	FormAndSendHttpResp(resp, "Payment Schedule Created Successfully", http.StatusOK, nil)
 }

@@ -90,5 +90,5 @@ func HandleCreateAptSetterRequest(resp http.ResponseWriter, req *http.Request) {
 	data := result[0].(map[string]interface{})
 
 	log.DBTransDebugTrace(0, "New Appointment setter created with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "Appointment Setter Created Sucessfully", http.StatusOK, nil)
+	FormAndSendHttpResp(resp, "Appointment Setter Created Successfully", http.StatusOK, nil)
 }

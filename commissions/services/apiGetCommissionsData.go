@@ -60,7 +60,7 @@ func HandleGetCommissionsDataRequest(resp http.ResponseWriter, req *http.Request
 
 	tableName := db.TableName_commission_rates
 	query = `
-	SELECT pt1.partner_name as partner_name, pt2.partner_name as installer_name, st.name as state_name, sl.type_name as sale_type, cr.sale_price, rp.rep_type, cr.rl, cr.rate, cr.start_date, cr.end_date
+	SELECT cr.id as record_id, pt1.partner_name as partner_name, pt2.partner_name as installer_name, st.name as state_name, sl.type_name as sale_type, cr.sale_price, rp.rep_type, cr.rl, cr.rate, cr.start_date, cr.end_date
 	FROM commission_rates cr
 	JOIN states st ON st.state_id = cr.state_id
 	JOIN partners pt1 ON pt1.partner_id = cr.partner_id
@@ -83,6 +83,12 @@ func HandleGetCommissionsDataRequest(resp http.ResponseWriter, req *http.Request
 	commissionsList := models.GetCommissionsList{}
 
 	for _, item := range data {
+
+		RecordId, ok := item["record_id"].(int64)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get record id. Item: %+v\n", item)
+			continue
+		}
 		Partner, ok := item["partner_name"].(string)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get partner name. Item: %+v\n", item)
@@ -144,6 +150,7 @@ func HandleGetCommissionsDataRequest(resp http.ResponseWriter, req *http.Request
 		}
 
 		commissionData := models.GetCommissionData{
+			RecordId:  RecordId,
 			Partner:   Partner,
 			Installer: Installer,
 			State:     State,

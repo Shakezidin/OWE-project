@@ -83,5 +83,5 @@ func HandleCreateDealerRequest(resp http.ResponseWriter, req *http.Request) {
 	data := result[0].(map[string]interface{})
 
 	log.DBTransDebugTrace(0, "Dealers created with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "Dealers Created Sucessfully", http.StatusOK, nil)
+	FormAndSendHttpResp(resp, "Dealers Created Successfully", http.StatusOK, nil)
 }

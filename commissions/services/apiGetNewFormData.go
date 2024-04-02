@@ -92,7 +92,6 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 			tableName = "owe_cost"
 		default:
 			log.FuncErrorTrace(0, "Invalid table name provided: %v", tableName)
-			// Add table data with unsupported message
 			responseData[tableName] = nil
 			continue
 		}
@@ -116,6 +115,6 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	// Send the response
-	log.FuncInfoTrace(0, "Number of new form data List fetched : %v userlist %+v", len(responseData), responseData)
+	log.FuncInfoTrace(0, "Number of new form data List fetched : %v list %+v", len(responseData), responseData)
 	FormAndSendHttpResp(resp, "New Form Data", http.StatusOK, responseData)
 }

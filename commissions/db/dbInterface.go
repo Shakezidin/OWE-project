@@ -38,6 +38,7 @@ const (
 	CreatePartnerFunction         string = "create_new_partner"
 	CreateStateFunction           string = "create_new_state"
 	CreateLoanTypeFunction        string = "create_new_loan_type"
+	UpdateCommissionFunction      string = "update_commission"
 	TableName_teams               string = "teams"
 	TableName_commission_rates    string = "commission_rates"
 	TableName_users_details       string = "user_details"
@@ -53,7 +54,7 @@ const (
 	TableName_states              string = "states"
 	TableName_loan_type           string = "loan_type"
 	TableName_source              string = "source"
-	TableName_adder_type  string = "adder_type"
+	TableName_adder_type          string = "adder_type"
 )
 
 /******************************************************************************
@@ -93,7 +94,7 @@ func InitDBConnection() (err error) {
 		return err
 	}
 
-	log.FuncInfoTrace(0, "Database Initialized Sucessfully")
+	log.FuncInfoTrace(0, "Database Initialized Successfully")
 	return err
 }
 

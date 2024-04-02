@@ -88,5 +88,5 @@ func HandleCreateTierLoanFeeRequest(resp http.ResponseWriter, req *http.Request)
 	data := result[0].(map[string]interface{})
 
 	log.DBTransDebugTrace(0, "Tier Loan Fee created with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "Tier Loan Fee Created Sucessfully", http.StatusOK, nil)
+	FormAndSendHttpResp(resp, "Tier Loan Fee Created Successfully", http.StatusOK, nil)
 }

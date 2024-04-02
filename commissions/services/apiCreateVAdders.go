@@ -89,5 +89,5 @@ func HandleCreateVAddersRequest(resp http.ResponseWriter, req *http.Request) {
 	data := result[0].(map[string]interface{})
 
 	log.DBTransDebugTrace(0, "v adders created with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "v adders Created Sucessfully", http.StatusOK, nil)
+	FormAndSendHttpResp(resp, "v adders Created Successfully", http.StatusOK, nil)
 }

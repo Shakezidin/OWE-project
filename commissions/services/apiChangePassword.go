@@ -82,5 +82,5 @@ func HandleChangePassRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	FormAndSendHttpResp(resp, "Password Updated Sucessfully", http.StatusOK, nil)
+	FormAndSendHttpResp(resp, "Password Updated Successfully", http.StatusOK, nil)
 }

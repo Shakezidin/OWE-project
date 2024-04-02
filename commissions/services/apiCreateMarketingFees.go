@@ -100,5 +100,5 @@ func HandleCreateMarketingFeesRequest(resp http.ResponseWriter, req *http.Reques
 	data := result[0].(map[string]interface{})
 
 	log.DBTransDebugTrace(0, "Marketing Fees created with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "Marketing Fees Created Sucessfully", http.StatusOK, nil)
+	FormAndSendHttpResp(resp, "Marketing Fees Created Successfully", http.StatusOK, nil)
 }

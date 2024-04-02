@@ -77,5 +77,5 @@ func HandleCreateSaleTypeRequest(resp http.ResponseWriter, req *http.Request) {
 	data := result[0].(map[string]interface{})
 
 	log.DBTransDebugTrace(0, "sale type created with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "sale type Created Sucessfully", http.StatusOK, nil)
+	FormAndSendHttpResp(resp, "sale type Created Successfully", http.StatusOK, nil)
 }

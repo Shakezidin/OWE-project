@@ -179,7 +179,7 @@ import (
 	}
 
 	// Send the response
-	log.FuncInfoTrace(0, "Number of users List fetched : %v userlist %+v", len(usersDetailsList.UsersDataList), usersDetailsList)
+	log.FuncInfoTrace(0, "Number of users List fetched : %v list %+v", len(usersDetailsList.UsersDataList), usersDetailsList)
 	FormAndSendHttpResp(resp, "Users Data", http.StatusOK, usersDetailsList)
 }
 

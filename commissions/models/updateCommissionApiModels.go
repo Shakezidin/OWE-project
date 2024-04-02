@@ -1,13 +1,13 @@
 /**************************************************************************
- *	Function	: commissionApiModels.go
- *	DESCRIPTION : Files contains struct for get commission models
+ *	Function	: updateCommissionApiModels.go
+ *	DESCRIPTION : Files contains struct for update commission models
  *	DATE        : 20-Jan-2024
  **************************************************************************/
 
 package models
 
-type GetCommissionData struct {
-	RecordId  int64   `json:"record_id"`
+type UpdateCommission struct {
+	RecordId   int64  `json:"record_id"`
 	Partner   string  `json:"partner"`
 	Installer string  `json:"installer"`
 	State     string  `json:"state"`
@@ -18,8 +18,4 @@ type GetCommissionData struct {
 	Rate      float64 `json:"rate"`
 	StartDate string  `json:"start_date"`
 	EndDate   string  `json:"end_date"`
-}
-
-type GetCommissionsList struct {
-	CommissionsList []GetCommissionData `json:"commissions_list"`
 }

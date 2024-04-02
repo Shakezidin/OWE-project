@@ -88,7 +88,7 @@ func HandleForgotPassRequest(resp http.ResponseWriter, req *http.Request) {
 
 		/* Store OTP in local buffer against user Email Id */
 		StoreForgotPassOTP(forgotPasswordReq.EmailId, otp)
-		FormAndSendHttpResp(resp, "OTP Generated Sucessfully", http.StatusOK, nil)
+		FormAndSendHttpResp(resp, "OTP Generated Successfully", http.StatusOK, nil)
 	} else {
 
 		if len(forgotPasswordReq.NewPassword) <= 0 || len(forgotPasswordReq.Otp) <= 0 {
@@ -114,6 +114,6 @@ func HandleForgotPassRequest(resp http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		FormAndSendHttpResp(resp, "Password Updated Sucessfully", http.StatusOK, nil)
+		FormAndSendHttpResp(resp, "Password Updated Successfully", http.StatusOK, nil)
 	}
 }

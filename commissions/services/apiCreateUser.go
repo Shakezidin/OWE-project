@@ -89,5 +89,5 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	FormAndSendHttpResp(resp, "User Created Sucessfully", http.StatusOK, nil)
+	FormAndSendHttpResp(resp, "User Created Successfully", http.StatusOK, nil)
 }
