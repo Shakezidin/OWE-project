@@ -9,7 +9,7 @@ import { ActionButton } from "../../../components/button/ActionButton";
 import { updateLoanTypeForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createLoanTypeSlice";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
-import { LoanTypeModel } from "../../../../core/models/configuration/LoanTypeModel";
+import { LoanTypeModel } from "../../../../core/models/configuration/create/LoanTypeModel";
 import { useDispatch } from "react-redux";
 
 type ButtonProps = {

@@ -2,7 +2,7 @@
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { TimeLineSlaModel } from '../../../../core/models/configuration/TimeLineSlaModel';
+import { TimeLineSlaModel } from '../../../../core/models/configuration/create/TimeLineSlaModel';
 
 
 

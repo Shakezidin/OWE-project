@@ -7,11 +7,11 @@ import Input from "../../../components/text_input/Input";
 import DropdownButton from "../../../components/dropdown/DropdownButton";
 import { ActionButton } from "../../../components/button/ActionButton";
 import { useDispatch } from "react-redux";
-import { AdderVModel } from "../../../../core/models/configuration/AdderVModel";
+import { AdderVModel } from "../../../../core/models/configuration/create/AdderVModel";
 import { updateSalesForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createSalesTypeSlice";
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
-import { SalesTypeModel } from "../../../../core/models/configuration/SalesTypeModel";
+import { SalesTypeModel } from "../../../../core/models/configuration/create/SalesTypeModel";
 
 type ButtonProps = {
     handleClose: () => void

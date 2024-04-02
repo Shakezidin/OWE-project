@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
-import { MarketingFeeModel } from "../../../../core/models/configuration/MarketingFeeModel";
+import { MarketingFeeModel } from "../../../../core/models/configuration/create/MarketingFeeModel";
 
 
 

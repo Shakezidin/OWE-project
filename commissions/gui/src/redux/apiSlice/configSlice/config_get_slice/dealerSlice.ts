@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
-import { DealerModel } from "../../../../core/models/configuration/DealerModel";
+import { DealerModel } from "../../../../core/models/configuration/create/DealerModel";
 
 
 

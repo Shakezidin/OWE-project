@@ -1,7 +1,7 @@
 // src/features/createDealerSlice.ts
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { DealerModel } from '../../../../core/models/configuration/DealerModel';
+import { DealerModel } from '../../../../core/models/configuration/create/DealerModel';
 
 
 

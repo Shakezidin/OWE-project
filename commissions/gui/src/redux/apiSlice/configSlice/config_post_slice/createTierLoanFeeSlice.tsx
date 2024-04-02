@@ -2,7 +2,7 @@
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { TierLoanFeeModel } from '../../../../core/models/configuration/TierLoanFeeModel';
+import { TierLoanFeeModel } from '../../../../core/models/configuration/create/TierLoanFeeModel';
 
 
 

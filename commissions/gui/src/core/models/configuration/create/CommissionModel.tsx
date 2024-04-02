@@ -1,4 +1,5 @@
 export interface CommissionModel {
+  record_id:number,
     partner: string;
     installer: string;
     state: string;

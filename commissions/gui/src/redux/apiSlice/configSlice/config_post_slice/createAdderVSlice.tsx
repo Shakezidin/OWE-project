@@ -2,7 +2,7 @@
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { AdderVModel } from '../../../../core/models/configuration/AdderVModel';
+import { AdderVModel } from '../../../../core/models/configuration/create/AdderVModel';
 
 
 

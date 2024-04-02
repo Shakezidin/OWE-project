@@ -2,7 +2,7 @@
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { LoanTypeModel } from '../../../../core/models/configuration/LoanTypeModel';
+import { LoanTypeModel } from '../../../../core/models/configuration/create/LoanTypeModel';
 
 
 

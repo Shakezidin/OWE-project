@@ -41,8 +41,8 @@ const UserTable:React.FC= () => {
             className="TableContainer"
             style={{ overflowX: "auto", whiteSpace: "nowrap" }} >
             <table>
-                <thead style={{ background: "#F5F5F5" }}>
-                    <tr>
+                <thead > 
+                    <tr style={{backgroundColor:"#F5F5F5"}}>
                         <th>
                             <div>
                                 <CheckBox

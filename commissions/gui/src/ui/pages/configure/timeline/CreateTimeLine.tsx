@@ -9,7 +9,7 @@ import { ActionButton } from "../../../components/button/ActionButton";
 import { updateTimeLineForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createTimeLineSlaSlice";
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
-import { TimeLineSlaModel } from "../../../../core/models/configuration/TimeLineSlaModel";
+import { TimeLineSlaModel } from "../../../../core/models/configuration/create/TimeLineSlaModel";
 import { useDispatch } from "react-redux";
 import Select from 'react-select';
 import { stateOption } from "../../../../core/models/data_models/SelectDataModel";

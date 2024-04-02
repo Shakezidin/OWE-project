@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import ManageUser from "./ManageUser";
 import BarChart from "./BarChart/BarChart";
 import { IoAddSharp } from "react-icons/io5";
+import UserOnboardCreation from "./UserOnboardCreation";
 
 
 const UserManagement: React.FC = () => {
+  const [open,setOpen] = useState<boolean>(false)
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   return (
     <>
       <div className="management-section">
@@ -18,14 +22,20 @@ const UserManagement: React.FC = () => {
             style={{
               background: "#0493CE",
               color: "white",
+              border:"none"
+
               // border: "1px solid black",
             }}
-            // onClick={onpressAddNew}
+            onClick={()=>handleOpen()}
           >
             <IoAddSharp /> Add New
           </button>
         </div>
       </div>
+      {open && <UserOnboardCreation
+                        
+                       
+                         handleClose={handleClose} />}
       <div className="barchart-section">
         <BarChart />
       </div>
