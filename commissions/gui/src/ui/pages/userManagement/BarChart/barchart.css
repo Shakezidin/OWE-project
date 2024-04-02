@@ -1,4 +1,4 @@
-.PieChart-container {
+/* .PieChart-container {
   display: flex;
   margin-top: 1rem;
   gap: 3rem;
@@ -10,7 +10,7 @@
   background-color: var(--primary-text-color);
   width: 48%;
   border-radius: 16px;
-}
+} */
 
 .pieChart-section p {
   font-size: 20px;
