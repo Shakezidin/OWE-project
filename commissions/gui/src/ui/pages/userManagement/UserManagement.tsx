@@ -37,7 +37,7 @@ const UserManagement: React.FC = () => {
                        
                          handleClose={handleClose} />}
       <div className="barchart-section">
-        {/* <BarChart /> */}
+        <BarChart />
       </div>
       <div className="onboardrow">
         <div className="user-component">
