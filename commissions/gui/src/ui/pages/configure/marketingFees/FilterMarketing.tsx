@@ -8,7 +8,7 @@ import Input from "../../../components/text_input/Input";
 import DropdownButton from "../../../components/dropdown/DropdownButton";
 import { ActionButton } from "../../../components/button/ActionButton";
 import Select from 'react-select';
-import { dbaData, sourceData } from "../../../../core/models/data_models/SelectDataModel";
+
 
 type ButtonProps = {
     handleClose: () => void
@@ -53,7 +53,7 @@ const FilterMarketing = (props: ButtonProps) => {
                     <label className="inputLabel">Source</label>
                     <div className="">
                       <Select
-                        options={sourceData}
+                        // options={sourceData}
                         styles={{
                           control: (baseStyles, state) => ({
                             ...baseStyles,
@@ -66,7 +66,7 @@ const FilterMarketing = (props: ButtonProps) => {
                           }),
                         }}
                     
-                        value={sourceData.find((option) => option.value ==='Source')}
+                        // value={sourceData.find((option) => option.value ==='Source')}
                       />
                     </div>
                   </div>
@@ -74,7 +74,7 @@ const FilterMarketing = (props: ButtonProps) => {
                     <label className="inputLabel">Dealer</label>
                     <div className="">
                       <Select
-                        options={dbaData}
+                        // options={dbaData}
                         styles={{
                           control: (baseStyles, state) => ({
                             ...baseStyles,
@@ -87,7 +87,7 @@ const FilterMarketing = (props: ButtonProps) => {
                           }),
                         }}
                     
-                        value={dbaData.find((option) => option.value ==='dba')}
+                        // value={dbaData.find((option) => option.value ==='dba')}
                       />
                     </div>
                   </div>

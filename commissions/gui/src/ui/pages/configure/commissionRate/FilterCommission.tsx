@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "../../create_profile/CreateUserProfile.css";
 import { ReactComponent as PROFILE_BACKGROUND } from "../../../../resources/assets/Profile_background.svg";
 import { IoAddSharp } from "react-icons/io5";
@@ -8,9 +8,11 @@ import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cro
 import Input from "../../../components/text_input/Input";
 
 import { ActionButton } from "../../../components/button/ActionButton";
+import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
+import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
 import {
-  installers,
-  partners,
+  installerOption,
+  partnerOption,
 } from "../../../../core/models/data_models/SelectDataModel";
 
 type ButtonProps = {
@@ -41,7 +43,7 @@ const FilterCommission = (props: ButtonProps) => {
                 }}
                 // onClick={onpressAddNew}
               >
-                <IoAddSharp style={{fontSize:"20px"}}/> Add New
+                <IoAddSharp style={{ fontSize: "20px" }} /> Add New
               </button>
             </div>
           </div>
@@ -52,7 +54,7 @@ const FilterCommission = (props: ButtonProps) => {
                   <label className="inputLabel">Partner</label>
                   <div className="">
                     <Select
-                      options={partners}
+                      // options={partners}
                       styles={{
                         control: (baseStyles, state) => ({
                           ...baseStyles,
@@ -63,9 +65,9 @@ const FilterCommission = (props: ButtonProps) => {
                           border: "1px solid #d0d5dd",
                         }),
                       }}
-                      value={partners.find(
-                        (option) => option.value === "Partners"
-                      )}
+                      // value={partners.find(
+                      //   (option) => option.value === "Partners"
+                      // )}
                     />
                   </div>
                 </div>
@@ -73,7 +75,7 @@ const FilterCommission = (props: ButtonProps) => {
                   <label className="inputLabel">Installer</label>
                   <div className="">
                     <Select
-                      options={installers}
+                      // options={installers}
                       styles={{
                         control: (baseStyles, state) => ({
                           ...baseStyles,
@@ -84,9 +86,9 @@ const FilterCommission = (props: ButtonProps) => {
                           border: "1px solid #d0d5dd",
                         }),
                       }}
-                      value={installers.find(
-                        (option) => option.value === "installer"
-                      )}
+                      // value={installers.find(
+                      //   (option) => option.value === "installer"
+                      // )}
                     />
                   </div>
                 </div>
@@ -107,7 +109,11 @@ const FilterCommission = (props: ButtonProps) => {
           <div className="createUserActionButton" style={{ gap: "2rem" }}>
             <ActionButton title={"Save"} type="submit" onClick={() => {}} />
 
-            <ActionButton title={"cancel"} type="submit" onClick={() => {}} />
+            <ActionButton
+              title={"cancel"}
+              type="reset"
+              onClick={props.handleClose}
+            />
           </div>
         </div>
       </div>

@@ -33,6 +33,7 @@ interface Endpoints {
   create_tierloanfees:string,
   create_timelinesla:string,
   create_loantype:string,
+  get_newFormData:string
 }
 
 export const EndPoints: Endpoints = {
@@ -59,6 +60,9 @@ export const EndPoints: Endpoints = {
   create_saletype:"create_saletype",
   create_tierloanfees:"create_tierloanfees",
   create_vadder:"create_vadder",
-  create_timelinesla:"create_timelinesla"
+  create_timelinesla:"create_timelinesla",
+
+  // /get form Data 
+  get_newFormData:"get_newformdata"
 
 };

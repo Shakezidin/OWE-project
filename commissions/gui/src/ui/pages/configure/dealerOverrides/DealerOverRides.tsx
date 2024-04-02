@@ -38,7 +38,7 @@ const DealerOverRides: React.FC = () => {
   }, [dispatch]);
 
   const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === dealerList.length;
+  const isAllRowsSelected = selectedRows.size === dealerList?.length;
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -46,7 +46,7 @@ const DealerOverRides: React.FC = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
-  if (!dealerList === null || dealerList.length === 0) {
+  if (dealerList === null || dealerList?.length === 0) {
     return <div>Data not found</div>;
   }
   return (
@@ -120,7 +120,8 @@ const DealerOverRides: React.FC = () => {
             </thead>
 
             <tbody>
-              {dealerList?.length > 0 ? dealerList?.map((el, i) => (
+              {dealerList?.length > 0
+                ? dealerList?.map((el, i) => (
                     <tr key={i}>
                       <td>
                         <CheckBox

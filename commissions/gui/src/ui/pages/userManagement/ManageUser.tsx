@@ -3,7 +3,9 @@ import "../userManagement/user.css";
 import { ICONS } from "../../icons/Icons";
 import Select from "react-select";
 import { CiEdit } from "react-icons/ci";
-
+import CheckBox from "../../components/chekbox/CheckBox";
+import '../configure/configure.css'
+import { userSelectData } from "../../../resources/static_data/StaticData";
 // import { installers, partners, respTypeData, statData } from "../../../../../core/models/data_models/SelectDataModel";
 
 type ButtonProps = {
@@ -48,38 +50,27 @@ const ManageUser: React.FC = () => {
           <p>Admin Users</p>
         </div>
         <div className="delete-icon-container">
-          <div className="create-input-field">
-           <div className="User-drop-down">
-            <select>
-              <option value="volvo">Admin User</option>
-              <option value="saab">Appointment Setter</option>
-              <option value="mercedes">Partner</option>
-              <option value="audi">Regional Manager</option>
-              <option value="audi">Dealer Owner</option>
-              <option value="audi">Sales Representative</option>
-              <option value="audi">Sales Representative</option>
-              <option value="audi">Sales Manager</option>
+          <div className=" rate-input-field">
+            <label className="inputLabel">Adder Type</label>
+            <Select
+              options={userSelectData}
+              isSearchable
+              styles={{
+                control: (baseStyles, state) => ({
+                  ...baseStyles,
+                  marginTop: "4.5px",
+                  borderRadius: "8px",
+                  outline: "none",
+                  height: "2.8rem",
+                  border: "1px solid #d0d5dd"
 
-            </select>
-            </div>
-            {/* <div className="">
-              <Select
-                styles={{
-                  control: (baseStyles, state) => ({
-                    ...baseStyles,
-                    // marginTop: "4.5px",
-                    borderRadius: "8px",
-                    outline: "none",
-                    height: "1.8rem",
-                    width: "200px",
-                    border: "1px solid #d0d5dd",
-                  }),
-                }}
-              // onChange={(newValue) => handleChange(newValue, 'installer')}
-              // value={installers.find((option) => option.value === createCommission.installer)}
-              />
-            </div> */}
+                }),
+              }}
+              // onChange={(newValue) => handleChange(newValue, 'adder_type')}
+              value={userSelectData?.find((option) => option.value === "admin_user")}
+            />
           </div>
+
           <div className="iconsSection-delete">
             <button type="button">
               <img src={ICONS.deleteIcon} alt="" />
@@ -102,18 +93,12 @@ const ManageUser: React.FC = () => {
             <tr>
               <th>
                 <div>
-                  {/* <CheckBox
-                      checked={selectAllChecked}
-                      onChange={() =>
-                        toggleAllRows(
-                          selectedRows,
-                          commissionList,
-                          setSelectedRows,
-                          setSelectAllChecked
-                        )
-                      }
-                      indeterminate={isAnyRowSelected && !isAllRowsSelected}
-                    /> */}
+                  <CheckBox
+                    checked={true}
+                    onChange={() => { }
+                    }
+                  // indeterminate={isAnyRowSelected && !isAllRowsSelected}
+                  />
                 </div>
               </th>
               <th>
@@ -164,17 +149,12 @@ const ManageUser: React.FC = () => {
               ? dataUser.map((el, i) => (
                 <tr key={i}>
                   <td>
-                    {/* <CheckBox
-                          checked={selectedRows.has(i)}
-                          onChange={() =>
-                            toggleRowSelection(
-                              i,
-                              selectedRows,
-                              setSelectedRows,
-                              setSelectAllChecked
-                            )
-                          }
-                        /> */}
+                    <CheckBox
+                      checked={true}
+                      onChange={() => { }
+                      }
+                    // indeterminate={isAnyRowSelected && !isAllRowsSelected}
+                    />
                   </td>
                   <td style={{ fontWeight: "500", color: "black" }}>{el.code}</td>
                   <td>{el.name}</td>

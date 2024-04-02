@@ -7,7 +7,7 @@ import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cro
 import Input from "../../../components/text_input/Input";
 import DropdownButton from "../../../components/dropdown/DropdownButton";
 import { ActionButton } from "../../../components/button/ActionButton";
-import { installers, payPartnerData } from "../../../../core/models/data_models/SelectDataModel";
+// import { payPartnerData } from "../../../../core/models/data_models/SelectDataModel";
 import Select from 'react-select';
 
 type ButtonProps = {
@@ -53,7 +53,7 @@ const FilterPayment = (props: ButtonProps) => {
                     <label className="inputLabel">Partner</label>
                     <div className="">
                       <Select
-                        options={payPartnerData}
+                        // options={payPartnerData}
                         styles={{
                           control: (baseStyles, state) => ({
                             ...baseStyles,
@@ -66,7 +66,7 @@ const FilterPayment = (props: ButtonProps) => {
                           }),
                         }}
                     
-                        value={payPartnerData.find((option) => option.value ==='installer')}
+                        // value={payPartnerData.find((option) => option.value ==='installer')}
                       />
                     </div>
                   </div>
@@ -74,7 +74,7 @@ const FilterPayment = (props: ButtonProps) => {
                     <label className="inputLabel">Installer</label>
                     <div className="">
                       <Select
-                        options={installers}
+                        // options={payPartnerData}
                         styles={{
                           control: (baseStyles, state) => ({
                             ...baseStyles,
@@ -87,7 +87,7 @@ const FilterPayment = (props: ButtonProps) => {
                           }),
                         }}
                     
-                        value={installers.find((option) => option.value ==='installer')}
+                        // value={payPartnerData.find((option) => option.value ==='installer')}
                       />
                     </div>
                   </div>
