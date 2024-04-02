@@ -39,7 +39,7 @@ const MarketingFees: React.FC = () => {
     dispatch(fetchmarketingFees(pageNumber));
   }, [dispatch]);
   const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === marketingFeesList.length;
+  const isAllRowsSelected = selectedRows.size === marketingFeesList?.length;
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -47,7 +47,7 @@ const MarketingFees: React.FC = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
-  if (!marketingFeesList === null || marketingFeesList.length === 0) {
+  if (!marketingFeesList === null || marketingFeesList?.length === 0) {
     return <div>Data not found</div>;
   }
   return (
@@ -172,7 +172,7 @@ const MarketingFees: React.FC = () => {
                       <td>{el.pay_src}</td>
                       <td>{el.description}</td>
                       <td>{el.start_date}</td>
-                      <td>{el.end_date}</td>
+                      <td>{el.end_date} </td>
                       <td
                         style={{
                           display: "flex",

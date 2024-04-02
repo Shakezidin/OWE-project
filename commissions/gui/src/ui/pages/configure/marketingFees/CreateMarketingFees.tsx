@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../../create_profile/CreateUserProfile.css";
 import { ReactComponent as PROFILE_BACKGROUND } from "../../../../resources/assets/Profile_background.svg";
 
@@ -7,12 +7,13 @@ import Input from "../../../components/text_input/Input";
 
 import { ActionButton } from "../../../components/button/ActionButton";
 import Select from 'react-select';
-import { chldlrData, dbaData, sourceData, stateData } from "../../../../core/models/data_models/SelectDataModel";
+import { chg_dlrOption, dbaOption, sourceOption, stateOption } from "../../../../core/models/data_models/SelectDataModel";
 import { updateMarketingForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createMarketingSlice";
 import { MarketingFeeModel } from "../../../../core/models/configuration/MarketingFeeModel";
 import { useDispatch } from "react-redux";
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
+import { chldlrData, dbaData } from "../../../../resources/static_data/StaticData";
 type ButtonProps = {
     handleClose: () => void
 }
@@ -33,7 +34,18 @@ const CreateMarketingFees = (props: ButtonProps) => {
         description: "Marketing Fee Description1"
       }
   )
-
+  const [newFormData,setNewFormData] = useState<any>([])
+  const tableData = {
+    tableNames: ["states","source","dba","chg_dlr"]
+  }
+ const getNewFormData=async()=>{
+  const res = await postCaller(EndPoints.get_newFormData,tableData)
+  setNewFormData(res.data)
+  
+ }
+ useEffect(()=>{
+getNewFormData()
+ },[])
  
 
   const handleChange = (newValue: any, fieldName: string) => {
@@ -84,7 +96,7 @@ const CreateMarketingFees = (props: ButtonProps) => {
                             <div className="create-input-field">
               <label className="inputLabel">Source</label>
               <Select
-                      options={sourceData}
+                      options={sourceOption(newFormData)}
                       styles={{
                         control: (baseStyles, state) => ({
                           ...baseStyles,
@@ -98,13 +110,13 @@ const CreateMarketingFees = (props: ButtonProps) => {
                       }}
                       isSearchable
                       onChange={(newValue) => handleChange(newValue, 'source')}
-                      value={sourceData.find((option) => option.value ===createMarketing.source )}
+                      value={sourceOption(newFormData)?.find((option) => option.value ===createMarketing.source )}
                     />
                 </div>
                 <div className="create-input-field">
               <label className="inputLabel">DBA</label>
               <Select
-                      options={dbaData}
+                      options={dbaOption(newFormData)||dbaData}
                       styles={{
                         control: (baseStyles, state) => ({
                           ...baseStyles,
@@ -118,13 +130,13 @@ const CreateMarketingFees = (props: ButtonProps) => {
                       }}
                       isSearchable
                       onChange={(newValue) => handleChange(newValue, 'dba')}
-                      value={dbaData.find((option) => option.value ===createMarketing.dba )}
+                      value={dbaOption(newFormData)||dbaData?.find((option) => option.value ===createMarketing.dba )}
                     />
                 </div>
                 <div className="create-input-field">
               <label className="inputLabel">State</label>
               <Select
-                      options={stateData}
+                      options={stateOption(newFormData)}
                       styles={{
                         control: (baseStyles, state) => ({
                           ...baseStyles,
@@ -138,7 +150,7 @@ const CreateMarketingFees = (props: ButtonProps) => {
                       }}
                       isSearchable
                       onChange={(newValue) => handleChange(newValue, 'state')}
-                      value={stateData.find((option) => option.value ===createMarketing.state )}
+                      value={stateOption(newFormData)?.find((option) => option.value ===createMarketing.state )}
                     />
                 </div>
                             </div>
@@ -157,7 +169,7 @@ const CreateMarketingFees = (props: ButtonProps) => {
                                 <div className="create-input-field">
               <label className="inputLabel">Chg DLR</label>
               <Select
-                      options={chldlrData}
+                      options={chg_dlrOption(newFormData)||chldlrData}
                       styles={{
                         control: (baseStyles, state) => ({
                           ...baseStyles,
@@ -171,7 +183,7 @@ const CreateMarketingFees = (props: ButtonProps) => {
                       }}
                       isSearchable
                       onChange={(newValue) => handleChange(newValue, 'chg_dlr')}
-                      value={chldlrData.find((option) => option.value ===createMarketing.chg_dlr )}
+                      value={chg_dlrOption(newFormData)||chldlrData?.find((option:any) => option.value === createMarketing.chg_dlr )}
                     />
                 </div>
                                 <div className="create-input-field">

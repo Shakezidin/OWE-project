@@ -2,16 +2,18 @@ import React from "react";
 import ManageUser from "./ManageUser";
 import BarChart from "./BarChart";
 import { IoAddSharp } from "react-icons/io5";
+import UserOnboardCreation from "../../pages/userManagement/UserOnboardCreation";
+import AppSetterOnboardCreation from "../../pages/userManagement/AppSetterOnboardCreation";
 
 const UserManagement: React.FC = () => {
   return (
     <>
       <div className="management-section">
         <div className="manage-user">
-        <p>Welcome, Caleb Antonucci</p>
-        <h2>User Management</h2>
-      </div>
-      <div className="iconsSection2">
+          <p>Welcome, Caleb Antonucci</p>
+          <h2>User Management</h2>
+        </div>
+        <div className="iconsSection2">
           <button
             type="button"
             style={{
@@ -33,7 +35,7 @@ const UserManagement: React.FC = () => {
           <ManageUser />
         </div>
       </div>
-   
+      
     </>
   );
 };

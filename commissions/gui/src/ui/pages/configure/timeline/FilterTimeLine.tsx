@@ -8,7 +8,7 @@ import Input from "../../../components/text_input/Input";
 import DropdownButton from "../../../components/dropdown/DropdownButton";
 import { ActionButton } from "../../../components/button/ActionButton";
 import Select from 'react-select';
-import { installers, partners } from "../../../../core/models/data_models/SelectDataModel";
+// import { partners } from "../../../../core/models/data_models/SelectDataModel";
 
 type ButtonProps = {
     handleClose: () => void
@@ -53,7 +53,7 @@ const FilterTimeLine = (props: ButtonProps) => {
                     <label className="inputLabel">Partner</label>
                     <div className="">
                       <Select
-                        options={partners}
+                        // options={partners}
                         styles={{
                           control: (baseStyles, state) => ({
                             ...baseStyles,
@@ -66,7 +66,7 @@ const FilterTimeLine = (props: ButtonProps) => {
                           }),
                         }}
                     
-                        value={partners.find((option) => option.value ==='partner')}
+                        // value={partners.find((option) => option.value ==='partner')}
                       />
                     </div>
                   </div>
@@ -74,7 +74,7 @@ const FilterTimeLine = (props: ButtonProps) => {
                     <label className="inputLabel">Installer</label>
                     <div className="">
                       <Select
-                        options={installers}
+                        // options={partners}
                         styles={{
                           control: (baseStyles, state) => ({
                             ...baseStyles,
@@ -87,7 +87,7 @@ const FilterTimeLine = (props: ButtonProps) => {
                           }),
                         }}
                     
-                        value={installers.find((option) => option.value ==='installer')}
+                        // value={partners.find((option) => option.value ==='installer')}
                       />
                     </div>
                   </div>

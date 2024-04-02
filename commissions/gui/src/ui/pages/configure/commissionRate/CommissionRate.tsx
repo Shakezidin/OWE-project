@@ -207,7 +207,7 @@ const CommissionRate: React.FC = () => {
                           <div className="" style={{ cursor: "pointer" }}>
                             <img src={ICONS.ARCHIVE} alt="" />
                           </div>
-                          <div className="" style={{ cursor: "pointer" }}>
+                          <div className="" style={{ cursor: "pointer" }} onClick={()=>handleOpen()}>
                             <CiEdit
                               style={{ fontSize: "1.5rem", color: "#344054" }}
                             />

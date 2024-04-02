@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../../create_profile/CreateUserProfile.css";
 import { ReactComponent as PROFILE_BACKGROUND } from "../../../../resources/assets/Profile_background.svg";
 
@@ -12,7 +12,8 @@ import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoin
 import { useDispatch } from "react-redux";
 import { TierLoanFeeModel } from "../../../../core/models/configuration/TierLoanFeeModel";
 import Select from 'react-select';
-import { oweCost, tierInstallerData, tierState } from "../../../../core/models/data_models/SelectDataModel";
+import { installerOption, oweCostOption, stateOption } from "../../../../core/models/data_models/SelectDataModel";
+import { installers } from "../../../../resources/static_data/StaticData";
 type ButtonProps = {
     handleClose: () => void
 }
@@ -33,6 +34,18 @@ const CreateTierLoan = (props: ButtonProps) => {
         end_date: "2024-12-31"
     }
   )
+  const [newFormData,setNewFormData] = useState<any>([])
+  const tableData = {
+    tableNames: ["partners", "states","installers","owe_cost"]
+  }
+ const getNewFormData=async()=>{
+  const res = await postCaller(EndPoints.get_newFormData,tableData)
+  setNewFormData(res.data)
+  
+ }
+ useEffect(()=>{
+getNewFormData()
+ },[])
 
  
 
@@ -94,7 +107,7 @@ const CreateTierLoan = (props: ButtonProps) => {
                                 <div className="create-input-field">
                                 <label className="inputLabel">Installer</label>
               <Select
-                      options={tierInstallerData}
+                      options={installerOption(newFormData)}
                       isSearchable
                       styles={{
                         control: (baseStyles, state) => ({
@@ -108,13 +121,13 @@ const CreateTierLoan = (props: ButtonProps) => {
                         }),
                       }}
                       onChange={(newValue) => handleChange(newValue, 'installer')}
-                      value={tierInstallerData.find((option) => option.value === createTier.installer )}
+                      value={installerOption(newFormData)?.find((option) => option.value === createTier.installer )}
                     />
                                 </div>
                                 <div className="create-input-field">
                                 <label className="inputLabel">State</label>
               <Select
-                      options={tierState}
+                      options={stateOption(newFormData)}
                       isSearchable
                       styles={{
                         control: (baseStyles, state) => ({
@@ -128,7 +141,7 @@ const CreateTierLoan = (props: ButtonProps) => {
                         }),
                       }}
                       onChange={(newValue) => handleChange(newValue, 'state')}
-                      value={tierState.find((option) => option.value === createTier.state )}
+                      value={stateOption(newFormData)?.find((option) => option.value === createTier.state )}
                     />
                                 </div>
                             </div>
@@ -147,7 +160,7 @@ const CreateTierLoan = (props: ButtonProps) => {
                                 <div className="create-input-field">
                                 <label className="inputLabel">OWE Cost</label>
               <Select
-                      options={oweCost}
+                      options={oweCostOption(newFormData)}
                       styles={{
                         control: (baseStyles, state) => ({
                           ...baseStyles,
@@ -161,7 +174,7 @@ const CreateTierLoan = (props: ButtonProps) => {
                       }}
                       isSearchable
                       onChange={(newValue) => handleChange(newValue, 'owe_cost')}
-                      value={oweCost.find((option) => option.value === createTier.owe_cost )}
+                      value={oweCostOption(newFormData)?.find((option) => option.value === createTier.owe_cost )}
                     />
                                 </div>
                                 <div className="create-input-field">

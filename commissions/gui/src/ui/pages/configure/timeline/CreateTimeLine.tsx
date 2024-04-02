@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../../create_profile/CreateUserProfile.css";
 import { ReactComponent as PROFILE_BACKGROUND } from "../../../../resources/assets/Profile_background.svg";
 
@@ -12,7 +12,7 @@ import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoin
 import { TimeLineSlaModel } from "../../../../core/models/configuration/TimeLineSlaModel";
 import { useDispatch } from "react-redux";
 import Select from 'react-select';
-import { stateData } from "../../../../core/models/data_models/SelectDataModel";
+import { stateOption } from "../../../../core/models/data_models/SelectDataModel";
 type ButtonProps = {
     handleClose: () => void
 }
@@ -23,13 +23,25 @@ const CreateTimeLine = (props: ButtonProps) => {
     const [createPayData, setCreatePayData] = useState<TimeLineSlaModel>(
         {
             type_m2m: "YourTypeM2MValue2",
-            state: "Alabama",
+            state: "",
             days: "10",
             start_date: "2024-04-01",
             end_date: "2024-04-10"
         }
     )
-
+    const [newFormData,setNewFormData] = useState<any>([])
+    const tableData = {
+      tableNames: ["states"]
+    }
+   const getNewFormData=async()=>{
+    const res = await postCaller(EndPoints.get_newFormData,tableData)
+    setNewFormData(res.data)
+    
+   }
+   useEffect(()=>{
+  getNewFormData()
+   },[])
+  
 
 
     const handleChange = (newValue: any, fieldName: string) => {
@@ -90,7 +102,7 @@ const CreateTimeLine = (props: ButtonProps) => {
                                 <div className="create-input-field">
                                 <label className="inputLabel">ST</label>
                                     <Select
-                                        options={stateData}
+                                        options={stateOption(newFormData)}
                                         isSearchable
                                         styles={{
                                             control: (baseStyles, state) => ({
@@ -104,7 +116,7 @@ const CreateTimeLine = (props: ButtonProps) => {
                                             }),
                                           }}
                                         onChange={(newValue) => handleChange(newValue, 'state')}
-                                        value={stateData.find((option) => option.value === createPayData.state)}
+                                        value={stateOption(newFormData)?.find((option) => option.value === createPayData.state)}
                                     />
                                 </div>
                                 <div className="create-input-field">
