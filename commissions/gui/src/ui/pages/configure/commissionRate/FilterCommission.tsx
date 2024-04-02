@@ -51,10 +51,10 @@ const FilterCommission = (props: ButtonProps) => {
             <div className="createProfileTextView">
               <div className="create-input-container">
                 <div className="create-input-field">
-                  <label className="inputLabel">Partner</label>
+                  <label className="inputLabel">Column Name</label>
                   <div className="">
                     <Select
-                      // options={partners}
+                      // options={}
                       styles={{
                         control: (baseStyles, state) => ({
                           ...baseStyles,
@@ -72,7 +72,7 @@ const FilterCommission = (props: ButtonProps) => {
                   </div>
                 </div>
                 <div className="create-input-field">
-                  <label className="inputLabel">Installer</label>
+                  <label className="inputLabel">Operation</label>
                   <div className="">
                     <Select
                       // options={installers}
@@ -96,10 +96,10 @@ const FilterCommission = (props: ButtonProps) => {
                 <div className="create-input-field">
                   <Input
                     type={"text"}
-                    label="Sales Type"
+                    label="Value"
                     value={""}
                     name=""
-                    placeholder={"Sales Type"}
+                    placeholder={"Enter"}
                     onChange={() => {}}
                   />
                 </div>
