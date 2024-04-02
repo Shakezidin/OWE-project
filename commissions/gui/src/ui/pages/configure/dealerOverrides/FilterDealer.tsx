@@ -34,9 +34,9 @@ const FilterDealer = (props: ButtonProps) => {
   return (
     <div className="transparent-model">
       <div className="modal">
-        <div className="createUserCrossButton" onClick={props.handleClose}>
+        {/* <div className="createUserCrossButton" >
           <CROSS_BUTTON />
-        </div>
+        </div> */}
         <div className="createUserContainer">
           <div
             className=""
@@ -67,7 +67,7 @@ const FilterDealer = (props: ButtonProps) => {
             <div className="createProfileTextView">
               <div className="create-input-container">
                 <div className="create-input-field">
-                  <label className="inputLabel">Sub Dealer</label>
+                  <label className="inputLabel">Column Name</label>
                   <div className="">
                     <Select
                       options={subDealerOption(newFormData)}
@@ -88,7 +88,7 @@ const FilterDealer = (props: ButtonProps) => {
                   </div>
                 </div>
                 <div className="create-input-field">
-                  <label className="inputLabel">Dealer</label>
+                  <label className="inputLabel">Operation</label>
                   <div className="">
                     <Select
                       options={dealerOption(newFormData)}
@@ -112,10 +112,10 @@ const FilterDealer = (props: ButtonProps) => {
                 <div className="create-input-field">
                   <Input
                     type={"text"}
-                    label="Sales Type"
+                    label="Value"
                     value={""}
                     name=""
-                    placeholder={"Sales Type"}
+                    placeholder={"Enter"}
                     onChange={() => {}}
                   />
                 </div>
@@ -125,7 +125,7 @@ const FilterDealer = (props: ButtonProps) => {
           <div className="createUserActionButton" style={{ gap: "2rem" }}>
             <ActionButton title={"Save"} type="submit" onClick={() => {}} />
 
-            <ActionButton title={"cancel"} type="submit" onClick={() => {}} />
+            <ActionButton title={"cancel"} type="reset" onClick={props.handleClose}/>
           </div>
         </div>
       </div>

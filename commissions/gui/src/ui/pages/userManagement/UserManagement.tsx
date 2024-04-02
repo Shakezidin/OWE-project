@@ -1,9 +1,8 @@
 import React from "react";
 import ManageUser from "./ManageUser";
-import BarChart from "./BarChart";
+import BarChart from "./BarChart/BarChart";
 import { IoAddSharp } from "react-icons/io5";
-import UserOnboardCreation from "../../pages/userManagement/UserOnboardCreation";
-import AppSetterOnboardCreation from "../../pages/userManagement/AppSetterOnboardCreation";
+
 
 const UserManagement: React.FC = () => {
   return (

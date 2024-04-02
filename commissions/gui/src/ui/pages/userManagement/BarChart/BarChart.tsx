@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useCallback } from "react";
 import "./barchart.css";
-import { PieChart } from "recharts";
-import { Pie } from "recharts";
+
+import { ResponsiveContainer, PieChart, Pie } from "recharts";
 
 const BarChart: React.FC = () => {
+  const renderLabel = useCallback((piePiece: any) => {
+    return piePiece.name;
+  }, []);
+
   const data01 = [
     {
       name: "Group A",
@@ -56,9 +60,31 @@ const BarChart: React.FC = () => {
       value: 4800,
     },
   ];
+  const data = [
+    {
+      name: "Liquide Vermogen",
+      value: 6000,
+      fill: "#3333FF",
+    },
+    {
+      name: "Pensioenopbouw",
+      value: 4000,
+      fill: "#FF9933",
+    },
+    {
+      name: "Onroerend",
+      value: 10000,
+      fill: "#FF3333",
+    },
+    {
+      name: "Zakelijk",
+      value: 12000,
+      fill: "#00FF00",
+    },
+  ];
   return (
     <>
-    <div className="PieChart-container">
+      {/* <div className="PieChart-container">
       <div className="pieChart-section">
         <p>Onboarding Detail</p>
         <PieChart width={550} height={350}>
@@ -87,7 +113,31 @@ const BarChart: React.FC = () => {
           />
         </PieChart>
       </div>
+      </div> */}
+
+      <div className="PieChart-container" style={{ width: "50%", height: "50vh", background: "white" }}>
+
+        <ResponsiveContainer>
+         
+            <p>Onboarding Detail</p>
+            <PieChart style={{ cursor: "pointer" }}>
+              <Pie
+                dataKey="value"
+                data={data}
+                label={renderLabel}
+                cx="50%"
+                cy="50%"
+                outerRadius={"75%"}
+                nameKey="name"
+              // activeShape={(props) => renderActiveShape(props, showSubchart)}
+              // onMouseEnter={onMouseOver}
+              // onMouseLeave={onMouseLeave}
+              />
+            </PieChart>
+          
+        </ResponsiveContainer>
       </div>
+
     </>
   );
 };

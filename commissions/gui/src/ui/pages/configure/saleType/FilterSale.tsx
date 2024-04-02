@@ -21,10 +21,10 @@ const FilterSale = (props: ButtonProps) => {
         <div className="transparent-model">
             <div className="modal">
 
-                <div className="createUserCrossButton" onClick={props.handleClose}>
+                {/* <div className="createUserCrossButton" onClick={props.handleClose}>
                     <CROSS_BUTTON />
 
-                </div>
+                </div> */}
                 <div className="createUserContainer">
                     <div className="" style={{ display: "flex", justifyContent: "space-between", padding: "1rem 2rem 0rem 2rem" }}>
                         <div className="">
@@ -51,10 +51,10 @@ const FilterSale = (props: ButtonProps) => {
                             <div className="create-input-field">
                                     <Input
                                         type={"text"}
-                                        label="Sales Type"
+                                        label="Column Name"
                                         value={""}
                                         name=""
-                                        placeholder={"Sales Type"}
+                                        placeholder={"Enter"}
                                         onChange={() => { }}
                                     />
                                 </div>
@@ -62,10 +62,10 @@ const FilterSale = (props: ButtonProps) => {
                                 <div className="create-input-field">
                                     <Input
                                         type={"text"}
-                                        label="Sales Type"
+                                        label="Operation"
                                         value={""}
                                         name=""
-                                        placeholder={"Sales Type"}
+                                        placeholder={"Enter"}
                                         onChange={() => { }}
                                     />
                                 </div>
@@ -79,7 +79,7 @@ const FilterSale = (props: ButtonProps) => {
                             onClick={() => { }} />
 
                         <ActionButton title={"cancel"} type="submit"
-                            onClick={() => { }} />
+                            onClick={props.handleClose} />
                     </div>
 
                 </div>

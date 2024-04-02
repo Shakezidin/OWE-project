@@ -22,10 +22,10 @@ const FilterMarketing = (props: ButtonProps) => {
         <div className="transparent-model">
             <div className="modal">
 
-                <div className="createUserCrossButton" onClick={props.handleClose}>
+                {/* <div className="createUserCrossButton" onClick={props.handleClose}>
                     <CROSS_BUTTON />
 
-                </div>
+                </div> */}
                 <div className="createUserContainer">
                     <div className="" style={{ display: "flex", justifyContent: "space-between", padding: "1rem 2rem 0rem 2rem" }}>
                         <div className="">
@@ -50,7 +50,7 @@ const FilterMarketing = (props: ButtonProps) => {
                         <div className="createProfileTextView">
                             <div className="create-input-container">
                             <div className="create-input-field">
-                    <label className="inputLabel">Source</label>
+                    <label className="inputLabel">Column Name</label>
                     <div className="">
                       <Select
                         // options={sourceData}
@@ -71,7 +71,7 @@ const FilterMarketing = (props: ButtonProps) => {
                     </div>
                   </div>
                   <div className="create-input-field">
-                    <label className="inputLabel">Dealer</label>
+                    <label className="inputLabel">Operation</label>
                     <div className="">
                       <Select
                         // options={dbaData}
@@ -95,10 +95,10 @@ const FilterMarketing = (props: ButtonProps) => {
                                 <div className="create-input-field">
                                     <Input
                                         type={"text"}
-                                        label="Sales Type"
+                                        label="Value"
                                         value={""}
                                         name=""
-                                        placeholder={"Sales Type"}
+                                        placeholder={"Enter"}
                                         onChange={() => { }}
                                     />
                                 </div>
@@ -112,7 +112,7 @@ const FilterMarketing = (props: ButtonProps) => {
                             onClick={() => { }} />
 
                         <ActionButton title={"cancel"} type="submit"
-                            onClick={() => { }} />
+                            onClick={props.handleClose} />
                     </div>
 
                 </div>
