@@ -9,7 +9,7 @@ import { ActionButton } from "../../../components/button/ActionButton";
 import Select from 'react-select';
 import { chg_dlrOption, dbaOption, sourceOption, stateOption } from "../../../../core/models/data_models/SelectDataModel";
 import { updateMarketingForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createMarketingSlice";
-import { MarketingFeeModel } from "../../../../core/models/configuration/MarketingFeeModel";
+import { MarketingFeeModel } from "../../../../core/models/configuration/create/MarketingFeeModel";
 import { useDispatch } from "react-redux";
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";

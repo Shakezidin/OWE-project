@@ -110,6 +110,7 @@ table tbody {
 }
 
 table thead tr {
+ 
   border-bottom: 1px solid var(--table-border-color);
 }
 table thead tr th {
@@ -117,7 +118,7 @@ table thead tr th {
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;
-  background-color:#FCFCFD;
+
   padding: 0.8rem 1rem 0.8rem 1rem;
   /* line-height: 18px; */
 }

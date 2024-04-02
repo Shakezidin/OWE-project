@@ -2,7 +2,7 @@
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { DealerTierModel } from '../../../../core/models/configuration/DealerTierModel';
+import { DealerTierModel } from '../../../../core/models/configuration/create/DealerTierModel';
 
 
 

@@ -6,50 +6,58 @@ import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cro
 import Input from "../../../components/text_input/Input";
 
 import { ActionButton } from "../../../components/button/ActionButton";
-import { CommissionModel } from "../../../../core/models/configuration/CommissionModel";
-import { useDispatch, useSelector } from 'react-redux';
-import { updateForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createCommissionSlice";
-import { getCaller, postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
+import { CommissionModel } from "../../../../core/models/configuration/create/CommissionModel";
+import { useDispatch} from 'react-redux';
+// import { updateForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createCommissionSlice";
+import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import Select from 'react-select';
 import { installerOption, partnerOption, repTypeOption, stateOption } from "../../../../core/models/data_models/SelectDataModel";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
 import { respTypeData } from "../../../../resources/static_data/StaticData";
-type ButtonProps = {
-  handleClose: () => void
-}
-interface Option {
-  value: string;
-  label: string;
+import {  updateForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createCommissionSlice";
+interface ButtonProps {
+  handleClose: () => void,
+commission: CommissionModel | null;
+ 
 }
 
-const CreateCommissionRate = (props: ButtonProps) => {
+const CreateCommissionRate:React.FC<ButtonProps> = ({handleClose,commission}) => {
+  
   const dispatch = useDispatch();
+ 
   const [createCommission, setCreateCommission] = useState<CommissionModel>(
     {
-      partner: "",
-      installer: "",
-      state: "",
-      sale_type: "BATTERY",
-      sale_price: 1500.0,
-      rep_type: "EMPLOYEE",
-      rl: 0.5,
-      rate: 0.1,
-      start_date: "2024-04-01",
-      end_date: "2024-06-30"
+    record_id:commission? commission?.record_id:0,
+      partner:commission? commission?.partner : "",
+      installer:commission? commission?.installer : "",
+      state:commission? commission?.state : "",
+      sale_type: commission? commission?.sale_type : "",
+      sale_price:commission? commission?.sale_price : 0,
+      rep_type:commission? commission?.rep_type: "",
+      rl: commission? commission?.rl :0,
+      rate: commission? commission?.rate :0,
+      start_date:commission? commission?.start_date : "",
+      end_date:commission? commission?.end_date : ""
     }
   )
-  const [newFormData,setNewFormData] = useState<any>([])
+  const [newFormData, setNewFormData] = useState<any>([])
   const tableData = {
-    tableNames: ["partners", "states","installers","rep_type"]
+    tableNames: ["partners", "states", "installers", "rep_type"]
   }
- const getNewFormData=async()=>{
-  const res = await postCaller(EndPoints.get_newFormData,tableData)
-  setNewFormData(res.data)
-  
- }
- useEffect(()=>{
-getNewFormData()
- },[])
+  const getNewFormData = async () => {
+    const res = await postCaller(EndPoints.get_newFormData, tableData)
+    setNewFormData(res.data)
+
+  }
+  useEffect(() => {
+    getNewFormData()
+  }, [])
+
+  useEffect(() => {
+    if (commission) {
+      setCreateCommission(commission);
+    }
+  }, [commission]);
 
   const handleChange = (newValue: any, fieldName: string) => {
     setCreateCommission((prevData) => ({
@@ -68,30 +76,46 @@ getNewFormData()
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      console.log(createCommission)
+   
       dispatch(updateForm(createCommission));
-      const res = await postCaller(EndPoints.create_commission, createCommission);
-      if(res.status===200){
-        alert(res.message)
-        props.handleClose()
-        window.location.reload()
+      if(createCommission.record_id){
+        const res = await postCaller(EndPoints.update_commission, createCommission);
+        if (res.status === 200) {
+          alert(res.message)
+          handleClose()
+          window.location.reload()
+        }
+        else {
+          alert(res.message)
+        }
       }
       else{
-        alert(res.message)
+        const res = await postCaller(EndPoints.create_commission, createCommission);
+        if (res.status === 200) {
+          alert(res.message)
+          handleClose()
+          window.location.reload()
+        }
+        else {
+          alert(res.message)
+        }
       }
+    
       // dispatch(resetForm());
     } catch (error) {
       console.error('Error submitting form:', error);
     }
   };
+
+
+ 
   
-  const staticData = repTypeOption(newFormData) || repTypeOption
 
   return (
     <div className="transparent-model">
       <div className="modal">
 
-        <div className="createUserCrossButton" onClick={props.handleClose}>
+        <div className="createUserCrossButton" onClick={handleClose}>
           <CROSS_BUTTON />
 
         </div>
@@ -111,12 +135,12 @@ getNewFormData()
                       styles={{
                         control: (baseStyles, state) => ({
                           ...baseStyles,
-                          marginTop:"4.5px",
-                          borderRadius:"8px",
-                          outline:"none",
-                          height:"2.8rem",
-                          border:"1px solid #d0d5dd"
-                          
+                          marginTop: "4.5px",
+                          borderRadius: "8px",
+                          outline: "none",
+                          height: "2.8rem",
+                          border: "1px solid #d0d5dd"
+
                         }),
                       }}
                     />
@@ -129,12 +153,12 @@ getNewFormData()
                         styles={{
                           control: (baseStyles, state) => ({
                             ...baseStyles,
-                            marginTop:"4.5px",
-                            borderRadius:"8px",
-                            outline:"none",
-                            height:"2.8rem",
-                            border:"1px solid #d0d5dd"
-                            
+                            marginTop: "4.5px",
+                            borderRadius: "8px",
+                            outline: "none",
+                            height: "2.8rem",
+                            border: "1px solid #d0d5dd"
+
                           }),
                         }}
                         onChange={(newValue) => handleChange(newValue, 'installer')}
@@ -149,12 +173,12 @@ getNewFormData()
                       styles={{
                         control: (baseStyles, state) => ({
                           ...baseStyles,
-                          marginTop:"4.5px",
-                          borderRadius:"8px",
-                          outline:"none",
-                          height:"2.8rem",
-                          border:"1px solid #d0d5dd"
-                          
+                          marginTop: "4.5px",
+                          borderRadius: "8px",
+                          outline: "none",
+                          height: "2.8rem",
+                          border: "1px solid #d0d5dd"
+
                         }),
                       }}
                       isSearchable
@@ -189,22 +213,22 @@ getNewFormData()
                   <div className="create-input-field">
                     <label className="inputLabel">Representative Type</label>
                     <Select
-                      options={repTypeOption(newFormData) ||respTypeData}
+                      options={repTypeOption(newFormData) || respTypeData}
                       isSearchable
                       styles={{
                         control: (baseStyles, state) => ({
                           ...baseStyles,
-                          marginTop:"4.5px",
-                          borderRadius:"8px",
-                          outline:"none",
-                          height:"2.8rem",
-                          border:"1px solid #d0d5dd"
-                          
+                          marginTop: "4.5px",
+                          borderRadius: "8px",
+                          outline: "none",
+                          height: "2.8rem",
+                          border: "1px solid #d0d5dd"
+
                         }),
                       }}
                       // options={partners}
                       onChange={(newValue) => handleChange(newValue, 'rep_type')}
-                      value={repTypeOption(newFormData)||respTypeData?.find((option) => option.value === createCommission.rep_type)}
+                      value={repTypeOption(newFormData) || respTypeData?.find((option) => option.value === createCommission.rep_type)}
                     />
                   </div>
                 </div>

@@ -1,7 +1,7 @@
 // src/features/createSalesTypeSlice.ts
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { SalesTypeModel } from '../../../../core/models/configuration/SalesTypeModel';
+import { SalesTypeModel } from '../../../../core/models/configuration/create/SalesTypeModel';
 
 
 

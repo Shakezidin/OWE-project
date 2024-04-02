@@ -19,11 +19,15 @@ import {
 import Pagination from "../../../components/pagination/Pagination";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 
+import { CommissionModel } from "../../../../core/models/configuration/create/CommissionModel";
+
 const CommissionRate: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
+  const [updateOpen,setUpdateOpen] = React.useState<boolean>(false)
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
  const filter = ()=>setFilterOpen(true)
   const filterClose = () => setFilterOpen(false);
 
@@ -33,6 +37,8 @@ const CommissionRate: React.FC = () => {
   const error = useAppSelector((state) => state.comm.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
+  const [editMode, setEditMode] = useState(false);
+  const [editedCommission, setEditedCommission] = useState<CommissionModel | null>(null);
   const itemsPerPage = 5;
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
   useEffect(() => {
@@ -58,7 +64,17 @@ const CommissionRate: React.FC = () => {
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
+  const handleAddCommission = () => {
+    setEditMode(false);
+    setEditedCommission(null);
+    handleOpen()
+  };
 
+  const handleEditCommission = (commission: CommissionModel) => {
+    setEditMode(true);
+    setEditedCommission(commission);
+    handleOpen()
+  };
 
 
   if (loading) {
@@ -86,10 +102,13 @@ const CommissionRate: React.FC = () => {
           onPressFilter={() => filter()}
           onPressImport={() => {}}
           onpressExport={() => {}}
-          onpressAddNew={() => handleOpen()}
+          onpressAddNew={() => handleAddCommission()}
         />
-        {filterOPen && <FilterCommission handleClose={filterClose} />}
-        {open && <CreateCommissionRate handleClose={handleClose} />}
+             {filterOPen && <FilterCommission handleClose={filterClose} />}
+             {open && <CreateCommissionRate 
+                         commission={editedCommission}
+                       
+                         handleClose={handleClose} />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
@@ -97,7 +116,7 @@ const CommissionRate: React.FC = () => {
           <table>
             <thead>
               <tr>
-                <th>
+                <th >
                   <div>
                     <CheckBox
                       checked={selectAllChecked}
@@ -207,12 +226,13 @@ const CommissionRate: React.FC = () => {
                           <div className="" style={{ cursor: "pointer" }}>
                             <img src={ICONS.ARCHIVE} alt="" />
                           </div>
-                          <div className="" style={{ cursor: "pointer" }} onClick={()=>handleOpen()}>
+                          <div className="" style={{ cursor: "pointer" }} onClick={()=>handleEditCommission(el)}>
                             <CiEdit
                               style={{ fontSize: "1.5rem", color: "#344054" }}
                             />
                           </div>
                         </div>
+                     
                       </td>
                     </tr>
                   ))

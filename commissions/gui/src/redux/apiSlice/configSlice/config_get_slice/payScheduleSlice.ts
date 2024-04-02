@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
-import { PayScheduleModel } from "../../../../core/models/configuration/PayScheduleModel";
+import { PayScheduleModel } from "../../../../core/models/configuration/create/PayScheduleModel";
 
 
 interface payScheduleState {

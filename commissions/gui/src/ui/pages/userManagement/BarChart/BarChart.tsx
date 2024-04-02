@@ -117,7 +117,7 @@ const BarChart: React.FC = () => {
 
       <div className="PieChart-container" style={{ width: "50%", height: "50vh", background: "white" }}>
 
-        <ResponsiveContainer>
+      {/* <ResponsiveContainer width="100%" height="100%"> */}
          
             <p>Onboarding Detail</p>
             <PieChart style={{ cursor: "pointer" }}>
@@ -135,7 +135,7 @@ const BarChart: React.FC = () => {
               />
             </PieChart>
           
-        </ResponsiveContainer>
+        {/* </ResponsiveContainer> */}
       </div>
 
     </>

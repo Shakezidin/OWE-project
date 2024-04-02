@@ -1,11 +1,12 @@
 // src/features/createCommissionSlice.ts
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { CommissionModel } from '../../../../core/models/configuration/CommissionModel';
+import { CommissionModel } from '../../../../core/models/configuration/create/CommissionModel';
 
 
 
 const initialState: CommissionModel = {
+  record_id:0,
   partner: '',
   installer: '',
   state: '',

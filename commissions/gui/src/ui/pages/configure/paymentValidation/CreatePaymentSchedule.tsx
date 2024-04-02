@@ -10,7 +10,7 @@ import { updatePayForm } from "../../../../redux/apiSlice/configSlice/config_pos
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
 import { useDispatch } from "react-redux";
-import { PayScheduleModel } from "../../../../core/models/configuration/PayScheduleModel";
+import { PayScheduleModel } from "../../../../core/models/configuration/create/PayScheduleModel";
 import { installerOption, partnerOption, salesTypeOption, stateOption, } from "../../../../core/models/data_models/SelectDataModel";
 import Select from 'react-select';
 import { partners, paySaleTypeData } from "../../../../resources/static_data/StaticData";

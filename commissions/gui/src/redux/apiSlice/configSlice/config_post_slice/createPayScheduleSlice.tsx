@@ -1,7 +1,7 @@
 // src/features/createPayScheduleSlice.ts
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { PayScheduleModel } from '../../../../core/models/configuration/PayScheduleModel';
+import { PayScheduleModel } from '../../../../core/models/configuration/create/PayScheduleModel';
 
 
 

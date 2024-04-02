@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
-import { TierLoanFeeModel } from "../../../../core/models/configuration/TierLoanFeeModel";
+import { TierLoanFeeModel } from "../../../../core/models/configuration/create/TierLoanFeeModel";
 
 
 interface TierLoanState {

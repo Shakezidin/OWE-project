@@ -2,7 +2,7 @@
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { MarketingFeeModel } from '../../../../core/models/configuration/MarketingFeeModel';
+import { MarketingFeeModel } from '../../../../core/models/configuration/create/MarketingFeeModel';
 
 
 

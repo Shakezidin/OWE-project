@@ -7,7 +7,7 @@ import Input from "../../../components/text_input/Input";
 import DropdownButton from "../../../components/dropdown/DropdownButton";
 import { ActionButton } from "../../../components/button/ActionButton";
 import { useDispatch } from "react-redux";
-import { DealerModel } from "../../../../core/models/configuration/DealerModel";
+import { DealerModel } from "../../../../core/models/configuration/create/DealerModel";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import Select from 'react-select';
