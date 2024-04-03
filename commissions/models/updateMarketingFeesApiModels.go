@@ -1,12 +1,12 @@
 /**************************************************************************
- *	Function	: getMarketingFeesApiModels.go
- *	DESCRIPTION : Files contains struct for get Marketing Fees user models
+ *	Function	: updateMarketingFeesApiModels.go
+ *	DESCRIPTION : Files contains struct for update Marketing Fees user models
  *	DATE        : 20-Jan-2024
  **************************************************************************/
 
 package models
 
-type GetMarketingFeesData struct {
+type UpdateMarketingFee struct {
 	RecordId    int64  `json:"record_id"`
 	Source      string `json:"source"`
 	Dba         string `json:"dba"`
@@ -17,8 +17,4 @@ type GetMarketingFeesData struct {
 	StartDate   string `json:"start_date"`
 	EndDate     string `json:"end_date"`
 	Description string `json:"description"`
-}
-
-type GetMarketingFeesList struct {
-	MarketingFeesList []GetMarketingFeesData `json:"marketing_fees_list"`
 }
