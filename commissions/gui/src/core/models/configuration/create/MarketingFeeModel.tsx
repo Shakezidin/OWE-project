@@ -1,4 +1,5 @@
 export interface MarketingFeeModel {
+  record_id:number,
     source: string;
     dba: string;
     state: string;

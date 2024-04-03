@@ -10,10 +10,11 @@ import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import { updateTierLoanForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createTierLoanFeeSlice";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
 import { useDispatch } from "react-redux";
-import { TierLoanFeeModel } from "../../../../core/models/configuration/create/TierLoanFeeModel";
+
 import Select from 'react-select';
 import { installerOption, oweCostOption, stateOption } from "../../../../core/models/data_models/SelectDataModel";
 import { installers } from "../../../../resources/static_data/StaticData";
+import { TierLoanFeeModel } from "../../../../core/models/configuration/create/TierLoanFeeModel";
 type ButtonProps = {
     handleClose: () => void
 }
