@@ -18,12 +18,11 @@ import {
 } from "../../../components/chekbox/checkHelper";
 import Pagination from "../../../components/pagination/Pagination";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
-
 import { CommissionModel } from "../../../../core/models/configuration/create/CommissionModel";
+
 
 const CommissionRate: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
-  const [updateOpen,setUpdateOpen] = React.useState<boolean>(false)
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -107,7 +106,7 @@ const CommissionRate: React.FC = () => {
              {filterOPen && <FilterCommission handleClose={filterClose} />}
              {open && <CreateCommissionRate 
                          commission={editedCommission}
-                       
+                         editMode={editMode}
                          handleClose={handleClose} />}
         <div
           className="TableContainer"

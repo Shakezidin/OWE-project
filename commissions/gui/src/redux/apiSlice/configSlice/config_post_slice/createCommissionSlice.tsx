@@ -5,6 +5,7 @@ import { CommissionModel } from '../../../../core/models/configuration/create/Co
 
 
 
+
 const initialState: CommissionModel = {
   record_id:0,
   partner: '',

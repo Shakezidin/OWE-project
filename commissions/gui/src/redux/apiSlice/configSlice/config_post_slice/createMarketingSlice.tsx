@@ -1,12 +1,14 @@
 // src/features/createMarketingSlice.ts
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
 import { MarketingFeeModel } from '../../../../core/models/configuration/create/MarketingFeeModel';
 
 
 
+
+
 const initialState: MarketingFeeModel = {
+  record_id:0,
     source: "",
     dba:"",
     state: "",

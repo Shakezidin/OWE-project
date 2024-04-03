@@ -7,6 +7,7 @@ import { SalesTypeModel } from '../../../../core/models/configuration/create/Sal
 
 
 
+
 const initialState: SalesTypeModel = {
     type_name:"",
     description: ""

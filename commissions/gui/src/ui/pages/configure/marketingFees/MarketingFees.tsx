@@ -13,6 +13,7 @@ import {
   toggleRowSelection,
 } from "../../../components/chekbox/checkHelper";
 import FilterMarketing from "./FilterMarketing";
+import { MarketingFeeModel } from "../../../../core/models/configuration/create/MarketingFeeModel";
 
 const MarketingFees: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -31,6 +32,8 @@ const MarketingFees: React.FC = () => {
   const error = useAppSelector((state) => state.marketing.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
+  const [editMode, setEditMode] = useState(false);
+  const [editedMarketing, setEditedMarketing] = useState<MarketingFeeModel | null>(null);
   useEffect(() => {
     const pageNumber = {
       page_number: 1,
@@ -38,6 +41,19 @@ const MarketingFees: React.FC = () => {
     };
     dispatch(fetchmarketingFees(pageNumber));
   }, [dispatch]);
+
+  const handleAddMarketing = () => {
+    setEditMode(false);
+    setEditedMarketing(null);
+    handleOpen()
+  };
+
+  const handleEditMarketing = (marketingData: MarketingFeeModel) => {
+    setEditMode(true);
+    setEditedMarketing(marketingData);
+    handleOpen()
+  };
+
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === marketingFeesList?.length;
   if (loading) {
@@ -60,10 +76,12 @@ const MarketingFees: React.FC = () => {
           onPressFilter={() => filter()}
           onPressImport={() => {}}
           onpressExport={() => {}}
-          onpressAddNew={() => handleOpen()}
+          onpressAddNew={() => handleAddMarketing()}
         />
         {filterOPen && <FilterMarketing handleClose={filterClose} />}
-        {open && <CreateMarketingFees handleClose={handleClose} />}
+        {open && <CreateMarketingFees marketingData={editedMarketing}
+                         editMode={editMode}
+                         handleClose={handleClose} />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
@@ -181,9 +199,11 @@ const MarketingFees: React.FC = () => {
                         }}
                       >
                         <img src={ICONS.ARCHIVE} alt="" />
-                        <CiEdit
+                      <div className="" style={{cursor:"pointer"}} onClick={()=>handleEditMarketing(el)}>
+                      <CiEdit
                           style={{ fontSize: "1.5rem", color: "#344054" }}
                         />
+                      </div>
                       </td>
                     </tr>
                   ))

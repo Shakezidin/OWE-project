@@ -29,7 +29,7 @@ export const stateData = [
   { value: 'Alabama', label: 'Alabama' },
 ]
 export const chldlrData = [
-  { value: 100, label: 'chld' },
+  { value: 100, label:100 },
 ]
 export const adderTypeData = [
   { value: "Type A", label: 'Type A' },
