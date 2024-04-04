@@ -8,19 +8,18 @@ import RegionalManagerTable from "./userManagerAllTable/RegionalManagerTable";
 import DealerOwnerTable from "./userManagerAllTable/DealerOwnerTable";
 import SalesRepresentativeTable from "./userManagerAllTable/SalesRepresentativeTable";
 import SalesManagerTable from "./userManagerAllTable/SalesManagerTable";
+import UserHeaderSection from "./UserHeader/UserHeaderSection";
 // import { installers, partners, respTypeData, statData } from "../../../../../core/models/data_models/SelectDataModel";
 
 
 const ManageUser: React.FC = () => {
   return (
     <>
-      <UserTable/>
-      <AppointmentSetterTable />
-      <PartnerTable />
-      <RegionalManagerTable />
-      <DealerOwnerTable/>
-      <SalesRepresentativeTable/>
-      <SalesManagerTable/>
+    <div className="">
+    <UserHeaderSection/>
+    </div>
+  
+  
     </>
   );
 };

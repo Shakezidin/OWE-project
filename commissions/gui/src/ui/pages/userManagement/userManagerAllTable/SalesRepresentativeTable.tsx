@@ -42,7 +42,7 @@ const SalesRepresentativeTable = () => {
       ];
     return (
 <>
-<UserHeaderSection  name="Sales Representative"/>
+{/* <UserHeaderSection  name="Sales Representative"/> */}
         <div
             className="TableContainer"
             style={{ overflowX: "auto", whiteSpace: "nowrap" }} >

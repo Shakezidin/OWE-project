@@ -33,7 +33,7 @@ const dataUser = [
 const PartnerTable = () => {
     return (
         <>
-            <UserHeaderSection name="Partner" />
+            {/* <UserHeaderSection name="Partner" /> */}
             <div
                 className="TableContainer"
                 style={{ overflowX: "auto", whiteSpace: "nowrap" }}  >

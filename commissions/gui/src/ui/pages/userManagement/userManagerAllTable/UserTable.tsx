@@ -36,7 +36,7 @@ const UserTable:React.FC= () => {
       ];
     return (
 <>
-<UserHeaderSection name="Admin Users"/>
+{/* <UserHeaderSection name="Admin Users"/> */}
         <div
             className="TableContainer"
             style={{ overflowX: "auto", whiteSpace: "nowrap" }} >

@@ -1,3 +1,5 @@
+import UserTable from "../../ui/pages/userManagement/userManagerAllTable/UserTable";
+
 export const partners = [
   { value: 'OWE', label: 'OWE' },
 ];
@@ -69,8 +71,4 @@ export const userSelectData = [
   { value: "Sales Representative", label: 'Sales Representative' },
   { value: "Sales Manager", label: 'Sales Manager' },
 
-]
-export const userAppointment = [
-  { value: "Appointment Setter", label: 'Appointment Setter' },
-  { value: "Appointment Setter", label: 'Appointment Setter' }
 ]
