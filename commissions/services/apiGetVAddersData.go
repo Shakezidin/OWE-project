@@ -59,7 +59,7 @@ func HandleGetVAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	tableName := db.TableName_v_adders
 	query = `
-	SELECT vadd.adder_name, vadd.adder_type, vadd.price_type, vadd.price_amount, vadd.active, vadd.description
+	SELECT  vadd.id as record_id,vadd.adder_name, vadd.adder_type, vadd.price_type, vadd.price_amount, vadd.active, vadd.description
 	FROM v_adders vadd`
 
 	filter, whereEleList = PrepareFilters(tableName, dataReq)
@@ -78,6 +78,12 @@ func HandleGetVAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	// Assuming you have data as a slice of maps, as in your previous code
 	for _, item := range data {
+		RecordId, ok := item["record_id"].(int64)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get record id. Item: %+v\n", item)
+			continue
+		}
+
 		AdderName, ok := item["adder_name"].(string)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get adder name. Item: %+v\n", item)
@@ -117,6 +123,7 @@ func HandleGetVAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 		// Create a new GetVAdderData object
 		vaddersData := models.GetVAdderData{
+			RecordId:  RecordId,
 			AdderName:   AdderName,
 			AdderType:   AdderType,
 			PriceType:   PriceType,
