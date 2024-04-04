@@ -53,7 +53,7 @@ text-align: left;
 
 }
 
-.User-drop-down select {
+/* .rate-input-field select {
   width: Fixed (180px)px;
 height: Fixed (36px)px;
 padding: 6px 16px 6px 6px;
@@ -62,8 +62,7 @@ border-radius: 8px;
 border: 1px 0px 0px 0px;
 opacity: 0px;
 
-
-}
+} */
 
 .delete-icon-container {
   display: flex;

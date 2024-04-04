@@ -39,7 +39,7 @@ const dataUser = [
 const DealerOwnerTable: React.FC = () => {
   return (
     <>
-    <UserHeaderSection  name="Dealer Owner"/>
+    {/* <UserHeaderSection  name="Dealer Owner"/> */}
       <div
         className="TableContainer"
         style={{ overflowX: "auto", whiteSpace: "nowrap" }}  >

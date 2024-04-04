@@ -39,7 +39,7 @@ const RegionalManagerTable = () => {
       ];
     return (
 <>
-<UserHeaderSection  name="Regional Manager"/>
+{/* <UserHeaderSection  name="Regional Manager"/> */}
         <div
             className="TableContainer"
             style={{ overflowX: "auto", whiteSpace: "nowrap" }} >

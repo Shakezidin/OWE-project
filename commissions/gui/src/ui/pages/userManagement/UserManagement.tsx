@@ -34,14 +34,13 @@ const UserManagement: React.FC = () => {
       </div>
       {open && <UserOnboardCreation
                         
-                       
-                         handleClose={handleClose} />}
+       handleClose={handleClose} />}
       <div className="barchart-section">
         <BarChart />
       </div>
       <div className="onboardrow">
         <div className="user-component">
-          <ManageUser />
+          {/* <ManageUser /> */}
         </div>
       </div>
       

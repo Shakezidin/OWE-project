@@ -39,7 +39,7 @@ const SalesManagerTable = () => {
       ];
     return (
 <>
-<UserHeaderSection  name="Sale Manager"/>
+{/* <UserHeaderSection  name="Sale Manager"/> */}
         <div
             className="TableContainer"
             style={{ overflowX: "auto", whiteSpace: "nowrap" }} >
