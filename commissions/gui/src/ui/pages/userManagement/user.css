@@ -44,6 +44,9 @@
   border-radius: 16px 16px 0px 0px;
   padding: 1rem;
 }
+.admin-user{
+  width: 20%;
+}
 .admin-user p{
   font-family: Poppins;
 font-size: 18px;
@@ -66,9 +69,10 @@ opacity: 0px;
 
 .delete-icon-container {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: flex-end;
   gap: 1rem;
+  width: 70%;
 }
 .iconsSection-delete {
   margin-left: 1rem;

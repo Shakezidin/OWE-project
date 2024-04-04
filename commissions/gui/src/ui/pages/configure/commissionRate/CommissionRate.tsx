@@ -19,6 +19,7 @@ import {
 import Pagination from "../../../components/pagination/Pagination";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 import { CommissionModel } from "../../../../core/models/configuration/create/CommissionModel";
+import { FaArrowDown } from "react-icons/fa6";
 
 
 const CommissionRate: React.FC = () => {
@@ -133,57 +134,57 @@ const CommissionRate: React.FC = () => {
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Partner</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Partner</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Installer</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Installer</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>State</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>State</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Sales Type</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Sales Type</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Sales Price</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Sales Price</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Rep.Type</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Rep.Type</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Rate List</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Rate List</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Rate</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Rate</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Start Dt.</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Start Dt.</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>End Dt.</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>End Dt.</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Action</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Action</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
               </tr>

@@ -30,6 +30,11 @@ export const DashboardPage: React.FC = () => {
           <h6>Welcome back, Colten</h6>
           <h3>Your Dashboard</h3>
         </div>
+        <div className="">
+          <div className="">
+            
+          </div>
+        </div>
        <DashboardTotal/>
       </div>
       </>

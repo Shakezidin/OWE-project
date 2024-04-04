@@ -5,6 +5,7 @@ import { CiEdit } from "react-icons/ci";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import '../../configure/configure.css'
 import UserHeaderSection from "../UserHeader/UserHeaderSection";
+import { FaArrowDown } from "react-icons/fa6";
 // import { installers, partners, respTypeData, statData } from "../../../../../core/models/data_models/SelectDataModel";
 
 
@@ -59,32 +60,32 @@ const DealerOwnerTable: React.FC = () => {
               
               <th>
                 <div className="table-header">
-                  <p>Code</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                  <p>Code</p> <FaArrowDown style={{color:"#667085"}}/>
                 </div>
               </th>
               <th>
                 <div className="table-header">
-                  <p>Name</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                  <p>Name</p> <FaArrowDown style={{color:"#667085"}}/>
                 </div>
               </th>
               <th>
                 <div className="table-header">
-                  <p>Email ID</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                  <p>Email ID</p> <FaArrowDown style={{color:"#667085"}}/>
                 </div>
               </th>
               <th>
                 <div className="table-header">
-                  <p>Phone Number</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                  <p>Phone Number</p> <FaArrowDown style={{color:"#667085"}}/>
                 </div>
               </th>
               <th>
                 <div className="table-header">
-                  <p>Descriptions</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                  <p>Descriptions</p> <FaArrowDown style={{color:"#667085"}}/>
                 </div>
               </th>
               <th>
                 <div className="table-header">
-                  <p>Action</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                  <p>Action</p> <FaArrowDown style={{color:"#667085"}}/>
                 </div>
               </th>
             </tr>

@@ -15,6 +15,7 @@ import {
 } from "../../../components/chekbox/checkHelper";
 import FilterDealer from "./FilterDealer";
 import { DealerModel } from "../../../../core/models/configuration/create/DealerModel";
+import { FaArrowDown } from "react-icons/fa6";
 
 const DealerOverRides: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -104,32 +105,32 @@ const DealerOverRides: React.FC = () => {
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Sub Dealer</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Sub Dealer</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Dealer</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Dealer</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Pay Rate</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Pay Rate</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Start Date</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Start Date</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>End Date</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>End Date</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Action</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Action</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
               </tr>

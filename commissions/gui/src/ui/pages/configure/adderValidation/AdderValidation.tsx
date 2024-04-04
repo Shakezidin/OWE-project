@@ -16,6 +16,7 @@ import {
   toggleRowSelection,
 } from "../../../components/chekbox/checkHelper";
 import FilterAdder from "./FilterAdder";
+import { FaArrowDown } from "react-icons/fa6";
 
 const AdderValidation = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -93,37 +94,37 @@ const AdderValidation = () => {
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Adder Name</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Adder Name</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Adder Type</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Adder Type</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Price Type</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Price Type</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Price Amount</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Price Amount</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Details</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Details</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Created On</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Created On</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Action</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Action</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
               </tr>

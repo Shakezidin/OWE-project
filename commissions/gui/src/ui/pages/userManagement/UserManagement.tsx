@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import ManageUser from "./ManageUser";
-import BarChart from "./BarChart/BarChart";
+
 import { IoAddSharp } from "react-icons/io5";
 import UserOnboardCreation from "./UserOnboardCreation";
-
+import UserHeaderSection from "./UserHeader/UserHeaderSection";
+import UserPieChart from "./pieChart/UserPieChart";
 
 const UserManagement: React.FC = () => {
-  const [open,setOpen] = useState<boolean>(false)
+  const [open, setOpen] = useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   return (
@@ -22,28 +22,24 @@ const UserManagement: React.FC = () => {
             style={{
               background: "#0493CE",
               color: "white",
-              border:"none"
-
+              border: "none",
               // border: "1px solid black",
             }}
-            onClick={()=>handleOpen()}
+            onClick={() => handleOpen()}
           >
             <IoAddSharp /> Add New
           </button>
         </div>
       </div>
-      {open && <UserOnboardCreation
-                        
-       handleClose={handleClose} />}
+      {open && <UserOnboardCreation handleClose={handleClose} />}
       <div className="barchart-section">
-        <BarChart />
+        <UserPieChart />
       </div>
       <div className="onboardrow">
         <div className="user-component">
-          {/* <ManageUser /> */}
+          <UserHeaderSection />
         </div>
       </div>
-      
     </>
   );
 };

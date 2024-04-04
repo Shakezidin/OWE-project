@@ -215,10 +215,11 @@
 .user-name {
   flex-direction: "row";
   display: flex;
+  gap: 1rem;
 }
 .user-name h4 {
   font-size: 0.9rem;
-  font-weight: normal;
+  font-weight:500;
 }
 
 .user-name p {

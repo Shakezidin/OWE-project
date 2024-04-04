@@ -14,6 +14,7 @@ import {
 } from "../../../components/chekbox/checkHelper";
 import FilterMarketing from "./FilterMarketing";
 import { MarketingFeeModel } from "../../../../core/models/configuration/create/MarketingFeeModel";
+import { FaArrowDown } from "react-icons/fa6";
 
 const MarketingFees: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -107,47 +108,47 @@ const MarketingFees: React.FC = () => {
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Source</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Source</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>DBA</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>DBA</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>State</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>State</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Fee Rate</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Fee Rate</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Chg Dlr</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Chg Dlr</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Pay Soucre</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Pay Soucre</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Note</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Note</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Start Dt.</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Start Dt.</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>End Dt.</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>End Dt.</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>

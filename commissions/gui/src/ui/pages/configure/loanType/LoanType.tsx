@@ -8,6 +8,8 @@ import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import { fetchLoanType } from "../../../../redux/apiSlice/configSlice/config_get_slice/loanTypeSlice";
 import CreateLoanType from "./CreateLoanType";
 import CheckBox from "../../../components/chekbox/CheckBox";
+import { FaArrowDown } from "react-icons/fa6";
+
 import {
   toggleAllRows,
   toggleRowSelection,
@@ -90,29 +92,29 @@ const LoanType = () => {
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Product Code</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Product Code</p> <FaArrowDown style={{color:"#667085"}}/> 
                   </div>
                 </th>
 
                 <th>
                   <div className="table-header">
-                    <p>Active</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Active</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
 
                 <th>
                   <div className="table-header">
-                    <p>Adder</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Adder</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Description</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Description</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Action</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Action</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
               </tr>

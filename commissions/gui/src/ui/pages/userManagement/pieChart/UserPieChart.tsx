@@ -3,7 +3,7 @@ import "./barchart.css";
 
 import { ResponsiveContainer, PieChart, Pie } from "recharts";
 
-const BarChart: React.FC = () => {
+const UserPieChart: React.FC = () => {
   const renderLabel = useCallback((piePiece: any) => {
     return piePiece.name;
   }, []);
@@ -60,7 +60,7 @@ const BarChart: React.FC = () => {
   return (
     <>
       <div className="PieChart-container" style={{display:"flex", gap:"2rem"}}>
-        <div className="pie-section" style={{width:"50%",height:"60vh", background:"white", borderRadius:"16px", padding:"1rem"}}>
+        <div className="pie-section" style={{width:"50%",height:"40vh", background:"white", borderRadius:"16px", padding:"1rem"}}>
           <div className="pieChart-section">
             <p>Onboarding</p>
           </div>
@@ -82,7 +82,7 @@ const BarChart: React.FC = () => {
 
           </ResponsiveContainer>
         </div>
-        <div className="pie-section" style={{width:"50%",height:"60vh", background:"white", borderRadius:"16px",padding:"1rem"}} >
+        <div className="pie-section" style={{width:"50%",height:"40vh", background:"white", borderRadius:"16px",padding:"1rem"}} >
           <div className="pieChart-section" >
             <p>Performance</p>
           </div>
@@ -110,4 +110,4 @@ const BarChart: React.FC = () => {
   );
 };
 
-export default BarChart;
+export default UserPieChart;

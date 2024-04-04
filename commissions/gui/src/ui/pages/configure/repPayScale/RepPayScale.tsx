@@ -7,6 +7,7 @@ import "../configure.css";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { ICONS } from "../../../icons/Icons";
 import CreateRepPayScale from "./CreateRepPayScale";
+import { FaArrowDown } from "react-icons/fa6";
 const RepPayScale: React.FC = () => {
 
   const [open, setOpen] = React.useState<boolean>(false);
@@ -95,42 +96,42 @@ const RepPayScale: React.FC = () => {
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Name</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Name</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>State</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>State</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Pay Scale</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Pay Scale</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Position</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Position</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>BE</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>BE</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Start Date</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Start Date</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>End Date</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>End Date</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Action</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Action</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
               </tr>

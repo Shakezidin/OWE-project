@@ -3,6 +3,7 @@ import CheckBox from '../../../components/chekbox/CheckBox'
 import { ICONS } from '../../../icons/Icons'
 import { CiEdit } from "react-icons/ci";
 import UserHeaderSection from '../UserHeader/UserHeaderSection';
+import { FaArrowDown } from 'react-icons/fa6';
 
 const SalesRepresentativeTable = () => {
     const dataUser = [
@@ -61,52 +62,52 @@ const SalesRepresentativeTable = () => {
                         </th>
                         <th>
                             <div className="table-header">
-                                <p>Code</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                                <p>Code</p> <FaArrowDown style={{color:"#667085"}}/>
                             </div>
                         </th>
                         <th>
                             <div className="table-header">
-                                <p>Name</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                                <p>Name</p> <FaArrowDown style={{color:"#667085"}}/>
                             </div>
                         </th>
                         <th>
                             <div className="table-header">
-                                <p>Role</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                                <p>Role</p> <FaArrowDown style={{color:"#667085"}}/>
                             </div>
                         </th>
                         <th>
                             <div className="table-header">
-                                <p>Dealer Owner</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                                <p>Dealer Owner</p> <FaArrowDown style={{color:"#667085"}}/>
                             </div>
                         </th>
                         <th>
                             <div className="table-header">
-                                <p>Team Name</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                                <p>Team Name</p> <FaArrowDown style={{color:"#667085"}}/>
                             </div>
                         </th>
                         <th>
                             <div className="table-header">
-                                <p>Reporting To</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                                <p>Reporting To</p> <FaArrowDown style={{color:"#667085"}}/>
                             </div>
                         </th>
                         <th>
                             <div className="table-header">
-                                <p>Email ID</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                                <p>Email ID</p> <FaArrowDown style={{color:"#667085"}}/>
                             </div>
                         </th>
                         <th>
                             <div className="table-header">
-                                <p>Phone Number</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                                <p>Phone Number</p> <FaArrowDown style={{color:"#667085"}}/>
                             </div>
                         </th>
                         <th>
                             <div className="table-header">
-                                <p>Description</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                                <p>Description</p> <FaArrowDown style={{color:"#667085"}}/>
                             </div>
                         </th>
                         <th>
                             <div className="table-header">
-                                <p>Action</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                                <p>Action</p> <FaArrowDown style={{color:"#667085"}}/>
                             </div>
                         </th>
                     </tr>
