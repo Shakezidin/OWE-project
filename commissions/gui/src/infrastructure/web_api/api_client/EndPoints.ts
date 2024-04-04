@@ -34,7 +34,8 @@ interface Endpoints {
   create_timelinesla:string,
   create_loantype:string,
   get_newFormData:string,
-  update_commission:string
+  update_commission:string,
+  update_dealer:string,
 }
 
 export const EndPoints: Endpoints = {
@@ -65,6 +66,7 @@ export const EndPoints: Endpoints = {
 
 // update config point 
 update_commission:"update_commission",
+update_dealer:"update_dealer",
   // /get form Data 
   get_newFormData:"get_newformdata"
 

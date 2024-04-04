@@ -68,9 +68,9 @@ func HandleCreateDealerRequest(resp http.ResponseWriter, req *http.Request) {
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, createDealerReq.SubDealer)
 	queryParameters = append(queryParameters, createDealerReq.Dealer)
+	queryParameters = append(queryParameters, createDealerReq.PayRate)
 	queryParameters = append(queryParameters, createDealerReq.StartDate)
 	queryParameters = append(queryParameters, createDealerReq.EndDate)
-	queryParameters = append(queryParameters, createDealerReq.PayRate)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.CreateDealerFunction, queryParameters)

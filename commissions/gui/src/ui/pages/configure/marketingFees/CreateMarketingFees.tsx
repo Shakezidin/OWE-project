@@ -9,29 +9,33 @@ import { ActionButton } from "../../../components/button/ActionButton";
 import Select from 'react-select';
 import { chg_dlrOption, dbaOption, sourceOption, stateOption } from "../../../../core/models/data_models/SelectDataModel";
 import { updateMarketingForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createMarketingSlice";
-import { MarketingFeeModel } from "../../../../core/models/configuration/create/MarketingFeeModel";
+
 import { useDispatch } from "react-redux";
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
 import { chldlrData, dbaData } from "../../../../resources/static_data/StaticData";
-type ButtonProps = {
-    handleClose: () => void
+import { MarketingFeeModel } from "../../../../core/models/configuration/create/MarketingFeeModel";
+interface marketingProps {
+    handleClose: () => void,
+    editMode:boolean,
+    marketingData:MarketingFeeModel|null
 }
 
-const CreateMarketingFees = (props: ButtonProps) => {
+const CreateMarketingFees:React.FC<marketingProps> = ({handleClose,editMode,marketingData}) => {
     const dispatch = useDispatch();
 
   const [createMarketing, setCreateMarketing] = useState<MarketingFeeModel>( 
     {
-        source: "PRINT",
-        dba: "Marketing DBA Name1",
-        state: "Alabama",
-        fee_rate: "100",
-        chg_dlr: 100,   // Example integer value for ChgDlr
-        pay_src: 200,   // Example integer value for PaySrc
-        start_date: "2024-03-22",
-        end_date: "2024-04-22",
-        description: "Marketing Fee Description1"
+      record_id:marketingData ? marketingData.record_id:0,
+        source: marketingData ? marketingData.source:"PRINT",
+        dba: marketingData ? marketingData.dba:"Marketing DBA Name1",
+        state: marketingData ? marketingData.state:"Alabama",
+        fee_rate:marketingData ? marketingData.fee_rate: "100",
+        chg_dlr: marketingData ? marketingData.chg_dlr:100,   // Example integer value for ChgDlr
+        pay_src:marketingData ? marketingData.pay_src: 200,   // Example integer value for PaySrc
+        start_date: marketingData ? marketingData.start_date:"2024-03-22",
+        end_date:marketingData ? marketingData.end_date: "2024-04-22",
+        description: marketingData ? marketingData.description:"Marketing Fee Description1"
       }
   )
   const [newFormData,setNewFormData] = useState<any>([])
@@ -66,15 +70,27 @@ getNewFormData()
     e.preventDefault();
     try {
       dispatch(updateMarketingForm(createMarketing));
+     if(createMarketing.record_id){
+      // const res = await postCaller(EndPoints.create_marketingfee, createMarketing);
+      // if(res.status===200){
+      //   alert(res.message)
+      //   handleClose()
+      //   window.location.reload()
+      // }
+      // else{
+      //   alert(res.message)
+      // }
+     }else{
       const res = await postCaller(EndPoints.create_marketingfee, createMarketing);
       if(res.status===200){
         alert(res.message)
-        props.handleClose()
+        handleClose()
         window.location.reload()
       }
       else{
         alert(res.message)
       }
+     }
     } catch (error) {
       console.error('Error submitting form:', error);
     }
@@ -83,12 +99,12 @@ getNewFormData()
         <div className="transparent-model">
             <div className="modal">
 
-                <div className="createUserCrossButton" onClick={props.handleClose}>
+                <div className="createUserCrossButton" onClick={handleClose}>
                     <CROSS_BUTTON />
 
                 </div>
                 <div className="createUserContainer">
-                    <h3 className="createProfileText">Marketing Fees</h3>
+                    <h3 className="createProfileText">{editMode===false?"Marketing Fees":"Update Marketing Fees"}</h3>
                  <form action="" onSubmit={(e)=>submitMarketingFees(e)}>
                  <div className="createProfileInputView">
                         <div className="createProfileTextView">
@@ -232,7 +248,7 @@ getNewFormData()
                            
                         </div>
                         <div className="createUserActionButton">
-                            <ActionButton title={"Save"} type="submit"
+                            <ActionButton title={editMode===false?"Save":"Update"} type="submit"
                                 onClick={() => { }} />
                         </div>
 
