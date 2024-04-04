@@ -4,6 +4,7 @@ import "../configure.css";
 import { CiEdit } from "react-icons/ci";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { ICONS } from "../../../icons/Icons";
+import { FaArrowDown } from "react-icons/fa6";
 
 const PaymentValidation = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -57,19 +58,19 @@ const PaymentValidation = () => {
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Adder Name</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Adder Name</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
 
                 <th>
                   <div className="table-header">
-                    <p>Details</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Details</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
 
                 <th>
                   <div className="table-header">
-                    <p>Action</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Action</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
               </tr>

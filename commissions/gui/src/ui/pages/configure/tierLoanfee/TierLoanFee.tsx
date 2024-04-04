@@ -13,6 +13,7 @@ import {
   toggleRowSelection,
 } from "../../../components/chekbox/checkHelper";
 import FilterTierLoan from "./filterTierLoan";
+import { FaArrowDown } from "react-icons/fa6";
 const TierLoanFee = () => {
   const dispatch = useAppDispatch();
   const tierloanList = useAppSelector(
@@ -89,52 +90,52 @@ const TierLoanFee = () => {
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Dealer Tier</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Dealer Tier</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Installer</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Installer</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>State</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>State</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Finance Type </p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Finance Type </p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>OWE Cost</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>OWE Cost</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>DLR MU</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>DLR MU</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>DLR Cost</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>DLR Cost</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Start Date</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Start Date</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>End Date</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>End Date</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Action</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Action</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
               </tr>

@@ -15,6 +15,7 @@ import {
   toggleRowSelection,
 } from "../../../components/chekbox/checkHelper";
 import FilterDealerTier from "./FilterDealerTier";
+import { FaArrowDown } from "react-icons/fa6";
 const DealerTier = () => {
   const dispatch = useAppDispatch();
   // const getData = useAppSelector(state=>state.comm.data)
@@ -91,27 +92,27 @@ const DealerTier = () => {
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Dealer Name</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Dealer Name</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Tier</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Tier</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Start Date</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Start Date</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>End Date</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>End Date</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Action</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Action</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
               </tr>

@@ -33,5 +33,9 @@ export const ICONS = {
   USER_IMAGE: require("../../resources/assets/user.png"),
   NOTIFICATION: require("../../resources/assets/notification.png"),
   SETTING_LINE: require("../../resources/assets/settings-line.png"),
-  deleteIcon: require("../../resources/assets/deleteIcon.png")
+  deleteIcon: require("../../resources/assets/deleteIcon.png"),
+  doller1Icon:require("../../resources/assets/doller1.png"),
+  doller2Icon:require("../../resources/assets/doller2 (2).png"),
+  doller3Icon:require("../../resources/assets/doller3 (1).png"),
+
 };

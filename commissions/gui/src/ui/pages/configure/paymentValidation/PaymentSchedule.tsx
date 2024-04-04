@@ -14,6 +14,7 @@ import {
   toggleRowSelection,
 } from "../../../components/chekbox/checkHelper";
 import FilterPayment from "./FilterPayment";
+import { FaArrowDown } from "react-icons/fa6";
 
 const PaymentSchedule = () => {
   const dispatch = useAppDispatch();
@@ -91,72 +92,72 @@ const PaymentSchedule = () => {
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Partner Name</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Partner Name</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Partner</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Partner</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Installer</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Installer</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Sale Type</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Sale Type</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>ST</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>ST</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Rate List</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Rate List</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Draw %</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Draw %</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Draw Max</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Draw Max</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Rep Draw %</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Rep Draw %</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Rep Max Draw %</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Rep Max Draw %</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Rep Pay</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Rep Pay</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Start Date</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Start Date</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>End Date</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>End Date</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Action</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Action</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
               </tr>

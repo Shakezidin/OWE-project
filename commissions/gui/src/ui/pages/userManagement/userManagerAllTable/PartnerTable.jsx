@@ -5,6 +5,7 @@ import { CiEdit } from "react-icons/ci";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import '../../configure/configure.css'
 import UserHeaderSection from "../UserHeader/UserHeaderSection";
+import { FaArrowDown } from "react-icons/fa6";
 // import { installers, partners, respTypeData, statData } from "../../../../../core/models/data_models/SelectDataModel";
 
 
@@ -53,17 +54,17 @@ const PartnerTable = () => {
 
                             <th>
                                 <div className="table-header">
-                                    <p>Name</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                                    <p>Name</p> <FaArrowDown style={{color:"#667085"}}/>
                                 </div>
                             </th>
                             <th>
                                 <div className="table-header">
-                                    <p>Details</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                                    <p>Details</p> <FaArrowDown style={{color:"#667085"}}/>
                                 </div>
                             </th>
                             <th>
                                 <div className="table-header">
-                                    <p>Action</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                                    <p>Action</p> <FaArrowDown style={{color:"#667085"}}/>
                                 </div>
                             </th>
                         </tr>

@@ -2,6 +2,7 @@ import React from "react";
 import "../configure.css";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { ICONS } from "../../../icons/Icons";
+import { FaArrowDown } from "react-icons/fa6";
 const DealeronBoarding = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
@@ -75,42 +76,42 @@ const DealeronBoarding = () => {
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Designation</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Designation</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
 
                 <th>
                   <div className="table-header">
-                    <p>Dealer Code</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Dealer Code</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Name</p> <img src={ICONS.DOWN_ARROW} alt="" />
-                  </div>
-                </th>
-
-                <th>
-                  <div className="table-header">
-                    <p>Email ID</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Name</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
 
                 <th>
                   <div className="table-header">
-                    <p>Phone Number</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Email ID</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
 
                 <th>
                   <div className="table-header">
-                    <p>Dealer Name</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Phone Number</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
 
                 <th>
                   <div className="table-header">
-                    <p>Descriptions</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Dealer Name</p> <FaArrowDown style={{color:"#667085"}}/>
+                  </div>
+                </th>
+
+                <th>
+                  <div className="table-header">
+                    <p>Descriptions</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
               </tr>

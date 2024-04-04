@@ -13,7 +13,7 @@ interface Toggleprops {
 
 const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
   const userRole = localStorage.getItem("role");
-  const userEmail = localStorage.getItem("emailId");
+  const userEmail = localStorage.getItem("email");
   return (
     <div className="header-content">
       <div className="header-icon">

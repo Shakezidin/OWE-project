@@ -4,6 +4,7 @@ import "../configure.css";
 import { CiEdit } from "react-icons/ci";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { ICONS } from "../../../icons/Icons";
+import { FaArrowDown } from "react-icons/fa6";
 const AppointmentSetters = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
@@ -61,37 +62,37 @@ const AppointmentSetters = () => {
                 </th>
                 <th>
                   <div className="table-header">
-                    <p> Name</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p> Name</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
 
                 <th>
                   <div className="table-header">
-                    <p>Pay Rate</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Pay Rate</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
 
                 <th>
                   <div className="table-header">
-                    <p>Description</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Description</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
 
                 <th>
                   <div className="table-header">
-                    <p>Start Date</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Start Date</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
 
                 <th>
                   <div className="table-header">
-                    <p>End Date</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>End Date</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
 
                 <th>
                   <div className="table-header">
-                    <p>Action</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Action</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
               </tr>

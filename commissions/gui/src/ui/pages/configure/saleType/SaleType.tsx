@@ -14,6 +14,7 @@ import {
   toggleRowSelection,
 } from "../../../components/chekbox/checkHelper";
 import FilterSale from "./FilterSale";
+import { FaArrowDown } from "react-icons/fa6";
 
 const SaleType = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -90,19 +91,19 @@ const SaleType = () => {
                 </th>
                 <th>
                   <div className="table-header">
-                    <p> Name</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p> Name</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
 
                 <th>
                   <div className="table-header">
-                    <p>Description</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Description</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
 
                 <th>
                   <div className="table-header">
-                    <p>Action</p> <img src={ICONS.DOWN_ARROW} alt="" />
+                    <p>Action</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
               </tr>
