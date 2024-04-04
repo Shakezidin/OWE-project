@@ -15,6 +15,7 @@ import {
 } from "../../../components/chekbox/checkHelper";
 import FilterSale from "./FilterSale";
 import { FaArrowDown } from "react-icons/fa6";
+import { SalesTypeModel } from "../../../../core/models/configuration/create/SalesTypeModel";
 
 const SaleType = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -32,6 +33,8 @@ const SaleType = () => {
   const error = useAppSelector((state) => state.salesType.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
+  const [editMode, setEditMode] = useState(false);
+  const [editedSalesType, setEditedMarketing] = useState<SalesTypeModel | null>(null);
   useEffect(() => {
     const pageNumber = {
       page_number: 1,
@@ -47,9 +50,17 @@ const SaleType = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
-  if (!salesTypeList === null || salesTypeList.length === 0) {
-    return <div>Data not found</div>;
-  }
+  const handleAddSaleType = () => {
+    setEditMode(false);
+    setEditedMarketing(null);
+    handleOpen()
+  };
+
+  const handleEditSaleType = (saleTypeData: SalesTypeModel) => {
+    setEditMode(true);
+    setEditedMarketing(saleTypeData);
+    handleOpen()
+  };
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === salesTypeList.length;
   return (
@@ -62,10 +73,12 @@ const SaleType = () => {
           onPressFilter={() => filter()}
           onPressImport={() => {}}
           onpressExport={() => {}}
-          onpressAddNew={() => handleOpen()}
+          onpressAddNew={() => handleAddSaleType()}
         />
         {filterOPen && <FilterSale handleClose={filterClose}/>}
-        {open && <CreateSaleType handleClose={handleClose} />}
+        {open && <CreateSaleType salesTypeData={editedSalesType}
+                         editMode={editMode}
+                         handleClose={handleClose} />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
@@ -139,9 +152,11 @@ const SaleType = () => {
                         }}
                       >
                         <img src={ICONS.ARCHIVE} alt="" />
-                        <CiEdit
+                      <div className="" style={{cursor:"pointer"}} onClick={()=>handleEditSaleType(el)}>
+                      <CiEdit
                           style={{ fontSize: "1.5rem", color: "#344054" }}
                         />
+                      </div>
                       </td>
                     </tr>
                   ))

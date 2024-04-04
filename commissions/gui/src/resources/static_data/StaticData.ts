@@ -50,6 +50,7 @@ export const oweCost = [
 ]
 export const dealerTierData = [
   { value: "TierName123", label: 'TierName123' },
+  { value: "TierName124", label: 'TierName124' }
 ]
 
 

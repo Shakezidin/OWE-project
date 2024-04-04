@@ -9,6 +9,7 @@ import { SalesTypeModel } from '../../../../core/models/configuration/create/Sal
 
 
 const initialState: SalesTypeModel = {
+  record_id:0,
     type_name:"",
     description: ""
 };

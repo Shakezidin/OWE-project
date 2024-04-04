@@ -7,6 +7,7 @@ import { AdderVModel } from '../../../../core/models/configuration/create/AdderV
 
 
 const initialState: AdderVModel = {
+  record_id:0,
     active:1,
     adder_name:"",
     adder_type:"",

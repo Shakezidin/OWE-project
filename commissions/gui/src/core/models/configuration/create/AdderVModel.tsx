@@ -1,4 +1,5 @@
 export interface AdderVModel {
+    record_id:number,
     active:number,
     adder_name:string,
     adder_type:string,

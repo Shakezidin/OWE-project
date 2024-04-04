@@ -16,6 +16,7 @@ import {
 } from "../../../components/chekbox/checkHelper";
 import FilterDealerTier from "./FilterDealerTier";
 import { FaArrowDown } from "react-icons/fa6";
+import { DealerTierModel } from "../../../../core/models/configuration/create/DealerTierModel";
 const DealerTier = () => {
   const dispatch = useAppDispatch();
   // const getData = useAppSelector(state=>state.comm.data)
@@ -33,6 +34,8 @@ const DealerTier = () => {
   const error = useAppSelector((state) => state.dealerTier.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
+  const [editMode, setEditMode] = useState(false);
+  const [editedDealerTier, setEditedDealerTier] = useState<DealerTierModel | null>(null);
   useEffect(() => {
     const pageNumber = {
       page_number: 1,
@@ -41,6 +44,18 @@ const DealerTier = () => {
     dispatch(fetchDealerTier(pageNumber));
   }, [dispatch]);
   console.log(dealerTierList);
+
+  const handleAddDealerTier = () => {
+    setEditMode(false);
+    setEditedDealerTier(null);
+    handleOpen()
+  };
+
+  const handleEditDealerTier = (editDealerTier: DealerTierModel) => {
+    setEditMode(true);
+    setEditedDealerTier(editDealerTier);
+    handleOpen()
+  };
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -48,9 +63,7 @@ const DealerTier = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
-  if (!dealerTierList === null || dealerTierList.length === 0) {
-    return <div>Data not found</div>;
-  }
+
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === dealerTierList.length;
   return (
@@ -63,10 +76,12 @@ const DealerTier = () => {
           onPressFilter={() => filter()}
           onPressImport={() => {}}
           onpressExport={() => {}}
-          onpressAddNew={() => handleOpen()}
+          onpressAddNew={() => handleAddDealerTier()}
         />
         {filterOPen && <FilterDealerTier handleClose={filterClose} />}
-        {open && <CreateDealerTier handleClose={handleClose} />}
+        {open && <CreateDealerTier handleClose={handleClose} 
+         editDealerTier={editedDealerTier}
+         editMode={editMode} />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
@@ -148,9 +163,11 @@ const DealerTier = () => {
                         }}
                       >
                         <img src={ICONS.ARCHIVE} alt="" />
-                        <CiEdit
+                       <div className="" style={{cursor:"pointer"}} onClick={()=>handleEditDealerTier(el)}>
+                       <CiEdit
                           style={{ fontSize: "1.5rem", color: "#344054" }}
                         />
+                       </div>
                       </td>
                     </tr>
                   ))

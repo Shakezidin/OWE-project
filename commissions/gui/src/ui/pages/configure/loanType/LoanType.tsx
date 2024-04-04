@@ -15,6 +15,7 @@ import {
   toggleRowSelection,
 } from "../../../components/chekbox/checkHelper";
 import FilterLoanType from "./FilterLoanType";
+import { LoanTypeModel } from "../../../../core/models/configuration/create/LoanTypeModel";
 
 const LoanType = () => {
   const dispatch = useAppDispatch();
@@ -33,6 +34,8 @@ const LoanType = () => {
   const error = useAppSelector((state) => state.loanType.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
+  const [editMode, setEditMode] = useState(false);
+  const [editedLoanData, setEditedLoanData] = useState<LoanTypeModel | null>(null);
   useEffect(() => {
     const pageNumber = {
       page_number: 1,
@@ -40,6 +43,17 @@ const LoanType = () => {
     };
     dispatch(fetchLoanType(pageNumber));
   }, [dispatch]);
+  const handleAddLoan = () => {
+    setEditMode(false);
+    setEditedLoanData(null);
+    handleOpen()
+  };
+
+  const handleEditLoan = (loanData:LoanTypeModel) => {
+    setEditMode(true);
+    setEditedLoanData(loanData);
+    handleOpen()
+  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -48,9 +62,7 @@ const LoanType = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
-  if (!loanTypeList === null || loanTypeList.length === 0) {
-    return <div>Data not found</div>;
-  }
+ 
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === loanTypeList.length;
   return (
@@ -63,10 +75,13 @@ const LoanType = () => {
           onPressFilter={() => filter()}
           onPressImport={() => { }}
           onpressExport={() => { }}
-          onpressAddNew={() => handleOpen()}
+          onpressAddNew={() => handleAddLoan()}
         />
         {filterOPen && <FilterLoanType handleClose={filterClose} />}
-        {open && <CreateLoanType handleClose={handleClose} />}
+        {open && <CreateLoanType
+         loanData={editedLoanData}
+         editMode={editMode}
+         handleClose={handleClose} />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
@@ -159,9 +174,13 @@ const LoanType = () => {
                       }}
                     >
                       <img src={ICONS.ARCHIVE} alt="" />
-                      <CiEdit
+                     <div className="" style={{cursor:"pointer"}} >
+                    <div className="" style={{cursor:"pointer"}} onClick={()=>handleEditLoan(el)}>
+                    <CiEdit
                         style={{ fontSize: "1.5rem", color: "#344054" }}
                       />
+                    </div>
+                     </div>
                     </td>
                   </tr>
                 ))

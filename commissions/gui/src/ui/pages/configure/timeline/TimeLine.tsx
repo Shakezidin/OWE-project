@@ -71,9 +71,7 @@ const TimeLine = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
-  if (!timelinesla_list === null || timelinesla_list.length === 0) {
-    return <div>Data not found</div>;
-  }
+ 
   return (
     <div className="comm">
       <div className="commissionContainer">
@@ -188,13 +186,15 @@ const TimeLine = () => {
           </table>
         
         </div>
-        <Pagination
+       {
+        timelinesla_list?.length>0 ? <Pagination
         currentPage={currentPage}
         totalPages={totalPages} // You need to calculate total pages
         paginate={paginate}
         goToNextPage={goToNextPage}
         goToPrevPage={goToPrevPage}
-      />
+      />:null
+       }
       </div>
   
   );

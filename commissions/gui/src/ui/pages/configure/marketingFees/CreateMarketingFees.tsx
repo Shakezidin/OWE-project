@@ -71,15 +71,15 @@ getNewFormData()
     try {
       dispatch(updateMarketingForm(createMarketing));
      if(createMarketing.record_id){
-      // const res = await postCaller(EndPoints.create_marketingfee, createMarketing);
-      // if(res.status===200){
-      //   alert(res.message)
-      //   handleClose()
-      //   window.location.reload()
-      // }
-      // else{
-      //   alert(res.message)
-      // }
+      const res = await postCaller(EndPoints.update_marketingfee, createMarketing);
+      if(res.status===200){
+        alert(res.message)
+        handleClose()
+        window.location.reload()
+      }
+      else{
+        alert(res.message)
+      }
      }else{
       const res = await postCaller(EndPoints.create_marketingfee, createMarketing);
       if(res.status===200){

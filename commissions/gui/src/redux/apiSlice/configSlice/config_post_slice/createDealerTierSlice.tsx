@@ -7,6 +7,7 @@ import { DealerTierModel } from '../../../../core/models/configuration/create/De
 
 
 const initialState: DealerTierModel = {
+  record_id:0,
     dealer_name: "",
     tier: "",
     start_date:"",
