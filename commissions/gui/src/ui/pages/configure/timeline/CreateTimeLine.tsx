@@ -23,8 +23,9 @@ const CreateTimeLine = (props: ButtonProps) => {
 
     const [createPayData, setCreatePayData] = useState<TimeLineSlaModel>(
         {
+            record_id:0,
             type_m2m: "YourTypeM2MValue2",
-            state: "",
+            state: "Alabama",
             days: "10",
             start_date: "2024-04-01",
             end_date: "2024-04-10"

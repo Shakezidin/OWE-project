@@ -24,6 +24,7 @@ const CreateTierLoan = (props: ButtonProps) => {
 
   const [createTier, setCreateTier] = useState<TierLoanFeeModel>( 
     {
+      record_id:0,
         dealer_tier: "TierName123",
         installer: "PartnerABC",
         state: "Alabama",

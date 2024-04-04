@@ -9,6 +9,7 @@ import { TierLoanFeeModel } from '../../../../core/models/configuration/create/T
 
 
 const initialState: TierLoanFeeModel = {
+  record_id:0,
     dealer_tier: "",
     installer:"",
     state: "",

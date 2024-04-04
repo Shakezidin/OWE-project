@@ -45,9 +45,7 @@ const TierLoanFee = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
-  if (!tierloanList === null || tierloanList.length === 0) {
-    return <div>Data not found</div>;
-  }
+ 
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === tierloanList.length;
 

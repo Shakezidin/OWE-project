@@ -15,20 +15,24 @@ import { installerOption, partnerOption, salesTypeOption, stateOption, } from ".
 import Select from 'react-select';
 import { partners, paySaleTypeData } from "../../../../resources/static_data/StaticData";
 import { PayScheduleModel } from "../../../../core/models/configuration/create/PayScheduleModel";
-type ButtonProps = {
-    handleClose: () => void
+interface payScheduleProps {
+    handleClose: () => void,
+    editMode:boolean,
+    payEditedData:PayScheduleModel|null
 }
 
-const CreatePaymentSchedule = (props: ButtonProps) => {
+
+const CreatePaymentSchedule:React.FC<payScheduleProps> = ({handleClose,editMode,payEditedData}) => {
     const dispatch = useDispatch();
 
     const [createPayData, setCreatePayData] = useState<PayScheduleModel>(
         {
+            record_id:0,
             partner: "Shushank Sharma",
             partner_name: "FFS",
-            installer_name: "",
+            installer_name: "OWE",
             sale_type: "BATTERY",
-            state: "",
+            state: "Alabama",
             rl: "40",
             draw: "50%",
             draw_max: "50%",
@@ -75,7 +79,7 @@ const CreatePaymentSchedule = (props: ButtonProps) => {
             const res = await postCaller(EndPoints.create_paymentschedule, createPayData);
             if (res?.status === 200) {
                 alert(res.message)
-                props.handleClose()
+                handleClose()
                 window.location.reload()
             }
             else {
@@ -89,12 +93,12 @@ const CreatePaymentSchedule = (props: ButtonProps) => {
         <div className="transparent-model">
             <div className="modal">
 
-                <div className="createUserCrossButton" onClick={props.handleClose}>
+                <div className="createUserCrossButton" onClick={handleClose}>
                     <CROSS_BUTTON />
 
                 </div>
                 <div className="createUserContainer">
-                    <h3 className="createProfileText">Payment Schedule</h3>
+                    <h3 className="createProfileText">{editMode===false?"Payment Schedule":"Update Payment Schedule"}</h3>
                    <form onSubmit={(e)=>submitPaySchedule(e)}>
                    <div className="createProfileInputView">
                         <div className="createProfileTextView">
@@ -286,7 +290,7 @@ const CreatePaymentSchedule = (props: ButtonProps) => {
                             </div>
                         </div>
                         <div className="createUserActionButton">
-                            <ActionButton title={"Save"} type="submit"
+                            <ActionButton title={editMode===false?"Save":"Update"} type="submit"
                                 onClick={() => { }} />
                         </div>
 

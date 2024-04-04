@@ -64,9 +64,7 @@ const MarketingFees: React.FC = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
-  if (!marketingFeesList === null || marketingFeesList?.length === 0) {
-    return <div>Data not found</div>;
-  }
+
   return (
     <div className="comm">
       <div className="commissionContainer">

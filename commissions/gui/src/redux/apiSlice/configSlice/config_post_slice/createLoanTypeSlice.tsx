@@ -7,6 +7,7 @@ import { LoanTypeModel } from '../../../../core/models/configuration/create/Loan
 
 
 const initialState: LoanTypeModel = {
+  record_id:0,
     product_code:"",
     active:1,
     adder:0,

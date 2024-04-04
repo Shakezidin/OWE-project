@@ -13,15 +13,18 @@ import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import { useDispatch } from "react-redux";
 import { LoanTypeModel } from "../../../../core/models/configuration/create/LoanTypeModel";
 
-type ButtonProps = {
-    handleClose: () => void
+interface loanProps {
+    handleClose: () => void,
+    editMode:boolean,
+    loanData:LoanTypeModel|null
 }
 
-const CreateLoanType = (props: ButtonProps) => {
+const CreateLoanType:React.FC<loanProps> = ({handleClose,editMode,loanData}) => {
     const dispatch = useDispatch();
 
     const [createLoanTypeData, setCreateLoanTypeData] = useState<LoanTypeModel>(
         {
+            record_id:0,
             product_code: "Prd2",
             active: 1,
             adder: 2,
@@ -53,7 +56,7 @@ const CreateLoanType = (props: ButtonProps) => {
             const res = await postCaller(EndPoints.create_loantype, createLoanTypeData);
             if (res.status === 200) {
                 alert(res.message)
-                props.handleClose()
+                handleClose()
                 window.location.reload()
             }
             else {
@@ -67,7 +70,7 @@ const CreateLoanType = (props: ButtonProps) => {
         <div className="transparent-model">
             <div className="modal">
 
-                <div className="createUserCrossButton" onClick={props.handleClose}>
+                <div className="createUserCrossButton" onClick={handleClose}>
                     <CROSS_BUTTON />
 
                 </div>
