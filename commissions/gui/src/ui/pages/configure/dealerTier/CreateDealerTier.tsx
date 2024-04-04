@@ -9,11 +9,12 @@ import { ActionButton } from "../../../components/button/ActionButton";
 import { updateDealerTierForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createDealerTierSlice";
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
-import { DealerTierModel } from "../../../../core/models/configuration/create/DealerTierModel";
+
 import { useDispatch } from "react-redux";
 import { dealertierOption } from "../../../../core/models/data_models/SelectDataModel";
 import Select from 'react-select';
 import { dealerTierData, tierState } from "../../../../resources/static_data/StaticData";
+import { DealerTierModel } from "../../../../core/models/configuration/create/DealerTierModel";
 type ButtonProps = {
     handleClose: () => void
 }

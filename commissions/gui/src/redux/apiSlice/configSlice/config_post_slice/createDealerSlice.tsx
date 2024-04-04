@@ -5,7 +5,9 @@ import { DealerModel } from '../../../../core/models/configuration/create/Dealer
 
 
 
+
 const initialState: DealerModel = {
+    record_id:0,
     sub_dealer: "",
     dealer: "",
     pay_rate:"",

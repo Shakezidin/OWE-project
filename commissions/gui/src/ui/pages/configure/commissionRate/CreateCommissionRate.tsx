@@ -6,7 +6,7 @@ import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cro
 import Input from "../../../components/text_input/Input";
 
 import { ActionButton } from "../../../components/button/ActionButton";
-import { CommissionModel } from "../../../../core/models/configuration/create/CommissionModel";
+
 import { useDispatch} from 'react-redux';
 // import { updateForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createCommissionSlice";
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
@@ -15,13 +15,15 @@ import { installerOption, partnerOption, repTypeOption, stateOption } from "../.
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
 import { respTypeData } from "../../../../resources/static_data/StaticData";
 import {  updateForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createCommissionSlice";
+import { CommissionModel } from "../../../../core/models/configuration/create/CommissionModel";
 interface ButtonProps {
+  editMode:boolean,
   handleClose: () => void,
 commission: CommissionModel | null;
  
 }
 
-const CreateCommissionRate:React.FC<ButtonProps> = ({handleClose,commission}) => {
+const CreateCommissionRate:React.FC<ButtonProps> = ({handleClose,commission,editMode}) => {
   
   const dispatch = useDispatch();
  
@@ -106,21 +108,14 @@ const CreateCommissionRate:React.FC<ButtonProps> = ({handleClose,commission}) =>
       console.error('Error submitting form:', error);
     }
   };
-
-
- 
-  
-
   return (
     <div className="transparent-model">
       <div className="modal">
-
         <div className="createUserCrossButton" onClick={handleClose}>
           <CROSS_BUTTON />
-
         </div>
         <div className="createUserContainer">
-          <h3 className="createProfileText">Commission Rate</h3>
+          <h3 className="createProfileText">{editMode===false?"Commission Rate":"Update Commission Rate"}</h3>
           <form action="" onSubmit={(e) => handleSubmit(e)}>
             <div className="createProfileInputView">
               <div className="createProfileTextView">
@@ -280,7 +275,7 @@ const CreateCommissionRate:React.FC<ButtonProps> = ({handleClose,commission}) =>
                 </div>
               </div>
               <div className="createUserActionButton">
-                <ActionButton title={"Save"} type="submit"
+                <ActionButton title={editMode===false?"Create":"Update"} type="submit"
                   onClick={() => { }} />
               </div>
 
