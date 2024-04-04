@@ -1,4 +1,20 @@
+<<<<<<< HEAD
+/* .PieChart-container {
+  display: flex;
+  margin-top: 1rem;
+  gap: 3rem;
+  align-items: center;
+  
+}
+.pieChart-section {
+  padding: 1rem;
+  background-color: var(--primary-text-color);
+  width: 48%;
+  border-radius: 16px;
+} */
+=======
 
+>>>>>>> b8efb2106ba65065348bfa160af7d3922ac1de2b
 
 .pieChart-section p {
   font-size: 20px;
