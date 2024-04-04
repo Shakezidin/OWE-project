@@ -65,9 +65,9 @@ func HandleCreateVAddersRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 	if createVAddersReq.Active <= 0 {
-		err = fmt.Errorf("Invalid Chg Dlr Not Allowed")
+		err = fmt.Errorf("Invalid Active Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Rate list Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Active Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 	// Populate query parameters in the correct order

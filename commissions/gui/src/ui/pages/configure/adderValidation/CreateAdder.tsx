@@ -9,9 +9,10 @@ import { updateAdderV } from "../../../../redux/apiSlice/configSlice/config_post
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
 import { useDispatch } from "react-redux";
-import { AdderVModel } from "../../../../core/models/configuration/create/AdderVModel";
+
 import { adderTypeOption, priceTypeOption } from "../../../../core/models/data_models/SelectDataModel";
 import { adderTypeData, priceTypeData } from "../../../../resources/static_data/StaticData";
+import { AdderVModel } from "../../../../core/models/configuration/create/AdderVModel";
 type ButtonProps = {
     handleClose: () => void
 }

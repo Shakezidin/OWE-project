@@ -14,6 +14,7 @@ import {
   toggleRowSelection,
 } from "../../../components/chekbox/checkHelper";
 import FilterDealer from "./FilterDealer";
+import { DealerModel } from "../../../../core/models/configuration/create/DealerModel";
 
 const DealerOverRides: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -29,6 +30,8 @@ const DealerOverRides: React.FC = () => {
   const error = useAppSelector((state) => state.dealer.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
+  const [editMode, setEditMode] = useState(false);
+  const [editedDealer, setEditDealer] = useState<DealerModel | null>(null);
   useEffect(() => {
     const pageNumber = {
       page_number: 1,
@@ -36,7 +39,17 @@ const DealerOverRides: React.FC = () => {
     };
     dispatch(fetchDealer(pageNumber));
   }, [dispatch]);
+  const handleAddDealer = () => {
+    setEditMode(false);
+    setEditDealer(null);
+    handleOpen()
+  };
 
+  const handleEditDealer = (dealerData: DealerModel) => {
+    setEditMode(true);
+    setEditDealer(dealerData);
+    handleOpen()
+  };
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === dealerList?.length;
   if (loading) {
@@ -59,10 +72,13 @@ const DealerOverRides: React.FC = () => {
           onPressFilter={() => filter()}
           onPressImport={() => {}}
           onpressExport={() => {}}
-          onpressAddNew={() => handleOpen()}
+          onpressAddNew={() => handleAddDealer()}
         />
         {filterOPen && <FilterDealer handleClose={filterClose} />}
-        {open && <CreateDealer handleClose={handleClose} />}
+        {open && <CreateDealer handleClose={handleClose} 
+         dealerData={editedDealer}
+         editMode={editMode}
+        />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
@@ -150,7 +166,7 @@ const DealerOverRides: React.FC = () => {
                           <div className="" style={{ cursor: "pointer" }}>
                             <img src={ICONS.ARCHIVE} alt="" />
                           </div>
-                          <div className="" style={{ cursor: "pointer" }}>
+                          <div className="" style={{ cursor: "pointer" }} onClick={()=>handleEditDealer(el)}>
                             <CiEdit
                               style={{ fontSize: "1.5rem", color: "#344054" }}
                             />

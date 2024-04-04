@@ -7,28 +7,32 @@ import Input from "../../../components/text_input/Input";
 import DropdownButton from "../../../components/dropdown/DropdownButton";
 import { ActionButton } from "../../../components/button/ActionButton";
 import { useDispatch } from "react-redux";
-import { DealerModel } from "../../../../core/models/configuration/create/DealerModel";
+
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import Select from 'react-select';
 import { dealerOption, subDealerOption } from "../../../../core/models/data_models/SelectDataModel";
 import { updateDealerForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createDealerSlice";
 import { dealer, subDealer } from "../../../../resources/static_data/StaticData";
+import { DealerModel } from "../../../../core/models/configuration/create/DealerModel";
 
-type ButtonProps = {
-  handleClose: () => void
+interface dealerProps {
+  handleClose: () => void,
+  editMode:boolean,
+  dealerData: DealerModel| null;
 }
 
-const CreateDealer = (props: ButtonProps) => {
+const CreateDealer:React.FC<dealerProps> = ({handleClose,editMode,dealerData}) => {
   const dispatch = useDispatch();
 
   const [createDealer, setCreateDealer] = useState<DealerModel>( 
     {
-      sub_dealer: "Sub Dealer Name1",
-      dealer: "Shushank Sharma",
-      pay_rate: "500",
-      start_date: "2024-04-01",
-      end_date: "2024-04-30"
+      record_id:dealerData? dealerData?.record_id:0,
+      sub_dealer: dealerData? dealerData?.sub_dealer: "Sub Dealer Name1",
+      dealer: dealerData? dealerData?.dealer: "Shushank Sharma",
+      pay_rate: dealerData? dealerData?.pay_rate: "500",
+      start_date: dealerData? dealerData?.start_date:"2024-04-01",
+      end_date: dealerData? dealerData?.end_date:"2024-04-30"
   }
   )
   const [newFormData,setNewFormData] = useState<any>([])
@@ -63,14 +67,27 @@ getNewFormData()
     e.preventDefault();
     try {
       dispatch(updateDealerForm(createDealer));
-      const res = await postCaller(EndPoints.create_dealer, createDealer);
-      if(res.status===200){
-        alert(res.message)
-        props.handleClose()
-        window.location.reload()
+      if(createDealer.record_id){
+        const res = await postCaller(EndPoints.update_dealer, createDealer);
+        if (res.status === 200) {
+          alert(res.message)
+          handleClose()
+          window.location.reload()
+        }
+        else {
+          alert(res.message)
+        }
       }
       else{
-        alert(res.message)
+        const res = await postCaller(EndPoints.create_dealer, createDealer);
+        if (res.status === 200) {
+          alert(res.message)
+          handleClose()
+          window.location.reload()
+        }
+        else {
+          alert(res.message)
+        }
       }
     } catch (error) {
       console.error('Error submitting form:', error);
@@ -80,12 +97,12 @@ getNewFormData()
     <div className="transparent-model">
       <div className="modal">
 
-        <div className="createUserCrossButton" onClick={props.handleClose}>
+        <div className="createUserCrossButton" onClick={handleClose}>
           <CROSS_BUTTON />
 
         </div>
         <div className="createUserContainer">
-          <span className="createProfileText">Dealer Overrides</span>
+          <span className="createProfileText">{editMode===false?"Dealer Overrides":"Update Dealer Overrides"}</span>
         <form onSubmit={(e)=>submitDealer(e)}>
         <div className="createProfileInputView">
             <div className="createProfileTextView">
@@ -168,7 +185,7 @@ getNewFormData()
               </div>
             </div>
             <div className="createUserActionButton">
-              <ActionButton title={"Create"} type="submit"
+              <ActionButton title={editMode===false?"Create":"Update"} type="submit"
                 onClick={() => { }} />
             </div>
 

@@ -60,7 +60,7 @@ func HandleGetDealersDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	tableName := db.TableName_dealer_override
 	query = `
-	SELECT dor.sub_dealer, ud.name, dor.pay_rate, dor.start_date, dor.end_date
+	SELECT dor.id as record_id, dor.sub_dealer, ud.name, dor.pay_rate, dor.start_date, dor.end_date
 	FROM dealer_override dor
 	JOIN user_details ud ON ud.user_id = dor.dealer_id`
 
@@ -79,6 +79,13 @@ func HandleGetDealersDataRequest(resp http.ResponseWriter, req *http.Request) {
 	dealersList := models.GetDealersList{}
 
 	for _, item := range data {
+
+		RecordId, ok := item["record_id"].(int64)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get record id. Item: %+v\n", item)
+			continue
+		}
+
 		SubDealer, ok := item["sub_dealer"].(string)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get sub dealer. Item: %+v\n", item)
@@ -110,6 +117,7 @@ func HandleGetDealersDataRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 
 		dealerData := models.GetDealerData{
+			RecordId:  RecordId,
 			SubDealer: SubDealer,
 			Dealer:    Dealer,
 			PayRate:   PayRate,

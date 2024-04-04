@@ -6,6 +6,7 @@ import { PayScheduleModel } from '../../../../core/models/configuration/create/P
 
 
 
+
 const initialState: PayScheduleModel = {
   partner: '',
   partner_name: "",

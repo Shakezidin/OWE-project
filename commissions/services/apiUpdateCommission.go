@@ -66,7 +66,7 @@ func HandleUpdateCommissionRequest(resp http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	if updateCommissionReq.RecordId <= 0 {
+	if updateCommissionReq.RecordId <= int64(0) {
 		err = fmt.Errorf("Invalid Record Id, unable to proceed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Invalid Record Id, Update failed", http.StatusBadRequest, nil)
@@ -107,7 +107,7 @@ func HandleUpdateCommissionRequest(resp http.ResponseWriter, req *http.Request) 
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateCommissionFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Add commissions in DB with err: %v", err)
+		log.FuncErrorTrace(0, "Failed to Update commissions in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Update commissions", http.StatusInternalServerError, nil)
 		return
 	}

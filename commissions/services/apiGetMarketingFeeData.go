@@ -60,7 +60,7 @@ func HandleGetMarketingFeesDataRequest(resp http.ResponseWriter, req *http.Reque
 
 	tableName := db.TableName_marketing_fees
 	query = `
-	SELECT mf.dba, mf.fee_rate, mf.chg_dlr, mf.pay_src, mf.start_date, mf.end_date, mf.description, st.name as state_name, sr.name as source_name
+	SELECT mf.id as record_id, mf.dba, mf.fee_rate, mf.chg_dlr, mf.pay_src, mf.start_date, mf.end_date, mf.description, st.name as state_name, sr.name as source_name
 	FROM marketing_fees mf
 	JOIN states st ON st.state_id = mf.state_id
 	JOIN source sr ON sr.id = mf.source_id`
@@ -81,6 +81,11 @@ func HandleGetMarketingFeesDataRequest(resp http.ResponseWriter, req *http.Reque
 
 	// Assuming you have data as a slice of maps, as in your previous code
 	for _, item := range data {
+		RecordId, ok := item["record_id"].(int64)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get record id. Item: %+v\n", item)
+			continue
+		}
 		Source, ok := item["source_name"].(string)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get source name. Item: %+v\n", item)
@@ -139,15 +144,16 @@ func HandleGetMarketingFeesDataRequest(resp http.ResponseWriter, req *http.Reque
 
 		// Create a new GetMarketingFeesData object
 		marketingFeesData := models.GetMarketingFeesData{
+			RecordId:    RecordId,
 			Source:      Source,
 			Dba:         Dba,
 			State:       State,
 			FeeRate:     FeeRate,
 			ChgDlr:      ChgDlr,
 			PaySrc:      PaySrc,
-			Description: Description,
 			StartDate:   StartDate,
 			EndDate:     EndDate,
+			Description: Description,
 		}
 
 		// Append the new marketingFeesData to the marketingFeesList

@@ -30,5 +30,14 @@ BEGIN
         updated_at = CURRENT_TIMESTAMP
     WHERE id = p_id
     RETURNING id INTO v_commissions_id;
+IF NOT FOUND THEN
+        RAISE EXCEPTION 'Record with ID % not found in commission_rates table', p_id;
+    END IF;
+
+    -- No need for a RETURN statement when using OUT parameters
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Handle the exception, you can log or re-raise as needed
+        RAISE EXCEPTION 'Error updating record in commission_rates: %', SQLERRM;
 END;
 $$ LANGUAGE plpgsql;
