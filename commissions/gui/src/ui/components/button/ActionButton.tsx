@@ -18,7 +18,7 @@ interface ActionButtonProps {
 
 export const ActionButton = (props: ActionButtonProps) => {
   return (
-    <button className="loginButton"   onClick={props.onClick} type={props.type}>
+    <button className={props.title==="cancel"?"cancel":"loginButton"}   onClick={props.onClick} type={props.type}>
       {props.title}
     </button>
   );
