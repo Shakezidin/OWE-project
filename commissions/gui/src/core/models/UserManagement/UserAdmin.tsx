@@ -1,10 +1,13 @@
 export interface UserAdmin {
-    First_Name: "Deepak";
-    Last_Name: "Chauhan";
-    Role: "Admin";
-    Email_ID: "imdeepak@gmail.com";
-    Phone_Number: 9716953624;
-    Dealer_Owner: "Vinay";
-    Description: 123456;
+    
+        first_name:string,
+        last_name:string,
+        email_id:string,
+        mobile_number:string,
+        password:string,
+        designation:string,
+        assigned_dealer_name:string,
+        role_name:string
+    
     
     }
