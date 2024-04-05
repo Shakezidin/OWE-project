@@ -4,7 +4,6 @@ import { ICONS } from "../../../icons/Icons";
 import { CiEdit } from "react-icons/ci";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import '../../configure/configure.css'
-import UserHeaderSection from "../UserHeader/UserHeaderSection";
 import { FaArrowDown } from "react-icons/fa6";
 // import { installers, partners, respTypeData, statData } from "../../../../../core/models/data_models/SelectDataModel";
 

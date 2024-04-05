@@ -29,18 +29,18 @@ const CreateCommissionRate:React.FC<ButtonProps> = ({handleClose,commission,edit
  
   const [createCommission, setCreateCommission] = useState<CommissionModel>(
     {
-    record_id:commission? commission?.record_id:0,
-      partner:commission? commission?.partner : "",
-      installer:commission? commission?.installer : "",
-      state:commission? commission?.state : "",
-      sale_type: commission? commission?.sale_type : "",
-      sale_price:commission? commission?.sale_price : 0,
-      rep_type:commission? commission?.rep_type: "",
-      rl: commission? commission?.rl :0,
-      rate: commission? commission?.rate :0,
-      start_date:commission? commission?.start_date : "",
-      end_date:commission? commission?.end_date : ""
-    }
+      record_id:commission? commission?.record_id:0,
+        partner:commission? commission?.partner : "",
+        installer:commission? commission?.installer : "",
+        state:commission? commission?.state : "",
+        sale_type: commission? commission?.sale_type : "",
+        sale_price:commission? commission?.sale_price : 0,
+        rep_type:commission? commission?.rep_type: "",
+        rl: commission? commission?.rl :0,
+        rate: commission? commission?.rate :0,
+        start_date:commission? commission?.start_date : "",
+        end_date:commission? commission?.end_date : ""
+      }
   )
   const [newFormData, setNewFormData] = useState<any>([])
   const tableData = {

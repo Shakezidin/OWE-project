@@ -17,8 +17,6 @@ import DealeronBoarding from "../ui/pages/configure/dealeronBoarding/DealeronBoa
 import AppointmentSetters from "../ui/pages/configure/appointmentSetters/AppointmentSetters";
 import SaleType from "../ui/pages/configure/saleType/SaleType";
 import LoanType from "../ui/pages/configure/loanType/LoanType";
-import Onboarding from "../ui/pages/onboarding/Onboarding";
-import UserOnboarding from "../ui/pages/onboarding/useronboarding/UserOnboarding";
 import Project from "../ui/pages/project/Project";
 import Report from "../ui/pages/report/Report";
 import DatabaseController from "../ui/pages/databaseController/DatabaseController";

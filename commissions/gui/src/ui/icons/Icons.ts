@@ -37,5 +37,7 @@ export const ICONS = {
   doller1Icon:require("../../resources/assets/doller1.png"),
   doller2Icon:require("../../resources/assets/doller2 (2).png"),
   doller3Icon:require("../../resources/assets/doller3 (1).png"),
+  lineChartIcon:require("../../resources/assets/listIcon.png"),
+  graphIcon:require("../../resources/assets/graphIcon.png"),
 
 };
