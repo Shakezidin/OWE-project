@@ -65,7 +65,8 @@ const CreateDealerTier:React.FC<dealerProps> = ({handleClose,editMode,editDealer
         e.preventDefault();
         try {
             dispatch(updateDealerTierForm(createDealerTierData));
-            const res = await postCaller(EndPoints.create_dealertier, createDealerTierData);
+         if(createDealerTierData.record_id){
+            const res = await postCaller(EndPoints.update_dealertier, createDealerTierData);
             if (res?.status === 200) {
                 alert(res.message)
                 handleClose()
@@ -74,6 +75,19 @@ const CreateDealerTier:React.FC<dealerProps> = ({handleClose,editMode,editDealer
             else {
                 alert(res.message)
             }
+         }
+         else{
+            const { record_id, ...cleanedFormData } = createDealerTierData;
+            const res = await postCaller(EndPoints.create_dealertier, cleanedFormData);
+            if (res?.status === 200) {
+                alert(res.message)
+                handleClose()
+                window.location.reload()
+            }
+            else {
+                alert(res.message)
+            }
+         }
         } catch (error) {
             console.error('Error submitting form:', error);
         }

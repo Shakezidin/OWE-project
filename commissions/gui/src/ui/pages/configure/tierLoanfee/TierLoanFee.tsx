@@ -14,6 +14,7 @@ import {
 } from "../../../components/chekbox/checkHelper";
 import FilterTierLoan from "./filterTierLoan";
 import { FaArrowDown } from "react-icons/fa6";
+import { TierLoanFeeModel } from "../../../../core/models/configuration/create/TierLoanFeeModel";
 const TierLoanFee = () => {
   const dispatch = useAppDispatch();
   const tierloanList = useAppSelector(
@@ -27,7 +28,8 @@ const TierLoanFee = () => {
   const handleClose = () => setOpen(false);
   const filter = () => setFilterOpen(true);
   const filterClose = () => setFilterOpen(false);
-  
+  const [editMode, setEditMode] = useState(false);
+  const [editedTierLoanfee, setEditedTierLoanFee] = useState<TierLoanFeeModel | null>(null);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   useEffect(() => {
@@ -45,7 +47,17 @@ const TierLoanFee = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
- 
+  const handleAddTierLoan = () => {
+    setEditMode(false);
+    setEditedTierLoanFee(null);
+    handleOpen()
+  };
+
+  const handleEditTierLoan = (tierEditedData: TierLoanFeeModel) => {
+    setEditMode(true);
+    setEditedTierLoanFee(tierEditedData);
+    handleOpen()
+  };
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === tierloanList.length;
 
@@ -59,10 +71,15 @@ const TierLoanFee = () => {
           onPressFilter={() => filter()}
           onPressImport={() => {}}
           onpressExport={() => {}}
-          onpressAddNew={() => handleOpen()}
+          onpressAddNew={() => handleAddTierLoan()}
         />
         {filterOPen && <FilterTierLoan handleClose={filterClose}/>}
-        {open && <CreateTierLoan handleClose={handleClose} />}
+        {open && <CreateTierLoan 
+        editMode={editMode}
+      tierEditedData={editedTierLoanfee}
+        handleClose={handleClose}
+        
+        />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
@@ -174,9 +191,11 @@ const TierLoanFee = () => {
                         }}
                       >
                         <img src={ICONS.ARCHIVE} alt="" />
-                        <CiEdit
+                     <div className="" style={{cursor:"pointer"}} onClick={()=>handleEditTierLoan(el)}>
+                     <CiEdit
                           style={{ fontSize: "1.5rem", color: "#344054" }}
                         />
+                     </div>
                       </td>
                     </tr>
                   ))

@@ -142,7 +142,7 @@ const SaleType = () => {
                         {el.type_name}
                       </td>
 
-                      <td>{el.type_name}</td>
+                      <td>{el.description}</td>
 
                       <td
                         style={{

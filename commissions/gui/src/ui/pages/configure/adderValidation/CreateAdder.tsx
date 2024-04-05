@@ -19,14 +19,14 @@ interface vadderProps {
 }
 const CreateAdder:React.FC<vadderProps>= ({editMode,handleClose,vAdderData}) => {
     const dispatch = useDispatch();
-
+   console.log(vAdderData)
     const [createAdderV, setCreateAdderV] = useState<AdderVModel>(
         {
             record_id:vAdderData? vAdderData?.record_id:0,
-            adder_name:vAdderData ? vAdderData?.adder_name:"Example Adder",
-            adder_type: vAdderData? vAdderData?.adder_type: "Type A",
-            price_type: vAdderData? vAdderData?.price_type: "Type X",
-            price_amount: vAdderData? vAdderData?.price_amount:"12.34",
+            adder_name:vAdderData ? vAdderData?.adder_name:"",
+            adder_type: vAdderData? vAdderData?.adder_type: "",
+            price_type: vAdderData? vAdderData?.price_type: "",
+            price_amount: vAdderData? vAdderData?.price_amount:"",
             active:vAdderData? vAdderData?.active: 1,
             description:vAdderData? vAdderData?.description: "This is an example description"
         }
@@ -75,7 +75,8 @@ const CreateAdder:React.FC<vadderProps>= ({editMode,handleClose,vAdderData}) => 
             }
            }
            else{
-            const res = await postCaller(EndPoints.adderV, createAdderV);
+            const { record_id, ...cleanedFormData } = createAdderV;
+            const res = await postCaller(EndPoints.adderV, cleanedFormData);
             if (res.status === 200) {
                 alert(res.message)
                 handleClose()
@@ -152,7 +153,7 @@ const CreateAdder:React.FC<vadderProps>= ({editMode,handleClose,vAdderData}) => 
                                     <div className=" rate-input-field">
                                         <label className="inputLabel">Price Type</label>
                                         <Select
-                                            options={priceTypeOption(newFormData)}
+                                            options={priceTypeOption(newFormData)||priceTypeData}
                                             isSearchable
                                             styles={{
                                                 control: (baseStyles, state) => ({
@@ -166,7 +167,7 @@ const CreateAdder:React.FC<vadderProps>= ({editMode,handleClose,vAdderData}) => 
                                                 }),
                                               }}
                                             onChange={(newValue) => handleChange(newValue, 'price_type')}
-                                            value={priceTypeOption(newFormData)?.find((option) => option.value === createAdderV.price_type)}
+                                            value={priceTypeOption(newFormData)||priceTypeData?.find((option) => option.value === createAdderV.price_type)}
                                         />
                                     </div>
                                 </div>

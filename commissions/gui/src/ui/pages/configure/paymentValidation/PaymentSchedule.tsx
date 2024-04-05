@@ -75,7 +75,7 @@ const PaymentSchedule = () => {
           onPressFilter={() => filter()}
           onPressImport={() => {}}
           onpressExport={() => {}}
-          onpressAddNew={() => handleOpen()}
+          onpressAddNew={() => handleAddPaySchedule()}
         />
         {filterOPen && <FilterPayment handleClose={filterClose} />}
         {open && <CreatePaymentSchedule 
