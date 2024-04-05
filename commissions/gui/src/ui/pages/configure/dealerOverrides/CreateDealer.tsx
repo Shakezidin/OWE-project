@@ -79,7 +79,8 @@ getNewFormData()
         }
       }
       else{
-        const res = await postCaller(EndPoints.create_dealer, createDealer);
+        const { record_id, ...cleanedFormData } = createDealer;
+        const res = await postCaller(EndPoints.create_dealer, cleanedFormData);
         if (res.status === 200) {
           alert(res.message)
           handleClose()

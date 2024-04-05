@@ -30,14 +30,17 @@ interface Endpoints {
   create_paymentschedule:string,
   create_vadder:string,
   create_saletype:string,
-  create_tierloanfees:string,
+  create_tierloanfee:string,
   create_timelinesla:string,
   create_loantype:string,
   get_newFormData:string,
   update_commission:string,
   update_dealer:string,
   update_vadders:string,
-  update_marketingfee:string
+  update_marketingfee:string,
+  update_saletype:string,
+  update_dealertier:string
+  update_tierloanfee:string
 }
 
 export const EndPoints: Endpoints = {
@@ -62,7 +65,7 @@ export const EndPoints: Endpoints = {
   create_marketingfee:"create_marketingfee",
   create_paymentschedule:"create_paymentschedule",
   create_saletype:"create_saletype",
-  create_tierloanfees:"create_tierloanfees",
+  create_tierloanfee:"create_tierloanfee",
   create_vadder:"create_vadder",
   create_timelinesla:"create_timelinesla",
 
@@ -71,6 +74,9 @@ update_commission:"update_commission",
 update_dealer:"update_dealer",
 update_vadders:"update_vadders",
 update_marketingfee:"update_marketingfee",
+update_saletype:"update_saletype",
+update_dealertier:"update_dealertier",
+update_tierloanfee:"update_tierloanfee",
   // /get form Data 
   get_newFormData:"get_newformdata"
 

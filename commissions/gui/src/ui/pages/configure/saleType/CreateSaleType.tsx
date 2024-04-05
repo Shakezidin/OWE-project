@@ -21,12 +21,12 @@ interface salesProps{
 
 const CreateSaleType:React.FC<salesProps> = ({handleClose,salesTypeData,editMode}) => {
     const dispatch = useDispatch();
-
+  console.log(salesTypeData)
     const [createSales, setCreateSales] = useState<SalesTypeModel>( 
         {
             record_id: salesTypeData? salesTypeData?.record_id: 0,
-            type_name: salesTypeData? salesTypeData?.type_name: "Example sale type 2",
-            description: salesTypeData? salesTypeData?.description: "This is an example sale type 2"
+            type_name: salesTypeData? salesTypeData?.type_name: "",
+            description: salesTypeData? salesTypeData?.description: ""
         }
         
     )
@@ -43,12 +43,29 @@ const CreateSaleType:React.FC<salesProps> = ({handleClose,salesTypeData,editMode
       e.preventDefault();
       try {
         dispatch(updateSalesForm(createSales));
-        const res = await postCaller(EndPoints.create_saletype, createSales);
+      if(createSales.record_id){
+        const res = await postCaller(EndPoints.update_saletype, createSales);
         if(res.status===200){
-          alert("Created Successfully")
+          alert(res.message)
           handleClose()
           window.location.reload()
         }
+        else{
+            alert(res.message)
+        }
+      }
+      else{
+        const { record_id, ...cleanedFormData } = createSales;
+        const res = await postCaller(EndPoints.create_saletype, cleanedFormData);
+        if(res.status===200){
+          alert(res.message)
+          handleClose()
+          window.location.reload()
+        }
+        else{
+            alert(res.message)
+        }
+      }
       } catch (error) {
         console.error('Error submitting form:', error);
       }

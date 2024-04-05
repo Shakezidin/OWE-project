@@ -34,7 +34,8 @@ export const getCaller = async (endpoint: string) => {
     headers: {
       Authorization: `${localStorage.getItem('token')}`,
       'Content-Type': 'application/json',
-    }
+    },
+    mode:"cors"
   });
   const result = await response.json();
     return result;
@@ -48,6 +49,7 @@ try{
       Authorization: `${localStorage.getItem('token')}`,
       'Content-Type': 'application/json',
     },
+    // mode:"cors",
     body: JSON.stringify(data),
   });
   

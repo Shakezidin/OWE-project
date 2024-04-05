@@ -61,9 +61,7 @@ const AdderValidation = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
-  if (!adderVList === null || adderVList.length === 0) {
-    return <div>Data not found</div>;
-  }
+ 
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === adderVList.length;
   return (

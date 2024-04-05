@@ -24,11 +24,11 @@ const CreateLoanType:React.FC<loanProps> = ({handleClose,editMode,loanData}) => 
 
     const [createLoanTypeData, setCreateLoanTypeData] = useState<LoanTypeModel>(
         {
-            record_id:0,
-            product_code: "Prd2",
-            active: 1,
-            adder: 2,
-            description: "description"
+            record_id: loanData? loanData?.record_id: 0,
+            product_code:loanData? loanData?.product_code: "Prd2",
+            active: loanData? loanData?.active: 1,
+            adder: loanData? loanData?.adder: 2,
+            description: loanData? loanData?.description:"description"
         }
     )
    
@@ -75,7 +75,7 @@ const CreateLoanType:React.FC<loanProps> = ({handleClose,editMode,loanData}) => 
 
                 </div>
                 <div className="createUserContainer">
-                    <h3 className="createProfileText">Loan Type</h3>
+                    <h3 className="createProfileText">{editMode===false?"Loan Type":"Update Loan Type"}</h3>
                   <form onSubmit={(e)=>submitLoanType(e)}>
                   <div className="createProfileInputView">
                         <div className="createProfileTextView">
@@ -140,7 +140,7 @@ const CreateLoanType:React.FC<loanProps> = ({handleClose,editMode,loanData}) => 
 
                         </div>
                         <div className="createUserActionButton">
-                            <ActionButton title={"Save"} type="submit"
+                            <ActionButton title={editMode===false?"Save":"Update"} type="submit"
                                 onClick={() => { }} />
                         </div>
 

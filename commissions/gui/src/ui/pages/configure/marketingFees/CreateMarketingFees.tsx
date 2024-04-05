@@ -81,7 +81,8 @@ getNewFormData()
         alert(res.message)
       }
      }else{
-      const res = await postCaller(EndPoints.create_marketingfee, createMarketing);
+      const { record_id, ...cleanedFormData } = createMarketing;
+      const res = await postCaller(EndPoints.create_marketingfee, cleanedFormData);
       if(res.status===200){
         alert(res.message)
         handleClose()

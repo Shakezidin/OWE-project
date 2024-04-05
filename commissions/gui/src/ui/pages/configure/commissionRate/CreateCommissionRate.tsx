@@ -92,7 +92,8 @@ const CreateCommissionRate:React.FC<ButtonProps> = ({handleClose,commission,edit
         }
       }
       else{
-        const res = await postCaller(EndPoints.create_commission, createCommission);
+        const { record_id, ...cleanedFormData } = createCommission;
+        const res = await postCaller(EndPoints.create_commission, cleanedFormData);
         if (res.status === 200) {
           alert(res.message)
           handleClose()
