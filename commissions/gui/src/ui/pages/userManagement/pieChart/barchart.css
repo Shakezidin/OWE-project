@@ -1,25 +1,17 @@
-<<<<<<< HEAD
 /* .PieChart-container {
   display: flex;
-  margin-top: 1rem;
-  gap: 3rem;
-  align-items: center;
+  justify-content: space-between;  
   
 }
-.pieChart-section {
-  padding: 1rem;
-  background-color: var(--primary-text-color);
-  width: 48%;
-  border-radius: 16px;
+.pie-section {
+background-color: white;
+border-radius: 16px;
+padding: 1rem;
 } */
-=======
-
->>>>>>> b8efb2106ba65065348bfa160af7d3922ac1de2b
-
 .pieChart-section p {
   font-size: 20px;
   font-weight: 600;
   line-height: 30px;
-  text-align: left;
+  /* text-align: left; */
   color: var(--side-logo-bg-color);
 }

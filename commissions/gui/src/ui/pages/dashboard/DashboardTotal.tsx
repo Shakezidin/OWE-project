@@ -1,5 +1,6 @@
 import React from "react";
 import { ICONS } from "../../icons/Icons";
+import DashBoardTable from "./DashBoardTable";
 
 const DashboardTotal: React.FC = () => {
   const data = [
@@ -13,7 +14,7 @@ const DashboardTotal: React.FC = () => {
     {
       doller: "$120,450",
       paid: "Pipeline Remaining",
-      img:ICONS.doller2Icon,
+      img: ICONS.doller2Icon,
       backgroundColor: "#CAF0FF",
     },
     {
@@ -26,20 +27,26 @@ const DashboardTotal: React.FC = () => {
   ];
   return (
     <>
-      <div className="commission-section-dash">
-        {data.length > 0
-          ? data.map((el, i) => (
+      <div className="" >
+        <div className="commission-section-dash">
+          {data.length > 0
+            ? data.map((el, i) => (
               <div className="total-commisstion">
                 <div className="total-section">
                   <h4>{el.doller}</h4>
                   <p>{el.paid}</p>
                 </div>
-                <div className="teamImg" style={{backgroundColor:el.backgroundColor}}>
-                  <img src={el.img} alt=""/>
+                <div className="teamImg" style={{ backgroundColor: el.backgroundColor }}>
+                  <img src={el.img} alt="" />
                 </div>
               </div>
             ))
-          : null}
+            : null}
+        </div>
+
+        <div className="" style={{marginTop:"1.5rem"}}>
+          <DashBoardTable />
+        </div>
       </div>
     </>
   );

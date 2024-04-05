@@ -29,6 +29,7 @@ const CreateCommissionRate:React.FC<ButtonProps> = ({handleClose,commission,edit
  
   const [createCommission, setCreateCommission] = useState<CommissionModel>(
     {
+
     record_id:commission? commission?.record_id:0,
       partner:commission? commission?.partner : "OWE",
       installer:commission? commission?.installer : "OWE",
@@ -41,6 +42,7 @@ const CreateCommissionRate:React.FC<ButtonProps> = ({handleClose,commission,edit
       start_date:commission? commission?.start_date : "2024-04-01",
       end_date:commission? commission?.end_date : "2024-06-30"
     }
+
   )
   const [newFormData, setNewFormData] = useState<any>([])
   const tableData = {
