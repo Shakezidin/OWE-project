@@ -60,7 +60,7 @@ func HandleGetTierLoanFeesDataRequest(resp http.ResponseWriter, req *http.Reques
 
 	tableName := db.TableName_tier_loan_fee
 	query = `
-	SELECT tr.tier_name as dealer_tier, ptr.partner_name as installer, st.name as state, lnt.product_code as finance_type, tlf.owe_cost, tlf.dlr_mu, tlf.dlr_cost, tlf.start_date, tlf.end_date
+	SELECT tlf.id as record_id, tr.tier_name as dealer_tier, ptr.partner_name as installer, st.name as state, lnt.product_code as finance_type, tlf.owe_cost, tlf.dlr_mu, tlf.dlr_cost, tlf.start_date, tlf.end_date
 	FROM tier_loan_fee tlf
 	JOIN tier tr ON tlf.dealer_tier = tr.id
 	JOIN partners ptr ON tlf.installer_id = ptr.partner_id
@@ -84,6 +84,11 @@ func HandleGetTierLoanFeesDataRequest(resp http.ResponseWriter, req *http.Reques
 
 	// Assuming you have data as a slice of maps, as in your previous code
 	for _, item := range data {
+		RecordId, ok := item["record_id"].(int64)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get record id. Item: %+v\n", item)
+			continue
+		}
 		DealerTierName, tierOk := item["dealer_tier"].(string)
 		if !tierOk {
 			log.FuncErrorTrace(0, "Failed to get dealer tier. Item: %+v\n", item)
@@ -140,6 +145,7 @@ func HandleGetTierLoanFeesDataRequest(resp http.ResponseWriter, req *http.Reques
 
 		// Create a new GetTierLoanFeeData object
 		vaddersData := models.GetTierLoanFeeData{
+			RecordId:    RecordId,
 			DealerTier:  DealerTierName,
 			Installer:   PartnerName,
 			State:       State,

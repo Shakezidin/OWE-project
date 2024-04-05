@@ -146,10 +146,9 @@ import (
 		}
 
 		// Description
-		Description, ok := item["description"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get Description. Item: %+v\n", item)
-			continue
+		Description, descOk := item["description"].(string)
+		if !descOk || Description == "" {
+			Description = ""
 		}
 
 		var CreatedDate, UpdatedDate string

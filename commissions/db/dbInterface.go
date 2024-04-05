@@ -42,6 +42,8 @@ const (
 	UpdateDealerOverrideFunction  string = "update_dealer_override"
 	UpdateMarketingFeeFunction    string = "update_marketing_fee"
 	UpdateVAddersFunction         string = "update_v_adders"
+	UpdateSaleTypeFunction        string = "update_sale_type"
+	UpdateTierLoanFeeFunction     string = "update_tier_loan_fee"
 	TableName_teams               string = "teams"
 	TableName_commission_rates    string = "commission_rates"
 	TableName_users_details       string = "user_details"

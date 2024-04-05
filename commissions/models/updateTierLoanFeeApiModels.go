@@ -1,12 +1,12 @@
 /**************************************************************************
- *	Function	: createTierLoanFeeApiModels.go
- *	DESCRIPTION : Files contains struct for create Tier loan Fee user models
+ *	Function	: updateTierLoanFeeApiModels.go
+ *	DESCRIPTION : Files contains struct for update Tier loan Fee user models
  *	DATE        : 20-Jan-2024
  **************************************************************************/
 
 package models
 
-type GetTierLoanFeeData struct {
+type UpdateTierLoanFee struct {
 	RecordId    int64  `json:"record_id"`
 	DealerTier  string `json:"dealer_tier"`
 	Installer   string `json:"installer"`
@@ -17,8 +17,4 @@ type GetTierLoanFeeData struct {
 	DlrCost     string `json:"dlr_cost"`
 	StartDate   string `json:"start_date"`
 	EndDate     string `json:"end_date"`
-}
-
-type GetTierLoanFeeList struct {
-	TierLoanFeeList []GetTierLoanFeeData `json:"tier_loan_fee_list"`
 }

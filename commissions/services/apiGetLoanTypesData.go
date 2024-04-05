@@ -109,8 +109,7 @@ func HandleGetLoanTypesDataRequest(resp http.ResponseWriter, req *http.Request) 
 		}
 		description, descOk := item["description"].(string)
 		if !descOk || description == "" {
-			log.FuncErrorTrace(0, "Failed to get description Item: %+v\n", item)
-			continue
+			description = ""
 		}
 
 		// Create a new CreateLoanType object

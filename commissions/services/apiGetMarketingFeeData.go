@@ -136,10 +136,9 @@ func HandleGetMarketingFeesDataRequest(resp http.ResponseWriter, req *http.Reque
 			continue
 		}
 
-		Description, ok := item["description"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get description. Item: %+v\n", item)
-			continue
+		Description, descOk := item["description"].(string)
+		if !descOk || Description == "" {
+			Description = ""
 		}
 
 		// Create a new GetMarketingFeesData object

@@ -78,20 +78,20 @@ func HandleGetPartnerDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	// Assuming you have data as a slice of maps, as in your previous code
 	for _, item := range data {
-		partnerName, Ok := item["partner_name"].(string)
-		if !Ok || partnerName == "" {
-			partnerName = ""
+		PartnerName, Ok := item["partner_name"].(string)
+		if !Ok || PartnerName == "" {
+			PartnerName = ""
 		}
 
-		description, descOk := item["description"].(string)
-		if !descOk || description == "" {
-			description = ""
+		Description, descOk := item["description"].(string)
+		if !descOk || Description == "" {
+			Description = ""
 		}
 
 		// Create a new GetSaleTypeData object
 		partnerData := models.GetPartnerData{
-			PartnerName: partnerName,
-			Description: description,
+			PartnerName: PartnerName,
+			Description: Description,
 		}
 
 		partnerList.PartnersList = append(partnerList.PartnersList, partnerData)
