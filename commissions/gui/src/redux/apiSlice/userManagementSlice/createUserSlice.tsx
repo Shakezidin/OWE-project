@@ -1,32 +1,37 @@
-// src/features/createCommissionSlice.ts
+// src/features/createUserSlice.ts
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { UserAdmin } from '../../../core/models/UserManagement/UserAdmin';
 
 
-const initialState: UserAdmin = {
-  First_Name:"Deepak",
-  Last_Name: "Chauhan",
-  Role: "Admin",
-  Email_ID: "imdeepak@gmail.com",
-  Phone_Number:9716953624,
-  Dealer_Owner: "Vinay",
-  Description: 123456,
 
+
+
+const initialState: UserAdmin = {
+  
+    first_name:"",
+    last_name:"",
+    email_id:"",
+    mobile_number:"",
+    password:"",
+    designation:"",
+    assigned_dealer_name:"",
+    role_name:""
+  
 };
 
 const createUserSlice = createSlice({
   name: 'form',
   initialState,
   reducers: {
-    updateForm(state, action: PayloadAction<Partial<UserAdmin>>) {
+    updateUserForm(state, action: PayloadAction<Partial<UserAdmin>>) {
       return { ...state, ...action.payload };
     },
-    resetForm(state) {
+    userResetForm(state) {
       return initialState;
     },
   },
 });
 
-export const { updateForm, resetForm } = createUserSlice.actions;
+export const { updateUserForm, userResetForm } = createUserSlice.actions;
 export default createUserSlice.reducer;

@@ -4,43 +4,43 @@ import { ResponsiveContainer, PieChart, Pie, LabelList } from "recharts";
 const data = [
   {
     name: "Sale Rep.",
-    value: 600,
+    value:800,
     percentage: "30%",
     fill: "#5e5ef0",
   },
   {
     name: "App Setter",
-    value: 2000,
+    value: 300,
     percentage: "30%",
     fill: "#ff3f66",
   },
   {
     name: "Dealer Owner",
-    value: 1000,
+    value: 250,
     percentage: "20%",
     fill: "#fb7955",
   },
   {
     name: "Partner",
-    value: 1200,
+    value: 300,
     percentage: "20%",
     fill: "#ffa133"
   },
   {
     name: "Regional Manager",
-    value: 1200,
+    value: 300,
     percentage: "20%",
     fill: "#5edd74"
   },
   {
     name: "Sales Manager",
-    value: 1200,
+    value: 300,
     percentage: "20%",
     fill: "#52cafe"
   },
   {
     name: "Admin",
-    value: 1500,
+    value: 600,
     percentage: "20%",
     fill: "#0181ff"
   },
@@ -54,15 +54,15 @@ const data2 = [
   },
   {
     name: "Admin",
-    value: 700,
+    value: 800,
     percentage: "20%",
     fill: "#0181ff",
   }
 ]
 
 const renderCustomizedLabelPercentage = (data: any, total = 32000) => {
-  let percentageCalculated = (data.value / total) * 100;
-  return percentageCalculated.toFixed(2).replace(".", ",").toString() + "%";
+  let percentageCalculated = data.value
+  return percentageCalculated;
 };
 const UserPieChart = () => {
   const navigate = useNavigate()

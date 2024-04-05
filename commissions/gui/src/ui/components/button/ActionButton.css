@@ -11,6 +11,7 @@
   line-height: 11.962px; /* 85.446% */
   min-width: 260px;
   cursor: pointer;
+  text-transform: capitalize;
 }
 .cancel{
   border:1px solid #0493ce;
