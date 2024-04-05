@@ -14,7 +14,9 @@ import DealerOwnerTable from "../userManagerAllTable/DealerOwnerTable";
 //   name: string;
 // }
 const UserHeaderSection: React.FC = () => {
-  const [selectedOption, setSelectedOption] = useState<string>(userSelectData[0].label);
+  const [selectedOption, setSelectedOption] = useState<string>(
+    userSelectData[0].label
+  );
 
   const handleSelectChange = (
     selectedOption: { value: string; label: string } | null
@@ -44,35 +46,31 @@ const UserHeaderSection: React.FC = () => {
   };
   return (
     <>
-      <div
-        className="ManagerUser-container" >
+      <div className="ManagerUser-container">
         <div className="admin-user">
           <p>{selectedOption}</p>
         </div>
         <div className="delete-icon-container">
-        <div className="create-input-field">
-         
-                      <Select
-                        options={userSelectData}
-                        value={userSelectData.find(
-                          (option) => option.value === selectedOption
-                        )}
-                        onChange={handleSelectChange}
-                        styles={{
-                          control: (baseStyles, state) => ({
-                            ...baseStyles,
-                            marginTop:"4.5px",
-                            borderRadius:"8px",
-                            outline:"none",
-                            height:"2.8rem",
-                            border:"1px solid #d0d5dd"
-                            
-                          }),
-                        }}
-                      />
-                
-                  </div>
-        
+          <div className="create-input-field">
+            <Select
+              options={userSelectData}
+              value={userSelectData.find(
+                (option) => option.value === selectedOption
+              )}
+              onChange={handleSelectChange}
+              styles={{
+                control: (baseStyles, state) => ({
+                  ...baseStyles,
+                  marginTop: "4.5px",
+                  borderRadius: "8px",
+                  outline: "none",
+                  height: "2.8rem",
+                  border: "1px solid #d0d5dd",
+                }),
+              }}
+            />
+          </div>
+
           <div className="iconsSection-delete">
             <button type="button">
               <img src={ICONS.deleteIcon} alt="" />

@@ -23,6 +23,8 @@ import createpayScheduleReducer from './apiSlice/configSlice/config_post_slice/c
 import createtimeLineSlaReducer from './apiSlice/configSlice/config_post_slice/createTimeLineSlaSlice'
 import createloanTypeReducer from './apiSlice/configSlice/config_post_slice/createLoanTypeSlice'
 import paginationReducer from './apiSlice/paginationslice/paginationSlice'
+import createUserReducer from './apiSlice/userManagementSlice/createUserSlice'
+
 export const store = configureStore({
   reducer: {
     appState: appStateSlice,
@@ -49,8 +51,8 @@ export const store = configureStore({
     createpaySchedule: createpayScheduleReducer,
     createtimelineSla: createtimeLineSlaReducer,
     createloanType: createloanTypeReducer,
-
-    paginationType:paginationReducer
+    paginationType:paginationReducer,
+    createUserType: createUserReducer
   },
 });
 
