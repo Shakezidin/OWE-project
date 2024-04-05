@@ -84,9 +84,7 @@ const CommissionRate: React.FC = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
-  if (!commissionList === null || commissionList.length === 0) {
-    return <div>Data not found</div>;
-  }
+ 
   const currentPageData = commissionList?.slice(startIndex, endIndex);
 
   const isAnyRowSelected = selectedRows.size > 0;
@@ -241,13 +239,15 @@ const CommissionRate: React.FC = () => {
           </table>
         </div>
       </div>
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages} // You need to calculate total pages
-        paginate={paginate}
-        goToNextPage={goToNextPage}
-        goToPrevPage={goToPrevPage}
-      />
+    {
+      commissionList?.length>0?  <Pagination
+      currentPage={currentPage}
+      totalPages={totalPages} // You need to calculate total pages
+      paginate={paginate}
+      goToNextPage={goToNextPage}
+      goToPrevPage={goToPrevPage}
+    />:null
+    }
     </div>
   );
 };

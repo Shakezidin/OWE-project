@@ -13,19 +13,22 @@ import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import { useDispatch } from "react-redux";
 import { LoanTypeModel } from "../../../../core/models/configuration/create/LoanTypeModel";
 
-type ButtonProps = {
-    handleClose: () => void
+interface loanProps {
+    handleClose: () => void,
+    editMode:boolean,
+    loanData:LoanTypeModel|null
 }
 
-const CreateLoanType = (props: ButtonProps) => {
+const CreateLoanType:React.FC<loanProps> = ({handleClose,editMode,loanData}) => {
     const dispatch = useDispatch();
 
     const [createLoanTypeData, setCreateLoanTypeData] = useState<LoanTypeModel>(
         {
-            product_code: "Prd2",
-            active: 1,
-            adder: 2,
-            description: "description"
+            record_id: loanData? loanData?.record_id: 0,
+            product_code:loanData? loanData?.product_code: "Prd2",
+            active: loanData? loanData?.active: 1,
+            adder: loanData? loanData?.adder: 2,
+            description: loanData? loanData?.description:"description"
         }
     )
    
@@ -53,7 +56,7 @@ const CreateLoanType = (props: ButtonProps) => {
             const res = await postCaller(EndPoints.create_loantype, createLoanTypeData);
             if (res.status === 200) {
                 alert(res.message)
-                props.handleClose()
+                handleClose()
                 window.location.reload()
             }
             else {
@@ -67,12 +70,12 @@ const CreateLoanType = (props: ButtonProps) => {
         <div className="transparent-model">
             <div className="modal">
 
-                <div className="createUserCrossButton" onClick={props.handleClose}>
+                <div className="createUserCrossButton" onClick={handleClose}>
                     <CROSS_BUTTON />
 
                 </div>
                 <div className="createUserContainer">
-                    <h3 className="createProfileText">Loan Type</h3>
+                    <h3 className="createProfileText">{editMode===false?"Loan Type":"Update Loan Type"}</h3>
                   <form onSubmit={(e)=>submitLoanType(e)}>
                   <div className="createProfileInputView">
                         <div className="createProfileTextView">
@@ -137,7 +140,7 @@ const CreateLoanType = (props: ButtonProps) => {
 
                         </div>
                         <div className="createUserActionButton">
-                            <ActionButton title={"Save"} type="submit"
+                            <ActionButton title={editMode===false?"Save":"Update"} type="submit"
                                 onClick={() => { }} />
                         </div>
 

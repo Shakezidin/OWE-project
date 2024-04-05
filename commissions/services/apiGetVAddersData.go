@@ -59,7 +59,7 @@ func HandleGetVAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	tableName := db.TableName_v_adders
 	query = `
-	SELECT  vadd.id as record_id,vadd.adder_name, vadd.adder_type, vadd.price_type, vadd.price_amount, vadd.active, vadd.description
+	SELECT vadd.id as record_id, vadd.adder_name, vadd.adder_type, vadd.price_type, vadd.price_amount, vadd.active, vadd.description
 	FROM v_adders vadd`
 
 	filter, whereEleList = PrepareFilters(tableName, dataReq)
@@ -115,15 +115,14 @@ func HandleGetVAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 		Active := int(ActiveVal)
 
-		Description, ok := item["description"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get description. Item: %+v\n", item)
-			continue
+		Description, descOk := item["description"].(string)
+		if !descOk || Description == "" {
+			Description = ""
 		}
 
 		// Create a new GetVAdderData object
 		vaddersData := models.GetVAdderData{
-			RecordId:  RecordId,
+			RecordId:    RecordId,
 			AdderName:   AdderName,
 			AdderType:   AdderType,
 			PriceType:   PriceType,

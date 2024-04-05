@@ -15,19 +15,21 @@ import { dealertierOption } from "../../../../core/models/data_models/SelectData
 import Select from 'react-select';
 import { dealerTierData, tierState } from "../../../../resources/static_data/StaticData";
 import { DealerTierModel } from "../../../../core/models/configuration/create/DealerTierModel";
-type ButtonProps = {
-    handleClose: () => void
-}
-
-const CreateDealerTier = (props: ButtonProps) => {
+interface dealerProps {
+    handleClose: () => void,
+    editMode:boolean,
+    editDealerTier: DealerTierModel| null;
+  }
+const CreateDealerTier:React.FC<dealerProps> = ({handleClose,editMode,editDealerTier}) => {
     const dispatch = useDispatch();
 
     const [createDealerTierData, setCreateDealerTierData] = useState<DealerTierModel>(
         {
-            dealer_name: "Shushank Sharma",
-            tier: "TierName123",
-            start_date: "2024-04-01",
-            end_date: "2024-04-30"
+            record_id: editDealerTier? editDealerTier?.record_id: 0,
+            dealer_name:editDealerTier? editDealerTier?.dealer_name: "Shushank Sharma",
+            tier:editDealerTier? editDealerTier?.tier: "TierName123",
+            start_date:editDealerTier? editDealerTier?.start_date: "2024-04-01",
+            end_date: editDealerTier? editDealerTier?.end_date:"2024-04-30"
         }
     )
     const [newFormData,setNewFormData] = useState<any>([])
@@ -63,15 +65,29 @@ const CreateDealerTier = (props: ButtonProps) => {
         e.preventDefault();
         try {
             dispatch(updateDealerTierForm(createDealerTierData));
-            const res = await postCaller(EndPoints.create_dealertier, createDealerTierData);
+         if(createDealerTierData.record_id){
+            const res = await postCaller(EndPoints.update_dealertier, createDealerTierData);
             if (res?.status === 200) {
                 alert(res.message)
-                props.handleClose()
+                handleClose()
                 window.location.reload()
             }
             else {
                 alert(res.message)
             }
+         }
+         else{
+            const { record_id, ...cleanedFormData } = createDealerTierData;
+            const res = await postCaller(EndPoints.create_dealertier, cleanedFormData);
+            if (res?.status === 200) {
+                alert(res.message)
+                handleClose()
+                window.location.reload()
+            }
+            else {
+                alert(res.message)
+            }
+         }
         } catch (error) {
             console.error('Error submitting form:', error);
         }
@@ -80,7 +96,7 @@ const CreateDealerTier = (props: ButtonProps) => {
         <div className="transparent-model">
             <div className="modal">
 
-                <div className="createUserCrossButton" onClick={props.handleClose}>
+                <div className="createUserCrossButton" onClick={handleClose}>
                     <CROSS_BUTTON />
 
                 </div>

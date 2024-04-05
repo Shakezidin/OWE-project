@@ -59,7 +59,7 @@ func HandleGetSaleTypeDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	tableName := db.TableName_sale_type
 	query = `
-	SELECT st.type_name as type_name, st.description as description
+	SELECT st.id as record_id, st.type_name as type_name, st.description as description
 	FROM sale_type st`
 
 	filter, whereEleList = PrepareFilters(tableName, dataReq)
@@ -78,22 +78,27 @@ func HandleGetSaleTypeDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	// Assuming you have data as a slice of maps, as in your previous code
 	for _, item := range data {
+		RecordId, ok := item["record_id"].(int64)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get record id. Item: %+v\n", item)
+			continue
+		}
 		typeName, typeOk := item["type_name"].(string)
 		if !typeOk {
 			log.FuncErrorTrace(0, "Failed to get type name. Item: %+v\n", item)
 			continue
 		}
 
-		description, descOk := item["description"].(string)
-		if !descOk {
-			log.FuncErrorTrace(0, "Failed to get description. Item: %+v\n", item)
-			continue
+		Description, descOk := item["description"].(string)
+		if !descOk || Description == "" {
+			Description = ""
 		}
 
 		// Create a new GetSaleTypeData object
 		saleTypeData := models.GetSaleTypeData{
+			RecordId:    RecordId,
 			TypeName:    typeName,
-			Description: description,
+			Description: Description,
 		}
 
 		saleTypeList.SaleTypeList = append(saleTypeList.SaleTypeList, saleTypeData)

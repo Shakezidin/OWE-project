@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { RiDeleteBin5Line } from "react-icons/ri";
 import "../configure.css";
 
-import { IoAddSharp } from "react-icons/io5";
-import CreateDealer from "../dealerOverrides/CreateDealer";
 import { CiEdit } from "react-icons/ci";
 import { fetchAdderV } from "../../../../redux/apiSlice/configSlice/config_get_slice/adderVSlice";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
@@ -17,6 +14,7 @@ import {
 } from "../../../components/chekbox/checkHelper";
 import FilterAdder from "./FilterAdder";
 import { FaArrowDown } from "react-icons/fa6";
+import { AdderVModel } from "../../../../core/models/configuration/create/AdderVModel";
 
 const AdderValidation = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -34,7 +32,20 @@ const AdderValidation = () => {
   const adderVList = useAppSelector((state) => state.adderV.VAdders_list);
   const loading = useAppSelector((state) => state.adderV.loading);
   const error = useAppSelector((state) => state.adderV.error);
+  const [editMode, setEditMode] = useState(false);
+  const [editedVAdder, setEditedVAdder] = useState<AdderVModel | null>(null);
 
+  const handleAddvAdder = () => {
+    setEditMode(false);
+    setEditedVAdder(null);
+    handleOpen()
+  };
+
+  const handleEditVAdder = (vAdderData: AdderVModel) => {
+    setEditMode(true);
+    setEditedVAdder(vAdderData);
+    handleOpen()
+  };
   useEffect(() => {
     const pageNumber = {
       page_number: 1,
@@ -50,9 +61,7 @@ const AdderValidation = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
-  if (!adderVList === null || adderVList.length === 0) {
-    return <div>Data not found</div>;
-  }
+ 
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === adderVList.length;
   return (
@@ -65,10 +74,13 @@ const AdderValidation = () => {
           onPressFilter={() => filter()}
           onPressImport={() => {}}
           onpressExport={() => {}}
-          onpressAddNew={() => handleOpen()}
+          onpressAddNew={() => handleAddvAdder()}
         />
         {filterOPen && <FilterAdder handleClose={filterClose}/>}
-        {open && <CreateAdder handleClose={handleClose} />}
+        {open && <CreateAdder 
+        vAdderData ={editedVAdder}
+         editMode={editMode}
+        handleClose={handleClose} />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
@@ -160,7 +172,7 @@ const AdderValidation = () => {
                           <div className="" style={{ cursor: "pointer" }}>
                             <img src={ICONS.ARCHIVE} alt="" />
                           </div>
-                          <div className="" style={{ cursor: "pointer" }}>
+                          <div className="" style={{ cursor: "pointer" }} onClick={()=>handleEditVAdder(el)}>
                             <CiEdit
                               style={{ fontSize: "1.5rem", color: "#344054" }}
                             />

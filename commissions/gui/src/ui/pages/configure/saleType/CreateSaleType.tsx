@@ -13,17 +13,20 @@ import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoin
 import { SalesTypeModel } from "../../../../core/models/configuration/create/SalesTypeModel";
 
 
-type ButtonProps = {
-    handleClose: () => void
+interface salesProps{
+    handleClose: () => void,
+    salesTypeData:SalesTypeModel|null,
+    editMode:boolean,
 }
 
-const CreateSaleType = (props: ButtonProps) => {
+const CreateSaleType:React.FC<salesProps> = ({handleClose,salesTypeData,editMode}) => {
     const dispatch = useDispatch();
-
+  console.log(salesTypeData)
     const [createSales, setCreateSales] = useState<SalesTypeModel>( 
         {
-            type_name: "Example sale type 2",
-            description: "This is an example sale type 2"
+            record_id: salesTypeData? salesTypeData?.record_id: 0,
+            type_name: salesTypeData? salesTypeData?.type_name: "",
+            description: salesTypeData? salesTypeData?.description: ""
         }
         
     )
@@ -40,12 +43,29 @@ const CreateSaleType = (props: ButtonProps) => {
       e.preventDefault();
       try {
         dispatch(updateSalesForm(createSales));
-        const res = await postCaller(EndPoints.create_saletype, createSales);
+      if(createSales.record_id){
+        const res = await postCaller(EndPoints.update_saletype, createSales);
         if(res.status===200){
-          alert("Created Successfully")
-          props.handleClose()
+          alert(res.message)
+          handleClose()
           window.location.reload()
         }
+        else{
+            alert(res.message)
+        }
+      }
+      else{
+        const { record_id, ...cleanedFormData } = createSales;
+        const res = await postCaller(EndPoints.create_saletype, cleanedFormData);
+        if(res.status===200){
+          alert(res.message)
+          handleClose()
+          window.location.reload()
+        }
+        else{
+            alert(res.message)
+        }
+      }
       } catch (error) {
         console.error('Error submitting form:', error);
       }
@@ -54,12 +74,12 @@ const CreateSaleType = (props: ButtonProps) => {
         <div className="transparent-model">
             <div className="sales-modal">
 
-                <div className="createUserCrossButton" onClick={props.handleClose}>
+                <div className="createUserCrossButton" onClick={handleClose}>
                     <CROSS_BUTTON />
 
                 </div>
                 <div className="createUserContainer">
-                    <h3 className="createProfileText">Sale Type</h3>
+                    <h3 className="createProfileText">{editMode===false?"Sale Type":"Update Sale Type"}</h3>
                 <form onSubmit={(e)=>submitSalesType(e)}>
                 <div className="createProfileInputView">
                         <div className="createProfileTextView">
@@ -85,7 +105,7 @@ const CreateSaleType = (props: ButtonProps) => {
 
                         </div>
                         <div className="createUserActionButton">
-                            <ActionButton title={"Create"} type="submit"
+                            <ActionButton title={editMode===false?"Create":"Update"} type="submit"
                                 onClick={() => { }} />
                         </div>
 

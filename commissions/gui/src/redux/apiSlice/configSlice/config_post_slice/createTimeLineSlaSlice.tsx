@@ -10,6 +10,7 @@ import { TimeLineSlaModel } from '../../../../core/models/configuration/create/T
 
 
 const initialState: TimeLineSlaModel = {
+  record_id:0,
     type_m2m:"",
     state:"",
     days: "",

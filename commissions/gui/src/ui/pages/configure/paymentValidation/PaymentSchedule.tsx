@@ -15,6 +15,7 @@ import {
 } from "../../../components/chekbox/checkHelper";
 import FilterPayment from "./FilterPayment";
 import { FaArrowDown } from "react-icons/fa6";
+import { PayScheduleModel } from "../../../../core/models/configuration/create/PayScheduleModel";
 
 const PaymentSchedule = () => {
   const dispatch = useAppDispatch();
@@ -33,6 +34,8 @@ const PaymentSchedule = () => {
   const error = useAppSelector((state) => state.paySchedule.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
+  const [editMode, setEditMode] = useState(false);
+  const [editedPaySchedule, setEditedPaySchedule] = useState<PayScheduleModel | null>(null);
   useEffect(() => {
     const pageNumber = {
       page_number: 1,
@@ -40,7 +43,18 @@ const PaymentSchedule = () => {
     };
     dispatch(fetchPaySchedule(pageNumber));
   }, [dispatch]);
-  console.log(payScheduleList);
+
+  const handleAddPaySchedule = () => {
+    setEditMode(false);
+    setEditedPaySchedule(null);
+    handleOpen()
+  };
+
+  const handleEditPaySchedule = (payEditedData: PayScheduleModel) => {
+    setEditMode(true);
+    setEditedPaySchedule(payEditedData);
+    handleOpen()
+  };
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -48,9 +62,7 @@ const PaymentSchedule = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
-  if (!payScheduleList === null || payScheduleList.length === 0) {
-    return <div>Data not found</div>;
-  }
+
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === payScheduleList.length;
   return (
@@ -63,10 +75,13 @@ const PaymentSchedule = () => {
           onPressFilter={() => filter()}
           onPressImport={() => {}}
           onpressExport={() => {}}
-          onpressAddNew={() => handleOpen()}
+          onpressAddNew={() => handleAddPaySchedule()}
         />
         {filterOPen && <FilterPayment handleClose={filterClose} />}
-        {open && <CreatePaymentSchedule handleClose={handleClose} />}
+        {open && <CreatePaymentSchedule 
+        editMode={editMode}
+         payEditedData={editedPaySchedule}
+        handleClose={handleClose} />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
@@ -200,9 +215,11 @@ const PaymentSchedule = () => {
                         }}
                       >
                         <img src={ICONS.ARCHIVE} alt="" />
-                        <CiEdit
+                      <div className="" style={{cursor:"pointer"}} onClick={()=>handleEditPaySchedule(el)}>
+                      <CiEdit
                           style={{ fontSize: "1.5rem", color: "#344054" }}
                         />
+                      </div>
                       </td>
                     </tr>
                   ))

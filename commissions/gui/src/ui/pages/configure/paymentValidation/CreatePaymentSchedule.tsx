@@ -15,28 +15,32 @@ import { installerOption, partnerOption, salesTypeOption, stateOption, } from ".
 import Select from 'react-select';
 import { partners, paySaleTypeData } from "../../../../resources/static_data/StaticData";
 import { PayScheduleModel } from "../../../../core/models/configuration/create/PayScheduleModel";
-type ButtonProps = {
-    handleClose: () => void
+interface payScheduleProps {
+    handleClose: () => void,
+    editMode:boolean,
+    payEditedData:PayScheduleModel|null
 }
 
-const CreatePaymentSchedule = (props: ButtonProps) => {
+
+const CreatePaymentSchedule:React.FC<payScheduleProps> = ({handleClose,editMode,payEditedData}) => {
     const dispatch = useDispatch();
 
     const [createPayData, setCreatePayData] = useState<PayScheduleModel>(
         {
-            partner: "Shushank Sharma",
-            partner_name: "FFS",
-            installer_name: "",
-            sale_type: "BATTERY",
-            state: "",
-            rl: "40",
-            draw: "50%",
-            draw_max: "50%",
-            rep_draw: "2000.00",
-            rep_draw_max: "2000.00",
-            rep_pay: "Yes",
-            start_date: "2024-04-01",
-            end_date: "2024-04-30"
+            record_id: payEditedData? payEditedData?.record_id: 0,
+            partner: payEditedData? payEditedData?.partner: "Shushank Sharma",
+            partner_name:payEditedData? payEditedData?.partner_name: "FFS",
+            installer_name: payEditedData? payEditedData?.installer_name:"OWE",
+            sale_type: payEditedData? payEditedData?.sale_type:"BATTERY",
+            state: payEditedData? payEditedData?.state:"Alabama",
+            rl: payEditedData? payEditedData?.rl:"40",
+            draw:payEditedData? payEditedData?.draw: "50%",
+            draw_max: payEditedData? payEditedData?.draw_max:"50%",
+            rep_draw:payEditedData? payEditedData?.rep_draw: "2000.00",
+            rep_draw_max:payEditedData? payEditedData?.rep_draw_max: "2000.00",
+            rep_pay:payEditedData? payEditedData?.rep_pay: "Yes",
+            start_date: payEditedData? payEditedData?.start_date:"2024-04-01",
+            end_date: payEditedData? payEditedData?.end_date:"2024-04-30"
           }
     )
     const [newFormData,setNewFormData] = useState<any>([])
@@ -72,15 +76,31 @@ const CreatePaymentSchedule = (props: ButtonProps) => {
         e.preventDefault();
         try {
             dispatch(updatePayForm(createPayData));
-            const res = await postCaller(EndPoints.create_paymentschedule, createPayData);
-            if (res?.status === 200) {
-                alert(res.message)
-                props.handleClose()
-                window.location.reload()
+            if(createPayData.record_id){
+             
+                const res = await postCaller(EndPoints.create_paymentschedule, createPayData);
+                if (res?.status === 200) {
+                    alert(res.message)
+                    handleClose()
+                    window.location.reload()
+                }
+                else {
+                    alert(res.message)
+                }
             }
-            else {
-                alert(res.message)
+            else{
+                const { record_id, ...cleanedFormData } = createPayData;
+                const res = await postCaller(EndPoints.create_paymentschedule, cleanedFormData);
+                if (res?.status === 200) {
+                    alert(res.message)
+                    handleClose()
+                    window.location.reload()
+                }
+                else {
+                    alert(res.message)
+                }
             }
+           
         } catch (error) {
             console.error('Error submitting form:', error);
         }
@@ -89,12 +109,12 @@ const CreatePaymentSchedule = (props: ButtonProps) => {
         <div className="transparent-model">
             <div className="modal">
 
-                <div className="createUserCrossButton" onClick={props.handleClose}>
+                <div className="createUserCrossButton" onClick={handleClose}>
                     <CROSS_BUTTON />
 
                 </div>
                 <div className="createUserContainer">
-                    <h3 className="createProfileText">Payment Schedule</h3>
+                    <h3 className="createProfileText">{editMode===false?"Payment Schedule":"Update Payment Schedule"}</h3>
                    <form onSubmit={(e)=>submitPaySchedule(e)}>
                    <div className="createProfileInputView">
                         <div className="createProfileTextView">
@@ -286,7 +306,7 @@ const CreatePaymentSchedule = (props: ButtonProps) => {
                             </div>
                         </div>
                         <div className="createUserActionButton">
-                            <ActionButton title={"Save"} type="submit"
+                            <ActionButton title={editMode===false?"Save":"Update"} type="submit"
                                 onClick={() => { }} />
                         </div>
 

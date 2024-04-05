@@ -1,4 +1,5 @@
 export interface TierLoanFeeModel {
+  record_id:number,
     dealer_tier: string;
     installer: string;
     state: string;

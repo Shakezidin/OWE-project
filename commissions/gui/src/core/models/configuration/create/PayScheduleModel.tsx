@@ -1,4 +1,5 @@
 export interface PayScheduleModel {
+  record_id:number,
   partner: string;
   partner_name: string;
   installer_name: string;

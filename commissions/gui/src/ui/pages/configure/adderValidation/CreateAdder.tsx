@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import "../../create_profile/CreateUserProfile.css";
 import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cross_button.svg";
 import Input from "../../../components/text_input/Input";
-import DropdownButton from "../../../components/dropdown/DropdownButton";
 import { ActionButton } from "../../../components/button/ActionButton";
 import Select from 'react-select';
 import { updateAdderV } from "../../../../redux/apiSlice/configSlice/config_post_slice/createAdderVSlice";
@@ -13,20 +12,23 @@ import { useDispatch } from "react-redux";
 import { adderTypeOption, priceTypeOption } from "../../../../core/models/data_models/SelectDataModel";
 import { adderTypeData, priceTypeData } from "../../../../resources/static_data/StaticData";
 import { AdderVModel } from "../../../../core/models/configuration/create/AdderVModel";
-type ButtonProps = {
-    handleClose: () => void
+interface vadderProps {
+    editMode:boolean,
+    handleClose: () => void,
+    vAdderData: AdderVModel | null;
 }
-const CreateAdder = (props: ButtonProps) => {
+const CreateAdder:React.FC<vadderProps>= ({editMode,handleClose,vAdderData}) => {
     const dispatch = useDispatch();
-
+   console.log(vAdderData)
     const [createAdderV, setCreateAdderV] = useState<AdderVModel>(
         {
-            adder_name: "Example Adder",
-            adder_type: "Type A",
-            price_type: "Type X",
-            price_amount: "12.34",
-            active: 1,
-            description: "This is an example description"
+            record_id:vAdderData? vAdderData?.record_id:0,
+            adder_name:vAdderData ? vAdderData?.adder_name:"",
+            adder_type: vAdderData? vAdderData?.adder_type: "",
+            price_type: vAdderData? vAdderData?.price_type: "",
+            price_amount: vAdderData? vAdderData?.price_amount:"",
+            active:vAdderData? vAdderData?.active: 1,
+            description:vAdderData? vAdderData?.description: "This is an example description"
         }
     )
 
@@ -61,15 +63,29 @@ const CreateAdder = (props: ButtonProps) => {
         e.preventDefault();
         try {
             dispatch(updateAdderV(createAdderV));
-            const res = await postCaller(EndPoints.adderV, createAdderV);
+           if(createAdderV.record_id){
+            const res = await postCaller(EndPoints.update_vadders, createAdderV);
             if (res.status === 200) {
                 alert(res.message)
-                props.handleClose()
+                handleClose()
                 window.location.reload()
             }
             else{
                 alert(res.message)
             }
+           }
+           else{
+            const { record_id, ...cleanedFormData } = createAdderV;
+            const res = await postCaller(EndPoints.adderV, cleanedFormData);
+            if (res.status === 200) {
+                alert(res.message)
+                handleClose()
+                window.location.reload()
+            }
+            else{
+                alert(res.message)
+            }
+           }
         } catch (error) {
             console.error('Error submitting form:', error);
         }
@@ -78,12 +94,12 @@ const CreateAdder = (props: ButtonProps) => {
         <div className="transparent-model">
             <div className="modal">
 
-                <div className="createUserCrossButton" onClick={props.handleClose}>
+                <div className="createUserCrossButton" onClick={handleClose}>
                     <CROSS_BUTTON />
 
                 </div>
                 <div className="createUserContainer">
-                    <h3 className="createProfileText">Adder</h3>
+                    <h3 className="createProfileText">{editMode===false?"Adder":"Update Adder"}</h3>
                     <form onSubmit={(e) => submitMarketingFees(e)}>
                         <div className="createProfileInputView">
                             <div className="createProfileTextView">
@@ -101,7 +117,7 @@ const CreateAdder = (props: ButtonProps) => {
                                     <div className=" rate-input-field">
                                         <label className="inputLabel">Adder Type</label>
                                         <Select
-                                            options={adderTypeOption(newFormData)||adderTypeData}
+                                            options={adderTypeOption(newFormData)}
                                             isSearchable
                                             styles={{
                                                 control: (baseStyles, state) => ({
@@ -115,7 +131,7 @@ const CreateAdder = (props: ButtonProps) => {
                                                 }),
                                               }}
                                             onChange={(newValue) => handleChange(newValue, 'adder_type')}
-                                            value={adderTypeOption(newFormData)||adderTypeData?.find((option) => option.value === createAdderV.adder_type)}
+                                            value={adderTypeOption(newFormData)?.find((option) => option.value === createAdderV.adder_type)}
                                         />
                                     </div>
 
@@ -154,7 +170,6 @@ const CreateAdder = (props: ButtonProps) => {
                                             value={priceTypeOption(newFormData)||priceTypeData?.find((option) => option.value === createAdderV.price_type)}
                                         />
                                     </div>
-
                                 </div>
                                 <div className="create-input-field-note">
                                     <label htmlFor="" className="inputLabel">Note</label> <br />
@@ -165,7 +180,7 @@ const CreateAdder = (props: ButtonProps) => {
 
                             </div>
                             <div className="createUserActionButton">
-                                <ActionButton title={"Save"} type="submit"
+                                <ActionButton title={editMode===false?"Save":"Update"} type="submit"
                                     onClick={() => { }} />
                             </div>
 

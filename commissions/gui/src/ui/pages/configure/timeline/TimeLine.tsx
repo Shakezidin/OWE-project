@@ -16,6 +16,7 @@ import Pagination from "../../../components/pagination/Pagination";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 import FilterTimeLine from "./FilterTimeLine";
 import { FaArrowDown } from "react-icons/fa6";
+import { TimeLineSlaModel } from "../../../../core/models/configuration/create/TimeLineSlaModel";
 const TimeLine = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -32,6 +33,8 @@ const TimeLine = () => {
   const error = useAppSelector((state) => state.timelineSla.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
+  const [editMode, setEditMode] = useState(false);
+  const [editedTimeLineSla, setEditedTimeLineSla] = useState<TimeLineSlaModel | null>(null);
   const itemsPerPage = 5;
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
   useEffect(() => {
@@ -64,6 +67,18 @@ const TimeLine = () => {
 
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === timelinesla_list.length;
+
+  const handleTimeLineSla = () => {
+    setEditMode(false);
+    setEditedTimeLineSla(null);
+    handleOpen()
+  };
+
+  const handleEditTimeLineSla = (timeLineSlaData:TimeLineSlaModel) => {
+    setEditMode(true);
+    setEditedTimeLineSla(timeLineSlaData);
+    handleOpen()
+  };
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -71,9 +86,7 @@ const TimeLine = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
-  if (!timelinesla_list === null || timelinesla_list.length === 0) {
-    return <div>Data not found</div>;
-  }
+ 
   return (
     <div className="comm">
       <div className="commissionContainer">
@@ -84,10 +97,13 @@ const TimeLine = () => {
           onPressFilter={() => filter()}
           onPressImport={() => { }}
           onpressExport={() => { }}
-          onpressAddNew={() => handleOpen()}
+          onpressAddNew={() => handleTimeLineSla()}
         />
         {filterOPen && <FilterTimeLine handleClose={filterClose} />}
-        {open && <CreateTimeLine handleClose={handleClose} />}
+        {open && <CreateTimeLine 
+        timeLineSlaData={editedTimeLineSla}
+        editMode={editMode}
+        handleClose={handleClose} />}
 
           <table  style={{ overflowX: "auto", whiteSpace: "nowrap" }}>
         
@@ -176,9 +192,11 @@ const TimeLine = () => {
                       }}
                     >
                       <img src={ICONS.ARCHIVE} alt="" />
-                      <CiEdit
+                     <div className="" onClick={()=>handleEditTimeLineSla(el)}>
+                     <CiEdit
                         style={{ fontSize: "1.5rem", color: "#344054" }}
-                      />
+                      /> 
+                     </div>
                     </td>
                   </tr>
                 ))
@@ -188,13 +206,15 @@ const TimeLine = () => {
           </table>
         
         </div>
-        <Pagination
+       {
+        timelinesla_list?.length>0 ? <Pagination
         currentPage={currentPage}
         totalPages={totalPages} // You need to calculate total pages
         paginate={paginate}
         goToNextPage={goToNextPage}
         goToPrevPage={goToPrevPage}
-      />
+      />:null
+       }
       </div>
   
   );
