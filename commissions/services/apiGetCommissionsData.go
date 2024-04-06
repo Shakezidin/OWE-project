@@ -83,7 +83,6 @@ func HandleGetCommissionsDataRequest(resp http.ResponseWriter, req *http.Request
 	commissionsList := models.GetCommissionsList{}
 
 	for _, item := range data {
-
 		RecordId, ok := item["record_id"].(int64)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get record id. Item: %+v\n", item)

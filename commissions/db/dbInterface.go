@@ -44,6 +44,8 @@ const (
 	UpdateVAddersFunction         string = "update_v_adders"
 	UpdateSaleTypeFunction        string = "update_sale_type"
 	UpdateTierLoanFeeFunction     string = "update_tier_loan_fee"
+	UpdateDealerTierFunction      string = "update_dealer_tier"
+	UpdatePaymentScheduleFunction string = "update_payment_schedule"
 	TableName_teams               string = "teams"
 	TableName_commission_rates    string = "commission_rates"
 	TableName_users_details       string = "user_details"

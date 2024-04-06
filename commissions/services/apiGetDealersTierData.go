@@ -60,7 +60,7 @@ func HandleGetDealersTierDataRequest(resp http.ResponseWriter, req *http.Request
 
 	tableName := db.TableName_dealer_tier
 	query = ` 
-	SELECT ud.name as dealer_name, tr.tier_name as tier, dt.start_date, dt.end_date
+	SELECT dt.id as record_id, ud.name as dealer_name, tr.tier_name as tier, dt.start_date, dt.end_date
 	FROM dealer_tier dt
 	JOIN tier tr ON dt.tier_id = tr.id
 	JOIN user_details ud ON dt.dealer_id = ud.user_id`
@@ -80,6 +80,11 @@ func HandleGetDealersTierDataRequest(resp http.ResponseWriter, req *http.Request
 	dealersTierList := models.GetDealersTierList{}
 
 	for _, item := range data {
+		RecordId, ok := item["record_id"].(int64)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get record id. Item: %+v\n", item)
+			continue
+		}
 		DealerName, nameOk := item["dealer_name"].(string)
 		if !nameOk {
 			log.FuncErrorTrace(0, "Failed to get dealer name. Item: %+v\n", item)
@@ -106,6 +111,7 @@ func HandleGetDealersTierDataRequest(resp http.ResponseWriter, req *http.Request
 
 		// Create a new GetDealerTierData object
 		dealerTierData := models.GetDealerTierData{
+			RecordId:   RecordId,
 			DealerName: DealerName,
 			Tier:       Tier,
 			StartDate:  StartDate,

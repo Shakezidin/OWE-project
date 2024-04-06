@@ -73,14 +73,15 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	queryParameters = append(queryParameters, createUserReq.Name)
-	queryParameters = append(queryParameters, createUserReq.EmailId)
-	queryParameters = append(queryParameters, createUserReq.MobileNumber)
-	queryParameters = append(queryParameters, string(hashedPassBytes))
-	queryParameters = append(queryParameters, createUserReq.Designation)
-	queryParameters = append(queryParameters, createUserReq.RoleName)
 	queryParameters = append(queryParameters, createUserReq.UserCode)
+	queryParameters = append(queryParameters, createUserReq.MobileNumber)
+	queryParameters = append(queryParameters, createUserReq.EmailId)
+	queryParameters = append(queryParameters, string(hashedPassBytes))
+	queryParameters = append(queryParameters, createUserReq.PasswordChangeReq)
 	queryParameters = append(queryParameters, createUserReq.ReportingManager)
+	queryParameters = append(queryParameters, createUserReq.RoleName)
 	queryParameters = append(queryParameters, createUserReq.UserStatus)
+	queryParameters = append(queryParameters, createUserReq.Designation)
 	queryParameters = append(queryParameters, createUserReq.Description)
 	_, err = db.CallDBFunction(db.CreateUserFunction, queryParameters)
 	if err != nil {

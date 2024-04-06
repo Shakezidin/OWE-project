@@ -59,8 +59,8 @@ func HandleGetPaymentSchedulesDataRequest(resp http.ResponseWriter, req *http.Re
 	}
 
 	tableName := db.TableName_payment_schedule
-	query = `SELECT ud.name as partner, pt1.partner_name AS partner_name, pt2.partner_name AS installer_name, 
-	st.name AS state, sl.type_name AS sale_type, ps.rl, ps.draw, ps.draw_max, ps.rep_draw, ps.rep_draw_max, ps.rep_pay
+	query = `SELECT ps.id as record_id, ud.name as partner, pt1.partner_name AS partner_name, pt2.partner_name AS installer_name, 
+	st.name AS state, sl.type_name AS sale_type, ps.rl, ps.draw, ps.draw_max, ps.rep_draw, ps.rep_draw_max, ps.rep_pay, ps.start_date, ps.end_date
 	FROM payment_schedule ps 
 	JOIN states st ON st.state_id = ps.state_id 
 	JOIN partners pt1 ON pt1.partner_id = ps.partner_id 
@@ -83,6 +83,11 @@ func HandleGetPaymentSchedulesDataRequest(resp http.ResponseWriter, req *http.Re
 	paymentScheduleList := models.GetPaymentScheduleList{}
 
 	for _, item := range data {
+		RecordId, ok := item["record_id"].(int64)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get record id. Item: %+v\n", item)
+			continue
+		}
 		Partner, ok := item["partner"].(string)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get Partner. Item: %+v\n", item)
@@ -128,13 +133,32 @@ func HandleGetPaymentSchedulesDataRequest(resp http.ResponseWriter, req *http.Re
 			log.FuncErrorTrace(0, "Failed to get RepDraw. Item: %+v\n", item)
 			continue
 		}
+		RepDrawMax, ok := item["rep_draw_max"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get RepDrawMax. Item: %+v\n", item)
+			continue
+		}
 		RepPay, ok := item["rep_pay"].(string)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get RepPay. Item: %+v\n", item)
 			continue
 		}
+		// StartDate
+		StartDate, ok := item["start_date"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get StartDate. Item: %+v\n", item)
+			continue
+		}
+
+		// EndDate
+		EndDate, ok := item["end_date"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get EndDate. Item: %+v\n", item)
+			continue
+		}
 
 		paySchData := models.GetPaymentScheduleData{
+			RecordId:      RecordId,
 			Partner:       Partner,
 			PartnerName:   PartnerName,
 			InstallerName: Installer,
@@ -144,7 +168,10 @@ func HandleGetPaymentSchedulesDataRequest(resp http.ResponseWriter, req *http.Re
 			Draw:          Draw,
 			DrawMax:       DrawMax,
 			RepDraw:       RepDraw,
+			RepDrawMax:    RepDrawMax,
 			RepPay:        RepPay,
+			StartDate:     StartDate,
+			EndDate:       EndDate,
 		}
 
 		paymentScheduleList.PaymentScheduleList = append(paymentScheduleList.PaymentScheduleList, paySchData)

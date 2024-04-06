@@ -1,12 +1,12 @@
 /**************************************************************************
- *	Function	: createPaymentScheduleApiModels.go
+ *	Function	: updatePaymentSchedulesApiModels.go
  *	DESCRIPTION : Files contains struct for create payment schedule user models
  *	DATE        : 20-Jan-2024
  **************************************************************************/
 
 package models
 
-type GetPaymentScheduleData struct {
+type UpdatePaymentSchedule struct {
 	RecordId      int64  `json:"record_id"`
 	Partner       string `json:"partner"`
 	PartnerName   string `json:"partner_name"`
@@ -21,8 +21,4 @@ type GetPaymentScheduleData struct {
 	RepPay        string `json:"rep_pay"`
 	StartDate     string `json:"start_date"`
 	EndDate       string `json:"end_date"`
-}
-
-type GetPaymentScheduleList struct {
-	PaymentScheduleList []GetPaymentScheduleData `json:"payment_schedule_list"`
 }
