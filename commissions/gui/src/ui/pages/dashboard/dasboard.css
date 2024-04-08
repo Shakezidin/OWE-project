@@ -86,18 +86,22 @@
 
 .line-graph {
   display: flex;
+  align-items: center;
   margin-top: 0.4rem;
   gap: 1rem;
-  align-content: center;
-  justify-content: center;
+  /* align-content: center;
+  justify-content: center; */
 }
-
+.filter-line {
+font-size: 0.5rem;
+  }
 .filter-line img{
-  border: 1px solid #d0d5dd;
   text-align: center;
-  padding: 0.5rem;
+  /* padding: 1rem;  */
   width: 36px;
   height: 36px;
   background-color: white;
   border-radius: 8px;
+  cursor: pointer;
+  font-size: 25px;
 }

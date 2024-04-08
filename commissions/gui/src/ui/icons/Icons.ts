@@ -39,5 +39,6 @@ export const ICONS = {
   doller3Icon:require("../../resources/assets/doller3 (1).png"),
   lineChartIcon:require("../../resources/assets/listIcon.png"),
   graphIcon:require("../../resources/assets/graphIcon.png"),
+  filter2: require("../../resources/assets/filter2.png")
 
 };

@@ -62,16 +62,6 @@ const AppointmentSetterTable: React.FC = () => {
               </th>
               <th>
                 <div className="table-header">
-                  <p>Pay Rate</p> <FaArrowDown style={{color:"#667085"}}/>
-                </div>
-              </th>
-              <th>
-                <div className="table-header">
-                  <p>Descriptions</p> <FaArrowDown style={{color:"#667085"}}/>
-                </div>
-              </th>
-              <th>
-                <div className="table-header">
                   <p>Start Date</p> <FaArrowDown style={{color:"#667085"}}/>
                 </div>
               </th>
@@ -80,6 +70,17 @@ const AppointmentSetterTable: React.FC = () => {
                   <p>End Date</p> <FaArrowDown style={{color:"#667085"}}/>
                 </div>
               </th>
+              <th>
+                <div className="table-header">
+                  <p>Pay Rate</p> <FaArrowDown style={{color:"#667085"}}/>
+                </div>
+              </th>
+              <th>
+                <div className="table-header">
+                  <p>Descriptions</p> <FaArrowDown style={{color:"#667085"}}/>
+                </div>
+              </th>
+             
               <th>
                 <div className="table-header">
                   <p>Action</p> <FaArrowDown style={{color:"#667085"}}/>
@@ -101,10 +102,11 @@ const AppointmentSetterTable: React.FC = () => {
                     />
                   </td>
                   <td style={{ fontWeight: "500", color: "black" }}>{el.name}</td>
-                  <td>{el.pay}</td>
-                  <td>{el.des}</td>
                   <td>{el.sd}</td>
                   <td>{el.ed}</td>
+                  <td>{el.pay}</td>
+                  <td>{el.des}</td>
+                  
                   <td>
                     <div className="action-icon">
                       <div className="" style={{ cursor: "pointer" }}>

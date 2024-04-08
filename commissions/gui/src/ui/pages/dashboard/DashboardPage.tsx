@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import './dasboard.css'
 import DashboardTotal from "./DashboardTotal";
+import DonutChart from './DonutChart/DonutChart'
+import TinyBarChart from './DonutChart/TinyBarChart'
 import Select from 'react-select';
 import { ICONS } from "../../icons/Icons";
+
 export const DashboardPage: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
-
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -47,27 +49,25 @@ export const DashboardPage: React.FC = () => {
                     // marginTop: "4.5px",
                     borderRadius: "8px ",
                     outline: "none",
-                   
+
                     // height: "1rem",
                     border: "1px solid #d0d5dd",
                     background: "#ECECEC",
-                  
+
                   }),
                 }}
               />
             </div>
             <div className="Line-container">
               <div className="line-graph">
-                <div className=".filter-line">
+                <div className="filter-line">
                   <img src={ICONS.lineChartIcon} alt="" />
                 </div>
-                <div className=".filter-line">
+                <div className="filter-line">
                   <img src={ICONS.graphIcon} alt="" />
                 </div>
                 <div className="filter-line">
-
-                  <img src={ICONS.FILTER} alt="" />
-
+                  <img src={ICONS.filter2} alt="" />
                 </div>
               </div>
             </div>
@@ -76,7 +76,10 @@ export const DashboardPage: React.FC = () => {
 
         </div>
       </div>
-      <DashboardTotal />
+      <div className="" style={{ marginTop: "2rem" }}>
+        <DashboardTotal />
+        <DonutChart />
+      </div>
 
     </>
 
