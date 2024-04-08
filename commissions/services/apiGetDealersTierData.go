@@ -82,31 +82,35 @@ func HandleGetDealersTierDataRequest(resp http.ResponseWriter, req *http.Request
 	for _, item := range data {
 		RecordId, ok := item["record_id"].(int64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get record id. Item: %+v\n", item)
+			log.FuncErrorTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
 			continue
 		}
+		// DealerName
 		DealerName, nameOk := item["dealer_name"].(string)
-		if !nameOk {
-			log.FuncErrorTrace(0, "Failed to get dealer name. Item: %+v\n", item)
-			continue
+		if !nameOk || DealerName == "" {
+			log.FuncErrorTrace(0, "Failed to get dealer name for Record ID %v. Item: %+v\n", RecordId, item)
+			DealerName = ""
 		}
 
+		// Tier
 		Tier, tierOk := item["tier"].(string)
-		if !tierOk {
-			log.FuncErrorTrace(0, "Failed to get tier. Item: %+v\n", item)
-			continue
+		if !tierOk || Tier == "" {
+			log.FuncErrorTrace(0, "Failed to get tier for Record ID %v. Item: %+v\n", RecordId, item)
+			Tier = ""
 		}
 
+		// StartDate
 		StartDate, startOk := item["start_date"].(string)
-		if !startOk {
-			log.FuncErrorTrace(0, "Failed to get start date. Item: %+v\n", item)
-			continue
+		if !startOk || StartDate == "" {
+			log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
+			StartDate = ""
 		}
 
+		// EndDate
 		EndDate, endOk := item["end_date"].(string)
-		if !endOk {
-			log.FuncErrorTrace(0, "Failed to get end date. Item: %+v\n", item)
-			continue
+		if !endOk || EndDate == "" {
+			log.FuncErrorTrace(0, "Failed to get end date for Record ID %v. Item: %+v\n", RecordId, item)
+			EndDate = ""
 		}
 
 		// Create a new GetDealerTierData object

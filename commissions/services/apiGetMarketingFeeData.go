@@ -83,59 +83,72 @@ func HandleGetMarketingFeesDataRequest(resp http.ResponseWriter, req *http.Reque
 	for _, item := range data {
 		RecordId, ok := item["record_id"].(int64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get record id. Item: %+v\n", item)
+			log.FuncErrorTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
 			continue
 		}
+		// Source
 		Source, ok := item["source_name"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get source name. Item: %+v\n", item)
-			continue
+		if !ok || Source == "" {
+			log.FuncErrorTrace(0, "Failed to get source name for Record ID %v. Item: %+v\n", RecordId, item)
+			Source = ""
 		}
 
+		// Dba
 		Dba, ok := item["dba"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get dba. Item: %+v\n", item)
-			continue
+		if !ok || Dba == "" {
+			log.FuncErrorTrace(0, "Failed to get dba for Record ID %v. Item: %+v\n", RecordId, item)
+			Dba = ""
 		}
 
+		// State
 		State, ok := item["state_name"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get state name. Item: %+v\n", item)
-			continue
+		if !ok || State == "" {
+			log.FuncErrorTrace(0, "Failed to get state name for Record ID %v. Item: %+v\n", RecordId, item)
+			State = ""
 		}
 
+		// FeeRate
 		FeeRate, ok := item["fee_rate"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get fee rate. Item: %+v\n", item)
-			continue
+		if !ok || FeeRate == "" {
+			log.FuncErrorTrace(0, "Failed to get fee rate for Record ID %v. Item: %+v\n", RecordId, item)
+			FeeRate = ""
 		}
 
+		// ChgDlr
 		ChgDlrVal, ok := item["chg_dlr"].(int64)
+		ChgDlr := 0
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get chg_dlr. Item: %+v\n", item)
-			continue
+			log.FuncErrorTrace(0, "Failed to get chg_dlr for Record ID %v. Item: %+v\n", RecordId, item)
+			ChgDlr = 0 // Default ChgDlr value of 0
+		} else {
+			ChgDlr = int(ChgDlrVal)
 		}
-		ChgDlr := int(ChgDlrVal)
 
+		// PaySrc
 		PaySrcVal, ok := item["pay_src"].(int64)
+		PaySrc := 0
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get pay_src. Item: %+v\n", item)
-			continue
+			log.FuncErrorTrace(0, "Failed to get pay_src for Record ID %v. Item: %+v\n", RecordId, item)
+			PaySrc = 0 // Default PaySrc value of 0
+		} else {
+			PaySrc = int(PaySrcVal)
 		}
-		PaySrc := int(PaySrcVal)
 
+		// StartDate
 		StartDate, ok := item["start_date"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get start date. Item: %+v\n", item)
-			continue
+		if !ok || StartDate == "" {
+			log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
+			StartDate = ""
 		}
 
+		// EndDate
 		EndDate, ok := item["end_date"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get end date. Item: %+v\n", item)
-			continue
+		if !ok || EndDate == "" {
+			log.FuncErrorTrace(0, "Failed to get end date for Record ID %v. Item: %+v\n", RecordId, item)
+			EndDate = ""
 		}
 
+		// Description
 		Description, descOk := item["description"].(string)
 		if !descOk || Description == "" {
 			Description = ""

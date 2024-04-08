@@ -85,76 +85,98 @@ func HandleGetPaymentSchedulesDataRequest(resp http.ResponseWriter, req *http.Re
 	for _, item := range data {
 		RecordId, ok := item["record_id"].(int64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get record id. Item: %+v\n", item)
+			log.FuncErrorTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
 			continue
 		}
+		// Partner
 		Partner, ok := item["partner"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get Partner. Item: %+v\n", item)
-			continue
+		if !ok || Partner == "" {
+			log.FuncErrorTrace(0, "Failed to get Partner for Record ID %v. Item: %+v\n", RecordId, item)
+			Partner = ""
 		}
+
+		// PartnerName
 		PartnerName, ok := item["partner_name"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get Partner Name. Item: %+v\n", item)
-			continue
+		if !ok || PartnerName == "" {
+			log.FuncErrorTrace(0, "Failed to get Partner Name for Record ID %v. Item: %+v\n", RecordId, item)
+			PartnerName = ""
 		}
+
+		// Installer
 		Installer, ok := item["installer_name"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get Installer. Item: %+v\n", item)
-			continue
+		if !ok || Installer == "" {
+			log.FuncErrorTrace(0, "Failed to get Installer for Record ID %v. Item: %+v\n", RecordId, item)
+			Installer = ""
 		}
+
+		// State
 		State, ok := item["state"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get State. Item: %+v\n", item)
-			continue
+		if !ok || State == "" {
+			log.FuncErrorTrace(0, "Failed to get State for Record ID %v. Item: %+v\n", RecordId, item)
+			State = ""
 		}
+
+		// Sale
 		Sale, ok := item["sale_type"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get Sale. Item: %+v\n", item)
-			continue
+		if !ok || Sale == "" {
+			log.FuncErrorTrace(0, "Failed to get Sale for Record ID %v. Item: %+v\n", RecordId, item)
+			Sale = ""
 		}
+
+		// Rl
 		Rl, ok := item["rl"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get Rl. Item: %+v\n", item)
-			continue
+		if !ok || Rl == "" {
+			log.FuncErrorTrace(0, "Failed to get Rl for Record ID %v. Item: %+v\n", RecordId, item)
+			Rl = ""
 		}
+
+		// Draw
 		Draw, ok := item["draw"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get Draw. Item: %+v\n", item)
-			continue
+		if !ok || Draw == "" {
+			log.FuncErrorTrace(0, "Failed to get Draw for Record ID %v. Item: %+v\n", RecordId, item)
+			Draw = ""
 		}
+
+		// DrawMax
 		DrawMax, ok := item["draw_max"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get DrawMax. Item: %+v\n", item)
-			continue
+		if !ok || DrawMax == "" {
+			log.FuncErrorTrace(0, "Failed to get DrawMax for Record ID %v. Item: %+v\n", RecordId, item)
+			DrawMax = ""
 		}
+
+		// RepDraw
 		RepDraw, ok := item["rep_draw"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get RepDraw. Item: %+v\n", item)
-			continue
+		if !ok || RepDraw == "" {
+			log.FuncErrorTrace(0, "Failed to get RepDraw for Record ID %v. Item: %+v\n", RecordId, item)
+			RepDraw = ""
 		}
+
+		// RepDrawMax
 		RepDrawMax, ok := item["rep_draw_max"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get RepDrawMax. Item: %+v\n", item)
-			continue
+		if !ok || RepDrawMax == "" {
+			log.FuncErrorTrace(0, "Failed to get RepDrawMax for Record ID %v. Item: %+v\n", RecordId, item)
+			RepDrawMax = ""
 		}
+
+		// RepPay
 		RepPay, ok := item["rep_pay"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get RepPay. Item: %+v\n", item)
-			continue
+		if !ok || RepPay == "" {
+			log.FuncErrorTrace(0, "Failed to get RepPay for Record ID %v. Item: %+v\n", RecordId, item)
+			RepPay = ""
 		}
+
 		// StartDate
 		StartDate, ok := item["start_date"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get StartDate. Item: %+v\n", item)
-			continue
+		if !ok || StartDate == "" {
+			log.FuncErrorTrace(0, "Failed to get StartDate for Record ID %v. Item: %+v\n", RecordId, item)
+			StartDate = ""
 		}
 
 		// EndDate
 		EndDate, ok := item["end_date"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get EndDate. Item: %+v\n", item)
-			continue
+		if !ok || EndDate == "" {
+			log.FuncErrorTrace(0, "Failed to get EndDate for Record ID %v. Item: %+v\n", RecordId, item)
+			EndDate = ""
 		}
 
 		paySchData := models.GetPaymentScheduleData{

@@ -86,61 +86,70 @@ func HandleGetTierLoanFeesDataRequest(resp http.ResponseWriter, req *http.Reques
 	for _, item := range data {
 		RecordId, ok := item["record_id"].(int64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get record id. Item: %+v\n", item)
+			log.FuncErrorTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
 			continue
 		}
+		// DealerTierName
 		DealerTierName, tierOk := item["dealer_tier"].(string)
-		if !tierOk {
-			log.FuncErrorTrace(0, "Failed to get dealer tier. Item: %+v\n", item)
-			continue
+		if !tierOk || DealerTierName == "" {
+			log.FuncErrorTrace(0, "Failed to get dealer tier for Record ID %v. Item: %+v\n", RecordId, item)
+			DealerTierName = ""
 		}
 
+		// PartnerName
 		PartnerName, partnerOk := item["installer"].(string)
-		if !partnerOk {
-			log.FuncErrorTrace(0, "Failed to get partner name. Item: %+v\n", item)
-			continue
+		if !partnerOk || PartnerName == "" {
+			log.FuncErrorTrace(0, "Failed to get partner name for Record ID %v. Item: %+v\n", RecordId, item)
+			PartnerName = ""
 		}
 
+		// State
 		State, stateOk := item["state"].(string)
-		if !stateOk {
-			log.FuncErrorTrace(0, "Failed to get state. Item: %+v\n", item)
-			continue
+		if !stateOk || State == "" {
+			log.FuncErrorTrace(0, "Failed to get state for Record ID %v. Item: %+v\n", RecordId, item)
+			State = ""
 		}
 
+		// FinanceType
 		FinanceType, financeOk := item["finance_type"].(string)
-		if !financeOk {
-			log.FuncErrorTrace(0, "Failed to get finance type. Item: %+v\n", item)
-			continue
+		if !financeOk || FinanceType == "" {
+			log.FuncErrorTrace(0, "Failed to get finance type for Record ID %v. Item: %+v\n", RecordId, item)
+			FinanceType = ""
 		}
 
+		// OweCost
 		OweCost, oweOk := item["owe_cost"].(string)
-		if !oweOk {
-			log.FuncErrorTrace(0, "Failed to get owe cost. Item: %+v\n", item)
-			continue
+		if !oweOk || OweCost == "" {
+			log.FuncErrorTrace(0, "Failed to get owe cost for Record ID %v. Item: %+v\n", RecordId, item)
+			OweCost = ""
 		}
 
+		// DlrMu
 		DlrMu, muOk := item["dlr_mu"].(string)
-		if !muOk {
-			log.FuncErrorTrace(0, "Failed to get dlr_mu. Item: %+v\n", item)
-			continue
+		if !muOk || DlrMu == "" {
+			log.FuncErrorTrace(0, "Failed to get dlr_mu for Record ID %v. Item: %+v\n", RecordId, item)
+			DlrMu = ""
 		}
 
+		// DlrCost
 		DlrCost, costOk := item["dlr_cost"].(string)
-		if !costOk {
-			log.FuncErrorTrace(0, "Failed to get dlr cost. Item: %+v\n", item)
-			continue
+		if !costOk || DlrCost == "" {
+			log.FuncErrorTrace(0, "Failed to get dlr cost for Record ID %v. Item: %+v\n", RecordId, item)
+			DlrCost = ""
 		}
 
+		// StartDate
 		StartDate, startOk := item["start_date"].(string)
-		if !startOk {
-			log.FuncErrorTrace(0, "Failed to get start date. Item: %+v\n", item)
-			continue
+		if !startOk || StartDate == "" {
+			log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
+			StartDate = ""
 		}
 
+		// EndDate
 		EndDate, endOk := item["end_date"].(string)
-		if !endOk {
-			log.FuncErrorTrace(0, "Failed to get end date. Item: %+v\n", item)
-			continue
+		if !endOk || EndDate == "" {
+			log.FuncErrorTrace(0, "Failed to get end date for Record ID %v. Item: %+v\n", RecordId, item)
+			EndDate = ""
 		}
 
 		// Create a new GetTierLoanFeeData object

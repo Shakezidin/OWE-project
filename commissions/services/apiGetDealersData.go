@@ -82,38 +82,43 @@ func HandleGetDealersDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 		RecordId, ok := item["record_id"].(int64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get record id. Item: %+v\n", item)
+			log.FuncErrorTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
 			continue
 		}
 
+		// SubDealer
 		SubDealer, ok := item["sub_dealer"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get sub dealer. Item: %+v\n", item)
-			continue
+		if !ok || SubDealer == "" {
+			log.FuncErrorTrace(0, "Failed to get sub dealer for Record ID %v. Item: %+v\n", RecordId, item)
+			SubDealer = ""
 		}
 
+		// Dealer
 		Dealer, ok := item["name"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get dealer name. Item: %+v\n", item)
-			continue
+		if !ok || Dealer == "" {
+			log.FuncErrorTrace(0, "Failed to get dealer name for Record ID %v. Item: %+v\n", RecordId, item)
+			Dealer = ""
 		}
 
+		// PayRate
 		PayRate, ok := item["pay_rate"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get pay rate. Item: %+v\n", item)
-			continue
+		if !ok || PayRate == "" {
+			log.FuncErrorTrace(0, "Failed to get pay rate for Record ID %v. Item: %+v\n", RecordId, item)
+			PayRate = ""
 		}
 
+		// StartDate
 		StartDate, ok := item["start_date"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get start date. Item: %+v\n", item)
-			continue
+		if !ok || StartDate == "" {
+			log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
+			StartDate = ""
 		}
 
+		// EndDate
 		EndDate, ok := item["end_date"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get end date. Item: %+v\n", item)
-			continue
+		if !ok || EndDate == "" {
+			log.FuncErrorTrace(0, "Failed to get end date for Record ID %v. Item: %+v\n", RecordId, item)
+			EndDate = ""
 		}
 
 		dealerData := models.GetDealerData{

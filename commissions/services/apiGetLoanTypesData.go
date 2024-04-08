@@ -59,7 +59,7 @@ func HandleGetLoanTypesDataRequest(resp http.ResponseWriter, req *http.Request) 
 
 	tableName := db.TableName_loan_type
 	query = `
-	SELECT lt.product_code, lt.active, lt.adder, lt.description FROM loan_type lt`
+	SELECT lt.id as record_id, lt.product_code, lt.active, lt.adder, lt.description FROM loan_type lt`
 
 	filter, whereEleList = PrepareFilters(tableName, dataReq)
 	if filter != "" {
@@ -77,36 +77,32 @@ func HandleGetLoanTypesDataRequest(resp http.ResponseWriter, req *http.Request) 
 
 	// Assuming you have data as a slice of maps, as in your previous code
 	for _, item := range data {
+		RecordId, ok := item["record_id"].(int64)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
+			continue
+		}
 		// Convert fields from item
 		productCode, codeOk := item["product_code"].(string)
 		if !codeOk || productCode == "" {
 			log.FuncErrorTrace(0, "Failed to get partner code Item: %+v\n", item)
-			continue
+			productCode = ""
 		}
 
-		active, activeOk := func() (int, bool) {
-			activeVal, ok := item["active"].(int64)
-			if !ok {
-				return 0, false
-			}
-			return int(activeVal), true
-		}()
-		if !activeOk {
+		activeVal, ok := item["active"].(int64)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get active Item: %+v\n", item)
-			continue
+			activeVal = 0 // Assigning 0 as default for activeVal
 		}
+		active := int(activeVal)
 
-		adder, adderOk := func() (int, bool) {
-			adderVal, ok := item["adder"].(int64)
-			if !ok {
-				return 0, false
-			}
-			return int(adderVal), true
-		}()
-		if !adderOk {
+		adderVal, ok := item["adder"].(int64)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get adder Item: %+v\n", item)
-			continue
+			adderVal = 0 // Assigning 0 as default for adderVal
 		}
+		adder := int(adderVal)
+
 		description, descOk := item["description"].(string)
 		if !descOk || description == "" {
 			description = ""
@@ -114,6 +110,7 @@ func HandleGetLoanTypesDataRequest(resp http.ResponseWriter, req *http.Request) 
 
 		// Create a new CreateLoanType object
 		loanType := models.GetLoanTypeData{
+			RecordId:    RecordId,
 			ProductCode: productCode,
 			Active:      active,
 			Adder:       adder,
