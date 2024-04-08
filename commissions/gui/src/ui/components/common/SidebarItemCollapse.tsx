@@ -13,10 +13,10 @@ import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
 type Props = {
   item: RouteType;
   setToggleOpen:React.Dispatch<React.SetStateAction<boolean>>;
-
+  toggleOpen:boolean;
 };
 
-const SidebarItemCollapse = ({ item,setToggleOpen }: Props) => {
+const SidebarItemCollapse = ({ item,setToggleOpen,toggleOpen }: Props) => {
 const [open,setOpen] = useState<boolean>(false)
 
   const { appState } = useSelector((state: RootState) => state.appState);
@@ -35,9 +35,11 @@ const [open,setOpen] = useState<boolean>(false)
 
      {item.sidebarProps.icon && item.sidebarProps.icon}
    
-     <p className={`tablink ${open ? "active-side":""}`}>
-     {item.sidebarProps.displayText}
-        </p>
+    {
+      toggleOpen?null: <p className={`tablink ${open ? "active-side":""}`}>
+      {item.sidebarProps.displayText}
+         </p>
+    }
       </div>
     {
       open?<MdKeyboardArrowUp style={{fontSize:"1.5rem",color:colorConfig.sidebar.activeBg}} />:<MdKeyboardArrowDown style={{fontSize:"1.5rem",color:"white"}} />
@@ -48,9 +50,9 @@ const [open,setOpen] = useState<boolean>(false)
           {item.child?.map((route, index) => (
             route.sidebarProps ? (
               route.child ? (
-                <SidebarItemCollapse  setToggleOpen={setToggleOpen} item={route} key={index} />
+                <SidebarItemCollapse   toggleOpen={toggleOpen}  setToggleOpen={setToggleOpen} item={route} key={index} />
               ) : (
-                <SidebarItem  setToggleOpen={setToggleOpen} item={route} key={index} />
+                <SidebarItem   toggleOpen={toggleOpen}  setToggleOpen={setToggleOpen} item={route} key={index} />
               )
             ) : null
           ))}

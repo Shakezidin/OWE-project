@@ -23,7 +23,7 @@ interface marketingProps {
 
 const CreateMarketingFees:React.FC<marketingProps> = ({handleClose,editMode,marketingData}) => {
     const dispatch = useDispatch();
-
+console.log(marketingData)
   const [createMarketing, setCreateMarketing] = useState<MarketingFeeModel>( 
     {
       record_id:marketingData ? marketingData.record_id:0,
@@ -62,7 +62,7 @@ getNewFormData()
     const { name, value } = e.target;
     setCreateMarketing((prevData) => ({
       ...prevData,
-      [name] : value,
+      [name]: name === 'pay_src' ? parseFloat(value) : value,
     }));
   };
 
@@ -208,7 +208,7 @@ getNewFormData()
                                         type={"text"}
                                         label="Pay Src"
                                         value={createMarketing.pay_src}
-                                        name=""
+                                        name="pay_src"
                                         placeholder={"Enter"}
                                         onChange={(e) => handlemarketingInputChange(e)}
                                     />
@@ -222,7 +222,7 @@ getNewFormData()
                                         type={"date"}
                                         label="Start Date"
                                         value={createMarketing.start_date}
-                                        name=""
+                                        name="start_date"
                                         placeholder={"1/04/2004"}
                                         onChange={(e) => handlemarketingInputChange(e)}
                                     />
@@ -233,7 +233,7 @@ getNewFormData()
                                         type={"date"}
                                         label="End Date"
                                         value={createMarketing.end_date}
-                                        name=""
+                                        name="end_date"
                                         placeholder={"10/04/2004"}
                                         onChange={(e) => handlemarketingInputChange(e)}
                                     />

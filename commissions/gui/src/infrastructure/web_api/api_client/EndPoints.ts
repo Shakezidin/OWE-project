@@ -39,8 +39,11 @@ interface Endpoints {
   update_vadders:string,
   update_marketingfee:string,
   update_saletype:string,
-  update_dealertier:string
-  update_tierloanfee:string
+  update_dealertier:string,
+  update_tierloanfee:string,
+  update_paymentschedule:string,
+  update_timelinesla:string,
+  update_loantype:string
 }
 
 export const EndPoints: Endpoints = {
@@ -77,6 +80,10 @@ update_marketingfee:"update_marketingfee",
 update_saletype:"update_saletype",
 update_dealertier:"update_dealertier",
 update_tierloanfee:"update_tierloanfee",
+update_paymentschedule:"update_paymentschedule",
+update_timelinesla:"update_timelinesla",
+update_loantype:"update_loantype",
+
   // /get form Data 
   get_newFormData:"get_newformdata"
 

@@ -24,15 +24,17 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
     >
       <div className="side-bar-logo" onClick={() => setToggleOpen(false)}>
         <img src={ICONS.sidebarLogo} alt="" />
-        <h3>Commission App</h3>
+        <h3>OWE APP</h3>
       </div>
-      <div className="side-bar-content">
+      <div className={`side-bar-content ${toggleOpen ? "side-bar-content-active" : ""}`}>
+        {/* <h3 style={{color:""}}>Commission</h3> */}
         {appRoutes.map((route, index) =>
           route.sidebarProps ? (
             route.child ? (
               <SidebarItemCollapse
                 setToggleOpen={setToggleOpen}
                 item={route}
+                toggleOpen={toggleOpen}
                 key={index}
               />
             ) : (
@@ -40,22 +42,25 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                 setToggleOpen={setToggleOpen}
                 item={route}
                 key={index}
+                toggleOpen={toggleOpen}
               />
             )
           ) : null
         )}
 
-        <div className="side-icon-container">
+        <div className="side-icon-container"     onClick={handleLogout}>
           <img src={ICONS.logoutIcon} className="icon-image" alt="" />
-          <div
-            onClick={handleLogout}
-            className="tablink"
-            style={{
-              color: "white",
-            }}
-          >
-            logout
-          </div>
+         {
+          toggleOpen? null: <div
+        
+          className="tablink"
+          style={{
+            color: "white",
+          }}
+        >
+          logout
+        </div>
+         }
         </div>
       </div>
     </div>

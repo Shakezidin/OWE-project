@@ -53,7 +53,9 @@ const CreateLoanType:React.FC<loanProps> = ({handleClose,editMode,loanData}) => 
         e.preventDefault();
         try {
             dispatch(updateLoanTypeForm(createLoanTypeData));
-            const res = await postCaller(EndPoints.create_loantype, createLoanTypeData);
+           if(createLoanTypeData.record_id){
+        
+            const res = await postCaller(EndPoints.update_loantype, createLoanTypeData);
             if (res.status === 200) {
                 alert(res.message)
                 handleClose()
@@ -62,6 +64,19 @@ const CreateLoanType:React.FC<loanProps> = ({handleClose,editMode,loanData}) => 
             else {
                 alert(res.message)
             }
+           }
+           else{
+            const { record_id, ...cleanedFormData } = createLoanTypeData;
+            const res = await postCaller(EndPoints.create_loantype, cleanedFormData);
+            if (res.status === 200) {
+                alert(res.message)
+                handleClose()
+                window.location.reload()
+            }
+            else {
+                alert(res.message)
+            }
+           }
         } catch (error) {
             console.error('Error submitting form:', error);
         }

@@ -21,11 +21,13 @@
 .checked {
     background-color: var(--check-color);
     border-color: var(--check-color);
+   
 }
 
 .indeterminate {
     /* background-color: #007bff; */
     border-color:var(--check-color);
+   
 }
 
 .minus-sign {
@@ -33,8 +35,9 @@
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    font-size: 18px;
-   
+    font-size: 22px;
+    border-radius: .5rem !important;
+    overflow: hidden;
     color: var(--check-color);
     background-color: transparent !important;
 }

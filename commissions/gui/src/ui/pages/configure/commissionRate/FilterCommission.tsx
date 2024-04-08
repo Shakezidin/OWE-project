@@ -1,124 +1,181 @@
-import React, { useEffect, useState } from "react";
-import "../../create_profile/CreateUserProfile.css";
-import { ReactComponent as PROFILE_BACKGROUND } from "../../../../resources/assets/Profile_background.svg";
 import { IoAddSharp } from "react-icons/io5";
-import Select from "react-select";
+import Select,{ ActionMeta, OnChangeValue, StylesConfig} from "react-select";
 import "./Filter.css";
-import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cross_button.svg";
 import Input from "../../../components/text_input/Input";
-
 import { ActionButton } from "../../../components/button/ActionButton";
-import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
-import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
-import {
-  installerOption,
-  partnerOption,
-} from "../../../../core/models/data_models/SelectDataModel";
+import { useEffect, useState } from "react";
 
-type ButtonProps = {
-  handleClose: () => void;
-};
+interface TableProps {
+  handleClose: () => void,
+   columns: string[],
+   page_number:number,
+   page_size:number
+}
+interface FilterModel{
+  Column: string, Operation: string, Data: string
+}
+// Filter component
+const FilterCommission: React.FC<TableProps>=({handleClose,columns,page_number,page_size}) => {
+  const [filters, setFilters] = useState<FilterModel[]>([
+    { Column: columns.length > 0 ? columns[0]:"", Operation:"",Data:""}
+  ]);
 
-const FilterCommission = (props: ButtonProps) => {
-  const handleFormChange = () => {};
+  const applyFilter = async () => {
+    const formattedFilters = filters.map(filter => ({
+      Column: filter.Column,
+      Operation: filter.Operation,
+      Data: filter.Data
+    }));
+    const req={
+      page_number:page_number,
+      page_size:page_size,
+      filters:formattedFilters
+    }
+    console.log(req)
+  };
+  const handleAddRow = () => {
+    setFilters([...filters, { Column: '', Operation: '', Data: '' }]);
+  };
+
+  const handleRemoveRow = (index: number) => {
+    const updatedFilters = [...filters];
+    updatedFilters.splice(index, 1);
+    setFilters(updatedFilters);
+  };
+  const handleOperationChange = (selectedOption: any, index: number) => {
+    const updatedFilters = [...filters];
+    updatedFilters[index].Operation = selectedOption?.value || '';
+    setFilters(updatedFilters);
+  };
+  const handleColumnChange = (selectedOption: any, index: number) => {
+    const updatedFilters = [...filters];
+    updatedFilters[index].Column = selectedOption?.value || '';
+    setFilters(updatedFilters);
+  };
+  useEffect(() => {
+    if (filters.length > 0) {
+      const updatedFilters = [...filters];
+      updatedFilters[0].Operation = 'equals';
+      setFilters(updatedFilters);
+    }
+  }, []);
+ 
   return (
-    <div className="transparent-model">
-      <div className="modal">
-        {/* <div className="createUserCrossButton" onClick={props.handleClose}>
-                    <CROSS_BUTTON />
 
-                </div> */}
-        <div className="createUserContainer">
-          <div className="filter-section">
-            <div className="apply">
-              <p>Apply Filter</p>
-            </div>
-            <div className="iconsSection2">
-              <button
-                type="button"
-                style={{
-                  // background: "black",
-                  color: "black",
-                  border: "1px solid #9d9d9d",
-                }}
-                // onClick={onpressAddNew}
-              >
-                <IoAddSharp style={{ fontSize: "20px" }} /> Add New
-              </button>
-            </div>
-          </div>
-          <div className="createProfileInputView">
-            <div className="createProfileTextView">
-              <div className="create-input-container">
-                <div className="create-input-field">
-                  <label className="inputLabel">Column Name</label>
-                  <div className="">
-                    <Select
-                      // options={}
-                      styles={{
-                        control: (baseStyles, state) => ({
-                          ...baseStyles,
-                          marginTop: "4.5px",
-                          borderRadius: "8px",
-                          outline: "none",
-                          height: "2.8rem",
-                          border: "1px solid #d0d5dd",
-                        }),
-                      }}
-                      // value={partners.find(
-                      //   (option) => option.value === "Partners"
-                      // )}
-                    />
-                  </div>
-                </div>
-                <div className="create-input-field">
-                  <label className="inputLabel">Operation</label>
-                  <div className="">
-                    <Select
-                      // options={installers}
-                      styles={{
-                        control: (baseStyles, state) => ({
-                          ...baseStyles,
-                          marginTop: "4.5px",
-                          borderRadius: "8px",
-                          outline: "none",
-                          height: "2.8rem",
-                          border: "1px solid #d0d5dd",
-                        }),
-                      }}
-                      // value={installers.find(
-                      //   (option) => option.value === "installer"
-                      // )}
-                    />
-                  </div>
-                </div>
-
-                <div className="create-input-field">
-                  <Input
-                    type={"text"}
-                    label="Value"
-                    value={""}
-                    name=""
-                    placeholder={"Enter"}
-                    onChange={() => {}}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="createUserActionButton" style={{ gap: "2rem" }}>
-            <ActionButton title={"Save"} type="submit" onClick={() => {}} />
-
-            <ActionButton
-              title={"cancel"}
-              type="reset"
-              onClick={props.handleClose}
-            />
-          </div>
+<div className="transparent-model">
+<div className="filter-modal">
+  <div className="createUserContainer">
+    <div className="filter-section">
+    <h3 className="createProfileText">Filter</h3>
+      <div className="iconsSection2">
+      <div className="iconsSection2">
+          <button
+            type="button"
+            style={{
+              background: "black",
+              color: "white",
+              border: "1px solid black",
+            }}
+            onClick={handleAddRow}
+          >
+            <IoAddSharp /> Add New
+          </button>
         </div>
+      
       </div>
     </div>
+    <div className="createProfileInputView">
+      <div className="createProfileTextView">
+      {filters.map((filter, index) => (
+        <div className="create-input-container" key={index}>
+          <div className="create-input-field">
+            <label className="inputLabel">Column Name</label>
+            <div className="">
+            <Select
+            options={columns.map((col) => ({ value: col, label: col }))}
+            value={{ value: filter.Column, label: filter.Column }}
+            onChange={(selectedOption) => handleColumnChange(selectedOption, index)}
+            placeholder="Select Column"
+         
+            styles={{
+              control: (baseStyles, state) => ({
+                ...baseStyles,
+                marginTop: "4.5px",
+                borderRadius: "8px",
+                outline: "none",
+                height: "2.8rem",
+                border: "1px solid #d0d5dd",
+                
+              }),
+            }}
+      //       className="basic-multi-select"
+      // classNamePrefix="select"
+          />
+            </div>
+          </div>
+          <div className="create-input-field">
+            <label className="inputLabel">Operation</label>
+            <div className="">
+            <Select
+            options={[
+              { value: '=', label: 'Equals' },
+              { value: 'contains', label: 'Contains' },
+              { value: '>', label: 'Greater Than' },
+              { value: '<', label: 'Less Than' },
+            ]}
+            value={{ value: filter.Operation, label: filter.Operation }}
+            onChange={(selectedOption) => handleOperationChange(selectedOption, index)}
+            placeholder="Select Operation"
+            styles={{
+              control: (baseStyles, state) => ({
+                ...baseStyles,
+                marginTop: "4.5px",
+                borderRadius: "8px",
+                outline: "none",
+                height: "2.8rem",
+                border: "1px solid #d0d5dd",
+              }),
+            }}
+          />
+            </div>
+          </div>
+
+          <div className="create-input-field">
+            <Input
+              type={"text"}
+              label="Value"
+         
+              name=""
+            
+              value={filter.Data}
+              onChange={(e) => {
+                const updatedFilters = [...filters];
+                updatedFilters[index].Data = e.target.value;
+                setFilters(updatedFilters);
+              }}
+              placeholder={"Enter"}
+            
+            />
+          </div>
+          <div className="cross-btn">
+            <button type="button" onClick={()=>handleRemoveRow(index)}>X</button>
+          </div>
+        </div>
+      ))}
+      </div>
+    </div>
+    <div className="createUserActionButton" style={{ gap: "2rem" }}>
+      <ActionButton title={"Apply"} type="submit" onClick={() =>applyFilter()} />
+
+      <ActionButton
+        title={"cancel"}
+        type="reset"
+        onClick={handleClose}
+      />
+    </div>
+  </div>
+</div>
+</div>
   );
 };
-
-export default FilterCommission;
+export default FilterCommission

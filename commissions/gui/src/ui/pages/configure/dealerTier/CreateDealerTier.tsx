@@ -119,7 +119,7 @@ const CreateDealerTier:React.FC<dealerProps> = ({handleClose,editMode,editDealer
                                 <div className="create-input-field">
                                     <label className="inputLabel">Tier</label>
                                     <Select
-                                        options={dealertierOption(newFormData)||dealerTierData}
+                                        options={dealertierOption(newFormData)}
                                         isSearchable
                                         styles={{
                                             control: (baseStyles, state) => ({
@@ -133,7 +133,7 @@ const CreateDealerTier:React.FC<dealerProps> = ({handleClose,editMode,editDealer
                                             }),
                                           }}
                                         onChange={(newValue) => handleChange(newValue, 'tier')}
-                                        value={dealertierOption(newFormData)||dealerTierData?.find((option) => option.value === createDealerTierData.tier)}
+                                        value={dealertierOption(newFormData)?.find((option) => option.value === createDealerTierData.tier)}
                                     />
                                 </div>
                                 <div className="create-input-field">

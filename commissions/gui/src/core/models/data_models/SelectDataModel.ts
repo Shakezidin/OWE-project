@@ -49,7 +49,7 @@
     value,
     label:value
   })) 
-  export const chg_dlrOption=(newFormData:any): Option[] => newFormData?.chg_dlr?.map((value:string)=>({
+  export const chg_dlrOption=(newFormData:any): Option[] => newFormData?.chg_dlr?.map((value:string|Number)=>({
     value,
     label:value
   })) 

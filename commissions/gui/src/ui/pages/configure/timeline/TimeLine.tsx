@@ -192,7 +192,7 @@ const TimeLine = () => {
                       }}
                     >
                       <img src={ICONS.ARCHIVE} alt="" />
-                     <div className="" onClick={()=>handleEditTimeLineSla(el)}>
+                     <div className="" onClick={()=>handleEditTimeLineSla(el)} style={{cursor:"pointer"}}>
                      <CiEdit
                         style={{ fontSize: "1.5rem", color: "#344054" }}
                       /> 

@@ -16,6 +16,8 @@ import {
 import FilterSale from "./FilterSale";
 import { FaArrowDown } from "react-icons/fa6";
 import { SalesTypeModel } from "../../../../core/models/configuration/create/SalesTypeModel";
+import Pagination from "../../../components/pagination/Pagination";
+import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 
 const SaleType = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -35,14 +37,30 @@ const SaleType = () => {
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
   const [editedSalesType, setEditedMarketing] = useState<SalesTypeModel | null>(null);
+  const itemsPerPage = 5;
+  const currentPage = useAppSelector((state) => state.paginationType.currentPage);
   useEffect(() => {
     const pageNumber = {
       page_number: 1,
       page_size: 10,
     };
     dispatch(fetchSalesType(pageNumber));
-  }, [dispatch]);
+  }, [dispatch,currentPage]);
+  const paginate = (pageNumber: number) => {
+    dispatch(setCurrentPage(pageNumber));
+  };
 
+  const goToNextPage = () => {
+    dispatch(setCurrentPage(currentPage + 1));
+  };
+
+  const goToPrevPage = () => {
+    dispatch(setCurrentPage(currentPage - 1));
+  };
+  const totalPages = Math.ceil(salesTypeList?.length / itemsPerPage);
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -61,6 +79,7 @@ const SaleType = () => {
     setEditedMarketing(saleTypeData);
     handleOpen()
   };
+  const currentPageData = salesTypeList?.slice(startIndex, endIndex);
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === salesTypeList.length;
   return (
@@ -122,8 +141,8 @@ const SaleType = () => {
               </tr>
             </thead>
             <tbody>
-              {salesTypeList?.length > 0
-                ? salesTypeList?.map((el, i) => (
+              {currentPageData?.length > 0
+                ? currentPageData?.map((el, i) => (
                     <tr key={i}>
                       <td>
                         <CheckBox
@@ -165,6 +184,15 @@ const SaleType = () => {
           </table>
         </div>
       </div>
+      {
+      salesTypeList?.length>0?  <Pagination
+      currentPage={currentPage}
+      totalPages={totalPages} // You need to calculate total pages
+      paginate={paginate}
+      goToNextPage={goToNextPage}
+      goToPrevPage={goToPrevPage}
+    />:null
+    }
     </div>
   );
 };
