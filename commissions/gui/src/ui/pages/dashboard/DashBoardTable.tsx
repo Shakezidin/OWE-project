@@ -67,7 +67,6 @@ const dataUser = [
 const DashBoardTable: React.FC = () => {
   return (
     <>
-    {/* <UserHeaderSection  name="Appointment Setter"/> */}
       <div
         className="TableContainer"
         style={{ overflowX: "auto", whiteSpace: "nowrap" }}  >

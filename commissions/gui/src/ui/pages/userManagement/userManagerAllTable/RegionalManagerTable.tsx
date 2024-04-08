@@ -2,7 +2,6 @@ import React from 'react'
 import CheckBox from '../../../components/chekbox/CheckBox'
 import { ICONS } from '../../../icons/Icons'
 import { CiEdit } from "react-icons/ci";
-import UserHeaderSection from '../UserHeader/UserHeaderSection';
 import { FaArrowDown } from 'react-icons/fa6';
 
 const RegionalManagerTable = () => {
