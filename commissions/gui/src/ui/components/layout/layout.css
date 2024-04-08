@@ -17,6 +17,8 @@
 }
 .side-bar-active{
   width: 50px;
+  transition: .4s all linear;
+  transition: .4s ease-out;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
@@ -43,6 +45,11 @@
   gap: 0.4rem;
   align-items: center;
 }
+.side-bar-logo-active{
+  transition: .4s all linear;
+  padding: 1.3rem 1rem 1.2rem 0.5rem;
+  /* padding: .7rem 1rem .8rem 0.8rem; */
+}
 .side-bar-logo img {
   width: 31px;
   height: 31px;
@@ -62,6 +69,7 @@
 }
 .side-bar-content-active{
   margin: 1rem;
+  transition: .4s all linear;
 }
 
 .tablink {
