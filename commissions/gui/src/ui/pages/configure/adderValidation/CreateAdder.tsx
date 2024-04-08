@@ -10,7 +10,7 @@ import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoin
 import { useDispatch } from "react-redux";
 
 import { adderTypeOption, priceTypeOption } from "../../../../core/models/data_models/SelectDataModel";
-import { adderTypeData, priceTypeData } from "../../../../resources/static_data/StaticData";
+import { priceTypeData } from "../../../../resources/static_data/StaticData";
 import { AdderVModel } from "../../../../core/models/configuration/create/AdderVModel";
 interface vadderProps {
     editMode:boolean,
@@ -76,7 +76,7 @@ const CreateAdder:React.FC<vadderProps>= ({editMode,handleClose,vAdderData}) => 
            }
            else{
             const { record_id, ...cleanedFormData } = createAdderV;
-            const res = await postCaller(EndPoints.adderV, cleanedFormData);
+            const res = await postCaller(EndPoints.create_vadder, cleanedFormData);
             if (res.status === 200) {
                 alert(res.message)
                 handleClose()

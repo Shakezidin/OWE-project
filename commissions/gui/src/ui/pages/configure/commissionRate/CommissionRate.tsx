@@ -4,7 +4,7 @@ import "../configure.css";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import CreateCommissionRate from "./CreateCommissionRate";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-
+import { CSVLink } from 'react-csv';
 import { ICONS } from "../../../icons/Icons";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { fetchCommissions } from "../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice";
@@ -25,12 +25,11 @@ import { FaArrowDown } from "react-icons/fa6";
 const CommissionRate: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
+  const [exportOPen, setExportOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
- const filter = ()=>setFilterOpen(true)
+  const handleExportOpen=()=>setExportOpen(!exportOPen)
   const filterClose = () => setFilterOpen(false);
-
   const dispatch = useAppDispatch();
   const commissionList = useAppSelector((state) => state.comm.commissionsList);
   const loading = useAppSelector((state) => state.comm.loading);
@@ -39,19 +38,25 @@ const CommissionRate: React.FC = () => {
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
   const [editedCommission, setEditedCommission] = useState<CommissionModel | null>(null);
+  const [filteredData, setFilteredData] = useState<CommissionModel[]>([]);
+  const [columns, setColumns] = useState<string[]>([]);
   const itemsPerPage = 5;
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
+  
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
+      
     };
     dispatch(fetchCommissions(pageNumber));
+   
   }, [dispatch,currentPage]);
-
+  
   const paginate = (pageNumber: number) => {
     dispatch(setCurrentPage(pageNumber));
   };
+
 
   const goToNextPage = () => {
     dispatch(setCurrentPage(currentPage + 1));
@@ -60,6 +65,21 @@ const CommissionRate: React.FC = () => {
   const goToPrevPage = () => {
     dispatch(setCurrentPage(currentPage - 1));
   };
+
+  // Extract column names
+  const getColumnNames = () => {
+    if (commissionList.length > 0) {
+      const keys = Object.keys(commissionList[0]);
+      setColumns(keys);
+    }
+  };
+  const filter = ()=>{
+    setFilterOpen(true)
+    getColumnNames()
+  }
+ 
+  // Apply filter logic
+ 
   const totalPages = Math.ceil(commissionList?.length / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -76,7 +96,6 @@ const CommissionRate: React.FC = () => {
     handleOpen()
   };
 
-
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -84,9 +103,8 @@ const CommissionRate: React.FC = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
- 
-  const currentPageData = commissionList?.slice(startIndex, endIndex);
 
+  const currentPageData = commissionList?.slice(startIndex, endIndex);
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === commissionList.length;
 
@@ -99,14 +117,22 @@ const CommissionRate: React.FC = () => {
           onPressArchive={() => {}}
           onPressFilter={() => filter()}
           onPressImport={() => {}}
-          onpressExport={() => {}}
+          onpressExport={() => handleExportOpen()}
           onpressAddNew={() => handleAddCommission()}
         />
-             {filterOPen && <FilterCommission handleClose={filterClose} />}
+        {exportOPen &&( <div className="export-modal">
+          <CSVLink style={{color:"#04a5e8"}} data={currentPageData} filename={"table.csv"}>Export CSV</CSVLink>
+        </div>)}
+             {filterOPen && <FilterCommission handleClose={filterClose}  
+             columns={columns}
+             page_number = {currentPage}
+             page_size = {itemsPerPage}
+             />}
              {open && <CreateCommissionRate 
                          commission={editedCommission}
                          editMode={editMode}
-                         handleClose={handleClose} />}
+                         handleClose={handleClose}
+                          />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
@@ -130,8 +156,8 @@ const CommissionRate: React.FC = () => {
                     />
                   </div>
                 </th>
-                <th>
-                  <div className="table-header">
+                <th >
+                  <div className="table-header" >
                     <p>Partner</p> <FaArrowDown style={{color:"#667085"}}/>
                   </div>
                 </th>
