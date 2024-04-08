@@ -39,7 +39,7 @@ const CommissionRate: React.FC = () => {
   const [editMode, setEditMode] = useState(false);
   const [editedCommission, setEditedCommission] = useState<CommissionModel | null>(null);
   const [filteredData, setFilteredData] = useState<CommissionModel[]>([]);
-  const [columns, setColumns] = useState<string[]>([]);
+    const [columns, setColumns] = useState<string[]>([]);
   const itemsPerPage = 5;
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
   

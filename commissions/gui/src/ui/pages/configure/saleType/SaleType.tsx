@@ -9,6 +9,7 @@ import TableHeader from "../../../components/tableHeader/TableHeader";
 import { fetchSalesType } from "../../../../redux/apiSlice/configSlice/config_get_slice/salesSlice";
 import CreateSaleType from "./CreateSaleType";
 import CheckBox from "../../../components/chekbox/CheckBox";
+
 import {
   toggleAllRows,
   toggleRowSelection,
@@ -22,10 +23,10 @@ import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/pagin
 const SaleType = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
+  const [columns, setColumns] = useState<string[]>([]);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const filter = () => setFilterOpen(true);
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const salesTypeList = useAppSelector(
@@ -49,7 +50,16 @@ const SaleType = () => {
   const paginate = (pageNumber: number) => {
     dispatch(setCurrentPage(pageNumber));
   };
-
+  const getColumnNames = () => {
+    if (salesTypeList.length > 0) {
+      const keys = Object.keys(salesTypeList[0]);
+      setColumns(keys);
+    }
+  };
+  const filter = ()=>{
+    setFilterOpen(true)
+    getColumnNames()
+  }
   const goToNextPage = () => {
     dispatch(setCurrentPage(currentPage + 1));
   };
@@ -94,7 +104,10 @@ const SaleType = () => {
           onpressExport={() => {}}
           onpressAddNew={() => handleAddSaleType()}
         />
-        {filterOPen && <FilterSale handleClose={filterClose}/>}
+        {filterOPen && <FilterSale handleClose={filterClose}
+         columns={columns}
+         page_number = {1}
+         page_size = {5}/>}
         {open && <CreateSaleType salesTypeData={editedSalesType}
                          editMode={editMode}
                          handleClose={handleClose} />}

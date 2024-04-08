@@ -1,6 +1,5 @@
 import { IoAddSharp } from "react-icons/io5";
 import Select,{ ActionMeta, OnChangeValue, StylesConfig} from "react-select";
-import "./Filter.css";
 import Input from "../../../components/text_input/Input";
 import { ActionButton } from "../../../components/button/ActionButton";
 import { useEffect, useState } from "react";
@@ -86,14 +85,14 @@ const FilterCommission: React.FC<TableProps>=({handleClose,columns,page_number,p
     </div>
     <div className="createProfileInputView">
       <div className="createProfileTextView">
-      {filters.map((filter, index) => (
+      {filters?.map((filter, index) => (
         <div className="create-input-container" key={index}>
           <div className="create-input-field">
             <label className="inputLabel">Column Name</label>
             <div className="">
             <Select
-            options={columns.map((col) => ({ value: col, label: col }))}
-            value={{ value: filter.Column, label: filter.Column }}
+            options={columns?.map((col) => ({ value: col, label: col }))}
+            value={{ value: filter?.Column, label: filter?.Column }}
             onChange={(selectedOption) => handleColumnChange(selectedOption, index)}
             placeholder="Select Column"
          

@@ -21,14 +21,12 @@ const MarketingFees: React.FC = () => {
   // const getData = useAppSelector(state=>state.comm.data)
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
+  const [columns, setColumns] = useState<string[]>([]);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const filter = () => setFilterOpen(true);
   const filterClose = () => setFilterOpen(false);
-  const marketingFeesList = useAppSelector(
-    (state) => state.marketing.marketing_fees_list
-  );
+  const marketingFeesList = useAppSelector((state) => state.marketing.marketing_fees_list);
   const loading = useAppSelector((state) => state.marketing.loading);
   const error = useAppSelector((state) => state.marketing.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
@@ -55,6 +53,17 @@ const MarketingFees: React.FC = () => {
     handleOpen()
   };
 
+  const getColumnNames = () => {
+    if (marketingFeesList.length > 0) {
+      const keys = Object.keys(marketingFeesList[0]);
+      setColumns(keys);
+    }
+  };
+  const filter = ()=>{
+    setFilterOpen(true)
+    getColumnNames()
+  }
+
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === marketingFeesList?.length;
   if (loading) {
@@ -77,7 +86,10 @@ const MarketingFees: React.FC = () => {
           onpressExport={() => {}}
           onpressAddNew={() => handleAddMarketing()}
         />
-        {filterOPen && <FilterMarketing handleClose={filterClose} />}
+        {filterOPen && <FilterMarketing handleClose={filterClose}
+         columns={columns}
+         page_number = {1}
+         page_size = {5} />}
         {open && <CreateMarketingFees marketingData={editedMarketing}
                          editMode={editMode}
                          handleClose={handleClose} />}

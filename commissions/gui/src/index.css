@@ -216,3 +216,37 @@ justify-content: space-between;
   height:20px !important;
   background-color:var(--border-color);
 }
+
+
+/* <-----------------Filter css---------------------> */
+.filter-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+    padding: 1rem 1rem 0rem 0;
+    /* padding: "1rem 2rem 0rem 2rem"; */
+  
+  }
+  .apply p {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 14.5px;
+  text-align: left;
+  
+  }
+  .cross-btn{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1.6rem;
+  
+  }
+  .cross-btn button{
+    background-color: red;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    padding: .3rem .7rem .3rem .7rem;
+    color: white;
+    border-radius: .25rem;
+  }

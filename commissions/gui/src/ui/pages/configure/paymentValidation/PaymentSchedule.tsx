@@ -25,7 +25,6 @@ const PaymentSchedule = () => {
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const filter = () => setFilterOpen(true);
   const filterClose = () => setFilterOpen(false);
   const payScheduleList = useAppSelector(
     (state) => state.paySchedule.payment_schedule_list
@@ -35,7 +34,10 @@ const PaymentSchedule = () => {
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
-  const [editedPaySchedule, setEditedPaySchedule] = useState<PayScheduleModel | null>(null);
+  const [columns, setColumns] = useState<string[]>([]);
+
+  const [editedPaySchedule, setEditedPaySchedule] =
+    useState<PayScheduleModel | null>(null);
   useEffect(() => {
     const pageNumber = {
       page_number: 1,
@@ -43,17 +45,28 @@ const PaymentSchedule = () => {
     };
     dispatch(fetchPaySchedule(pageNumber));
   }, [dispatch]);
+  // Extract column names
+  const getColumnNames = () => {
+    if (payScheduleList.length > 0) {
+      const keys = Object.keys(payScheduleList[0]);
+      setColumns(keys);
+    }
+  };
+  const filter = () => {
+    setFilterOpen(true);
+    getColumnNames();
+  };
 
   const handleAddPaySchedule = () => {
     setEditMode(false);
     setEditedPaySchedule(null);
-    handleOpen()
+    handleOpen();
   };
 
   const handleEditPaySchedule = (payEditedData: PayScheduleModel) => {
     setEditMode(true);
     setEditedPaySchedule(payEditedData);
-    handleOpen()
+    handleOpen();
   };
   if (loading) {
     return <div>Loading...</div>;
@@ -77,11 +90,21 @@ const PaymentSchedule = () => {
           onpressExport={() => {}}
           onpressAddNew={() => handleAddPaySchedule()}
         />
-        {filterOPen && <FilterPayment handleClose={filterClose} />}
-        {open && <CreatePaymentSchedule 
-        editMode={editMode}
-         payEditedData={editedPaySchedule}
-        handleClose={handleClose} />}
+        {filterOPen && (
+          <FilterPayment
+            handleClose={filterClose}
+            columns={columns}
+            page_number={1}
+            page_size={5}
+          />
+        )}
+        {open && (
+          <CreatePaymentSchedule
+            editMode={editMode}
+            payEditedData={editedPaySchedule}
+            handleClose={handleClose}
+          />
+        )}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
@@ -107,72 +130,79 @@ const PaymentSchedule = () => {
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Partner Name</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p>Partner Name</p>{" "}
+                    <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Partner</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p>Partner</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Installer</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p>Installer</p>{" "}
+                    <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Sale Type</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p>Sale Type</p>{" "}
+                    <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>ST</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p>ST</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Rate List</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p>Rate List</p>{" "}
+                    <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Draw %</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p>Draw %</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Draw Max</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p>Draw Max</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Rep Draw %</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p>Rep Draw %</p>{" "}
+                    <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Rep Max Draw %</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p>Rep Max Draw %</p>{" "}
+                    <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Rep Pay</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p>Rep Pay</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Start Date</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p>Start Date</p>{" "}
+                    <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>End Date</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p>End Date</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Action</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p>Action</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
               </tr>
@@ -215,11 +245,15 @@ const PaymentSchedule = () => {
                         }}
                       >
                         <img src={ICONS.ARCHIVE} alt="" />
-                      <div className="" style={{cursor:"pointer"}} onClick={()=>handleEditPaySchedule(el)}>
-                      <CiEdit
-                          style={{ fontSize: "1.5rem", color: "#344054" }}
-                        />
-                      </div>
+                        <div
+                          className=""
+                          style={{ cursor: "pointer" }}
+                          onClick={() => handleEditPaySchedule(el)}
+                        >
+                          <CiEdit
+                            style={{ fontSize: "1.5rem", color: "#344054" }}
+                          />
+                        </div>
                       </td>
                     </tr>
                   ))

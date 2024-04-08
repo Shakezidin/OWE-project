@@ -23,7 +23,8 @@ const TimeLine = () => {
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const filter = () => setFilterOpen(true);
+  const [columns, setColumns] = useState<string[]>([]);
+
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const timelinesla_list = useAppSelector(
@@ -45,7 +46,16 @@ const TimeLine = () => {
     dispatch(fetchTimeLineSla(pageNumber));
   }, [dispatch,currentPage]);
 
-
+  const getColumnNames = () => {
+    if (timelinesla_list.length > 0) {
+      const keys = Object.keys(timelinesla_list[0]);
+      setColumns(keys);
+    }
+  };
+  const filter = ()=>{
+    setFilterOpen(true)
+    getColumnNames()
+  }
  
 
   const paginate = (pageNumber: number) => {
@@ -99,7 +109,10 @@ const TimeLine = () => {
           onpressExport={() => { }}
           onpressAddNew={() => handleTimeLineSla()}
         />
-        {filterOPen && <FilterTimeLine handleClose={filterClose} />}
+        {filterOPen && <FilterTimeLine handleClose={filterClose}
+         columns={columns}
+         page_number = {1}
+         page_size = {5} />}
         {open && <CreateTimeLine 
         timeLineSlaData={editedTimeLineSla}
         editMode={editMode}
