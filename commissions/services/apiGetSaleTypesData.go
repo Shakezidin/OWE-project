@@ -80,12 +80,12 @@ func HandleGetSaleTypeDataRequest(resp http.ResponseWriter, req *http.Request) {
 	for _, item := range data {
 		RecordId, ok := item["record_id"].(int64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get record id. Item: %+v\n", item)
+			log.FuncErrorTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
 			continue
 		}
 		typeName, typeOk := item["type_name"].(string)
 		if !typeOk {
-			log.FuncErrorTrace(0, "Failed to get type name. Item: %+v\n", item)
+			log.FuncErrorTrace(0, "Failed to get type name for Record ID %v. Item: %+v\n", RecordId, item)
 			continue
 		}
 
