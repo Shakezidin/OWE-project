@@ -10,6 +10,7 @@ import PartnerTable from "../userManagerAllTable/PartnerTable";
 import SalesManagerTable from "../userManagerAllTable/SalesManagerTable";
 import SalesRepresentativeTable from "../userManagerAllTable/SalesRepresentativeTable";
 import DealerOwnerTable from "../userManagerAllTable/DealerOwnerTable";
+import RegionalManagerTable from "../userManagerAllTable/RegionalManagerTable";
 // interface props {
 //   name: string;
 // }
@@ -33,7 +34,7 @@ const UserHeaderSection: React.FC = () => {
       case "Partner":
         return <PartnerTable />;
       case "Regional Manager":
-        return <PartnerTable />;
+        return <RegionalManagerTable />;
       case "Dealer Owner":
         return <DealerOwnerTable />;
       case "Sales Representative":
