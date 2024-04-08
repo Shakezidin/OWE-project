@@ -22,9 +22,11 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
     <div
       className={`side-bar-container ${toggleOpen ? "side-bar-active" : ""}`}
     >
-      <div className="side-bar-logo" onClick={() => setToggleOpen(false)}>
+      <div className={`side-bar-logo ${toggleOpen? "side-bar-logo-active" :""}`}>
         <img src={ICONS.sidebarLogo} alt="" />
-        <h3>OWE APP</h3>
+      {
+        toggleOpen?null:  <h3>OWE APP</h3>
+      }
       </div>
       <div className={`side-bar-content ${toggleOpen ? "side-bar-content-active" : ""}`}>
         {/* <h3 style={{color:""}}>Commission</h3> */}
