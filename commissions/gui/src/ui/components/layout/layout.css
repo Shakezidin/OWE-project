@@ -15,6 +15,10 @@
   scroll-behavior: unset;
   scrollbar-width: 0;
 }
+.side-bar-active{
+  width: 50px;
+}
+
 /* Hide scrollbar for Chrome, Safari and Opera */
 .side-bar-container::-webkit-scrollbar {
   display: none;
@@ -26,14 +30,15 @@
   scrollbar-width: none; /* Firefox */
 }
 .children-container {
-  background-color: var(--children-bg-color);
+  /* background-color: var(--children-bg-color); */
+  background-color: #F2F4F6;
   padding: 1.5rem;
 }
 
 /* sidebar style  */
 .side-bar-logo {
   background-color: var(--side-logo-bg-color);
-  padding: 1rem;
+  padding: 1.3rem 1rem 1.2rem 1rem;
   display: flex;
   gap: 0.4rem;
   align-items: center;
@@ -52,14 +57,17 @@
 .side-bar-content {
   display: flex;
   flex-direction: column;
-  margin: 1rem;
+  margin: 1rem 1rem 1rem 2rem;
   gap: 1.5rem;
+}
+.side-bar-content-active{
+  margin: 1rem;
 }
 
 .tablink {
   color: white;
   font-weight: normal;
-  font-size: 15px;
+  font-size: 14px;
   text-transform: capitalize;
   text-decoration: none;
   cursor: pointer;

@@ -44,6 +44,10 @@ const (
 	UpdateVAddersFunction         string = "update_v_adders"
 	UpdateSaleTypeFunction        string = "update_sale_type"
 	UpdateTierLoanFeeFunction     string = "update_tier_loan_fee"
+	UpdateDealerTierFunction      string = "update_dealer_tier"
+	UpdatePaymentScheduleFunction string = "update_payment_schedule"
+	UpdateTimelineSlaFunction     string = "update_timeline_Sla"
+	UpdateLoanTypeFunction        string = "update_loan_type"
 	TableName_teams               string = "teams"
 	TableName_commission_rates    string = "commission_rates"
 	TableName_users_details       string = "user_details"
@@ -60,6 +64,7 @@ const (
 	TableName_loan_type           string = "loan_type"
 	TableName_source              string = "source"
 	TableName_adder_type          string = "adder_type"
+	TableName_tier          string = "tier"
 )
 
 /******************************************************************************

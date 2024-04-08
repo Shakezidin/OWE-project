@@ -17,6 +17,8 @@ import {
 import FilterDealerTier from "./FilterDealerTier";
 import { FaArrowDown } from "react-icons/fa6";
 import { DealerTierModel } from "../../../../core/models/configuration/create/DealerTierModel";
+import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
+import Pagination from "../../../components/pagination/Pagination";
 const DealerTier = () => {
   const dispatch = useAppDispatch();
   // const getData = useAppSelector(state=>state.comm.data)
@@ -25,7 +27,7 @@ const DealerTier = () => {
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const filter = () => setFilterOpen(true);
+
   const filterClose = () => setFilterOpen(false);
   const dealerTierList = useAppSelector(
     (state) => state.dealerTier.dealers_tier_list
@@ -36,21 +38,49 @@ const DealerTier = () => {
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
   const [editedDealerTier, setEditedDealerTier] = useState<DealerTierModel | null>(null);
+  const [filteredData, setFilteredData] = useState<DealerTierModel[]>([]);
+  const [columns, setColumns] = useState<string[]>([]);
+  const itemsPerPage = 5;
+  const currentPage = useAppSelector((state) => state.paginationType.currentPage);
   useEffect(() => {
     const pageNumber = {
-      page_number: 1,
-      page_size: 10,
+      page_number: currentPage,
+      page_size:itemsPerPage,
     };
     dispatch(fetchDealerTier(pageNumber));
-  }, [dispatch]);
+  }, [dispatch,currentPage]);
   console.log(dealerTierList);
-
+  const getColumnNames = () => {
+    if (dealerTierList.length > 0) {
+      const keys = Object.keys(dealerTierList[0]);
+      setColumns(keys);
+    }
+  };
+  const filter = ()=>{
+    setFilterOpen(true)
+    getColumnNames()
+  }
   const handleAddDealerTier = () => {
     setEditMode(false);
     setEditedDealerTier(null);
     handleOpen()
   };
+  const paginate = (pageNumber: number) => {
+    dispatch(setCurrentPage(pageNumber));
+  };
 
+
+  const goToNextPage = () => {
+    dispatch(setCurrentPage(currentPage + 1));
+  };
+
+  const goToPrevPage = () => {
+    dispatch(setCurrentPage(currentPage - 1));
+  };
+  const totalPages = Math.ceil(dealerTierList?.length / itemsPerPage);
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
   const handleEditDealerTier = (editDealerTier: DealerTierModel) => {
     setEditMode(true);
     setEditedDealerTier(editDealerTier);
@@ -66,6 +96,7 @@ const DealerTier = () => {
 
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === dealerTierList.length;
+  const currentPageData = dealerTierList?.slice(startIndex, endIndex);
   return (
     <div className="comm">
       <div className="commissionContainer">
@@ -78,7 +109,10 @@ const DealerTier = () => {
           onpressExport={() => {}}
           onpressAddNew={() => handleAddDealerTier()}
         />
-        {filterOPen && <FilterDealerTier handleClose={filterClose} />}
+        {filterOPen && <FilterDealerTier handleClose={filterClose}  
+             columns={columns}
+             page_number = {currentPage}
+             page_size = {itemsPerPage} />}
         {open && <CreateDealerTier handleClose={handleClose} 
          editDealerTier={editedDealerTier}
          editMode={editMode} />}
@@ -133,8 +167,8 @@ const DealerTier = () => {
               </tr>
             </thead>
             <tbody>
-              {dealerTierList?.length > 0
-                ? dealerTierList?.map((el, i) => (
+              {currentPageData?.length > 0
+                ? currentPageData?.map((el, i) => (
                     <tr key={i}>
                       <td>
                         <CheckBox
@@ -176,6 +210,15 @@ const DealerTier = () => {
           </table>
         </div>
       </div>
+      {
+      dealerTierList?.length>0?  <Pagination
+      currentPage={currentPage}
+      totalPages={totalPages} // You need to calculate total pages
+      paginate={paginate}
+      goToNextPage={goToNextPage}
+      goToPrevPage={goToPrevPage}
+    />:null
+    }
     </div>
   );
 };

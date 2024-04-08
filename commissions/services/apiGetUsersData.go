@@ -11,7 +11,6 @@ import (
 	log "OWEApp/logger"
 	models "OWEApp/models"
 	"strings"
-	"time"
 
 	"encoding/json"
 	"fmt"
@@ -25,7 +24,7 @@ import (
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
- func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
+func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err          error
 		dataReq      models.DataRequestBody
@@ -62,9 +61,9 @@ import (
 	tableName := db.TableName_users_details
 	query = `
 	SELECT ud.name, ud.user_code, ud.mobile_number, ud.email_id, ud.password_change_required, ud.created_at,
-    ud.updated_at, ud1.name AS reporting_manager, ur.role_name, ud.user_status, ud.user_designation, ud.description
+    ud.updated_at, COALESCE(ud1.name, 'NA') AS reporting_manager, ur.role_name, ud.user_status, ud.user_designation, ud.description
 	FROM user_details ud
-	JOIN user_details ud1 ON ud1.reporting_manager = ud.user_id
+	LEFT JOIN user_details ud1 ON ud.reporting_manager = ud1.user_id
 	JOIN user_roles ur ON ur.role_id = ud.role_id`
 
 	filter, whereEleList = PrepareUsersDetailFilters(tableName, dataReq)
@@ -83,80 +82,71 @@ import (
 
 	for _, item := range data {
 		// Name
-		Name, ok := item["name"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get Name. Item: %+v\n", item)
-			continue
+		Name, nameOk := item["name"].(string)
+		if !nameOk || Name == "" {
+			log.FuncErrorTrace(0, "Failed to get Name for Item: %+v\n", item)
+			Name = ""
 		}
 
 		// EmailID
-		EmailID, ok := item["email_id"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get EmailID. Item: %+v\n", item)
-			continue
+		EmailID, emailOk := item["email_id"].(string)
+		if !emailOk || EmailID == "" {
+			log.FuncErrorTrace(0, "Failed to get EmailID for Item: %+v\n", item)
+			EmailID = ""
 		}
 
 		// MobileNumber
-		MobileNumber, ok := item["mobile_number"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get MobileNumber. Item: %+v\n", item)
-			continue
+		MobileNumber, mobileOk := item["mobile_number"].(string)
+		if !mobileOk || MobileNumber == "" {
+			log.FuncErrorTrace(0, "Failed to get MobileNumber for Item: %+v\n", item)
+			MobileNumber = ""
 		}
 
 		// Designation
-		Designation, ok := item["user_designation"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get Designation. Item: %+v\n", item)
-			continue
+		Designation, designationOk := item["user_designation"].(string)
+		if !designationOk || Designation == "" {
+			log.FuncErrorTrace(0, "Failed to get Designation for Item: %+v\n", item)
+			Designation = ""
 		}
 
 		// RoleName
-		RoleName, ok := item["role_name"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get RoleName. Item: %+v\n", item)
-			continue
+		RoleName, roleOk := item["role_name"].(string)
+		if !roleOk || RoleName == "" {
+			log.FuncErrorTrace(0, "Failed to get RoleName for Item: %+v\n", item)
+			RoleName = ""
 		}
 
 		// UserCode
-		UserCode, ok := item["user_code"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get UserCode. Item: %+v\n", item)
-			continue
+		UserCode, codeOk := item["user_code"].(string)
+		if !codeOk || UserCode == "" {
+			log.FuncErrorTrace(0, "Failed to get UserCode for Item: %+v\n", item)
+			UserCode = ""
 		}
 
 		// PasswordChangeReq
-		PasswordChangeReq, ok := item["password_change_required"].(bool)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get PasswordChangeReq. Item: %+v\n", item)
-			continue
+		PasswordChangeReq, passOk := item["password_change_required"].(bool)
+		if !passOk {
+			log.FuncErrorTrace(0, "Failed to get PasswordChangeReq for Item: %+v\n", item)
 		}
 
 		// ReportingManager
-		ReportingManager, ok := item["reporting_manager"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get ReportingManager. Item: %+v\n", item)
-			continue
+		ReportingManager, managerOk := item["reporting_manager"].(string)
+		if !managerOk || ReportingManager == "" {
+			log.FuncErrorTrace(0, "Failed to get ReportingManager for Item: %+v\n", item)
+			ReportingManager = ""
 		}
 
 		// UserStatus
-		UserStatus, ok := item["user_status"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get UserStatus. Item: %+v\n", item)
-			continue
+		UserStatus, statusOk := item["user_status"].(string)
+		if !statusOk || UserStatus == "" {
+			log.FuncErrorTrace(0, "Failed to get UserStatus for Item: %+v\n", item)
+			UserStatus = ""
 		}
 
 		// Description
 		Description, descOk := item["description"].(string)
 		if !descOk || Description == "" {
 			Description = ""
-		}
-
-		var CreatedDate, UpdatedDate string
-		if createdDateVal, ok := item["created_at"].(time.Time); ok {
-			CreatedDate = createdDateVal.Format("2006-01-02 15:04:05")
-		}
-		if updatedDateVal, ok := item["updated_at"].(time.Time); ok {
-			UpdatedDate = updatedDateVal.Format("2006-01-02 15:04:05")
 		}
 
 		usersData := models.GetUsersData{
@@ -170,8 +160,6 @@ import (
 			ReportingManager:  ReportingManager,
 			UserStatus:        UserStatus,
 			Description:       Description,
-			CreatedDate:       CreatedDate,
-			UpdatedDate:       UpdatedDate,
 		}
 
 		usersDetailsList.UsersDataList = append(usersDetailsList.UsersDataList, usersData)
@@ -181,7 +169,6 @@ import (
 	log.FuncInfoTrace(0, "Number of users List fetched : %v list %+v", len(usersDetailsList.UsersDataList), usersDetailsList)
 	FormAndSendHttpResp(resp, "Users Data", http.StatusOK, usersDetailsList)
 }
-
 
 /******************************************************************************
  * FUNCTION:		PrepareUsersDetailFilters

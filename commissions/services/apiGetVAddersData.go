@@ -80,41 +80,46 @@ func HandleGetVAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 	for _, item := range data {
 		RecordId, ok := item["record_id"].(int64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get record id. Item: %+v\n", item)
+			log.FuncErrorTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
 			continue
 		}
 
-		AdderName, ok := item["adder_name"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get adder name. Item: %+v\n", item)
-			continue
+		// AdderName
+		AdderName, adderNameOk := item["adder_name"].(string)
+		if !adderNameOk || AdderName == "" {
+			log.FuncErrorTrace(0, "Failed to get adder name for Record ID %v. Item: %+v\n", RecordId, item)
+			AdderName = ""
 		}
 
-		AdderType, ok := item["adder_type"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get adder type. Item: %+v\n", item)
-			continue
+		// AdderType
+		AdderType, adderTypeOk := item["adder_type"].(string)
+		if !adderTypeOk || AdderType == "" {
+			log.FuncErrorTrace(0, "Failed to get adder type for Record ID %v. Item: %+v\n", RecordId, item)
+			AdderType = ""
 		}
 
-		PriceType, ok := item["price_type"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get price type. Item: %+v\n", item)
-			continue
+		// PriceType
+		PriceType, priceTypeOk := item["price_type"].(string)
+		if !priceTypeOk || PriceType == "" {
+			log.FuncErrorTrace(0, "Failed to get price type for Record ID %v. Item: %+v\n", RecordId, item)
+			PriceType = ""
 		}
 
-		PriceAmount, ok := item["price_amount"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get price amount. Item: %+v\n", item)
-			continue
+		// PriceAmount
+		PriceAmount, priceAmountOk := item["price_amount"].(string)
+		if !priceAmountOk || PriceAmount == "" {
+			log.FuncErrorTrace(0, "Failed to get price amount for Record ID %v. Item: %+v\n", RecordId, item)
+			PriceAmount = ""
 		}
 
-		ActiveVal, ok := item["active"].(int64)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get active. Item: %+v\n", item)
-			continue
+		// Active
+		ActiveVal, activeOk := item["active"].(int64)
+		if !activeOk {
+			log.FuncErrorTrace(0, "Failed to get active for Record ID %v. Item: %+v\n", RecordId, item)
 		}
 		Active := int(ActiveVal)
 
+		// Description
 		Description, descOk := item["description"].(string)
 		if !descOk || Description == "" {
 			Description = ""

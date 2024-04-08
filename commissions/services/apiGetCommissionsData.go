@@ -83,70 +83,79 @@ func HandleGetCommissionsDataRequest(resp http.ResponseWriter, req *http.Request
 	commissionsList := models.GetCommissionsList{}
 
 	for _, item := range data {
-
 		RecordId, ok := item["record_id"].(int64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get record id. Item: %+v\n", item)
+			log.FuncErrorTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
 			continue
 		}
+		// Partner
 		Partner, ok := item["partner_name"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get partner name. Item: %+v\n", item)
-			continue
+		if !ok || Partner == "" {
+			log.FuncErrorTrace(0, "Failed to get partner name for Record ID %v. Item: %+v\n", RecordId, item)
+			Partner = ""
 		}
 
+		// Installer
 		Installer, ok := item["installer_name"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get installer name. Item: %+v\n", item)
-			continue
+		if !ok || Installer == "" {
+			log.FuncErrorTrace(0, "Failed to get installer name for Record ID %v. Item: %+v\n", RecordId, item)
+			Installer = ""
 		}
 
+		// State
 		State, ok := item["state_name"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get state name. Item: %+v\n", item)
-			continue
+		if !ok || State == "" {
+			log.FuncErrorTrace(0, "Failed to get state name for Record ID %v. Item: %+v\n", RecordId, item)
+			State = ""
 		}
 
+		// SaleType
 		SaleType, ok := item["sale_type"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get sale type. Item: %+v\n", item)
-			continue
+		if !ok || SaleType == "" {
+			log.FuncErrorTrace(0, "Failed to get sale type for Record ID %v. Item: %+v\n", RecordId, item)
+			SaleType = ""
 		}
 
+		// SalePrice
 		SalePrice, ok := item["sale_price"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get sale price. Item: %+v\n", item)
-			continue
+			log.FuncErrorTrace(0, "Failed to get sale price for Record ID %v. Item: %+v\n", RecordId, item)
+			SalePrice = 0.0 // Default sale price of 0.0
 		}
 
+		// RepType
 		RepType, ok := item["rep_type"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get rep type. Item: %+v\n", item)
-			continue
+		if !ok || RepType == "" {
+			log.FuncErrorTrace(0, "Failed to get rep type for Record ID %v. Item: %+v\n", RecordId, item)
+			RepType = ""
 		}
 
+		// RL
 		RL, ok := item["rl"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get rl. Item: %+v\n", item)
-			continue
+			log.FuncErrorTrace(0, "Failed to get rl for Record ID %v. Item: %+v\n", RecordId, item)
+			RL = 0.0 // Default RL value of 0.0
 		}
 
+		// Rate
 		Rate, ok := item["rate"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get rate. Item: %+v\n", item)
-			continue
+			log.FuncErrorTrace(0, "Failed to get rate for Record ID %v. Item: %+v\n", RecordId, item)
+			Rate = 0.0 // Default rate value of 0.0
 		}
 
+		// StartDate
 		StartDate, ok := item["start_date"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get start date. Item: %+v\n", item)
-			continue
+		if !ok || StartDate == "" {
+			log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
+			StartDate = ""
 		}
 
+		// EndDate
 		EndDate, ok := item["end_date"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get end date. Item: %+v\n", item)
-			continue
+		if !ok || EndDate == "" {
+			log.FuncErrorTrace(0, "Failed to get end date for Record ID %v. Item: %+v\n", RecordId, item)
+			EndDate = ""
 		}
 
 		commissionData := models.GetCommissionData{

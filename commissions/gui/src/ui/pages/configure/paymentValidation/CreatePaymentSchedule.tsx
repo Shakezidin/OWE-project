@@ -78,7 +78,7 @@ const CreatePaymentSchedule:React.FC<payScheduleProps> = ({handleClose,editMode,
             dispatch(updatePayForm(createPayData));
             if(createPayData.record_id){
              
-                const res = await postCaller(EndPoints.create_paymentschedule, createPayData);
+                const res = await postCaller(EndPoints.update_paymentschedule, createPayData);
                 if (res?.status === 200) {
                     alert(res.message)
                     handleClose()

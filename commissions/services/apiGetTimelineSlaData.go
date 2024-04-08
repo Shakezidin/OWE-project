@@ -60,7 +60,7 @@ func HandleGetTimelineSlasDataRequest(resp http.ResponseWriter, req *http.Reques
 
 	tableName := db.TableName_timeline_sla
 	query = `
-	SELECT tlsa.type_m2m, st.name as state, tlsa.days, tlsa.start_date, tlsa.end_date
+	SELECT tlsa.id as record_id, tlsa.type_m2m, st.name as state, tlsa.days, tlsa.start_date, tlsa.end_date
 	FROM timeline_sla tlsa
 	JOIN states st ON tlsa.state_id = st.state_id
 	`
@@ -81,44 +81,52 @@ func HandleGetTimelineSlasDataRequest(resp http.ResponseWriter, req *http.Reques
 
 	// Iterate through each item in the data
 	for _, item := range data {
+		RecordId, ok := item["record_id"].(int64)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
+			continue
+		}
 		// TypeM2M
 		TypeM2M, ok := item["type_m2m"].(string)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get TypeM2M. Item: %+v\n", item)
-			continue
+			log.FuncErrorTrace(0, "Failed to get TypeM2M for Record ID %v. Item: %+v\n", RecordId, item)
+			TypeM2M = ""
 		}
 
 		// State
 		State, ok := item["state"].(string)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get State. Item: %+v\n", item)
-			continue
+			log.FuncErrorTrace(0, "Failed to get State for Record ID %v. Item: %+v\n", RecordId, item)
+			State = ""
 		}
 
 		// Days
 		DaysVal, ok := item["days"].(int64)
+		Days := 0
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get Days. Item: %+v\n", item)
-			continue
+			log.FuncErrorTrace(0, "Failed to get Days for Record ID %v. Item: %+v\n", RecordId, item)
+			Days = 0 // Assigning 0 as default for Days
+		} else {
+			Days = int(DaysVal)
 		}
-		Days := int(DaysVal)
 
 		// StartDate
 		StartDate, ok := item["start_date"].(string)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get StartDate. Item: %+v\n", item)
-			continue
+			log.FuncErrorTrace(0, "Failed to get StartDate for Record ID %v. Item: %+v\n", RecordId, item)
+			StartDate = ""
 		}
 
 		// EndDate
 		EndDate, ok := item["end_date"].(string)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get EndDate. Item: %+v\n", item)
-			continue
+			log.FuncErrorTrace(0, "Failed to get EndDate for Record ID %v. Item: %+v\n", RecordId, item)
+			EndDate = ""
 		}
 
 		// Create a new GetTimelineSlaData object
 		tlsData := models.GetTimelineSlaData{
+			RecordId:  RecordId,
 			TypeM2M:   TypeM2M,
 			State:     State,
 			Days:      Days,

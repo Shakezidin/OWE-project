@@ -89,7 +89,8 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 			query = "SELECT adder_type as data FROM " + db.TableName_adder_type
 		case "owe_cost":
 			query = "SELECT owe_cost as data FROM " + db.TableName_tier_loan_fee
-			tableName = "owe_cost"
+		case "tier":
+			query = "SELECT tier_name as data FROM " + db.TableName_tier
 		default:
 			log.FuncErrorTrace(0, "Invalid table name provided: %v", tableName)
 			responseData[tableName] = nil
@@ -106,7 +107,7 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 		for _, item := range data {
 			name, ok := item["data"].(string)
 			if !ok {
-				log.FuncErrorTrace(0, "Failed to get data item. Item: %+v\n", item)
+				log.FuncErrorTrace(0, "Failed to get data item for Item: %+v\n", item)
 				continue
 			}
 			items = append(items, name)

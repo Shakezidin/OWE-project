@@ -17,7 +17,7 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
   return (
     <div className="header-content">
       <div className="header-icon">
-        <div className="menu-icon" onClick={() => setToggleOpen(true)}>
+        <div className="menu-icon" onClick={() => setToggleOpen(!toggleOpen)}>
           <MdOutlineMenu className="icon" />
         </div>
         <div className="header-logo">

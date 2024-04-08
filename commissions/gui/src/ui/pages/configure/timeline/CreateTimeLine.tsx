@@ -21,15 +21,15 @@ interface timeLineProps {
 }
 const CreateTimeLine:React.FC<timeLineProps> = ({handleClose,editMode,timeLineSlaData}) => {
     const dispatch = useDispatch();
-
+  console.log(timeLineSlaData)
     const [createTimeLine, setCreateTimeLine] = useState<TimeLineSlaModel>(
         {
-            record_id:0,
-            type_m2m: "YourTypeM2MValue2",
-            state: "Alabama",
-            days: "10",
-            start_date: "2024-04-01",
-            end_date: "2024-04-10"
+            record_id:timeLineSlaData? timeLineSlaData?.record_id: 0,
+            type_m2m:timeLineSlaData? timeLineSlaData?.type_m2m: "YourTypeM2MValue2",
+            state: timeLineSlaData? timeLineSlaData?.state: "Alabama",
+            days: timeLineSlaData? timeLineSlaData?.days: "10",
+            start_date: timeLineSlaData? timeLineSlaData?.start_date: "2024-04-01",
+            end_date:timeLineSlaData? timeLineSlaData?.end_date: "2024-04-10"
         }
     )
     const [newFormData,setNewFormData] = useState<any>([])
@@ -65,6 +65,19 @@ const CreateTimeLine:React.FC<timeLineProps> = ({handleClose,editMode,timeLineSl
         e.preventDefault();
         try {
             dispatch(updateTimeLineForm(createTimeLine));
+          if(createTimeLine.record_id){
+        
+            const res = await postCaller(EndPoints.update_timelinesla, createTimeLine);
+            if (res?.status === 200) {
+                alert(res.message)
+                handleClose()
+                window.location.reload()
+            }
+            else {
+                alert(res.message)
+            }
+          }
+          else{
             const { record_id, ...cleanedFormData } = createTimeLine;
             const res = await postCaller(EndPoints.create_timelinesla, cleanedFormData);
             if (res?.status === 200) {
@@ -75,6 +88,7 @@ const CreateTimeLine:React.FC<timeLineProps> = ({handleClose,editMode,timeLineSl
             else {
                 alert(res.message)
             }
+          }
         } catch (error) {
             console.error('Error submitting form:', error);
         }
