@@ -28,7 +28,7 @@ const CommissionRate: React.FC = () => {
   const [exportOPen, setExportOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const handleExportOpen=()=>setExportOpen(!exportOPen)
+  const handleExportOpen = () => setExportOpen(!exportOPen)
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const commissionList = useAppSelector((state) => state.comm.commissionsList);
@@ -39,20 +39,20 @@ const CommissionRate: React.FC = () => {
   const [editMode, setEditMode] = useState(false);
   const [editedCommission, setEditedCommission] = useState<CommissionModel | null>(null);
   const [filteredData, setFilteredData] = useState<CommissionModel[]>([]);
-    const [columns, setColumns] = useState<string[]>([]);
+  const [columns, setColumns] = useState<string[]>([]);
   const itemsPerPage = 5;
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
-  
+
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
-      
+
     };
     dispatch(fetchCommissions(pageNumber));
-   
-  }, [dispatch,currentPage]);
-  
+
+  }, [dispatch, currentPage]);
+
   const paginate = (pageNumber: number) => {
     dispatch(setCurrentPage(pageNumber));
   };
@@ -73,13 +73,13 @@ const CommissionRate: React.FC = () => {
       setColumns(keys);
     }
   };
-  const filter = ()=>{
+  const filter = () => {
     setFilterOpen(true)
     getColumnNames()
   }
- 
+
   // Apply filter logic
- 
+
   const totalPages = Math.ceil(commissionList?.length / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -113,26 +113,26 @@ const CommissionRate: React.FC = () => {
       <div className="commissionContainer">
         <TableHeader
           title="Commisstion Rate"
-          onPressViewArchive={() => {}}
-          onPressArchive={() => {}}
+          onPressViewArchive={() => { }}
+          onPressArchive={() => { }}
           onPressFilter={() => filter()}
-          onPressImport={() => {}}
+          onPressImport={() => { }}
           onpressExport={() => handleExportOpen()}
           onpressAddNew={() => handleAddCommission()}
         />
-        {exportOPen &&( <div className="export-modal">
-          <CSVLink style={{color:"#04a5e8"}} data={currentPageData} filename={"table.csv"}>Export CSV</CSVLink>
+        {exportOPen && (<div className="export-modal">
+          <CSVLink style={{ color: "#04a5e8" }} data={currentPageData} filename={"table.csv"}>Export CSV</CSVLink>
         </div>)}
-             {filterOPen && <FilterCommission handleClose={filterClose}  
-             columns={columns}
-             page_number = {currentPage}
-             page_size = {itemsPerPage}
-             />}
-             {open && <CreateCommissionRate 
-                         commission={editedCommission}
-                         editMode={editMode}
-                         handleClose={handleClose}
-                          />}
+        {filterOPen && <FilterCommission handleClose={filterClose}
+          columns={columns}
+          page_number={currentPage}
+          page_size={itemsPerPage}
+        />}
+        {open && <CreateCommissionRate
+          commission={editedCommission}
+          editMode={editMode}
+          handleClose={handleClose}
+        />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
@@ -158,57 +158,57 @@ const CommissionRate: React.FC = () => {
                 </th>
                 <th >
                   <div className="table-header" >
-                    <p>Partner</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p>Partner</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Installer</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p>Installer</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>State</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p>State</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Sales Type</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p>Sales Type</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Sales Price</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p>Sales Price</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Rep.Type</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p>Rep.Type</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Rate List</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p>Rate List</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Rate</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p>Rate</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Start Dt.</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p>Start Dt.</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>End Dt.</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p>End Dt.</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Action</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p>Action</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
               </tr>
@@ -216,64 +216,64 @@ const CommissionRate: React.FC = () => {
             <tbody>
               {currentPageData?.length > 0
                 ? currentPageData?.map((el, i) => (
-                    <tr
-                      key={i}
-                      className={selectedRows.has(i) ? "selected" : ""}
-                    >
-                      <td>
-                        <CheckBox
-                          checked={selectedRows.has(i)}
-                          onChange={() =>
-                            toggleRowSelection(
-                              i,
-                              selectedRows,
-                              setSelectedRows,
-                              setSelectAllChecked
-                            )
-                          }
-                        />
-                      </td>
-                      <td style={{ fontWeight: "500", color: "black" }}>
-                        {el.partner}
-                      </td>
-                      <td>{el.installer}</td>
-                      <td>{el.state}</td>
-                      <td>{el.sale_type}</td>
-                      <td>{el.sale_price}</td>
-                      <td>{el.rep_type}</td>
-                      <td>{el.rl}</td>
-                      <td>{el.rate}</td>
-                      <td>{el.start_date}</td>
-                      <td>{el.end_date}</td>
-                      <td>
-                        <div className="action-icon">
-                          <div className="" style={{ cursor: "pointer" }}>
-                            <img src={ICONS.ARCHIVE} alt="" />
-                          </div>
-                          <div className="" style={{ cursor: "pointer" }} onClick={()=>handleEditCommission(el)}>
-                            <CiEdit
-                              style={{ fontSize: "1.5rem", color: "#344054" }}
-                            />
-                          </div>
+                  <tr
+                    key={i}
+                    className={selectedRows.has(i) ? "selected" : ""}
+                  >
+                    <td>
+                      <CheckBox
+                        checked={selectedRows.has(i)}
+                        onChange={() =>
+                          toggleRowSelection(
+                            i,
+                            selectedRows,
+                            setSelectedRows,
+                            setSelectAllChecked
+                          )
+                        }
+                      />
+                    </td>
+                    <td style={{ fontWeight: "500", color: "black" }}>
+                      {el.partner}
+                    </td>
+                    <td>{el.installer}</td>
+                    <td>{el.state}</td>
+                    <td>{el.sale_type}</td>
+                    <td>{el.sale_price}</td>
+                    <td>{el.rep_type}</td>
+                    <td>{el.rl}</td>
+                    <td>{el.rate}</td>
+                    <td>{el.start_date}</td>
+                    <td>{el.end_date}</td>
+                    <td>
+                      <div className="action-icon">
+                        <div className="" style={{ cursor: "pointer" }}>
+                          <img src={ICONS.ARCHIVE} alt="" />
                         </div>
-                     
-                      </td>
-                    </tr>
-                  ))
+                        <div className="" style={{ cursor: "pointer" }} onClick={() => handleEditCommission(el)}>
+                          <CiEdit
+                            style={{ fontSize: "1.5rem", color: "#344054" }}
+                          />
+                        </div>
+                      </div>
+
+                    </td>
+                  </tr>
+                ))
                 : null}
             </tbody>
           </table>
         </div>
       </div>
-    {
-      commissionList?.length>0?  <Pagination
-      currentPage={currentPage}
-      totalPages={totalPages} // You need to calculate total pages
-      paginate={paginate}
-      goToNextPage={goToNextPage}
-      goToPrevPage={goToPrevPage}
-    />:null
-    }
+      {
+        commissionList?.length > 0 ? <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages} // You need to calculate total pages
+          paginate={paginate}
+          goToNextPage={goToNextPage}
+          goToPrevPage={goToPrevPage}
+        /> : null
+      }
     </div>
   );
 };
