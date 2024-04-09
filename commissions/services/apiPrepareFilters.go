@@ -28,16 +28,18 @@ func PrepareFilters(tableName string, dataFilter models.DataRequestBody) (filter
 	// Check if there are filters
 	if len(dataFilter.Filters) > 0 {
 		filtersBuilder.WriteString(" WHERE ")
-		for i, filters := range dataFilter.Filters {
+		for i, filter := range dataFilter.Filters {
 			if i > 0 {
 				filtersBuilder.WriteString(" AND ")
 			}
-			filtersBuilder.WriteString(filters.Column)
-			filtersBuilder.WriteString(" ")
-			filtersBuilder.WriteString(filters.Operation)
-			filtersBuilder.WriteString(" $")
+			filtersBuilder.WriteString("LOWER(")
+			filtersBuilder.WriteString(filter.Column)
+			filtersBuilder.WriteString(") ")
+			filtersBuilder.WriteString(filter.Operation)
+			filtersBuilder.WriteString(" LOWER($")
 			filtersBuilder.WriteString(fmt.Sprintf("%d", i+1))
-			whereEleList = append(whereEleList, filters.Data)
+			filtersBuilder.WriteString(")")
+			whereEleList = append(whereEleList, strings.ToLower(filter.Data))
 		}
 	}
 

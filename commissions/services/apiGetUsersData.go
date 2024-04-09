@@ -60,7 +60,7 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	tableName := db.TableName_users_details
 	query = `
-	SELECT ud.name, ud.user_code, ud.mobile_number, ud.email_id, ud.password_change_required, ud.created_at,
+	SELECT ud.name as name, ud.user_code, ud.mobile_number, ud.email_id, ud.password_change_required, ud.created_at,
     ud.updated_at, COALESCE(ud1.name, 'NA') AS reporting_manager, ur.role_name, ud.user_status, ud.user_designation, ud.description
 	FROM user_details ud
 	LEFT JOIN user_details ud1 ON ud.reporting_manager = ud1.user_id
@@ -177,40 +177,44 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
  * RETURNS:    		void
  ******************************************************************************/
 func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBody) (filters string, whereEleList []interface{}) {
-	log.EnterFn(0, "PrepareCommissionFilters")
-	defer func() { log.ExitFn(0, "PrepareCommissionFilters", nil) }()
+	log.EnterFn(0, "PrepareUsersDetailFilters")
+	defer func() { log.ExitFn(0, "PrepareUsersDetailFilters", nil) }()
 	var filtersBuilder strings.Builder
 
-	// Check if there are filters
 	if len(dataFilter.Filters) > 0 {
 		filtersBuilder.WriteString(" WHERE ")
+
 		for i, filter := range dataFilter.Filters {
 			if i > 0 {
 				filtersBuilder.WriteString(" AND ")
 			}
 
-			// Check if the column is a foreign key
 			column := filter.Column
 			switch column {
-			case "ReportingManager":
-				filtersBuilder.WriteString(fmt.Sprintf("ud1.name %s $%d", filter.Operation, len(whereEleList)+1))
-			case "RoleName":
-				filtersBuilder.WriteString(fmt.Sprintf("ur.role_name %s $%d", filter.Operation, len(whereEleList)+1))
+			case "name":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud.name) %s LOWER($%d)", filter.Operation, len(whereEleList)+1))
+				whereEleList = append(whereEleList, strings.ToLower(filter.Data))
+			case "reporting_manager":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud1.name) %s LOWER($%d)", filter.Operation, len(whereEleList)+1))
+				whereEleList = append(whereEleList, strings.ToLower(filter.Data))
+			case "role_name":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ur.role_name) %s LOWER($%d)", filter.Operation, len(whereEleList)+1))
+				whereEleList = append(whereEleList, strings.ToLower(filter.Data))
 			default:
-				// For other columns, call PrepareFilters function
-				if len(filtersBuilder.String()) > len(" WHERE ") {
-					filtersBuilder.WriteString(" AND ")
-				}
-				subFilters, subWhereEleList := PrepareFilters(tableName, models.DataRequestBody{Filters: []models.Filter{filter}})
-				filtersBuilder.WriteString(subFilters)
-				whereEleList = append(whereEleList, subWhereEleList...)
-				continue
+				filtersBuilder.WriteString("LOWER(")
+				filtersBuilder.WriteString(filter.Column)
+				filtersBuilder.WriteString(") ")
+				filtersBuilder.WriteString(filter.Operation)
+				filtersBuilder.WriteString(" LOWER($")
+				filtersBuilder.WriteString(fmt.Sprintf("%d", len(whereEleList)+1))
+				filtersBuilder.WriteString(")")
+				whereEleList = append(whereEleList, strings.ToLower(filter.Data))
 			}
-
-			whereEleList = append(whereEleList, filter.Data)
 		}
 	}
+
 	filters = filtersBuilder.String()
+
 	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
 	return filters, whereEleList
 }

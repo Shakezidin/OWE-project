@@ -154,9 +154,9 @@ func PrepareDealerTierFilters(tableName string, dataFilter models.DataRequestBod
 			column := filter.Column
 			switch column {
 			case "dealer_name":
-				filtersBuilder.WriteString(fmt.Sprintf("ud.name %s $%d", filter.Operation, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud.name) %s LOWER($%d)", filter.Operation, len(whereEleList)+1))
 			case "tier":
-				filtersBuilder.WriteString(fmt.Sprintf("tr.tier_name %s $%d", filter.Operation, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(tr.tier_name) %s LOWER($%d)", filter.Operation, len(whereEleList)+1))			
 			default:
 				// For other columns, call PrepareFilters function
 				if len(filtersBuilder.String()) > len(" WHERE ") {
