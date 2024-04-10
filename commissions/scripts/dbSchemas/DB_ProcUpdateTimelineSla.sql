@@ -13,7 +13,7 @@ BEGIN
     UPDATE timeline_sla
     SET 
         type_m2m = p_type_m2m,
-        state_id = (SELECT state_id FROM states WHERE name = p_state LIMIT 1),
+        state_id = (SELECT state_id FROM states WHERE LOWER(name) = LOWER(p_state) LIMIT 1),
         days = p_days,
         start_date = p_start_date,
         end_date = p_end_date,

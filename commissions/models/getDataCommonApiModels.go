@@ -8,9 +8,9 @@ package models
 
 // Filter represents a single filter with Column, operation, and data
 type Filter struct {
-	Column    string `json:"Column"`
-	Operation string `json:"operation"`
-	Data      string `json:"data"`
+	Column    string      `json:"Column"`
+	Operation string      `json:"operation"`
+	Data      interface{} `json:"Data"`
 }
 
 // Parse the request body to extract parameters
@@ -19,4 +19,3 @@ type DataRequestBody struct {
 	PageSize   int      `json:"page_size"`
 	Filters    []Filter `json:"filters"`
 }
-

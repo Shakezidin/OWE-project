@@ -157,6 +157,7 @@ func PrepareTimelineSlaFilters(tableName string, dataFilter models.DataRequestBo
 	// Check if there are filters
 	if len(dataFilter.Filters) > 0 {
 		filtersBuilder.WriteString(" WHERE ")
+
 		for i, filter := range dataFilter.Filters {
 			if i > 0 {
 				filtersBuilder.WriteString(" AND ")
@@ -166,21 +167,25 @@ func PrepareTimelineSlaFilters(tableName string, dataFilter models.DataRequestBo
 			column := filter.Column
 			switch column {
 			case "state":
-				filtersBuilder.WriteString(fmt.Sprintf("st.name %s $%d", filter.Operation, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(st.name) %s LOWER($%d)", filter.Operation, len(whereEleList)+1))
+				whereEleList = append(whereEleList, strings.ToLower(filter.Data.(string)))
+			case "days":
+				filtersBuilder.WriteString(fmt.Sprintf("ts.days %s $%d", filter.Operation, len(whereEleList)+1))
+				whereEleList = append(whereEleList, filter.Data)
 			default:
-				// For other columns, call PrepareFilters function
-				if len(filtersBuilder.String()) > len(" WHERE ") {
-					filtersBuilder.WriteString(" AND ")
-				}
-				subFilters, subWhereEleList := PrepareFilters(tableName, models.DataRequestBody{Filters: []models.Filter{filter}})
-				filtersBuilder.WriteString(subFilters)
-				whereEleList = append(whereEleList, subWhereEleList...)
-				continue
+				// For other columns, handle them accordingly
+				filtersBuilder.WriteString("LOWER(")
+				filtersBuilder.WriteString(filter.Column)
+				filtersBuilder.WriteString(") ")
+				filtersBuilder.WriteString(filter.Operation)
+				filtersBuilder.WriteString(" LOWER($")
+				filtersBuilder.WriteString(fmt.Sprintf("%d", len(whereEleList)+1))
+				filtersBuilder.WriteString(")")
+				whereEleList = append(whereEleList, strings.ToLower(filter.Data.(string)))
 			}
-
-			whereEleList = append(whereEleList, filter.Data)
 		}
 	}
+
 	filters = filtersBuilder.String()
 	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
 	return filters, whereEleList

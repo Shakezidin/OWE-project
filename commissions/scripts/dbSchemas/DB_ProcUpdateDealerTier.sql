@@ -14,8 +14,8 @@ BEGIN
         v_tier_id INT;
     BEGIN
         -- Get IDs for foreign keys from their respective tables
-        SELECT user_id INTO v_dealer_id FROM user_details WHERE name = p_dealer_name;
-        SELECT id INTO v_tier_id FROM tier WHERE tier_name = p_tier_name;
+        SELECT user_id INTO v_dealer_id FROM user_details WHERE LOWER(name) = LOWER(p_dealer_name);
+        SELECT id INTO v_tier_id FROM tier WHERE LOWER(tier_name) = LOWER(p_tier_name);
         
         -- Update the dealer_tier table
         UPDATE dealer_tier

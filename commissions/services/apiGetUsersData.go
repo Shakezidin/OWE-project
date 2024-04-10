@@ -193,13 +193,13 @@ func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBo
 			switch column {
 			case "name":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud.name) %s LOWER($%d)", filter.Operation, len(whereEleList)+1))
-				whereEleList = append(whereEleList, strings.ToLower(filter.Data))
+				whereEleList = append(whereEleList, strings.ToLower(filter.Data.(string)))
 			case "reporting_manager":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud1.name) %s LOWER($%d)", filter.Operation, len(whereEleList)+1))
-				whereEleList = append(whereEleList, strings.ToLower(filter.Data))
+				whereEleList = append(whereEleList, strings.ToLower(filter.Data.(string)))
 			case "role_name":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ur.role_name) %s LOWER($%d)", filter.Operation, len(whereEleList)+1))
-				whereEleList = append(whereEleList, strings.ToLower(filter.Data))
+				whereEleList = append(whereEleList, strings.ToLower(filter.Data.(string)))
 			default:
 				filtersBuilder.WriteString("LOWER(")
 				filtersBuilder.WriteString(filter.Column)
@@ -208,7 +208,7 @@ func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBo
 				filtersBuilder.WriteString(" LOWER($")
 				filtersBuilder.WriteString(fmt.Sprintf("%d", len(whereEleList)+1))
 				filtersBuilder.WriteString(")")
-				whereEleList = append(whereEleList, strings.ToLower(filter.Data))
+				whereEleList = append(whereEleList, strings.ToLower(filter.Data.(string)))
 			}
 		}
 	}

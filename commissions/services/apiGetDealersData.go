@@ -161,19 +161,23 @@ func PrepareDealerFilters(tableName string, dataFilter models.DataRequestBody) (
 			column := filter.Column
 			switch column {
 			case "dealer":
-				filtersBuilder.WriteString(fmt.Sprintf("ud.name %s $%d", filter.Operation, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud.name) %s LOWER($%d)", filter.Operation, len(whereEleList)+1))
+				whereEleList = append(whereEleList, strings.ToLower(filter.Data.(string)))
 			default:
-				// For other columns, call PrepareFilters function
+				// For other columns, handle them accordingly
 				if len(filtersBuilder.String()) > len(" WHERE ") {
 					filtersBuilder.WriteString(" AND ")
 				}
-				subFilters, subWhereEleList := PrepareFilters(tableName, models.DataRequestBody{Filters: []models.Filter{filter}})
-				filtersBuilder.WriteString(subFilters)
-				whereEleList = append(whereEleList, subWhereEleList...)
-				continue
+				// Assuming other columns need no change, just appending
+				filtersBuilder.WriteString("LOWER(")
+				filtersBuilder.WriteString(filter.Column)
+				filtersBuilder.WriteString(") ")
+				filtersBuilder.WriteString(filter.Operation)
+				filtersBuilder.WriteString(" LOWER($")
+				filtersBuilder.WriteString(fmt.Sprintf("%d", len(whereEleList)+1))
+				filtersBuilder.WriteString(")")
+				whereEleList = append(whereEleList, strings.ToLower(filter.Data.(string)))
 			}
-
-			whereEleList = append(whereEleList, filter.Data)
 		}
 	}
 	filters = filtersBuilder.String()

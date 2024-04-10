@@ -137,41 +137,44 @@ func HandleGetDealersTierDataRequest(resp http.ResponseWriter, req *http.Request
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
-func PrepareDealerTierFilters(tableName string, dataFilter models.DataRequestBody) (filters string, whereEleList []interface{}) {
-	log.EnterFn(0, "PrepareDealerFilters")
+ func PrepareDealerTierFilters(tableName string, dataFilter models.DataRequestBody) (filters string, whereEleList []interface{}) {
+	log.EnterFn(0, "PrepareDealerTierFilters")
 	defer func() { log.ExitFn(0, "PrepareDealerTierFilters", nil) }()
 	var filtersBuilder strings.Builder
 
 	// Check if there are filters
 	if len(dataFilter.Filters) > 0 {
 		filtersBuilder.WriteString(" WHERE ")
+
 		for i, filter := range dataFilter.Filters {
 			if i > 0 {
 				filtersBuilder.WriteString(" AND ")
 			}
 
-			// Check if the column is a foreign key
 			column := filter.Column
 			switch column {
 			case "dealer_name":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud.name) %s LOWER($%d)", filter.Operation, len(whereEleList)+1))
+				whereEleList = append(whereEleList, strings.ToLower(filter.Data.(string)))
 			case "tier":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(tr.tier_name) %s LOWER($%d)", filter.Operation, len(whereEleList)+1))			
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(tr.tier_name) %s LOWER($%d)", filter.Operation, len(whereEleList)+1))
+				whereEleList = append(whereEleList, strings.ToLower(filter.Data.(string)))
 			default:
-				// For other columns, call PrepareFilters function
-				if len(filtersBuilder.String()) > len(" WHERE ") {
-					filtersBuilder.WriteString(" AND ")
-				}
-				subFilters, subWhereEleList := PrepareFilters(tableName, models.DataRequestBody{Filters: []models.Filter{filter}})
-				filtersBuilder.WriteString(subFilters)
-				whereEleList = append(whereEleList, subWhereEleList...)
-				continue
+				filtersBuilder.WriteString("LOWER(")
+				filtersBuilder.WriteString(filter.Column)
+				filtersBuilder.WriteString(") ")
+				filtersBuilder.WriteString(filter.Operation)
+				filtersBuilder.WriteString(" LOWER($")
+				filtersBuilder.WriteString(fmt.Sprintf("%d", len(whereEleList)+1))
+				filtersBuilder.WriteString(")")
+				whereEleList = append(whereEleList, strings.ToLower(filter.Data.(string)))
 			}
-
-			whereEleList = append(whereEleList, filter.Data)
 		}
 	}
+
 	filters = filtersBuilder.String()
+
 	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
 	return filters, whereEleList
 }
+

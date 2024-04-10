@@ -13,7 +13,7 @@ BEGIN
     UPDATE dealer_override
     SET 
         sub_dealer = p_sub_dealer,
-        dealer_id = (SELECT user_id FROM user_details WHERE name = p_dealer LIMIT 1),
+        dealer_id = (SELECT user_id FROM user_details WHERE LOWER(name) = LOWER(p_dealer) LIMIT 1),
         pay_rate = p_pay_rate,
         start_date = p_start_date,
         end_date = p_end_date,
