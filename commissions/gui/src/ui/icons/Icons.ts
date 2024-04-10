@@ -5,7 +5,7 @@
  * Project Name: owe_web_app
  * Path: src/ui/pages
  */
-
+import crossIcon from '../../resources/assets/cross.svg'
 export const ICONS = {
   BACKGROUND: require("../../resources/assets/background.png"),
   LOGO: require("../../resources/assets/logo.png"),
@@ -40,6 +40,7 @@ export const ICONS = {
   lineChartIcon: require("../../resources/assets/listIcon.png"),
   graphIcon: require("../../resources/assets/graphIcon.png"),
   filter2: require("../../resources/assets/filter2.png"),
-  groupIcon: require("../../resources/assets/Group2.png")
-
+  groupIcon: require("../../resources/assets/Group2.png"),
+  arrowNext:require("../../resources/assets/Vector.svg"),
+  cross:crossIcon
 };
