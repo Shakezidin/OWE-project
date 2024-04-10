@@ -1,5 +1,9 @@
 import React from "react";
+import { ICONS } from "../../icons/Icons";
 import '../pagination/pagination.css'
+import { FaLessThan } from "react-icons/fa6";
+import { FaGreaterThan } from "react-icons/fa6";
+
 interface PaginationProps {
     currentPage: number;
     totalPages: number;
@@ -19,7 +23,7 @@ interface PaginationProps {
       <div className="pagination-container">
         <div className="pagination">
     
-            <button  className={currentPage === 1 ? "disabled" : "current-btn"} onClick={goToPrevPage} disabled={currentPage===1}>Previous</button>
+            <button  className={currentPage === 1 ? "disabled" : "current-btn"} onClick={goToPrevPage} disabled={currentPage===1}><FaLessThan style={{color:"gray", marginTop:"5px"}}/></button>
        
           {Array.from({ length: totalPages }, (_, i) => (
             
@@ -27,7 +31,7 @@ interface PaginationProps {
         
           ))}
          
-            <button className={currentPage === totalPages ? "disabled" : "current-btn"} onClick={goToNextPage}>Next</button>
+            <button className={currentPage === totalPages ? "disabled" : "current-btn"} onClick={goToNextPage}><FaGreaterThan style={{color:"gray", marginTop:"5px"}}/></button>
           
         </div>
       </div>

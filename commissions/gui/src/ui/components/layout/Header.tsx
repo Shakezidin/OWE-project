@@ -35,10 +35,9 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           />
         </div> */}
         <div className="user-container">
-          {/* <button className="app-btn">
-            <img src={ICONS.APPICON} alt="" />
-            App
-          </button> */}
+          <button className="app-btn">
+            <img src={ICONS.groupIcon} alt="" />
+          </button>
           <div className="notification">
             <img src={ICONS.NOTIFICATION} alt="" />
           </div>

@@ -71,9 +71,8 @@ const FilterSale: React.FC<TableProps>=({handleClose,columns,page_number,page_si
           <button
             type="button"
             style={{
-              background: "black",
-              color: "white",
-              border: "1px solid black",
+              color: "black",
+              border: "1px solid #ACACAC",
             }}
             onClick={handleAddRow}
           >

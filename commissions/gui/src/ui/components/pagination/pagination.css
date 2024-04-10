@@ -1,50 +1,59 @@
-.pagination-container{
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 1rem;
+.pagination-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
 }
-.pagination{
-    display: flex;
-    align-content: center;
-    gap: 1rem;
-    list-style: none;
+.pagination {
+  display: flex;
+  align-content: center;
+  gap: 1rem;
+  list-style: none;
 }
-.disabled{
-    background-color: var(--border-color);
-    cursor: not-allowed;
-    border-radius: .25rem;
-    padding: .2rem 1rem .2rem 1rem;
+.disabled {
+  background-color: var(--border-color);
+  cursor: not-allowed;
+  border-radius: 0.25rem;
+  padding: 0.2rem 1rem 0.2rem 1rem;
+  border: 1px solid #d9d9d9;
+  font-weight: 800;
+  font-size: 16px;
 }
-.current-page{
-    background-color: grey;
-    border: none;
-    outline: none;
-    display: flex;
-    align-items: center;
-    padding: .2rem 1rem .2rem 1rem;
-    border-radius: 1rem;
-    color: white;
-    cursor: pointer;
+.current-page {
+  background: #ffffff;
+  border: 1px solid #d9d9d9;
+  outline: none;
+  display: flex;
+  align-items: center;
+  padding: 0.2rem 1rem 0.2rem 1rem;
+  /* padding: 6px 10px 6px 10px; */
+  border-radius: 1rem;
+  cursor: pointer;
+  border-radius: 2px;
+  font-weight: 600;
+  
 }
 
-.active-page{
-   background-color: var(--active-text-color);
-   cursor: pointer;
-   border: none;
-   border-radius: 1rem;
-   outline: none;
-   display: flex;
-   color: white;
-   cursor: pointer;
-   align-items: center;
-   padding: .2rem 1rem .2rem 1rem;
+.active-page {
+  background-color:  #ffffff;
+  border: 1px solid #04a5e8;
+  cursor: pointer;
+  border-radius: 1rem;
+  outline: none;
+  display: flex;
+  color: #04a5e8;
+  cursor: pointer;
+  align-items: center;
+  padding: 0.2rem 1rem 0.2rem 1rem;
+  border-radius: 2px;
 }
-.current-btn{
-    background-color: var(--active-text-color);
-    border: none;
-    outline: none;
-    color: white;
-    cursor: pointer;
-    padding: .2rem 1rem .2rem 1rem;
-    border-radius: .25rem;
+.current-btn {
+  background-color: #ffffff;
+  border: 1px solid #d9d9d9;
+  outline: none;
+  cursor: pointer;
+  padding: 0.2rem 1rem 0.2rem 1rem;
+  text-align: center;
+  border-radius: 0.25rem;
+  font-weight: 800;
+  font-size: 16px;
 }

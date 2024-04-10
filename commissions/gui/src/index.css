@@ -242,7 +242,7 @@ justify-content: space-between;
   
   }
   .cross-btn button{
-    background-color: red;
+    background-color: black;
     cursor: pointer;
     border: none;
     outline: none;
