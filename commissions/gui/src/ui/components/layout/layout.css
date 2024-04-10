@@ -174,7 +174,7 @@
 .user-container {
   /* width: 50%; */
   display: flex;
-  gap: 2rem;
+  gap: 1.5rem;
   align-items: center;
 }
 
@@ -196,17 +196,13 @@
 }
 
 .app-btn {
-  border: 1px solid var(--black-color);
-  height: 2.4rem;
-  padding: 0.4rem 1rem 0.4rem 1rem !important;
-  outline: none;
-  background-color: var(--primary-text-color);
   border-radius: 0.5rem;
   cursor: pointer;
-  font-size: 1rem;
   display: flex;
-  gap: 0.5rem;
+  /* gap: 0.3rem; */
   align-items: center;
+  border: none;
+  margin-bottom: 0.3rem;
 }
 
 .user-img-container {

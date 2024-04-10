@@ -19,10 +19,10 @@ import { AdderVModel } from "../../../../core/models/configuration/create/AdderV
 const AdderValidation = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
+  const [columns, setColumns] = useState<string[]>([]);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const filter = () => setFilterOpen(true);
   const filterClose = () => setFilterOpen(false);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
@@ -46,6 +46,18 @@ const AdderValidation = () => {
     setEditedVAdder(vAdderData);
     handleOpen()
   };
+
+  const getColumnNames = () => {
+    if (adderVList.length > 0) {
+      const keys = Object.keys(adderVList[0]);
+      setColumns(keys);
+    }
+  };
+  const filter = ()=>{
+    setFilterOpen(true)
+    getColumnNames()
+  }
+ 
   useEffect(() => {
     const pageNumber = {
       page_number: 1,
@@ -76,7 +88,10 @@ const AdderValidation = () => {
           onpressExport={() => {}}
           onpressAddNew={() => handleAddvAdder()}
         />
-        {filterOPen && <FilterAdder handleClose={filterClose}/>}
+        {filterOPen && <FilterAdder handleClose={filterClose}
+         columns={columns}
+         page_number = {1}
+         page_size = {5}/>}
         {open && <CreateAdder 
         vAdderData ={editedVAdder}
          editMode={editMode}

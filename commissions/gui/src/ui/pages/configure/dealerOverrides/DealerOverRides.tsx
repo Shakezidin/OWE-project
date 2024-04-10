@@ -23,7 +23,6 @@ const DealerOverRides: React.FC = () => {
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const filter = () => setFilterOpen(true);
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const dealerList = useAppSelector((state) => state.dealer.Dealers_list);
@@ -32,6 +31,7 @@ const DealerOverRides: React.FC = () => {
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
+  const [columns, setColumns] = useState<string[]>([]);
   const [editedDealer, setEditDealer] = useState<DealerModel | null>(null);
   useEffect(() => {
     const pageNumber = {
@@ -45,7 +45,16 @@ const DealerOverRides: React.FC = () => {
     setEditDealer(null);
     handleOpen()
   };
-
+  const getColumnNames = () => {
+    if (dealerList.length > 0) {
+      const keys = Object.keys(dealerList[0]);
+      setColumns(keys);
+    }
+  };
+  const filter = ()=>{
+    setFilterOpen(true)
+    getColumnNames()
+  }
   const handleEditDealer = (dealerData: DealerModel) => {
     setEditMode(true);
     setEditDealer(dealerData);
@@ -73,7 +82,10 @@ const DealerOverRides: React.FC = () => {
           onpressExport={() => {}}
           onpressAddNew={() => handleAddDealer()}
         />
-        {filterOPen && <FilterDealer handleClose={filterClose} />}
+        {filterOPen && <FilterDealer handleClose={filterClose}
+        columns={columns}
+        page_number = {1}
+        page_size = {5} />}
         {open && <CreateDealer handleClose={handleClose} 
          dealerData={editedDealer}
          editMode={editMode}

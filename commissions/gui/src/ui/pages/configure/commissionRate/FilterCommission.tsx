@@ -1,7 +1,7 @@
 import { IoAddSharp } from "react-icons/io5";
 import Select from "react-select";
 import '../../create_profile/CreateUserProfile.css'
-import "../commissionRate/Filter.css";
+// import "../commissionRate/Filter.css";
 import Input from "../../../components/text_input/Input";
 import { ActionButton } from "../../../components/button/ActionButton";
 import { useEffect, useState } from "react";
@@ -109,9 +109,8 @@ const FilterCommission: React.FC<TableProps>=({handleClose,columns,page_number,p
       <button
             type="button"
             style={{
-              background: "black",
-              color: "white",
-              border: "1px solid black",
+              color: "black",
+              border: "1px solid #ACACAC",
             }}
             onClick={handleAddRow}
           >
@@ -121,7 +120,7 @@ const FilterCommission: React.FC<TableProps>=({handleClose,columns,page_number,p
     </div>
     <div className="createProfileInputView">
       <div className="createProfileTextView">
-      {filters.map((filter, index) => (
+      {filters?.map((filter, index) => (
         <div className="create-input-container" key={index}>
           <div className="create-input-field">
             <label className="inputLabel">Column Name</label>

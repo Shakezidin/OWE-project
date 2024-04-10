@@ -25,7 +25,7 @@ const LoanType = () => {
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const filter = () => setFilterOpen(true);
+  const [columns, setColumns] = useState<string[]>([]);
   const filterClose = () => setFilterOpen(false);
   const loanTypeList = useAppSelector(
     (state) => state?.loanType?.loantype_list
@@ -48,6 +48,16 @@ const LoanType = () => {
     setEditedLoanData(null);
     handleOpen()
   };
+  const getColumnNames = () => {
+    if (loanTypeList.length > 0) {
+      const keys = Object.keys(loanTypeList[0]);
+      setColumns(keys);
+    }
+  };
+  const filter = ()=>{
+    setFilterOpen(true)
+    getColumnNames()
+  }
 
   const handleEditLoan = (loanData:LoanTypeModel) => {
     setEditMode(true);
@@ -77,7 +87,10 @@ const LoanType = () => {
           onpressExport={() => { }}
           onpressAddNew={() => handleAddLoan()}
         />
-        {filterOPen && <FilterLoanType handleClose={filterClose} />}
+        {filterOPen && <FilterLoanType handleClose={filterClose}
+         columns={columns}
+         page_number = {1}
+         page_size = {5} />}
         {open && <CreateLoanType
          loanData={editedLoanData}
          editMode={editMode}

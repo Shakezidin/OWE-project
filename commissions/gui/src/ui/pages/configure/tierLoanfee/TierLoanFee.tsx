@@ -26,7 +26,7 @@ const TierLoanFee = () => {
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const filter = () => setFilterOpen(true);
+  const [columns, setColumns] = useState<string[]>([]);
   const filterClose = () => setFilterOpen(false);
   const [editMode, setEditMode] = useState(false);
   const [editedTierLoanfee, setEditedTierLoanFee] = useState<TierLoanFeeModel | null>(null);
@@ -52,7 +52,17 @@ const TierLoanFee = () => {
     setEditedTierLoanFee(null);
     handleOpen()
   };
-
+  const getColumnNames = () => {
+    if (tierloanList.length > 0) {
+      const keys = Object.keys(tierloanList[0]);
+      setColumns(keys);
+    }
+  };
+  const filter = ()=>{
+    setFilterOpen(true)
+    getColumnNames()
+  }
+ 
   const handleEditTierLoan = (tierEditedData: TierLoanFeeModel) => {
     setEditMode(true);
     setEditedTierLoanFee(tierEditedData);
@@ -73,7 +83,10 @@ const TierLoanFee = () => {
           onpressExport={() => {}}
           onpressAddNew={() => handleAddTierLoan()}
         />
-        {filterOPen && <FilterTierLoan handleClose={filterClose}/>}
+        {filterOPen && <FilterTierLoan handleClose={filterClose}
+         columns={columns}
+         page_number = {1}
+         page_size = {5}/>}
         {open && <CreateTierLoan 
         editMode={editMode}
       tierEditedData={editedTierLoanfee}

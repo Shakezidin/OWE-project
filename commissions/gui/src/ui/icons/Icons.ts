@@ -34,11 +34,12 @@ export const ICONS = {
   NOTIFICATION: require("../../resources/assets/notification.png"),
   SETTING_LINE: require("../../resources/assets/settings-line.png"),
   deleteIcon: require("../../resources/assets/deleteIcon.png"),
-  doller1Icon:require("../../resources/assets/doller1.png"),
-  doller2Icon:require("../../resources/assets/doller2 (2).png"),
-  doller3Icon:require("../../resources/assets/doller3 (1).png"),
-  lineChartIcon:require("../../resources/assets/listIcon.png"),
-  graphIcon:require("../../resources/assets/graphIcon.png"),
-  filter2: require("../../resources/assets/filter2.png")
+  doller1Icon: require("../../resources/assets/doller1.png"),
+  doller2Icon: require("../../resources/assets/doller2 (2).png"),
+  doller3Icon: require("../../resources/assets/doller3 (1).png"),
+  lineChartIcon: require("../../resources/assets/listIcon.png"),
+  graphIcon: require("../../resources/assets/graphIcon.png"),
+  filter2: require("../../resources/assets/filter2.png"),
+  groupIcon: require("../../resources/assets/Group2.png")
 
 };

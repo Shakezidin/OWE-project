@@ -1,7 +1,6 @@
 import { IoAddSharp } from "react-icons/io5";
 import Select from "react-select";
 import '../../create_profile/CreateUserProfile.css'
-import "../commissionRate/Filter.css";
 import Input from "../../../components/text_input/Input";
 import { ActionButton } from "../../../components/button/ActionButton";
 import { useEffect, useState } from "react";
@@ -97,9 +96,8 @@ const options: Option[] = columns.map((column: string) => ({
       <button
             type="button"
             style={{
-              background: "black",
-              color: "white",
-              border: "1px solid black",
+              color: "black",
+              border: "1px solid #ACACAC",
             }}
             onClick={handleAddRow}
           >
