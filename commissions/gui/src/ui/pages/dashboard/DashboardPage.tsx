@@ -78,7 +78,7 @@ export const DashboardPage: React.FC = () => {
       </div>
       <div className="" style={{ marginTop: "2rem" }}>
         <DashboardTotal />
-        <DonutChart />
+        {/* <DonutChart /> */}
       </div>
 
     </>
