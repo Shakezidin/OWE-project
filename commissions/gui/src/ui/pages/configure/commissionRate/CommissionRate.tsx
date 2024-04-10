@@ -68,7 +68,7 @@ const CommissionRate: React.FC = () => {
     dispatch(setCurrentPage(currentPage - 1));
   };
   const columns: Column[] = [
-    { name: "record_id", displayName: "Record ID", type: "number" },
+    // { name: "record_id", displayName: "Record ID", type: "number" },
     { name: "partner", displayName: "Partner", type: "string" },
     { name: "installer", displayName: "Installer", type: "string" },
     { name: "state", displayName: "State", type: "string" },
@@ -77,8 +77,8 @@ const CommissionRate: React.FC = () => {
     { name: "rep_type", displayName: "Rep Type", type: "string" },
     { name: "rl", displayName: "RL", type: "number" },
     { name: "rate", displayName: "Rate", type: "number" },
-    { name: "start_date", displayName: "Start Date", type: "date" },
-    { name: "end_date", displayName: "End Date", type: "date" }
+    { name: "start_date", displayName: "Start Date", type: "string" },
+    { name: "end_date", displayName: "End Date", type: "string" }
   ];
   const filter = ()=>{
     setFilterOpen(true)

@@ -3,7 +3,7 @@ import "./Input.css";
 import { ReactComponent as EYE_ICON } from "../../../resources/assets/eye-icon.svg";
 
 interface InputProps {
-  type: "text" | "number" | "email" | "password" | "date" ;
+  type: "text" | "number" | "email" | "password" | "date" |"datetime-local";
   value: string | number;
   placeholder: string;
   label?: string;
