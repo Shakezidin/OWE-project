@@ -27,7 +27,7 @@ interface PaginationProps {
         
           ))}
          
-            <button className={currentPage === totalPages ? "disabled" : "current-btn"} onClick={goToNextPage}>Next</button>
+            <button className={currentPage === totalPages ? "disabled" : "current-btn"} onClick={goToNextPage}></button>
           
         </div>
       </div>

@@ -16,32 +16,33 @@
     padding: .2rem 1rem .2rem 1rem;
 }
 .current-page{
-    background-color: grey;
-    border: none;
+    border: 1px solid  var(--active-text-color);
+   background-color: transparent !important;
     outline: none;
     display: flex;
     align-items: center;
     padding: .2rem 1rem .2rem 1rem;
-    border-radius: 1rem;
-    color: white;
+    border-radius: .25rem;
+    color: var(--active-text-color);
     cursor: pointer;
 }
 
 .active-page{
-   background-color: var(--active-text-color);
+    border: 1px solid  var(--active-text-color);
    cursor: pointer;
-   border: none;
-   border-radius: 1rem;
+   /* border: none; */
+   background-color: transparent !important;
+   border-radius: .25rem;
    outline: none;
    display: flex;
-   color: white;
+   color: var(--active-text-color);
    cursor: pointer;
    align-items: center;
    padding: .2rem 1rem .2rem 1rem;
 }
 .current-btn{
-    background-color: var(--active-text-color);
-    border: none;
+    /* background-color:; */
+    border: 1px solid  var(--active-text-color);
     outline: none;
     color: white;
     cursor: pointer;
