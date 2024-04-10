@@ -152,7 +152,7 @@ table tbody tr td {
   padding: 0.8rem 1rem 0.8rem 1rem;
   font-size: 12px;
   width: auto;
-  color: var(--coloumn-text-color);
+  color: #101828;
 }
 
 table tbody tr:last-child {

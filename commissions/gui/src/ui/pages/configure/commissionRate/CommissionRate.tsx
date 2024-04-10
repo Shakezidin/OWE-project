@@ -20,7 +20,11 @@ import Pagination from "../../../components/pagination/Pagination";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 import { CommissionModel } from "../../../../core/models/configuration/create/CommissionModel";
 import { FaArrowDown } from "react-icons/fa6";
-
+interface Column {
+  name: string;
+  displayName: string;
+  type: string;
+}
 
 const CommissionRate: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -38,8 +42,6 @@ const CommissionRate: React.FC = () => {
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
   const [editedCommission, setEditedCommission] = useState<CommissionModel | null>(null);
-  const [filteredData, setFilteredData] = useState<CommissionModel[]>([]);
-  const [columns, setColumns] = useState<string[]>([]);
   const itemsPerPage = 5;
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
 
@@ -65,21 +67,23 @@ const CommissionRate: React.FC = () => {
   const goToPrevPage = () => {
     dispatch(setCurrentPage(currentPage - 1));
   };
-
-  // Extract column names
-  const getColumnNames = () => {
-    if (commissionList.length > 0) {
-      const keys = Object.keys(commissionList[0]);
-      setColumns(keys);
-    }
-  };
-  const filter = () => {
+  const columns: Column[] = [
+    { name: "record_id", displayName: "Record ID", type: "number" },
+    { name: "partner", displayName: "Partner", type: "string" },
+    { name: "installer", displayName: "Installer", type: "string" },
+    { name: "state", displayName: "State", type: "string" },
+    { name: "sale_type", displayName: "Sale Type", type: "string" },
+    { name: "sale_price", displayName: "Sale Price", type: "number" },
+    { name: "rep_type", displayName: "Rep Type", type: "string" },
+    { name: "rl", displayName: "RL", type: "number" },
+    { name: "rate", displayName: "Rate", type: "number" },
+    { name: "start_date", displayName: "Start Date", type: "date" },
+    { name: "end_date", displayName: "End Date", type: "date" }
+  ];
+  const filter = ()=>{
     setFilterOpen(true)
-    getColumnNames()
   }
-
-  // Apply filter logic
-
+ 
   const totalPages = Math.ceil(commissionList?.length / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -123,16 +127,16 @@ const CommissionRate: React.FC = () => {
         {exportOPen && (<div className="export-modal">
           <CSVLink style={{ color: "#04a5e8" }} data={currentPageData} filename={"table.csv"}>Export CSV</CSVLink>
         </div>)}
-        {filterOPen && <FilterCommission handleClose={filterClose}
-          columns={columns}
-          page_number={currentPage}
-          page_size={itemsPerPage}
-        />}
-        {open && <CreateCommissionRate
-          commission={editedCommission}
-          editMode={editMode}
-          handleClose={handleClose}
-        />}
+             {filterOPen && <FilterCommission handleClose={filterClose}  
+            columns={columns} 
+             page_number = {currentPage}
+             page_size = {itemsPerPage}
+             />}
+             {open && <CreateCommissionRate 
+                         commission={editedCommission}
+                         editMode={editMode}
+                         handleClose={handleClose}
+                          />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}

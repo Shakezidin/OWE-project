@@ -20,10 +20,10 @@ AS $$
 BEGIN
     UPDATE payment_schedule
     SET 
-        partner_id = (SELECT partner_id FROM partners WHERE partner_name = p_partner_name LIMIT 1),
-        installer_id = (SELECT partner_id FROM partners WHERE partner_name = p_installer_name LIMIT 1),
-        sale_type_id = (SELECT id FROM sale_type WHERE type_name = p_sale_type LIMIT 1),
-        state_id = (SELECT state_id FROM states WHERE name = p_state LIMIT 1),
+        partner_id = (SELECT partner_id FROM partners WHERE LOWER(partner_name) = LOWER(p_partner_name) LIMIT 1),
+        installer_id = (SELECT partner_id FROM partners WHERE LOWER(partner_name) = LOWER(p_installer_name) LIMIT 1),
+        sale_type_id = (SELECT id FROM sale_type WHERE LOWER(type_name) = LOWER(p_sale_type) LIMIT 1),
+        state_id = (SELECT state_id FROM states WHERE LOWER(name) = LOWER(p_state) LIMIT 1),
         rl = p_rl,
         draw = p_draw,
         draw_max = p_draw_max,

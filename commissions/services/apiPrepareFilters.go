@@ -39,7 +39,7 @@ func PrepareFilters(tableName string, dataFilter models.DataRequestBody) (filter
 			filtersBuilder.WriteString(" LOWER($")
 			filtersBuilder.WriteString(fmt.Sprintf("%d", i+1))
 			filtersBuilder.WriteString(")")
-			whereEleList = append(whereEleList, strings.ToLower(filter.Data))
+			whereEleList = append(whereEleList, strings.ToLower(filter.Data.(string)))
 		}
 	}
 

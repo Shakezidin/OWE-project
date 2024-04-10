@@ -1,37 +1,53 @@
 import { IoAddSharp } from "react-icons/io5";
-import Select,{ ActionMeta, OnChangeValue, StylesConfig} from "react-select";
+import Select from "react-select";
+import '../../create_profile/CreateUserProfile.css'
+// import "../commissionRate/Filter.css";
 import Input from "../../../components/text_input/Input";
 import { ActionButton } from "../../../components/button/ActionButton";
 import { useEffect, useState } from "react";
+import { fetchDealerTier } from "../../../../redux/apiSlice/configSlice/config_get_slice/dealerTierSlice";
+import { useAppDispatch } from "../../../../redux/hooks";
+import { fetchCommissions } from "../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice";
+interface columnHeader{
+Partner:string,
+Installer:string,
 
+}
+interface Column {
+  name: string;
+  displayName: string;
+  type: string;
+}
 interface TableProps {
   handleClose: () => void,
-   columns: string[],
+   columns: Column[],
    page_number:number,
    page_size:number
 }
 interface FilterModel{
   Column: string, Operation: string, Data: string
 }
+interface Option {
+  value: string;
+  label: string;
+}
+const operations = [
+  { value: '=', label: 'Equals' },
+  { value: '>', label: 'Greater Than' },
+  { value: '<', label: 'Less Than' },
+  { value: 'contains', label: 'Contains' }
+];
 // Filter component
 const FilterCommission: React.FC<TableProps>=({handleClose,columns,page_number,page_size}) => {
+    const dispatch = useAppDispatch();
   const [filters, setFilters] = useState<FilterModel[]>([
-    { Column: columns.length > 0 ? columns[0]:"", Operation:"",Data:""}
+    { Column:"", Operation:"",Data:""}
   ]);
-
-  const applyFilter = async () => {
-    const formattedFilters = filters.map(filter => ({
-      Column: filter.Column,
-      Operation: filter.Operation,
-      Data: filter.Data
-    }));
-    const req={
-      page_number:page_number,
-      page_size:page_size,
-      filters:formattedFilters
-    }
-    console.log(req)
-  };
+  const options: Option[] = columns.map((column) => ({
+    value: column.name,
+    label:column.displayName
+  }));
+  
   const handleAddRow = () => {
     setFilters([...filters, { Column: '', Operation: '', Data: '' }]);
   };
@@ -46,19 +62,42 @@ const FilterCommission: React.FC<TableProps>=({handleClose,columns,page_number,p
     updatedFilters[index].Operation = selectedOption?.value || '';
     setFilters(updatedFilters);
   };
-  const handleColumnChange = (selectedOption: any, index: number) => {
-    const updatedFilters = [...filters];
-    updatedFilters[index].Column = selectedOption?.value || '';
-    setFilters(updatedFilters);
-  };
-  useEffect(() => {
-    if (filters.length > 0) {
-      const updatedFilters = [...filters];
-      updatedFilters[0].Operation = 'equals';
-      setFilters(updatedFilters);
-    }
-  }, []);
  
+  const handleChange = (index: number, field: keyof FilterModel, value: any) => {
+    const newRules = [...filters];
+    newRules[index][field] = value;
+    setFilters(newRules);
+  };
+  const getOperationsForColumnType = (columnType: string) => {
+    if (columnType === 'string') {
+      return [
+        { value: '=', label: 'Equals' },
+        { value: 'contains', label: 'Contains' }
+      ];
+    } else if (columnType === 'number') {
+      return [
+        { value: '=', label: 'Equals' },
+        { value: '<', label: 'Less Than' },
+        { value: '>', label: 'Greater Than' }
+      ];
+    }
+    return [];
+  };
+  const applyFilter = async () => {
+    const formattedFilters = filters.map(filter => ({
+      Column: filter.Column,
+      Operation: filter.Operation,
+      Data: filter.Data
+    }));
+    const req={
+      page_number:page_number,
+      page_size:page_size,
+      filters:formattedFilters
+    }
+    dispatch(fetchCommissions(req));
+    handleClose()
+    
+  };
   return (
 
 <div className="transparent-model">
@@ -67,8 +106,7 @@ const FilterCommission: React.FC<TableProps>=({handleClose,columns,page_number,p
     <div className="filter-section">
     <h3 className="createProfileText">Filter</h3>
       <div className="iconsSection2">
-      <div className="iconsSection2">
-          <button
+      <button
             type="button"
             style={{
               color: "black",
@@ -78,8 +116,6 @@ const FilterCommission: React.FC<TableProps>=({handleClose,columns,page_number,p
           >
             <IoAddSharp /> Add New
           </button>
-        </div>
-      
       </div>
     </div>
     <div className="createProfileInputView">
@@ -90,11 +126,15 @@ const FilterCommission: React.FC<TableProps>=({handleClose,columns,page_number,p
             <label className="inputLabel">Column Name</label>
             <div className="">
             <Select
-            options={columns?.map((col) => ({ value: col, label: col }))}
-            value={{ value: filter?.Column, label: filter?.Column }}
-            onChange={(selectedOption) => handleColumnChange(selectedOption, index)}
-            placeholder="Select Column"
-         
+           options={options}
+            isSearchable
+            value={options.find(option => option.value === filter.Column) || null}
+            onChange={(selectedOption:any) => {
+              handleChange(index, 'Column', selectedOption.value);
+              handleChange(index, 'Operation', '');
+              handleChange(index, 'Data', '');
+            }}
+            
             styles={{
               control: (baseStyles, state) => ({
                 ...baseStyles,
@@ -103,11 +143,14 @@ const FilterCommission: React.FC<TableProps>=({handleClose,columns,page_number,p
                 outline: "none",
                 height: "2.8rem",
                 border: "1px solid #d0d5dd",
-                
+                overflowY: 'auto'
               }),
+              menu: provided => ({
+                ...provided,
+                maxHeight: '200px', // Set a max height for the dropdown menu
+                overflowY: 'auto' // Enable vertical scrolling
+              })
             }}
-      //       className="basic-multi-select"
-      // classNamePrefix="select"
           />
             </div>
           </div>
@@ -115,15 +158,10 @@ const FilterCommission: React.FC<TableProps>=({handleClose,columns,page_number,p
             <label className="inputLabel">Operation</label>
             <div className="">
             <Select
-            options={[
-              { value: '=', label: 'Equals' },
-              { value: 'contains', label: 'Contains' },
-              { value: '>', label: 'Greater Than' },
-              { value: '<', label: 'Less Than' },
-            ]}
-            value={{ value: filter.Operation, label: filter.Operation }}
-            onChange={(selectedOption) => handleOperationChange(selectedOption, index)}
-            placeholder="Select Operation"
+             options={getOperationsForColumnType(columns.find(column => column.name === filter.Column)?.type || '')}
+             value={{ value: filter.Operation, label: filter.Operation}}
+             onChange={(selectedOption:any) => handleChange(index, 'Operation', selectedOption.value)}
+            // placeholder="Select Operation"
             styles={{
               control: (baseStyles, state) => ({
                 ...baseStyles,
@@ -139,21 +177,35 @@ const FilterCommission: React.FC<TableProps>=({handleClose,columns,page_number,p
           </div>
 
           <div className="create-input-field">
-            <Input
-              type={"text"}
-              label="Value"
          
-              name=""
-            
-              value={filter.Data}
-              onChange={(e) => {
-                const updatedFilters = [...filters];
-                updatedFilters[index].Data = e.target.value;
-                setFilters(updatedFilters);
-              }}
-              placeholder={"Enter"}
-            
-            />
+          {
+            filter.Column==="start_date" && "end_date"?  <Input
+            type={"date"}
+            label="Value"
+            name=""
+            value={filter.Data}
+            onChange={(e) => {
+              const updatedFilters = [...filters];
+              updatedFilters[index].Data = e.target.value;
+              setFilters(updatedFilters);
+            }}
+            placeholder={"Enter"}
+          
+          />: <Input
+          type={"text"}
+          label="Data"
+          name="Data"
+          value={filter.Data}
+          onChange={(e) => {
+            const updatedFilters = [...filters];
+            updatedFilters[index].Data = e.target.value;
+            setFilters(updatedFilters);
+          }}
+          placeholder={"Enter"}
+        
+        />
+          }
+          
           </div>
           <div className="cross-btn">
             <button type="button" onClick={()=>handleRemoveRow(index)}>X</button>

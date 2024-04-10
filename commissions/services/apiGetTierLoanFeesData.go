@@ -68,7 +68,7 @@ func HandleGetTierLoanFeesDataRequest(resp http.ResponseWriter, req *http.Reques
 	JOIN loan_type lnt ON tlf.finance_type = lnt.id
 	`
 
-	filter, whereEleList = PrepareTierLoanFeeFeesFilters(tableName, dataReq)
+	filter, whereEleList = PrepareTierLoanFeesFilters(tableName, dataReq)
 	if filter != "" {
 		query += filter
 	}
@@ -176,19 +176,20 @@ func HandleGetTierLoanFeesDataRequest(resp http.ResponseWriter, req *http.Reques
 }
 
 /******************************************************************************
- * FUNCTION:		PrepareTierLoanFeeFeesFilters
+ * FUNCTION:		PrepareTierLoanFeesFilters
  * DESCRIPTION:     handler for prepare filter
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
-func PrepareTierLoanFeeFeesFilters(tableName string, dataFilter models.DataRequestBody) (filters string, whereEleList []interface{}) {
-	log.EnterFn(0, "PrepareTierLoanFeeFeesFilters")
-	defer func() { log.ExitFn(0, "PrepareTierLoanFeeFeesFilters", nil) }()
+ func PrepareTierLoanFeesFilters(tableName string, dataFilter models.DataRequestBody) (filters string, whereEleList []interface{}) {
+	log.EnterFn(0, "PrepareTierLoanFeesFilters")
+	defer func() { log.ExitFn(0, "PrepareTierLoanFeesFilters", nil) }()
 	var filtersBuilder strings.Builder
 
 	// Check if there are filters
 	if len(dataFilter.Filters) > 0 {
 		filtersBuilder.WriteString(" WHERE ")
+
 		for i, filter := range dataFilter.Filters {
 			if i > 0 {
 				filtersBuilder.WriteString(" AND ")
@@ -198,28 +199,33 @@ func PrepareTierLoanFeeFeesFilters(tableName string, dataFilter models.DataReque
 			column := filter.Column
 			switch column {
 			case "dealer_tier":
-				filtersBuilder.WriteString(fmt.Sprintf("tr.tier_name %s $%d", filter.Operation, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(tr.tier_name) %s LOWER($%d)", filter.Operation, len(whereEleList)+1))
+				whereEleList = append(whereEleList, strings.ToLower(filter.Data.(string)))
 			case "installer":
-				filtersBuilder.WriteString(fmt.Sprintf("ptr.partner_name %s $%d", filter.Operation, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ptr.partner_name) %s LOWER($%d)", filter.Operation, len(whereEleList)+1))
+				whereEleList = append(whereEleList, strings.ToLower(filter.Data.(string)))
 			case "state":
-				filtersBuilder.WriteString(fmt.Sprintf("st.name %s $%d", filter.Operation, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(st.name) %s LOWER($%d)", filter.Operation, len(whereEleList)+1))
+				whereEleList = append(whereEleList, strings.ToLower(filter.Data.(string)))
 			case "finance_type":
-				filtersBuilder.WriteString(fmt.Sprintf("lnt.product_code %s $%d", filter.Operation, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(lnt.product_code) %s LOWER($%d)", filter.Operation, len(whereEleList)+1))
+				whereEleList = append(whereEleList, strings.ToLower(filter.Data.(string)))
 			default:
-				// For other columns, call PrepareFilters function
-				if len(filtersBuilder.String()) > len(" WHERE ") {
-					filtersBuilder.WriteString(" AND ")
-				}
-				subFilters, subWhereEleList := PrepareFilters(tableName, models.DataRequestBody{Filters: []models.Filter{filter}})
-				filtersBuilder.WriteString(subFilters)
-				whereEleList = append(whereEleList, subWhereEleList...)
-				continue
+				// For other columns, handle them accordingly
+				filtersBuilder.WriteString("LOWER(")
+				filtersBuilder.WriteString(filter.Column)
+				filtersBuilder.WriteString(") ")
+				filtersBuilder.WriteString(filter.Operation)
+				filtersBuilder.WriteString(" LOWER($")
+				filtersBuilder.WriteString(fmt.Sprintf("%d", len(whereEleList)+1))
+				filtersBuilder.WriteString(")")
+				whereEleList = append(whereEleList, strings.ToLower(filter.Data.(string)))
 			}
-
-			whereEleList = append(whereEleList, filter.Data)
 		}
 	}
+
 	filters = filtersBuilder.String()
 	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
 	return filters, whereEleList
 }
+

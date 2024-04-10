@@ -17,12 +17,12 @@ AS $$
 BEGIN
     UPDATE commission_rates
     SET 
-        partner_id = (SELECT partner_id FROM partners WHERE partner_name = p_partner LIMIT 1),
-        installer_id = (SELECT partner_id FROM partners WHERE partner_name = p_installer LIMIT 1),
-        state_id = (SELECT state_id FROM states WHERE name = p_state LIMIT 1),
-        sale_type_id = (SELECT id FROM sale_type WHERE type_name = p_sale_type LIMIT 1),
+        partner_id = (SELECT partner_id FROM partners WHERE LOWER(partner_name) = LOWER(p_partner) LIMIT 1),
+        installer_id = (SELECT partner_id FROM partners WHERE LOWER(partner_name) = LOWER(p_installer) LIMIT 1),
+        state_id = (SELECT state_id FROM states WHERE LOWER(name) = LOWER(p_state) LIMIT 1),
+        sale_type_id = (SELECT id FROM sale_type WHERE LOWER(type_name) = LOWER(p_sale_type) LIMIT 1),
         sale_price = p_sale_price,
-        rep_type = (SELECT id FROM rep_type WHERE rep_type = p_rep_type LIMIT 1),
+        rep_type = (SELECT id FROM rep_type WHERE LOWER(rep_type) = LOWER(p_rep_type) LIMIT 1),
         rl = p_rl,
         rate = p_rate,
         start_date = p_start_date,
