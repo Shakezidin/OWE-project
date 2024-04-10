@@ -7,21 +7,42 @@ import { ActionButton } from "../../../components/button/ActionButton";
 import { useEffect, useState } from "react";
 import { fetchDealerTier } from "../../../../redux/apiSlice/configSlice/config_get_slice/dealerTierSlice";
 import { useAppDispatch } from "../../../../redux/hooks";
+interface columnHeader{
+Partner:string,
+Installer:string,
+
+}
 interface TableProps {
   handleClose: () => void,
    columns: string[],
    page_number:number,
    page_size:number
 }
+interface Option {
+  value: string;
+  label: string;
+}
 interface FilterModel{
   Column: string, Operation: string, Data: string
 }
+const operations = [
+  { value: '=', label: 'Equals' },
+  { value: '>', label: 'Greater Than' },
+  { value: '<', label: 'Less Than' },
+  { value: 'contains', label: 'Contains' }
+];
 // Filter component
 const FilterDealerTier: React.FC<TableProps>=({handleClose,columns,page_number,page_size}) => {
     const dispatch = useAppDispatch();
   const [filters, setFilters] = useState<FilterModel[]>([
-    { Column: columns.length > 0 ? columns[0]:"", Operation:"",Data:""}
+    { Column: columns.length > 0 ? columns[1]:"", Operation:"",Data:""}
   ]);
+
+const options: Option[] = columns.map((column: string) => ({
+  value: column,
+  label: column === 'dealer_name' ? 'Dealer Name' : column.replace(/_/g, ' ').toUpperCase()
+}));
+
 
   const applyFilter = async () => {
     const formattedFilters = filters.map(filter => ({
@@ -52,7 +73,8 @@ const FilterDealerTier: React.FC<TableProps>=({handleClose,columns,page_number,p
     updatedFilters[index].Operation = selectedOption?.value || '';
     setFilters(updatedFilters);
   };
-  const handleColumnChange = (selectedOption: any, index: number) => {
+ 
+  const handleColumnChange = (selectedOption: Option | null, index: number) => {
     const updatedFilters = [...filters];
     updatedFilters[index].Column = selectedOption?.value || '';
     setFilters(updatedFilters);
@@ -93,8 +115,8 @@ const FilterDealerTier: React.FC<TableProps>=({handleClose,columns,page_number,p
             <label className="inputLabel">Column Name</label>
             <div className="">
             <Select
-            options={columns.map((col) => ({ value: col, label: col }))}
-            value={{ value: filter.Column, label: filter.Column }}
+            options={options}
+            value={options.find(option => option.value === filter.Column) || null}
             onChange={(selectedOption) => handleColumnChange(selectedOption, index)}
             placeholder="Select Column"
             styles={{
@@ -120,15 +142,10 @@ const FilterDealerTier: React.FC<TableProps>=({handleClose,columns,page_number,p
             <label className="inputLabel">Operation</label>
             <div className="">
             <Select
-            options={[
-              { value: '=', label: 'Equals' },
-              { value: 'contains', label: 'Contains' },
-              { value: '>', label: 'Greater Than' },
-              { value: '<', label: 'Less Than' },
-            ]}
-            value={{ value: filter.Operation, label: filter.Operation }}
+            options={operations}
+            value={operations.find(option => option.value === filter.Operation) || null}
             onChange={(selectedOption) => handleOperationChange(selectedOption, index)}
-            placeholder="Select Operation"
+            // placeholder="Select Operation"
             styles={{
               control: (baseStyles, state) => ({
                 ...baseStyles,
@@ -160,8 +177,8 @@ const FilterDealerTier: React.FC<TableProps>=({handleClose,columns,page_number,p
           
           />: <Input
           type={"text"}
-          label="Value"
-          name=""
+          label="Data"
+          name="Data"
           value={filter.Data}
           onChange={(e) => {
             const updatedFilters = [...filters];

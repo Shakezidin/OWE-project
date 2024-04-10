@@ -38,7 +38,6 @@ const DealerTier = () => {
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
   const [editedDealerTier, setEditedDealerTier] = useState<DealerTierModel | null>(null);
-  const [filteredData, setFilteredData] = useState<DealerTierModel[]>([]);
   const [columns, setColumns] = useState<string[]>([]);
   const itemsPerPage = 5;
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
