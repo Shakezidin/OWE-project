@@ -17,9 +17,9 @@ AS $$
 BEGIN
     UPDATE marketing_fees
     SET 
-        source_id = (SELECT id FROM source WHERE name = p_source LIMIT 1),
+        source_id = (SELECT id FROM source WHERE LOWER(name) = LOWER(p_source) LIMIT 1),
         dba = p_dba,
-        state_id = (SELECT state_id FROM states WHERE name = p_state LIMIT 1),
+        state_id = (SELECT state_id FROM states WHERE LOWER(name) = LOWER(p_state) LIMIT 1),
         fee_rate = p_fee_rate,
         chg_dlr = p_chg_dlr,
         pay_src = p_pay_src,

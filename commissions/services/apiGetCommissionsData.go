@@ -60,7 +60,7 @@ func HandleGetCommissionsDataRequest(resp http.ResponseWriter, req *http.Request
 
 	tableName := db.TableName_commission_rates
 	query = `
-	SELECT cr.id as record_id, pt1.partner_name as partner_name, pt2.partner_name as installer_name, st.name as state_name, sl.type_name as sale_type, cr.sale_price, rp.rep_type, cr.rl, cr.rate, cr.start_date, cr.end_date
+	SELECT cr.id as record_id, pt1.partner_name as partner_name, pt2.partner_name as installer_name, st.name, sl.type_name as sale_type, cr.sale_price, rp.rep_type, cr.rl, cr.rate, cr.start_date, cr.end_date
 	FROM commission_rates cr
 	JOIN states st ON st.state_id = cr.state_id
 	JOIN partners pt1 ON pt1.partner_id = cr.partner_id
@@ -103,7 +103,7 @@ func HandleGetCommissionsDataRequest(resp http.ResponseWriter, req *http.Request
 		}
 
 		// State
-		State, ok := item["state_name"].(string)
+		State, ok := item["name"].(string)
 		if !ok || State == "" {
 			log.FuncErrorTrace(0, "Failed to get state name for Record ID %v. Item: %+v\n", RecordId, item)
 			State = ""
@@ -194,6 +194,7 @@ func PrepareCommissionFilters(tableName string, dataFilter models.DataRequestBod
 	// Check if there are filters
 	if len(dataFilter.Filters) > 0 {
 		filtersBuilder.WriteString(" WHERE ")
+
 		for i, filter := range dataFilter.Filters {
 			if i > 0 {
 				filtersBuilder.WriteString(" AND ")
@@ -203,28 +204,35 @@ func PrepareCommissionFilters(tableName string, dataFilter models.DataRequestBod
 			column := filter.Column
 			switch column {
 			case "partner", "installer":
-				filtersBuilder.WriteString(fmt.Sprintf("pt1.partner_name %s $%d", filter.Operation, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(pt1.partner_name) %s LOWER($%d)", filter.Operation, len(whereEleList)+1))
+				whereEleList = append(whereEleList, strings.ToLower(filter.Data.(string)))
 			case "state":
-				filtersBuilder.WriteString(fmt.Sprintf("st.names %s $%d", filter.Operation, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(st.name) %s LOWER($%d)", filter.Operation, len(whereEleList)+1))
+				whereEleList = append(whereEleList, strings.ToLower(filter.Data.(string)))
 			case "sale_type":
-				filtersBuilder.WriteString(fmt.Sprintf("sl.type_name %s $%d", filter.Operation, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(sl.type_name) %s LOWER($%d)", filter.Operation, len(whereEleList)+1))
+				whereEleList = append(whereEleList, strings.ToLower(filter.Data.(string)))
 			case "rep_type":
-				filtersBuilder.WriteString(fmt.Sprintf("rp.rep_type %s $%d", filter.Operation, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(rp.rep_type) %s LOWER($%d)", filter.Operation, len(whereEleList)+1))
+				whereEleList = append(whereEleList, strings.ToLower(filter.Data.(string)))
+			case "sale_price":
+				filtersBuilder.WriteString(fmt.Sprintf("cr.sale_price %s $%d", filter.Operation, len(whereEleList)+1))
+				whereEleList = append(whereEleList, filter.Data)
 			default:
-				// For other columns, call PrepareFilters function
-				if len(filtersBuilder.String()) > len(" WHERE ") {
-					filtersBuilder.WriteString(" AND ")
-				}
-				subFilters, subWhereEleList := PrepareFilters(tableName, models.DataRequestBody{Filters: []models.Filter{filter}})
-				filtersBuilder.WriteString(subFilters)
-				whereEleList = append(whereEleList, subWhereEleList...)
-				continue
+				filtersBuilder.WriteString("LOWER(")
+				filtersBuilder.WriteString(filter.Column)
+				filtersBuilder.WriteString(") ")
+				filtersBuilder.WriteString(filter.Operation)
+				filtersBuilder.WriteString(" LOWER($")
+				filtersBuilder.WriteString(fmt.Sprintf("%d", len(whereEleList)+1))
+				filtersBuilder.WriteString(")")
+				whereEleList = append(whereEleList, strings.ToLower(filter.Data.(string)))
 			}
-
-			whereEleList = append(whereEleList, filter.Data)
 		}
 	}
+
 	filters = filtersBuilder.String()
+
 	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
 	return filters, whereEleList
 }
