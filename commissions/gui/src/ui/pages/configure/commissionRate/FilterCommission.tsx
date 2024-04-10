@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { fetchDealerTier } from "../../../../redux/apiSlice/configSlice/config_get_slice/dealerTierSlice";
 import { useAppDispatch } from "../../../../redux/hooks";
 import { fetchCommissions } from "../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice";
+import { ICONS } from "../../../icons/Icons";
 interface columnHeader{
 Partner:string,
 Installer:string,
@@ -95,7 +96,7 @@ const FilterCommission: React.FC<TableProps>=({handleClose,columns,page_number,p
       filters:formattedFilters
     }
     dispatch(fetchCommissions(req));
-    handleClose()
+    // handleClose()
     
   };
   return (
@@ -141,15 +142,11 @@ const FilterCommission: React.FC<TableProps>=({handleClose,columns,page_number,p
                 marginTop: "4.5px",
                 borderRadius: "8px",
                 outline: "none",
-                height: "2.8rem",
+                // height: "2.8rem",
                 border: "1px solid #d0d5dd",
                 overflowY: 'auto'
               }),
-              menu: provided => ({
-                ...provided,
-                maxHeight: '200px', // Set a max height for the dropdown menu
-                overflowY: 'auto' // Enable vertical scrolling
-              })
+             
             }}
           />
             </div>
@@ -170,7 +167,9 @@ const FilterCommission: React.FC<TableProps>=({handleClose,columns,page_number,p
                 outline: "none",
                 height: "2.8rem",
                 border: "1px solid #d0d5dd",
+                
               }),
+            
             }}
           />
             </div>
@@ -182,8 +181,8 @@ const FilterCommission: React.FC<TableProps>=({handleClose,columns,page_number,p
             filter.Column==="start_date" && "end_date"?  <Input
             type={"date"}
             label="Value"
-            name=""
-            value={filter.Data}
+            name="Data"
+            value={"2024-04-04"}
             onChange={(e) => {
               const updatedFilters = [...filters];
               updatedFilters[index].Data = e.target.value;
@@ -207,8 +206,8 @@ const FilterCommission: React.FC<TableProps>=({handleClose,columns,page_number,p
           }
           
           </div>
-          <div className="cross-btn">
-            <button type="button" onClick={()=>handleRemoveRow(index)}>X</button>
+          <div className="cross-btn"  onClick={()=>handleRemoveRow(index)}>
+            <img src={ICONS.cross} alt="" />
           </div>
         </div>
       ))}
