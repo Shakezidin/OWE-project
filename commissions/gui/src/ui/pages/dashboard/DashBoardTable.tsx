@@ -71,8 +71,8 @@ const DashBoardTable: React.FC = () => {
         className="TableContainer"
         style={{ overflowX: "auto", whiteSpace: "nowrap" }}  >
         <table>
-          <thead style={{background: "#FCFCFD"}}>
-            <tr>
+          <thead >
+            <tr style={{background: "#FCFCFD"}}>
               <th>
                 <div>
                   <CheckBox

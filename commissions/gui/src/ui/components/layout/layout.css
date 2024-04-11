@@ -14,6 +14,7 @@
   overflow-y: scroll !important;
   scroll-behavior: unset;
   scrollbar-width: 0;
+  /* border: 1px solid red; */
 }
 .side-bar-active{
   width: 50px;
@@ -32,18 +33,19 @@
   scrollbar-width: none; /* Firefox */
 }
 .children-container {
-  /* background-color: var(--children-bg-color); */
-  background-color: #F2F4F6;
+  background-color: var(--children-bg-color);
+  /* background-color: #F2F4F6; */
   padding: 1.5rem;
 }
 
 /* sidebar style  */
 .side-bar-logo {
-  background-color: var(--side-logo-bg-color);
+  /* background-color: var(--side-logo-bg-color); */
   padding: 1.3rem 1rem 1.2rem 1rem;
   display: flex;
   gap: 0.4rem;
   align-items: center;
+  border: 1px solid #F3F3F3;
 }
 .side-bar-logo-active{
   transition: .4s all linear;
@@ -73,7 +75,7 @@
 }
 
 .tablink {
-  color: white;
+  color: black;
   font-weight: normal;
   font-size: 14px;
   text-transform: capitalize;
@@ -98,11 +100,12 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  border: 1px solid gray;
   /* align-items: center; */
   /* background-color: #212121; */
   border-radius: 1rem;
   padding: 1rem 0rem 1rem 0.5rem;
-  background-color: var(--side-logo-bg-color);
+  /* background-color: var(--side-logo-bg-color); */
 
   /* padding: 1rem; */
 }
@@ -128,7 +131,7 @@
   position: sticky;
   top: 0;
   z-index: 10;
-  box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.1); */
 }
 
 .header-logo {

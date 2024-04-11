@@ -6,6 +6,14 @@
  * Path: src/ui/pages
  */
 import crossIcon from '../../resources/assets/cross.svg'
+import dashIcon from '../../resources/assets/dashIcon.svg'
+import ConfigIcon from '../../resources/assets/config.svg';
+import userManIcon from '../../resources/assets/userManag.svg'
+import techIcon from '../../resources/assets/techIcon.svg'
+import accountIcon from '../../resources/assets/accountIcon.svg'
+import logoutIcon from '../../resources/assets/logoutIcon.svg'
+import trackerIcon from '../../resources/assets/trackerIcon.svg'
+import activityIcon from '../../resources/assets/activityIcon.svg'
 export const ICONS = {
   BACKGROUND: require("../../resources/assets/background.png"),
   LOGO: require("../../resources/assets/logo.png"),
@@ -19,7 +27,7 @@ export const ICONS = {
   umIcon: require("../../resources/assets/umIcon.png"),
   supportIcon: require("../../resources/assets/contact.png"),
   myAccountIcon: require("../../resources/assets/myAccountIcon.png"),
-  logoutIcon: require("../../resources/assets/logout1.png"),
+  // logoutIcon: require("../../resources/assets/logout1.png"),
   //  addIcon:require('../../resources/assets/addIcon.png'),
   //   addIcon2:require('../../resources/assets/Frame (1).png'),
   //   addIcon3:require('../../resources/assets/Frame (2).png'),
@@ -41,6 +49,14 @@ export const ICONS = {
   graphIcon: require("../../resources/assets/graphIcon.png"),
   filter2: require("../../resources/assets/filter2.png"),
   groupIcon: require("../../resources/assets/Group2.png"),
-  arrowNext:require("../../resources/assets/Vector.svg"),
-  cross:crossIcon
+  arrowNext: require("../../resources/assets/Vector.svg"),
+  cross: crossIcon,
+  dash: dashIcon,
+  config: ConfigIcon,
+  userMan: userManIcon,
+  techIcon: techIcon,
+  accountIcon: accountIcon,
+  logoutIcon: logoutIcon,
+  trackerIcon: trackerIcon,
+  activityIcon: activityIcon
 };

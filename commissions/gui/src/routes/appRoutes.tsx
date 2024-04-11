@@ -25,7 +25,7 @@ const appRoutes: RouteType[] = [
     state: "dashboard",
     sidebarProps: {
       displayText: "Dashboard",
-      icon: <img src={ICONS.dashboardIcon} className="icon-image" alt="" />,
+      icon: <img src={ICONS.dash} className="icon-image" alt="" />,
     },
   },
   {
@@ -34,7 +34,7 @@ const appRoutes: RouteType[] = [
     state: "configuration",
     sidebarProps: {
       displayText: "Configuration",
-      icon: <img src={ICONS.confige} className="icon-image" alt="" />,
+      icon: <img src="" className="icon-image" alt="" />,
     },
     child: [
       {
@@ -224,13 +224,22 @@ const appRoutes: RouteType[] = [
     ],
   },
 
+  // {
+  //   path: "/dashboard/project",
+  //   element: <Project />,
+  //   state: "project",
+  //   sidebarProps: {
+  //     displayText: "Project",
+  //     icon: <img src={ICONS.projectIcon} className="icon-image" alt="" />,
+  //   },
+  // },
   {
-    path: "/dashboard/project",
-    element: <Project />,
-    state: "project",
+    path: "/dashboard/report",
+    element: <Report />,
+    state: "report",
     sidebarProps: {
-      displayText: "Project",
-      icon: <img src={ICONS.projectIcon} className="icon-image" alt="" />,
+      displayText: "Data",
+      icon: <img src={ICONS.config} className="icon-image" alt="" />,
     },
   },
   {
@@ -238,8 +247,8 @@ const appRoutes: RouteType[] = [
     element: <Report />,
     state: "report",
     sidebarProps: {
-      displayText: "Report",
-      icon: <img src={ICONS.reportIcon} className="icon-image" alt="" />,
+      displayText: "User Activity",
+      icon: <img src={ICONS.activityIcon} className="icon-image" alt="" />,
     },
   },
   {
@@ -247,8 +256,8 @@ const appRoutes: RouteType[] = [
     element: <DatabaseController />,
     state: "databasecontroller",
     sidebarProps: {
-      displayText: "DatabaseController",
-      icon: <img src={ICONS.dbIcon} className="icon-image" alt="" />,
+      displayText: "Project Tracker",
+      icon: <img src={ICONS.trackerIcon} className="icon-image" alt="" />,
     },
   },
   {
@@ -256,8 +265,8 @@ const appRoutes: RouteType[] = [
     element: <UserManamement />,
     state: "usermanagement",
     sidebarProps: {
-      displayText: "UserManagement",
-      icon: <img src={ICONS.umIcon} className="icon-image" alt="" />,
+      displayText: "User Management",
+      icon: <img src={ICONS.userMan} className="icon-image" alt="" />,
     },
   },
   {
@@ -265,8 +274,8 @@ const appRoutes: RouteType[] = [
     element: <DatabaseController />,
     state: "control",
     sidebarProps: {
-      displayText: "Control/Support",
-      icon: <img src={ICONS.supportIcon} className="icon-image" alt="" />,
+      displayText: "Technical Support",
+      icon: <img src={ICONS.techIcon} className="icon-image" alt="" />,
     },
   },
   {
@@ -275,7 +284,7 @@ const appRoutes: RouteType[] = [
     state: "myaccount",
     sidebarProps: {
       displayText: "My Account",
-      icon: <img src={ICONS.myAccountIcon} className="icon-image" alt="" />,
+      icon: <img src={ICONS.accountIcon} className="icon-image" alt="" />,
     },
   },
 ];

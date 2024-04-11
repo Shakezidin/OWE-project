@@ -42,7 +42,7 @@ const [open,setOpen] = useState<boolean>(false)
     }
       </div>
     {
-      open?<MdKeyboardArrowUp style={{fontSize:"1.5rem",color:colorConfig.sidebar.activeBg}} />:<MdKeyboardArrowDown style={{fontSize:"1.5rem",color:"white"}} />
+      open?<MdKeyboardArrowUp style={{fontSize:"1.5rem",color:colorConfig.sidebar.activeBg}} />:<MdKeyboardArrowDown style={{fontSize:"1.5rem",color:"black"}} />
     }
      </div>
         {
