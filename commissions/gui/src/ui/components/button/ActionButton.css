@@ -13,6 +13,10 @@
   padding: 16px 46px 16px 46px;
   text-transform: capitalize;
 }
+.loginButton:hover{
+  background-color: #0493ce;
+
+}
 .cancel{
   border:1px solid #0493ce;
   color:black;

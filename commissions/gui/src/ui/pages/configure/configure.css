@@ -88,6 +88,10 @@
   color: #344054;
   cursor: pointer;
 }
+.iconsSection2 button:hover{
+  background-color: var(--active-text-color) !important;
+  border: 1px solid var(--active-text-color) !important;
+}
 
 .iconsSection-filter button {
   display: flex;
