@@ -58,11 +58,7 @@ const FilterCommission: React.FC<TableProps>=({handleClose,columns,page_number,p
     updatedFilters.splice(index, 1);
     setFilters(updatedFilters);
   };
-  const handleOperationChange = (selectedOption: any, index: number) => {
-    const updatedFilters = [...filters];
-    updatedFilters[index].Operation = selectedOption?.value || '';
-    setFilters(updatedFilters);
-  };
+ 
  
   const handleChange = (index: number, field: keyof FilterModel, value: any) => {
     const newRules = [...filters];
@@ -142,10 +138,12 @@ const FilterCommission: React.FC<TableProps>=({handleClose,columns,page_number,p
                 marginTop: "4.5px",
                 borderRadius: "8px",
                 outline: "none",
-                // height: "2.8rem",
+                height: "2.8rem",
                 border: "1px solid #d0d5dd",
                 overflowY: 'auto'
               }),
+              
+           
              
             }}
           />
@@ -169,7 +167,11 @@ const FilterCommission: React.FC<TableProps>=({handleClose,columns,page_number,p
                 border: "1px solid #d0d5dd",
                 
               }),
-            
+              option: (baseStyles, state) => ({
+                ...baseStyles,
+               height:"200px"
+                
+              }),
             }}
           />
             </div>
@@ -178,7 +180,7 @@ const FilterCommission: React.FC<TableProps>=({handleClose,columns,page_number,p
           <div className="create-input-field">
          
           {
-            filter.Column==="start_date" && "end_date"?  <Input
+            filter.Column==="start_date" || filter.Column==="end_date"?  <Input
             type={"date"}
             label="Value"
             name="Data"
