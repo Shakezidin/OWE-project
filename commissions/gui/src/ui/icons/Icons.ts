@@ -14,6 +14,7 @@ import accountIcon from '../../resources/assets/accountIcon.svg'
 import logoutIcon from '../../resources/assets/logoutIcon.svg'
 import trackerIcon from '../../resources/assets/trackerIcon.svg'
 import activityIcon from '../../resources/assets/activityIcon.svg'
+import report from '../../resources/assets/report.svg'
 export const ICONS = {
   BACKGROUND: require("../../resources/assets/background.png"),
   LOGO: require("../../resources/assets/logo.png"),
@@ -22,7 +23,7 @@ export const ICONS = {
   dashboardIcon: require("../../resources/assets/dash.png"),
   confige: require("../../resources/assets/config.png"),
   projectIcon: require("../../resources/assets/project.png"),
-  reportIcon: require("../../resources/assets/reportIcon.png"),
+
   dbIcon: require("../../resources/assets/dbIcon.png"),
   umIcon: require("../../resources/assets/umIcon.png"),
   supportIcon: require("../../resources/assets/contact.png"),
@@ -54,6 +55,7 @@ export const ICONS = {
   dash: dashIcon,
   config: ConfigIcon,
   userMan: userManIcon,
+  reportIcon:report,
   techIcon: techIcon,
   accountIcon: accountIcon,
   logoutIcon: logoutIcon,

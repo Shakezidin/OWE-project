@@ -19,6 +19,7 @@ import AccountSettings from "../ui/pages/accountSettings/AccountSettings";
 import colorConfig from "../config/colorConfig";
 import UserManamement from "../ui/pages/userManagement/UserManagement";
 const appRoutes: RouteType[] = [
+  
   {
     path: "/dashboard",
     element: <DashboardPage />,
@@ -34,7 +35,7 @@ const appRoutes: RouteType[] = [
     state: "configuration",
     sidebarProps: {
       displayText: "Configuration",
-      icon: <img src="" className="icon-image" alt="" />,
+      icon: <img src={ICONS.config} className="icon-image" alt="" />,
     },
     child: [
       {
@@ -107,22 +108,7 @@ const appRoutes: RouteType[] = [
           ),
         },
       },
-      // {
-      //   path:"/dashboard/configuration/common_configuration",
-      //   element:<CommonConfigure/>,
-      //   state:"configuration.common_configuration",
-      //   sidebarProps:{
-      //     displayText:"Common Configuration"
-      //   }
-      // },
-      // {
-      //   path:"/dashboard/configuration/rep_pay_scale",
-      //   element:<RepPayScale/>,
-      //   state:"configuration.rep_pay_scale",
-      //   sidebarProps:{
-      //     displayText:"Rep Pay Scale"
-      //   }
-      // },
+      
       {
         path: "/dashboard/configuration/tier_loan_fee",
         element: <TierLoanFee />,
@@ -181,32 +167,6 @@ const appRoutes: RouteType[] = [
         },
       },
 
-      // {
-      //   path:"/dashboard/configuration/payment_validation",
-      //   element:<PaymentValidation/>,
-      //   state:"configuration.payment_validation",
-      //   sidebarProps:{
-      //     displayText:"Partner Validation"
-      //   }
-      // },
-      // {
-      //   path:"/dashboard/configuration/dealer_on_boarding",
-      //   element:<DealeronBoarding/>,
-      //   state:"configuration.dealer_on_boarding",
-      //   sidebarProps:{
-      //     displayText:"User Onboarding"
-      //   }
-      // },
-
-      // {
-      //   path:"/dashboard/configuration/appointment_setters",
-      //   element:<AppointmentSetters/>,
-      //   state:"configuration.appointment_setters",
-      //   sidebarProps:{
-      //     displayText:"Appointment Setters"
-      //   }
-      // },
-
       {
         path: "/dashboard/configuration/loan_type",
         element: <LoanType />,
@@ -224,33 +184,16 @@ const appRoutes: RouteType[] = [
     ],
   },
 
-  // {
-  //   path: "/dashboard/project",
-  //   element: <Project />,
-  //   state: "project",
-  //   sidebarProps: {
-  //     displayText: "Project",
-  //     icon: <img src={ICONS.projectIcon} className="icon-image" alt="" />,
-  //   },
-  // },
   {
     path: "/dashboard/report",
     element: <Report />,
     state: "report",
     sidebarProps: {
-      displayText: "Data",
+      displayText: "Report",
       icon: <img src={ICONS.config} className="icon-image" alt="" />,
     },
   },
-  {
-    path: "/dashboard/report",
-    element: <Report />,
-    state: "report",
-    sidebarProps: {
-      displayText: "User Activity",
-      icon: <img src={ICONS.activityIcon} className="icon-image" alt="" />,
-    },
-  },
+ 
   {
     path: "/dashboard/databasecontroller",
     element: <DatabaseController />,
