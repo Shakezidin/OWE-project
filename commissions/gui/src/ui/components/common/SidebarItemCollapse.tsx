@@ -31,7 +31,7 @@ const [open,setOpen] = useState<boolean>(false)
     item.sidebarProps ? (
       <>
        <div className="side-accordian" onClick={() => setOpen(!open)} style={{cursor:"pointer"}}>
-      <div className="side-icon-container">
+      <div className="side-icon-container-1">
 
      {item.sidebarProps.icon && item.sidebarProps.icon}
    
@@ -46,7 +46,7 @@ const [open,setOpen] = useState<boolean>(false)
     }
      </div>
         {
-          open &&   <div className="side-accordian-item">
+          open &&   <div className="side-accordian-item" >
           {item.child?.map((route, index) => (
             route.sidebarProps ? (
               route.child ? (

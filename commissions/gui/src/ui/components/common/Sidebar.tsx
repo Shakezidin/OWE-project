@@ -29,7 +29,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       }
       </div>
       <div className={`side-bar-content ${toggleOpen ? "side-bar-content-active" : ""}`}>
-        {/* <h3 style={{color:""}}>Commission</h3> */}
+        <p className="heading">Commissions</p>
         {appRoutes.map((route, index) =>
           route.sidebarProps ? (
             route.child ? (
@@ -50,7 +50,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           ) : null
         )}
 
-        <div className="side-icon-container"     onClick={handleLogout}>
+        <div className="side-icon-container" onClick={handleLogout}>
           <img src={ICONS.logoutIcon} className="icon-image" alt="" />
          {
           toggleOpen? null: <div

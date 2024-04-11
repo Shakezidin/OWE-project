@@ -9,6 +9,7 @@ import { fetchDealerTier } from "../../../../redux/apiSlice/configSlice/config_g
 import { useAppDispatch } from "../../../../redux/hooks";
 import { fetchCommissions } from "../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice";
 import { ICONS } from "../../../icons/Icons";
+import CustomAlert from "./CustomAlert";
 interface columnHeader{
 Partner:string,
 Installer:string,
@@ -44,11 +45,23 @@ const FilterCommission: React.FC<TableProps>=({handleClose,columns,page_number,p
   const [filters, setFilters] = useState<FilterModel[]>([
     { Column:"", Operation:"",Data:""}
   ]);
+  const [formState, setFormState] = useState({ Column: '', Operation: '', Data: '' });
   const options: Option[] = columns.map((column) => ({
     value: column.name,
     label:column.displayName
   }));
-  
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+
+  const handleAlertClose = () => {
+    setShowAlert(false);
+    setAlertMessage('');
+  };
+
+  const showAlertMessage = (message: string) => {
+    setAlertMessage(message);
+    setShowAlert(true);
+  };
   const handleAddRow = () => {
     setFilters([...filters, { Column: '', Operation: '', Data: '' }]);
   };
@@ -66,35 +79,59 @@ const FilterCommission: React.FC<TableProps>=({handleClose,columns,page_number,p
     setFilters(newRules);
   };
   const getOperationsForColumnType = (columnType: string) => {
+    const options = [];
     if (columnType === 'string') {
-      return [
-        { value: '=', label: 'Equals' },
-        { value: 'contains', label: 'Contains' }
-      ];
-    } else if (columnType === 'number') {
-      return [
-        { value: '=', label: 'Equals' },
-        { value: '<', label: 'Less Than' },
-        { value: '>', label: 'Greater Than' }
-      ];
+      options.push({ value: '=', label: 'Equals' });
+      options.push({ value: 'contains', label: 'Contains' });
     }
-    return [];
+    if (columnType === 'number') {
+      options.push({ value: '=', label: 'Equals' });
+      options.push({ value: '>', label: 'Greater Than' });
+      options.push({ value: '<', label: 'Less Than' });
+    }
+   return options;
+ 
   };
+  const getInputType = (columnName:string) => {
+    if (columnName === 'rate' || columnName === 'rl') {
+      return 'number';
+    } else if (columnName === 'start_date' || columnName === 'end_date') {
+      return 'date';
+    } else {
+      return 'text';
+    }
+  };
+
+
+ 
   const applyFilter = async () => {
+  
+  filters.forEach((filter, index) => {
+    if (!!filter.Column && !filter.Operation) {
+      showAlertMessage(`In Filter Row ${index + 1}, For ${filter?.Column?.toUpperCase()}, Please Provide Operation Name`);
+    }
+    if (!!filter.Column && !!filter.Operation && !filter.Data) {
+      showAlertMessage(`In Filter Row ${index + 1}, For ${filter?.Column?.toUpperCase()}, Please Provide Data`);
+    }
+});   
     const formattedFilters = filters.map(filter => ({
       Column: filter.Column,
       Operation: filter.Operation,
       Data: filter.Data
     }));
+    console.log(formattedFilters)
     const req={
       page_number:page_number,
       page_size:page_size,
       filters:formattedFilters
     }
     dispatch(fetchCommissions(req));
-    // handleClose()
+    handleClose()
     
   };
+  useEffect(() => {
+    
+  }, [handleClose]);
   return (
 
 <div className="transparent-model">
@@ -123,7 +160,7 @@ const FilterCommission: React.FC<TableProps>=({handleClose,columns,page_number,p
             <label className="inputLabel">Column Name</label>
             <div className="">
             <Select
-           options={options}
+           options={[  { value: '', label: 'Choose Column' },...options]}
             isSearchable
             value={options.find(option => option.value === filter.Column) || null}
             onChange={(selectedOption:any) => {
@@ -141,6 +178,7 @@ const FilterCommission: React.FC<TableProps>=({handleClose,columns,page_number,p
                 height: "2.8rem",
                 border: "1px solid #d0d5dd",
                 overflowY: 'auto'
+              
               }),
               
            
@@ -169,7 +207,7 @@ const FilterCommission: React.FC<TableProps>=({handleClose,columns,page_number,p
               }),
               option: (baseStyles, state) => ({
                 ...baseStyles,
-               height:"200px"
+              //  height:"200px"
                 
               }),
             }}
@@ -179,21 +217,8 @@ const FilterCommission: React.FC<TableProps>=({handleClose,columns,page_number,p
 
           <div className="create-input-field">
          
-          {
-            filter.Column==="start_date" || filter.Column==="end_date"?  <Input
-            type={"date"}
-            label="Value"
-            name="Data"
-            value={"2024-04-04"}
-            onChange={(e) => {
-              const updatedFilters = [...filters];
-              updatedFilters[index].Data = e.target.value;
-              setFilters(updatedFilters);
-            }}
-            placeholder={"Enter"}
-          
-          />: <Input
-          type={"text"}
+         <Input
+           type={getInputType(filter.Column)}
           label="Data"
           name="Data"
           value={filter.Data}
@@ -205,7 +230,7 @@ const FilterCommission: React.FC<TableProps>=({handleClose,columns,page_number,p
           placeholder={"Enter"}
         
         />
-          }
+          
           
           </div>
           <div className="cross-btn"  onClick={()=>handleRemoveRow(index)}>
@@ -215,15 +240,18 @@ const FilterCommission: React.FC<TableProps>=({handleClose,columns,page_number,p
       ))}
       </div>
     </div>
-    <div className="createUserActionButton" style={{ gap: "2rem" }}>
-      <ActionButton title={"Apply"} type="submit" onClick={() =>applyFilter()} />
+    <div className="createUserActionButton" >
+     <div className="" style={{ gap: "2rem",display:"flex",marginTop:"14rem"}}>
+     <ActionButton title={"Apply"} type="submit" onClick={() =>applyFilter()} />
 
-      <ActionButton
-        title={"cancel"}
-        type="reset"
-        onClick={handleClose}
-      />
+<ActionButton
+  title={"cancel"}
+  type="reset"
+  onClick={handleClose}
+/>
+     </div>
     </div>
+    {showAlert && <CustomAlert message={alertMessage} onClose={handleAlertClose} />}
   </div>
 </div>
 </div>

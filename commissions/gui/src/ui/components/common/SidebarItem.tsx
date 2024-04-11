@@ -18,24 +18,18 @@ const SidebarItem = ({ item,setToggleOpen,toggleOpen }: Props) => {
   const navigate = useNavigate()
   return (
     item.sidebarProps && item.path ? (
-   <div className="side-icon-container" >
+   <div className={`side-icon-container ${appState === item.state?"active-link-bg":""}`} >
 
    {item.sidebarProps.icon && item.sidebarProps.icon}
    
    {
     toggleOpen?null:<Link
     to={item.path}
-    className="tablink"
-    style={{
-      color: appState === item.state ? colorConfig.sidebar.activeBg : "black",
-    }}
+    className={`tablink ${appState === item.state?"active-link":""}`}
   >
     {item.sidebarProps.displayText}
   </Link>
    }
-  
-   
-    
    </div>
     ) : null
   );
