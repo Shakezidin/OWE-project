@@ -25,7 +25,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       <div className={`side-bar-logo ${toggleOpen? "side-bar-logo-active" :""}`}>
         <img src={ICONS.sidebarLogo} alt="" />
       {
-        toggleOpen?null:  <h3>OWE APP</h3>
+        toggleOpen?null:  <h3 style={{color:"black"}}>OWE HUB</h3>
       }
       </div>
       <div className={`side-bar-content ${toggleOpen ? "side-bar-content-active" : ""}`}>
@@ -57,7 +57,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
         
           className="tablink"
           style={{
-            color: "white",
+            color: "black",
           }}
         >
           logout

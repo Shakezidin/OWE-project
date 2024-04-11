@@ -27,7 +27,7 @@ const SidebarItem = ({ item,setToggleOpen,toggleOpen }: Props) => {
     to={item.path}
     className="tablink"
     style={{
-      color: appState === item.state ? colorConfig.sidebar.activeBg : "white",
+      color: appState === item.state ? colorConfig.sidebar.activeBg : "black",
     }}
   >
     {item.sidebarProps.displayText}

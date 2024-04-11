@@ -8,7 +8,7 @@
 }
 /* color config */
 :root {
-  --sidebar-bg-color: #32404f;
+  --sidebar-bg-color: white;
   --children-bg-color: #f3f3f3;
   --side-logo-bg-color: #263747;
   --primary-text-color: white;
@@ -33,9 +33,10 @@ li {
 }
 /* image icon srtyle  */
 .icon-image {
-  width: 18x;
-  height: 18px;
+  width: 18x !important;
+  height: 18px !important;
 }
+
 /* circle style  */
 .ellipse {
   width: 9px;
@@ -98,9 +99,8 @@ li {
   justify-content: center;
   z-index: 11;
   align-items: center;
- 
 }
-.sales-modal{
+.sales-modal {
   width: 400px;
   background-color: white;
   border-radius: 16px;
@@ -115,8 +115,7 @@ li {
   max-height: 300px;
   height: 100%;
   overflow-y: auto;
- /* height: auto; */
-
+  /* height: auto; */
 }
 .modal {
   background-color: white;
@@ -125,7 +124,6 @@ li {
   width: 900px;
   max-height: 600px;
   overflow-y: scroll;
- 
 }
 
 .createUserCrossButton {
@@ -151,9 +149,8 @@ li {
   gap: 20px;
   padding: 0 39px 0px 39px;
 }
-.createProfileInputView{
+.createProfileInputView {
   margin-top: 1rem;
-  
 }
 .create-input-container {
   display: flex;
@@ -169,84 +166,79 @@ li {
   padding: 24px 0 24px 0;
   gap: 1rem;
 }
-.rate-input-container{
-display: flex;
-width: 31.5%;
-justify-content: space-between;
+.rate-input-container {
+  display: flex;
+  width: 31.5%;
+  justify-content: space-between;
 }
-.start-input-container{
+.start-input-container {
   display: flex;
   width: 65.5%;
-justify-content: space-between;
+  justify-content: space-between;
 }
-.rate-input-field{
+.rate-input-field {
   width: 48.5%;
 }
-.create-input-field{
+.create-input-field {
   width: 31.5%;
-
 }
-.radio-container{
+.radio-container {
   display: flex;
   align-items: center;
   gap: 2rem;
   /* justify-content: space-between; */
 }
-.radio-content{
+.radio-content {
   display: flex;
   align-items: center;
-  gap: .5rem;
-  margin-top: .3rem;
+  gap: 0.5rem;
+  margin-top: 0.3rem;
   /* width: 23%; */
 }
-.radio{
+.radio {
   cursor: pointer;
   width: 30px !important;
   height: 30px;
 }
-.create-input-field-note{
+.create-input-field-note {
   width: 100%;
 }
-.create-input-field-note textarea{
+.create-input-field-note textarea {
   width: 100%;
   border: 1px solid #d0d5dd;
   outline: none;
-  padding: .5rem;
-  border-radius: .5rem;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
   font-size: 1rem;
 }
-.check-box{
+.check-box {
   width: 20px !important;
-  height:20px !important;
-  background-color:var(--border-color);
+  height: 20px !important;
+  background-color: var(--border-color);
 }
-
 
 /* <-----------------Filter css---------------------> */
 .filter-section {
   display: flex;
   justify-content: space-between;
   align-items: center;
-    padding: 1rem 1rem 0rem 0;
-    /* padding: "1rem 2rem 0rem 2rem"; */
-  
-  }
-  .apply p {
+  padding: 1rem 1rem 0rem 0;
+  /* padding: "1rem 2rem 0rem 2rem"; */
+}
+.apply p {
   font-size: 16px;
   font-weight: 600;
   line-height: 14.5px;
   text-align: left;
-  
-  }
-  .cross-btn{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 1.6rem;
-    cursor: pointer;
-  
-  }
-.cross-btn img{
+}
+.cross-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1.6rem;
+  cursor: pointer;
+}
+.cross-btn img {
   width: 24px;
   height: 24px;
 }
