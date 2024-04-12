@@ -15,6 +15,7 @@ import logoutIcon from '../../resources/assets/logoutIcon.svg'
 import trackerIcon from '../../resources/assets/trackerIcon.svg'
 import activityIcon from '../../resources/assets/activityIcon.svg'
 import report from '../../resources/assets/report.svg'
+import menu from '../../resources/assets/menu-icon.svg'
 export const ICONS = {
   BACKGROUND: require("../../resources/assets/background.png"),
   LOGO: require("../../resources/assets/logo.png"),
@@ -60,5 +61,6 @@ export const ICONS = {
   accountIcon: accountIcon,
   logoutIcon: logoutIcon,
   trackerIcon: trackerIcon,
-  activityIcon: activityIcon
+  activityIcon: activityIcon,
+  menuIcon:menu,
 };
