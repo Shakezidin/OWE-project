@@ -18,31 +18,25 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
   return (
     <div className="header-content">
       <div className="header-icon">
-        <div className="menu-icon" onClick={() => setToggleOpen(!toggleOpen)}>
-          <MdOutlineMenu className="icon" />
-        </div>
+     
         <div className="header-logo">
           <img src={ICONS.LOGO} alt="" />
         </div>
       </div>
       <div className="search-container">
-        {/* <div className="search-icon-img">
-          <GoSearch style={{ fontSize: "1.5rem", color: "gray" }} />
-          <input
-            type="text"
-            name="search"
-            placeholder="Search..."
-            className="search-input"
-          />
-        </div> */}
         <div className="user-container">
           <button className="app-btn" onClick={()=>setOpenModal(!openModal)}>
             <img src={ICONS.groupIcon} alt="" />
           </button>
           {
             openModal&&(<div className="header-modal">
+              <div className="">
+                <h3>Select Option</h3>
+              </div>
                 <div className="">
-                  <div className=""></div>
+                  <div className="image-icon">
+
+                  </div>
                   <div className="">
                     Commission
                   </div>

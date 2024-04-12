@@ -7,6 +7,7 @@ import { ICONS } from "../../icons/Icons";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logout } from "../../../redux/apiSlice/authSlice/authSlice";
+import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 interface Toggleprops {
   toggleOpen: boolean;
   setToggleOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -29,7 +30,19 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
       }
       </div>
       <div className={`side-bar-content ${toggleOpen ? "side-bar-content-active" : ""}`}>
-        <p className="heading">Commissions</p>
+      <div className="heading-container">
+      <div className={`icon-shape ${toggleOpen?"icon-shape-active":""}`}  onClick={() => setToggleOpen(!toggleOpen)}>
+     
+    {
+      toggleOpen?  <MdKeyboardArrowRight style={{fontSize:"1.2rem",color:"black"}} />: <img src={ICONS.menuIcon} alt="" />
+    }
+      </div>
+
+    
+      </div>
+      {
+        toggleOpen?null:<p className="heading">Commissions</p>
+      }
         {appRoutes.map((route, index) =>
           route.sidebarProps ? (
             route.child ? (

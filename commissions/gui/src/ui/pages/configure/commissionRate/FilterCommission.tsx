@@ -39,13 +39,16 @@ const operations = [
   { value: '<', label: 'Less Than' },
   { value: 'contains', label: 'Contains' }
 ];
+interface ErrorState {
+  [key: string]: string;
+}
 // Filter component
 const FilterCommission: React.FC<TableProps>=({handleClose,columns,page_number,page_size}) => {
     const dispatch = useAppDispatch();
   const [filters, setFilters] = useState<FilterModel[]>([
     { Column:"", Operation:"",Data:""}
   ]);
-  const [formState, setFormState] = useState({ Column: '', Operation: '', Data: '' });
+  const [errors, setErrors] = useState<ErrorState>({});
   const options: Option[] = columns.map((column) => ({
     value: column.name,
     label:column.displayName
@@ -77,17 +80,22 @@ const FilterCommission: React.FC<TableProps>=({handleClose,columns,page_number,p
     const newRules = [...filters];
     newRules[index][field] = value;
     setFilters(newRules);
+    
   };
   const getOperationsForColumnType = (columnType: string) => {
     const options = [];
     if (columnType === 'string') {
-      options.push({ value: '=', label: 'Equals' });
-      options.push({ value: 'contains', label: 'Contains' });
+      options.push({ value: 'eqs', label: 'Equals To' });
+      options.push({ value: 'stw', label: 'Start With' });
+      options.push({ value: 'edw', label: 'End With' });
+      options.push({ value: 'cont', label: 'Contains' });
     }
     if (columnType === 'number') {
-      options.push({ value: '=', label: 'Equals' });
-      options.push({ value: '>', label: 'Greater Than' });
-      options.push({ value: '<', label: 'Less Than' });
+      options.push({ value: 'eqs', label: 'Equals' });
+      options.push({ value: 'grt', label: 'Greater Than' });
+      options.push({ value: 'grteqs', label: 'Greater Than Equals To' });
+      options.push({ value: 'lst', label: 'Less Than' });
+      options.push({ value: 'lsteqs', label: 'Less Than Equals To' });
     }
    return options;
  
@@ -105,33 +113,44 @@ const FilterCommission: React.FC<TableProps>=({handleClose,columns,page_number,p
 
  
   const applyFilter = async () => {
-  
-  filters.forEach((filter, index) => {
-    if (!!filter.Column && !filter.Operation) {
-      showAlertMessage(`In Filter Row ${index + 1}, For ${filter?.Column?.toUpperCase()}, Please Provide Operation Name`);
-    }
-    if (!!filter.Column && !!filter.Operation && !filter.Data) {
-      showAlertMessage(`In Filter Row ${index + 1}, For ${filter?.Column?.toUpperCase()}, Please Provide Data`);
-    }
-});   
-    const formattedFilters = filters.map(filter => ({
-      Column: filter.Column,
-      Operation: filter.Operation,
-      Data: filter.Data
-    }));
-    console.log(formattedFilters)
-    const req={
-      page_number:page_number,
-      page_size:page_size,
-      filters:formattedFilters
-    }
-    dispatch(fetchCommissions(req));
-    handleClose()
-    
-  };
-  useEffect(() => {
-    
-  }, [handleClose]);
+
+setErrors({});
+
+// Perform validation
+const newErrors: ErrorState = {};
+
+filters.forEach((filter, index) => {
+  if (!filter.Operation) {
+    newErrors[`operation${index}`] = `Please provide Operation Name for Row ${index + 1}`;
+  }
+  if (!filter.Data) {
+    newErrors[`data${index}`] = `Please provide Data for Filter ${index + 1}`;
+  }
+});
+
+// Update state with new errors
+setErrors(newErrors);
+
+// If no errors, proceed with API call
+if (Object.keys(newErrors).length === 0) {
+  const formattedFilters = filters.map(filter => ({
+    Column: filter.Column,
+    Operation: filter.Operation,
+    Data: typeof filter.Data === 'string' ? parseInt(filter.Data, 10) : filter.Data,
+  }));
+  console.log(formattedFilters)
+  const req={
+    page_number:page_number,
+    page_size:page_size,
+    filters:formattedFilters
+  }
+  dispatch(fetchCommissions(req));
+  handleClose()
+}
+
+}
+ 
+ console.log(errors)
   return (
 
 <div className="transparent-model">
@@ -160,13 +179,12 @@ const FilterCommission: React.FC<TableProps>=({handleClose,columns,page_number,p
             <label className="inputLabel">Column Name</label>
             <div className="">
             <Select
-           options={[  { value: '', label: 'Choose Column' },...options]}
+           options={[  { value: '', label: 'Select' },...options]}
             isSearchable
             value={options.find(option => option.value === filter.Column) || null}
             onChange={(selectedOption:any) => {
               handleChange(index, 'Column', selectedOption.value);
-              handleChange(index, 'Operation', '');
-              handleChange(index, 'Data', '');
+              setErrors({ ...errors, [`column${index}`]: '' });
             }}
             
             styles={{
@@ -180,11 +198,9 @@ const FilterCommission: React.FC<TableProps>=({handleClose,columns,page_number,p
                 overflowY: 'auto'
               
               }),
-              
-           
-             
             }}
           />
+      
             </div>
           </div>
           <div className="create-input-field">
@@ -193,7 +209,9 @@ const FilterCommission: React.FC<TableProps>=({handleClose,columns,page_number,p
             <Select
              options={getOperationsForColumnType(columns.find(column => column.name === filter.Column)?.type || '')}
              value={{ value: filter.Operation, label: filter.Operation}}
-             onChange={(selectedOption:any) => handleChange(index, 'Operation', selectedOption.value)}
+             onChange={(selectedOption:any) => {handleChange(index, 'Operation', selectedOption.value);
+             setErrors({ ...errors, [`operation${index}`]: '' });
+             }}
             // placeholder="Select Operation"
             styles={{
               control: (baseStyles, state) => ({
@@ -212,6 +230,7 @@ const FilterCommission: React.FC<TableProps>=({handleClose,columns,page_number,p
               }),
             }}
           />
+            {errors[`operation${index}`] && <span style={{color:"red",fontSize:"12px"}}>{errors[`operation${index}`]}</span>}
             </div>
           </div>
 
@@ -226,10 +245,12 @@ const FilterCommission: React.FC<TableProps>=({handleClose,columns,page_number,p
             const updatedFilters = [...filters];
             updatedFilters[index].Data = e.target.value;
             setFilters(updatedFilters);
+            setErrors({ ...errors, [`data${index}`]: '' });
           }}
           placeholder={"Enter"}
         
         />
+         {errors[`data${index}`] && <span style={ {color:"red",fontSize:"12px"}}>{errors[`data${index}`]}</span>}
           
           
           </div>

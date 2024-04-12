@@ -34,7 +34,7 @@ const appRoutes: RouteType[] = [
     element: <Configuration />,
     state: "configuration",
     sidebarProps: {
-      displayText: "Configuration",
+      displayText: "Configure",
       icon: <img src={ICONS.config} className="icon-image" alt="" />,
     },
     child: [
@@ -190,7 +190,7 @@ const appRoutes: RouteType[] = [
     state: "report",
     sidebarProps: {
       displayText: "Report",
-      icon: <img src={ICONS.config} className="icon-image" alt="" />,
+      icon: <img src={ICONS.reportIcon} className="icon-image" alt="" />,
     },
   },
  
