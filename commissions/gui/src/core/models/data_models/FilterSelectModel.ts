@@ -7,7 +7,7 @@ export interface FilterModel{
     type: string;
   }
   
-export interface Option {
+export interface optionOperation {
     value: string;
     label: string;
   }
@@ -42,5 +42,28 @@ export interface Option {
       return 'date';
     } else {
       return 'text';
+    }
+  };
+  export  const getLabelForOperation = (value: string) => {
+    switch (value) {
+      case 'eqs':
+        return 'Equals' ||"On";
+      case 'stw':
+        return 'Start With';
+      case 'edw':
+        return 'End With';
+      case 'cont':
+        return 'Contains';
+      case 'grt':
+        return 'Greater Than' || "After";
+      case 'grteqs':
+        return 'Greater Than Equals To'||"On and After";
+      case 'lst':
+        return 'Less Than'||"Before";
+      case 'lsteqs':
+        return 'Less Than Equals To'||"On and Before";
+    
+      default:
+        return value;
     }
   };
