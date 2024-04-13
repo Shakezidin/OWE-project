@@ -22,6 +22,7 @@ import viewChart from '../../resources/assets/viewcahrt.svg'
 import archive from '../../resources/assets/archive.svg'
 import edit from '../../resources/assets/edit.svg'
 import viewA from '../../resources/assets/ellips.svg'
+import leftArrow from '../../resources/assets/leftArrow.svg'
 export const ICONS = {
   BACKGROUND: require("../../resources/assets/background.png"),
   LOGO: require("../../resources/assets/logo.png"),
@@ -60,4 +61,5 @@ export const ICONS = {
   trackerIcon: trackerIcon,
   activityIcon: activityIcon,
   menuIcon:menu,
+  leftArrow: leftArrow
 };

@@ -97,3 +97,50 @@ text-align: left;
   color: #344054;
   background: white;
 }
+.db-access {
+  display: flex;
+  align-items: center;
+ 
+ }
+ .db-access input{
+   width: 24px;
+ height: 24px;
+ border-radius: 4px 0px 0px 0px;
+ border: 1px 0px 0px 0px;
+ opacity: 0px;
+ 
+ 
+ }
+ .db-access label{
+  margin-top: 1rem;
+  padding-left: 0.5rem;
+   font-size: 14px;
+   font-weight: 500;
+   line-height: 12px;
+   padding-bottom: 1rem;
+   
+ }
+ .selectTable-section {
+   display: flex;
+   align-items: center;
+   gap: 0.5rem;
+   padding: 1rem;
+ }
+ .selectTable-section img {
+ cursor: pointer;
+ 
+ }
+ .selectTable-section p {
+ font-size: 28px;
+ font-weight: 600;
+ line-height: 14.5px;
+ text-align: left;
+ }
+ .access-data p {
+   font-size: 14px;
+   font-weight: 500;
+   line-height: 14.5px;
+   text-align: left;
+   margin-top: 0.4rem;
+   
+ }

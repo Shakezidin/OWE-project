@@ -5,6 +5,8 @@ import UserOnboardCreation from "./userOnboard/UserOnboardCreation";
 import EditOnboarding from "../userManagement/userOnboard/EditOnboarding"
 import UserHeaderSection from "./UserHeader/UserHeaderSection";
 import UserPieChart from "./pieChart/UserPieChart";
+import DatabaseAccess from "./userOnboard/DatabaseAccess";
+import SelectTable from "./userOnboard/SeletTable";
 const UserManagement: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
   const handleOpen = () => setOpen(true);
@@ -32,7 +34,7 @@ const UserManagement: React.FC = () => {
         </div>
       </div>
       {open && (
-        <EditOnboarding
+        <SelectTable
           handleClose={handleClose}
           editMode={false}
           userOnboard={null}
