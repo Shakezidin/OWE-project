@@ -1,39 +1,58 @@
 import { IoAddSharp } from "react-icons/io5";
-import Select,{ ActionMeta, OnChangeValue, StylesConfig} from "react-select";
+import Select from "react-select";
+import '../../create_profile/CreateUserProfile.css'
+// import "../commissionRate/Filter.css";
 import Input from "../../../components/text_input/Input";
 import { ActionButton } from "../../../components/button/ActionButton";
-import { useEffect, useState } from "react";
 
+import { useAppDispatch } from "../../../../redux/hooks";
+import { fetchCommissions } from "../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice";
+import { ICONS } from "../../../icons/Icons";
+
+import { getLabelForOperation, getOperationsForColumnType } from "../../../../core/models/data_models/FilterSelectModel";
+import { useState } from "react";
+import OperationSelect from "../commissionRate/OperationSelect";
+import { fetchDealer } from "../../../../redux/apiSlice/configSlice/config_get_slice/dealerSlice";
+
+interface Column {
+  name: string;
+  displayName: string;
+  type: string;
+}
 interface TableProps {
   handleClose: () => void,
-   columns: string[],
-   page_number:number,
-   page_size:number
+  columns: Column[],
+  page_number: number,
+  page_size: number
 }
-interface FilterModel{
+interface FilterModel {
   Column: string, Operation: string, Data: string
 }
-// Filter component
-const FilterTimeLine: React.FC<TableProps>=({handleClose,columns,page_number,page_size}) => {
-  const [filters, setFilters] = useState<FilterModel[]>([
-    { Column: columns.length > 0 ? columns[0]:"", Operation:"",Data:""}
-  ]);
+interface Option {
+  value: string;
+  label: string;
+}
 
-  const applyFilter = async () => {
-    const formattedFilters = filters.map(filter => ({
-      Column: filter.Column,
-      Operation: filter.Operation,
-      Data: filter.Data
-    }));
-    const req={
-      page_number:page_number,
-      page_size:page_size,
-      filters:formattedFilters
-    }
-    console.log(req)
-  };
+interface ErrorState {
+  [key: string]: string;
+}
+// Filter component
+const FilterTimeLine: React.FC<TableProps> = ({ handleClose, columns, page_number, page_size }) => {
+  const dispatch = useAppDispatch();
+  const [filters, setFilters] = useState<FilterModel[]>([
+    { Column: "", Operation: "", Data: "" }
+  ]);
+  const [errors, setErrors] = useState<ErrorState>({});
+  const options: Option[] = columns.map((column) => ({
+    value: column.name,
+    label: column.displayName
+  }));
+
+
+
   const handleAddRow = () => {
     setFilters([...filters, { Column: '', Operation: '', Data: '' }]);
+    setErrors({});
   };
 
   const handleRemoveRow = (index: number) => {
@@ -41,139 +60,184 @@ const FilterTimeLine: React.FC<TableProps>=({handleClose,columns,page_number,pag
     updatedFilters.splice(index, 1);
     setFilters(updatedFilters);
   };
-  const handleOperationChange = (selectedOption: any, index: number) => {
-    const updatedFilters = [...filters];
-    updatedFilters[index].Operation = selectedOption?.value || '';
-    setFilters(updatedFilters);
+
+
+  const handleChange = (index: number, field: keyof FilterModel, value: any) => {
+    const newRules = [...filters];
+    newRules[index][field] = value;
+    newRules[index].Data = '';
+    setFilters(newRules);
+
+
   };
-  const handleColumnChange = (selectedOption: any, index: number) => {
-    const updatedFilters = [...filters];
-    updatedFilters[index].Column = selectedOption?.value || '';
-    setFilters(updatedFilters);
-  };
-  useEffect(() => {
-    if (filters.length > 0) {
-      const updatedFilters = [...filters];
-      updatedFilters[0].Operation = 'equals';
-      setFilters(updatedFilters);
+  const handleDataChange=(index: number, value: string)=>{
+    const newFilters = [...filters];
+    // Convert ".1" to "0.1" if the column is "rate" or "rate list"
+    if (newFilters[index].Column === 'chg_dlr' || newFilters[index].Column === 'pay_src') {
+      value = value.replace(/^(\.)(\d+)/, '0$1$2');
     }
-  }, []);
- 
+    newFilters[index].Data = value;
+    setFilters(newFilters)
+  }
+  const getInputType = (columnName: string) => {
+    if (columnName === 'rate' || columnName === 'rl') {
+      return 'number';
+    } else if (columnName === 'start_date' || columnName === 'end_date') {
+      return 'date';
+    } else {
+      return 'text';
+    }
+  };
+
+
+  const applyFilter = async () => {
+
+    setErrors({});
+    if (filters.some((filter) => !filter.Column || filter.Column === 'Select')) {
+      console.log("Column not selected or 'Select' chosen. Skipping validation and API call.");
+      return;
+    }
+    // Perform validation
+    const newErrors: ErrorState = {};
+
+    filters.forEach((filter, index) => {
+      if (!filter.Operation) {
+        newErrors[`operation${index}`] = `Please provide Operation`;
+      }
+      if (!filter.Data) {
+        newErrors[`data${index}`] = `Please provide Data`;
+      }
+    });
+
+    // Update state with new errors
+    setErrors(newErrors);
+
+    // If no errors, proceed with API call
+    if (Object.keys(newErrors).length === 0) {
+      const formattedFilters = filters.map(filter => ({
+        Column: filter.Column,
+        Operation: filter.Operation,
+        Data: filter.Data,
+      }));
+      console.log(formattedFilters)
+      const req = {
+        page_number: page_number,
+        page_size: page_size,
+        filters: formattedFilters
+      }
+      console.log(req)
+      // dispatch(fetchDealer(req));
+      // handleClose()
+    }
+
+  }
+
+  console.log(errors)
   return (
 
-<div className="transparent-model">
-<div className="filter-modal">
-  <div className="createUserContainer">
-    <div className="filter-section">
-    <h3 className="createProfileText">Filter</h3>
-      <div className="iconsSection2">
-      <div className="iconsSection2">
-          <button
-            type="button"
-            style={{
-              color: "black",
-              border: "1px solid #ACACAC",
-            }}
-            onClick={handleAddRow}
-          >
-            <IoAddSharp /> Add New
-          </button>
-        </div>
-      
-      </div>
-    </div>
-    <div className="createProfileInputView">
-      <div className="createProfileTextView">
-      {filters?.map((filter, index) => (
-        <div className="create-input-container" key={index}>
-          <div className="create-input-field">
-            <label className="inputLabel">Column Name</label>
-            <div className="">
-            <Select
-            options={columns?.map((col) => ({ value: col, label: col }))}
-            value={{ value: filter?.Column, label: filter?.Column }}
-            onChange={(selectedOption) => handleColumnChange(selectedOption, index)}
-            placeholder="Select Column"
-         
-            styles={{
-              control: (baseStyles, state) => ({
-                ...baseStyles,
-                marginTop: "4.5px",
-                borderRadius: "8px",
-                outline: "none",
-                height: "2.8rem",
-                border: "1px solid #d0d5dd",
-                
-              }),
-            }}
-      //       className="basic-multi-select"
-      // classNamePrefix="select"
-          />
+    <div className="transparent-model">
+      <div className="filter-modal">
+        <div className="createUserContainer">
+          <div className="filter-section">
+            <h3 className="createProfileText">Filter</h3>
+            <div className="iconsSection2">
+              <button
+                type="button"
+                style={{
+                  color: "black",
+                  border: "1px solid #ACACAC",
+                }}
+                onClick={handleAddRow}
+              >
+                <IoAddSharp /> Add New
+              </button>
             </div>
           </div>
-          <div className="create-input-field">
-            <label className="inputLabel">Operation</label>
-            <div className="">
-            <Select
-            options={[
-              { value: '=', label: 'Equals' },
-              { value: 'contains', label: 'Contains' },
-              { value: '>', label: 'Greater Than' },
-              { value: '<', label: 'Less Than' },
-            ]}
-            value={{ value: filter.Operation, label: filter.Operation }}
-            onChange={(selectedOption) => handleOperationChange(selectedOption, index)}
-            placeholder="Select Operation"
-            styles={{
-              control: (baseStyles, state) => ({
-                ...baseStyles,
-                marginTop: "4.5px",
-                borderRadius: "8px",
-                outline: "none",
-                height: "2.8rem",
-                border: "1px solid #d0d5dd",
-              }),
-            }}
-          />
+          <div className="createProfileInputView">
+            <div className="createProfileTextView">
+              {filters?.map((filter, index) => (
+                <div className="create-input-container" key={index}>
+                  <div className="create-input-field">
+                    <label className="inputLabel">Column Name</label>
+                    <div className="">
+                      <Select
+                        options={[{ value: 'Select', label: 'Select' }, ...options]}
+                        isSearchable
+                        value={options.find(option => option.value === filter.Column) || null}
+                        onChange={(selectedOption: any) => {
+                          handleChange(index, 'Column', selectedOption.value);
+                          setErrors({ ...errors, [`column${index}`]: '' });
+                        }}
+
+                        styles={{
+                          control: (baseStyles, state) => ({
+                            ...baseStyles,
+                            marginTop: "4.5px",
+                            borderRadius: "8px",
+                            outline: "none",
+                            height: "2.8rem",
+                            border: "1px solid #d0d5dd",
+                            overflowY: 'auto'
+
+                          }),
+                        }}
+                      />
+
+                    </div>
+                  </div>
+                  <div className="create-input-field">
+                    <label className="inputLabel">Operation</label>
+                   <OperationSelect
+                   options={options}
+                   columnType={columns.find(option => option.name === filter.Column)?.type || ''}
+                   value={filter.Operation}
+                   onChange={(value:any) =>{ handleChange(index, 'Operation', value);
+                   setErrors({ ...errors, [`operation${index}`]: '' });
+                   }}
+                   errors={errors}
+                   index={index}
+                   />
+                  </div>
+
+                  <div className="create-input-field">
+
+                    <Input
+                      type={getInputType(filter.Column)}
+                      label="Data"
+                      name="Data"
+                      value={filter.Data}
+                      onChange={(e) =>{ handleDataChange(index, e.target.value);
+                        setErrors({ ...errors, [`data${index}`]: '' });
+                      }}
+                      placeholder={"Enter"}
+
+                    />
+                    {errors[`data${index}`] && <span style={{ color: "red", fontSize: "12px" }}>{errors[`data${index}`]}</span>}
+
+
+                  </div>
+                  <div className="cross-btn" onClick={() => handleRemoveRow(index)}>
+                    <img src={ICONS.cross} alt="" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="createUserActionButton" >
+            <div className="" style={{ gap: "2rem", display: "flex"}}>
+              <ActionButton title={"Apply"} type="submit" onClick={() => applyFilter()} />
+
+              <ActionButton
+                title={"cancel"}
+                type="reset"
+                onClick={handleClose}
+              />
             </div>
           </div>
 
-          <div className="create-input-field">
-            <Input
-              type={"text"}
-              label="Value"
-         
-              name=""
-            
-              value={filter.Data}
-              onChange={(e) => {
-                const updatedFilters = [...filters];
-                updatedFilters[index].Data = e.target.value;
-                setFilters(updatedFilters);
-              }}
-              placeholder={"Enter"}
-            
-            />
-          </div>
-          <div className="cross-btn">
-            <button type="button" onClick={()=>handleRemoveRow(index)}>X</button>
-          </div>
         </div>
-      ))}
       </div>
     </div>
-    <div className="createUserActionButton" style={{ gap: "2rem" }}>
-      <ActionButton title={"Apply"} type="submit" onClick={() =>applyFilter()} />
-
-      <ActionButton
-        title={"cancel"}
-        type="reset"
-        onClick={handleClose}
-      />
-    </div>
-  </div>
-</div>
-</div>
   );
 };
 export default FilterTimeLine

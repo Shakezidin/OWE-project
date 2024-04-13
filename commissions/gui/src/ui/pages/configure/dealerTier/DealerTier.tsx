@@ -20,6 +20,7 @@ import { DealerTierModel } from "../../../../core/models/configuration/create/De
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 import Pagination from "../../../components/pagination/Pagination";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
+import { Column } from "../../../../core/models/data_models/FilterSelectModel";
 const DealerTier = () => {
   const dispatch = useAppDispatch();
   // const getData = useAppSelector(state=>state.comm.data)
@@ -39,7 +40,7 @@ const DealerTier = () => {
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
   const [editedDealerTier, setEditedDealerTier] = useState<DealerTierModel | null>(null);
-  const [columns, setColumns] = useState<string[]>([]);
+ 
   const itemsPerPage = 5;
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
   useEffect(() => {
@@ -50,15 +51,17 @@ const DealerTier = () => {
     dispatch(fetchDealerTier(pageNumber));
   }, [dispatch,currentPage]);
   console.log(dealerTierList);
-  const getColumnNames = () => {
-    if (dealerTierList.length > 0) {
-      const keys = Object.keys(dealerTierList[0]);
-      setColumns(keys);
-    }
-  };
+  const columns: Column[] = [
+    // { name: "record_id", displayName: "Record ID", type: "number" },
+
+    { name: "dealer", displayName: "Dealer", type: "string" },
+    { name: "tier", displayName: "Tier", type: "string" },
+    { name: "start_date", displayName: "Start Date", type: "date" },
+    { name: "end_date", displayName: "End Date", type: "date" }
+  ];
   const filter = ()=>{
     setFilterOpen(true)
-    getColumnNames()
+
   }
   const handleAddDealerTier = () => {
     setEditMode(false);

@@ -163,7 +163,6 @@ const appRoutesTwo = [
                     },
                     {
                         path: routes.loanFeeRoutes,
-
                         sidebarProps: {
                             displayText: "Loan Fee Addr",
                             icon: (

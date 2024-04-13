@@ -16,11 +16,12 @@ import FilterAdder from "./FilterAdder";
 import { FaArrowDown } from "react-icons/fa6";
 import { AdderVModel } from "../../../../core/models/configuration/create/AdderVModel";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
+import { Column } from "../../../../core/models/data_models/FilterSelectModel";
 
 const AdderValidation = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
-  const [columns, setColumns] = useState<string[]>([]);
+
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -48,15 +49,17 @@ const AdderValidation = () => {
     handleOpen()
   };
 
-  const getColumnNames = () => {
-    if (adderVList.length > 0) {
-      const keys = Object.keys(adderVList[0]);
-      setColumns(keys);
-    }
-  };
+  const columns: Column[] = [
+    // { name: "record_id", displayName: "Record ID", type: "number" },
+    { name: "adder_name", displayName: "Adder Name", type: "string" },
+    { name: "adder_type", displayName: "Adder Type", type: "string" },
+    { name: "description", displayName: "Description", type: "string" },
+    { name: "price_amount", displayName: "Price Amount", type: "string" },
+    { name: "price_type", displayName: "Price Type", type: "string" },
+  ];
   const filter = ()=>{
     setFilterOpen(true)
-    getColumnNames()
+   
   }
  
   useEffect(() => {

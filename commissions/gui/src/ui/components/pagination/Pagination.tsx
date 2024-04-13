@@ -23,7 +23,7 @@ interface PaginationProps {
       <div className="pagination-container">
         <div className="pagination">
     
-            <button  className={currentPage === 1 ? "disabled" : "current-btn"} onClick={goToPrevPage} disabled={currentPage===1}><MdArrowBackIos  style={{color: "#667085",fontSize:"1.5rem", marginTop:"5px"}}/></button>
+            <button  className={currentPage === 1 ? "disabled" : "current-btn"} onClick={goToPrevPage} disabled={currentPage===1}><MdArrowBackIos  style={{color: "#667085",fontSize:".9rem",marginLeft:'.2rem'}}/></button>
        
           {Array.from({ length: totalPages }, (_, i) => (
             
@@ -31,7 +31,7 @@ interface PaginationProps {
         
           ))}
          
-            <button className={currentPage === totalPages ? "disabled" : "current-btn"} onClick={goToNextPage}><MdArrowForwardIos  style={{color: "#667085", marginTop:"5px",fontSize:"1.5rem",}}/></button>
+            <button className={currentPage === totalPages ? "disabled" : "current-btn"} onClick={goToNextPage}><MdArrowForwardIos  style={{color: "#667085",fontSize:".9rem",}}/></button>
           
         </div>
       </div>

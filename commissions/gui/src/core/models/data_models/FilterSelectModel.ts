@@ -47,7 +47,7 @@ export interface optionOperation {
   export  const getLabelForOperation = (value: string) => {
     switch (value) {
       case 'eqs':
-        return 'Equals' ||"On";
+        return 'Equals' || "On";
       case 'stw':
         return 'Start With';
       case 'edw':

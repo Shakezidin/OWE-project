@@ -16,6 +16,7 @@ import FilterTierLoan from "./filterTierLoan";
 import { FaArrowDown } from "react-icons/fa6";
 import { TierLoanFeeModel } from "../../../../core/models/configuration/create/TierLoanFeeModel";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
+import { Column } from "../../../../core/models/data_models/FilterSelectModel";
 const TierLoanFee = () => {
   const dispatch = useAppDispatch();
   const tierloanList = useAppSelector(
@@ -27,7 +28,7 @@ const TierLoanFee = () => {
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [columns, setColumns] = useState<string[]>([]);
+  
   const filterClose = () => setFilterOpen(false);
   const [editMode, setEditMode] = useState(false);
   const [editedTierLoanfee, setEditedTierLoanFee] = useState<TierLoanFeeModel | null>(null);
@@ -53,15 +54,22 @@ const TierLoanFee = () => {
     setEditedTierLoanFee(null);
     handleOpen()
   };
-  const getColumnNames = () => {
-    if (tierloanList.length > 0) {
-      const keys = Object.keys(tierloanList[0]);
-      setColumns(keys);
-    }
-  };
+  const columns: Column[] = [
+    // { name: "record_id", displayName: "Record ID", type: "number" },
+
+    { name: "dealer_tier", displayName: "Dealer Tier", type: "string" },
+    { name: "installer", displayName: "Installer", type: "string" },
+    { name: "state", displayName: "State", type: "string" },
+    { name: "finance_type", displayName: "Finance Type", type: "string" },
+    { name: "owe_cost", displayName: "OWE Cost", type: "string" },
+    { name: "dlr_mu", displayName: "DLR MU", type: "string" },
+    { name: "dlr_cost", displayName: "DLR Cost", type: "string" },
+    { name: "start_date", displayName: "Start Date", type: "date" },
+    { name: "end_date", displayName: "End Date", type: "date" }
+  ];
   const filter = ()=>{
     setFilterOpen(true)
-    getColumnNames()
+ 
   }
  
   const handleEditTierLoan = (tierEditedData: TierLoanFeeModel) => {
