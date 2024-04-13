@@ -65,7 +65,7 @@ export const LoginPage = () => {
         localStorage.setItem("role", role_name);
         localStorage.setItem("token", access_token);
         dispatch(loginSuccess({ email_id, role_name, access_token }));
-          navigate("/dashboard");
+          navigate("/commission/dashboard");
         
 
       } catch (error) {
@@ -76,7 +76,7 @@ export const LoginPage = () => {
   };
 
   if (isAuthenticated) {
-    navigate("/dashboard");
+    navigate("/commission/dashboard");
   }
   return (
     <div className="mainContainer">

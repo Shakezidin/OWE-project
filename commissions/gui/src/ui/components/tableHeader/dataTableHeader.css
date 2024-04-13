@@ -1,0 +1,32 @@
+.data-header-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .search-container-data {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .search-container-data input {
+    padding: 0.6rem;
+    border-radius: 8px;
+    border: 2px solid #d0d5dd;
+  }
+  
+  .search-container-data ::placeholder {
+      color: #101828;
+     font-size: 14px;
+     font-weight: 500;
+  }
+  
+  .dropdown-icon {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    font-size: 2rem;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: gray;
+  }

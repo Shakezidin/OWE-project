@@ -9,9 +9,11 @@ import { ICONS } from "../../icons/Icons";
 interface Toggleprops {
   toggleOpen: boolean;
   setToggleOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setSidebarChange: React.Dispatch<React.SetStateAction<number>>,
+  sidebarChange:number
 }
 
-const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
+const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen,setSidebarChange,sidebarChange }) => {
   const userRole = localStorage.getItem("role");
   const userEmail = localStorage.getItem("email");
   const [openModal,setOpenModal] = useState<boolean>(false)
@@ -33,7 +35,7 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
               <div className="select-head">
                 <p>Select Option</p>
               </div>
-                <div className="image-box-container">
+                <div className="image-box-container" >
                   <div className="image-icon" style={{backgroundColor:"#DDF3FF"}}>
 
                   </div>
@@ -41,7 +43,7 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                     Commission
                   </p>
                 </div>
-                <div className="image-box-container">
+                <div className="image-box-container" onClick={()=>setSidebarChange(1)}>
                   <div className="image-icon" style={{backgroundColor:"#FFE6E6"}}>
 
                   </div>

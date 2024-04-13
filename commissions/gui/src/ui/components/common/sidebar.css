@@ -108,13 +108,14 @@
   font-size: 14px;
   font-weight: 500;
   padding-left: 1.5rem;
-  padding-bottom: 1rem;
+  /* padding-bottom: 1rem; */
   text-transform: uppercase;
   }
   .side-accordian {
     display: flex;
     justify-content: space-between;
     padding: .7rem 1.5rem .7rem 1.5rem;
+
   }
   .side-icon-container {
     display: flex;
@@ -133,8 +134,11 @@
   .side-accordian-item {
     display: flex;
     flex-direction: column;
-    border-radius: 1rem;
+    /* border-radius: 1rem; */
     padding-left: 1.5rem;
+    border-bottom: 1px solid #A5AAB2;
+    max-height: 200px;
+    overflow-y: auto
   }
   
   .active-side {
