@@ -115,10 +115,10 @@ const DealerCredit: React.FC = () => {
 
   return (
     <div className="comm">
-      <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Auto Adder"/>
+      <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="dealer-credit"/>
       <div className="commissionContainer">
         <TableHeader
-          title="Auto Adder"
+          title="Dealer Credit"
           onPressViewArchive={() => { }}
           onPressArchive={() => { }}
           onPressFilter={() => filter()}
@@ -189,7 +189,12 @@ const DealerCredit: React.FC = () => {
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Notes</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Approved By:</p> <FaArrowDown style={{ color: "#667085" }} />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>Notes:</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
@@ -247,6 +252,7 @@ const DealerCredit: React.FC = () => {
                     <td>{el.sale_type}</td>
                     <td>{el.sale_price}</td>
                     <td>{el.rep_type}</td>
+                    <td>{el.rl}</td>
                     <td>{el.rl}</td>
                     <td>{el.rate}</td>
                     <td>{el.start_date}</td>
