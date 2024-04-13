@@ -16,6 +16,7 @@ import {
 import FilterDealer from "./FilterDealer";
 import { DealerModel } from "../../../../core/models/configuration/create/DealerModel";
 import { FaArrowDown } from "react-icons/fa6";
+import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 
 const DealerOverRides: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -72,6 +73,7 @@ const DealerOverRides: React.FC = () => {
 
   return (
     <div className="comm">
+       <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Dealer OverRides"/>
       <div className="commissionContainer">
         <TableHeader
           title="Dealer OverRides"
@@ -178,9 +180,7 @@ const DealerOverRides: React.FC = () => {
                             <img src={ICONS.ARCHIVE} alt="" />
                           </div>
                           <div className="" style={{ cursor: "pointer" }} onClick={()=>handleEditDealer(el)}>
-                            <CiEdit
-                              style={{ fontSize: "1.5rem", color: "#344054" }}
-                            />
+                          <img src={ICONS.editIcon} alt="" />
                           </div>
                         </div>
                       </td>

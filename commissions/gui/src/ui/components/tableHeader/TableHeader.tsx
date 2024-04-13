@@ -61,14 +61,15 @@ const TableHeader = (props: TableProps) => {
             Export
           </button>
         </div>
-        <div className="iconsSection2">
+        <div className="iconsSection2 hover-btn">
           <button
             type="button"
             style={{
               background: "black",
               color: "white",
-              border: "1px solid black",
+              border: "2px solid black",
             }}
+            className="hover-btn"
             onClick={onpressAddNew}
           >
             <IoAddSharp /> Add New

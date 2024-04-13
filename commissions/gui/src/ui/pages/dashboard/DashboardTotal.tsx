@@ -45,10 +45,7 @@ const DashboardTotal: React.FC = () => {
             : null}
         </div>
 
-        <div className="" style={{ marginTop: "1.5rem" }}>
-          <DashBoardTable />
-     
-        </div>
+    
       </div>
     </>
   );

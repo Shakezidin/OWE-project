@@ -1,0 +1,22 @@
+.breadcrumb-container{
+    display: flex;
+    /* align-items: center; */
+    flex-direction: column;
+    padding-bottom: .5rem;
+}
+.bread-link{
+    display: flex;
+    align-items: center;
+    gap: .2rem;
+}
+.bread-link a{
+    font-size: 12px;
+}
+.bread-link span{
+    margin-top: .1rem;
+}
+.bread-head{
+    color: #263747;
+    font-size: 20px;
+    font-weight: 600;
+}

@@ -15,6 +15,7 @@ import {
 import FilterTierLoan from "./filterTierLoan";
 import { FaArrowDown } from "react-icons/fa6";
 import { TierLoanFeeModel } from "../../../../core/models/configuration/create/TierLoanFeeModel";
+import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 const TierLoanFee = () => {
   const dispatch = useAppDispatch();
   const tierloanList = useAppSelector(
@@ -73,6 +74,7 @@ const TierLoanFee = () => {
 
   return (
     <div className="comm">
+       <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Tier Loan Fee"/>
       <div className="commissionContainer">
         <TableHeader
           title="Tier Loan Fee"
@@ -205,9 +207,7 @@ const TierLoanFee = () => {
                       >
                         <img src={ICONS.ARCHIVE} alt="" />
                      <div className="" style={{cursor:"pointer"}} onClick={()=>handleEditTierLoan(el)}>
-                     <CiEdit
-                          style={{ fontSize: "1.5rem", color: "#344054" }}
-                        />
+                     <img src={ICONS.editIcon} alt="" />
                      </div>
                       </td>
                     </tr>

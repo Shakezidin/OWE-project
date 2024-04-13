@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import SidebarItem from "./SidebarItem";
 import SidebarItemCollapse from "./SidebarItemCollapse";
 import appRoutes from "../../../routes/appRoutes";
-import "../layout/layout.css";
+import "../common/sidebar.css";
 import { ICONS } from "../../icons/Icons";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";

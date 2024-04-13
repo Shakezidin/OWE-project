@@ -20,6 +20,7 @@ import Pagination from "../../../components/pagination/Pagination";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 import { CommissionModel } from "../../../../core/models/configuration/create/CommissionModel";
 import { FaArrowDown } from "react-icons/fa6";
+import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 interface Column {
   name: string;
   displayName: string;
@@ -77,8 +78,8 @@ const CommissionRate: React.FC = () => {
     { name: "rep_type", displayName: "Rep Type", type: "string" },
     { name: "rl", displayName: "RL", type: "number" },
     { name: "rate", displayName: "Rate", type: "number" },
-    { name: "start_date", displayName: "Start Date", type: "string" },
-    { name: "end_date", displayName: "End Date", type: "string" }
+    { name: "start_date", displayName: "Start Date", type: "date" },
+    { name: "end_date", displayName: "End Date", type: "date" }
   ];
   const filter = ()=>{
     setFilterOpen(true)
@@ -114,6 +115,7 @@ const CommissionRate: React.FC = () => {
 
   return (
     <div className="comm">
+      <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Commission Rate"/>
       <div className="commissionContainer">
         <TableHeader
           title="Commisstion Rate"
@@ -255,9 +257,7 @@ const CommissionRate: React.FC = () => {
                           <img src={ICONS.ARCHIVE} alt="" />
                         </div>
                         <div className="" style={{ cursor: "pointer" }} onClick={() => handleEditCommission(el)}>
-                          <CiEdit
-                            style={{ fontSize: "1.5rem", color: "#344054" }}
-                          />
+                        <img src={ICONS.editIcon} alt="" />
                         </div>
                       </div>
 

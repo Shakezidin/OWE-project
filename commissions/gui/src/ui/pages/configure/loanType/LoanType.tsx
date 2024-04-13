@@ -16,6 +16,7 @@ import {
 } from "../../../components/chekbox/checkHelper";
 import FilterLoanType from "./FilterLoanType";
 import { LoanTypeModel } from "../../../../core/models/configuration/create/LoanTypeModel";
+import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 
 const LoanType = () => {
   const dispatch = useAppDispatch();
@@ -77,7 +78,9 @@ const LoanType = () => {
   const isAllRowsSelected = selectedRows.size === loanTypeList.length;
   return (
     <div className="comm">
+       <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Loan Type"/>
       <div className="commissionContainer">
+
         <TableHeader
           title="Loan Type"
           onPressViewArchive={() => { }}
@@ -189,9 +192,7 @@ const LoanType = () => {
                       <img src={ICONS.ARCHIVE} alt="" />
                      <div className="" style={{cursor:"pointer"}} >
                     <div className="" style={{cursor:"pointer"}} onClick={()=>handleEditLoan(el)}>
-                    <CiEdit
-                        style={{ fontSize: "1.5rem", color: "#344054" }}
-                      />
+                    <img src={ICONS.editIcon} alt="" />
                     </div>
                      </div>
                     </td>

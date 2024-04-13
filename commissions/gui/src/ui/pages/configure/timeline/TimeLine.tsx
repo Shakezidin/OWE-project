@@ -17,6 +17,7 @@ import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/pagin
 import FilterTimeLine from "./FilterTimeLine";
 import { FaArrowDown } from "react-icons/fa6";
 import { TimeLineSlaModel } from "../../../../core/models/configuration/create/TimeLineSlaModel";
+import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 const TimeLine = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -99,6 +100,7 @@ const TimeLine = () => {
  
   return (
     <div className="comm">
+       <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Timeline SLA"/>
       <div className="commissionContainer">
         <TableHeader
           title="Time Line SLA"
@@ -206,9 +208,7 @@ const TimeLine = () => {
                     >
                       <img src={ICONS.ARCHIVE} alt="" />
                      <div className="" onClick={()=>handleEditTimeLineSla(el)} style={{cursor:"pointer"}}>
-                     <CiEdit
-                        style={{ fontSize: "1.5rem", color: "#344054" }}
-                      /> 
+                     <img src={ICONS.editIcon} alt="" />
                      </div>
                     </td>
                   </tr>

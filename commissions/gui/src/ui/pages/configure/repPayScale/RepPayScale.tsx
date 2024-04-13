@@ -8,6 +8,7 @@ import TableHeader from "../../../components/tableHeader/TableHeader";
 import { ICONS } from "../../../icons/Icons";
 import CreateRepPayScale from "./CreateRepPayScale";
 import { FaArrowDown } from "react-icons/fa6";
+import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 const RepPayScale: React.FC = () => {
 
   const [open, setOpen] = React.useState<boolean>(false);
@@ -70,6 +71,7 @@ const RepPayScale: React.FC = () => {
   return (
 
     <div className="comm">
+       <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Rep Pay Scale"/>
       <div className="commissionContainer">
         <TableHeader
           title="Rep Pay Scale"

@@ -30,34 +30,36 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
           </button>
           {
             openModal&&(<div className="header-modal">
-              <div className="">
-                <h3>Select Option</h3>
+              <div className="select-head">
+                <p>Select Option</p>
               </div>
-                <div className="">
-                  <div className="image-icon">
+                <div className="image-box-container">
+                  <div className="image-icon" style={{backgroundColor:"#DDF3FF"}}>
 
                   </div>
-                  <div className="">
+                  <p className="" >
                     Commission
-                  </div>
+                  </p>
                 </div>
-                <div className="">
-                  <div className=""></div>
-                  <div className="">
+                <div className="image-box-container">
+                  <div className="image-icon" style={{backgroundColor:"#FFE6E6"}}>
+
+                  </div>
+                  <p className="">
                     Database Manger
-                  </div>
+                  </p>
                 </div>
-                <div className="">
-                  <div className=""></div>
-                  <div className="">
+                <div className="image-box-container">
+                  <div className="image-icon" style={{backgroundColor:"#667085"}}></div>
+                  <p className="">
                     Project Manager
-                  </div>
+                  </p>
                 </div>
-                <div className="">
-                  <div className=""></div>
-                  <div className="">
+                <div className="image-box-container">
+                  <div className="image-icon"  style={{backgroundColor:"#DDF3FF"}}></div>
+                  <p className="">
                     Team Management
-                  </div>
+                  </p>
                 </div>
             </div>)
           }
