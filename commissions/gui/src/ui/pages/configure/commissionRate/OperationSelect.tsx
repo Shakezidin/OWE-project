@@ -1,11 +1,11 @@
 // OperationSelect.tsx
 import React from "react";
 import Select from "react-select";
-import { Option, getOperationsForColumnType } from "../../../../core/models/data_models/FilterSelectModel";
+import { getLabelForOperation, getOperationsForColumnType, optionOperation } from "../../../../core/models/data_models/FilterSelectModel";
 
 
 const OperationSelect: React.FC<{
-  options: Option[];
+  options: optionOperation[];
   columnType: string;
   value: string;
   onChange: (value: string) => void;
@@ -14,32 +14,11 @@ const OperationSelect: React.FC<{
 }> = ({ options, columnType, value, onChange, errors, index }) => {
     
   const operations = getOperationsForColumnType(columnType);
-  const getLabelForOperation = (value: string) => {
-    switch (value) {
-      case 'eqs':
-        return 'Equals';
-      case 'stw':
-        return 'Start With';
-      case 'edw':
-        return 'End With';
-      case 'cont':
-        return 'Contains';
-      case 'grt':
-        return 'Greater Than';
-      case 'grteqs':
-        return 'Greater Than Equals To';
-      case 'lst':
-        return 'Less Than';
-      case 'lsteqs':
-        return 'Less Than Equals To';
-      default:
-        return value;
-    }
-  };
+
   return (
     <div className="">
       <Select
-         options={operations.map(operation => ({ value: operation.value, label: getLabelForOperation(operation.value) }))}
+         options={operations.map(operation => ({ value: operation.value, label:operation.label }))}
          value={{ value, label: getLabelForOperation(value) }}
      
         onChange={(selectedOption: any) => {
