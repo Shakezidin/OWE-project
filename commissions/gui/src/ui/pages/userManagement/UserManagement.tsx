@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 
 import { IoAddSharp } from "react-icons/io5";
-import UserOnboardCreation from "./userOnboard/UserOnboardCreation";
-import EditOnboarding from "../userManagement/userOnboard/EditOnboarding"
 import UserHeaderSection from "./UserHeader/UserHeaderSection";
 import UserPieChart from "./pieChart/UserPieChart";
 import DatabaseAccess from "./userOnboard/DatabaseAccess";
-import SelectTable from "./userOnboard/SeletTable";
+
 const UserManagement: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
   const handleOpen = () => setOpen(true);
@@ -24,8 +22,8 @@ const UserManagement: React.FC = () => {
             style={{
               background: "#0493CE",
               color: "white",
-              border: "none",
-              // border: "1px solid black",
+           
+              border: "2px solid #0493CE",
             }}
             onClick={() => handleOpen()}
           >
