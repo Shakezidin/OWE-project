@@ -234,7 +234,7 @@ const DatabaseAccess: React.FC<ButtonProps> = ({
                                                     View
                                                 </div>
                                             </div>
-                                            <div className="Line-container" style={{ marginTop: "0.3rem", cursor:"pointer" }}>
+                                            <div className="Line-container" style={{ marginTop: "0.3rem", cursor: "pointer" }}>
                                                 <div className="line-graph">
                                                     <div className="edit-line">
                                                         <img src={ICONS.editIconUser} style={{ background: "white" }} alt="" />
@@ -261,11 +261,10 @@ const DatabaseAccess: React.FC<ButtonProps> = ({
                                     ></textarea>
                                 </div>
                             </div>
-
                             <div className="createUserActionButton">
                                 <ActionButton
                                     title={"Cancel"}
-                                    onClick={() => { }}
+                                    onClick={handleClose}
                                     type={"button"}
                                 />
                                 <ActionButton
