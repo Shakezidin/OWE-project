@@ -115,6 +115,7 @@
     display: flex;
     justify-content: space-between;
     padding: .7rem 1.5rem .7rem 1.5rem;
+ 
 
   }
   .side-icon-container {
@@ -136,8 +137,9 @@
     flex-direction: column;
     /* border-radius: 1rem; */
     padding-left: 1.5rem;
-    border-bottom: 1px solid #A5AAB2;
-    max-height: 200px;
+    border-bottom: 1px solid var(--table-border-color);
+    max-height: 400px;
+    /* margin: 1rem; */
     overflow-y: auto
   }
   

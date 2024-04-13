@@ -163,7 +163,6 @@ const appRoutesTwo = [
                     },
                     {
                         path: routes.loanFeeRoutes,
-
                         sidebarProps: {
                             displayText: "Loan Fee Addr",
                             icon: (
@@ -217,7 +216,7 @@ const appRoutesTwo = [
                         path: routes.nonCommRoutes,
 
                         sidebarProps: {
-                            displayText: "Non-Comm(DLR Pay)",
+                            displayText: "Non-Comm(DLRPay)",
                             icon: (
                                 <div
                                     className="ellipse"
@@ -230,7 +229,7 @@ const appRoutesTwo = [
                         path: routes.dlrOthRoutes,
 
                         sidebarProps: {
-                            displayText: "DLR-OTH(DLR Pay)",
+                            displayText: "DLR-OTH(DLRPay)",
                             icon: (
                                 <div
                                     className="ellipse"

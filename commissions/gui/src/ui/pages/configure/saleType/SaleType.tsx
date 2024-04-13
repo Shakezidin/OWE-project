@@ -20,11 +20,12 @@ import { SalesTypeModel } from "../../../../core/models/configuration/create/Sal
 import Pagination from "../../../components/pagination/Pagination";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
+import { Column } from "../../../../core/models/data_models/FilterSelectModel";
 
 const SaleType = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
-  const [columns, setColumns] = useState<string[]>([]);
+
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -51,15 +52,16 @@ const SaleType = () => {
   const paginate = (pageNumber: number) => {
     dispatch(setCurrentPage(pageNumber));
   };
-  const getColumnNames = () => {
-    if (salesTypeList.length > 0) {
-      const keys = Object.keys(salesTypeList[0]);
-      setColumns(keys);
-    }
-  };
+  const columns: Column[] = [
+    // { name: "record_id", displayName: "Record ID", type: "number" },
+
+    { name: "type_name", displayName: "Name", type: "string" },
+    { name: "description", displayName: "Description", type: "string" },
+ 
+  ];
   const filter = ()=>{
     setFilterOpen(true)
-    getColumnNames()
+
   }
   const goToNextPage = () => {
     dispatch(setCurrentPage(currentPage + 1));

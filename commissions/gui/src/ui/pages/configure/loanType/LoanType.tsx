@@ -17,6 +17,7 @@ import {
 import FilterLoanType from "./FilterLoanType";
 import { LoanTypeModel } from "../../../../core/models/configuration/create/LoanTypeModel";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
+import { Column } from "../../../../core/models/data_models/FilterSelectModel";
 
 const LoanType = () => {
   const dispatch = useAppDispatch();
@@ -26,7 +27,7 @@ const LoanType = () => {
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [columns, setColumns] = useState<string[]>([]);
+
   const filterClose = () => setFilterOpen(false);
   const loanTypeList = useAppSelector(
     (state) => state?.loanType?.loantype_list
@@ -49,15 +50,17 @@ const LoanType = () => {
     setEditedLoanData(null);
     handleOpen()
   };
-  const getColumnNames = () => {
-    if (loanTypeList.length > 0) {
-      const keys = Object.keys(loanTypeList[0]);
-      setColumns(keys);
-    }
-  };
+  const columns: Column[] = [
+    // { name: "record_id", displayName: "Record ID", type: "number" },
+
+    { name: "product_code", displayName: "Product Code", type: "string" },
+    { name: "adder", displayName: "Adder", type: "number" },
+    { name: "description", displayName: "Description", type: "string" },
+
+  ];
   const filter = ()=>{
     setFilterOpen(true)
-    getColumnNames()
+ 
   }
 
   const handleEditLoan = (loanData:LoanTypeModel) => {

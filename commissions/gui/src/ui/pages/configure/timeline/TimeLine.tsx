@@ -18,13 +18,14 @@ import FilterTimeLine from "./FilterTimeLine";
 import { FaArrowDown } from "react-icons/fa6";
 import { TimeLineSlaModel } from "../../../../core/models/configuration/create/TimeLineSlaModel";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
+import { Column } from "../../../../core/models/data_models/FilterSelectModel";
 const TimeLine = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [columns, setColumns] = useState<string[]>([]);
+
 
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
@@ -47,15 +48,17 @@ const TimeLine = () => {
     dispatch(fetchTimeLineSla(pageNumber));
   }, [dispatch,currentPage]);
 
-  const getColumnNames = () => {
-    if (timelinesla_list.length > 0) {
-      const keys = Object.keys(timelinesla_list[0]);
-      setColumns(keys);
-    }
-  };
+  const columns: Column[] = [
+    // { name: "record_id", displayName: "Record ID", type: "number" },
+    { name: "type_m2m", displayName: "Type M2M", type: "string" },
+    { name: "state", displayName: "State", type: "string" },
+    { name: "days", displayName: "Days", type: "string" },
+    { name: "start_date", displayName: "Start Date", type: "date" },
+    { name: "end_date", displayName: "End Date", type: "date" }
+  ];
   const filter = ()=>{
     setFilterOpen(true)
-    getColumnNames()
+   
   }
  
 

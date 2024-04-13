@@ -17,6 +17,7 @@ import FilterPayment from "./FilterPayment";
 import { FaArrowDown } from "react-icons/fa6";
 import { PayScheduleModel } from "../../../../core/models/configuration/create/PayScheduleModel";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
+import { Column } from "../../../../core/models/data_models/FilterSelectModel";
 
 const PaymentSchedule = () => {
   const dispatch = useAppDispatch();
@@ -35,7 +36,7 @@ const PaymentSchedule = () => {
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
-  const [columns, setColumns] = useState<string[]>([]);
+
 
   const [editedPaySchedule, setEditedPaySchedule] =
     useState<PayScheduleModel | null>(null);
@@ -47,15 +48,26 @@ const PaymentSchedule = () => {
     dispatch(fetchPaySchedule(pageNumber));
   }, [dispatch]);
   // Extract column names
-  const getColumnNames = () => {
-    if (payScheduleList.length > 0) {
-      const keys = Object.keys(payScheduleList[0]);
-      setColumns(keys);
-    }
-  };
+  const columns: Column[] = [
+    // { name: "record_id", displayName: "Record ID", type: "number" },
+
+    { name: "partner", displayName: "Partner", type: "string" },
+    { name: "partner_name", displayName: "Partner Name", type: "string" },
+    { name: "installer_name", displayName: "Installer Name", type: "string" },
+    { name: "sale_type", displayName: "Partner", type: "string" },
+    { name: "state", displayName: "State", type: "string" },
+    { name: "rl", displayName: "Rate List", type: "string" },
+    { name: "draw", displayName: "Draw", type: "string" },
+    { name: "draw_max", displayName: "Draw Max", type: "string" },
+    { name: "rep_draw", displayName: "rep_draw", type: "string" },
+    { name: "rep_draw_max", displayName: "rep_draw_max", type: "string" },
+    { name: "rep_pay", displayName: "rep_pay", type: "string" },
+    { name: "start_date", displayName: "Start Date", type: "date" },
+    { name: "end_date", displayName: "End Date", type: "date" }
+  ];
   const filter = () => {
     setFilterOpen(true);
-    getColumnNames();
+  
   };
 
   const handleAddPaySchedule = () => {

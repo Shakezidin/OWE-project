@@ -17,6 +17,7 @@ import FilterDealer from "./FilterDealer";
 import { DealerModel } from "../../../../core/models/configuration/create/DealerModel";
 import { FaArrowDown } from "react-icons/fa6";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
+import { Column } from "../../../../core/models/data_models/FilterSelectModel";
 
 const DealerOverRides: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -32,7 +33,7 @@ const DealerOverRides: React.FC = () => {
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
-  const [columns, setColumns] = useState<string[]>([]);
+ 
   const [editedDealer, setEditDealer] = useState<DealerModel | null>(null);
   useEffect(() => {
     const pageNumber = {
@@ -46,15 +47,17 @@ const DealerOverRides: React.FC = () => {
     setEditDealer(null);
     handleOpen()
   };
-  const getColumnNames = () => {
-    if (dealerList.length > 0) {
-      const keys = Object.keys(dealerList[0]);
-      setColumns(keys);
-    }
-  };
+  const columns: Column[] = [
+    // { name: "record_id", displayName: "Record ID", type: "number" },
+    { name: "sub_dealer", displayName: "Sub Dealer", type: "string" },
+    { name: "dealer", displayName: "Dealer", type: "string" },
+    { name: "pay_rate", displayName: "Pay Rate", type: "string" },
+    { name: "start_date", displayName: "Start Date", type: "date" },
+    { name: "end_date", displayName: "End Date", type: "date" }
+  ];
   const filter = ()=>{
     setFilterOpen(true)
-    getColumnNames()
+
   }
   const handleEditDealer = (dealerData: DealerModel) => {
     setEditMode(true);
@@ -85,7 +88,7 @@ const DealerOverRides: React.FC = () => {
           onpressAddNew={() => handleAddDealer()}
         />
         {filterOPen && <FilterDealer handleClose={filterClose}
-        columns={columns}
+        columns={columns} 
         page_number = {1}
         page_size = {5} />}
         {open && <CreateDealer handleClose={handleClose} 

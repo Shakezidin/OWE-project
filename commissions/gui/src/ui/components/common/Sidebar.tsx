@@ -174,7 +174,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen, setSidebarC
 
                       )
                         :
-                        <div className="" >
+                        <div className="">
                           <Link
                             to={item.path}
                             className={`side-icon-container ${location.pathname === item.path ? "active-link-bg" : ""}`}

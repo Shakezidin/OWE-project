@@ -21,11 +21,8 @@ import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/pagin
 import { CommissionModel } from "../../../../core/models/configuration/create/CommissionModel";
 import { FaArrowDown } from "react-icons/fa6";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
-interface Column {
-  name: string;
-  displayName: string;
-  type: string;
-}
+import { Column } from "../../../../core/models/data_models/FilterSelectModel";
+
 
 const CommissionRate: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);

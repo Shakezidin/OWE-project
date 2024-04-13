@@ -16,13 +16,14 @@ import FilterMarketing from "./FilterMarketing";
 import { MarketingFeeModel } from "../../../../core/models/configuration/create/MarketingFeeModel";
 import { FaArrowDown } from "react-icons/fa6";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
+import { Column } from "../../../../core/models/data_models/FilterSelectModel";
 
 const MarketingFees: React.FC = () => {
   const dispatch = useAppDispatch();
   // const getData = useAppSelector(state=>state.comm.data)
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
-  const [columns, setColumns] = useState<string[]>([]);
+  
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -54,15 +55,21 @@ const MarketingFees: React.FC = () => {
     handleOpen()
   };
 
-  const getColumnNames = () => {
-    if (marketingFeesList.length > 0) {
-      const keys = Object.keys(marketingFeesList[0]);
-      setColumns(keys);
-    }
-  };
+  const columns: Column[] = [
+    // { name: "record_id", displayName: "Record ID", type: "number" },
+    { name: "source", displayName: "Source", type: "string" },
+    { name: "dba", displayName: "DBA", type: "string" },
+    { name: "state", displayName: "State", type: "string" },
+    { name: "fee_rate", displayName: "Fee Rate", type: "string" },
+    { name: "chg_dlr", displayName: "Chg Dlr", type: "number" },
+    { name: "pay_src", displayName: "Pay Src", type: "number" },
+    { name: "description", displayName: "Description", type: "string" },
+    { name: "start_date", displayName: "Start Date", type: "date" },
+    { name: "end_date", displayName: "End Date", type: "date" }
+  ];
   const filter = ()=>{
     setFilterOpen(true)
-    getColumnNames()
+    
   }
 
   const isAnyRowSelected = selectedRows.size > 0;
@@ -90,7 +97,7 @@ const MarketingFees: React.FC = () => {
         />
         {filterOPen && <FilterMarketing handleClose={filterClose}
          columns={columns}
-         page_number = {1}
+         page_number ={1}
          page_size = {5} />}
         {open && <CreateMarketingFees marketingData={editedMarketing}
                          editMode={editMode}
