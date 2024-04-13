@@ -181,7 +181,7 @@ const appRoutesTwo = [
                             icon: (
                                 <div
                                     className="ellipse"
-                                    style={{ backgroundColor: colorConfig.loanTypeColor }}
+                                    style={{ backgroundColor: colorConfig.dealerColor }}
                                 ></div>
                             ),
                         },
@@ -194,7 +194,7 @@ const appRoutesTwo = [
                             icon: (
                                 <div
                                     className="ellipse"
-                                    style={{ backgroundColor: colorConfig.loanTypeColor }}
+                                    style={{ backgroundColor: colorConfig.commissionColor }}
                                 ></div>
                             ),
                         },
@@ -207,7 +207,7 @@ const appRoutesTwo = [
                             icon: (
                                 <div
                                     className="ellipse"
-                                    style={{ backgroundColor: colorConfig.loanTypeColor }}
+                                    style={{ backgroundColor: colorConfig.adderColor }}
                                 ></div>
                             ),
                         },
@@ -220,7 +220,7 @@ const appRoutesTwo = [
                             icon: (
                                 <div
                                     className="ellipse"
-                                    style={{ backgroundColor: colorConfig.loanTypeColor }}
+                                    style={{ backgroundColor: colorConfig.payColor }}
                                 ></div>
                             ),
                         },
@@ -233,7 +233,7 @@ const appRoutesTwo = [
                             icon: (
                                 <div
                                     className="ellipse"
-                                    style={{ backgroundColor: colorConfig.loanTypeColor }}
+                                    style={{ backgroundColor: colorConfig.dealerTierColor }}
                                 ></div>
                             ),
                         },

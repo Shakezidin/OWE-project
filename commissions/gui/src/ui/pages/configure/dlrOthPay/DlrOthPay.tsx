@@ -115,10 +115,10 @@ const DlrOthPay: React.FC = () => {
 
   return (
     <div className="comm">
-      <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Auto Adder"/>
+      <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="DLR-OTH"/>
       <div className="commissionContainer">
         <TableHeader
-          title="Auto Adder"
+          title="DLR-OTH"
           onPressViewArchive={() => { }}
           onPressArchive={() => { }}
           onPressFilter={() => filter()}
@@ -164,44 +164,30 @@ const DlrOthPay: React.FC = () => {
                 </th>
                 <th >
                   <div className="table-header" >
-                    <p>Customer</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Payee</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Dealer Code</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Amount</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Delaer DBA</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Description</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Exact Amt.</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Balance</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Per kW Amt.</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Paid Amt.</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
-                <th>
-                  <div className="table-header">
-                    <p>Notes</p> <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Total Amt.</p> <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Sys. Size</p> <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
+                
                 <th>
                   <div className="table-header">
                     <p>Start Dt.</p> <FaArrowDown style={{ color: "#667085" }} />
@@ -246,9 +232,6 @@ const DlrOthPay: React.FC = () => {
                     <td>{el.state}</td>
                     <td>{el.sale_type}</td>
                     <td>{el.sale_price}</td>
-                    <td>{el.rep_type}</td>
-                    <td>{el.rl}</td>
-                    <td>{el.rate}</td>
                     <td>{el.start_date}</td>
                     <td>{el.end_date}</td>
                     <td>
