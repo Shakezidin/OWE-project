@@ -1,16 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cross_button.svg";
 
 import Input from "../../../components/text_input/Input";
 
-import DropdownButton from "../../../components/dropdown/DropdownButton";
 import { ActionButton } from "../../../components/button/ActionButton";
 import Select from "react-select";
 import { UserAdmin } from "../../../../core/models/UserManagement/UserAdmin";
 import { useDispatch } from "react-redux";
-import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
-import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
+
 import { updateUserForm } from "../../../../redux/apiSlice/userManagementSlice/createUserSlice";
 import {
   dealer,
@@ -219,7 +217,7 @@ const UserOnboardCreation: React.FC<ButtonProps> = ({
               <div className="createUserActionButton">
                 <ActionButton
                   title={"Cancel"}
-                  onClick={() => {}}
+                 onClick={handleClose}
                   type={"button"}
                 />
                 <ActionButton

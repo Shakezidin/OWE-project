@@ -221,7 +221,7 @@ const FilterCommission: React.FC<TableProps> = ({ handleClose, columns, page_num
             </div>
           </div>
           <div className="createUserActionButton" >
-            <div className="" style={{ gap: "2rem", display: "flex", marginTop: "14rem" }}>
+            <div className="" style={{ gap: "2rem", display: "flex"}}>
               <ActionButton title={"Apply"} type="submit" onClick={() => applyFilter()} />
 
               <ActionButton
