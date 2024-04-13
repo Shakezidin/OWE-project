@@ -16,6 +16,7 @@ import {
 import FilterPayment from "./FilterPayment";
 import { FaArrowDown } from "react-icons/fa6";
 import { PayScheduleModel } from "../../../../core/models/configuration/create/PayScheduleModel";
+import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 
 const PaymentSchedule = () => {
   const dispatch = useAppDispatch();
@@ -80,6 +81,7 @@ const PaymentSchedule = () => {
   const isAllRowsSelected = selectedRows.size === payScheduleList.length;
   return (
     <div className="comm">
+         <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Payment Scheduler"/>
       <div className="commissionContainer">
         <TableHeader
           title="Payment Scheduler"
@@ -250,9 +252,7 @@ const PaymentSchedule = () => {
                           style={{ cursor: "pointer" }}
                           onClick={() => handleEditPaySchedule(el)}
                         >
-                          <CiEdit
-                            style={{ fontSize: "1.5rem", color: "#344054" }}
-                          />
+                              <img src={ICONS.editIcon} alt="" />
                         </div>
                       </td>
                     </tr>

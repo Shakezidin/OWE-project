@@ -16,6 +16,7 @@ import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoin
 import { respTypeData } from "../../../../resources/static_data/StaticData";
 import {  updateForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createCommissionSlice";
 import { CommissionModel } from "../../../../core/models/configuration/create/CommissionModel";
+import ToastComponent from "../../../components/toast/ToastComponent";
 interface ButtonProps {
   editMode:boolean,
   handleClose: () => void,
@@ -26,7 +27,7 @@ commission: CommissionModel | null;
 const CreateCommissionRate:React.FC<ButtonProps> = ({handleClose,commission,editMode}) => {
   
   const dispatch = useDispatch();
- 
+  const [showToast, setShowToast] = useState(false);
   const [createCommission, setCreateCommission] = useState<CommissionModel>(
     {
 
@@ -85,7 +86,7 @@ const CreateCommissionRate:React.FC<ButtonProps> = ({handleClose,commission,edit
       if(createCommission.record_id){
         const res = await postCaller(EndPoints.update_commission, createCommission);
         if (res.status === 200) {
-          alert(res.message)
+          setShowToast(true);
           handleClose()
           window.location.reload()
         }
@@ -97,9 +98,9 @@ const CreateCommissionRate:React.FC<ButtonProps> = ({handleClose,commission,edit
         const { record_id, ...cleanedFormData } = createCommission;
         const res = await postCaller(EndPoints.create_commission, cleanedFormData);
         if (res.status === 200) {
-          alert(res.message)
+          setShowToast(true);
           handleClose()
-          window.location.reload()
+          // window.location.reload()
         }
         else {
           alert(res.message)
@@ -117,6 +118,7 @@ const CreateCommissionRate:React.FC<ButtonProps> = ({handleClose,commission,edit
         <div className="createUserCrossButton" onClick={handleClose}>
           <CROSS_BUTTON />
         </div>
+        {showToast && <ToastComponent message="Login successful" />}
         <div className="createUserContainer">
           <h3 className="createProfileText">{editMode===false?"Commission Rate":"Update Commission Rate"}</h3>
           <form action="" onSubmit={(e) => handleSubmit(e)}>

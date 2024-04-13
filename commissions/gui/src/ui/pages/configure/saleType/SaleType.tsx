@@ -19,6 +19,7 @@ import { FaArrowDown } from "react-icons/fa6";
 import { SalesTypeModel } from "../../../../core/models/configuration/create/SalesTypeModel";
 import Pagination from "../../../components/pagination/Pagination";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
+import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 
 const SaleType = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -94,6 +95,7 @@ const SaleType = () => {
   const isAllRowsSelected = selectedRows.size === salesTypeList.length;
   return (
     <div className="comm">
+       <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Sale Type"/>
       <div className="commissionContainer">
         <TableHeader
           title="Sale Types"
@@ -185,9 +187,7 @@ const SaleType = () => {
                       >
                         <img src={ICONS.ARCHIVE} alt="" />
                       <div className="" style={{cursor:"pointer"}} onClick={()=>handleEditSaleType(el)}>
-                      <CiEdit
-                          style={{ fontSize: "1.5rem", color: "#344054" }}
-                        />
+                      <img src={ICONS.editIcon} alt="" />
                       </div>
                       </td>
                     </tr>

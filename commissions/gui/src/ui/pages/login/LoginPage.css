@@ -37,6 +37,7 @@
   outline: none;
   background-color: transparent;
   font-weight: 500;
+  cursor: pointer;
 }
 /* switch button style  */
 .switch {

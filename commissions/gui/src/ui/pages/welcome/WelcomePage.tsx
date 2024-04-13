@@ -118,7 +118,7 @@ export const WelcomePage = () => {
             <div className="welcomeBoxView">
               <CustomBox
                 icon={CommissionIcon}
-                title="Commission App"
+                title="OWE HUB"
                 description="More than that, you can have any amount of layers attached "
                 onClick={() => {
                   navigate('/login');

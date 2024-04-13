@@ -33,18 +33,19 @@
 .minus-sign {
     position: absolute;
     left: 50%;
-    top: 50%;
+    top: 60%;
     transform: translate(-50%, -50%);
     font-size: 20px;
     border-radius: .5rem !important;
     overflow: hidden;
     color: var(--check-color);
+    z-index: 20;
     background-color: transparent !important;
 }
 .checkbox:checked::after {
     content: '';
     position: absolute;
-    left: 4px;
+    left: 5.5px;
     top: 3px;
     width: 4px;
     height: 6px;

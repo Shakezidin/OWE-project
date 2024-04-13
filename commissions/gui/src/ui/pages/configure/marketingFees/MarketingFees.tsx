@@ -15,6 +15,7 @@ import {
 import FilterMarketing from "./FilterMarketing";
 import { MarketingFeeModel } from "../../../../core/models/configuration/create/MarketingFeeModel";
 import { FaArrowDown } from "react-icons/fa6";
+import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 
 const MarketingFees: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -76,6 +77,7 @@ const MarketingFees: React.FC = () => {
 
   return (
     <div className="comm">
+       <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Marketing Fees"/>
       <div className="commissionContainer">
         <TableHeader
           title="Marketing Fees"
@@ -211,9 +213,7 @@ const MarketingFees: React.FC = () => {
                       >
                         <img src={ICONS.ARCHIVE} alt="" />
                       <div className="" style={{cursor:"pointer"}} onClick={()=>handleEditMarketing(el)}>
-                      <CiEdit
-                          style={{ fontSize: "1.5rem", color: "#344054" }}
-                        />
+                      <img src={ICONS.editIcon} alt="" />
                       </div>
                       </td>
                     </tr>

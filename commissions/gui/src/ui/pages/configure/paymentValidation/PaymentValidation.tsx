@@ -5,6 +5,7 @@ import { CiEdit } from "react-icons/ci";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { ICONS } from "../../../icons/Icons";
 import { FaArrowDown } from "react-icons/fa6";
+import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 
 const PaymentValidation = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -34,6 +35,7 @@ const PaymentValidation = () => {
   ];
   return (
     <div className="comm">
+       <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Payment Validation"/>
       <div className="commissionContainer">
         <TableHeader
           title="Payment Validation"

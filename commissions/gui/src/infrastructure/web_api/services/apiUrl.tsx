@@ -20,7 +20,7 @@ export const login = async (credentials: Credentials): Promise<{data: LoginRespo
   try {
     const response = await axios.post<{ data: LoginResponse }>(`${BASE_URL}/login`, credentials);
     if(response.status===HTTP_STATUS.OK){
-      alert("login Successfully")
+     
     }
     return response.data;
   } catch (error) {

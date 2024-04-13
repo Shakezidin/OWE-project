@@ -103,21 +103,14 @@ export const LoginPage = () => {
               <br />
               <div className="loginLogowithText">
                 <LOGO_SMALL />
-                <span className={"loginHeader"}> Commission App</span>
+                <span className={"loginHeader"}>OWE HUB</span>
               </div>
               <div className="loginUnderLine">
                 <UNDER_LINE />
               </div>
               <span className="loginLogText">Log In</span>
               <br />
-              <Input
-                type={"text"}
-                name="commission"
-                value={"Commission App"}
-                placeholder={"Commission App"}
-                onChange={() => {}}
-              />
-              <br />
+             
               <Input
                 type={"text"}
                 name={"email_id"}

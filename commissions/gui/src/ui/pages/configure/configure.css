@@ -49,21 +49,7 @@
   font-weight: 600;
 }
 
-.iconsSection {
-  display: flex;
-  align-items: center;
-}
 
-.iconsSection button {
-  display: flex;
-  align-items: center;
-  font-size: 1rem;
-  border: none;
-  color: #344054;
-  font-weight: 500;
-  background-color: white;
-  gap: 0.5rem;
-}
 
 .iconsSection2 {
   display: flex;
@@ -78,10 +64,9 @@
   justify-content: center;
   align-items: center;
   gap: 0.5rem;
-  border: none;
   background-color: var(--primary-text-color);
   padding: 0.4rem 1rem 0.4rem 1rem;
-  border: 1px solid var(--button-border-color);
+  border: 2px solid #D0D5DD;
   font-size: 15px;
   border-radius: 8px;
   font-weight: 500;
@@ -90,7 +75,7 @@
 }
 .iconsSection2 button:hover{
   background-color: var(--active-text-color) !important;
-  border: 1px solid var(--active-text-color) !important;
+  border: 2px solid var(--active-text-color) !important;
 }
 
 .iconsSection-filter button {
@@ -101,11 +86,11 @@
   border: none;
   background-color: var(--primary-text-color);
   padding: 0.5rem;
-  border: 1px solid var(--button-border-color);
+  border: 2px solid #D0D5DD;
   font-size: 15px;
   border-radius: 8px;
   font-weight: 500;
-  color: var(--coloumn-text-color);
+  color: #344054;
   cursor: pointer;
 }
 /* table style  */
@@ -171,5 +156,10 @@ table tbody tr:last-child {
   display: flex;
   align-items: center;
   gap: 1rem;
+}
+.action-icon img{
+  width: 14px;
+  height: 14px;
+  /* object-fit: cover; */
 }
 /* checkbox design  */

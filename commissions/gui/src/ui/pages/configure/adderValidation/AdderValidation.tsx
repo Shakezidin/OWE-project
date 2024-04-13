@@ -15,6 +15,7 @@ import {
 import FilterAdder from "./FilterAdder";
 import { FaArrowDown } from "react-icons/fa6";
 import { AdderVModel } from "../../../../core/models/configuration/create/AdderVModel";
+import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 
 const AdderValidation = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -78,7 +79,9 @@ const AdderValidation = () => {
   const isAllRowsSelected = selectedRows.size === adderVList.length;
   return (
     <div className="comm">
+         <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="AdderV"/>
       <div className="commissionContainer">
+   
         <TableHeader
           title="Adder validation"
           onPressViewArchive={() => {}}
@@ -188,9 +191,7 @@ const AdderValidation = () => {
                             <img src={ICONS.ARCHIVE} alt="" />
                           </div>
                           <div className="" style={{ cursor: "pointer" }} onClick={()=>handleEditVAdder(el)}>
-                            <CiEdit
-                              style={{ fontSize: "1.5rem", color: "#344054" }}
-                            />
+                          <img src={ICONS.editIcon} alt="" />
                           </div>
                         </div>
                       </td>
