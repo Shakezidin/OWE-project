@@ -10,13 +10,17 @@ import OperationSelect from "./OperationSelect";
 import { ICONS } from "../../../icons/Icons";
 import { Column, FilterModel, Option } from "../../../../core/models/data_models/FilterSelectModel";
 import { IoAddSharp } from "react-icons/io5";
+import {  fetchCommissionsWithFilters } from "../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice";
+import { useDispatch,} from "react-redux";
+import { Dispatch } from '@reduxjs/toolkit'
 
 
 interface TableProps {
   handleClose: () => void;
   columns: Column[];
   page_number: number;
-  page_size: number;
+  page_size: number; // Adjust the type according to your filter data type
+ 
 }
 
 
@@ -25,7 +29,7 @@ const FilterCommission: React.FC<TableProps> = ({ handleClose, columns, page_num
   const [filters, setFilters] = useState<FilterModel[]>([{ Column: "", Operation: "", Data: "" }]);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const options: Option[] = columns.map((column) => ({ value: column.name, label: column.displayName }));
-
+  const dispatch = useDispatch<Dispatch>();
   const handleAddRow = () => {
     setFilters([...filters, { Column: '', Operation: '', Data: '' }]);
   };
@@ -62,12 +66,7 @@ const FilterCommission: React.FC<TableProps> = ({ handleClose, columns, page_num
     if (Object.keys(newErrors).length === 0) {
       const formattedFilters = filters.map(filter => ({ ...filter, Data: filter.Data.trim() }));
       console.log(formattedFilters)
-      const req = {
-        page_number: page_number,
-        page_size: page_size,
-        filters: formattedFilters
-      };
-      // dispatch(fetchCommissions(req)); // Assuming this is the API call
+      // dispatch(fetchCommissionsWithFilters({ page_number, page_size, filters: formattedFilters }));
     }
   };
 
