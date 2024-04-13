@@ -115,10 +115,10 @@ const LoanFeeAddr: React.FC = () => {
 
   return (
     <div className="comm">
-      <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Auto Adder"/>
+      <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="loan-fee-addr"/>
       <div className="commissionContainer">
         <TableHeader
-          title="Auto Adder"
+          title="Loan Fee Addr"
           onPressViewArchive={() => { }}
           onPressArchive={() => { }}
           onPressFilter={() => filter()}
@@ -164,27 +164,57 @@ const LoanFeeAddr: React.FC = () => {
                 </th>
                 <th >
                   <div className="table-header" >
-                    <p>Customer</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Type</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Dealer Code</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Dealer</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Delaer DBA</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Installer</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Exact Amt.</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>State</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Per kW Amt.</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Contract $$</p> <FaArrowDown style={{ color: "#667085" }} />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>Dir Tier</p> <FaArrowDown style={{ color: "#667085" }} />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>OWE Cost</p> <FaArrowDown style={{ color: "#667085" }} />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>Addr Amt.</p> <FaArrowDown style={{ color: "#667085" }} />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>Per KW Amt.</p> <FaArrowDown style={{ color: "#667085" }} />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>REP $ / %</p> <FaArrowDown style={{ color: "#667085" }} />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>Description</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
@@ -194,14 +224,80 @@ const LoanFeeAddr: React.FC = () => {
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Total Amt.</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Type</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Sys. Size</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Rep1</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
+                <th>
+                  <div className="table-header">
+                    <p>Rep2</p> <FaArrowDown style={{ color: "#667085" }} />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>Sys Size</p> <FaArrowDown style={{ color: "#667085" }} />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>State</p> <FaArrowDown style={{ color: "#667085" }} />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>REP Count</p> <FaArrowDown style={{ color: "#667085" }} />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>Per Rep Addr</p> <FaArrowDown style={{ color: "#667085" }} />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>Per Rep Ovrd</p> <FaArrowDown style={{ color: "#667085" }} />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>Share</p> <FaArrowDown style={{ color: "#667085" }} />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>R1 Pay Scale</p> <FaArrowDown style={{ color: "#667085" }} />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>Rep 1 Def Resp</p> <FaArrowDown style={{ color: "#667085" }} />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>R1 Addr Resp</p> <FaArrowDown style={{ color: "#667085" }} />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>R2 Pay Scale</p> <FaArrowDown style={{ color: "#667085" }} />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>Rep 2 Def Resp</p> <FaArrowDown style={{ color: "#667085" }} />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>R1 Addr Resp</p> <FaArrowDown style={{ color: "#667085" }} />
+                  </div>
+                </th>
+
                 <th>
                   <div className="table-header">
                     <p>Start Dt.</p> <FaArrowDown style={{ color: "#667085" }} />
@@ -249,6 +345,25 @@ const LoanFeeAddr: React.FC = () => {
                     <td>{el.rep_type}</td>
                     <td>{el.rl}</td>
                     <td>{el.rate}</td>
+                    <td>{el.state}</td>
+                    <td>{el.sale_type}</td>
+                    <td>{el.sale_price}</td>
+                    <td>{el.rep_type}</td>
+                    <td>{el.rl}</td>
+                    <td>{el.rate}</td>
+                    <td>{el.state}</td>
+                    <td>{el.sale_type}</td>
+                    <td>{el.sale_price}</td>
+                    <td>{el.rep_type}</td>
+                    <td>{el.rl}</td>
+                    <td>{el.rate}</td>
+                    <td>{el.state}</td>
+                    <td>{el.sale_type}</td>
+                    <td>{el.sale_price}</td>
+                    <td>{el.rep_type}</td>
+                    <td>{el.rl}</td>
+                    <td>{el.rep_type}</td>
+                    <td>{el.rl}</td>
                     <td>{el.start_date}</td>
                     <td>{el.end_date}</td>
                     <td>
