@@ -34,7 +34,7 @@ const UserManagement: React.FC = () => {
         </div>
       </div>
       {open && (
-        <SelectTable
+        <DatabaseAccess
           handleClose={handleClose}
           editMode={false}
           userOnboard={null}

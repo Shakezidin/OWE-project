@@ -144,3 +144,20 @@ text-align: left;
    margin-top: 0.4rem;
    
  }
+ .dash-select-user{
+  background-color: #ECECEC;
+  width: 51px;
+  text-align: center;
+  align-items: center;
+  height: 28px;
+  border: none;
+  outline: none;
+  padding: .2rem .5rem .1rem .5rem;
+  font-size: 12px;
+  cursor: pointer;
+  color: #344054 !important;
+  font-weight: 500;
+  border-radius: .25rem;
+
+
+}
