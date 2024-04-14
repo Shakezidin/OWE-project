@@ -149,7 +149,7 @@ const FilterDealer: React.FC<TableProps> = ({ handleClose, columns, page_number,
                 }}
                 onClick={handleAddRow}
               >
-                <IoAddSharp /> Add New
+                 <img src={ICONS.BlackAddIcon} alt=""  style={{width:"14px", height:"14px"}}/> Add New
               </button>
             </div>
           </div>
@@ -225,13 +225,14 @@ const FilterDealer: React.FC<TableProps> = ({ handleClose, columns, page_number,
           </div>
           <div className="createUserActionButton" >
             <div className="" style={{ gap: "2rem", display: "flex"}}>
-              <ActionButton title={"Apply"} type="submit" onClick={() => applyFilter()} />
 
               <ActionButton
                 title={"cancel"}
                 type="reset"
                 onClick={handleClose}
               />
+               <ActionButton title={"Apply"} type="submit" onClick={() => applyFilter()} />
+
             </div>
           </div>
 

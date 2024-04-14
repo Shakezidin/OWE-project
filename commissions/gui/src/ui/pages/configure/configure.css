@@ -55,8 +55,8 @@
 }
 
 .iconsSection2 img {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
 }
 
 .iconsSection2 button {
@@ -93,15 +93,7 @@
   color: #344054;
   cursor: pointer;
 }
-/* .iconsSection-filter img {
-  width: 15px;
-  height: 15px;
-  top: 3.34px;
-  left: 2.5px;
-  gap: 0px;
-  opacity: 0px;
-  
-} */
+
 /* table style  */
 .TableContainer {
   overflow-x: auto;

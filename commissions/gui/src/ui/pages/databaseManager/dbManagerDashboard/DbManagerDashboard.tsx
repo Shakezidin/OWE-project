@@ -55,7 +55,7 @@ const DbManagerDashboard = () => {
                   placeholder="Table 1"
                   className="search-input-dash"
                 />
-                <BiChevronDown className="dropdown-icon-dash" />
+                {/* <BiChevronDown className="dropdown-icon-dash" /> */}
               </div>
             </div>
           </div>

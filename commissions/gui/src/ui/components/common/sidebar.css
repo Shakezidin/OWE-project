@@ -36,6 +36,7 @@
     background-color: var(--children-bg-color);
     /* background-color: #F2F4F6; */
     padding: .5rem 1.5rem .5rem 1.5rem;
+  
   }
   
   /* sidebar style  */
@@ -97,7 +98,7 @@
   .tablink {
     color: #101828;
     font-weight: normal;
-    font-size: 14px;
+    font-size: 13px;
     text-transform: capitalize;
     text-decoration: none;
     cursor: pointer;

@@ -70,7 +70,7 @@ const FilterAdder: React.FC<TableProps> = ({ handleClose, columns, page_number, 
 
 
   };
-  const handleDataChange=(index: number, value: string)=>{
+  const handleDataChange = (index: number, value: string) => {
     const newFilters = [...filters];
     // Convert ".1" to "0.1" if the column is "rate" or "rate list"
     newFilters[index].Data = value;
@@ -146,7 +146,7 @@ const FilterAdder: React.FC<TableProps> = ({ handleClose, columns, page_number, 
                 }}
                 onClick={handleAddRow}
               >
-                <IoAddSharp /> Add New
+               <img src={ICONS.BlackAddIcon} alt=""  style={{width:"14px", height:"14px"}}/> Add New
               </button>
             </div>
           </div>
@@ -184,16 +184,17 @@ const FilterAdder: React.FC<TableProps> = ({ handleClose, columns, page_number, 
                   </div>
                   <div className="create-input-field">
                     <label className="inputLabel">Operation</label>
-                   <OperationSelect
-                   options={options}
-                   columnType={columns.find(option => option.name === filter.Column)?.type || ''}
-                   value={filter.Operation}
-                   onChange={(value:any) =>{ handleChange(index, 'Operation', value);
-                   setErrors({ ...errors, [`operation${index}`]: '' });
-                   }}
-                   errors={errors}
-                   index={index}
-                   />
+                    <OperationSelect
+                      options={options}
+                      columnType={columns.find(option => option.name === filter.Column)?.type || ''}
+                      value={filter.Operation}
+                      onChange={(value: any) => {
+                        handleChange(index, 'Operation', value);
+                        setErrors({ ...errors, [`operation${index}`]: '' });
+                      }}
+                      errors={errors}
+                      index={index}
+                    />
                   </div>
 
                   <div className="create-input-field">
@@ -203,7 +204,8 @@ const FilterAdder: React.FC<TableProps> = ({ handleClose, columns, page_number, 
                       label="Data"
                       name="Data"
                       value={filter.Data}
-                      onChange={(e) =>{ handleDataChange(index, e.target.value);
+                      onChange={(e) => {
+                        handleDataChange(index, e.target.value);
                         setErrors({ ...errors, [`data${index}`]: '' });
                       }}
                       placeholder={"Enter"}
@@ -221,14 +223,14 @@ const FilterAdder: React.FC<TableProps> = ({ handleClose, columns, page_number, 
             </div>
           </div>
           <div className="createUserActionButton" >
-            <div className="" style={{ gap: "2rem", display: "flex"}}>
-              <ActionButton title={"Apply"} type="submit" onClick={() => applyFilter()} />
+            <div className="" style={{ gap: "2rem", display: "flex" }}>
 
               <ActionButton
                 title={"cancel"}
                 type="reset"
                 onClick={handleClose}
               />
+              <ActionButton title={"Apply"} type="submit" onClick={() => applyFilter()} />
             </div>
           </div>
 

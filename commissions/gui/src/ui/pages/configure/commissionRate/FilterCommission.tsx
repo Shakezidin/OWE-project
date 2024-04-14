@@ -141,12 +141,13 @@ const FilterCommission: React.FC<TableProps> = ({ handleClose, columns, page_num
               <button
                 type="button"
                 style={{
+                  background:"white",
                   color: "black",
                   border: "1px solid #ACACAC",
                 }}
                 onClick={handleAddRow}
               >
-                <IoAddSharp /> Add New
+               <img src={ICONS.BlackAddIcon} alt=""  style={{width:"14px", height:"14px"}}/> Add New
               </button>
             </div>
           </div>
@@ -222,13 +223,14 @@ const FilterCommission: React.FC<TableProps> = ({ handleClose, columns, page_num
           </div>
           <div className="createUserActionButton" >
             <div className="" style={{ gap: "2rem", display: "flex"}}>
-              <ActionButton title={"Apply"} type="submit" onClick={() => applyFilter()} />
-
-              <ActionButton
+            <ActionButton
                 title={"cancel"}
                 type="reset"
                 onClick={handleClose}
               />
+              <ActionButton title={"Apply"} type="submit" onClick={() => applyFilter()} />
+
+             
             </div>
           </div>
 
