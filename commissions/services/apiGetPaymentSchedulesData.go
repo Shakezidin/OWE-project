@@ -212,11 +212,13 @@ func HandleGetPaymentSchedulesDataRequest(resp http.ResponseWriter, req *http.Re
 func PreparePaymentScheduleFilters(tableName string, dataFilter models.DataRequestBody) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PreparePaymentScheduleFilters")
 	defer func() { log.ExitFn(0, "PreparePaymentScheduleFilters", nil) }()
+
 	var filtersBuilder strings.Builder
 
 	// Check if there are filters
 	if len(dataFilter.Filters) > 0 {
 		filtersBuilder.WriteString(" WHERE ")
+
 		for i, filter := range dataFilter.Filters {
 			if i > 0 {
 				filtersBuilder.WriteString(" AND ")
@@ -224,36 +226,71 @@ func PreparePaymentScheduleFilters(tableName string, dataFilter models.DataReque
 
 			// Check if the column is a foreign key
 			column := filter.Column
+
+			// Determine the operator and value based on the filter operation
+			operator := GetFilterDBMappedOperator(filter.Operation)
+			value := filter.Data
+
+			// For "stw" and "edw" operations, modify the value with '%'
+			if filter.Operation == "stw" || filter.Operation == "edw" || filter.Operation == "cont" {
+				value = GetFilterModifiedValue(filter.Operation, filter.Data.(string))
+			}
+
+			// Build the filter condition using correct db column name
 			switch column {
 			case "partner":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud.name) %s LOWER($%d)", filter.Operation, len(whereEleList)+1))
-				whereEleList = append(whereEleList, strings.ToLower(filter.Data.(string)))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud.name) %s LOWER($%d)", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
 			case "partner_name":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(pt1.partner_name) %s LOWER($%d)", filter.Operation, len(whereEleList)+1))
-				whereEleList = append(whereEleList, strings.ToLower(filter.Data.(string)))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(pt1.partner_name) %s LOWER($%d)", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
 			case "installer_name":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(pt2.partner_name) %s LOWER($%d)", filter.Operation, len(whereEleList)+1))
-				whereEleList = append(whereEleList, strings.ToLower(filter.Data.(string)))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(pt2.partner_name) %s LOWER($%d)", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
 			case "state":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(st.name) %s LOWER($%d)", filter.Operation, len(whereEleList)+1))
-				whereEleList = append(whereEleList, strings.ToLower(filter.Data.(string)))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(st.name) %s LOWER($%d)", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
 			case "sale_type":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(sl.type_name) %s LOWER($%d)", filter.Operation, len(whereEleList)+1))
-				whereEleList = append(whereEleList, strings.ToLower(filter.Data.(string)))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(sl.type_name) %s LOWER($%d)", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "rl":
+				filtersBuilder.WriteString(fmt.Sprintf("ps.rl %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "draw":
+				filtersBuilder.WriteString(fmt.Sprintf("ps.draw %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "draw_max":
+				filtersBuilder.WriteString(fmt.Sprintf("ps.draw_max %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "rep_draw":
+				filtersBuilder.WriteString(fmt.Sprintf("ps.rep_draw %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "rep_draw_max":
+				filtersBuilder.WriteString(fmt.Sprintf("ps.rep_draw_max %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "rep_pay":
+				filtersBuilder.WriteString(fmt.Sprintf("ps.rep_pay %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
 			default:
 				// For other columns, handle them accordingly
+				if len(filtersBuilder.String()) > len(" WHERE ") {
+					filtersBuilder.WriteString(" AND ")
+				}
+				// Assuming other columns need no change, just appending
 				filtersBuilder.WriteString("LOWER(")
-				filtersBuilder.WriteString(filter.Column)
+				filtersBuilder.WriteString(column)
 				filtersBuilder.WriteString(") ")
-				filtersBuilder.WriteString(filter.Operation)
+				filtersBuilder.WriteString(operator)
 				filtersBuilder.WriteString(" LOWER($")
 				filtersBuilder.WriteString(fmt.Sprintf("%d", len(whereEleList)+1))
 				filtersBuilder.WriteString(")")
-				whereEleList = append(whereEleList, strings.ToLower(filter.Data.(string)))
+				whereEleList = append(whereEleList, value)
 			}
 		}
 	}
+
 	filters = filtersBuilder.String()
+
 	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
 	return filters, whereEleList
 }

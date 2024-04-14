@@ -144,14 +144,15 @@ func HandleGetDealersDataRequest(resp http.ResponseWriter, req *http.Request) {
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
-func PrepareDealerFilters(tableName string, dataFilter models.DataRequestBody) (filters string, whereEleList []interface{}) {
+ func PrepareDealerFilters(tableName string, dataFilter models.DataRequestBody) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PrepareDealerFilters")
 	defer func() { log.ExitFn(0, "PrepareDealerFilters", nil) }()
-	var filtersBuilder strings.Builder
 
+	var filtersBuilder strings.Builder
 	// Check if there are filters
 	if len(dataFilter.Filters) > 0 {
 		filtersBuilder.WriteString(" WHERE ")
+
 		for i, filter := range dataFilter.Filters {
 			if i > 0 {
 				filtersBuilder.WriteString(" AND ")
@@ -159,10 +160,21 @@ func PrepareDealerFilters(tableName string, dataFilter models.DataRequestBody) (
 
 			// Check if the column is a foreign key
 			column := filter.Column
+
+			// Determine the operator and value based on the filter operation
+			operator := GetFilterDBMappedOperator(filter.Operation)
+			value := filter.Data
+
+			// For "stw" and "edw" operations, modify the value with '%'
+			if filter.Operation == "stw" || filter.Operation == "edw" || filter.Operation == "cont" {
+				value = GetFilterModifiedValue(filter.Operation, filter.Data.(string))
+			}
+			
+			// Build the filter condition using correct db column name
 			switch column {
 			case "dealer":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud.name) %s LOWER($%d)", filter.Operation, len(whereEleList)+1))
-				whereEleList = append(whereEleList, strings.ToLower(filter.Data.(string)))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud.name) %s LOWER($%d)", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
 			default:
 				// For other columns, handle them accordingly
 				if len(filtersBuilder.String()) > len(" WHERE ") {
@@ -170,17 +182,20 @@ func PrepareDealerFilters(tableName string, dataFilter models.DataRequestBody) (
 				}
 				// Assuming other columns need no change, just appending
 				filtersBuilder.WriteString("LOWER(")
-				filtersBuilder.WriteString(filter.Column)
+				filtersBuilder.WriteString(column)
 				filtersBuilder.WriteString(") ")
-				filtersBuilder.WriteString(filter.Operation)
+				filtersBuilder.WriteString(operator)
 				filtersBuilder.WriteString(" LOWER($")
 				filtersBuilder.WriteString(fmt.Sprintf("%d", len(whereEleList)+1))
 				filtersBuilder.WriteString(")")
-				whereEleList = append(whereEleList, strings.ToLower(filter.Data.(string)))
+				whereEleList = append(whereEleList, value)
 			}
 		}
 	}
+
 	filters = filtersBuilder.String()
+
 	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
 	return filters, whereEleList
 }
+
