@@ -47,17 +47,17 @@ const TableHeader = (props: TableProps) => {
         </div>
         <div className="iconsSection-filter">
           <button type="button" onClick={onPressFilter}>
-            <img src={ICONS.FILTER} alt="" />
+            <img src={ICONS.filtercomm} alt="" />
           </button>
         </div>
         <div className="iconsSection2">
           <button type="button" onClick={onPressImport}>
-            <img src={ICONS.IMAGE_IMPORT} alt="" /> Import
+            <img src={ICONS.importIcon} alt="" /> Import
           </button>
         </div>
         <div className="iconsSection2">
           <button type="button" onClick={onpressExport}>
-            <img src={ICONS.IMAGE_EXPORT} alt="" />
+            <img src={ICONS.exportIcon} alt="" />
             Export
           </button>
         </div>
@@ -67,12 +67,12 @@ const TableHeader = (props: TableProps) => {
             style={{
               background: "black",
               color: "white",
-              border: "2px solid black",
+              border: "1px solid black",
             }}
             className="hover-btn"
             onClick={onpressAddNew}
           >
-            <IoAddSharp /> Add New
+             <img src={ICONS.AddIcon} alt=""  style={{width:"14px", height:"14px"}}/> Add New
           </button>
         </div>
       </div>

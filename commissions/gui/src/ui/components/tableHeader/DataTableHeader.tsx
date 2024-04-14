@@ -32,8 +32,6 @@ const DataTableHeader = (props: TableProps) => {
                         type="text"
                         placeholder="Table 1"
                         className="search-input-data"
-                    // Add any other props you need
-
                     />
                     <BiChevronDown className="dropdown-icon" />
 

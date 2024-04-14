@@ -138,8 +138,9 @@ const CreateCommissionRate:React.FC<ButtonProps> = ({handleClose,commission,edit
                           marginTop: "4.5px",
                           borderRadius: "8px",
                           outline: "none",
-                          height: "2.8rem",
-                          border: "1px solid #d0d5dd"
+                          height: "42px",
+                          // width:"280px"
+                          border: "1px solid #d0d5dd"                                         
 
                         }),
                       }}
@@ -156,7 +157,7 @@ const CreateCommissionRate:React.FC<ButtonProps> = ({handleClose,commission,edit
                             marginTop: "4.5px",
                             borderRadius: "8px",
                             outline: "none",
-                            height: "2.8rem",
+                            height: "42px",
                             border: "1px solid #d0d5dd"
 
                           }),
@@ -176,7 +177,7 @@ const CreateCommissionRate:React.FC<ButtonProps> = ({handleClose,commission,edit
                           marginTop: "4.5px",
                           borderRadius: "8px",
                           outline: "none",
-                          height: "2.8rem",
+                          height: "42px",
                           border: "1px solid #d0d5dd"
 
                         }),
@@ -221,7 +222,7 @@ const CreateCommissionRate:React.FC<ButtonProps> = ({handleClose,commission,edit
                           marginTop: "4.5px",
                           borderRadius: "8px",
                           outline: "none",
-                          height: "2.8rem",
+                          height: "42px",
                           border: "1px solid #d0d5dd"
 
                         }),
