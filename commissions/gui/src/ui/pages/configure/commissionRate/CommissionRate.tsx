@@ -265,8 +265,7 @@ const CommissionRate: React.FC = () => {
             </tbody>
           </table>
         </div>
-      </div>
-      {
+        {
         commissionList?.length > 0 ? <Pagination
           currentPage={currentPage}
           totalPages={totalPages} // You need to calculate total pages
@@ -275,6 +274,8 @@ const CommissionRate: React.FC = () => {
           goToPrevPage={goToPrevPage}
         /> : null
       }
+      </div>
+     
     </div>
   );
 };

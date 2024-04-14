@@ -24,6 +24,10 @@ import edit from '../../resources/assets/edit.svg'
 import viewA from '../../resources/assets/ellips.svg'
 import leftArrow from '../../resources/assets/leftArrow.svg'
 import editIconUser from '../../resources/assets/editIcon.svg'
+import filtercomm from '../../resources/assets/filtercomm.svg'
+import AddIcon from '../../resources/assets/AddIcon.svg'
+import exportIcon from '../../resources/assets/exportIcon.svg'
+import importIcon from '../../resources/assets/importIcon.svg'
 export const ICONS = {
   BACKGROUND: require("../../resources/assets/background.png"),
   LOGO: require("../../resources/assets/logo.png"),
@@ -63,5 +67,9 @@ export const ICONS = {
   activityIcon: activityIcon,
   menuIcon:menu,
   leftArrow: leftArrow,
-  editIconUser: editIconUser
+  editIconUser: editIconUser,
+  filtercomm: filtercomm,
+  AddIcon: AddIcon,
+  exportIcon: exportIcon,
+  importIcon: importIcon
 };

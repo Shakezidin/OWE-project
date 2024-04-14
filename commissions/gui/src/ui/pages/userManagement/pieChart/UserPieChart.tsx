@@ -92,12 +92,14 @@ const UserPieChart = () => {
               // onMouseLeave={onMouseLeave}
               >
                 <LabelList
-                  dy={-3}
+                  dy={0}
+                  // dx={-30}
                   fill="white" // Percentage color
                   // dataKey="percentage"
                   dataKey={renderCustomizedLabelPercentage}
                   position="inside"
-                  angle={0}
+                  angle={-45}
+                  
                   stroke="none" // Border of letters
                   className="label-percentage"
                 />
@@ -127,12 +129,12 @@ const UserPieChart = () => {
               // onMouseLeave={onMouseLeave}
               >
                 <LabelList
-                  dy={-3}
+                  dy={0}
                   fill="white" // Percentage color
                   // dataKey="percentage"
                   dataKey={renderCustomizedLabelPercentage}
                   position="inside"
-                  angle={0}
+                  angle={45}
                   stroke="none" // Border of letters
                   className="label-percentage"
                 />

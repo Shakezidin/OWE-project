@@ -1,0 +1,132 @@
+.Db-manager-container {
+  display: flex;
+  justify-content: space-between;
+}
+.runner-section {
+  width: 233px;
+  height: 354px;
+  gap: 0px;
+  border-radius: 16px;
+  opacity: 0px;
+  background-color: #008dda;
+  text-align: center;
+  padding-top: 5rem;
+}
+.runner-section h3 {
+  font-family: Poppins;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 30px;
+  color: #b9e5fe;
+}
+.runner-section p {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 21px;
+  color: #ffffff;
+}
+.active-button {
+  margin-top: 1rem;
+  width: 181px;
+  height: 139px;
+  margin-left: 1.5rem;
+  gap: 0px;
+  border-radius: 12px;
+  opacity: 0px;
+  background: #0069a3;
+}
+.active-since-section button {
+  width: 100px;
+  height: 36px;
+  margin-top: 30px;
+  border-radius: 100px;
+  opacity: 0px;
+  border: none;
+  background: #03c988;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 21px;
+  cursor: pointer;
+}
+.since-section h3 {
+  margin-top: 0.5rem;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+  color: #ffffff;
+}
+.since-section p {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 18px;
+}
+.DashBarchart-section {
+  background-color: white;
+  width: 80%;
+  border-radius: 16px;
+  border: 1px solid #d0d5dd;
+}
+.dash-section {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  text-align: left;
+}
+.webhook-container {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: white;
+  border-radius: 16px;
+}
+.status-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.since-section p {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+}
+.create-container {
+  border: 1px solid #D0D5DD;
+  width: 353px;
+  height: 394px;
+  border-radius: 16px;
+  opacity: 0px;
+}
+.Create-section {
+  display: flex;
+  padding: 1rem;
+}
+.Create-section p {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    text-align: left;
+    
+}
+.dash-search-container {
+    position: relative;
+    display: inline-block;
+  }
+.dash-serach-container input{
+  
+padding: 6px 16px 6px 16px;
+gap: 36px;
+border-radius: 8px;
+border: 1px solid #D0D5DD;
+opacity: 0px;
+
+}
+
+.dropdown-icon-dash {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    font-size: 2rem;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: gray;
+  }
