@@ -1225,8 +1225,6 @@ CREATE TABLE
 /**********************************DEALER PAY SCHEMA END **************************************/
 
 
-
-
 /* Add a default Admin User to Login tables */
 /* Default Admin Password is 1234 for Development purpose */
 -- Insert default role 'Admin' into user_roles table
