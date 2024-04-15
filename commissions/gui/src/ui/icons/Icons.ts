@@ -29,6 +29,12 @@ import AddIcon from '../../resources/assets/AddIcon.svg'
 import exportIcon from '../../resources/assets/exportIcon.svg'
 import importIcon from '../../resources/assets/importIcon.svg'
 import BlackAddIcon from '../../resources/assets/blackAddIcon.svg'
+import commIconHead from '../../resources/assets/CommIconhead.svg'
+import dbIconManag from '../../resources/assets/dbiconmang.svg'
+import projIcon from '../../resources/assets/projIcon.svg'
+import teamManag from '../../resources/assets/teamManag.svg'
+
+
 export const ICONS = {
   BACKGROUND: require("../../resources/assets/background.png"),
   LOGO: require("../../resources/assets/logo.png"),
@@ -73,5 +79,9 @@ export const ICONS = {
   AddIcon: AddIcon,
   exportIcon: exportIcon,
   importIcon: importIcon,
-  BlackAddIcon: BlackAddIcon
+  BlackAddIcon: BlackAddIcon,
+  commIconHead: commIconHead,
+  dbIconManag:dbIconManag,
+  projIcon: projIcon,
+  teamManag: teamManag
 };
