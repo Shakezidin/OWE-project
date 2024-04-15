@@ -37,7 +37,7 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen,setSidebarCha
               </div>
                 <div className="image-box-container" >
                   <div className="image-icon" style={{backgroundColor:"#DDF3FF"}}>
-
+                    <img src={ICONS.commIconHead} alt=""/>
                   </div>
                   <p className="" >
                     Commission
@@ -45,20 +45,24 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen,setSidebarCha
                 </div>
                 <div className="image-box-container" onClick={()=>setSidebarChange(1)}>
                   <div className="image-icon" style={{backgroundColor:"#FFE6E6"}}>
-
+                  <img src={ICONS.dbIconManag} alt=""/>
                   </div>
                   <p className="">
                     Database Manger
                   </p>
                 </div>
                 <div className="image-box-container">
-                  <div className="image-icon" style={{backgroundColor:"#667085"}}></div>
+                  <div className="image-icon" style={{backgroundColor:"#DDDFFF"}}>
+                  <img src={ICONS.projIcon} alt=""/>
+                  </div>
                   <p className="">
                     Project Manager
                   </p>
                 </div>
                 <div className="image-box-container">
-                  <div className="image-icon"  style={{backgroundColor:"#DDF3FF"}}></div>
+                  <div className="image-icon"  style={{backgroundColor:"#DDF3FF"}}>
+                  <img src={ICONS.teamManag} alt=""/>
+                  </div>
                   <p className="">
                     Team Management
                   </p>

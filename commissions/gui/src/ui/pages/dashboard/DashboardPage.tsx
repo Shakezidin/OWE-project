@@ -18,7 +18,7 @@ export const DashboardPage: React.FC = () => {
       <div className="Dashboard-section-container">
         <div className="Dashboard-container">
           <div className="Dashboard-wel">
-        <Breadcrumb head="Dashboard" linkPara="Commission" linkparaSecond="Dashboard"/>
+            <Breadcrumb head="Dashboard" linkPara="Commission" linkparaSecond="Dashboard" />
           </div>
           <div className="dashboard-payroll" >
             <div className="Payroll-section">
@@ -30,41 +30,43 @@ export const DashboardPage: React.FC = () => {
             <div className="Payroll-section">
               <label className="inputLabel" style={{ color: "#344054" }}>Set Default</label>
               <div className="dash-select">
-               Chart View
+                Chart View
               </div>
             </div>
             <div className="Line-container">
               <div className="line-graph">
-                <div className={`filter-line ${active===0?"active-filter-line":""}`} onClick={()=>setActive(0)}>
-                  <img src={ICONS.dashHead} style={{background:"white"}} alt=""/>
+                <div className={`filter-line ${active === 0 ? "active-filter-line" : ""}`} onClick={() => setActive(0)}>
+                  <img src={ICONS.dashHead} style={{ background: "white" }} alt="" />
                 </div>
-                <div className={`filter-line ${active===1?"active-filter-line":""}`} onClick={()=>setActive(1)}>
+                <div className={`filter-line ${active === 1 ? "active-filter-line" : ""}`} onClick={() => setActive(1)}>
                   <img src={ICONS.viewChart} alt="" />
                 </div>
-                <div className={`filter-line ${active===2?"active-filter-line":""}`} onClick={()=>setActive(2)}>
+                <div className={`filter-line ${active === 2 ? "active-filter-line" : ""}`} onClick={() => setActive(2)}>
                   <img src={ICONS.FILTER} alt="" />
                 </div>
               </div>
             </div>
           </div>
         </div>
+        <div className="">
+          <DashboardTotal />
+          {/* <DonutChart /> */}
+        </div>
+        <div className="" style={{ marginTop: "1.5rem" }}>
+        {
+          active === 0 && (
+            <DashBoardTable
+            />)
+        }
+        {
+          active === 1 && (
+            <DashBoardChart
+            />)
+        }
       </div>
-      <div className="">
-        <DashboardTotal />
-        {/* <DonutChart /> */}
       </div>
-    <div className="" style={{ marginTop: "1.5rem" }}>
-    {
-        active===0&&(
-        <DashBoardTable
-         />)
-      }
-      {
-        active===1&&(
-        <DashBoardChart
-         />)
-      }
-    </div>
+
+     
     </>
 
   )

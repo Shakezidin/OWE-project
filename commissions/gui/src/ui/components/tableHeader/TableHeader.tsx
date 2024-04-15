@@ -47,7 +47,7 @@ const TableHeader = (props: TableProps) => {
         </div>
         <div className="iconsSection-filter">
           <button type="button" onClick={onPressFilter}>
-            <img src={ICONS.filtercomm} alt="" />
+            <img src={ICONS.filtercomm} alt="" style={{width:"15px", height:"15px"}}/>
           </button>
         </div>
         <div className="iconsSection2">
