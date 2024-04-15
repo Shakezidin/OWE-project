@@ -269,6 +269,7 @@ const FilterCommission: React.FC<TableProps> = ({
           </div>
         </div>
       </div>
+
     </div>
   );
 };
