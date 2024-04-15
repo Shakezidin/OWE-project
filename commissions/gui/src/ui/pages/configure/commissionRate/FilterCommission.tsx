@@ -135,6 +135,8 @@ const FilterCommission: React.FC<TableProps> = ({ handleClose, columns, page_num
     <div className="transparent-model">
       <div className="filter-modal">
         <div className="createUserContainer">
+
+        <div className="scroll-content">
           <div className="filter-section">
             <h3 className="createProfileText">Filter</h3>
             <div className="iconsSection2">
@@ -233,9 +235,10 @@ const FilterCommission: React.FC<TableProps> = ({ handleClose, columns, page_num
              
             </div>
           </div>
-
+          </div>
         </div>
       </div>
+
     </div>
   );
 };

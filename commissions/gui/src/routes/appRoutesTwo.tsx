@@ -216,7 +216,7 @@ const appRoutesTwo = [
                         path: routes.nonCommRoutes,
 
                         sidebarProps: {
-                            displayText: "Non-Comm(DLRPay)",
+                            displayText: "NonComm(DLRPay)",
                             icon: (
                                 <div
                                     className="ellipse"
@@ -273,8 +273,8 @@ const appRoutesTwo = [
             {
                 path: routes.dbDashRoutes,
                 sidebarProps: {
-                    displayText: "Db Dashboard",
-                    icon: <img src={ICONS.dash} className="icon-image" alt="" />,
+                    displayText: "DB Dashboard",
+                    icon:<img src={ICONS.dash} className="icon-image" alt="" />,
                 },
             },
             {
