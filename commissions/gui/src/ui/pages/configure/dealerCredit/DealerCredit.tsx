@@ -21,6 +21,7 @@ import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/pagin
 import { CommissionModel } from "../../../../core/models/configuration/create/CommissionModel";
 import { FaArrowDown } from "react-icons/fa6";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
+import CreateDealerCredit from "./CreateDealerCredit";
 interface Column {
   name: string;
   displayName: string;
@@ -133,12 +134,12 @@ const DealerCredit: React.FC = () => {
             columns={columns} 
              page_number = {currentPage}
              page_size = {itemsPerPage}
-             />}
-             {open && <CreateCommissionRate 
+             />} */}
+             {open && <CreateDealerCredit
                          commission={editedCommission}
                          editMode={editMode}
                          handleClose={handleClose}
-                          />} */}
+                          />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}

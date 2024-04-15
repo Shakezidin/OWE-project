@@ -145,78 +145,78 @@ const PaymentSchedule = () => {
                 <th>
                   <div className="table-header">
                     <p>Partner Name</p>{" "}
-                    <FaArrowDown style={{ color: "#667085" }} />
+                    <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Partner</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Partner</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
                     <p>Installer</p>{" "}
-                    <FaArrowDown style={{ color: "#667085" }} />
+                    <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
                     <p>Sale Type</p>{" "}
-                    <FaArrowDown style={{ color: "#667085" }} />
+                    <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>ST</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>ST</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
                     <p>Rate List</p>{" "}
-                    <FaArrowDown style={{ color: "#667085" }} />
+                    <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Draw %</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Draw %</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Draw Max</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Draw Max</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
                     <p>Rep Draw %</p>{" "}
-                    <FaArrowDown style={{ color: "#667085" }} />
+                    <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
                     <p>Rep Max Draw %</p>{" "}
-                    <FaArrowDown style={{ color: "#667085" }} />
+                    <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Rep Pay</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Rep Pay</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
                     <p>Start Date</p>{" "}
-                    <FaArrowDown style={{ color: "#667085" }} />
+                    <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>End Date</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>End Date</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Action</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Action</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
               </tr>
