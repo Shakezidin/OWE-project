@@ -38,7 +38,7 @@ const TimeLine = () => {
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
   const [editedTimeLineSla, setEditedTimeLineSla] = useState<TimeLineSlaModel | null>(null);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
   useEffect(() => {
     const pageNumber = {
@@ -122,8 +122,11 @@ const TimeLine = () => {
         timeLineSlaData={editedTimeLineSla}
         editMode={editMode}
         handleClose={handleClose} />}
-
-          <table  style={{ overflowX: "auto", whiteSpace: "nowrap" }}>
+ <div
+          className="TableContainer"
+          style={{ overflowX: "auto", whiteSpace: "nowrap" }}
+        >
+          <table>
         
            <thead >
               <tr>
@@ -220,9 +223,8 @@ const TimeLine = () => {
             </tbody>
     
           </table>
-        
-        </div>
-       {
+          </div>
+          {
         timelinesla_list?.length>0 ? <Pagination
         currentPage={currentPage}
         totalPages={totalPages} // You need to calculate total pages
@@ -231,6 +233,9 @@ const TimeLine = () => {
         goToPrevPage={goToPrevPage}
       />:null
        }
+
+        </div>
+      
       </div>
   
   );

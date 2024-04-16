@@ -198,8 +198,7 @@ const SaleType = () => {
             </tbody>
           </table>
         </div>
-      </div>
-      {
+        {
       salesTypeList?.length>0?  <Pagination
       currentPage={currentPage}
       totalPages={totalPages} // You need to calculate total pages
@@ -208,6 +207,8 @@ const SaleType = () => {
       goToPrevPage={goToPrevPage}
     />:null
     }
+      </div>
+     
     </div>
   );
 };
