@@ -155,7 +155,7 @@ const LoanType = () => {
             </thead>
             <tbody>
               {loanTypeList?.length > 0
-                ? loanTypeList?.map((el, i) => (
+                ? loanTypeList?.map((el: any, i: any) => (
                   <tr key={i}>
                     <td>
                       <CheckBox

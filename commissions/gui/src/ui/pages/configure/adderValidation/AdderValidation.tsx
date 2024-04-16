@@ -164,7 +164,7 @@ const AdderValidation = () => {
             </thead>
             <tbody>
               {adderVList?.length > 0
-                ? adderVList?.map((el, i) => (
+                ? adderVList?.map((el:any, i:any) => (
                     <tr key={i}>
                       <td>
                         <CheckBox

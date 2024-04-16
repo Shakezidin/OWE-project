@@ -11,6 +11,7 @@ import SalesManagerTable from "../userManagerAllTable/SalesManagerTable";
 import SalesRepresentativeTable from "../userManagerAllTable/SalesRepresentativeTable";
 import DealerOwnerTable from "../userManagerAllTable/DealerOwnerTable";
 import RegionalManagerTable from "../userManagerAllTable/RegionalManagerTable";
+import "./UserHeader.css"
 // interface props {
 //   name: string;
 // }
@@ -62,11 +63,22 @@ const UserHeaderSection: React.FC = () => {
               styles={{
                 control: (baseStyles, state) => ({
                   ...baseStyles,
-                  marginTop: "4.5px",
+                  fontSize: "0.8rem",
+                  fontWeight: "500",
                   borderRadius: "8px",
                   outline: "none",
-                  height: "2.8rem",
+                  height: "2.5rem",
+                  width: "12rem",
                   border: "1px solid #d0d5dd",
+                }),
+                menu: (baseStyles, state) => ({
+                  ...baseStyles,
+                  width: "12rem",
+                  outline: "none"
+                }),
+                option: (baseStyles, state) => ({
+                  ...baseStyles,
+                  fontSize: "0.8rem",
                 }),
               }}
             />
@@ -78,6 +90,7 @@ const UserHeaderSection: React.FC = () => {
               <h4>Delete</h4>
             </button>
           </div>
+
           <div className="iconsSection-filter">
             <button type="button">
               <img src={ICONS.FILTER} alt="" />
