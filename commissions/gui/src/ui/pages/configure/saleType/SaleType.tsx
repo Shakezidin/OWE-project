@@ -140,19 +140,19 @@ const SaleType = () => {
                 </th>
                 <th>
                   <div className="table-header">
-                    <p> Name</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p> Name</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}}/>
                   </div>
                 </th>
 
                 <th>
                   <div className="table-header">
-                    <p>Description</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p>Description</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}}/>
                   </div>
                 </th>
 
                 <th>
                   <div className="table-header">
-                    <p>Action</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p>Action</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}}/>
                   </div>
                 </th>
               </tr>
