@@ -211,8 +211,7 @@ const DealerTier = () => {
             </tbody>
           </table>
         </div>
-      </div>
-      {
+        {
       dealerTierList?.length>0?  <Pagination
       currentPage={currentPage}
       totalPages={totalPages} // You need to calculate total pages
@@ -221,6 +220,8 @@ const DealerTier = () => {
       goToPrevPage={goToPrevPage}
     />:null
     }
+      </div>
+   
     </div>
   );
 };
