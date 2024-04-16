@@ -100,16 +100,17 @@ const CreateTierLoan:React.FC<tierLoanProps> = ({handleClose,tierEditedData,edit
   };
   return (
     <div className="transparent-model">
-      <div className="modal">
+      <form onSubmit={(e) => submitTierLoad(e)} className="modal">
 
         <div className="createUserCrossButton" onClick={handleClose}>
           <CROSS_BUTTON />
 
         </div>
-        <div className="createUserContainer">
+      
           <h3 className="createProfileText">{editMode===false?"Tier Loan Fee":"Update Tier Loan Fee"}</h3>
-          <form onSubmit={(e) => submitTierLoad(e)}>
-            <div className="createProfileInputView">
+        
+          <div className="modal-body">
+          <div className="createProfileInputView">
               <div className="createProfileTextView">
                 <div className="create-input-container">
                   <div className="create-input-field">
@@ -138,6 +139,9 @@ const CreateTierLoan:React.FC<tierLoanProps> = ({handleClose,tierEditedData,edit
                           border: "1px solid #d0d5dd"
 
                         }),
+                        indicatorSeparator: () => ({
+                          display: 'none' // Hide the indicator separator
+                        }),
                       }}
                       onChange={(newValue) => handleChange(newValue, 'installer')}
                       value={installerOption(newFormData)?.find((option) => option.value === createTier.installer)}
@@ -158,6 +162,9 @@ const CreateTierLoan:React.FC<tierLoanProps> = ({handleClose,tierEditedData,edit
                           fontSize:"13px",
                           border: "1px solid #d0d5dd"
 
+                        }),
+                        indicatorSeparator: () => ({
+                          display: 'none' // Hide the indicator separator
                         }),
                       }}
                       onChange={(newValue) => handleChange(newValue, 'state')}
@@ -191,6 +198,9 @@ const CreateTierLoan:React.FC<tierLoanProps> = ({handleClose,tierEditedData,edit
                           fontSize:"13px",
                           border: "1px solid #d0d5dd"
 
+                        }),
+                        indicatorSeparator: () => ({
+                          display: 'none' // Hide the indicator separator
                         }),
                       }}
                       isSearchable
@@ -242,6 +252,8 @@ const CreateTierLoan:React.FC<tierLoanProps> = ({handleClose,tierEditedData,edit
                   </div>
                 </div>
               </div>
+              </div>
+          </div>
               <div className="createUserActionButton">
               <ActionButton title={"Cancel"} type="reset"
                   onClick={() => handleClose()} />
@@ -249,10 +261,10 @@ const CreateTierLoan:React.FC<tierLoanProps> = ({handleClose,tierEditedData,edit
                   onClick={() => { }} />
               </div>
 
-            </div>
-          </form>
-        </div>
-      </div>
+            
+    
+      
+        </form>
     </div>
   );
 };

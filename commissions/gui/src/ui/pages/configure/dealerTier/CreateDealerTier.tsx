@@ -90,15 +90,16 @@ const CreateDealerTier:React.FC<dealerProps> = ({handleClose,editMode,editDealer
     };
     return (
         <div className="transparent-model">
-            <div className="modal">
+             <form onSubmit={(e)=>submitTierLoan(e)} className="modal">
 
                 <div className="createUserCrossButton" onClick={handleClose}>
                     <CROSS_BUTTON />
                 </div>
-                <div className="createUserContainer">
+               
                     <h3 className="createProfileText">Dealer Tier</h3>
-                   <form onSubmit={(e)=>submitTierLoan(e)}>
-                   <div className="createProfileInputView">
+               
+                  <div className="modal-body">
+                  <div className="createProfileInputView">
                         <div className="createProfileTextView">
                             <div className="create-input-container">
                                 <div className="create-input-field">
@@ -126,6 +127,9 @@ const CreateDealerTier:React.FC<dealerProps> = ({handleClose,editMode,editDealer
                                               border:"1px solid #d0d5dd"
                                               
                                             }),
+                                            indicatorSeparator: () => ({
+                                                display: 'none' // Hide the indicator separator
+                                              }),
                                           }}
                                         onChange={(newValue) => handleChange(newValue, 'tier')}
                                         value={dealertierOption(newFormData)?.find((option) => option.value === createDealerTierData.tier)}
@@ -155,6 +159,8 @@ const CreateDealerTier:React.FC<dealerProps> = ({handleClose,editMode,editDealer
                                 </div>
                             </div>
                         </div>
+                        </div>
+                  </div>
                         <div className="createUserActionButton">
                         <ActionButton title={"Cancel"} type="reset"
                   onClick={() => handleClose()} />
@@ -162,10 +168,10 @@ const CreateDealerTier:React.FC<dealerProps> = ({handleClose,editMode,editDealer
                                 onClick={() => { }} />
                         </div>
 
-                    </div>
-                   </form>
-                </div>
-            </div>
+                
+             
+         
+                </form>
         </div>
     );
 };

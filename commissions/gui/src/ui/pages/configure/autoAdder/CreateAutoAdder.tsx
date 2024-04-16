@@ -114,15 +114,16 @@ const CreateAutoAdder:React.FC<ButtonProps> = ({handleClose,commission,editMode}
   };
   return (
     <div className="transparent-model">
-      <div className="modal">
+      <form action="" onSubmit={(e) => handleSubmit(e)} className="modal">
         <div className="createUserCrossButton" onClick={handleClose}>
           <CROSS_BUTTON />
         </div>
-        {showToast && <ToastComponent message="Login successful" />}
-        <div className="createUserContainer">
+      
+      
           <h3 className="createProfileText">{editMode===false?"Auto Adder":"Update Auto Adder"}</h3>
-          <form action="" onSubmit={(e) => handleSubmit(e)}>
-            <div className="createProfileInputView">
+    
+         <div className="modal-body">
+         <div className="createProfileInputView">
               <div className="createProfileTextView">
                 <div className="create-input-container">
                   <div className="create-input-field">
@@ -143,6 +144,9 @@ const CreateAutoAdder:React.FC<ButtonProps> = ({handleClose,commission,editMode}
                           border: "1px solid #d0d5dd"                                         
 
                         }),
+                        indicatorSeparator: () => ({
+                          display: 'none' // Hide the indicator separator
+                        }),
                       }}
                     />
                   </div>
@@ -160,6 +164,9 @@ const CreateAutoAdder:React.FC<ButtonProps> = ({handleClose,commission,editMode}
                             height: "42px",
                             border: "1px solid #d0d5dd"
 
+                          }),
+                          indicatorSeparator: () => ({
+                            display: 'none' // Hide the indicator separator
                           }),
                         }}
                         onChange={(newValue) => handleChange(newValue, 'installer')}
@@ -180,6 +187,9 @@ const CreateAutoAdder:React.FC<ButtonProps> = ({handleClose,commission,editMode}
                           height: "42px",
                           border: "1px solid #d0d5dd"
 
+                        }),
+                        indicatorSeparator: () => ({
+                          display: 'none' // Hide the indicator separator
                         }),
                       }}
                       isSearchable
@@ -225,6 +235,9 @@ const CreateAutoAdder:React.FC<ButtonProps> = ({handleClose,commission,editMode}
                           height: "42px",
                           border: "1px solid #d0d5dd"
 
+                        }),
+                        indicatorSeparator: () => ({
+                          display: 'none' // Hide the indicator separator
                         }),
                       }}
                       // options={partners}
@@ -280,6 +293,8 @@ const CreateAutoAdder:React.FC<ButtonProps> = ({handleClose,commission,editMode}
                   </div>
                 </div>
               </div>
+              </div>
+         </div>
               <div className="createUserActionButton">
               <ActionButton title={"Cancel"} type="reset"
                   onClick={() => handleClose()} />
@@ -287,10 +302,10 @@ const CreateAutoAdder:React.FC<ButtonProps> = ({handleClose,commission,editMode}
                   onClick={() => { }} />
               </div>
 
-            </div>
+       
           </form>
-        </div>
-      </div>
+      
+ 
     </div>
   );
 };
