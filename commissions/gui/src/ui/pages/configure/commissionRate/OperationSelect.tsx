@@ -34,6 +34,9 @@ const OperationSelect: React.FC<{
             height: "2.25rem",
             border: "1px solid #d0d5dd",
           }),
+          indicatorSeparator: () => ({
+            display: 'none' // Hide the indicator separator
+          }),
         }}
       />
       {errors[`operation${index}`] && <span style={{ color: "red", fontSize: "12px" }}>{errors[`operation${index}`]}</span>}

@@ -107,16 +107,17 @@ const CreatePaymentSchedule:React.FC<payScheduleProps> = ({handleClose,editMode,
     };
     return (
         <div className="transparent-model">
-            <div className="modal">
+             <form onSubmit={(e)=>submitPaySchedule(e)} className="modal">
 
                 <div className="createUserCrossButton" onClick={handleClose}>
                     <CROSS_BUTTON />
 
                 </div>
-                <div className="createUserContainer">
+             
                     <h3 className="createProfileText">{editMode===false?"Payment Schedule":"Update Payment Schedule"}</h3>
-                   <form onSubmit={(e)=>submitPaySchedule(e)}>
-                   <div className="createProfileInputView">
+                
+                  <div className="modal-body">
+                  <div className="createProfileInputView">
                         <div className="createProfileTextView">
                             <div className="create-input-container">
                                 <div className="create-input-field">
@@ -144,6 +145,9 @@ const CreatePaymentSchedule:React.FC<payScheduleProps> = ({handleClose,editMode,
                                               border:"1px solid #d0d5dd"
                                               
                                             }),
+                                            indicatorSeparator: () => ({
+                                                display: 'none' // Hide the indicator separator
+                                              }),
                                           }}
                                         isSearchable
                                         onChange={(newValue) => handleChange(newValue, 'partner')}
@@ -166,6 +170,9 @@ const CreatePaymentSchedule:React.FC<payScheduleProps> = ({handleClose,editMode,
                                               border:"1px solid #d0d5dd"
                                               
                                             }),
+                                            indicatorSeparator: () => ({
+                                                display: 'none' // Hide the indicator separator
+                                              }),
                                           }}
                                         onChange={(newValue) => handleChange(newValue, 'installer_name')}
                                         value={installerOption(newFormData)?.find((option) => option.value === createPayData.installer_name)}
@@ -190,6 +197,9 @@ const CreatePaymentSchedule:React.FC<payScheduleProps> = ({handleClose,editMode,
                                               border:"1px solid #d0d5dd"
                                               
                                             }),
+                                            indicatorSeparator: () => ({
+                                                display: 'none' // Hide the indicator separator
+                                              }),
                                           }}
                                         onChange={(newValue) => handleChange(newValue, 'sale_type')}
                                         value={salesTypeOption(newFormData)||paySaleTypeData?.find((option) => option.value === createPayData.sale_type)}
@@ -210,6 +220,9 @@ const CreatePaymentSchedule:React.FC<payScheduleProps> = ({handleClose,editMode,
                                               border:"1px solid #d0d5dd"
                                               
                                             }),
+                                            indicatorSeparator: () => ({
+                                                display: 'none' // Hide the indicator separator
+                                              }),
                                           }}
                                         isSearchable
                                         onChange={(newValue) => handleChange(newValue, 'state')}
@@ -309,6 +322,8 @@ const CreatePaymentSchedule:React.FC<payScheduleProps> = ({handleClose,editMode,
                                 </div>
                             </div>
                         </div>
+                        </div>
+                  </div>
                         <div className="createUserActionButton">
                         <ActionButton title={"Cancel"} type="reset"
                   onClick={() => handleClose()} />
@@ -316,10 +331,10 @@ const CreatePaymentSchedule:React.FC<payScheduleProps> = ({handleClose,editMode,
                                 onClick={() => { }} />
                         </div>
 
-                    </div>
-                   </form>
-                </div>
-            </div>
+                  
+             
+           
+                </form>
         </div>
     );
 };

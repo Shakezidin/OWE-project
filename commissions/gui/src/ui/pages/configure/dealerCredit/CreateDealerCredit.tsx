@@ -7,56 +7,58 @@ import Input from "../../../components/text_input/Input";
 
 import { ActionButton } from "../../../components/button/ActionButton";
 
-import { useDispatch} from 'react-redux';
+import { useDispatch } from "react-redux";
 // import { updateForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createCommissionSlice";
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
-import Select from 'react-select';
-import { installerOption, partnerOption, repTypeOption, stateOption } from "../../../../core/models/data_models/SelectDataModel";
+import Select from "react-select";
+import {
+  installerOption,
+  partnerOption,
+  repTypeOption,
+  stateOption,
+} from "../../../../core/models/data_models/SelectDataModel";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
 import { respTypeData } from "../../../../resources/static_data/StaticData";
-import {  updateForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createCommissionSlice";
+import { updateForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createCommissionSlice";
 import { CommissionModel } from "../../../../core/models/configuration/create/CommissionModel";
 import ToastComponent from "../../../components/toast/ToastComponent";
 interface ButtonProps {
-  editMode:boolean,
-  handleClose: () => void,
-commission: CommissionModel | null;
- 
+  editMode: boolean;
+  handleClose: () => void;
+  commission: CommissionModel | null;
 }
 
-const CreateDealerCredit:React.FC<ButtonProps> = ({handleClose,commission,editMode}) => {
-  
+const CreateDealerCredit: React.FC<ButtonProps> = ({
+  handleClose,
+  commission,
+  editMode,
+}) => {
   const dispatch = useDispatch();
   const [showToast, setShowToast] = useState(false);
-  const [createCommission, setCreateCommission] = useState<CommissionModel>(
-    {
-
-    record_id:commission? commission?.record_id:0,
-      partner:commission? commission?.partner : "OWE",
-      installer:commission? commission?.installer : "OWE",
-      state:commission? commission?.state : "Alaska",
-      sale_type: commission? commission?.sale_type : "BATTERY",
-      sale_price:commission? commission?.sale_price : 1500.0,
-      rep_type:commission? commission?.rep_type: "EMPLOYEE",
-      rl: commission? commission?.rl :0.5,
-      rate: commission? commission?.rate :0.1,
-      start_date:commission? commission?.start_date : "2024-04-01",
-      end_date:commission? commission?.end_date : "2024-06-30"
-    }
-
-  )
-  const [newFormData, setNewFormData] = useState<any>([])
+  const [createCommission, setCreateCommission] = useState<CommissionModel>({
+    record_id: commission ? commission?.record_id : 0,
+    partner: commission ? commission?.partner : "OWE",
+    installer: commission ? commission?.installer : "OWE",
+    state: commission ? commission?.state : "Alaska",
+    sale_type: commission ? commission?.sale_type : "BATTERY",
+    sale_price: commission ? commission?.sale_price : 1500.0,
+    rep_type: commission ? commission?.rep_type : "EMPLOYEE",
+    rl: commission ? commission?.rl : 0.5,
+    rate: commission ? commission?.rate : 0.1,
+    start_date: commission ? commission?.start_date : "2024-04-01",
+    end_date: commission ? commission?.end_date : "2024-06-30",
+  });
+  const [newFormData, setNewFormData] = useState<any>([]);
   const tableData = {
-    tableNames: ["partners", "states", "installers", "rep_type"]
-  }
+    tableNames: ["partners", "states", "installers", "rep_type"],
+  };
   const getNewFormData = async () => {
-    const res = await postCaller(EndPoints.get_newFormData, tableData)
-    setNewFormData(res.data)
-
-  }
+    const res = await postCaller(EndPoints.get_newFormData, tableData);
+    setNewFormData(res.data);
+  };
   useEffect(() => {
-    getNewFormData()
-  }, [])
+    getNewFormData();
+  }, []);
 
   useEffect(() => {
     if (commission) {
@@ -67,62 +69,69 @@ const CreateDealerCredit:React.FC<ButtonProps> = ({handleClose,commission,editMo
   const handleChange = (newValue: any, fieldName: string) => {
     setCreateCommission((prevData) => ({
       ...prevData,
-      [fieldName]: newValue ? newValue.value : '',
+      [fieldName]: newValue ? newValue.value : "",
     }));
   };
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setCreateCommission((prevData) => ({
       ...prevData,
-      [name]: name === 'rl' || name === 'sale_price' || name === 'rate' ? parseFloat(value) : value,
+      [name]:
+        name === "rl" || name === "sale_price" || name === "rate"
+          ? parseFloat(value)
+          : value,
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-   
       dispatch(updateForm(createCommission));
-      if(createCommission.record_id){
-        const res = await postCaller(EndPoints.update_commission, createCommission);
+      if (createCommission.record_id) {
+        const res = await postCaller(
+          EndPoints.update_commission,
+          createCommission
+        );
         if (res.status === 200) {
           setShowToast(true);
-          handleClose()
-          window.location.reload()
+          handleClose();
+          window.location.reload();
+        } else {
+          alert(res.message);
         }
-        else {
-          alert(res.message)
-        }
-      }
-      else{
+      } else {
         const { record_id, ...cleanedFormData } = createCommission;
-        const res = await postCaller(EndPoints.create_commission, cleanedFormData);
+        const res = await postCaller(
+          EndPoints.create_commission,
+          cleanedFormData
+        );
         if (res.status === 200) {
           setShowToast(true);
-          handleClose()
+          handleClose();
           // window.location.reload()
-        }
-        else {
-          alert(res.message)
+        } else {
+          alert(res.message);
         }
       }
-    
+
       // dispatch(resetForm());
     } catch (error) {
-      console.error('Error submitting form:', error);
+      console.error("Error submitting form:", error);
     }
   };
   return (
     <div className="transparent-model">
-      <div className="modal">
+      <form action="" onSubmit={(e) => handleSubmit(e)} className="modal">
         <div className="createUserCrossButton" onClick={handleClose}>
           <CROSS_BUTTON />
         </div>
-        {showToast && <ToastComponent message="Login successful" />}
-        <div className="createUserContainer">
-          <h3 className="createProfileText">{editMode===false?"Commission Rate":"Update Commission Rate"}</h3>
-          <form action="" onSubmit={(e) => handleSubmit(e)}>
-            <div className="createProfileInputView">
+    
+          <h3 className="createProfileText">
+            {editMode === false ? "Dealer Credit" : "Update Dealer Credit"}
+          </h3>
+        
+          <div className="modal-body">
+          <div className="createProfileInputView">
               <div className="createProfileTextView">
                 <div className="create-input-container">
                   <div className="create-input-field">
@@ -130,8 +139,10 @@ const CreateDealerCredit:React.FC<ButtonProps> = ({handleClose,commission,editMo
                     <Select
                       options={partnerOption(newFormData)}
                       isSearchable
-                      onChange={(newValue) => handleChange(newValue, 'partner')}
-                      value={partnerOption(newFormData)?.find((option) => option?.value === createCommission.partner)}
+                      onChange={(newValue) => handleChange(newValue, "partner")}
+                      value={partnerOption(newFormData)?.find(
+                        (option) => option?.value === createCommission.partner
+                      )}
                       styles={{
                         control: (baseStyles, state) => ({
                           ...baseStyles,
@@ -140,8 +151,10 @@ const CreateDealerCredit:React.FC<ButtonProps> = ({handleClose,commission,editMo
                           outline: "none",
                           height: "42px",
                           // width:"280px"
-                          border: "1px solid #d0d5dd"                                         
-
+                          border: "1px solid #d0d5dd",
+                        }),
+                        indicatorSeparator: () => ({
+                          display: "none", // Hide the indicator separator
                         }),
                       }}
                     />
@@ -158,12 +171,19 @@ const CreateDealerCredit:React.FC<ButtonProps> = ({handleClose,commission,editMo
                             borderRadius: "8px",
                             outline: "none",
                             height: "42px",
-                            border: "1px solid #d0d5dd"
-
+                            border: "1px solid #d0d5dd",
+                          }),
+                          indicatorSeparator: () => ({
+                            display: "none", // Hide the indicator separator
                           }),
                         }}
-                        onChange={(newValue) => handleChange(newValue, 'installer')}
-                        value={installerOption(newFormData)?.find((option) => option.value === createCommission.installer)}
+                        onChange={(newValue) =>
+                          handleChange(newValue, "installer")
+                        }
+                        value={installerOption(newFormData)?.find(
+                          (option) =>
+                            option.value === createCommission.installer
+                        )}
                       />
                     </div>
                   </div>
@@ -178,14 +198,18 @@ const CreateDealerCredit:React.FC<ButtonProps> = ({handleClose,commission,editMo
                           borderRadius: "8px",
                           outline: "none",
                           height: "42px",
-                          border: "1px solid #d0d5dd"
-
+                          border: "1px solid #d0d5dd",
+                        }),
+                        indicatorSeparator: () => ({
+                          display: "none", // Hide the indicator separator
                         }),
                       }}
                       isSearchable
                       // options={statData}
-                      onChange={(newValue) => handleChange(newValue, 'state')}
-                      value={stateOption(newFormData)?.find((option) => option.value === createCommission.state)}
+                      onChange={(newValue) => handleChange(newValue, "state")}
+                      value={stateOption(newFormData)?.find(
+                        (option) => option.value === createCommission.state
+                      )}
                     />
                   </div>
                 </div>
@@ -223,13 +247,22 @@ const CreateDealerCredit:React.FC<ButtonProps> = ({handleClose,commission,editMo
                           borderRadius: "8px",
                           outline: "none",
                           height: "42px",
-                          border: "1px solid #d0d5dd"
-
+                          border: "1px solid #d0d5dd",
+                        }),
+                        indicatorSeparator: () => ({
+                          display: "none", // Hide the indicator separator
                         }),
                       }}
                       // options={partners}
-                      onChange={(newValue) => handleChange(newValue, 'rep_type')}
-                      value={repTypeOption(newFormData) || respTypeData?.find((option) => option.value === createCommission.rep_type)}
+                      onChange={(newValue) =>
+                        handleChange(newValue, "rep_type")
+                      }
+                      value={
+                        repTypeOption(newFormData) ||
+                        respTypeData?.find(
+                          (option) => option.value === createCommission.rep_type
+                        )
+                      }
                     />
                   </div>
                 </div>
@@ -256,7 +289,7 @@ const CreateDealerCredit:React.FC<ButtonProps> = ({handleClose,commission,editMo
                       />
                     </div>
                   </div>
-                  <div className="start-input-container" >
+                  <div className="start-input-container">
                     <div className="rate-input-field">
                       <Input
                         type={"date"}
@@ -267,7 +300,7 @@ const CreateDealerCredit:React.FC<ButtonProps> = ({handleClose,commission,editMo
                         onChange={(e) => handleInputChange(e)}
                       />
                     </div>
-                    <div className="rate-input-field" >
+                    <div className="rate-input-field">
                       <Input
                         type={"date"}
                         label="End Date"
@@ -280,15 +313,23 @@ const CreateDealerCredit:React.FC<ButtonProps> = ({handleClose,commission,editMo
                   </div>
                 </div>
               </div>
-              <div className="createUserActionButton">
-                <ActionButton title={editMode===false?"Create":"Update"} type="submit"
-                  onClick={() => { }} />
               </div>
-
-            </div>
+          </div>
+              <div className="createUserActionButton">
+                <ActionButton
+                  title={"Cancel"}
+                  type="button"
+                  onClick={handleClose}
+                />
+                <ActionButton
+                  title={editMode === false ? "Save" : "Update"}
+                  type="submit"
+                  onClick={() => {}}
+                />
+              </div>
+         
           </form>
-        </div>
-      </div>
+     
     </div>
   );
 };

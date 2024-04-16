@@ -99,7 +99,7 @@ const FilterCommission: React.FC<TableProps> = ({
     }
   };
 
-  const resetAllFilter=()=>{
+  const resetAllFilter = () => {
     setFilters([]);
   }
 
@@ -150,14 +150,12 @@ const FilterCommission: React.FC<TableProps> = ({
   return (
     <div className="transparent-model">
       <div className="modal">
-      <div className="filter-section">
+        <div className="filter-section">
           <h3 className="createProfileText">Filter</h3>
           <div className="iconsSection2">
             <button
-            
               type="button"
               style={{
-                background: "white",
                 color: "black",
                 border: "1px solid #ACACAC",
               }}
@@ -167,124 +165,123 @@ const FilterCommission: React.FC<TableProps> = ({
                 src={ICONS.BlackAddIcon}
                 alt=""
                 style={{ width: "14px", height: "14px" }}
-              />
+              />{" "}
               Add New
             </button>
           </div>
         </div>
-        <div className="modal-content">
-          <div className="scroll-content">
-          <div className="scroll-flex">
-            <div className="createProfileInputView">
-              <div className="createProfileTextView">
-                {filters?.map((filter, index) => (
-                  <div className="create-input-container" key={index}>
-                    <div className="create-input-field">
-                      <label className="inputLabel">Column Name</label>
-                      <div className="">
-                        <Select
-                          options={[
-                            { value: "Select", label: "Select" },
-                            ...options,
-                          ]}
-                          isSearchable
-                          value={
-                            options.find(
-                              (option) => option.value === filter.Column
-                            ) || null
-                          }
-                          onChange={(selectedOption: any) => {
-                            handleChange(index, "Column", selectedOption.value);
-                            setErrors({ ...errors, [`column${index}`]: "" });
-                          }}
-                          styles={{
-                            control: (baseStyles, state) => ({
-                              ...baseStyles,
-                              marginTop: "4.5px",
-                              borderRadius: "8px",
-                              outline: "none",
-                              height: "2.25rem",
-                              fontSize:"13px",
-                              border: "1px solid #d0d5dd",
-                              overflowY: "auto",
-                            }),
-                          }}
-                        />
-                      </div>
-                    </div>
-                    <div className="create-input-field">
-                      <label className="inputLabel">Operation</label>
-                      <OperationSelect
-                        options={options}
-                        columnType={
-                          columns.find(
-                            (option) => option.name === filter.Column
-                          )?.type || ""
-                        }
-                        value={filter.Operation}
-                        onChange={(value: any) => {
-                          handleChange(index, "Operation", value);
-                          setErrors({ ...errors, [`operation${index}`]: "" });
-                        }}
-                        errors={errors}
-                        index={index}
-                      />
-                    </div>
+        <div className="modal-body">
 
-                    <div className="create-input-field">
-                      <Input
-                        type={getInputType(filter.Column)}
-                        label="Data"
-                        name="Data"
-                        value={filter.Data}
-                        onChange={(e) => {
-                          handleDataChange(index, e.target.value);
-                          setErrors({ ...errors, [`data${index}`]: "" });
+          <div className="createProfileInputView">
+            <div className="createProfileTextView">
+              {filters?.map((filter, index) => (
+                <div className="create-input-container" key={index}>
+                  <div className="create-input-field">
+                    <label className="inputLabel">Column Name</label>
+                    <div className="">
+                      <Select
+                        options={[
+                          { value: "Select", label: "Select" },
+                          ...options,
+                        ]}
+                        isSearchable
+                        value={
+                          options.find(
+                            (option) => option.value === filter.Column
+                          ) || null
+                        }
+                        onChange={(selectedOption: any) => {
+                          handleChange(index, "Column", selectedOption.value);
+                          setErrors({ ...errors, [`column${index}`]: "" });
                         }}
-                        placeholder={"Enter"}
+                        styles={{
+                          control: (baseStyles, state) => ({
+                            ...baseStyles,
+                            marginTop: "4.5px",
+                            borderRadius: "8px",
+                            outline: "none",
+                            height: "2.25rem",
+                            fontSize: "13px",
+                            border: "1px solid #d0d5dd",
+                            overflowY: "auto",
+                          }),
+                          indicatorSeparator: () => ({
+                            display: "none", // Hide the indicator separator
+                          }),
+                        }}
                       />
-                      {errors[`data${index}`] && (
-                        <span style={{ color: "red", fontSize: "12px" }}>
-                          {errors[`data${index}`]}
-                        </span>
-                      )}
                     </div>
-               <div
-                  className="cross-btn"
-                  onClick={() => handleRemoveRow(index)}
-                >
-                  <img src={ICONS.cross} alt="" />
-                </div>
                   </div>
-                ))}
-              </div>
+                  <div className="create-input-field">
+                    <label className="inputLabel">Operation</label>
+                    <OperationSelect
+                      options={options}
+                      columnType={
+                        columns.find((option) => option.name === filter.Column)
+                          ?.type || ""
+                      }
+                      value={filter.Operation}
+                      onChange={(value: any) => {
+                        handleChange(index, "Operation", value);
+                        setErrors({ ...errors, [`operation${index}`]: "" });
+                      }}
+                      errors={errors}
+                      index={index}
+                    />
+                  </div>
+
+                  <div className="create-input-field">
+                    <Input
+                      type={getInputType(filter.Column)}
+                      label="Data"
+                      name="Data"
+                      value={filter.Data}
+                      onChange={(e) => {
+                        handleDataChange(index, e.target.value);
+                        setErrors({ ...errors, [`data${index}`]: "" });
+                      }}
+                      placeholder={"Enter"}
+                    />
+                    {errors[`data${index}`] && (
+                      <span style={{ color: "red", fontSize: "12px" }}>
+                        {errors[`data${index}`]}
+                      </span>
+                    )}
+                  </div>
+                  <div
+                    className="cross-btn"
+                    onClick={() => handleRemoveRow(index)}
+                  >
+                    <img src={ICONS.cross} alt="" />
+                  </div>
+                </div>
+              ))}
             </div>
-            <div className="createUserActionButton">
-              <div className="" style={{ gap: "2rem", display: "flex" }}>
-                <ActionButton
-                  title={"cancel"}
-                  type="reset"
-                  onClick={handleClose}
-                />
-                 <ActionButton
-                  title={"reset"}
-                  type="reset"
-                  onClick={resetAllFilter}
-                />
-                <ActionButton
-                  title={"Apply"}
-                  type="submit"
-                  onClick={() => applyFilter()}
-                />
-              </div>
-            </div>
-            </div>
+          </div>
+
+        </div>
+        <div className="createUserActionButton">
+          <div className="" style={{ gap: "2rem", display: "flex" }}>
+            <ActionButton
+              title={"Cancel"}
+              type="reset"
+              onClick={handleClose}
+            />
+            <ActionButton
+              title={"reset"}
+              type="reset"
+              onClick={resetAllFilter}
+            />
+            <ActionButton
+              title={"Apply"}
+              type="submit"
+              onClick={() => applyFilter()}
+            />
           </div>
         </div>
       </div>
-    
-
     </div>
+ 
   );
 };
 export default FilterCommission;

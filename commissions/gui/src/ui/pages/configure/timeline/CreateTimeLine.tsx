@@ -95,16 +95,17 @@ const CreateTimeLine:React.FC<timeLineProps> = ({handleClose,editMode,timeLineSl
     };
     return (
         <div className="transparent-model">
-            <div className="modal">
+             <form onSubmit={(e)=>submitTimeLineSla(e)} className="modal">
 
                 <div className="createUserCrossButton" onClick={handleClose}>
                     <CROSS_BUTTON />
 
                 </div>
-                <div className="createUserContainer">
+              
                     <h3 className="createProfileText">{editMode===false?"TimeLine SLA":"Update TimeLine SLA"}</h3>
-                <form onSubmit={(e)=>submitTimeLineSla(e)}>
-                <div className="createProfileInputView">
+              
+             <div className="modal-body">
+             <div className="createProfileInputView">
                         <div className="createProfileTextView">
                             <div className="create-input-container">
                             <div className="create-input-field">
@@ -133,6 +134,9 @@ const CreateTimeLine:React.FC<timeLineProps> = ({handleClose,editMode,timeLineSl
                                               border:"1px solid #d0d5dd"
                                               
                                             }),
+                                            indicatorSeparator: () => ({
+                                                display: 'none' // Hide the indicator separator
+                                              }),
                                           }}
                                         onChange={(newValue) => handleChange(newValue, 'state')}
                                         value={stateOption(newFormData)?.find((option) => option.value === createTimeLine.state)}
@@ -174,6 +178,8 @@ const CreateTimeLine:React.FC<timeLineProps> = ({handleClose,editMode,timeLineSl
                                 </div>
                             </div>
                         </div>
+                        </div>
+             </div>
                         <div className="createUserActionButton">
                         <ActionButton title={"Cancel"} type="reset"
                   onClick={() => handleClose()} />
@@ -181,10 +187,10 @@ const CreateTimeLine:React.FC<timeLineProps> = ({handleClose,editMode,timeLineSl
                                 onClick={() => { }} />
                         </div>
 
-                    </div>
+                
+         
+             
                 </form>
-                </div>
-            </div>
         </div>
     );
 };
