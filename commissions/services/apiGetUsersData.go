@@ -187,10 +187,6 @@ func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBo
 		filtersBuilder.WriteString(" WHERE ")
 
 		for i, filter := range dataFilter.Filters {
-			if i > 0 {
-				filtersBuilder.WriteString(" AND ")
-			}
-
 			// Check if the column is a foreign key
 			column := filter.Column
 
@@ -204,6 +200,9 @@ func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBo
 			}
 
 			// Build the filter condition using correct db column name
+			if i > 0 {
+				filtersBuilder.WriteString(" AND ")
+			}
 			switch column {
 			case "name":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud.name) %s LOWER($%d)", operator, len(whereEleList)+1))
@@ -215,18 +214,7 @@ func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBo
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ur.role_name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
-				// For other columns, handle them accordingly
-				if len(filtersBuilder.String()) > len(" WHERE ") {
-					filtersBuilder.WriteString(" AND ")
-				}
-				// Assuming other columns need no change, just appending
-				filtersBuilder.WriteString("LOWER(")
-				filtersBuilder.WriteString(column)
-				filtersBuilder.WriteString(") ")
-				filtersBuilder.WriteString(operator)
-				filtersBuilder.WriteString(" LOWER($")
-				filtersBuilder.WriteString(fmt.Sprintf("%d", len(whereEleList)+1))
-				filtersBuilder.WriteString(")")
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			}
 		}

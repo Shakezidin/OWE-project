@@ -209,7 +209,7 @@ func PrepareMarketingFeesFilters(tableName string, dataFilter models.DataRequest
 			if filter.Operation == "stw" || filter.Operation == "edw" || filter.Operation == "cont" {
 				value = GetFilterModifiedValue(filter.Operation, filter.Data.(string))
 			}
-			
+
 			// Build the filter condition using correct db column name
 			switch column {
 			case "state":
@@ -232,10 +232,6 @@ func PrepareMarketingFeesFilters(tableName string, dataFilter models.DataRequest
 				whereEleList = append(whereEleList, value)
 			default:
 				// For other columns, handle them accordingly
-				if len(filtersBuilder.String()) > len(" WHERE ") {
-					filtersBuilder.WriteString(" AND ")
-				}
-				// Assuming other columns need no change, just appending
 				filtersBuilder.WriteString("LOWER(")
 				filtersBuilder.WriteString(column)
 				filtersBuilder.WriteString(") ")

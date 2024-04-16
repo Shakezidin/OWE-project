@@ -1,19 +1,15 @@
 import React, { useEffect, useState } from "react";
 import "../../create_profile/CreateUserProfile.css";
-import { ReactComponent as PROFILE_BACKGROUND } from "../../../../resources/assets/Profile_background.svg";
-
 import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cross_button.svg";
 import Input from "../../../components/text_input/Input";
-import DropdownButton from "../../../components/dropdown/DropdownButton";
 import { ActionButton } from "../../../components/button/ActionButton";
 import { updateDealerTierForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createDealerTierSlice";
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
-
 import { useDispatch } from "react-redux";
 import { dealertierOption } from "../../../../core/models/data_models/SelectDataModel";
 import Select from 'react-select';
-import { dealerTierData, tierState } from "../../../../resources/static_data/StaticData";
+
 import { DealerTierModel } from "../../../../core/models/configuration/create/DealerTierModel";
 interface dealerProps {
     handleClose: () => void,
@@ -98,7 +94,6 @@ const CreateDealerTier:React.FC<dealerProps> = ({handleClose,editMode,editDealer
 
                 <div className="createUserCrossButton" onClick={handleClose}>
                     <CROSS_BUTTON />
-
                 </div>
                 <div className="createUserContainer">
                     <h3 className="createProfileText">Dealer Tier</h3>
@@ -127,7 +122,7 @@ const CreateDealerTier:React.FC<dealerProps> = ({handleClose,editMode,editDealer
                                               marginTop:"4.5px",
                                               borderRadius:"8px",
                                               outline:"none",
-                                              height:"2.8rem",
+                                              height:"2.25rem",
                                               border:"1px solid #d0d5dd"
                                               
                                             }),
@@ -161,6 +156,8 @@ const CreateDealerTier:React.FC<dealerProps> = ({handleClose,editMode,editDealer
                             </div>
                         </div>
                         <div className="createUserActionButton">
+                        <ActionButton title={"Cancel"} type="reset"
+                  onClick={() => handleClose()} />
                             <ActionButton title={"Save"} type="submit"
                                 onClick={() => { }} />
                         </div>

@@ -120,7 +120,7 @@ const CreateAutoAdder:React.FC<ButtonProps> = ({handleClose,commission,editMode}
         </div>
         {showToast && <ToastComponent message="Login successful" />}
         <div className="createUserContainer">
-          <h3 className="createProfileText">{editMode===false?"Commission Rate":"Update Commission Rate"}</h3>
+          <h3 className="createProfileText">{editMode===false?"Auto Adder":"Update Auto Adder"}</h3>
           <form action="" onSubmit={(e) => handleSubmit(e)}>
             <div className="createProfileInputView">
               <div className="createProfileTextView">
@@ -128,7 +128,7 @@ const CreateAutoAdder:React.FC<ButtonProps> = ({handleClose,commission,editMode}
                   <div className="create-input-field">
                     <label className="inputLabel">Partner</label>
                     <Select
-                      options={partnerOption(newFormData)}
+                      options={partnerOption(newFormData)?.length>0? partnerOption(newFormData):undefined}
                       isSearchable
                       onChange={(newValue) => handleChange(newValue, 'partner')}
                       value={partnerOption(newFormData)?.find((option) => option?.value === createCommission.partner)}
@@ -281,7 +281,9 @@ const CreateAutoAdder:React.FC<ButtonProps> = ({handleClose,commission,editMode}
                 </div>
               </div>
               <div className="createUserActionButton">
-                <ActionButton title={editMode===false?"Create":"Update"} type="submit"
+              <ActionButton title={"Cancel"} type="reset"
+                  onClick={() => handleClose()} />
+                <ActionButton title={editMode===false?"Save":"Update"} type="submit"
                   onClick={() => { }} />
               </div>
 

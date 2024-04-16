@@ -24,7 +24,7 @@ commission: CommissionModel | null;
  
 }
 
-const CreateNonComm:React.FC<ButtonProps> = ({handleClose,commission,editMode}) => {
+const CreateAutoAdder:React.FC<ButtonProps> = ({handleClose,commission,editMode}) => {
   
   const dispatch = useDispatch();
   const [showToast, setShowToast] = useState(false);
@@ -120,7 +120,7 @@ const CreateNonComm:React.FC<ButtonProps> = ({handleClose,commission,editMode}) 
         </div>
         {showToast && <ToastComponent message="Login successful" />}
         <div className="createUserContainer">
-          <h3 className="createProfileText">{editMode===false?"Non-Comm(DLR Pay)":"Update Non-Comm(DLR Pay)"}</h3>
+          <h3 className="createProfileText">{editMode===false?"Loan Fee Addr":"Update Loan Fee Addr"}</h3>
           <form action="" onSubmit={(e) => handleSubmit(e)}>
             <div className="createProfileInputView">
               <div className="createProfileTextView">
@@ -128,7 +128,7 @@ const CreateNonComm:React.FC<ButtonProps> = ({handleClose,commission,editMode}) 
                   <div className="create-input-field">
                     <label className="inputLabel">Partner</label>
                     <Select
-                      options={partnerOption(newFormData)}
+                      options={partnerOption(newFormData)?.length>0? partnerOption(newFormData):undefined}
                       isSearchable
                       onChange={(newValue) => handleChange(newValue, 'partner')}
                       value={partnerOption(newFormData)?.find((option) => option?.value === createCommission.partner)}
@@ -295,4 +295,4 @@ const CreateNonComm:React.FC<ButtonProps> = ({handleClose,commission,editMode}) 
   );
 };
 
-export default CreateNonComm;
+export default CreateAutoAdder;

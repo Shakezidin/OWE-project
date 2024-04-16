@@ -1,16 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { CiEdit } from "react-icons/ci";
 import "../configure.css";
-import { RiDeleteBin5Line } from "react-icons/ri";
 import CreateCommissionRate from "./CreateCommissionRate";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import { CSVLink } from 'react-csv';
 import { ICONS } from "../../../icons/Icons";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { fetchCommissions } from "../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice";
-
 import FilterCommission from "./FilterCommission";
-
 import CheckBox from "../../../components/chekbox/CheckBox";
 import {
   toggleAllRows,
@@ -22,6 +18,7 @@ import { CommissionModel } from "../../../../core/models/configuration/create/Co
 import { FaArrowDown } from "react-icons/fa6";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import { Column } from "../../../../core/models/data_models/FilterSelectModel";
+import SortableHeader from "../../../components/tableHeader/SortableHeader";
 
 
 const CommissionRate: React.FC = () => {
@@ -40,7 +37,7 @@ const CommissionRate: React.FC = () => {
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
   const [editedCommission, setEditedCommission] = useState<CommissionModel | null>(null);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
 
   useEffect(() => {
@@ -143,6 +140,17 @@ const CommissionRate: React.FC = () => {
           <table>
             <thead>
               <tr>
+              {/* {
+              tableHeader.map((labal,key)=>(
+                <SortableHeader
+                key={key}
+                labe={label}
+                sortKey={key}
+                sortDirection={sortKey === key ? sortDirection : undefined}
+                onClick={handleSort}
+                />
+              ))
+              } */}
                 <th >
                   <div>
                     <CheckBox

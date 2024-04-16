@@ -186,7 +186,7 @@ func HandleGetCommissionsDataRequest(resp http.ResponseWriter, req *http.Request
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
-func PrepareCommissionFilters(tableName string, dataFilter models.DataRequestBody) (filters string, whereEleList []interface{}) {
+ func PrepareCommissionFilters(tableName string, dataFilter models.DataRequestBody) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PrepareCommissionFilters")
 	defer func() { log.ExitFn(0, "PrepareCommissionFilters", nil) }()
 
@@ -197,10 +197,6 @@ func PrepareCommissionFilters(tableName string, dataFilter models.DataRequestBod
 		filtersBuilder.WriteString(" WHERE ")
 
 		for i, filter := range dataFilter.Filters {
-			if i > 0 {
-				filtersBuilder.WriteString(" AND ")
-			}
-
 			// Check if the column is a foreign key
 			column := filter.Column
 
@@ -208,12 +204,15 @@ func PrepareCommissionFilters(tableName string, dataFilter models.DataRequestBod
 			operator := GetFilterDBMappedOperator(filter.Operation)
 			value := filter.Data
 
-		// For "stw" and "edw" operations, modify the value with '%'
-		if filter.Operation == "stw" || filter.Operation == "edw" || filter.Operation == "cont" {
-			value = GetFilterModifiedValue(filter.Operation, filter.Data.(string))
-		}
+			// For "stw" and "edw" operations, modify the value with '%'
+			if filter.Operation == "stw" || filter.Operation == "edw" || filter.Operation == "cont" {
+				value = GetFilterModifiedValue(filter.Operation, filter.Data.(string))
+			}
 
 			// Build the filter condition using correct db column name
+			if i > 0 {
+				filtersBuilder.WriteString(" AND ")
+			}
 			switch column {
 			case "partner":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(pt1.partner_name) %s LOWER($%d)", operator, len(whereEleList)+1))

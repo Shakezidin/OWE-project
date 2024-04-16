@@ -22,6 +22,7 @@ import { CommissionModel } from "../../../../core/models/configuration/create/Co
 import { FaArrowDown } from "react-icons/fa6";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import CreateCommissionRate from "../commissionRate/CreateCommissionRate";
+import CreateLoanFeeAddr from "./CreateLoanFeeAddr";
 interface Column {
   name: string;
   displayName: string;
@@ -135,7 +136,7 @@ const LoanFeeAddr: React.FC = () => {
              page_number = {currentPage}
              page_size = {itemsPerPage}
              />} */}
-             {open && <CreateCommissionRate 
+             {open && <CreateLoanFeeAddr
                          commission={editedCommission}
                          editMode={editMode}
                          handleClose={handleClose}

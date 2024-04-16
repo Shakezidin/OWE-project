@@ -28,7 +28,9 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen,setSidebarCha
       <div className="search-container">
         <div className="user-container">
           <button className="app-btn" onClick={()=>setOpenModal(!openModal)}>
-            <img src={ICONS.groupIcon} alt="" />
+           {
+            openModal? <img src={ICONS.groupActiveIcon} alt="" />: <img src={ICONS.groupIcon} alt="" />
+           }
           </button>
           {
             openModal&&(<div className="header-modal">

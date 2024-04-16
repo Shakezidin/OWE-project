@@ -61,7 +61,7 @@ const TableHeader = (props: TableProps) => {
             Export
           </button>
         </div>
-        <div className="iconsSection2 hover-btn">
+        <div className="iconsSection2">
           <button
             type="button"
             style={{
