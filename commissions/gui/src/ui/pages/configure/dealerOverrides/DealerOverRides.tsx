@@ -166,8 +166,8 @@ const DealerOverRides: React.FC = () => {
                   </div>
                 </th>
                 <th>
-                  <div className="table-header">
-                    <p>Action</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}}/>
+                  <div className="action-header">
+                    <p>Action</p>
                   </div>
                 </th>
               </tr>
@@ -197,8 +197,6 @@ const DealerOverRides: React.FC = () => {
                       <td>{el.pay_rate}</td>
                       <td>{el.start_date}</td>
                       <td>{el.end_date}</td>
-
-                      {/* <td>{el.endDate}</td> */}
                       <td>
                         <div className="action-icon">
                           <div className="" style={{ cursor: "pointer" }}>

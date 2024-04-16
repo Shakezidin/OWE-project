@@ -172,8 +172,8 @@ const TimeLine = () => {
                   </div>
                 </th>
                 <th>
-                  <div className="table-header">
-                    <p>Action</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}}/>
+                  <div className="action-header">
+                    <p>Action</p> 
                   </div>
                 </th>
               </tr>
@@ -206,16 +206,16 @@ const TimeLine = () => {
                     <td>{el.start_date}</td>
                     <td>{el.end_date}</td>
                     <td
-                      style={{
-                        display: "flex",
-                        gap: "1rem",
-                        alignItems: "center",
-                      }}
+                     
                     >
-                      <img src={ICONS.ARCHIVE} alt="" />
+                    <div className="action-icon">
+                  <div className="">
+                  <img src={ICONS.ARCHIVE} alt="" />
+                  </div>
                      <div className="" onClick={()=>handleEditTimeLineSla(el)} style={{cursor:"pointer"}}>
                      <img src={ICONS.editIcon} alt="" />
                      </div>
+                    </div>
                     </td>
                   </tr>
                 ))

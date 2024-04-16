@@ -13,11 +13,7 @@ const initialState: CommissionsState = {
   loading: false,
   error: null,
 };
-interface FetchCommissionsWithFiltersArgs {
-  page_number: number;
-  page_size: number;
-  filters: any[]; // Adjust the type according to your filter data type
-}
+
 export const fetchCommissions = createAsyncThunk(
   "commissions/fetchCommissions",
   async (data: any,thunkAPI) => {

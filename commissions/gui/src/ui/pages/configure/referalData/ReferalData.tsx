@@ -290,8 +290,8 @@ const ReferalData: React.FC = () => {
                   </div>
                 </th>
                 <th>
-                  <div className="table-header">
-                    <p>Action</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
+                  <div className="action-header">
+                    <p>Action</p> 
                   </div>
                 </th>
               </tr>
@@ -362,8 +362,7 @@ const ReferalData: React.FC = () => {
             </tbody>
           </table>
         </div>
-      </div>
-      {
+        {
         commissionList?.length > 0 ? <Pagination
           currentPage={currentPage}
           totalPages={totalPages} // You need to calculate total pages
@@ -372,6 +371,8 @@ const ReferalData: React.FC = () => {
           goToPrevPage={goToPrevPage}
         /> : null
       }
+      </div>
+     
     </div>
   );
 };

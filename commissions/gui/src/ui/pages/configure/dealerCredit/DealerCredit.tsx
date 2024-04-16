@@ -219,8 +219,8 @@ const DealerCredit: React.FC = () => {
                   </div>
                 </th>
                 <th>
-                  <div className="table-header">
-                    <p>Action</p> <FaArrowDown style={{ color: "#667085" }} />
+                  <div className="action-header">
+                    <p>Action</p> 
                   </div>
                 </th>
               </tr>
@@ -275,8 +275,7 @@ const DealerCredit: React.FC = () => {
             </tbody>
           </table>
         </div>
-      </div>
-      {
+        {
         commissionList?.length > 0 ? <Pagination
           currentPage={currentPage}
           totalPages={totalPages} // You need to calculate total pages
@@ -285,6 +284,8 @@ const DealerCredit: React.FC = () => {
           goToPrevPage={goToPrevPage}
         /> : null
       }
+      </div>
+    
     </div>
   );
 };
