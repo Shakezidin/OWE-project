@@ -175,7 +175,8 @@ const FilterSale: React.FC<TableProps> = ({ handleClose, columns, page_number, p
                             marginTop: "4.5px",
                             borderRadius: "8px",
                             outline: "none",
-                            height: "2.8rem",
+                            height: "2.25rem",
+                            fontSize:"13px",
                             border: "1px solid #d0d5dd",
                             overflowY: 'auto'
 

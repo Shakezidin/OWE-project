@@ -99,6 +99,10 @@ const FilterCommission: React.FC<TableProps> = ({
     }
   };
 
+  const resetAllFilter=()=>{
+    setFilters([]);
+  }
+
   const applyFilter = async () => {
     setErrors({});
     if (
@@ -145,11 +149,12 @@ const FilterCommission: React.FC<TableProps> = ({
   console.log(errors);
   return (
     <div className="transparent-model">
-      <div className="filter-modal">
-        <div className="filter-section">
+      <div className="modal">
+      <div className="filter-section">
           <h3 className="createProfileText">Filter</h3>
           <div className="iconsSection2">
             <button
+            
               type="button"
               style={{
                 background: "white",
@@ -162,13 +167,14 @@ const FilterCommission: React.FC<TableProps> = ({
                 src={ICONS.BlackAddIcon}
                 alt=""
                 style={{ width: "14px", height: "14px" }}
-              />{" "}
+              />
               Add New
             </button>
           </div>
         </div>
         <div className="modal-content">
-          <div className="scroolable-content">
+          <div className="scroll-content">
+          <div className="scroll-flex">
             <div className="createProfileInputView">
               <div className="createProfileTextView">
                 {filters?.map((filter, index) => (
@@ -197,7 +203,8 @@ const FilterCommission: React.FC<TableProps> = ({
                               marginTop: "4.5px",
                               borderRadius: "8px",
                               outline: "none",
-                              height: "2.8rem",
+                              height: "2.25rem",
+                              fontSize:"13px",
                               border: "1px solid #d0d5dd",
                               overflowY: "auto",
                             }),
@@ -242,12 +249,12 @@ const FilterCommission: React.FC<TableProps> = ({
                         </span>
                       )}
                     </div>
-                    <div
-                      className="cross-btn"
-                      onClick={() => handleRemoveRow(index)}
-                    >
-                      <img src={ICONS.cross} alt="" />
-                    </div>
+               <div
+                  className="cross-btn"
+                  onClick={() => handleRemoveRow(index)}
+                >
+                  <img src={ICONS.cross} alt="" />
+                </div>
                   </div>
                 ))}
               </div>
@@ -259,6 +266,11 @@ const FilterCommission: React.FC<TableProps> = ({
                   type="reset"
                   onClick={handleClose}
                 />
+                 <ActionButton
+                  title={"reset"}
+                  type="reset"
+                  onClick={resetAllFilter}
+                />
                 <ActionButton
                   title={"Apply"}
                   type="submit"
@@ -266,9 +278,11 @@ const FilterCommission: React.FC<TableProps> = ({
                 />
               </div>
             </div>
+            </div>
           </div>
         </div>
       </div>
+    
 
     </div>
   );

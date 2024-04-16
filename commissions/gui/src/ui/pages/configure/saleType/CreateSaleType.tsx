@@ -105,6 +105,8 @@ const CreateSaleType:React.FC<salesProps> = ({handleClose,salesTypeData,editMode
 
                         </div>
                         <div className="createUserActionButton">
+                        <ActionButton title={"Cancel"} type="reset"
+                  onClick={() => handleClose()} />
                             <ActionButton title={editMode===false?"Create":"Update"} type="submit"
                                 onClick={() => { }} />
                         </div>

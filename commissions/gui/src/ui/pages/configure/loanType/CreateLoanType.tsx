@@ -155,6 +155,8 @@ const CreateLoanType:React.FC<loanProps> = ({handleClose,editMode,loanData}) => 
 
                         </div>
                         <div className="createUserActionButton">
+                        <ActionButton title={"Cancel"} type="reset"
+                  onClick={() => handleClose()} />
                             <ActionButton title={editMode===false?"Save":"Update"} type="submit"
                                 onClick={() => { }} />
                         </div>
