@@ -180,7 +180,7 @@ const TierLoanFee = () => {
             </thead>
             <tbody>
               {tierloanList?.length > 0
-                ? tierloanList?.map((el, i) => (
+                ? tierloanList?.map((el: any, i: any) => (
                     <tr key={i}>
                       <td>
                         <CheckBox

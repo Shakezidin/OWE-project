@@ -101,7 +101,7 @@ const AppointmentSetterTable: React.FC = () => {
                     // indeterminate={isAnyRowSelected && !isAllRowsSelected}
                     />
                   </td>
-                  <td style={{ fontWeight: "500", color: "black" }}>{el.name}</td>
+                  <td style={{ fontWeight: "none", color: "#5B5B5B"}}>{el.name}</td>
                   <td>{el.sd}</td>
                   <td>{el.ed}</td>
                   <td>{el.pay}</td>
