@@ -208,7 +208,7 @@ const DlrOthPay: React.FC = () => {
             </thead>
             <tbody>
               {currentPageData?.length > 0
-                ? currentPageData?.map((el, i) => (
+                ? currentPageData?.map((el: any, i: any) => (
                   <tr
                     key={i}
                     className={selectedRows.has(i) ? "selected" : ""}

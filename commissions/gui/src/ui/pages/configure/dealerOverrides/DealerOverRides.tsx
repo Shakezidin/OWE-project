@@ -175,7 +175,7 @@ const DealerOverRides: React.FC = () => {
 
             <tbody>
               {dealerList?.length > 0
-                ? dealerList?.map((el, i) => (
+                ? dealerList?.map((el: any, i: any) => (
                     <tr key={i}>
                       <td>
                         <CheckBox

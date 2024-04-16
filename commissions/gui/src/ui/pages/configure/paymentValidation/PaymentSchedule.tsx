@@ -223,7 +223,7 @@ const PaymentSchedule = () => {
             </thead>
             <tbody>
               {payScheduleList?.length > 0
-                ? payScheduleList?.map((el, i) => (
+                ? payScheduleList?.map((el: any, i: any) => (
                     <tr key={i}>
                       <td>
                         <CheckBox

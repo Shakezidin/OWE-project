@@ -180,7 +180,7 @@ const MarketingFees: React.FC = () => {
 
             <tbody>
               {marketingFeesList?.length > 0
-                ? marketingFeesList?.map((el, i) => (
+                ? marketingFeesList?.map((el: any, i: any) => (
                     <tr key={i}>
                       <td>
                         <CheckBox
