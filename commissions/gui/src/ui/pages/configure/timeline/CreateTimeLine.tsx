@@ -128,7 +128,8 @@ const CreateTimeLine:React.FC<timeLineProps> = ({handleClose,editMode,timeLineSl
                                               marginTop:"4.5px",
                                               borderRadius:"8px",
                                               outline:"none",
-                                              height:"2.8rem",
+                                              fontSize:"13px",
+                                              height:"2.25rem",
                                               border:"1px solid #d0d5dd"
                                               
                                             }),
@@ -174,6 +175,8 @@ const CreateTimeLine:React.FC<timeLineProps> = ({handleClose,editMode,timeLineSl
                             </div>
                         </div>
                         <div className="createUserActionButton">
+                        <ActionButton title={"Cancel"} type="reset"
+                  onClick={() => handleClose()} />
                             <ActionButton title={editMode===false?"Save":"Update"} type="submit"
                                 onClick={() => { }} />
                         </div>

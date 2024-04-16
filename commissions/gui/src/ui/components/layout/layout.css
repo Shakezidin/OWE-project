@@ -174,11 +174,7 @@
 .icon {
   font-size: 2rem;
 }
-.heading-container{
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-}
+
 
 /* responsive  */
 @media (max-width: 768px) {

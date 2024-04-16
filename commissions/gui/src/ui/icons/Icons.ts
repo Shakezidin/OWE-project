@@ -33,7 +33,7 @@ import commIconHead from '../../resources/assets/CommIconhead.svg'
 import dbIconManag from '../../resources/assets/dbiconmang.svg'
 import projIcon from '../../resources/assets/projIcon.svg'
 import teamManag from '../../resources/assets/teamManag.svg'
-
+import groupActive from '../../resources/assets/groupActive.svg'
 
 export const ICONS = {
   BACKGROUND: require("../../resources/assets/background.png"),
@@ -60,6 +60,7 @@ export const ICONS = {
   filter2: require("../../resources/assets/filter2.png"),
   groupIcon: require("../../resources/assets/Group2.png"),
   arrowNext: require("../../resources/assets/Vector.svg"),
+  groupActiveIcon:groupActive,
   viewChart:viewChart,
   dashHead:dashHead,
   cross: crossIcon,

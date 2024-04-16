@@ -118,7 +118,8 @@ getNewFormData()
                           marginTop:"4.5px",
                           borderRadius:"8px",
                           outline:"none",
-                          height:"2.8rem",
+                          fontSize:"13px",
+                          height:"2.25rem",
                           border:"1px solid #d0d5dd"
                           
                         }),
@@ -138,7 +139,8 @@ getNewFormData()
                           marginTop:"4.5px",
                           borderRadius:"8px",
                           outline:"none",
-                          height:"2.8rem",
+                          fontSize:"13px",
+                          height:"2.25rem",
                           border:"1px solid #d0d5dd"
                           
                         }),
@@ -186,6 +188,8 @@ getNewFormData()
               </div>
             </div>
             <div className="createUserActionButton">
+            <ActionButton title={"Cancel"} type="reset"
+                  onClick={() => handleClose()} />
               <ActionButton title={editMode===false?"Create":"Update"} type="submit"
                 onClick={() => { }} />
             </div>

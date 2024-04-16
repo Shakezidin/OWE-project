@@ -18,6 +18,8 @@ import { DealerModel } from "../../../../core/models/configuration/create/Dealer
 import { FaArrowDown } from "react-icons/fa6";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import { Column } from "../../../../core/models/data_models/FilterSelectModel";
+import Pagination from "../../../components/pagination/Pagination";
+import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 
 const DealerOverRides: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -33,20 +35,38 @@ const DealerOverRides: React.FC = () => {
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
- 
+  const itemsPerPage = 10;
+  const currentPage = useAppSelector((state) => state.paginationType.currentPage);
   const [editedDealer, setEditDealer] = useState<DealerModel | null>(null);
   useEffect(() => {
     const pageNumber = {
-      page_number: 1,
-      page_size: 10,
+      page_number: currentPage,
+      page_size: itemsPerPage,
+
     };
     dispatch(fetchDealer(pageNumber));
-  }, [dispatch]);
+  }, [dispatch,currentPage]);
+  const paginate = (pageNumber: number) => {
+    dispatch(setCurrentPage(pageNumber));
+  };
+
+
+  const goToNextPage = () => {
+    dispatch(setCurrentPage(currentPage + 1));
+  };
+
+  const goToPrevPage = () => {
+    dispatch(setCurrentPage(currentPage - 1));
+  };
   const handleAddDealer = () => {
     setEditMode(false);
     setEditDealer(null);
     handleOpen()
   };
+  const totalPages = Math.ceil(dealerList?.length / itemsPerPage);
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
   const columns: Column[] = [
     // { name: "record_id", displayName: "Record ID", type: "number" },
     { name: "sub_dealer", displayName: "Sub Dealer", type: "string" },
@@ -64,6 +84,8 @@ const DealerOverRides: React.FC = () => {
     setEditDealer(dealerData);
     handleOpen()
   };
+  
+  const currentPageData = dealerList?.slice(startIndex, endIndex);
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === dealerList?.length;
   if (loading) {
@@ -193,6 +215,15 @@ const DealerOverRides: React.FC = () => {
             </tbody>
           </table>
         </div>
+        {
+        dealerList?.length > 0 ? <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages} // You need to calculate total pages
+          paginate={paginate}
+          goToNextPage={goToNextPage}
+          goToPrevPage={goToPrevPage}
+        /> : null
+      }
       </div>
     </div>
   );

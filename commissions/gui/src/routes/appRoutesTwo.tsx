@@ -4,7 +4,7 @@ import { ICONS } from "../ui/icons/Icons";
 import { routes } from "./routes";
 const appRoutesTwo = [
     {
-        name: "Commission",
+        // name: "Commission",
         commission: [
             {
                 path: routes.commissiondash,
@@ -14,6 +14,7 @@ const appRoutesTwo = [
                 },
             },
             {
+                path:"#",
                 sidebarProps: {
                     displayText: "Configure",
                     icon: <img src={ICONS.config} className="icon-image" alt="" />,

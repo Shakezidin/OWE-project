@@ -1,47 +1,42 @@
 import React, { useEffect, useState } from "react";
 import "../../create_profile/CreateUserProfile.css";
-import { ReactComponent as PROFILE_BACKGROUND } from "../../../../resources/assets/Profile_background.svg";
-
 import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cross_button.svg";
 import Input from "../../../components/text_input/Input";
-
 import { ActionButton } from "../../../components/button/ActionButton";
-
-import { useDispatch} from 'react-redux';
-// import { updateForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createCommissionSlice";
+import { useDispatch } from 'react-redux';
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import Select from 'react-select';
 import { installerOption, partnerOption, repTypeOption, stateOption } from "../../../../core/models/data_models/SelectDataModel";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
 import { respTypeData } from "../../../../resources/static_data/StaticData";
-import {  updateForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createCommissionSlice";
+import { updateForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createCommissionSlice";
 import { CommissionModel } from "../../../../core/models/configuration/create/CommissionModel";
-import ToastComponent from "../../../components/toast/ToastComponent";
+
 interface ButtonProps {
-  editMode:boolean,
+  editMode: boolean,
   handleClose: () => void,
-commission: CommissionModel | null;
- 
+  commission: CommissionModel | null;
+
 }
 
-const CreateCommissionRate:React.FC<ButtonProps> = ({handleClose,commission,editMode}) => {
-  
+const CreateCommissionRate: React.FC<ButtonProps> = ({ handleClose, commission, editMode }) => {
+
   const dispatch = useDispatch();
   const [showToast, setShowToast] = useState(false);
   const [createCommission, setCreateCommission] = useState<CommissionModel>(
     {
 
-    record_id:commission? commission?.record_id:0,
-      partner:commission? commission?.partner : "OWE",
-      installer:commission? commission?.installer : "OWE",
-      state:commission? commission?.state : "Alaska",
-      sale_type: commission? commission?.sale_type : "BATTERY",
-      sale_price:commission? commission?.sale_price : 1500.0,
-      rep_type:commission? commission?.rep_type: "EMPLOYEE",
-      rl: commission? commission?.rl :0.5,
-      rate: commission? commission?.rate :0.1,
-      start_date:commission? commission?.start_date : "2024-04-01",
-      end_date:commission? commission?.end_date : "2024-06-30"
+      record_id: commission ? commission?.record_id : 0,
+      partner: commission ? commission?.partner : "OWE",
+      installer: commission ? commission?.installer : "OWE",
+      state: commission ? commission?.state : "Alaska",
+      sale_type: commission ? commission?.sale_type : "BATTERY",
+      sale_price: commission ? commission?.sale_price : 1500.0,
+      rep_type: commission ? commission?.rep_type : "EMPLOYEE",
+      rl: commission ? commission?.rl : 0.5,
+      rate: commission ? commission?.rate : 0.1,
+      start_date: commission ? commission?.start_date : "2024-04-01",
+      end_date: commission ? commission?.end_date : "2024-06-30"
     }
 
   )
@@ -81,12 +76,12 @@ const CreateCommissionRate:React.FC<ButtonProps> = ({handleClose,commission,edit
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-   
+
       dispatch(updateForm(createCommission));
-      if(createCommission.record_id){
+      if (createCommission.record_id) {
         const res = await postCaller(EndPoints.update_commission, createCommission);
         if (res.status === 200) {
-          setShowToast(true);
+          alert(res.message)
           handleClose()
           window.location.reload()
         }
@@ -94,11 +89,11 @@ const CreateCommissionRate:React.FC<ButtonProps> = ({handleClose,commission,edit
           alert(res.message)
         }
       }
-      else{
+      else {
         const { record_id, ...cleanedFormData } = createCommission;
         const res = await postCaller(EndPoints.create_commission, cleanedFormData);
         if (res.status === 200) {
-          setShowToast(true);
+          alert(res.message)
           handleClose()
           // window.location.reload()
         }
@@ -106,7 +101,7 @@ const CreateCommissionRate:React.FC<ButtonProps> = ({handleClose,commission,edit
           alert(res.message)
         }
       }
-    
+
       // dispatch(resetForm());
     } catch (error) {
       console.error('Error submitting form:', error);
@@ -118,9 +113,9 @@ const CreateCommissionRate:React.FC<ButtonProps> = ({handleClose,commission,edit
         <div className="createUserCrossButton" onClick={handleClose}>
           <CROSS_BUTTON />
         </div>
-        {showToast && <ToastComponent message="Login successful" />}
+   
         <div className="createUserContainer">
-          <h3 className="createProfileText">{editMode===false?"Commission Rate":"Update Commission Rate"}</h3>
+          <h3 className="createProfileText">{editMode === false ? "Commission Rate" : "Update Commission Rate"}</h3>
           <form action="" onSubmit={(e) => handleSubmit(e)}>
             <div className="createProfileInputView">
               <div className="createProfileTextView">
@@ -138,9 +133,10 @@ const CreateCommissionRate:React.FC<ButtonProps> = ({handleClose,commission,edit
                           marginTop: "4.5px",
                           borderRadius: "8px",
                           outline: "none",
-                          height: "42px",
+                          fontSize:"13px",
+                          height: "2.25rem",
                           // width:"280px"
-                          border: "1px solid #d0d5dd"                                         
+                          border: "1px solid #d0d5dd"
 
                         }),
                       }}
@@ -157,7 +153,8 @@ const CreateCommissionRate:React.FC<ButtonProps> = ({handleClose,commission,edit
                             marginTop: "4.5px",
                             borderRadius: "8px",
                             outline: "none",
-                            height: "42px",
+                            fontSize:"13px",
+                            height: "2.25rem",
                             border: "1px solid #d0d5dd"
 
                           }),
@@ -177,7 +174,8 @@ const CreateCommissionRate:React.FC<ButtonProps> = ({handleClose,commission,edit
                           marginTop: "4.5px",
                           borderRadius: "8px",
                           outline: "none",
-                          height: "42px",
+                          fontSize:"13px",
+                          height: "2.25rem",
                           border: "1px solid #d0d5dd"
 
                         }),
@@ -222,7 +220,8 @@ const CreateCommissionRate:React.FC<ButtonProps> = ({handleClose,commission,edit
                           marginTop: "4.5px",
                           borderRadius: "8px",
                           outline: "none",
-                          height: "42px",
+                          fontSize:"13px",
+                          height: "2.25rem",
                           border: "1px solid #d0d5dd"
 
                         }),
@@ -281,7 +280,9 @@ const CreateCommissionRate:React.FC<ButtonProps> = ({handleClose,commission,edit
                 </div>
               </div>
               <div className="createUserActionButton">
-                <ActionButton title={editMode===false?"Create":"Update"} type="submit"
+              <ActionButton title={"Cancel"} type="reset"
+                  onClick={() => handleClose()} />
+                <ActionButton title={editMode === false ? "Save" : "Update"} type="submit"
                   onClick={() => { }} />
               </div>
 

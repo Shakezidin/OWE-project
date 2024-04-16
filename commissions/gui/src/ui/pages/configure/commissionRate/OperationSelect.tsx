@@ -30,7 +30,8 @@ const OperationSelect: React.FC<{
             marginTop: "4.5px",
             borderRadius: "8px",
             outline: "none",
-            height: "2.8rem",
+            fontSize:"13px",
+            height: "2.25rem",
             border: "1px solid #d0d5dd",
           }),
         }}

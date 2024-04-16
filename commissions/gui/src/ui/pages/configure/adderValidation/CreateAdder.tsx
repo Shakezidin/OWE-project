@@ -125,7 +125,8 @@ const CreateAdder:React.FC<vadderProps>= ({editMode,handleClose,vAdderData}) => 
                                                   marginTop:"4.5px",
                                                   borderRadius:"8px",
                                                   outline:"none",
-                                                  height:"2.8rem",
+                                                  height:"2.25rem",
+                                                  fontSize:"13px",
                                                   border:"1px solid #d0d5dd"
                                                   
                                                 }),
@@ -161,7 +162,8 @@ const CreateAdder:React.FC<vadderProps>= ({editMode,handleClose,vAdderData}) => 
                                                   marginTop:"4.5px",
                                                   borderRadius:"8px",
                                                   outline:"none",
-                                                  height:"2.8rem",
+                                                  fontSize:"13px",
+                                                  height:"2.25rem",
                                                   border:"1px solid #d0d5dd"
                                                   
                                                 }),
@@ -180,6 +182,8 @@ const CreateAdder:React.FC<vadderProps>= ({editMode,handleClose,vAdderData}) => 
 
                             </div>
                             <div className="createUserActionButton">
+                            <ActionButton title={"Cancel"} type="reset"
+                  onClick={() => handleClose()} />
                                 <ActionButton title={editMode===false?"Save":"Update"} type="submit"
                                     onClick={() => { }} />
                             </div>
