@@ -37,7 +37,7 @@ import RebateData from "./ui/pages/configure/reabateData/RebateData";
 import ReferalData from "./ui/pages/configure/referalData/ReferalData";
 import DlrOthPay from "./ui/pages/configure/dlrOthPay/DlrOthPay";
 import NonCommDlrPay from "./ui/pages/configure/non_comm(dlrpay)/NonCommDlrPay";
-import LoanFeeAddr from "./ui/pages/configure/loadnFeeAddr/LoanFeeAddr";
+import LoanFeeAddr from "./ui/pages/configure/loanFeeAddr/LoanFeeAddr";
 import UserManagement from "./ui/pages/userManagement/UserManagement";
 import AccountSettings from "./ui/pages/accountSettings/AccountSettings";
 import Report from "./ui/pages/report/Report";

@@ -126,29 +126,29 @@ const LoanType = () => {
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Product Code</p> <FaArrowDown style={{color:"#667085"}}/> 
+                    <p>Product Code</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}}/> 
                   </div>
                 </th>
 
                 <th>
                   <div className="table-header">
-                    <p>Active</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p>Active</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}}/>
                   </div>
                 </th>
 
                 <th>
                   <div className="table-header">
-                    <p>Adder</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p>Adder</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Description</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p>Description</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Action</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p>Action</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}}/>
                   </div>
                 </th>
               </tr>

@@ -21,6 +21,7 @@ import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/pagin
 import { CommissionModel } from "../../../../core/models/configuration/create/CommissionModel";
 import { FaArrowDown } from "react-icons/fa6";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
+import CreateDlrOth from "./CreateDlrOth";
 interface Column {
   name: string;
   displayName: string;
@@ -133,12 +134,12 @@ const DlrOthPay: React.FC = () => {
             columns={columns} 
              page_number = {currentPage}
              page_size = {itemsPerPage}
-             />}
-             {open && <CreateCommissionRate 
+             />} */}
+             {open && <CreateDlrOth
                          commission={editedCommission}
                          editMode={editMode}
                          handleClose={handleClose}
-                          />} */}
+                          />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
@@ -164,43 +165,43 @@ const DlrOthPay: React.FC = () => {
                 </th>
                 <th >
                   <div className="table-header" >
-                    <p>Payee</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Payee</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Amount</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Amount</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Description</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Description</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Balance</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Balance</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Paid Amt.</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Paid Amt.</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 
                 <th>
                   <div className="table-header">
-                    <p>Start Dt.</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Start Dt.</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>End Dt.</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>End Dt.</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Action</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Action</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
               </tr>

@@ -4,7 +4,7 @@
     label: string;
   }
 
-  export const partnerOption=(newFormData:any): Option[] => newFormData.partners?.map((value:string)=>({
+  export const partnerOption=(newFormData:any): Option[] => newFormData?.partners?.map((value:string)=>({
     value,
     label:value
   })) 

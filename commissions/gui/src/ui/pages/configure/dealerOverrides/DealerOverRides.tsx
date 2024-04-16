@@ -142,32 +142,32 @@ const DealerOverRides: React.FC = () => {
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Sub Dealer</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p>Sub Dealer</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Dealer</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p>Dealer</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Pay Rate</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p>Pay Rate</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Start Date</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p>Start Date</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>End Date</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p>End Date</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Action</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p>Action</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}}/>
                   </div>
                 </th>
               </tr>

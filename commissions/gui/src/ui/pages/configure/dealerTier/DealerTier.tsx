@@ -145,27 +145,27 @@ const DealerTier = () => {
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Dealer Name</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p>Dealer Name</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Tier</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p>Tier</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Start Date</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p>Start Date</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>End Date</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p>End Date</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}}/>
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Action</p> <FaArrowDown style={{color:"#667085"}}/>
+                    <p>Action</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}}/>
                   </div>
                 </th>
               </tr>
