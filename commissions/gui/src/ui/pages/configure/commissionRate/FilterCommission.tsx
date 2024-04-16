@@ -255,7 +255,7 @@ const FilterCommission: React.FC<TableProps> = ({
             <div className="createUserActionButton">
               <div className="" style={{ gap: "2rem", display: "flex" }}>
                 <ActionButton
-                  title={"cancel"}
+                  title={"Cancel"}
                   type="reset"
                   onClick={handleClose}
                 />
@@ -263,6 +263,11 @@ const FilterCommission: React.FC<TableProps> = ({
                   title={"Apply"}
                   type="submit"
                   onClick={() => applyFilter()}
+                />
+                 <ActionButton
+                  title={"Reset"}
+                  type="reset"
+                  onClick={handleClose}
                 />
               </div>
             </div>
