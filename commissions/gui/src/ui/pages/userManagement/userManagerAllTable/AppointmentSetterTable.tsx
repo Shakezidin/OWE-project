@@ -82,8 +82,8 @@ const AppointmentSetterTable: React.FC = () => {
               </th>
              
               <th>
-                <div className="table-header">
-                  <p>Action</p> <FaArrowDown style={{color:"#667085"}}/>
+                <div className="action-header">
+                  <p>Action</p> 
                 </div>
               </th>
             </tr>
@@ -108,16 +108,14 @@ const AppointmentSetterTable: React.FC = () => {
                   <td>{el.des}</td>
                   
                   <td>
-                    <div className="action-icon">
-                      <div className="" style={{ cursor: "pointer" }}>
-                        <img src={ICONS.ARCHIVE} alt="" />
+                  <div className="action-icon">
+                        <div className="" style={{ cursor: "pointer" }}>
+                          <img src={ICONS.ARCHIVE} alt="" />
+                        </div>
+                        <div className="" style={{ cursor: "pointer" }} >
+                        <img src={ICONS.editIcon} alt="" />
+                        </div>
                       </div>
-                      <div className="" style={{ cursor: "pointer" }}>
-                        <CiEdit
-                          style={{ fontSize: "1.5rem", color: "#344054" }}
-                        />
-                      </div>
-                    </div>
                   </td>
                 </tr>
               ))

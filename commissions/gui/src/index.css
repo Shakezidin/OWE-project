@@ -41,6 +41,9 @@ li {
   list-style: none;
 }
 /* image icon srtyle  */
+img{
+  cursor: pointer;
+}
 .icon-image {
   width: 18x !important;
   height: 18px !important;

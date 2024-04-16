@@ -63,22 +63,17 @@ const UserHeaderSection: React.FC = () => {
               styles={{
                 control: (baseStyles, state) => ({
                   ...baseStyles,
-                  fontSize: "0.8rem",
+                  fontSize: "13px",
                   fontWeight: "500",
                   borderRadius: "8px",
                   outline: "none",
-                  height: "2.5rem",
+                  height: "2.25rem",
                   width: "12rem",
+                
                   border: "1px solid #d0d5dd",
                 }),
-                menu: (baseStyles, state) => ({
-                  ...baseStyles,
-                  width: "12rem",
-                  outline: "none"
-                }),
-                option: (baseStyles, state) => ({
-                  ...baseStyles,
-                  fontSize: "0.8rem",
+                indicatorSeparator: () => ({
+                  display: 'none' // Hide the indicator separator
                 }),
               }}
             />
@@ -105,27 +100,4 @@ const UserHeaderSection: React.FC = () => {
 
 export default UserHeaderSection;
 
-{
-  /* <label className="inputLabel">Adder Type</label> */
-}
-{
-  /* <Select
-            options={userSelectData}
-            isSearchable
-            styles={{
-              control: (baseStyles, state) => ({
-                ...baseStyles,
-                marginTop: "4.5px",
-                borderRadius: "8px",
-                outline: "none",
-                height: "1.8rem",
-                width: "200px",
-                border: "1px solid #d0d5dd",
-              }),
-            }}
-            // onChange={(newValue) => handleChange(newValue, 'adder_type')}
-            value={userSelectData?.find(
-              (option) => option.value === "admin_user"
-            )}
-          /> */
-}
+

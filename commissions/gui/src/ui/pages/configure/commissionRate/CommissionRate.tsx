@@ -218,8 +218,8 @@ const CommissionRate: React.FC = () => {
                   </div>
                 </th>
                 <th>
-                  <div className="table-header">
-                    <p>Action</p> <FaArrowDown style={{ color: "#667085", fontSize:"12px" }} />
+                  <div className="action-header">
+                    <p>Action</p> 
                   </div>
                 </th>
               </tr>

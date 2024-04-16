@@ -147,18 +147,25 @@ table tbody tr td {
   color: #101828;
 }
 
-table tbody tr:last-child {
-  /* border: 0; */
-}
+
 .selected {
   /* background-color: var(--input-border-color); */
   background-color: #fafafa;
   transition: 0.4s all linear;
 }
+.action-header{
+  display: flex;
+  align-items: center;
+  gap: .3rem;
+  justify-content: flex-end;
+
+}
 .action-icon {
   display: flex;
   align-items: center;
   gap: 1rem;
+  
+  justify-content: flex-end;
 }
 .action-icon img {
   width: 14px;
