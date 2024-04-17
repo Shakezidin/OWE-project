@@ -128,7 +128,8 @@ const TimeLine = () => {
           onPressArchive={() => { }}
           onPressFilter={() => filter()}
           onPressImport={() => { }}
-          checked={selectAllChecked}
+          checked={isAllRowsSelected}
+          isAnyRowSelected={isAnyRowSelected}
           onpressExport={() => { }}
           onpressAddNew={() => handleTimeLineSla()}
         />

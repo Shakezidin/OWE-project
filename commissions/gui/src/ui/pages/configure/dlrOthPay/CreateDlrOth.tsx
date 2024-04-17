@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from "react";
-import "../../create_profile/CreateUserProfile.css";
-import { ReactComponent as PROFILE_BACKGROUND } from "../../../../resources/assets/Profile_background.svg";
-
 import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cross_button.svg";
 import Input from "../../../components/text_input/Input";
 
 import { ActionButton } from "../../../components/button/ActionButton";
-
 import { useDispatch } from "react-redux";
 // import { updateForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createCommissionSlice";
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
@@ -21,7 +17,6 @@ import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoin
 import { respTypeData } from "../../../../resources/static_data/StaticData";
 import { updateForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createCommissionSlice";
 import { CommissionModel } from "../../../../core/models/configuration/create/CommissionModel";
-import ToastComponent from "../../../components/toast/ToastComponent";
 interface ButtonProps {
   editMode: boolean;
   handleClose: () => void;

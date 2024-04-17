@@ -123,7 +123,8 @@ const AutoAdder: React.FC = () => {
           onPressFilter={() => filter()}
           onPressImport={() => { }}
           onpressExport={() => handleExportOpen()}
-          checked={selectAllChecked}
+          checked={isAllRowsSelected}
+          isAnyRowSelected={isAnyRowSelected}
           onpressAddNew={() => handleAddCommission()}
         />
         {exportOPen && (<div className="export-modal">

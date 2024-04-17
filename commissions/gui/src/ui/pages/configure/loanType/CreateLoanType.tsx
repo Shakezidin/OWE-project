@@ -1,15 +1,10 @@
 import React, { useState } from "react";
-import "../../create_profile/CreateUserProfile.css";
-import { ReactComponent as PROFILE_BACKGROUND } from "../../../../resources/assets/Profile_background.svg";
-
 import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cross_button.svg";
 import Input from "../../../components/text_input/Input";
-import DropdownButton from "../../../components/dropdown/DropdownButton";
 import { ActionButton } from "../../../components/button/ActionButton";
 import { updateLoanTypeForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createLoanTypeSlice";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
-
 import { useDispatch } from "react-redux";
 import { LoanTypeModel } from "../../../../core/models/configuration/create/LoanTypeModel";
 

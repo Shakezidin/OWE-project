@@ -122,7 +122,8 @@ const DealerCredit: React.FC = () => {
           title="Dealer Credit"
           onPressViewArchive={() => { }}
           onPressArchive={() => { }}
-          checked={selectAllChecked}
+          checked={isAllRowsSelected}
+          isAnyRowSelected={isAnyRowSelected}
           onPressFilter={() => filter()}
           onPressImport={() => { }}
           onpressExport={() => handleExportOpen()}

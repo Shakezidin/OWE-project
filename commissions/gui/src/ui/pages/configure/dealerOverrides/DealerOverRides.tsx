@@ -128,7 +128,8 @@ const DealerOverRides: React.FC = () => {
           onPressFilter={() => filter()}
           onPressImport={() => {}}
           onpressExport={() => {}}
-          checked={selectAllChecked}
+          checked={isAllRowsSelected}
+          isAnyRowSelected={isAnyRowSelected}
           onpressAddNew={() => handleAddDealer()}
         />
         {filterOPen && <FilterDealer handleClose={filterClose}

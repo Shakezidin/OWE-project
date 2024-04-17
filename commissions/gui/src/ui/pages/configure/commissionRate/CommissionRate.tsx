@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "../configure.css";
 import CreateCommissionRate from "./CreateCommissionRate";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-import { CSVLink } from 'react-csv';
+
 import { ICONS } from "../../../icons/Icons";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { fetchCommissions } from "../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice";
@@ -12,6 +12,7 @@ import {
   toggleAllRows,
   toggleRowSelection,
 } from "../../../components/chekbox/checkHelper";
+import { CSVLink } from 'react-csv';
 import Pagination from "../../../components/pagination/Pagination";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 import { CommissionModel } from "../../../../core/models/configuration/create/CommissionModel";
@@ -39,6 +40,7 @@ const CommissionRate: React.FC = () => {
   const [editMode, setEditMode] = useState(false);
   const [editedCommission, setEditedCommission] = useState<CommissionModel | null>(null);
   const itemsPerPage = 10;
+  const csvLinkRef = useRef<CSVLink>(null);
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
   const [sortKey, setSortKey] = useState("");
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
@@ -66,7 +68,6 @@ const CommissionRate: React.FC = () => {
   }
 
   const totalPages = Math.ceil(commissionList?.length / itemsPerPage);
-
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const handleAddCommission = () => {
@@ -81,8 +82,25 @@ const CommissionRate: React.FC = () => {
     handleOpen()
   };
   const currentPageData = commissionList?.slice(startIndex, endIndex);
-  const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === commissionList.length;
+  const isAnyRowSelected = selectedRows?.size > 0;
+  const isAllRowsSelected = selectedRows?.size === commissionList?.length;
+  const handleArchiveAllClick = () => {
+    const archived: number[] = Array.from(selectedRows);
+    // Implement archive logic here
+    console.log("Archiving all rows:", archived);
+    setSelectedRows(new Set());
+  };
+
+  const handleArchiveClick = (record_id: number) => {
+    const archived: number[] = [record_id];
+    // Implement archive logic here
+    console.log("Archiving row:", archived);
+    const newSelectedRows = new Set(selectedRows);
+    newSelectedRows.delete(record_id);
+    setSelectedRows(newSelectedRows);
+  };
+ 
+
   const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
@@ -122,15 +140,16 @@ const CommissionRate: React.FC = () => {
         <TableHeader
           title="Commisstion Rate"
           onPressViewArchive={() => { }}
-          onPressArchive={() => { }}
-          checked={selectAllChecked}
+          onPressArchive={handleArchiveAllClick}
+          checked={isAllRowsSelected}
+          isAnyRowSelected={isAnyRowSelected}
           onPressFilter={() => filter()}
           onPressImport={() => { }}
           onpressExport={() => handleExportOpen()}
           onpressAddNew={() => handleAddCommission()}
         />
         {exportOPen && (<div className="export-modal">
-          <CSVLink style={{ color: "#04a5e8" }} data={currentPageData} filename={"table.csv"}>Export CSV</CSVLink>
+          <CSVLink style={{ color: "white" ,fontSize:"12px"}} data={currentPageData} filename={"table.csv"}>Export CSV</CSVLink>
         </div>)}
         {filterOPen && <FilterCommission handleClose={filterClose}
           columns={Commissioncolumns}
@@ -217,7 +236,7 @@ const CommissionRate: React.FC = () => {
                     <td>{el.end_date}</td>
                     <td>
                       <div className="action-icon">
-                        <div className="" style={{ cursor: "pointer" }}>
+                        <div className="" style={{ cursor: "pointer" }} onClick={()=>handleArchiveClick(el.record_id)}>
                           <img src={ICONS.ARCHIVE} alt="" />
                         </div>
                         <div className="" style={{ cursor: "pointer" }} onClick={() => handleEditCommission(el)}>
@@ -231,6 +250,7 @@ const CommissionRate: React.FC = () => {
                 : null}
             </tbody>
           </table>
+        
         </div>
 
         <div className="page-heading-container">

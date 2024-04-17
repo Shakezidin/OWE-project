@@ -124,7 +124,8 @@ const MarketingFees: React.FC = () => {
       <div className="commissionContainer">
         <TableHeader
           title="Marketing Fees"
-          checked={selectAllChecked}
+          checked={isAllRowsSelected}
+          isAnyRowSelected={isAnyRowSelected}
           onPressViewArchive={() => { }}
           onPressArchive={() => { }}
           onPressFilter={() => filter()}
