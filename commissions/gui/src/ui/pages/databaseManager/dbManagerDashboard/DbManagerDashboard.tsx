@@ -78,6 +78,7 @@ const DbManagerDashboard = () => {
               </div>
             </div> */}
 
+
             {/* <div className="create-container">
               <div className="Create-section">
                 <p>Delete Webhooks</p>
@@ -99,7 +100,9 @@ const DbManagerDashboard = () => {
                 <div className="PieBarchart-section">
                   <PieChartWithPaddingAngle />
                 </div>
-              </div>
+
+          </div>
+         
             </div>
 
             <div className="create-container">

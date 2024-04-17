@@ -17,13 +17,17 @@ import { MarketingFeeModel } from "../../../../core/models/configuration/create/
 import { FaArrowDown } from "react-icons/fa6";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import { Column } from "../../../../core/models/data_models/FilterSelectModel";
+import Pagination from "../../../components/pagination/Pagination";
+import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
+import { MarketingFeesColumn } from "../../../../resources/static_data/configureHeaderData/MarketingFeeColumn";
+import SortableHeader from "../../../components/tableHeader/SortableHeader";
 
 const MarketingFees: React.FC = () => {
   const dispatch = useAppDispatch();
   // const getData = useAppSelector(state=>state.comm.data)
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
-  
+
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -35,13 +39,17 @@ const MarketingFees: React.FC = () => {
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
   const [editedMarketing, setEditedMarketing] = useState<MarketingFeeModel | null>(null);
+  const itemsPerPage = 5;
+  const [sortKey, setSortKey] =  useState("");
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const currentPage = useAppSelector((state) => state.paginationType.currentPage);
   useEffect(() => {
     const pageNumber = {
-      page_number: 1,
-      page_size: 10,
+      page_number: currentPage,
+      page_size: itemsPerPage,
     };
     dispatch(fetchmarketingFees(pageNumber));
-  }, [dispatch]);
+  }, [dispatch, currentPage]);
 
   const handleAddMarketing = () => {
     setEditMode(false);
@@ -54,26 +62,54 @@ const MarketingFees: React.FC = () => {
     setEditedMarketing(marketingData);
     handleOpen()
   };
+  const paginate = (pageNumber: number) => {
+    dispatch(setCurrentPage(pageNumber));
+  };
 
-  const columns: Column[] = [
-    // { name: "record_id", displayName: "Record ID", type: "number" },
-    { name: "source", displayName: "Source", type: "string" },
-    { name: "dba", displayName: "DBA", type: "string" },
-    { name: "state", displayName: "State", type: "string" },
-    { name: "fee_rate", displayName: "Fee Rate", type: "string" },
-    { name: "chg_dlr", displayName: "Chg Dlr", type: "number" },
-    { name: "pay_src", displayName: "Pay Src", type: "number" },
-    { name: "description", displayName: "Description", type: "string" },
-    { name: "start_date", displayName: "Start Date", type: "date" },
-    { name: "end_date", displayName: "End Date", type: "date" }
-  ];
-  const filter = ()=>{
+
+  const goToNextPage = () => {
+    dispatch(setCurrentPage(currentPage + 1));
+  };
+
+  const goToPrevPage = () => {
+    dispatch(setCurrentPage(currentPage - 1));
+  };
+
+
+  const filter = () => {
     setFilterOpen(true)
-    
-  }
 
+  }
+  const totalPages = Math.ceil(marketingFeesList?.length / itemsPerPage);
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentPageData = marketingFeesList?.slice(startIndex, endIndex);
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === marketingFeesList?.length;
+  const handleSort = (key:any) => {
+    if (sortKey === key) {
+      setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
+    } else {
+      setSortKey(key);
+      setSortDirection('asc');
+    }
+  };
+
+  if (sortKey) {
+    currentPageData.sort((a:any, b:any) => {
+      const aValue = a[sortKey];
+      const bValue = b[sortKey];
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        return sortDirection === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+      } else {
+        // Ensure numeric values for arithmetic operations
+        const numericAValue = typeof aValue === 'number' ? aValue : parseFloat(aValue);
+        const numericBValue = typeof bValue === 'number' ? bValue : parseFloat(bValue);
+        return sortDirection === 'asc' ? numericAValue - numericBValue : numericBValue - numericAValue;
+      }
+    });
+  }
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -84,24 +120,25 @@ const MarketingFees: React.FC = () => {
 
   return (
     <div className="comm">
-       <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Marketing Fees"/>
+      <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Marketing Fees" />
       <div className="commissionContainer">
         <TableHeader
           title="Marketing Fees"
-          onPressViewArchive={() => {}}
-          onPressArchive={() => {}}
+          checked={selectAllChecked}
+          onPressViewArchive={() => { }}
+          onPressArchive={() => { }}
           onPressFilter={() => filter()}
-          onPressImport={() => {}}
-          onpressExport={() => {}}
+          onPressImport={() => { }}
+          onpressExport={() => { }}
           onpressAddNew={() => handleAddMarketing()}
         />
         {filterOPen && <FilterMarketing handleClose={filterClose}
-         columns={columns}
-         page_number ={1}
-         page_size = {5} />}
+          columns={MarketingFeesColumn}
+          page_number={1}
+          page_size={5} />}
         {open && <CreateMarketingFees marketingData={editedMarketing}
-                         editMode={editMode}
-                         handleClose={handleClose} />}
+          editMode={editMode}
+          handleClose={handleClose} />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
@@ -125,53 +162,19 @@ const MarketingFees: React.FC = () => {
                     />
                   </div>
                 </th>
+              {
+                MarketingFeesColumn.map((item,key)=>(
+                  <SortableHeader
+                  key={key}
+                  titleName={item.displayName}
+                  sortKey={item.name}
+                  sortDirection={sortKey === item.name ? sortDirection : undefined}
+                  onClick={()=>handleSort(item.name)}
+                  />
+                ))
+              }
                 <th>
-                  <div className="table-header">
-                    <p>Source</p> <FaArrowDown style={{color:"#667085"}}/>
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>DBA</p> <FaArrowDown style={{color:"#667085"}}/>
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>State</p> <FaArrowDown style={{color:"#667085"}}/>
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Fee Rate</p> <FaArrowDown style={{color:"#667085"}}/>
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Chg Dlr</p> <FaArrowDown style={{color:"#667085"}}/>
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Pay Soucre</p> <FaArrowDown style={{color:"#667085"}}/>
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Note</p> <FaArrowDown style={{color:"#667085"}}/>
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Start Dt.</p> <FaArrowDown style={{color:"#667085"}}/>
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>End Dt.</p> <FaArrowDown style={{color:"#667085"}}/>
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
+                  <div className="action-header">
                     <p>Action</p>
                   </div>
                 </th>
@@ -179,55 +182,70 @@ const MarketingFees: React.FC = () => {
             </thead>
 
             <tbody>
-              {marketingFeesList?.length > 0
-                ? marketingFeesList?.map((el, i) => (
-                    <tr key={i}>
-                      <td>
-                        <CheckBox
-                          checked={selectedRows.has(i)}
-                          onChange={() =>
-                            toggleRowSelection(
-                              i,
-                              selectedRows,
-                              setSelectedRows,
-                              setSelectAllChecked
-                            )
-                          }
-                        />
-                      </td>
-                      <td style={{ fontWeight: "500", color: "black" }}>
-                        {el.source}
-                      </td>
-                      <td>{el.dba}</td>
-                      <td>{el.state}</td>
-                      <td>{el.fee_rate}</td>
-                      <td>
-                        {el.chg_dlr}
-                        {/* <div className="">
+              {currentPageData?.length > 0
+                ? currentPageData?.map((el: any, i: any) => (
+                  <tr key={i}>
+                    <td>
+                      <CheckBox
+                        checked={selectedRows.has(i)}
+                        onChange={() =>
+                          toggleRowSelection(
+                            i,
+                            selectedRows,
+                            setSelectedRows,
+                            setSelectAllChecked
+                          )
+                        }
+                      />
+                    </td>
+                    <td style={{ fontWeight: "500", color: "black" }}>
+                      {el.source}
+                    </td>
+                    <td>{el.dba}</td>
+                    <td>{el.state}</td>
+                    <td>{el.fee_rate}</td>
+                    <td>
+                      {el.chg_dlr}
+                      {/* <div className="">
                       <img src={img} alt="" />
                     </div> */}
-                      </td>
-                      <td>{el.pay_src}</td>
-                      <td>{el.description}</td>
-                      <td>{el.start_date}</td>
-                      <td>{el.end_date} </td>
-                      <td
-                        style={{
-                          display: "flex",
-                          gap: "1rem",
-                          alignItems: "center",
-                        }}
-                      >
-                        <img src={ICONS.ARCHIVE} alt="" />
-                      <div className="" style={{cursor:"pointer"}} onClick={()=>handleEditMarketing(el)}>
-                      <img src={ICONS.editIcon} alt="" />
+                    </td>
+                    <td>{el.pay_src}</td>
+                    <td>{el.description}</td>
+                    <td>{el.start_date}</td>
+                    <td>{el.end_date} </td>
+                    <td
+
+                    >
+                      <div className="action-icon">
+                        <div className="" style={{ cursor: "pointer" }}>
+                          <img src={ICONS.ARCHIVE} alt="" />
+                        </div>
+                        <div className="" style={{ cursor: "pointer" }} onClick={() => handleEditMarketing(el)}>
+                          <img src={ICONS.editIcon} alt="" />
+                        </div>
                       </div>
-                      </td>
-                    </tr>
-                  ))
+                    </td>
+                  </tr>
+                ))
                 : null}
             </tbody>
           </table>
+        </div>
+        <div className="page-heading-container">
+          <p className="page-heading">
+            {currentPage} - {totalPages} of {marketingFeesList?.length} item
+          </p>
+
+          {
+            marketingFeesList?.length > 0 ? <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages} // You need to calculate total pages
+              paginate={paginate}
+              goToNextPage={goToNextPage}
+              goToPrevPage={goToPrevPage}
+            /> : null
+          }
         </div>
       </div>
     </div>

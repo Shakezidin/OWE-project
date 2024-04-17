@@ -21,6 +21,7 @@ import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/pagin
 import { CommissionModel } from "../../../../core/models/configuration/create/CommissionModel";
 import { FaArrowDown } from "react-icons/fa6";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
+import CreateRebateData from "./CreateRebateData";
 interface Column {
   name: string;
   displayName: string;
@@ -123,6 +124,7 @@ const RebeteData: React.FC = () => {
           onPressArchive={() => { }}
           onPressFilter={() => filter()}
           onPressImport={() => { }}
+          checked={selectAllChecked}
           onpressExport={() => handleExportOpen()}
           onpressAddNew={() => handleAddCommission()}
         />
@@ -133,12 +135,12 @@ const RebeteData: React.FC = () => {
             columns={columns} 
              page_number = {currentPage}
              page_size = {itemsPerPage}
-             />}
-             {open && <CreateCommissionRate 
+             />} */}
+             {open && <CreateRebateData
                          commission={editedCommission}
                          editMode={editMode}
                          handleClose={handleClose}
-                          />} */}
+                          />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
@@ -164,144 +166,144 @@ const RebeteData: React.FC = () => {
                 </th>
                 <th >
                   <div className="table-header" >
-                    <p>Customer ver</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Customer ver</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Type</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Type</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Item</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Item</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Amount</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Amount</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Rep $ / %</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Rep $ / %</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Notes</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Notes</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Type</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Type</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Rep1</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Rep1</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Rep2</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Rep2</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Sys Size</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Sys Size</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>State</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>State</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Rep Count</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Rep Count</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Per Rep Addr</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Per Rep Addr</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Per Rep Def</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Per Rep Def</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Per Rep Ovrd</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Per Rep Ovrd</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Share</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Share</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>R1 Pay Scale</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>R1 Pay Scale</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>R1 Rebrate Cr</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>R1 Rebrate Cr</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>R1 Rebrate Cr</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>R1 Rebrate Cr</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>R1 Addr Resp</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>R1 Addr Resp</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>R2 Pay Scale</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>R2 Pay Scale</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>R2 Rebate Cr</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>R2 Rebate Cr</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>R2 Rebate Cr</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>R2 Rebate Cr</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>R1 Addr Resp</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>R1 Addr Resp</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Start Dt.</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Start Dt.</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>End Dt.</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>End Dt.</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Action</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Action</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
                 </th>
               </tr>
             </thead>
             <tbody>
               {currentPageData?.length > 0
-                ? currentPageData?.map((el, i) => (
+                ? currentPageData?.map((el: any, i: any) => (
                   <tr
                     key={i}
                     className={selectedRows.has(i) ? "selected" : ""}
@@ -364,16 +366,24 @@ const RebeteData: React.FC = () => {
             </tbody>
           </table>
         </div>
+        <div className="page-heading-container">
+      
+      <p className="page-heading">
+       {currentPage} - {totalPages} of {commissionList?.length} item
+      </p>
+ 
+   {
+    commissionList?.length > 0 ? <Pagination
+      currentPage={currentPage}
+      totalPages={totalPages} // You need to calculate total pages
+      paginate={paginate}
+      goToNextPage={goToNextPage}
+      goToPrevPage={goToPrevPage}
+    /> : null
+  }
+   </div>
       </div>
-      {
-        commissionList?.length > 0 ? <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages} // You need to calculate total pages
-          paginate={paginate}
-          goToNextPage={goToNextPage}
-          goToPrevPage={goToPrevPage}
-        /> : null
-      }
+      
     </div>
   );
 };

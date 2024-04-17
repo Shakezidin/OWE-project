@@ -133,11 +133,13 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen, setSidebarC
               }
               {
                 el.commission?.map((item, index) => (
-                  <div >
+                  <div key={index} >
                     {
                       item.child ? (<>
-                        <div className="side-accordian" onClick={() => setOpen(!open)} style={{ cursor: "pointer" }}>
-                          <div className="side-icon-container-1">
+                        <Link to={item.path}
+                          style={{paddingLeft:toggleOpen?".8rem":"",cursor:"pointer"}}
+                         className={`side-accordian`} onClick={() => setOpen(!open)}>
+                          <div className={`side-icon-container-1`}>
                             {item.sidebarProps.icon && item.sidebarProps.icon}
                           {
                             toggleOpen?null:  <p className={`tablink`} style={{ color: open ? "#0069A3" : "#101828" }}>
@@ -149,14 +151,15 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen, setSidebarC
                             open ? <MdKeyboardArrowUp style={{ fontSize: "1.5rem", color: colorConfig.sidebar.activeBg }} /> : <MdKeyboardArrowDown style={{ fontSize: "1.5rem", color: "black" }} />
                           }
 
-                        </div>
+                        </Link>
                         {
-                          open && <div className="side-accordian-item" >
+                          open && <div className={`side-accordian-item`} >
                             {
                               item?.child?.map((accr, ele) => (
                                 <Link
                                   key={ele}
                                   to={accr?.path}
+                                  style={{paddingLeft:toggleOpen?".8rem":""}}
                                   className={`side-icon-container ${location.pathname === accr.path ? "active-link-bg" : ""}`}>
 
                                   {accr.sidebarProps.icon && accr.sidebarProps.icon}
@@ -177,9 +180,9 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen, setSidebarC
                         <div className="">
                           <Link
                             to={item.path}
+                            style={{paddingLeft:toggleOpen?".8rem":""}}
                             className={`side-icon-container ${location.pathname === item.path ? "active-link-bg" : ""}`}
                           >
-
                             {item.sidebarProps.icon && item.sidebarProps.icon}
                           {
                             toggleOpen?null:  <p className={`tablink`}>
@@ -188,7 +191,6 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen, setSidebarC
                           }
                           </Link>
                         </div>
-
                     }
                   </div>
                 ))
@@ -198,27 +200,22 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen, setSidebarC
                   el.other?.map((oth, index) => (
                     <Link
                       key={index}
-
+                      style={{paddingLeft:toggleOpen?".8rem":""}}
                       to={oth.path}
                       className={`side-icon-container ${location.pathname === oth.path ? "active-link-bg" : ""}`}
                     >
-                      {oth.sidebarProps.icon && oth.sidebarProps.icon}
-                   {
-                    toggleOpen? null:   <p className={`tablink`}>
-                    {oth.sidebarProps.displayText}
-                  </p>
-                   }
+                    {oth.sidebarProps.icon && oth.sidebarProps.icon}{toggleOpen? null:<p className={`tablink`}>{oth.sidebarProps.displayText}</p>
+}
                     </Link>
-
-
-
                   ))
                 }
               </div>
             </div>
           ))
         }
-        <div className="side-icon-container" onClick={handleLogout} >
+        {/* <div className="side-icon-container"
+          style={{paddingLeft:toggleOpen?".8rem":""}}
+         onClick={handleLogout} >
           <img src={ICONS.logoutIcon} className="icon-image" alt="" />
           {
             toggleOpen ? null : <div
@@ -231,7 +228,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen, setSidebarC
             </div>
           }
 
-        </div>
+        </div> */}
       </div>
 
 

@@ -17,6 +17,10 @@ import { FaArrowDown } from "react-icons/fa6";
 import { AdderVModel } from "../../../../core/models/configuration/create/AdderVModel";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import { Column } from "../../../../core/models/data_models/FilterSelectModel";
+import Pagination from "../../../components/pagination/Pagination";
+import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
+import { AdderVColumns } from "../../../../resources/static_data/configureHeaderData/AdderVTableColumn";
+import SortableHeader from "../../../components/tableHeader/SortableHeader";
 
 const AdderValidation = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -36,7 +40,10 @@ const AdderValidation = () => {
   const error = useAppSelector((state) => state.adderV.error);
   const [editMode, setEditMode] = useState(false);
   const [editedVAdder, setEditedVAdder] = useState<AdderVModel | null>(null);
-
+  const itemsPerPage = 10;
+  const currentPage = useAppSelector((state) => state.paginationType.currentPage);
+  const [sortKey, setSortKey] =  useState("");
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const handleAddvAdder = () => {
     setEditMode(false);
     setEditedVAdder(null);
@@ -48,15 +55,23 @@ const AdderValidation = () => {
     setEditedVAdder(vAdderData);
     handleOpen()
   };
+  const paginate = (pageNumber: number) => {
+    dispatch(setCurrentPage(pageNumber));
+  };
 
-  const columns: Column[] = [
-    // { name: "record_id", displayName: "Record ID", type: "number" },
-    { name: "adder_name", displayName: "Adder Name", type: "string" },
-    { name: "adder_type", displayName: "Adder Type", type: "string" },
-    { name: "description", displayName: "Description", type: "string" },
-    { name: "price_amount", displayName: "Price Amount", type: "string" },
-    { name: "price_type", displayName: "Price Type", type: "string" },
-  ];
+
+  const goToNextPage = () => {
+    dispatch(setCurrentPage(currentPage + 1));
+  };
+
+  const goToPrevPage = () => {
+    dispatch(setCurrentPage(currentPage - 1));
+  };
+  const totalPages = Math.ceil(adderVList?.length / itemsPerPage);
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+
   const filter = ()=>{
     setFilterOpen(true)
    
@@ -64,12 +79,37 @@ const AdderValidation = () => {
  
   useEffect(() => {
     const pageNumber = {
-      page_number: 1,
-      page_size: 10,
+      page_number: currentPage,
+      page_size: itemsPerPage,
     };
     dispatch(fetchAdderV(pageNumber));
-  }, [dispatch]);
+  }, [dispatch,currentPage]);
+  const currentPageData = adderVList?.slice(startIndex, endIndex);
+  const isAnyRowSelected = selectedRows.size > 0;
+  const isAllRowsSelected = selectedRows.size === adderVList.length;
+  const handleSort = (key:any) => {
+    if (sortKey === key) {
+      setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
+    } else {
+      setSortKey(key);
+      setSortDirection('asc');
+    }
+  };
 
+  if (sortKey) {
+    currentPageData.sort((a:any, b:any) => {
+      const aValue = a[sortKey];
+      const bValue = b[sortKey];
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        return sortDirection === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+      } else {
+        // Ensure numeric values for arithmetic operations
+        const numericAValue = typeof aValue === 'number' ? aValue : parseFloat(aValue);
+        const numericBValue = typeof bValue === 'number' ? bValue : parseFloat(bValue);
+        return sortDirection === 'asc' ? numericAValue - numericBValue : numericBValue - numericAValue;
+      }
+    });
+  }
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -77,9 +117,7 @@ const AdderValidation = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
- 
-  const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === adderVList.length;
+
   return (
     <div className="comm">
          <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="AdderV"/>
@@ -88,6 +126,7 @@ const AdderValidation = () => {
         <TableHeader
           title="Adder validation"
           onPressViewArchive={() => {}}
+          checked={selectAllChecked}
           onPressArchive={() => {}}
           onPressFilter={() => filter()}
           onPressImport={() => {}}
@@ -95,7 +134,7 @@ const AdderValidation = () => {
           onpressAddNew={() => handleAddvAdder()}
         />
         {filterOPen && <FilterAdder handleClose={filterClose}
-         columns={columns}
+         columns={AdderVColumns}
          page_number = {1}
          page_size = {5}/>}
         {open && <CreateAdder 
@@ -125,46 +164,27 @@ const AdderValidation = () => {
                     />
                   </div>
                 </th>
+                {
+                AdderVColumns.map((item,key)=>(
+                  <SortableHeader
+                  key={key}
+                  titleName={item.displayName}
+                  sortKey={item.name}
+                  sortDirection={sortKey === item.name ? sortDirection : undefined}
+                  onClick={()=>handleSort(item.name)}
+                  />
+                ))
+               }
                 <th>
-                  <div className="table-header">
-                    <p>Adder Name</p> <FaArrowDown style={{color:"#667085"}}/>
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Adder Type</p> <FaArrowDown style={{color:"#667085"}}/>
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Price Type</p> <FaArrowDown style={{color:"#667085"}}/>
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Price Amount</p> <FaArrowDown style={{color:"#667085"}}/>
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Details</p> <FaArrowDown style={{color:"#667085"}}/>
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Created On</p> <FaArrowDown style={{color:"#667085"}}/>
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Action</p> <FaArrowDown style={{color:"#667085"}}/>
+                  <div className="action-header">
+                    <p>Action</p> 
                   </div>
                 </th>
               </tr>
             </thead>
             <tbody>
-              {adderVList?.length > 0
-                ? adderVList?.map((el, i) => (
+              {currentPageData?.length > 0
+                ? currentPageData?.map((el:any, i:any) => (
                     <tr key={i}>
                       <td>
                         <CheckBox
@@ -204,6 +224,22 @@ const AdderValidation = () => {
             </tbody>
           </table>
         </div>
+        <div className="page-heading-container">
+      
+      <p className="page-heading">
+       {currentPage} - {totalPages} of {adderVList?.length} item
+      </p>
+ 
+   {
+    adderVList?.length > 0 ? <Pagination
+      currentPage={currentPage}
+      totalPages={totalPages} // You need to calculate total pages
+      paginate={paginate}
+      goToNextPage={goToNextPage}
+      goToPrevPage={goToPrevPage}
+    /> : null
+  }
+   </div>
       </div>
     </div>
   );

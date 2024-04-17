@@ -160,14 +160,13 @@ const DashBoardTable: React.FC = () => {
                 </div>
               </th>
               <th>
-                <div className="table-header">
-                  <p>Action</p> <FaArrowDown style={{color:"#667085"}}/>
+                <div className="action-header">
+                  <p>Action</p>
                 </div>
               </th>
               
             </tr>
           </thead>
-
           <tbody>
             {dataUser.length > 0
               ? dataUser.map((el, i) => (
@@ -197,7 +196,7 @@ const DashBoardTable: React.FC = () => {
                   <td>{el.epc}</td>
 
                   <td>
-                    <div className="">
+                    <div className="action-icon">
                       <div className="" style={{ cursor: "pointer", textAlign:"center" }}>
                       <IoIosHelpCircleOutline />
 

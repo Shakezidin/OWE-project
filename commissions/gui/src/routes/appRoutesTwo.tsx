@@ -4,7 +4,7 @@ import { ICONS } from "../ui/icons/Icons";
 import { routes } from "./routes";
 const appRoutesTwo = [
     {
-        name: "Commission",
+        // name: "Commission",
         commission: [
             {
                 path: routes.commissiondash,
@@ -14,6 +14,7 @@ const appRoutesTwo = [
                 },
             },
             {
+                path:"#",
                 sidebarProps: {
                     displayText: "Configure",
                     icon: <img src={ICONS.config} className="icon-image" alt="" />,
@@ -216,7 +217,7 @@ const appRoutesTwo = [
                         path: routes.nonCommRoutes,
 
                         sidebarProps: {
-                            displayText: "Non-Comm(DLRPay)",
+                            displayText: "NonComm(DLRPay)",
                             icon: (
                                 <div
                                     className="ellipse"
@@ -260,27 +261,25 @@ const appRoutesTwo = [
     {
         name: "Other",
         other: [
-
-
             {
-                path: routes.projectRoutes,
+                path:routes.projectRoutes,
 
                 sidebarProps: {
-                    displayText: "Project Tracker",
+                    displayText:"Project Tracker",
                     icon: <img src={ICONS.trackerIcon} className="icon-image" alt="" />,
                 },
             },
             {
-                path: routes.dbDashRoutes,
+                path:routes.dbDashRoutes,
                 sidebarProps: {
-                    displayText: "Db Dashboard",
-                    icon: <img src={ICONS.dash} className="icon-image" alt="" />,
+                    displayText:"DB Dashboard",
+                    icon:<img src={ICONS.dash} className="icon-image" alt="" />,
                 },
             },
             {
                 path: routes.dataTableRoutes,
                 sidebarProps: {
-                    displayText: "Data",
+                    displayText:"Data",
                     icon: <img src={ICONS.reportIcon} className="icon-image" alt="" />,
                 },
             },
@@ -307,14 +306,14 @@ const appRoutesTwo = [
                     icon: <img src={ICONS.techIcon} className="icon-image" alt="" />,
                 },
             },
-            {
-                path: routes.accountSettingRoutes,
+            // {
+            //     path: routes.accountSettingRoutes,
 
-                sidebarProps: {
-                    displayText: "My Account",
-                    icon: <img src={ICONS.accountIcon} className="icon-image" alt="" />,
-                },
-            },
+            //     sidebarProps: {
+            //         displayText: "My Account",
+            //         icon: <img src={ICONS.accountIcon} className="icon-image" alt="" />,
+            //     },
+            // },
         ]
     }
 

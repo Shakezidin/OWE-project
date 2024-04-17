@@ -1065,7 +1065,7 @@ CREATE TABLE
         dealer   text,
         dba  text,
         type1  text,
-        today  text,
+        today  text,d
         amount  text,
         type2  text,
         sys_size  text,

@@ -18,8 +18,8 @@ const OperationSelect: React.FC<{
   return (
     <div className="">
       <Select
-         options={operations.map(operation => ({ value: operation.value, label:operation.label }))}
-         value={{ value, label: getLabelForOperation(value) }}
+         options={operations}
+         value={operations.find(el=>el.value===value)}
      
         onChange={(selectedOption: any) => {
           onChange(selectedOption.value);
@@ -30,8 +30,12 @@ const OperationSelect: React.FC<{
             marginTop: "4.5px",
             borderRadius: "8px",
             outline: "none",
-            height: "2.8rem",
+            fontSize:"13px",
+            height: "2.25rem",
             border: "1px solid #d0d5dd",
+          }),
+          indicatorSeparator: () => ({
+            display: 'none' // Hide the indicator separator
           }),
         }}
       />
