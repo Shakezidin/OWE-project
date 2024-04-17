@@ -19,6 +19,7 @@ import { FaArrowDown } from "react-icons/fa6";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import { Column } from "../../../../core/models/data_models/FilterSelectModel";
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
+import { Commissioncolumns} from "../../../../resources/static_data/configureHeaderData/CommissionTableHeaderData";
 
 
 const CommissionRate: React.FC = () => {
@@ -39,7 +40,8 @@ const CommissionRate: React.FC = () => {
   const [editedCommission, setEditedCommission] = useState<CommissionModel | null>(null);
   const itemsPerPage = 10;
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
-
+  const [sortKey, setSortKey] =  useState("");
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -62,19 +64,7 @@ const CommissionRate: React.FC = () => {
   const goToPrevPage = () => {
     dispatch(setCurrentPage(currentPage - 1));
   };
-  const columns: Column[] = [
-    // { name: "record_id", displayName: "Record ID", type: "number" },
-    { name: "partner", displayName: "Partner", type: "string" },
-    { name: "installer", displayName: "Installer", type: "string" },
-    { name: "state", displayName: "State", type: "string" },
-    { name: "sale_type", displayName: "Sale Type", type: "string" },
-    { name: "sale_price", displayName: "Sale Price", type: "number" },
-    { name: "rep_type", displayName: "Rep Type", type: "string" },
-    { name: "rl", displayName: "RL", type: "number" },
-    { name: "rate", displayName: "Rate", type: "number" },
-    { name: "start_date", displayName: "Start Date", type: "date" },
-    { name: "end_date", displayName: "End Date", type: "date" }
-  ];
+
   const filter = ()=>{
     setFilterOpen(true)
   }
@@ -94,18 +84,38 @@ const CommissionRate: React.FC = () => {
     setEditedCommission(commission);
     handleOpen()
   };
+  const currentPageData = commissionList?.slice(startIndex, endIndex);
+  const isAnyRowSelected = selectedRows.size > 0;
+  const isAllRowsSelected = selectedRows.size === commissionList.length;
+  const handleSort = (key:any) => {
+    if (sortKey === key) {
+      setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
+    } else {
+      setSortKey(key);
+      setSortDirection('asc');
+    }
+  };
 
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
+  if (sortKey) {
+    currentPageData.sort((a:any, b:any) => {
+      const aValue = a[sortKey];
+      const bValue = b[sortKey];
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        return sortDirection === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+      } else {
+        // Ensure numeric values for arithmetic operations
+        const numericAValue = typeof aValue === 'number' ? aValue : parseFloat(aValue);
+        const numericBValue = typeof bValue === 'number' ? bValue : parseFloat(bValue);
+        return sortDirection === 'asc' ? numericAValue - numericBValue : numericBValue - numericAValue;
+      }
+    });
+  }
 
   if (error) {
     return <div>Error: {error}</div>;
   }
 
-  const currentPageData = commissionList?.slice(startIndex, endIndex);
-  const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === commissionList.length;
+
 
   return (
     <div className="comm">
@@ -124,7 +134,7 @@ const CommissionRate: React.FC = () => {
           <CSVLink style={{ color: "#04a5e8" }} data={currentPageData} filename={"table.csv"}>Export CSV</CSVLink>
         </div>)}
              {filterOPen && <FilterCommission handleClose={filterClose}  
-            columns={columns} 
+            columns={Commissioncolumns} 
              page_number = {currentPage}
              page_size = {itemsPerPage}
              />}
@@ -140,18 +150,7 @@ const CommissionRate: React.FC = () => {
           <table>
             <thead>
               <tr>
-              {/* {
-              tableHeader.map((labal,key)=>(
-                <SortableHeader
-                key={key}
-                labe={label}
-                sortKey={key}
-                sortDirection={sortKey === key ? sortDirection : undefined}
-                onClick={handleSort}
-                />
-              ))
-              } */}
-                <th >
+              <th >
                   <div>
                     <CheckBox
                       checked={selectAllChecked}
@@ -167,56 +166,17 @@ const CommissionRate: React.FC = () => {
                     />
                   </div>
                 </th>
-                <th >
-                  <div className="table-header" >
-                    <p>Partner</p> <FaArrowDown style={{ color: "#667085", fontSize:"12px"}} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Installer</p> <FaArrowDown style={{ color: "#667085", fontSize:"12px" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>State</p> <FaArrowDown style={{ color: "#667085", fontSize:"12px" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Sales Type</p> <FaArrowDown style={{ color: "#667085", fontSize:"12px" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Sales Price</p> <FaArrowDown style={{ color: "#667085", fontSize:"12px" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Rep.Type</p> <FaArrowDown style={{ color: "#667085", fontSize:"12px" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Rate List</p> <FaArrowDown style={{ color: "#667085", fontSize:"12px" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Rate</p> <FaArrowDown style={{ color: "#667085", fontSize:"12px" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Start Dt.</p> <FaArrowDown style={{ color: "#667085", fontSize:"12px" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>End Dt.</p> <FaArrowDown style={{ color: "#667085", fontSize:"12px" }} />
-                  </div>
-                </th>
+              {
+              Commissioncolumns.map((item,key)=>(
+                <SortableHeader
+                key={key}
+                titleName={item.displayName}
+                sortKey={item.name}
+                sortDirection={sortKey === item.name ? sortDirection : undefined}
+                onClick={()=>handleSort(item.name)}
+                />
+              ))
+              }
                 <th>
                   <div className="action-header">
                     <p>Action</p> 
