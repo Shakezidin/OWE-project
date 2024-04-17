@@ -16,6 +16,7 @@ import {
 import { useState } from "react";
 import OperationSelect from "../commissionRate/OperationSelect";
 import { fetchDealer } from "../../../../redux/apiSlice/configSlice/config_get_slice/dealerSlice";
+import { fetchAdderV } from "../../../../redux/apiSlice/configSlice/config_get_slice/adderVSlice";
 
 interface Column {
   name: string;
@@ -137,9 +138,11 @@ const FilterAdder: React.FC<TableProps> = ({
         page_size: page_size,
         filters: formattedFilters,
       };
-      console.log(req);
-      // dispatch(fetchDealer(req));
-      // handleClose()
+      // filters.forEach((filter, index) => {
+      //   alert(`Filter apply for ${filter.Column}`)
+      // });
+       handleClose()
+      dispatch(fetchAdderV(req));
     }
   };
 

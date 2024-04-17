@@ -11,6 +11,10 @@ interface TableProps {
   onPressImport: () => void;
   onpressExport: () => void;
   onpressAddNew: () => void;
+
+  checked:boolean
+ 
+
 }
 
 const TableHeader = (props: TableProps) => {
@@ -22,6 +26,7 @@ const TableHeader = (props: TableProps) => {
     onPressViewArchive,
     onpressExport,
     onpressAddNew,
+    checked,
   
   } = props;
   return (
@@ -39,11 +44,12 @@ const TableHeader = (props: TableProps) => {
         </div>
 
         <div className="iconsSection2">
-          <button type="button" onClick={onPressArchive}>
-            <img src={ICONS.ARCHIVE} alt="" />
-            Archive
-          </button>
-        </div>
+        <button type="button" onClick={onPressArchive} style={{cursor:checked?"pointer":"not-allowed"}}>
+          <img src={ICONS.ARCHIVE} alt="" />
+          Archive
+        </button>
+      </div>
+       
         <div className="iconsSection-filter">
           <button type="button" onClick={onPressFilter}>
             <img src={ICONS.filtercomm} alt="" style={{width:"15px", height:"15px"}}/>

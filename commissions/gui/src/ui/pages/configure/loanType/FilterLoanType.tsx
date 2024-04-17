@@ -16,6 +16,7 @@ import {
 import { useState } from "react";
 import OperationSelect from "../commissionRate/OperationSelect";
 import { fetchDealer } from "../../../../redux/apiSlice/configSlice/config_get_slice/dealerSlice";
+import { fetchLoanType } from "../../../../redux/apiSlice/configSlice/config_get_slice/loanTypeSlice";
 
 interface Column {
   name: string;
@@ -88,7 +89,7 @@ const FilterLoanType: React.FC<TableProps> = ({
     setFilters(newFilters);
   };
   const getInputType = (columnName: string) => {
-    if (columnName === "rate" || columnName === "rl") {
+    if (columnName === "adder") {
       return "number";
     } else if (columnName === "start_date" || columnName === "end_date") {
       return "date";
@@ -138,8 +139,11 @@ const FilterLoanType: React.FC<TableProps> = ({
         filters: formattedFilters,
       };
       console.log(req);
-      // dispatch(fetchDealer(req));
-      // handleClose()
+      // filters.forEach((filter, index) => {
+      //   alert(`Filter apply for ${filter?.Column?.toUpperCase()}`)
+      // });
+       handleClose()
+      dispatch(fetchLoanType(req));
     }
   };
 

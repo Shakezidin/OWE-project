@@ -18,6 +18,10 @@ import { FaArrowDown } from "react-icons/fa6";
 import { PayScheduleModel } from "../../../../core/models/configuration/create/PayScheduleModel";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import { Column } from "../../../../core/models/data_models/FilterSelectModel";
+import Pagination from "../../../components/pagination/Pagination";
+import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
+import { PayScheduleColumns } from "../../../../resources/static_data/configureHeaderData/PayScheduleColumn";
+import SortableHeader from "../../../components/tableHeader/SortableHeader";
 
 const PaymentSchedule = () => {
   const dispatch = useAppDispatch();
@@ -36,38 +40,36 @@ const PaymentSchedule = () => {
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
-
-
+  const [sortKey, setSortKey] =  useState("");
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const itemsPerPage = 10;
+  const currentPage = useAppSelector((state) => state.paginationType.currentPage);
   const [editedPaySchedule, setEditedPaySchedule] =
     useState<PayScheduleModel | null>(null);
   useEffect(() => {
     const pageNumber = {
-      page_number: 1,
-      page_size: 10,
+      page_number: currentPage,
+      page_size: itemsPerPage,
     };
     dispatch(fetchPaySchedule(pageNumber));
-  }, [dispatch]);
+  }, [dispatch,currentPage]);
   // Extract column names
-  const columns: Column[] = [
-    // { name: "record_id", displayName: "Record ID", type: "number" },
 
-    { name: "partner", displayName: "Partner", type: "string" },
-    { name: "partner_name", displayName: "Partner Name", type: "string" },
-    { name: "installer_name", displayName: "Installer Name", type: "string" },
-    { name: "sale_type", displayName: "Partner", type: "string" },
-    { name: "state", displayName: "State", type: "string" },
-    { name: "rl", displayName: "Rate List", type: "string" },
-    { name: "draw", displayName: "Draw", type: "string" },
-    { name: "draw_max", displayName: "Draw Max", type: "string" },
-    { name: "rep_draw", displayName: "rep_draw", type: "string" },
-    { name: "rep_draw_max", displayName: "rep_draw_max", type: "string" },
-    { name: "rep_pay", displayName: "rep_pay", type: "string" },
-    { name: "start_date", displayName: "Start Date", type: "date" },
-    { name: "end_date", displayName: "End Date", type: "date" }
-  ];
   const filter = () => {
     setFilterOpen(true);
   
+  };
+  const paginate = (pageNumber: number) => {
+    dispatch(setCurrentPage(pageNumber));
+  };
+
+
+  const goToNextPage = () => {
+    dispatch(setCurrentPage(currentPage + 1));
+  };
+
+  const goToPrevPage = () => {
+    dispatch(setCurrentPage(currentPage - 1));
   };
 
   const handleAddPaySchedule = () => {
@@ -81,6 +83,36 @@ const PaymentSchedule = () => {
     setEditedPaySchedule(payEditedData);
     handleOpen();
   };
+  const totalPages = Math.ceil(payScheduleList?.length / itemsPerPage);
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentPageData = payScheduleList?.slice(startIndex, endIndex);
+  const isAnyRowSelected = selectedRows.size > 0;
+  const isAllRowsSelected = selectedRows.size === payScheduleList.length;
+  const handleSort = (key:any) => {
+    if (sortKey === key) {
+      setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
+    } else {
+      setSortKey(key);
+      setSortDirection('asc');
+    }
+  };
+
+  if (sortKey) {
+    currentPageData.sort((a:any, b:any) => {
+      const aValue = a[sortKey];
+      const bValue = b[sortKey];
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        return sortDirection === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+      } else {
+        // Ensure numeric values for arithmetic operations
+        const numericAValue = typeof aValue === 'number' ? aValue : parseFloat(aValue);
+        const numericBValue = typeof bValue === 'number' ? bValue : parseFloat(bValue);
+        return sortDirection === 'asc' ? numericAValue - numericBValue : numericBValue - numericAValue;
+      }
+    });
+  }
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -88,9 +120,7 @@ const PaymentSchedule = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
-
-  const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === payScheduleList.length;
+ 
   return (
     <div className="comm">
          <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Payment Scheduler"/>
@@ -99,6 +129,7 @@ const PaymentSchedule = () => {
           title="Payment Scheduler"
           onPressViewArchive={() => {}}
           onPressArchive={() => {}}
+          checked={selectAllChecked}
           onPressFilter={() => filter()}
           onPressImport={() => {}}
           onpressExport={() => {}}
@@ -107,7 +138,7 @@ const PaymentSchedule = () => {
         {filterOPen && (
           <FilterPayment
             handleClose={filterClose}
-            columns={columns}
+            columns={PayScheduleColumns}
             page_number={1}
             page_size={5}
           />
@@ -142,78 +173,17 @@ const PaymentSchedule = () => {
                     />
                   </div>
                 </th>
-                <th>
-                  <div className="table-header">
-                    <p>Partner Name</p>{" "}
-                    <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Partner</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Installer</p>{" "}
-                    <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Sale Type</p>{" "}
-                    <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>ST</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Rate List</p>{" "}
-                    <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Draw %</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Draw Max</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Rep Draw %</p>{" "}
-                    <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Rep Max Draw %</p>{" "}
-                    <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Rep Pay</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Start Date</p>{" "}
-                    <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>End Date</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-                  </div>
-                </th>
+                {
+                PayScheduleColumns?.map((item,key)=>(
+                  <SortableHeader
+                  key={key}
+                  titleName={item.displayName}
+                  sortKey={item.name}
+                  sortDirection={sortKey === item.name ? sortDirection : undefined}
+                  onClick={()=>handleSort(item.name)}
+                  />
+                ))
+              }
                 <th>
                   <div className="action-header">
                     <p>Action</p>
@@ -222,8 +192,8 @@ const PaymentSchedule = () => {
               </tr>
             </thead>
             <tbody>
-              {payScheduleList?.length > 0
-                ? payScheduleList?.map((el: any, i: any) => (
+              {currentPageData?.length > 0
+                ? currentPageData?.map((el: any, i: any) => (
                     <tr key={i}>
                       <td>
                         <CheckBox
@@ -273,6 +243,21 @@ const PaymentSchedule = () => {
             </tbody>
           </table>
         </div>
+        <div className="page-heading-container">
+      <p className="page-heading">
+       {currentPage} - {totalPages} of {payScheduleList?.length} item
+      </p>
+ 
+   {
+    payScheduleList?.length > 0 ? <Pagination
+      currentPage={currentPage}
+      totalPages={totalPages} // You need to calculate total pages
+      paginate={paginate}
+      goToNextPage={goToNextPage}
+      goToPrevPage={goToPrevPage}
+    /> : null
+  }
+   </div>
       </div>
     </div>
   );

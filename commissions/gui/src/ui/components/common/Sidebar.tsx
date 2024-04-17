@@ -183,7 +183,6 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen, setSidebarC
                             style={{paddingLeft:toggleOpen?".8rem":""}}
                             className={`side-icon-container ${location.pathname === item.path ? "active-link-bg" : ""}`}
                           >
-
                             {item.sidebarProps.icon && item.sidebarProps.icon}
                           {
                             toggleOpen?null:  <p className={`tablink`}>
@@ -192,7 +191,6 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen, setSidebarC
                           }
                           </Link>
                         </div>
-
                     }
                   </div>
                 ))
@@ -206,23 +204,16 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen, setSidebarC
                       to={oth.path}
                       className={`side-icon-container ${location.pathname === oth.path ? "active-link-bg" : ""}`}
                     >
-                      {oth.sidebarProps.icon && oth.sidebarProps.icon}
-                   {
-                    toggleOpen? null:   <p className={`tablink`}>
-                    {oth.sidebarProps.displayText}
-                  </p>
-                   }
+                    {oth.sidebarProps.icon && oth.sidebarProps.icon}{toggleOpen? null:<p className={`tablink`}>{oth.sidebarProps.displayText}</p>
+}
                     </Link>
-
-
-
                   ))
                 }
               </div>
             </div>
           ))
         }
-        <div className="side-icon-container"
+        {/* <div className="side-icon-container"
           style={{paddingLeft:toggleOpen?".8rem":""}}
          onClick={handleLogout} >
           <img src={ICONS.logoutIcon} className="icon-image" alt="" />
@@ -237,7 +228,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen, setSidebarC
             </div>
           }
 
-        </div>
+        </div> */}
       </div>
 
 

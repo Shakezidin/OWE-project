@@ -13,6 +13,7 @@ import { getLabelForOperation, getOperationsForColumnType } from "../../../../co
 import { useState } from "react";
 import OperationSelect from "../commissionRate/OperationSelect";
 import { fetchDealer } from "../../../../redux/apiSlice/configSlice/config_get_slice/dealerSlice";
+import { fetchTimeLineSla } from "../../../../redux/apiSlice/configSlice/config_get_slice/timeLineSlice";
 
 interface Column {
   name: string;
@@ -73,14 +74,14 @@ const FilterTimeLine: React.FC<TableProps> = ({ handleClose, columns, page_numbe
   const handleDataChange = (index: number, value: string) => {
     const newFilters = [...filters];
     // Convert ".1" to "0.1" if the column is "rate" or "rate list"
-    if (newFilters[index].Column === 'chg_dlr' || newFilters[index].Column === 'pay_src') {
+    if (newFilters[index].Column === 'days') {
       value = value.replace(/^(\.)(\d+)/, '0$1$2');
     }
     newFilters[index].Data = value;
     setFilters(newFilters)
   }
   const getInputType = (columnName: string) => {
-    if (columnName === 'rate' || columnName === 'rl') {
+    if (columnName === 'days') {
       return 'number';
     } else if (columnName === 'start_date' || columnName === 'end_date') {
       return 'date';
@@ -119,7 +120,7 @@ const FilterTimeLine: React.FC<TableProps> = ({ handleClose, columns, page_numbe
       const formattedFilters = filters.map(filter => ({
         Column: filter.Column,
         Operation: filter.Operation,
-        Data: filter.Data,
+        Data: filter.Column==="days"? parseInt(filter.Data) :filter.Data,
       }));
       console.log(formattedFilters)
       const req = {
@@ -127,9 +128,11 @@ const FilterTimeLine: React.FC<TableProps> = ({ handleClose, columns, page_numbe
         page_size: page_size,
         filters: formattedFilters
       }
-      console.log(req)
-      // dispatch(fetchDealer(req));
-      // handleClose()
+      // filters.forEach((filter, index) => {
+      //   alert(`Filter apply for ${filter?.Column?.toUpperCase()}`)
+      // });
+       handleClose()
+      dispatch(fetchTimeLineSla(req));
     }
 
   }

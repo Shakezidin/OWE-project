@@ -21,16 +21,21 @@ import {
   subDealer,
 } from "../../../../resources/static_data/StaticData";
 import { DealerModel } from "../../../../core/models/configuration/create/DealerModel";
+import { fetchDealer } from "../../../../redux/apiSlice/configSlice/config_get_slice/dealerSlice";
 
 interface dealerProps {
   handleClose: () => void;
   editMode: boolean;
   dealerData: DealerModel | null;
+  page_number: number;
+  page_size: number;
 }
 
 const CreateDealer: React.FC<dealerProps> = ({
   handleClose,
   editMode,
+  page_number,
+  page_size,
   dealerData,
 }) => {
   const dispatch = useDispatch();
@@ -68,7 +73,11 @@ const CreateDealer: React.FC<dealerProps> = ({
       [name]: value,
     }));
   };
+  const pageNumber = {
+    page_number:page_number,
+    page_size:page_size,
 
+  };
   const submitDealer = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
@@ -77,8 +86,9 @@ const CreateDealer: React.FC<dealerProps> = ({
         const res = await postCaller(EndPoints.update_dealer, createDealer);
         if (res.status === 200) {
           alert(res.message);
-          handleClose();
+      
           window.location.reload();
+          handleClose();
         } else {
           alert(res.message);
         }
@@ -87,8 +97,8 @@ const CreateDealer: React.FC<dealerProps> = ({
         const res = await postCaller(EndPoints.create_dealer, cleanedFormData);
         if (res.status === 200) {
           alert(res.message);
-          handleClose();
           window.location.reload();
+          handleClose();
         } else {
           alert(res.message);
         }
@@ -213,7 +223,7 @@ const CreateDealer: React.FC<dealerProps> = ({
             onClick={() => handleClose()}
           />
           <ActionButton
-            title={editMode === false ? "Create" : "Update"}
+            title={editMode === false ? "Save" : "Update"}
             type="submit"
             onClick={() => {}}
           />
