@@ -81,7 +81,7 @@ const PartnerTable = () => {
                                         // indeterminate={isAnyRowSelected && !isAllRowsSelected}
                                         />
                                     </td>
-                                    <td style={{ fontWeight: "500", color: "black" }}>{el.name}</td>
+                                    <td style={{ fontWeight: "500", color: "#5B5B5B" }}>{el.name}</td>
                                     <td>{el.det}</td>
                                     <td>
                                     <div className="action-icon">

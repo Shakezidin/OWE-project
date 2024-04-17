@@ -125,7 +125,7 @@ img{
   height: calc(100% - 150px); /* Adjust the height for the body content */
   overflow-y: auto;
   /* padding: 10px; */
-  padding-bottom: 20px;
+  /* padding-bottom: 20px; */
 }
 
 .modal-footer {
@@ -216,6 +216,11 @@ select {
   cursor: pointer;
   width: 30px !important;
   height: 30px;
+}
+.user-radio{
+  height: 18px;
+  width: 30px;
+  cursor: pointer;
 }
 .create-input-field-note {
   width: 100%;

@@ -7,14 +7,10 @@ import { FaArrowDown } from "react-icons/fa6";
 
 
 interface ButtonProps {
-    editMode: boolean;
-    handleClose: () => void;
-    userOnboard: UserAdmin | null;
+    setSelectTable: React.Dispatch<React.SetStateAction<boolean>>
 }
 const SelectTable: React.FC<ButtonProps> = ({
-    handleClose,
-    userOnboard,
-    editMode,
+    setSelectTable,
 }) => {
     // const [circleStates, setCircleStates] = useState(Array(1).fill(Array(1).fill(false)));
 
@@ -27,7 +23,7 @@ const SelectTable: React.FC<ButtonProps> = ({
         <>
             <div className="transparent-model">
                 <div className="modal">
-                    <div className="createUserCrossButton" onClick={handleClose}>
+                    <div className="createUserCrossButton" onClick={() => setSelectTable(false)}>
                         <CROSS_BUTTON />
                     </div>
                     <div className="selectTable-section">
@@ -90,7 +86,34 @@ const SelectTable: React.FC<ButtonProps> = ({
                                             <div className="radio-content">
                                                 <input
                                                     type="radio"
+                                                    className="user-radio"
+                                                    name="active"   
+                                                    // value={"1"}
+                                                    // checked={createLoanTypeData.active === 1}
+                                                    // onChange={handleOptionChange}
+                                                />
+                                                
+                                            </div>
+                                            {/* <div className="radio-content">
+                                                <input
+                                                    type="radio"
+                                                    name="active"
                                                     className="radio"
+                                                    // value={"0"}
+                                                    // checked={createLoanTypeData.active === 0}
+                                                    // onChange={(e) => handleOptionChange(e)}
+                                                />
+                                                
+                                            </div> */}
+
+                                        </div>
+                                    </td>
+                                    <td >
+                                    <div className="radio-container">
+                                            <div className="radio-content">
+                                                <input
+                                                    type="radio"
+                                                    className="user-radio"
                                                     name="active"
                                                     // value={"1"}
                                                     // checked={createLoanTypeData.active === 1}
@@ -117,34 +140,7 @@ const SelectTable: React.FC<ButtonProps> = ({
                                             <div className="radio-content">
                                                 <input
                                                     type="radio"
-                                                    className="radio"
-                                                    name="active"
-                                                    // value={"1"}
-                                                    // checked={createLoanTypeData.active === 1}
-                                                    // onChange={handleOptionChange}
-                                                />
-                                                
-                                            </div>
-                                            {/* <div className="radio-content">
-                                                <input
-                                                    type="radio"
-                                                    name="active"
-                                                    className="radio"
-                                                    // value={"0"}
-                                                    // checked={createLoanTypeData.active === 0}
-                                                    // onChange={(e) => handleOptionChange(e)}
-                                                />
-                                                
-                                            </div> */}
-
-                                        </div>
-                                    </td>
-                                    <td >
-                                    <div className="radio-container">
-                                            <div className="radio-content">
-                                                <input
-                                                    type="radio"
-                                                    className="radio"
+                                                    className="user-radio"
                                                     name="active"
                                                     // value={"1"}
                                                     // checked={createLoanTypeData.active === 1}

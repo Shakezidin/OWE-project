@@ -18,6 +18,7 @@ import {
 } from "../../../../resources/static_data/StaticData";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import { ICONS } from "../../../icons/Icons";
+import SelectTable from "./SeletTable";
 
 interface ButtonProps {
     editMode: boolean;
@@ -59,6 +60,8 @@ const UserOnboardingCreation: React.FC<ButtonProps> = ({
     //     setCreateOnboarding(userOnboard);
     //   }
     // }, [userOnboard]);
+
+    const [selectTable, setSelectTable] = useState<boolean>(false)
 
     const handleChange = (newValue: any, fieldName: string) => {
         setCreateOnboarding((prevData) => ({
@@ -155,6 +158,10 @@ const UserOnboardingCreation: React.FC<ButtonProps> = ({
                                                 indicatorSeparator: () => ({
                                                     display: 'none' // Hide the indicator separator
                                                   }),
+                                                  option: (baseStyles) => ({
+                                                    ...baseStyles,
+                                                    fontSize: "13px"
+                                                  })
                                             }}
                                         />
                                     </div>
@@ -206,6 +213,10 @@ const UserOnboardingCreation: React.FC<ButtonProps> = ({
                                                 indicatorSeparator: () => ({
                                                     display: 'none' // Hide the indicator separator
                                                   }),
+                                                  option: (baseStyles) => ({
+                                                    ...baseStyles,
+                                                    fontSize: "13px"
+                                                  })
                                             }}
                                         />
                                     </div>
@@ -244,13 +255,15 @@ const UserOnboardingCreation: React.FC<ButtonProps> = ({
                                                 </div>
                                             </div>
                                             <div className="Line-container" style={{ marginTop: "0.3rem", cursor: "pointer" }}>
-                                                <div className="line-graph">
+                                                <div className="line-graph" onClick={() => setSelectTable(true)}>
                                                     <div className="edit-line">
                                                         <img src={ICONS.editIconUser} style={{ background: "white" }} alt="" />
                                                     </div>
-
                                                 </div>
                                             </div>
+                                            {
+                                                        selectTable && (<SelectTable setSelectTable={setSelectTable} />)
+                                                    }
                                         </div>
                                     </div>
                                 </div>
