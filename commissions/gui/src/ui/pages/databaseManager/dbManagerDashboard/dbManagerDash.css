@@ -130,3 +130,18 @@ opacity: 0px;
     cursor: pointer;
     color: gray;
   }
+
+  .container-graph{
+    margin-top: 10px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .PieBarchart-section{
+    width: 30%;
+  }
+  /* .recharts-wrapper{
+    width: 300px !important;
+  } */
+  
