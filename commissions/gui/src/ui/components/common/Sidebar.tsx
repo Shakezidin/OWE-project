@@ -222,7 +222,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen, setSidebarC
             </div>
           ))
         }
-        <div className="side-icon-container"
+        {/* <div className="side-icon-container"
           style={{paddingLeft:toggleOpen?".8rem":""}}
          onClick={handleLogout} >
           <img src={ICONS.logoutIcon} className="icon-image" alt="" />
@@ -237,7 +237,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen, setSidebarC
             </div>
           }
 
-        </div>
+        </div> */}
       </div>
 
 
