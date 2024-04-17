@@ -101,6 +101,7 @@ const FilterCommission: React.FC<TableProps> = ({
 
   const resetAllFilter = () => {
     setFilters([]);
+    
   }
 
   const applyFilter = async () => {
