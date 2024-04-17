@@ -11,8 +11,10 @@ interface TableProps {
   onPressImport: () => void;
   onpressExport: () => void;
   onpressAddNew: () => void;
+
   checked:boolean
  
+
 }
 
 const TableHeader = (props: TableProps) => {

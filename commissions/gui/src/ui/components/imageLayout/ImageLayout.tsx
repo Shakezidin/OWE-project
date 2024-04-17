@@ -20,7 +20,7 @@ const ImageLayout: React.FC<ImageLayoutProps> = ({ images }) => {
             />
             <div className="bottamTextView">
               <div>
-                <span>
+                <span style={{ marginLeft: '29px' }}>
                   {index === 1
                     ? "Energy Bill Reduction"
                     : "Easy, Transparent Partnership"}
@@ -35,7 +35,7 @@ const ImageLayout: React.FC<ImageLayoutProps> = ({ images }) => {
           <img src={images[2]} alt="Center" />
           <div className="centerTextView">
             <div>
-              <span>Best-in-ClassTechnology</span>
+              <span style={{ marginLeft: '29px' }}>Best-in-ClassTechnology</span>
             </div>
           </div>
         </div>
@@ -51,7 +51,7 @@ const ImageLayout: React.FC<ImageLayoutProps> = ({ images }) => {
             />
             <div className="bottamTextView">
               <div>
-                <span>
+                <span style={{ marginLeft: '29px' }}>
                   {index === 1
                     ? "Industry Leading Warranty"
                     : "Expert Installation"}
