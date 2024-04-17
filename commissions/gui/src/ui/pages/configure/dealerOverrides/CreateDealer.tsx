@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from "react";
-import "../../create_profile/CreateUserProfile.css";
-import { ReactComponent as PROFILE_BACKGROUND } from "../../../../resources/assets/Profile_background.svg";
-
 import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cross_button.svg";
 import Input from "../../../components/text_input/Input";
-import DropdownButton from "../../../components/dropdown/DropdownButton";
 import { ActionButton } from "../../../components/button/ActionButton";
 import { useDispatch } from "react-redux";
 
@@ -21,7 +17,6 @@ import {
   subDealer,
 } from "../../../../resources/static_data/StaticData";
 import { DealerModel } from "../../../../core/models/configuration/create/DealerModel";
-import { fetchDealer } from "../../../../redux/apiSlice/configSlice/config_get_slice/dealerSlice";
 
 interface dealerProps {
   handleClose: () => void;
@@ -73,11 +68,7 @@ const CreateDealer: React.FC<dealerProps> = ({
       [name]: value,
     }));
   };
-  const pageNumber = {
-    page_number:page_number,
-    page_size:page_size,
 
-  };
   const submitDealer = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {

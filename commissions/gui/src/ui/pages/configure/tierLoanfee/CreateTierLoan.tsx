@@ -1,19 +1,13 @@
 import React, { useEffect, useState } from "react";
-import "../../create_profile/CreateUserProfile.css";
-import { ReactComponent as PROFILE_BACKGROUND } from "../../../../resources/assets/Profile_background.svg";
-
 import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cross_button.svg";
 import Input from "../../../components/text_input/Input";
-import DropdownButton from "../../../components/dropdown/DropdownButton";
 import { ActionButton } from "../../../components/button/ActionButton";
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import { updateTierLoanForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createTierLoanFeeSlice";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
 import { useDispatch } from "react-redux";
-
 import Select from 'react-select';
 import { installerOption, oweCostOption, stateOption } from "../../../../core/models/data_models/SelectDataModel";
-import { installers } from "../../../../resources/static_data/StaticData";
 import { TierLoanFeeModel } from "../../../../core/models/configuration/create/TierLoanFeeModel";
 interface tierLoanProps{
   handleClose: () => void,

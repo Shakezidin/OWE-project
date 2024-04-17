@@ -128,7 +128,8 @@ const DealerTier = () => {
           title="Dealer Tier"
           onPressViewArchive={() => {}}
           onPressArchive={() => {}}
-          checked={selectAllChecked}
+          checked={isAllRowsSelected}
+          isAnyRowSelected={isAnyRowSelected}
           onPressFilter={() => filter()}
           onPressImport={() => {}}
           onpressExport={() => {}}

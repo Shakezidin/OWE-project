@@ -124,7 +124,8 @@ const ReferalData: React.FC = () => {
           onPressArchive={() => { }}
           onPressFilter={() => filter()}
           onPressImport={() => { }}
-          checked={selectAllChecked}
+          checked={isAllRowsSelected}
+          isAnyRowSelected={isAnyRowSelected}
           onpressExport={() => handleExportOpen()}
           onpressAddNew={() => handleAddCommission()}
         />

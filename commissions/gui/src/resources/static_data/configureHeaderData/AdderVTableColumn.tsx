@@ -7,4 +7,5 @@ export   const AdderVColumns: Column[] = [
     { name: "description", displayName: "Description", type: "string" },
     { name: "price_amount", displayName: "Price Amount", type: "string" },
     { name: "price_type", displayName: "Price Type", type: "string" },
+    { name: "active", displayName: "Active", type: "number" },
   ];

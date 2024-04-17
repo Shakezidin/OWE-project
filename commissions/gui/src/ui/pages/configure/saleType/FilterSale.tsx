@@ -1,18 +1,12 @@
-import { IoAddSharp } from "react-icons/io5";
+
 import Select from "react-select";
-import '../../create_profile/CreateUserProfile.css'
-// import "../commissionRate/Filter.css";
 import Input from "../../../components/text_input/Input";
 import { ActionButton } from "../../../components/button/ActionButton";
 
 import { useAppDispatch } from "../../../../redux/hooks";
-import { fetchCommissions } from "../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice";
 import { ICONS } from "../../../icons/Icons";
-
-import { getLabelForOperation, getOperationsForColumnType } from "../../../../core/models/data_models/FilterSelectModel";
 import { useState } from "react";
 import OperationSelect from "../commissionRate/OperationSelect";
-import { fetchDealer } from "../../../../redux/apiSlice/configSlice/config_get_slice/dealerSlice";
 import { fetchSalesType } from "../../../../redux/apiSlice/configSlice/config_get_slice/salesSlice";
 
 interface Column {

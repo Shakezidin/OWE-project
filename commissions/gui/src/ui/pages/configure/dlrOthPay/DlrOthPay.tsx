@@ -123,7 +123,8 @@ const DlrOthPay: React.FC = () => {
           onPressViewArchive={() => { }}
           onPressArchive={() => { }}
           onPressFilter={() => filter()}
-          checked={selectAllChecked}
+          checked={isAllRowsSelected}
+          isAnyRowSelected={isAnyRowSelected}
           onPressImport={() => { }}
           onpressExport={() => handleExportOpen()}
           onpressAddNew={() => handleAddCommission()}

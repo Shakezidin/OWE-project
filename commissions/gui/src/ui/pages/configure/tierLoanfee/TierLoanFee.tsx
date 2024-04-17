@@ -123,7 +123,8 @@ const TierLoanFee = () => {
           title="Tier Loan Fee"
           onPressViewArchive={() => {}}
           onPressArchive={() => {}}
-          checked={selectAllChecked}
+          checked={isAllRowsSelected}
+          isAnyRowSelected={isAnyRowSelected}
           onPressFilter={() => filter()}
           onPressImport={() => {}}
           onpressExport={() => {}}
