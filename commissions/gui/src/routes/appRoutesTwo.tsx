@@ -308,14 +308,14 @@ const appRoutesTwo = [
                     icon: <img src={ICONS.techIcon} className="icon-image" alt="" />,
                 },
             },
-            {
-                path: routes.accountSettingRoutes,
+            // {
+            //     path: routes.accountSettingRoutes,
 
-                sidebarProps: {
-                    displayText: "My Account",
-                    icon: <img src={ICONS.accountIcon} className="icon-image" alt="" />,
-                },
-            },
+            //     sidebarProps: {
+            //         displayText: "My Account",
+            //         icon: <img src={ICONS.accountIcon} className="icon-image" alt="" />,
+            //     },
+            // },
         ]
     }
 
