@@ -1,6 +1,5 @@
 import React from "react";
 import { ICONS } from "../../icons/Icons";
-import { IoAddSharp } from "react-icons/io5";
 import "../../pages/configure/configure.css";
 
 interface TableProps {

@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { CiEdit } from "react-icons/ci";
 import "../configure.css";
-import { RiDeleteBin5Line } from "react-icons/ri";
 // import CreateCommissionRate from "./CreateCommissionRate";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import { CSVLink } from 'react-csv';
