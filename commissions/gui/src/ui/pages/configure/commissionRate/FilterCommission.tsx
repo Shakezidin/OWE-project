@@ -100,8 +100,8 @@ const FilterCommission: React.FC<TableProps> = ({
   };
 
   const resetAllFilter = () => {
-    setFilters([]);
-    
+    setFilters([{ Column: "", Operation: "", Data: "" }]);
+
   }
 
   const applyFilter = async () => {
@@ -125,11 +125,7 @@ const FilterCommission: React.FC<TableProps> = ({
         newErrors[`data${index}`] = `Please provide Data`;
       }
     });
-
-    // Update state with new errors
     setErrors(newErrors);
-
-    // If no errors, proceed with API call
     if (Object.keys(newErrors).length === 0) {
       const formattedFilters = filters.map((filter) => ({
         Column: filter.Column,
@@ -142,8 +138,9 @@ const FilterCommission: React.FC<TableProps> = ({
         page_size: page_size,
         filters: formattedFilters,
       };
+      handleClose()
       dispatch(fetchCommissions(req));
-      // handleClose()
+     
     }
   };
 
@@ -282,7 +279,7 @@ const FilterCommission: React.FC<TableProps> = ({
         </div>
       </div>
     </div>
- 
+
   );
 };
 export default FilterCommission;

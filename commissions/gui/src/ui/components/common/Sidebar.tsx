@@ -183,7 +183,6 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen, setSidebarC
                             style={{paddingLeft:toggleOpen?".8rem":""}}
                             className={`side-icon-container ${location.pathname === item.path ? "active-link-bg" : ""}`}
                           >
-
                             {item.sidebarProps.icon && item.sidebarProps.icon}
                           {
                             toggleOpen?null:  <p className={`tablink`}>
@@ -192,7 +191,6 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen, setSidebarC
                           }
                           </Link>
                         </div>
-
                     }
                   </div>
                 ))
@@ -206,16 +204,9 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen, setSidebarC
                       to={oth.path}
                       className={`side-icon-container ${location.pathname === oth.path ? "active-link-bg" : ""}`}
                     >
-                      {oth.sidebarProps.icon && oth.sidebarProps.icon}
-                   {
-                    toggleOpen? null:   <p className={`tablink`}>
-                    {oth.sidebarProps.displayText}
-                  </p>
-                   }
+                    {oth.sidebarProps.icon && oth.sidebarProps.icon}{toggleOpen? null:<p className={`tablink`}>{oth.sidebarProps.displayText}</p>
+}
                     </Link>
-
-
-
                   ))
                 }
               </div>

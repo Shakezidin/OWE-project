@@ -123,6 +123,7 @@ const DlrOthPay: React.FC = () => {
           onPressViewArchive={() => { }}
           onPressArchive={() => { }}
           onPressFilter={() => filter()}
+          checked={selectAllChecked}
           onPressImport={() => { }}
           onpressExport={() => handleExportOpen()}
           onpressAddNew={() => handleAddCommission()}
@@ -252,7 +253,13 @@ const DlrOthPay: React.FC = () => {
             </tbody>
           </table>
         </div>
-        {
+        <div className="page-heading-container">
+      
+          <p className="page-heading">
+           {currentPage} - {totalPages} of {commissionList?.length} item
+          </p>
+     
+       {
         commissionList?.length > 0 ? <Pagination
           currentPage={currentPage}
           totalPages={totalPages} // You need to calculate total pages
@@ -261,6 +268,7 @@ const DlrOthPay: React.FC = () => {
           goToPrevPage={goToPrevPage}
         /> : null
       }
+       </div>
       </div>
      
     </div>

@@ -19,7 +19,7 @@ import { FaArrowDown } from "react-icons/fa6";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import { Column } from "../../../../core/models/data_models/FilterSelectModel";
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
-import { Commissioncolumns} from "../../../../resources/static_data/configureHeaderData/CommissionTableHeaderData";
+import { Commissioncolumns } from "../../../../resources/static_data/configureHeaderData/CommissionColumn";
 
 
 const CommissionRate: React.FC = () => {
@@ -40,7 +40,7 @@ const CommissionRate: React.FC = () => {
   const [editedCommission, setEditedCommission] = useState<CommissionModel | null>(null);
   const itemsPerPage = 10;
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
-  const [sortKey, setSortKey] =  useState("");
+  const [sortKey, setSortKey] = useState("");
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   useEffect(() => {
     const pageNumber = {
@@ -55,20 +55,16 @@ const CommissionRate: React.FC = () => {
   const paginate = (pageNumber: number) => {
     dispatch(setCurrentPage(pageNumber));
   };
-
-
   const goToNextPage = () => {
     dispatch(setCurrentPage(currentPage + 1));
   };
-
   const goToPrevPage = () => {
     dispatch(setCurrentPage(currentPage - 1));
   };
-
-  const filter = ()=>{
+  const filter = () => {
     setFilterOpen(true)
   }
- 
+
   const totalPages = Math.ceil(commissionList?.length / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -87,7 +83,7 @@ const CommissionRate: React.FC = () => {
   const currentPageData = commissionList?.slice(startIndex, endIndex);
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === commissionList.length;
-  const handleSort = (key:any) => {
+  const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
     } else {
@@ -97,7 +93,7 @@ const CommissionRate: React.FC = () => {
   };
 
   if (sortKey) {
-    currentPageData.sort((a:any, b:any) => {
+    currentPageData.sort((a: any, b: any) => {
       const aValue = a[sortKey];
       const bValue = b[sortKey];
       if (typeof aValue === 'string' && typeof bValue === 'string') {
@@ -114,17 +110,20 @@ const CommissionRate: React.FC = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
-
+  if (loading) {
+    return <div>Loading... {loading}</div>;
+  }
 
 
   return (
     <div className="comm">
-      <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Commission Rate"/>
+      <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Commission Rate" />
       <div className="commissionContainer">
         <TableHeader
           title="Commisstion Rate"
           onPressViewArchive={() => { }}
           onPressArchive={() => { }}
+          checked={selectAllChecked}
           onPressFilter={() => filter()}
           onPressImport={() => { }}
           onpressExport={() => handleExportOpen()}
@@ -133,16 +132,16 @@ const CommissionRate: React.FC = () => {
         {exportOPen && (<div className="export-modal">
           <CSVLink style={{ color: "#04a5e8" }} data={currentPageData} filename={"table.csv"}>Export CSV</CSVLink>
         </div>)}
-             {filterOPen && <FilterCommission handleClose={filterClose}  
-            columns={Commissioncolumns} 
-             page_number = {currentPage}
-             page_size = {itemsPerPage}
-             />}
-             {open && <CreateCommissionRate 
-                         commission={editedCommission}
-                         editMode={editMode}
-                         handleClose={handleClose}
-                          />}
+        {filterOPen && <FilterCommission handleClose={filterClose}
+          columns={Commissioncolumns}
+          page_number={currentPage}
+          page_size={itemsPerPage}
+        />}
+        {open && <CreateCommissionRate
+          commission={editedCommission}
+          editMode={editMode}
+          handleClose={handleClose}
+        />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
@@ -150,7 +149,7 @@ const CommissionRate: React.FC = () => {
           <table>
             <thead>
               <tr>
-              <th >
+                <th >
                   <div>
                     <CheckBox
                       checked={selectAllChecked}
@@ -166,20 +165,20 @@ const CommissionRate: React.FC = () => {
                     />
                   </div>
                 </th>
-              {
-              Commissioncolumns.map((item,key)=>(
-                <SortableHeader
-                key={key}
-                titleName={item.displayName}
-                sortKey={item.name}
-                sortDirection={sortKey === item.name ? sortDirection : undefined}
-                onClick={()=>handleSort(item.name)}
-                />
-              ))
-              }
+                {
+                  Commissioncolumns.map((item, key) => (
+                    <SortableHeader
+                      key={key}
+                      titleName={item.displayName}
+                      sortKey={item.name}
+                      sortDirection={sortKey === item.name ? sortDirection : undefined}
+                      onClick={() => handleSort(item.name)}
+                    />
+                  ))
+                }
                 <th>
                   <div className="action-header">
-                    <p>Action</p> 
+                    <p>Action</p>
                   </div>
                 </th>
               </tr>
@@ -222,7 +221,7 @@ const CommissionRate: React.FC = () => {
                           <img src={ICONS.ARCHIVE} alt="" />
                         </div>
                         <div className="" style={{ cursor: "pointer" }} onClick={() => handleEditCommission(el)}>
-                        <img src={ICONS.editIcon} alt="" />
+                          <img src={ICONS.editIcon} alt="" />
                         </div>
                       </div>
 
@@ -233,17 +232,25 @@ const CommissionRate: React.FC = () => {
             </tbody>
           </table>
         </div>
-        {
-        commissionList?.length > 0 ? <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages} // You need to calculate total pages
-          paginate={paginate}
-          goToNextPage={goToNextPage}
-          goToPrevPage={goToPrevPage}
-        /> : null
-      }
+
+        <div className="page-heading-container">
+
+          <p className="page-heading">
+            {currentPage} - {totalPages} of {commissionList?.length} item
+          </p>
+
+          {
+            commissionList?.length > 0 ? <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages} // You need to calculate total pages
+              paginate={paginate}
+              goToNextPage={goToNextPage}
+              goToPrevPage={goToPrevPage}
+            /> : null
+          }
+        </div>
       </div>
-     
+
     </div>
   );
 };

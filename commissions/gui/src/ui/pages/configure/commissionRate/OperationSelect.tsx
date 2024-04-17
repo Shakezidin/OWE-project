@@ -18,8 +18,8 @@ const OperationSelect: React.FC<{
   return (
     <div className="">
       <Select
-         options={operations.map(operation => ({ value: operation.value, label:operation.label }))}
-         value={{ value, label: getLabelForOperation(value) }}
+         options={operations}
+         value={operations.find(el=>el.value===value)}
      
         onChange={(selectedOption: any) => {
           onChange(selectedOption.value);

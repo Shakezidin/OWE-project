@@ -18,6 +18,10 @@ import FilterLoanType from "./FilterLoanType";
 import { LoanTypeModel } from "../../../../core/models/configuration/create/LoanTypeModel";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import { Column } from "../../../../core/models/data_models/FilterSelectModel";
+import Pagination from "../../../components/pagination/Pagination";
+import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
+import SortableHeader from "../../../components/tableHeader/SortableHeader";
+import { LoanTypeColumns } from "../../../../resources/static_data/configureHeaderData/LoanTypeColumn";
 
 const LoanType = () => {
   const dispatch = useAppDispatch();
@@ -38,37 +42,74 @@ const LoanType = () => {
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
   const [editedLoanData, setEditedLoanData] = useState<LoanTypeModel | null>(null);
+  const itemsPerPage = 5;
+  const currentPage = useAppSelector((state) => state.paginationType.currentPage);
+  const [sortKey, setSortKey] =  useState("");
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   useEffect(() => {
     const pageNumber = {
       page_number: 1,
       page_size: 10,
     };
     dispatch(fetchLoanType(pageNumber));
-  }, [dispatch]);
+  }, [dispatch,currentPage]);
+  const paginate = (pageNumber: number) => {
+    dispatch(setCurrentPage(pageNumber));
+  };
+
+
+  const goToNextPage = () => {
+    dispatch(setCurrentPage(currentPage + 1));
+  };
+
+  const goToPrevPage = () => {
+    dispatch(setCurrentPage(currentPage - 1));
+  };
   const handleAddLoan = () => {
     setEditMode(false);
     setEditedLoanData(null);
     handleOpen()
   };
-  const columns: Column[] = [
-    // { name: "record_id", displayName: "Record ID", type: "number" },
 
-    { name: "product_code", displayName: "Product Code", type: "string" },
-    { name: "adder", displayName: "Adder", type: "number" },
-    { name: "description", displayName: "Description", type: "string" },
-
-  ];
   const filter = ()=>{
     setFilterOpen(true)
  
   }
+  const totalPages = Math.ceil(loanTypeList?.length / itemsPerPage);
 
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
   const handleEditLoan = (loanData:LoanTypeModel) => {
     setEditMode(true);
     setEditedLoanData(loanData);
     handleOpen()
   };
+  const currentPageData = loanTypeList?.slice(startIndex, endIndex);
+  const isAnyRowSelected = selectedRows.size > 0;
+  const isAllRowsSelected = selectedRows.size === loanTypeList.length;
+  const handleSort = (key:any) => {
+    if (sortKey === key) {
+      setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
+    } else {
+      setSortKey(key);
+      setSortDirection('asc');
+    }
+  };
 
+  if (sortKey) {
+    currentPageData.sort((a:any, b:any) => {
+      const aValue = a[sortKey];
+      const bValue = b[sortKey];
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        return sortDirection === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+      } else {
+        // Ensure numeric values for arithmetic operations
+        const numericAValue = typeof aValue === 'number' ? aValue : parseFloat(aValue);
+        const numericBValue = typeof bValue === 'number' ? bValue : parseFloat(bValue);
+        return sortDirection === 'asc' ? numericAValue - numericBValue : numericBValue - numericAValue;
+      }
+    });
+  }
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -77,8 +118,7 @@ const LoanType = () => {
     return <div>Error: {error}</div>;
   }
  
-  const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === loanTypeList.length;
+ 
   return (
     <div className="comm">
        <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Loan Type"/>
@@ -88,13 +128,14 @@ const LoanType = () => {
           title="Loan Type"
           onPressViewArchive={() => { }}
           onPressArchive={() => { }}
+          checked={selectAllChecked}
           onPressFilter={() => filter()}
           onPressImport={() => { }}
           onpressExport={() => { }}
           onpressAddNew={() => handleAddLoan()}
         />
         {filterOPen && <FilterLoanType handleClose={filterClose}
-         columns={columns}
+         columns={LoanTypeColumns}
          page_number = {1}
          page_size = {5} />}
         {open && <CreateLoanType
@@ -124,28 +165,17 @@ const LoanType = () => {
                     />
                   </div>
                 </th>
-                <th>
-                  <div className="table-header">
-                    <p>Product Code</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}}/> 
-                  </div>
-                </th>
-
-                <th>
-                  <div className="table-header">
-                    <p>Active</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}}/>
-                  </div>
-                </th>
-
-                <th>
-                  <div className="table-header">
-                    <p>Adder</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}}/>
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Description</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}}/>
-                  </div>
-                </th>
+                {
+                LoanTypeColumns?.map((item,key)=>(
+                  <SortableHeader
+                  key={key}
+                  titleName={item.displayName}
+                  sortKey={item.name}
+                  sortDirection={sortKey === item.name ? sortDirection : undefined}
+                  onClick={()=>handleSort(item.name)}
+                  />
+                ))
+              }
                 <th>
                   <div className="action-header">
                     <p>Action</p> 
@@ -154,8 +184,8 @@ const LoanType = () => {
               </tr>
             </thead>
             <tbody>
-              {loanTypeList?.length > 0
-                ? loanTypeList?.map((el: any, i: any) => (
+              {currentPageData?.length > 0
+                ? currentPageData?.map((el: any, i: any) => (
                   <tr key={i}>
                     <td>
                       <CheckBox
@@ -205,6 +235,22 @@ const LoanType = () => {
             </tbody>
           </table>
         </div>
+        <div className="page-heading-container">
+      
+      <p className="page-heading">
+       {currentPage} - {totalPages} of {loanTypeList?.length} item
+      </p>
+ 
+   {
+    loanTypeList?.length > 0 ? <Pagination
+      currentPage={currentPage}
+      totalPages={totalPages} // You need to calculate total pages
+      paginate={paginate}
+      goToNextPage={goToNextPage}
+      goToPrevPage={goToPrevPage}
+    /> : null
+  }
+   </div>
       </div>
     </div>
   );

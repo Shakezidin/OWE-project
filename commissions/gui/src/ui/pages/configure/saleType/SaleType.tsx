@@ -21,6 +21,8 @@ import Pagination from "../../../components/pagination/Pagination";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import { Column } from "../../../../core/models/data_models/FilterSelectModel";
+import { SalesTypeColumn } from "../../../../resources/static_data/configureHeaderData/SalesTypeColumn";
+import SortableHeader from "../../../components/tableHeader/SortableHeader";
 
 const SaleType = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -42,6 +44,8 @@ const SaleType = () => {
   const [editedSalesType, setEditedMarketing] = useState<SalesTypeModel | null>(null);
   const itemsPerPage = 5;
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
+  const [sortKey, setSortKey] =  useState("");
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   useEffect(() => {
     const pageNumber = {
       page_number: 1,
@@ -52,13 +56,7 @@ const SaleType = () => {
   const paginate = (pageNumber: number) => {
     dispatch(setCurrentPage(pageNumber));
   };
-  const columns: Column[] = [
-    // { name: "record_id", displayName: "Record ID", type: "number" },
 
-    { name: "type_name", displayName: "Name", type: "string" },
-    { name: "description", displayName: "Description", type: "string" },
- 
-  ];
   const filter = ()=>{
     setFilterOpen(true)
 
@@ -74,13 +72,9 @@ const SaleType = () => {
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+  const currentPageData = salesTypeList?.slice(startIndex, endIndex);
+  const isAnyRowSelected = selectedRows.size > 0;
+  const isAllRowsSelected = selectedRows.size === salesTypeList.length;
   const handleAddSaleType = () => {
     setEditMode(false);
     setEditedMarketing(null);
@@ -92,9 +86,37 @@ const SaleType = () => {
     setEditedMarketing(saleTypeData);
     handleOpen()
   };
-  const currentPageData = salesTypeList?.slice(startIndex, endIndex);
-  const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === salesTypeList.length;
+  const handleSort = (key:any) => {
+    if (sortKey === key) {
+      setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
+    } else {
+      setSortKey(key);
+      setSortDirection('asc');
+    }
+  };
+
+  if (sortKey) {
+    currentPageData.sort((a:any, b:any) => {
+      const aValue = a[sortKey];
+      const bValue = b[sortKey];
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        return sortDirection === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+      } else {
+        // Ensure numeric values for arithmetic operations
+        const numericAValue = typeof aValue === 'number' ? aValue : parseFloat(aValue);
+        const numericBValue = typeof bValue === 'number' ? bValue : parseFloat(bValue);
+        return sortDirection === 'asc' ? numericAValue - numericBValue : numericBValue - numericAValue;
+      }
+    });
+  }
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+ 
   return (
     <div className="comm">
        <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Sale Type"/>
@@ -103,13 +125,14 @@ const SaleType = () => {
           title="Sale Types"
           onPressViewArchive={() => {}}
           onPressArchive={() => {}}
+          checked={selectAllChecked}
           onPressFilter={() => filter()}
           onPressImport={() => {}}
           onpressExport={() => {}}
           onpressAddNew={() => handleAddSaleType()}
         />
         {filterOPen && <FilterSale handleClose={filterClose}
-         columns={columns}
+         columns={SalesTypeColumn}
          page_number = {1}
          page_size = {5}/>}
         {open && <CreateSaleType salesTypeData={editedSalesType}
@@ -138,17 +161,17 @@ const SaleType = () => {
                     />
                   </div>
                 </th>
-                <th>
-                  <div className="table-header">
-                    <p> Name</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}}/>
-                  </div>
-                </th>
-
-                <th>
-                  <div className="table-header">
-                    <p>Description</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}}/>
-                  </div>
-                </th>
+                {
+                SalesTypeColumn.map((item,key)=>(
+                  <SortableHeader
+                  key={key}
+                  titleName={item.displayName}
+                  sortKey={item.name}
+                  sortDirection={sortKey === item.name ? sortDirection : undefined}
+                  onClick={()=>handleSort(item.name)}
+                  />
+                ))
+              }
 
                 <th>
                   <div className="action-header">
@@ -198,15 +221,22 @@ const SaleType = () => {
             </tbody>
           </table>
         </div>
-        {
-      salesTypeList?.length>0?  <Pagination
+        <div className="page-heading-container">
+      
+      <p className="page-heading">
+       {currentPage} - {totalPages} of {salesTypeList?.length} item
+      </p>
+ 
+   {
+    salesTypeList?.length > 0 ? <Pagination
       currentPage={currentPage}
       totalPages={totalPages} // You need to calculate total pages
       paginate={paginate}
       goToNextPage={goToNextPage}
       goToPrevPage={goToPrevPage}
-    />:null
-    }
+    /> : null
+  }
+   </div>
       </div>
      
     </div>

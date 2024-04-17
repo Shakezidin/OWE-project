@@ -13,6 +13,7 @@ import { getLabelForOperation, getOperationsForColumnType } from "../../../../co
 import { useState } from "react";
 import OperationSelect from "../commissionRate/OperationSelect";
 import { fetchDealer } from "../../../../redux/apiSlice/configSlice/config_get_slice/dealerSlice";
+import { fetchTearLoan } from "../../../../redux/apiSlice/configSlice/config_get_slice/tearLoanSlice";
 
 interface Column {
   name: string;
@@ -127,9 +128,11 @@ const FilterTierLoan: React.FC<TableProps> = ({ handleClose, columns, page_numbe
         page_size: page_size,
         filters: formattedFilters
       }
-      console.log(req)
-      // dispatch(fetchDealer(req));
-      // handleClose()
+      // filters.forEach((filter, index) => {
+      //   alert(`Filter apply for ${filter?.Column?.toLocaleUpperCase()}`)
+      // });
+       handleClose()
+      dispatch(fetchTearLoan(req));
     }
 
   }
