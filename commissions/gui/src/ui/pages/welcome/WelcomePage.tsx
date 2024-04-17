@@ -103,7 +103,7 @@ export const WelcomePage = () => {
                 </h1>
               </div>
               <div className="welcome-right-view">
-                <img
+              <img
                   className="welcome-laptop-image"
                   src={LaptopImage}
                   alt="laptop"
@@ -151,6 +151,9 @@ export const WelcomePage = () => {
             </div>
           </div>
         </section>
+
+
+
         <section className="welcomeAboutUsContainer">
           <div className="welcomeAboutUsView">
             <div className="welcomeAboutUsLeftView">
@@ -196,13 +199,26 @@ export const WelcomePage = () => {
               </p>
             
             </div>
+
+
           </div>
         </section>
+
+
+
+
+
         <section className="welcomeWorkEaseView">
           <span className="welcomeWorkEaseTitle">We Make Your Work Easy</span>
           <br />
           <ImageLayout images={[Grid_1, Grid_2, Grid_3, Grid_4, Grid_5]} />
         </section>
+
+
+
+
+ 
+        
         <section className="welcomeOverProcessContainer">
           <div className="welcomeOverProcess">
             <span className="welcomeOverProcessTitle">Our Process</span>
@@ -223,6 +239,7 @@ export const WelcomePage = () => {
                 <tbody>
                   <tr>
                     {data.map((item) => (
+                      
                       <td key={item.id}>
                         <div className="table-box">
                           <div className="welcomeRowTitle">{item.title}</div>
