@@ -97,10 +97,15 @@
 /* table style  */
 .TableContainer {
   overflow-x: auto;
-
   position: relative;
   height: 60vh;
 
+}
+.UserManageTable{
+  overflow-x: auto;
+  position: relative;
+  background: #fff;
+  height: 50vh;
 }
 .adder-input {
   border: 1px solid var(--button-border-color);

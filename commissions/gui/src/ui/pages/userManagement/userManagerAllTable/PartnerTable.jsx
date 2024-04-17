@@ -35,7 +35,7 @@ const PartnerTable = () => {
         <>
             {/* <UserHeaderSection name="Partner" /> */}
             <div
-                className="TableContainer"
+                className="UserManageTable"
                 style={{ overflowX: "auto", whiteSpace: "nowrap" }}  >
                 <table>
                     <thead style={{ background: "#F5F5F5" }}>
