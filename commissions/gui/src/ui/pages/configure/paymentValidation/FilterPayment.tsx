@@ -13,6 +13,7 @@ import { getLabelForOperation, getOperationsForColumnType } from "../../../../co
 import { useState } from "react";
 import OperationSelect from "../commissionRate/OperationSelect";
 import { fetchDealer } from "../../../../redux/apiSlice/configSlice/config_get_slice/dealerSlice";
+import { fetchPaySchedule } from "../../../../redux/apiSlice/configSlice/config_get_slice/payScheduleSlice";
 
 interface Column {
   name: string;
@@ -128,9 +129,11 @@ const FilterPayment: React.FC<TableProps> = ({ handleClose, columns, page_number
         page_size: page_size,
         filters: formattedFilters
       }
-      console.log(req)
-      // dispatch(fetchDealer(req));
-      // handleClose()
+      // filters.forEach((filter, index) => {
+      //   alert(`Filter apply for ${filter?.Column?.toUpperCase()}`)
+      // });
+       handleClose()
+      dispatch(fetchPaySchedule(req));
     }
 
   }

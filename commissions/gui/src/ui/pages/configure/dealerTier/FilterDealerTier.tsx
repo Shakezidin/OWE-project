@@ -16,6 +16,7 @@ import {
 import { useState } from "react";
 import OperationSelect from "../commissionRate/OperationSelect";
 import { fetchDealer } from "../../../../redux/apiSlice/configSlice/config_get_slice/dealerSlice";
+import { fetchDealerTier } from "../../../../redux/apiSlice/configSlice/config_get_slice/dealerTierSlice";
 
 interface Column {
   name: string;
@@ -137,9 +138,11 @@ const FilterDealerTier: React.FC<TableProps> = ({
         page_size: page_size,
         filters: formattedFilters,
       };
-      console.log(req);
-      // dispatch(fetchDealer(req));
-      // handleClose()
+      // filters.forEach((filter, index) => {
+      //   alert(`Filter apply for ${filter?.Column?.toLocaleUpperCase()}`)
+      // });
+       handleClose()
+      dispatch(fetchDealerTier(req));
     }
   };
 

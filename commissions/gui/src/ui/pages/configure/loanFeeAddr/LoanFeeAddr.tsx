@@ -125,6 +125,7 @@ const LoanFeeAddr: React.FC = () => {
           onPressArchive={() => { }}
           onPressFilter={() => filter()}
           onPressImport={() => { }}
+          checked={selectAllChecked}
           onpressExport={() => handleExportOpen()}
           onpressAddNew={() => handleAddCommission()}
         />
@@ -385,15 +386,22 @@ const LoanFeeAddr: React.FC = () => {
             </tbody>
           </table>
         </div>
-        {
-        commissionList?.length > 0 ? <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages} // You need to calculate total pages
-          paginate={paginate}
-          goToNextPage={goToNextPage}
-          goToPrevPage={goToPrevPage}
-        /> : null
-      }
+        <div className="page-heading-container">
+      
+      <p className="page-heading">
+       {currentPage} - {totalPages} of {commissionList?.length} item
+      </p>
+ 
+   {
+    commissionList?.length > 0 ? <Pagination
+      currentPage={currentPage}
+      totalPages={totalPages} // You need to calculate total pages
+      paginate={paginate}
+      goToNextPage={goToNextPage}
+      goToPrevPage={goToPrevPage}
+    /> : null
+  }
+   </div>
       </div>
      
     </div>

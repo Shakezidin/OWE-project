@@ -82,10 +82,10 @@ const NonCommDlrPay: React.FC = () => {
     { name: "start_date", displayName: "Start Date", type: "date" },
     { name: "end_date", displayName: "End Date", type: "date" }
   ];
-  const filter = ()=>{
+  const filter = () => {
     setFilterOpen(true)
   }
- 
+
   const totalPages = Math.ceil(commissionList?.length / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -116,7 +116,7 @@ const NonCommDlrPay: React.FC = () => {
 
   return (
     <div className="comm">
-      <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="NON-Comm"/>
+      <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="NON-Comm" />
       <div className="commissionContainer">
         <TableHeader
           title="NON-Comm"
@@ -124,22 +124,23 @@ const NonCommDlrPay: React.FC = () => {
           onPressArchive={() => { }}
           onPressFilter={() => filter()}
           onPressImport={() => { }}
+          checked={selectAllChecked}
           onpressExport={() => handleExportOpen()}
           onpressAddNew={() => handleAddCommission()}
         />
         {exportOPen && (<div className="export-modal">
           <CSVLink style={{ color: "#04a5e8" }} data={currentPageData} filename={"table.csv"}>Export CSV</CSVLink>
         </div>)}
-             {/* {filterOPen && <FilterCommission handleClose={filterClose}  
+        {/* {filterOPen && <FilterCommission handleClose={filterClose}  
             columns={columns} 
              page_number = {currentPage}
              page_size = {itemsPerPage}
              />} */}
-             {open && <CreateNonComm 
-                         commission={editedCommission}
-                         editMode={editMode}
-                         handleClose={handleClose}
-                          />}
+        {open && <CreateNonComm
+          commission={editedCommission}
+          editMode={editMode}
+          handleClose={handleClose}
+        />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
@@ -165,62 +166,62 @@ const NonCommDlrPay: React.FC = () => {
                 </th>
                 <th >
                   <div className="table-header" >
-                    <p>Customer</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
+                    <p>Customer</p> <FaArrowDown style={{ color: "#667085", fontSize: "12px" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Dealer Code</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
+                    <p>Dealer Code</p> <FaArrowDown style={{ color: "#667085", fontSize: "12px" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Dealer DBA</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
+                    <p>Dealer DBA</p> <FaArrowDown style={{ color: "#667085", fontSize: "12px" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Exact Amt.</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
+                    <p>Exact Amt.</p> <FaArrowDown style={{ color: "#667085", fontSize: "12px" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Approved By:</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
+                    <p>Approved By:</p> <FaArrowDown style={{ color: "#667085", fontSize: "12px" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Notes:</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
+                    <p>Notes:</p> <FaArrowDown style={{ color: "#667085", fontSize: "12px" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Balance</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
+                    <p>Balance</p> <FaArrowDown style={{ color: "#667085", fontSize: "12px" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Paid Amt.</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
+                    <p>Paid Amt.</p> <FaArrowDown style={{ color: "#667085", fontSize: "12px" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>DBA</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
+                    <p>DBA</p> <FaArrowDown style={{ color: "#667085", fontSize: "12px" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Start Dt.</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
+                    <p>Start Dt.</p> <FaArrowDown style={{ color: "#667085", fontSize: "12px" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>End Dt.</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
+                    <p>End Dt.</p> <FaArrowDown style={{ color: "#667085", fontSize: "12px" }} />
                   </div>
                 </th>
                 <th>
                   <div className="action-header">
-                    <p>Action</p> 
+                    <p>Action</p>
                   </div>
                 </th>
               </tr>
@@ -264,7 +265,7 @@ const NonCommDlrPay: React.FC = () => {
                           <img src={ICONS.ARCHIVE} alt="" />
                         </div>
                         <div className="" style={{ cursor: "pointer" }} onClick={() => handleEditCommission(el)}>
-                        <img src={ICONS.editIcon} alt="" />
+                          <img src={ICONS.editIcon} alt="" />
                         </div>
                       </div>
 
@@ -275,17 +276,23 @@ const NonCommDlrPay: React.FC = () => {
             </tbody>
           </table>
         </div>
-        {
-        commissionList?.length > 0 ? <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages} // You need to calculate total pages
-          paginate={paginate}
-          goToNextPage={goToNextPage}
-          goToPrevPage={goToPrevPage}
-        /> : null
-      }
+        <div className="page-heading-container">
+          <p className="page-heading">
+            {currentPage} - {totalPages} of {commissionList?.length} item
+          </p>
+
+          {
+            commissionList?.length > 0 ? <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages} // You need to calculate total pages
+              paginate={paginate}
+              goToNextPage={goToNextPage}
+              goToPrevPage={goToPrevPage}
+            /> : null
+          }
+        </div>
       </div>
-    
+
     </div>
   );
 };

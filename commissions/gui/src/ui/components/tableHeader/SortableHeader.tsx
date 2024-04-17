@@ -1,10 +1,8 @@
 import { FaArrowDown, FaArrowUp } from "react-icons/fa6";
-
+import '../../pages/configure/configure.css'
 interface SortableHeaderProps {
     titleName: string;
     sortKey: string;
-  
-
     sortDirection?: 'asc' | 'desc';
     onClick: (key: string) => void;
   }
@@ -17,7 +15,7 @@ interface SortableHeaderProps {
     return (
       <th onClick={handleClick}>
          <div className="table-header" >
-                    <p>{titleName}</p> {sortDirection !== 'desc' ? <FaArrowDown style={{ color: "#667085", fontSize:"12px"}} /> : <FaArrowUp style={{ color: "#667085",fontSize:"12px" }} />}
+                    <p>{titleName}</p> {sortDirection !== 'desc' ? <FaArrowDown className="arrow-icon-table" /> : <FaArrowUp className="arrow-icon-table" />}
                   </div>
       </th>
     );

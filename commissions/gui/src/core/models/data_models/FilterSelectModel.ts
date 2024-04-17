@@ -12,7 +12,7 @@ export interface optionOperation {
     label: string;
   }
   export const getOperationsForColumnType = (columnType: string) => {
-    const options = [];
+    const options:optionOperation[] = [];
     if (columnType === 'string') {
       options.push({ value: 'eqs', label: 'Equals To' });
       options.push({ value: 'stw', label: 'Start With' });
@@ -35,15 +35,7 @@ export interface optionOperation {
     }
     return options;
   };
-  export const getInputType = (columnName:string) => {
-    if (columnName === 'rate' || columnName === 'rl') {
-      return 'number';
-    } else if (columnName === 'start_date' || columnName === 'end_date') {
-      return 'date';
-    } else {
-      return 'text';
-    }
-  };
+
   export  const getLabelForOperation = (value: string) => {
     switch (value) {
       case 'eqs':

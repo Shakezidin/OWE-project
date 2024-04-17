@@ -144,9 +144,12 @@ const FilterDealer: React.FC<TableProps> = ({
         page_size: page_size,
         filters: formattedFilters,
       };
-      console.log(req);
-      // dispatch(fetchDealer(req));
-      // handleClose()
+      // filters.forEach((filter, index) => {
+      //   alert(`Filter apply for ${filter.Column}`)
+      // });
+      handleClose()
+      dispatch(fetchDealer(req));
+    
     }
   };
 

@@ -21,6 +21,8 @@ import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/pagin
 import Pagination from "../../../components/pagination/Pagination";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import { Column } from "../../../../core/models/data_models/FilterSelectModel";
+import { DealerTierColumn } from "../../../../resources/static_data/configureHeaderData/DealerTierColumn";
+import SortableHeader from "../../../components/tableHeader/SortableHeader";
 const DealerTier = () => {
   const dispatch = useAppDispatch();
   // const getData = useAppSelector(state=>state.comm.data)
@@ -40,7 +42,8 @@ const DealerTier = () => {
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
   const [editedDealerTier, setEditedDealerTier] = useState<DealerTierModel | null>(null);
- 
+  const [sortKey, setSortKey] =  useState("");
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const itemsPerPage = 5;
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
   useEffect(() => {
@@ -51,14 +54,7 @@ const DealerTier = () => {
     dispatch(fetchDealerTier(pageNumber));
   }, [dispatch,currentPage]);
   console.log(dealerTierList);
-  const columns: Column[] = [
-    // { name: "record_id", displayName: "Record ID", type: "number" },
 
-    { name: "dealer", displayName: "Dealer", type: "string" },
-    { name: "tier", displayName: "Tier", type: "string" },
-    { name: "start_date", displayName: "Start Date", type: "date" },
-    { name: "end_date", displayName: "End Date", type: "date" }
-  ];
   const filter = ()=>{
     setFilterOpen(true)
 
@@ -89,6 +85,32 @@ const DealerTier = () => {
     setEditedDealerTier(editDealerTier);
     handleOpen()
   };
+  const isAnyRowSelected = selectedRows.size > 0;
+  const isAllRowsSelected = selectedRows.size === dealerTierList.length;
+  const currentPageData = dealerTierList?.slice(startIndex, endIndex);
+  const handleSort = (key:any) => {
+    if (sortKey === key) {
+      setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
+    } else {
+      setSortKey(key);
+      setSortDirection('asc');
+    }
+  };
+
+  if (sortKey) {
+    currentPageData.sort((a:any, b:any) => {
+      const aValue = a[sortKey];
+      const bValue = b[sortKey];
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        return sortDirection === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+      } else {
+        // Ensure numeric values for arithmetic operations
+        const numericAValue = typeof aValue === 'number' ? aValue : parseFloat(aValue);
+        const numericBValue = typeof bValue === 'number' ? bValue : parseFloat(bValue);
+        return sortDirection === 'asc' ? numericAValue - numericBValue : numericBValue - numericAValue;
+      }
+    });
+  }
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -97,9 +119,7 @@ const DealerTier = () => {
     return <div>Error: {error}</div>;
   }
 
-  const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === dealerTierList.length;
-  const currentPageData = dealerTierList?.slice(startIndex, endIndex);
+
   return (
     <div className="comm">
        <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Dealer Tier"/>
@@ -108,13 +128,14 @@ const DealerTier = () => {
           title="Dealer Tier"
           onPressViewArchive={() => {}}
           onPressArchive={() => {}}
+          checked={selectAllChecked}
           onPressFilter={() => filter()}
           onPressImport={() => {}}
           onpressExport={() => {}}
           onpressAddNew={() => handleAddDealerTier()}
         />
         {filterOPen && <FilterDealerTier handleClose={filterClose}  
-             columns={columns}
+             columns={DealerTierColumn}
              page_number = {currentPage}
              page_size = {itemsPerPage} />}
         {open && <CreateDealerTier handleClose={handleClose} 
@@ -143,26 +164,17 @@ const DealerTier = () => {
                     />
                   </div>
                 </th>
-                <th>
-                  <div className="table-header">
-                    <p>Dealer Name</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}}/>
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Tier</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}}/>
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Start Date</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}}/>
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>End Date</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}}/>
-                  </div>
-                </th>
+                {
+                DealerTierColumn?.map((item,key)=>(
+                  <SortableHeader
+                  key={key}
+                  titleName={item.displayName}
+                  sortKey={item.name}
+                  sortDirection={sortKey === item.name ? sortDirection : undefined}
+                  onClick={()=>handleSort(item.name)}
+                  />
+                ))
+              }
                 <th>
                   <div className="action-header">
                     <p>Action</p>
@@ -212,15 +224,22 @@ const DealerTier = () => {
             </tbody>
           </table>
         </div>
-        {
-      dealerTierList?.length>0?  <Pagination
+        <div className="page-heading-container">
+      
+      <p className="page-heading">
+       {currentPage} - {totalPages} of {dealerTierList?.length} item
+      </p>
+ 
+   {
+    dealerTierList?.length > 0 ? <Pagination
       currentPage={currentPage}
       totalPages={totalPages} // You need to calculate total pages
       paginate={paginate}
       goToNextPage={goToNextPage}
       goToPrevPage={goToPrevPage}
-    />:null
-    }
+    /> : null
+  }
+   </div>
       </div>
    
     </div>

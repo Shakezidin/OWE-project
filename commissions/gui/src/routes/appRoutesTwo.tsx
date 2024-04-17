@@ -261,27 +261,25 @@ const appRoutesTwo = [
     {
         name: "Other",
         other: [
-
-
             {
-                path: routes.projectRoutes,
+                path:routes.projectRoutes,
 
                 sidebarProps: {
-                    displayText: "Project Tracker",
+                    displayText:"Project Tracker",
                     icon: <img src={ICONS.trackerIcon} className="icon-image" alt="" />,
                 },
             },
             {
-                path: routes.dbDashRoutes,
+                path:routes.dbDashRoutes,
                 sidebarProps: {
-                    displayText: "DB Dashboard",
+                    displayText:"DB Dashboard",
                     icon:<img src={ICONS.dash} className="icon-image" alt="" />,
                 },
             },
             {
                 path: routes.dataTableRoutes,
                 sidebarProps: {
-                    displayText: "Data",
+                    displayText:"Data",
                     icon: <img src={ICONS.reportIcon} className="icon-image" alt="" />,
                 },
             },

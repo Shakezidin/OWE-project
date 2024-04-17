@@ -16,6 +16,7 @@ import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoin
 import { respTypeData } from "../../../../resources/static_data/StaticData";
 import { updateForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createCommissionSlice";
 import { CommissionModel } from "../../../../core/models/configuration/create/CommissionModel";
+import { fetchCommissions } from "../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice";
 
 interface ButtonProps {
   editMode: boolean;
@@ -102,8 +103,10 @@ const CreateCommissionRate: React.FC<ButtonProps> = ({
         );
         if (res.status === 200) {
           alert(res.message);
+         
+         
           handleClose();
-          // window.location.reload()
+          window.location.reload()
         } else {
           alert(res.message);
         }
