@@ -205,7 +205,7 @@ const AdderValidation = () => {
                       <td>{el.adder_type}</td>
                       <td>{el.price_type}</td>
                       <td>{el.price_amount}</td>
-                      <td>{el.description}</td>
+                      {/* <td>{el.description}</td> */}
                       <td>{el.active}</td>
 
                       <td>
