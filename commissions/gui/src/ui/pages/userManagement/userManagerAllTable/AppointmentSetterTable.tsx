@@ -95,7 +95,7 @@ const AppointmentSetterTable: React.FC = () => {
                 <tr key={i}>
                   <td>
                     <CheckBox
-                      checked={true}
+                      checked={true} 
                       onChange={() => { }
                       }
                     // indeterminate={isAnyRowSelected && !isAllRowsSelected}

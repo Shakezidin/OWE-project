@@ -103,7 +103,7 @@ const DealerOwnerTable: React.FC = () => {
                     />
                   </td>
                   <td style={{ fontWeight: "500", color: "black" }}>{el.code}</td>
-                  <td>{el.name}</td>
+                  <td style={{color: "#5B5B5B"}}>{el.name}</td>
                   <td>{el.email}</td>
                   <td>{el.pn}</td>
                   <td>{el.des}</td>
