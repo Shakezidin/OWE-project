@@ -97,7 +97,8 @@
 /* table style  */
 .TableContainer {
   overflow-x: auto;
-  height: 55vh;
+  background: #fff;
+  height: 50vh;
 }
 .adder-input {
   border: 1px solid var(--button-border-color);
