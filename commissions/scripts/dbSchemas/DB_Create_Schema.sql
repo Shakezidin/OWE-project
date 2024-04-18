@@ -7,24 +7,6 @@ create database owe_db;
 \c owe_db;
 
 /**************************** OWE DB Schema ***********************************************************/
-CREATE TABLE
-    IF NOT EXISTS webhook_info (
-        hook_id text unique not null,
-        hook_type text,
-        appid text,
-        app_name text
-    );
-
-/* Test App Start */
-CREATE TABLE
-    IF NOT EXISTS owe_test_app_schema (
-        item_id  bigint,
-        id text,
-        name text,
-        phone text,
-        email text
-    );
-
 /* Test App End */
 CREATE TABLE
     IF NOT EXISTS internal_ops_metrics_schema (
@@ -1057,17 +1039,16 @@ CREATE TABLE referral_bonus (
 /**********************************DEALER PAY SCHEMA START **************************************/
 
 CREATE TABLE
-    IF NOT EXISTS webhook_info (
+    IF NOT EXISTS pr_data (
         home_owner	text,
         current_status text,
         status_date text,
         unique_id  text,
         dealer   text,
         dba  text,
-        type1  text,
-        today  text,d
+        type  text,
+        today  text,
         amount  text,
-        type2  text,
         sys_size  text,
         contract_value  text,
         loan_fee  text,
