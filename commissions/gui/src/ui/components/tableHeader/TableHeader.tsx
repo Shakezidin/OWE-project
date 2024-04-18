@@ -35,14 +35,15 @@ const TableHeader = (props: TableProps) => {
         <h2>{title}</h2>
       </div>
       <div className="iconContainer">
-        {
-         isAnyRowSelected ===true ?<>
-         <div className="iconsSection2">
+      <div className="iconsSection2">
           <button type="button" onClick={onPressViewArchive}>
             <img src={ICONS.VIEW_ARCHIVE} alt="" />
             View Archive
           </button>
         </div>
+        {
+         isAnyRowSelected ===true ?<>
+       
 
         <div className="iconsSection2">
         <button type="button" onClick={onPressArchive} style={{cursor:checked?"pointer":"not-allowed"}}>
