@@ -13,8 +13,8 @@ interface SortableHeaderProps {
     };
   
     return (
-      <th onClick={handleClick}>
-         <div className="table-header" >
+      <th >
+         <div className="table-header" onClick={handleClick} >
                     <p>{titleName}</p> {sortDirection !== 'desc' ? <FaArrowDown className="arrow-icon-table" /> : <FaArrowUp className="arrow-icon-table" />}
                   </div>
       </th>

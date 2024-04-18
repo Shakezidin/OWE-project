@@ -186,7 +186,7 @@ func HandleGetCommissionsDataRequest(resp http.ResponseWriter, req *http.Request
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
- func PrepareCommissionFilters(tableName string, dataFilter models.DataRequestBody) (filters string, whereEleList []interface{}) {
+func PrepareCommissionFilters(tableName string, dataFilter models.DataRequestBody) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PrepareCommissionFilters")
 	defer func() { log.ExitFn(0, "PrepareCommissionFilters", nil) }()
 
@@ -243,6 +243,11 @@ func HandleGetCommissionsDataRequest(resp http.ResponseWriter, req *http.Request
 				whereEleList = append(whereEleList, value)
 			}
 		}
+	}
+	// Add pagination logic
+	if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+		offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
+		filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
 	}
 
 	filters = filtersBuilder.String()

@@ -129,7 +129,8 @@ const PaymentSchedule = () => {
           title="Payment Scheduler"
           onPressViewArchive={() => {}}
           onPressArchive={() => {}}
-          checked={selectAllChecked}
+          checked={isAllRowsSelected}
+          isAnyRowSelected={isAnyRowSelected}
           onPressFilter={() => filter()}
           onPressImport={() => {}}
           onpressExport={() => {}}

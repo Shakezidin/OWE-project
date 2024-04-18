@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "../configure.css";
-
-import { CiEdit } from "react-icons/ci";
 import { fetchAdderV } from "../../../../redux/apiSlice/configSlice/config_get_slice/adderVSlice";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import { ICONS } from "../../../icons/Icons";
@@ -13,14 +11,13 @@ import {
   toggleRowSelection,
 } from "../../../components/chekbox/checkHelper";
 import FilterAdder from "./FilterAdder";
-import { FaArrowDown } from "react-icons/fa6";
 import { AdderVModel } from "../../../../core/models/configuration/create/AdderVModel";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
-import { Column } from "../../../../core/models/data_models/FilterSelectModel";
 import Pagination from "../../../components/pagination/Pagination";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 import { AdderVColumns } from "../../../../resources/static_data/configureHeaderData/AdderVTableColumn";
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
+
 
 const AdderValidation = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -126,8 +123,9 @@ const AdderValidation = () => {
         <TableHeader
           title="Adder validation"
           onPressViewArchive={() => {}}
-          checked={selectAllChecked}
+          checked={isAllRowsSelected}
           onPressArchive={() => {}}
+          isAnyRowSelected={isAnyRowSelected}
           onPressFilter={() => filter()}
           onPressImport={() => {}}
           onpressExport={() => {}}
@@ -175,6 +173,7 @@ const AdderValidation = () => {
                   />
                 ))
                }
+                 
                 <th>
                   <div className="action-header">
                     <p>Action</p> 

@@ -38,7 +38,7 @@ const UserTable:React.FC= () => {
 <>
 {/* <UserHeaderSection name="Admin Users"/> */}
         <div
-            className="TableContainer"
+            className="UserManageTable"
             style={{ overflowX: "auto", whiteSpace: "nowrap" }} >
             <table>
                 <thead > 
@@ -109,7 +109,7 @@ const UserTable:React.FC= () => {
                                     />
                                 </td>
                                 <td style={{ fontWeight: "500", color: "black" }}>{el.code}</td>
-                                <td>{el.name}</td>
+                                <td style={{color: "#5B5B5B"}}>{el.name}</td>
                                 <td>{el.role}</td>
                                 <td>{el.reporting}</td>
                                 <td>{el.email}</td>

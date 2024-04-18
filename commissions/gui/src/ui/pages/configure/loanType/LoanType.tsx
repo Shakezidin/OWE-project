@@ -128,7 +128,8 @@ const LoanType = () => {
           title="Loan Type"
           onPressViewArchive={() => { }}
           onPressArchive={() => { }}
-          checked={selectAllChecked}
+          checked={isAllRowsSelected}
+          isAnyRowSelected={isAnyRowSelected}
           onPressFilter={() => filter()}
           onPressImport={() => { }}
           onpressExport={() => { }}
@@ -165,6 +166,7 @@ const LoanType = () => {
                     />
                   </div>
                 </th>
+            
                 {
                 LoanTypeColumns?.map((item,key)=>(
                   <SortableHeader

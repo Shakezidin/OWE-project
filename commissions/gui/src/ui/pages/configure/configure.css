@@ -1,21 +1,30 @@
 .comm {
   background: #f3f3f3;
   width: 100%;
-  /* height: 87.5vh; */
+  height: 87.5vh;
   border-radius: 1rem;
   position: relative;
 }
+
 .export-modal {
+  background-color: var(--check-color);
+  width: 8%;
   position: absolute;
-  top: 25%;
-  left: 83%;
+  z-index: 10;
   transform: translate(-50%, -50%);
-  background-color: white;
-  box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.1);
-  color: var(--active-color) !important;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
+  left: 84.5%;
+  padding: 1rem;
+  top: 20%;
+
+  height: 2rem;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
 }
+
 .commissionContainer {
   background-color: white;
   justify-content: space-between;
@@ -37,11 +46,13 @@
   justify-content: space-between;
   gap: 1rem;
 }
+
 .rateSection {
   display: flex;
   gap: 0.3rem;
   flex-direction: column;
 }
+
 .rateSection h2 {
   font-size: 18px !important;
   font-weight: 600;
@@ -71,6 +82,7 @@
   color: #344054;
   cursor: pointer;
 }
+
 .iconsSection2 .hover-btn:hover {
   background-color: var(--active-text-color) !important;
   border: 1px solid var(--active-text-color) !important;
@@ -97,11 +109,18 @@
 /* table style  */
 .TableContainer {
   overflow-x: auto;
-
   position: relative;
   height: 60vh;
 
 }
+
+.UserManageTable {
+  overflow-x: auto;
+  position: relative;
+  background: #fff;
+  height: 50vh;
+}
+
 .adder-input {
   border: 1px solid var(--button-border-color);
   width: 40px;
@@ -109,15 +128,17 @@
   padding: 0.2rem;
   border-radius: 0.5rem;
 }
+
 table {
   width: 100%;
   background-color: var(--primary-text-color);
   border-collapse: collapse;
   overflow: hidden;
-position: relative;
+  position: relative;
   /* border-top-left-radius: 1rem;
   border-top-right-radius: 1rem; */
 }
+
 table tbody {
   width: 100%;
 }
@@ -126,6 +147,7 @@ table thead tr {
   border-bottom: 1px solid var(--table-border-color);
   background-color: #f6f6f6;
 }
+
 table thead tr th {
   text-align: left;
   font-size: 13px;
@@ -134,6 +156,7 @@ table thead tr th {
   padding: 0.8rem 1rem 0.8rem 1rem;
   /* line-height: 18px; */
 }
+
 /* table thead tr th:last-child{
   position: fixed;
   transform: translate(-50,-50%);
@@ -146,10 +169,13 @@ table thead tr th {
   display: flex;
   align-items: center;
   gap: 0.3rem;
+  cursor: pointer;
 }
+
 table tbody tr {
   border-bottom: 1px solid var(--table-border-color);
 }
+
 table tbody tr td {
   padding: 0.8rem 1rem 0.8rem 1rem;
   font-size: 12px;
@@ -163,38 +189,41 @@ table tbody tr td {
   background-color: #fafafa;
   transition: 0.4s all linear;
 }
-.action-header{
+
+.action-header {
   display: flex;
   align-items: center;
   gap: .3rem;
   justify-content: flex-end;
 
 }
+
 .action-icon {
   display: flex;
   align-items: center;
   gap: 1rem;
-  
   justify-content: flex-end;
 }
+
 .action-icon img {
   width: 14px;
   height: 14px;
   /* object-fit: cover; */
 }
-.arrow-icon-table{
+
+.arrow-icon-table {
   color: #667085 !important;
-   font-size:12px !important;
-   cursor:pointer !important;
+  font-size: 12px !important;
 }
 
-.page-heading-container{
+.page-heading-container {
   display: flex;
   justify-content: space-between;
   padding: 1rem;
   /* border-top: 1px solid var(--table-border-color); */
 }
-.page-heading{
+
+.page-heading {
   color: #000000;
   font-size: 12px;
 }

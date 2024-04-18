@@ -1,6 +1,5 @@
 import React from "react";
 import { ICONS } from "../../icons/Icons";
-import { IoAddSharp } from "react-icons/io5";
 import "../../pages/configure/configure.css";
 
 interface TableProps {
@@ -11,7 +10,7 @@ interface TableProps {
   onPressImport: () => void;
   onpressExport: () => void;
   onpressAddNew: () => void;
-
+  isAnyRowSelected:boolean,
   checked:boolean
  
 
@@ -27,16 +26,18 @@ const TableHeader = (props: TableProps) => {
     onpressExport,
     onpressAddNew,
     checked,
+    isAnyRowSelected
   
   } = props;
   return (
     <div className="commissionSection">
       <div className="rateSection">
         <h2>{title}</h2>
-      
       </div>
       <div className="iconContainer">
-        <div className="iconsSection2">
+        {
+         isAnyRowSelected ===true ?<>
+         <div className="iconsSection2">
           <button type="button" onClick={onPressViewArchive}>
             <img src={ICONS.VIEW_ARCHIVE} alt="" />
             View Archive
@@ -49,6 +50,8 @@ const TableHeader = (props: TableProps) => {
           Archive
         </button>
       </div>
+         </>:null
+        }
        
         <div className="iconsSection-filter">
           <button type="button" onClick={onPressFilter}>
