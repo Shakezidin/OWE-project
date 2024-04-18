@@ -250,9 +250,7 @@ const CommissionRate: React.FC = () => {
                 : null}
             </tbody>
           </table>
-        
         </div>
-
         <div className="page-heading-container">
 
           <p className="page-heading">
@@ -270,9 +268,11 @@ const CommissionRate: React.FC = () => {
           }
         </div>
       </div>
-
     </div>
   );
 };
 
 export default CommissionRate;
+
+
+

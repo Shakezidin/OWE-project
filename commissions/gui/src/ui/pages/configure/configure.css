@@ -1,5 +1,5 @@
 .comm {
-  background: #f3f3f3;
+  background: var(--children-bg-color);
   width: 100%;
   height: 87.5vh;
   border-radius: 1rem;
@@ -26,11 +26,11 @@
 }
 
 .commissionContainer {
-  background-color: white;
+  background-color:var(--white-color);
   justify-content: space-between;
   border-radius: 1rem;
   overflow: hidden;
-  border: 1px solid #eaecf0;
+  border: 1px solid var(--border-color);
 }
 
 .commissionSection {
@@ -38,7 +38,7 @@
   align-items: center;
   padding: 1rem;
   justify-content: space-between;
-  /* border-bottom: 1px solid #eaecf0; */
+  border-bottom: 1px solid var(--border-color);
 }
 
 .iconContainer {
@@ -73,20 +73,20 @@
   justify-content: center;
   align-items: center;
   gap: 0.5rem;
-  background-color: var(--primary-text-color);
+  background-color: var(--white-color);
   padding: 0.4rem 1rem 0.4rem 1rem;
-  border: 1px solid #d0d5dd;
+  border: 1px solid var(--button-border-color);
   font-size: 13px;
   border-radius: 8px;
   font-weight: 500;
-  color: #344054;
+  color: var(--btn-text-color);
   cursor: pointer;
 }
 
 .iconsSection2 .hover-btn:hover {
   background-color: var(--active-text-color) !important;
   border: 1px solid var(--active-text-color) !important;
-  color: white !important;
+  color: var(--white-color) !important;
   transition: .4s all linear;
 }
 
@@ -96,13 +96,13 @@
   align-items: center;
   gap: 0.5rem;
   border: none;
-  background-color: var(--primary-text-color);
+  background-color: var(--white-color);
   padding: 0.5rem;
-  border: 1px solid #d0d5dd;
+  border: 1px solid var(--button-border-color);
   font-size: 13px;
   border-radius: 8px;
   font-weight: 500;
-  color: #344054;
+  color: var(--btn-text-color);
   cursor: pointer;
 }
 
@@ -117,7 +117,7 @@
 .UserManageTable {
   overflow-x: auto;
   position: relative;
-  background: #fff;
+  background: var(--white-color);
   height: 50vh;
 }
 
@@ -131,7 +131,7 @@
 
 table {
   width: 100%;
-  background-color: var(--primary-text-color);
+  background-color: var(--white-color);
   border-collapse: collapse;
   overflow: hidden;
   position: relative;
@@ -144,8 +144,8 @@ table tbody {
 }
 
 table thead tr {
-  border-bottom: 1px solid var(--table-border-color);
-  background-color: #f6f6f6;
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--row-bg-color);
 }
 
 table thead tr th {
@@ -174,20 +174,20 @@ table thead tr th {
 }
 
 table tbody tr {
-  border-bottom: 1px solid var(--table-border-color);
+  border-bottom: 1px solid var(--border-color);
 }
 
 table tbody tr td {
   padding: 0.8rem 1rem 0.8rem 1rem;
   font-size: 12px;
   width: auto;
-  color: #101828;
+  color: var(--coloumn-text-color);
 }
 
 
 .selected {
   /* background-color: var(--input-border-color); */
-  background-color: #fafafa;
+  background-color:var(--white-color);
   transition: 0.4s all linear;
 }
 
@@ -213,7 +213,7 @@ table tbody tr td {
 }
 
 .arrow-icon-table {
-  color: #667085 !important;
+  color: var(--arrow-icon-color) !important;
   font-size: 12px !important;
 }
 
@@ -225,7 +225,7 @@ table tbody tr td {
 }
 
 .page-heading {
-  color: #000000;
+  color: var(--heading-color);
   font-size: 12px;
 }
 
