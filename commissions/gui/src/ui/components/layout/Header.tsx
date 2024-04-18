@@ -25,6 +25,7 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen, setSidebarCh
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation()
+  
   const handleLogout = () => {
     dispatch(logout());
     navigate("/");

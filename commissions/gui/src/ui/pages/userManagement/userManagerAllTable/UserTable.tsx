@@ -130,6 +130,7 @@ const UserTable:React.FC= () => {
                         : null}
                 </tbody>
             </table>
+            
         </div>
         </>
     )
