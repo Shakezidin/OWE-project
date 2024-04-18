@@ -170,6 +170,7 @@ table thead tr th {
   align-items: center;
   gap: 0.3rem;
   cursor: pointer;
+  font-weight: 600;
 }
 
 table tbody tr {

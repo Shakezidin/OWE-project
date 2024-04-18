@@ -101,7 +101,7 @@ const AppointmentSetterTable: React.FC = () => {
                     // indeterminate={isAnyRowSelected && !isAllRowsSelected}
                     />
                   </td>
-                  <td style={{ fontWeight: "none", color: "#5B5B5B"}}>{el.name}</td>
+                  <td style={{ fontWeight: "none", color: "var( --fade-gray-black)"}}>{el.name}</td>
                   <td>{el.sd}</td>
                   <td>{el.ed}</td>
                   <td>{el.pay}</td>
@@ -110,7 +110,7 @@ const AppointmentSetterTable: React.FC = () => {
                   <td>
                   <div className="action-icon">
                         <div className="" style={{ cursor: "pointer" }}>
-                          <img src={ICONS.ARCHIVE} alt="" />
+                          <img src={ICONS.deleteIcon} alt="" />
                         </div>
                         <div className="" style={{ cursor: "pointer" }} >
                         <img src={ICONS.editIcon} alt="" />
