@@ -39,13 +39,15 @@ import logoutIconLeft from '../../resources/assets/logout-circle-r-line.svg'
 import userPic from '../../resources/assets/userPic.svg'
 import settingIconAcc from '../../resources/assets/settings-line.svg'
 import supportImage from '../../resources/assets/supportImage.svg'
+import sales from '../../resources/assets/sales.svg'
+import ntp from '../../resources/assets/ntp.svg'
+import install from '../../resources/assets/install.svg'
+import cancelled from '../../resources/assets/cancel.svg'
 export const ICONS = {
   BACKGROUND: require("../../resources/assets/background.png"),
   LOGO: require("../../resources/assets/logo.png"),
   MENU_1: require("../../resources/assets/menu_1.png"),
   sidebarLogo: require("../../resources/assets/comissionlogo.png"),
-  IMAGE_EXPORT: require("../../resources/assets/export.png"),
-  IMAGE_IMPORT: require("../../resources/assets/import.png"),
   DOWN_ARROW: require("../../resources/assets/arrow-down.png"),
   VIEW_ARCHIVE: viewA,
   FILTER:filter,
@@ -93,5 +95,9 @@ export const ICONS = {
   logoutIconLeft: logoutIconLeft,
   userPic: userPic,
 settingIconAcc: settingIconAcc,
-supportImage: supportImage
+supportImage: supportImage,
+salesIcon:sales,
+ntpIcon:ntp,
+installIcon:install,
+cancelIcon:cancelled
 };

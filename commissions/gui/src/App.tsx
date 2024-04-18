@@ -41,7 +41,7 @@ import LoanFeeAddr from "./ui/pages/configure/loanFeeAddr/LoanFeeAddr";
 import UserManagement from "./ui/pages/userManagement/UserManagement";
 import AccountSettings from "./ui/pages/accountSettings/AccountSettings";
 import Report from "./ui/pages/report/Report";
-import Project from "./ui/pages/project/Project";
+import Project from "./ui/pages/projectTracker/ProjectTracker";
 import TechnicalSupport from "./ui/pages/technicalSupport/TechnicalSupport";
 import DataTablle from "./ui/pages/databaseManager/dataTable/DataTable";
 import UserActivity from "./ui/pages/databaseManager/userActivity/UserActivity";
