@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { PieChart, Pie, Cell, Label, LabelList} from "recharts";
+import { PieChart, Pie, Cell, Label, LabelList, Legend} from "recharts";
 
 
 const data = [
@@ -14,12 +14,13 @@ const renderCustomizedLabelPercentage = (data: any, total = 32000) => {
   return percentageCalculated;
 };
 
+
 export default class PieChartWithPaddingAngle extends PureComponent {
   render() {
     const totalValue = data.reduce((acc, cur) => acc + cur.value, 0);
     return (
-      <div style={{ width: "100%",  margin: "0rem 0 0 -17rem" }}>
-        <PieChart width={500} height={400}>
+      <div style={{ width: "100%" }}>
+        <PieChart width={300} height={400} style={{ margin: "-75px 0 0 39px" }}>
           <Pie
             data={data}
             cx={120}
@@ -60,14 +61,6 @@ export default class PieChartWithPaddingAngle extends PureComponent {
                 fill={COLORS[index % COLORS.length]}
               />
             ))}
-             <g>
-            {/* Pass */}
-            <rect x={120} y={250} width={40} height={40} fill="#FF0000" />
-            <text x={170} y={280} fill="#000000">30% Pass</text>
-            {/* Fail */}
-            <rect x={170} y={250} width={40} height={40} fill="#800080" />
-            <text x={220} y={280} fill="#000000">70% Fail</text>
-          </g>
           </Pie>
         </PieChart>
       </div>

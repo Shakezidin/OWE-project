@@ -89,27 +89,18 @@ const DataTablle: React.FC = () => {
       col2: "Josh Morton",
       col3: "Josh Morton",
       col4: "Josh Morton",
-      col5: "$120,450",
-      col6: "$100,320",
-      col7: "$100,320"
     },
     {
       col1: "1234567890",
       col2: "Josh Morton",
       col3: "Josh Morton",
       col4: "Josh Morton",
-      col5: "$120,450",
-      col6: "$100,320",
-      col7: "$100,320"
     },
     {
       col1: "1234567890",
       col2: "Josh Morton",
       col3: "Josh Morton",
       col4: "Josh Morton",
-      col5: "$120,450",
-      col6: "$100,320",
-      col7: "$100,320"
     },
   ]
 
@@ -118,14 +109,10 @@ const DataTablle: React.FC = () => {
       <Breadcrumb head="Data" linkPara="Database Manager" linkparaSecond="Data" />
       <div className="commissionContainer">
         <DataTableHeader
-          title="Table Name"
+          title="Failed Webhooks"
           onPressFilter={() => filter()}
           onPressImport={() => { }}
         />
-        {/* {filterOPen && <FilterDealer handleClose={filterClose}
-          columns={columns}
-          page_number={1}
-          page_size={5} />} */}
 
         <div
           className="TableContainer"
@@ -152,37 +139,22 @@ const DataTablle: React.FC = () => {
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Column 1</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Webhook ID</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Column 2</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Item ID</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Column 3</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Error</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Column 4</p> <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Column 5</p> <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Column 6</p> <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Column 7</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Date & Time</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
               </tr>
@@ -211,10 +183,6 @@ const DataTablle: React.FC = () => {
                     <td>{el.col2}</td>
                     <td>{el.col3}</td>
                     <td>{el.col4}</td>
-                    <td style={{color:"#0493CE"}}>{el.col5}</td>
-
-                    <td style={{color:"#0493CE"}}>{el.col6}</td>
-                   <td style={{color:"#0493CE"}}>{el.col7}</td>
                   </tr>
                 ))
                 : null}
@@ -222,15 +190,6 @@ const DataTablle: React.FC = () => {
           </table>
         </div>
       </div>
-      {/* {
-        dataDb?.length > 0 ? <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages} // You need to calculate total pages
-          paginate={paginate}
-          goToNextPage={goToNextPage}
-          goToPrevPage={goToPrevPage}
-        /> : null
-      } */}
     </div>
   );
 };

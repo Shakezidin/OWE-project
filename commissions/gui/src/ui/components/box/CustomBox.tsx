@@ -14,7 +14,6 @@ const CustomBox = (props: CustomBoxProps) => {
   return (
     <div className="boxContainer" onClick={onClick}>
       <div className="boxUpperView">
-        {/* <br /> */}
         <img src={icon} alt={"icon"} />
       </div>
 

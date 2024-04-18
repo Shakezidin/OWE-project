@@ -119,14 +119,11 @@
   align-items: center;
   gap: 10px;
   flex-shrink: 0;
-  border-radius: 1rem;
+  border-radius: 16px;
   background: var(--primary-color, #04a5e8);
   display: inline-flex;
-  height: 2rem;
+  height: 42px;
   padding: 1rem;
-}
-.welcome-phone-view:hover {
-  cursor: pointer;
 }
 
 .welcome-phone-text {
@@ -140,9 +137,7 @@
   transform-style: preserve-3d;
 }
 
-.welcome-phone-text:hover {
-  transform: rotateY(360deg);
-}
+
 
 /** Our application view Csss*/
 
@@ -150,7 +145,7 @@
   height: 350px;
   border-radius: 40px 40px 0px 0px;
   /* opacity: 0.2; */
-  background: linear-gradient(180deg, #a9d0f8 0%, rgba(121, 187, 227, 0) 100%);
+  background: linear-gradient(180deg, #c2defa 0%, rgba(121, 187, 227, 0) 100%);
   display: flex;
   margin-top: -10px;
   position: relative;
@@ -181,6 +176,9 @@
   display: flex;
   margin-top: 10px;
   position: relative;
+}
+.welcomeAboutUsRightView p {
+  margin-bottom: 20px; /* Adjust this value to add more or less space between lines */
 }
 
 /** about us view css*/
@@ -322,7 +320,7 @@
   flex-direction: column;
   align-items: flex-start;
   padding: 20px;
-  width: 300px;
+  width: 377px;
   margin-right: 20px;
 }
 
