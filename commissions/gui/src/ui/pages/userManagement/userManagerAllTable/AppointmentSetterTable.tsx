@@ -127,9 +127,9 @@ const currentPageData = dataUser?.slice(startIndex, endIndex);
                     />
                   </td>
                   <td style={{ fontWeight: "none", color: "var( --fade-gray-black)"}}>{el.name}</td>
-                  <td>{el.sd}</td>
-                  <td>{el.ed}</td>
-                  <td>{el.pay}</td>
+                  <td style={{ fontWeight: "500"}}>{el.sd}</td>
+                  <td style={{ fontWeight: "500"}}>{el.ed}</td>
+                  <td style={{ fontWeight: "500"}}>{el.pay}</td>
                   <td>{el.des}</td>
                   
                   <td>
