@@ -31,7 +31,7 @@ interface PaginationProps {
         
           ))}
          
-            <button className={currentPage === totalPages ? "disabled" : "current-btn"} onClick={goToNextPage}><MdArrowForwardIos  style={{color:currentPage===totalPages?"#d9d9d9":"#667085",fontSize:".9rem",}}/></button>
+            <button disabled={currentPage === totalPages} className={currentPage === totalPages ? "disabled" : "current-btn"} onClick={goToNextPage}><MdArrowForwardIos  style={{color:currentPage===totalPages?"#d9d9d9":"#667085",fontSize:".9rem",}}/></button>
           
         </div>
       </div>

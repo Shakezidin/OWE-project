@@ -36,7 +36,6 @@ return (
     <div className="commissionSection">
         <div className="rateSection">
             <h2>{title}</h2>
-
         </div>
         <div className="data-header-section">
             <div className="search-container-data">

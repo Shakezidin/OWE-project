@@ -8,20 +8,24 @@
 }
 /* color config */
 :root {
-  --sidebar-bg-color: white;
+  --white-color: white;
   --children-bg-color: #f3f3f3;
-  --side-logo-bg-color: #263747;
-  --primary-text-color: white;
+  --border-color:#eaecf0;
+  --btn-text-color:#344054;
+  --check-border-color:#ccc;
+  --page-heading-color: #263747;
   --secondary-text-color: #565656;
   --active-text-color: #04a5e8;
   --input-border-color: #d5d5d5;
   --black-color: #0d0d0d;
+  --heading-color:#000000;
   --danger-color: #d93f21;
   --check-color: #2196f3;
   --green-color: #8fcd00;
-  --table-border-color: #eaecf0;
-  --coloumn-text-color: #667085;
-  --button-border-color: #979797;
+  --coloumn-text-color:#101828;
+  --row-bg-color:#f6f6f6;
+  --arrow-icon-color:#667085;
+  --button-border-color: #D0D5DD;
   --para-color: #393851;
   --fade-gray-black: #575757;
 }
