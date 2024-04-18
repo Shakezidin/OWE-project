@@ -28,6 +28,19 @@
   --button-border-color: #D0D5DD;
   --para-color: #393851;
   --fade-gray-black: #575757;
+  --project-card-color-1:#E9F8FF;
+  --project-card-color-2:#E9EBFF;
+  --project-card-color-3:#E9FFF7;
+  --project-card-color-4:#FFE9E9;
+
+ --project-icon-color:#0493CE;
+ --project-icon-color-2:#E98045;
+ --project-icon-color-3:#19B87E;
+ --project-icon-color-4:#DE2E2E;
+
+  
+
+
 }
 a {
   text-decoration: none;
@@ -50,8 +63,8 @@ img{
   cursor: pointer;
 }
 .icon-image {
-  width: 18x !important;
-  height: 18px !important;
+  width: 20x !important;
+  height: 20px !important;
 }
 
 /* circle style  */

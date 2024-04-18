@@ -84,30 +84,8 @@ const DbManagerDashboard = () => {
             </div>
 
 </div>
-          <div className="create-container">
-              <div className="Create-section">
-                <p>Delete Webhooks</p>
-                <div
-                  className="search-container-data"
-                  style={{ marginLeft: '99px' }}
-                >
-                  <select
-                  
-                    className="search-input-data"
-                  >
-                    <option value="Today">Today</option>
-                    <option value="This Week">This Week</option>
-                    <option value="All">All</option>
-                  </select>
-
-                </div>
-                <div className="identity">
-                <Boxes color="#FB7955"/> <p>30% Fail</p>
-                <Boxes color="#0088FE"/> <p>70% Pass</p>
-                </div>
-
-               
-            </div> 
+       
+             
 
 
 
@@ -160,7 +138,7 @@ const DbManagerDashboard = () => {
                
             </div> 
 
-</div>
+
           </div>
         </div>
      
