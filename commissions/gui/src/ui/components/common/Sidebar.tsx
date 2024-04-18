@@ -111,14 +111,10 @@ const Sidebar: React.FC<Toggleprops> = ({
 }) => {
   const [open, setOpen] = useState<boolean>(false);
   const [cords, setCords] = useState({ left: 0, top: 0, opacity: 0, text: "" });
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  
   const location = useLocation();
   const timeOut = useRef<NodeJS.Timeout | null>(null)
-  const handleLogout = () => {
-    dispatch(logout());
-    navigate("/");
-  };
+  
   const handleMouseover = (
     e: React.MouseEvent<HTMLAnchorElement | MouseEvent>
     , name: string) => {
