@@ -146,7 +146,8 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                       marginTop: "4.5px",
                       borderRadius: "8px",
                       outline: "none",
-                      height: "42px",
+                      height: "2.25rem",
+                      fontSize:"13px",
                       // width:"280px"
                       border: "1px solid #d0d5dd",
                     }),
@@ -167,7 +168,8 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                         marginTop: "4.5px",
                         borderRadius: "8px",
                         outline: "none",
-                        height: "42px",
+                        height: "2.25rem",
+                        fontSize:"13px",
                         border: "1px solid #d0d5dd",
                       }),
                       indicatorSeparator: () => ({
@@ -191,7 +193,8 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                       marginTop: "4.5px",
                       borderRadius: "8px",
                       outline: "none",
-                      height: "42px",
+                      height: "2.25rem",
+                      fontSize:"13px",
                       border: "1px solid #d0d5dd",
                     }),
                     indicatorSeparator: () => ({
@@ -240,7 +243,8 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                       marginTop: "4.5px",
                       borderRadius: "8px",
                       outline: "none",
-                      height: "42px",
+                      height: "2.25rem",
+                      fontSize:"13px",
                       border: "1px solid #d0d5dd",
                     }),
                     indicatorSeparator: () => ({
