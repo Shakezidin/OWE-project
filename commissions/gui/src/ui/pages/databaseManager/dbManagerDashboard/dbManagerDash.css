@@ -1,6 +1,9 @@
 .Db-manager-container {
+  margin-bottom: 1rem;
   display: flex;
   justify-content: space-between;
+
+  align-items: center;
 
 }
 .runner-section {
@@ -96,6 +99,7 @@
   height: 394px;
   border-radius: 16px;
   opacity: 0px;
+  align-items: center;
 }
 .Create-section {
   display: flex;
@@ -123,26 +127,60 @@ opacity: 0px;
 }
 
 .dropdown-icon-dash {
-    position: absolute;
-    top: 50%;
-    right: 10px;
-    font-size: 2rem;
-    transform: translateY(-50%);
-    cursor: pointer;
-    color: gray;
+  margin-left: -110px;
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  font-size: 2rem;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: gray;
   }
 
   .container-graph{
     margin-top: 10px;
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
     gap: 12px;
   }
-  .PieBarchart-section{
-    width: 30%;
-  }
-  /* .recharts-wrapper{
-    width: 300px !important;
-  } */
   
+
+  .Payroll-section {
+    display: flex;
+    height: 36px;
+    background-color: white;
+    padding: 0 6px 0 12px;
+    gap: 0.5rem;
+    align-items: center;
+    border-radius: 8px;
+    border: 1px solid #b6b5b5;
+    margin-left: 47px;
+    /* Add z-index to ensure the dropdown appears above other elements */
+    z-index: 1; /* You can adjust the value as needed */
+  }
+  
+  .dash-select {
+    background-color: #ffffff;
+    position: relative;
+    border: none;
+    outline: none;
+    padding: .1rem .5rem .1rem .5rem;
+    font-size: 12px;
+    cursor: pointer;
+    color: #02050a !important;
+    font-weight: 500;
+    border-radius: .25rem;
+    /* Add a higher z-index to ensure the dropdown menu appears above other elements */
+    z-index: 2; /* You can adjust the value as needed */
+  }
+  
+  .identity{
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    margin-left: 70px;
+    margin-top: -40px;
+  }
+  .identity p{
+    margin-top: -5px;
+  }

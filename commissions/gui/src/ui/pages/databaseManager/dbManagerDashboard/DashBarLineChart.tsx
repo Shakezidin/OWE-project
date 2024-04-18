@@ -80,20 +80,20 @@ export default class LineChart extends PureComponent {
                 // bottom: 10,
               }}
             >
-              <CartesianGrid strokeDasharray="3 3" />
+              <CartesianGrid  />
               <XAxis dataKey="name" />
               <YAxis />
-              <Tooltip />
+              
               <Legend />
               <Bar
                 dataKey="Historical_Records"
                 fill="#FB7955"
-                activeBar={<Rectangle fill="pink" stroke="blue" />}
+                // activeBar={<Rectangle fill="pink" stroke="blue" />}
               />
               <Bar
                 dataKey="Total_Records"
                 fill="#007AF5"
-                activeBar={<Rectangle fill="gold" stroke="purple" />}
+                // activeBar={<Rectangle fill="gold" stroke="purple" />}
               />
             </BarChart>
           </ResponsiveContainer>

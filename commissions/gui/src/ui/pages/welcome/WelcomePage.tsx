@@ -81,8 +81,10 @@ export const WelcomePage = () => {
               <div>
                 <img src={LogoImage} alt={"Logo"} />
               </div>
+ 
               <div className="welcome-phone-view">
                 <CallIcon />
+                
                 <h3 className="welcome-phone-text">Call Us (623) 850-5700</h3>
               </div>
             </div>
@@ -175,7 +177,7 @@ export const WelcomePage = () => {
                   delay={10}
                 />
               </p>
-
+               
               <p className="welcomeAboutPara">
                 <Typewriter
                   text="First, let's talk a little about what tool we will use. You can
@@ -259,6 +261,7 @@ export const WelcomePage = () => {
             </div>
           </div>
         </section>
+        
       </div>
       <footer className="welcomeFooterView">
         <div className="welcomeInnerView">

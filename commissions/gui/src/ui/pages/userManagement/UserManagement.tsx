@@ -45,9 +45,11 @@ const UserManagement: React.FC = () => {
       <div className="barchart-section">
         <UserPieChart />
       </div>
+
+      
       <div className="onboardrow">
         <div className="user-component">
-          <UserHeaderSection />
+        <UserHeaderSection />
         </div>
       </div>
     </>

@@ -35,7 +35,7 @@ const ImageLayout: React.FC<ImageLayoutProps> = ({ images }) => {
           <img src={images[2]} alt="Center" />
           <div className="centerTextView">
             <div>
-              <span style={{ marginLeft: '29px' }}>Best-in-ClassTechnology</span>
+              <span style={{ marginLeft: '29px' }}>Best-in-Class Technology</span>
             </div>
           </div>
         </div>
