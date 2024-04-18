@@ -3,6 +3,9 @@ import CheckBox from '../../../components/chekbox/CheckBox'
 import { ICONS } from '../../../icons/Icons'
 import { CiEdit } from "react-icons/ci";
 import { FaArrowDown } from 'react-icons/fa6';
+import Pagination from "../../../components/pagination/Pagination";
+import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
+import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 
 const SalesRepresentativeTable = () => {
     const dataUser = [
@@ -40,6 +43,27 @@ const SalesRepresentativeTable = () => {
             des: "Implementing solar system commission"
           },
       ];
+      const dispatch = useAppDispatch();
+      const currentPage = useAppSelector((state) => state.paginationType.currentPage);
+      const itemsPerPage = 10;
+      
+      const paginate = (pageNumber: number) => {
+        dispatch(setCurrentPage(pageNumber));
+      };
+      
+      
+      const goToNextPage = () => {
+        dispatch(setCurrentPage(currentPage + 1));
+      };
+      
+      const goToPrevPage = () => {
+        dispatch(setCurrentPage(currentPage - 1));
+      };
+      const totalPages = Math.ceil(dataUser?.length / itemsPerPage);
+      
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const endIndex = startIndex + itemsPerPage;
+      const currentPageData = dataUser?.slice(startIndex, endIndex);
     return (
 <>
 {/* <UserHeaderSection  name="Sales Representative"/> */}
@@ -125,12 +149,12 @@ const SalesRepresentativeTable = () => {
                                 </td>
                                 <td style={{ fontWeight: "500", color: "black" }}>{el.code}</td>
                                 <td style={{color: "var( --fade-gray-black)"}}>{el.name}</td>
-                                <td>{el.role}</td>
-                                <td>{el.dealer}</td>
-                                <td>{el.tm}</td>
-                                <td>{el.repoting}</td>
-                                <td>{el.email}</td>
-                                <td>{el.pn}</td>
+                                <td style={{ fontWeight: "500"}}>{el.role}</td>
+                                <td style={{ fontWeight: "500"}}>{el.dealer}</td>
+                                <td style={{ fontWeight: "500"}}>{el.tm}</td>
+                                <td style={{ fontWeight: "500"}}>{el.repoting}</td>
+                                <td style={{ fontWeight: "500"}}>{el.email}</td>
+                                <td style={{ fontWeight: "500"}}>{el.pn}</td>
                                 <td>{el.des}</td>
                                 <td>
                                 <div className="action-icon">
@@ -147,6 +171,22 @@ const SalesRepresentativeTable = () => {
                         : null}
                 </tbody>
             </table>
+            <div className="page-heading-container">
+      
+      <p className="page-heading">
+       {currentPage} - {totalPages} of {dataUser?.length} item
+      </p>
+ 
+   {
+    dataUser?.length > 0 ? <Pagination
+      currentPage={currentPage}
+      totalPages={totalPages} // You need to calculate total pages
+      paginate={paginate}
+      goToNextPage={goToNextPage}
+      goToPrevPage={goToPrevPage}
+    /> : null
+  }
+   </div>
         </div>
         </>
     )
