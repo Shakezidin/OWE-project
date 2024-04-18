@@ -81,10 +81,10 @@ const DbManagerDashboard = () => {
               <div className="PieBarchart-section">
                   <PieChartWithPaddingAngle/>                  
 
-            </div> */}
+            </div>
 
-
-            {/* <div className="create-container">
+</div>
+          <div className="create-container">
               <div className="Create-section">
                 <p>Delete Webhooks</p>
                 <div
@@ -92,8 +92,7 @@ const DbManagerDashboard = () => {
                   style={{ marginLeft: '99px' }}
                 >
                   <select
-                    value={selectedOption}
-                    onChange={handleChange}
+                  
                     className="search-input-data"
                   >
                     <option value="Today">Today</option>
@@ -161,9 +160,10 @@ const DbManagerDashboard = () => {
                
             </div> 
 
-
+</div>
           </div>
         </div>
+     
     </>
   );
 };
