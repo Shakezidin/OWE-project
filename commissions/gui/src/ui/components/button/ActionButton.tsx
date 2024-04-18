@@ -18,7 +18,9 @@ interface ActionButtonProps {
 
 export const ActionButton = (props: ActionButtonProps) => {
   return (
-    <button className={props?.title?.toLowerCase()==="cancel"?"cancel":"loginButton"}   onClick={props.onClick} type={props.type}>
+    <button
+    style={{color:props?.title?.toLowerCase()==="reset"?"#0493ce":""}}
+     className={props?.title?.toLowerCase()==="cancel"||props?.title?.toLowerCase()==="reset"?"cancel":"loginButton"}   onClick={props.onClick} type={props.type}>
       {props.title}
     </button>
   );

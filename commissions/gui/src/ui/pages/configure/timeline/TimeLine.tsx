@@ -19,6 +19,8 @@ import { FaArrowDown } from "react-icons/fa6";
 import { TimeLineSlaModel } from "../../../../core/models/configuration/create/TimeLineSlaModel";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import { Column } from "../../../../core/models/data_models/FilterSelectModel";
+import SortableHeader from "../../../components/tableHeader/SortableHeader";
+import { TimeLineSlaColumns } from "../../../../resources/static_data/configureHeaderData/TimeLineSlaColumn";
 const TimeLine = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -38,8 +40,10 @@ const TimeLine = () => {
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
   const [editedTimeLineSla, setEditedTimeLineSla] = useState<TimeLineSlaModel | null>(null);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
+  const [sortKey, setSortKey] =  useState("");
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -48,19 +52,10 @@ const TimeLine = () => {
     dispatch(fetchTimeLineSla(pageNumber));
   }, [dispatch,currentPage]);
 
-  const columns: Column[] = [
-    // { name: "record_id", displayName: "Record ID", type: "number" },
-    { name: "type_m2m", displayName: "Type M2M", type: "string" },
-    { name: "state", displayName: "State", type: "string" },
-    { name: "days", displayName: "Days", type: "string" },
-    { name: "start_date", displayName: "Start Date", type: "date" },
-    { name: "end_date", displayName: "End Date", type: "date" }
-  ];
   const filter = ()=>{
     setFilterOpen(true)
    
   }
- 
 
   const paginate = (pageNumber: number) => {
     dispatch(setCurrentPage(pageNumber));
@@ -81,7 +76,29 @@ const TimeLine = () => {
 
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === timelinesla_list.length;
+  const handleSort = (key:any) => {
+    if (sortKey === key) {
+      setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
+    } else {
+      setSortKey(key);
+      setSortDirection('asc');
+    }
+  };
 
+  if (sortKey) {
+    currentPageData.sort((a:any, b:any) => {
+      const aValue = a[sortKey];
+      const bValue = b[sortKey];
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        return sortDirection === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+      } else {
+        // Ensure numeric values for arithmetic operations
+        const numericAValue = typeof aValue === 'number' ? aValue : parseFloat(aValue);
+        const numericBValue = typeof bValue === 'number' ? bValue : parseFloat(bValue);
+        return sortDirection === 'asc' ? numericAValue - numericBValue : numericBValue - numericAValue;
+      }
+    });
+  }
   const handleTimeLineSla = () => {
     setEditMode(false);
     setEditedTimeLineSla(null);
@@ -111,19 +128,24 @@ const TimeLine = () => {
           onPressArchive={() => { }}
           onPressFilter={() => filter()}
           onPressImport={() => { }}
+          checked={isAllRowsSelected}
+          isAnyRowSelected={isAnyRowSelected}
           onpressExport={() => { }}
           onpressAddNew={() => handleTimeLineSla()}
         />
         {filterOPen && <FilterTimeLine handleClose={filterClose}
-         columns={columns}
+         columns={TimeLineSlaColumns}
          page_number = {1}
          page_size = {5} />}
         {open && <CreateTimeLine 
         timeLineSlaData={editedTimeLineSla}
         editMode={editMode}
         handleClose={handleClose} />}
-
-          <table  style={{ overflowX: "auto", whiteSpace: "nowrap" }}>
+ <div
+          className="TableContainer"
+          style={{ overflowX: "auto", whiteSpace: "nowrap" }}
+        >
+          <table>
         
            <thead >
               <tr>
@@ -143,41 +165,27 @@ const TimeLine = () => {
                     />
                   </div>
                 </th>
+                {
+                TimeLineSlaColumns?.map((item,key)=>(
+                  <SortableHeader
+                  key={key}
+                  titleName={item.displayName}
+                  sortKey={item.name}
+                  sortDirection={sortKey === item.name ? sortDirection : undefined}
+                  onClick={()=>handleSort(item.name)}
+                  />
+                ))
+              }
                 <th>
-                  <div className="table-header">
-                    <p>TYPE / M2M</p> <FaArrowDown style={{color:"#667085"}}/>
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>State</p> <FaArrowDown style={{color:"#667085"}}/>
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Days</p> <FaArrowDown style={{color:"#667085"}}/>
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Start Date</p> <FaArrowDown style={{color:"#667085"}}/>
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>End Date</p> <FaArrowDown style={{color:"#667085"}}/>
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Action</p> <FaArrowDown style={{color:"#667085"}}/>
+                  <div className="action-header">
+                    <p>Action</p> 
                   </div>
                 </th>
               </tr>
             </thead>
           <tbody >
               {currentPageData?.length > 0
-                ? currentPageData?.map((el, i) => (
+                ? currentPageData?.map((el: any, i: any) => (
                   <tr
                     key={i}
                     className={selectedRows.has(i) ? "selected" : ""}
@@ -203,16 +211,16 @@ const TimeLine = () => {
                     <td>{el.start_date}</td>
                     <td>{el.end_date}</td>
                     <td
-                      style={{
-                        display: "flex",
-                        gap: "1rem",
-                        alignItems: "center",
-                      }}
+                     
                     >
-                      <img src={ICONS.ARCHIVE} alt="" />
+                    <div className="action-icon">
+                  <div className="">
+                  <img src={ICONS.ARCHIVE} alt="" />
+                  </div>
                      <div className="" onClick={()=>handleEditTimeLineSla(el)} style={{cursor:"pointer"}}>
                      <img src={ICONS.editIcon} alt="" />
                      </div>
+                    </div>
                     </td>
                   </tr>
                 ))
@@ -220,17 +228,26 @@ const TimeLine = () => {
             </tbody>
     
           </table>
-        
+          </div>
+          <div className="page-heading-container">
+      
+      <p className="page-heading">
+       {currentPage} - {totalPages} of {timelinesla_list?.length} item
+      </p>
+ 
+   {
+    timelinesla_list?.length > 0 ? <Pagination
+      currentPage={currentPage}
+      totalPages={totalPages} // You need to calculate total pages
+      paginate={paginate}
+      goToNextPage={goToNextPage}
+      goToPrevPage={goToPrevPage}
+    /> : null
+  }
+   </div>
+
         </div>
-       {
-        timelinesla_list?.length>0 ? <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages} // You need to calculate total pages
-        paginate={paginate}
-        goToNextPage={goToNextPage}
-        goToPrevPage={goToPrevPage}
-      />:null
-       }
+      
       </div>
   
   );

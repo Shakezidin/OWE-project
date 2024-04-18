@@ -3,17 +3,21 @@ import React, { useState } from "react";
 import { IoAddSharp } from "react-icons/io5";
 import UserHeaderSection from "./UserHeader/UserHeaderSection";
 import UserPieChart from "./pieChart/UserPieChart";
-import DatabaseAccess from "./userOnboard/DatabaseAccess";
+
+import UserOnboardingCreation from "./userOnboard/UserOnboardCreation";
 
 const UserManagement: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const userRole = localStorage.getItem("role");
+  const userEmail = localStorage.getItem("email");
+
   return (
     <>
       <div className="management-section">
         <div className="manage-user">
-          <p>Welcome, Caleb Antonucci</p>
+          <p>Welcome, {userEmail}</p>
           <h2>User Management</h2>
         </div>
         <div className="iconsSection2">
@@ -32,7 +36,7 @@ const UserManagement: React.FC = () => {
         </div>
       </div>
       {open && (
-        <DatabaseAccess
+        <UserOnboardingCreation
           handleClose={handleClose}
           editMode={false}
           userOnboard={null}

@@ -28,6 +28,17 @@ import filtercomm from '../../resources/assets/filtercomm.svg'
 import AddIcon from '../../resources/assets/AddIcon.svg'
 import exportIcon from '../../resources/assets/exportIcon.svg'
 import importIcon from '../../resources/assets/importIcon.svg'
+import BlackAddIcon from '../../resources/assets/blackAddIcon.svg'
+import commIconHead from '../../resources/assets/CommIconhead.svg'
+import dbIconManag from '../../resources/assets/dbiconmang.svg'
+import projIcon from '../../resources/assets/projIcon.svg'
+import teamManag from '../../resources/assets/teamManag.svg'
+import groupActive from '../../resources/assets/groupActive.svg'
+import upperIcon from '../../resources/assets/arrow-up-s-line.svg'
+import logoutIconLeft from '../../resources/assets/logout-circle-r-line.svg'
+import userPic from '../../resources/assets/userPic.svg'
+import settingIconAcc from '../../resources/assets/settings-line.svg'
+import supportImage from '../../resources/assets/supportImage.svg'
 export const ICONS = {
   BACKGROUND: require("../../resources/assets/background.png"),
   LOGO: require("../../resources/assets/logo.png"),
@@ -53,6 +64,7 @@ export const ICONS = {
   filter2: require("../../resources/assets/filter2.png"),
   groupIcon: require("../../resources/assets/Group2.png"),
   arrowNext: require("../../resources/assets/Vector.svg"),
+  groupActiveIcon:groupActive,
   viewChart:viewChart,
   dashHead:dashHead,
   cross: crossIcon,
@@ -71,5 +83,15 @@ export const ICONS = {
   filtercomm: filtercomm,
   AddIcon: AddIcon,
   exportIcon: exportIcon,
-  importIcon: importIcon
+  importIcon: importIcon,
+  BlackAddIcon: BlackAddIcon,
+  commIconHead: commIconHead,
+  dbIconManag:dbIconManag,
+  projIcon: projIcon,
+  teamManag: teamManag,
+  upperIcon: upperIcon,
+  logoutIconLeft: logoutIconLeft,
+  userPic: userPic,
+settingIconAcc: settingIconAcc,
+supportImage: supportImage
 };

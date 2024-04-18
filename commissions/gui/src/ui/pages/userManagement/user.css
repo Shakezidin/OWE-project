@@ -1,8 +1,8 @@
 .management-section {
-  margin-bottom: 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 10px;
 }
 .manage-user p {
   font-size: 12px;
@@ -75,9 +75,11 @@ opacity: 0px;
   width: 70%;
 }
 .iconsSection-delete {
-  margin-left: 1rem;
   background: #344054;
-
+}
+.iconsSection-delete img{
+  width: 17px;
+  height: 18px;
 }
 .iconsSection-delete h4 {
 
@@ -158,6 +160,4 @@ text-align: left;
   color: #344054 !important;
   font-weight: 500;
   border-radius: .25rem;
-
-
 }

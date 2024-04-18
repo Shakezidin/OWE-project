@@ -21,6 +21,7 @@ import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/pagin
 import { CommissionModel } from "../../../../core/models/configuration/create/CommissionModel";
 import { FaArrowDown } from "react-icons/fa6";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
+import CreateDealerCredit from "./CreateDealerCredit";
 interface Column {
   name: string;
   displayName: string;
@@ -121,6 +122,8 @@ const DealerCredit: React.FC = () => {
           title="Dealer Credit"
           onPressViewArchive={() => { }}
           onPressArchive={() => { }}
+          checked={isAllRowsSelected}
+          isAnyRowSelected={isAnyRowSelected}
           onPressFilter={() => filter()}
           onPressImport={() => { }}
           onpressExport={() => handleExportOpen()}
@@ -133,12 +136,12 @@ const DealerCredit: React.FC = () => {
             columns={columns} 
              page_number = {currentPage}
              page_size = {itemsPerPage}
-             />}
-             {open && <CreateCommissionRate 
+             />} */}
+             {open && <CreateDealerCredit
                          commission={editedCommission}
                          editMode={editMode}
                          handleClose={handleClose}
-                          />} */}
+                          />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
@@ -218,15 +221,15 @@ const DealerCredit: React.FC = () => {
                   </div>
                 </th>
                 <th>
-                  <div className="table-header">
-                    <p>Action</p> <FaArrowDown style={{ color: "#667085" }} />
+                  <div className="action-header">
+                    <p>Action</p> 
                   </div>
                 </th>
               </tr>
             </thead>
             <tbody>
               {currentPageData?.length > 0
-                ? currentPageData?.map((el, i) => (
+                ? currentPageData?.map((el: any, i: any) => (
                   <tr
                     key={i}
                     className={selectedRows.has(i) ? "selected" : ""}
@@ -274,16 +277,24 @@ const DealerCredit: React.FC = () => {
             </tbody>
           </table>
         </div>
+        <div className="page-heading-container">
+      
+      <p className="page-heading">
+       {currentPage} - {totalPages} of {commissionList?.length} item
+      </p>
+ 
+   {
+    commissionList?.length > 0 ? <Pagination
+      currentPage={currentPage}
+      totalPages={totalPages} // You need to calculate total pages
+      paginate={paginate}
+      goToNextPage={goToNextPage}
+      goToPrevPage={goToPrevPage}
+    /> : null
+  }
+   </div>
       </div>
-      {
-        commissionList?.length > 0 ? <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages} // You need to calculate total pages
-          paginate={paginate}
-          goToNextPage={goToNextPage}
-          goToPrevPage={goToPrevPage}
-        /> : null
-      }
+    
     </div>
   );
 };

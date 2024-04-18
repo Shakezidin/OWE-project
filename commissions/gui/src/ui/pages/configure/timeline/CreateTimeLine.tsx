@@ -1,15 +1,10 @@
 import React, { useEffect, useState } from "react";
-import "../../create_profile/CreateUserProfile.css";
-import { ReactComponent as PROFILE_BACKGROUND } from "../../../../resources/assets/Profile_background.svg";
-
 import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cross_button.svg";
 import Input from "../../../components/text_input/Input";
-import DropdownButton from "../../../components/dropdown/DropdownButton";
 import { ActionButton } from "../../../components/button/ActionButton";
 import { updateTimeLineForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createTimeLineSlaSlice";
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
-
 import { useDispatch } from "react-redux";
 import Select from 'react-select';
 import { stateOption } from "../../../../core/models/data_models/SelectDataModel";
@@ -95,16 +90,17 @@ const CreateTimeLine:React.FC<timeLineProps> = ({handleClose,editMode,timeLineSl
     };
     return (
         <div className="transparent-model">
-            <div className="modal">
+             <form onSubmit={(e)=>submitTimeLineSla(e)} className="modal">
 
                 <div className="createUserCrossButton" onClick={handleClose}>
                     <CROSS_BUTTON />
 
                 </div>
-                <div className="createUserContainer">
+              
                     <h3 className="createProfileText">{editMode===false?"TimeLine SLA":"Update TimeLine SLA"}</h3>
-                <form onSubmit={(e)=>submitTimeLineSla(e)}>
-                <div className="createProfileInputView">
+              
+             <div className="modal-body">
+             <div className="createProfileInputView">
                         <div className="createProfileTextView">
                             <div className="create-input-container">
                             <div className="create-input-field">
@@ -128,10 +124,14 @@ const CreateTimeLine:React.FC<timeLineProps> = ({handleClose,editMode,timeLineSl
                                               marginTop:"4.5px",
                                               borderRadius:"8px",
                                               outline:"none",
-                                              height:"2.8rem",
+                                              fontSize:"13px",
+                                              height:"2.25rem",
                                               border:"1px solid #d0d5dd"
                                               
                                             }),
+                                            indicatorSeparator: () => ({
+                                                display: 'none' // Hide the indicator separator
+                                              }),
                                           }}
                                         onChange={(newValue) => handleChange(newValue, 'state')}
                                         value={stateOption(newFormData)?.find((option) => option.value === createTimeLine.state)}
@@ -173,15 +173,19 @@ const CreateTimeLine:React.FC<timeLineProps> = ({handleClose,editMode,timeLineSl
                                 </div>
                             </div>
                         </div>
+                        </div>
+             </div>
                         <div className="createUserActionButton">
+                        <ActionButton title={"Cancel"} type="reset"
+                  onClick={() => handleClose()} />
                             <ActionButton title={editMode===false?"Save":"Update"} type="submit"
                                 onClick={() => { }} />
                         </div>
 
-                    </div>
+                
+         
+             
                 </form>
-                </div>
-            </div>
         </div>
     );
 };

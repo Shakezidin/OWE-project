@@ -5,12 +5,13 @@
   border: none;
   border-radius: .5rem;
   color: #fff;
-  font-size: 1rem;
+  font-size: 13px;
   font-style: normal;
   font-weight: 500;
   line-height: 11.962px; /* 85.446% */
   cursor: pointer;
-  padding: 16px 46px 16px 46px;
+  padding: 0px 46px 0px 46px;
+  height: 40px;
   text-transform: capitalize;
 }
 .loginButton:hover{
@@ -19,7 +20,7 @@
 }
 .cancel{
   border:1px solid #0493ce;
-  color:black;
+  color:#000000;
   background-color: transparent !important;
  
 }

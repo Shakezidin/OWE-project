@@ -1,8 +1,7 @@
 .pagination-container {
   display: flex;
-  justify-content: flex-end;
-  margin-top: 1rem;
-  padding: 1rem;
+
+
 }
 .pagination {
   display: flex;
@@ -36,9 +35,9 @@
   border-radius: .25rem !important;
   cursor: pointer;
   border-radius: 2px;
-  color:#dbdbdb !important;
-  font-weight: 600 !important;
-  font-size: .9rem;
+  color:#000000 !important;
+  font-weight: 500 !important;
+  font-size: 12px;
 }
 
 .active-page {
@@ -48,7 +47,7 @@
   border-radius: .25rem !important;
   outline: none;
   display: flex;
-  font-size: .9rem;
+  font-size: 12px;
   color: #04a5e8;
   font-weight: 600 !important;
   cursor: pointer;
