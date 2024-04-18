@@ -1,0 +1,48 @@
+.support-cont-section{
+    display: flex;
+    width: 1138px;
+    height: 536px;
+    margin-top: 1rem;
+    left: 270px;
+    gap: 0px;
+    border-radius: 24px;
+    opacity: 0px;
+    background: #ffffff;
+}
+.support-container {
+ padding: 2rem;
+}
+.support-section {
+}
+.support-section h3 {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 27px;
+  text-align: left;
+}
+.supportImage {
+  margin-top: 5rem;
+  width: 390px;
+  height: 207px;
+  top: 279px;
+  opacity: 0px;
+  /* padding: 2rem; */
+}
+.vertical-support {
+    border-left: 2px solid #dbdddf;
+    height: 450px;
+    margin-top: 3rem;
+   padding: 1rem;
+    /* border: 1px 0px 0px 0px; */
+  }
+  .touch-container {
+    margin-top: 2rem;
+    width: 100%;
+    height:"50vh";
+  }
+.touch-info {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 27px;
+    text-align: left;
+}

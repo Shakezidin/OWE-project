@@ -1,14 +1,31 @@
 import React from "react";
+import { useState } from 'react'
 import "./AccountSettings.css";
 import { ICONS } from "../../icons/Icons";
+import MyProfile from "./MyProfile";
+import ResetPassword from "../resetPassword/ResetPassword";
+import ResetPasswordAccount from "./ResetPasswordAccount";
+import { logout } from "../../../redux/apiSlice/authSlice/authSlice";
+import { useAppDispatch } from "../../../redux/hooks";
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const AccountSettings = () => {
+  const [activeTab, setActiveTab] = useState(0);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const handleTabClick = (i:number) => {
+    setActiveTab(i);
+  };
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/");
+  };
   return (
     <>
       <div className="">
         <div className="account-container">
           <div className="titlehed">
-            <img src={ICONS.SETTING_LINE} alt="" />
+            <img src={ICONS.settingIconAcc} alt="" />
           </div>
           <div className="">
             <p> Account Setting</p>
@@ -16,43 +33,23 @@ const AccountSettings = () => {
         </div>
       </div>
       <div className="profile-section">
-        <div className="profile-sec-button">
-          <button type="button" style={{ background: "#E9F0FF" }}>
-            My Profile
-          </button>
-          <br />
-          <button type="button">Reset Password</button>
-          <br />
-          <button type="button">Logout</button>
+     
+        <div className="tab-links">
+          <button onClick={() => handleTabClick(0)} className={`tab ${activeTab===0?"active-profile":""}`}>My Profile</button>
+          <button onClick={() => handleTabClick(1)} className={`tab ${activeTab===1?"active-profile":""}`}>Reset Password</button>
+          <button onClick={handleLogout} className="tab">Logout</button>
         </div>
         <div className="vertical"></div>
-
-        <div className="myProf-section">
-          <p>My Profile</p>
-
-          <div className="" >
-            <div className="admin-section">
-              <div className="">
-                <img src={ICONS.userPic} alt="" />
-              </div>
-              <div className="" style={{ display: "flex", gap: "30rem", alignContent: "center" }}>
-                <div className="caleb-section">
-                  <h3>Caleb Antonucci</h3>
-                  <p>Admin</p>
-                </div>
-
-                <div className="edit-section">
-                  <img src={ICONS.editIcon} alt="" />
-                  <p>Edit</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="">
-            <h1>Deepak</h1>
-          </div>
+        <div className="tab-content">
+          {activeTab === 0 && <div><MyProfile /></div>}
+          {activeTab === 1 && <div><ResetPasswordAccount /></div>}
+  
         </div>
+
+       
+
+        {/* <MyProfile /> */}
+        {/* <ResetPasswordAccount /> */}
       </div>
     </>
   );

@@ -37,7 +37,8 @@ import groupActive from '../../resources/assets/groupActive.svg'
 import upperIcon from '../../resources/assets/arrow-up-s-line.svg'
 import logoutIconLeft from '../../resources/assets/logout-circle-r-line.svg'
 import userPic from '../../resources/assets/userPic.svg'
-
+import settingIconAcc from '../../resources/assets/settings-line.svg'
+import supportImage from '../../resources/assets/supportImage.svg'
 export const ICONS = {
   BACKGROUND: require("../../resources/assets/background.png"),
   LOGO: require("../../resources/assets/logo.png"),
@@ -90,5 +91,7 @@ export const ICONS = {
   teamManag: teamManag,
   upperIcon: upperIcon,
   logoutIconLeft: logoutIconLeft,
-  userPic: userPic
+  userPic: userPic,
+settingIconAcc: settingIconAcc,
+supportImage: supportImage
 };

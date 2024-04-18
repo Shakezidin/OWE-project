@@ -5,35 +5,35 @@
   padding: 0.5rem;
 }
 .titlehed {
-  background-color: black;
+  background-color: #333333;
   padding: 0.5rem;
   border-radius: 50%;
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   align-items: center;
   justify-content: center;
   text-align: center;
+  color: #333333;
 }
 .titlehed img {
-  margin-top: 0.3rem;
-  width: 25px;
-  height: 25px;
-  color: white;
+  margin-top: 2px;
+  width: 20px;
+  height: 20px;
 }
 .profile-section {
   display: flex;
   gap: 3rem;
   background-color: white;
-  height: 520px;
+  /* height: 520px; */
   border-radius: 16px;
+  padding-bottom: 2rem;
 }
 .profile-sec-button {
   padding: 1rem;
   background-color: white;
-
   border-radius: 16px;
 }
-.profile-sec-button button {
+/* .profile-sec-button button {
   background-color: white;
   width: 120px;
   height: 32px;
@@ -45,10 +45,34 @@
   padding: 8px 0px 8px 12px;
   margin: 0.5rem;
   cursor: pointer;
+} */
+.tab-links {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+ 
+}
+.tab {
+  padding: 0.5rem;
+  margin: 0.5em;
+  border: none;
+  color: black;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+  
+  outline: none;
+  background-color: transparent;
+  text-align: left;
+  font-weight: 500;
+}
+.active-profile{
+background-color: #E9F0FF;
+font-weight: 600;
 }
 .vertical {
   border-left: 2px solid #dbdddf;
-  height: 480px;
+  height: 650px !important;
   margin-top: 1.5rem;
 
   /* border: 1px 0px 0px 0px; */
@@ -59,54 +83,96 @@
   font-weight: 500;
   line-height: 27px;
   text-align: left;
+  /* max-height: 50vh; */
 }
 .admin-section {
-    display: flex;
-    padding: 1rem;
-    gap: 1rem;
-    align-items: center;
-    margin-top: 1rem;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  padding: 1rem 0rem 1rem 1rem;
+  gap: 1rem;
+  align-items: center;
+  margin-top: 1rem;
   width: 854px;
   height: 114px;
   border: 1px solid #e0e0e0;
-  border-radius: 8px;
-
+  border-radius: 16px;
 }
-.caleb-section h3{
-font-size: 16px;
-font-weight: 500;
-line-height: 24px;
-text-align: left;
-
+.caleb-section h3 {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  text-align: left;
 }
 .caleb-section p {
-
-font-size: 12px;
-font-weight: 400;
-line-height: 18px;
-text-align: left;
-
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+  text-align: left;
 }
 .edit-section {
-    display: flex;
-    align-items: center;
-    width: 90px;
-height: 34px;
-
-padding: 8px 16px 8px 16px;
-gap: 8px;
-border-radius: 8px;
-border: 1px solid #D5D5D5;
-opacity: 0px;
-cursor: pointer;
+  display: flex;
+  align-items: center;
+  width: 90px;
+  height: 34px;
+  padding: 8px 16px 8px 16px;
+  gap: 8px;
+  border-radius: 8px;
+  border: 1px solid #d5d5d5;
+  cursor: pointer;
 }
 .edit-section p {
-    font-family: Poppins;
-font-size: 12px;
-font-weight: 500;
-line-height: 18px;
-
-
+  font-family: Poppins;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+}
+.Personal-container {
+  margin-top: 1rem;
+  width: 854px;
+  height: 250px;
+  opacity: 0px;
+  border: 1px solid #e0e0e0;
+  border-radius: 16px;
+}
+.caleb-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 32.2rem;
+}
+.personal-section {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  align-items: center;
+}
+.reset-Update {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+.reset-Update button {
+  width: 280px;
+  height: 48px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 11.96px;
+  text-align: center;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-decoration: none;
+  display: inline-block;
+  margin: 4px 2px;
+  cursor: pointer;
+  background-color: #0493ce;
+  border-radius: 8px;
 }
 
+.profile-reset {
+  display: flex;
+  gap: 2rem;
+  margin-top: 1rem;
+}
 
