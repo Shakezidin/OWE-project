@@ -6,6 +6,7 @@ import Header from "./Header";
 import './layout.css'
 import { useSelector } from 'react-redux';
 import { RootState } from "../../../redux/store";
+import { EndPoints } from "../../../infrastructure/web_api/api_client/EndPoints";
 
 
 const MainLayout= () => {
@@ -24,7 +25,7 @@ const MainLayout= () => {
            </div>
        </div>
     </div>
-</div>:<Navigate to={'/login'} replace/>
+</div>:<Navigate to={EndPoints.login} replace/>
 
   );
 };
