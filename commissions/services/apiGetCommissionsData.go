@@ -130,6 +130,13 @@ func HandleGetCommissionsDataRequest(resp http.ResponseWriter, req *http.Request
 			RepType = ""
 		}
 
+		// is_archived
+		IsArchived, ok := item["is_archived"].(bool)
+		if !ok || !IsArchived {
+			log.FuncErrorTrace(0, "Failed to get is_archived value for Record ID %v. Item: %+v\n", RecordId, item)
+			IsArchived = false
+		}
+
 		// RL
 		RL, ok := item["rl"].(float64)
 		if !ok {
@@ -159,17 +166,18 @@ func HandleGetCommissionsDataRequest(resp http.ResponseWriter, req *http.Request
 		}
 
 		commissionData := models.GetCommissionData{
-			RecordId:  RecordId,
-			Partner:   Partner,
-			Installer: Installer,
-			State:     State,
-			SaleType:  SaleType,
-			SalePrice: SalePrice,
-			RepType:   RepType,
-			RL:        RL,
-			Rate:      Rate,
-			StartDate: StartDate,
-			EndDate:   EndDate,
+			RecordId:   RecordId,
+			Partner:    Partner,
+			Installer:  Installer,
+			State:      State,
+			SaleType:   SaleType,
+			SalePrice:  SalePrice,
+			RepType:    RepType,
+			IsArchived: IsArchived,
+			RL:         RL,
+			Rate:       Rate,
+			StartDate:  StartDate,
+			EndDate:    EndDate,
 		}
 
 		commissionsList.CommissionsList = append(commissionsList.CommissionsList, commissionData)
@@ -186,7 +194,7 @@ func HandleGetCommissionsDataRequest(resp http.ResponseWriter, req *http.Request
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
- func PrepareCommissionFilters(tableName string, dataFilter models.DataRequestBody) (filters string, whereEleList []interface{}) {
+func PrepareCommissionFilters(tableName string, dataFilter models.DataRequestBody) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PrepareCommissionFilters")
 	defer func() { log.ExitFn(0, "PrepareCommissionFilters", nil) }()
 
@@ -238,11 +246,19 @@ func HandleGetCommissionsDataRequest(resp http.ResponseWriter, req *http.Request
 			case "rate":
 				filtersBuilder.WriteString(fmt.Sprintf("cr.rate %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
+			case "is_archived":
+				filtersBuilder.WriteString(fmt.Sprintf("cr.is_archived %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
 			default:
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			}
 		}
+	}
+	// Add pagination logic
+	if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+		offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
+		filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
 	}
 
 	filters = filtersBuilder.String()

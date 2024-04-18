@@ -7,24 +7,6 @@ create database owe_db;
 \c owe_db;
 
 /**************************** OWE DB Schema ***********************************************************/
-CREATE TABLE
-    IF NOT EXISTS webhook_info (
-        hook_id text unique not null,
-        hook_type text,
-        appid text,
-        app_name text
-    );
-
-/* Test App Start */
-CREATE TABLE
-    IF NOT EXISTS owe_test_app_schema (
-        item_id  bigint,
-        id text,
-        name text,
-        phone text,
-        email text
-    );
-
 /* Test App End */
 CREATE TABLE
     IF NOT EXISTS internal_ops_metrics_schema (
@@ -732,6 +714,7 @@ CREATE TABLE commission_rates (
     sale_type_id INT,
     sale_price double precision,
     rep_type INT,
+    is_archived BOOLEAN DEFAULT FALSE,
     rl double precision,
     rate double precision,
     start_date character varying NOT NULL,
@@ -1057,17 +1040,16 @@ CREATE TABLE referral_bonus (
 /**********************************DEALER PAY SCHEMA START **************************************/
 
 CREATE TABLE
-    IF NOT EXISTS webhook_info (
+    IF NOT EXISTS pr_data (
         home_owner	text,
         current_status text,
         status_date text,
         unique_id  text,
         dealer   text,
         dba  text,
-        type1  text,
-        today  text,d
+        type  text,
+        today  text,
         amount  text,
-        type2  text,
         sys_size  text,
         contract_value  text,
         loan_fee  text,
@@ -1086,7 +1068,7 @@ CREATE TABLE
         st  text,
         contract_date  text
 );
-
+/* to do review
 CREATE TABLE   
     IF NOT EXISTS dlr_pay_calc(  
     dealer   text,
@@ -1125,7 +1107,6 @@ CREATE TABLE
     status_date      text,
     contract2      text,
     epc_calc      text,
-    dealer      text,
     dealer_dba      text,
     rl_1      text,
     credit      text,
@@ -1221,6 +1202,7 @@ CREATE TABLE
     r2_comm_total      text,
     r2_comm_status_check      text
 );
+*/
 
 /**********************************DEALER PAY SCHEMA END **************************************/
 
