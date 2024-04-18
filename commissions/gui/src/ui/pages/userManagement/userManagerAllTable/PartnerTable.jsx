@@ -81,12 +81,12 @@ const PartnerTable = () => {
                                         // indeterminate={isAnyRowSelected && !isAllRowsSelected}
                                         />
                                     </td>
-                                    <td style={{ fontWeight: "500", color: "#5B5B5B" }}>{el.name}</td>
+                                    <td style={{ fontWeight: "500", color: "var( --fade-gray-black)" }}>{el.name}</td>
                                     <td>{el.det}</td>
                                     <td>
                                     <div className="action-icon">
                         <div className="" style={{ cursor: "pointer" }}>
-                          <img src={ICONS.ARCHIVE} alt="" />
+                          <img src={ICONS.deleteIcon} alt="" />
                         </div>
                         <div className="" style={{ cursor: "pointer" }} >
                         <img src={ICONS.editIcon} alt="" />

@@ -12,6 +12,7 @@ const UserManagement: React.FC = () => {
   const handleClose = () => setOpen(false);
   const userRole = localStorage.getItem("role");
   const userEmail = localStorage.getItem("email");
+
   return (
     <>
       <div className="management-section">

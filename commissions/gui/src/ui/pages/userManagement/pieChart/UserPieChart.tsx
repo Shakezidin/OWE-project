@@ -73,7 +73,7 @@ const UserPieChart = () => {
   return (
  
     <div className="PieChart-container" style={{display:"flex", gap:"2rem"}} >
-      <div className="pie-section" style={{width:"50%",height:"50vh", background:"white", borderRadius:"16px", padding:"1rem"}} >
+      <div className="pie-section" style={{width:"50%",height:"55vh", background:"white", borderRadius:"16px", padding:"1rem"}} >
         <div className="pieChart-section">
           <h2>Onboarding Detail</h2>
         </div>
@@ -86,34 +86,36 @@ const UserPieChart = () => {
                 label={renderLabel}
                 cx="50%"
                 cy="50%"
-                outerRadius={"75%"}
+                outerRadius={"85%"}
                 nameKey="name"
                 fontSize={12}
+                labelLine = {true}
+                textAnchor=''
                 dominantBaseline="central" 
               // activeShape={(props) => renderActiveShape(props, showSubchart)}
               // onMouseEnter={onMouseOver}
               // onMouseLeave={onMouseLeave}
               >
-                <LabelList
-                  dy={0}
-                  dx={10}
-                  fill="white" // Percentage color
-                  // dataKey="percentage"
-                  dataKey={renderCustomizedLabelPercentage}
-                  position="outside"
-                  angle={0}
-                  fontSize={16}
-                  stroke="none" // Border of letters
-                  className="label-percentage"
-                  offset={-45}
-                />
+                  <LabelList
+                    dy={0}
+                    dx={10}
+                    fill="white" // Percentage color
+                    // dataKey="percentage"
+                    dataKey={renderCustomizedLabelPercentage}
+                    position="outside"
+                    angle={0}
+                    fontSize={16}
+                    stroke="none" // Border of letters
+                    className="label-percentage"
+                    offset={-45}
+                  />
               </Pie>
             </PieChart>
           </ResponsiveContainer>
         </div>
       </div>
 
-      <div className='pie-section' style={{width:"50%",height:"50vh", background:"white", borderRadius:"16px", padding:"1rem"}}>
+      <div className='pie-section' style={{width:"50%",height:"55vh", background:"white", borderRadius:"16px", padding:"1rem"}}>
         <div className="pieChart-section">
           <h2>Performance</h2>
         </div>
@@ -126,7 +128,7 @@ const UserPieChart = () => {
                 // label={renderLabel}
                 cx="50%"
                 cy="50%"
-                outerRadius={"75%"}
+                outerRadius={"85%"}
                 nameKey="name"
                 labelLine={false}
               // activeShape={(props) => renderActiveShape(props, showSubchart)}

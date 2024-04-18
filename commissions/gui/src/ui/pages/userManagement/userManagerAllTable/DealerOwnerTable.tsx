@@ -103,14 +103,14 @@ const DealerOwnerTable: React.FC = () => {
                     />
                   </td>
                   <td style={{ fontWeight: "500", color: "black" }}>{el.code}</td>
-                  <td style={{color: "#5B5B5B"}}>{el.name}</td>
+                  <td style={{color: "var( --fade-gray-black)"}}>{el.name}</td>
                   <td>{el.email}</td>
                   <td>{el.pn}</td>
                   <td>{el.des}</td>
                   <td>
                   <div className="action-icon">
                         <div className="" style={{ cursor: "pointer" }}>
-                          <img src={ICONS.ARCHIVE} alt="" />
+                          <img src={ICONS.deleteIcon} alt="" />
                         </div>
                         <div className="" style={{ cursor: "pointer" }} >
                         <img src={ICONS.editIcon} alt="" />

@@ -2,10 +2,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: fixed;
-  left: 247px;
-  right: 25px;
-  z-index: 10;
+  margin-bottom: 10px;
 }
 .manage-user p {
   font-size: 12px;
@@ -14,9 +11,6 @@
   letter-spacing: -0.03em;
   text-align: left;
   color: var(--para-color);
-}
-.barchart-section{
-  margin-top: 55px;
 }
 .manage-user h2 {
   font-size: 20px;
