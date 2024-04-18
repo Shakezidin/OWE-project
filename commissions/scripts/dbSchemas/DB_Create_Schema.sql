@@ -714,6 +714,7 @@ CREATE TABLE commission_rates (
     sale_type_id INT,
     sale_price double precision,
     rep_type INT,
+    is_archived BOOLEAN DEFAULT FALSE,
     rl double precision,
     rate double precision,
     start_date character varying NOT NULL,
@@ -1067,7 +1068,7 @@ CREATE TABLE
         st  text,
         contract_date  text
 );
-
+/* to do review
 CREATE TABLE   
     IF NOT EXISTS dlr_pay_calc(  
     dealer   text,
@@ -1106,7 +1107,6 @@ CREATE TABLE
     status_date      text,
     contract2      text,
     epc_calc      text,
-    dealer      text,
     dealer_dba      text,
     rl_1      text,
     credit      text,
@@ -1202,6 +1202,7 @@ CREATE TABLE
     r2_comm_total      text,
     r2_comm_status_check      text
 );
+*/
 
 /**********************************DEALER PAY SCHEMA END **************************************/
 
