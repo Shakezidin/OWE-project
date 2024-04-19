@@ -38,13 +38,13 @@ const MyProfile = () => {
 
                     <div className='caleb-container'>
                         <div className='caleb-section'>
-                            <h3>Caleb Antonucci</h3>
+                            <h3>Shushank </h3>
                             <p>Admin</p>
                         </div>
-                        <div className='edit-section'>
-                        <img src={ICONS.editIcon} alt="" />
-                        <p>Edit</p>
-                        </div>
+                        {/* <div className='edit-section'>
+                            <img src={ICONS.editIcon} alt="" />
+                            <p>Edit</p>
+                        </div> */}
                     </div>
 
                 </div>
@@ -54,10 +54,10 @@ const MyProfile = () => {
                         <div className=''>
                             <p>Personal Information</p>
                         </div>
-                        <div className="edit-section">
+                        {/* <div className="edit-section">
                             <img src={ICONS.editIcon} alt="" />
                             <p>Edit</p>
-                        </div>
+                        </div> */}
                     </div>
 
                     <div className="create-input-container" style={{ padding: "0.5rem", marginLeft: "1rem" }}>
@@ -68,7 +68,7 @@ const MyProfile = () => {
                                 value={"createMarketing.fee_rate"}
                                 name="fee_rate"
                                 placeholder={"Enter"}
-                                onChange={(e) => {}}
+                                onChange={(e) => { }}
                             />
                         </div>
                         <div className="create-input-field">
@@ -78,7 +78,7 @@ const MyProfile = () => {
                                 value={"createMarketing.fee_rate"}
                                 name="fee_rate"
                                 placeholder={"Enter"}
-                                onChange={(e) => {}}
+                                onChange={(e) => { }}
                             />
                         </div>
                     </div>
@@ -90,17 +90,17 @@ const MyProfile = () => {
                                 value={"createMarketing.fee_rate"}
                                 name="fee_rate"
                                 placeholder={"Enter"}
-                                onChange={(e) => {}}
+                                onChange={(e) => { }}
                             />
                         </div>
                         <div className="create-input-field">
                             <Input
                                 type={"text"}
-                                label="Fee Rate"
+                                label="Phone Number"
                                 value={"createMarketing.fee_rate"}
                                 name="fee_rate"
                                 placeholder={"Enter"}
-                                onChange={(e) => {}}
+                                onChange={(e) => { }}
                             />
                         </div>
 
@@ -125,7 +125,7 @@ const MyProfile = () => {
                                 value={"createMarketing.fee_rate"}
                                 name="fee_rate"
                                 placeholder={"Enter"}
-                                onChange={(e) => {}}
+                                onChange={(e) => { }}
                             />
                         </div>
                         <div className="create-input-field">
@@ -184,7 +184,7 @@ const MyProfile = () => {
                                 value={"createMarketing.fee_rate"}
                                 name="fee_rate"
                                 placeholder={"Enter"}
-                                onChange={(e) => {}}
+                                onChange={(e) => { }}
                             />
                         </div>
                         <div className="create-input-field">
@@ -194,7 +194,7 @@ const MyProfile = () => {
                                 value={"createMarketing.fee_rate"}
                                 name="fee_rate"
                                 placeholder={"Enter"}
-                                onChange={(e) => {}}
+                                onChange={(e) => { }}
                             />
                         </div>
                     </div>
@@ -204,7 +204,7 @@ const MyProfile = () => {
                         <ActionButton
                             title={"Reset"}
                             type="reset"
-                            onClick={() => {}}
+                            onClick={() => { }}
                         />
                         <ActionButton
                             title={"Update"}
