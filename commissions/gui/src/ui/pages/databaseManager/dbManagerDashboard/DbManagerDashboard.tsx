@@ -11,11 +11,31 @@ import { routes } from "../../../../routes/routes";
 import Boxes from "./Boxes";
 const DbManagerDashboard = () => {
   const navigate = useNavigate();
+  const [selectedOption, setSelectedOption] = useState("");
 
-
-  const handleClick = (event: React.ChangeEvent<HTMLSelectElement>) => {
-      navigate(routes.dataTableRoutes);
+  // Function to handle dropdown selection change
+  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedValue = event.target.value;
+    setSelectedOption(selectedValue);
+    if (selectedValue === "Today" || selectedValue === "This Week" || selectedValue === "All") {
+      navigate(`/userManagement`);
+    }
   };
+
+
+  const data = [
+    { name: "Group A", value: 200, Historical_Records: 100, Total_Records: 150 },
+    { name: "Group B", value: 500, Historical_Records: 250, Total_Records: 300 },
+  ];
+  const data1 = [
+    { name: "Group A", value: 50, Historical_Records: 100, Total_Records: 130 },
+    { name: "Group B", value: 200, Historical_Records: 200, Total_Records: 340 },
+  ];
+  const data2 = [
+    { name: "Group A", value: 100, Historical_Records: 100, Total_Records: 150 },
+    { name: "Group B", value: 300, Historical_Records: 250, Total_Records: 300 },
+  ];
+  
   return (
     <>
       {/* <CreateWebHook/> */}
@@ -53,13 +73,15 @@ const DbManagerDashboard = () => {
             <p>Webhooks Status</p>
 
             <div className="search-container-data">
-              <input
+            <input
                 type="text"
-                placeholder="Table 1"
+                placeholder="Table 1 Data"
                 className="search-input-data"
               />
               <BiChevronDown className="dropdown-icon" />
             </div>
+
+
           </div>
           <div className="container-graph">
 
@@ -67,18 +89,18 @@ const DbManagerDashboard = () => {
               <div className="Create-section">
                 <p>Create Webhooks</p>
                 
-              <div className="Payroll-section">
-              <select name="" id="" className="dash-select">
-                <option value="">Today</option>
-                <option value="">This Week</option>
-                <option value="">All</option>
+                <div className="Payroll-section">
+              <select name="" id="" className="dash-select" onChange={handleSelectChange}>
+                <option value="Today">Today</option>
+                <option value="This Week">This Week</option>
+                <option value="All">All</option>
               </select>
             </div>
 
                 
               </div>
               <div className="PieBarchart-section">
-                  <PieChartWithPaddingAngle/>                  
+                  <PieChartWithPaddingAngle data={data}/>                  
                 </div>
                 <div className="identity">
                 <Boxes color="#FB7955"/> <p>30% Fail</p>
@@ -93,17 +115,17 @@ const DbManagerDashboard = () => {
                 <p>Update Webhooks</p>
                 
               <div className="Payroll-section">
-              <select name="" id="" className="dash-select">
-                <option value="">Today</option>
-                <option value="">This Week</option>
-                <option value="">All</option>
+              <select name="" id="" className="dash-select" onChange={handleSelectChange}>
+                <option value="Today">Today</option>
+                <option value="This Week">This Week</option>
+                <option value="All">All</option>
               </select>
             </div>
 
                 
               </div>
               <div className="PieBarchart-section">
-                  <PieChartWithPaddingAngle />                  
+                  <PieChartWithPaddingAngle data={data1}/>                  
                 </div>
                 <div className="identity">
                 <Boxes color="#FB7955"/> <p>30% Fail</p>
@@ -117,18 +139,18 @@ const DbManagerDashboard = () => {
               <div className="Create-section">
                 <p>Delete Webhooks</p>
                 
-              <div className="Payroll-section">
-              <select name="" id="" className="dash-select">
-                <option value="">Today</option>
-                <option value="">This Week</option>
-                <option value="">All</option>
+                <div className="Payroll-section">
+              <select name="" id="" className="dash-select" onChange={handleSelectChange}>
+                <option value="Today">Today</option>
+                <option value="This Week">This Week</option>
+                <option value="All">All</option>
               </select>
             </div>
 
                 
               </div>
               <div className="PieBarchart-section">
-                  <PieChartWithPaddingAngle />                  
+                  <PieChartWithPaddingAngle data={data2}/>                  
                 </div>
                 <div className="identity">
                 <Boxes color="#FB7955"/> <p>30% Fail</p>

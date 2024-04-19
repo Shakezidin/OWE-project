@@ -46,6 +46,7 @@ import TechnicalSupport from "./ui/pages/technicalSupport/TechnicalSupport";
 import DataTablle from "./ui/pages/databaseManager/dataTable/DataTable";
 import UserActivity from "./ui/pages/databaseManager/userActivity/UserActivity";
 import DbManagerDashboard from "./ui/pages/databaseManager/dbManagerDashboard/DbManagerDashboard";
+import Webhook from "./ui/pages/databaseManager/webhookTable/Webhook";
 
 
 function App() {
@@ -105,6 +106,7 @@ function App() {
                 <Route  path={routes.dataTableRoutes} element={<DataTablle/>}/>
                 <Route  path={routes.userActivityRoutes} element={<UserActivity/>}/>
                 <Route  path={routes.technicalSupportRoutes} element={<TechnicalSupport/>}/>
+                <Route  path={routes.webhookRoutes} element={<Webhook/>}/>
             </Route>
       
        

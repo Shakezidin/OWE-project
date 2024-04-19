@@ -1,8 +1,9 @@
 .Db-manager-container {
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 15px;
 }
 .runner-section {
   width: 233px;
@@ -110,30 +111,45 @@
     text-align: left;
     
 }
-.dash-search-container {
+
+
+
+  .search-container-data {
     position: relative;
     display: inline-block;
   }
-.dash-serach-container input{
-  
-padding: 6px 16px 6px 16px;
-gap: 36px;
-border-radius: 8px;
-border: 1px solid #D0D5DD;
-opacity: 0px;
 
-}
-
-.dropdown-icon-dash {
-  margin-left: -110px;
-  position: absolute;
-  top: 50%;
-  right: 10px;
-  font-size: 2rem;
-  transform: translateY(-50%);
-  cursor: pointer;
-  color: gray;
+  .search-container-data input {
+    padding: 0.6rem;
+    border-radius: 8px;
+    border: 2px solid #d0d5dd;
   }
+
+  .search-container-data ::placeholder {
+      color: #101828;
+     font-size: 14px;
+     font-weight: 500;
+  }
+
+  .dropdown-icon {
+    position: absolute;
+    top: 5%;
+    right: 10px;
+    font-size: 2rem;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: gray;
+  }
+
+
+
+
+
+
+
+
+
+
 
   .container-graph{
     margin-top: 10px;

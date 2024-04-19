@@ -18,7 +18,7 @@ import { toggleAllRows, toggleRowSelection } from "../../../components/chekbox/c
 
 
 
-const DataTablle: React.FC = () => {
+const Webhook: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
 
@@ -86,43 +86,33 @@ const DataTablle: React.FC = () => {
   const dataDb = [
     {
       col1: "1234567890",
-      col2: "Josh Morton",
-      col3: "Josh Morton",
-      col4: "Josh Morton",
-      col5: "$120,450",
-      col6: "$100,320",
-      col7: "$100,320"
+      col2: "1234",
+      col3: "Invalid Data",
+      col4: "20/03/2024  10:00 AM",
     },
     {
       col1: "1234567890",
-      col2: "Josh Morton",
-      col3: "Josh Morton",
-      col4: "Josh Morton",
-      col5: "$120,450",
-      col6: "$100,320",
-      col7: "$100,320"
+      col2: "1234",
+      col3: "Data not found",
+      col4: "04/03/2024  12:00 PM",
     },
     {
       col1: "1234567890",
-      col2: "Josh Morton",
-      col3: "Josh Morton",
-      col4: "Josh Morton",
-      col5: "$120,450",
-      col6: "$100,320",
-      col7: "$100,320"
+      col2: "1234",
+      col3: "NA",
+      col4: "22/03/2024  1:00 AM",
     },
   ]
 
   return (
     <div className="comm">
-      <Breadcrumb head="Data" linkPara="Database Manager" linkparaSecond="Data" />
+      <Breadcrumb head="Created" linkPara="Database" linkparaSecond="Created" />
       <div className="commissionContainer">
-        <DataTableHeader
-          title="Table Name"
+      <DataTableHeader
+          title="Failed Webhooks"
           onPressFilter={() => filter()}
           onPressImport={() => { }}
         />
-
 
         <div
           className="TableContainer"
@@ -149,37 +139,22 @@ const DataTablle: React.FC = () => {
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Column 1</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Webhook ID</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Column 2</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Item ID</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Column 3</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Error</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Column 4</p> <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Column 5</p> <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Column 6</p> <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Column 7</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Date & Time</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
               </tr>
@@ -208,9 +183,6 @@ const DataTablle: React.FC = () => {
                     <td>{el.col2}</td>
                     <td>{el.col3}</td>
                     <td>{el.col4}</td>
-                    <td style={{color:"#0493CE"}}>{el.col5}</td>
-                    <td style={{color:"#0493CE"}}>{el.col6}</td>
-                   <td style={{color:"#0493CE"}}>{el.col7}</td>
                   </tr>
                 ))
                 : null}
@@ -222,4 +194,4 @@ const DataTablle: React.FC = () => {
   );
 };
 
-export default DataTablle;
+export default Webhook;
