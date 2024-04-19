@@ -72,7 +72,7 @@ const DashBoardTable: React.FC = () => {
         style={{ overflowX: "auto", whiteSpace: "nowrap", borderRadius: "16px 16px 0 0" }}  >
         <table>
           <thead>
-            <tr style={{background: "#FCFCFD"}}>
+            <tr style={{background: "#EEF0F7"}}>
               <th>
                 <div>
                   <CheckBox

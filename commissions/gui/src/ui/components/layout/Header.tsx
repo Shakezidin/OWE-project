@@ -47,7 +47,8 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen, setSidebarCh
       </div>
       <div className="search-container">
         <div className="user-container">
-          <button className="app-btn" onClick={() => setOpenModal(!openModal)}>
+          {/* <button className="app-btn" onClick={() => setOpenModal(!openModal)}> */}
+          <button className="app-btn">
             {
               openModal ? <img src={ICONS.groupActiveIcon} alt="" /> : <img src={ICONS.groupIcon} alt="" />
             }
@@ -114,7 +115,7 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen, setSidebarCh
                     openIcon && (<div className="header-modal-1">
 
                       <div className="image-box-container" onClick={()=> navigate(routes.accountSettingRoutes)}>
-                        <div className="image-icon"  style={{ backgroundColor: "#DDF3FF"}}>
+                        <div className="image-icon">
                           <img src={ICONS.commIconHead} alt="" />
                         </div>
                         <p className="" style={{fontSize:"12px", fontWeight: "500" }} >
@@ -126,7 +127,7 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen, setSidebarCh
                       <div className="image-box-container "
                         // style={{ paddingLeft: toggleOpen ? ".8rem" : "" }}
                         onClick={handleLogout} >
-                        <div className="image-icon" style={{ backgroundColor: "#FFE6E6"}}>
+                        <div className="image-icon">
                         <img src={ICONS.logoutIconLeft}  alt="" />
                         </div>
                         {

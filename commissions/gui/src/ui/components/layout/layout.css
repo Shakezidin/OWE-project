@@ -104,7 +104,7 @@
   background-color: white;
   box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.1);
   transform: translate(-50%,-50);
-  top: 100%;
+  top: 101%;
   width: 14%;
   right: 2.3%;
   display: flex;
@@ -119,6 +119,10 @@
   align-items: center;
   cursor: pointer;
   gap: .5rem;
+  width: 100%;
+}
+.image-box-container:hover{
+  background-color: var(--children-bg-color);
 }
 .image-box-container p{
   font-size: 14px;
@@ -190,7 +194,6 @@
 .user-name p {
   font-size: 10px;
   font-weight: 500;
-  color: var( --active-text-color);
 }
 
 .menu-icon {
