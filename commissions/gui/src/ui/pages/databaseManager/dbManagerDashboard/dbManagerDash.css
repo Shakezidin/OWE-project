@@ -157,22 +157,21 @@ opacity: 0px;
     align-items: center;
     border-radius: 8px;
     border: 1px solid #b6b5b5;
-    margin-left: 47px;
+    /* margin-left: 47px; */
     /* Add z-index to ensure the dropdown appears above other elements */
     z-index: 1; /* You can adjust the value as needed */
   }
   
   .dash-select {
-    background-color: #ffffff;
     position: relative;
     border: none;
     outline: none;
-    padding: .1rem .5rem .1rem .5rem;
+    padding: .3rem .5rem;
     font-size: 12px;
     cursor: pointer;
     color: #02050a !important;
     font-weight: 500;
-    border-radius: .25rem;
+    border-radius: .40rem;
     /* Add a higher z-index to ensure the dropdown menu appears above other elements */
     z-index: 2; /* You can adjust the value as needed */
   }
