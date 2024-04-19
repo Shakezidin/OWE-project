@@ -19,6 +19,7 @@
   margin-top: 2px;
   width: 20px;
   height: 20px;
+ 
 }
 .profile-section {
   display: flex;
@@ -27,11 +28,13 @@
   /* height: 520px; */
   border-radius: 16px;
   padding-bottom: 2rem;
+
 }
 .profile-sec-button {
   padding: 1rem;
   background-color: white;
   border-radius: 16px;
+  
 }
 /* .profile-sec-button button {
   background-color: white;
@@ -71,7 +74,7 @@ background-color: #E9F0FF;
 font-weight: 600;
 }
 .vertical {
-  border-left: 2px solid #dbdddf;
+  border-left: 1px solid #dbdddf;
   height: 650px !important;
   margin-top: 1.5rem;
 
@@ -83,7 +86,7 @@ font-weight: 600;
   font-weight: 500;
   line-height: 27px;
   text-align: left;
-  /* max-height: 50vh; */
+  
 }
 .admin-section {
   display: flex;
@@ -93,7 +96,7 @@ font-weight: 600;
   gap: 1rem;
   align-items: center;
   margin-top: 1rem;
-  width: 854px;
+  width: 960px;
   height: 114px;
   border: 1px solid #e0e0e0;
   border-radius: 16px;
@@ -129,7 +132,7 @@ font-weight: 600;
 }
 .Personal-container {
   margin-top: 1rem;
-  width: 854px;
+  width: 960px;
   height: 250px;
   opacity: 0px;
   border: 1px solid #e0e0e0;
@@ -149,8 +152,8 @@ font-weight: 600;
 }
 .reset-Update {
   display: flex;
-  justify-content: center;
-  margin-top: 2rem;
+  justify-content: right;
+  padding: 1rem;
 }
 .reset-Update button {
   width: 280px;
@@ -172,6 +175,7 @@ font-weight: 600;
 
 .profile-reset {
   display: flex;
+  justify-content: right;
   gap: 2rem;
   margin-top: 1rem;
 }
