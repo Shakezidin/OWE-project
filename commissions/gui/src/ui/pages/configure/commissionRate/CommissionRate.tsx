@@ -96,7 +96,7 @@ const CommissionRate: React.FC = () => {
     // Implement archive logic here
     console.log("Archiving row:", archived);
     const newSelectedRows = new Set(selectedRows);
-    newSelectedRows.delete(record_id);
+    newSelectedRows?.delete(record_id);
     setSelectedRows(newSelectedRows);
   };
  
