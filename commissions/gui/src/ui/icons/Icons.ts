@@ -43,6 +43,12 @@ import sales from '../../resources/assets/sales.svg'
 import ntp from '../../resources/assets/ntp.svg'
 import install from '../../resources/assets/install.svg'
 import cancelled from '../../resources/assets/cancel.svg'
+import greenDoller from '../../resources/assets/greenDoller.svg'
+import redDoller from '../../resources/assets/redDoller.svg'
+import curveRed from '../../resources/assets/curveRed.svg'
+import curveGreen from '../../resources/assets/curvegreen.svg'
+import arrowGreen from '../../resources/assets/greenArrow.svg'
+import arrowRed from '../../resources/assets/redArrow.svg'
 export const ICONS = {
   BACKGROUND: require("../../resources/assets/background.png"),
   LOGO: require("../../resources/assets/logo.png"),
@@ -99,5 +105,11 @@ supportImage: supportImage,
 salesIcon:sales,
 ntpIcon:ntp,
 installIcon:install,
-cancelIcon:cancelled
+cancelIcon:cancelled,
+greenDoller:greenDoller,
+redDoller:redDoller,
+curveGreen:curveGreen,
+curveRed:curveRed,
+arrowRed:arrowRed,
+arrowGreen:arrowGreen
 };

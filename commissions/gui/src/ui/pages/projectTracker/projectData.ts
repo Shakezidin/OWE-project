@@ -26,3 +26,36 @@ export const cardData=[
     icon:ICONS.cancelIcon,
 }
 ]
+export const projectDashData=[
+    {
+        ruppes:"$620,450.05",
+        para:"Total Sales for Periods",
+        iconBgColor:"#E8F8EE",
+        icon:ICONS.greenDoller,
+        percentColor:"#14AD8A",
+        curveImg:ICONS.curveGreen,
+        arrow:ICONS.arrowGreen,
+       
+    },
+    {
+        ruppes:"$620,450.05",
+        para:"Total Cancellation for Periods",
+        iconBgColor:"#FFE6E6",
+        icon:ICONS.redDoller,
+        arrow:ICONS.arrowRed,
+        percentColor:"#E92727",
+        curveImg:ICONS.curveRed
+       
+    },
+    {
+        ruppes:"$620,450.05",
+        para:"Team Performance",
+        iconBgColor:"#E8F8EE",
+        icon:ICONS.greenDoller,
+        percentColor:"#14AD8A",
+        curveImg:ICONS.curveGreen,
+        arrow:ICONS.arrowGreen,
+       
+    }
+   
+]
