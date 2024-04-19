@@ -7,7 +7,6 @@
   justify-content: space-between;
   align-items: center;
   gap: 2rem;
-
 }
 .Dashboard-wel h6 {
   font-size: 12px;
@@ -23,6 +22,7 @@
   line-height: 30px;
   text-align: left;
   color: #263747;
+  margin-bottom: -10px;
 }
 .commission-section-dash {
   display: flex;
@@ -37,8 +37,8 @@
   align-items: center;
   background-color: white;
   border-radius: 16px;
-  padding: 1rem 2rem 1rem 1rem;
-  width: 32%;
+  padding: 1.2rem;
+  width: 32.3%;
   height: 110px;
 }
 
@@ -109,16 +109,18 @@
  width: 36px !important;
  height: 36px !important;
  border-radius: .5rem;
-cursor: pointer;
-background-color: white;
+ cursor: pointer;
+ background-color: white;
  display: flex;
  align-items: center;
  justify-content: center;
-  }
-  .active-filter-line{
-    background-color: #263747;
-    color: white;
-  }
+}
+.active-filter-line{
+  background-color: #263747;
+}
+.active-filter-line img{
+  fill: white;
+}
 .filter-line img{
  width:20px;
  height: 20px;

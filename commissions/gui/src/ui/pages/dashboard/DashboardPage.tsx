@@ -18,6 +18,7 @@ export const DashboardPage: React.FC = () => {
       <div className="Dashboard-section-container">
         <div className="Dashboard-container">
           <div className="Dashboard-wel">
+            <h3>Dashboard</h3> 
             <Breadcrumb head="Dashboard" linkPara="Commission" linkparaSecond="Dashboard" />
           </div>
           <div className="dashboard-payroll" >
@@ -36,7 +37,8 @@ export const DashboardPage: React.FC = () => {
             <div className="Line-container">
               <div className="line-graph">
                 <div className={`filter-line ${active === 0 ? "active-filter-line" : ""}`} onClick={() => setActive(0)}>
-                  <img src={ICONS.dashHead} style={{ background: "white" }} alt="" />
+                  <img src={ICONS.dashHead} alt="" />
+                  {/* fill={active === 0 ? "#ff0000" : "none"} */}
                 </div>
                 <div className={`filter-line ${active === 1 ? "active-filter-line" : ""}`} onClick={() => setActive(1)}>
                   <img src={ICONS.viewChart} alt="" />

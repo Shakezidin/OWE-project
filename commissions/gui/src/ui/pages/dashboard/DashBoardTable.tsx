@@ -69,9 +69,9 @@ const DashBoardTable: React.FC = () => {
     <>
       <div
         className="TableContainer"
-        style={{ overflowX: "auto", whiteSpace: "nowrap" }}  >
+        style={{ overflowX: "auto", whiteSpace: "nowrap", borderRadius: "16px 16px 0 0" }}  >
         <table>
-          <thead >
+          <thead>
             <tr style={{background: "#FCFCFD"}}>
               <th>
                 <div>
@@ -180,9 +180,9 @@ const DashBoardTable: React.FC = () => {
                     />
                   </td>
                   <td style={{ fontWeight: "500", color: "black" }}>{el.pi}</td>
-                  <td style={{color:"#101828"}}>{el.dn}</td>
-                  <td style={{color:"#101828"}}>{el.sr}</td>
-                  <td style={{color:"#101828"}}>{el.cn}</td>
+                  <td style={{fontWeight: "500", color:"#101828"}}>{el.dn}</td>
+                  <td style={{fontWeight: "500", color:"#101828"}}>{el.sr}</td>
+                  <td style={{fontWeight: "500", color:"#101828"}}>{el.cn}</td>
                   <td style={{color: "#0493CE"}}>{el.amt}</td>
                   <td style={{color: "#0493CE"}}>{el.pipeline}</td>
                   <td style={{color: "#0493CE"}}>{el.cd}</td>

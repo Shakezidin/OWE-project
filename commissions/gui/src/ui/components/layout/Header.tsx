@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./layout.css";
 import "../layout/layout.css";
 import { GoSearch } from "react-icons/go";
@@ -18,6 +18,7 @@ interface Toggleprops {
 }
 
 const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen, setSidebarChange, sidebarChange }) => {
+  const [name, setName] = useState<String>();
   const userRole = localStorage.getItem("role");
   const userEmail = localStorage.getItem("email");
   const [openModal, setOpenModal] = useState<boolean>(false)
@@ -30,6 +31,12 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen, setSidebarCh
     dispatch(logout());
     navigate("/");
   };
+  useEffect(() => {
+    if (userEmail) {
+      var firstLetter = userEmail.charAt(0).toUpperCase();
+      setName(firstLetter); // Set the first letter as the name
+    }
+  }, [userEmail]);
   return (
     <div className="header-content">
       <div className="header-icon">
@@ -88,8 +95,8 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen, setSidebarCh
             <img src={ICONS.NOTIFICATION} alt="" />
           </div>
           <div className="user-img-container">
-            <div className="user-img">
-              <img src={ICONS.USER_IMAGE} alt="" />
+          <div className="user-img">
+              <span>{name}</span>
             </div>
             <div className="user-name">
               <div className="down-arrow">
