@@ -47,13 +47,12 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen, setSidebarCh
       </div>
       <div className="search-container">
         <div className="user-container">
-          {/* <button className="app-btn" onClick={() => setOpenModal(!openModal)}> */}
-          <button className="app-btn">
+          {/* <button className="app-btn" onClick={() => setOpenModal(!openModal)}>
             {
               openModal ? <img src={ICONS.groupActiveIcon} alt="" /> : <img src={ICONS.groupIcon} alt="" />
             }
-          </button>
-          {
+          </button> */}
+          {/* {
             openModal && (<div className="header-modal">
               <div className="select-head">
                 <p>Select Option</p>
@@ -90,8 +89,9 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen, setSidebarCh
                   Team Management
                 </p>
               </div>
-            </div>)
-          }
+            </div>
+            )
+          } */}
           <div className="notification">
             <img src={ICONS.NOTIFICATION} alt="" />
           </div>
@@ -123,7 +123,6 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen, setSidebarCh
                         </p>
                       </div>
 
-
                       <div className="image-box-container "
                         // style={{ paddingLeft: toggleOpen ? ".8rem" : "" }}
                         onClick={handleLogout} >
@@ -142,11 +141,6 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen, setSidebarCh
                         }
 
                       </div>
-
-
-
-
-
                     </div>
                     )
                   }
