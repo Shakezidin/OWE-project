@@ -1,11 +1,11 @@
 .support-cont-section{
     display: flex;
-    width: 1138px;
+    width: 1255px;
     height: 536px;
     margin-top: 1rem;
     left: 270px;
     gap: 0px;
-    border-radius: 24px;
+    border-radius: 16px;
     opacity: 0px;
     background: #ffffff;
 }
@@ -21,24 +21,26 @@
   text-align: left;
 }
 .supportImage {
-  margin-top: 5rem;
-  width: 390px;
+  margin-top: 3rem;
+  padding: 2rem;
+  width: 450px;
   height: 207px;
-  top: 279px;
   opacity: 0px;
+
   /* padding: 2rem; */
 }
 .vertical-support {
-    border-left: 2px solid #dbdddf;
+    border-left: 1px solid #dbdddf;
     height: 450px;
     margin-top: 3rem;
    padding: 1rem;
     /* border: 1px 0px 0px 0px; */
   }
   .touch-container {
-    margin-top: 2rem;
-    width: 100%;
+  
+    width: 55%;
     height:"50vh";
+    padding: 2rem;
   }
 .touch-info {
     font-size: 18px;

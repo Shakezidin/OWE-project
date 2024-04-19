@@ -24,7 +24,7 @@ const TechnicalSupport = () => {
             <p>Get In Touch with us for more Information</p>
           </div>
           <div className="create-input-container" style={{ width: "100%", display: "flex", marginTop: "1rem" }}>
-            <div className="create-input-field" style={{ width: "40%" }} >
+            <div className="create-input-field" style={{ width: "290px" }} >
               <Input
                 type={"text"}
                 label="First Name"
@@ -34,7 +34,7 @@ const TechnicalSupport = () => {
                 onChange={(e) => { }}
               />
             </div>
-            <div className="create-input-field" style={{ width: "40%" }}>
+            <div className="create-input-field" style={{ width: "290px" }}>
               <Input
                 type={"text"}
                 label="Last Name"
@@ -46,7 +46,7 @@ const TechnicalSupport = () => {
             </div>
           </div>
           <div className="create-input-container" style={{ width: "100%", display: "flex", marginTop: "1rem" }}>
-            <div className="create-input-field" style={{ width: "40%" }} >
+            <div className="create-input-field" style={{ width: "290px" }} >
               <Input
                 type={"text"}
                 label="Email"
@@ -57,7 +57,7 @@ const TechnicalSupport = () => {
 
               />
             </div>
-            <div className="create-input-field" style={{ width: "40%" }}>
+            <div className="create-input-field" style={{ width: "290px" }}>
               <Input
                 type={"text"}
                 label="Phone Number"
@@ -81,7 +81,7 @@ const TechnicalSupport = () => {
                   outline: "none",
                   fontSize: "13px",
                   height: "2.25rem",
-                  width: "260px",
+                  width: "290px",
                   border: "1px solid #d0d5dd",
                 }),
 
@@ -91,33 +91,9 @@ const TechnicalSupport = () => {
               }}
 
             />
-        </div>
-        <div className="create-input-container">
-            <div className="rate-input-container">
-              <div className="rate-input-field">
-                <Input
-                  type={"number"}
-                  label="Rate"
-                  value={"createCommission.rate"}
-                  name="rate"
-                  placeholder={"Rate"}
-                  onChange={(e) => { }}
-                />
-              </div>
-              <div className="rate-input-field">
-                <Input
-                  type={"number"}
-                  label="Rate List"
-                  value={"createCommission.rate"}
-                  name="rl"
-                  placeholder={"Rate List"}
-                  onChange={(e) => { }} />
-              </div>
-            </div>
           </div>
         </div>
       </div>
-
     </>
   )
 }
