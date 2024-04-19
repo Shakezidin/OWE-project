@@ -2,7 +2,7 @@ import React from 'react'
 import Breadcrumb from '../../components/breadcrumb/Breadcrumb'
 import '../projectTracker/projectTracker.css'
 import { ICONS } from '../../icons/Icons'
-import { cardData } from './projectData'
+import { cardData, projectDashData } from './projectData'
 const ProjectTracker = () => {
   return (
     <div className="">
@@ -39,7 +39,33 @@ const ProjectTracker = () => {
       </div>
     ))
   }
-
+  
+</div>
+<div className="project-card-container">
+{
+  projectDashData.map((item,i)=>(
+    <div className="project-ruppes-card" key={i}>
+     <div className="project-ruppes-body">
+     <div className="project-icon-img" style={{background:item.iconBgColor}}>
+      <img src={item.icon} alt="" />
+     </div>
+     <div className="doller-head">
+      <h2>{item.ruppes}</h2>
+      <p>{item.para}</p>
+     </div>
+     </div>
+     <div className="project-ruppes-body">
+     <div className="project-img-curve">
+      <img src={item.curveImg} alt="" />
+     </div>
+     <div className="percent" style={{background:item.iconBgColor}}>
+      <img src={item.arrow} alt="" />
+      <p style={{color:item.percentColor}}>40%</p>
+     </div>
+     </div>
+    </div>
+  ))
+}
 </div>
 
       </div>

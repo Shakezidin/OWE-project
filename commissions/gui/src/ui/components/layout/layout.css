@@ -17,7 +17,7 @@
   position: sticky;
   border-bottom: 1px solid #F0F0F0; 
   top: 0;
-  z-index: 10;
+  z-index: 100;
   /* box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.1); */
 }
 
