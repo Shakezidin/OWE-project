@@ -37,14 +37,13 @@ export const DashboardPage: React.FC = () => {
             <div className="Line-container">
               <div className="line-graph">
                 <div className={`filter-line ${active === 0 ? "active-filter-line" : ""}`} onClick={() => setActive(0)}>
-                  <img src={ICONS.dashHead} alt="" />
-                  {/* fill={active === 0 ? "#ff0000" : "none"} */}
+                  {active === 0 ? <img src={ICONS.dashActive} alt="" /> : <img src={ICONS.dashHead} alt="" /> }
                 </div>
                 <div className={`filter-line ${active === 1 ? "active-filter-line" : ""}`} onClick={() => setActive(1)}>
-                  <img src={ICONS.viewChart} alt="" />
+                {active === 1 ? <img src={ICONS.viewActive} alt="" /> : <img src={ICONS.viewChart} alt="" /> }
                 </div>
                 <div className={`filter-line ${active === 2 ? "active-filter-line" : ""}`} onClick={() => setActive(2)}>
-                  <img src={ICONS.FILTER} alt="" />
+                {active === 2 ? <img src={ICONS.FILTERACTIVE} alt="" /> : <img src={ICONS.FILTER} alt="" /> }
                 </div>
               </div>
             </div>

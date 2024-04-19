@@ -17,8 +17,11 @@ import activityIcon from '../../resources/assets/activityIcon.svg'
 import report from '../../resources/assets/report.svg'
 import menu from '../../resources/assets/menu-icon.svg'
 import filter from '../../resources/assets/filter.svg'
+import filterActive from '../../resources/assets/filterActive.svg'
 import dashHead from '../../resources/assets/dashhead.svg'
+import dashActive from '../../resources/assets/dashactive.svg'
 import viewChart from '../../resources/assets/viewcahrt.svg'
+import viewActive from '../../resources/assets/viewActive.svg'
 import archive from '../../resources/assets/archive.svg'
 import edit from '../../resources/assets/edit.svg'
 import viewA from '../../resources/assets/ellips.svg'
@@ -57,6 +60,7 @@ export const ICONS = {
   DOWN_ARROW: require("../../resources/assets/arrow-down.png"),
   VIEW_ARCHIVE: viewA,
   FILTER:filter,
+  FILTERACTIVE: filterActive,
   ARCHIVE:archive,
   editIcon:edit,
   APPICON: require("../../resources/assets/appicon.png"),
@@ -74,7 +78,9 @@ export const ICONS = {
   arrowNext: require("../../resources/assets/Vector.svg"),
   groupActiveIcon:groupActive,
   viewChart:viewChart,
+  viewActive:viewActive,
   dashHead:dashHead,
+  dashActive:dashActive,
   cross: crossIcon,
   dash: dashIcon,
   config: ConfigIcon,
