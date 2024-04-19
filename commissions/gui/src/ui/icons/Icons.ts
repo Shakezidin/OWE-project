@@ -52,6 +52,7 @@ import curveRed from '../../resources/assets/curveRed.svg'
 import curveGreen from '../../resources/assets/curvegreen.svg'
 import arrowGreen from '../../resources/assets/greenArrow.svg'
 import arrowRed from '../../resources/assets/redArrow.svg'
+import search from '../../resources/assets/search.svg'
 export const ICONS = {
   BACKGROUND: require("../../resources/assets/background.png"),
   LOGO: require("../../resources/assets/logo.png"),
@@ -117,5 +118,6 @@ redDoller:redDoller,
 curveGreen:curveGreen,
 curveRed:curveRed,
 arrowRed:arrowRed,
-arrowGreen:arrowGreen
+arrowGreen:arrowGreen,
+search:search
 };
