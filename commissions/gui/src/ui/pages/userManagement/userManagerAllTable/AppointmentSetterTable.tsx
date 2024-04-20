@@ -1,5 +1,4 @@
 import React from "react";
-import "../../userManagement/user.css";
 import { ICONS } from "../../../icons/Icons";
 import { CiEdit } from "react-icons/ci";
 import CheckBox from "../../../components/chekbox/CheckBox";
@@ -64,6 +63,7 @@ const AppointmentSetterTable: React.FC = () => {
         className="UserManageTable"
         style={{ overflowX: "auto", whiteSpace: "nowrap" }}
       >
+
         <table>
           <thead style={{ background: "#F5F5F5" }}>
             <tr>

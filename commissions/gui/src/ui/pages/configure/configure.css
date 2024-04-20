@@ -41,6 +41,14 @@
   border-bottom: 1px solid var(--border-color);
 }
 
+.dashBoard-container{
+    background-color: var(--white-color);
+    justify-content: space-between;
+    border-radius: 1rem;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+
 .iconContainer {
   display: flex;
   justify-content: space-between;
@@ -110,7 +118,13 @@
 .TableContainer {
   overflow-x: auto;
   position: relative;
-  height: 60vh;
+  height: 60vh; 
+  background: var(--white-color);
+  border-radius: 16px;
+  overflow-x: auto;
+  scrollbar-color: rgba(0, 0, 0, 0.5) rgba(0, 0, 0, 0.1);
+  scrollbar-width: thin;
+
 }
 
 .UserManageTable {
