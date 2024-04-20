@@ -36,9 +36,7 @@ const UserManagement: React.FC = () => {
       </div>
 
       <div className="onboardrow">
-        <div className="user-component">
-          <UserHeaderSection />
-        </div>
+         <UserHeaderSection />
       </div>
     </>
   );
