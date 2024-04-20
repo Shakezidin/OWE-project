@@ -49,7 +49,6 @@ export const LoginPage = () => {
     let localEmail = localStorage.getItem('email');
     let localPassword = localStorage.getItem('password');
 
-    console.log(localEmail, localPassword, localRememberMe)
     if(localRememberMe === 'true'){
       handleInputChange('email_id', localEmail)
       handleInputChange('password', localPassword)
@@ -78,8 +77,9 @@ export const LoginPage = () => {
     } else {
       try {
         const response = await login(credentials);
-        const { email_id, role_name, access_token } = response.data;
+        const { email_id, user_name, role_name, access_token } = response.data;
         localStorage.setItem("email", email_id);
+        localStorage.setItem('userName', user_name)
         localStorage.setItem("role", role_name);
         localStorage.setItem("token", access_token);
         localStorage.setItem('password', credentials.password)

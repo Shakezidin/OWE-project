@@ -1,7 +1,6 @@
 import React from "react";
 import { ICONS } from "../../icons/Icons";
-import DashBoardTable from "./DashBoardTable";
-import DonutChart from "./DonutChart/DonutChart";
+
 const DashboardTotal: React.FC = () => {
   const data = [
     {
