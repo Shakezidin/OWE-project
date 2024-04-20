@@ -19,7 +19,9 @@ const UserManagement: React.FC = () => {
           <h2>User Management</h2>
         </div>
 
-        <AddNewButton title={"Add New"} onClick={()=>{} }/>
+        <AddNewButton title={"Add New"} onClick={()=>{
+          handleOpen()
+        } }/>
        
       </div>
       {open && (

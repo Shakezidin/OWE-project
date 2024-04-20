@@ -18,11 +18,10 @@ interface ActionButtonProps {
 export const AddNewButton = (props: ActionButtonProps) => {
   const { title, onClick } = props;
   return (
-   <div className="add_view_button">
+   <div className="add_view_button" onClick={onClick}>
     <img src={ICONS.AddIcon} alt=""/>
     <br/>
      <button
-      onClick={onClick}
       type={'button'}
     >
       {title}
