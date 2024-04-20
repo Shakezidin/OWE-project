@@ -11,7 +11,7 @@ import SalesManagerTable from "../userManagerAllTable/SalesManagerTable";
 import SalesRepresentativeTable from "../userManagerAllTable/SalesRepresentativeTable";
 import DealerOwnerTable from "../userManagerAllTable/DealerOwnerTable";
 import RegionalManagerTable from "../userManagerAllTable/RegionalManagerTable";
-import "./UserHeader.css"
+import "./UserHeader.css";
 // interface props {
 //   name: string;
 // }
@@ -30,8 +30,8 @@ const UserHeaderSection: React.FC = () => {
     switch (selectedOption) {
       case "Admin User":
         return <UserTable />;
-    case "DB User":
-          return <UserTable />;
+      case "DB User":
+        return <UserTable />;
       case "Appointment Setter":
         return <AppointmentSetterTable />;
       case "Partner":
@@ -74,7 +74,7 @@ const UserHeaderSection: React.FC = () => {
                   border: "1px solid #d0d5dd",
                 }),
                 indicatorSeparator: () => ({
-                  display: 'none'
+                  display: "none",
                 }),
                 option: (baseStyles) => ({
                   ...baseStyles,
@@ -83,7 +83,7 @@ const UserHeaderSection: React.FC = () => {
                 menu: (baseStyles) => ({
                   ...baseStyles,
                   minWidth: "12rem",
-                  width: "12rem"
+                  width: "12rem",
                 }),
               }}
             />
@@ -92,9 +92,8 @@ const UserHeaderSection: React.FC = () => {
           <div className="iconsSection-delete">
             <button type="button">
               <img src={ICONS.deleteIcon} alt="" />
-              <h4>Delete</h4>
             </button>
-          </div>
+            </div>
 
           <div className="iconsSection-filter">
             <button type="button">
@@ -109,5 +108,3 @@ const UserHeaderSection: React.FC = () => {
 };
 
 export default UserHeaderSection;
-
-
