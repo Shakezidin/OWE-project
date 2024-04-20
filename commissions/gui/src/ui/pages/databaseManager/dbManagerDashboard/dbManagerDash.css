@@ -33,15 +33,19 @@
   width: 181px;
   height: 139px;
   margin-left: 1.5rem;
+  margin-right: 2rem;
   gap: 0px;
   border-radius: 12px;
   opacity: 0px;
   background: #0069a3;
+  display: inline-block;
 }
+
 .active-since-section button {
   width: 100px;
   height: 36px;
   margin-top: 30px;
+  margin-bottom: 9px;
   border-radius: 100px;
   opacity: 0px;
   border: none;
@@ -71,7 +75,7 @@
   border: 1px solid #d0d5dd;
 }
 .dash-section {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 600;
   line-height: 24px;
   text-align: left;
@@ -87,10 +91,11 @@
   justify-content: space-between;
   align-items: center;
 }
-.since-section p {
+.status-section p {
   font-size: 16px;
   font-weight: 600;
   line-height: 24px;
+  color: #263747;
 }
 .create-container {
   border: 1px solid #D0D5DD;
@@ -172,6 +177,19 @@
     /* Add z-index to ensure the dropdown appears above other elements */
     z-index: 1; /* You can adjust the value as needed */
   }
+  .Payroll-section1 {
+    display: flex;
+    height: 36px;
+    background-color: white;
+    padding: 0 6px 0 12px;
+    gap: 0.5rem;
+    align-items: center;
+    border-radius: 8px;
+    border: 1px solid #b6b5b5;
+    margin-left: 41px;
+    /* Add z-index to ensure the dropdown appears above other elements */
+    z-index: 1; /* You can adjust the value as needed */
+  }
   
   .dash-select {
     background-color: #ffffff;
@@ -181,11 +199,11 @@
     padding: .1rem .5rem .1rem .5rem;
     font-size: 12px;
     cursor: pointer;
-    color: #02050a !important;
+    color: #000000 !important;
     font-weight: 500;
     border-radius: .25rem;
-    /* Add a higher z-index to ensure the dropdown menu appears above other elements */
-    z-index: 2; /* You can adjust the value as needed */
+    z-index: 2; 
+    line-height: 20px;
   }
   
   .identity{

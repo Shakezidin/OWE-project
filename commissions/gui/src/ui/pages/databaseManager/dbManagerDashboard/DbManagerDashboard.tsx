@@ -114,7 +114,7 @@ const DbManagerDashboard = () => {
               <div className="Create-section">
                 <p>Update Webhooks</p>
                 
-              <div className="Payroll-section">
+              <div className="Payroll-section1">
               <select name="" id="" className="dash-select" onChange={handleSelectChange}>
                 <option value="Today">Today</option>
                 <option value="This Week">This Week</option>

@@ -2,11 +2,9 @@ import React, { PureComponent } from "react";
 import {
   BarChart,
   Bar,
-  Rectangle,
   XAxis,
   YAxis,
   CartesianGrid,
-  Tooltip,
   Legend,
   ResponsiveContainer,
 } from "recharts";
@@ -56,7 +54,7 @@ const data = [
   },
 ];
 
-export default class LineChart extends PureComponent {
+export default class BarChartComponent extends PureComponent {
   render() {
     return (
       <div className="">
@@ -70,26 +68,35 @@ export default class LineChart extends PureComponent {
               height={800}
               data={data}
               margin={{
-                // top: 50,
                 right: 30,
                 left: 20,
                 bottom: 30,
               }}
             >
               <CartesianGrid vertical={false} />
-              <XAxis dataKey="name"  tickLine={false}  tick={{  fill: "#000000",fontWeight: 500, fontSize: "10px"}}/>
-              <YAxis axisLine={false} tick={{ fontFamily: "Inter", fontWeight: 500, fontSize: 12, fill: "#101828" }} tickLine={false}/>
-              <Legend/>
+              <XAxis
+                dataKey="name"
+                tickLine={false}
+                tick={{ fill: "#000000", fontWeight: 500, fontSize: "10px" }}
+              />
+              <YAxis
+                axisLine={false}
+                tick={{ fontFamily: "Inter", fontWeight: 500, fontSize: 12, fill: "#101828" }}
+                tickLine={false}
+              />
+              <Legend
+                wrapperStyle={{ fontSize: "12px", color: "#000000" }} payload={[{ value: 'Total Records', type: 'rect', color: '#FB7955'  }, { value: 'Historical Records', type: 'rect', color: '#007AF5' }]} iconSize={15} 
+              />
               <Bar
                 dataKey="Total_Records"
                 fill="#FB7955"
-                label={{ position: "top", fill: "black", fontSize: 12, fontWeight: "bold" }}
+                label={{ position: "top", fill: "#565656", fontSize: "10px", fontWeight: 500 }}
                 radius={[8, 8, 0, 0]}
               />
               <Bar
                 dataKey="Historical_Records"
                 fill="#007AF5"
-                label={{ position: "top", fill: "black", fontSize: 12, fontWeight: "bold" }}
+                label={{ position: "top", fill: "#565656", fontSize: "10px", fontWeight: 500 }}
                 radius={[8, 8, 0, 0]}
               />
             </BarChart>

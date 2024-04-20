@@ -14,6 +14,7 @@ import DataTableHeader from "../../../components/tableHeader/DataTableHeader";
 import FilterDealer from "../../configure/dealerOverrides/FilterDealer";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import { toggleAllRows, toggleRowSelection } from "../../../components/chekbox/checkHelper";
+import FilterData from "./FilterData";
 
 
 
@@ -123,7 +124,9 @@ const DataTablle: React.FC = () => {
           onPressImport={() => { }}
         />
 
-
+             {filterOPen && <FilterData handleClose={filterClose}  
+            
+             />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}

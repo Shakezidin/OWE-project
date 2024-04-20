@@ -110,6 +110,7 @@ const CommissionRate: React.FC = () => {
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === commissionList.length;
 
+  
   return (
     <div className="comm">
       <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Commission Rate"/>

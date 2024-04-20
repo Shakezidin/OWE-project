@@ -16,7 +16,6 @@ const CustomBox = (props: CustomBoxProps) => {
       <div className="boxUpperView">
         <img src={icon} alt={"icon"} />
       </div>
-
       <div className="boxBelowView">
         <span className="boxCommissionText">{title}</span>
         <br />
