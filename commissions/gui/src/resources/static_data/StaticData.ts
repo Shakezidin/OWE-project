@@ -1,4 +1,3 @@
-import UserTable from "../../ui/pages/userManagement/userManagerAllTable/UserTable";
 
 export const partners = [
   { value: 'OWE', label: 'OWE' },
