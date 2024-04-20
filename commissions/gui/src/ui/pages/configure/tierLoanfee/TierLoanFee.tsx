@@ -147,31 +147,24 @@ const TierLoanFee = () => {
           <table>
             <thead>
               <tr>
-                <th>
-                  <div>
-                    <CheckBox
-                      checked={selectAllChecked}
-                      onChange={() =>
-                        toggleAllRows(
-                          selectedRows,
-                          tierloanList,
-                          setSelectedRows,
-                          setSelectAllChecked
-                        )
-                      }
-                      indeterminate={isAnyRowSelected && !isAllRowsSelected}
-                    />
-                  </div>
-                </th>
+               
                 {
                 TierLoanColumn?.map((item,key)=>(
                   <SortableHeader
                   key={key}
+                  isCheckbox={item.isCheckbox}
                   titleName={item.displayName}
+                  data={tierloanList}
+                  isAllRowsSelected={isAllRowsSelected}
+                  isAnyRowSelected={isAnyRowSelected}
+                  selectAllChecked={selectAllChecked}
+                  setSelectAllChecked={setSelectAllChecked}
+                  selectedRows={selectedRows}
+                  setSelectedRows={setSelectedRows}
                   sortKey={item.name}
                   sortDirection={sortKey === item.name ? sortDirection : undefined}
-                  onClick={()=>handleSort(item.name)}
-                  />
+                  onClick={() => handleSort(item.name)}
+                />
                 ))
               }
               <th>
@@ -185,8 +178,10 @@ const TierLoanFee = () => {
               {currentPageData?.length > 0
                 ? currentPageData?.map((el: any, i: any) => (
                     <tr key={i}>
-                      <td>
-                        <CheckBox
+                    
+                      <td style={{ fontWeight: "500", color: "black" }}>
+                  <div className="flex-check">
+                  <CheckBox
                           checked={selectedRows.has(i)}
                           onChange={() =>
                             toggleRowSelection(
@@ -197,9 +192,8 @@ const TierLoanFee = () => {
                             )
                           }
                         />
-                      </td>
-                      <td style={{ fontWeight: "500", color: "black" }}>
                         {el.dealer_tier}
+                  </div>
                       </td>
                       <td>{el.installer}</td>
                       <td>{el.state}</td>
@@ -230,7 +224,7 @@ const TierLoanFee = () => {
         <div className="page-heading-container">
       
       <p className="page-heading">
-       {currentPage} - {totalPages} of {tierloanList?.length} item
+       {currentPage} - {totalPages} of {currentPageData?.length} item
       </p>
  
    {
@@ -238,6 +232,7 @@ const TierLoanFee = () => {
       currentPage={currentPage}
       totalPages={totalPages} // You need to calculate total pages
       paginate={paginate}
+      currentPageData={currentPageData}
       goToNextPage={goToNextPage}
       goToPrevPage={goToPrevPage}
     /> : null

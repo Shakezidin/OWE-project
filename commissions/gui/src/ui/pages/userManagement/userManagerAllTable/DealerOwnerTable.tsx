@@ -154,20 +154,22 @@ const DealerOwnerTable: React.FC = () => {
           </tbody>
         </table>
         <div className="page-heading-container">
-          <p className="page-heading">
-            {currentPage} - {totalPages} of {dataUser?.length} item
-          </p>
-
-          {dataUser?.length > 0 ? (
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages} // You need to calculate total pages
-              paginate={paginate}
-              goToNextPage={goToNextPage}
-              goToPrevPage={goToPrevPage}
-            />
-          ) : null}
-        </div>
+      
+      <p className="page-heading">
+       {currentPage} - {totalPages} of {dataUser?.length} item
+      </p>
+ 
+   {
+    dataUser?.length > 0 ? <Pagination
+      currentPage={currentPage}
+      totalPages={totalPages} // You need to calculate total pages
+      paginate={paginate}
+      goToNextPage={goToNextPage}
+      goToPrevPage={goToPrevPage}
+      currentPageData={currentPageData}
+    /> : null
+  }
+   </div>
       </div>
     </>
   );

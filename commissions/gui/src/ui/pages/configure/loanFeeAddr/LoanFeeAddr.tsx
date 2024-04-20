@@ -390,7 +390,7 @@ const LoanFeeAddr: React.FC = () => {
         <div className="page-heading-container">
       
       <p className="page-heading">
-       {currentPage} - {totalPages} of {commissionList?.length} item
+       {currentPage} - {totalPages} of {currentPageData?.length} item
       </p>
  
    {
@@ -398,6 +398,7 @@ const LoanFeeAddr: React.FC = () => {
       currentPage={currentPage}
       totalPages={totalPages} // You need to calculate total pages
       paginate={paginate}
+      currentPageData={currentPageData}
       goToNextPage={goToNextPage}
       goToPrevPage={goToPrevPage}
     /> : null

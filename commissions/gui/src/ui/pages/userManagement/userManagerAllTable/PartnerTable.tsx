@@ -134,6 +134,7 @@ const PartnerTable: React.FC = () => {
       </div>
     </>
   );
+
 };
 
 export default PartnerTable;

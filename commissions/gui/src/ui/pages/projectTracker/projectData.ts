@@ -59,3 +59,138 @@ export const projectDashData=[
     }
    
 ]
+
+export const statusDataRow=[
+    {
+    title:"Owe App Installation",
+    statusData:[
+        {
+            name:"Sales",
+            bgImg:ICONS.firstRect,
+            queruIcon:ICONS.activeQueryIcon,
+            date:"20 Feb 2024",
+            width:"140px",
+            isProgress:false,
+            color:"white"
+    
+        },
+        {
+            name:"Site Survey",
+            queruIcon:ICONS.queryIcon,
+            bgImg:ICONS.secondRec,
+            date:"Date not available",
+            width:"140px",
+            isProgress:false,
+        },
+        {
+            name:"Permit Submitted",
+            queruIcon:ICONS.queryIcon,
+            bgImg:ICONS.secondRec,
+            date:"Date not available",
+            width:"180px",
+            isProgress:false,
+        },
+        {
+            name:"Install Ready",
+            queruIcon:ICONS.queryIcon,
+            bgImg:ICONS.secondRec,
+            date:"Date not available",
+            width:"140px",
+            isProgress:false,
+        },
+        {
+            name:"Install Completed",
+            queruIcon:ICONS.queryIcon,
+            bgImg:ICONS.secondRec,
+            width:"180px",
+            date:"Date not available",
+            isProgress:false,
+        },
+        {
+            name:"PTO",
+            queruIcon:ICONS.queryIcon,
+            bgImg:ICONS.fiveRec,
+            date:"Date not available",
+            width:"127px",
+            isProgress:false,
+        },
+       
+        {
+            name:"20%",
+            isProgress:true,
+            queruIcon:ICONS.percent,
+            bgImg:ICONS.progressIcon,
+            date:"Overall Progress",
+            width:"140px",
+        },
+    
+    ]
+    },
+    {
+        title:"Owe App Installation",
+        statusData:[
+            {
+                name:"Sales",
+                bgImg:ICONS.greenRect,
+                queruIcon:ICONS.activeQueryIcon,
+                date:"20 Feb 2024",
+                width:"140px",
+                isProgress:false,
+                color:"white"
+        
+            },
+            {
+                name:"Site Survey",
+                queruIcon:ICONS.activeQueryIcon,
+                bgImg:ICONS.blueRect,
+                date:"Date not available",
+                width:"140px",
+                isProgress:false,
+                color:"white"
+            },
+            {
+                name:"Permit Submitted",
+                queruIcon:ICONS.queryIcon,
+                bgImg:ICONS.secondRec,
+                date:"Date not available",
+                width:"180px",
+                isProgress:false,
+            },
+            {
+                name:"Install Ready",
+                queruIcon:ICONS.queryIcon,
+                bgImg:ICONS.secondRec,
+                date:"Date not available",
+                width:"140px",
+                isProgress:false,
+            },
+            {
+                name:"Install Completed",
+                queruIcon:ICONS.queryIcon,
+                bgImg:ICONS.secondRec,
+                width:"180px",
+                date:"Date not available",
+                isProgress:false,
+            },
+            {
+                name:"PTO",
+                queruIcon:ICONS.queryIcon,
+                bgImg:ICONS.fiveRec,
+                date:"Date not available",
+                width:"127px",
+                isProgress:false,
+            },
+           
+            {
+                name:"20%",
+                isProgress:true,
+                queruIcon:ICONS.percent,
+                bgImg:ICONS.progressIcon,
+                date:"Overall Progress",
+                width:"140px",
+            },
+        
+        ]
+        },
+
+]

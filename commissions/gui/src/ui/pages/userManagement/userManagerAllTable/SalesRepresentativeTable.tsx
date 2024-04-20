@@ -186,6 +186,7 @@ const SalesRepresentativeTable = () => {
                           <img src={ICONS.editIcon} alt="" />
                         </div>
                       </div>
+
                     </td>
                   </tr>
                 ))
@@ -206,6 +207,7 @@ const SalesRepresentativeTable = () => {
               goToPrevPage={goToPrevPage}
             />
           ) : null}
+
         </div>
       </div>
     </>

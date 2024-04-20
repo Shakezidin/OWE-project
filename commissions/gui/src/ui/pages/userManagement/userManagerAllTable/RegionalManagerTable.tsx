@@ -174,6 +174,7 @@ const RegionalManagerTable = () => {
                           <img src={ICONS.editIcon} alt="" />
                         </div>
                       </div>
+
                     </td>
                   </tr>
                 ))
@@ -194,6 +195,7 @@ const RegionalManagerTable = () => {
               goToPrevPage={goToPrevPage}
             />
           ) : null}
+
         </div>
       </div>
     </>

@@ -29,6 +29,7 @@ export const LoginPage = () => {
   });
 
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState<string>("");
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated
   );
@@ -92,10 +93,12 @@ export const LoginPage = () => {
     }
   };
 
+
   if (isAuthenticated) {
     navigate("/commission/dashboard");
   }
   /** UI render */
+
   return (
     <div className="mainContainer">
       <div className={"overlay"} />
@@ -159,11 +162,14 @@ export const LoginPage = () => {
               <div className="loginSwitchView">
                 <div className="loginSwitchInnerView">
                   <label className="switch">
+
+
                     <input type="checkbox" checked={credentials.isRememberMe} onChange={(event)=>{
                       handleInputChange("isRememberMe", !credentials.isRememberMe)
 
                       console.log(event.target.value)
                     }}/>
+
                     <span className="slider round"></span>
                   </label>
                   <div className="loginRBM">Remember Me</div>

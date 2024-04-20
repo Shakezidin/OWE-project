@@ -39,7 +39,7 @@ const MarketingFees: React.FC = () => {
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
   const [editedMarketing, setEditedMarketing] = useState<MarketingFeeModel | null>(null);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
   const [sortKey, setSortKey] =  useState("");
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
@@ -147,31 +147,24 @@ const MarketingFees: React.FC = () => {
           <table>
             <thead>
               <tr>
-                <th>
-                  <div>
-                    <CheckBox
-                      checked={selectAllChecked}
-                      onChange={() =>
-                        toggleAllRows(
-                          selectedRows,
-                          marketingFeesList,
-                          setSelectedRows,
-                          setSelectAllChecked
-                        )
-                      }
-                      indeterminate={isAnyRowSelected && !isAllRowsSelected}
-                    />
-                  </div>
-                </th>
+              
               {
                 MarketingFeesColumn.map((item,key)=>(
                   <SortableHeader
                   key={key}
+                  isCheckbox={item.isCheckbox}
                   titleName={item.displayName}
+                  data={marketingFeesList}
+                  isAllRowsSelected={isAllRowsSelected}
+                  isAnyRowSelected={isAnyRowSelected}
+                  selectAllChecked={selectAllChecked}
+                  setSelectAllChecked={setSelectAllChecked}
+                  selectedRows={selectedRows}
+                  setSelectedRows={setSelectedRows}
                   sortKey={item.name}
                   sortDirection={sortKey === item.name ? sortDirection : undefined}
-                  onClick={()=>handleSort(item.name)}
-                  />
+                  onClick={() => handleSort(item.name)}
+                />
                 ))
               }
                 <th>
@@ -186,8 +179,10 @@ const MarketingFees: React.FC = () => {
               {currentPageData?.length > 0
                 ? currentPageData?.map((el: any, i: any) => (
                   <tr key={i}>
-                    <td>
-                      <CheckBox
+                 
+                    <td style={{ fontWeight: "500", color: "black" }}>
+               <div className="flex-check">
+               <CheckBox
                         checked={selectedRows.has(i)}
                         onChange={() =>
                           toggleRowSelection(
@@ -198,9 +193,8 @@ const MarketingFees: React.FC = () => {
                           )
                         }
                       />
-                    </td>
-                    <td style={{ fontWeight: "500", color: "black" }}>
                       {el.source}
+               </div>
                     </td>
                     <td>{el.dba}</td>
                     <td>{el.state}</td>
@@ -235,13 +229,15 @@ const MarketingFees: React.FC = () => {
         </div>
         <div className="page-heading-container">
           <p className="page-heading">
-            {currentPage} - {totalPages} of {marketingFeesList?.length} item
+            {currentPage} - {totalPages} of {currentPageData?.length} item
           </p>
 
           {
             marketingFeesList?.length > 0 ? <Pagination
               currentPage={currentPage}
-              totalPages={totalPages} // You need to calculate total pages
+              totalPages={totalPages}
+              currentPageData={currentPageData}
+               // You need to calculate total pages
               paginate={paginate}
               goToNextPage={goToNextPage}
               goToPrevPage={goToPrevPage}

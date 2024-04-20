@@ -175,6 +175,7 @@ const SalesManagerTable = () => {
                           <img src={ICONS.editIcon} alt="" />
                         </div>
                       </div>
+
                     </td>
                   </tr>
                 ))
@@ -195,6 +196,7 @@ const SalesManagerTable = () => {
               goToPrevPage={goToPrevPage}
             />
           ) : null}
+
         </div>
       </div>
     </>

@@ -164,6 +164,7 @@ const UserTable: React.FC = () => {
                           <img src={ICONS.editIcon} alt="" />
                         </div>
                       </div>
+
                     </td>
                   </tr>
                 ))
@@ -184,6 +185,7 @@ const UserTable: React.FC = () => {
               goToPrevPage={goToPrevPage}
             />
           ) : null}
+
         </div>
       </div>
     </>
