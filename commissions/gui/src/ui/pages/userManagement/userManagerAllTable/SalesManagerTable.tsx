@@ -194,6 +194,7 @@ const SalesManagerTable = () => {
               paginate={paginate}
               goToNextPage={goToNextPage}
               goToPrevPage={goToPrevPage}
+              currentPageData={currentPageData}
             />
           ) : null}
 
