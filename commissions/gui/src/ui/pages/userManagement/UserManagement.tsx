@@ -3,6 +3,7 @@ import { IoAddSharp } from "react-icons/io5";
 import UserHeaderSection from "./UserHeader/UserHeaderSection";
 import UserPieChart from "./pieChart/UserPieChart";
 import UserOnboardingCreation from "./userOnboard/UserOnboardCreation";
+import { AddNewButton } from "../../components/button/AddNewButton";
 
 const UserManagement: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -17,19 +18,11 @@ const UserManagement: React.FC = () => {
           <p>Welcome, {userName}</p>
           <h2>User Management</h2>
         </div>
-        <div className="iconsSection2">
-          <button
-            type="button"
-            style={{
-              background: "#0493CE",
-              color: "white",
-              border: "2px solid #0493CE",
-            }}
-            onClick={() => handleOpen()}
-          >
-            <IoAddSharp /> Add New
-          </button>
-        </div>
+
+        <AddNewButton title={"Add New"} onClick={()=>{
+          handleOpen()
+        } }/>
+       
       </div>
       {open && (
         <UserOnboardingCreation
@@ -43,9 +36,7 @@ const UserManagement: React.FC = () => {
       </div>
 
       <div className="onboardrow">
-        <div className="user-component">
-          <UserHeaderSection />
-        </div>
+         <UserHeaderSection />
       </div>
     </>
   );

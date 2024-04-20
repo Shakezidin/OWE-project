@@ -60,136 +60,126 @@ const UserTable: React.FC = () => {
   const endIndex = startIndex + itemsPerPage;
   const currentPageData = dataUser?.slice(startIndex, endIndex);
   return (
-    <>
-      {/* <UserHeaderSection name="Admin Users"/> */}
-      <div
-        className="UserManageTable"
-        style={{ overflowX: "auto", whiteSpace: "nowrap" }}
-      >
-        <table>
-          <thead>
-            <tr style={{ backgroundColor: "#F5F5F5" }}>
-              <th>
-                <div>
-                  <CheckBox
-                    checked={true}
-                    onChange={() => {}}
-                    // indeterminate={isAnyRowSelected && !isAllRowsSelected}
-                  />
-                </div>
-              </th>
-              <th>
-                <div className="table-header">
-                  <p>Code</p> <FaArrowDown style={{ color: "#667085" }} />
-                </div>
-              </th>
-              <th>
-                <div className="table-header">
-                  <p>Name</p> <FaArrowDown style={{ color: "#667085" }} />
-                </div>
-              </th>
-              <th>
-                <div className="table-header">
-                  <p>Role</p> <FaArrowDown style={{ color: "#667085" }} />
-                </div>
-              </th>
+    <div
+      className="UserManageTable"
+      style={{ overflowX: "auto", whiteSpace: "nowrap" }}
+    >
+      <table>
+        <thead>
+          <tr style={{ backgroundColor: "#F5F5F5" }}>
+            <th>
+              <div>
+                <CheckBox
+                  checked={true}
+                  onChange={() => {}}
+                  // indeterminate={isAnyRowSelected && !isAllRowsSelected}
+                />
+              </div>
+            </th>
+            <th>
+              <div className="table-header">
+                <p>Code</p> <FaArrowDown style={{ color: "#667085" }} />
+              </div>
+            </th>
+            <th>
+              <div className="table-header">
+                <p>Name</p> <FaArrowDown style={{ color: "#667085" }} />
+              </div>
+            </th>
+            <th>
+              <div className="table-header">
+                <p>Role</p> <FaArrowDown style={{ color: "#667085" }} />
+              </div>
+            </th>
 
-              <th>
-                <div className="table-header">
-                  <p>Reporting To</p>{" "}
-                  <FaArrowDown style={{ color: "#667085" }} />
-                </div>
-              </th>
-              <th>
-                <div className="table-header">
-                  <p>Email ID</p> <FaArrowDown style={{ color: "#667085" }} />
-                </div>
-              </th>
-              <th>
-                <div className="table-header">
-                  <p>Phone Number</p>{" "}
-                  <FaArrowDown style={{ color: "#667085" }} />
-                </div>
-              </th>
-              <th>
-                <div className="table-header">
-                  <p>Description</p>{" "}
-                  <FaArrowDown style={{ color: "#667085" }} />
-                </div>
-              </th>
-              <th>
-                <div className="action-header">
-                  <p>Action</p>
-                </div>
-              </th>
-            </tr>
-          </thead>
+            <th>
+              <div className="table-header">
+                <p>Reporting To</p> <FaArrowDown style={{ color: "#667085" }} />
+              </div>
+            </th>
+            <th>
+              <div className="table-header">
+                <p>Email ID</p> <FaArrowDown style={{ color: "#667085" }} />
+              </div>
+            </th>
+            <th>
+              <div className="table-header">
+                <p>Phone Number</p> <FaArrowDown style={{ color: "#667085" }} />
+              </div>
+            </th>
+            <th>
+              <div className="table-header">
+                <p>Description</p> <FaArrowDown style={{ color: "#667085" }} />
+              </div>
+            </th>
+            <th>
+              <div className="action-header">
+                <p>Action</p>
+              </div>
+            </th>
+          </tr>
+        </thead>
 
-          <tbody>
-            {dataUser?.length > 0
-              ? dataUser?.map((el, i) => (
-                  <tr key={i}>
-                    <td>
-                      <CheckBox
-                        checked={true}
-                        onChange={() => {}}
-                        // indeterminate={isAnyRowSelected && !isAllRowsSelected}
-                      />
-                    </td>
-                    <td style={{ color: "var( --fade-gray-black)" }}>
-                      {el.code}
-                    </td>
-                    <td style={{ color: "var( --fade-gray-black)" }}>
-                      {el.name}
-                    </td>
-                    <td style={{ color: "var( --fade-gray-black)" }}>
-                      {el.role}
-                    </td>
-                    <td style={{ color: "var( --fade-gray-black)" }}>
-                      {el.reporting}
-                    </td>
-                    <td style={{ color: "var( --fade-gray-black)" }}>
-                      {el.email}
-                    </td>
-                    <td style={{ color: "var( --fade-gray-black)" }}>
-                      {el.pn}
-                    </td>
-                    <td>{el.des}</td>
-                    <td>
-                      <div className="action-icon">
-                        <div className="" style={{ cursor: "pointer" }}>
-                          <img src={ICONS.deleteIcon} alt="" />
-                        </div>
-                        <div className="" style={{ cursor: "pointer" }}>
-                          <img src={ICONS.editIcon} alt="" />
-                        </div>
+        <tbody>
+          {dataUser?.length > 0
+            ? dataUser?.map((el, i) => (
+                <tr key={i}>
+                  <td>
+                    <CheckBox
+                      checked={true}
+                      onChange={() => {}}
+                      // indeterminate={isAnyRowSelected && !isAllRowsSelected}
+                    />
+                  </td>
+                  <td style={{ color: "var( --fade-gray-black)" }}>
+                    {el.code}
+                  </td>
+                  <td style={{ color: "var( --fade-gray-black)" }}>
+                    {el.name}
+                  </td>
+                  <td style={{ color: "var( --fade-gray-black)" }}>
+                    {el.role}
+                  </td>
+                  <td style={{ color: "var( --fade-gray-black)" }}>
+                    {el.reporting}
+                  </td>
+                  <td style={{ color: "var( --fade-gray-black)" }}>
+                    {el.email}
+                  </td>
+                  <td style={{ color: "var( --fade-gray-black)" }}>{el.pn}</td>
+                  <td>{el.des}</td>
+                  <td>
+                    <div className="action-icon">
+                      <div className="" style={{ cursor: "pointer" }}>
+                        <img src={ICONS.deleteIcon} alt="" />
                       </div>
+                      <div className="" style={{ cursor: "pointer" }}>
+                        <img src={ICONS.editIcon} alt="" />
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            : null}
+        </tbody>
+      </table>
+      <div className="page-heading-container">
+        <p className="page-heading">
+          {currentPage} - {totalPages} of {dataUser?.length} item
+        </p>
 
-                    </td>
-                  </tr>
-                ))
-              : null}
-          </tbody>
-        </table>
-        <div className="page-heading-container">
-          <p className="page-heading">
-            {currentPage} - {totalPages} of {dataUser?.length} item
-          </p>
-
-          {dataUser?.length > 0 ? (
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages} // You need to calculate total pages
-              paginate={paginate}
-              goToNextPage={goToNextPage}
-              currentPageData={currentPageData}
-              goToPrevPage={goToPrevPage}
-            />
-          ) : null}
-
-        </div>
+        {dataUser?.length > 0 ? (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages} // You need to calculate total pages
+            paginate={paginate}
+            goToNextPage={goToNextPage}
+            currentPageData={currentPageData}
+            goToPrevPage={goToPrevPage}
+          />
+        ) : null}
       </div>
-    </>
+    </div>
   );
 };
 

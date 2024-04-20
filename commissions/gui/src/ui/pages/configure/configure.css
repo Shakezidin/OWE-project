@@ -26,7 +26,7 @@
 }
 
 .commissionContainer {
-  background-color:var(--white-color);
+  background-color: var(--white-color);
   justify-content: space-between;
   border-radius: 1rem;
   overflow: hidden;
@@ -87,7 +87,7 @@
   background-color: var(--active-text-color) !important;
   border: 1px solid var(--active-text-color) !important;
   color: var(--white-color) !important;
-  transition: .4s all linear;
+  transition: 0.4s all linear;
 }
 
 .iconsSection-filter button {
@@ -111,14 +111,12 @@
   overflow-x: auto;
   position: relative;
   height: 60vh;
-
 }
 
 .UserManageTable {
   overflow-x: auto;
   position: relative;
   background: var(--white-color);
-  height: 50vh;
 }
 
 .adder-input {
@@ -183,19 +181,17 @@ table tbody tr td {
   color: var(--coloumn-text-color);
 }
 
-
 .selected {
   /* background-color: var(--input-border-color); */
-  background-color:var(--white-color);
+  background-color: var(--white-color);
   transition: 0.4s all linear;
 }
 
 .action-header {
   display: flex;
   align-items: center;
-  gap: .3rem;
+  gap: 0.3rem;
   justify-content: flex-end;
-
 }
 
 .action-icon {
@@ -227,10 +223,10 @@ table tbody tr td {
   color: var(--heading-color);
   font-size: 12px;
 }
-.flex-check{
+.flex-check {
   display: flex;
   align-items: center;
-  gap: .8rem;
+  gap: 0.8rem;
 }
 
 /* checkbox design  */
