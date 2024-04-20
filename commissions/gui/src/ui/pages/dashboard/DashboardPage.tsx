@@ -1,6 +1,5 @@
-
 import React, { useEffect, useState } from "react";
-import "./dasboard.css"
+import "./dasboard.css";
 
 import Select from "react-select";
 
@@ -23,25 +22,24 @@ export const DashboardPage: React.FC = () => {
     setSelectedOption(selectedOption ? selectedOption.value : "");
   };
 
-
   return (
     <>
       <div className="Dashboard-section-container">
         <div className="Dashboard-container">
           <div className="Dashboard-wel">
+            <h3>Dashboard</h3>
 
-            <h3>Dashboard</h3> 
-
-            <Breadcrumb
+            {/* <Breadcrumb
               head="Dashboard"
               linkPara="Commission"
               linkparaSecond="Dashboard"
-            />
+            /> */}
           </div>
           <div className="dashboard-payroll">
             <div className="Payroll-section">
-
-              <label className="inputLabel" style={{ color: "#344054" }}>Payroll Date</label>
+              <label className="inputLabel" style={{ color: "#344054" }}>
+                Payroll Date
+              </label>
               {/* <select name="" id="" className="dash-select">
                 <option value="">01/02/2024</option>
                 <option value="">23/02/2024</option>
@@ -49,40 +47,39 @@ export const DashboardPage: React.FC = () => {
                 <option value="">07/04/2024</option>
                 <option value="">24/04/2024</option>
               </select> */}
-               <Select
-              options={payRollData}
-              value={payRollData.find(
-                (option) => option.value === selectedOption
-              )}
-              onChange={handleSelectChange}
-              styles={{
-                control: (baseStyles, state) => ({
-                  ...baseStyles,
-                  fontSize: "13px",
-                  fontWeight: "500",
-                  borderRadius: ".40rem",
-                  border: "none",
-                  outline: "none",
-                  width: "6rem",
-                  minHeight: "unset",
-                  height: "30px",
-                  alignContent: "center",
-                  backgroundColor: '#ECECEC'
-                }),
-                indicatorSeparator: () => ({
-                  display: 'none'
-                }),
-                option: (baseStyles) => ({
-                  ...baseStyles,
-                  fontSize: "13px",
-                }),
-                menu: (baseStyles) => ({
-                  ...baseStyles,
-                  width: "6rem"
-                }),
-              }}
-            />
-
+              <Select
+                options={payRollData}
+                value={payRollData.find(
+                  (option) => option.value === selectedOption
+                )}
+                onChange={handleSelectChange}
+                styles={{
+                  control: (baseStyles, state) => ({
+                    ...baseStyles,
+                    fontSize: "13px",
+                    fontWeight: "500",
+                    borderRadius: ".40rem",
+                    border: "none",
+                    outline: "none",
+                    width: "6rem",
+                    minHeight: "unset",
+                    height: "30px",
+                    alignContent: "center",
+                    backgroundColor: "#ECECEC",
+                  }),
+                  indicatorSeparator: () => ({
+                    display: "none",
+                  }),
+                  option: (baseStyles) => ({
+                    ...baseStyles,
+                    fontSize: "13px",
+                  }),
+                  menu: (baseStyles) => ({
+                    ...baseStyles,
+                    width: "6rem",
+                  }),
+                }}
+              />
             </div>
             <div className="Payroll-section">
               <label className="inputLabel" style={{ color: "#344054" }}>
@@ -138,18 +135,9 @@ export const DashboardPage: React.FC = () => {
         </div>
 
         <div className="" style={{ marginTop: "20px" }}>
-        {
-          active === 0 && (
-            <DashBoardTable
-            />)
-        }
-        {
-          active === 1 && (
-            <DashBoardChart
-            />)
-        }
-      </div>
-
+          {active === 0 && <DashBoardTable />}
+          {active === 1 && <DashBoardChart />}
+        </div>
       </div>
     </>
   );

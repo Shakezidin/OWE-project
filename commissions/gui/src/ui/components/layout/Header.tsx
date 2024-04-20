@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from "react";
 import "./layout.css";
 import "../layout/layout.css";
-import { MdKeyboardArrowDown } from "react-icons/md";
+import {
+  MdKeyboardArrowDown,
+  MdKeyboardArrowRight,
+  MdKeyboardArrowUp,
+} from "react-icons/md";
 import { ICONS } from "../../icons/Icons";
-import {  useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { logout } from "../../../redux/apiSlice/authSlice/authSlice";
 import { routes } from "../../../routes/routes";
 import { FaUserCircle } from "react-icons/fa";
@@ -13,35 +17,58 @@ import { IoMdLogOut } from "react-icons/io";
 interface Toggleprops {
   toggleOpen: boolean;
   setToggleOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setSidebarChange: React.Dispatch<React.SetStateAction<number>>,
-  sidebarChange: number
+  setSidebarChange: React.Dispatch<React.SetStateAction<number>>;
+  sidebarChange: number;
 }
 
-const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen, setSidebarChange, sidebarChange }) => {
+const Header: React.FC<Toggleprops> = ({
+  toggleOpen,
+  setToggleOpen,
+  setSidebarChange,
+  sidebarChange,
+}) => {
   const [name, setName] = useState<String>();
   const userRole = localStorage.getItem("role");
   const userName = localStorage.getItem("userName");
-  const [openIcon, setOPenIcon] = useState<boolean>(false)
+  const [openIcon, setOPenIcon] = useState<boolean>(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  
+
   const handleLogout = () => {
     dispatch(logout());
     navigate("/");
   };
   useEffect(() => {
     if (userName) {
-      var firstLetter = userName.toUpperCase();
-      setName(firstLetter); // Set the first letter as the name
+      const firstLetter = userName.charAt(0).toUpperCase();
+      setName(firstLetter);
     }
   }, [userName]);
   return (
     <div className="header-content">
       <div className="header-icon">
-
-        <div className="header-logo">
+        <div
+          className="header-logo"
+          style={{ marginLeft: toggleOpen ? "17px" : "" }}
+        >
           <img src={ICONS.LOGO} alt="" />
         </div>
+        {toggleOpen && (
+          <div
+            className={`icon-shape ${toggleOpen ? "icon-shape-active" : ""}`}
+            onClick={() => setToggleOpen(!toggleOpen)}
+            style={{
+              position: "absolute",
+              left: "0px",
+              top: "10px",
+              borderRadius: "0px 10px 10px 0px",
+            }}
+          >
+            <MdKeyboardArrowRight
+              style={{ fontSize: "1.2rem", color: "black" }}
+            />
+          </div>
+        )}
       </div>
       <div className="search-container">
         <div className="user-container">
@@ -94,8 +121,8 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen, setSidebarCh
             <img src={ICONS.NOTIFICATION} alt="" />
           </div>
           <div className="user-img-container">
-          <div className="user-img">
-              <span>{name?.slice(0,1)}</span>
+            <div className="user-img">
+              <span>{name}</span>
             </div>
             <div className="user-name">
               <div className="down-arrow">
@@ -104,45 +131,57 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen, setSidebarCh
               </div>
 
               <div className="">
-                <div className="down-circle" onClick={() => setOPenIcon(!openIcon)}>
-
-                  {
-                    openIcon ? <img src={ICONS.upperIcon} alt="" /> : <MdKeyboardArrowDown style={{ fontSize: "1.5rem" }} />
-                  }
-                  {
-                    openIcon && (<div className="header-modal-1">
-
-                      <div className="image-box-container" onClick={()=> navigate(routes.accountSettingRoutes)}>
+                <div
+                  className="down-circle"
+                  onClick={() => setOPenIcon(!openIcon)}
+                >
+                  {openIcon ? (
+                    <img src={ICONS.upperIcon} alt="" />
+                  ) : (
+                    <MdKeyboardArrowDown style={{ fontSize: "1.5rem" }} />
+                  )}
+                  {openIcon && (
+                    <div className="header-modal-1">
+                      <div
+                        className="image-box-container"
+                        onClick={() => navigate(routes.accountSettingRoutes)}
+                      >
                         <div className="image-icon">
                           <FaUserCircle />
                         </div>
-                        <p className="" style={{fontSize:"12px", fontWeight: "500" }} >
+                        <p
+                          className=""
+                          style={{ fontSize: "12px", fontWeight: "500" }}
+                        >
                           My Account
                         </p>
                       </div>
 
-                      <div className="image-box-container "
+                      <div
+                        className="image-box-container "
                         // style={{ paddingLeft: toggleOpen ? ".8rem" : "" }}
-                        onClick={handleLogout} >
+                        onClick={handleLogout}
+                      >
                         <div className="image-icon">
-                          <IoMdLogOut  />
+                          <IoMdLogOut />
                         </div>
-                        {
-                          toggleOpen ? null : <div
+                        {toggleOpen ? null : (
+                          <div
                             className="tablink"
-                            style={{
-                              // color: "black",
-                            }}
+                            style={
+                              {
+                                // color: "black",
+                              }
+                            }
                           >
-                           <p style={{fontSize:"12px",fontWeight: "500"}}>Logout</p> 
+                            <p style={{ fontSize: "12px", fontWeight: "500" }}>
+                              Logout
+                            </p>
                           </div>
-                        }
-
+                        )}
                       </div>
                     </div>
-                    )
-                  }
-
+                  )}
                 </div>
               </div>
             </div>

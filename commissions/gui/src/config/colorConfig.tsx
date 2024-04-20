@@ -24,6 +24,7 @@ const colorConfig = {
     backgroundColor: "white",
     color: "black",
   },
+  childrenicon: "#e3e3e3",
 };
 
 export default colorConfig;

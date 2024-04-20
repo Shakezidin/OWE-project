@@ -68,6 +68,19 @@ img{
   height: 20px !important;
 }
 
+
+.user_img{
+width: 18px !important;
+height: 18px !important;
+}
+.children-icon-image{
+width: 16px !important;
+height: 16px !important;
+}
+
+
+
+
 /* circle style  */
 .ellipse {
   width: 9px;
