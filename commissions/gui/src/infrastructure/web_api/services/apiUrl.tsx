@@ -10,6 +10,7 @@ const BASE_URL = `${process.env.REACT_APP_BASE_URL}`;
 export interface LoginResponse {
   email_id: string;
   role_name: string;
+  user_name: string;
   access_token: string;
   status:number,
   message:string,

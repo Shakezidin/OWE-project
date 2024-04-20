@@ -1,6 +1,5 @@
 import React, { useCallback } from 'react'
 import "./barchart.css"
-import { useNavigate } from 'react-router-dom'
 import { ResponsiveContainer, PieChart, Pie, LabelList } from "recharts";
 const data = [
   {
@@ -66,7 +65,6 @@ const renderCustomizedLabelPercentage = (data: any, total = 32000) => {
   return `${percentageCalculated}`;
 };
 const UserPieChart = () => {
-  const navigate = useNavigate()
   const renderLabel = useCallback((piePiece: any) => {
     return piePiece.name;
   }, []);
@@ -104,7 +102,7 @@ const UserPieChart = () => {
                     dataKey={renderCustomizedLabelPercentage}
                     position="outside"
                     angle={0}
-                    fontSize={16}
+                    fontSize={12}
                     stroke="none" // Border of letters
                     className="label-percentage"
                     offset={-45}
@@ -125,12 +123,12 @@ const UserPieChart = () => {
               <Pie
                 dataKey="value"
                 data={data2}
-                // label={renderLabel}
+                label={renderLabel}
                 cx="50%"
                 cy="50%"
                 outerRadius={"85%"}
                 nameKey="name"
-                labelLine={false}
+                labelLine={true}
               // activeShape={(props) => renderActiveShape(props, showSubchart)}
               // onMouseEnter={onMouseOver}
               // onMouseLeave={onMouseLeave}
@@ -141,7 +139,7 @@ const UserPieChart = () => {
                   // dataKey="percentage"
                   dataKey={renderCustomizedLabelPercentage}
                   position="inside"
-                  fontSize={16}
+                  fontSize={12}
                   angle={45}
                   stroke="none" // Border of letters
                   className="label-percentage"

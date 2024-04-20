@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "./layout.css";
 import "../layout/layout.css";
-import { GoSearch } from "react-icons/go";
 import { MdKeyboardArrowDown } from "react-icons/md";
-import { MdOutlineMenu } from "react-icons/md";
 import { ICONS } from "../../icons/Icons";
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import {  useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { logout } from "../../../redux/apiSlice/authSlice/authSlice";
 import { routes } from "../../../routes/routes";
@@ -20,23 +18,21 @@ interface Toggleprops {
 const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen, setSidebarChange, sidebarChange }) => {
   const [name, setName] = useState<String>();
   const userRole = localStorage.getItem("role");
-  const userEmail = localStorage.getItem("email");
-  const [openModal, setOpenModal] = useState<boolean>(false)
+  const userName = localStorage.getItem("userName");
   const [openIcon, setOPenIcon] = useState<boolean>(false)
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const location = useLocation()
   
   const handleLogout = () => {
     dispatch(logout());
     navigate("/");
   };
   useEffect(() => {
-    if (userEmail) {
-      var firstLetter = userEmail.charAt(0).toUpperCase();
+    if (userName) {
+      var firstLetter = userName.toUpperCase();
       setName(firstLetter); // Set the first letter as the name
     }
-  }, [userEmail]);
+  }, [userName]);
   return (
     <div className="header-content">
       <div className="header-icon">
@@ -101,7 +97,7 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen, setSidebarCh
             </div>
             <div className="user-name">
               <div className="down-arrow">
-                <h4>{userEmail}</h4>
+                <h4>{userName}</h4>
                 <p>{userRole}</p>
               </div>
 
