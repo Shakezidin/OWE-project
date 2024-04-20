@@ -183,6 +183,7 @@ const SalesRepresentativeTable = () => {
       totalPages={totalPages} // You need to calculate total pages
       paginate={paginate}
       goToNextPage={goToNextPage}
+      currentPageData={currentPageData}
       goToPrevPage={goToPrevPage}
     /> : null
   }

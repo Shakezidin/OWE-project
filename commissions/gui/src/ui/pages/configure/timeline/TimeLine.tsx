@@ -75,7 +75,7 @@ const TimeLine = () => {
   const currentPageData = timelinesla_list?.slice(startIndex, endIndex);
 
   const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === timelinesla_list.length;
+  const isAllRowsSelected = selectedRows.size === timelinesla_list?.length;
   const handleSort = (key:any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
@@ -149,31 +149,24 @@ const TimeLine = () => {
         
            <thead >
               <tr>
-                <th>
-                  <div>
-                    <CheckBox
-                      checked={selectAllChecked}
-                      onChange={() =>
-                        toggleAllRows(
-                          selectedRows,
-                          timelinesla_list,
-                          setSelectedRows,
-                          setSelectAllChecked
-                        )
-                      }
-                      indeterminate={isAnyRowSelected && !isAllRowsSelected}
-                    />
-                  </div>
-                </th>
+               
                 {
                 TimeLineSlaColumns?.map((item,key)=>(
                   <SortableHeader
                   key={key}
+                  isCheckbox={item.isCheckbox}
                   titleName={item.displayName}
+                  data={timelinesla_list}
+                  isAllRowsSelected={isAllRowsSelected}
+                  isAnyRowSelected={isAnyRowSelected}
+                  selectAllChecked={selectAllChecked}
+                  setSelectAllChecked={setSelectAllChecked}
+                  selectedRows={selectedRows}
+                  setSelectedRows={setSelectedRows}
                   sortKey={item.name}
                   sortDirection={sortKey === item.name ? sortDirection : undefined}
-                  onClick={()=>handleSort(item.name)}
-                  />
+                  onClick={() => handleSort(item.name)}
+                />
                 ))
               }
                 <th>
@@ -190,8 +183,10 @@ const TimeLine = () => {
                     key={i}
                     className={selectedRows.has(i) ? "selected" : ""}
                   >
-                    <td>
-                      <CheckBox
+                  
+                    <td style={{ fontWeight: "500", color: "black" }}>
+                  <div className="flex-check">
+                  <CheckBox
                         checked={selectedRows.has(i)}
                         onChange={() =>
                           toggleRowSelection(
@@ -202,9 +197,8 @@ const TimeLine = () => {
                           )
                         }
                       />
-                    </td>
-                    <td style={{ fontWeight: "500", color: "black" }}>
                       {el.type_m2m}
+                  </div>
                     </td>
                     <td>{el.state}</td>
                     <td>{el.days}</td>
@@ -232,7 +226,7 @@ const TimeLine = () => {
           <div className="page-heading-container">
       
       <p className="page-heading">
-       {currentPage} - {totalPages} of {timelinesla_list?.length} item
+       {currentPage} - {totalPages} of {currentPageData?.length} item
       </p>
  
    {
@@ -240,6 +234,7 @@ const TimeLine = () => {
       currentPage={currentPage}
       totalPages={totalPages} // You need to calculate total pages
       paginate={paginate}
+      currentPageData={currentPageData}
       goToNextPage={goToNextPage}
       goToPrevPage={goToPrevPage}
     /> : null

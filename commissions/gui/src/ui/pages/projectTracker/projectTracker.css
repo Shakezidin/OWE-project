@@ -8,11 +8,14 @@
     padding: 16px;
     border-radius: 16px;
 }
-
+.project-status-container{
+   height: 380px;
+}
 /* performance css  */
 .project-heading{
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
 .project-heading h2{
@@ -121,6 +124,123 @@
 
 
 /* project status css  */
-.project-status-container{
 
+.search-input-container{
+    display: flex;
+    align-items: center;
+}
+.status-header{
+    background-color: var(--row-bg-color);
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    justify-content: space-between;
+}
+.status-body{
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    padding: 1rem;
+}
+.head--row-status{
+    width: 10%;
+    
+}
+.head-status-text{
+    font-size: 14px;
+    color: #222222;
+    font-weight: 600;
+}
+.row-status-text{
+    font-size: 12px;
+    color: var(--black-color);
+    font-weight: 600;
+}
+.head--row-status-1{
+    width: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* gap: 0rem; */
+}
+.status-bg-img{
+    position: relative;
+    
+}
+.status-rect-content{
+    display: flex;
+    flex-direction: column;
+    gap: .1rem;
+    position: absolute;
+    transform: translate(-50%,-50%);
+    left: 70%;
+    top: 45%;
+    right: 0;
+    width: 100%;
+ /* padding: 0 2rem 0 2rem; */
+}
+.status-flex:first-child{
+    margin: 0;
+}
+.status-flex{
+    display: flex;
+    align-items: center;
+    /* justify-content: space-between; */
+  gap: .5rem;
+
+}
+.name-text{
+    font-size: 12px;
+    font-weight: 500;
+}
+.date-text{
+    font-size: 10px;
+}
+.border-height{
+    width: 0px;
+    height: 30px;
+    border-left: 1px solid #D6D6D6;
+    margin-left: 0rem;
+    margin-right: .7rem;
+    margin-top: .5rem;
+}
+.popup{
+    position: absolute;
+    background-color: white;
+    width: 250px;
+    /* height: 40px; */
+    box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.1);
+    transform: translate(-50,-50%);
+    left: 60%;
+    border-radius: 8px;
+    top: 10%;
+    z-index: 10;
+    padding: 1rem;
+}
+.pop-head{
+    font-size: 16px;
+    font-weight: 600;
+}
+.start-date-flex{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+}
+.date-head p{
+  color: #a5aab2;
+  font-size: 12px;
+}
+.date-head h3{
+    color: var(--coloumn-text-color);
+    font-weight: 500;
+    font-size: 12px;
+}
+.work{
+    margin-top: 1rem;
+}
+.work p{
+    font-size: 14px;
+    color: #a5aab2;
+}
+.work span{
+    font-size: 14px
 }

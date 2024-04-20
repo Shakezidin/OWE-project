@@ -44,7 +44,7 @@ const DealerTier = () => {
   const [editedDealerTier, setEditedDealerTier] = useState<DealerTierModel | null>(null);
   const [sortKey, setSortKey] =  useState("");
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
   useEffect(() => {
     const pageNumber = {
@@ -149,31 +149,24 @@ const DealerTier = () => {
           <table>
             <thead>
               <tr>
-                <th>
-                  <div>
-                    <CheckBox
-                      checked={selectAllChecked}
-                      onChange={() =>
-                        toggleAllRows(
-                          selectedRows,
-                          dealerTierList,
-                          setSelectedRows,
-                          setSelectAllChecked
-                        )
-                      }
-                      indeterminate={isAnyRowSelected && !isAllRowsSelected}
-                    />
-                  </div>
-                </th>
+            
                 {
                 DealerTierColumn?.map((item,key)=>(
                   <SortableHeader
                   key={key}
+                  isCheckbox={item.isCheckbox}
                   titleName={item.displayName}
+                  data={dealerTierList}
+                  isAllRowsSelected={isAllRowsSelected}
+                  isAnyRowSelected={isAnyRowSelected}
+                  selectAllChecked={selectAllChecked}
+                  setSelectAllChecked={setSelectAllChecked}
+                  selectedRows={selectedRows}
+                  setSelectedRows={setSelectedRows}
                   sortKey={item.name}
                   sortDirection={sortKey === item.name ? sortDirection : undefined}
-                  onClick={()=>handleSort(item.name)}
-                  />
+                  onClick={() => handleSort(item.name)}
+                />
                 ))
               }
                 <th>
@@ -187,8 +180,10 @@ const DealerTier = () => {
               {currentPageData?.length > 0
                 ? currentPageData?.map((el: any, i: any) => (
                     <tr key={i}>
-                      <td>
-                        <CheckBox
+                   
+                      <td style={{ fontWeight: "500", color: "black" }}>
+                    <div className="flex-check">
+                    <CheckBox
                           checked={selectedRows.has(i)}
                           onChange={() =>
                             toggleRowSelection(
@@ -199,9 +194,8 @@ const DealerTier = () => {
                             )
                           }
                         />
-                      </td>
-                      <td style={{ fontWeight: "500", color: "black" }}>
                         {el.dealer_name}
+                    </div>
                       </td>
                       <td>{el.tier}</td>
                       <td>{el.start_date}</td>
@@ -228,7 +222,7 @@ const DealerTier = () => {
         <div className="page-heading-container">
       
       <p className="page-heading">
-       {currentPage} - {totalPages} of {dealerTierList?.length} item
+       {currentPage} - {totalPages} of {currentPageData?.length} item
       </p>
  
    {
@@ -238,6 +232,7 @@ const DealerTier = () => {
       paginate={paginate}
       goToNextPage={goToNextPage}
       goToPrevPage={goToPrevPage}
+      currentPageData={currentPageData}
     /> : null
   }
    </div>

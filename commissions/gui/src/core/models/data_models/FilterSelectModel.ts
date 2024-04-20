@@ -5,7 +5,10 @@ export interface FilterModel{
     name: string;
     displayName: string;
     type: string;
+    isCheckbox:boolean
+   
   }
+
   
 export interface optionOperation {
     value: string;

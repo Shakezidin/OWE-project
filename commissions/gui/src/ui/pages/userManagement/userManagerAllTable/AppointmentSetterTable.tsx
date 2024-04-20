@@ -160,6 +160,7 @@ const currentPageData = dataUser?.slice(startIndex, endIndex);
       paginate={paginate}
       goToNextPage={goToNextPage}
       goToPrevPage={goToPrevPage}
+      currentPageData={currentPageData}
     /> : null
   }
    </div>

@@ -149,31 +149,24 @@ const DealerOverRides: React.FC = () => {
           <table>
             <thead>
               <tr>
-                <th>
-                  <div>
-                    <CheckBox
-                      checked={selectAllChecked}
-                      onChange={() =>
-                        toggleAllRows(
-                          selectedRows,
-                          dealerList,
-                          setSelectedRows,
-                          setSelectAllChecked
-                        )
-                      }
-                      indeterminate={isAnyRowSelected && !isAllRowsSelected}
-                    />
-                  </div>
-                </th>
+               
                {
                 DealerTableData.map((item,key)=>(
                   <SortableHeader
                   key={key}
+                  isCheckbox={item.isCheckbox}
                   titleName={item.displayName}
+                  data={dealerList}
+                  isAllRowsSelected={isAllRowsSelected}
+                  isAnyRowSelected={isAnyRowSelected}
+                  selectAllChecked={selectAllChecked}
+                  setSelectAllChecked={setSelectAllChecked}
+                  selectedRows={selectedRows}
+                  setSelectedRows={setSelectedRows}
                   sortKey={item.name}
                   sortDirection={sortKey === item.name ? sortDirection : undefined}
-                  onClick={()=>handleSort(item.name)}
-                  />
+                  onClick={() => handleSort(item.name)}
+                />
                 ))
                }
                 <th>
@@ -187,8 +180,10 @@ const DealerOverRides: React.FC = () => {
               {currentPageData?.length > 0
                 ? currentPageData?.map((el: any, i: any) => (
                     <tr key={i}>
-                      <td>
-                        <CheckBox
+                    
+                      <td style={{ fontWeight: "500", color: "black" }}>
+                   <div className="flex-check">
+                   <CheckBox
                           checked={selectedRows.has(i)}
                           onChange={() =>
                             toggleRowSelection(
@@ -199,9 +194,8 @@ const DealerOverRides: React.FC = () => {
                             )
                           }
                         />
-                      </td>
-                      <td style={{ fontWeight: "500", color: "black" }}>
                         {el.sub_dealer}
+                   </div>
                       </td>
                       <td>{el.dealer}</td>
                       <td>{el.pay_rate}</td>
@@ -226,7 +220,7 @@ const DealerOverRides: React.FC = () => {
         <div className="page-heading-container">
       
           <p className="page-heading">
-           {currentPage} - {totalPages} of {dealerList?.length} item
+           {currentPage} - {totalPages} of {currentPageData?.length} item
           </p>
      
        {
@@ -234,6 +228,7 @@ const DealerOverRides: React.FC = () => {
           currentPage={currentPage}
           totalPages={totalPages} // You need to calculate total pages
           paginate={paginate}
+          currentPageData={currentPageData}
           goToNextPage={goToNextPage}
           goToPrevPage={goToPrevPage}
         /> : null

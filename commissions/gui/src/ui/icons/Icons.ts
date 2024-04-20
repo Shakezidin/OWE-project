@@ -53,6 +53,17 @@ import curveGreen from '../../resources/assets/curvegreen.svg'
 import arrowGreen from '../../resources/assets/greenArrow.svg'
 import arrowRed from '../../resources/assets/redArrow.svg'
 import search from '../../resources/assets/search.svg'
+import firstRect from '../../resources/assets/firstRec.svg'
+import secondRec from '../../resources/assets/secondRec.svg'
+import thirdRec from '../../resources/assets/thirdRec.svg'
+import fourRec from '../../resources/assets/fourRec.svg'
+import fiveRec from '../../resources/assets/fiveRec.svg'
+import queryIcon from '../../resources/assets/queryIcon.svg'
+import activeQueryIcon from '../../resources/assets/activeQueryIcon.svg'
+import progressIcon from '../../resources/assets/progressICon.svg'
+import percent from '../../resources/assets/ellipsePercentage.svg'
+import greenRect from   '../../resources/assets/greenRect.svg'
+import blueRect from '../../resources/assets/blueRect.svg' 
 export const ICONS = {
   BACKGROUND: require("../../resources/assets/background.png"),
   LOGO: require("../../resources/assets/logo.png"),
@@ -119,5 +130,16 @@ curveGreen:curveGreen,
 curveRed:curveRed,
 arrowRed:arrowRed,
 arrowGreen:arrowGreen,
-search:search
+search:search,
+firstRect:firstRect,
+secondRec:secondRec,
+thirdRec:thirdRec,
+fourRec:fourRec,
+queryIcon:queryIcon,
+activeQueryIcon:activeQueryIcon,
+fiveRec:fiveRec,
+progressIcon:progressIcon,
+percent:percent,
+greenRect:greenRect,
+blueRect:blueRect
 };

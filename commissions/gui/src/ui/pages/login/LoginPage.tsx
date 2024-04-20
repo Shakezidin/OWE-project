@@ -29,6 +29,7 @@ export const LoginPage = () => {
   });
 
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState<string>("");
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated
@@ -74,10 +75,21 @@ export const LoginPage = () => {
       }
     }
   };
-
-  if (isAuthenticated) {
-    navigate("/commission/dashboard");
-  }
+  useEffect(() => {
+    const rememberedEmail = localStorage.getItem("email");
+    const rememberedPassword = localStorage.getItem("password");
+    if (rememberMe && rememberedEmail && rememberedPassword) {
+      setCredentials({
+        email_id: rememberedEmail,
+        password: rememberedPassword,
+      });
+    }
+  }, [rememberMe]);
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/commission/dashboard");
+    }
+  }, [isAuthenticated,navigate]);
   return (
     <div className="mainContainer">
       <div className={"overlay"} />
@@ -135,7 +147,8 @@ export const LoginPage = () => {
               <div className="loginSwitchView">
                 <div className="loginSwitchInnerView">
                   <label className="switch">
-                    <input type="checkbox" />
+                    <input type="checkbox" checked={rememberMe}
+                      onChange={(e) => setRememberMe(e.target.checked)}/>
                     <span className="slider round"></span>
                   </label>
                   <div className="loginRBM">Remember Me</div>

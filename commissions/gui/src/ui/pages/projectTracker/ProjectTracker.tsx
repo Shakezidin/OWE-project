@@ -12,7 +12,7 @@ const ProjectTracker = () => {
      <div className="project-container">
         <ProjectPerformence />
         </div>
-     <div className="project-container">
+     <div className="project-container" style={{padding:0}}>
      <ProjectStatus />
      </div>
      </div>

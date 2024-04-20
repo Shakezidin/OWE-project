@@ -6,6 +6,7 @@ import { MdArrowForwardIos,MdArrowBackIos } from "react-icons/md";
 
 interface PaginationProps {
     currentPage: number;
+    currentPageData:any[]
     totalPages: number;
     paginate: (pageNumber: number) => void;
     goToNextPage: () => void;
@@ -17,6 +18,7 @@ interface PaginationProps {
     totalPages,
     paginate,
     goToNextPage,
+    currentPageData,
     goToPrevPage,
   }) => {
     return (
@@ -31,7 +33,7 @@ interface PaginationProps {
         
           ))}
          
-            <button disabled={currentPage === totalPages} className={currentPage === totalPages ? "disabled" : "current-btn"} onClick={goToNextPage}><MdArrowForwardIos  style={{color:currentPage===totalPages?"#d9d9d9":"#667085",fontSize:".9rem",}}/></button>
+            <button disabled={currentPage===currentPageData?.length} className={ "current-btn"} onClick={goToNextPage}><MdArrowForwardIos  style={{color:"#667085",fontSize:".9rem",}}/></button>
           
         </div>
       </div>
