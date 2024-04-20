@@ -22,8 +22,6 @@ import { RootState } from "../../../redux/store";
 
 export const LoginPage = () => {
   const navigate = useNavigate();
-
-
   const [credentials, setCredentials] = useState<Credentials>({
     email_id: "",
     password: "",
@@ -44,6 +42,7 @@ export const LoginPage = () => {
     }));
   };
 
+  /** handle local storage */
   useEffect(()=>{
 
     let localRememberMe = localStorage.getItem('isRememberMe');
@@ -59,15 +58,16 @@ export const LoginPage = () => {
 
   },[])
 
+  /** email validation */
   const isValidEmail = (email: string) => {
     // Regular expression pattern for validating email addresses
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return emailPattern.test(email);
   };
 
+  /** handle login action */
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
 
     if (credentials.email_id.length === 0) {
       alert("Please enter email id");
@@ -95,6 +95,7 @@ export const LoginPage = () => {
   if (isAuthenticated) {
     navigate("/commission/dashboard");
   }
+  /** UI render */
   return (
     <div className="mainContainer">
       <div className={"overlay"} />
