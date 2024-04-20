@@ -44,16 +44,15 @@
   border-radius: 16px 16px 0px 0px;
   padding: 1rem;
 }
-.admin-user{
+.admin-user {
   width: 20%;
 }
-.admin-user p{
+.admin-user p {
   font-family: Poppins;
-font-size: 18px;
-font-weight: 600;
-line-height: 28px;
-text-align: left;
-
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 28px;
+  text-align: left;
 }
 
 /* .rate-input-field select {
@@ -75,89 +74,88 @@ opacity: 0px;
   width: 70%;
 }
 .iconsSection-delete {
-  background: #344054;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  border-radius: 8px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #d0d5dd;
+  padding: 2px;
+
+  /* border: "1px solid #d0d5dd"; */
 }
-.iconsSection-delete img{
+.iconsSection-delete img {
   width: 17px;
   height: 18px;
 }
-.iconsSection-delete h4 {
-
-font-size: 14px;
-font-weight: 500;
-line-height: 20px;
-text-align: left;
-
-}
+/* .iconsSection-delete h4 {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  text-align: left;
+} */
 
 .iconsSection-delete button {
   display: flex;
-  gap: 0.5rem;
   padding: 0.5rem;
-  border: none;
   cursor: pointer;
-  color: #344054;
   background: white;
+  border: none;
 }
 .db-access {
   display: flex;
   align-items: center;
- 
- }
- .db-access input{
-   width: 24px;
- height: 24px;
- border-radius: 4px 0px 0px 0px;
- border: 1px 0px 0px 0px;
- opacity: 0px;
- 
- 
- }
- .db-access label{
+}
+.db-access input {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px 0px 0px 0px;
+  border: 1px 0px 0px 0px;
+  opacity: 0px;
+}
+.db-access label {
   margin-top: 1rem;
   padding-left: 0.5rem;
-   font-size: 14px;
-   font-weight: 500;
-   line-height: 12px;
-   padding-bottom: 1rem;
-   
- }
- .selectTable-section {
-   display: flex;
-   align-items: center;
-   gap: 0.5rem;
-   padding: 1rem;
- }
- .selectTable-section img {
- cursor: pointer;
- 
- }
- .selectTable-section p {
- font-size: 28px;
- font-weight: 600;
- line-height: 14.5px;
- text-align: left;
- }
- .access-data p {
-   font-size: 14px;
-   font-weight: 500;
-   line-height: 14.5px;
-   text-align: left;
-   margin-top: 0.4rem;
-   
- }
- .dash-select-user{
-  background-color: #ECECEC;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 12px;
+  padding-bottom: 1rem;
+}
+.selectTable-section {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+}
+.selectTable-section img {
+  cursor: pointer;
+}
+.selectTable-section p {
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 14.5px;
+  text-align: left;
+}
+.access-data p {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 14.5px;
+  text-align: left;
+  margin-top: 0.4rem;
+}
+.dash-select-user {
+  background-color: #ececec;
   width: 51px;
   text-align: center;
   align-items: center;
   height: 28px;
   border: none;
   outline: none;
-  padding: .3rem .5rem .1rem .5rem;
+  padding: 0.3rem 0.5rem 0.1rem 0.5rem;
   font-size: 12px;
   cursor: pointer;
   color: #344054 !important;
   font-weight: 500;
-  border-radius: .25rem;
+  border-radius: 0.25rem;
 }
