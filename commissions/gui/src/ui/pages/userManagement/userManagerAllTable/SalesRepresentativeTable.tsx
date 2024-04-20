@@ -68,7 +68,7 @@ const SalesRepresentativeTable = () => {
 <>
 {/* <UserHeaderSection  name="Sales Representative"/> */}
         <div
-            className="UserManageTable"
+            className="TableContainer"
             style={{ overflowX: "auto", whiteSpace: "nowrap" }} >
             <table>
                 <thead style={{ background: "#F5F5F5" }}>

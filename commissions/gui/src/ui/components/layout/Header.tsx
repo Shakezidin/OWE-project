@@ -9,6 +9,8 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { logout } from "../../../redux/apiSlice/authSlice/authSlice";
 import { routes } from "../../../routes/routes";
+import { FaUserCircle } from "react-icons/fa";
+import { IoMdLogOut } from "react-icons/io";
 
 interface Toggleprops {
   toggleOpen: boolean;
@@ -116,7 +118,7 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen, setSidebarCh
 
                       <div className="image-box-container" onClick={()=> navigate(routes.accountSettingRoutes)}>
                         <div className="image-icon">
-                          <img src={ICONS.commIconHead} alt="" />
+                          <FaUserCircle />
                         </div>
                         <p className="" style={{fontSize:"12px", fontWeight: "500" }} >
                           My Account
@@ -127,7 +129,7 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen, setSidebarCh
                         // style={{ paddingLeft: toggleOpen ? ".8rem" : "" }}
                         onClick={handleLogout} >
                         <div className="image-icon">
-                        <img src={ICONS.logoutIconLeft}  alt="" />
+                          <IoMdLogOut  />
                         </div>
                         {
                           toggleOpen ? null : <div

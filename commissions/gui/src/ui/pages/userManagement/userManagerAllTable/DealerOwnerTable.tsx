@@ -65,7 +65,7 @@ const DealerOwnerTable: React.FC = () => {
     <>
     {/* <UserHeaderSection  name="Dealer Owner"/> */}
       <div
-        className="UserManageTable"
+        className="TableContainer"
         style={{ overflowX: "auto", whiteSpace: "nowrap" }}  >
         <table>
           <thead style={{ background: "#F5F5F5" }}>

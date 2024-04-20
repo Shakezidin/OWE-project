@@ -65,7 +65,7 @@ const SalesManagerTable = () => {
 <>
 {/* <UserHeaderSection  name="Sale Manager"/> */}
         <div
-            className="UserManageTable"
+            className="TableContainer"
             style={{ overflowX: "auto", whiteSpace: "nowrap" }} >
             <table>
                 <thead style={{ background: "#F5F5F5" }}>

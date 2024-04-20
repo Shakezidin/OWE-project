@@ -59,7 +59,7 @@ const PartnerTable: React.FC = () => {
         <>
             {/* <UserHeaderSection name="Partner" /> */}
             <div
-                className="UserManageTable"
+                className="TableContainer"
                 style={{ overflowX: "auto", whiteSpace: "nowrap" }}  >
                 <table>
                     <thead style={{ background: "#F5F5F5" }}>

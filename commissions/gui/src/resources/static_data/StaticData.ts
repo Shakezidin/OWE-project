@@ -73,3 +73,11 @@ export const userSelectData = [
   { value: "Sales Representative", label: 'Sales Representative' },
   { value: "Sales Manager", label: 'Sales Manager' },
 ]
+
+export const payRollData = [
+  { value: "Select", label: 'Select' },
+  { value: "02/04/2024", label: '02/04/2024' },
+  { value: "03/04/2024", label: '03/04/2024' },
+  { value: "04/04/2024", label: '04/04/2024' },
+  { value: "05/04/2024", label: '05/04/2024' },
+]

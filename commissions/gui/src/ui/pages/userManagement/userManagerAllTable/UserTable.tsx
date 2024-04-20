@@ -62,7 +62,7 @@ const UserTable:React.FC= () => {
 <>
 {/* <UserHeaderSection name="Admin Users"/> */}
         <div
-            className="UserManageTable"
+            className="TableContainer"
             style={{ overflowX: "auto", whiteSpace: "nowrap" }} >
             <table>
                 <thead > 

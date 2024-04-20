@@ -1,5 +1,4 @@
 import React from "react";
-import "../../userManagement/user.css";
 import { ICONS } from "../../../icons/Icons";
 import { CiEdit } from "react-icons/ci";
 import CheckBox from "../../../components/chekbox/CheckBox";
@@ -64,7 +63,7 @@ const currentPageData = dataUser?.slice(startIndex, endIndex);
     <>
     {/* <UserHeaderSection  name="Appointment Setter"/> */}
       <div
-        className="UserManageTable"
+        className="TableContainer"
         style={{ overflowX: "auto", whiteSpace: "nowrap" }}  >
         <table>
           <thead style={{ background: "#F5F5F5" }}>
