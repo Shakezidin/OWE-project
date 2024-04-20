@@ -240,6 +240,7 @@ const DashBoardTable: React.FC = () => {
     dataUser?.length > 0 ? <Pagination
       currentPage={currentPage}
       totalPages={totalPages} 
+      currentPageData={currentPageData}
       paginate={paginate}
       goToNextPage={goToNextPage}
       goToPrevPage={goToPrevPage}

@@ -25,67 +25,6 @@ const dataUser = [
   },
 ];
 
-const PartnerTable: React.FC = () => {
-  const dispatch = useAppDispatch();
-  const currentPage = useAppSelector(
-    (state) => state.paginationType.currentPage
-  );
-  const itemsPerPage = 10;
-
-  const paginate = (pageNumber: number) => {
-    dispatch(setCurrentPage(pageNumber));
-  };
-
-  const goToNextPage = () => {
-    dispatch(setCurrentPage(currentPage + 1));
-  };
-
-  const goToPrevPage = () => {
-    dispatch(setCurrentPage(currentPage - 1));
-  };
-  const totalPages = Math.ceil(dataUser?.length / itemsPerPage);
-
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentPageData = dataUser?.slice(startIndex, endIndex);
-  return (
-    <>
-      {/* <UserHeaderSection name="Partner" /> */}
-      <div
-        className="UserManageTable"
-        style={{ overflowX: "auto", whiteSpace: "nowrap" }}
-      >
-        <table>
-          <thead style={{ background: "#F5F5F5" }}>
-            <tr>
-              <th>
-                <div>
-                  <CheckBox
-                    checked={true}
-                    onChange={() => {}}
-                    // indeterminate={isAnyRowSelected && !isAllRowsSelected}
-                  />
-                </div>
-              </th>
-
-              <th>
-                <div className="table-header">
-                  <p>Name</p> <FaArrowDown style={{ color: "#667085" }} />
-                </div>
-              </th>
-              <th>
-                <div className="table-header">
-                  <p>Details</p> <FaArrowDown style={{ color: "#667085" }} />
-                </div>
-              </th>
-              <th>
-                <div className="action-header">
-                  <p>Action</p>
-                </div>
-              </th>
-            </tr>
-          </thead>
-
 
 const PartnerTable: React.FC = () => {
     const dispatch = useAppDispatch();
