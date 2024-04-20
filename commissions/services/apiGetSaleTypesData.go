@@ -10,6 +10,7 @@ import (
 	"OWEApp/db"
 	log "OWEApp/logger"
 	models "OWEApp/models"
+	"strings"
 
 	"encoding/json"
 	"fmt"
@@ -62,7 +63,7 @@ func HandleGetSaleTypeDataRequest(resp http.ResponseWriter, req *http.Request) {
 	SELECT st.id as record_id, st.type_name as type_name, st.description as description
 	FROM sale_type st`
 
-	filter, whereEleList = PrepareFilters(tableName, dataReq)
+	filter, whereEleList = PrepareSaleTypeFilters(tableName, dataReq)
 	if filter != "" {
 		query += filter
 	}
@@ -94,6 +95,13 @@ func HandleGetSaleTypeDataRequest(resp http.ResponseWriter, req *http.Request) {
 			Description = ""
 		}
 
+		// is_archived
+		IsArchived, ok := item["is_archived"].(bool)
+		if !ok || !IsArchived {
+			log.FuncErrorTrace(0, "Failed to get is_archived value for Record ID %v. Item: %+v\n", RecordId, item)
+			IsArchived = false
+		}
+
 		// Create a new GetSaleTypeData object
 		saleTypeData := models.GetSaleTypeData{
 			RecordId:    RecordId,
@@ -107,4 +115,77 @@ func HandleGetSaleTypeDataRequest(resp http.ResponseWriter, req *http.Request) {
 	// Send the response
 	log.FuncInfoTrace(0, "Number of sale type List fetched : %v list %+v", len(saleTypeList.SaleTypeList), saleTypeList)
 	FormAndSendHttpResp(resp, "sale type Data", http.StatusOK, saleTypeList)
+}
+
+/******************************************************************************
+ * FUNCTION:		PrepareSaleTypeFilters
+ * DESCRIPTION:     handler for create select query
+ * INPUT:			resp, req
+ * RETURNS:    		void
+ ******************************************************************************/
+func PrepareSaleTypeFilters(tableName string, dataFilter models.DataRequestBody) (filters string, whereEleList []interface{}) {
+	log.EnterFn(0, "PrepareSaleTypeFilters")
+	defer func() { log.ExitFn(0, "PrepareSaleTypeFilters", nil) }()
+
+	var filtersBuilder strings.Builder
+	whereAdded := false // Flag to track if WHERE clause has been added
+
+	// Check if there are filters
+	if len(dataFilter.Filters) > 0 {
+		filtersBuilder.WriteString(" WHERE ")
+		whereAdded = true // Set flag to true as WHERE clause is added
+
+		for i, filter := range dataFilter.Filters {
+			if i > 0 {
+				filtersBuilder.WriteString(" AND ")
+			}
+
+			// Check if the column is a foreign key
+			column := filter.Column
+
+			// Determine the operator and value based on the filter operation
+			operator := GetFilterDBMappedOperator(filter.Operation)
+			value := filter.Data
+
+			// For "stw" and "edw" operations, modify the value with '%'
+			if filter.Operation == "stw" || filter.Operation == "edw" || filter.Operation == "cont" {
+				value = GetFilterModifiedValue(filter.Operation, filter.Data.(string))
+			}
+			// Build the filter condition using correct db column name
+			filtersBuilder.WriteString("LOWER(")
+			filtersBuilder.WriteString(column)
+			filtersBuilder.WriteString(") ")
+			filtersBuilder.WriteString(operator)
+			filtersBuilder.WriteString(" LOWER($")
+			filtersBuilder.WriteString(fmt.Sprintf("%d", len(whereEleList)+1))
+			filtersBuilder.WriteString(")")
+			whereEleList = append(whereEleList, value)
+		}
+	}
+
+	// Handle the Archived field
+	if dataFilter.Archived {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+		}
+		filtersBuilder.WriteString("st.is_archived = TRUE")
+	} else {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+		}
+		filtersBuilder.WriteString("st.is_archived = FALSE")
+	}
+
+	// Add pagination
+	if (dataFilter.PageSize > 0) && (dataFilter.PageNumber > 0) {
+		filtersBuilder.WriteString(fmt.Sprintf(" LIMIT %d OFFSET %d", dataFilter.PageSize, (dataFilter.PageNumber-1)*dataFilter.PageSize))
+	}
+
+	filters = filtersBuilder.String()
+	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filtersBuilder.String())
+	return filters, whereEleList
 }

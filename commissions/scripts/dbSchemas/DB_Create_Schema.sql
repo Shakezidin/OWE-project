@@ -685,6 +685,7 @@ CREATE TABLE sale_type (
     id serial NOT NULL,
     type_name character varying,
     description character varying,
+    is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     PRIMARY KEY (id)
@@ -764,6 +765,7 @@ CREATE TABLE dealer_override (
     pay_rate character varying,
     start_date character varying NOT NULL,
     end_date character varying,
+    is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     FOREIGN KEY (dealer_id) REFERENCES user_details(user_id),
@@ -789,6 +791,7 @@ CREATE TABLE marketing_fees (
     start_date character varying NOT NULL,
     end_date character varying,
     description character varying,
+    is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     FOREIGN KEY (state_id) REFERENCES states(state_id),
@@ -804,6 +807,7 @@ CREATE TABLE v_adders (
     price_amount character varying,
     active integer,
     description character varying,
+    is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     PRIMARY KEY (id)
@@ -815,6 +819,7 @@ CREATE TABLE loan_type (
     active integer,
     adder integer,
     description character varying,
+    is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     PRIMARY KEY (id)
@@ -835,6 +840,7 @@ CREATE TABLE dealer_tier (
     tier_id INT,
     start_date character varying NOT NULL,
     end_date character varying,
+    is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     FOREIGN KEY (tier_id) REFERENCES tier(id),
@@ -853,6 +859,7 @@ CREATE TABLE tier_loan_fee (
     dlr_cost character varying,
     start_date character varying NOT NULL,
     end_date character varying,
+    is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     FOREIGN KEY (dealer_tier) REFERENCES tier(id),
@@ -878,6 +885,7 @@ CREATE TABLE payment_schedule (
     rep_pay character varying,
     start_date character varying NOT NULL,
     end_date character varying,
+    is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     FOREIGN KEY (state_id) REFERENCES states(state_id),
@@ -895,6 +903,7 @@ CREATE TABLE timeline_sla (
     days integer,
     start_date character varying NOT NULL,
     end_date character varying,
+    is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     FOREIGN KEY (state_id) REFERENCES states(state_id),
@@ -1036,6 +1045,46 @@ CREATE TABLE referral_bonus (
 	PRIMARY KEY (id)
 );
 
+CREATE TABLE auto_adder (
+    id serial NOT NULL,
+    unique_id varchar NOT NULL UNIQUE,
+    type_aa_mktg text,
+    gc text,
+    exact_amount text,
+    per_kw_amount float,
+    rep_doll_divby_per float,
+    description_rep_visible text,
+    notes_not_rep_visible text,
+    type text,
+    rep_1 INT,
+    rep_2 INT,
+    sys_size float,
+    state_id INT,
+    rep_count float,
+    per_rep_addr_share float,
+    per_rep_ovrd_share float,
+    r1_pay_scale float,
+    rep_1_def_resp text,
+    r1_addr_resp text,
+    r2_pay_scale float,
+    rep_2_def_resp text,
+    r2_addr_resp text,
+    contract_amount float,
+    project_base_cost float,
+    crt_addr float,
+    r1_loan_fee float,
+    r1_rebate float,
+    r1_referral float,
+    r1_r_plus_r float,
+    total_comm float,
+    start_date character varying NOT NULL,
+    end_date character varying,   
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
+    FOREIGN KEY (state_id) REFERENCES states(state_id),
+    FOREIGN KEY (rep_1) REFERENCES user_details(user_id),
+    FOREIGN KEY (rep_2) REFERENCES user_details(user_id)
+);
 
 /**********************************DEALER PAY SCHEMA START **************************************/
 
@@ -1267,3 +1316,14 @@ INSERT INTO loan_type (product_code,active,adder,description) VALUES ('P123',1,1
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdatePaymentSchedule.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateTimelineSla.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateLoanType.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateCommissionArchive.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateDealerArchive.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateMarketingFeesArchive.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateVAddersArchive.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateSaleTypeArchive.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateTierLoanFeeArchive.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateDealerTierArchive.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdatePaymentScheduleArchive.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateTimelineSlaArchive.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateLoanTypeArchive.sql';
+

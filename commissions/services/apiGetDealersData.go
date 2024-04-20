@@ -107,6 +107,13 @@ func HandleGetDealersDataRequest(resp http.ResponseWriter, req *http.Request) {
 			PayRate = ""
 		}
 
+		// is_archived
+		IsArchived, ok := item["is_archived"].(bool)
+		if !ok || !IsArchived {
+			log.FuncErrorTrace(0, "Failed to get is_archived value for Record ID %v. Item: %+v\n", RecordId, item)
+			IsArchived = false
+		}
+
 		// StartDate
 		StartDate, ok := item["start_date"].(string)
 		if !ok || StartDate == "" {
@@ -149,10 +156,12 @@ func PrepareDealerFilters(tableName string, dataFilter models.DataRequestBody) (
 	defer func() { log.ExitFn(0, "PrepareDealerFilters", nil) }()
 
 	var filtersBuilder strings.Builder
+	whereAdded := false // Flag to track if WHERE clause has been added
 
 	// Check if there are filters
 	if len(dataFilter.Filters) > 0 {
 		filtersBuilder.WriteString(" WHERE ")
+		whereAdded = true // Set flag to true as WHERE clause is added
 
 		for i, filter := range dataFilter.Filters {
 			if i > 0 {
@@ -188,6 +197,23 @@ func PrepareDealerFilters(tableName string, dataFilter models.DataRequestBody) (
 				whereEleList = append(whereEleList, value)
 			}
 		}
+	}
+
+	// Handle the Archived field
+	if dataFilter.Archived {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+		}
+		filtersBuilder.WriteString("dor.is_archived = TRUE")
+	} else {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+		}
+		filtersBuilder.WriteString("dor.is_archived = FALSE")
 	}
 
 	// Add pagination logic

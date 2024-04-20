@@ -42,24 +42,29 @@
 .bottamTextView {
   position: absolute;
   bottom: 3%;
-  width: 100%;
+  width: 99.6%;
+ 
 }
 
 .bottamTextView div {
   border-radius: 0px 0px 16px 16px;
   background: rgba(0, 0, 0, 0.63);
-  margin-left: 4px;
+  margin-left: 4.6px;
   margin-right: 4px;
+  margin-bottom: 3px;
+  text-align: center;
+  height: 45px;
+  align-items: center;
 }
+
 
 .bottamTextView div span {
   color: #fff;
-  text-align: center;
   font-family: Poppins;
   font-size: 18px;
   font-style: normal;
   font-weight: 400;
-  line-height: 32px; /* 177.778% */
+  line-height: 32px;
 }
 
 .centerTextView {
@@ -71,6 +76,8 @@
 .centerTextView div {
   border-radius: 0px 0px 16px 16px;
   background: rgba(0, 0, 0, 0.63);
+  margin-bottom: 5.8px;
+  text-align: center;
 }
 
 .centerTextView div span {

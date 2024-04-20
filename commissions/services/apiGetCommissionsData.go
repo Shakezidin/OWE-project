@@ -199,10 +199,12 @@ func PrepareCommissionFilters(tableName string, dataFilter models.DataRequestBod
 	defer func() { log.ExitFn(0, "PrepareCommissionFilters", nil) }()
 
 	var filtersBuilder strings.Builder
+	whereAdded := false // Flag to track if WHERE clause has been added
 
 	// Check if there are filters
 	if len(dataFilter.Filters) > 0 {
 		filtersBuilder.WriteString(" WHERE ")
+		whereAdded = true // Set flag to true as WHERE clause is added
 
 		for i, filter := range dataFilter.Filters {
 			// Check if the column is a foreign key
@@ -246,15 +248,30 @@ func PrepareCommissionFilters(tableName string, dataFilter models.DataRequestBod
 			case "rate":
 				filtersBuilder.WriteString(fmt.Sprintf("cr.rate %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-			case "is_archived":
-				filtersBuilder.WriteString(fmt.Sprintf("cr.is_archived %s $%d", operator, len(whereEleList)+1))
-				whereEleList = append(whereEleList, value)
 			default:
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			}
 		}
 	}
+
+	// Handle the Archived field
+	if dataFilter.Archived {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+		}
+		filtersBuilder.WriteString("cr.is_archived = TRUE")
+	} else {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+		}
+		filtersBuilder.WriteString("cr.is_archived = FALSE")
+	}
+
 	// Add pagination logic
 	if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
 		offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize

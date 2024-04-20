@@ -2,11 +2,9 @@ import React, { PureComponent } from "react";
 import {
   BarChart,
   Bar,
-  Rectangle,
   XAxis,
   YAxis,
   CartesianGrid,
-  Tooltip,
   Legend,
   ResponsiveContainer,
 } from "recharts";
@@ -56,44 +54,50 @@ const data = [
   },
 ];
 
-export default class LineChart extends PureComponent {
-  // static demoUrl = 'https://codesandbox.io/s/simple-bar-chart-tpz8r';
-
+export default class BarChartComponent extends PureComponent {
   render() {
     return (
-      <div className="" >
-        <div className="dash-section" style={{padding:"1rem"}}>
+      <div className="">
+        <div className="dash-section" style={{ padding: "1rem" }}>
           <p>Total Table Record</p>
         </div>
-        <div style={{ width: "100%", height: "35vh", marginTop:"1rem" }}>
+        <div style={{ width: "100%", height: "280px", marginTop: "1rem" }}>
           <ResponsiveContainer width="100%" height="110%">
             <BarChart
               width={500}
-              height={500}
+              height={800}
               data={data}
-            
               margin={{
-                // top: 50,
                 right: 30,
                 left: 20,
-                
-                // bottom: 10,
+                bottom: 30,
               }}
             >
-              <CartesianGrid  />
-              <XAxis dataKey="name" />
-              <YAxis />
-              
-              <Legend />
-              <Bar
-                dataKey="Historical_Records"
-                fill="#FB7955"
-                // activeBar={<Rectangle fill="pink" stroke="blue" />}
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="name"
+                tickLine={false}
+                tick={{ fill: "#000000", fontWeight: 500, fontSize: "10px" }}
+              />
+              <YAxis
+                axisLine={false}
+                tick={{ fontFamily: "Inter", fontWeight: 500, fontSize: 12, fill: "#101828" }}
+                tickLine={false}
+              />
+              <Legend
+                wrapperStyle={{ fontSize: "12px", color: "#000000" }} payload={[{ value: 'Total Records', type: 'rect', color: '#FB7955'  }, { value: 'Historical Records', type: 'rect', color: '#007AF5' }]} iconSize={15} 
               />
               <Bar
                 dataKey="Total_Records"
+                fill="#FB7955"
+                label={{ position: "top", fill: "#565656", fontSize: "10px", fontWeight: 500 }}
+                radius={[8, 8, 0, 0]}
+              />
+              <Bar
+                dataKey="Historical_Records"
                 fill="#007AF5"
-                // activeBar={<Rectangle fill="gold" stroke="purple" />}
+                label={{ position: "top", fill: "#565656", fontSize: "10px", fontWeight: 500 }}
+                radius={[8, 8, 0, 0]}
               />
             </BarChart>
           </ResponsiveContainer>

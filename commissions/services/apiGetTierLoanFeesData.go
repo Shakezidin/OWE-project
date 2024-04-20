@@ -152,6 +152,13 @@ func HandleGetTierLoanFeesDataRequest(resp http.ResponseWriter, req *http.Reques
 			EndDate = ""
 		}
 
+		// is_archived
+		IsArchived, ok := item["is_archived"].(bool)
+		if !ok || !IsArchived {
+			log.FuncErrorTrace(0, "Failed to get is_archived value for Record ID %v. Item: %+v\n", RecordId, item)
+			IsArchived = false
+		}
+
 		// Create a new GetTierLoanFeeData object
 		vaddersData := models.GetTierLoanFeeData{
 			RecordId:    RecordId,
@@ -186,10 +193,12 @@ func PrepareTierLoanFeesFilters(tableName string, dataFilter models.DataRequestB
 	defer func() { log.ExitFn(0, "PrepareTierLoanFeesFilters", nil) }()
 
 	var filtersBuilder strings.Builder
+	whereAdded := false // Flag to track if WHERE clause has been added
 
 	// Check if there are filters
 	if len(dataFilter.Filters) > 0 {
 		filtersBuilder.WriteString(" WHERE ")
+		whereAdded = true // Set flag to true as WHERE clause is added
 
 		for i, filter := range dataFilter.Filters {
 			// Check if the column is a foreign key
@@ -229,6 +238,23 @@ func PrepareTierLoanFeesFilters(tableName string, dataFilter models.DataRequestB
 				whereEleList = append(whereEleList, value)
 			}
 		}
+	}
+
+	// Handle the Archived field
+	if dataFilter.Archived {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+		}
+		filtersBuilder.WriteString("tlf.is_archived = TRUE")
+	} else {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+		}
+		filtersBuilder.WriteString("tlf.is_archived = FALSE")
 	}
 
 	// Add pagination logic

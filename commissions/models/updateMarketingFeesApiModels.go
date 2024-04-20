@@ -18,3 +18,8 @@ type UpdateMarketingFee struct {
 	EndDate     string `json:"end_date"`
 	Description string `json:"description"`
 }
+
+type UpdateMarketingFeeArchive struct {
+	RecordId   []int64 `json:"record_id"`
+	IsArchived bool    `json:"is_archived"`
+}

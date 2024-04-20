@@ -49,6 +49,19 @@ const dealerSlice = createSlice({
         }
         state.Dealers_list = action?.payload?.data?.Dealers_list;
       })
+      // .addCase(fetchDealer.fulfilled, (state, action) => {
+      //   state.loading = false;
+      //   state.error = null;
+      //   if (
+      //     action.payload &&
+      //     action.payload.data &&
+      //     action.payload.data.Dealers_list
+      //   ) {
+      //     state.Dealers_list = action.payload.data.Dealers_list;
+      //   } else {
+      //     state.Dealers_list = [];
+      //   }
+      // })      
       .addCase(fetchDealer.rejected, (state, action) => {
         state.loading = false;
         state.error = action?.error?.message ?? "Failed to fetch dealer data";
