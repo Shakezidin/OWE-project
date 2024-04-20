@@ -7,11 +7,13 @@ interface CommissionsState {
   commissionsList: CommissionModel[];
   loading: boolean;
   error: string | null;
+ 
 }
 const initialState: CommissionsState = {
   commissionsList: [],
   loading: false,
   error: null,
+  
 };
 
 export const fetchCommissions = createAsyncThunk(
@@ -21,6 +23,7 @@ export const fetchCommissions = createAsyncThunk(
     return response;
   }
 );
+
 
 
 // Define fetchCommissions async thunk without filters
@@ -53,7 +56,8 @@ const commissionSlice = createSlice({
         state.loading = false;
         state.error =
           action.error.message ?? "Failed to fetch commissions data";
-      });
+      })
+      
   },
 });
 

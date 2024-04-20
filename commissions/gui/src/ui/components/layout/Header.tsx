@@ -95,7 +95,7 @@ const Header: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen, setSidebarCh
           </div>
           <div className="user-img-container">
           <div className="user-img">
-              <span>{name}</span>
+              <span>{name?.slice(0,1)}</span>
             </div>
             <div className="user-name">
               <div className="down-arrow">
