@@ -3,7 +3,7 @@ import Select from "react-select";
 import Input from "../../../components/text_input/Input";
 import { ActionButton } from "../../../components/button/ActionButton";
 import { useAppDispatch } from "../../../../redux/hooks";
-import { fetchCommissions } from "../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice";
+import {fetchCommissions } from "../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice";
 import { ICONS } from "../../../icons/Icons";
 import { useEffect, useState } from "react";
 import OperationSelect from "./OperationSelect";
@@ -151,6 +151,14 @@ const FilterCommission: React.FC<TableProps> = ({
      
     }
   };
+  const handleCloseModal = () => {
+      const req = {
+        page_number: page_number,
+        page_size: page_size,
+      };
+      dispatch(fetchCommissions(req));
+    handleClose();
+  };
 
   console.log(errors);
   return (
@@ -271,7 +279,7 @@ const FilterCommission: React.FC<TableProps> = ({
             <ActionButton
               title={"Cancel"}
               type="reset"
-              onClick={handleClose}
+              onClick={handleCloseModal}
             />
             <ActionButton
               title={"reset"}
