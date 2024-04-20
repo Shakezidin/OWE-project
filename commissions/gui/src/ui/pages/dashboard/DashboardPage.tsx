@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import "./dasboard.css"
 
-import React from "react";
+import Select from "react-select";
 
 import DashboardTotal from "./DashboardTotal";
 import { ICONS } from "../../icons/Icons";
