@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 
 const SalesRepresentativeTable = () => {
+
   const dataUser = [
     {
       code: "323223",
@@ -48,6 +49,7 @@ const SalesRepresentativeTable = () => {
     (state) => state.paginationType.currentPage
   );
   const itemsPerPage = 10;
+
 
   const paginate = (pageNumber: number) => {
     dispatch(setCurrentPage(pageNumber));

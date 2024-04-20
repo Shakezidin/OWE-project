@@ -27,7 +27,7 @@
 .commission-section-dash {
   display: flex;
   justify-content: space-between;
-  margin-top: 1rem;
+  margin-top: 10px;
   flex-wrap: wrap;
 
 }
@@ -79,8 +79,7 @@
   /* width: 240px; */
   height: 36px;
   background-color: white;
- padding: 0 6px 0 12px;
-
+  padding: 0 3px 0 12px;
   gap: 0.5rem;
   align-items: center;
   border-radius: 8px;
@@ -90,12 +89,13 @@
   background-color: #ECECEC;
   border: none;
   outline: none;
-  padding: .1rem .5rem .1rem .5rem;
+  padding: .3rem, .7rem;
   font-size: 12px;
   cursor: pointer;
   color: #344054 !important;
   font-weight: 500;
-  border-radius: .25rem;
+  border-radius: .40rem;
+  position: relative;
 }
 .line-graph {
   display: flex;

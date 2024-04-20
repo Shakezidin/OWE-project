@@ -43,6 +43,7 @@ const UserTable: React.FC = () => {
   );
   const itemsPerPage = 10;
 
+
   const paginate = (pageNumber: number) => {
     dispatch(setCurrentPage(pageNumber));
   };

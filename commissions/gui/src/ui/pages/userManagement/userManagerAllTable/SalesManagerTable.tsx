@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 
 const SalesManagerTable = () => {
+
   const dataUser = [
     {
       code: "323223",

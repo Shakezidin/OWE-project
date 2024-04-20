@@ -50,6 +50,7 @@ const RegionalManagerTable = () => {
     dispatch(setCurrentPage(pageNumber));
   };
 
+
   const goToNextPage = () => {
     dispatch(setCurrentPage(currentPage + 1));
   };

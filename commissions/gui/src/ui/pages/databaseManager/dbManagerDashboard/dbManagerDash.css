@@ -148,7 +148,7 @@ opacity: 0px;
   }
   
 
-  .Payroll-section {
+  /* .Payroll-section {
     display: flex;
     height: 36px;
     background-color: white;
@@ -157,10 +157,9 @@ opacity: 0px;
     align-items: center;
     border-radius: 8px;
     border: 1px solid #b6b5b5;
-    /* margin-left: 47px; */
-    /* Add z-index to ensure the dropdown appears above other elements */
-    z-index: 1; /* You can adjust the value as needed */
+    z-index: 1; 
   }
+   */
   
   .dash-select {
     position: relative;
@@ -172,10 +171,8 @@ opacity: 0px;
     color: #02050a !important;
     font-weight: 500;
     border-radius: .40rem;
-    /* Add a higher z-index to ensure the dropdown menu appears above other elements */
-    z-index: 2; /* You can adjust the value as needed */
+    z-index: 2; 
   }
-  
   .identity{
     display: flex;
     flex-direction: row;
