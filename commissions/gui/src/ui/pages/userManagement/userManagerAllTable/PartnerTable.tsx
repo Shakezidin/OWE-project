@@ -128,6 +128,7 @@ const PartnerTable: React.FC = () => {
               paginate={paginate}
               goToNextPage={goToNextPage}
               goToPrevPage={goToPrevPage}
+              currentPageData={currentPageData}
             />
           ) : null}
         </div>
