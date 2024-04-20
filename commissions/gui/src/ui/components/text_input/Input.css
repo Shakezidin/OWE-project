@@ -6,10 +6,10 @@
 
 /* Input style */
  .input {
-  font-size: 1rem;
+  font-size: 13px;
   font-weight: 400;
   flex: 1;
-  height: 2.73rem;
+  height: 2.25rem;
   color: #000;
  padding: 0px 14px;
   line-height: 14.5px;
@@ -29,10 +29,12 @@
   overflow: hidden;
   background: #fff;
 }
-
+.input-inner-view:hover{
+  /* border: 1px solid #777777 !important; */
+}
 input::placeholder {
-  color: #5a5a5a;
-  font-size: 14px;
+  color: #777777;
+  font-size: 13px;
   font-style: normal;
   font-weight: 400;
   line-height: 14.5px;
@@ -41,7 +43,7 @@ input::placeholder {
 
 .inputLabel {
   color: #000000;
-  font-size: 14px;
+  font-size: 13px;
 
   font-weight: 500;
   /* line-height: 14.5px; */

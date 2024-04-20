@@ -11,6 +11,7 @@ import SalesManagerTable from "../userManagerAllTable/SalesManagerTable";
 import SalesRepresentativeTable from "../userManagerAllTable/SalesRepresentativeTable";
 import DealerOwnerTable from "../userManagerAllTable/DealerOwnerTable";
 import RegionalManagerTable from "../userManagerAllTable/RegionalManagerTable";
+import "./UserHeader.css";
 // interface props {
 //   name: string;
 // }
@@ -28,6 +29,8 @@ const UserHeaderSection: React.FC = () => {
   const renderComponent = () => {
     switch (selectedOption) {
       case "Admin User":
+        return <UserTable />;
+      case "DB User":
         return <UserTable />;
       case "Appointment Setter":
         return <AppointmentSetterTable />;
@@ -62,11 +65,25 @@ const UserHeaderSection: React.FC = () => {
               styles={{
                 control: (baseStyles, state) => ({
                   ...baseStyles,
-                  marginTop: "4.5px",
+                  fontSize: "13px",
+                  fontWeight: "500",
                   borderRadius: "8px",
                   outline: "none",
-                  height: "2.8rem",
+                  // height: "2.25rem",
+                  width: "12rem",
                   border: "1px solid #d0d5dd",
+                }),
+                indicatorSeparator: () => ({
+                  display: "none",
+                }),
+                option: (baseStyles) => ({
+                  ...baseStyles,
+                  fontSize: "13px",
+                }),
+                menu: (baseStyles) => ({
+                  ...baseStyles,
+                  minWidth: "12rem",
+                  width: "12rem",
                 }),
               }}
             />
@@ -75,9 +92,9 @@ const UserHeaderSection: React.FC = () => {
           <div className="iconsSection-delete">
             <button type="button">
               <img src={ICONS.deleteIcon} alt="" />
-              <h4>Delete</h4>
             </button>
-          </div>
+            </div>
+
           <div className="iconsSection-filter">
             <button type="button">
               <img src={ICONS.FILTER} alt="" />
@@ -91,28 +108,3 @@ const UserHeaderSection: React.FC = () => {
 };
 
 export default UserHeaderSection;
-
-{
-  /* <label className="inputLabel">Adder Type</label> */
-}
-{
-  /* <Select
-            options={userSelectData}
-            isSearchable
-            styles={{
-              control: (baseStyles, state) => ({
-                ...baseStyles,
-                marginTop: "4.5px",
-                borderRadius: "8px",
-                outline: "none",
-                height: "1.8rem",
-                width: "200px",
-                border: "1px solid #d0d5dd",
-              }),
-            }}
-            // onChange={(newValue) => handleChange(newValue, 'adder_type')}
-            value={userSelectData?.find(
-              (option) => option.value === "admin_user"
-            )}
-          /> */
-}

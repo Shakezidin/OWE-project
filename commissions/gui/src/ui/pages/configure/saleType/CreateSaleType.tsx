@@ -1,10 +1,6 @@
 import React, { useState } from "react";
-import "../../create_profile/CreateUserProfile.css";
-import { ReactComponent as PROFILE_BACKGROUND } from "../../../../resources/assets/Profile_background.svg";
-
 import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cross_button.svg";
 import Input from "../../../components/text_input/Input";
-import DropdownButton from "../../../components/dropdown/DropdownButton";
 import { ActionButton } from "../../../components/button/ActionButton";
 import { useDispatch } from "react-redux";
 import { updateSalesForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createSalesTypeSlice";
@@ -104,7 +100,9 @@ const CreateSaleType:React.FC<salesProps> = ({handleClose,salesTypeData,editMode
                             </div>
 
                         </div>
-                        <div className="createUserActionButton">
+                        <div className="createUserActionButton" style={{marginTop:"32px"}}>
+                        <ActionButton title={"Cancel"} type="reset"
+                  onClick={() => handleClose()} />
                             <ActionButton title={editMode===false?"Create":"Update"} type="submit"
                                 onClick={() => { }} />
                         </div>

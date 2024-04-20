@@ -37,11 +37,11 @@ import RebateData from "./ui/pages/configure/reabateData/RebateData";
 import ReferalData from "./ui/pages/configure/referalData/ReferalData";
 import DlrOthPay from "./ui/pages/configure/dlrOthPay/DlrOthPay";
 import NonCommDlrPay from "./ui/pages/configure/non_comm(dlrpay)/NonCommDlrPay";
-import LoanFeeAddr from "./ui/pages/configure/loadnFeeAddr/LoanFeeAddr";
+import LoanFeeAddr from "./ui/pages/configure/loanFeeAddr/LoanFeeAddr";
 import UserManagement from "./ui/pages/userManagement/UserManagement";
 import AccountSettings from "./ui/pages/accountSettings/AccountSettings";
 import Report from "./ui/pages/report/Report";
-import Project from "./ui/pages/project/Project";
+import Project from "./ui/pages/projectTracker/ProjectTracker";
 import TechnicalSupport from "./ui/pages/technicalSupport/TechnicalSupport";
 import DataTablle from "./ui/pages/databaseManager/dataTable/DataTable";
 import UserActivity from "./ui/pages/databaseManager/userActivity/UserActivity";
@@ -65,13 +65,21 @@ function App() {
         <Route
           path="/"
           element={
-            isAuthenticated ? <Navigate to={"/commission/dashboard"} /> : <WelcomePage />
+            isAuthenticated ? (
+              <Navigate to={"/commission/dashboard"} />
+            ) : (
+              <WelcomePage />
+            )
           }
         />
         <Route
           path="/login"
           element={
-            isAuthenticated ? <Navigate to={"/commission/dashboard"} /> : <LoginPage />
+            isAuthenticated ? (
+              <Navigate to={"/commission/dashboard"} />
+            ) : (
+              <LoginPage />
+            )
           }
         />
         <Route path="/resetPassword" element={<ResetPassword />} />

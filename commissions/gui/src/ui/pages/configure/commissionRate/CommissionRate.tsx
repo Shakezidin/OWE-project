@@ -1,27 +1,26 @@
-import React, { useEffect, useState } from "react";
-import { CiEdit } from "react-icons/ci";
+import React, { useEffect, useRef, useState } from "react";
 import "../configure.css";
-import { RiDeleteBin5Line } from "react-icons/ri";
 import CreateCommissionRate from "./CreateCommissionRate";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-import { CSVLink } from 'react-csv';
+
 import { ICONS } from "../../../icons/Icons";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { fetchCommissions } from "../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice";
-
 import FilterCommission from "./FilterCommission";
-
 import CheckBox from "../../../components/chekbox/CheckBox";
 import {
   toggleAllRows,
   toggleRowSelection,
 } from "../../../components/chekbox/checkHelper";
+import { CSVLink } from 'react-csv';
 import Pagination from "../../../components/pagination/Pagination";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 import { CommissionModel } from "../../../../core/models/configuration/create/CommissionModel";
 import { FaArrowDown } from "react-icons/fa6";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import { Column } from "../../../../core/models/data_models/FilterSelectModel";
+import SortableHeader from "../../../components/tableHeader/SortableHeader";
+import { Commissioncolumns } from "../../../../resources/static_data/configureHeaderData/CommissionColumn";
 
 
 const CommissionRate: React.FC = () => {
@@ -40,9 +39,11 @@ const CommissionRate: React.FC = () => {
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
   const [editedCommission, setEditedCommission] = useState<CommissionModel | null>(null);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
+ 
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
-
+  const [sortKey, setSortKey] = useState("");
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -51,39 +52,22 @@ const CommissionRate: React.FC = () => {
     };
     dispatch(fetchCommissions(pageNumber));
 
-  }, [dispatch, currentPage]);
+  }, [dispatch, currentPage,itemsPerPage]);
 
   const paginate = (pageNumber: number) => {
     dispatch(setCurrentPage(pageNumber));
   };
-
-
   const goToNextPage = () => {
     dispatch(setCurrentPage(currentPage + 1));
   };
-
   const goToPrevPage = () => {
     dispatch(setCurrentPage(currentPage - 1));
   };
-  const columns: Column[] = [
-    // { name: "record_id", displayName: "Record ID", type: "number" },
-    { name: "partner", displayName: "Partner", type: "string" },
-    { name: "installer", displayName: "Installer", type: "string" },
-    { name: "state", displayName: "State", type: "string" },
-    { name: "sale_type", displayName: "Sale Type", type: "string" },
-    { name: "sale_price", displayName: "Sale Price", type: "number" },
-    { name: "rep_type", displayName: "Rep Type", type: "string" },
-    { name: "rl", displayName: "RL", type: "number" },
-    { name: "rate", displayName: "Rate", type: "number" },
-    { name: "start_date", displayName: "Start Date", type: "date" },
-    { name: "end_date", displayName: "End Date", type: "date" }
-  ];
-  const filter = ()=>{
+  const filter = () => {
     setFilterOpen(true)
   }
- 
-  const totalPages = Math.ceil(commissionList?.length / itemsPerPage);
 
+  const totalPages = Math.ceil(commissionList?.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const handleAddCommission = () => {
@@ -97,14 +81,56 @@ const CommissionRate: React.FC = () => {
     setEditedCommission(commission);
     handleOpen()
   };
+  const currentPageData = commissionList?.slice(startIndex, endIndex);
+  const isAnyRowSelected = selectedRows?.size > 0;
+  const isAllRowsSelected = selectedRows?.size === commissionList?.length;
+  const handleArchiveAllClick = () => {
+    const archived: number[] = Array.from(selectedRows);
+    // Implement archive logic here
+    console.log("Archiving all rows:", archived);
+    setSelectedRows(new Set());
+  };
 
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
+  const handleArchiveClick = (record_id: number) => {
+    const archived: number[] = [record_id];
+    // Implement archive logic here
+    console.log("Archiving row:", archived);
+    const newSelectedRows = new Set(selectedRows);
+    newSelectedRows?.delete(record_id);
+    setSelectedRows(newSelectedRows);
+  };
+
+
+  const handleSort = (key: any) => {
+    if (sortKey === key) {
+      setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
+    } else {
+      setSortKey(key);
+      setSortDirection('asc');
+    }
+  };
+
+  if (sortKey) {
+    currentPageData.sort((a: any, b: any) => {
+      const aValue = a[sortKey];
+      const bValue = b[sortKey];
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        return sortDirection === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+      } else {
+        // Ensure numeric values for arithmetic operations
+        const numericAValue = typeof aValue === 'number' ? aValue : parseFloat(aValue);
+        const numericBValue = typeof bValue === 'number' ? bValue : parseFloat(bValue);
+        return sortDirection === 'asc' ? numericAValue - numericBValue : numericBValue - numericAValue;
+      }
+    });
+  }
 
   if (error) {
     return <div>Error: {error}</div>;
   }
+  // if (loading) {
+  //   return <div>Loading... {loading}</div>;
+  // }
 
   const currentPageData = commissionList?.slice(startIndex, endIndex);
   const isAnyRowSelected = selectedRows.size > 0;
@@ -113,30 +139,32 @@ const CommissionRate: React.FC = () => {
   
   return (
     <div className="comm">
-      <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Commission Rate"/>
+      <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Commission Rate" />
       <div className="commissionContainer">
         <TableHeader
           title="Commisstion Rate"
           onPressViewArchive={() => { }}
-          onPressArchive={() => { }}
+          onPressArchive={handleArchiveAllClick}
+          checked={isAllRowsSelected}
+          isAnyRowSelected={isAnyRowSelected}
           onPressFilter={() => filter()}
           onPressImport={() => { }}
           onpressExport={() => handleExportOpen()}
           onpressAddNew={() => handleAddCommission()}
         />
         {exportOPen && (<div className="export-modal">
-          <CSVLink style={{ color: "#04a5e8" }} data={currentPageData} filename={"table.csv"}>Export CSV</CSVLink>
+          <CSVLink style={{ color: "white", fontSize: "12px" }} data={currentPageData} filename={"table.csv"}>Export CSV</CSVLink>
         </div>)}
-             {filterOPen && <FilterCommission handleClose={filterClose}  
-            columns={columns} 
-             page_number = {currentPage}
-             page_size = {itemsPerPage}
-             />}
-             {open && <CreateCommissionRate 
-                         commission={editedCommission}
-                         editMode={editMode}
-                         handleClose={handleClose}
-                          />}
+        {filterOPen && <FilterCommission handleClose={filterClose}
+          columns={Commissioncolumns}
+          page_number={currentPage}
+          page_size={itemsPerPage}
+        />}
+        {open && <CreateCommissionRate
+          commission={editedCommission}
+          editMode={editMode}
+          handleClose={handleClose}
+        />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
@@ -144,101 +172,55 @@ const CommissionRate: React.FC = () => {
           <table>
             <thead>
               <tr>
-                <th >
-                  <div>
-                    <CheckBox
-                      checked={selectAllChecked}
-                      onChange={() =>
-                        toggleAllRows(
-                          selectedRows,
-                          commissionList,
-                          setSelectedRows,
-                          setSelectAllChecked
-                        )
-                      }
-                      indeterminate={isAnyRowSelected && !isAllRowsSelected}
+                {
+                  Commissioncolumns?.map((item, key) => (
+                    <SortableHeader
+                      key={key}
+                      isCheckbox={item.isCheckbox}
+                      titleName={item.displayName}
+                      data={commissionList}
+                      isAllRowsSelected={isAllRowsSelected}
+                      isAnyRowSelected={isAnyRowSelected}
+                      selectAllChecked={selectAllChecked}
+                      setSelectAllChecked={setSelectAllChecked}
+                      selectedRows={selectedRows}
+                      setSelectedRows={setSelectedRows}
+                      sortKey={item.name}
+                      sortDirection={sortKey === item.name ? sortDirection : undefined}
+                      onClick={() => handleSort(item.name)}
                     />
-                  </div>
-                </th>
-                <th >
-                  <div className="table-header" >
-                    <p>Partner</p> <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
+
+                  ))
+                }
                 <th>
-                  <div className="table-header">
-                    <p>Installer</p> <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>State</p> <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Sales Type</p> <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Sales Price</p> <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Rep.Type</p> <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Rate List</p> <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Rate</p> <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Start Dt.</p> <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>End Dt.</p> <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Action</p> <FaArrowDown style={{ color: "#667085" }} />
+                  <div className="action-header">
+                    <p>Action</p>
                   </div>
                 </th>
               </tr>
             </thead>
             <tbody>
               {currentPageData?.length > 0
-                ? currentPageData?.map((el, i) => (
+                ? currentPageData?.map((el: any, i: any) => (
                   <tr
                     key={i}
                     className={selectedRows.has(i) ? "selected" : ""}
                   >
-                    <td>
-                      <CheckBox
-                        checked={selectedRows.has(i)}
-                        onChange={() =>
-                          toggleRowSelection(
-                            i,
-                            selectedRows,
-                            setSelectedRows,
-                            setSelectAllChecked
-                          )
-                        }
-                      />
-                    </td>
                     <td style={{ fontWeight: "500", color: "black" }}>
-                      {el.partner}
+                      <div className="flex-check">
+                        <CheckBox
+                          checked={selectedRows.has(i)}
+                          onChange={() =>
+                            toggleRowSelection(
+                              i,
+                              selectedRows,
+                              setSelectedRows,
+                              setSelectAllChecked
+                            )
+                          }
+                        />
+                        {el.partner}
+                      </div>
                     </td>
                     <td>{el.installer}</td>
                     <td>{el.state}</td>
@@ -251,11 +233,11 @@ const CommissionRate: React.FC = () => {
                     <td>{el.end_date}</td>
                     <td>
                       <div className="action-icon">
-                        <div className="" style={{ cursor: "pointer" }}>
+                        <div className="" style={{ cursor: "pointer" }} onClick={() => handleArchiveClick(el.record_id)}>
                           <img src={ICONS.ARCHIVE} alt="" />
                         </div>
                         <div className="" style={{ cursor: "pointer" }} onClick={() => handleEditCommission(el)}>
-                        <img src={ICONS.editIcon} alt="" />
+                          <img src={ICONS.editIcon} alt="" />
                         </div>
                       </div>
 
@@ -266,19 +248,28 @@ const CommissionRate: React.FC = () => {
             </tbody>
           </table>
         </div>
-        {
-        commissionList?.length > 0 ? <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages} // You need to calculate total pages
-          paginate={paginate}
-          goToNextPage={goToNextPage}
-          goToPrevPage={goToPrevPage}
-        /> : null
-      }
+        <div className="page-heading-container">
+          <p className="page-heading">
+            {currentPage} - {totalPages} of {currentPageData?.length} item
+          </p>
+
+          {
+            commissionList?.length > 0 ? <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages} // You need to calculate total pages
+              paginate={paginate}
+              currentPageData={currentPageData}
+              goToNextPage={goToNextPage}
+              goToPrevPage={goToPrevPage}
+            /> : null
+          }
+        </div>
       </div>
-     
     </div>
   );
 };
 
 export default CommissionRate;
+
+
+

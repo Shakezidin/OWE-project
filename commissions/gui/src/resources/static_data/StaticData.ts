@@ -1,4 +1,3 @@
-import UserTable from "../../ui/pages/userManagement/userManagerAllTable/UserTable";
 
 export const partners = [
   { value: 'OWE', label: 'OWE' },
@@ -65,11 +64,19 @@ export const paySaleTypeData = [
 ]
 export const userSelectData = [
   { value: "Admin User", label: 'Admin User' },
+  { value: "DB User", label: 'DB User' },
   { value: "Appointment Setter", label: 'Appointment Setter' },
   { value: "Partner", label: 'Partner' },
   { value: "Regional Manager", label: 'Regional Manager' },
   { value: "Dealer Owner", label: 'Dealer Owner' },
   { value: "Sales Representative", label: 'Sales Representative' },
   { value: "Sales Manager", label: 'Sales Manager' },
+]
 
+export const payRollData = [
+  { value: "Select", label: 'Select' },
+  { value: "02/04/2024", label: '02/04/2024' },
+  { value: "03/04/2024", label: '03/04/2024' },
+  { value: "04/04/2024", label: '04/04/2024' },
+  { value: "05/04/2024", label: '05/04/2024' },
 ]

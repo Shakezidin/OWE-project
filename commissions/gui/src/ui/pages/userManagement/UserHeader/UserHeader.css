@@ -1,0 +1,5 @@
+.delete-icon-container{
+    width: 50%;
+    display: flex;
+    align-self: flex-end;
+}

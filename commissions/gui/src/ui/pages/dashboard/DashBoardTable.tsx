@@ -1,78 +1,102 @@
 import React from "react";
 import "../userManagement/user.css";
+import "../configure/configure.css"
 import { CiEdit } from "react-icons/ci";
-import '../configure/configure.css'
 import { FaArrowDown } from "react-icons/fa6";
 import CheckBox from "../../components/chekbox/CheckBox";
 import { IoIosHelpCircleOutline } from "react-icons/io";
+import "../../components/pagination/Pagination"
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
+import { setCurrentPage } from "../../../redux/apiSlice/paginationslice/paginationSlice";
+import Pagination from "../../components/pagination/Pagination";
 // import { installers, partners, respTypeData, statData } from "../../../../../core/models/data_models/SelectDataModel";
 
 
-
-const dataUser = [
-  {
-    pi:"1234567890",
-    dn:"Josh Morton",
-    sr:"Josh Morton",
-    cn:"josh Morton",
-    amt:"$123,456",
-    pipeline: "$100,362",
-    cd: "$300,652",
-    ps:"Active",
-    state:"Texas",
-    sysSize:"10.5",
-    type:"loan",
-    adder:"$62,500",
-    ajh:"12 Days",
-    rl:"$20.00",
-    epc:"2.444",
-  },
-  {
-    pi:"1234567890",
-    dn:"Josh Morton",
-    sr:"Josh Morton",
-    cn:"josh Morton",
-    amt:"$123,456",
-    pipeline: "$100,362",
-    cd: "$300,652",
-    ps:"Active",
-    state:"Texas",
-    sysSize:"10.5",
-    type:"loan",
-    adder:"$62,500",
-    ajh:"12 Days",
-    rl:"$20.00",
-    epc:"2.444",
-  },
-  {
-    pi:"1234567890",
-    dn:"Josh Morton",
-    sr:"Josh Morton",
-    cn:"josh Morton",
-    amt:"$123,456",
-    pipeline: "$100,362",
-    cd: "$300,652",
-    ps:"Active",
-    state:"Texas",
-    sysSize:"10.5",
-    type:"loan",
-    adder:"$62,500",
-    ajh:"12 Days",
-    rl:"$20.00",
-    epc:"2.444",
-  },
-
-];
-
 const DashBoardTable: React.FC = () => {
+  const dataUser = [
+    {
+      pi:"1234567890",
+      dn:"Josh Morton",
+      sr:"Josh Morton",
+      cn:"josh Morton",
+      amt:"$123,456",
+      pipeline: "$100,362",
+      cd: "$300,652",
+      ps:"Active",
+      state:"Texas",
+      sysSize:"10.5",
+      type:"loan",
+      adder:"$62,500",
+      ajh:"12 Days",
+      rl:"$20.00",
+      epc:"2.444",
+    },
+    {
+      pi:"1234567890",
+      dn:"Josh Morton",
+      sr:"Josh Morton",
+      cn:"josh Morton",
+      amt:"$123,456",
+      pipeline: "$100,362",
+      cd: "$300,652",
+      ps:"Active",
+      state:"Texas",
+      sysSize:"10.5",
+      type:"loan",
+      adder:"$62,500",
+      ajh:"12 Days",
+      rl:"$20.00",
+      epc:"2.444",
+    },
+    {
+      pi:"1234567890",
+      dn:"Josh Morton",
+      sr:"Josh Morton",
+      cn:"josh Morton",
+      amt:"$123,456",
+      pipeline: "$100,362",
+      cd: "$300,652",
+      ps:"Active",
+      state:"Texas",
+      sysSize:"10.5",
+      type:"loan",
+      adder:"$62,500",
+      ajh:"12 Days",
+      rl:"$20.00",
+      epc:"2.444",
+    },
+  
+  ];
+  const dispatch = useAppDispatch();
+      const currentPage = useAppSelector((state: any) => state.paginationType.currentPage);
+      const itemsPerPage = 10;
+      
+      const paginate = (pageNumber: number) => {
+        dispatch(setCurrentPage(pageNumber));
+      };
+      
+      
+      const goToNextPage = () => {
+        dispatch(setCurrentPage(currentPage + 1));
+      };
+      
+      const goToPrevPage = () => {
+        dispatch(setCurrentPage(currentPage - 1));
+      };
+      const totalPages = Math.ceil(dataUser?.length / itemsPerPage);
+      
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const endIndex = startIndex + itemsPerPage;
+      const currentPageData = dataUser?.slice(startIndex, endIndex);
   return (
     <>
+    <div className="dashBoard-container">
       <div
         className="TableContainer"
-        style={{ overflowX: "auto", whiteSpace: "nowrap" }}  >
+        style={{ overflowX: "auto", whiteSpace: "nowrap"}}>
         <table>
-          <thead >
-            <tr style={{background: "#FCFCFD"}}>
+          <thead>
+            <tr style={{background: "#fcfcfc"}}>
               <th>
                 <div>
                   <CheckBox
@@ -160,14 +184,13 @@ const DashBoardTable: React.FC = () => {
                 </div>
               </th>
               <th>
-                <div className="table-header">
-                  <p>Action</p> <FaArrowDown style={{color:"#667085"}}/>
+                <div className="action-header">
+                  <p>Action</p>
                 </div>
               </th>
               
             </tr>
           </thead>
-
           <tbody>
             {dataUser.length > 0
               ? dataUser.map((el, i) => (
@@ -181,9 +204,9 @@ const DashBoardTable: React.FC = () => {
                     />
                   </td>
                   <td style={{ fontWeight: "500", color: "black" }}>{el.pi}</td>
-                  <td style={{color:"#101828"}}>{el.dn}</td>
-                  <td style={{color:"#101828"}}>{el.sr}</td>
-                  <td style={{color:"#101828"}}>{el.cn}</td>
+                  <td style={{fontWeight: "500", color:"#101828"}}>{el.dn}</td>
+                  <td style={{fontWeight: "500", color:"#101828"}}>{el.sr}</td>
+                  <td style={{fontWeight: "500", color:"#101828"}}>{el.cn}</td>
                   <td style={{color: "#0493CE"}}>{el.amt}</td>
                   <td style={{color: "#0493CE"}}>{el.pipeline}</td>
                   <td style={{color: "#0493CE"}}>{el.cd}</td>
@@ -197,11 +220,9 @@ const DashBoardTable: React.FC = () => {
                   <td>{el.epc}</td>
 
                   <td>
-                    <div className="">
+                    <div className="action-icon">
                       <div className="" style={{ cursor: "pointer", textAlign:"center" }}>
                       <IoIosHelpCircleOutline />
-
-                        {/* <img src={ICONS.ARCHIVE} alt="" /> */}
                       </div>
                     </div>
                   </td>
@@ -211,6 +232,22 @@ const DashBoardTable: React.FC = () => {
           </tbody>
         </table>
       </div>
+      <div className="page-heading-container">
+      <p className="page-heading">
+       {currentPage} - {totalPages} of {dataUser?.length} item
+      </p>
+   {
+    dataUser?.length > 0 ? <Pagination
+      currentPage={currentPage}
+      totalPages={totalPages} 
+      currentPageData={currentPageData}
+      paginate={paginate}
+      goToNextPage={goToNextPage}
+      goToPrevPage={goToPrevPage}
+    /> : null
+  }
+   </div>
+   </div>
     </>
   );
 };

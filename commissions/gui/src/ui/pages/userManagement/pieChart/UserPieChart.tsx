@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react'
-import { useNavigate } from 'react-router-dom'
+import "./barchart.css"
 import { ResponsiveContainer, PieChart, Pie, LabelList } from "recharts";
 const data = [
   {
@@ -54,7 +54,7 @@ const data2 = [
   },
   {
     name: "Admin",
-    value: 800,
+    value: 700,
     percentage: "20%",
     fill: "#0181ff",
   }
@@ -62,19 +62,18 @@ const data2 = [
 
 const renderCustomizedLabelPercentage = (data: any, total = 32000) => {
   let percentageCalculated = data.value
-  return percentageCalculated;
+  return `${percentageCalculated}`;
 };
 const UserPieChart = () => {
-  const navigate = useNavigate()
   const renderLabel = useCallback((piePiece: any) => {
     return piePiece.name;
   }, []);
   return (
  
     <div className="PieChart-container" style={{display:"flex", gap:"2rem"}} >
-      <div className="pie-section" style={{width:"50%",height:"50vh", background:"white", borderRadius:"16px", padding:"1rem"}} >
+      <div className="pie-section" style={{width:"50%",height:"55vh", background:"white", borderRadius:"16px", padding:"1rem"}} >
         <div className="pieChart-section">
-          <p>Onboarding</p>
+          <h2>Onboarding Detail</h2>
         </div>
         <div style={{ width: "100%", height: "45vh" }}>
           <ResponsiveContainer>
@@ -85,33 +84,38 @@ const UserPieChart = () => {
                 label={renderLabel}
                 cx="50%"
                 cy="50%"
-                outerRadius={"75%"}
+                outerRadius={"85%"}
                 nameKey="name"
+                fontSize={12}
+                labelLine = {true}
+                textAnchor=''
+                dominantBaseline="central" 
               // activeShape={(props) => renderActiveShape(props, showSubchart)}
               // onMouseEnter={onMouseOver}
               // onMouseLeave={onMouseLeave}
               >
-                <LabelList
-                  dy={0}
-                  // dx={-30}
-                  fill="white" // Percentage color
-                  // dataKey="percentage"
-                  dataKey={renderCustomizedLabelPercentage}
-                  position="inside"
-                  angle={-45}
-                  
-                  stroke="none" // Border of letters
-                  className="label-percentage"
-                />
+                  <LabelList
+                    dy={0}
+                    dx={10}
+                    fill="white" // Percentage color
+                    // dataKey="percentage"
+                    dataKey={renderCustomizedLabelPercentage}
+                    position="outside"
+                    angle={0}
+                    fontSize={12}
+                    stroke="none" // Border of letters
+                    className="label-percentage"
+                    offset={-45}
+                  />
               </Pie>
             </PieChart>
           </ResponsiveContainer>
         </div>
       </div>
 
-      <div className='pie-section' style={{width:"50%",height:"50vh", background:"white", borderRadius:"16px", padding:"1rem"}}>
+      <div className='pie-section' style={{width:"50%",height:"55vh", background:"white", borderRadius:"16px", padding:"1rem"}}>
         <div className="pieChart-section">
-          <p>Onboarding</p>
+          <h2>Performance</h2>
         </div>
         <div style={{ width: "100%", height: "45vh" }}>
           <ResponsiveContainer>
@@ -122,8 +126,9 @@ const UserPieChart = () => {
                 label={renderLabel}
                 cx="50%"
                 cy="50%"
-                outerRadius={"75%"}
+                outerRadius={"85%"}
                 nameKey="name"
+                labelLine={true}
               // activeShape={(props) => renderActiveShape(props, showSubchart)}
               // onMouseEnter={onMouseOver}
               // onMouseLeave={onMouseLeave}
@@ -134,9 +139,11 @@ const UserPieChart = () => {
                   // dataKey="percentage"
                   dataKey={renderCustomizedLabelPercentage}
                   position="inside"
+                  fontSize={12}
                   angle={45}
                   stroke="none" // Border of letters
                   className="label-percentage"
+
                 />
               </Pie>
             </PieChart>

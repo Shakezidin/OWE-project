@@ -1,65 +1,71 @@
 import React, { useEffect, useState } from "react";
-import "../../create_profile/CreateUserProfile.css";
-import { ReactComponent as PROFILE_BACKGROUND } from "../../../../resources/assets/Profile_background.svg";
-
 import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cross_button.svg";
 import Input from "../../../components/text_input/Input";
-import DropdownButton from "../../../components/dropdown/DropdownButton";
 import { ActionButton } from "../../../components/button/ActionButton";
 import { useDispatch } from "react-redux";
 
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
-import Select from 'react-select';
-import { dealerOption, subDealerOption } from "../../../../core/models/data_models/SelectDataModel";
+import Select from "react-select";
+import {
+  dealerOption,
+  subDealerOption,
+} from "../../../../core/models/data_models/SelectDataModel";
 import { updateDealerForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createDealerSlice";
-import { dealer, subDealer } from "../../../../resources/static_data/StaticData";
+import {
+  dealer,
+  subDealer,
+} from "../../../../resources/static_data/StaticData";
 import { DealerModel } from "../../../../core/models/configuration/create/DealerModel";
 
 interface dealerProps {
-  handleClose: () => void,
-  editMode:boolean,
-  dealerData: DealerModel| null;
+  handleClose: () => void;
+  editMode: boolean;
+  dealerData: DealerModel | null;
+  page_number: number;
+  page_size: number;
 }
 
-const CreateDealer:React.FC<dealerProps> = ({handleClose,editMode,dealerData}) => {
+const CreateDealer: React.FC<dealerProps> = ({
+  handleClose,
+  editMode,
+  page_number,
+  page_size,
+  dealerData,
+}) => {
   const dispatch = useDispatch();
 
-  const [createDealer, setCreateDealer] = useState<DealerModel>( 
-    {
-      record_id:dealerData? dealerData?.record_id:0,
-      sub_dealer: dealerData? dealerData?.sub_dealer: "Sub Dealer Name1",
-      dealer: dealerData? dealerData?.dealer: "Shushank Sharma",
-      pay_rate: dealerData? dealerData?.pay_rate: "500",
-      start_date: dealerData? dealerData?.start_date:"2024-04-01",
-      end_date: dealerData? dealerData?.end_date:"2024-04-30"
-  }
-  )
-  const [newFormData,setNewFormData] = useState<any>([])
+  const [createDealer, setCreateDealer] = useState<DealerModel>({
+    record_id: dealerData ? dealerData?.record_id : 0,
+    sub_dealer: dealerData ? dealerData?.sub_dealer : "Sub Dealer Name1",
+    dealer: dealerData ? dealerData?.dealer : "Shushank Sharma",
+    pay_rate: dealerData ? dealerData?.pay_rate : "500",
+    start_date: dealerData ? dealerData?.start_date : "2024-04-01",
+    end_date: dealerData ? dealerData?.end_date : "2024-04-30",
+  });
+  const [newFormData, setNewFormData] = useState<any>([]);
   const tableData = {
-    tableNames: ["sub_dealer","dealer"]
-  }
- const getNewFormData=async()=>{
-  const res = await postCaller(EndPoints.get_newFormData,tableData)
-  setNewFormData(res.data)
-  
- }
- useEffect(()=>{
-getNewFormData()
- },[])
- 
+    tableNames: ["sub_dealer", "dealer"],
+  };
+  const getNewFormData = async () => {
+    const res = await postCaller(EndPoints.get_newFormData, tableData);
+    setNewFormData(res.data);
+  };
+  useEffect(() => {
+    getNewFormData();
+  }, []);
 
   const handleChange = (newValue: any, fieldName: string) => {
     setCreateDealer((prevData) => ({
       ...prevData,
-      [fieldName]: newValue ? newValue.value : '',
+      [fieldName]: newValue ? newValue.value : "",
     }));
   };
   const handleDealerInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setCreateDealer((prevData) => ({
       ...prevData,
-      [name] : value,
+      [name]: value,
     }));
   };
 
@@ -67,86 +73,102 @@ getNewFormData()
     e.preventDefault();
     try {
       dispatch(updateDealerForm(createDealer));
-      if(createDealer.record_id){
+      if (createDealer.record_id) {
         const res = await postCaller(EndPoints.update_dealer, createDealer);
         if (res.status === 200) {
-          alert(res.message)
-          handleClose()
-          window.location.reload()
+          alert(res.message);
+      
+          window.location.reload();
+          handleClose();
+        } else {
+          alert(res.message);
         }
-        else {
-          alert(res.message)
-        }
-      }
-      else{
+      } else {
         const { record_id, ...cleanedFormData } = createDealer;
         const res = await postCaller(EndPoints.create_dealer, cleanedFormData);
         if (res.status === 200) {
-          alert(res.message)
-          handleClose()
-          window.location.reload()
-        }
-        else {
-          alert(res.message)
+          alert(res.message);
+          window.location.reload();
+          handleClose();
+        } else {
+          alert(res.message);
         }
       }
     } catch (error) {
-      console.error('Error submitting form:', error);
+      console.error("Error submitting form:", error);
     }
   };
   return (
     <div className="transparent-model">
-      <div className="modal">
-
+      <form onSubmit={(e) => submitDealer(e)} className="modal">
         <div className="createUserCrossButton" onClick={handleClose}>
           <CROSS_BUTTON />
-
         </div>
-        <div className="createUserContainer">
-          <span className="createProfileText">{editMode===false?"Dealer Overrides":"Update Dealer Overrides"}</span>
-        <form onSubmit={(e)=>submitDealer(e)}>
-        <div className="createProfileInputView">
+
+        <span className="createProfileText">
+          {editMode === false ? "Dealer Overrides" : "Update Dealer Overrides"}
+        </span>
+        <div className="modal-body">
+          <div className="createProfileInputView">
             <div className="createProfileTextView">
               <div className="create-input-container">
-              <div className="create-input-field">
-              <label className="inputLabel">Sub Dealer</label>
-              <Select
-                      options={subDealerOption(newFormData)||subDealer}
-                      styles={{
-                        control: (baseStyles, state) => ({
-                          ...baseStyles,
-                          marginTop:"4.5px",
-                          borderRadius:"8px",
-                          outline:"none",
-                          height:"2.8rem",
-                          border:"1px solid #d0d5dd"
-                          
-                        }),
-                      }}
-                      isSearchable
-                      onChange={(newValue) => handleChange(newValue, 'sub_dealer')}
-                      value={subDealerOption(newFormData)||subDealer?.find((option) => option.value ===createDealer.sub_dealer )}
-                    />
+                <div className="create-input-field">
+                  <label className="inputLabel">Sub Dealer</label>
+                  <Select
+                    options={subDealerOption(newFormData) || subDealer}
+                    styles={{
+                      control: (baseStyles, state) => ({
+                        ...baseStyles,
+                        marginTop: "4.5px",
+                        borderRadius: "8px",
+                        outline: "none",
+                        fontSize: "13px",
+                        height: "2.25rem",
+                        border: "1px solid #d0d5dd",
+                      }),
+                      indicatorSeparator: () => ({
+                        display: "none", // Hide the indicator separator
+                      }),
+                    }}
+                    isSearchable
+                    onChange={(newValue) =>
+                      handleChange(newValue, "sub_dealer")
+                    }
+                    value={
+                      subDealerOption(newFormData) ||
+                      subDealer?.find(
+                        (option) => option.value === createDealer.sub_dealer
+                      )
+                    }
+                  />
                 </div>
                 <div className="create-input-field">
-                <label className="inputLabel">Dealer</label>
-                <Select
-                      options={dealerOption(newFormData)||dealer}
-                      styles={{
-                        control: (baseStyles, state) => ({
-                          ...baseStyles,
-                          marginTop:"4.5px",
-                          borderRadius:"8px",
-                          outline:"none",
-                          height:"2.8rem",
-                          border:"1px solid #d0d5dd"
-                          
-                        }),
-                      }}
-                      isSearchable
-                      onChange={(newValue) => handleChange(newValue, 'dealer')}
-                      value={dealerOption(newFormData)||dealer?.find((option) => option.value === createDealer.dealer)}
-                    />
+                  <label className="inputLabel">Dealer</label>
+                  <Select
+                    options={dealerOption(newFormData) || dealer}
+                    styles={{
+                      control: (baseStyles, state) => ({
+                        ...baseStyles,
+                        marginTop: "4.5px",
+                        borderRadius: "8px",
+                        outline: "none",
+                        fontSize: "13px",
+                        height: "2.25rem",
+                        border: "1px solid #d0d5dd",
+                      }),
+                      indicatorSeparator: () => ({
+                        display: "none", // Hide the indicator separator
+                      }),
+                    }}
+                    isSearchable
+                    onChange={(newValue) => handleChange(newValue, "dealer")}
+                    value={
+                      dealerOption(newFormData) ||
+                      dealer?.find(
+                        (option) => option.value === createDealer.dealer
+                      )
+                    }
+                  />
                 </div>
                 <div className="create-input-field">
                   <Input
@@ -181,19 +203,23 @@ getNewFormData()
                     onChange={(e) => handleDealerInputChange(e)}
                   />
                 </div>
-
-
               </div>
             </div>
-            <div className="createUserActionButton">
-              <ActionButton title={editMode===false?"Create":"Update"} type="submit"
-                onClick={() => { }} />
-            </div>
-
           </div>
-        </form>
         </div>
-      </div>
+        <div className="createUserActionButton">
+          <ActionButton
+            title={"Cancel"}
+            type="reset"
+            onClick={() => handleClose()}
+          />
+          <ActionButton
+            title={editMode === false ? "Save" : "Update"}
+            type="submit"
+            onClick={() => {}}
+          />
+        </div>
+      </form>
     </div>
   );
 };

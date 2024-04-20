@@ -99,6 +99,7 @@ const DbManagerDashboard = () => {
 
                 
               </div>
+
               <div className="PieBarchart-section">
                   <PieChartWithPaddingAngle data={data}/>                  
                 </div>
@@ -162,6 +163,7 @@ const DbManagerDashboard = () => {
 
           </div>
         </div>
+     
     </>
   );
 };

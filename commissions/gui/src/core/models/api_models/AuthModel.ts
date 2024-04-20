@@ -17,6 +17,7 @@ export interface AuthModel {
 export interface Credentials {
   email_id: string;
   password: string;
+  isRememberMe: boolean;
 }
 export interface resetPassword {
   email_id: string;

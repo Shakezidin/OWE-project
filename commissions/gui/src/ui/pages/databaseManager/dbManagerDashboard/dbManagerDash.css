@@ -2,6 +2,7 @@
   margin-bottom: 2rem;
   display: flex;
   justify-content: space-between;
+
   align-items: center;
   gap: 15px;
 }
@@ -99,7 +100,7 @@
 }
 .create-container {
   border: 1px solid #D0D5DD;
-  width: 353px;
+  width: 30%;
   height: 394px;
   border-radius: 16px;
   opacity: 0px;
@@ -108,6 +109,8 @@
 .Create-section {
   display: flex;
   padding: 1rem;
+  justify-content: space-between;
+  align-items: center;
 }
 .Create-section p {
     font-size: 16px;
@@ -161,10 +164,11 @@
     display: flex;
     flex-direction: row;
     gap: 12px;
+    justify-content: space-between;
   }
   
 
-  .Payroll-section {
+  /* .Payroll-section {
     display: flex;
     height: 36px;
     background-color: white;
@@ -173,9 +177,7 @@
     align-items: center;
     border-radius: 8px;
     border: 1px solid #b6b5b5;
-    margin-left: 47px;
-    /* Add z-index to ensure the dropdown appears above other elements */
-    z-index: 1; /* You can adjust the value as needed */
+    z-index: 1; 
   }
   .Payroll-section1 {
     display: flex;
@@ -192,11 +194,10 @@
   }
   
   .dash-select {
-    background-color: #ffffff;
     position: relative;
     border: none;
     outline: none;
-    padding: .1rem .5rem .1rem .5rem;
+    padding: .3rem .7rem;
     font-size: 12px;
     cursor: pointer;
     color: #000000 !important;
@@ -205,7 +206,6 @@
     z-index: 2; 
     line-height: 20px;
   }
-  
   .identity{
     display: flex;
     flex-direction: row;

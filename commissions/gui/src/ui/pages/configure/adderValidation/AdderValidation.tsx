@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "../configure.css";
-
-import { CiEdit } from "react-icons/ci";
 import { fetchAdderV } from "../../../../redux/apiSlice/configSlice/config_get_slice/adderVSlice";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import { ICONS } from "../../../icons/Icons";
@@ -13,30 +11,32 @@ import {
   toggleRowSelection,
 } from "../../../components/chekbox/checkHelper";
 import FilterAdder from "./FilterAdder";
-import { FaArrowDown } from "react-icons/fa6";
 import { AdderVModel } from "../../../../core/models/configuration/create/AdderVModel";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
-import { Column } from "../../../../core/models/data_models/FilterSelectModel";
+import Pagination from "../../../components/pagination/Pagination";
+import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
+import { AdderVColumns } from "../../../../resources/static_data/configureHeaderData/AdderVTableColumn";
+import SortableHeader from "../../../components/tableHeader/SortableHeader";
+
 
 const AdderValidation = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
-
-
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const filterClose = () => setFilterOpen(false);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const dispatch = useAppDispatch();
-  // const getData = useAppSelector(state=>state.comm.data)
-
   const adderVList = useAppSelector((state) => state.adderV.VAdders_list);
   const loading = useAppSelector((state) => state.adderV.loading);
   const error = useAppSelector((state) => state.adderV.error);
   const [editMode, setEditMode] = useState(false);
   const [editedVAdder, setEditedVAdder] = useState<AdderVModel | null>(null);
-
+  const itemsPerPage = 10;
+  const currentPage = useAppSelector((state) => state.paginationType.currentPage);
+  const [sortKey, setSortKey] = useState("");
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const handleAddvAdder = () => {
     setEditMode(false);
     setEditedVAdder(null);
@@ -48,28 +48,61 @@ const AdderValidation = () => {
     setEditedVAdder(vAdderData);
     handleOpen()
   };
+  const paginate = (pageNumber: number) => {
+    dispatch(setCurrentPage(pageNumber));
+  };
 
-  const columns: Column[] = [
-    // { name: "record_id", displayName: "Record ID", type: "number" },
-    { name: "adder_name", displayName: "Adder Name", type: "string" },
-    { name: "adder_type", displayName: "Adder Type", type: "string" },
-    { name: "description", displayName: "Description", type: "string" },
-    { name: "price_amount", displayName: "Price Amount", type: "string" },
-    { name: "price_type", displayName: "Price Type", type: "string" },
-  ];
-  const filter = ()=>{
+
+  const goToNextPage = () => {
+    dispatch(setCurrentPage(currentPage + 1));
+  };
+
+  const goToPrevPage = () => {
+    dispatch(setCurrentPage(currentPage - 1));
+  };
+  const totalPages = Math.ceil(adderVList?.length / itemsPerPage);
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+
+  const filter = () => {
     setFilterOpen(true)
-   
+
   }
- 
+
   useEffect(() => {
     const pageNumber = {
-      page_number: 1,
-      page_size: 10,
+      page_number: currentPage,
+      page_size: itemsPerPage,
     };
     dispatch(fetchAdderV(pageNumber));
-  }, [dispatch]);
+  }, [dispatch, currentPage]);
+  const currentPageData = adderVList?.slice(startIndex, endIndex);
+  const isAnyRowSelected = selectedRows.size > 0;
+  const isAllRowsSelected = selectedRows.size === adderVList.length;
+  const handleSort = (key: any) => {
+    if (sortKey === key) {
+      setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
+    } else {
+      setSortKey(key);
+      setSortDirection('asc');
+    }
+  };
 
+  if (sortKey) {
+    currentPageData.sort((a: any, b: any) => {
+      const aValue = a[sortKey];
+      const bValue = b[sortKey];
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        return sortDirection === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+      } else {
+        // Ensure numeric values for arithmetic operations
+        const numericAValue = typeof aValue === 'number' ? aValue : parseFloat(aValue);
+        const numericBValue = typeof bValue === 'number' ? bValue : parseFloat(bValue);
+        return sortDirection === 'asc' ? numericAValue - numericBValue : numericBValue - numericAValue;
+      }
+    });
+  }
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -77,31 +110,30 @@ const AdderValidation = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
- 
-  const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === adderVList.length;
+
   return (
     <div className="comm">
-         <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="AdderV"/>
+      <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="AdderV" />
       <div className="commissionContainer">
-   
         <TableHeader
-          title="Adder validation"
-          onPressViewArchive={() => {}}
-          onPressArchive={() => {}}
+          title="Adder Validation"
+          onPressViewArchive={() => { }}
+          checked={isAllRowsSelected}
+          onPressArchive={() => { }}
+          isAnyRowSelected={isAnyRowSelected}
           onPressFilter={() => filter()}
-          onPressImport={() => {}}
-          onpressExport={() => {}}
+          onPressImport={() => { }}
+          onpressExport={() => { }}
           onpressAddNew={() => handleAddvAdder()}
         />
         {filterOPen && <FilterAdder handleClose={filterClose}
-         columns={columns}
-         page_number = {1}
-         page_size = {5}/>}
-        {open && <CreateAdder 
-        vAdderData ={editedVAdder}
-         editMode={editMode}
-        handleClose={handleClose} />}
+          columns={AdderVColumns}
+          page_number={1}
+          page_size={5} />}
+        {open && <CreateAdder
+          vAdderData={editedVAdder}
+          editMode={editMode}
+          handleClose={handleClose} />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
@@ -109,100 +141,92 @@ const AdderValidation = () => {
           <table>
             <thead>
               <tr>
+             
+                {
+                  AdderVColumns.map((item, key) => (
+                    <SortableHeader
+                    key={key}
+                    isCheckbox={item.isCheckbox}
+                    titleName={item.displayName}
+                    data={adderVList}
+                    isAllRowsSelected={isAllRowsSelected}
+                    isAnyRowSelected={isAnyRowSelected}
+                    selectAllChecked={selectAllChecked}
+                    setSelectAllChecked={setSelectAllChecked}
+                    selectedRows={selectedRows}
+                    setSelectedRows={setSelectedRows}
+                    sortKey={item.name}
+                    sortDirection={sortKey === item.name ? sortDirection : undefined}
+                    onClick={() => handleSort(item.name)}
+                  />
+                  ))
+                }
+
                 <th>
-                  <div>
-                    <CheckBox
-                      checked={selectAllChecked}
-                      onChange={() =>
-                        toggleAllRows(
-                          selectedRows,
-                          adderVList,
-                          setSelectedRows,
-                          setSelectAllChecked
-                        )
-                      }
-                      indeterminate={isAnyRowSelected && !isAllRowsSelected}
-                    />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Adder Name</p> <FaArrowDown style={{color:"#667085"}}/>
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Adder Type</p> <FaArrowDown style={{color:"#667085"}}/>
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Price Type</p> <FaArrowDown style={{color:"#667085"}}/>
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Price Amount</p> <FaArrowDown style={{color:"#667085"}}/>
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Details</p> <FaArrowDown style={{color:"#667085"}}/>
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Created On</p> <FaArrowDown style={{color:"#667085"}}/>
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Action</p> <FaArrowDown style={{color:"#667085"}}/>
+                  <div className="action-header">
+                    <p>Action</p>
                   </div>
                 </th>
               </tr>
             </thead>
             <tbody>
-              {adderVList?.length > 0
-                ? adderVList?.map((el, i) => (
-                    <tr key={i}>
-                      <td>
-                        <CheckBox
-                          checked={selectedRows.has(i)}
-                          onChange={() =>
-                            toggleRowSelection(
-                              i,
-                              selectedRows,
-                              setSelectedRows,
-                              setSelectAllChecked
-                            )
-                          }
-                        />
-                      </td>
-                      <td style={{ fontWeight: "500", color: "black" }}>
-                        {el.adder_name}
-                      </td>
-                      <td>{el.adder_type}</td>
-                      <td>{el.price_type}</td>
-                      <td>{el.price_amount}</td>
-                      <td>{el.description}</td>
-                      <td>{el.active}</td>
+              {currentPageData?.length > 0
+                ? currentPageData?.map((el: any, i: any) => (
+                  <tr key={i}>
+                
+                    <td style={{ fontWeight: "500", color: "black" }}>
+                   <div className="flex-check">
+                   <CheckBox
+                        checked={selectedRows.has(i)}
+                        onChange={() =>
+                          toggleRowSelection(
+                            i,
+                            selectedRows,
+                            setSelectedRows,
+                            setSelectAllChecked
+                          )
+                        }
+                      />
+                      {el.adder_name}
+                   </div>
+                    </td>
+                    <td>{el.adder_type}</td>
+                    <td>{el.price_type}</td>
+                    <td>{el.price_amount}</td>
+                    <td>{el.description}</td>
+                    <td>{el.active}</td>
 
-                      <td>
-                        <div className="action-icon">
-                          <div className="" style={{ cursor: "pointer" }}>
-                            <img src={ICONS.ARCHIVE} alt="" />
-                          </div>
-                          <div className="" style={{ cursor: "pointer" }} onClick={()=>handleEditVAdder(el)}>
-                          <img src={ICONS.editIcon} alt="" />
-                          </div>
+                    <td>
+                      <div className="action-icon">
+                        <div className="" style={{ cursor: "pointer" }}>
+                          <img src={ICONS.ARCHIVE} alt="" />
                         </div>
-                      </td>
-                    </tr>
-                  ))
+                        <div className="" style={{ cursor: "pointer" }} onClick={() => handleEditVAdder(el)}>
+                          <img src={ICONS.editIcon} alt="" />
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                ))
                 : null}
             </tbody>
           </table>
+        </div>
+        <div className="page-heading-container">
+
+          <p className="page-heading">
+            {currentPage} - {totalPages} of {currentPageData?.length} item
+          </p>
+          {
+            adderVList?.length > 0 ? <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages} // You need to calculate total pages
+              paginate={paginate}
+              currentPageData={currentPageData}
+              goToNextPage={goToNextPage}
+              goToPrevPage={goToPrevPage}
+            /> : null
+          }
         </div>
       </div>
     </div>
