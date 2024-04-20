@@ -168,7 +168,7 @@
   }
   
 
-  /* .Payroll-section {
+   .Payroll-section {
     display: flex;
     height: 36px;
     background-color: white;
@@ -192,7 +192,7 @@
     /* Add z-index to ensure the dropdown appears above other elements */
     z-index: 1; /* You can adjust the value as needed */
   }
-  
+   
   .dash-select {
     position: relative;
     border: none;

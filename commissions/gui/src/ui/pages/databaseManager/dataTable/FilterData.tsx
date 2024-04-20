@@ -1,7 +1,6 @@
 import React from "react";
 import { IoAddSharp } from "react-icons/io5";
 import Select from "react-select";
-import "../../create_profile/CreateUserProfile.css";
 import Input from "../../../components/text_input/Input";
 import { ActionButton } from "../../../components/button/ActionButton";
 import { ICONS } from "../../../icons/Icons";

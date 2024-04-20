@@ -132,11 +132,7 @@ const CommissionRate: React.FC = () => {
   //   return <div>Loading... {loading}</div>;
   // }
 
-  const currentPageData = commissionList?.slice(startIndex, endIndex);
-  const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === commissionList.length;
-
-  
+ 
   return (
     <div className="comm">
       <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Commission Rate" />
