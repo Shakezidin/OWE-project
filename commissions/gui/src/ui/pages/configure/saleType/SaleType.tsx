@@ -42,14 +42,14 @@ const SaleType = () => {
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
   const [editedSalesType, setEditedMarketing] = useState<SalesTypeModel | null>(null);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
   const [sortKey, setSortKey] =  useState("");
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   useEffect(() => {
     const pageNumber = {
-      page_number: 1,
-      page_size: 10,
+      page_number: currentPage,
+      page_size: itemsPerPage,
     };
     dispatch(fetchSalesType(pageNumber));
   }, [dispatch,currentPage]);
@@ -146,31 +146,24 @@ const SaleType = () => {
           <table>
             <thead>
               <tr>
-                <th>
-                  <div>
-                    <CheckBox
-                      checked={selectAllChecked}
-                      onChange={() =>
-                        toggleAllRows(
-                          selectedRows,
-                          salesTypeList,
-                          setSelectedRows,
-                          setSelectAllChecked
-                        )
-                      }
-                      indeterminate={isAnyRowSelected && !isAllRowsSelected}
-                    />
-                  </div>
-                </th>
+          
                 {
                 SalesTypeColumn.map((item,key)=>(
                   <SortableHeader
                   key={key}
+                  isCheckbox={item.isCheckbox}
                   titleName={item.displayName}
+                  data={salesTypeList}
+                  isAllRowsSelected={isAllRowsSelected}
+                  isAnyRowSelected={isAnyRowSelected}
+                  selectAllChecked={selectAllChecked}
+                  setSelectAllChecked={setSelectAllChecked}
+                  selectedRows={selectedRows}
+                  setSelectedRows={setSelectedRows}
                   sortKey={item.name}
                   sortDirection={sortKey === item.name ? sortDirection : undefined}
-                  onClick={()=>handleSort(item.name)}
-                  />
+                  onClick={() => handleSort(item.name)}
+                />
                 ))
               }
 
@@ -185,8 +178,10 @@ const SaleType = () => {
               {currentPageData?.length > 0
                 ? currentPageData?.map((el: any, i: any) => (
                     <tr key={i}>
-                      <td>
-                        <CheckBox
+                  
+                      <td style={{ fontWeight: "500", color: "black" }}>
+                   <div className="flex-check">
+                   <CheckBox
                           checked={selectedRows.has(i)}
                           onChange={() =>
                             toggleRowSelection(
@@ -197,9 +192,8 @@ const SaleType = () => {
                             )
                           }
                         />
-                      </td>
-                      <td style={{ fontWeight: "500", color: "black" }}>
                         {el.type_name}
+                   </div>
                       </td>
 
                       <td>{el.description}</td>
@@ -225,7 +219,7 @@ const SaleType = () => {
         <div className="page-heading-container">
       
       <p className="page-heading">
-       {currentPage} - {totalPages} of {salesTypeList?.length} item
+       {currentPage} - {totalPages} of {currentPageData?.length} item
       </p>
  
    {
@@ -234,6 +228,7 @@ const SaleType = () => {
       totalPages={totalPages} // You need to calculate total pages
       paginate={paginate}
       goToNextPage={goToNextPage}
+      currentPageData={currentPageData}
       goToPrevPage={goToPrevPage}
     /> : null
   }

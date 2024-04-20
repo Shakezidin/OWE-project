@@ -158,31 +158,24 @@ const PaymentSchedule = () => {
           <table>
             <thead>
               <tr>
-                <th>
-                  <div>
-                    <CheckBox
-                      checked={selectAllChecked}
-                      onChange={() =>
-                        toggleAllRows(
-                          selectedRows,
-                          payScheduleList,
-                          setSelectedRows,
-                          setSelectAllChecked
-                        )
-                      }
-                      indeterminate={isAnyRowSelected && !isAllRowsSelected}
-                    />
-                  </div>
-                </th>
+            
                 {
                 PayScheduleColumns?.map((item,key)=>(
                   <SortableHeader
                   key={key}
+                  isCheckbox={item.isCheckbox}
                   titleName={item.displayName}
+                  data={payScheduleList}
+                  isAllRowsSelected={isAllRowsSelected}
+                  isAnyRowSelected={isAnyRowSelected}
+                  selectAllChecked={selectAllChecked}
+                  setSelectAllChecked={setSelectAllChecked}
+                  selectedRows={selectedRows}
+                  setSelectedRows={setSelectedRows}
                   sortKey={item.name}
                   sortDirection={sortKey === item.name ? sortDirection : undefined}
-                  onClick={()=>handleSort(item.name)}
-                  />
+                  onClick={() => handleSort(item.name)}
+                />
                 ))
               }
                 <th>
@@ -196,8 +189,10 @@ const PaymentSchedule = () => {
               {currentPageData?.length > 0
                 ? currentPageData?.map((el: any, i: any) => (
                     <tr key={i}>
-                      <td>
-                        <CheckBox
+                    
+                      <td style={{ fontWeight: "500",color:"black" }}>
+                     <div className="flex-check">
+                     <CheckBox
                           checked={selectedRows.has(i)}
                           onChange={() =>
                             toggleRowSelection(
@@ -208,8 +203,9 @@ const PaymentSchedule = () => {
                             )
                           }
                         />
-                      </td>
-                      <td style={{ fontWeight: "600" }}>{el.partner_name}</td>
+                        {el.partner_name}
+                     </div>
+                        </td>
                       <td>{el.partner}</td>
                       <td>{el.installer_name}</td>
                       <td>{el.sale_type}</td>
@@ -246,7 +242,7 @@ const PaymentSchedule = () => {
         </div>
         <div className="page-heading-container">
       <p className="page-heading">
-       {currentPage} - {totalPages} of {payScheduleList?.length} item
+       {currentPage} - {totalPages} of {currentPageData?.length} item
       </p>
  
    {
@@ -256,6 +252,7 @@ const PaymentSchedule = () => {
       paginate={paginate}
       goToNextPage={goToNextPage}
       goToPrevPage={goToPrevPage}
+      currentPageData={currentPageData}
     /> : null
   }
    </div>

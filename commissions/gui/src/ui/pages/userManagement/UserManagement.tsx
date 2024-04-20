@@ -1,39 +1,28 @@
 import React, { useState } from "react";
-
 import { IoAddSharp } from "react-icons/io5";
 import UserHeaderSection from "./UserHeader/UserHeaderSection";
 import UserPieChart from "./pieChart/UserPieChart";
-
 import UserOnboardingCreation from "./userOnboard/UserOnboardCreation";
+import { AddNewButton } from "../../components/button/AddNewButton";
 
 const UserManagement: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const userRole = localStorage.getItem("role");
-  const userEmail = localStorage.getItem("email");
+  const userName = localStorage.getItem("userName");
 
   return (
     <>
       <div className="management-section">
         <div className="manage-user">
-          <p>Welcome, {userEmail}</p>
+          <p>Welcome, {userName}</p>
           <h2>User Management</h2>
         </div>
-        <div className="iconsSection2">
-          <button
-            type="button"
-            style={{
-              background: "#0493CE",
-              color: "white",
-           
-              border: "2px solid #0493CE",
-            }}
-            onClick={() => handleOpen()}
-          >
-            <IoAddSharp /> Add New
-          </button>
-        </div>
+
+        <AddNewButton title={"Add New"} onClick={()=>{
+          handleOpen()
+        } }/>
+       
       </div>
       {open && (
         <UserOnboardingCreation
@@ -46,11 +35,8 @@ const UserManagement: React.FC = () => {
         <UserPieChart />
       </div>
 
-      
       <div className="onboardrow">
-        <div className="user-component">
-        <UserHeaderSection />
-        </div>
+         <UserHeaderSection />
       </div>
     </>
   );

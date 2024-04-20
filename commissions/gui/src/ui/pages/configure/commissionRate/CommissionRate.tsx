@@ -40,7 +40,7 @@ const CommissionRate: React.FC = () => {
   const [editMode, setEditMode] = useState(false);
   const [editedCommission, setEditedCommission] = useState<CommissionModel | null>(null);
   const itemsPerPage = 10;
-  const csvLinkRef = useRef<CSVLink>(null);
+ 
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
   const [sortKey, setSortKey] = useState("");
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
@@ -52,7 +52,7 @@ const CommissionRate: React.FC = () => {
     };
     dispatch(fetchCommissions(pageNumber));
 
-  }, [dispatch, currentPage]);
+  }, [dispatch, currentPage,itemsPerPage]);
 
   const paginate = (pageNumber: number) => {
     dispatch(setCurrentPage(pageNumber));
@@ -99,7 +99,7 @@ const CommissionRate: React.FC = () => {
     newSelectedRows?.delete(record_id);
     setSelectedRows(newSelectedRows);
   };
- 
+
 
   const handleSort = (key: any) => {
     if (sortKey === key) {
@@ -128,11 +128,11 @@ const CommissionRate: React.FC = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
-  if (loading) {
-    return <div>Loading... {loading}</div>;
-  }
+  // if (loading) {
+  //   return <div>Loading... {loading}</div>;
+  // }
 
-
+console.log(currentPageData)
   return (
     <div className="comm">
       <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Commission Rate" />
@@ -149,7 +149,7 @@ const CommissionRate: React.FC = () => {
           onpressAddNew={() => handleAddCommission()}
         />
         {exportOPen && (<div className="export-modal">
-          <CSVLink style={{ color: "white" ,fontSize:"12px"}} data={currentPageData} filename={"table.csv"}>Export CSV</CSVLink>
+          <CSVLink style={{ color: "white", fontSize: "12px" }} data={currentPageData} filename={"table.csv"}>Export CSV</CSVLink>
         </div>)}
         {filterOPen && <FilterCommission handleClose={filterClose}
           columns={Commissioncolumns}
@@ -168,31 +168,24 @@ const CommissionRate: React.FC = () => {
           <table>
             <thead>
               <tr>
-                <th >
-                  <div>
-                    <CheckBox
-                      checked={selectAllChecked}
-                      onChange={() =>
-                        toggleAllRows(
-                          selectedRows,
-                          commissionList,
-                          setSelectedRows,
-                          setSelectAllChecked
-                        )
-                      }
-                      indeterminate={isAnyRowSelected && !isAllRowsSelected}
-                    />
-                  </div>
-                </th>
                 {
-                  Commissioncolumns.map((item, key) => (
+                  Commissioncolumns?.map((item, key) => (
                     <SortableHeader
                       key={key}
+                      isCheckbox={item.isCheckbox}
                       titleName={item.displayName}
+                      data={commissionList}
+                      isAllRowsSelected={isAllRowsSelected}
+                      isAnyRowSelected={isAnyRowSelected}
+                      selectAllChecked={selectAllChecked}
+                      setSelectAllChecked={setSelectAllChecked}
+                      selectedRows={selectedRows}
+                      setSelectedRows={setSelectedRows}
                       sortKey={item.name}
                       sortDirection={sortKey === item.name ? sortDirection : undefined}
                       onClick={() => handleSort(item.name)}
                     />
+
                   ))
                 }
                 <th>
@@ -209,21 +202,21 @@ const CommissionRate: React.FC = () => {
                     key={i}
                     className={selectedRows.has(i) ? "selected" : ""}
                   >
-                    <td>
-                      <CheckBox
-                        checked={selectedRows.has(i)}
-                        onChange={() =>
-                          toggleRowSelection(
-                            i,
-                            selectedRows,
-                            setSelectedRows,
-                            setSelectAllChecked
-                          )
-                        }
-                      />
-                    </td>
                     <td style={{ fontWeight: "500", color: "black" }}>
-                      {el.partner}
+                      <div className="flex-check">
+                        <CheckBox
+                          checked={selectedRows.has(i)}
+                          onChange={() =>
+                            toggleRowSelection(
+                              i,
+                              selectedRows,
+                              setSelectedRows,
+                              setSelectAllChecked
+                            )
+                          }
+                        />
+                        {el.partner}
+                      </div>
                     </td>
                     <td>{el.installer}</td>
                     <td>{el.state}</td>
@@ -236,7 +229,7 @@ const CommissionRate: React.FC = () => {
                     <td>{el.end_date}</td>
                     <td>
                       <div className="action-icon">
-                        <div className="" style={{ cursor: "pointer" }} onClick={()=>handleArchiveClick(el.record_id)}>
+                        <div className="" style={{ cursor: "pointer" }} onClick={() => handleArchiveClick(el.record_id)}>
                           <img src={ICONS.ARCHIVE} alt="" />
                         </div>
                         <div className="" style={{ cursor: "pointer" }} onClick={() => handleEditCommission(el)}>
@@ -252,9 +245,8 @@ const CommissionRate: React.FC = () => {
           </table>
         </div>
         <div className="page-heading-container">
-
           <p className="page-heading">
-            {currentPage} - {totalPages} of {commissionList?.length} item
+            {currentPage} - {totalPages} of {currentPageData?.length} item
           </p>
 
           {
@@ -262,6 +254,7 @@ const CommissionRate: React.FC = () => {
               currentPage={currentPage}
               totalPages={totalPages} // You need to calculate total pages
               paginate={paginate}
+              currentPageData={currentPageData}
               goToNextPage={goToNextPage}
               goToPrevPage={goToPrevPage}
             /> : null

@@ -47,7 +47,6 @@ import DataTablle from "./ui/pages/databaseManager/dataTable/DataTable";
 import UserActivity from "./ui/pages/databaseManager/userActivity/UserActivity";
 import DbManagerDashboard from "./ui/pages/databaseManager/dbManagerDashboard/DbManagerDashboard";
 
-
 function App() {
   const dispatch = useDispatch();
 
@@ -64,50 +63,59 @@ function App() {
         <Route
           path="/"
           element={
-            isAuthenticated ? <Navigate to={"/commission/dashboard"} /> : <WelcomePage />
+            isAuthenticated ? (
+              <Navigate to={"/commission/dashboard"} />
+            ) : (
+              <WelcomePage />
+            )
           }
         />
         <Route
           path="/login"
           element={
-            isAuthenticated ? <Navigate to={"/commission/dashboard"} /> : <LoginPage />
+            isAuthenticated ? (
+              <Navigate to={"/commission/dashboard"} />
+            ) : (
+              <LoginPage />
+            )
           }
         />
         <Route path="/resetPassword" element={<ResetPassword />} />
         <Route path="/otp" element={<EnterOtpScreen />} />
-              <Route
-              element={<MainLayout/>}
-            >
-           
-                <Route  path={routes.commissiondash} element={<DashboardPage/>}/>
-                <Route  path={routes.commissionrate} element={<CommissionRate/>}/>
-                <Route  path={routes.dealerOverRoutes} element={<DealerOverRides/>}/>
-                <Route  path={routes.marketingRoutes} element={<MarketingFees/>}/>
-                <Route  path={routes.dealerTierRoutes} element={<DealerTier/>}/>
-                <Route  path={routes.loanRoutes} element={<LoanType/>}/>
-                <Route  path={routes.saleRoutes} element={<SaleType/>}/>
-                <Route  path={routes.adderRoutes} element={<AdderValidation/>}/>
-                <Route  path={routes.paymentSchRoutes} element={<PaymentSchedule/>}/>
-                <Route  path={routes.tierLoanFeeRoutes} element={<TierLoanFee/>}/>
-                <Route  path={routes.timelineRoutes} element={<TimeLine/>}/>
-                <Route  path={routes.autoadderRoutes} element={<AutoAdder/>}/>
-                <Route  path={routes.dealerCreditRoutes} element={<DealerCredit/>}/>
-                <Route  path={routes.rebetDataRoutes} element={<RebateData/>}/>
-                <Route  path={routes.referalDataRoutes} element={<ReferalData/>}/>
-                <Route  path={routes.dlrOthRoutes} element={<DlrOthPay/>}/>
-                <Route  path={routes.nonCommRoutes} element={<NonCommDlrPay/>}/>
-                <Route  path={routes.loanFeeRoutes} element={<LoanFeeAddr/>}/>
-                <Route  path={routes.usermgtRoutes} element={<UserManagement/>}/>
-                <Route  path={routes.accountSettingRoutes} element={<AccountSettings/>}/>
-                <Route  path={routes.reportRoutes} element={<Report/>}/>
-                <Route  path={routes.projectRoutes} element={<Project/>}/>
-                <Route  path={routes.dbDashRoutes} element={<DbManagerDashboard/>}/>
-                <Route  path={routes.dataTableRoutes} element={<DataTablle/>}/>
-                <Route  path={routes.userActivityRoutes} element={<UserActivity/>}/>
-                <Route  path={routes.technicalSupportRoutes} element={<TechnicalSupport/>}/>
-            </Route>
-      
-       
+        <Route element={<MainLayout />}>
+          <Route path={routes.commissiondash} element={<DashboardPage />} />
+          <Route path={routes.commissionrate} element={<CommissionRate />} />
+          <Route path={routes.dealerOverRoutes} element={<DealerOverRides />} />
+          <Route path={routes.marketingRoutes} element={<MarketingFees />} />
+          <Route path={routes.dealerTierRoutes} element={<DealerTier />} />
+          <Route path={routes.loanRoutes} element={<LoanType />} />
+          <Route path={routes.saleRoutes} element={<SaleType />} />
+          <Route path={routes.adderRoutes} element={<AdderValidation />} />
+          <Route path={routes.paymentSchRoutes} element={<PaymentSchedule />} />
+          <Route path={routes.tierLoanFeeRoutes} element={<TierLoanFee />} />
+          <Route path={routes.timelineRoutes} element={<TimeLine />} />
+          <Route path={routes.autoadderRoutes} element={<AutoAdder />} />
+          <Route path={routes.dealerCreditRoutes} element={<DealerCredit />} />
+          <Route path={routes.rebetDataRoutes} element={<RebateData />} />
+          <Route path={routes.referalDataRoutes} element={<ReferalData />} />
+          <Route path={routes.dlrOthRoutes} element={<DlrOthPay />} />
+          <Route path={routes.nonCommRoutes} element={<NonCommDlrPay />} />
+          <Route path={routes.loanFeeRoutes} element={<LoanFeeAddr />} />
+          <Route path={routes.usermgtRoutes} element={<UserManagement />} />
+          <Route
+            path={routes.accountSettingRoutes}
+            element={<AccountSettings />}
+          />
+          <Route path={routes.reportRoutes} element={<Report />} />
+          <Route path={routes.projectRoutes} element={<Project />} />
+          <Route path={routes.dbDashRoutes} element={<DbManagerDashboard />} />
+          <Route path={routes.dataTableRoutes} element={<DataTablle />} />
+          <Route path={routes.userActivityRoutes} element={<UserActivity />} />
+          <Route
+            path={routes.technicalSupportRoutes}
+            element={<TechnicalSupport />}
+          />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

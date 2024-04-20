@@ -116,7 +116,7 @@ const AdderValidation = () => {
       <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="AdderV" />
       <div className="commissionContainer">
         <TableHeader
-          title="Adder validation"
+          title="Adder Validation"
           onPressViewArchive={() => { }}
           checked={isAllRowsSelected}
           onPressArchive={() => { }}
@@ -141,31 +141,24 @@ const AdderValidation = () => {
           <table>
             <thead>
               <tr>
-                <th>
-                  <div>
-                    <CheckBox
-                      checked={selectAllChecked}
-                      onChange={() =>
-                        toggleAllRows(
-                          selectedRows,
-                          adderVList,
-                          setSelectedRows,
-                          setSelectAllChecked
-                        )
-                      }
-                      indeterminate={isAnyRowSelected && !isAllRowsSelected}
-                    />
-                  </div>
-                </th>
+             
                 {
                   AdderVColumns.map((item, key) => (
                     <SortableHeader
-                      key={key}
-                      titleName={item.displayName}
-                      sortKey={item.name}
-                      sortDirection={sortKey === item.name ? sortDirection : undefined}
-                      onClick={() => handleSort(item.name)}
-                    />
+                    key={key}
+                    isCheckbox={item.isCheckbox}
+                    titleName={item.displayName}
+                    data={adderVList}
+                    isAllRowsSelected={isAllRowsSelected}
+                    isAnyRowSelected={isAnyRowSelected}
+                    selectAllChecked={selectAllChecked}
+                    setSelectAllChecked={setSelectAllChecked}
+                    selectedRows={selectedRows}
+                    setSelectedRows={setSelectedRows}
+                    sortKey={item.name}
+                    sortDirection={sortKey === item.name ? sortDirection : undefined}
+                    onClick={() => handleSort(item.name)}
+                  />
                   ))
                 }
 
@@ -180,8 +173,10 @@ const AdderValidation = () => {
               {currentPageData?.length > 0
                 ? currentPageData?.map((el: any, i: any) => (
                   <tr key={i}>
-                    <td>
-                      <CheckBox
+                
+                    <td style={{ fontWeight: "500", color: "black" }}>
+                   <div className="flex-check">
+                   <CheckBox
                         checked={selectedRows.has(i)}
                         onChange={() =>
                           toggleRowSelection(
@@ -192,9 +187,8 @@ const AdderValidation = () => {
                           )
                         }
                       />
-                    </td>
-                    <td style={{ fontWeight: "500", color: "black" }}>
                       {el.adder_name}
+                   </div>
                     </td>
                     <td>{el.adder_type}</td>
                     <td>{el.price_type}</td>
@@ -221,13 +215,14 @@ const AdderValidation = () => {
         <div className="page-heading-container">
 
           <p className="page-heading">
-            {currentPage} - {totalPages} of {adderVList?.length} item
+            {currentPage} - {totalPages} of {currentPageData?.length} item
           </p>
           {
             adderVList?.length > 0 ? <Pagination
               currentPage={currentPage}
               totalPages={totalPages} // You need to calculate total pages
               paginate={paginate}
+              currentPageData={currentPageData}
               goToNextPage={goToNextPage}
               goToPrevPage={goToPrevPage}
             /> : null
