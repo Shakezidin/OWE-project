@@ -5,7 +5,7 @@ import { ActionButton } from "../../../components/button/ActionButton";
 import { useAppDispatch } from "../../../../redux/hooks";
 import { fetchCommissions } from "../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice";
 import { ICONS } from "../../../icons/Icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import OperationSelect from "./OperationSelect";
 interface Column {
   name: string;
@@ -39,21 +39,29 @@ const FilterCommission: React.FC<TableProps> = ({
   page_size,
 }) => {
   const dispatch = useAppDispatch();
-  const [filters, setFilters] = useState<FilterModel[]>([
-    { Column: "", Operation: "", Data: "" },
-  ]);
+  const [filters, setFilters] = useState<FilterModel[]>(() => {
+    const savedFilters = localStorage.getItem("filters");
+    return savedFilters ? JSON.parse(savedFilters) : [{ Column: "", Operation: "", Data: "" }];
+  });
   const [errors, setErrors] = useState<ErrorState>({});
   const options: Option[] = columns.map((column) => ({
     value: column.name,
     label: column.displayName,
   }));
-
+  useEffect(() => {
+    localStorage.setItem("filters", JSON.stringify(filters));
+  }, [filters]);
   const handleAddRow = () => {
     setFilters([...filters, { Column: "", Operation: "", Data: "" }]);
     setErrors({});
   };
 
   const handleRemoveRow = (index: number) => {
+    if (filters.length === 1) {
+      // Close the modal if only one row is present
+      handleClose();
+      return;
+    }
     const updatedFilters = [...filters];
     updatedFilters.splice(index, 1);
     setFilters(updatedFilters);
@@ -92,9 +100,17 @@ const FilterCommission: React.FC<TableProps> = ({
   };
 
   const resetAllFilter = () => {
-    setFilters([{ Column: "", Operation: "", Data: "" }]);
-
-  }
+    localStorage.removeItem("filters");
+    const resetFilters = filters.map(filter => ({
+      ...filter,
+      Column:"",
+      Operation: "",
+      Data:"" 
+    }));
+  
+    setFilters(resetFilters);
+    setErrors({});
+  };
 
   const applyFilter = async () => {
     setErrors({});
