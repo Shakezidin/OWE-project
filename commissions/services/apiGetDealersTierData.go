@@ -113,6 +113,13 @@ func HandleGetDealersTierDataRequest(resp http.ResponseWriter, req *http.Request
 			EndDate = ""
 		}
 
+		// is_archived
+		IsArchived, ok := item["is_archived"].(bool)
+		if !ok || !IsArchived {
+			log.FuncErrorTrace(0, "Failed to get is_archived value for Record ID %v. Item: %+v\n", RecordId, item)
+			IsArchived = false
+		}
+
 		// Create a new GetDealerTierData object
 		dealerTierData := models.GetDealerTierData{
 			RecordId:   RecordId,
@@ -142,10 +149,12 @@ func PrepareDealerTierFilters(tableName string, dataFilter models.DataRequestBod
 	defer func() { log.ExitFn(0, "PrepareDealerTierFilters", nil) }()
 
 	var filtersBuilder strings.Builder
+	whereAdded := false // Flag to track if WHERE clause has been added
 
 	// Check if there are filters
 	if len(dataFilter.Filters) > 0 {
 		filtersBuilder.WriteString(" WHERE ")
+		whereAdded = true // Set flag to true as WHERE clause is added
 
 		for i, filter := range dataFilter.Filters {
 			// Check if the column is a foreign key
@@ -176,6 +185,23 @@ func PrepareDealerTierFilters(tableName string, dataFilter models.DataRequestBod
 				whereEleList = append(whereEleList, value)
 			}
 		}
+	}
+
+	// Handle the Archived field
+	if dataFilter.Archived {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+		}
+		filtersBuilder.WriteString("dt.is_archived = TRUE")
+	} else {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+		}
+		filtersBuilder.WriteString("dt.is_archived = FALSE")
 	}
 
 	// Add pagination logic

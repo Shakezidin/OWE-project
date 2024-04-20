@@ -22,3 +22,8 @@ type UpdatePaymentSchedule struct {
 	StartDate     string `json:"start_date"`
 	EndDate       string `json:"end_date"`
 }
+
+type UpdatePaymentScheduleArchive struct {
+	RecordId   []int64 `json:"record_id"`
+	IsArchived bool    `json:"is_archived"`
+}

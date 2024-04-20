@@ -30,6 +30,7 @@ func HandleLoginRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err                    error
 		emailId                string
+		userName string
 		roleName               string
 		passwordChangeRequired bool
 		creds                  models.Credentials
@@ -67,7 +68,7 @@ func HandleLoginRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	emailId, roleName, passwordChangeRequired, err = ValidateUser(creds)
+	emailId, userName, roleName, passwordChangeRequired, err = ValidateUser(creds)
 	if (err != nil) || (len(emailId) <= 0) || (len(roleName) <= 0) {
 		log.FuncErrorTrace(0, "Failed to Validate User Unauthorize access err: %v", err)
 		FormAndSendHttpResp(resp, "Unauthorize access", http.StatusUnauthorized, nil)
@@ -91,6 +92,7 @@ func HandleLoginRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	loginResp.EmailId = emailId
+	loginResp.UserName = userName
 	loginResp.RoleName = roleName
 	loginResp.IsPasswordChangeRequired = passwordChangeRequired
 	loginResp.AccessToken = tokenString

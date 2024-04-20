@@ -67,7 +67,7 @@ func HandleChangePassRequest(resp http.ResponseWriter, req *http.Request) {
 		EmailId:  userEmailId,
 		Password: changePasswordReq.CurrentPassword,
 	}
-	_, _, _, err = ValidateUser(creds)
+	_, _, _, _, err = ValidateUser(creds)
 	if err != nil {
 		log.FuncErrorTrace(0, "Invalid Current Password err: %v", err)
 		FormAndSendHttpResp(resp, "Invalid Current Password", http.StatusUnauthorized, nil)

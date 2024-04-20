@@ -12,3 +12,8 @@ type CreateLoanType struct {
 	Adder       int    `json:"adder"`
 	Description string `json:"description"`
 }
+
+type UpdateLoanTypeArchive struct {
+	RecordId   []int64 `json:"record_id"`
+	IsArchived bool    `json:"is_archived"`
+}

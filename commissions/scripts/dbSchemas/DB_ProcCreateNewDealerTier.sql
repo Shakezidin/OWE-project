@@ -34,13 +34,15 @@ BEGIN
         dealer_id,
         tier_id,
         start_date,
-        end_date
+        end_date,
+        is_archived
     )
     VALUES (
         v_dealer_id,
         v_tier_id,
         p_start_date,
-        p_end_date
+        p_end_date,
+        FALSE
     )
     RETURNING id INTO v_dealer_override_id;
 

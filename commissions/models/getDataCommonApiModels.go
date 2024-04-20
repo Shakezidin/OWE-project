@@ -17,5 +17,6 @@ type Filter struct {
 type DataRequestBody struct {
 	PageNumber int      `json:"page_number"`
 	PageSize   int      `json:"page_size"`
+	Archived   bool     `json:"archived"`
 	Filters    []Filter `json:"filters"`
 }
