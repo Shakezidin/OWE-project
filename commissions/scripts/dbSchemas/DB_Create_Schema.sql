@@ -747,14 +747,23 @@ CREATE TABLE IF NOT EXISTS user_details(
     password VARCHAR(255) NOT NULL,
     password_change_required BOOLEAN,
     reporting_manager INT,
+    dealer_owner INT,
     role_id INT,
     user_status VARCHAR(255) NOT NULL,
     user_designation VARCHAR(255),
     description VARCHAR(255),
+    street_address VARCHAR(255),
+    state INT,
+    city VARCHAR(50),
+    zipcode INT,
+    country VARCHAR(50),
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     FOREIGN KEY (reporting_manager) REFERENCES user_details(user_id),
+    FOREIGN KEY (dealer_owner) REFERENCES user_details(user_id),
     FOREIGN KEY (role_id) REFERENCES user_roles(role_id),
+    FOREIGN KEY (state REFERENCES states(state_id),
+    FOREIGN KEY (zipcode) REFERENCES zipcodes(id),
 	PRIMARY KEY (user_id)
 );
 
@@ -1593,6 +1602,13 @@ CREATE TABLE
 /* Default Admin Password is 1234 for Development purpose */
 -- Insert default role 'Admin' into user_roles table
 INSERT INTO user_roles (role_name) VALUES ('Admin');
+INSERT INTO user_roles (role_name) VALUES ('DealerOwner');
+INSERT INTO user_roles (role_name) VALUES ('SubDealerOwner');
+INSERT INTO user_roles (role_name) VALUES ('Partner');
+INSERT INTO user_roles (role_name) VALUES ('RegionalManager');
+INSERT INTO user_roles (role_name) VALUES ('SalesManager');
+INSERT INTO user_roles (role_name) VALUES ('SaleRepresentative');
+INSERT INTO user_roles (role_name) VALUES ('AppointmentSetter');
 INSERT INTO user_details (name, user_code, mobile_number, email_id, password, password_change_required, reporting_manager, role_id, user_status, user_designation, description) VALUES ('Shushank Sharma', 'OWE001', '0987654321', 'shushank22@gmail.com', '$2a$10$5DPnnf5GqDE1dI8L/fM79OsY7XjzmLbw3rkSVONPz.92CqHUkXYHC', false, NULL, 1, 'Active', 'CTO', 'Chief Technical Officer');
 INSERT INTO user_details (name, user_code, mobile_number, email_id, password, password_change_required, reporting_manager, role_id, user_status, user_designation, description) VALUES ('Jaitunjai Singh', 'OWE002', '0987654322', 'Jai22@gmail.com', '$2a$10$5DPnnf5GqDE1dI8L/fM79OsY7XjzmLbw3rkSVONPz.92CqHUkXYHC', false, 1, 1, 'Active', 'Software Engineer', 'SE');
 INSERT INTO user_details (name, user_code, mobile_number, email_id, password, password_change_required, reporting_manager, role_id, user_status, user_designation, description) VALUES ('M Asif', 'OWE003', '0987654323', 'asif22@gmail.com', '$2a$10$5DPnnf5GqDE1dI8L/fM79OsY7XjzmLbw3rkSVONPz.92CqHUkXYHC', false, 2, 1, 'Active', 'CEO', 'Chief Exec Officer');
