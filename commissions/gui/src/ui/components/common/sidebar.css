@@ -6,7 +6,7 @@
   width: 220px;
   background-color: var(--white-color);
   display: flex;
-  position: sticky;
+  position: fixed;
   top: 0;
   height: 100vh;
   flex-direction: column;
