@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { RiDeleteBin5Line } from "react-icons/ri";
 import "../configure.css";
-import { CiEdit } from "react-icons/ci";
 import CreateDealer from "./CreateDealer";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 
@@ -10,19 +8,15 @@ import TableHeader from "../../../components/tableHeader/TableHeader";
 import { fetchDealer } from "../../../../redux/apiSlice/configSlice/config_get_slice/dealerSlice";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import {
-  toggleAllRows,
   toggleRowSelection,
 } from "../../../components/chekbox/checkHelper";
-import FilterDealer from "./FilterDealer";
 import { DealerModel } from "../../../../core/models/configuration/create/DealerModel";
-import { FaArrowDown } from "react-icons/fa6";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
-import { Column } from "../../../../core/models/data_models/FilterSelectModel";
 import Pagination from "../../../components/pagination/Pagination";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 import { DealerTableData } from "../../../../resources/static_data/configureHeaderData/DealerTableData";
-import DealerOwnerTable from "../../userManagement/userManagerAllTable/DealerOwnerTable";
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
+import FilterModal from "../../../components/FilterModal/FilterModal";
 
 const DealerOverRides: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -108,7 +102,9 @@ const DealerOverRides: React.FC = () => {
       }
     });
   }
-
+  const fetchFunction = (req: any) => {
+    dispatch(fetchDealer(req));
+   };
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -132,10 +128,11 @@ const DealerOverRides: React.FC = () => {
           isAnyRowSelected={isAnyRowSelected}
           onpressAddNew={() => handleAddDealer()}
         />
-        {filterOPen && <FilterDealer handleClose={filterClose}
+        {filterOPen && <FilterModal handleClose={filterClose}
         columns={DealerTableData} 
-        page_number = {1}
-        page_size = {5} />}
+        fetchFunction={fetchFunction}
+        page_number = {currentPage}
+        page_size = {itemsPerPage} />}
         {open && <CreateDealer handleClose={handleClose} 
          dealerData={editedDealer}
          editMode={editMode}

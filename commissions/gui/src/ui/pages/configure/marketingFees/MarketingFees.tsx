@@ -1,26 +1,22 @@
 import React, { useEffect, useState } from "react";
 import "../configure.css";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-
 import { ICONS } from "../../../icons/Icons";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { fetchmarketingFees } from "../../../../redux/apiSlice/configSlice/config_get_slice/marketingSlice";
-import { CiEdit } from "react-icons/ci";
 import CreateMarketingFees from "./CreateMarketingFees";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import {
-  toggleAllRows,
   toggleRowSelection,
 } from "../../../components/chekbox/checkHelper";
-import FilterMarketing from "./FilterMarketing";
 import { MarketingFeeModel } from "../../../../core/models/configuration/create/MarketingFeeModel";
-import { FaArrowDown } from "react-icons/fa6";
+
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
-import { Column } from "../../../../core/models/data_models/FilterSelectModel";
 import Pagination from "../../../components/pagination/Pagination";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 import { MarketingFeesColumn } from "../../../../resources/static_data/configureHeaderData/MarketingFeeColumn";
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
+import FilterModal from "../../../components/FilterModal/FilterModal";
 
 const MarketingFees: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -110,6 +106,9 @@ const MarketingFees: React.FC = () => {
       }
     });
   }
+  const fetchFunction = (req: any) => {
+    dispatch(fetchmarketingFees(req));
+   };
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -133,10 +132,11 @@ const MarketingFees: React.FC = () => {
           onpressExport={() => { }}
           onpressAddNew={() => handleAddMarketing()}
         />
-        {filterOPen && <FilterMarketing handleClose={filterClose}
+        {filterOPen && <FilterModal handleClose={filterClose}
           columns={MarketingFeesColumn}
-          page_number={1}
-          page_size={5} />}
+          page_number={currentPage}
+          fetchFunction={fetchFunction}
+          page_size={itemsPerPage} />}
         {open && <CreateMarketingFees marketingData={editedMarketing}
           editMode={editMode}
           handleClose={handleClose} />}

@@ -1,16 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { CiEdit } from "react-icons/ci";
 import "../configure.css";
-import { RiDeleteBin5Line } from "react-icons/ri";
-// import CreateCommissionRate from "./CreateCommissionRate";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import { CSVLink } from 'react-csv';
 import { ICONS } from "../../../icons/Icons";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { fetchCommissions } from "../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice";
-
-// import FilterCommission from "./FilterCommission";
-
 import CheckBox from "../../../components/chekbox/CheckBox";
 import {
   toggleAllRows,

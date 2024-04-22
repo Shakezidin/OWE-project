@@ -4,7 +4,6 @@ import Input from "../../../components/text_input/Input";
 import { ActionButton } from "../../../components/button/ActionButton";
 import { useDispatch } from "react-redux";
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
-import Select from "react-select";
 import {
   installerOption,
   partnerOption,
@@ -12,10 +11,12 @@ import {
   stateOption,
 } from "../../../../core/models/data_models/SelectDataModel";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
-import { respTypeData } from "../../../../resources/static_data/StaticData";
 import { updateForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createCommissionSlice";
 import { CommissionModel } from "../../../../core/models/configuration/create/CommissionModel";
+import SelectOption from "../../../components/selectOption/SelectOption";
 
+// const success = Swal.mixin(toastData.success)
+// const error = Swal.mixin(toastData.error)
 interface ButtonProps {
   editMode: boolean;
   handleClose: () => void;
@@ -28,7 +29,6 @@ const CreateCommissionRate: React.FC<ButtonProps> = ({
   editMode,
 }) => {
   const dispatch = useDispatch();
-  const [showToast, setShowToast] = useState(false);
   const [createCommission, setCreateCommission] = useState<CommissionModel>({
     record_id: commission ? commission?.record_id : 0,
     partner: commission ? commission?.partner : "OWE",
@@ -101,15 +101,12 @@ const CreateCommissionRate: React.FC<ButtonProps> = ({
         );
         if (res.status === 200) {
           alert(res.message);
-         
-         
           handleClose();
           window.location.reload()
         } else {
           alert(res.message);
         }
       }
-
       // dispatch(resetForm());
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -131,77 +128,34 @@ const CreateCommissionRate: React.FC<ButtonProps> = ({
               <div className="create-input-container">
                 <div className="create-input-field">
                   <label className="inputLabel">Partner</label>
-                  <Select
-                    options={partnerOption(newFormData)}
-                    isSearchable
-                    onChange={(newValue) => handleChange(newValue, "partner")}
-                    value={partnerOption(newFormData)?.find(
-                      (option) => option?.value === createCommission.partner
-                    )}
-                    styles={{
-                      control: (baseStyles, state) => ({
-                        ...baseStyles,
-                        marginTop: "4.5px",
-                        borderRadius: "8px",
-                        outline: "none",
-                        fontSize: "13px",
-                        height: "2.25rem",
-                        // width:"280px"
-                        border: "1px solid #d0d5dd",
-                      }),
-                      indicatorSeparator: () => ({
-                        display: "none", // Hide the indicator separator
-                      }),
-                    }}
+                  <SelectOption
+                  options={partnerOption(newFormData)}
+                  onChange={(newValue)=>handleChange(newValue,"partner")}
+                  value={partnerOption(newFormData)?.find(
+                    (option) => option?.value === createCommission.partner
+                  )}
                   />
+               
                 </div>
                 <div className="create-input-field">
                   <label className="inputLabel">Installer</label>
                   <div className="">
-                    <Select
-                      options={installerOption(newFormData)}
-                      styles={{
-                        control: (baseStyles, state) => ({
-                          ...baseStyles,
-                          marginTop: "4.5px",
-                          borderRadius: "8px",
-                          outline: "none",
-                          fontSize: "13px",
-                          height: "2.25rem",
-                          border: "1px solid #d0d5dd",
-                        }),
-                        indicatorSeparator: () => ({
-                          display: "none", // Hide the indicator separator
-                        }),
-                      }}
-                      onChange={(newValue) =>
-                        handleChange(newValue, "installer")
-                      }
-                      value={installerOption(newFormData)?.find(
-                        (option) => option.value === createCommission.installer
-                      )}
-                    />
+                  <SelectOption
+                  options={installerOption(newFormData)}
+                  onChange={(newValue) =>
+                    handleChange(newValue, "installer")
+                  }
+                  value={installerOption(newFormData)?.find(
+                    (option) => option.value === createCommission.installer
+                  )}
+                  />
+                  
                   </div>
                 </div>
                 <div className="create-input-field">
                   <label className="inputLabel">State</label>
-                  <Select
-                    options={stateOption(newFormData)}
-                    styles={{
-                      control: (baseStyles, state) => ({
-                        ...baseStyles,
-                        marginTop: "4.5px",
-                        borderRadius: "8px",
-                        outline: "none",
-                        fontSize: "13px",
-                        height: "2.25rem",
-                        border: "1px solid #d0d5dd",
-                      }),
-                      indicatorSeparator: () => ({
-                        display: "none", // Hide the indicator separator
-                      }),
-                    }}
-                    isSearchable
+                  <SelectOption
+                    options={stateOption(newFormData)} 
                     // options={statData}
                     onChange={(newValue) => handleChange(newValue, "state")}
                     value={stateOption(newFormData)?.find(
@@ -234,29 +188,11 @@ const CreateCommissionRate: React.FC<ButtonProps> = ({
                 </div>
                 <div className="create-input-field">
                   <label className="inputLabel">Representative Type</label>
-                  <Select
-                    options={repTypeOption(newFormData) || respTypeData}
-                    isSearchable
-                    styles={{
-                      control: (baseStyles, state) => ({
-                        ...baseStyles,
-                        marginTop: "4.5px",
-                        borderRadius: "8px",
-                        outline: "none",
-                        fontSize: "13px",
-                        height: "2.25rem",
-                        border: "1px solid #d0d5dd",
-                      }),
-
-                      indicatorSeparator: () => ({
-                        display: "none", // Hide the indicator separator
-                      }),
-                    }}
-                    // options={partners}
+                  <SelectOption
+                    options={repTypeOption(newFormData)}
                     onChange={(newValue) => handleChange(newValue, "rep_type")}
                     value={
-                      repTypeOption(newFormData) ||
-                      respTypeData?.find(
+                      repTypeOption(newFormData)?.find(
                         (option) => option.value === createCommission.rep_type
                       )
                     }

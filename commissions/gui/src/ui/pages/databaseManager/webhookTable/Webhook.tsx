@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { RiDeleteBin5Line } from "react-icons/ri";
+
 import "../../configure/configure.css";
-import { CiEdit } from "react-icons/ci";
 // import CreateDealer from "./CreateDealer";
 
 import { FaArrowDown } from "react-icons/fa6";
@@ -11,7 +10,6 @@ import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/pagin
 import { DealerModel } from "../../../../core/models/configuration/create/DealerModel";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import DataTableHeader from "../../../components/tableHeader/DataTableHeader";
-import FilterDealer from "../../configure/dealerOverrides/FilterDealer";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import { toggleAllRows, toggleRowSelection } from "../../../components/chekbox/checkHelper";
 

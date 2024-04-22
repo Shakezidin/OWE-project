@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 
-import { RiDeleteBin5Line } from "react-icons/ri";
-import { CiEdit } from "react-icons/ci";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { ICONS } from "../../../icons/Icons";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
@@ -9,18 +7,17 @@ import { fetchTearLoan } from "../../../../redux/apiSlice/configSlice/config_get
 import CreateTierLoan from "./CreateTierLoan";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import {
-  toggleAllRows,
   toggleRowSelection,
 } from "../../../components/chekbox/checkHelper";
-import FilterTierLoan from "./filterTierLoan";
-import { FaArrowDown } from "react-icons/fa6";
+
 import { TierLoanFeeModel } from "../../../../core/models/configuration/create/TierLoanFeeModel";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
-import { Column } from "../../../../core/models/data_models/FilterSelectModel";
+
 import Pagination from "../../../components/pagination/Pagination";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
 import { TierLoanColumn } from "../../../../resources/static_data/configureHeaderData/TierLoanFeeColumn";
+import FilterModal from "../../../components/FilterModal/FilterModal";
 const TierLoanFee = () => {
   const dispatch = useAppDispatch();
   const tierloanList = useAppSelector(
@@ -108,6 +105,9 @@ const TierLoanFee = () => {
       }
     });
   }
+  const fetchFunction = (req: any) => {
+    dispatch(fetchTearLoan(req));
+   };
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -130,10 +130,11 @@ const TierLoanFee = () => {
           onpressExport={() => {}}
           onpressAddNew={() => handleAddTierLoan()}
         />
-        {filterOPen && <FilterTierLoan handleClose={filterClose}
+        {filterOPen && <FilterModal handleClose={filterClose}
          columns={TierLoanColumn}
-         page_number = {1}
-         page_size = {5}/>}
+         page_number = {currentPage}
+         fetchFunction={fetchFunction}
+         page_size = {itemsPerPage}/>}
         {open && <CreateTierLoan 
         editMode={editMode}
       tierEditedData={editedTierLoanfee}

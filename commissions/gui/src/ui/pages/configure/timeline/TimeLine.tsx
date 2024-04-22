@@ -1,7 +1,4 @@
 import React, { useEffect, useState } from "react";
-
-import { RiDeleteBin5Line } from "react-icons/ri";
-import { CiEdit } from "react-icons/ci";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { ICONS } from "../../../icons/Icons";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
@@ -9,18 +6,16 @@ import { fetchTimeLineSla } from "../../../../redux/apiSlice/configSlice/config_
 import CreateTimeLine from "./CreateTimeLine";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import {
-  toggleAllRows,
   toggleRowSelection,
 } from "../../../components/chekbox/checkHelper";
 import Pagination from "../../../components/pagination/Pagination";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
-import FilterTimeLine from "./FilterTimeLine";
-import { FaArrowDown } from "react-icons/fa6";
 import { TimeLineSlaModel } from "../../../../core/models/configuration/create/TimeLineSlaModel";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
-import { Column } from "../../../../core/models/data_models/FilterSelectModel";
+
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
 import { TimeLineSlaColumns } from "../../../../resources/static_data/configureHeaderData/TimeLineSlaColumn";
+import FilterModal from "../../../components/FilterModal/FilterModal";
 const TimeLine = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -110,6 +105,9 @@ const TimeLine = () => {
     setEditedTimeLineSla(timeLineSlaData);
     handleOpen()
   };
+  const fetchFunction = (req: any) => {
+    dispatch(fetchTimeLineSla(req));
+   };
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -133,9 +131,10 @@ const TimeLine = () => {
           onpressExport={() => { }}
           onpressAddNew={() => handleTimeLineSla()}
         />
-        {filterOPen && <FilterTimeLine handleClose={filterClose}
+        {filterOPen && <FilterModal handleClose={filterClose}
           columns={TimeLineSlaColumns}
           page_number={currentPage}
+          fetchFunction={fetchFunction}
           page_size={itemsPerPage} />}
         {open && <CreateTimeLine
           timeLineSlaData={editedTimeLineSla}

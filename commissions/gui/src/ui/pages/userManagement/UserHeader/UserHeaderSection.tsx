@@ -16,6 +16,7 @@ import Pagination from "../../../components/pagination/Pagination";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 import { dataUser, appointmentList, partnerList, RMManagerList, dealerList, saleReprestList, SaleManagerList } from "../../../../resources/static_data/StaticUserList";
+import SelectOption from "../../../components/selectOption/SelectOption";
 
 // interface props {
 //   name: string;
@@ -88,36 +89,13 @@ const UserHeaderSection = () => {
         </div>
         <div className="delete-icon-container">
           <div className="create-input-field">
-            <Select
+            <SelectOption
               options={userSelectData}
               value={userSelectData.find(
                 (option) => option.label === selectedOption
               )}
               onChange={handleSelectChange}
-              styles={{
-                control: (baseStyles, state) => ({
-                  ...baseStyles,
-                  fontSize: "13px",
-                  fontWeight: "500",
-                  borderRadius: "8px",
-                  outline: "none",
-                  // height: "2.25rem",
-                  width: "12rem",
-                  border: "1px solid #d0d5dd",
-                }),
-                indicatorSeparator: () => ({
-                  display: "none",
-                }),
-                option: (baseStyles) => ({
-                  ...baseStyles,
-                  fontSize: "13px",
-                }),
-                menu: (baseStyles) => ({
-                  ...baseStyles,
-                  minWidth: "12rem",
-                  width: "12rem",
-                }),
-              }}
+             
             />
           </div>
 

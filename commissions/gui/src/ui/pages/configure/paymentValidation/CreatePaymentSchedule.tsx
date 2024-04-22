@@ -12,6 +12,7 @@ import { installerOption, partnerOption, salesTypeOption, stateOption, } from ".
 import Select from 'react-select';
 import {paySaleTypeData } from "../../../../resources/static_data/StaticData";
 import { PayScheduleModel } from "../../../../core/models/configuration/create/PayScheduleModel";
+import SelectOption from "../../../components/selectOption/SelectOption";
 interface payScheduleProps {
     handleClose: () => void,
     editMode:boolean,
@@ -129,48 +130,16 @@ const CreatePaymentSchedule:React.FC<payScheduleProps> = ({handleClose,editMode,
                                 </div>
                                 <div className="create-input-field">
                                 <label className="inputLabel">Partner</label>
-                                    <Select
+                                    <SelectOption
                                         options={partnerOption(newFormData)}
-                                        styles={{
-                                            control: (baseStyles, state) => ({
-                                              ...baseStyles,
-                                              marginTop:"4.5px",
-                                              borderRadius:"8px",
-                                              outline:"none",
-                                              height:"2.25rem",
-                                              fontSize:"13px",
-                                              border:"1px solid #d0d5dd"
-                                              
-                                            }),
-                                            indicatorSeparator: () => ({
-                                                display: 'none' // Hide the indicator separator
-                                              }),
-                                          }}
-                                        isSearchable
                                         onChange={(newValue) => handleChange(newValue, 'partner')}
                                         value={partnerOption(newFormData)?.find((option) => option.value === createPayData.partner)}
                                     />
                                 </div>
                                 <div className="create-input-field">
                                 <label className="inputLabel">Installer</label>
-                                    <Select
+                                    <SelectOption
                                         options={installerOption(newFormData)}
-                                        isSearchable
-                                        styles={{
-                                            control: (baseStyles, state) => ({
-                                              ...baseStyles,
-                                              marginTop:"4.5px",
-                                              borderRadius:"8px",
-                                              outline:"none",
-                                              height:"2.25rem",
-                                              fontSize:"13px",
-                                              border:"1px solid #d0d5dd"
-                                              
-                                            }),
-                                            indicatorSeparator: () => ({
-                                                display: 'none' // Hide the indicator separator
-                                              }),
-                                          }}
                                         onChange={(newValue) => handleChange(newValue, 'installer_name')}
                                         value={installerOption(newFormData)?.find((option) => option.value === createPayData.installer_name)}
                                     />
@@ -180,48 +149,16 @@ const CreatePaymentSchedule:React.FC<payScheduleProps> = ({handleClose,editMode,
                             <div className="create-input-container">
                                 <div className="create-input-field">
                                 <label className="inputLabel">Sales Type</label>
-                                    <Select
-                                        options={salesTypeOption(newFormData)||paySaleTypeData}
-                                        isSearchable
-                                        styles={{
-                                            control: (baseStyles, state) => ({
-                                              ...baseStyles,
-                                              marginTop:"4.5px",
-                                              borderRadius:"8px",
-                                              outline:"none",
-                                              height:"2.25rem",
-                                              fontSize:"13px",
-                                              border:"1px solid #d0d5dd"
-                                              
-                                            }),
-                                            indicatorSeparator: () => ({
-                                                display: 'none' // Hide the indicator separator
-                                              }),
-                                          }}
+                                    <SelectOption
+                                        options={salesTypeOption(newFormData)}
                                         onChange={(newValue) => handleChange(newValue, 'sale_type')}
-                                        value={salesTypeOption(newFormData)||paySaleTypeData?.find((option) => option.value === createPayData.sale_type)}
+                                        value={salesTypeOption(newFormData)?.find((option) => option.value === createPayData.sale_type)}
                                     />
                                 </div>
                                 <div className="create-input-field">
                                 <label className="inputLabel">ST</label>
-                                    <Select
+                                    <SelectOption
                                         options={stateOption(newFormData)}
-                                        styles={{
-                                            control: (baseStyles, state) => ({
-                                              ...baseStyles,
-                                              marginTop:"4.5px",
-                                              borderRadius:"8px",
-                                              outline:"none",
-                                              height:"2.25rem",
-                                              fontSize:"13px",
-                                              border:"1px solid #d0d5dd"
-                                              
-                                            }),
-                                            indicatorSeparator: () => ({
-                                                display: 'none' // Hide the indicator separator
-                                              }),
-                                          }}
-                                        isSearchable
                                         onChange={(newValue) => handleChange(newValue, 'state')}
                                         value={stateOption(newFormData)?.find((option) => option.value === createPayData.state)}
                                     />

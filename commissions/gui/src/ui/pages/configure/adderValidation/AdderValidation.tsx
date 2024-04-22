@@ -7,16 +7,15 @@ import TableHeader from "../../../components/tableHeader/TableHeader";
 import CreateAdder from "./CreateAdder";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import {
-  toggleAllRows,
   toggleRowSelection,
 } from "../../../components/chekbox/checkHelper";
-import FilterAdder from "./FilterAdder";
 import { AdderVModel } from "../../../../core/models/configuration/create/AdderVModel";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import Pagination from "../../../components/pagination/Pagination";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 import { AdderVColumns } from "../../../../resources/static_data/configureHeaderData/AdderVTableColumn";
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
+import FilterModal from "../../../components/FilterModal/FilterModal";
 
 
 const AdderValidation = () => {
@@ -103,6 +102,9 @@ const AdderValidation = () => {
       }
     });
   }
+  const fetchFunction = (req: any) => {
+    dispatch(fetchAdderV(req));
+   };
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -126,10 +128,13 @@ const AdderValidation = () => {
           onpressExport={() => { }}
           onpressAddNew={() => handleAddvAdder()}
         />
-        {filterOPen && <FilterAdder handleClose={filterClose}
+        {filterOPen && <FilterModal handleClose={filterClose}
           columns={AdderVColumns}
-          page_number={1}
-          page_size={5} />}
+          page_number={currentPage}
+          fetchFunction={fetchFunction}
+          page_size={itemsPerPage} />
+
+          }
         {open && <CreateAdder
           vAdderData={editedVAdder}
           editMode={editMode}

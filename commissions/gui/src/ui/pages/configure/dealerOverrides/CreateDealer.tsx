@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cross_button.svg";
 import Input from "../../../components/text_input/Input";
 import { ActionButton } from "../../../components/button/ActionButton";
@@ -17,6 +17,7 @@ import {
   subDealer,
 } from "../../../../resources/static_data/StaticData";
 import { DealerModel } from "../../../../core/models/configuration/create/DealerModel";
+import SelectOption from "../../../components/selectOption/SelectOption";
 
 interface dealerProps {
   handleClose: () => void;
@@ -98,6 +99,8 @@ const CreateDealer: React.FC<dealerProps> = ({
       console.error("Error submitting form:", error);
     }
   };
+ 
+
   return (
     <div className="transparent-model">
       <form onSubmit={(e) => submitDealer(e)} className="modal">
@@ -114,29 +117,13 @@ const CreateDealer: React.FC<dealerProps> = ({
               <div className="create-input-container">
                 <div className="create-input-field">
                   <label className="inputLabel">Sub Dealer</label>
-                  <Select
-                    options={subDealerOption(newFormData) || subDealer}
-                    styles={{
-                      control: (baseStyles, state) => ({
-                        ...baseStyles,
-                        marginTop: "4.5px",
-                        borderRadius: "8px",
-                        outline: "none",
-                        fontSize: "13px",
-                        height: "2.25rem",
-                        border: "1px solid #d0d5dd",
-                      }),
-                      indicatorSeparator: () => ({
-                        display: "none", // Hide the indicator separator
-                      }),
-                    }}
-                    isSearchable
+                  <SelectOption
+                    options={subDealerOption(newFormData)}
                     onChange={(newValue) =>
                       handleChange(newValue, "sub_dealer")
                     }
                     value={
-                      subDealerOption(newFormData) ||
-                      subDealer?.find(
+                      subDealerOption(newFormData)?.find(
                         (option) => option.value === createDealer.sub_dealer
                       )
                     }
@@ -144,30 +131,12 @@ const CreateDealer: React.FC<dealerProps> = ({
                 </div>
                 <div className="create-input-field">
                   <label className="inputLabel">Dealer</label>
-                  <Select
-                    options={dealerOption(newFormData) || dealer}
-                    styles={{
-                      control: (baseStyles, state) => ({
-                        ...baseStyles,
-                        marginTop: "4.5px",
-                        borderRadius: "8px",
-                        outline: "none",
-                        fontSize: "13px",
-                        height: "2.25rem",
-                        border: "1px solid #d0d5dd",
-                      }),
-                      indicatorSeparator: () => ({
-                        display: "none", // Hide the indicator separator
-                      }),
-                    }}
-                    isSearchable
+                  <SelectOption
+                    options={dealerOption(newFormData)}
                     onChange={(newValue) => handleChange(newValue, "dealer")}
                     value={
-                      dealerOption(newFormData) ||
-                      dealer?.find(
-                        (option) => option.value === createDealer.dealer
-                      )
-                    }
+                      dealerOption(newFormData)?.find(
+                        (option) => option.value === createDealer.dealer)}
                   />
                 </div>
                 <div className="create-input-field">
@@ -180,6 +149,7 @@ const CreateDealer: React.FC<dealerProps> = ({
                     onChange={(e) => handleDealerInputChange(e)}
                   />
                 </div>
+              
               </div>
 
               <div className="create-input-container">

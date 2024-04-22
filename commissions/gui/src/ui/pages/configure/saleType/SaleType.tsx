@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { RiDeleteBin5Line } from "react-icons/ri";
 import "../configure.css";
-import { CiEdit } from "react-icons/ci";
 
 import { ICONS } from "../../../icons/Icons";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
@@ -9,13 +7,9 @@ import TableHeader from "../../../components/tableHeader/TableHeader";
 import { fetchSalesType } from "../../../../redux/apiSlice/configSlice/config_get_slice/salesSlice";
 import CreateSaleType from "./CreateSaleType";
 import CheckBox from "../../../components/chekbox/CheckBox";
-
 import {
-  toggleAllRows,
   toggleRowSelection,
 } from "../../../components/chekbox/checkHelper";
-import FilterSale from "./FilterSale";
-import { FaArrowDown } from "react-icons/fa6";
 import { SalesTypeModel } from "../../../../core/models/configuration/create/SalesTypeModel";
 import Pagination from "../../../components/pagination/Pagination";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
@@ -23,6 +17,7 @@ import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import { Column } from "../../../../core/models/data_models/FilterSelectModel";
 import { SalesTypeColumn } from "../../../../resources/static_data/configureHeaderData/SalesTypeColumn";
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
+import FilterModal from "../../../components/FilterModal/FilterModal";
 
 const SaleType = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -109,6 +104,9 @@ const SaleType = () => {
       }
     });
   }
+  const fetchFunction = (req: any) => {
+    dispatch(fetchSalesType(req));
+   };
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -132,10 +130,11 @@ const SaleType = () => {
           onpressExport={() => {}}
           onpressAddNew={() => handleAddSaleType()}
         />
-        {filterOPen && <FilterSale handleClose={filterClose}
+        {filterOPen && <FilterModal handleClose={filterClose}
          columns={SalesTypeColumn}
-         page_number = {1}
-         page_size = {5}/>}
+         fetchFunction={fetchFunction}
+         page_number = {currentPage}
+         page_size = {itemsPerPage}/>}
         {open && <CreateSaleType salesTypeData={editedSalesType}
                          editMode={editMode}
                          handleClose={handleClose} />}

@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from "react";
-
 import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cross_button.svg";
 import Input from "../../../components/text_input/Input";
-
 import { ActionButton } from "../../../components/button/ActionButton";
-
 import { useDispatch } from "react-redux";
-// import { updateForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createCommissionSlice";
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import Select from "react-select";
 import {
@@ -19,6 +15,7 @@ import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoin
 import { respTypeData } from "../../../../resources/static_data/StaticData";
 import { updateForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createCommissionSlice";
 import { CommissionModel } from "../../../../core/models/configuration/create/CommissionModel";
+import SelectOption from "../../../components/selectOption/SelectOption";
 
 interface ButtonProps {
   editMode: boolean;
@@ -32,7 +29,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
   editMode,
 }) => {
   const dispatch = useDispatch();
-  const [showToast, setShowToast] = useState(false);
+  
   const [createCommission, setCreateCommission] = useState<CommissionModel>({
     record_id: commission ? commission?.record_id : 0,
     partner: commission ? commission?.partner : "OWE",
@@ -91,7 +88,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
           createCommission
         );
         if (res.status === 200) {
-          setShowToast(true);
+       
           handleClose();
           window.location.reload();
         } else {
@@ -104,7 +101,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
           cleanedFormData
         );
         if (res.status === 200) {
-          setShowToast(true);
+          
           handleClose();
           // window.location.reload()
         } else {
@@ -123,203 +120,153 @@ const CreateReferalData: React.FC<ButtonProps> = ({
         <div className="createUserCrossButton" onClick={handleClose}>
           <CROSS_BUTTON />
         </div>
+    
+          <h3 className="createProfileText">
+            {editMode === false ? "Dealer Credit" : "Update Dealer Credit"}
+          </h3>
+        
+          <div className="modal-body">
+          <div className="createProfileInputView">
+              <div className="createProfileTextView">
+                <div className="create-input-container">
+                  <div className="create-input-field">
+                    <label className="inputLabel">Partner</label>
+                    <SelectOption
+                      options={partnerOption(newFormData)}
+                      onChange={(newValue) => handleChange(newValue, "partner")}
+                      value={partnerOption(newFormData)?.find(
+                        (option) => option?.value === createCommission.partner
+                      )}
+                     
+                    />
+                  </div>
+                  <div className="create-input-field">
+                    <label className="inputLabel">Installer</label>
+                    <div className="">
+                      <SelectOption
+                        options={installerOption(newFormData)}
+                        onChange={(newValue) =>
+                          handleChange(newValue, "installer")
+                        }
+                        value={installerOption(newFormData)?.find(
+                          (option) =>
+                            option.value === createCommission.installer
+                        )}
+                      />
+                    </div>
+                  </div>
+                  <div className="create-input-field">
+                    <label className="inputLabel">State</label>
+                    <SelectOption
+                      options={stateOption(newFormData)}
+                      onChange={(newValue) => handleChange(newValue, "state")}
+                      value={stateOption(newFormData)?.find(
+                        (option) => option.value === createCommission.state
+                      )}
+                    />
+                  </div>
+                </div>
 
-        <h3 className="createProfileText">
-          {editMode === false ? "Referal Data" : "Update Referal Data"}
-        </h3>
-      <div className="modal-body">
-      <div className="createProfileInputView">
-          <div className="createProfileTextView">
-            <div className="create-input-container">
-              <div className="create-input-field">
-                <label className="inputLabel">Partner</label>
-                <Select
-                  options={partnerOption(newFormData)}
-                  isSearchable
-                  onChange={(newValue) => handleChange(newValue, "partner")}
-                  value={partnerOption(newFormData)?.find(
-                    (option) => option?.value === createCommission.partner
-                  )}
-                  styles={{
-                    control: (baseStyles, state) => ({
-                      ...baseStyles,
-                      marginTop: "4.5px",
-                      borderRadius: "8px",
-                      outline: "none",
-                      height: "2.25rem",
-                      fontSize:"13px",
-                      // width:"280px"
-                      border: "1px solid #d0d5dd",
-                    }),
-                    indicatorSeparator: () => ({
-                      display: "none", // Hide the indicator separator
-                    }),
-                  }}
-                />
-              </div>
-              <div className="create-input-field">
-                <label className="inputLabel">Installer</label>
-                <div className="">
-                  <Select
-                    options={installerOption(newFormData)}
-                    styles={{
-                      control: (baseStyles, state) => ({
-                        ...baseStyles,
-                        marginTop: "4.5px",
-                        borderRadius: "8px",
-                        outline: "none",
-                        height: "2.25rem",
-                        fontSize:"13px",
-                        border: "1px solid #d0d5dd",
-                      }),
-                      indicatorSeparator: () => ({
-                        display: "none", // Hide the indicator separator
-                      }),
-                    }}
-                    onChange={(newValue) => handleChange(newValue, "installer")}
-                    value={installerOption(newFormData)?.find(
-                      (option) => option.value === createCommission.installer
-                    )}
-                  />
+                <div className="create-input-container">
+                  <div className="create-input-field">
+                    <Input
+                      type={"text"}
+                      label="Sales Type"
+                      value={createCommission.sale_type}
+                      name="sale_type"
+                      placeholder={"Sales Type"}
+                      onChange={(e) => handleInputChange(e)}
+                    />
+                  </div>
+                  <div className="create-input-field">
+                    <Input
+                      type={"number"}
+                      label="Sales Price"
+                      value={createCommission.sale_price}
+                      name="sale_price"
+                      placeholder={"sale price"}
+                      onChange={(e) => handleInputChange(e)}
+                    />
+                  </div>
+                  <div className="create-input-field">
+                    <label className="inputLabel">Representative Type</label>
+                    <SelectOption
+                      options={repTypeOption(newFormData)}
+                      onChange={(newValue) =>
+                        handleChange(newValue, "rep_type")
+                      }
+                      value={
+                        repTypeOption(newFormData)?.find(
+                          (option) => option.value === createCommission.rep_type
+                        )
+                      }
+                    />
+                  </div>
+                </div>
+                <div className="create-input-container">
+                  <div className="rate-input-container">
+                    <div className="rate-input-field">
+                      <Input
+                        type={"number"}
+                        label="Rate"
+                        value={createCommission.rate}
+                        name="rate"
+                        placeholder={"Rate"}
+                        onChange={(e) => handleInputChange(e)}
+                      />
+                    </div>
+                    <div className="rate-input-field">
+                      <Input
+                        type={"number"}
+                        label="Rate List"
+                        value={createCommission.rl}
+                        name="rl"
+                        placeholder={"Rate List"}
+                        onChange={(e) => handleInputChange(e)}
+                      />
+                    </div>
+                  </div>
+                  <div className="start-input-container">
+                    <div className="rate-input-field">
+                      <Input
+                        type={"date"}
+                        label="Start Date"
+                        value={createCommission.start_date}
+                        name="start_date"
+                        placeholder={"1/04/2004"}
+                        onChange={(e) => handleInputChange(e)}
+                      />
+                    </div>
+                    <div className="rate-input-field">
+                      <Input
+                        type={"date"}
+                        label="End Date"
+                        value={createCommission.end_date}
+                        name="end_date"
+                        placeholder={"10/04/2004"}
+                        onChange={(e) => handleInputChange(e)}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div className="create-input-field">
-                <label className="inputLabel">State</label>
-                <Select
-                  options={stateOption(newFormData)}
-                  styles={{
-                    control: (baseStyles, state) => ({
-                      ...baseStyles,
-                      marginTop: "4.5px",
-                      borderRadius: "8px",
-                      outline: "none",
-                      height: "2.25rem",
-                      fontSize:"13px",
-                      border: "1px solid #d0d5dd",
-                    }),
-                    indicatorSeparator: () => ({
-                      display: "none", // Hide the indicator separator
-                    }),
-                  }}
-                  isSearchable
-                  // options={statData}
-                  onChange={(newValue) => handleChange(newValue, "state")}
-                  value={stateOption(newFormData)?.find(
-                    (option) => option.value === createCommission.state
-                  )}
-                />
               </div>
-            </div>
-
-            <div className="create-input-container">
-              <div className="create-input-field">
-                <Input
-                  type={"text"}
-                  label="Sales Type"
-                  value={createCommission.sale_type}
-                  name="sale_type"
-                  placeholder={"Sales Type"}
-                  onChange={(e) => handleInputChange(e)}
-                />
-              </div>
-              <div className="create-input-field">
-                <Input
-                  type={"number"}
-                  label="Sales Price"
-                  value={createCommission.sale_price}
-                  name="sale_price"
-                  placeholder={"sale price"}
-                  onChange={(e) => handleInputChange(e)}
-                />
-              </div>
-              <div className="create-input-field">
-                <label className="inputLabel">Representative Type</label>
-                <Select
-                  options={repTypeOption(newFormData) || respTypeData}
-                  isSearchable
-                  styles={{
-                    control: (baseStyles, state) => ({
-                      ...baseStyles,
-                      marginTop: "4.5px",
-                      borderRadius: "8px",
-                      outline: "none",
-                      height: "2.25rem",
-                      fontSize:"13px",
-                      border: "1px solid #d0d5dd",
-                    }),
-                    indicatorSeparator: () => ({
-                      display: "none", // Hide the indicator separator
-                    }),
-                  }}
-                  // options={partners}
-                  onChange={(newValue) => handleChange(newValue, "rep_type")}
-                  value={
-                    repTypeOption(newFormData) ||
-                    respTypeData?.find(
-                      (option) => option.value === createCommission.rep_type
-                    )
-                  }
-                />
-              </div>
-            </div>
-            <div className="create-input-container">
-              <div className="rate-input-container">
-                <div className="rate-input-field">
-                  <Input
-                    type={"number"}
-                    label="Rate"
-                    value={createCommission.rate}
-                    name="rate"
-                    placeholder={"Rate"}
-                    onChange={(e) => handleInputChange(e)}
-                  />
-                </div>
-                <div className="rate-input-field">
-                  <Input
-                    type={"number"}
-                    label="Rate List"
-                    value={createCommission.rl}
-                    name="rl"
-                    placeholder={"Rate List"}
-                    onChange={(e) => handleInputChange(e)}
-                  />
-                </div>
-              </div>
-              <div className="start-input-container">
-                <div className="rate-input-field">
-                  <Input
-                    type={"date"}
-                    label="Start Date"
-                    value={createCommission.start_date}
-                    name="start_date"
-                    placeholder={"1/04/2004"}
-                    onChange={(e) => handleInputChange(e)}
-                  />
-                </div>
-                <div className="rate-input-field">
-                  <Input
-                    type={"date"}
-                    label="End Date"
-                    value={createCommission.end_date}
-                    name="end_date"
-                    placeholder={"10/04/2004"}
-                    onChange={(e) => handleInputChange(e)}
-                  />
-                </div>
-              </div>
-            </div>
           </div>
-        </div>
-      </div>
-        <div className="createUserActionButton">
-          <ActionButton title={"Cancel"} type="button" onClick={handleClose} />
-          <ActionButton
-            title={editMode === false ? "Save" : "Update"}
-            type="submit"
-            onClick={() => {}}
-          />
-        </div>
-      </form>
+              <div className="createUserActionButton">
+                <ActionButton
+                  title={"Cancel"}
+                  type="button"
+                  onClick={handleClose}
+                />
+                <ActionButton
+                  title={editMode === false ? "Save" : "Update"}
+                  type="submit"
+                  onClick={() => {}}
+                />
+              </div>
+         
+          </form>
+     
     </div>
   );
 };
