@@ -8,31 +8,32 @@
 
 import React, { useState } from "react";
 import "./WelcomePage.css";
-import LogoImage from "../../../resources/assets/logo.png";
-import LaptopImage from "../../../resources/assets/laptop.png";
+// import LogoImage from "../../../resources/assets/logo.png";
+import LaptopImage from "../../../resources/assets/laptop.svg";
 import { ReactComponent as CallIcon } from "../../../resources/assets/phone-fill.svg";
 import CustomBox from "../../components/box/CustomBox";
 import CommissionIcon from "../../../resources/assets/commission.svg";
 import OweIcon from "../../../resources/assets/OWE.svg";
 import ContractorIcon from "../../../resources/assets/contractor.svg";
+import logo from "../../../resources/assets/logo.svg";
 import pandoIcon from "../../../resources/assets/pando.svg";
-import AboutUsBig from "../../../resources/assets/aboutUsBig.png";
-import AboutUsSmall from "../../../resources/assets/aboutUsSmall.png";
+import AboutUsBig from "../../../resources/assets/AboutUsBig.svg";
+import AboutUsSmall from "../../../resources/assets/AboutUsSmall.svg";
 import { useNavigate } from "react-router-dom";
 import ImageLayout from "../../components/imageLayout/ImageLayout";
-import Grid_1 from "../../../resources/assets/grid_1.png";
-import Grid_2 from "../../../resources/assets/grid_2.png";
-import Grid_3 from "../../../resources/assets/grid_3.png";
-import Grid_4 from "../../../resources/assets/grid_4.png";
-import Grid_5 from "../../../resources/assets/grid_5.png";
+import Grid_1 from "../../../resources/assets/grid_1.svg";
+import Grid_2 from "../../../resources/assets/grid_2.svg";
+import Grid_3 from "../../../resources/assets/grid_3.svg";
+import Grid_4 from "../../../resources/assets/grid_4.svg";
+import Grid_5 from "../../../resources/assets/grid_5.svg";
 import TabBar from "../../components/tabBar/TabBar";
-import WhiteLogo from "../../../resources/assets/white-image-logo.png";
+import WhiteLogo from "../../../resources/assets/white-image-logo.svg";
 import { ReactComponent as Facebook } from "../../../resources/assets/facebook.svg";
 import { ReactComponent as Linkedin } from "../../../resources/assets/linkedin.svg";
 import { ReactComponent as Twitter } from "../../../resources/assets/twitter.svg";
 import { ReactComponent as YouTube } from "../../../resources/assets/youTube.svg";
 import { ReactComponent as Instagram } from "../../../resources/assets/Instagram.svg";
-import BusinessLogo from "../../../resources/assets/business_logo.png";
+import BusinessLogo from "../../../resources/assets/business_logo.svg";
 
 import Typewriter from "../../components/animation/Typewriter";
 
@@ -76,20 +77,18 @@ export const WelcomePage = () => {
       <div className="welcomeContainer">
         <header className="welcomeBannerView">
           <div className="welcomeInnerBannerView">
-            <br />
             <div className="welcomeHeaderView">
               <div>
-                <img src={LogoImage} alt={"Logo"} />
+                <img src={logo} alt={"Logo"} />
               </div>
  
               <div className="welcome-phone-view">
                 <CallIcon />
-                
                 <h3 className="welcome-phone-text">Call Us (623) 850-5700</h3>
               </div>
             </div>
 
-            <div style={{ display: "flex", marginTop: "1.5rem" }}>
+            <div className="welcome-main">
               <div className="welcome-left-view">
                 <h1 className="welcome-text-black">
                   Our <span className="welcome-text-blue">World</span> Revolves
@@ -235,13 +234,12 @@ export const WelcomePage = () => {
                 handleTabClick={(e) => handleTabClick(e)}
               />
             </div>
-            <br />
-            <div>
+            {/* <br /> */}
+            <div className="landing-table">
               <table>
                 <tbody>
                   <tr>
                     {data.map((item) => (
-
 
                       <td key={item.id}>
                         <div className="table-box">
@@ -285,7 +283,9 @@ export const WelcomePage = () => {
           </div>
           <div id="welcomeUnderLine"></div>
           <div id="welcomeFooterLowerView">
+            <div className="footer-logo">
             <img src={BusinessLogo} alt="logo" />
+            </div>
             <div className="footer-text">
               © 2024 BY OUR WORLD ENERGY. ALL RIGHTS RESERVED.{" "}
             </div>

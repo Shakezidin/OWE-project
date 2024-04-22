@@ -71,7 +71,7 @@ import comm from '../../resources/assets/80commision.svg'
 import repay from "../../resources/assets/repay.svg"
 export const ICONS = {
   BACKGROUND: require("../../resources/assets/background.png"),
-  LOGO: require("../../resources/assets/logo.png"),
+  LOGO: require("../../resources/assets/logo.svg"),
   MENU_1: require("../../resources/assets/menu_1.png"),
   sidebarLogo: require("../../resources/assets/comissionlogo.png"),
   DOWN_ARROW: require("../../resources/assets/arrow-down.png"),
