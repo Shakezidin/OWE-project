@@ -19,6 +19,7 @@ import {
 import CheckBox from "../../../components/chekbox/CheckBox";
 import { ICONS } from "../../../icons/Icons";
 import SelectTable from "./SeletTable";
+import UserBasedInput from "../UserBasedInput";
 
 interface ButtonProps {
   editMode: boolean;
@@ -41,11 +42,13 @@ const UserOnboardingCreation: React.FC<ButtonProps> = ({
     designation: "Developer",
     assigned_dealer_name: "369 Solar",
     role_name: "admin",
+    add_region:"",
+  team_name:"",
+    report_to:"",
+    reporting_to:"",
+
   });
   // const [newFormData, setNewFormData] = useState<any>([])
-  const tableData = {
-    tableNames: ["Role", "Dealer_Owner"],
-  };
   // const getNewFormData = async () => {
   //   const res = await postCaller(EndPoints.get_newFormData, tableData)
   //   setNewFormData(res.data)
@@ -140,7 +143,7 @@ const UserOnboardingCreation: React.FC<ButtonProps> = ({
                   <Select
                     options={userSelectData}
                     isSearchable
-                    onChange={(newValue) => handleChange(newValue, "role")}
+                    onChange={(newValue) => handleChange(newValue, "role_name")}
                     value={userSelectData?.find(
                       (option) =>
                         option?.value === createUserOnboarding.role_name
@@ -187,40 +190,46 @@ const UserOnboardingCreation: React.FC<ButtonProps> = ({
                     name={"mobile_number"}
                   />
                 </div>
-                <div className="create-input-field">
-                  <label className="inputLabel">Dealer</label>
-                  <Select
-                    options={dealer}
-                    isSearchable
-                    onChange={(newValue) =>
-                      handleChange(newValue, "assigned_dealer_name")
-                    }
-                    value={dealer?.find(
-                      (option) =>
-                        option?.value ===
-                        createUserOnboarding.assigned_dealer_name
-                    )}
-                    styles={{
-                      control: (baseStyles, state) => ({
-                        ...baseStyles,
-                        marginTop: "4.5px",
-                        borderRadius: "8px",
-                        outline: "none",
-                        height: "2.25rem",
-                        fontSize: "13px",
-                        border: "1px solid #d0d5dd",
-                      }),
-                      indicatorSeparator: () => ({
-                        display: "none", // Hide the indicator separator
-                      }),
-                      option: (baseStyles) => ({
-                        ...baseStyles,
-                        fontSize: "13px",
-                      }),
-                    }}
-                  />
-                </div>
+              {
+                createUserOnboarding.role_name==="admin"?null:  <div className="create-input-field">
+                <label className="inputLabel">Dealer Owner</label>
+                <Select
+                  options={dealer}
+                  isSearchable
+                  onChange={(newValue) =>
+                    handleChange(newValue, "assigned_dealer_name")
+                  }
+                  value={dealer?.find(
+                    (option) =>
+                      option?.value ===
+                      createUserOnboarding.assigned_dealer_name
+                  )}
+                  styles={{
+                    control: (baseStyles, state) => ({
+                      ...baseStyles,
+                      marginTop: "4.5px",
+                      borderRadius: "8px",
+                      outline: "none",
+                      height: "2.25rem",
+                      fontSize: "13px",
+                      border: "1px solid #d0d5dd",
+                    }),
+                    indicatorSeparator: () => ({
+                      display: "none", // Hide the indicator separator
+                    }),
+                    option: (baseStyles) => ({
+                      ...baseStyles,
+                      fontSize: "13px",
+                    }),
+                  }}
+                />
               </div>
+              }
+             
+              </div>
+             <UserBasedInput createUserOnboarding={createUserOnboarding}
+              onChange={(e:any) => handleInputChange(e)}
+             />
               <div className="">
                 <div className="" style={{ display: "flex", gap: "0.5rem" }}>
                   <CheckBox
