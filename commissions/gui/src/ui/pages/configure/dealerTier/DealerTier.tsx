@@ -11,18 +11,15 @@ import { fetchDealerTier } from "../../../../redux/apiSlice/configSlice/config_g
 import CreateDealerTier from "./CreateDealerTier";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import {
-  toggleAllRows,
   toggleRowSelection,
 } from "../../../components/chekbox/checkHelper";
-import FilterDealerTier from "./FilterDealerTier";
-import { FaArrowDown } from "react-icons/fa6";
 import { DealerTierModel } from "../../../../core/models/configuration/create/DealerTierModel";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 import Pagination from "../../../components/pagination/Pagination";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
-import { Column } from "../../../../core/models/data_models/FilterSelectModel";
 import { DealerTierColumn } from "../../../../resources/static_data/configureHeaderData/DealerTierColumn";
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
+import FilterModal from "../../../components/FilterModal/FilterModal";
 const DealerTier = () => {
   const dispatch = useAppDispatch();
   // const getData = useAppSelector(state=>state.comm.data)
@@ -111,6 +108,9 @@ const DealerTier = () => {
       }
     });
   }
+  const fetchFunction = (req: any) => {
+    dispatch(fetchDealerTier(req));
+   };
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -135,9 +135,11 @@ const DealerTier = () => {
           onpressExport={() => {}}
           onpressAddNew={() => handleAddDealerTier()}
         />
-        {filterOPen && <FilterDealerTier handleClose={filterClose}  
+        {filterOPen && <FilterModal handleClose={filterClose}  
              columns={DealerTierColumn}
+             fetchFunction={fetchFunction}
              page_number = {currentPage}
+             
              page_size = {itemsPerPage} />}
         {open && <CreateDealerTier handleClose={handleClose} 
          editDealerTier={editedDealerTier}

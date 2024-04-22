@@ -11,6 +11,7 @@ import { dealertierOption } from "../../../../core/models/data_models/SelectData
 import Select from 'react-select';
 
 import { DealerTierModel } from "../../../../core/models/configuration/create/DealerTierModel";
+import SelectOption from "../../../components/selectOption/SelectOption";
 interface dealerProps {
     handleClose: () => void,
     editMode:boolean,
@@ -114,23 +115,8 @@ const CreateDealerTier:React.FC<dealerProps> = ({handleClose,editMode,editDealer
                                 </div>
                                 <div className="create-input-field">
                                     <label className="inputLabel">Tier</label>
-                                    <Select
+                                    <SelectOption
                                         options={dealertierOption(newFormData)}
-                                        isSearchable
-                                        styles={{
-                                            control: (baseStyles, state) => ({
-                                              ...baseStyles,
-                                              marginTop:"4.5px",
-                                              borderRadius:"8px",
-                                              outline:"none",
-                                              height:"2.25rem",
-                                              border:"1px solid #d0d5dd"
-                                              
-                                            }),
-                                            indicatorSeparator: () => ({
-                                                display: 'none' // Hide the indicator separator
-                                              }),
-                                          }}
                                         onChange={(newValue) => handleChange(newValue, 'tier')}
                                         value={dealertierOption(newFormData)?.find((option) => option.value === createDealerTierData.tier)}
                                     />

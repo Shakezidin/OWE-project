@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cross_button.svg";
 import Input from "../../../components/text_input/Input";
-
 import { ActionButton } from "../../../components/button/ActionButton";
-
 import { useDispatch } from "react-redux";
-// import { updateForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createCommissionSlice";
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import Select from "react-select";
 import {
@@ -18,6 +15,7 @@ import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoin
 import { respTypeData } from "../../../../resources/static_data/StaticData";
 import { updateForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createCommissionSlice";
 import { CommissionModel } from "../../../../core/models/configuration/create/CommissionModel";
+import SelectOption from "../../../components/selectOption/SelectOption";
 
 interface ButtonProps {
   editMode: boolean;
@@ -31,7 +29,7 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
   editMode,
 }) => {
   const dispatch = useDispatch();
-  const [showToast, setShowToast] = useState(false);
+  
   const [createCommission, setCreateCommission] = useState<CommissionModel>({
     record_id: commission ? commission?.record_id : 0,
     partner: commission ? commission?.partner : "OWE",
@@ -90,7 +88,7 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
           createCommission
         );
         if (res.status === 200) {
-          setShowToast(true);
+       
           handleClose();
           window.location.reload();
         } else {
@@ -103,7 +101,7 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
           cleanedFormData
         );
         if (res.status === 200) {
-          setShowToast(true);
+          
           handleClose();
           // window.location.reload()
         } else {
@@ -133,48 +131,20 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
                 <div className="create-input-container">
                   <div className="create-input-field">
                     <label className="inputLabel">Partner</label>
-                    <Select
+                    <SelectOption
                       options={partnerOption(newFormData)}
-                      isSearchable
                       onChange={(newValue) => handleChange(newValue, "partner")}
                       value={partnerOption(newFormData)?.find(
                         (option) => option?.value === createCommission.partner
                       )}
-                      styles={{
-                        control: (baseStyles, state) => ({
-                          ...baseStyles,
-                          marginTop: "4.5px",
-                          borderRadius: "8px",
-                          outline: "none",
-                          height: "2.25rem",
-                          fontSize:"13px",
-                          border: "1px solid #d0d5dd",
-                        }),
-                        indicatorSeparator: () => ({
-                          display: "none", // Hide the indicator separator
-                        }),
-                      }}
+                     
                     />
                   </div>
                   <div className="create-input-field">
                     <label className="inputLabel">Installer</label>
                     <div className="">
-                      <Select
+                      <SelectOption
                         options={installerOption(newFormData)}
-                        styles={{
-                          control: (baseStyles, state) => ({
-                            ...baseStyles,
-                            marginTop: "4.5px",
-                            borderRadius: "8px",
-                            outline: "none",
-                            height: "2.25rem",
-                            fontSize:"13px",
-                            border: "1px solid #d0d5dd",
-                          }),
-                          indicatorSeparator: () => ({
-                            display: "none", // Hide the indicator separator
-                          }),
-                        }}
                         onChange={(newValue) =>
                           handleChange(newValue, "installer")
                         }
@@ -187,24 +157,8 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
                   </div>
                   <div className="create-input-field">
                     <label className="inputLabel">State</label>
-                    <Select
+                    <SelectOption
                       options={stateOption(newFormData)}
-                      styles={{
-                        control: (baseStyles, state) => ({
-                          ...baseStyles,
-                          marginTop: "4.5px",
-                          borderRadius: "8px",
-                          outline: "none",
-                          height: "2.25rem",
-                          fontSize:"13px",
-                          border: "1px solid #d0d5dd",
-                        }),
-                        indicatorSeparator: () => ({
-                          display: "none", // Hide the indicator separator
-                        }),
-                      }}
-                      isSearchable
-                      // options={statData}
                       onChange={(newValue) => handleChange(newValue, "state")}
                       value={stateOption(newFormData)?.find(
                         (option) => option.value === createCommission.state
@@ -236,30 +190,13 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
                   </div>
                   <div className="create-input-field">
                     <label className="inputLabel">Representative Type</label>
-                    <Select
-                      options={repTypeOption(newFormData) || respTypeData}
-                      isSearchable
-                      styles={{
-                        control: (baseStyles, state) => ({
-                          ...baseStyles,
-                          marginTop: "4.5px",
-                          borderRadius: "8px",
-                          outline: "none",
-                          height: "2.25rem",
-                          fontSize:"13px",
-                          border: "1px solid #d0d5dd",
-                        }),
-                        indicatorSeparator: () => ({
-                          display: "none", // Hide the indicator separator
-                        }),
-                      }}
-                      // options={partners}
+                    <SelectOption
+                      options={repTypeOption(newFormData)}
                       onChange={(newValue) =>
                         handleChange(newValue, "rep_type")
                       }
                       value={
-                        repTypeOption(newFormData) ||
-                        respTypeData?.find(
+                        repTypeOption(newFormData)?.find(
                           (option) => option.value === createCommission.rep_type
                         )
                       }

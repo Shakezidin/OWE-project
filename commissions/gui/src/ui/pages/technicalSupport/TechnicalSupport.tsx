@@ -81,7 +81,7 @@ const TechnicalSupport = () => {
                   outline: "none",
                   fontSize: "13px",
                   height: "2.25rem",
-                  width: "290px",
+             
                   border: "1px solid #d0d5dd",
                 }),
 

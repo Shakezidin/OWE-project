@@ -14,6 +14,7 @@ import {
 } from "../../../../core/models/data_models/SelectDataModel";
 import { priceTypeData } from "../../../../resources/static_data/StaticData";
 import { AdderVModel } from "../../../../core/models/configuration/create/AdderVModel";
+import SelectOption from "../../../components/selectOption/SelectOption";
 interface vadderProps {
   editMode: boolean;
   handleClose: () => void;
@@ -100,11 +101,9 @@ const CreateAdder: React.FC<vadderProps> = ({
         <div className="createUserCrossButton" onClick={handleClose}>
           <CROSS_BUTTON />
         </div>
-
         <h3 className="createProfileText">
           {editMode === false ? "Adder" : "Update Adder"}
         </h3>
-
         <div className="modal-body">
           <div className="createProfileInputView">
             <div className="createProfileTextView">
@@ -121,23 +120,9 @@ const CreateAdder: React.FC<vadderProps> = ({
                 </div>
                 <div className=" rate-input-field">
                   <label className="inputLabel">Adder Type</label>
-                  <Select
+                  <SelectOption
                     options={adderTypeOption(newFormData)}
-                    isSearchable
-                    styles={{
-                      control: (baseStyles, state) => ({
-                        ...baseStyles,
-                        marginTop: "4.5px",
-                        borderRadius: "8px",
-                        outline: "none",
-                        height: "2.25rem",
-                        fontSize: "13px",
-                        border: "1px solid #d0d5dd",
-                      }),
-                      indicatorSeparator: () => ({
-                        display: "none", // Hide the indicator separator
-                      }),
-                    }}
+                   
                     onChange={(newValue) =>
                       handleChange(newValue, "adder_type")
                     }
@@ -161,29 +146,13 @@ const CreateAdder: React.FC<vadderProps> = ({
                 </div>
                 <div className=" rate-input-field">
                   <label className="inputLabel">Price Type</label>
-                  <Select
-                    options={priceTypeOption(newFormData) || priceTypeData}
-                    isSearchable
-                    styles={{
-                      control: (baseStyles, state) => ({
-                        ...baseStyles,
-                        marginTop: "4.5px",
-                        borderRadius: "8px",
-                        outline: "none",
-                        fontSize: "13px",
-                        height: "2.25rem",
-                        border: "1px solid #d0d5dd",
-                      }),
-                      indicatorSeparator: () => ({
-                        display: "none", // Hide the indicator separator
-                      }),
-                    }}
+                  <SelectOption
+                    options={priceTypeOption(newFormData)}
                     onChange={(newValue) =>
                       handleChange(newValue, "price_type")
                     }
                     value={
-                      priceTypeOption(newFormData) ||
-                      priceTypeData?.find(
+                      priceTypeOption(newFormData)?.find(
                         (option) => option.value === createAdderV.price_type
                       )
                     }

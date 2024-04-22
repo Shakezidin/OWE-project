@@ -1,16 +1,9 @@
-import React, { useEffect, useState } from "react";
-
+import React, { useState } from "react";
 import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cross_button.svg";
-
 import Input from "../../../components/text_input/Input";
-
-import DropdownButton from "../../../components/dropdown/DropdownButton";
 import { ActionButton } from "../../../components/button/ActionButton";
-import Select from "react-select";
 import { UserAdmin } from "../../../../core/models/UserManagement/UserAdmin";
 import { useDispatch } from "react-redux";
-import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
-import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
 import { updateUserForm } from "../../../../redux/apiSlice/userManagementSlice/createUserSlice";
 import {
   dealer,
@@ -20,6 +13,7 @@ import CheckBox from "../../../components/chekbox/CheckBox";
 import { ICONS } from "../../../icons/Icons";
 import SelectTable from "./SeletTable";
 import UserBasedInput from "./UserBasedInput";
+import SelectOption from "../../../components/selectOption/SelectOption";
 
 interface ButtonProps {
   editMode: boolean;
@@ -139,32 +133,14 @@ const UserOnboardingCreation: React.FC<ButtonProps> = ({
                 </div>
                 <div className="create-input-field">
                   <label className="inputLabel">Role</label>
-                  <Select
+                  <SelectOption
                     options={userSelectData}
-                    isSearchable
                     onChange={(newValue) => handleChange(newValue, "role_name")}
                     value={userSelectData?.find(
                       (option) =>
                         option?.value === createUserOnboarding.role_name
                     )}
-                    styles={{
-                      control: (baseStyles, state) => ({
-                        ...baseStyles,
-                        marginTop: "4.5px",
-                        borderRadius: "8px",
-                        outline: "none",
-                        height: "2.25rem",
-                        fontSize: "13px",
-                        border: "1px solid #d0d5dd",
-                      }),
-                      indicatorSeparator: () => ({
-                        display: "none", // Hide the indicator separator
-                      }),
-                      option: (baseStyles) => ({
-                        ...baseStyles,
-                        fontSize: "13px",
-                      }),
-                    }}
+                    
                   />
                 </div>
               </div>
@@ -192,9 +168,8 @@ const UserOnboardingCreation: React.FC<ButtonProps> = ({
                 {createUserOnboarding.role_name === "admin" || createUserOnboarding.role_name === "dealer_owner" ? null : (
                   <div className="create-input-field">
                     <label className="inputLabel">Dealer Owner</label>
-                    <Select
+                    <SelectOption
                       options={dealer}
-                      isSearchable
                       onChange={(newValue) =>
                         handleChange(newValue, "assigned_dealer_name")
                       }
@@ -203,24 +178,6 @@ const UserOnboardingCreation: React.FC<ButtonProps> = ({
                           option?.value ===
                           createUserOnboarding.assigned_dealer_name
                       )}
-                      styles={{
-                        control: (baseStyles, state) => ({
-                          ...baseStyles,
-                          marginTop: "4.5px",
-                          borderRadius: "8px",
-                          outline: "none",
-                          height: "2.25rem",
-                          fontSize: "13px",
-                          border: "1px solid #d0d5dd",
-                        }),
-                        indicatorSeparator: () => ({
-                          display: "none", // Hide the indicator separator
-                        }),
-                        option: (baseStyles) => ({
-                          ...baseStyles,
-                          fontSize: "13px",
-                        }),
-                      }}
                     />
                   </div>
                 )}

@@ -1,11 +1,12 @@
 // api.ts
 
-import axios from "axios";
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import {
   HTTP_METHOD,
   HTTP_STATUS,
 } from "../../../core/models/api_models/RequestModel";
 import { Credentials } from "../../../core/models/api_models/AuthModel";
+import { EndPoints } from '../api_client/EndPoints';
 
 const BASE_URL = `${process.env.REACT_APP_BASE_URL}`;
 // authService.ts
@@ -24,7 +25,7 @@ export const login = async (
 ): Promise<{ data: LoginResponse }> => {
   try {
     const response = await axios.post<{ data: LoginResponse }>(
-      `${BASE_URL}/login`,
+      `${BASE_URL}${EndPoints.login}`,
       credentials
     );
     if (response.status === HTTP_STATUS.OK) {
@@ -35,37 +36,21 @@ export const login = async (
     throw new Error("Login failed. Please check your credentials.");
   }
 };
-
-export const getCaller = async (endpoint: string) => {
-  const response = await fetch(`${BASE_URL}/${endpoint}`, {
-    method: HTTP_METHOD.GET,
+export const postCaller = async ( endpoint: string, postData: any): Promise<any> => {
+  const config: AxiosRequestConfig = {
     headers: {
       Authorization: `${localStorage.getItem("token")}`,
       "Content-Type": "application/json",
     },
-    mode: "cors",
-  });
-  const result = await response.json();
-  return result;
-};
-
-export const postCaller = async (endpoint: string, data: any) => {
+  };
   try {
-    const response = await fetch(`${BASE_URL}/${endpoint}`, {
-      method: HTTP_METHOD.POST,
-      headers: {
-        Authorization: `${localStorage.getItem("token")}`,
-        "Content-Type": "application/json",
-      },
-      // mode:"cors",
-      body: JSON.stringify(data),
-    });
-
-    return response.json();
+    const response: AxiosResponse = await axios.post(`${BASE_URL}/${endpoint}`, postData, config);
+    return response.data; // Return the data from the response
   } catch (error) {
-    console.log(error);
+    throw new Error('Failed to fetch data');
   }
 };
+
 
 export const putCaller = async (endpoint: string, data: any) => {
   const response = await fetch(`${BASE_URL}/${endpoint}`, {
