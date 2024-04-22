@@ -7,7 +7,11 @@ export interface UserAdmin {
         password:string,
         designation:string,
         assigned_dealer_name:string,
-        role_name:string
+        role_name:string,
+        add_region:string,
+        report_to:string,
+        team_name:string,
+        reporting_to:string,
     
     
     }
