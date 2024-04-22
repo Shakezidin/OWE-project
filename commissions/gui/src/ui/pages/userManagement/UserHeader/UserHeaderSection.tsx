@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "../../userManagement/user.css";
 import { ICONS } from "../../../icons/Icons";
 import Select from "react-select";
@@ -134,7 +134,7 @@ const UserHeaderSection = () => {
       </div>
       {selectedOption && renderComponent()}
 
-      <div className="page-heading-container">
+      <div className="user-page-heading-container">
         <p className="page-heading">
           {currentPage} - {totalPages} of {dataUser?.length} item
         </p>
