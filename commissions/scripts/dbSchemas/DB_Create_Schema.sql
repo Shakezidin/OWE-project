@@ -762,7 +762,7 @@ CREATE TABLE IF NOT EXISTS user_details(
     FOREIGN KEY (reporting_manager) REFERENCES user_details(user_id),
     FOREIGN KEY (dealer_owner) REFERENCES user_details(user_id),
     FOREIGN KEY (role_id) REFERENCES user_roles(role_id),
-    FOREIGN KEY (state REFERENCES states(state_id),
+    FOREIGN KEY (state) REFERENCES states(state_id),
     FOREIGN KEY (zipcode) REFERENCES zipcodes(id),
 	PRIMARY KEY (user_id)
 );

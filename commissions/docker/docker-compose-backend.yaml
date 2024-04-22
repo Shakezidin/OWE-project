@@ -17,12 +17,12 @@ services:
       owe_net:
         ipv4_address: 172.30.0.211
 
-###############Commissions#####################
-#  service-commissions:
- service-commissions:
+############### OWE HUB #####################
+#  service-owe-hub:
+ service-owe-hub:
    restart: always
-   image: commissions:v1
-   container_name: commissions_1
+   image: owe-hub:v1
+   container_name: owe_hub_1
    networks:
      owe_net:
        ipv4_address: 172.30.0.201

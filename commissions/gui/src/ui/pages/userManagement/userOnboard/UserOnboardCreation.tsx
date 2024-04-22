@@ -42,11 +42,10 @@ const UserOnboardingCreation: React.FC<ButtonProps> = ({
     designation: "Developer",
     assigned_dealer_name: "369 Solar",
     role_name: "admin",
-    add_region:"",
-  team_name:"",
-    report_to:"",
-    reporting_to:"",
-
+    add_region: "",
+    team_name: "",
+    report_to: "",
+    reporting_to: "",
   });
   // const [newFormData, setNewFormData] = useState<any>([])
   // const getNewFormData = async () => {
@@ -190,46 +189,46 @@ const UserOnboardingCreation: React.FC<ButtonProps> = ({
                     name={"mobile_number"}
                   />
                 </div>
-              {
-                createUserOnboarding.role_name==="admin"?null:  <div className="create-input-field">
-                <label className="inputLabel">Dealer Owner</label>
-                <Select
-                  options={dealer}
-                  isSearchable
-                  onChange={(newValue) =>
-                    handleChange(newValue, "assigned_dealer_name")
-                  }
-                  value={dealer?.find(
-                    (option) =>
-                      option?.value ===
-                      createUserOnboarding.assigned_dealer_name
-                  )}
-                  styles={{
-                    control: (baseStyles, state) => ({
-                      ...baseStyles,
-                      marginTop: "4.5px",
-                      borderRadius: "8px",
-                      outline: "none",
-                      height: "2.25rem",
-                      fontSize: "13px",
-                      border: "1px solid #d0d5dd",
-                    }),
-                    indicatorSeparator: () => ({
-                      display: "none", // Hide the indicator separator
-                    }),
-                    option: (baseStyles) => ({
-                      ...baseStyles,
-                      fontSize: "13px",
-                    }),
-                  }}
-                />
+                {createUserOnboarding.role_name === "admin" || createUserOnboarding.role_name === "dealer_owner" ? null : (
+                  <div className="create-input-field">
+                    <label className="inputLabel">Dealer Owner</label>
+                    <Select
+                      options={dealer}
+                      isSearchable
+                      onChange={(newValue) =>
+                        handleChange(newValue, "assigned_dealer_name")
+                      }
+                      value={dealer?.find(
+                        (option) =>
+                          option?.value ===
+                          createUserOnboarding.assigned_dealer_name
+                      )}
+                      styles={{
+                        control: (baseStyles, state) => ({
+                          ...baseStyles,
+                          marginTop: "4.5px",
+                          borderRadius: "8px",
+                          outline: "none",
+                          height: "2.25rem",
+                          fontSize: "13px",
+                          border: "1px solid #d0d5dd",
+                        }),
+                        indicatorSeparator: () => ({
+                          display: "none", // Hide the indicator separator
+                        }),
+                        option: (baseStyles) => ({
+                          ...baseStyles,
+                          fontSize: "13px",
+                        }),
+                      }}
+                    />
+                  </div>
+                )}
               </div>
-              }
-             
-              </div>
-             <UserBasedInput createUserOnboarding={createUserOnboarding}
-              onChange={(e:any) => handleInputChange(e)}
-             />
+              <UserBasedInput
+                createUserOnboarding={createUserOnboarding}
+                onChange={(e: any) => handleInputChange(e)}
+              />
               <div className="">
                 <div className="" style={{ display: "flex", gap: "0.5rem" }}>
                   <CheckBox

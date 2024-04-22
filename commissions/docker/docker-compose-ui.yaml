@@ -1,10 +1,10 @@
 version: '3.0'
 services:
 
-##############nwdaf-ui#####################
- service-commissions-ui:
+##############owe-hub-ui#####################
+ service-owe-hub-ui:
    restart: always
-   image: commissions-ui:v1
+   image: owe-hub-ui:v1
    networks:
      owe_net1:
        ipv4_address: 172.30.0.221
