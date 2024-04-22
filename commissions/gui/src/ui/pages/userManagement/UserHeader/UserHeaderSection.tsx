@@ -15,7 +15,7 @@ import "./UserHeader.css";
 import Pagination from "../../../components/pagination/Pagination";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
-import { dataUser } from "../../../../resources/static_data/StaticUserList";
+import { dataUser, appointmentList, partnerList, RMManagerList, dealerList, saleReprestList, SaleManagerList } from "../../../../resources/static_data/StaticUserList";
 
 // interface props {
 //   name: string;
@@ -33,22 +33,22 @@ const UserHeaderSection = () => {
     setSelectedOption(selectedOption ? selectedOption.value : "");
   };
 
-  const dispatch = useAppDispatch();
+  const despatch = useAppDispatch();
   const currentPage = useAppSelector(
     (state) => state.paginationType.currentPage
   );
   const itemsPerPage = 10;
 
   const paginate = (pageNumber: number) => {
-    dispatch(setCurrentPage(pageNumber));
+    despatch(setCurrentPage(pageNumber));
   };
 
   const goToNextPage = () => {
-    dispatch(setCurrentPage(currentPage + 1));
+    despatch(setCurrentPage(currentPage + 1));
   };
 
   const goToPrevPage = () => {
-    dispatch(setCurrentPage(currentPage - 1));
+    despatch(setCurrentPage(currentPage - 1));
   };
   const totalPages = Math.ceil(dataUser?.length / itemsPerPage);
 
@@ -63,17 +63,17 @@ const UserHeaderSection = () => {
       case "DB User":
         return <UserTable data={dataUser} />;
       case "Appointment Setter":
-        return <AppointmentSetterTable />;
+        return <AppointmentSetterTable data={appointmentList} />;
       case "Partner":
-        return <PartnerTable />;
+        return <PartnerTable data={partnerList} />;
       case "Regional Manager":
-        return <RegionalManagerTable />;
+        return <RegionalManagerTable data={RMManagerList} />;
       case "Dealer Owner":
-        return <DealerOwnerTable />;
+        return <DealerOwnerTable data={dealerList} />;
       case "Sales Representative":
-        return <SalesRepresentativeTable />;
+        return <SalesRepresentativeTable data={saleReprestList} />;
       case "Sales Manager":
-        return <SalesManagerTable />;
+        return <SalesManagerTable data={SaleManagerList} />;
       default:
         return null;
     }

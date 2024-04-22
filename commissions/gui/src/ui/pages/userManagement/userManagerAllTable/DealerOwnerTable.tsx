@@ -1,62 +1,14 @@
 import React from "react";
 import "../../userManagement/user.css";
 import { ICONS } from "../../../icons/Icons";
-import { CiEdit } from "react-icons/ci";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import "../../configure/configure.css";
 import { FaArrowDown } from "react-icons/fa6";
-import Pagination from "../../../components/pagination/Pagination";
-import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
-// import { installers, partners, respTypeData, statData } from "../../../../../core/models/data_models/SelectDataModel";
+interface DealerProps {
+  data: { [key: string]: any }[];
+}
 
-const dataUser = [
-  {
-    code: "header-content",
-    name: "Voltaic Power LLC",
-    email: "$hanery@gmail.com",
-    pn: "123456789",
-    des: "Implementing solar system commission",
-  },
-  {
-    code: "header-content",
-    name: "Voltaic Power LLC",
-    email: "$hanery@gmail.com",
-    pn: "123456789",
-    des: "Implementing solar system commission",
-  },
-  {
-    code: "header-content",
-    name: "Voltaic Power LLC",
-    email: "$hanery@gmail.com",
-    pn: "123456789",
-    des: "Implementing solar system commission",
-  },
-];
-
-const DealerOwnerTable: React.FC = () => {
-  const dispatch = useAppDispatch();
-  const currentPage = useAppSelector(
-    (state) => state.paginationType.currentPage
-  );
-  const itemsPerPage = 10;
-
-  const paginate = (pageNumber: number) => {
-    dispatch(setCurrentPage(pageNumber));
-  };
-
-  const goToNextPage = () => {
-    dispatch(setCurrentPage(currentPage + 1));
-  };
-
-  const goToPrevPage = () => {
-    dispatch(setCurrentPage(currentPage - 1));
-  };
-  const totalPages = Math.ceil(dataUser?.length / itemsPerPage);
-
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentPageData = dataUser?.slice(startIndex, endIndex);
+const DealerOwnerTable: React.FC<DealerProps> = ({ data }) => {
   return (
     <>
       {/* <UserHeaderSection  name="Dealer Owner"/> */}
@@ -113,8 +65,8 @@ const DealerOwnerTable: React.FC = () => {
           </thead>
 
           <tbody>
-            {dataUser.length > 0
-              ? dataUser.map((el, i) => (
+            {data.length > 0
+              ? data.map((el, i) => (
                   <tr key={i}>
                     <td>
                       <CheckBox
@@ -153,23 +105,6 @@ const DealerOwnerTable: React.FC = () => {
               : null}
           </tbody>
         </table>
-        <div className="page-heading-container">
-      
-      <p className="page-heading">
-       {currentPage} - {totalPages} of {dataUser?.length} item
-      </p>
- 
-   {
-    dataUser?.length > 0 ? <Pagination
-      currentPage={currentPage}
-      totalPages={totalPages} // You need to calculate total pages
-      paginate={paginate}
-      goToNextPage={goToNextPage}
-      goToPrevPage={goToPrevPage}
-      currentPageData={currentPageData}
-    /> : null
-  }
-   </div>
       </div>
     </>
   );

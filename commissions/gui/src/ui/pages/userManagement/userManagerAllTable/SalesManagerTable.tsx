@@ -1,67 +1,13 @@
 import React from "react";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import { ICONS } from "../../../icons/Icons";
-import { CiEdit } from "react-icons/ci";
 import { FaArrowDown } from "react-icons/fa6";
-import Pagination from "../../../components/pagination/Pagination";
-import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 
-const SalesManagerTable = () => {
-  const dataUser = [
-    {
-      code: "323223",
-      name: "Voltaic Power LLC",
-      role: "Regional Manager",
-      dealer: "Regional Manager",
-      reporting: "hanery",
-      email: "hanery@gmail.com",
-      pn: "123456789",
-      des: "Implementing solar system commission",
-    },
-    {
-      code: "323223",
-      name: "Voltaic Power LLC",
-      role: "Regional Manager",
-      dealer: "Regional Manager",
-      reporting: "hanery",
-      email: "hanery@gmail.com",
-      pn: "123456789",
-      des: "Implementing solar system commission",
-    },
-    {
-      code: "323223",
-      name: "Voltaic Power LLC",
-      role: "Regional Manager",
-      dealer: "Regional Manager",
-      reporting: "hanery",
-      email: "hanery@gmail.com",
-      pn: "123456789",
-      des: "Implementing solar system commission",
-    },
-  ];
-  const dispatch = useAppDispatch();
-  const currentPage = useAppSelector(
-    (state) => state.paginationType.currentPage
-  );
-  const itemsPerPage = 10;
+interface SaleManagerProps {
+  data: { [key: string]: any }[];
+}
 
-  const paginate = (pageNumber: number) => {
-    dispatch(setCurrentPage(pageNumber));
-  };
-
-  const goToNextPage = () => {
-    dispatch(setCurrentPage(currentPage + 1));
-  };
-
-  const goToPrevPage = () => {
-    dispatch(setCurrentPage(currentPage - 1));
-  };
-  const totalPages = Math.ceil(dataUser?.length / itemsPerPage);
-
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentPageData = dataUser?.slice(startIndex, endIndex);
+const SalesManagerTable: React.FC<SaleManagerProps> = ({ data }) => {
   return (
     <>
       {/* <UserHeaderSection  name="Sale Manager"/> */}
@@ -134,8 +80,8 @@ const SalesManagerTable = () => {
           </thead>
 
           <tbody>
-            {dataUser?.length > 0
-              ? dataUser?.map((el, i) => (
+            {data?.length > 0
+              ? data?.map((el, i) => (
                   <tr key={i}>
                     <td>
                       <CheckBox
@@ -175,30 +121,12 @@ const SalesManagerTable = () => {
                           <img src={ICONS.editIcon} alt="" />
                         </div>
                       </div>
-
                     </td>
                   </tr>
                 ))
               : null}
           </tbody>
         </table>
-        <div className="page-heading-container">
-          <p className="page-heading">
-            {currentPage} - {totalPages} of {dataUser?.length} item
-          </p>
-
-          {dataUser?.length > 0 ? (
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages} // You need to calculate total pages
-              paginate={paginate}
-              goToNextPage={goToNextPage}
-              goToPrevPage={goToPrevPage}
-              currentPageData={currentPageData}
-            />
-          ) : null}
-
-        </div>
       </div>
     </>
   );

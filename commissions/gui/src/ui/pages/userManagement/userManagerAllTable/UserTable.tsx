@@ -7,7 +7,7 @@ interface UserTableProps {
   data: { [key: string]: any }[];
 }
 const UserTable: React.FC<UserTableProps> = ({data}) => {
-  // const dataUser = [
+ 
   //   {
   //     code: "323223",
   //     name: "Voltaic Power LLC",
