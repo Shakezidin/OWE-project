@@ -152,7 +152,7 @@ func CallDBFunction(functionName string, parameters []interface{}) (outData []in
 		return nil, err
 	}
 	defer rows.Close()
-	
+
 	columns, err := rows.Columns()
 	if err != nil {
 		log.FuncErrorTrace(0, "CallDBFunction No columns found error = %v", err)

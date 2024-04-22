@@ -57,7 +57,8 @@ BEGIN
         dlr_mu,
         dlr_cost,
         start_date,
-        end_date
+        end_date,
+        is_archived
     )
     VALUES (
         v_dealer_tier_id,
@@ -68,7 +69,8 @@ BEGIN
         p_dlr_mu,
         p_dlr_cost,
         p_start_date,
-        p_end_date
+        p_end_date,
+        FALSE
     )
     RETURNING id INTO v_tier_loan_fee_id;
 

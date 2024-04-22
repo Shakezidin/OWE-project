@@ -7,35 +7,8 @@ interface UserTableProps {
   data: { [key: string]: any }[];
 }
 const UserTable: React.FC<UserTableProps> = ({data}) => {
- 
-  //   {
-  //     code: "323223",
-  //     name: "Voltaic Power LLC",
-  //     role: "Regional Manager",
-  //     reporting: "Hanery",
-  //     email: "hanery@gmail.com",
-  //     pn: "123456789",
-  //     des: "Implementing solar system commission",
-  //   },
-  //   {
-  //     code: "323223",
-  //     name: "Voltaic Power LLC",
-  //     role: "Regional Manager",
-  //     reporting: "Hanery",
-  //     email: "hanery@gmail.com",
-  //     pn: "123456789",
-  //     des: "Implementing solar system commission",
-  //   },
-  //   {
-  //     code: "323223",
-  //     name: "Voltaic Power LLC",
-  //     role: "Regional Manager",
-  //     reporting: "Hanery",
-  //     email: "hanery@gmail.com",
-  //     pn: "123456789",
-  //     des: "Implementing solar system commission",
-  //   },
-  // ];
+
+  console.log(data)
   return (
     <div
       className="UserManageTable"

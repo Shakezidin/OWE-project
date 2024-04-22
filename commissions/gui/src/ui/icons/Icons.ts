@@ -64,6 +64,11 @@ import progressIcon from '../../resources/assets/progressICon.svg'
 import percent from '../../resources/assets/ellipsePercentage.svg'
 import greenRect from   '../../resources/assets/greenRect.svg'
 import blueRect from '../../resources/assets/blueRect.svg' 
+import dealerpay from '../../resources/assets/dealer.svg'
+import dbmanager  from '../../resources/assets/dbmanager.svg'
+import projectrack from '../../resources/assets/projecttracking.svg'
+import comm from '../../resources/assets/80commision.svg'
+import repay from "../../resources/assets/repay.svg"
 export const ICONS = {
   BACKGROUND: require("../../resources/assets/background.png"),
   LOGO: require("../../resources/assets/logo.png"),
@@ -141,5 +146,10 @@ fiveRec:fiveRec,
 progressIcon:progressIcon,
 percent:percent,
 greenRect:greenRect,
-blueRect:blueRect
+blueRect:blueRect,
+dealerpayIcon:dealerpay,
+dbmanagerIcon:dbmanager,
+projectrackingIcon:projectrack,
+commission80:comm,
+repayIcon:repay,
 };

@@ -13,9 +13,11 @@ const DealerOwnerTable: React.FC<DealerProps> = ({ data }) => {
     <>
       {/* <UserHeaderSection  name="Dealer Owner"/> */}
       <div
+
         className="UserManageTable"
         style={{ overflowX: "auto", whiteSpace: "nowrap" }}
       >
+
         <table>
           <thead style={{ background: "#F5F5F5" }}>
             <tr>

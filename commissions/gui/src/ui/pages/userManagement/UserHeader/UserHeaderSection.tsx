@@ -30,7 +30,7 @@ const UserHeaderSection = () => {
   const handleSelectChange = (
     selectedOption: { value: string; label: string } | null
   ) => {
-    setSelectedOption(selectedOption ? selectedOption.value : "");
+    setSelectedOption(selectedOption ? selectedOption.label : "");
   };
 
   const despatch = useAppDispatch();
@@ -58,7 +58,7 @@ const UserHeaderSection = () => {
 
   const renderComponent = () => {
     switch (selectedOption) {
-      case "Admin User":
+      case "Admin":
         return <UserTable data={dataUser} />;
       case "DB User":
         return <UserTable data={dataUser} />;
@@ -70,7 +70,7 @@ const UserHeaderSection = () => {
         return <RegionalManagerTable data={RMManagerList} />;
       case "Dealer Owner":
         return <DealerOwnerTable data={dealerList} />;
-      case "Sales Representative":
+      case "Sales Representative Manager":
         return <SalesRepresentativeTable data={saleReprestList} />;
       case "Sales Manager":
         return <SalesManagerTable data={SaleManagerList} />;
@@ -78,6 +78,8 @@ const UserHeaderSection = () => {
         return null;
     }
   };
+
+  console.log('userSelectData',userSelectData)
   return (
     <>
       <div className="ManagerUser-container">
@@ -89,7 +91,7 @@ const UserHeaderSection = () => {
             <Select
               options={userSelectData}
               value={userSelectData.find(
-                (option) => option.value === selectedOption
+                (option) => option.label === selectedOption
               )}
               onChange={handleSelectChange}
               styles={{

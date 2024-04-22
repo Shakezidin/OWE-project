@@ -36,14 +36,16 @@ BEGIN
         state_id,
         days,
         start_date,
-        end_date
+        end_date,
+        is_archived
     )
     VALUES (
         p_type_m2m,
         v_state_id,
         v_days_int,
         p_start_date,
-        p_end_date
+        p_end_date,
+        FALSE
     )
     RETURNING id INTO v_timeline_sla_id;
 

@@ -43,7 +43,8 @@ BEGIN
         pay_src,
         start_date,
         end_date,
-        description
+        description,
+        is_archived
     )
     VALUES (
         v_marketing_fees_id,
@@ -54,7 +55,8 @@ BEGIN
         p_pay_src,
         p_start_date,
         p_end_date,
-        p_description
+        p_description,
+        FALSE
     )
     RETURNING id INTO v_marketing_fees_id;
 

@@ -4,6 +4,7 @@
 .header-width {
   width: calc(100% - 220px);
   flex-grow: 1;
+ 
   /* height: 100vh; */
   /* flex-grow: 1; */
 }
@@ -134,8 +135,8 @@
   /* color: #dbdbdb; */
 }
 .image-icon{
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
   /* padding: rem; */
   border-radius: .25rem;
   display: flex;

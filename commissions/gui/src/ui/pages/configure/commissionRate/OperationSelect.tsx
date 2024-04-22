@@ -17,7 +17,8 @@ const OperationSelect: React.FC<{
   return (
     <div className="">
       <Select
-         options={operations}
+        options={operations}
+       
          value={operations.find(el=>el.value===value)}
      
         onChange={(selectedOption: any) => {

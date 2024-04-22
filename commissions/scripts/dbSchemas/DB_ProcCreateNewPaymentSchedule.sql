@@ -87,7 +87,8 @@ BEGIN
         rep_draw_max,
         rep_pay,
         start_date,
-        end_date
+        end_date,
+        is_archived
     )
     VALUES (
         v_rep_id,
@@ -102,7 +103,8 @@ BEGIN
         p_rep_draw_max,
         p_rep_pay,
         p_start_date,
-        p_end_date
+        p_end_date,
+        FALSE
     )
     RETURNING id INTO v_schedule_id;
 

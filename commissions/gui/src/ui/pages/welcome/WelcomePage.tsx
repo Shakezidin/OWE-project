@@ -241,7 +241,8 @@ export const WelcomePage = () => {
                 <tbody>
                   <tr>
                     {data.map((item) => (
-                      
+
+
                       <td key={item.id}>
                         <div className="table-box">
                           <div className="welcomeRowTitle">{item.title}</div>

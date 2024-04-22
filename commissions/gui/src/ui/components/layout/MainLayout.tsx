@@ -18,7 +18,7 @@ const MainLayout= () => {
     <div className='main-container'>
     <div className="side-header">
         <Sidebar toggleOpen={toggleOpen} setToggleOpen={setToggleOpen} sidebarChange={sidebarChange} setSidebarChange={setSidebarChange}/>
-       <div className="header-width" >
+       <div className="header-width" style={{marginLeft: !toggleOpen ? "220px" : "50px"}}>
        <Header  toggleOpen={toggleOpen} setToggleOpen={setToggleOpen} sidebarChange={sidebarChange} setSidebarChange={setSidebarChange}/>
         <div className='children-container'>
        <Outlet/>

@@ -13,6 +13,7 @@ type Credentials struct {
 
 type LoginResp struct {
 	EmailId                  string `json:"email_id"`
+	UserName                 string `json:"user_name"`
 	RoleName                 string `json:"role_name"`
 	IsPasswordChangeRequired bool   `json:"is_password_change_required"`
 	AccessToken              string `json:"access_token"`

@@ -154,6 +154,13 @@ func HandleGetMarketingFeesDataRequest(resp http.ResponseWriter, req *http.Reque
 			Description = ""
 		}
 
+		// is_archived
+		IsArchived, ok := item["is_archived"].(bool)
+		if !ok || !IsArchived {
+			log.FuncErrorTrace(0, "Failed to get is_archived value for Record ID %v. Item: %+v\n", RecordId, item)
+			IsArchived = false
+		}
+
 		// Create a new GetMarketingFeesData object
 		marketingFeesData := models.GetMarketingFeesData{
 			RecordId:    RecordId,
@@ -188,10 +195,12 @@ func PrepareMarketingFeesFilters(tableName string, dataFilter models.DataRequest
 	defer func() { log.ExitFn(0, "PrepareMarketingFeesFilters", nil) }()
 
 	var filtersBuilder strings.Builder
+	whereAdded := false // Flag to track if WHERE clause has been added
 
 	// Check if there are filters
 	if len(dataFilter.Filters) > 0 {
 		filtersBuilder.WriteString(" WHERE ")
+		whereAdded = true // Set flag to true as WHERE clause is added
 
 		for i, filter := range dataFilter.Filters {
 			if i > 0 {
@@ -242,6 +251,23 @@ func PrepareMarketingFeesFilters(tableName string, dataFilter models.DataRequest
 				whereEleList = append(whereEleList, value)
 			}
 		}
+	}
+
+	// Handle the Archived field
+	if dataFilter.Archived {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+		}
+		filtersBuilder.WriteString("mf.is_archived = TRUE")
+	} else {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+		}
+		filtersBuilder.WriteString("mf.is_archived = FALSE")
 	}
 
 	// Add pagination logic

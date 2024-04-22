@@ -6,7 +6,6 @@ CREATE OR REPLACE FUNCTION create_new_commission(
     p_sale_price double precision,
     p_rep_type_name character varying,
     p_rl double precision,
-    p_is_archived BOOLEAN,
     p_rate double precision,
     p_start_date character varying,
     p_end_date character varying,
@@ -93,7 +92,7 @@ BEGIN
         p_sale_price,
         v_rep_type_id,
         p_rl,
-        p_is_archived,
+        FALSE,  -- Set is_archived to false
         p_rate,
         p_start_date,
         p_end_date

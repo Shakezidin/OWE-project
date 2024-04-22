@@ -1,5 +1,4 @@
 import React from "react";
-import "../../userManagement/user.css";
 import { ICONS } from "../../../icons/Icons";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import "../../configure/configure.css";
@@ -18,6 +17,7 @@ const AppointmentSetterTable: React.FC<AppointmentSetterProps> = ({data}) => {
         className="UserManageTable"
         style={{ overflowX: "auto", whiteSpace: "nowrap" }}
       >
+
         <table>
           <thead style={{ background: "#F5F5F5" }}>
             <tr>

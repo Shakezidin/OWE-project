@@ -13,12 +13,16 @@ BEGIN
         product_code, 
         active, 
         adder, 
-        description)
+        description,
+        is_archived
+    )
     VALUES (
         p_product_code,
         p_active,
         p_adder,
-        p_description)
+        p_description,
+        FALSE
+    )
 
     RETURNING id INTO loan_type_id;
 

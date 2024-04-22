@@ -9,11 +9,13 @@ BEGIN
     -- Insert a new v_adder into sale_type table
     INSERT INTO sale_type (
         type_name,
-        description
+        description,
+        is_archived
     )
     VALUES (
         p_type_name,
-        p_description
+        p_description,
+        FALSE
     )
     RETURNING id INTO sale_type_id;
 

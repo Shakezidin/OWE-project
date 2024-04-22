@@ -28,5 +28,5 @@ export const routes={
     dbDashRoutes:"/dbManager/dashboard",
     dataTableRoutes:"/dbManager/dataTable",
     userActivityRoutes:"/dbManager/userActivity",
-
+    webhookRoutes:"/dbManager/webhooks",
 }

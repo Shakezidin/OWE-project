@@ -42,7 +42,7 @@ const TimeLine = () => {
   const [editedTimeLineSla, setEditedTimeLineSla] = useState<TimeLineSlaModel | null>(null);
   const itemsPerPage = 10;
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
-  const [sortKey, setSortKey] =  useState("");
+  const [sortKey, setSortKey] = useState("");
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   useEffect(() => {
     const pageNumber = {
@@ -50,11 +50,11 @@ const TimeLine = () => {
       page_size: itemsPerPage,
     };
     dispatch(fetchTimeLineSla(pageNumber));
-  }, [dispatch,currentPage]);
+  }, [dispatch, currentPage]);
 
-  const filter = ()=>{
+  const filter = () => {
     setFilterOpen(true)
-   
+
   }
 
   const paginate = (pageNumber: number) => {
@@ -76,7 +76,7 @@ const TimeLine = () => {
 
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === timelinesla_list?.length;
-  const handleSort = (key:any) => {
+  const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
     } else {
@@ -86,7 +86,7 @@ const TimeLine = () => {
   };
 
   if (sortKey) {
-    currentPageData.sort((a:any, b:any) => {
+    currentPageData.sort((a: any, b: any) => {
       const aValue = a[sortKey];
       const bValue = b[sortKey];
       if (typeof aValue === 'string' && typeof bValue === 'string') {
@@ -105,7 +105,7 @@ const TimeLine = () => {
     handleOpen()
   };
 
-  const handleEditTimeLineSla = (timeLineSlaData:TimeLineSlaModel) => {
+  const handleEditTimeLineSla = (timeLineSlaData: TimeLineSlaModel) => {
     setEditMode(true);
     setEditedTimeLineSla(timeLineSlaData);
     handleOpen()
@@ -117,10 +117,10 @@ const TimeLine = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
- 
+
   return (
     <div className="comm">
-       <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Timeline SLA"/>
+      <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Timeline SLA" />
       <div className="commissionContainer">
         <TableHeader
           title="Time Line SLA"
@@ -134,117 +134,117 @@ const TimeLine = () => {
           onpressAddNew={() => handleTimeLineSla()}
         />
         {filterOPen && <FilterTimeLine handleClose={filterClose}
-         columns={TimeLineSlaColumns}
-         page_number = {1}
-         page_size = {5} />}
-        {open && <CreateTimeLine 
-        timeLineSlaData={editedTimeLineSla}
-        editMode={editMode}
-        handleClose={handleClose} />}
- <div
+          columns={TimeLineSlaColumns}
+          page_number={currentPage}
+          page_size={itemsPerPage} />}
+        {open && <CreateTimeLine
+          timeLineSlaData={editedTimeLineSla}
+          editMode={editMode}
+          handleClose={handleClose} />}
+        <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
         >
           <table>
-        
-           <thead >
+
+            <thead >
               <tr>
-               
+
                 {
-                TimeLineSlaColumns?.map((item,key)=>(
-                  <SortableHeader
-                  key={key}
-                  isCheckbox={item.isCheckbox}
-                  titleName={item.displayName}
-                  data={timelinesla_list}
-                  isAllRowsSelected={isAllRowsSelected}
-                  isAnyRowSelected={isAnyRowSelected}
-                  selectAllChecked={selectAllChecked}
-                  setSelectAllChecked={setSelectAllChecked}
-                  selectedRows={selectedRows}
-                  setSelectedRows={setSelectedRows}
-                  sortKey={item.name}
-                  sortDirection={sortKey === item.name ? sortDirection : undefined}
-                  onClick={() => handleSort(item.name)}
-                />
-                ))
-              }
+                  TimeLineSlaColumns?.map((item, key) => (
+                    <SortableHeader
+                      key={key}
+                      isCheckbox={item.isCheckbox}
+                      titleName={item.displayName}
+                      data={timelinesla_list}
+                      isAllRowsSelected={isAllRowsSelected}
+                      isAnyRowSelected={isAnyRowSelected}
+                      selectAllChecked={selectAllChecked}
+                      setSelectAllChecked={setSelectAllChecked}
+                      selectedRows={selectedRows}
+                      setSelectedRows={setSelectedRows}
+                      sortKey={item.name}
+                      sortDirection={sortKey === item.name ? sortDirection : undefined}
+                      onClick={() => handleSort(item.name)}
+                    />
+                  ))
+                }
                 <th>
                   <div className="action-header">
-                    <p>Action</p> 
+                    <p>Action</p>
                   </div>
                 </th>
               </tr>
             </thead>
-          <tbody >
+            <tbody >
               {currentPageData?.length > 0
                 ? currentPageData?.map((el: any, i: any) => (
                   <tr
                     key={i}
                     className={selectedRows.has(i) ? "selected" : ""}
                   >
-                  
+
                     <td style={{ fontWeight: "500", color: "black" }}>
-                  <div className="flex-check">
-                  <CheckBox
-                        checked={selectedRows.has(i)}
-                        onChange={() =>
-                          toggleRowSelection(
-                            i,
-                            selectedRows,
-                            setSelectedRows,
-                            setSelectAllChecked
-                          )
-                        }
-                      />
-                      {el.type_m2m}
-                  </div>
+                      <div className="flex-check">
+                        <CheckBox
+                          checked={selectedRows.has(i)}
+                          onChange={() =>
+                            toggleRowSelection(
+                              i,
+                              selectedRows,
+                              setSelectedRows,
+                              setSelectAllChecked
+                            )
+                          }
+                        />
+                        {el.type_m2m}
+                      </div>
                     </td>
                     <td>{el.state}</td>
                     <td>{el.days}</td>
                     <td>{el.start_date}</td>
                     <td>{el.end_date}</td>
                     <td
-                     
+
                     >
-                    <div className="action-icon">
-                  <div className="">
-                  <img src={ICONS.ARCHIVE} alt="" />
-                  </div>
-                     <div className="" onClick={()=>handleEditTimeLineSla(el)} style={{cursor:"pointer"}}>
-                     <img src={ICONS.editIcon} alt="" />
-                     </div>
-                    </div>
+                      <div className="action-icon">
+                        <div className="">
+                          <img src={ICONS.ARCHIVE} alt="" />
+                        </div>
+                        <div className="" onClick={() => handleEditTimeLineSla(el)} style={{ cursor: "pointer" }}>
+                          <img src={ICONS.editIcon} alt="" />
+                        </div>
+                      </div>
                     </td>
                   </tr>
                 ))
                 : null}
             </tbody>
-    
-          </table>
-          </div>
-          <div className="page-heading-container">
-      
-      <p className="page-heading">
-       {currentPage} - {totalPages} of {currentPageData?.length} item
-      </p>
- 
-   {
-    timelinesla_list?.length > 0 ? <Pagination
-      currentPage={currentPage}
-      totalPages={totalPages} // You need to calculate total pages
-      paginate={paginate}
-      currentPageData={currentPageData}
-      goToNextPage={goToNextPage}
-      goToPrevPage={goToPrevPage}
-    /> : null
-  }
-   </div>
 
+          </table>
         </div>
-      
+        <div className="page-heading-container">
+
+          <p className="page-heading">
+            {currentPage} - {totalPages} of {currentPageData?.length} item
+          </p>
+
+          {
+            timelinesla_list?.length > 0 ? <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages} // You need to calculate total pages
+              paginate={paginate}
+              currentPageData={currentPageData}
+              goToNextPage={goToNextPage}
+              goToPrevPage={goToPrevPage}
+            /> : null
+          }
+        </div>
+
       </div>
-  
+
+    </div>
+
   );
 };
 

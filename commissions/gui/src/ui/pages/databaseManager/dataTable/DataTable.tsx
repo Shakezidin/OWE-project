@@ -14,6 +14,7 @@ import DataTableHeader from "../../../components/tableHeader/DataTableHeader";
 import FilterDealer from "../../configure/dealerOverrides/FilterDealer";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import { toggleAllRows, toggleRowSelection } from "../../../components/chekbox/checkHelper";
+import FilterData from "./FilterData";
 
 
 
@@ -89,18 +90,27 @@ const DataTablle: React.FC = () => {
       col2: "Josh Morton",
       col3: "Josh Morton",
       col4: "Josh Morton",
+      col5: "$120,450",
+      col6: "$100,320",
+      col7: "$100,320"
     },
     {
       col1: "1234567890",
       col2: "Josh Morton",
       col3: "Josh Morton",
       col4: "Josh Morton",
+      col5: "$120,450",
+      col6: "$100,320",
+      col7: "$100,320"
     },
     {
       col1: "1234567890",
       col2: "Josh Morton",
       col3: "Josh Morton",
       col4: "Josh Morton",
+      col5: "$120,450",
+      col6: "$100,320",
+      col7: "$100,320"
     },
   ]
 
@@ -109,11 +119,14 @@ const DataTablle: React.FC = () => {
       <Breadcrumb head="Data" linkPara="Database Manager" linkparaSecond="Data" />
       <div className="commissionContainer">
         <DataTableHeader
-          title="Failed Webhooks"
+          title="Table Name"
           onPressFilter={() => filter()}
           onPressImport={() => { }}
         />
 
+             {filterOPen && <FilterData handleClose={filterClose}  
+            
+             />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
@@ -139,22 +152,37 @@ const DataTablle: React.FC = () => {
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Webhook ID</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Column 1</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Item ID</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Column 2</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Error</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Column 3</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Date & Time</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Column 4</p> <FaArrowDown style={{ color: "#667085" }} />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>Column 5</p> <FaArrowDown style={{ color: "#667085" }} />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>Column 6</p> <FaArrowDown style={{ color: "#667085" }} />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>Column 7</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
               </tr>
@@ -183,6 +211,9 @@ const DataTablle: React.FC = () => {
                     <td>{el.col2}</td>
                     <td>{el.col3}</td>
                     <td>{el.col4}</td>
+                    <td style={{color:"#0493CE"}}>{el.col5}</td>
+                    <td style={{color:"#0493CE"}}>{el.col6}</td>
+                   <td style={{color:"#0493CE"}}>{el.col7}</td>
                   </tr>
                 ))
                 : null}

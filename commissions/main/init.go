@@ -453,6 +453,114 @@ var apiRoutes = ApiRoutes{
 			types.RoleAdmin,
 		},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_commission_archive",
+		apiHandler.HandleUpdateCommissionArchiveRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_marketing_fees_archive",
+		apiHandler.HandleUpdateMarketingFeesArchiveRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_dealer_archive",
+		apiHandler.HandleUpdateDealerArchiveRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_vadders_archive",
+		apiHandler.HandleUpdateVAddersArchiveRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_saletype_archive",
+		apiHandler.HandleUpdateSaleTypeArchiveRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_tierloanfee_archive",
+		apiHandler.HandleUpdateTierLoanFeeArchiveRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_dealertier_archive",
+		apiHandler.HandleUpdateDealerTierArchiveRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_paymentschedule_archive",
+		apiHandler.HandleUpdatePaymentScheduleArchiveRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_timelinesla_archive",
+		apiHandler.HandleUpdateTimelineSlaArchiveRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_loantype_archive",
+		apiHandler.HandleUpdateLoanTypeArchiveRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/create_autoadder",
+		apiHandler.HandleCreateAutoAdderRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_autoadder",
+		apiHandler.HandleUpdateAutoAdderRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
 }
 
 /******************************************************************************
@@ -515,7 +623,7 @@ func init() {
 	}()
 
 	/* Initializing Logger package */
-	initLogger("COMM", "-", "-", log.FUNCTRL, "VM", "/var/log/owe/commissions.log", 100, 28, 3)
+	initLogger("COMM", "-", "-", log.FUNCTRL, "VM", "/var/log/owe/owehub.log", 100, 28, 3)
 
 	if !ValidateRequiredEnv() {
 		err = fmt.Errorf("missing required env variables")

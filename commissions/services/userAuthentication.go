@@ -17,7 +17,7 @@ import (
 )
 
 const (
-	logginSessionTimeMin = 60*8
+	logginSessionTimeMin = 60 * 8
 )
 
 type Claims struct {
@@ -32,19 +32,19 @@ type Claims struct {
  * INPUT:			credentials
  * RETURNS:    		emailId, roleName, passwordChangeRequired, err
  ******************************************************************************/
-func ValidateUser(cread models.Credentials) (emailId string, roleName string,
+func ValidateUser(cread models.Credentials) (emailId string, userName string, roleName string,
 	passwordChangeRequired bool, err error) {
 
 	data, err := GetUserInfo(cread.EmailId)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to reterieve user login details err: %v", err)
-		return emailId, roleName, passwordChangeRequired, err
+		return emailId, userName, roleName, passwordChangeRequired, err
 	}
 
 	if (data == nil) || (len(data) <= 0) {
 		err = fmt.Errorf("Empty User Info Reterived")
 		log.FuncErrorTrace(0, "%v", err)
-		return emailId, roleName, passwordChangeRequired, err
+		return emailId, userName, roleName, passwordChangeRequired, err
 	}
 
 	reterivedPassword := data[0]["password"].(string)
@@ -52,11 +52,12 @@ func ValidateUser(cread models.Credentials) (emailId string, roleName string,
 	if err != nil {
 		err = fmt.Errorf("Invalid password, did not matched with DB: ")
 		log.FuncErrorTrace(0, "%v", err)
-		return emailId, roleName, passwordChangeRequired, err
+		return emailId, userName, roleName, passwordChangeRequired, err
 	}
 
 	emailId = data[0]["email_id"].(string)
 	roleName = data[0]["role_name"].(string)
+	userName = data[0]["name"].(string)
 	if val, ok := data[0]["password_change_required"].(bool); ok {
 		passwordChangeRequired = val
 	} else {
@@ -64,7 +65,7 @@ func ValidateUser(cread models.Credentials) (emailId string, roleName string,
 		passwordChangeRequired = false
 	}
 
-	return emailId, roleName, passwordChangeRequired, err
+	return emailId, userName, roleName, passwordChangeRequired, err
 }
 
 /******************************************************************************
@@ -120,7 +121,7 @@ func GetUserInfo(emailId string) (data []map[string]interface{}, err error) {
 	defer func() { log.ExitFn(0, "GetUserInfo", err) }()
 
 	query := `
-		SELECT u.user_id, u.email_id, u.password, u.password_change_required, u.role_id, r.role_name
+		SELECT u.user_id, u.name, u.email_id, u.password, u.password_change_required, u.role_id, r.role_name
 		FROM user_details u
 		JOIN user_roles r ON u.role_id = r.role_id
 		`

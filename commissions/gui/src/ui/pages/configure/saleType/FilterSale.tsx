@@ -5,7 +5,7 @@ import { ActionButton } from "../../../components/button/ActionButton";
 
 import { useAppDispatch } from "../../../../redux/hooks";
 import { ICONS } from "../../../icons/Icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import OperationSelect from "../commissionRate/OperationSelect";
 import { fetchSalesType } from "../../../../redux/apiSlice/configSlice/config_get_slice/salesSlice";
 
@@ -34,64 +34,87 @@ interface ErrorState {
 // Filter component
 const FilterSale: React.FC<TableProps> = ({ handleClose, columns, page_number, page_size }) => {
   const dispatch = useAppDispatch();
-  const [filters, setFilters] = useState<FilterModel[]>([
-    { Column: "", Operation: "", Data: "" }
-  ]);
+  const [filters, setFilters] = useState<FilterModel[]>(() => {
+    const savedFilters = localStorage.getItem("filters");
+    return savedFilters ? JSON.parse(savedFilters) : [{ Column: "", Operation: "", Data: "" }];
+  });
   const [errors, setErrors] = useState<ErrorState>({});
   const options: Option[] = columns.map((column) => ({
     value: column.name,
-    label: column.displayName
+    label: column.displayName,
   }));
-
-
-
+  useEffect(() => {
+    localStorage.setItem("filters", JSON.stringify(filters));
+  }, [filters]);
   const handleAddRow = () => {
-    setFilters([...filters, { Column: '', Operation: '', Data: '' }]);
+    setFilters([...filters, { Column: "", Operation: "", Data: "" }]);
     setErrors({});
   };
 
   const handleRemoveRow = (index: number) => {
+    if (filters.length === 1) {
+      // Close the modal if only one row is present
+      handleClose();
+      return;
+    }
     const updatedFilters = [...filters];
     updatedFilters.splice(index, 1);
     setFilters(updatedFilters);
   };
 
-
-  const handleChange = (index: number, field: keyof FilterModel, value: any) => {
+  const handleChange = (
+    index: number,
+    field: keyof FilterModel,
+    value: any
+  ) => {
     const newRules = [...filters];
     newRules[index][field] = value;
-    newRules[index].Data = '';
+    newRules[index].Data = "";
     setFilters(newRules);
-
-
   };
   const handleDataChange = (index: number, value: string) => {
     const newFilters = [...filters];
     // Convert ".1" to "0.1" if the column is "rate" or "rate list"
-    if (newFilters[index].Column === 'chg_dlr' || newFilters[index].Column === 'pay_src') {
-      value = value.replace(/^(\.)(\d+)/, '0$1$2');
+    if (
+      newFilters[index].Column === "rate" ||
+      newFilters[index].Column === "rl"
+    ) {
+      value = value.replace(/^(\.)(\d+)/, "0$1$2");
     }
     newFilters[index].Data = value;
-    setFilters(newFilters)
-  }
+    setFilters(newFilters);
+  };
   const getInputType = (columnName: string) => {
-    if (columnName === 'rate' || columnName === 'rl') {
-      return 'number';
-    } else if (columnName === 'start_date' || columnName === 'end_date') {
-      return 'date';
+    if (columnName === "rate" || columnName === "rl") {
+      return "number";
+    } else if (columnName === "start_date" || columnName === "end_date") {
+      return "date";
     } else {
-      return 'text';
+      return "text";
     }
   };
-  const resetAllFilter=()=>{
-    setFilters([]);
-  }
+
+  const resetAllFilter = () => {
+    localStorage.removeItem("filters");
+    const resetFilters = filters.map(filter => ({
+      ...filter,
+      Column:"",
+      Operation: "",
+      Data:"" 
+    }));
+  
+    setFilters(resetFilters);
+    setErrors({});
+  };
 
   const applyFilter = async () => {
-
     setErrors({});
-    if (filters.some((filter) => !filter.Column || filter.Column === 'Select')) {
-      console.log("Column not selected or 'Select' chosen. Skipping validation and API call.");
+    if (
+      filters.some((filter) => !filter.Column || filter.Column === "Select")
+    ) {
+      console.log(
+        "Column not selected or 'Select' chosen. Skipping validation and API call."
+      );
       return;
     }
     // Perform validation
@@ -105,33 +128,32 @@ const FilterSale: React.FC<TableProps> = ({ handleClose, columns, page_number, p
         newErrors[`data${index}`] = `Please provide Data`;
       }
     });
-
-    // Update state with new errors
     setErrors(newErrors);
-
-    // If no errors, proceed with API call
     if (Object.keys(newErrors).length === 0) {
-      const formattedFilters = filters.map(filter => ({
+      const formattedFilters = filters.map((filter) => ({
         Column: filter.Column,
         Operation: filter.Operation,
         Data: filter.Data,
       }));
-      console.log(formattedFilters)
+      console.log(formattedFilters);
       const req = {
         page_number: page_number,
         page_size: page_size,
-        filters: formattedFilters
-      }
-      console.log(req)
-      // filters.forEach((filter, index) => {
-      //   alert(`Filter apply for ${filter?.Column?.toLocaleUpperCase()}`)
-      // });
-       handleClose()
+        filters: formattedFilters,
+      };
+      handleClose()
       dispatch(fetchSalesType(req));
+     
     }
-
-  }
-
+  };
+  const handleCloseModal = () => {
+      const req = {
+        page_number: page_number,
+        page_size: page_size,
+      };
+      dispatch(fetchSalesType(req));
+    handleClose();
+  };
   console.log(errors)
   return (
 
@@ -252,7 +274,7 @@ const FilterSale: React.FC<TableProps> = ({ handleClose, columns, page_number, p
           <ActionButton
             title={"Cancel"}
             type="reset"
-            onClick={handleClose}
+            onClick={handleCloseModal}
           />
           <ActionButton
             title={"reset"}

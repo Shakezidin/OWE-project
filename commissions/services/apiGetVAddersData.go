@@ -10,6 +10,7 @@ import (
 	"OWEApp/db"
 	log "OWEApp/logger"
 	models "OWEApp/models"
+	"strings"
 
 	"encoding/json"
 	"fmt"
@@ -125,6 +126,13 @@ func HandleGetVAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 			Description = ""
 		}
 
+		// is_archived
+		IsArchived, ok := item["is_archived"].(bool)
+		if !ok || !IsArchived {
+			log.FuncErrorTrace(0, "Failed to get is_archived value for Record ID %v. Item: %+v\n", RecordId, item)
+			IsArchived = false
+		}
+
 		// Create a new GetVAdderData object
 		vaddersData := models.GetVAdderData{
 			RecordId:    RecordId,
@@ -143,4 +151,102 @@ func HandleGetVAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 	// Send the response
 	log.FuncInfoTrace(0, "Number of v adders List fetched : %v list %+v", len(vaddersList.VAddersList), vaddersList)
 	FormAndSendHttpResp(resp, "v adders Data", http.StatusOK, vaddersList)
+}
+
+/******************************************************************************
+ * FUNCTION:		PrepareVAdderFilters
+ * DESCRIPTION:     handler for prepare filter
+ * INPUT:			resp, req
+ * RETURNS:    		void
+ ******************************************************************************/
+func PrepareVAdderFilters(tableName string, dataFilter models.DataRequestBody) (filters string, whereEleList []interface{}) {
+	log.EnterFn(0, "PrepareVAdderFilters")
+	defer func() { log.ExitFn(0, "PrepareVAdderFilters", nil) }()
+
+	var filtersBuilder strings.Builder
+	whereAdded := false // Flag to track if WHERE clause has been added
+
+	// Check if there are filters
+	if len(dataFilter.Filters) > 0 {
+		filtersBuilder.WriteString(" WHERE ")
+		whereAdded = true // Set flag to true as WHERE clause is added
+
+		for i, filter := range dataFilter.Filters {
+			if i > 0 {
+				filtersBuilder.WriteString(" AND ")
+			}
+
+			// Check if the column is a foreign key
+			column := filter.Column
+
+			// Determine the operator and value based on the filter operation
+			operator := GetFilterDBMappedOperator(filter.Operation)
+			value := filter.Data
+
+			// For "stw" and "edw" operations, modify the value with '%'
+			if filter.Operation == "stw" || filter.Operation == "edw" || filter.Operation == "cont" {
+				value = GetFilterModifiedValue(filter.Operation, filter.Data.(string))
+			}
+
+			// Build the filter condition using correct db column name
+			switch column {
+			case "state":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(st.name) %s LOWER($%d)", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "source":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(sr.name) %s LOWER($%d)", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "description":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(mf.description) %s LOWER($%d)", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "chg_dlr":
+				filtersBuilder.WriteString(fmt.Sprintf("mf.chg_dlr %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "pay_src":
+				filtersBuilder.WriteString(fmt.Sprintf("mf.pay_src %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "fee_rate":
+				filtersBuilder.WriteString(fmt.Sprintf("mf.fee_rate %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			default:
+				// For other columns, handle them accordingly
+				filtersBuilder.WriteString("LOWER(")
+				filtersBuilder.WriteString(column)
+				filtersBuilder.WriteString(") ")
+				filtersBuilder.WriteString(operator)
+				filtersBuilder.WriteString(" LOWER($")
+				filtersBuilder.WriteString(fmt.Sprintf("%d", len(whereEleList)+1))
+				filtersBuilder.WriteString(")")
+				whereEleList = append(whereEleList, value)
+			}
+		}
+	}
+
+	// Handle the Archived field
+	if dataFilter.Archived {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+		}
+		filtersBuilder.WriteString("vadd.is_archived = TRUE")
+	} else {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+		}
+		filtersBuilder.WriteString("vadd.is_archived = FALSE")
+	}
+
+	// Add pagination logic
+	if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+		offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
+		filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+	}
+
+	filters = filtersBuilder.String()
+
+	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
+	return filters, whereEleList
 }

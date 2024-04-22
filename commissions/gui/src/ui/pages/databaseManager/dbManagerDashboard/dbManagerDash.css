@@ -1,10 +1,10 @@
 .Db-manager-container {
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
   display: flex;
   justify-content: space-between;
 
   align-items: center;
-
+  gap: 15px;
 }
 .runner-section {
   width: 233px;
@@ -34,15 +34,19 @@
   width: 181px;
   height: 139px;
   margin-left: 1.5rem;
+  margin-right: 2rem;
   gap: 0px;
   border-radius: 12px;
   opacity: 0px;
   background: #0069a3;
+  display: inline-block;
 }
+
 .active-since-section button {
   width: 100px;
   height: 36px;
   margin-top: 30px;
+  margin-bottom: 9px;
   border-radius: 100px;
   opacity: 0px;
   border: none;
@@ -72,7 +76,7 @@
   border: 1px solid #d0d5dd;
 }
 .dash-section {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 600;
   line-height: 24px;
   text-align: left;
@@ -88,10 +92,11 @@
   justify-content: space-between;
   align-items: center;
 }
-.since-section p {
+.status-section p {
   font-size: 16px;
   font-weight: 600;
   line-height: 24px;
+  color: #263747;
 }
 .create-container {
   border: 1px solid #D0D5DD;
@@ -114,30 +119,45 @@
     text-align: left;
     
 }
-.dash-search-container {
+
+
+
+  .search-container-data {
     position: relative;
     display: inline-block;
   }
-.dash-serach-container input{
-  
-padding: 6px 16px 6px 16px;
-gap: 36px;
-border-radius: 8px;
-border: 1px solid #D0D5DD;
-opacity: 0px;
 
-}
-
-.dropdown-icon-dash {
-  margin-left: -110px;
-  position: absolute;
-  top: 50%;
-  right: 10px;
-  font-size: 2rem;
-  transform: translateY(-50%);
-  cursor: pointer;
-  color: gray;
+  .search-container-data input {
+    padding: 0.6rem;
+    border-radius: 8px;
+    border: 2px solid #d0d5dd;
   }
+
+  .search-container-data ::placeholder {
+      color: #101828;
+     font-size: 14px;
+     font-weight: 500;
+  }
+
+  .dropdown-icon {
+    position: absolute;
+    top: 5%;
+    right: 10px;
+    font-size: 2rem;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: gray;
+  }
+
+
+
+
+
+
+
+
+
+
 
   .container-graph{
     margin-top: 10px;
@@ -148,7 +168,7 @@ opacity: 0px;
   }
   
 
-  .Payroll-section {
+   .Payroll-section {
     display: flex;
     height: 36px;
     background-color: white;
@@ -157,11 +177,22 @@ opacity: 0px;
     align-items: center;
     border-radius: 8px;
     border: 1px solid #b6b5b5;
-    /* margin-left: 47px; */
+    z-index: 1; 
+  }
+  .Payroll-section1 {
+    display: flex;
+    height: 36px;
+    background-color: white;
+    padding: 0 6px 0 12px;
+    gap: 0.5rem;
+    align-items: center;
+    border-radius: 8px;
+    border: 1px solid #b6b5b5;
+    margin-left: 41px;
     /* Add z-index to ensure the dropdown appears above other elements */
     z-index: 1; /* You can adjust the value as needed */
   }
-  
+   
   .dash-select {
     position: relative;
     border: none;
@@ -169,13 +200,12 @@ opacity: 0px;
     padding: .3rem .7rem;
     font-size: 12px;
     cursor: pointer;
-    color: #02050a !important;
+    color: #000000 !important;
     font-weight: 500;
-    border-radius: .40rem;
-    /* Add a higher z-index to ensure the dropdown menu appears above other elements */
-    z-index: 2; /* You can adjust the value as needed */
+    border-radius: .25rem;
+    z-index: 2; 
+    line-height: 20px;
   }
-  
   .identity{
     display: flex;
     flex-direction: row;
