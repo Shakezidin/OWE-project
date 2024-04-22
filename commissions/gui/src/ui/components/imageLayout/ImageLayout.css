@@ -52,19 +52,18 @@
   margin-left: 4.6px;
   margin-right: 4px;
   margin-bottom: 3px;
-  text-align: center;
-  height: 45px;
-  align-items: center;
 }
 
 
 .bottamTextView div span {
   color: #fff;
-  font-family: Poppins;
+  /* font-family: Poppins; */
+  font-weight: 300;
   font-size: 18px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 32px;
+  height: 5vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .centerTextView {
@@ -77,15 +76,15 @@
   border-radius: 0px 0px 16px 16px;
   background: rgba(0, 0, 0, 0.63);
   margin-bottom: 5.8px;
-  text-align: center;
 }
 
 .centerTextView div span {
   color: #fff;
-  text-align: center;
+  font-weight: 300;
   font-family: Poppins;
   font-size: 18px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 32px; /* 177.778% */
+  height: 5vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

@@ -1,5 +1,5 @@
 import React from "react";
-import Input from "../../components/text_input/Input";
+import Input from "../../../components/text_input/Input";
 
 interface inputSelectProps {
   onChange: any;

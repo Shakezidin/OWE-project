@@ -60,9 +60,9 @@ li {
   list-style: none;
 }
 /* image icon srtyle  */
-img{
+/* img{
   cursor: pointer;
-}
+} */
 .icon-image {
   width: 20x !important;
   height: 20px !important;
