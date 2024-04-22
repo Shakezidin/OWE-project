@@ -52,7 +52,7 @@ const UserHeaderSection: React.FC = () => {
     <>
       <div className="ManagerUser-container">
         <div className="admin-user">
-          <p>{selectedOption}</p>
+          <p>{selectedOption?.toUpperCase()}</p>
         </div>
         <div className="delete-icon-container">
           <div className="create-input-field">
