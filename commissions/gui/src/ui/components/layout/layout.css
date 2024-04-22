@@ -4,6 +4,7 @@
 .header-width {
   width: calc(100% - 220px);
   flex-grow: 1;
+ 
   /* height: 100vh; */
   /* flex-grow: 1; */
 }
