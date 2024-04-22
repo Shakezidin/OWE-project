@@ -63,14 +63,14 @@ export const paySaleTypeData = [
   { value: "BATTERY", label: 'BATTERY' },
 ]
 export const userSelectData = [
-  { value: "Admin User", label: 'Admin User' },
-  { value: "DB User", label: 'DB User' },
-  { value: "Appointment Setter", label: 'Appointment Setter' },
+  { value: "admin", label: 'Admin' },
+  { value: "db_user", label: 'DB User' },
+  { value: "ap_setter", label: 'Appointment Setter' },
   { value: "Partner", label: 'Partner' },
-  { value: "Regional Manager", label: 'Regional Manager' },
-  { value: "Dealer Owner", label: 'Dealer Owner' },
-  { value: "Sales Representative", label: 'Sales Representative' },
-  { value: "Sales Manager", label: 'Sales Manager' },
+  { value: "rm", label: 'Regional Manager' },
+  { value: "dealer_owner", label: 'Dealer Owner' },
+  { value: "sales_rep_m", label: 'Sales Representative Manager' },
+  { value: "sales_m", label: 'Sales Manager' },
 ]
 
 export const payRollData = [
