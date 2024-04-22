@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../../userManagement/user.css";
 import { ICONS } from "../../../icons/Icons";
 import Select from "react-select";
@@ -12,10 +12,17 @@ import SalesRepresentativeTable from "../userManagerAllTable/SalesRepresentative
 import DealerOwnerTable from "../userManagerAllTable/DealerOwnerTable";
 import RegionalManagerTable from "../userManagerAllTable/RegionalManagerTable";
 import "./UserHeader.css";
+import Pagination from "../../../components/pagination/Pagination";
+import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
+import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
+import { dataUser } from "../../../../resources/static_data/StaticUserList";
+
 // interface props {
 //   name: string;
 // }
-const UserHeaderSection: React.FC = () => {
+const UserHeaderSection = () => {
+
+
   const [selectedOption, setSelectedOption] = useState<string>(
     userSelectData[0].label
   );
@@ -26,12 +33,35 @@ const UserHeaderSection: React.FC = () => {
     setSelectedOption(selectedOption ? selectedOption.value : "");
   };
 
+  const dispatch = useAppDispatch();
+  const currentPage = useAppSelector(
+    (state) => state.paginationType.currentPage
+  );
+  const itemsPerPage = 10;
+
+  const paginate = (pageNumber: number) => {
+    dispatch(setCurrentPage(pageNumber));
+  };
+
+  const goToNextPage = () => {
+    dispatch(setCurrentPage(currentPage + 1));
+  };
+
+  const goToPrevPage = () => {
+    dispatch(setCurrentPage(currentPage - 1));
+  };
+  const totalPages = Math.ceil(dataUser?.length / itemsPerPage);
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentPageData = dataUser?.slice(startIndex, endIndex);
+
   const renderComponent = () => {
     switch (selectedOption) {
       case "Admin User":
-        return <UserTable />;
+        return <UserTable data={dataUser} />;
       case "DB User":
-        return <UserTable />;
+        return <UserTable data={dataUser} />;
       case "Appointment Setter":
         return <AppointmentSetterTable />;
       case "Partner":
@@ -103,6 +133,23 @@ const UserHeaderSection: React.FC = () => {
         </div>
       </div>
       {selectedOption && renderComponent()}
+
+      <div className="page-heading-container">
+        <p className="page-heading">
+          {currentPage} - {totalPages} of {dataUser?.length} item
+        </p>
+
+        {dataUser?.length > 0 ? (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages} // You need to calculate total pages
+            paginate={paginate}
+            goToNextPage={goToNextPage}
+            currentPageData={currentPageData}
+            goToPrevPage={goToPrevPage}
+          />
+        ) : null}
+      </div>
     </>
   );
 };
