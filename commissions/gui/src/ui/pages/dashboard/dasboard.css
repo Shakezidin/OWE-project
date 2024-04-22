@@ -7,6 +7,7 @@
   justify-content: space-between;
   align-items: center;
   gap: 2rem;
+  padding: 10px 0;
 }
 .Dashboard-wel h6 {
   font-size: 12px;
@@ -79,7 +80,7 @@
   /* width: 240px; */
   height: 36px;
   background-color: white;
-  padding: 0 3px 0 12px;
+  padding: 0 6px 0 12px;
   gap: 0.5rem;
   align-items: center;
   border-radius: 8px;

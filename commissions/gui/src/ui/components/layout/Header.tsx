@@ -33,6 +33,7 @@ const Header: React.FC<Toggleprops> = ({
   const [openIcon, setOPenIcon] = useState<boolean>(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [scrolled, setScrolled] = useState(false);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -44,8 +45,22 @@ const Header: React.FC<Toggleprops> = ({
       setName(firstLetter);
     }
   }, [userName]);
+  useEffect(() => {
+    const handleScroll = () => {
+        const isScrolled = window.scrollY > 0;
+        if (isScrolled !== scrolled) {
+            setScrolled(isScrolled);
+        }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    
+    return () => {
+        window.removeEventListener('scroll', handleScroll);
+    };
+}, [scrolled]);
   return (
-    <div className="header-content">
+    <div className={`${scrolled ? 'header-scrolled' : ''} header-content`}>
       <div className="header-icon">
         <div
           className="header-logo"
