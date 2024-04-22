@@ -7,7 +7,7 @@ GOBUILD=go build -gcflags "-N -l" -v
 
 # Exporting service specific variables
 #GOGETFILES=golang.org/x/oauth2 golang.org/x/net github.com/gorilla/mux github.com/antihax
-APP_NAME=commissions.bin
+APP_NAME=owehub.bin
 APP_DIR=main
 
 SERVICE_PATH=${PWD}/../
@@ -42,20 +42,20 @@ clean: ## Remove previous build
 	
 
 docker: ## Create Docker Image
-	@echo "Building commissions Docker Image $SERVICE_ROOT"
+	@echo "Building owehub Docker Image $SERVICE_ROOT"
 		cd $(SERVICE_ROOT)/ || exit 1 ; \
-		docker build -f docker/Dockerfile-Owe-App -t commissions:v1 .; 
+		docker build -f docker/Dockerfile-Owe-App -t owe-hub:v1 .; 
 		
 dockerpush: ## Create Docker Image
-	@echo "Build and push commissions Docker Image"
+	@echo "Build and push owe-hub Docker Image"
 	@echo "Registry Name $(DOCKER_REGISTRY)"
 		cd $(SERVICE_PATH)/ || exit 1 ; \
-		docker build -f docker/Dockerfile-Owe-App -t commissions:v1 .; \
-        docker push commissions:v1 ; 
+		docker build -f docker/Dockerfile-Owe-App -t owe-hub:v1 .; \
+        docker push owe-hub:v1 ; 
 
 dockerpushclean: ## Create Docker Image
-	@echo "Clean commissions docker Images From Registry.."
-	echo "Removing Image commissions:v1" ; \
+	@echo "Clean owe-hub docker Images From Registry.."
+	echo "Removing Image owe-hub:v1" ; \
 	cd $(SERVICE_PATH)/ ; \
-	docker rmi commissions:v1 ; 
+	docker rmi owe-hub:v1 ; 
 

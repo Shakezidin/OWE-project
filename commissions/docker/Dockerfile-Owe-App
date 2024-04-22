@@ -47,6 +47,6 @@ ADD bin /app/bin
 ADD json /app/bin/json
 WORKDIR /app/bin/
 RUN cd /app/bin/
-RUN chmod +x /app/bin/commissions.bin
-CMD ./commissions.bin
+RUN chmod +x /app/bin/owehub.bin
+CMD ./owehub.bin
 

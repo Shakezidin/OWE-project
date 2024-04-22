@@ -623,7 +623,7 @@ func init() {
 	}()
 
 	/* Initializing Logger package */
-	initLogger("COMM", "-", "-", log.FUNCTRL, "VM", "/var/log/owe/commissions.log", 100, 28, 3)
+	initLogger("COMM", "-", "-", log.FUNCTRL, "VM", "/var/log/owe/owehub.log", 100, 28, 3)
 
 	if !ValidateRequiredEnv() {
 		err = fmt.Errorf("missing required env variables")
