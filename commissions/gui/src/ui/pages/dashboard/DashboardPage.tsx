@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./dasboard.css";
-
 import Select from "react-select";
-
 import DashboardTotal from "./DashboardTotal";
 import { ICONS } from "../../icons/Icons";
 import Breadcrumb from "../../components/breadcrumb/Breadcrumb";
@@ -28,7 +26,6 @@ export const DashboardPage: React.FC = () => {
         <div className="Dashboard-container">
           <div className="Dashboard-wel">
             <h3>Dashboard</h3>
-
             {/* <Breadcrumb
               head="Dashboard"
               linkPara="Commission"
@@ -38,15 +35,46 @@ export const DashboardPage: React.FC = () => {
           <div className="dashboard-payroll">
             <div className="Payroll-section">
               <label className="inputLabel" style={{ color: "#344054" }}>
+                Comission Rate
+              </label>
+              <Select
+                options={payRollData}
+                value={payRollData.find(
+                  (option) => option.value === selectedOption
+                )}
+                onChange={handleSelectChange}
+                styles={{
+                  control: (baseStyles, state) => ({
+                    ...baseStyles,
+                    fontSize: "13px",
+                    fontWeight: "500",
+                    borderRadius: ".40rem",
+                    border: "none",
+                    outline: "none",
+                    width: "6rem",
+                    minHeight: "unset",
+                    height: "30px",
+                    alignContent: "center",
+                    backgroundColor: "#ECECEC",
+                  }),
+                  indicatorSeparator: () => ({
+                    display: "none",
+                  }),
+                  option: (baseStyles) => ({
+                    ...baseStyles,
+                    fontSize: "13px",
+                  }),
+                  menu: (baseStyles) => ({
+                    ...baseStyles,
+                    width: "6rem",
+                  }),
+                }}
+              />
+            </div>
+            <div className="Payroll-section">
+              <label className="inputLabel" style={{ color: "#344054" }}>
                 Payroll Date
               </label>
-              {/* <select name="" id="" className="dash-select">
-                <option value="">01/02/2024</option>
-                <option value="">23/02/2024</option>
-                <option value="">12/03/2024</option>
-                <option value="">07/04/2024</option>
-                <option value="">24/04/2024</option>
-              </select> */}
               <Select
                 options={payRollData}
                 value={payRollData.find(
