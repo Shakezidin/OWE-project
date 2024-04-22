@@ -19,7 +19,7 @@ import {
 import CheckBox from "../../../components/chekbox/CheckBox";
 import { ICONS } from "../../../icons/Icons";
 import SelectTable from "./SeletTable";
-import UserBasedInput from "../UserBasedInput";
+import UserBasedInput from "./UserBasedInput";
 
 interface ButtonProps {
   editMode: boolean;
