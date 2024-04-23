@@ -56,41 +56,133 @@ func HandleUpdateAutoAdderRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// if (len(updateAutoAdderReq.Partner) <= 0) || (len(updateAutoAdderReq.Installer) <= 0) ||
-	// 	(len(updateAutoAdderReq.State) <= 0) || (len(updateAutoAdderReq.SaleType) <= 0) ||
-	// 	(len(updateAutoAdderReq.RepType) <= 0) || (len(updateAutoAdderReq.StartDate) <= 0) ||
-	// 	(len(updateAutoAdderReq.EndDate) <= 0) {
-	// 	err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
-	// 	log.FuncErrorTrace(0, "%v", err)
-	// 	FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed, Update failed", http.StatusBadRequest, nil)
-	// 	return
-	// }
+	if (len(updateAutoAdderReq.UniqueID) <= 0) || (len(updateAutoAdderReq.TypeAAMktg) <= 0) ||
+		(len(updateAutoAdderReq.GC) <= 0) || (len(updateAutoAdderReq.ExactAmount) <= 0) ||
+		(len(updateAutoAdderReq.DescriptionRepVisible) <= 0) || (len(updateAutoAdderReq.NotesNotRepVisible) <= 0) ||
+		(len(updateAutoAdderReq.Type) <= 0) || (len(updateAutoAdderReq.Rep1DefResp) <= 0) ||
+		(len(updateAutoAdderReq.R1AddrResp) <= 0) || (len(updateAutoAdderReq.Rep2DefResp) <= 0) ||
+		(len(updateAutoAdderReq.R2AddrResp) <= 0) || (len(updateAutoAdderReq.StartDate) <= 0) ||
+		(len(updateAutoAdderReq.EndDate) <= 0) {
+		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
 
-	// if updateAutoAdderReq.RecordId <= int64(0) {
-	// 	err = fmt.Errorf("Invalid Record Id, unable to proceed")
-	// 	log.FuncErrorTrace(0, "%v", err)
-	// 	FormAndSendHttpResp(resp, "Invalid Record Id, Update failed", http.StatusBadRequest, nil)
-	// 	return
-	// }
-	// if updateAutoAdderReq.SalePrice <= float64(0) {
-	// 	err = fmt.Errorf("Invalid Sale price Not Allowed")
-	// 	log.FuncErrorTrace(0, "%v", err)
-	// 	FormAndSendHttpResp(resp, "Invalid Sale price, Update failed", http.StatusBadRequest, nil)
-	// 	return
-	// }
-	// if updateAutoAdderReq.RL <= float64(0) {
-	// 	err = fmt.Errorf("Invalid Rate list Not Allowed")
-	// 	log.FuncErrorTrace(0, "%v", err)
-	// 	FormAndSendHttpResp(resp, "Invalid Rate list, Update failed", http.StatusBadRequest, nil)
-	// 	return
-	// }
-	// if updateAutoAdderReq.Rate <= float64(0) {
-	// 	err = fmt.Errorf("Invalid Rate Not Allowed")
-	// 	log.FuncErrorTrace(0, "%v", err)
-	// 	FormAndSendHttpResp(resp, "Invalid Rate, Update failed", http.StatusBadRequest, nil)
-	// 	return
-	// }
-
+	if updateAutoAdderReq.PerKWAmount <= float64(0) {
+		err = fmt.Errorf("Invalid perkwamount price Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Perkwamount price Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if updateAutoAdderReq.RepDollDivbyPer <= float64(0) {
+		err = fmt.Errorf("Invalid Repdolldivbyper list Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Repdolldivbyper list Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if updateAutoAdderReq.SysSize <= float64(0) {
+		err = fmt.Errorf("Invalid Syssize Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Syssize Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if updateAutoAdderReq.RepCount <= float64(0) {
+		err = fmt.Errorf("Invalid Repcount Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Repcount Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if updateAutoAdderReq.PerRepAddrShare <= float64(0) {
+		err = fmt.Errorf("Invalid Perrepaddrshare Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Perrepaddrshare Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if updateAutoAdderReq.PerRepOvrdShare <= float64(0) {
+		err = fmt.Errorf("Invalid Perrepovrdshare Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Perrepovrdshare Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if updateAutoAdderReq.R1PayScale <= float64(0) {
+		err = fmt.Errorf("Invalid R1payscale Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid R1payscale Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if updateAutoAdderReq.R2PayScale <= float64(0) {
+		err = fmt.Errorf("Invalid R2payscale Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid R2payscale Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if updateAutoAdderReq.ContractAmount <= float64(0) {
+		err = fmt.Errorf("Invalid Contractamount Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Contractamount Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if updateAutoAdderReq.ProjectBaseCost <= float64(0) {
+		err = fmt.Errorf("Invalid Projectbasecost Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Projectbasecost Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if updateAutoAdderReq.CrtAddr <= float64(0) {
+		err = fmt.Errorf("Invalid Crtaddr Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Crtaddr Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if updateAutoAdderReq.R1LoanFee <= float64(0) {
+		err = fmt.Errorf("Invalid R1loanfee Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid R1loanfee Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if updateAutoAdderReq.R1Rebate <= float64(0) {
+		err = fmt.Errorf("Invalid R1rebate Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid R1rebate Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if updateAutoAdderReq.R1Referral <= float64(0) {
+		err = fmt.Errorf("Invalid R1referral Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid R1referral Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if updateAutoAdderReq.R1RPlusR <= float64(0) {
+		err = fmt.Errorf("Invalid R1RPlusR Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid R1RPlusR Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if updateAutoAdderReq.TotalComm <= float64(0) {
+		err = fmt.Errorf("Invalid Totalcomm Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Totalcomm Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if updateAutoAdderReq.Rep1 <= 0 {
+		err = fmt.Errorf("Invalid Rep1 Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Rep1 Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if updateAutoAdderReq.Rep2 <= 0 {
+		err = fmt.Errorf("Invalid Rep2 Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Rep2 Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if updateAutoAdderReq.StateID <= 0 {
+		err = fmt.Errorf("Invalid StateId Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid StateId Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, updateAutoAdderReq.RecordId)
 	queryParameters = append(queryParameters, updateAutoAdderReq.UniqueID)

@@ -1602,13 +1602,13 @@ CREATE TABLE
 /* Default Admin Password is 1234 for Development purpose */
 -- Insert default role 'Admin' into user_roles table
 INSERT INTO user_roles (role_name) VALUES ('Admin');
-INSERT INTO user_roles (role_name) VALUES ('DealerOwner');
-INSERT INTO user_roles (role_name) VALUES ('SubDealerOwner');
+INSERT INTO user_roles (role_name) VALUES ('Dealer Owner');
+INSERT INTO user_roles (role_name) VALUES ('SubDealer Owner');
 INSERT INTO user_roles (role_name) VALUES ('Partner');
-INSERT INTO user_roles (role_name) VALUES ('RegionalManager');
-INSERT INTO user_roles (role_name) VALUES ('SalesManager');
-INSERT INTO user_roles (role_name) VALUES ('SaleRepresentative');
-INSERT INTO user_roles (role_name) VALUES ('AppointmentSetter');
+INSERT INTO user_roles (role_name) VALUES ('Regional Manager');
+INSERT INTO user_roles (role_name) VALUES ('Sales Manager');
+INSERT INTO user_roles (role_name) VALUES ('Sale Representative');
+INSERT INTO user_roles (role_name) VALUES ('Appointment Setter');
 INSERT INTO user_details (name, user_code, mobile_number, email_id, password, password_change_required, reporting_manager, role_id, user_status, user_designation, description) VALUES ('Shushank Sharma', 'OWE001', '0987654321', 'shushank22@gmail.com', '$2a$10$5DPnnf5GqDE1dI8L/fM79OsY7XjzmLbw3rkSVONPz.92CqHUkXYHC', false, NULL, 1, 'Active', 'CTO', 'Chief Technical Officer');
 INSERT INTO user_details (name, user_code, mobile_number, email_id, password, password_change_required, reporting_manager, role_id, user_status, user_designation, description) VALUES ('Jaitunjai Singh', 'OWE002', '0987654322', 'Jai22@gmail.com', '$2a$10$5DPnnf5GqDE1dI8L/fM79OsY7XjzmLbw3rkSVONPz.92CqHUkXYHC', false, 1, 1, 'Active', 'Software Engineer', 'SE');
 INSERT INTO user_details (name, user_code, mobile_number, email_id, password, password_change_required, reporting_manager, role_id, user_status, user_designation, description) VALUES ('M Asif', 'OWE003', '0987654323', 'asif22@gmail.com', '$2a$10$5DPnnf5GqDE1dI8L/fM79OsY7XjzmLbw3rkSVONPz.92CqHUkXYHC', false, 2, 1, 'Active', 'CEO', 'Chief Exec Officer');
@@ -1675,4 +1675,4 @@ INSERT INTO loan_type (product_code,active,adder,description) VALUES ('P123',1,1
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdatePaymentScheduleArchive.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateTimelineSlaArchive.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateLoanTypeArchive.sql';
-
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateUser.sql'

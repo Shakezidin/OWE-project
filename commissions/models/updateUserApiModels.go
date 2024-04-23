@@ -1,12 +1,13 @@
 /**************************************************************************
- *	Function	: getUsersDetailsApiModels.go
- *	DESCRIPTION : Files contains struct for get users detail models
+ *	Function	: createUserApiModels.go
+ *	DESCRIPTION : Files contains struct for create user API
  *	DATE        : 20-Jan-2024
  **************************************************************************/
 
 package models
 
-type GetUsersData struct {
+type UpdateUserReq struct {
+	RecordId          int64  `json:"record_id"`
 	Name              string `json:"name"`
 	UserCode          string `json:"user_code"`
 	EmailId           string `json:"email_id"`
@@ -23,8 +24,4 @@ type GetUsersData struct {
 	City              string `json:"city"`
 	Zipcode           string `json:"zipcode"`
 	Country           string `json:"country"`
-}
-
-type GetUsersDataList struct {
-	UsersDataList []GetUsersData `json:"users_data_list"`
 }

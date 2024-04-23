@@ -60,6 +60,7 @@ const (
 	UpdateLoanTypeFunction               string = "update_loan_type"
 	UpdateLoanTypeArchiveFunction        string = "update_loan_type_archive"
 	UpdateAutoAdderFunction              string = "update_auto_adder"
+	UpdateUserFunction                   string = "update_user"
 	TableName_teams                      string = "teams"
 	TableName_commission_rates           string = "commission_rates"
 	TableName_users_details              string = "user_details"
@@ -77,6 +78,8 @@ const (
 	TableName_source                     string = "source"
 	TableName_adder_type                 string = "adder_type"
 	TableName_tier                       string = "tier"
+	TableName_auto_adder                 string = "auto_adder"
+	TableName_user_roles                 string = "user_roles"
 )
 
 /******************************************************************************

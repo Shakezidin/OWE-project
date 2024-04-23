@@ -1,6 +1,7 @@
 package models
 
-type CreateAutoAdder struct {
+type GetAutoAdderData struct {
+	RecordId              int64   `json:"record_id"`
 	UniqueID              string  `json:"unique_id"`
 	TypeAAMktg            string  `json:"type_aa_mktg"`
 	GC                    string  `json:"gc"`
@@ -10,8 +11,8 @@ type CreateAutoAdder struct {
 	DescriptionRepVisible string  `json:"description_rep_visible"`
 	NotesNotRepVisible    string  `json:"notes_not_rep_visible"`
 	Type                  string  `json:"type"`
-	Rep1Name              string  `json:"rep_1_name"`
-	Rep2Name              string  `json:"rep_2_name"`
+	Rep1                  string  `json:"rep_1_name"`
+	Rep2                  string  `json:"rep_2_name"`
 	SysSize               float64 `json:"sys_size"`
 	State                 string  `json:"state"`
 	RepCount              float64 `json:"rep_count"`
@@ -33,4 +34,8 @@ type CreateAutoAdder struct {
 	TotalComm             float64 `json:"total_comm"`
 	StartDate             string  `json:"start_date"`
 	EndDate               string  `json:"end_date"`
+}
+
+type GetAutoAdderList struct {
+	AutoAdderList []GetAutoAdderData `json:"auto_adder_list"`
 }
