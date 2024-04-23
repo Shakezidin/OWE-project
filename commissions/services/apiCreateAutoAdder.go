@@ -62,29 +62,108 @@ func HandleCreateAutoAdderRequest(resp http.ResponseWriter, req *http.Request) {
 		(len(createAutoAdderReq.Type) <= 0) || (len(createAutoAdderReq.Rep1DefResp) <= 0) ||
 		(len(createAutoAdderReq.R1AddrResp) <= 0) || (len(createAutoAdderReq.Rep2DefResp) <= 0) ||
 		(len(createAutoAdderReq.R2AddrResp) <= 0) || (len(createAutoAdderReq.StartDate) <= 0) ||
-		(len(createAutoAdderReq.EndDate) <= 0) {
+		(len(createAutoAdderReq.EndDate) <= 0) || (len(createAutoAdderReq.Rep1Name) <= 0) ||
+		(len(createAutoAdderReq.Rep2Name) <= 0) || (len(createAutoAdderReq.State) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
-	if createAutoAdderReq.SalePrice <= float64(0) {
-		err = fmt.Errorf("Invalid Sale price Not Allowed")
+	if createAutoAdderReq.PerKWAmount <= float64(0) {
+		err = fmt.Errorf("Invalid perkwamount price Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Sale price Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Perkwamount price Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
-	if createAutoAdderReq.RL <= float64(0) {
-		err = fmt.Errorf("Invalid Rate list Not Allowed")
+	if createAutoAdderReq.RepDollDivbyPer <= float64(0) {
+		err = fmt.Errorf("Invalid Repdolldivbyper list Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Rate list Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Repdolldivbyper list Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
-	if createAutoAdderReq.Rate <= float64(0) {
-		err = fmt.Errorf("Invalid Rate Not Allowed")
+	if createAutoAdderReq.SysSize <= float64(0) {
+		err = fmt.Errorf("Invalid Syssize Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Rate Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Syssize Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if createAutoAdderReq.RepCount <= float64(0) {
+		err = fmt.Errorf("Invalid Repcount Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Repcount Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if createAutoAdderReq.PerRepAddrShare <= float64(0) {
+		err = fmt.Errorf("Invalid Perrepaddrshare Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Perrepaddrshare Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if createAutoAdderReq.PerRepOvrdShare <= float64(0) {
+		err = fmt.Errorf("Invalid Perrepovrdshare Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Perrepovrdshare Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if createAutoAdderReq.R1PayScale <= float64(0) {
+		err = fmt.Errorf("Invalid R1payscale Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid R1payscale Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if createAutoAdderReq.R2PayScale <= float64(0) {
+		err = fmt.Errorf("Invalid R2payscale Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid R2payscale Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if createAutoAdderReq.ContractAmount <= float64(0) {
+		err = fmt.Errorf("Invalid Contractamount Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Contractamount Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if createAutoAdderReq.ProjectBaseCost <= float64(0) {
+		err = fmt.Errorf("Invalid Projectbasecost Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Projectbasecost Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if createAutoAdderReq.CrtAddr <= float64(0) {
+		err = fmt.Errorf("Invalid Crtaddr Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Crtaddr Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if createAutoAdderReq.R1LoanFee <= float64(0) {
+		err = fmt.Errorf("Invalid R1loanfee Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid R1loanfee Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if createAutoAdderReq.R1Rebate <= float64(0) {
+		err = fmt.Errorf("Invalid R1rebate Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid R1rebate Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if createAutoAdderReq.R1Referral <= float64(0) {
+		err = fmt.Errorf("Invalid R1referral Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid R1referral Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if createAutoAdderReq.R1RPlusR <= float64(0) {
+		err = fmt.Errorf("Invalid R1RPlusR Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid R1RPlusR Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if createAutoAdderReq.TotalComm <= float64(0) {
+		err = fmt.Errorf("Invalid Totalcomm Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Totalcomm Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -98,10 +177,10 @@ func HandleCreateAutoAdderRequest(resp http.ResponseWriter, req *http.Request) {
 	queryParameters = append(queryParameters, createAutoAdderReq.DescriptionRepVisible)
 	queryParameters = append(queryParameters, createAutoAdderReq.NotesNotRepVisible)
 	queryParameters = append(queryParameters, createAutoAdderReq.Type)
-	queryParameters = append(queryParameters, createAutoAdderReq.Rep1)
-	queryParameters = append(queryParameters, createAutoAdderReq.Rep2)
+	queryParameters = append(queryParameters, createAutoAdderReq.Rep1Name)
+	queryParameters = append(queryParameters, createAutoAdderReq.Rep2Name)
 	queryParameters = append(queryParameters, createAutoAdderReq.SysSize)
-	queryParameters = append(queryParameters, createAutoAdderReq.StateID)
+	queryParameters = append(queryParameters, createAutoAdderReq.State)
 	queryParameters = append(queryParameters, createAutoAdderReq.RepCount)
 	queryParameters = append(queryParameters, createAutoAdderReq.PerRepAddrShare)
 	queryParameters = append(queryParameters, createAutoAdderReq.PerRepOvrdShare)

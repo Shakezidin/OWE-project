@@ -554,8 +554,35 @@ var apiRoutes = ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_autoadder",
+		apiHandler.HandleGetAutoAdderDataRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_autoadder",
 		apiHandler.HandleUpdateAutoAdderRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_user",
+		apiHandler.HandleUpdateUserRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_users_onboarding",
+		apiHandler.HandleGetUserMgmtOnboardingDataRequest,
 		true,
 		[]types.UserRoles{
 			types.RoleAdmin,

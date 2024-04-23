@@ -63,6 +63,9 @@ COPY ./dbSchemas/DB_ProcUpdateDealerTierArchive.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcUpdatePaymentScheduleArchive.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcUpdateTimelineSlaArchive.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcUpdateLoanTypeArchive.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcCreateNewAutoAdder.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcUpdateAutoAdder.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcUpdateUser.sql /docker-entrypoint-initdb.d/
 
 RUN chmod +x /docker-entrypoint-initdb.d/DB_Create_Schema.sql
 
