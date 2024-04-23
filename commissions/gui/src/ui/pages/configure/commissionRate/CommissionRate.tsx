@@ -78,6 +78,7 @@ const CommissionRate: React.FC = () => {
     { name: "start_date", displayName: "Start Date", type: "date" },
     { name: "end_date", displayName: "End Date", type: "date" }
   ];
+  
   const filter = ()=>{
     setFilterOpen(true)
   }
@@ -269,7 +270,7 @@ const CommissionRate: React.FC = () => {
         {
         commissionList?.length > 0 ? <Pagination
           currentPage={currentPage}
-          totalPages={totalPages} // You need to calculate total pages
+          totalPages={totalPages}
           paginate={paginate}
           goToNextPage={goToNextPage}
           goToPrevPage={goToPrevPage}
