@@ -287,7 +287,7 @@ table tbody tr td {
   border-radius: 16px;
 }
 .configure-main-section p{
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--page-heading-color);
 }
@@ -308,6 +308,11 @@ table tbody tr td {
   border-radius: 12px;
   padding: 15px;
   cursor: pointer;
+}
+.pay-card:hover{
+  box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
+  transform: scale(1.02);
+  transition: transform 0.1s ease-in-out;
 }
 .pay-card p {
   font-size: 14px;
@@ -336,5 +341,5 @@ table tbody tr td {
   color: var(--arrow-icon-color);
 }
 .Rep-pay{
-  margin: 10px 0;
+  margin: 24px 0;
 }
