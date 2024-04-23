@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import Select from 'react-select';
 import { stateOption } from "../../../../core/models/data_models/SelectDataModel";
 import { TimeLineSlaModel } from "../../../../core/models/configuration/create/TimeLineSlaModel";
+import SelectOption from "../../../components/selectOption/SelectOption";
 interface timeLineProps {
     handleClose: () => void,
     editMode:boolean,
@@ -115,24 +116,8 @@ const CreateTimeLine:React.FC<timeLineProps> = ({handleClose,editMode,timeLineSl
                                 </div>
                                 <div className="create-input-field">
                                 <label className="inputLabel">ST</label>
-                                    <Select
+                                    <SelectOption
                                         options={stateOption(newFormData)}
-                                        isSearchable
-                                        styles={{
-                                            control: (baseStyles, state) => ({
-                                              ...baseStyles,
-                                              marginTop:"4.5px",
-                                              borderRadius:"8px",
-                                              outline:"none",
-                                              fontSize:"13px",
-                                              height:"2.25rem",
-                                              border:"1px solid #d0d5dd"
-                                              
-                                            }),
-                                            indicatorSeparator: () => ({
-                                                display: 'none' // Hide the indicator separator
-                                              }),
-                                          }}
                                         onChange={(newValue) => handleChange(newValue, 'state')}
                                         value={stateOption(newFormData)?.find((option) => option.value === createTimeLine.state)}
                                     />

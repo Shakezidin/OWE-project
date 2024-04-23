@@ -1,7 +1,8 @@
 // OperationSelect.tsx
 import React from "react";
 import Select from "react-select";
-import { getOperationsForColumnType, optionOperation } from "../../../../core/models/data_models/FilterSelectModel";
+import { getOperationsForColumnType, optionOperation } from "../../../core/models/data_models/FilterSelectModel";
+
 
 const OperationSelect: React.FC<{
   options: optionOperation[];

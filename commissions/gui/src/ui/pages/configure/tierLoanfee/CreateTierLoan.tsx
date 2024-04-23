@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import Select from 'react-select';
 import { installerOption, oweCostOption, stateOption } from "../../../../core/models/data_models/SelectDataModel";
 import { TierLoanFeeModel } from "../../../../core/models/configuration/create/TierLoanFeeModel";
+import SelectOption from "../../../components/selectOption/SelectOption";
 interface tierLoanProps{
   handleClose: () => void,
   tierEditedData:TierLoanFeeModel|null,
@@ -119,48 +120,17 @@ const CreateTierLoan:React.FC<tierLoanProps> = ({handleClose,tierEditedData,edit
                   </div>
                   <div className="create-input-field">
                     <label className="inputLabel">Installer</label>
-                    <Select
+                    <SelectOption
                       options={installerOption(newFormData)}
-                      isSearchable
-                      styles={{
-                        control: (baseStyles, state) => ({
-                          ...baseStyles,
-                          marginTop: "4.5px",
-                          borderRadius: "8px",
-                          outline: "none",
-                          height: "2.25rem",
-                          fontSize:"13px",
-                          border: "1px solid #d0d5dd"
-
-                        }),
-                        indicatorSeparator: () => ({
-                          display: 'none' // Hide the indicator separator
-                        }),
-                      }}
                       onChange={(newValue) => handleChange(newValue, 'installer')}
                       value={installerOption(newFormData)?.find((option) => option.value === createTier.installer)}
                     />
                   </div>
                   <div className="create-input-field">
                     <label className="inputLabel">State</label>
-                    <Select
+                    <SelectOption
                       options={stateOption(newFormData)}
-                      isSearchable
-                      styles={{
-                        control: (baseStyles, state) => ({
-                          ...baseStyles,
-                          marginTop: "4.5px",
-                          borderRadius: "8px",
-                          outline: "none",
-                          height: "2.25rem",
-                          fontSize:"13px",
-                          border: "1px solid #d0d5dd"
-
-                        }),
-                        indicatorSeparator: () => ({
-                          display: 'none' // Hide the indicator separator
-                        }),
-                      }}
+                     
                       onChange={(newValue) => handleChange(newValue, 'state')}
                       value={stateOption(newFormData)?.find((option) => option.value === createTier.state)}
                     />
@@ -180,24 +150,8 @@ const CreateTierLoan:React.FC<tierLoanProps> = ({handleClose,tierEditedData,edit
                   </div>
                   <div className="create-input-field">
                     <label className="inputLabel">OWE Cost</label>
-                    <Select
+                    <SelectOption
                       options={oweCostOption(newFormData)}
-                      styles={{
-                        control: (baseStyles, state) => ({
-                          ...baseStyles,
-                          marginTop: "4.5px",
-                          borderRadius: "8px",
-                          outline: "none",
-                          height: "2.25rem",
-                          fontSize:"13px",
-                          border: "1px solid #d0d5dd"
-
-                        }),
-                        indicatorSeparator: () => ({
-                          display: 'none' // Hide the indicator separator
-                        }),
-                      }}
-                      isSearchable
                       onChange={(newValue) => handleChange(newValue, 'owe_cost')}
                       value={oweCostOption(newFormData)?.find((option) => option.value === createTier.owe_cost)}
                     />
@@ -253,11 +207,7 @@ const CreateTierLoan:React.FC<tierLoanProps> = ({handleClose,tierEditedData,edit
                   onClick={() => handleClose()} />
                 <ActionButton title={editMode===false?"Save":"Update"} type="submit"
                   onClick={() => { }} />
-              </div>
-
-            
-    
-      
+              </div>  
         </form>
     </div>
   );

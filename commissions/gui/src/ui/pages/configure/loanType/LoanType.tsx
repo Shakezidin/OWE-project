@@ -8,20 +8,16 @@ import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import { fetchLoanType } from "../../../../redux/apiSlice/configSlice/config_get_slice/loanTypeSlice";
 import CreateLoanType from "./CreateLoanType";
 import CheckBox from "../../../components/chekbox/CheckBox";
-import { FaArrowDown } from "react-icons/fa6";
-
 import {
-  toggleAllRows,
   toggleRowSelection,
 } from "../../../components/chekbox/checkHelper";
-import FilterLoanType from "./FilterLoanType";
 import { LoanTypeModel } from "../../../../core/models/configuration/create/LoanTypeModel";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
-import { Column } from "../../../../core/models/data_models/FilterSelectModel";
 import Pagination from "../../../components/pagination/Pagination";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
 import { LoanTypeColumns } from "../../../../resources/static_data/configureHeaderData/LoanTypeColumn";
+import FilterModal from "../../../components/FilterModal/FilterModal";
 
 const LoanType = () => {
   const dispatch = useAppDispatch();
@@ -110,6 +106,9 @@ const LoanType = () => {
       }
     });
   }
+  const fetchFunction = (req: any) => {
+    dispatch(fetchLoanType(req));
+   };
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -135,10 +134,11 @@ const LoanType = () => {
           onpressExport={() => { }}
           onpressAddNew={() => handleAddLoan()}
         />
-        {filterOPen && <FilterLoanType handleClose={filterClose}
+        {filterOPen && <FilterModal handleClose={filterClose}
          columns={LoanTypeColumns}
-         page_number = {1}
-         page_size = {5} />}
+         page_number = {currentPage}
+         fetchFunction={fetchFunction}
+         page_size = {itemsPerPage} />}
         {open && <CreateLoanType
          loanData={editedLoanData}
          editMode={editMode}

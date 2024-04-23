@@ -189,7 +189,7 @@ const TechnicalSupport = () => {
           </div>
         </div>
       </div>
-<CreateUserProfile/>
+      <CreateUserProfile />
     </>
   );
 };

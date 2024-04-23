@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "../configure.css";
-import { RiDeleteBin5Line } from "react-icons/ri";
-import { CiEdit } from "react-icons/ci";
-
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { ICONS } from "../../../icons/Icons";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
@@ -10,18 +7,15 @@ import { fetchPaySchedule } from "../../../../redux/apiSlice/configSlice/config_
 import CreatePaymentSchedule from "./CreatePaymentSchedule";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import {
-  toggleAllRows,
   toggleRowSelection,
 } from "../../../components/chekbox/checkHelper";
-import FilterPayment from "./FilterPayment";
-import { FaArrowDown } from "react-icons/fa6";
 import { PayScheduleModel } from "../../../../core/models/configuration/create/PayScheduleModel";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
-import { Column } from "../../../../core/models/data_models/FilterSelectModel";
 import Pagination from "../../../components/pagination/Pagination";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 import { PayScheduleColumns } from "../../../../resources/static_data/configureHeaderData/PayScheduleColumn";
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
+import FilterModal from "../../../components/FilterModal/FilterModal";
 
 const PaymentSchedule = () => {
   const dispatch = useAppDispatch();
@@ -113,6 +107,9 @@ const PaymentSchedule = () => {
       }
     });
   }
+  const fetchFunction = (req: any) => {
+    dispatch(fetchPaySchedule(req));
+   };
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -137,11 +134,12 @@ const PaymentSchedule = () => {
           onpressAddNew={() => handleAddPaySchedule()}
         />
         {filterOPen && (
-          <FilterPayment
+          <FilterModal
+          fetchFunction={fetchFunction}
             handleClose={filterClose}
             columns={PayScheduleColumns}
-            page_number={1}
-            page_size={5}
+            page_number={currentPage}
+            page_size={itemsPerPage}
           />
         )}
         {open && (

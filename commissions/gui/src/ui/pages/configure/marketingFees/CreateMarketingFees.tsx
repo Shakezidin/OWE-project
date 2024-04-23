@@ -20,6 +20,7 @@ import {
   dbaData,
 } from "../../../../resources/static_data/StaticData";
 import { MarketingFeeModel } from "../../../../core/models/configuration/create/MarketingFeeModel";
+import SelectOption from "../../../components/selectOption/SelectOption";
 interface marketingProps {
   handleClose: () => void;
   editMode: boolean;
@@ -130,23 +131,8 @@ const CreateMarketingFees: React.FC<marketingProps> = ({
               <div className="create-input-container">
                 <div className="create-input-field">
                   <label className="inputLabel">Source</label>
-                  <Select
+                  <SelectOption
                     options={sourceOption(newFormData)}
-                    styles={{
-                      control: (baseStyles, state) => ({
-                        ...baseStyles,
-                        marginTop: "4.5px",
-                        borderRadius: "8px",
-                        outline: "none",
-                        fontSize: "13px",
-                        height: "2.25rem",
-                        border: "1px solid #d0d5dd",
-                      }),
-                      indicatorSeparator: () => ({
-                        display: "none", // Hide the indicator separator
-                      }),
-                    }}
-                    isSearchable
                     onChange={(newValue) => handleChange(newValue, "source")}
                     value={sourceOption(newFormData)?.find(
                       (option) => option.value === createMarketing.source
@@ -155,27 +141,11 @@ const CreateMarketingFees: React.FC<marketingProps> = ({
                 </div>
                 <div className="create-input-field">
                   <label className="inputLabel">DBA</label>
-                  <Select
-                    options={dbaOption(newFormData) || dbaData}
-                    styles={{
-                      control: (baseStyles, state) => ({
-                        ...baseStyles,
-                        marginTop: "4.5px",
-                        borderRadius: "8px",
-                        outline: "none",
-                        fontSize: "13px",
-                        height: "2.25rem",
-                        border: "1px solid #d0d5dd",
-                      }),
-                      indicatorSeparator: () => ({
-                        display: "none", // Hide the indicator separator
-                      }),
-                    }}
-                    isSearchable
+                  <SelectOption
+                    options={dbaOption(newFormData)}
                     onChange={(newValue) => handleChange(newValue, "dba")}
                     value={
-                      dbaOption(newFormData) ||
-                      dbaData?.find(
+                      dbaOption(newFormData)?.find(
                         (option) => option.value === createMarketing.dba
                       )
                     }
@@ -183,23 +153,8 @@ const CreateMarketingFees: React.FC<marketingProps> = ({
                 </div>
                 <div className="create-input-field">
                   <label className="inputLabel">State</label>
-                  <Select
+                  <SelectOption
                     options={stateOption(newFormData)}
-                    styles={{
-                      control: (baseStyles, state) => ({
-                        ...baseStyles,
-                        marginTop: "4.5px",
-                        borderRadius: "8px",
-                        outline: "none",
-                        height: "2.25rem",
-                        border: "1px solid #d0d5dd",
-                        fontSize: "13px",
-                      }),
-                      indicatorSeparator: () => ({
-                        display: "none", // Hide the indicator separator
-                      }),
-                    }}
-                    isSearchable
                     onChange={(newValue) => handleChange(newValue, "state")}
                     value={stateOption(newFormData)?.find(
                       (option) => option.value === createMarketing.state
@@ -221,27 +176,12 @@ const CreateMarketingFees: React.FC<marketingProps> = ({
                 </div>
                 <div className="create-input-field">
                   <label className="inputLabel">Chg DLR</label>
-                  <Select
-                    options={chg_dlrOption(newFormData) || chldlrData}
-                    styles={{
-                      control: (baseStyles, state) => ({
-                        ...baseStyles,
-                        marginTop: "4.5px",
-                        borderRadius: "8px",
-                        outline: "none",
-                        height: "2.25rem",
-                        fontSize: "13px",
-                        border: "1px solid #d0d5dd",
-                      }),
-                      indicatorSeparator: () => ({
-                        display: "none", // Hide the indicator separator
-                      }),
-                    }}
-                    isSearchable
+                  <SelectOption
+                    options={chg_dlrOption(newFormData)}
+                    
                     onChange={(newValue) => handleChange(newValue, "chg_dlr")}
                     value={
-                      chg_dlrOption(newFormData) ||
-                      chldlrData?.find(
+                      chg_dlrOption(newFormData)?.find(
                         (option: any) =>
                           option.value === createMarketing.chg_dlr
                       )
@@ -289,7 +229,7 @@ const CreateMarketingFees: React.FC<marketingProps> = ({
                 </label>{" "}
                 <br />
                 <textarea
-                  name="description"
+                  name={createMarketing.description}
                   id=""
                   rows={4}
                   onChange={(e) => handlemarketingInputChange(e)}

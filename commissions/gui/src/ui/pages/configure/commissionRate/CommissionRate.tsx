@@ -1,26 +1,22 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../configure.css";
 import CreateCommissionRate from "./CreateCommissionRate";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-
 import { ICONS } from "../../../icons/Icons";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { fetchCommissions } from "../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice";
-import FilterCommission from "./FilterCommission";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import {
-  toggleAllRows,
   toggleRowSelection,
 } from "../../../components/chekbox/checkHelper";
 import { CSVLink } from 'react-csv';
 import Pagination from "../../../components/pagination/Pagination";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 import { CommissionModel } from "../../../../core/models/configuration/create/CommissionModel";
-import { FaArrowDown } from "react-icons/fa6";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
-import { Column } from "../../../../core/models/data_models/FilterSelectModel";
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
 import { Commissioncolumns } from "../../../../resources/static_data/configureHeaderData/CommissionColumn";
+import FilterModal from "../../../components/FilterModal/FilterModal";
 
 
 const CommissionRate: React.FC = () => {
@@ -33,7 +29,7 @@ const CommissionRate: React.FC = () => {
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const commissionList = useAppSelector((state) => state.comm.commissionsList);
-  const loading = useAppSelector((state) => state.comm.loading);
+  // const loading = useAppSelector((state) => state.comm.loading);
   const error = useAppSelector((state) => state.comm.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
@@ -124,9 +120,11 @@ const CommissionRate: React.FC = () => {
       }
     });
   }
-
+  const fetchFunction = (req: any) => {
+   dispatch(fetchCommissions(req));
+  };
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div>{error}</div>;
   }
   // if (loading) {
   //   return <div>Loading... {loading}</div>;
@@ -151,11 +149,13 @@ const CommissionRate: React.FC = () => {
         {exportOPen && (<div className="export-modal">
           <CSVLink style={{ color: "white", fontSize: "12px" }} data={currentPageData} filename={"table.csv"}>Export CSV</CSVLink>
         </div>)}
-        {filterOPen && <FilterCommission handleClose={filterClose}
+        {filterOPen && <FilterModal handleClose={filterClose}
           columns={Commissioncolumns}
           page_number={currentPage}
           page_size={itemsPerPage}
-        />}
+          fetchFunction={fetchFunction}
+        />
+        }
         {open && <CreateCommissionRate
           commission={editedCommission}
           editMode={editMode}
@@ -266,6 +266,3 @@ const CommissionRate: React.FC = () => {
 };
 
 export default CommissionRate;
-
-
-

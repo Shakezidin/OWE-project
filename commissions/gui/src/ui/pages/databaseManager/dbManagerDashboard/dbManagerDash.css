@@ -167,12 +167,11 @@
     justify-content: space-between;
   }
   
-
    .Payroll-section {
     display: flex;
     height: 36px;
     background-color: white;
-    padding: 0 6px 0 12px;
+    padding: 0 3px 0 12px;
     gap: 0.5rem;
     align-items: center;
     border-radius: 8px;

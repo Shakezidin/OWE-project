@@ -11,7 +11,6 @@ import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/pagin
 import { DealerModel } from "../../../../core/models/configuration/create/DealerModel";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import DataTableHeader from "../../../components/tableHeader/DataTableHeader";
-import FilterDealer from "../../configure/dealerOverrides/FilterDealer";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import { toggleAllRows, toggleRowSelection } from "../../../components/chekbox/checkHelper";
 import FilterData from "./FilterData";
@@ -59,8 +58,8 @@ const DataTablle: React.FC = () => {
     dispatch(setCurrentPage(currentPage - 1));
   };
   const getColumnNames = () => {
-    if (dealerList.length > 0) {
-      const keys = Object.keys(dealerList[0]);
+    if (dealerList?.length > 0) {
+      const keys = Object?.keys(dealerList[0]);
       setColumns(keys);
     }
   };
