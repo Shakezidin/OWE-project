@@ -8,7 +8,7 @@ interface TableProps {
     title: string;
 
     onPressFilter: () => void;
-    onPressImport: () => void;
+    // onPressImport: () => void;
 
 
 }
@@ -17,7 +17,7 @@ const DataTableHeader = (props: TableProps) => {
     const {
         title,
         onPressFilter,
-        onPressImport,
+        // onPressImport,
 
     } = props;
     return (
@@ -30,7 +30,7 @@ const DataTableHeader = (props: TableProps) => {
                 <div className="search-container-data">
                     <input
                         type="text"
-                        placeholder="Table 1"
+                        placeholder="Select Table"
                         className="search-input-data"
                     />
                     <BiChevronDown className="dropdown-icon" />
@@ -43,11 +43,11 @@ const DataTableHeader = (props: TableProps) => {
                         <img src={ICONS.FILTER} alt="" />
                     </button>
                 </div>
-                <div className="iconsSection-filter">
+                {/* <div className="iconsSection-filter">
                     <button type="button" onClick={onPressImport}>
                         <img src={ICONS.IMAGE_IMPORT} alt="" /> Import
                     </button>
-                </div>
+                </div> */}
             </div>
          
         </div >

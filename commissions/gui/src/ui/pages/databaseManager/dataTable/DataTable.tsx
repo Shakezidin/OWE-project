@@ -173,7 +173,7 @@ const DataTablle: React.FC = () => {
         <DataTableHeader
           title="Table Name"
           onPressFilter={() => filter()}
-          onPressImport={() => { }}
+          // onPressImport={() => { }}
         />
 
 
