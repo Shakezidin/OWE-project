@@ -47,6 +47,7 @@ import DataTablle from "./ui/pages/databaseManager/dataTable/DataTable";
 import UserActivity from "./ui/pages/databaseManager/userActivity/UserActivity";
 import DbManagerDashboard from "./ui/pages/databaseManager/dbManagerDashboard/DbManagerDashboard";
 import Webhook from "./ui/pages/databaseManager/webhookTable/Webhook";
+import ConfigurePage from "./ui/pages/configure/ConfigurePage";
 
 
 function App() {
@@ -88,6 +89,7 @@ function App() {
               element={<MainLayout/>}
             >
            
+
                 <Route  path={ROUTES.COMMISSION_DASHBOARD} element={<DashboardPage/>}/>
                 <Route  path={ROUTES.CONFIG_COMMISSION_RATE} element={<CommissionRate/>}/>
                 <Route  path={ROUTES.CONFIG_DEALER_OVER} element={<DealerOverRides/>}/>
@@ -115,8 +117,8 @@ function App() {
                 <Route  path={ROUTES.DB_MANAGER_USER_ACTIVITY} element={<UserActivity/>}/>
                 <Route  path={ROUTES.TECHNICAL_SUPPORT} element={<TechnicalSupport/>}/>
                 <Route  path={ROUTES.DB_MANAGER_WEB_HOOKS} element={<Webhook/>}/>
+
             </Route>
-      
        
       </Routes>
     </BrowserRouter>

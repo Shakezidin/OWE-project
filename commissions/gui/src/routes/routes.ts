@@ -1,3 +1,4 @@
+
 export const ROUTES = {
   LOGIN: "/login",
   RESETPASSWORD: "/resetPassword",
@@ -33,3 +34,4 @@ export const ROUTES = {
   DB_MANAGER_USER_ACTIVITY: "/dbManager/userActivity",
   DB_MANAGER_WEB_HOOKS: "/dbManager/webhooks",
 };
+
