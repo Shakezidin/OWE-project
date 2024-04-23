@@ -21,7 +21,7 @@ import FilterModal from "../../../components/FilterModal/FilterModal";
 const DealerOverRides: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
-
+  const [viewArchived, setViewArchived] = useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const filterClose = () => setFilterOpen(false);
@@ -123,6 +123,7 @@ const DealerOverRides: React.FC = () => {
           onPressArchive={() => {}}
           onPressFilter={() => filter()}
           onPressImport={() => {}}
+          viewArchive={viewArchived}
           onpressExport={() => {}}
           checked={isAllRowsSelected}
           isAnyRowSelected={isAnyRowSelected}

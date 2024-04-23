@@ -31,7 +31,7 @@ const CreateAdder: React.FC<vadderProps> = ({
     record_id: vAdderData ? vAdderData?.record_id : 0,
     adder_name: vAdderData ? vAdderData?.adder_name : "",
     adder_type: vAdderData ? vAdderData?.adder_type : "",
-    price_type: vAdderData ? vAdderData?.price_type : "",
+    price_type: vAdderData ? vAdderData?.price_type : "Type X",
     price_amount: vAdderData ? vAdderData?.price_amount : "",
     active: vAdderData ? vAdderData?.active : 1,
     description: vAdderData

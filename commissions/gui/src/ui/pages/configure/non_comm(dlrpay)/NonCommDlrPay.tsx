@@ -42,7 +42,7 @@ const NonCommDlrPay: React.FC = () => {
   const [editedCommission, setEditedCommission] = useState<CommissionModel | null>(null);
   const itemsPerPage = 5;
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
-
+  const [viewArchived, setViewArchived] = useState<boolean>(false);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -118,6 +118,7 @@ const NonCommDlrPay: React.FC = () => {
           title="NON-Comm"
           onPressViewArchive={() => { }}
           onPressArchive={() => { }}
+          viewArchive={viewArchived}
           onPressFilter={() => filter()}
           onPressImport={() => { }}
           checked={isAllRowsSelected}

@@ -37,6 +37,7 @@ const PaymentSchedule = () => {
   const [sortKey, setSortKey] =  useState("");
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const itemsPerPage = 10;
+  const [viewArchived, setViewArchived] = useState<boolean>(false);
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
   const [editedPaySchedule, setEditedPaySchedule] =
     useState<PayScheduleModel | null>(null);
@@ -126,6 +127,7 @@ const PaymentSchedule = () => {
           title="Payment Scheduler"
           onPressViewArchive={() => {}}
           onPressArchive={() => {}}
+          viewArchive={viewArchived}
           checked={isAllRowsSelected}
           isAnyRowSelected={isAnyRowSelected}
           onPressFilter={() => filter()}

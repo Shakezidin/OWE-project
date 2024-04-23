@@ -38,6 +38,7 @@ const SaleType = () => {
   const [editMode, setEditMode] = useState(false);
   const [editedSalesType, setEditedMarketing] = useState<SalesTypeModel | null>(null);
   const itemsPerPage = 10;
+  const [viewArchived, setViewArchived] = useState<boolean>(false);
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
   const [sortKey, setSortKey] =  useState("");
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
@@ -126,6 +127,7 @@ const SaleType = () => {
           checked={isAllRowsSelected}
           isAnyRowSelected={isAnyRowSelected}
           onPressFilter={() => filter()}
+          viewArchive={viewArchived}
           onPressImport={() => {}}
           onpressExport={() => {}}
           onpressAddNew={() => handleAddSaleType()}

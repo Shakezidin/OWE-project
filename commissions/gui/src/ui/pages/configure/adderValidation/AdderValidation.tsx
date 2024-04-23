@@ -16,6 +16,10 @@ import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/pagin
 import { AdderVColumns } from "../../../../resources/static_data/configureHeaderData/AdderVTableColumn";
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
 import FilterModal from "../../../components/FilterModal/FilterModal";
+import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
+import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
+import Swal from "sweetalert2";
+import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
 
 
 const AdderValidation = () => {
@@ -27,6 +31,7 @@ const AdderValidation = () => {
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const dispatch = useAppDispatch();
+  const [viewArchived, setViewArchived] = useState<boolean>(false);
   const adderVList = useAppSelector((state) => state.adderV.VAdders_list);
   const loading = useAppSelector((state) => state.adderV.loading);
   const error = useAppSelector((state) => state.adderV.error);
@@ -73,9 +78,10 @@ const AdderValidation = () => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
+      archived: viewArchived ? true : undefined,
     };
     dispatch(fetchAdderV(pageNumber));
-  }, [dispatch, currentPage]);
+  }, [dispatch, currentPage,viewArchived]);
   const currentPageData = adderVList?.slice(startIndex, endIndex);
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === adderVList.length;
@@ -87,7 +93,91 @@ const AdderValidation = () => {
       setSortDirection('asc');
     }
   };
+  const handleArchiveAllClick = async () => {
+    const confirmationResult = await Swal.fire({
+      title: 'Are you sure?',
+      text: 'This action will archive all selected rows.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, archive all'
+    });
+    if (confirmationResult.isConfirmed) {
+      // Extract record IDs from selected rows
+      const archivedRows = Array.from(selectedRows).map(index => adderVList[index].record_id);
 
+      // Check if any rows are selected
+      if (archivedRows.length > 0) {
+        // Perform API call to archive all selected rows
+        const newValue = {
+          record_id: archivedRows,
+          is_archived: true
+        };
+
+        const pageNumber = {
+          page_number: currentPage,
+          page_size: itemsPerPage,
+        };
+
+        const res = await postCaller(EndPoints.update_vadders_archive, newValue);
+        if (res.status === HTTP_STATUS.OK) {
+          // If API call is successful, refetch commissions
+          dispatch(fetchAdderV(pageNumber));
+          const remainingSelectedRows = Array.from(selectedRows).filter(index => !archivedRows.includes(adderVList[index].record_id));
+          const isAnyRowSelected = remainingSelectedRows.length > 0;
+          setSelectAllChecked(isAnyRowSelected);
+          setSelectedRows(new Set());
+          Swal.fire({
+            title: 'Archived!',
+            text: 'All selected rows have been archived.',
+            icon: 'success',
+            timer: 2000,
+            showConfirmButton: false
+          });
+        }
+        else {
+          Swal.fire({
+            title: 'Error!',
+            text: 'Failed to archive selected rows. Please try again later.',
+            icon: 'error',
+            timer: 2000,
+            showConfirmButton: false
+          });
+        }
+      }
+
+    }
+  };
+
+
+
+  const handleArchiveClick = async (record_id: any) => {
+    const archived: number[] = [record_id];
+    let newValue = {
+      record_id: archived,
+      is_archived: true
+    }
+    const pageNumber = {
+      page_number: currentPage,
+      page_size: itemsPerPage,
+
+    };
+    const res = await postCaller(EndPoints.update_vadders_archive, newValue);
+    if (res.status === HTTP_STATUS.OK) {
+      dispatch(fetchAdderV(pageNumber))
+    }
+    // const newSelectedRows = new Set(selectedRows);
+    // newSelectedRows.delete(record_id);
+    // setSelectedRows(newSelectedRows);
+  };
+
+  const handleViewArchiveToggle = () => {
+    setViewArchived(!viewArchived);
+    // When toggling, reset the selected rows
+    setSelectedRows(new Set());
+    setSelectAllChecked(false);
+  };
   if (sortKey) {
     currentPageData.sort((a: any, b: any) => {
       const aValue = a[sortKey];
@@ -119,13 +209,14 @@ const AdderValidation = () => {
       <div className="commissionContainer">
         <TableHeader
           title="Adder Validation"
-          onPressViewArchive={() => { }}
+          onPressViewArchive={() => handleViewArchiveToggle()}
           checked={isAllRowsSelected}
-          onPressArchive={() => { }}
+          onPressArchive={() => handleArchiveAllClick()}
           isAnyRowSelected={isAnyRowSelected}
           onPressFilter={() => filter()}
           onPressImport={() => { }}
           onpressExport={() => { }}
+          viewArchive={viewArchived}
           onpressAddNew={() => handleAddvAdder()}
         />
         {filterOPen && <FilterModal handleClose={filterClose}
@@ -203,7 +294,7 @@ const AdderValidation = () => {
 
                     <td>
                       <div className="action-icon">
-                        <div className="" style={{ cursor: "pointer" }}>
+                        <div className="" style={{ cursor: "pointer" }} onClick={()=>handleArchiveClick(el.record_id)}>
                           <img src={ICONS.ARCHIVE} alt="" />
                         </div>
                         <div className="" style={{ cursor: "pointer" }} onClick={() => handleEditVAdder(el)}>

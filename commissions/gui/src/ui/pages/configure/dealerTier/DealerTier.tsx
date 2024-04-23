@@ -42,6 +42,7 @@ const DealerTier = () => {
   const [sortKey, setSortKey] =  useState("");
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const itemsPerPage = 10;
+  const [viewArchived, setViewArchived] = useState<boolean>(false);
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
   useEffect(() => {
     const pageNumber = {
@@ -132,6 +133,7 @@ const DealerTier = () => {
           isAnyRowSelected={isAnyRowSelected}
           onPressFilter={() => filter()}
           onPressImport={() => {}}
+          viewArchive={viewArchived}
           onpressExport={() => {}}
           onpressAddNew={() => handleAddDealerTier()}
         />
