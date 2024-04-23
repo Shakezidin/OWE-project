@@ -109,7 +109,7 @@ const Webhook: React.FC = () => {
       <DataTableHeader
           title="Failed Webhooks"
           onPressFilter={() => filter()}
-          onPressImport={() => { }}
+          // onPressImport={() => { }}
         />
 
         <div

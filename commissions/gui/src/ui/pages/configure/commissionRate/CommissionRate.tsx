@@ -339,6 +339,7 @@ const CommissionRate: React.FC = () => {
             /> : null
           }
         </div>
+
       </div>
     </div>
   );

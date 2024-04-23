@@ -8,7 +8,7 @@ import Select from "react-select"; interface TableProps {
     title: string;
 
     onPressFilter: () => void;
-    onPressImport: () => void;
+    // onPressImport: () => void;
 
 
 }
@@ -21,7 +21,7 @@ const DataTableHeader = (props: TableProps) => {
     const {
         title,
         onPressFilter,
-        onPressImport,
+        // onPressImport,
 
     } = props;
 
@@ -63,20 +63,33 @@ return (
 
             </div>
 
-            <div className="iconsSection-filter">
-          <button type="button" onClick={onPressFilter}>
-            <img src={ICONS.filtercomm} alt="" style={{width:"15px", height:"15px"}}/>
-          </button>
-        </div>
-            <div className="iconsSection2">
-          <button type="button" onClick={onPressImport}>
-            <img src={ICONS.importIcon} alt="" /> Import
-          </button>
-        </div>
-        </div>
+            <div className="data-header-section">
+                <div className="search-container-data">
+                    <input
+                        type="text"
+                        placeholder="Select Table"
+                        className="search-input-data"
+                    />
+                    <BiChevronDown className="dropdown-icon" />
 
-    </div >
-);
+                </div>
+
+
+                <div className="iconsSection-filter">
+                    <button type="button" onClick={onPressFilter}>
+                        <img src={ICONS.FILTER} alt="" />
+                    </button>
+                </div>
+                {/* <div className="iconsSection-filter">
+                    <button type="button" onClick={onPressImport}>
+                        <img src={ICONS.IMAGE_IMPORT} alt="" /> Import
+                    </button>
+                </div> */}
+            </div>
+         
+        </div >
+    );
+
 };
 
 export default DataTableHeader;

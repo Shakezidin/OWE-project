@@ -8,12 +8,10 @@ import { ActionButton } from "../../../components/button/ActionButton";
 import { useAppDispatch } from "../../../../redux/hooks";
 import { fetchCommissions } from "../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice";
 import { ICONS } from "../../../icons/Icons";
+
 import { getLabelForOperation, getOperationsForColumnType } from "../../../../core/models/data_models/FilterSelectModel";
 import { useState } from "react";
 import OperationSelect from "../../configure/commissionRate/OperationSelect";
-import { fetchDealer } from "../../../../redux/apiSlice/configSlice/config_get_slice/dealerSlice";
-import { fetchData } from "../../../../redux/apiSlice/configSlice/config_get_slice/dataslice";
-
 
 interface Column {
   name: string;
@@ -38,7 +36,7 @@ interface ErrorState {
   [key: string]: string;
 }
 // Filter component
-const FilterData: React.FC<TableProps> = ({ handleClose, columns, page_number, page_size }) => {
+const UserActivityFilter: React.FC<TableProps> = ({ handleClose, columns, page_number, page_size }) => {
   const dispatch = useAppDispatch();
   const [filters, setFilters] = useState<FilterModel[]>([
     { Column: "", Operation: "", Data: "" }
@@ -68,23 +66,26 @@ const FilterData: React.FC<TableProps> = ({ handleClose, columns, page_number, p
     newRules[index][field] = value;
     newRules[index].Data = '';
     setFilters(newRules);
-  };
 
+
+  };
   const handleDataChange=(index: number, value: string)=>{
     const newFilters = [...filters];
-    if (newFilters[index].Column === 'col5' || newFilters[index].Column === 'col6') {
+    // Convert ".1" to "0.1" if the column is "rate" or "rate list"
+    if (newFilters[index].Column === 'rate' || newFilters[index].Column === 'rl') {
       value = value.replace(/^(\.)(\d+)/, '0$1$2');
     }
     newFilters[index].Data = value;
     setFilters(newFilters)
   }
   const getInputType = (columnName: string) => {
-    if (columnName === 'col5' || columnName === 'col6' || columnName === 'col7') {
-      return 'number';
-    }else {
+    if (columnName === 'time_date') {
+      return 'date';
+    } else {
       return 'text';
     }
   };
+
 
   const applyFilter = async () => {
 
@@ -121,12 +122,11 @@ const FilterData: React.FC<TableProps> = ({ handleClose, columns, page_number, p
         page_size: page_size,
         filters: formattedFilters
       }
-      dispatch(fetchData(req));
+      dispatch(fetchCommissions(req));
+      // handleClose()
     }
 
   }
-
-  
 
   console.log(errors)
   return (
@@ -236,4 +236,4 @@ const FilterData: React.FC<TableProps> = ({ handleClose, columns, page_number, p
     </div>
   );
 };
-export default FilterData
+export default UserActivityFilter
