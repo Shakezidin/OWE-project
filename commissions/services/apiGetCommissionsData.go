@@ -130,6 +130,13 @@ func HandleGetCommissionsDataRequest(resp http.ResponseWriter, req *http.Request
 			RepType = ""
 		}
 
+		// is_archived
+		IsArchived, ok := item["is_archived"].(bool)
+		if !ok || !IsArchived {
+			log.FuncErrorTrace(0, "Failed to get is_archived value for Record ID %v. Item: %+v\n", RecordId, item)
+			IsArchived = false
+		}
+
 		// RL
 		RL, ok := item["rl"].(float64)
 		if !ok {
@@ -159,17 +166,18 @@ func HandleGetCommissionsDataRequest(resp http.ResponseWriter, req *http.Request
 		}
 
 		commissionData := models.GetCommissionData{
-			RecordId:  RecordId,
-			Partner:   Partner,
-			Installer: Installer,
-			State:     State,
-			SaleType:  SaleType,
-			SalePrice: SalePrice,
-			RepType:   RepType,
-			RL:        RL,
-			Rate:      Rate,
-			StartDate: StartDate,
-			EndDate:   EndDate,
+			RecordId:   RecordId,
+			Partner:    Partner,
+			Installer:  Installer,
+			State:      State,
+			SaleType:   SaleType,
+			SalePrice:  SalePrice,
+			RepType:    RepType,
+			IsArchived: IsArchived,
+			RL:         RL,
+			Rate:       Rate,
+			StartDate:  StartDate,
+			EndDate:    EndDate,
 		}
 
 		commissionsList.CommissionsList = append(commissionsList.CommissionsList, commissionData)
@@ -191,16 +199,14 @@ func PrepareCommissionFilters(tableName string, dataFilter models.DataRequestBod
 	defer func() { log.ExitFn(0, "PrepareCommissionFilters", nil) }()
 
 	var filtersBuilder strings.Builder
+	whereAdded := false // Flag to track if WHERE clause has been added
 
 	// Check if there are filters
 	if len(dataFilter.Filters) > 0 {
 		filtersBuilder.WriteString(" WHERE ")
+		whereAdded = true // Set flag to true as WHERE clause is added
 
 		for i, filter := range dataFilter.Filters {
-			if i > 0 {
-				filtersBuilder.WriteString(" AND ")
-			}
-
 			// Check if the column is a foreign key
 			column := filter.Column
 
@@ -208,12 +214,15 @@ func PrepareCommissionFilters(tableName string, dataFilter models.DataRequestBod
 			operator := GetFilterDBMappedOperator(filter.Operation)
 			value := filter.Data
 
-		// For "stw" and "edw" operations, modify the value with '%'
-		if filter.Operation == "stw" || filter.Operation == "edw" || filter.Operation == "cont" {
-			value = GetFilterModifiedValue(filter.Operation, filter.Data.(string))
-		}
+			// For "stw" and "edw" operations, modify the value with '%'
+			if filter.Operation == "stw" || filter.Operation == "edw" || filter.Operation == "cont" {
+				value = GetFilterModifiedValue(filter.Operation, filter.Data.(string))
+			}
 
 			// Build the filter condition using correct db column name
+			if i > 0 {
+				filtersBuilder.WriteString(" AND ")
+			}
 			switch column {
 			case "partner":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(pt1.partner_name) %s LOWER($%d)", operator, len(whereEleList)+1))
@@ -244,6 +253,29 @@ func PrepareCommissionFilters(tableName string, dataFilter models.DataRequestBod
 				whereEleList = append(whereEleList, value)
 			}
 		}
+	}
+
+	// Handle the Archived field
+	if dataFilter.Archived {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+		}
+		filtersBuilder.WriteString("cr.is_archived = TRUE")
+	} else {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+		}
+		filtersBuilder.WriteString("cr.is_archived = FALSE")
+	}
+
+	// Add pagination logic
+	if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+		offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
+		filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
 	}
 
 	filters = filtersBuilder.String()

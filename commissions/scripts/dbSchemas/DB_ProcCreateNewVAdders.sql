@@ -17,7 +17,8 @@ BEGIN
         price_type,
         price_amount,
         active,
-        description
+        description,
+        is_archived
     )
     VALUES (
         p_adder_name,
@@ -25,7 +26,8 @@ BEGIN
         p_price_type,
         p_price_amount,
         p_active,
-        p_description
+        p_description,
+        FALSE
     )
     RETURNING id INTO v_adder_id;
 

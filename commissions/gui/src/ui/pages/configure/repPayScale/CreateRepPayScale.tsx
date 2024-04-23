@@ -1,10 +1,7 @@
 import React from "react";
-import "../../create_profile/CreateUserProfile.css";
-import { ReactComponent as PROFILE_BACKGROUND } from "../../../../resources/assets/Profile_background.svg";
-
 import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cross_button.svg";
 import Input from "../../../components/text_input/Input";
-import DropdownButton from "../../../components/dropdown/DropdownButton";
+import DropdownButton from "../../../components/selectOption/SelectOption";
 import { ActionButton } from "../../../components/button/ActionButton";
 
 type ButtonProps ={
@@ -27,7 +24,7 @@ const CreateRepPayScale = (props:ButtonProps) => {
           <h3 className="createProfileText">Commission Rate</h3>
           <div className="createProfileInputView">
             <div className="createProfileTextView">
-              <div className="create-input-container">
+              {/* <div className="create-input-container">
                    <div className="create-input-field">
                     <DropdownButton  id="selectField1"
                    label="Partner"
@@ -49,7 +46,7 @@ const CreateRepPayScale = (props:ButtonProps) => {
                    options={['Option 1', 'Option 2', 'Option 3']}
                    onChange={handleFormChange}/>
                     </div> 
-              </div>
+              </div> */}
 
               <div className="create-input-container">
               <div className="create-input-field">

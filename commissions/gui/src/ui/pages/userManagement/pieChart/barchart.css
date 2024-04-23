@@ -1,7 +1,6 @@
-.pieChart-section p {
-  font-size: 20px;
+.pieChart-section h2 {
+  font-size: 16px;
   font-weight: 600;
-  line-height: 30px;
-  /* text-align: left; */
-  color: var(--side-logo-bg-color);
+  text-align: left;
+  color: var(--page-heading-color);
 }

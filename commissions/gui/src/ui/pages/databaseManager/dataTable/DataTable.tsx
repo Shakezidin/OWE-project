@@ -7,7 +7,6 @@ import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/pagin
 import { DealerModel } from "../../../../core/models/configuration/create/DealerModel";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import DataTableHeader from "../../../components/tableHeader/DataTableHeader";
-import FilterDealer from "../../configure/dealerOverrides/FilterDealer";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import { toggleAllRows, toggleRowSelection } from "../../../components/chekbox/checkHelper";
 import FilterData from "./FilterData";
@@ -66,8 +65,6 @@ const DataTablle: React.FC = () => {
     { name: "col6", displayName: "Column6", type: "number" },
     { name: "col7", displayName: "Column7", type: "number" },
   ];
-
-
   const filter = () => {
     setFilterOpen(true);
   }
@@ -281,6 +278,7 @@ const DataTablle: React.FC = () => {
           totalPages={totalPages}
           paginate={paginate}
           goToNextPage={goToNextPage}
+         currentPageData={currentPageData}
           goToPrevPage={goToPrevPage}
         />
       }

@@ -1,9 +1,10 @@
 import { ChangeEvent, FC } from "react";
 import "./Input.css";
 import { ReactComponent as EYE_ICON } from "../../../resources/assets/eye-icon.svg";
+import { ICONS } from "../../icons/Icons";
 
 interface InputProps {
-  type: "text" | "number" | "email" | "password" | "date" |"datetime-local";
+  type: "text" | "number" | "email" | "password" | "date" |"datetime-local" | "file";
   value: string | number;
   placeholder: string;
   label?: string;
@@ -14,6 +15,7 @@ interface InputProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onClickEyeIcon?: () => void;
   isTypePassword?: boolean;
+  isTypeSearch?:boolean
 }
 
 const Input: FC<InputProps> = ({
@@ -27,6 +29,7 @@ const Input: FC<InputProps> = ({
   onChange,
   onClickEyeIcon,
   isTypePassword,
+  isTypeSearch,
 }) => {
   return (
     <div className="input-wrapper">
@@ -43,8 +46,19 @@ const Input: FC<InputProps> = ({
         {isTypePassword ? (
           <EYE_ICON
             className="eyeIcon"
+           
+            onClick={onClickEyeIcon}
+          />
+        ) : (
+          <></>
+        )}
+          {isTypeSearch ? (
+          <img
+            className="eyeIcon"
+            src={ICONS.search}
             style={{ marginRight: ".5rem" }}
             onClick={onClickEyeIcon}
+            alt=""
           />
         ) : (
           <></>

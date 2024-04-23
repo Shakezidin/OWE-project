@@ -1,5 +1,5 @@
 .active {
-  padding: 10px;
+  padding: 0 0 10px 5px;
   border: 0px, 0px, 1px, 0px;
   gap: 20px;
   background-color: transparent;
@@ -8,19 +8,17 @@
   cursor: pointer;
   overflow: hidden;
   outline: none;
-  border-bottom: 1px solid #04a5e8;
-
+  border-bottom: 2.5px solid #04a5e8;
   color: var(--primary-color, #04a5e8);
   font-family: Poppins;
   font-size: 16px;
   font-style: normal;
   font-weight: 700;
   display: inline-block; /* Set display to inline-block */
-  margin: 0 128px 0 0; /* Adjust this value to set the desired gap */
+  margin: 0 70px 0 0; /* Adjust this value to set the desired gap */
 }
 
 .inactive {
-  padding: 10px;
   background-color: transparent;
   border: none;
   cursor: pointer;
@@ -32,7 +30,7 @@
   font-style: normal;
   font-weight: 400;
   display: inline-block; /* Set display to inline-block */
-  margin: 0 128px 0 0; /* Adjust this value to set the desired gap */
+  margin: 0 70px 0 0; /* Adjust this value to set the desired gap */
 }
 
 

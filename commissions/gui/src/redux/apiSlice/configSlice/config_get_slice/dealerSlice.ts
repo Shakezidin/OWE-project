@@ -35,6 +35,7 @@ const dealerSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
+
       // .addCase(fetchDealer.fulfilled, (state, action) => {
       //   state.loading = false;
       //   state.error = null;
@@ -64,7 +65,7 @@ const dealerSlice = createSlice({
       })     
       .addCase(fetchDealer.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message ?? "Failed to fetch dealer data";
+        state.error = action?.error?.message ?? "Failed to fetch dealer data";
       });
   },
 });

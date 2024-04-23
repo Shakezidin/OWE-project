@@ -113,6 +113,13 @@ func HandleGetDealersTierDataRequest(resp http.ResponseWriter, req *http.Request
 			EndDate = ""
 		}
 
+		// is_archived
+		IsArchived, ok := item["is_archived"].(bool)
+		if !ok || !IsArchived {
+			log.FuncErrorTrace(0, "Failed to get is_archived value for Record ID %v. Item: %+v\n", RecordId, item)
+			IsArchived = false
+		}
+
 		// Create a new GetDealerTierData object
 		dealerTierData := models.GetDealerTierData{
 			RecordId:   RecordId,
@@ -142,16 +149,14 @@ func PrepareDealerTierFilters(tableName string, dataFilter models.DataRequestBod
 	defer func() { log.ExitFn(0, "PrepareDealerTierFilters", nil) }()
 
 	var filtersBuilder strings.Builder
+	whereAdded := false // Flag to track if WHERE clause has been added
 
 	// Check if there are filters
 	if len(dataFilter.Filters) > 0 {
 		filtersBuilder.WriteString(" WHERE ")
+		whereAdded = true // Set flag to true as WHERE clause is added
 
 		for i, filter := range dataFilter.Filters {
-			if i > 0 {
-				filtersBuilder.WriteString(" AND ")
-			}
-
 			// Check if the column is a foreign key
 			column := filter.Column
 
@@ -165,6 +170,9 @@ func PrepareDealerTierFilters(tableName string, dataFilter models.DataRequestBod
 			}
 
 			// Build the filter condition using correct db column name
+			if i > 0 {
+				filtersBuilder.WriteString(" AND ")
+			}
 			switch column {
 			case "dealer_name":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud.name) %s LOWER($%d)", operator, len(whereEleList)+1))
@@ -173,21 +181,33 @@ func PrepareDealerTierFilters(tableName string, dataFilter models.DataRequestBod
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(tr.tier_name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
-				// For other columns, handle them accordingly
-				if len(filtersBuilder.String()) > len(" WHERE ") {
-					filtersBuilder.WriteString(" AND ")
-				}
-				// Assuming other columns need no change, just appending
-				filtersBuilder.WriteString("LOWER(")
-				filtersBuilder.WriteString(column)
-				filtersBuilder.WriteString(") ")
-				filtersBuilder.WriteString(operator)
-				filtersBuilder.WriteString(" LOWER($")
-				filtersBuilder.WriteString(fmt.Sprintf("%d", len(whereEleList)+1))
-				filtersBuilder.WriteString(")")
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			}
 		}
+	}
+
+	// Handle the Archived field
+	if dataFilter.Archived {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+		}
+		filtersBuilder.WriteString("dt.is_archived = TRUE")
+	} else {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+		}
+		filtersBuilder.WriteString("dt.is_archived = FALSE")
+	}
+
+	// Add pagination logic
+	if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+		offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
+		filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
 	}
 
 	filters = filtersBuilder.String()

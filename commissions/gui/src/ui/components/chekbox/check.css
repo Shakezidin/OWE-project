@@ -11,8 +11,8 @@
     height:18px !important;
     border-radius: 4px !important;
     /* margin-top: .5rem; */
-    border: 1px solid #ccc;
-    background-color:var(--border-color);
+    border: 1px solid var(--check-border-color);
+    background-color:var(--white-color);
     cursor: pointer;
     vertical-align: middle;
     position: relative;
@@ -39,7 +39,8 @@
     border-radius: .5rem !important;
     overflow: hidden;
     color: var(--check-color);
-    z-index: 20;
+    cursor: pointer;
+    z-index: 0;
     background-color: transparent !important;
 }
 .checkbox:checked::after {
@@ -49,7 +50,7 @@
     top: 3px;
     width: 4px;
     height: 6px;
-    border:  solid #fff;
+    border: solid var(--white-color);
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
 }

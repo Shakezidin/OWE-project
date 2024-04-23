@@ -15,3 +15,8 @@ type UpdateVAdder struct {
 	Active      int    `json:"active"`
 	Description string `json:"description"`
 }
+
+type UpdateVAdderArchive struct {
+	RecordId   []int64 `json:"record_id"`
+	IsArchived bool    `json:"is_archived"`
+}

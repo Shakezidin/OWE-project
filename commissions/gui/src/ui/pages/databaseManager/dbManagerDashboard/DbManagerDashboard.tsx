@@ -1,14 +1,12 @@
 import React, { useState } from "react";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
-import CreateWebHook from "./CreateWebHook";
 import "./dbManagerDash.css";
-import { BiSearch, BiChevronDown } from "react-icons/bi";
+import { BiChevronDown } from "react-icons/bi";
 import DashBarLineChart from "../../databaseManager/dbManagerDashboard/DashBarLineChart";
 import PieChartWithPaddingAngle from "./PieChartWithPaddingAngle";
-import { Bar, BarChart, Rectangle, ResponsiveContainer } from "recharts";
 import { useNavigate } from "react-router-dom";
-import { routes } from "../../../../routes/routes";
 import Boxes from "./Boxes";
+
 const DbManagerDashboard = () => {
   const navigate = useNavigate();
   const [selectedOption, setSelectedOption] = useState("");
@@ -99,6 +97,7 @@ const DbManagerDashboard = () => {
 
                 
               </div>
+
               <div className="PieBarchart-section">
                   <PieChartWithPaddingAngle data={data}/>                  
                 </div>
@@ -162,6 +161,7 @@ const DbManagerDashboard = () => {
 
           </div>
         </div>
+     
     </>
   );
 };

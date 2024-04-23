@@ -1,16 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { RiDeleteBin5Line } from "react-icons/ri";
 import "../../configure/configure.css";
-import { CiEdit } from "react-icons/ci";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import { fetchDealer } from "../../../../redux/apiSlice/configSlice/config_get_slice/dealerSlice";
 import { DealerModel } from "../../../../core/models/configuration/create/DealerModel";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import DataTableHeader from "../../../components/tableHeader/DataTableHeader";
-import FilterDealer from "../../configure/dealerOverrides/FilterDealer";
 import { FaArrowDown } from "react-icons/fa6";
-import CheckBox from "../../../components/chekbox/CheckBox";
-import { toggleRowSelection } from "../../../components/chekbox/checkHelper";
 // import CreateDealer from "./CreateDealer";
 
 

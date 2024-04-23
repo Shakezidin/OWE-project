@@ -1,6 +1,5 @@
 import React from "react";
 import { ICONS } from "../../icons/Icons";
-import { IoAddSharp } from "react-icons/io5";
 import "../../pages/configure/configure.css";
 
 interface TableProps {
@@ -11,43 +10,53 @@ interface TableProps {
   onPressImport: () => void;
   onpressExport: () => void;
   onpressAddNew: () => void;
+  isAnyRowSelected:boolean,
+  checked:boolean,
+  viewArchive:boolean,
  
+
 }
 
 const TableHeader = (props: TableProps) => {
   const {
     title,
     onPressArchive,
+    viewArchive,
     onPressFilter,
     onPressImport,
     onPressViewArchive,
     onpressExport,
     onpressAddNew,
+    isAnyRowSelected
   
   } = props;
+  console.log(viewArchive)
   return (
     <div className="commissionSection">
       <div className="rateSection">
         <h2>{title}</h2>
-      
       </div>
       <div className="iconContainer">
-        <div className="iconsSection2">
+      <div className="iconsSection2">
           <button type="button" onClick={onPressViewArchive}>
-            <img src={ICONS.VIEW_ARCHIVE} alt="" />
+         {viewArchive===true?   <img src={ICONS.Ellipse} alt="" />:   <img src={ICONS.VIEW_ARCHIVE} alt="" />}
             View Archive
           </button>
         </div>
-
+        {
+         isAnyRowSelected === true ?<>
         <div className="iconsSection2">
-          <button type="button" onClick={onPressArchive}>
-            <img src={ICONS.ARCHIVE} alt="" />
-            Archive
-          </button>
-        </div>
+        <button type="button" onClick={onPressArchive} style={{cursor:isAnyRowSelected?"pointer":"not-allowed"}}>
+          <img src={ICONS.ARCHIVE} alt="" />
+          Archive
+        </button>
+      </div>
+         </>:null
+        }
+       
         <div className="iconsSection-filter">
           <button type="button" onClick={onPressFilter}>
-            <img src={ICONS.filtercomm} alt="" />
+            <img src={ICONS.filtercomm} alt="" style={{width:"15px", height:"15px"}}/>
           </button>
         </div>
         <div className="iconsSection2">
@@ -61,7 +70,7 @@ const TableHeader = (props: TableProps) => {
             Export
           </button>
         </div>
-        <div className="iconsSection2 hover-btn">
+        <div className="iconsSection2">
           <button
             type="button"
             style={{

@@ -4,13 +4,17 @@ import { IoAddSharp } from "react-icons/io5";
 import "../../pages/configure/configure.css";
 import { BiSearch, BiChevronDown } from 'react-icons/bi';
 import '../tableHeader/dataTableHeader.css'
-interface TableProps {
+import Select from "react-select"; interface TableProps {
     title: string;
 
     onPressFilter: () => void;
     // onPressImport: () => void;
 
 
+}
+interface OptionType {
+    value: string;
+    label: string;
 }
 
 const DataTableHeader = (props: TableProps) => {
@@ -20,12 +24,45 @@ const DataTableHeader = (props: TableProps) => {
         // onPressImport,
 
     } = props;
-    return (
-        <div className="commissionSection">
-            <div className="rateSection">
-                <h2>{title}</h2>
+
+
+
+const options: OptionType[] = [
+    { value: 'apple', label: 'Apple' },
+    { value: 'banana', label: 'Banana' },
+    { value: 'orange', label: 'Orange' },
+];
+return (
+    <div className="commissionSection">
+        <div className="rateSection">
+            <h2>{title}</h2>
+        </div>
+        <div className="data-header-section">
+            <div className="search-container-data">
+                <Select
+                   
+                    isSearchable
+
+                    value={""}
+                    styles={{
+                        control: (baseStyles, state) => ({
+                            ...baseStyles,
+                            marginTop: "px",
+                            borderRadius: "8px",
+                            outline: "none",
+                            // height: "2rem",
+                            width:"200px",
+                            fontSize: "13px",
+                            border: "1px solid #d0d5dd",
+                        }),
+                        indicatorSeparator: () => ({
+                            display: 'none' // Hide the indicator separator
+                        }),
+                    }}
+                />
 
             </div>
+
             <div className="data-header-section">
                 <div className="search-container-data">
                     <input
@@ -52,6 +89,7 @@ const DataTableHeader = (props: TableProps) => {
          
         </div >
     );
+
 };
 
 export default DataTableHeader;

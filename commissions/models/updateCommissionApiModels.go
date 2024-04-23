@@ -7,7 +7,7 @@
 package models
 
 type UpdateCommission struct {
-	RecordId   int64  `json:"record_id"`
+	RecordId  int64   `json:"record_id"`
 	Partner   string  `json:"partner"`
 	Installer string  `json:"installer"`
 	State     string  `json:"state"`
@@ -18,4 +18,9 @@ type UpdateCommission struct {
 	Rate      float64 `json:"rate"`
 	StartDate string  `json:"start_date"`
 	EndDate   string  `json:"end_date"`
+}
+
+type UpdateCommissionArchive struct {
+	RecordId   []int64 `json:"record_id"`
+	IsArchived bool    `json:"is_archived"`
 }

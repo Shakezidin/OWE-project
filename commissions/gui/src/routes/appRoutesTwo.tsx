@@ -1,324 +1,438 @@
-
 import colorConfig from "../config/colorConfig";
 import { ICONS } from "../ui/icons/Icons";
-import { routes } from "./routes";
+import { ROUTES } from "./routes";
+import { CiWallet } from "react-icons/ci";
+import { BiSupport } from "react-icons/bi";
+import { RiUserSettingsLine } from "react-icons/ri";
+import { GoProjectRoadmap } from "react-icons/go";
+import { FaHandHoldingDollar } from "react-icons/fa6";
+import { BsDatabaseGear } from "react-icons/bs";
+import { MdOutlinePayment } from "react-icons/md";
+import { FiServer } from "react-icons/fi";
+import { FcDataConfiguration } from "react-icons/fc";
+import { GrDocumentConfig } from "react-icons/gr";
+
+
 const appRoutesTwo = [
-    {
-        name: "Commission",
-        commission: [
-            {
-                path: routes.commissiondash,
-                sidebarProps: {
-                    displayText: "Dashboard",
-                    icon: <img src={ICONS.dash} className="icon-image" alt="" />,
-                },
+  {
+    commission: [
+      {
+        path:  ROUTES.COMMISSION_DASHBOARD,
+        sidebarProps: {
+          displayText: "Dealer Pay",
+          icon: <MdOutlinePayment size={20} style={{marginLeft: "5px"}} color="black"/>
+          // icon: (
+          //   <img
+          //     src={ICONS.dealerpayIcon}
+          //     className="icon-image"
+          //     alt=""
+          //     style={{
+          //       height: "18px",
+          //       width: "18px",
+          //       marginLeft: "2px",
+          //       marginRight: "2px",
+          //     }}
+          //   />
+          // ),
+        },
+      },
+    ],
+  },
+
+  {
+    repay: [
+      {
+        path: "#",
+        sidebarProps: {
+          displayText: "Rep. Pay",
+          icon:<CiWallet size={20}  style={{marginLeft: "5px"}} color="black"/>
+        },
+      },
+    ],
+  },
+
+  {
+    ar: [
+      {
+        path: "#",
+        sidebarProps: {
+          displayText: "AR",
+          icon: <FiServer size={18}  style={{marginLeft: "5px"}}  color="black"/>
+          // icon: (
+          //   <img
+          //     src={ICONS.dash}
+          //     alt=""
+          //     className="children-icon-image"
+          //     style={{ marginLeft: "2px", marginRight: "2px" }}
+          //   />
+          // ),
+        },
+      },
+    ],
+  },
+
+  {
+    db: [
+      {
+        path: "#",
+        sidebarProps: {
+          displayText: "DB Manager",
+          icon: 
+          <BsDatabaseGear size={20} style={{marginLeft: "3px"}} color="black"/>,
+        },
+        child: [
+          {
+            path: ROUTES.DB_MANAGER_DASHBOARD,
+            sidebarProps: {
+              displayText: "Dashboard",
+              icon: (
+                <div
+                  className="ellipsee"
+                  style={{
+                    backgroundColor: colorConfig.childrenicon,
+                  }}
+                ></div>
+              ),
             },
-            {
-                sidebarProps: {
-                    displayText: "Configure",
-                    icon: <img src={ICONS.config} className="icon-image" alt="" />,
-                },
-                child: [
-                    {
-                        path: routes.commissionrate,
-                        sidebarProps: {
-                            displayText: "Commission Rate",
-                            icon: (
-                                <div
-                                    className="ellipse"
-                                    style={{ backgroundColor: colorConfig.commissionColor }}
-                                ></div>
-                            ),
-                        },
-                    },
-                    {
-                        path: routes.dealerOverRoutes,
-
-
-                        sidebarProps: {
-                            displayText: "Dealer OverRides",
-                            icon: (
-                                <div
-                                    className="ellipse"
-                                    style={{ backgroundColor: colorConfig.dealerColor }}
-                                ></div>
-                            ),
-                        },
-                    },
-                    {
-                        path: routes.marketingRoutes,
-
-
-                        sidebarProps: {
-                            displayText: "Marketing Fees",
-                            icon: (
-                                <div
-                                    className="ellipse"
-                                    style={{ backgroundColor: colorConfig.marketColor }}
-                                ></div>
-                            ),
-                        },
-                    },
-                    {
-                        path: routes.adderRoutes,
-                        sidebarProps: {
-                            displayText: "Adder",
-                            icon: (
-                                <div
-                                    className="ellipse"
-                                    style={{ backgroundColor: colorConfig.adderColor }}
-                                ></div>
-                            ),
-                        },
-                    },
-                    {
-                        path: routes.saleRoutes,
-                        sidebarProps: {
-                            displayText: "Sales Type",
-                            icon: (
-                                <div
-                                    className="ellipse"
-                                    style={{ backgroundColor: colorConfig.salesColor }}
-                                ></div>
-                            ),
-                        },
-                    },
-
-                    {
-                        path: routes.tierLoanFeeRoutes,
-                        sidebarProps: {
-                            displayText: "Tier Loan fees",
-                            icon: (
-                                <div
-                                    className="ellipse"
-                                    style={{ backgroundColor: colorConfig.tierColor }}
-                                ></div>
-                            ),
-                        },
-                    },
-                    {
-                        path: routes.dealerTierRoutes,
-                        sidebarProps: {
-                            displayText: "Dealer Tier",
-                            icon: (
-                                <div
-                                    className="ellipse"
-                                    style={{ backgroundColor: colorConfig.dealerTierColor }}
-                                ></div>
-                            ),
-                        },
-                    },
-                    {
-                        path: routes.paymentSchRoutes,
-                        sidebarProps: {
-                            displayText: "Pay Schedule",
-                            icon: (
-                                <div
-                                    className="ellipse"
-                                    style={{ backgroundColor: colorConfig.payColor }}
-                                ></div>
-                            ),
-                        },
-                    },
-
-                    {
-                        path: routes.timelineRoutes,
-
-                        sidebarProps: {
-                            displayText: "TimeLine SLA",
-                            icon: (
-                                <div
-                                    className="ellipse"
-                                    style={{ backgroundColor: colorConfig.timeLineColor }}
-                                ></div>
-                            ),
-                        },
-                    },
-
-                    {
-                        path: routes.loanRoutes,
-
-                        sidebarProps: {
-                            displayText: "Loan Type",
-                            icon: (
-                                <div
-                                    className="ellipse"
-                                    style={{ backgroundColor: colorConfig.loanTypeColor }}
-                                ></div>
-                            ),
-                        },
-                    },
-                    {
-                        path: routes.autoadderRoutes,
-
-                        sidebarProps: {
-                            displayText: "Auto Adder",
-                            icon: (
-                                <div
-                                    className="ellipse"
-                                    style={{ backgroundColor: colorConfig.marketColor }}
-                                ></div>
-                            ),
-                        },
-                    },
-                    {
-                        path: routes.loanFeeRoutes,
-                        sidebarProps: {
-                            displayText: "Loan Fee Addr",
-                            icon: (
-                                <div
-                                    className="ellipse"
-                                    style={{ backgroundColor: colorConfig.loanTypeColor }}
-                                ></div>
-                            ),
-                        },
-                    },
-                    {
-                        path: routes.rebetDataRoutes,
-
-                        sidebarProps: {
-                            displayText: "Rebate Data",
-                            icon: (
-                                <div
-                                    className="ellipse"
-                                    style={{ backgroundColor: colorConfig.dealerColor }}
-                                ></div>
-                            ),
-                        },
-                    },
-                    {
-                        path: routes.referalDataRoutes,
-
-                        sidebarProps: {
-                            displayText: "Referal Data",
-                            icon: (
-                                <div
-                                    className="ellipse"
-                                    style={{ backgroundColor: colorConfig.commissionColor }}
-                                ></div>
-                            ),
-                        },
-                    },
-                    {
-                        path: routes.dealerCreditRoutes,
-
-                        sidebarProps: {
-                            displayText: "Dealer Credit",
-                            icon: (
-                                <div
-                                    className="ellipse"
-                                    style={{ backgroundColor: colorConfig.adderColor }}
-                                ></div>
-                            ),
-                        },
-                    },
-                    {
-                        path: routes.nonCommRoutes,
-
-                        sidebarProps: {
-                            displayText: "Non-Comm(DLRPay)",
-                            icon: (
-                                <div
-                                    className="ellipse"
-                                    style={{ backgroundColor: colorConfig.payColor }}
-                                ></div>
-                            ),
-                        },
-                    },
-                    {
-                        path: routes.dlrOthRoutes,
-
-                        sidebarProps: {
-                            displayText: "DLR-OTH(DLRPay)",
-                            icon: (
-                                <div
-                                    className="ellipse"
-                                    style={{ backgroundColor: colorConfig.dealerTierColor }}
-                                ></div>
-                            ),
-                        },
-                    },
-                    //       - AutoAdder
-                    // LoanFeeAddr
-                    // Rebate Data
-                    // Referal Data
-                    // dealer credit
-                    // non-comm (DLR PAY)
-                    // DLR-OTH (DLR PAY)
-
-                ],
+          },
+          {
+            path: ROUTES.DB_MANAGER_DATA_TABLE,
+            sidebarProps: {
+              displayText: "Data",
+              icon: (
+                <div
+                  className="ellipsee"
+                  style={{
+                    backgroundColor: colorConfig.childrenicon,
+                  }}
+                ></div>
+              ),
             },
-            {
-                path: routes.reportRoutes,
-                sidebarProps: {
-                    displayText: "Report",
-                    icon: <img src={ICONS.reportIcon} className="icon-image" alt="" />,
-                },
+          },
+          {
+            path: ROUTES.DB_MANAGER_USER_ACTIVITY,
+            sidebarProps: {
+              displayText: "User Activity",
+              icon: (
+                <div
+                  className="ellipsee"
+                  style={{
+                    backgroundColor: colorConfig.childrenicon,
+                  }}
+                ></div>
+              ),
             },
-        ]
-    },
-    {
-        name: "Other",
-        other: [
+          },
+        ],
+      },
+    ],
+  },
 
-
-            {
-                path: routes.projectRoutes,
-
-                sidebarProps: {
-                    displayText: "Project Tracker",
-                    icon: <img src={ICONS.trackerIcon} className="icon-image" alt="" />,
-                },
+  {
+    project: [
+      {
+        path: "##",
+        sidebarProps: {
+          displayText: "Project Tracking",
+          icon:  <GoProjectRoadmap size={18} style={{marginLeft: "3px"}} color="black"/>
+        },
+        child: [
+          {
+            path: "#",
+            sidebarProps: {
+              displayText: "Performance",
+              icon: (
+                <div
+                  className="ellipsee"
+                  style={{
+                    backgroundColor: colorConfig.childrenicon,
+                  }}
+                ></div>
+              ),
             },
-            {
-                path: routes.dbDashRoutes,
-                sidebarProps: {
-                    displayText: "Db Dashboard",
-                    icon: <img src={ICONS.dash} className="icon-image" alt="" />,
-                },
+          },
+          {
+            path:  ROUTES.PROJECT,
+            sidebarProps: {
+              displayText: "Project Detail",
+              icon: (
+                <div
+                  className="ellipsee"
+                  style={{
+                    backgroundColor: colorConfig.childrenicon,
+                  }}
+                ></div>
+              ),
             },
-            {
-                path: routes.dataTableRoutes,
-                sidebarProps: {
-                    displayText: "Data",
-                    icon: <img src={ICONS.reportIcon} className="icon-image" alt="" />,
-                },
-            },
-            {
-                path: routes.userActivityRoutes,
-                sidebarProps: {
-                    displayText: "UserActivity",
-                    icon: <img src={ICONS.activityIcon} className="icon-image" alt="" />,
-                },
-            },
-            {
-                path: routes.usermgtRoutes,
+          },
+        ],
+      },
+    ],
+  },
 
-                sidebarProps: {
-                    displayText: "User Management",
-                    icon: <img src={ICONS.userMan} className="icon-image" alt="" />,
-                },
+  {
+    other: [
+      {
+        path:   ROUTES.USER_MANAEMENT,
+
+        sidebarProps: {
+          displayText: "User Management",
+          icon:<RiUserSettingsLine size={20} color="black" style={{flexShrink: "0", }}/>
+        },
+      },
+      {
+        path: "#",
+        sidebarProps: {
+          displayText: "Configure",
+          icon: <GrDocumentConfig size={20} color="black" style={{flexShrink: "0", }}/> 
+        },
+        child: [
+          {
+            path: ROUTES.CONFIG_COMMISSION_RATE,
+            sidebarProps: {
+              displayText: "Commission Rate",
+              icon: (
+                <div
+                  className="ellipse"
+                  style={{ backgroundColor: colorConfig.commissionColor }}
+                ></div>
+              ),
             },
-            {
-                path: routes.technicalSupportRoutes,
-
-                sidebarProps: {
-                    displayText: "Technical Support",
-                    icon: <img src={ICONS.techIcon} className="icon-image" alt="" />,
-                },
+          },
+          {
+            path: ROUTES.CONFIG_DEALER_OVER,
+            sidebarProps: {
+              displayText: "Dealer OverRides",
+              icon: (
+                <div
+                  className="ellipse"
+                  style={{ backgroundColor: colorConfig.dealerColor }}
+                ></div>
+              ),
             },
-            {
-                path: routes.accountSettingRoutes,
+          },
+          {
+            path: ROUTES.CONFIG_MARKETING,
 
-                sidebarProps: {
-                    displayText: "My Account",
-                    icon: <img src={ICONS.accountIcon} className="icon-image" alt="" />,
-                },
+            sidebarProps: {
+              displayText: "Marketing Fees",
+              icon: (
+                <div
+                  className="ellipse"
+                  style={{ backgroundColor: colorConfig.marketColor }}
+                ></div>
+              ),
             },
-        ]
-    }
+          },
+          {
+            path: ROUTES.CONFIG_ADDER,
+            sidebarProps: {
+              displayText: "Adder",
+              icon: (
+                <div
+                  className="ellipse"
+                  style={{ backgroundColor: colorConfig.adderColor }}
+                ></div>
+              ),
+            },
+          },
+          {
+            path: ROUTES.CONFIG_SALE,
+            sidebarProps: {
+              displayText: "Sales Type",
+              icon: (
+                <div
+                  className="ellipse"
+                  style={{ backgroundColor: colorConfig.salesColor }}
+                ></div>
+              ),
+            },
+          },
 
+          {
+            path: ROUTES.CONFIG_TIER_LOAN_FEE,
+            sidebarProps: {
+              displayText: "Tier Loan fees",
+              icon: (
+                <div
+                  className="ellipse"
+                  style={{ backgroundColor: colorConfig.tierColor }}
+                ></div>
+              ),
+            },
+          },
+          {
+            path: ROUTES.CONFIG_DEALER_TIER,
+            sidebarProps: {
+              displayText: "Dealer Tier",
+              icon: (
+                <div
+                  className="ellipse"
+                  style={{ backgroundColor: colorConfig.dealerTierColor }}
+                ></div>
+              ),
+            },
+          },
+          {
+            path: ROUTES.CONFIG_PAYMENT_SCHEDULE,
+            sidebarProps: {
+              displayText: "Pay Schedule",
+              icon: (
+                <div
+                  className="ellipse"
+                  style={{ backgroundColor: colorConfig.payColor }}
+                ></div>
+              ),
+            },
+          },
 
+          {
+            path: ROUTES.CONFIG_TIMELINE,
+
+            sidebarProps: {
+              displayText: "TimeLine SLA",
+              icon: (
+                <div
+                  className="ellipse"
+                  style={{ backgroundColor: colorConfig.timeLineColor }}
+                ></div>
+              ),
+            },
+          },
+
+          {
+            path: ROUTES.CONFIG_LOAN,
+
+            sidebarProps: {
+              displayText: "Loan Type",
+              icon: (
+                <div
+                  className="ellipse"
+                  style={{ backgroundColor: colorConfig.loanTypeColor }}
+                ></div>
+              ),
+            },
+          },
+          {
+            path: ROUTES.CONFIG_AUTO_ADDER,
+
+            sidebarProps: {
+              displayText: "Auto Adder",
+              icon: (
+                <div
+                  className="ellipse"
+                  style={{ backgroundColor: colorConfig.marketColor }}
+                ></div>
+              ),
+            },
+          },
+          {
+            path: ROUTES.CONFIG_LOAN_FEE,
+            sidebarProps: {
+              displayText: "Loan Fee Addr",
+              icon: (
+                <div
+                  className="ellipse"
+                  style={{ backgroundColor: colorConfig.loanTypeColor }}
+                ></div>
+              ),
+            },
+          },
+          {
+            path: ROUTES.CONFIG_REBET_DATA,
+
+            sidebarProps: {
+              displayText: "Rebate Data",
+              icon: (
+                <div
+                  className="ellipse"
+                  style={{ backgroundColor: colorConfig.dealerColor }}
+                ></div>
+              ),
+            },
+          },
+          {
+            path: ROUTES.CONFIG_REFERAL_DATA,
+
+            sidebarProps: {
+              displayText: "Referal Data",
+              icon: (
+                <div
+                  className="ellipse"
+                  style={{ backgroundColor: colorConfig.commissionColor }}
+                ></div>
+              ),
+            },
+          },
+          {
+            path: ROUTES.CONFIG_DEALER_CREDIT,
+
+            sidebarProps: {
+              displayText: "Dealer Credit",
+              icon: (
+                <div
+                  className="ellipse"
+                  style={{ backgroundColor: colorConfig.adderColor }}
+                ></div>
+              ),
+            },
+          },
+          {
+            path: ROUTES.CONFIG_NON_COMM_DLR_PAY,
+
+            sidebarProps: {
+              displayText: "NonComm(DLRPay)",
+              icon: (
+                <div
+                  className="ellipse"
+                  style={{ backgroundColor: colorConfig.payColor }}
+                ></div>
+              ),
+            },
+          },
+          {
+            path: ROUTES.CONFIG_DLE_OTH_PAY,
+
+            sidebarProps: {
+              displayText: "DLR-OTH(DLRPay)",
+              icon: (
+                <div
+                  className="ellipse"
+                  style={{ backgroundColor: colorConfig.dealerTierColor }}
+                ></div>
+              ),
+            },
+          },
+          //       - AutoAdder
+          // LoanFeeAddr
+          // Rebate Data
+          // Referal Data
+          // dealer credit
+          // non-comm (DLR PAY)
+          // DLR-OTH (DLR PAY)
+        ],
+      },
+
+      {
+        path:  ROUTES.TECHNICAL_SUPPORT,
+
+        sidebarProps: {
+          displayText: "Technical Support",
+          icon: <BiSupport size={20} color="black"  style={{flexShrink: "0",}}/>,
+        },
+      },
+    ],
+  },
 ];
+
+// const newArr =[
+//   {
+//     path:"",
+//     label:"Dealer Pay",
+//     children:[{name:"Comission",icon:"",path:""}],
+//     icon:"",
+//     hasChildren:true,
+//   }
+// ]
 
 export default appRoutesTwo;

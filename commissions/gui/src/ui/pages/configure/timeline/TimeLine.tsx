@@ -1,7 +1,4 @@
 import React, { useEffect, useState } from "react";
-
-import { RiDeleteBin5Line } from "react-icons/ri";
-import { CiEdit } from "react-icons/ci";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { ICONS } from "../../../icons/Icons";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
@@ -9,16 +6,16 @@ import { fetchTimeLineSla } from "../../../../redux/apiSlice/configSlice/config_
 import CreateTimeLine from "./CreateTimeLine";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import {
-  toggleAllRows,
   toggleRowSelection,
 } from "../../../components/chekbox/checkHelper";
 import Pagination from "../../../components/pagination/Pagination";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
-import FilterTimeLine from "./FilterTimeLine";
-import { FaArrowDown } from "react-icons/fa6";
 import { TimeLineSlaModel } from "../../../../core/models/configuration/create/TimeLineSlaModel";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
-import { Column } from "../../../../core/models/data_models/FilterSelectModel";
+
+import SortableHeader from "../../../components/tableHeader/SortableHeader";
+import { TimeLineSlaColumns } from "../../../../resources/static_data/configureHeaderData/TimeLineSlaColumn";
+import FilterModal from "../../../components/FilterModal/FilterModal";
 const TimeLine = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -38,29 +35,23 @@ const TimeLine = () => {
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
   const [editedTimeLineSla, setEditedTimeLineSla] = useState<TimeLineSlaModel | null>(null);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
+  const [viewArchived, setViewArchived] = useState<boolean>(false);
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
+  const [sortKey, setSortKey] = useState("");
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
     };
     dispatch(fetchTimeLineSla(pageNumber));
-  }, [dispatch,currentPage]);
+  }, [dispatch, currentPage]);
 
-  const columns: Column[] = [
-    // { name: "record_id", displayName: "Record ID", type: "number" },
-    { name: "type_m2m", displayName: "Type M2M", type: "string" },
-    { name: "state", displayName: "State", type: "string" },
-    { name: "days", displayName: "Days", type: "string" },
-    { name: "start_date", displayName: "Start Date", type: "date" },
-    { name: "end_date", displayName: "End Date", type: "date" }
-  ];
-  const filter = ()=>{
+  const filter = () => {
     setFilterOpen(true)
-   
+
   }
- 
 
   const paginate = (pageNumber: number) => {
     dispatch(setCurrentPage(pageNumber));
@@ -80,19 +71,44 @@ const TimeLine = () => {
   const currentPageData = timelinesla_list?.slice(startIndex, endIndex);
 
   const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === timelinesla_list.length;
+  const isAllRowsSelected = selectedRows.size === timelinesla_list?.length;
+  const handleSort = (key: any) => {
+    if (sortKey === key) {
+      setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
+    } else {
+      setSortKey(key);
+      setSortDirection('asc');
+    }
+  };
 
+  if (sortKey) {
+    currentPageData.sort((a: any, b: any) => {
+      const aValue = a[sortKey];
+      const bValue = b[sortKey];
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        return sortDirection === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+      } else {
+        // Ensure numeric values for arithmetic operations
+        const numericAValue = typeof aValue === 'number' ? aValue : parseFloat(aValue);
+        const numericBValue = typeof bValue === 'number' ? bValue : parseFloat(bValue);
+        return sortDirection === 'asc' ? numericAValue - numericBValue : numericBValue - numericAValue;
+      }
+    });
+  }
   const handleTimeLineSla = () => {
     setEditMode(false);
     setEditedTimeLineSla(null);
     handleOpen()
   };
 
-  const handleEditTimeLineSla = (timeLineSlaData:TimeLineSlaModel) => {
+  const handleEditTimeLineSla = (timeLineSlaData: TimeLineSlaModel) => {
     setEditMode(true);
     setEditedTimeLineSla(timeLineSlaData);
     handleOpen()
   };
+  const fetchFunction = (req: any) => {
+    dispatch(fetchTimeLineSla(req));
+   };
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -100,10 +116,10 @@ const TimeLine = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
- 
+
   return (
     <div className="comm">
-       <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Timeline SLA"/>
+      <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Timeline SLA" />
       <div className="commissionContainer">
         <TableHeader
           title="Time Line SLA"
@@ -111,128 +127,125 @@ const TimeLine = () => {
           onPressArchive={() => { }}
           onPressFilter={() => filter()}
           onPressImport={() => { }}
+          checked={isAllRowsSelected}
+          viewArchive={viewArchived}
+          isAnyRowSelected={isAnyRowSelected}
           onpressExport={() => { }}
           onpressAddNew={() => handleTimeLineSla()}
         />
-        {filterOPen && <FilterTimeLine handleClose={filterClose}
-         columns={columns}
-         page_number = {1}
-         page_size = {5} />}
-        {open && <CreateTimeLine 
-        timeLineSlaData={editedTimeLineSla}
-        editMode={editMode}
-        handleClose={handleClose} />}
+        {filterOPen && <FilterModal handleClose={filterClose}
+          columns={TimeLineSlaColumns}
+          page_number={currentPage}
+          fetchFunction={fetchFunction}
+          page_size={itemsPerPage} />}
+        {open && <CreateTimeLine
+          timeLineSlaData={editedTimeLineSla}
+          editMode={editMode}
+          handleClose={handleClose} />}
+        <div
+          className="TableContainer"
+          style={{ overflowX: "auto", whiteSpace: "nowrap" }}
+        >
+          <table>
 
-          <table  style={{ overflowX: "auto", whiteSpace: "nowrap" }}>
-        
-           <thead >
+            <thead >
               <tr>
-                <th>
-                  <div>
-                    <CheckBox
-                      checked={selectAllChecked}
-                      onChange={() =>
-                        toggleAllRows(
-                          selectedRows,
-                          timelinesla_list,
-                          setSelectedRows,
-                          setSelectAllChecked
-                        )
-                      }
-                      indeterminate={isAnyRowSelected && !isAllRowsSelected}
+
+                {
+                  TimeLineSlaColumns?.map((item, key) => (
+                    <SortableHeader
+                      key={key}
+                      isCheckbox={item.isCheckbox}
+                      titleName={item.displayName}
+                      data={timelinesla_list}
+                      isAllRowsSelected={isAllRowsSelected}
+                      isAnyRowSelected={isAnyRowSelected}
+                      selectAllChecked={selectAllChecked}
+                      setSelectAllChecked={setSelectAllChecked}
+                      selectedRows={selectedRows}
+                      setSelectedRows={setSelectedRows}
+                      sortKey={item.name}
+                      sortDirection={sortKey === item.name ? sortDirection : undefined}
+                      onClick={() => handleSort(item.name)}
                     />
-                  </div>
-                </th>
+                  ))
+                }
                 <th>
-                  <div className="table-header">
-                    <p>TYPE / M2M</p> <FaArrowDown style={{color:"#667085"}}/>
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>State</p> <FaArrowDown style={{color:"#667085"}}/>
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Days</p> <FaArrowDown style={{color:"#667085"}}/>
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Start Date</p> <FaArrowDown style={{color:"#667085"}}/>
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>End Date</p> <FaArrowDown style={{color:"#667085"}}/>
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Action</p> <FaArrowDown style={{color:"#667085"}}/>
+                  <div className="action-header">
+                    <p>Action</p>
                   </div>
                 </th>
               </tr>
             </thead>
-          <tbody >
+            <tbody >
               {currentPageData?.length > 0
-                ? currentPageData?.map((el, i) => (
+                ? currentPageData?.map((el: any, i: any) => (
                   <tr
                     key={i}
                     className={selectedRows.has(i) ? "selected" : ""}
                   >
-                    <td>
-                      <CheckBox
-                        checked={selectedRows.has(i)}
-                        onChange={() =>
-                          toggleRowSelection(
-                            i,
-                            selectedRows,
-                            setSelectedRows,
-                            setSelectAllChecked
-                          )
-                        }
-                      />
-                    </td>
+
                     <td style={{ fontWeight: "500", color: "black" }}>
-                      {el.type_m2m}
+                      <div className="flex-check">
+                        <CheckBox
+                          checked={selectedRows.has(i)}
+                          onChange={() =>
+                            toggleRowSelection(
+                              i,
+                              selectedRows,
+                              setSelectedRows,
+                              setSelectAllChecked
+                            )
+                          }
+                        />
+                        {el.type_m2m}
+                      </div>
                     </td>
                     <td>{el.state}</td>
                     <td>{el.days}</td>
                     <td>{el.start_date}</td>
                     <td>{el.end_date}</td>
                     <td
-                      style={{
-                        display: "flex",
-                        gap: "1rem",
-                        alignItems: "center",
-                      }}
+
                     >
-                      <img src={ICONS.ARCHIVE} alt="" />
-                     <div className="" onClick={()=>handleEditTimeLineSla(el)} style={{cursor:"pointer"}}>
-                     <img src={ICONS.editIcon} alt="" />
-                     </div>
+                      <div className="action-icon">
+                        <div className="">
+                          <img src={ICONS.ARCHIVE} alt="" />
+                        </div>
+                        <div className="" onClick={() => handleEditTimeLineSla(el)} style={{ cursor: "pointer" }}>
+                          <img src={ICONS.editIcon} alt="" />
+                        </div>
+                      </div>
                     </td>
                   </tr>
                 ))
                 : null}
             </tbody>
-    
+
           </table>
-        
         </div>
-       {
-        timelinesla_list?.length>0 ? <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages} // You need to calculate total pages
-        paginate={paginate}
-        goToNextPage={goToNextPage}
-        goToPrevPage={goToPrevPage}
-      />:null
-       }
+        <div className="page-heading-container">
+
+          <p className="page-heading">
+            {currentPage} - {totalPages} of {currentPageData?.length} item
+          </p>
+
+          {
+            timelinesla_list?.length > 0 ? <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages} // You need to calculate total pages
+              paginate={paginate}
+              currentPageData={currentPageData}
+              goToNextPage={goToNextPage}
+              goToPrevPage={goToPrevPage}
+            /> : null
+          }
+        </div>
+
       </div>
-  
+
+    </div>
+
   );
 };
 

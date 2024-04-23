@@ -1,4 +1,3 @@
-import UserTable from "../../ui/pages/userManagement/userManagerAllTable/UserTable";
 
 export const partners = [
   { value: 'OWE', label: 'OWE' },
@@ -64,12 +63,26 @@ export const paySaleTypeData = [
   { value: "BATTERY", label: 'BATTERY' },
 ]
 export const userSelectData = [
-  { value: "Admin User", label: 'Admin User' },
-  { value: "Appointment Setter", label: 'Appointment Setter' },
+  { value: "admin", label: 'Admin' },
+  { value: "db_user", label: 'DB User' },
+  { value: "ap_setter", label: 'Appointment Setter' },
   { value: "Partner", label: 'Partner' },
-  { value: "Regional Manager", label: 'Regional Manager' },
-  { value: "Dealer Owner", label: 'Dealer Owner' },
-  { value: "Sales Representative", label: 'Sales Representative' },
-  { value: "Sales Manager", label: 'Sales Manager' },
+  { value: "rm", label: 'Regional Manager' },
+  { value: "dealer_owner", label: 'Dealer Owner' },
+  { value: "sales_rep_m", label: 'Sales Representative Manager' },
+  { value: "sales_m", label: 'Sales Manager' },
+]
+
+export const payRollData = [
+  { value: "02/04/2024", label: '02/04/2024' },
+  { value: "03/04/2024", label: '03/04/2024' },
+  { value: "04/04/2024", label: '04/04/2024' },
+  { value: "05/04/2024", label: '05/04/2024' },
+]
+
+export const comissionValueData = [
+  { value: "All", label: 'All' },
+  { value: "Percentage", label: 'Percentage' },
+  { value: "RL", label: 'RL' },
 
 ]

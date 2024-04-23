@@ -79,6 +79,7 @@ BEGIN
         sale_price,
         rep_type,
         rl,
+        is_archived,
         rate,
         start_date,
         end_date
@@ -91,6 +92,7 @@ BEGIN
         p_sale_price,
         v_rep_type_id,
         p_rl,
+        FALSE,  -- Set is_archived to false
         p_rate,
         p_start_date,
         p_end_date

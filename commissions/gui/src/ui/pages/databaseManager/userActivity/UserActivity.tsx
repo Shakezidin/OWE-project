@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { RiDeleteBin5Line } from "react-icons/ri";
+
 import "../../configure/configure.css";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
+
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import { fetchDealer } from "../../../../redux/apiSlice/configSlice/config_get_slice/dealerSlice";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import DataTableHeader from "../../../components/tableHeader/DataTableHeader";
-import FilterDealer from "../../configure/dealerOverrides/FilterDealer";
+
 import CheckBox from "../../../components/chekbox/CheckBox";
 import { toggleAllRows, toggleRowSelection } from "../../../components/chekbox/checkHelper";
 import { FaArrowDown } from "react-icons/fa6";

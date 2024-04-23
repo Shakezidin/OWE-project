@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "../configure.css";
-import { RiDeleteBin5Line } from "react-icons/ri";
-import { CiEdit } from "react-icons/ci";
-
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { ICONS } from "../../../icons/Icons";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
@@ -10,14 +7,15 @@ import { fetchPaySchedule } from "../../../../redux/apiSlice/configSlice/config_
 import CreatePaymentSchedule from "./CreatePaymentSchedule";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import {
-  toggleAllRows,
   toggleRowSelection,
 } from "../../../components/chekbox/checkHelper";
-import FilterPayment from "./FilterPayment";
-import { FaArrowDown } from "react-icons/fa6";
 import { PayScheduleModel } from "../../../../core/models/configuration/create/PayScheduleModel";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
-import { Column } from "../../../../core/models/data_models/FilterSelectModel";
+import Pagination from "../../../components/pagination/Pagination";
+import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
+import { PayScheduleColumns } from "../../../../resources/static_data/configureHeaderData/PayScheduleColumn";
+import SortableHeader from "../../../components/tableHeader/SortableHeader";
+import FilterModal from "../../../components/FilterModal/FilterModal";
 
 const PaymentSchedule = () => {
   const dispatch = useAppDispatch();
@@ -36,38 +34,37 @@ const PaymentSchedule = () => {
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
-
-
+  const [sortKey, setSortKey] =  useState("");
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const itemsPerPage = 10;
+  const [viewArchived, setViewArchived] = useState<boolean>(false);
+  const currentPage = useAppSelector((state) => state.paginationType.currentPage);
   const [editedPaySchedule, setEditedPaySchedule] =
     useState<PayScheduleModel | null>(null);
   useEffect(() => {
     const pageNumber = {
-      page_number: 1,
-      page_size: 10,
+      page_number: currentPage,
+      page_size: itemsPerPage,
     };
     dispatch(fetchPaySchedule(pageNumber));
-  }, [dispatch]);
+  }, [dispatch,currentPage]);
   // Extract column names
-  const columns: Column[] = [
-    // { name: "record_id", displayName: "Record ID", type: "number" },
 
-    { name: "partner", displayName: "Partner", type: "string" },
-    { name: "partner_name", displayName: "Partner Name", type: "string" },
-    { name: "installer_name", displayName: "Installer Name", type: "string" },
-    { name: "sale_type", displayName: "Partner", type: "string" },
-    { name: "state", displayName: "State", type: "string" },
-    { name: "rl", displayName: "Rate List", type: "string" },
-    { name: "draw", displayName: "Draw", type: "string" },
-    { name: "draw_max", displayName: "Draw Max", type: "string" },
-    { name: "rep_draw", displayName: "rep_draw", type: "string" },
-    { name: "rep_draw_max", displayName: "rep_draw_max", type: "string" },
-    { name: "rep_pay", displayName: "rep_pay", type: "string" },
-    { name: "start_date", displayName: "Start Date", type: "date" },
-    { name: "end_date", displayName: "End Date", type: "date" }
-  ];
   const filter = () => {
     setFilterOpen(true);
   
+  };
+  const paginate = (pageNumber: number) => {
+    dispatch(setCurrentPage(pageNumber));
+  };
+
+
+  const goToNextPage = () => {
+    dispatch(setCurrentPage(currentPage + 1));
+  };
+
+  const goToPrevPage = () => {
+    dispatch(setCurrentPage(currentPage - 1));
   };
 
   const handleAddPaySchedule = () => {
@@ -81,6 +78,39 @@ const PaymentSchedule = () => {
     setEditedPaySchedule(payEditedData);
     handleOpen();
   };
+  const totalPages = Math.ceil(payScheduleList?.length / itemsPerPage);
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentPageData = payScheduleList?.slice(startIndex, endIndex);
+  const isAnyRowSelected = selectedRows.size > 0;
+  const isAllRowsSelected = selectedRows.size === payScheduleList.length;
+  const handleSort = (key:any) => {
+    if (sortKey === key) {
+      setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
+    } else {
+      setSortKey(key);
+      setSortDirection('asc');
+    }
+  };
+
+  if (sortKey) {
+    currentPageData.sort((a:any, b:any) => {
+      const aValue = a[sortKey];
+      const bValue = b[sortKey];
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        return sortDirection === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+      } else {
+        // Ensure numeric values for arithmetic operations
+        const numericAValue = typeof aValue === 'number' ? aValue : parseFloat(aValue);
+        const numericBValue = typeof bValue === 'number' ? bValue : parseFloat(bValue);
+        return sortDirection === 'asc' ? numericAValue - numericBValue : numericBValue - numericAValue;
+      }
+    });
+  }
+  const fetchFunction = (req: any) => {
+    dispatch(fetchPaySchedule(req));
+   };
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -88,9 +118,7 @@ const PaymentSchedule = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
-
-  const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === payScheduleList.length;
+ 
   return (
     <div className="comm">
          <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Payment Scheduler"/>
@@ -99,17 +127,21 @@ const PaymentSchedule = () => {
           title="Payment Scheduler"
           onPressViewArchive={() => {}}
           onPressArchive={() => {}}
+          viewArchive={viewArchived}
+          checked={isAllRowsSelected}
+          isAnyRowSelected={isAnyRowSelected}
           onPressFilter={() => filter()}
           onPressImport={() => {}}
           onpressExport={() => {}}
           onpressAddNew={() => handleAddPaySchedule()}
         />
         {filterOPen && (
-          <FilterPayment
+          <FilterModal
+          fetchFunction={fetchFunction}
             handleClose={filterClose}
-            columns={columns}
-            page_number={1}
-            page_size={5}
+            columns={PayScheduleColumns}
+            page_number={currentPage}
+            page_size={itemsPerPage}
           />
         )}
         {open && (
@@ -126,107 +158,41 @@ const PaymentSchedule = () => {
           <table>
             <thead>
               <tr>
+            
+                {
+                PayScheduleColumns?.map((item,key)=>(
+                  <SortableHeader
+                  key={key}
+                  isCheckbox={item.isCheckbox}
+                  titleName={item.displayName}
+                  data={payScheduleList}
+                  isAllRowsSelected={isAllRowsSelected}
+                  isAnyRowSelected={isAnyRowSelected}
+                  selectAllChecked={selectAllChecked}
+                  setSelectAllChecked={setSelectAllChecked}
+                  selectedRows={selectedRows}
+                  setSelectedRows={setSelectedRows}
+                  sortKey={item.name}
+                  sortDirection={sortKey === item.name ? sortDirection : undefined}
+                  onClick={() => handleSort(item.name)}
+                />
+                ))
+              }
                 <th>
-                  <div>
-                    <CheckBox
-                      checked={selectAllChecked}
-                      onChange={() =>
-                        toggleAllRows(
-                          selectedRows,
-                          payScheduleList,
-                          setSelectedRows,
-                          setSelectAllChecked
-                        )
-                      }
-                      indeterminate={isAnyRowSelected && !isAllRowsSelected}
-                    />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Partner Name</p>{" "}
-                    <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Partner</p> <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Installer</p>{" "}
-                    <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Sale Type</p>{" "}
-                    <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>ST</p> <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Rate List</p>{" "}
-                    <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Draw %</p> <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Draw Max</p> <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Rep Draw %</p>{" "}
-                    <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Rep Max Draw %</p>{" "}
-                    <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Rep Pay</p> <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Start Date</p>{" "}
-                    <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>End Date</p> <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Action</p> <FaArrowDown style={{ color: "#667085" }} />
+                  <div className="action-header">
+                    <p>Action</p>
                   </div>
                 </th>
               </tr>
             </thead>
             <tbody>
-              {payScheduleList?.length > 0
-                ? payScheduleList?.map((el, i) => (
+              {currentPageData?.length > 0
+                ? currentPageData?.map((el: any, i: any) => (
                     <tr key={i}>
-                      <td>
-                        <CheckBox
+                    
+                      <td style={{ fontWeight: "500",color:"black" }}>
+                     <div className="flex-check">
+                     <CheckBox
                           checked={selectedRows.has(i)}
                           onChange={() =>
                             toggleRowSelection(
@@ -237,8 +203,9 @@ const PaymentSchedule = () => {
                             )
                           }
                         />
-                      </td>
-                      <td style={{ fontWeight: "600" }}>{el.partner_name}</td>
+                        {el.partner_name}
+                     </div>
+                        </td>
                       <td>{el.partner}</td>
                       <td>{el.installer_name}</td>
                       <td>{el.sale_type}</td>
@@ -252,13 +219,12 @@ const PaymentSchedule = () => {
                       <td>{el.start_date}</td>
                       <td>{el.end_date}</td>
                       <td
-                        style={{
-                          display: "flex",
-                          gap: "1rem",
-                          alignItems: "center",
-                        }}
+                      
                       >
-                        <img src={ICONS.ARCHIVE} alt="" />
+                      <div className="action-icon">
+                    <div className="">
+                    <img src={ICONS.ARCHIVE} alt="" />
+                    </div>
                         <div
                           className=""
                           style={{ cursor: "pointer" }}
@@ -266,6 +232,7 @@ const PaymentSchedule = () => {
                         >
                               <img src={ICONS.editIcon} alt="" />
                         </div>
+                      </div>
                       </td>
                     </tr>
                   ))
@@ -273,6 +240,22 @@ const PaymentSchedule = () => {
             </tbody>
           </table>
         </div>
+        <div className="page-heading-container">
+      <p className="page-heading">
+       {currentPage} - {totalPages} of {currentPageData?.length} item
+      </p>
+ 
+   {
+    payScheduleList?.length > 0 ? <Pagination
+      currentPage={currentPage}
+      totalPages={totalPages} // You need to calculate total pages
+      paginate={paginate}
+      goToNextPage={goToNextPage}
+      goToPrevPage={goToPrevPage}
+      currentPageData={currentPageData}
+    /> : null
+  }
+   </div>
       </div>
     </div>
   );

@@ -11,6 +11,12 @@ CREATE OR REPLACE FUNCTION create_new_user(
     p_user_status VARCHAR(50),
     p_designation VARCHAR(255),
     p_description VARCHAR(255),
+    p_dealer_owner VARCHAR(255),
+    p_street_address VARCHAR(255),
+    p_state VARCHAR(255),
+    p_city VARCHAR(255),
+    p_zipcode VARCHAR(255),
+    p_country VARCHAR(255),
     OUT v_user_id INT
 )
 RETURNS INT
@@ -19,6 +25,9 @@ DECLARE
     v_role_id INT;
     v_user_details_id INT;
     v_reporting_manager_id INT;
+    v_dealer_owner_id INT;
+    v_state_id INT;
+    v_zipcode_id INT;
 BEGIN
     -- Get the role_id based on the provided role_name
     SELECT role_id INTO v_role_id
@@ -48,6 +57,33 @@ BEGIN
         RAISE EXCEPTION 'Reporting manager with name % not found', p_reporting_manager;
     END IF;
 
+    -- Get the dealer owner's user_id based on the provided email
+    SELECT user_id INTO v_dealer_owner_id
+    FROM user_details
+    WHERE name = p_dealer_owner;
+
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Dealer owner with name % not found', p_dealer_owner;
+    END IF;
+
+    -- Get the state id based on the provided state name
+    SELECT state_id INTO v_state_id
+    FROM states
+    WHERE name = p_state;
+
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'state id with name % not found', p_state;
+    END IF;
+
+    -- Get the reporting manager's user_id based on the provided email
+    SELECT id INTO v_zipcode_id
+    FROM zipcodes
+    WHERE zipcode = p_zipcode;
+
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'zipcode id with zipcode % not found', p_zipcode;
+    END IF;
+
     BEGIN
         -- Insert a new user into user_details table
         INSERT INTO user_details (
@@ -58,10 +94,16 @@ BEGIN
             password,
             password_change_required,
             reporting_manager,
+            dealer_owner,   
             role_id,
             user_status,
             user_designation,
-            description
+            description,
+            street_address,
+            state,
+            city,
+            zipcode,
+            country
         )
         VALUES (
             p_name,
@@ -71,10 +113,16 @@ BEGIN
             p_password,
             p_password_change_req,
             v_reporting_manager_id,
+            v_dealer_owner_id,
             v_role_id,
             p_user_status,
             p_designation,
-            p_description
+            p_description,
+            p_street_address,
+            v_state_id,
+            p_city,
+            v_zipcode_id,
+            p_country
         )
         RETURNING user_id INTO v_user_id;
 

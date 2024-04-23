@@ -16,7 +16,11 @@ const initialState: UserAdmin = {
     password:"",
     designation:"",
     assigned_dealer_name:"",
-    role_name:""
+    role_name:"",
+    add_region:"",
+    report_to:"",
+    team_name:"",
+    reporting_to:"",
   
 };
 

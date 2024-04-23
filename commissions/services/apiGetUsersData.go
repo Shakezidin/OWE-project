@@ -60,11 +60,15 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	tableName := db.TableName_users_details
 	query = `
-	SELECT ud.name as name, ud.user_code, ud.mobile_number, ud.email_id, ud.password_change_required, ud.created_at,
-    ud.updated_at, COALESCE(ud1.name, 'NA') AS reporting_manager, ur.role_name, ud.user_status, ud.user_designation, ud.description
-	FROM user_details ud
-	LEFT JOIN user_details ud1 ON ud.reporting_manager = ud1.user_id
-	JOIN user_roles ur ON ur.role_id = ud.role_id`
+	 SELECT ud.name as name, ud.user_code, ud.mobile_number, ud.email_id, ud.password_change_required, ud.created_at,
+	 ud.updated_at, COALESCE(ud1.name, 'NA') AS reporting_manager, COALESCE(ud2.name, 'NA') AS dealer_owner, ur.role_name, ud.user_status, ud.user_designation, 
+	 ud.description, ud.street_address, st.name as state_name, ud.city, zc.zipcode, ud.country
+	 FROM user_details ud
+	 LEFT JOIN user_details ud1 ON ud.reporting_manager = ud1.user_id
+	 JOIN user_details ud2 ON ud2.user_id = ud.dealer_owner
+	 JOIN states st ON st.state_id = ud.state
+	 JOIN zipcodes zc ON zc.id = ud.zipcode
+	 JOIN user_roles ur ON ur.role_id = ud.role_id`
 
 	filter, whereEleList = PrepareUsersDetailFilters(tableName, dataReq)
 	if filter != "" {
@@ -136,6 +140,13 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 			ReportingManager = ""
 		}
 
+		// DealerOwner
+		DealerOwner, dealerownerOk := item["dealer_owner"].(string)
+		if !dealerownerOk || DealerOwner == "" {
+			log.FuncErrorTrace(0, "Failed to get DealerOwner for Item: %+v\n", item)
+			DealerOwner = ""
+		}
+
 		// UserStatus
 		UserStatus, statusOk := item["user_status"].(string)
 		if !statusOk || UserStatus == "" {
@@ -149,17 +160,53 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 			Description = ""
 		}
 
+		// StreetAddress
+		StreetAddress, strtaddrsOk := item["street_address"].(string)
+		if !strtaddrsOk || StreetAddress == "" {
+			StreetAddress = ""
+		}
+
+		// StateName
+		StateName, stateOk := item["state_name"].(string)
+		if !stateOk || StateName == "" {
+			StateName = ""
+		}
+
+		// City
+		City, cityOk := item["city"].(string)
+		if !cityOk || City == "" {
+			City = ""
+		}
+
+		// Zipcode
+		Zipcode, zipcodeOk := item["zipcode"].(string)
+		if !zipcodeOk || Zipcode == "" {
+			Zipcode = ""
+		}
+
+		// Country
+		Country, countryOk := item["country"].(string)
+		if !countryOk || Country == "" {
+			Country = ""
+		}
+
 		usersData := models.GetUsersData{
 			Name:              Name,
-			EmailID:           EmailID,
+			EmailId:           EmailID,
 			MobileNumber:      MobileNumber,
 			Designation:       Designation,
 			RoleName:          RoleName,
 			UserCode:          UserCode,
 			PasswordChangeReq: PasswordChangeReq,
 			ReportingManager:  ReportingManager,
+			DealerOwner:       DealerOwner,
 			UserStatus:        UserStatus,
 			Description:       Description,
+			StreetAddress:     StreetAddress,
+			State:             StateName,
+			City:              City,
+			Zipcode:           Zipcode,
+			Country:           Country,
 		}
 
 		usersDetailsList.UsersDataList = append(usersDetailsList.UsersDataList, usersData)
@@ -187,10 +234,6 @@ func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBo
 		filtersBuilder.WriteString(" WHERE ")
 
 		for i, filter := range dataFilter.Filters {
-			if i > 0 {
-				filtersBuilder.WriteString(" AND ")
-			}
-
 			// Check if the column is a foreign key
 			column := filter.Column
 
@@ -204,6 +247,9 @@ func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBo
 			}
 
 			// Build the filter condition using correct db column name
+			if i > 0 {
+				filtersBuilder.WriteString(" AND ")
+			}
 			switch column {
 			case "name":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud.name) %s LOWER($%d)", operator, len(whereEleList)+1))
@@ -214,22 +260,35 @@ func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBo
 			case "role_name":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ur.role_name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
+			case "dealer_owner":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud2.name) %s LOWER($%d)", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "steet_address":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud.street_address) %s LOWER($%d)", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "state":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(st.name) %s LOWER($%d)", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "city":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud.city) %s LOWER($%d)", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "zipcode":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(zc.zipcode) %s LOWER($%d)", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "country":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud.country) %s LOWER($%d)", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
 			default:
-				// For other columns, handle them accordingly
-				if len(filtersBuilder.String()) > len(" WHERE ") {
-					filtersBuilder.WriteString(" AND ")
-				}
-				// Assuming other columns need no change, just appending
-				filtersBuilder.WriteString("LOWER(")
-				filtersBuilder.WriteString(column)
-				filtersBuilder.WriteString(") ")
-				filtersBuilder.WriteString(operator)
-				filtersBuilder.WriteString(" LOWER($")
-				filtersBuilder.WriteString(fmt.Sprintf("%d", len(whereEleList)+1))
-				filtersBuilder.WriteString(")")
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			}
 		}
+	}
+
+	// Add pagination logic
+	if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+		offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
+		filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
 	}
 
 	filters = filtersBuilder.String()

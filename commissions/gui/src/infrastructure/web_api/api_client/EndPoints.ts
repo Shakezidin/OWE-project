@@ -22,34 +22,45 @@ interface Endpoints {
   paySchedule: string;
   timeLineSla: string;
   loanType: string;
-  // post config 
-  create_commission:string,
-  create_dealer:string,
-  create_dealertier:string,
-  create_marketingfee:string,
-  create_paymentschedule:string,
-  create_vadder:string,
-  create_saletype:string,
-  create_tierloanfee:string,
-  create_timelinesla:string,
-  create_loantype:string,
-  get_newFormData:string,
-  update_commission:string,
-  update_dealer:string,
-  update_vadders:string,
-  update_marketingfee:string,
-  update_saletype:string,
-  update_dealertier:string,
-  update_tierloanfee:string,
-  update_paymentschedule:string,
-  update_timelinesla:string,
-  update_loantype:string
+  // post config
+  create_commission: string;
+  create_dealer: string;
+  create_dealertier: string;
+  create_marketingfee: string;
+  create_paymentschedule: string;
+  create_vadder: string;
+  create_saletype: string;
+  create_tierloanfee: string;
+  create_timelinesla: string;
+  create_loantype: string;
+  get_newFormData: string;
+  update_commission: string;
+  update_dealer: string;
+  update_vadders: string;
+  update_marketingfee: string;
+  update_saletype: string;
+  update_dealertier: string;
+  update_tierloanfee: string;
+  update_paymentschedule: string;
+  update_timelinesla: string;
+  update_loantype: string;
+  update_commission_archive:string,
+  update_dealer_archive: string;
+  update_vadders_archive: string;
+  update_marketingfee_archive: string;
+  update_saletype_archive: string;
+  update_dealertier_archive: string;
+  update_tierloanfee_archive: string;
+  update_paymentschedule_archive: string;
+  update_timelinesla_archive: string;
+  update_loantype_archive: string;
+
 }
 
 export const EndPoints: Endpoints = {
   login: `/login`,
   resetPassword: "forgot_password",
-  // get config endpoints 
+  // get config endpoints
   commission: "get_commissions",
   dealer: "get_dealers",
   marketing: "get_marketingfee",
@@ -60,31 +71,41 @@ export const EndPoints: Endpoints = {
   paySchedule: "get_paymentschedules",
   timeLineSla: "get_timelineslas",
   loanType: "get_loantypes",
-  // post config endpoint 
-  create_commission:"create_commission",
-  create_dealer:"create_dealer",
-  create_dealertier:"create_dealertier",
-  create_loantype:"create_loantype",
-  create_marketingfee:"create_marketingfee",
-  create_paymentschedule:"create_paymentschedule",
-  create_saletype:"create_saletype",
-  create_tierloanfee:"create_tierloanfee",
-  create_vadder:"create_vadder",
-  create_timelinesla:"create_timelinesla",
+  // post config endpoint
+  create_commission: "create_commission",
+  create_dealer: "create_dealer",
+  create_dealertier: "create_dealertier",
+  create_loantype: "create_loantype",
+  create_marketingfee: "create_marketingfee",
+  create_paymentschedule: "create_paymentschedule",
+  create_saletype: "create_saletype",
+  create_tierloanfee: "create_tierloanfee",
+  create_vadder: "create_vadder",
+  create_timelinesla: "create_timelinesla",
 
-// update config point 
-update_commission:"update_commission",
-update_dealer:"update_dealer",
-update_vadders:"update_vadders",
-update_marketingfee:"update_marketingfee",
-update_saletype:"update_saletype",
-update_dealertier:"update_dealertier",
-update_tierloanfee:"update_tierloanfee",
-update_paymentschedule:"update_paymentschedule",
-update_timelinesla:"update_timelinesla",
-update_loantype:"update_loantype",
+  // update config point
+  update_commission: "update_commission",
+  update_dealer: "update_dealer",
+  update_vadders: "update_vadders",
+  update_marketingfee: "update_marketingfee",
+  update_saletype: "update_saletype",
+  update_dealertier: "update_dealertier",
+  update_tierloanfee: "update_tierloanfee",
+  update_paymentschedule: "update_paymentschedule",
+  update_timelinesla: "update_timelinesla",
+  update_loantype: "update_loantype",
 
-  // /get form Data 
-  get_newFormData:"get_newformdata"
-
+  //archive config point 
+  update_commission_archive:"update_commission_archive",
+  update_dealer_archive: "update_dealer_archive",
+  update_vadders_archive: "update_vadders_archive",
+  update_marketingfee_archive: "update_marketingfee_archive",
+  update_saletype_archive: "update_saletype_archive",
+  update_dealertier_archive: "update_dealertier_archive",
+  update_tierloanfee_archive: "update_tierloanfee_archive",
+  update_paymentschedule_archive: "update_paymentschedule_archive",
+  update_timelinesla_archive: "update_timelinesla_archive",
+  update_loantype_archive: "update_loantype_archive",
+  // /get form Data
+  get_newFormData: "get_newformdata",
 };

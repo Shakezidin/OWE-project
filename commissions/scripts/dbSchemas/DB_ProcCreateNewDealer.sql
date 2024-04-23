@@ -26,14 +26,16 @@ BEGIN
         dealer_id,
         pay_rate,
         start_date,
-        end_date
+        end_date,
+        is_archived
     )
     VALUES (
         p_sub_dealer,
         v_dealer_id,  
         p_pay_rate,
         p_start_date,
-        p_end_date
+        p_end_date,
+        FALSE
     )
     RETURNING id INTO v_dealer_override_id;
 
