@@ -69,6 +69,8 @@ import dbmanager  from '../../resources/assets/dbmanager.svg'
 import projectrack from '../../resources/assets/projecttracking.svg'
 import comm from '../../resources/assets/80commision.svg'
 import repay from "../../resources/assets/repay.svg"
+import crossIconUser from '../../resources/assets/user-cross.svg'
+import userIconImg from '../../resources/assets/user-icon-img.svg'
 export const ICONS = {
   BACKGROUND: require("../../resources/assets/background.png"),
   LOGO: require("../../resources/assets/logo.png"),
@@ -152,4 +154,6 @@ dbmanagerIcon:dbmanager,
 projectrackingIcon:projectrack,
 commission80:comm,
 repayIcon:repay,
+crossIconUser: crossIconUser,
+userIconImg: userIconImg
 };
