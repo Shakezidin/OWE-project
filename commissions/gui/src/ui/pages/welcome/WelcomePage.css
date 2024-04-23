@@ -285,12 +285,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 59px 0px;
+  margin: 55px 0px;
 }
 .welcomeOverProcess {
   display: flex;
-  height: 300px;
-  margin: 0px 116px;
+  /* height: 300px; */
+  margin: 0px 135px;
   flex-direction: column;
   align-items: flex-start;
   width: 90rem;
@@ -298,7 +298,7 @@
 
 
 .welcomeOverProcessTitle {
-  margin-left: 18px;
+  /* margin-left: 60px; */
   color: #222;
   font-family: Poppins;
   font-size: 34px;
@@ -308,7 +308,7 @@
 }
 
 .welcomeTabView {
-  margin-left: 18px;
+  /* margin-left: 60px; */
   border-width: 0px;
   border-bottom-width: 2px;
   border-bottom-color: #f5f5f5;
@@ -319,17 +319,11 @@
 }
 
 .table-box {
-  text-align: left;
-  flex-shrink: 0;
   border-radius: 16px;
   border: 1px solid #d9d9d9;
   background: #fff;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
   padding: 20px;
   width: 377px;
-  margin-right: 20px;
 }
 
 .welcomeRowTitle {
@@ -443,7 +437,11 @@
   padding: 10px 120px;
 }
 .landing-table{
-  padding: 0 20px;
+  padding-top: 1.5rem;
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  width: 100%;
 }
 .footer-logo{
   width: 0;

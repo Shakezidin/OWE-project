@@ -81,7 +81,7 @@ export const WelcomePage = () => {
               <div>
                 <img src={logo} alt={"Logo"} />
               </div>
- 
+
               <div className="welcome-phone-view">
                 <CallIcon />
                 <h3 className="welcome-phone-text">Call Us (623) 850-5700</h3>
@@ -104,7 +104,7 @@ export const WelcomePage = () => {
                 </h1>
               </div>
               <div className="welcome-right-view">
-              <img
+                <img
                   className="welcome-laptop-image"
                   src={LaptopImage}
                   alt="laptop"
@@ -122,7 +122,7 @@ export const WelcomePage = () => {
                 title="OWE HUB"
                 description="More than that, you can have any amount of layers attached "
                 onClick={() => {
-                  navigate('/login');
+                  navigate("/login");
                 }}
               />
               <CustomBox
@@ -153,8 +153,6 @@ export const WelcomePage = () => {
           </div>
         </section>
 
-
-
         <section className="welcomeAboutUsContainer">
           <div className="welcomeAboutUsView">
             <div className="welcomeAboutUsLeftView">
@@ -176,7 +174,7 @@ export const WelcomePage = () => {
                   delay={10}
                 />
               </p>
-               
+
               <p className="welcomeAboutPara">
                 <Typewriter
                   text="First, let's talk a little about what tool we will use. You can
@@ -198,16 +196,9 @@ export const WelcomePage = () => {
                   delay={10}
                 />
               </p>
-            
             </div>
-
-
           </div>
         </section>
-
-
-
-
 
         <section className="welcomeWorkEaseView">
           <span className="welcomeWorkEaseTitle">We Make Your Work Easy</span>
@@ -215,11 +206,6 @@ export const WelcomePage = () => {
           <ImageLayout images={[Grid_1, Grid_2, Grid_3, Grid_4, Grid_5]} />
         </section>
 
-
-
-
- 
-        
         <section className="welcomeOverProcessContainer">
           <div className="welcomeOverProcess">
             <span className="welcomeOverProcessTitle">Our Process</span>
@@ -236,7 +222,7 @@ export const WelcomePage = () => {
             </div>
             {/* <br /> */}
             <div className="landing-table">
-              <table>
+              {/* <table>
                 <tbody>
                   <tr>
                     {data.map((item) => (
@@ -256,11 +242,24 @@ export const WelcomePage = () => {
                     ))}
                   </tr>
                 </tbody>
-              </table>
+              </table> */}
+              {data.map((item) => (
+                <div key={item.id}>
+                  <div className="table-box">
+                    <div className="welcomeRowTitle">{item.title}</div>
+                    <div>
+                      <span className="welcomeRowStep">{item.step}</span>{" "}
+                      <span className="welcomeRowTime">{item.time}</span>
+                    </div>
+                    <div className="welcomeRowDescription">
+                      {item.description}
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </section>
-        
       </div>
       <footer className="welcomeFooterView">
         <div className="welcomeInnerView">
@@ -284,7 +283,7 @@ export const WelcomePage = () => {
           <div id="welcomeUnderLine"></div>
           <div id="welcomeFooterLowerView">
             <div className="footer-logo">
-            <img src={BusinessLogo} alt="logo" />
+              <img src={BusinessLogo} alt="logo" />
             </div>
             <div className="footer-text">
               © 2024 BY OUR WORLD ENERGY. ALL RIGHTS RESERVED.{" "}
