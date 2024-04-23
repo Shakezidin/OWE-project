@@ -37,7 +37,7 @@ const Header: React.FC<Toggleprops> = ({
 
   const handleLogout = () => {
     dispatch(logout());
-    navigate("/");
+    navigate("/login");
   };
   useEffect(() => {
     if (userName) {
@@ -180,7 +180,7 @@ const Header: React.FC<Toggleprops> = ({
                         <div className="image-icon">
                           <IoMdLogOut />
                         </div>
-                        {toggleOpen ? null : (
+                        
                           <div
                             className="tablink"
                             style={
@@ -193,7 +193,7 @@ const Header: React.FC<Toggleprops> = ({
                               Logout
                             </p>
                           </div>
-                        )}
+                        
                       </div>
                     </div>
                   )}
