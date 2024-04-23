@@ -1,11 +1,11 @@
 import colorConfig from "../config/colorConfig";
 import { ICONS } from "../ui/icons/Icons";
-import { routes } from "./routes";
+import { ROUTES } from "./routes";
 const appRoutesTwo = [
   {
     commission: [
       {
-        path: routes.commissiondash,
+        path: ROUTES.commissiondash,
         sidebarProps: {
           displayText: "Dealer Pay",
           icon: (
@@ -74,7 +74,7 @@ const appRoutesTwo = [
         },
         child: [
           {
-            path: routes.dbDashRoutes,
+            path: ROUTES.dbDashRoutes,
             sidebarProps: {
               displayText: "Dashboard",
               icon: (
@@ -88,7 +88,7 @@ const appRoutesTwo = [
             },
           },
           {
-            path: routes.dataTableRoutes,
+            path: ROUTES.dataTableRoutes,
             sidebarProps: {
               displayText: "Data",
               icon: (
@@ -102,7 +102,7 @@ const appRoutesTwo = [
             },
           },
           {
-            path: routes.userActivityRoutes,
+            path: ROUTES.userActivityRoutes,
             sidebarProps: {
               displayText: "User Activity",
               icon: (
@@ -151,7 +151,7 @@ const appRoutesTwo = [
             },
           },
           {
-            path: routes.projectRoutes,
+            path: ROUTES.projectRoutes,
             sidebarProps: {
               displayText: "Project Detail",
               icon: (
@@ -172,7 +172,7 @@ const appRoutesTwo = [
   {
     other: [
       {
-        path: routes.usermgtRoutes,
+        path: ROUTES.usermgtRoutes,
 
         sidebarProps: {
           displayText: "User Management",
@@ -193,7 +193,7 @@ const appRoutesTwo = [
         },
         child: [
           {
-            path: routes.commissionrate,
+            path: ROUTES.commissionrate,
             sidebarProps: {
               displayText: "Commission Rate",
               icon: (
@@ -205,7 +205,7 @@ const appRoutesTwo = [
             },
           },
           {
-            path: routes.dealerOverRoutes,
+            path: ROUTES.dealerOverRoutes,
             sidebarProps: {
               displayText: "Dealer OverRides",
               icon: (
@@ -217,7 +217,7 @@ const appRoutesTwo = [
             },
           },
           {
-            path: routes.marketingRoutes,
+            path: ROUTES.marketingRoutes,
 
             sidebarProps: {
               displayText: "Marketing Fees",
@@ -230,7 +230,7 @@ const appRoutesTwo = [
             },
           },
           {
-            path: routes.adderRoutes,
+            path: ROUTES.adderRoutes,
             sidebarProps: {
               displayText: "Adder",
               icon: (
@@ -242,7 +242,7 @@ const appRoutesTwo = [
             },
           },
           {
-            path: routes.saleRoutes,
+            path: ROUTES.saleRoutes,
             sidebarProps: {
               displayText: "Sales Type",
               icon: (
@@ -255,7 +255,7 @@ const appRoutesTwo = [
           },
 
           {
-            path: routes.tierLoanFeeRoutes,
+            path: ROUTES.tierLoanFeeRoutes,
             sidebarProps: {
               displayText: "Tier Loan fees",
               icon: (
@@ -267,7 +267,7 @@ const appRoutesTwo = [
             },
           },
           {
-            path: routes.dealerTierRoutes,
+            path: ROUTES.dealerTierRoutes,
             sidebarProps: {
               displayText: "Dealer Tier",
               icon: (
@@ -279,7 +279,7 @@ const appRoutesTwo = [
             },
           },
           {
-            path: routes.paymentSchRoutes,
+            path: ROUTES.paymentSchRoutes,
             sidebarProps: {
               displayText: "Pay Schedule",
               icon: (
@@ -292,7 +292,7 @@ const appRoutesTwo = [
           },
 
           {
-            path: routes.timelineRoutes,
+            path: ROUTES.timelineRoutes,
 
             sidebarProps: {
               displayText: "TimeLine SLA",
@@ -306,7 +306,7 @@ const appRoutesTwo = [
           },
 
           {
-            path: routes.loanRoutes,
+            path: ROUTES.loanRoutes,
 
             sidebarProps: {
               displayText: "Loan Type",
@@ -319,7 +319,7 @@ const appRoutesTwo = [
             },
           },
           {
-            path: routes.autoadderRoutes,
+            path: ROUTES.autoadderRoutes,
 
             sidebarProps: {
               displayText: "Auto Adder",
@@ -332,7 +332,7 @@ const appRoutesTwo = [
             },
           },
           {
-            path: routes.loanFeeRoutes,
+            path: ROUTES.loanFeeRoutes,
             sidebarProps: {
               displayText: "Loan Fee Addr",
               icon: (
@@ -344,7 +344,7 @@ const appRoutesTwo = [
             },
           },
           {
-            path: routes.rebetDataRoutes,
+            path: ROUTES.rebetDataRoutes,
 
             sidebarProps: {
               displayText: "Rebate Data",
@@ -357,7 +357,7 @@ const appRoutesTwo = [
             },
           },
           {
-            path: routes.referalDataRoutes,
+            path: ROUTES.referalDataRoutes,
 
             sidebarProps: {
               displayText: "Referal Data",
@@ -370,7 +370,7 @@ const appRoutesTwo = [
             },
           },
           {
-            path: routes.dealerCreditRoutes,
+            path: ROUTES.dealerCreditRoutes,
 
             sidebarProps: {
               displayText: "Dealer Credit",
@@ -383,7 +383,7 @@ const appRoutesTwo = [
             },
           },
           {
-            path: routes.nonCommRoutes,
+            path: ROUTES.nonCommRoutes,
 
             sidebarProps: {
               displayText: "NonComm(DLRPay)",
@@ -396,7 +396,7 @@ const appRoutesTwo = [
             },
           },
           {
-            path: routes.dlrOthRoutes,
+            path: ROUTES.dlrOthRoutes,
 
             sidebarProps: {
               displayText: "DLR-OTH(DLRPay)",
@@ -419,7 +419,7 @@ const appRoutesTwo = [
       },
 
       {
-        path: routes.technicalSupportRoutes,
+        path: ROUTES.technicalSupportRoutes,
 
         sidebarProps: {
           displayText: "Technical Support",

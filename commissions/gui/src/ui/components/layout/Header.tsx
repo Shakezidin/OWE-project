@@ -10,7 +10,7 @@ import { ICONS } from "../../icons/Icons";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logout } from "../../../redux/apiSlice/authSlice/authSlice";
-import { routes } from "../../../routes/routes";
+import { ROUTES } from "../../../routes/routes";
 import { FaUserCircle } from "react-icons/fa";
 import { IoMdLogOut } from "react-icons/io";
 
@@ -159,7 +159,7 @@ const Header: React.FC<Toggleprops> = ({
                     <div className="header-modal-1">
                       <div
                         className="image-box-container"
-                        onClick={() => navigate(routes.accountSettingRoutes)}
+                        onClick={() => navigate(ROUTES.accountSettingRoutes)}
                       >
                         <div className="image-icon">
                           <FaUserCircle />

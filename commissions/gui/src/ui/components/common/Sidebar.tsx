@@ -1,15 +1,15 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {useRef, useState } from "react";
 import appRoutesTwo from "../../../routes/appRoutesTwo";
 import "../common/sidebar.css";
 import { ICONS } from "../../icons/Icons";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   MdKeyboardArrowDown,
   MdKeyboardArrowRight,
   MdKeyboardArrowUp,
 } from "react-icons/md";
 import colorConfig from "../../../config/colorConfig";
-import { logout } from "../../../redux/apiSlice/authSlice/authSlice";
+
 interface Child {
   path: string;
   sidebarProps: {

@@ -1,4 +1,4 @@
-export const routes={
+export const ROUTES={
     commissiondash:"/commission/dashboard",
     commissionrate:"/commission/config/commissionRate",
     dealerOverRoutes:"/commission/config/dealerOverrides",
