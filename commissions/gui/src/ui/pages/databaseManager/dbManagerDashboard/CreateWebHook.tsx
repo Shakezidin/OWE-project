@@ -95,7 +95,7 @@ const CreateWebHook: React.FC = () => {
         <DataTableHeader
           title="Failed Webhooks"
           onPressFilter={() => filter()}
-          // onPressImport={() => { }}
+          onPressImport={() => { }}
         />
         {/* {filterOPen && <FilterDealer handleClose={filterClose}
           columns={columns}

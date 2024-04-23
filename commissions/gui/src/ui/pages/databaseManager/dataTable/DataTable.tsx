@@ -12,6 +12,8 @@ import { toggleAllRows, toggleRowSelection } from "../../../components/chekbox/c
 import FilterData from "./FilterData";
 import { Column } from "../../../../core/models/data_models/FilterSelectModel";
 import Pagination from "../../../components/pagination/Pagination";
+import { DataTableColumn } from "../../../../resources/static_data/DataTableColumn";
+import FilterModal from "../../../components/FilterModal/FilterModal";
 
 
 
@@ -56,15 +58,7 @@ const DataTablle: React.FC = () => {
     dispatch(setCurrentPage(currentPage - 1));
   };
 
-  const columns: Column[] = [
-    { name: "col1", displayName: "Column1", type: "string" },
-    { name: "col2", displayName: "Column2", type: "string" },
-    { name: "col3", displayName: "Column3", type: "string" },
-    { name: "col4", displayName: "Column4", type: "string" },
-    { name: "col5", displayName: "Column5", type: "number" },
-    { name: "col6", displayName: "Column6", type: "number" },
-    { name: "col7", displayName: "Column7", type: "number" },
-  ];
+
   const filter = () => {
     setFilterOpen(true);
   }
@@ -162,7 +156,9 @@ const DataTablle: React.FC = () => {
   const currentPageData = dataDb.slice(startIndex, endIndex);
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === dataDb.length;
-
+  const fetchFunction = (req: any) => {
+    // dispatch(fetchPaySchedule(req));
+   };
   return (
     <div className="comm">
       <Breadcrumb head="Data" linkPara="Database Manager" linkparaSecond="Data" />
@@ -170,12 +166,13 @@ const DataTablle: React.FC = () => {
         <DataTableHeader
           title="Table Name"
           onPressFilter={() => filter()}
-          // onPressImport={() => { }}
+          onPressImport={() => { }}
         />
 
 
-             {filterOPen && <FilterData handleClose={filterClose}  
-               columns={columns} 
+             {filterOPen && <FilterModal handleClose={filterClose}  
+               columns={DataTableColumn} 
+               fetchFunction={fetchFunction}
                page_number = {currentPage}
                page_size = {itemsPerPage}
              />}
@@ -272,16 +269,23 @@ const DataTablle: React.FC = () => {
             </tbody>
           </table>
         </div>
-        {
-       <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          paginate={paginate}
-          goToNextPage={goToNextPage}
-         currentPageData={currentPageData}
-          goToPrevPage={goToPrevPage}
-        />
-      }
+        <div className="page-heading-container">
+      
+      <p className="page-heading">
+       {currentPage} - {totalPages} of {currentPageData?.length} item
+      </p>
+ 
+   {
+    dataDb?.length > 0 ? <Pagination
+      currentPage={currentPage}
+      totalPages={totalPages} // You need to calculate total pages
+      paginate={paginate}
+      goToNextPage={goToNextPage}
+      goToPrevPage={goToPrevPage}
+      currentPageData={currentPageData}
+    /> : null
+  }
+   </div>
       </div>
     </div>
   );
