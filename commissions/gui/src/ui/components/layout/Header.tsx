@@ -159,7 +159,7 @@ const Header: React.FC<Toggleprops> = ({
                     <div className="header-modal-1">
                       <div
                         className="image-box-container"
-                        onClick={() => navigate(ROUTES.accountSettingRoutes)}
+                        onClick={() => navigate(ROUTES.ACCOUNT_SETTING)}
                       >
                         <div className="image-icon">
                           <FaUserCircle />

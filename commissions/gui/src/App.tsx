@@ -66,7 +66,7 @@ function App() {
           path="/"
           element={
             isAuthenticated ? (
-              <Navigate to={"/commission/dashboard"} />
+              <Navigate to={ROUTES.COMMISSION_DASHBOARD} />
             ) : (
               <WelcomePage />
             )
@@ -76,45 +76,45 @@ function App() {
           path="/login"
           element={
             isAuthenticated ? (
-              <Navigate to={"/commission/dashboard"} />
+              <Navigate to={ROUTES.COMMISSION_DASHBOARD} />
             ) : (
               <LoginPage />
             )
           }
         />
-        <Route path="/resetPassword" element={<ResetPassword />} />
-        <Route path="/otp" element={<EnterOtpScreen />} />
+        <Route path={ROUTES.RESETPASSWORD} element={<ResetPassword />} />
+        <Route path={ROUTES.OTP} element={<EnterOtpScreen />} />
               <Route
               element={<MainLayout/>}
             >
            
-                <Route  path={ROUTES.commissiondash} element={<DashboardPage/>}/>
-                <Route  path={ROUTES.commissionrate} element={<CommissionRate/>}/>
-                <Route  path={ROUTES.dealerOverRoutes} element={<DealerOverRides/>}/>
-                <Route  path={ROUTES.marketingRoutes} element={<MarketingFees/>}/>
-                <Route  path={ROUTES.dealerTierRoutes} element={<DealerTier/>}/>
-                <Route  path={ROUTES.loanRoutes} element={<LoanType/>}/>
-                <Route  path={ROUTES.saleRoutes} element={<SaleType/>}/>
-                <Route  path={ROUTES.adderRoutes} element={<AdderValidation/>}/>
-                <Route  path={ROUTES.paymentSchRoutes} element={<PaymentSchedule/>}/>
-                <Route  path={ROUTES.tierLoanFeeRoutes} element={<TierLoanFee/>}/>
-                <Route  path={ROUTES.timelineRoutes} element={<TimeLine/>}/>
-                <Route  path={ROUTES.autoadderRoutes} element={<AutoAdder/>}/>
-                <Route  path={ROUTES.dealerCreditRoutes} element={<DealerCredit/>}/>
-                <Route  path={ROUTES.rebetDataRoutes} element={<RebateData/>}/>
-                <Route  path={ROUTES.referalDataRoutes} element={<ReferalData/>}/>
-                <Route  path={ROUTES.dlrOthRoutes} element={<DlrOthPay/>}/>
-                <Route  path={ROUTES.nonCommRoutes} element={<NonCommDlrPay/>}/>
-                <Route  path={ROUTES.loanFeeRoutes} element={<LoanFeeAddr/>}/>
-                <Route  path={ROUTES.usermgtRoutes} element={<UserManagement/>}/>
-                <Route  path={ROUTES.accountSettingRoutes} element={<AccountSettings/>}/>
-                <Route  path={ROUTES.reportRoutes} element={<Report/>}/>
-                <Route  path={ROUTES.projectRoutes} element={<Project/>}/>
-                <Route  path={ROUTES.dbDashRoutes} element={<DbManagerDashboard/>}/>
-                <Route  path={ROUTES.dataTableRoutes} element={<DataTablle/>}/>
-                <Route  path={ROUTES.userActivityRoutes} element={<UserActivity/>}/>
-                <Route  path={ROUTES.technicalSupportRoutes} element={<TechnicalSupport/>}/>
-                <Route  path={ROUTES.webhookRoutes} element={<Webhook/>}/>
+                <Route  path={ROUTES.COMMISSION_DASHBOARD} element={<DashboardPage/>}/>
+                <Route  path={ROUTES.CONFIG_COMMISSION_RATE} element={<CommissionRate/>}/>
+                <Route  path={ROUTES.CONFIG_DEALER_OVER} element={<DealerOverRides/>}/>
+                <Route  path={ROUTES.CONFIG_MARKETING} element={<MarketingFees/>}/>
+                <Route  path={ROUTES.CONFIG_DEALER_TIER} element={<DealerTier/>}/>
+                <Route  path={ROUTES.CONFIG_LOAN} element={<LoanType/>}/>
+                <Route  path={ROUTES.CONFIG_SALE} element={<SaleType/>}/>
+                <Route  path={ROUTES.CONFIG_ADDER} element={<AdderValidation/>}/>
+                <Route  path={ROUTES.CONFIG_PAYMENT_SCHEDULE} element={<PaymentSchedule/>}/>
+                <Route  path={ROUTES.CONFIG_TIER_LOAN_FEE} element={<TierLoanFee/>}/>
+                <Route  path={ROUTES.CONFIG_TIMELINE} element={<TimeLine/>}/>
+                <Route  path={ROUTES.CONFIG_AUTO_ADDER} element={<AutoAdder/>}/>
+                <Route  path={ROUTES.CONFIG_DEALER_CREDIT} element={<DealerCredit/>}/>
+                <Route  path={ROUTES.CONFIG_REBET_DATA} element={<RebateData/>}/>
+                <Route  path={ROUTES.CONFIG_REFERAL_DATA} element={<ReferalData/>}/>
+                <Route  path={ROUTES.CONFIG_DLE_OTH_PAY} element={<DlrOthPay/>}/>
+                <Route  path={ROUTES.CONFIG_NON_COMM_DLR_PAY} element={<NonCommDlrPay/>}/>
+                <Route  path={ROUTES.CONFIG_LOAN_FEE} element={<LoanFeeAddr/>}/>
+                <Route  path={ROUTES.USER_MANAEMENT} element={<UserManagement/>}/>
+                <Route  path={ROUTES.ACCOUNT_SETTING} element={<AccountSettings/>}/>
+                <Route  path={ROUTES.REPORT} element={<Report/>}/>
+                <Route  path={ROUTES.PROJECT} element={<Project/>}/>
+                <Route  path={ROUTES.DB_MANAGER_DASHBOARD} element={<DbManagerDashboard/>}/>
+                <Route  path={ROUTES.DB_MANAGER_DATA_TABLE} element={<DataTablle/>}/>
+                <Route  path={ROUTES.DB_MANAGER_USER_ACTIVITY} element={<UserActivity/>}/>
+                <Route  path={ROUTES.TECHNICAL_SUPPORT} element={<TechnicalSupport/>}/>
+                <Route  path={ROUTES.DB_MANAGER_WEB_HOOKS} element={<Webhook/>}/>
             </Route>
       
        

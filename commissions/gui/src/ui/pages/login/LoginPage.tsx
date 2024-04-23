@@ -19,6 +19,7 @@ import { loginSuccess } from "../../../redux/apiSlice/authSlice/authSlice";
 import { login } from "../../../infrastructure/web_api/services/apiUrl";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import { ROUTES } from "../../../routes/routes";
 
 export const LoginPage = () => {
   const navigate = useNavigate();
@@ -182,7 +183,7 @@ export const LoginPage = () => {
                 <button
                   className="reset-password"
                   onClick={() => {
-                    navigate("/resetPassword");
+                    navigate(ROUTES.RESETPASSWORD);
                   }}
                 >
                   Recover Password
