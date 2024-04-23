@@ -1,5 +1,7 @@
+// import { ActionButton } from "@adobe/react-spectrum";
 // import React from "react";
 // import Select from "react-select/dist/declarations/src/Select";
+// import SelectOption from "../../components/selectOption/SelectOption";
 // import Input from "../../components/text_input/Input";
 // import { ICONS } from "../../icons/Icons";
 // import "../../pages/accountSettings/AccountSettings.css";
@@ -17,7 +19,7 @@
 //                 <p>Enter the below detail to create User New Profile</p>
 //             </div>
 
-//             <div className="" style={{ display: "flex", gap: "2rem", padding: "1rem", marginLeft: "5rem" }}>
+//             <div className="user-create-profile-section">
 //                 <div className="cam-icon" >
 //                     <div className="edit-img">
 //                         <div className="">
@@ -46,72 +48,101 @@
 
 //                 <div className="vertical-create"></div>
 //                 <div className="">
-//                     <div className="" style={{ display: "flex", gap: "5rem", marginTop:"1rem" }}>
-//                         <div className="create-input-field" style={{ width: "200px" }}>
+//                     <div className="create-account-section">
+//                         <div className="create-input-field" style={{ width: "250px" }}>
 //                             <Input
 //                                 type={"text"}
-//                                 label="First Name"
-//                                 value={"createMarketing.pay_src"}
+//                                 label="First Name*"
+//                                 value={""}
 //                                 name="pay_src"
 //                                 placeholder={"Enter"}
 //                                 onChange={(e) => { }}
 //                             />
 //                         </div>
 
-//                         <div className="create-input-field" style={{ width: "200px" }}>
+//                         <div className="create-input-field" style={{ width: "250px" }}>
 //                             <Input
 //                                 type={"text"}
 //                                 label="Last Name"
-//                                 value={"createMarketing.pay_src"}
+//                                 value={""}
 //                                 name="pay_src"
 //                                 placeholder={"Enter"}
 //                                 onChange={(e) => { }}
 //                             />
 //                         </div>
 //                     </div>
-//                     <div className="" style={{ display: "flex", gap: "5rem",marginTop:"1rem" }}>
-//                         <div className="create-input-field" style={{ width: "200px" }}>
+//                     <div className="create-account-section">
+//                         <div className="create-input-field" style={{ width: "250px" }}>
 //                             <Input
 //                                 type={"text"}
-//                                 label="Email ID"
-//                                 value={"createMarketing.pay_src"}
+//                                 label="Email ID*"
+//                                 value={""}
 //                                 name="pay_src"
 //                                 placeholder={"Enter"}
 //                                 onChange={(e) => { }}
 //                             />
 //                         </div>
 
-//                         <div className="create-input-field" style={{ width: "200px" }}>
+//                         <div className="create-input-field" style={{ width: "250px" }}>
 //                             <Input
 //                                 type={"text"}
-//                                 label="Phone Number"
-//                                 value={"createMarketing.pay_src"}
+//                                 label="Phone Number*"
+//                                 value={""}
 //                                 name="pay_src"
 //                                 placeholder={"Enter"}
 //                                 onChange={(e) => { }}
 //                             />
 //                         </div>
 //                     </div>
+//                     <div className="create-account-section">
+//                         <div className="create-input-field" style={{ width: "250px" }}>
+//                             <label className="inputLabel">Select Role</label>
+//                             <SelectOption
+//                                 options={[]}
+//                                 value={""}
+//                                 onChange={(newValue) => { }}
+
+                             
+
+//                             />
+//                         </div>
+
+//                         <div className="create-input-field" style={{ width: "250px" }}>
+//                             <label className="inputLabel">Assign Dealer</label>
+//                             <SelectOption
+//                                 options={[]}
+//                                 value={""}
+//                                 onChange={(newValue) => { }}
+
+                              
+
+//                             />
+//                         </div>
 
 
-//                 </div>
+//                     </div>
 
 
+//                 </div >
+//                 {/* <div className="reset-Update-support">
+//                     <ActionButton title={"create"} type="submit" onClick={() => { }} />
+//                 </div> */}
 //             </div>
 
-
-//         </div >
+//         </div>
 //     );
 
 // };
 
 // export default CreateUserProfile;
+
+
 import React from 'react'
 
 const CreateUserProfile = () => {
-    return (
-        <div>CreateUserProfile</div>
-    )
+  return (
+    <div>CreateUserProfile</div>
+  )
 }
 
 export default CreateUserProfile

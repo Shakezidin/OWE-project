@@ -4,7 +4,8 @@ import { ICONS } from "../../icons/Icons";
 import "./support.css";
 import Select from "react-select";
 import { ActionButton } from "../../components/button/ActionButton";
-import CreateUserProfile from "../accountSettings/CreateUserProfile";
+import HelpDashboard from "../dashboard/HelpDashboard";
+// import CreateUserProfile from "../accountSettings/CreateUserProfile";
 
 const TechnicalSupport = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -189,7 +190,8 @@ const TechnicalSupport = () => {
           </div>
         </div>
       </div>
-      <CreateUserProfile />
+      {/* <CreateUserProfile /> */}
+      <HelpDashboard/>
     </>
   );
 };
