@@ -19,6 +19,7 @@ const DashBoardTable: React.FC = () => {
       dn:"Josh Morton",
       sr:"Josh Morton",
       cn:"josh Morton",
+      cv:"Percentage",
       amt:"$123,456",
       pipeline: "$100,362",
       cd: "$300,652",
@@ -36,6 +37,7 @@ const DashBoardTable: React.FC = () => {
       dn:"Josh Morton",
       sr:"Josh Morton",
       cn:"josh Morton",
+      cv:"RL",
       amt:"$123,456",
       pipeline: "$100,362",
       cd: "$300,652",
@@ -53,6 +55,7 @@ const DashBoardTable: React.FC = () => {
       dn:"Josh Morton",
       sr:"Josh Morton",
       cn:"josh Morton",
+      cv:"Percentage",
       amt:"$123,456",
       pipeline: "$100,362",
       cd: "$300,652",
@@ -70,6 +73,7 @@ const DashBoardTable: React.FC = () => {
       dn:"Josh Morton",
       sr:"Josh Morton",
       cn:"josh Morton",
+      cv:"RL",
       amt:"$123,456",
       pipeline: "$100,362",
       cd: "$300,652",
@@ -87,6 +91,7 @@ const DashBoardTable: React.FC = () => {
       dn:"Josh Morton",
       sr:"Josh Morton",
       cn:"josh Morton",
+      cv:"Percentage",
       amt:"$123,456",
       pipeline: "$100,362",
       cd: "$300,652",
@@ -104,6 +109,7 @@ const DashBoardTable: React.FC = () => {
       dn:"Josh Morton",
       sr:"Josh Morton",
       cn:"josh Morton",
+      cv:"RL",
       amt:"$123,456",
       pipeline: "$100,362",
       cd: "$300,652",
@@ -121,6 +127,7 @@ const DashBoardTable: React.FC = () => {
       dn:"Josh Morton",
       sr:"Josh Morton",
       cn:"josh Morton",
+      cv:"Percentage",
       amt:"$123,456",
       pipeline: "$100,362",
       cd: "$300,652",
@@ -138,6 +145,7 @@ const DashBoardTable: React.FC = () => {
       dn:"Josh Morton",
       sr:"Josh Morton",
       cn:"josh Morton",
+      cv:"RL",
       amt:"$123,456",
       pipeline: "$100,362",
       cd: "$300,652",
@@ -211,6 +219,11 @@ const DashBoardTable: React.FC = () => {
               <th>
                 <div className="table-header">
                   <p>Customer Name</p> <FaArrowDown style={{color:"#667085"}}/>
+                </div>
+              </th>
+              <th>
+                <div className="table-header">
+                  <p>Commision Value</p> <FaArrowDown style={{color:"#667085"}}/>
                 </div>
               </th>
               <th>
@@ -292,6 +305,7 @@ const DashBoardTable: React.FC = () => {
                   <td style={{fontWeight: "500", color:"#101828"}}>{el.dn}</td>
                   <td style={{fontWeight: "500", color:"#101828"}}>{el.sr}</td>
                   <td style={{fontWeight: "500", color:"#101828"}}>{el.cn}</td>
+                  <td style={{color:"#101828"}}>{el.cv}</td>
                   <td style={{color: "#0493CE"}}>{el.amt}</td>
                   <td style={{color: "#0493CE"}}>{el.pipeline}</td>
                   <td style={{color: "#0493CE"}}>{el.cd}</td>

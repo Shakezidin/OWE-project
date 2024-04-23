@@ -7,18 +7,28 @@ import Breadcrumb from "../../components/breadcrumb/Breadcrumb";
 import DashBoardTable from "./DashBoardTable";
 import DashBoardChart from "./DashBoardChart";
 import { payRollData } from "../../../resources/static_data/StaticData";
+import { comissionValueData } from "../../../resources/static_data/StaticData";
 
 export const DashboardPage: React.FC = () => {
   const [active, setActive] = React.useState<number>(0);
 
   const [selectedOption, setSelectedOption] = useState<string>(
-    payRollData[0].label
+    payRollData[0].label,
+  );
+  const [selectedOption2, setSelectedOption2] = useState<string>(
+    comissionValueData[0].label,
   );
   const handleSelectChange = (
     selectedOption: { value: string; label: string } | null
   ) => {
     setSelectedOption(selectedOption ? selectedOption.value : "");
   };
+  const handleSelectChange2 = (
+    selectedOption2: { value: string; label: string } | null
+  ) => {
+    setSelectedOption2(selectedOption2 ? selectedOption2.value : "");
+  };
+
 
   return (
     <>
@@ -35,14 +45,14 @@ export const DashboardPage: React.FC = () => {
           <div className="dashboard-payroll">
             <div className="Payroll-section">
               <label className="inputLabel" style={{ color: "#344054" }}>
-                Comission Rate
+                Commission Value
               </label>
               <Select
-                options={payRollData}
-                value={payRollData.find(
-                  (option) => option.value === selectedOption
+                options={comissionValueData}
+                value={comissionValueData.find(
+                  (option) => option.value === selectedOption2
                 )}
-                onChange={handleSelectChange}
+                onChange={handleSelectChange2}
                 styles={{
                   control: (baseStyles, state) => ({
                     ...baseStyles,
