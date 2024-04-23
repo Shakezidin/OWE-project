@@ -21,6 +21,7 @@ export const ROUTES = {
   CONFIG_DEALER_CREDIT: "/commission/config/dealerCredit",
   CONFIG_NON_COMM_DLR_PAY: "/commission/config/nonCommDlrPay",
   CONFIG_DLE_OTH_PAY: "/commission/config/dlrOthPay",
+  CONFIG_PAGE: "/commission/config",
   // other routes
   REPORT: "/report",
   DATABASE_CONTROLLER: "/databaseController",

@@ -117,7 +117,7 @@ function App() {
                 <Route  path={ROUTES.DB_MANAGER_USER_ACTIVITY} element={<UserActivity/>}/>
                 <Route  path={ROUTES.TECHNICAL_SUPPORT} element={<TechnicalSupport/>}/>
                 <Route  path={ROUTES.DB_MANAGER_WEB_HOOKS} element={<Webhook/>}/>
-
+                <Route  path={ROUTES.CONFIG_PAGE} element={<ConfigurePage/>}/>
             </Route>
        
       </Routes>
