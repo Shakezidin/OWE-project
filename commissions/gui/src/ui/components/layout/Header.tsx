@@ -132,9 +132,9 @@ const Header: React.FC<Toggleprops> = ({
             </div>
             )
           } */}
-          <div className="notification">
+          {/* <div className="notification">
             <img src={ICONS.NOTIFICATION} alt="" />
-          </div>
+          </div> */}
           <div className="user-img-container">
             <div className="user-img">
               <span>{name}</span>
