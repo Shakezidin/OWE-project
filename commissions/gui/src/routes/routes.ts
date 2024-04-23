@@ -29,4 +29,5 @@ export const routes={
     dataTableRoutes:"/dbManager/dataTable",
     userActivityRoutes:"/dbManager/userActivity",
     webhookRoutes:"/dbManager/webhooks",
+    configureRoutes:"/configure",
 }
