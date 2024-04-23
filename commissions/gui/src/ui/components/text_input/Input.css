@@ -42,9 +42,8 @@ input::placeholder {
 .inputLabel {
   color: #000000;
   font-size: 13px;
-
   font-weight: 500;
-  /* line-height: 14.5px; */
+  /* line-height: 14.5px */
   /* text-align: left; */
 }
 

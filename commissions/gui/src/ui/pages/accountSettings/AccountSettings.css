@@ -180,3 +180,82 @@ font-weight: 600;
   margin-top: 1rem;
 }
 
+.user-profile-container {
+  margin-top: 2rem;
+  width: 954px;
+height: 468px;
+top: 93px;
+left: 303px;
+gap: 0px;
+opacity: 0px;
+background: #FFFFFF;
+border-radius: 24px;
+padding: 0.5rem;
+}
+.user-profile-cross {
+  display: flex;
+  justify-content: right;
+  cursor: pointer;
+  padding: 0.5rem;
+
+}
+.create-user {
+  margin-left: 3rem;
+}
+.create-user h3{
+font-size: 28px;
+font-weight: 600;
+line-height: 44px;
+text-align: left;
+
+}
+.create-user p {
+font-size: 12px;
+font-weight: 300;
+line-height: 10.9px;
+text-align: left;
+
+}
+
+.cam-icon{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 133px;
+height: 133px;
+margin-top: 5rem;
+
+}
+.image-circle{
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: #D9D9D9;
+
+}
+.image-button {
+  margin-top: 0.5rem;
+}
+
+.image-button button {
+  border: none;
+font-size: 12px;
+font-weight: 500;
+text-align: left;
+background: #0493CE;
+padding: 12px;
+color: white;
+border-radius: 8px;
+
+}
+.vertical-create {
+  border-left: 1px solid #dbdddf;
+  height: 250px;
+  margin-top: 1.5rem;
+  padding: 2rem;
+}
+
+.image-circle {
+  text-align: center;
+  padding: 1rem;
+}

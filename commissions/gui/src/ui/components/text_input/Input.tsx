@@ -4,7 +4,7 @@ import { ReactComponent as EYE_ICON } from "../../../resources/assets/eye-icon.s
 import { ICONS } from "../../icons/Icons";
 
 interface InputProps {
-  type: "text" | "number" | "email" | "password" | "date" |"datetime-local";
+  type: "text" | "number" | "email" | "password" | "date" |"datetime-local" | "file";
   value: string | number;
   placeholder: string;
   label?: string;
