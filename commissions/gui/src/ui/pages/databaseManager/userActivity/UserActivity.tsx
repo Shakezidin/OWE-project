@@ -1,21 +1,18 @@
 import React, { useEffect, useState } from "react";
-
 import "../../configure/configure.css";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
-
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-import { fetchDealer } from "../../../../redux/apiSlice/configSlice/config_get_slice/dealerSlice";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
-import DataTableHeader from "../../../components/tableHeader/DataTableHeader";
-
 import CheckBox from "../../../components/chekbox/CheckBox";
 import { toggleAllRows, toggleRowSelection } from "../../../components/chekbox/checkHelper";
 import { FaArrowDown } from "react-icons/fa6";
 import { DealerModel } from "../../../../core/models/configuration/create/DealerModel";
 import { fetchCommissions } from "../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice";
 import Pagination from "../../../components/pagination/Pagination";
-import { Column } from "../../../../core/models/data_models/FilterSelectModel";
 import UserActivityFilter from "./UserActivityFilter";
+import { UserActivityColumn } from "../../../../resources/static_data/UserActivityColumn";
+import DataTableHeader from "../../../components/tableHeader/DataTableHeader";
+import FilterModal from "../../../components/FilterModal/FilterModal";
 
 
 const UserActivity: React.FC = () => {
@@ -159,16 +156,9 @@ const itemsPerPage = 5;
   const currentPageData = dataDb.slice(startIndex, endIndex);
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === dataDb.length;
-
-
-
-  const columns: Column[] = [
-    { name: "user_name", displayName: "User Name", type: "string" },
-    { name: "db_name", displayName: "DB Name", type: "string" },
-    { name: "query_details", displayName: "Query Details", type: "string" },
-    { name: "time_date", displayName: "Time & Date", type: "date" },
-  ];
-
+  const fetchFunction = (req: any) => {
+    // dispatch(fetchPaySchedule(req));
+   };
 
 
   return (
@@ -178,11 +168,12 @@ const itemsPerPage = 5;
         <DataTableHeader
           title="Activity List"
           onPressFilter={() => filter()}
-          // onPressImport={() => { }}
+          onPressImport={() => { }}
           
         />
-        {filterOPen && <UserActivityFilter handleClose={filterClose}
-          columns={columns}
+        {filterOPen && <FilterModal handleClose={filterClose}
+          columns={UserActivityColumn}
+          fetchFunction={fetchFunction}
           page_number={currentPage}
           page_size={itemsPerPage} />}
 
@@ -263,16 +254,25 @@ const itemsPerPage = 5;
             </tbody>
           </table>
         </div>
+        <div className="page-heading-container">
+      
+      <p className="page-heading">
+       {currentPage} - {totalPages} of {currentPageData?.length} item
+      </p>
+ 
+   {
+    dataDb?.length > 0 ? <Pagination
+      currentPage={currentPage}
+      totalPages={totalPages} // You need to calculate total pages
+      paginate={paginate}
+      goToNextPage={goToNextPage}
+      goToPrevPage={goToPrevPage}
+      currentPageData={currentPageData}
+    /> : null
+  }
+   </div>
       </div>
-      {
-        dataDb?.length > 0 ? <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          paginate={paginate}
-          goToNextPage={goToNextPage}
-          goToPrevPage={goToPrevPage}
-        /> : null
-      }
+    
     </div>
   );
 };

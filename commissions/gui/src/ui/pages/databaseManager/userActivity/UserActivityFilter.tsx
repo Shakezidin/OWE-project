@@ -1,6 +1,4 @@
 import { IoAddSharp } from "react-icons/io5";
-import Select from "react-select";
-import '../../create_profile/CreateUserProfile.css'
 // import "../commissionRate/Filter.css";
 import Input from "../../../components/text_input/Input";
 import { ActionButton } from "../../../components/button/ActionButton";
@@ -8,10 +6,10 @@ import { ActionButton } from "../../../components/button/ActionButton";
 import { useAppDispatch } from "../../../../redux/hooks";
 import { fetchCommissions } from "../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice";
 import { ICONS } from "../../../icons/Icons";
-
-import { getLabelForOperation, getOperationsForColumnType } from "../../../../core/models/data_models/FilterSelectModel";
 import { useState } from "react";
-import OperationSelect from "../../configure/commissionRate/OperationSelect";
+import OperationSelect from "../../../components/FilterModal/OperationSelect";
+import SelectOption from "../../../components/selectOption/SelectOption";
+
 
 interface Column {
   name: string;
@@ -156,26 +154,13 @@ const UserActivityFilter: React.FC<TableProps> = ({ handleClose, columns, page_n
                   <div className="create-input-field">
                     <label className="inputLabel">Column Name</label>
                     <div className="">
-                      <Select
+                      <SelectOption
                         options={[{ value: 'Select', label: 'Select' }, ...options]}
-                        isSearchable
-                        value={options.find(option => option.value === filter.Column) || null}
+              
+                        value={options.find(option => option.value === filter.Column) || undefined}
                         onChange={(selectedOption: any) => {
                           handleChange(index, 'Column', selectedOption.value);
                           setErrors({ ...errors, [`column${index}`]: '' });
-                        }}
-
-                        styles={{
-                          control: (baseStyles, state) => ({
-                            ...baseStyles,
-                            marginTop: "4.5px",
-                            borderRadius: "8px",
-                            outline: "none",
-                            height: "2.8rem",
-                            border: "1px solid #d0d5dd",
-                            overflowY: 'auto'
-
-                          }),
                         }}
                       />
 
