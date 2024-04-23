@@ -46,7 +46,7 @@ const DlrOthPay: React.FC = () => {
   const [editedCommission, setEditedCommission] = useState<CommissionModel | null>(null);
   const itemsPerPage = 5;
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
-
+  const [viewArchived, setViewArchived] = useState<boolean>(false);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -127,6 +127,7 @@ const DlrOthPay: React.FC = () => {
           isAnyRowSelected={isAnyRowSelected}
           onPressImport={() => { }}
           onpressExport={() => handleExportOpen()}
+          viewArchive={viewArchived}
           onpressAddNew={() => handleAddCommission()}
         />
         {exportOPen && (<div className="export-modal">

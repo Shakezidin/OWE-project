@@ -41,6 +41,7 @@ const LoanType = () => {
   const itemsPerPage = 10;
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
   const [sortKey, setSortKey] =  useState("");
+  const [viewArchived, setViewArchived] = useState<boolean>(false);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   useEffect(() => {
     const pageNumber = {
@@ -132,6 +133,7 @@ const LoanType = () => {
           onPressFilter={() => filter()}
           onPressImport={() => { }}
           onpressExport={() => { }}
+          viewArchive={viewArchived}
           onpressAddNew={() => handleAddLoan()}
         />
         {filterOPen && <FilterModal handleClose={filterClose}

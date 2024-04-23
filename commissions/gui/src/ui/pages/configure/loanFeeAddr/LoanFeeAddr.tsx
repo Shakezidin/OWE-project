@@ -47,7 +47,7 @@ const LoanFeeAddr: React.FC = () => {
   const [editedCommission, setEditedCommission] = useState<CommissionModel | null>(null);
   const itemsPerPage = 5;
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
-
+  const [viewArchived, setViewArchived] = useState<boolean>(false);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -128,6 +128,7 @@ const LoanFeeAddr: React.FC = () => {
           checked={isAllRowsSelected}
           isAnyRowSelected={isAnyRowSelected}
           onpressExport={() => handleExportOpen()}
+          viewArchive={viewArchived}
           onpressAddNew={() => handleAddCommission()}
         />
         {exportOPen && (<div className="export-modal">

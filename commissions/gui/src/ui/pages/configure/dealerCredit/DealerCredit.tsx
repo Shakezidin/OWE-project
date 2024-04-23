@@ -46,7 +46,7 @@ const DealerCredit: React.FC = () => {
   const [editedCommission, setEditedCommission] = useState<CommissionModel | null>(null);
   const itemsPerPage = 5;
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
-
+  const [viewArchived, setViewArchived] = useState<boolean>(false);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -126,6 +126,7 @@ const DealerCredit: React.FC = () => {
           isAnyRowSelected={isAnyRowSelected}
           onPressFilter={() => filter()}
           onPressImport={() => { }}
+          viewArchive={viewArchived}
           onpressExport={() => handleExportOpen()}
           onpressAddNew={() => handleAddCommission()}
         />

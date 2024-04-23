@@ -104,9 +104,7 @@ const UserOnboardingCreation: React.FC<ButtonProps> = ({
         <div className="createUserCrossButton" onClick={handleClose}>
           <CROSS_BUTTON />
         </div>
-
         <h3 className="createProfileText">Onboarding</h3>
-
         <div className="modal-body">
           <div className="createProfileInputView">
             <div className="createProfileTextView">

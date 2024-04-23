@@ -14,6 +14,10 @@ const CheckBox: React.FC<CheckboxProps> = ({ checked, onChange, indeterminate })
         }
         return checked ? 'checkbox checked' : 'checkbox';
     };
+    const handleMinusSignClick = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
+        e.stopPropagation(); // Prevent event from bubbling up to the parent elements
+        onChange(); // Trigger onChange event to deselect the row
+    };
 
     return (
         <div className="checkbox-container">
@@ -24,7 +28,7 @@ const CheckBox: React.FC<CheckboxProps> = ({ checked, onChange, indeterminate })
                 onChange={onChange}
                 className={getClassNames()}
             />
-            {indeterminate && <span className="minus-sign">-</span>}
+            {indeterminate && <span className="minus-sign" onClick={handleMinusSignClick}>-</span>}
         </div>
     );
 };

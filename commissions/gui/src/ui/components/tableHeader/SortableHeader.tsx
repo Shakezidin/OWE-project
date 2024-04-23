@@ -34,13 +34,21 @@ setSelectedRows,
           isCheckbox===true?<div>       
           <CheckBox
              checked={selectAllChecked}
-             onChange={() =>
-               toggleAllRows(
-                 selectedRows,
-                 data,
-                 setSelectedRows,
-                 setSelectAllChecked
-               )
+             onChange={() =>{
+              if (data?.length === null) {
+                setSelectAllChecked(false);
+                
+              } else {
+                toggleAllRows(
+                  selectedRows,
+                  data,
+                  setSelectedRows,
+                  setSelectAllChecked
+                )
+              }
+             }
+            
+             
              }
              indeterminate={isAnyRowSelected && !isAllRowsSelected}
            />

@@ -11,7 +11,8 @@ interface TableProps {
   onpressExport: () => void;
   onpressAddNew: () => void;
   isAnyRowSelected:boolean,
-  checked:boolean
+  checked:boolean,
+  viewArchive:boolean,
  
 
 }
@@ -20,15 +21,16 @@ const TableHeader = (props: TableProps) => {
   const {
     title,
     onPressArchive,
+    viewArchive,
     onPressFilter,
     onPressImport,
     onPressViewArchive,
     onpressExport,
     onpressAddNew,
-    checked,
     isAnyRowSelected
   
   } = props;
+  console.log(viewArchive)
   return (
     <div className="commissionSection">
       <div className="rateSection">
@@ -37,16 +39,14 @@ const TableHeader = (props: TableProps) => {
       <div className="iconContainer">
       <div className="iconsSection2">
           <button type="button" onClick={onPressViewArchive}>
-            <img src={ICONS.VIEW_ARCHIVE} alt="" />
+         {viewArchive===true?   <img src={ICONS.Ellipse} alt="" />:   <img src={ICONS.VIEW_ARCHIVE} alt="" />}
             View Archive
           </button>
         </div>
         {
-         isAnyRowSelected ===true ?<>
-       
-
+         isAnyRowSelected === true ?<>
         <div className="iconsSection2">
-        <button type="button" onClick={onPressArchive} style={{cursor:checked?"pointer":"not-allowed"}}>
+        <button type="button" onClick={onPressArchive} style={{cursor:isAnyRowSelected?"pointer":"not-allowed"}}>
           <img src={ICONS.ARCHIVE} alt="" />
           Archive
         </button>
