@@ -160,6 +160,9 @@ height: 45vh;
   font-weight: 600;
   /* line-height: 44px; */
 }
+.create-input-container {
+  text-align: left;
+}
 .help-icon {
   padding: 0.5rem;
   cursor: pointer;
