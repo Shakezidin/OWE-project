@@ -117,11 +117,10 @@
 /* table style  */
 .TableContainer {
   position: relative;
-  height: 55vh;
+  height: 60vh;
   background: var(--white-color);
   /* border-radius: 16px; */
-  /* overflow-x: auto; */
-  overflow-y: auto;
+  overflow-y: hidden;
   scrollbar-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1);
   scrollbar-width: thin;
 }
@@ -190,6 +189,7 @@ table tbody tr {
 table tbody tr td {
   padding: 0.8rem 1.875rem 0.8rem 1.6rem;
   font-size: 12px;
+  text-align: center;
   width: auto;
   color: var(--coloumn-text-color);
 }
