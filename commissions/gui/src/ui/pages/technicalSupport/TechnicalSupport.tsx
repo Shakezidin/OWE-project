@@ -4,15 +4,13 @@ import { ICONS } from "../../icons/Icons";
 import "./support.css";
 import Select from "react-select";
 import { ActionButton } from "../../components/button/ActionButton";
-import HelpDashboard from "../dashboard/HelpDashboard";
-// import CreateUserProfile from "../accountSettings/CreateUserProfile";
+import CreateProfileUser from "../accountSettings/CreateProfileUser";
 
 const TechnicalSupport = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileInputChange = (e: any) => {
     const file = e.target.files?.[0];
-    // Do something with the selected file
     console.log(file);
   };
 
@@ -190,8 +188,7 @@ const TechnicalSupport = () => {
           </div>
         </div>
       </div>
-      {/* <CreateUserProfile /> */}
-      <HelpDashboard/>
+     
     </>
   );
 };

@@ -1,11 +1,11 @@
 import colorConfig from "../config/colorConfig";
 import { ICONS } from "../ui/icons/Icons";
-import { routes } from "./routes";
+import { ROUTES } from "./routes";
 const appRoutesTwo = [
   {
     commission: [
       {
-        path: routes.commissiondash,
+        path: ROUTES.COMMISSION_DASHBOARD,
         sidebarProps: {
           displayText: "Dealer Pay",
           icon: (
@@ -74,7 +74,7 @@ const appRoutesTwo = [
         },
         child: [
           {
-            path: routes.dbDashRoutes,
+            path: ROUTES.DB_MANAGER_DASHBOARD,
             sidebarProps: {
               displayText: "Dashboard",
               icon: (
@@ -88,7 +88,7 @@ const appRoutesTwo = [
             },
           },
           {
-            path: routes.dataTableRoutes,
+            path: ROUTES.DB_MANAGER_DATA_TABLE,
             sidebarProps: {
               displayText: "Data",
               icon: (
@@ -102,7 +102,7 @@ const appRoutesTwo = [
             },
           },
           {
-            path: routes.userActivityRoutes,
+            path: ROUTES.DB_MANAGER_USER_ACTIVITY,
             sidebarProps: {
               displayText: "User Activity",
               icon: (
@@ -151,7 +151,7 @@ const appRoutesTwo = [
             },
           },
           {
-            path: routes.projectRoutes,
+            path: ROUTES.PROJECT,
             sidebarProps: {
               displayText: "Project Detail",
               icon: (
@@ -172,7 +172,7 @@ const appRoutesTwo = [
   {
     other: [
       {
-        path: routes.usermgtRoutes,
+        path: ROUTES.USER_MANAEMENT,
 
         sidebarProps: {
           displayText: "User Management",
@@ -193,7 +193,7 @@ const appRoutesTwo = [
         },
         child: [
           {
-            path: routes.commissionrate,
+            path: ROUTES.CONFIG_COMMISSION_RATE,
             sidebarProps: {
               displayText: "Commission Rate",
               icon: (
@@ -205,7 +205,7 @@ const appRoutesTwo = [
             },
           },
           {
-            path: routes.dealerOverRoutes,
+            path: ROUTES.CONFIG_DEALER_OVER,
             sidebarProps: {
               displayText: "Dealer OverRides",
               icon: (
@@ -217,7 +217,7 @@ const appRoutesTwo = [
             },
           },
           {
-            path: routes.marketingRoutes,
+            path: ROUTES.CONFIG_MARKETING,
 
             sidebarProps: {
               displayText: "Marketing Fees",
@@ -230,7 +230,7 @@ const appRoutesTwo = [
             },
           },
           {
-            path: routes.adderRoutes,
+            path: ROUTES.CONFIG_ADDER,
             sidebarProps: {
               displayText: "Adder",
               icon: (
@@ -242,7 +242,7 @@ const appRoutesTwo = [
             },
           },
           {
-            path: routes.saleRoutes,
+            path: ROUTES.CONFIG_SALE,
             sidebarProps: {
               displayText: "Sales Type",
               icon: (
@@ -255,7 +255,7 @@ const appRoutesTwo = [
           },
 
           {
-            path: routes.tierLoanFeeRoutes,
+            path: ROUTES.CONFIG_TIER_LOAN_FEE,
             sidebarProps: {
               displayText: "Tier Loan fees",
               icon: (
@@ -267,7 +267,7 @@ const appRoutesTwo = [
             },
           },
           {
-            path: routes.dealerTierRoutes,
+            path: ROUTES.CONFIG_DEALER_TIER,
             sidebarProps: {
               displayText: "Dealer Tier",
               icon: (
@@ -279,7 +279,7 @@ const appRoutesTwo = [
             },
           },
           {
-            path: routes.paymentSchRoutes,
+            path: ROUTES.CONFIG_PAYMENT_SCHEDULE,
             sidebarProps: {
               displayText: "Pay Schedule",
               icon: (
@@ -292,7 +292,7 @@ const appRoutesTwo = [
           },
 
           {
-            path: routes.timelineRoutes,
+            path: ROUTES.CONFIG_TIMELINE,
 
             sidebarProps: {
               displayText: "TimeLine SLA",
@@ -306,7 +306,7 @@ const appRoutesTwo = [
           },
 
           {
-            path: routes.loanRoutes,
+            path: ROUTES.CONFIG_LOAN,
 
             sidebarProps: {
               displayText: "Loan Type",
@@ -319,7 +319,7 @@ const appRoutesTwo = [
             },
           },
           {
-            path: routes.autoadderRoutes,
+            path: ROUTES.CONFIG_AUTO_ADDER,
 
             sidebarProps: {
               displayText: "Auto Adder",
@@ -332,7 +332,7 @@ const appRoutesTwo = [
             },
           },
           {
-            path: routes.loanFeeRoutes,
+            path: ROUTES.CONFIG_LOAN_FEE,
             sidebarProps: {
               displayText: "Loan Fee Addr",
               icon: (
@@ -344,7 +344,7 @@ const appRoutesTwo = [
             },
           },
           {
-            path: routes.rebetDataRoutes,
+            path: ROUTES.CONFIG_REBET_DATA,
 
             sidebarProps: {
               displayText: "Rebate Data",
@@ -357,7 +357,7 @@ const appRoutesTwo = [
             },
           },
           {
-            path: routes.referalDataRoutes,
+            path: ROUTES.CONFIG_REFERAL_DATA,
 
             sidebarProps: {
               displayText: "Referal Data",
@@ -370,7 +370,7 @@ const appRoutesTwo = [
             },
           },
           {
-            path: routes.dealerCreditRoutes,
+            path: ROUTES.CONFIG_DEALER_CREDIT,
 
             sidebarProps: {
               displayText: "Dealer Credit",
@@ -383,7 +383,7 @@ const appRoutesTwo = [
             },
           },
           {
-            path: routes.nonCommRoutes,
+            path: ROUTES.CONFIG_NON_COMM_DLR_PAY,
 
             sidebarProps: {
               displayText: "NonComm(DLRPay)",
@@ -396,7 +396,7 @@ const appRoutesTwo = [
             },
           },
           {
-            path: routes.dlrOthRoutes,
+            path: ROUTES.CONFIG_DLE_OTH_PAY,
 
             sidebarProps: {
               displayText: "DLR-OTH(DLRPay)",
@@ -419,7 +419,7 @@ const appRoutesTwo = [
       },
 
       {
-        path: routes.technicalSupportRoutes,
+        path: ROUTES.TECHNICAL_SUPPORT,
 
         sidebarProps: {
           displayText: "Technical Support",
@@ -431,15 +431,5 @@ const appRoutesTwo = [
     ],
   },
 ];
-
-// const newArr =[
-//   {
-//     path:"",
-//     label:"Dealer Pay",
-//     children:[{name:"Comission",icon:"",path:""}],
-//     icon:"",
-//     hasChildren:true,
-//   }
-// ]
 
 export default appRoutesTwo;

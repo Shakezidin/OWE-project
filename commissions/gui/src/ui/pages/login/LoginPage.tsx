@@ -19,13 +19,14 @@ import { loginSuccess } from "../../../redux/apiSlice/authSlice/authSlice";
 import { login } from "../../../infrastructure/web_api/services/apiUrl";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import { ROUTES } from "../../../routes/routes";
 
 export const LoginPage = () => {
   const navigate = useNavigate();
   const [credentials, setCredentials] = useState<Credentials>({
     email_id: "",
     password: "",
-    isRememberMe: false
+    isRememberMe: false,
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -44,19 +45,17 @@ export const LoginPage = () => {
   };
 
   /** handle local storage */
-  useEffect(()=>{
+  useEffect(() => {
+    let localRememberMe = localStorage.getItem("isRememberMe");
+    let localEmail = localStorage.getItem("email");
+    let localPassword = localStorage.getItem("password");
 
-    let localRememberMe = localStorage.getItem('isRememberMe');
-    let localEmail = localStorage.getItem('email');
-    let localPassword = localStorage.getItem('password');
-
-    if(localRememberMe === 'true'){
-      handleInputChange('email_id', localEmail)
-      handleInputChange('password', localPassword)
-      handleInputChange('isRememberMe', localRememberMe)
+    if (localRememberMe === "true") {
+      handleInputChange("email_id", localEmail);
+      handleInputChange("password", localPassword);
+      handleInputChange("isRememberMe", localRememberMe);
     }
-
-  },[])
+  }, []);
 
   /** email validation */
   const isValidEmail = (email: string) => {
@@ -80,19 +79,21 @@ export const LoginPage = () => {
         const response = await login(credentials);
         const { email_id, user_name, role_name, access_token } = response.data;
         localStorage.setItem("email", email_id);
-        localStorage.setItem('userName', user_name)
+        localStorage.setItem("userName", user_name);
         localStorage.setItem("role", role_name);
         localStorage.setItem("token", access_token);
-        localStorage.setItem('password', credentials.password)
-        localStorage.setItem('isRememberMe', (credentials.isRememberMe).toString());
+        localStorage.setItem("password", credentials.password);
+        localStorage.setItem(
+          "isRememberMe",
+          credentials.isRememberMe.toString()
+        );
         dispatch(loginSuccess({ email_id, role_name, access_token }));
-          navigate("/commission/dashboard");
+        navigate("/commission/dashboard");
       } catch (error) {
         alert("Please enter vaild credentails.");
       }
     }
   };
-
 
   if (isAuthenticated) {
     navigate("/commission/dashboard");
@@ -131,15 +132,15 @@ export const LoginPage = () => {
               </div>
               <span className="loginLogText">Log In</span>
               <br />
-             
+
               <Input
                 type={"text"}
                 name={"email_id"}
                 value={credentials.email_id}
                 placeholder={"Enter Email"}
-                onChange={(e)=>{
-                  const {name, value} = e.target
-                  handleInputChange(name, value)
+                onChange={(e) => {
+                  const { name, value } = e.target;
+                  handleInputChange(name, value);
                 }}
               />
               <br />
@@ -148,9 +149,9 @@ export const LoginPage = () => {
                 value={credentials.password}
                 name={"password"}
                 placeholder={"Enter Password"}
-                onChange={(e)=>{
-                  const {name, value} = e.target
-                  handleInputChange(name, value)
+                onChange={(e) => {
+                  const { name, value } = e.target;
+                  handleInputChange(name, value);
                 }}
                 isTypePassword={true}
                 onClickEyeIcon={() => {
@@ -162,13 +163,18 @@ export const LoginPage = () => {
               <div className="loginSwitchView">
                 <div className="loginSwitchInnerView">
                   <label className="switch">
+                    <input
+                      type="checkbox"
+                      checked={credentials.isRememberMe}
+                      onChange={(event) => {
+                        handleInputChange(
+                          "isRememberMe",
+                          !credentials.isRememberMe
+                        );
 
-
-                    <input type="checkbox" checked={credentials.isRememberMe} onChange={(event)=>{
-                      handleInputChange("isRememberMe", !credentials.isRememberMe)
-
-                      console.log(event.target.value)
-                    }}/>
+                        console.log(event.target.value);
+                      }}
+                    />
 
                     <span className="slider round"></span>
                   </label>
@@ -177,7 +183,7 @@ export const LoginPage = () => {
                 <button
                   className="reset-password"
                   onClick={() => {
-                    navigate("/resetPassword");
+                    navigate(ROUTES.RESETPASSWORD);
                   }}
                 >
                   Recover Password

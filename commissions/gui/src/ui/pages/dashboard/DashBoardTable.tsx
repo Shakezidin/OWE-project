@@ -10,13 +10,21 @@ import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { setCurrentPage } from "../../../redux/apiSlice/paginationslice/paginationSlice";
 import Pagination from "../../components/pagination/Pagination";
 import HelpDashboard from "./HelpDashboard";
+import { CommissionModel } from "../../../core/models/configuration/create/CommissionModel";
+
+
+
 // import { installers, partners, respTypeData, statData } from "../../../../../core/models/data_models/SelectDataModel";
 
 
 const DashBoardTable: React.FC = () => {
+  const [editedCommission, setEditedCommission] = useState<CommissionModel | null>(null);
+const [editMode, setEditMode] = useState(false);
   const [open, setOpen] = useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  
   const dataUser = [
     {
       pi: "1234567890",
@@ -315,13 +323,11 @@ const DashBoardTable: React.FC = () => {
                             handleOpen()
                           }} />
                         </div>
-                        {/* {open && (
-                          <HelpDashboard
-                            handleClose={handleClose}
-                            editMode={false}
-                            userOnboard={null}
-                          />
-                        )} */}
+                        {open && <HelpDashboard
+                          commission={editedCommission}
+                          editMode={editMode}
+                          handleClose={handleClose}
+                        />}
                       </div>
                     </td>
                   </tr>

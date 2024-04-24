@@ -74,9 +74,15 @@ export const userSelectData = [
 ]
 
 export const payRollData = [
-  { value: "Select", label: 'Select' },
   { value: "02/04/2024", label: '02/04/2024' },
   { value: "03/04/2024", label: '03/04/2024' },
   { value: "04/04/2024", label: '04/04/2024' },
   { value: "05/04/2024", label: '05/04/2024' },
+]
+
+export const comissionValueData = [
+  { value: "All", label: 'All' },
+  { value: "Percentage", label: 'Percentage' },
+  { value: "RL", label: 'RL' },
+
 ]

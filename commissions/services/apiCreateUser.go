@@ -58,7 +58,10 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		(len(createUserReq.MobileNumber) <= 0) || (len(createUserReq.Password) <= 0) ||
 		(len(createUserReq.Designation) <= 0) || (len(createUserReq.RoleName) <= 0) ||
 		(len(createUserReq.UserCode) <= 0) || (len(createUserReq.ReportingManager) <= 0) ||
-		(len(createUserReq.UserStatus) <= 0) || (len(createUserReq.Description) <= 0) {
+		(len(createUserReq.UserStatus) <= 0) || (len(createUserReq.Description) <= 0) ||
+		(len(createUserReq.DealerOwner) <= 0) || (len(createUserReq.StreetAddress) <= 0) ||
+		(len(createUserReq.State) <= 0) || (len(createUserReq.City) <= 0) ||
+		(len(createUserReq.Zipcode) <= 0) || (len(createUserReq.Country) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
@@ -79,10 +82,17 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	queryParameters = append(queryParameters, string(hashedPassBytes))
 	queryParameters = append(queryParameters, createUserReq.PasswordChangeReq)
 	queryParameters = append(queryParameters, createUserReq.ReportingManager)
+	queryParameters = append(queryParameters, createUserReq.DealerOwner)
 	queryParameters = append(queryParameters, createUserReq.RoleName)
 	queryParameters = append(queryParameters, createUserReq.UserStatus)
 	queryParameters = append(queryParameters, createUserReq.Designation)
 	queryParameters = append(queryParameters, createUserReq.Description)
+	queryParameters = append(queryParameters, createUserReq.StreetAddress)
+	queryParameters = append(queryParameters, createUserReq.State)
+	queryParameters = append(queryParameters, createUserReq.City)
+	queryParameters = append(queryParameters, createUserReq.Zipcode)
+	queryParameters = append(queryParameters, createUserReq.Country)
+
 	_, err = db.CallDBFunction(db.CreateUserFunction, queryParameters)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to Add User in DB with err: %v", err)
