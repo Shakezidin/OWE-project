@@ -70,7 +70,7 @@ export default class BarChartComponent extends PureComponent {
               margin={{
                 right: 30,
                 left: 20,
-                bottom: 30,
+                bottom: 36,
               }}
             >
               <CartesianGrid vertical={false} />
@@ -84,9 +84,9 @@ export default class BarChartComponent extends PureComponent {
                 tick={{ fontFamily: "Inter", fontWeight: 500, fontSize: 12, fill: "#101828" }}
                 tickLine={false}
               />
-              <Legend
+              {/* <Legend
                 wrapperStyle={{ fontSize: "12px", color: "#000000" }} payload={[{ value: 'Total Records', type: 'rect', color: '#FB7955'  }, { value: 'Historical Records', type: 'rect', color: '#007AF5' }]} iconSize={15} 
-              />
+              /> */}
               <Bar
                 dataKey="Total_Records"
                 fill="#FB7955"
