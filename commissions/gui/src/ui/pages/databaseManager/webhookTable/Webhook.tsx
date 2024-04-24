@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 
 import "../../configure/configure.css";
-// import CreateDealer from "./CreateDealer";
+
+import './hooktable.css'
 
 import { FaArrowDown } from "react-icons/fa6";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
@@ -12,6 +13,7 @@ import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import DataTableHeader from "../../../components/tableHeader/DataTableHeader";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import { toggleAllRows, toggleRowSelection } from "../../../components/chekbox/checkHelper";
+import Pagination from "../../../components/pagination/Pagination";
 
 
 
@@ -32,7 +34,7 @@ const Webhook: React.FC = () => {
   const [editMode, setEditMode] = useState(false);
   const [columns, setColumns] = useState<string[]>([]);
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
-  const itemsPerPage = 5;
+  const itemsPerPage = 7;
 
   useEffect(() => {
     const pageNumber = {
@@ -100,7 +102,66 @@ const Webhook: React.FC = () => {
       col3: "NA",
       col4: "22/03/2024  1:00 AM",
     },
+    {
+      col1: "1234567890",
+      col2: "1234",
+      col3: "Invalid Data",
+      col4: "20/03/2024  10:00 AM",
+    },
+    {
+      col1: "1234567890",
+      col2: "1234",
+      col3: "Data not found",
+      col4: "04/03/2024  12:00 PM",
+    },
+    {
+      col1: "1234567890",
+      col2: "1234",
+      col3: "NA",
+      col4: "22/03/2024  1:00 AM",
+    },
+    {
+      col1: "1234567890",
+      col2: "1234",
+      col3: "Invalid Data",
+      col4: "20/03/2024  10:00 AM",
+    },
+    {
+      col1: "1234567890",
+      col2: "1234",
+      col3: "Data not found",
+      col4: "04/03/2024  12:00 PM",
+    },
+    {
+      col1: "1234567890",
+      col2: "1234",
+      col3: "NA",
+      col4: "22/03/2024  1:00 AM",
+    },
+    {
+      col1: "1234567890",
+      col2: "1234",
+      col3: "Invalid Data",
+      col4: "20/03/2024  10:00 AM",
+    },
+    {
+      col1: "1234567890",
+      col2: "1234",
+      col3: "Data not found",
+      col4: "04/03/2024  12:00 PM",
+    },
+    {
+      col1: "1234567890",
+      col2: "1234",
+      col3: "NA",
+      col4: "22/03/2024  1:00 AM",
+    },
   ]
+  
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentPageData = dataDb.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(dataDb.length / itemsPerPage );
 
   return (
     <div className="comm">
@@ -110,6 +171,8 @@ const Webhook: React.FC = () => {
           title="Failed Webhooks"
           onPressFilter={() => filter()}
           onPressImport={() => { }}
+          showImportIcon={false}
+          showSelectIcon={false}
         />
 
         <div
@@ -121,22 +184,11 @@ const Webhook: React.FC = () => {
               <tr>
                 <th>
                   <div>
-                    <CheckBox
-                      checked={selectAllChecked}
-                      onChange={() =>
-                        toggleAllRows(
-                          selectedRows,
-                          dealerList,
-                          setSelectedRows,
-                          setSelectAllChecked
-                        )
-                      }
-                    // indeterminate={isAnyRowSelected && !isAllRowsSelected}
-                    />
+            
                   </div>
                 </th>
                 <th>
-                  <div className="table-header">
+                  <div className="table-header" >
                     <p>Webhook ID</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
@@ -159,23 +211,13 @@ const Webhook: React.FC = () => {
             </thead>
 
             <tbody>
-              {dataDb?.length > 0
-                ? dataDb?.map((el, i) => (
+              {currentPageData?.length > 0
+                ? currentPageData?.map((el, i) => (
                   <tr key={i}>
                     <td>
-                      <CheckBox
-                        checked={selectedRows.has(i)}
-                        onChange={() =>
-                          toggleRowSelection(
-                            i,
-                            selectedRows,
-                            setSelectedRows,
-                            setSelectAllChecked
-                          )
-                        }
-                      />
+
                     </td>
-                    <td style={{ fontWeight: "500", color: "black" }}>
+                    <td style={{ fontWeight: "500", color: "black" , textAlign: "left"}}>
                       {el.col1}
                     </td>
                     <td>{el.col2}</td>
@@ -186,6 +228,24 @@ const Webhook: React.FC = () => {
                 : null}
             </tbody>
           </table>
+        </div>
+
+        <div className="page-heading-container">
+      
+      <p className="page-heading">
+       {currentPage} - {totalPages} of {currentPageData?.length} item
+      </p>
+ 
+   {
+    dataDb?.length > 0 ? <Pagination
+      currentPage={currentPage}
+      totalPages={totalPages} // You need to calculate total pages
+      paginate={paginate}
+      goToNextPage={goToNextPage}
+      goToPrevPage={goToPrevPage}
+      currentPageData={currentPageData}
+    /> : null
+  }
         </div>
       </div>
     </div>
