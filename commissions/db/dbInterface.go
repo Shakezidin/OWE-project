@@ -39,6 +39,7 @@ const (
 	CreateStateFunction                  string = "create_new_state"
 	CreateLoanTypeFunction               string = "create_new_loan_type"
 	CreateAutoAdderFunction              string = "create_new_auto_adder"
+	UpdateAddAdderArchiveFunction        string = "update_auto_adder_archive"
 	UpdateCommissionFunction             string = "update_commission"
 	UpdateCommissionArchiveFunction      string = "update_commission_archive"
 	UpdateDealerOverrideFunction         string = "update_dealer_override"

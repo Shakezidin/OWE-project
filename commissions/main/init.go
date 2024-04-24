@@ -24,7 +24,6 @@ import (
 	apiHandler "OWEApp/services"
 
 	"github.com/google/uuid"
-	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 type CfgFilePaths struct {
@@ -565,6 +564,14 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_autoadder",
 		apiHandler.HandleUpdateAutoAdderRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_autoadder_archive",
+		apiHandler.HandleUpdateAutoAdderArchiveRequest,
 		true,
 		[]types.UserRoles{
 			types.RoleAdmin,
