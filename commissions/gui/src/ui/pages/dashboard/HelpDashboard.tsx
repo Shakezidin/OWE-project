@@ -129,8 +129,8 @@ const HelpDashboard: React.FC<ButtonProps> = ({ editMode, handleClose, commissio
 
                     </div>
 
-                    <div className="create-input-field-note" style={{marginLeft:"1rem", marginTop:"0.5rem"}}>
-                        <label htmlFor="" className="inputLabel" style={{marginLeft:"1rem"}}>
+                    <div className="create-input-field-note" style={{ marginLeft: "1rem", marginTop: "0.5rem" }}>
+                        <label htmlFor="" className="inputLabel" style={{ marginLeft: "1rem" }}>
                             Message
                         </label>
                         <br />
@@ -142,10 +142,10 @@ const HelpDashboard: React.FC<ButtonProps> = ({ editMode, handleClose, commissio
                             value={""}
                             placeholder="Type here..."
                             style={{
-                                width:"940px",
-                                marginLeft:"1rem",
-                                marginTop:"0.5rem"
-                                }}
+                                width: "940px",
+                                marginLeft: "1rem",
+                                marginTop: "0.5rem"
+                            }}
                         ></textarea>
                     </div>
 

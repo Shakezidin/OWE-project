@@ -45,7 +45,7 @@ export const DashboardPage: React.FC = () => {
           <div className="dashboard-payroll">
             <div className="Payroll-section">
               <label className="inputLabel" style={{ color: "#344054" }}>
-                Commission Value
+                Commission Model
               </label>
               <Select
                 options={comissionValueData}

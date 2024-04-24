@@ -47,6 +47,14 @@ input::placeholder {
   /* text-align: left; */
 }
 
+.eyeIcon{
+  background: #e8f0fe;
+    padding-top: -62px;
+    border: 34px 10px 10px 10px;
+    height: 36px;
+    width: 22px;
+    padding-right: 8px;
+}
 .eyeIcon:hover {
   cursor: pointer;
 }

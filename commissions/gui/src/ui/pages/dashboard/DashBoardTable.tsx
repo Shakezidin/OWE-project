@@ -12,19 +12,16 @@ import Pagination from "../../components/pagination/Pagination";
 import HelpDashboard from "./HelpDashboard";
 import { CommissionModel } from "../../../core/models/configuration/create/CommissionModel";
 
-
-
 // import { installers, partners, respTypeData, statData } from "../../../../../core/models/data_models/SelectDataModel";
 
 
 const DashBoardTable: React.FC = () => {
   const [editedCommission, setEditedCommission] = useState<CommissionModel | null>(null);
-const [editMode, setEditMode] = useState(false);
   const [open, setOpen] = useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [editMode, setEditMode] = useState(false);
 
-  
   const dataUser = [
     {
       pi: "1234567890",

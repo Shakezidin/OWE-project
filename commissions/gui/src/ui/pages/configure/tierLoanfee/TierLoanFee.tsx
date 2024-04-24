@@ -29,7 +29,7 @@ const TierLoanFee = () => {
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  
+  const [viewArchived, setViewArchived] = useState<boolean>(false);
   const filterClose = () => setFilterOpen(false);
   const [editMode, setEditMode] = useState(false);
   const [editedTierLoanfee, setEditedTierLoanFee] = useState<TierLoanFeeModel | null>(null);
@@ -128,6 +128,7 @@ const TierLoanFee = () => {
           onPressFilter={() => filter()}
           onPressImport={() => {}}
           onpressExport={() => {}}
+          viewArchive={viewArchived}
           onpressAddNew={() => handleAddTierLoan()}
         />
         {filterOPen && <FilterModal handleClose={filterClose}

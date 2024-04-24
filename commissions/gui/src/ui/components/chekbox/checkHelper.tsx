@@ -10,7 +10,9 @@ export const toggleRowSelection=( index: number,
       newSelectedRows.add(index);
     }
     setSelectedRows(newSelectedRows);
-    setSelectAllChecked(false);
+    if (newSelectedRows.size === 0) {
+      setSelectAllChecked(false);
+    }
   };
 
  export const toggleAllRows = (selectedRows: Set<number>,
