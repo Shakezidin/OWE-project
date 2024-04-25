@@ -202,7 +202,7 @@ const CommissionRate: React.FC = () => {
   //   return <div>Loading... {loading}</div>;
   // }
 
-
+  console.log("gjshadgjsadj",Commissioncolumns)
   return (
     <div className="comm">
       <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Commission Rate" />

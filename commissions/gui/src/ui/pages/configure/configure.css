@@ -166,14 +166,6 @@ table thead tr th {
   /* line-height: 18px; */
 }
 
-/* table thead tr th:last-child{
-  position: fixed;
-  transform: translate(-50,-50%);
-  top: 0;
-  left: 50%;
-  right: 0;
-} */
-
 .table-header {
   display: flex;
   align-items: center;

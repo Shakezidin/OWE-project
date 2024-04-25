@@ -18,10 +18,11 @@
   font-size: 14px;
   font-weight: 500;
   margin-left: 10px;
+  color: black;
 }
 
 .search-container-data ::placeholder {
-  color: #101828;
+  color: #000000;
 }
 
 .dropdown-icon {
@@ -31,5 +32,5 @@
   font-size: 2rem;
   transform: translateY(-50%);
   cursor: pointer;
-  color: gray;
+  color: rgb(0, 0, 0);
 }
