@@ -16,7 +16,6 @@ import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 import { dataUser, appointmentList, partnerList, RMManagerList, dealerList, saleReprestList, SaleManagerList } from "../../../../resources/static_data/StaticUserList";
 import SelectOption from "../../../components/selectOption/SelectOption";
-import { fetchUserOnboarding } from "../../../../redux/apiSlice/userManagementSlice/userManagementSlice";
 
 // interface props {
 //   name: string;

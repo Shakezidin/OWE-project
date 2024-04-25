@@ -4,7 +4,7 @@ import UserPieChart from "./pieChart/UserPieChart";
 import UserOnboardingCreation from "./userOnboard/UserOnboardCreation";
 import { AddNewButton } from "../../components/button/AddNewButton";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import { fetchUserOnboarding } from "../../../redux/apiSlice/userManagementSlice/userManagementSlice";
+import { fetchUserOnboarding } from "../../../redux/apiActions/userManagementActions";
 
 const UserManagement: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
