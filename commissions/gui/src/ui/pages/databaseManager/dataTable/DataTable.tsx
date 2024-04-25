@@ -167,6 +167,8 @@ const DataTablle: React.FC = () => {
           title="Table Name"
           onPressFilter={() => filter()}
           onPressImport={() => { }}
+          showImportIcon={false}
+          showSelectIcon={true}
         />
 
 
@@ -285,7 +287,7 @@ const DataTablle: React.FC = () => {
       currentPageData={currentPageData}
     /> : null
   }
-   </div>
+        </div>
       </div>
     </div>
   );
