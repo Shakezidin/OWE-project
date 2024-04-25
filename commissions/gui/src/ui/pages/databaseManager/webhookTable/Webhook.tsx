@@ -181,30 +181,25 @@ const Webhook: React.FC = () => {
         >
           <table>
             <thead>
-              <tr>
-                <th>
-                  <div>
-            
-                  </div>
-                </th>
+              <tr>               
                 <th>
                   <div className="table-header" >
-                    <p>Webhook ID</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Webhook ID</p> <FaArrowDown style={{ color: "#667085", textAlign: "left" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Item ID</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Item ID</p> <FaArrowDown style={{ color: "#667085", textAlign: "left" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Error</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Error</p> <FaArrowDown style={{ color: "#667085", textAlign: "left" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Date & Time</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Date & Time</p> <FaArrowDown style={{ color: "#667085", textAlign: "left" }} />
                   </div>
                 </th>
               </tr>
@@ -214,15 +209,12 @@ const Webhook: React.FC = () => {
               {currentPageData?.length > 0
                 ? currentPageData?.map((el, i) => (
                   <tr key={i}>
-                    <td>
-
-                    </td>
                     <td style={{ fontWeight: "500", color: "black" , textAlign: "left"}}>
                       {el.col1}
                     </td>
-                    <td>{el.col2}</td>
-                    <td>{el.col3}</td>
-                    <td>{el.col4}</td>
+                    <td style={{ fontWeight: "500", color: "black" }}>{el.col2}</td>
+                    <td style={{ fontWeight: "500", color: "black" }}>{el.col3}</td>
+                    <td style={{ fontWeight: "500", color: "black"}}>{el.col4}</td>
                   </tr>
                 ))
                 : null}

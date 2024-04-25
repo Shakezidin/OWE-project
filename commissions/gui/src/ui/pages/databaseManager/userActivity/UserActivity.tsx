@@ -31,7 +31,7 @@ const UserActivity: React.FC = () => {
   const [editMode, setEditMode] = useState(false);
   // const [columns, setColumns] = useState<string[]>([]);
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
-const itemsPerPage = 5;
+  const itemsPerPage = 5;
 
 
 
@@ -84,7 +84,7 @@ const itemsPerPage = 5;
     // setEditDealer(dealerData);
     handleOpen()
   };
-  
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -101,64 +101,64 @@ const itemsPerPage = 5;
       query: "Data not found in server",
     },
     {
-        uname: "Roi William",
-        dbname: "DB_Name",
-        date: "10/04/2024  3:00AM",
-        query: "Data not found in server",
-      },
-      {
-        uname: "Roi William",
-        dbname: "DB_Name",
-        date: "10/04/2024  3:00AM",
-        query: "Data not found in server",
-      },
-      {
-        uname: "Roi William",
-        dbname: "DB_Name",
-        date: "10/04/2024  3:00AM",
-        query: "Data not found in server",
-      },
-      {
-          uname: "Roi William",
-          dbname: "DB_Name",
-          date: "10/04/2024  3:00AM",
-          query: "Data not found in server",
-        },
-        {
-          uname: "Roi William",
-          dbname: "DB_Name",
-          date: "10/04/2024  3:00AM",
-          query: "Data not found in server",
-        },
-        {
-          uname: "Roi William",
-          dbname: "DB_Name",
-          date: "10/04/2024  3:00AM",
-          query: "Data not found in server",
-        },
-        {
-            uname: "Roi William",
-            dbname: "DB_Name",
-            date: "10/04/2024  3:00AM",
-            query: "Data not found in server",
-          },
-          {
-            uname: "Roi William",
-            dbname: "DB_Name",
-            date: "10/04/2024  3:00AM",
-            query: "Data not found in server",
-          },
+      uname: "Roi William",
+      dbname: "DB_Name",
+      date: "10/04/2024  3:00AM",
+      query: "Data not found in server",
+    },
+    {
+      uname: "Roi William",
+      dbname: "DB_Name",
+      date: "10/04/2024  3:00AM",
+      query: "Data not found in server",
+    },
+    {
+      uname: "Roi William",
+      dbname: "DB_Name",
+      date: "10/04/2024  3:00AM",
+      query: "Data not found in server",
+    },
+    {
+      uname: "Roi William",
+      dbname: "DB_Name",
+      date: "10/04/2024  3:00AM",
+      query: "Data not found in server",
+    },
+    {
+      uname: "Roi William",
+      dbname: "DB_Name",
+      date: "10/04/2024  3:00AM",
+      query: "Data not found in server",
+    },
+    {
+      uname: "Roi William",
+      dbname: "DB_Name",
+      date: "10/04/2024  3:00AM",
+      query: "Data not found in server",
+    },
+    {
+      uname: "Roi William",
+      dbname: "DB_Name",
+      date: "10/04/2024  3:00AM",
+      query: "Data not found in server",
+    },
+    {
+      uname: "Roi William",
+      dbname: "DB_Name",
+      date: "10/04/2024  3:00AM",
+      query: "Data not found in server",
+    },
   ]
 
 
-  const totalPages = Math.ceil(dataDb.length / itemsPerPage );
+  const totalPages = Math.ceil(dataDb.length / itemsPerPage);
 
   const currentPageData = dataDb.slice(startIndex, endIndex);
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === dataDb.length;
   const fetchFunction = (req: any) => {
     // dispatch(fetchPaySchedule(req));
-   };
+  };
 
 
   return (
@@ -197,7 +197,7 @@ const itemsPerPage = 5;
                           setSelectAllChecked
                         )
                       }
-                    indeterminate={isAnyRowSelected && !isAllRowsSelected}
+                      indeterminate={isAnyRowSelected && !isAllRowsSelected}
                     />
                   </div>
                 </th>
@@ -221,12 +221,12 @@ const itemsPerPage = 5;
                     <p>Query Details</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
-                
+
               </tr>
             </thead>
 
             <tbody>
-            {currentPageData?.length > 0
+              {currentPageData?.length > 0
                 ? currentPageData?.map((el, i) => (
                   <tr key={i}>
                     <td>
@@ -248,32 +248,35 @@ const itemsPerPage = 5;
                     <td>{el.dbname}</td>
                     <td>{el.date}</td>
                     <td>{el.query}</td>
-                    
+
                   </tr>
                 ))
                 : null}
             </tbody>
           </table>
         </div>
+
+
+
         <div className="page-heading-container">
-      
-      <p className="page-heading">
-       {currentPage} - {totalPages} of {currentPageData?.length} item
-      </p>
- 
-   {
-    dataDb?.length > 0 ? <Pagination
-      currentPage={currentPage}
-      totalPages={totalPages} // You need to calculate total pages
-      paginate={paginate}
-      goToNextPage={goToNextPage}
-      goToPrevPage={goToPrevPage}
-      currentPageData={currentPageData}
-    /> : null
-  }
-   </div>
+
+          <p className="page-heading">
+            {currentPage} - {totalPages} of {currentPageData?.length} item
+          </p>
+
+          {
+            dataDb?.length > 0 ? <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages} // You need to calculate total pages
+              paginate={paginate}
+              goToNextPage={goToNextPage}
+              goToPrevPage={goToPrevPage}
+              currentPageData={currentPageData}
+            /> : null
+          }
+        </div>
       </div>
-    
+
     </div>
   );
 };
