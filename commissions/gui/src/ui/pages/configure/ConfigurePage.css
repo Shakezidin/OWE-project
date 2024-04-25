@@ -1,0 +1,99 @@
+.configure-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .configure-name h3 {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 30px;
+    text-align: left;
+    color: var(--page-heading-color);
+    margin-bottom: -7px;
+  }
+  .spacer {
+    flex: 1;
+  }
+  .configure-header-icons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: var(--white-color);
+    padding: 0.44rem;
+    border: 1px solid var(--button-border-color);
+    border-radius: 8px;
+    color: var(--btn-text-color);
+    cursor: pointer;
+  }
+  .configure-main {
+    margin-top: 10px;
+    height: 100%;
+    background: var(--white-color);
+    padding: 30px;
+    border-radius: 16px;
+  }
+  .dealer-pay, .Rep-pay, .common p{
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--page-heading-color);
+  }
+  .configure-cards{
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin: 14px 0;
+  }
+  .pay-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 145px;
+    height: 58px;
+    border: 1px solid var(--button-border-color);
+    border-radius: 8px;
+    padding: 12px;
+    cursor: pointer;
+  }
+  .pay-card:hover, .rep-card:hover{
+    box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
+    transform: scale(1.05);
+    transition: transform 0.2s ease-in-out;
+  }
+  .pay-card p{
+    width: 70px;
+    font-size: 12px;
+    font-weight: 450;
+    color: var(--coloumn-text-color)
+  }
+  .pay-card-img{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 42px;
+    width: 42px;
+    border-radius: 8px;
+  }
+  .pay-dollar-img{
+    height: 24px;
+    width: 24px;
+  }
+  .pay-card-arrow{
+    height: 20px;
+    width: 24px;
+    color: var(--arrow-icon-color);
+  }
+  .configure-card-title{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: .5px solid var(--button-border-color);
+  }
+  .accordion-icon{
+    color: var(--secondary-text-color);
+    cursor: pointer;
+  }
+  .payer-type{
+    padding-bottom: 5px;
+  }
