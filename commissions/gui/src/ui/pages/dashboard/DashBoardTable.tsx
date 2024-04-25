@@ -46,6 +46,8 @@ const DashBoardTable: React.FC = () => {
       dn: "Josh Morton",
       sr: "Josh Morton",
       cn: "josh Morton",
+      cm: "RL",
+      pg: "-",
       amt: "$123,456",
       pipeline: "$100,362",
       cd: "$300,652",
@@ -97,6 +99,8 @@ const DashBoardTable: React.FC = () => {
       dn: "Josh Morton",
       sr: "Josh Morton",
       cn: "josh Morton",
+      cm: "RL",
+      pg: "-",
       amt: "$123,456",
       pipeline: "$100,362",
       cd: "$300,652",
@@ -148,6 +152,27 @@ const DashBoardTable: React.FC = () => {
       dn: "Josh Morton",
       sr: "Josh Morton",
       cn: "josh Morton",
+      cm: "RL",
+      pg: "-",
+      amt: "$123,456",
+      pipeline: "$100,362",
+      cd: "$300,652",
+      ps: "Active",
+      state: "Texas",
+      sysSize: "10.5",
+      type: "loan",
+      adder: "$62,500",
+      ajh: "12 Days",
+      rl: "$20.00",
+      epc: "2.444",
+    },
+    {
+      pi: "1234567890",
+      dn: "Josh Morton",
+      sr: "Josh Morton",
+      cn: "josh Morton",
+      cm: "Percentage",
+      pg: "90/10",
       amt: "$123,456",
       pipeline: "$100,362",
       cd: "$300,652",
@@ -196,7 +221,7 @@ const DashBoardTable: React.FC = () => {
                 <th>
                   <div>
                     <CheckBox
-                      checked={true}
+                      checked={false}
                       onChange={() => {}}
                       // indeterminate={isAnyRowSelected && !isAllRowsSelected}
                     />
@@ -300,7 +325,7 @@ const DashBoardTable: React.FC = () => {
                     <tr key={i}>
                       <td>
                         <CheckBox
-                          checked={true}
+                          checked={false}
                           onChange={() => {}}
                           // indeterminate={isAnyRowSelected && !isAllRowsSelected}
                         />

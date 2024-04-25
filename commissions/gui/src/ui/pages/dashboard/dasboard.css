@@ -74,9 +74,16 @@
   align-items: center;
   gap: 1rem;
 }
-.Payroll-section {
+.payroll-date{
+  font-size: 13px;
+  border-radius: 0.40rem;
+  border: none;
+  outline: none;
+  background: #ECECEC;
+  padding: 4px 8px;
+}
+.Payroll-section{
   display: flex;
-  /* width: 240px; */
   height: 36px;
   background-color: white;
   padding: 0 6px 0 12px;
@@ -85,8 +92,18 @@
   border-radius: 8px;
   border: 1px solid #d0d5dd;
 }
-.dash-select {
-  background-color: #ececec;
+.dash-head-input{
+  display: flex;
+  height: 36px;
+  background-color: white;
+  padding: 0 3px 0 12px;
+  gap: 0.5rem;
+  align-items: center;
+  border-radius: 8px;
+  border: 1px solid #d0d5dd;
+}
+.dash-select{
+  background-color: #ECECEC;
   border: none;
   outline: none;
   padding: 0.3rem, 0.7rem;
@@ -96,6 +113,15 @@
   font-weight: 500;
   border-radius: 0.4rem;
   position: relative;
+}
+.chart-view{
+  background: #ECECEC;
+  border-radius: 0.40rem;
+  border: none;
+  outline: none;
+  background: #ECECEC;
+  padding: 5px 8px;
+  cursor: pointer;
 }
 .line-graph {
   display: flex;
