@@ -694,6 +694,15 @@ var apiRoutes = ApiRoutes{
 			types.RoleAdmin,
 		},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/create_noncommdlrpay",
+		apiHandler.HandleCreateNonCommDlrPayRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
 }
 
 /******************************************************************************

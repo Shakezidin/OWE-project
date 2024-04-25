@@ -41,6 +41,7 @@ const (
 	CreateAutoAdderFunction              string = "create_new_auto_adder"
 	CreateReferralDataFunction           string = "create_new_referral_data"
 	CreateDealerCreditFunction           string = "create_new_dealer_credit"
+	CreateNonCommDlrPayFunction          string = "create_new_non_comm_dlr_pay"
 	UpdateAddAdderArchiveFunction        string = "update_auto_adder_archive"
 	UpdateCommissionFunction             string = "update_commission"
 	UpdateCommissionArchiveFunction      string = "update_commission_archive"
