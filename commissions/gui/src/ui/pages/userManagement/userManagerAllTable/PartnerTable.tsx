@@ -4,9 +4,10 @@ import { ICONS } from "../../../icons/Icons";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import "../../configure/configure.css";
 import { FaArrowDown } from "react-icons/fa6";
+import { UserRoleBasedListModel } from "../../../../core/models/api_models/UserManagementModel";
 
 interface PartnerProps {
-  data: { [key: string]: any }[];
+  data: UserRoleBasedListModel[];
 }
 
 const PartnerTable: React.FC<PartnerProps>= ({data}) => {
@@ -51,8 +52,8 @@ const PartnerTable: React.FC<PartnerProps>= ({data}) => {
 
           <tbody>
             {data.length > 0
-              ? data.map((el, i) => (
-                  <tr key={i}>
+              ? data.map((el: UserRoleBasedListModel) => (
+                  <tr key={el.email_id}>
                     <td>
                       <CheckBox
                         checked={true}
@@ -63,7 +64,7 @@ const PartnerTable: React.FC<PartnerProps>= ({data}) => {
                     <td style={{ color: "var( --fade-gray-black)" }}>
                       {el.name}
                     </td>
-                    <td>{el.det}</td>
+                    <td>{el.description}</td>
                     <td>
                       <div className="action-icon">
                         <div className="" style={{ cursor: "pointer" }}>

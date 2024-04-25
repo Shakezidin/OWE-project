@@ -1,31 +1,49 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
-import UserHeaderSection from "./UserHeader/UserHeaderSection";
 import UserPieChart from "./pieChart/UserPieChart";
 import UserOnboardingCreation from "./userOnboard/UserOnboardCreation";
 import { AddNewButton } from "../../components/button/AddNewButton";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import { fetchUserOnboarding } from "../../../redux/apiActions/userManagementActions";
+import { fetchUserListBasedOnRole, fetchUserOnboarding } from "../../../redux/apiActions/userManagementActions";
+import { userSelectData } from "../../../resources/static_data/StaticData";
+import { UserDropdownModel } from "../../../core/models/api_models/UserManagementModel";
+import UserManagementTable from "./userTableList/UserManagementTable";
 
 const UserManagement: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const userName = localStorage.getItem("userName");
+  const [selectedOption, setSelectedOption] = useState<string>(
+    userSelectData[0].label
+  );
 
   const dispatch = useAppDispatch();
-  const { userOnboardingList } = useAppSelector(
+  const { userOnboardingList, userRoleBasedList } = useAppSelector(
     (state) => state.userManagement
   );
+
+  //console.log(userRoleBasedList)
 
   /** fetch onboarding users data*/
   useEffect(() => {
     const fetchData = async () => {
-      dispatch(fetchUserOnboarding()); // Using dispatch
+      await dispatch(fetchUserOnboarding()); // Using dispatch
     };
 
     fetchData();
   }, []);
 
+  useEffect(()=>{
+      dispatch(fetchUserListBasedOnRole());
+  },[selectedOption])
+
+  /** handle dropdown value */
+  const handleSelectChange = (
+    selectedOption: UserDropdownModel
+  ) => {
+    setSelectedOption(selectedOption ? selectedOption.label : "");
+  };
   return (
     <>
       <div className="management-section">
@@ -53,7 +71,11 @@ const UserManagement: React.FC = () => {
       </div>
 
       <div className="onboardrow">
-        <UserHeaderSection />
+        <UserManagementTable 
+        userRoleBasedList={userRoleBasedList}
+        userDropdownData={userSelectData} 
+        selectedOption={selectedOption} 
+        handleSelectChange={handleSelectChange}/>
       </div>
     </>
   );
