@@ -595,6 +595,33 @@ var apiRoutes = ApiRoutes{
 			types.RoleAdmin,
 		},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/create_referraldata",
+		apiHandler.HandleCreateReferralDataRequest,
+		false,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/create_dealercredit",
+		apiHandler.HandleCreateDealerCreditRequest,
+		false,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/create_noncommdlrpay",
+		apiHandler.HandleCreateNonCommDlrPayRequest,
+		false,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
 }
 
 /******************************************************************************

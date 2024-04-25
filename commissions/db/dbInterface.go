@@ -39,6 +39,7 @@ const (
 	CreateStateFunction                  string = "create_new_state"
 	CreateLoanTypeFunction               string = "create_new_loan_type"
 	CreateAutoAdderFunction              string = "create_new_auto_adder"
+	CreateReferralDataFunction           string = "create_new_referral_data"
 	UpdateAddAdderArchiveFunction        string = "update_auto_adder_archive"
 	UpdateCommissionFunction             string = "update_commission"
 	UpdateCommissionArchiveFunction      string = "update_commission_archive"
