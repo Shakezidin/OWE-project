@@ -132,8 +132,8 @@ const CreateProfileUser: React.FC<ButtonProps> = ({editMode, handleClose, commis
 
                 </div >
                 {/* <div className="reset-Update-support">
-                    <ActionButton title={"create"} type="submit" onClick={() => { }} />
-                </div> */}
+            <ActionButton title={"Submit"} type="submit" onClick={() => {}} />
+          </div> */}
             </div>
 
         </div>

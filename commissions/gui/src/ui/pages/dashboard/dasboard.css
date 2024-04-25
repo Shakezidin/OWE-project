@@ -140,6 +140,7 @@ height: 45vh;
   position: fixed;
   border-radius: 24px;
   width: 65%;
+  height: 86vh;
  background-color: white;
  border: 1px solid gray;
 }
@@ -179,4 +180,40 @@ height: 45vh;
   gap: 0px;
   border: 1px solid #d9d9d9;
   margin-top: 1rem;
+}
+
+.breakdown-container {
+ padding-left: 1rem;
+ background: #0096D3;
+
+}
+.project-section h3 {
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 44px;
+  text-align: left;
+  color: white;
+}
+.project-section h4 {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  text-align: left;
+  color: white;
+
+}
+.project-section h5 {
+font-size: 12px;
+font-weight: 400;
+line-height: 18px;
+text-align: left;
+color: white;
+padding-bottom: 1rem;
+}
+
+.breakdown-table {
+  display: block;
+  height: 100%;
+overflow: auto;
+white-space: nowrap;
 }

@@ -5,6 +5,7 @@ import "./support.css";
 import Select from "react-select";
 import { ActionButton } from "../../components/button/ActionButton";
 import CreateProfileUser from "../accountSettings/CreateProfileUser";
+import ProjectBreakdown from "../dashboard/ProjectBreakdown";
 
 const TechnicalSupport = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -188,6 +189,8 @@ const TechnicalSupport = () => {
           </div>
         </div>
       </div>
+{/* <ProjectBreakdown/> */}
+{/* <CreateProfileUser/> */}
      
     </>
   );
