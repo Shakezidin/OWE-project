@@ -1095,6 +1095,81 @@ CREATE TABLE auto_adder (
     FOREIGN KEY (rep_2) REFERENCES user_details(user_id)
 );
 
+CREATE TABLE loan_fee_adder (
+    id serial NOT NULL,
+    unique_id varchar NOT NULL UNIQUE,
+	type_mktg text,
+	dealer_id INT,
+	installer_id INT,
+    state_id INT,
+	contract_dol_dol  float,
+	dealer_tier INT,
+	owe_cost  float,
+	addr_amount  float,
+    per_kw_amount float,
+    rep_doll_divby_per float,
+    description_rep_visible text,
+    notes_not_rep_visible text,
+    type text,
+    rep_1 INT,
+    rep_2 INT,
+    sys_size float,
+    rep_count float,
+    per_rep_addr_share float,
+    per_rep_ovrd_share float,
+    r1_pay_scale float,
+    rep_1_def_resp text,
+    r1_addr_resp text,
+    r2_pay_scale float,
+    rep_2_def_resp text,
+    r2_addr_resp text,
+    start_date character varying NOT NULL,
+    end_date character varying,   
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
+    FOREIGN KEY (state_id) REFERENCES states(state_id),
+    FOREIGN KEY (rep_1) REFERENCES user_details(user_id),
+    FOREIGN KEY (rep_2) REFERENCES user_details(user_id),
+	FOREIGN KEY (dealer_id) REFERENCES user_details(user_id),
+	FOREIGN KEY (installer_id) REFERENCES partners(partner_id),
+	FOREIGN KEY (dealer_tier) REFERENCES tier(id)
+	);
+
+CREATE TABLE rebate_data (
+    id serial NOT NULL,
+    unique_id varchar NOT NULL UNIQUE,
+    customer_verf text,
+    type_rd_mktg text,
+    item text,
+    amount text,
+    rep_doll_divby_per float,
+    notes text,
+    type text,
+    rep_1 INT,
+    rep_2 INT,
+    sys_size float,
+    rep_count float,
+	state_id INT,
+	per_rep_addr_share float,
+    per_rep_ovrd_share float,
+    r1_pay_scale float,
+    rep_1_def_resp text,
+    r1_addr_resp text,
+    r2_pay_scale float,
+    per_rep_def_ovrd text,
+    r1_rebate_credit_$ text,
+    r1_rebate_credit_perc text,
+    r2_rebate_credit_$ text,
+    r2_rebate_credit_perc text,
+    start_date character varying NOT NULL,
+    end_date character varying,   
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
+    FOREIGN KEY (state_id) REFERENCES states(state_id),
+    FOREIGN KEY (rep_1) REFERENCES user_details(user_id),
+    FOREIGN KEY (rep_2) REFERENCES user_details(user_id)
+);
+
 /**********************************DEALER PAY SCHEMA START **************************************/
 
 CREATE TABLE
@@ -1675,4 +1750,11 @@ INSERT INTO loan_type (product_code,active,adder,description) VALUES ('P123',1,1
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdatePaymentScheduleArchive.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateTimelineSlaArchive.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateLoanTypeArchive.sql';
-\i '/docker-entrypoint-initdb.d/DB_ProcUpdateUser.sql'
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateUser.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewAutoAdder.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewRebateData.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateRebateData.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateRebateDataArchive.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewLoanFeeAdder.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateLoanFeeAdder.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateLoanFeeAdderArchive.sql';
