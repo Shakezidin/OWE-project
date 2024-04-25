@@ -1,61 +1,21 @@
 import React, { useCallback } from 'react'
 import "./barchart.css"
 import { ResponsiveContainer, PieChart, Pie, LabelList } from "recharts";
-const data = [
-  {
-    name: "Sale Rep.",
-    value:800,
-    percentage: "30%",
-    fill: "#5e5ef0",
-  },
-  {
-    name: "App Setter",
-    value: 300,
-    percentage: "30%",
-    fill: "#ff3f66",
-  },
-  {
-    name: "Dealer Owner",
-    value: 250,
-    percentage: "20%",
-    fill: "#fb7955",
-  },
-  {
-    name: "Partner",
-    value: 300,
-    percentage: "20%",
-    fill: "#ffa133"
-  },
-  {
-    name: "Regional Manager",
-    value: 300,
-    percentage: "20%",
-    fill: "#5edd74"
-  },
-  {
-    name: "Sales Manager",
-    value: 300,
-    percentage: "20%",
-    fill: "#52cafe"
-  },
-  {
-    name: "Admin",
-    value: 600,
-    percentage: "20%",
-    fill: "#0181ff"
-  },
-];
+import { OnboardingChartModel } from '../../../../core/models/api_models/UserManagementModel';
+
+interface UserPieChartProps{
+  onboardingList: OnboardingChartModel[]
+}
+
 const data2 = [
   {
-    name: "User ",
+    name: "Inactive",
     value: 300,
-    percentage: "20%",
     fill: "#fb7955",
   },
   {
-    name: "Admin",
+    name: "Active",
     value: 700,
-    percentage: "20%",
     fill: "#0181ff",
   }
 ]
@@ -64,10 +24,12 @@ const renderCustomizedLabelPercentage = (data: any, total = 32000) => {
   let percentageCalculated = data.value
   return `${percentageCalculated}`;
 };
-const UserPieChart = () => {
+const UserPieChart:React.FC<UserPieChartProps> = ({ onboardingList }) => {
+
   const renderLabel = useCallback((piePiece: any) => {
     return piePiece.name;
   }, []);
+
   return (
  
     <div className="PieChart-container" style={{display:"flex", gap:"2rem"}} >
@@ -80,7 +42,7 @@ const UserPieChart = () => {
             <PieChart style={{ cursor: "pointer" }}>
               <Pie
                 dataKey="value"
-                data={data}
+                data={onboardingList}
                 label={renderLabel}
                 cx="50%"
                 cy="50%"

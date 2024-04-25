@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../../userManagement/user.css";
 import { ICONS } from "../../../icons/Icons";
-import Select from "react-select";
 import "../../configure/configure.css";
 import { userSelectData } from "../../../../resources/static_data/StaticData";
 import UserTable from "../userManagerAllTable/UserTable";
@@ -34,22 +33,25 @@ const UserHeaderSection = () => {
     setSelectedOption(selectedOption ? selectedOption.label : "");
   };
 
-  const despatch = useAppDispatch();
+  const dispatch = useAppDispatch();
+
   const currentPage = useAppSelector(
     (state) => state.paginationType.currentPage
   );
+
+  /** pagination */
   const itemsPerPage = 10;
 
   const paginate = (pageNumber: number) => {
-    despatch(setCurrentPage(pageNumber));
+    dispatch(setCurrentPage(pageNumber));
   };
 
   const goToNextPage = () => {
-    despatch(setCurrentPage(currentPage + 1));
+    dispatch(setCurrentPage(currentPage + 1));
   };
 
   const goToPrevPage = () => {
-    despatch(setCurrentPage(currentPage - 1));
+    dispatch(setCurrentPage(currentPage - 1));
   };
   const totalPages = Math.ceil(dataUser?.length / itemsPerPage);
 
@@ -57,6 +59,7 @@ const UserHeaderSection = () => {
   const endIndex = startIndex + itemsPerPage;
   const currentPageData = dataUser?.slice(startIndex, endIndex);
 
+  /** render table based on dropdown */
   const renderComponent = () => {
     switch (selectedOption) {
       case "Admin":
@@ -80,7 +83,7 @@ const UserHeaderSection = () => {
     }
   };
 
-  console.log('userSelectData',userSelectData)
+  /** render UI */
   return (
     <>
       <div className="ManagerUser-container">
