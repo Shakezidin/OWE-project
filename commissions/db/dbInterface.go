@@ -39,6 +39,8 @@ const (
 	CreateStateFunction                  string = "create_new_state"
 	CreateLoanTypeFunction               string = "create_new_loan_type"
 	CreateAutoAdderFunction              string = "create_new_auto_adder"
+	CreateRebateDataFunction             string = "create_new_rebate_data"
+	CreateLoanFeeAdderFunction           string = "create_new_loan_fee_adder"
 	UpdateCommissionFunction             string = "update_commission"
 	UpdateCommissionArchiveFunction      string = "update_commission_archive"
 	UpdateDealerOverrideFunction         string = "update_dealer_override"
@@ -61,6 +63,10 @@ const (
 	UpdateLoanTypeArchiveFunction        string = "update_loan_type_archive"
 	UpdateAutoAdderFunction              string = "update_auto_adder"
 	UpdateUserFunction                   string = "update_user"
+	UpdateRebateDataFunction             string = "update_rebate_data"
+	UpdateRebateDataArchiveFunction      string = "update_rebate_data_archive"
+	UpdateLoanFeeAdderFunction           string = "update_loan_fee_adder"
+	UpdateLoanFeeAdderArchiveFunction    string = "update_loan_fee_adder_archive"
 	TableName_teams                      string = "teams"
 	TableName_commission_rates           string = "commission_rates"
 	TableName_users_details              string = "user_details"
@@ -80,6 +86,7 @@ const (
 	TableName_tier                       string = "tier"
 	TableName_auto_adder                 string = "auto_adder"
 	TableName_user_roles                 string = "user_roles"
+	TableName_loan_fee_adder             string = "loan_fee_adder"
 )
 
 /******************************************************************************

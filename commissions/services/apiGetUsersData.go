@@ -60,15 +60,30 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	tableName := db.TableName_users_details
 	query = `
-	 SELECT ud.name as name, ud.user_code, ud.mobile_number, ud.email_id, ud.password_change_required, ud.created_at,
-	 ud.updated_at, COALESCE(ud1.name, 'NA') AS reporting_manager, COALESCE(ud2.name, 'NA') AS dealer_owner, ur.role_name, ud.user_status, ud.user_designation, 
-	 ud.description, ud.street_address, st.name as state_name, ud.city, zc.zipcode, ud.country
-	 FROM user_details ud
-	 LEFT JOIN user_details ud1 ON ud.reporting_manager = ud1.user_id
-	 JOIN user_details ud2 ON ud2.user_id = ud.dealer_owner
-	 JOIN states st ON st.state_id = ud.state
-	 JOIN zipcodes zc ON zc.id = ud.zipcode
-	 JOIN user_roles ur ON ur.role_id = ud.role_id`
+			SELECT ud.name AS name, 
+			ud.user_code, 
+			ud.mobile_number, 
+			ud.email_id, 
+			ud.password_change_required, 
+			ud.created_at,
+			ud.updated_at, 
+			COALESCE(ud1.name, 'NA') AS reporting_manager, 
+			COALESCE(ud2.name, 'NA') AS dealer_owner, 
+			ud.user_status, 
+			ud.user_designation, 
+			ud.description, 
+			ud.street_address, 
+			ud.city, 
+			ud.country,
+			st.name AS state_name,
+			ur.role_name,
+			zc.zipcode
+			FROM user_details ud
+			LEFT JOIN user_details ud1 ON ud.reporting_manager = ud1.user_id
+			LEFT JOIN user_details ud2 ON ud.dealer_owner = ud2.user_id
+			LEFT JOIN states st ON ud.state = st.state_id
+			LEFT JOIN user_roles ur ON ud.role_id = ur.role_id
+			LEFT JOIN zipcodes zc ON ud.zipcode = zc.id`
 
 	filter, whereEleList = PrepareUsersDetailFilters(tableName, dataReq)
 	if filter != "" {
