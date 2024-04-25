@@ -39,7 +39,7 @@ const DashBoardTable: React.FC = () => {
       sr: "Josh Morton",
       cn: "josh Morton",
       cm: "RL",
-      pg: "70/30",
+      pg: "-",
       amt: "$123,456",
       pipeline: "$100,362",
       cd: "$300,652",
@@ -96,7 +96,7 @@ const DashBoardTable: React.FC = () => {
       sr: "Josh Morton",
       cn: "josh Morton",
       cm: "RL",
-      pg: "70/30",
+      pg: "-",
       amt: "$123,456",
       pipeline: "$100,362",
       cd: "$300,652",
@@ -153,7 +153,7 @@ const DashBoardTable: React.FC = () => {
       sr: "Josh Morton",
       cn: "josh Morton",
       cm: "RL",
-      pg: "70/30",
+      pg: "-",
       amt: "$123,456",
       pipeline: "$100,362",
       cd: "$300,652",
@@ -221,7 +221,7 @@ const DashBoardTable: React.FC = () => {
                 <th>
                   <div>
                     <CheckBox
-                      checked={true}
+                      checked={false}
                       onChange={() => {}}
                       // indeterminate={isAnyRowSelected && !isAllRowsSelected}
                     />
@@ -337,7 +337,7 @@ const DashBoardTable: React.FC = () => {
                     <tr key={i}>
                       <td>
                         <CheckBox
-                          checked={true}
+                          checked={false}
                           onChange={() => {}}
                           // indeterminate={isAnyRowSelected && !isAllRowsSelected}
                         />

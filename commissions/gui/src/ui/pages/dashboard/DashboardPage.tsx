@@ -43,7 +43,7 @@ export const DashboardPage: React.FC = () => {
             /> */}
           </div>
           <div className="dashboard-payroll">
-            <div className="Payroll-section">
+            <div className="dash-head-input">
               <label className="inputLabel" style={{ color: "#344054" }}>
                 Commission Model
               </label>
@@ -77,53 +77,24 @@ export const DashboardPage: React.FC = () => {
                   menu: (baseStyles) => ({
                     ...baseStyles,
                     width: "6rem",
-                  }),
+                  })
                 }}
               />
             </div>
-            <div className="Payroll-section">
+            <div className="dash-head-input">
               <label className="inputLabel" style={{ color: "#344054" }}>
                 Payroll Date
               </label>
-              <Select
-                options={payRollData}
-                value={payRollData.find(
-                  (option) => option.value === selectedOption
-                )}
-                onChange={handleSelectChange}
-                styles={{
-                  control: (baseStyles, state) => ({
-                    ...baseStyles,
-                    fontSize: "13px",
-                    fontWeight: "500",
-                    borderRadius: ".40rem",
-                    border: "none",
-                    outline: "none",
-                    width: "6rem",
-                    minHeight: "unset",
-                    height: "30px",
-                    alignContent: "center",
-                    backgroundColor: "#ECECEC",
-                  }),
-                  indicatorSeparator: () => ({
-                    display: "none",
-                  }),
-                  option: (baseStyles) => ({
-                    ...baseStyles,
-                    fontSize: "13px",
-                  }),
-                  menu: (baseStyles) => ({
-                    ...baseStyles,
-                    width: "6rem",
-                  }),
-                }}
-              />
+              <input type="date" className="payroll-date"  />
             </div>
-            <div className="Payroll-section">
+            
+            <div className="dash-head-input">
               <label className="inputLabel" style={{ color: "#344054" }}>
                 Set Default
               </label>
-              <div className="dash-select">Chart View</div>
+              <label className="inputLabel chart-view" style={{ color: "#344054" }}>
+                Chart View
+              </label>
             </div>
             <div className="Line-container">
               <div className="line-graph">
