@@ -25,10 +25,10 @@ import (
  ******************************************************************************/
 func HandleCreateDealerCreditRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err                   error
-		createPaymentSchedule models.CreateDealerCredit
-		queryParameters       []interface{}
-		result                []interface{}
+		err                error
+		createDealerCredit models.CreateDealerCredit
+		queryParameters    []interface{}
+		result             []interface{}
 	)
 
 	log.EnterFn(0, "HandleCreateDealerCreditRequest")
@@ -48,43 +48,61 @@ func HandleCreateDealerCreditRequest(resp http.ResponseWriter, req *http.Request
 		return
 	}
 
-	err = json.Unmarshal(reqBody, &createPaymentSchedule)
+	err = json.Unmarshal(reqBody, &createDealerCredit)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal create Dealer Credit request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to unmarshal create Dealer Credit request", http.StatusBadRequest, nil)
 		return
 	}
 
-	if ((len(createPaymentSchedule.Partner) <= 0) || len(createPaymentSchedule.PartnerName) <= 0) ||
-		(len(createPaymentSchedule.InstallerName) <= 0) || (len(createPaymentSchedule.SaleType) <= 0) ||
-		(len(createPaymentSchedule.State) <= 0) || (len(createPaymentSchedule.Rl) <= 0) ||
-		(len(createPaymentSchedule.Draw) <= 0) || (len(createPaymentSchedule.DrawMax) <= 0) ||
-		(len(createPaymentSchedule.RepDraw) <= 0) || (len(createPaymentSchedule.RepDrawMax) <= 0) ||
-		(len(createPaymentSchedule.RepPay) <= 0) || (len(createPaymentSchedule.StartDate) <= 0) ||
-		(len(createPaymentSchedule.EndDate) <= 0) {
+	if (len(createDealerCredit.UniqueID) <= 0) || (len(createDealerCredit.Customer) <= 0) ||
+		(len(createDealerCredit.DealerName) <= 0) || (len(createDealerCredit.DealerDBA) <= 0) ||
+		(len(createDealerCredit.ExactAmount) <= 0) || (len(createDealerCredit.ApprovedBy) <= 0) ||
+		(len(createDealerCredit.Notes) <= 0) || (len(createDealerCredit.StartDate) <= 0) ||
+		(createDealerCredit.EndDate != nil && len(*createDealerCredit.EndDate) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
+	if createDealerCredit.PerKWAmount <= 0 {
+		err = fmt.Errorf("Invalid PerKWAmount price Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid PerKWAmount price Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+
+	if createDealerCredit.TotalAmount <= 0 {
+		err = fmt.Errorf("Invalid TotalAmount value: %f, Not Allowed", createDealerCredit.TotalAmount)
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid TotalAmount value Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+
+	if createDealerCredit.SysSize <= 0 {
+		err = fmt.Errorf("Invalid SysSize value: %f, Not Allowed", createDealerCredit.SysSize)
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid SysSize value Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+
 	// Populate query parameters in the correct order
-	queryParameters = append(queryParameters, createPaymentSchedule.Partner)
-	queryParameters = append(queryParameters, createPaymentSchedule.PartnerName)
-	queryParameters = append(queryParameters, createPaymentSchedule.InstallerName)
-	queryParameters = append(queryParameters, createPaymentSchedule.SaleType)
-	queryParameters = append(queryParameters, createPaymentSchedule.State)
-	queryParameters = append(queryParameters, createPaymentSchedule.Rl)
-	queryParameters = append(queryParameters, createPaymentSchedule.Draw)
-	queryParameters = append(queryParameters, createPaymentSchedule.DrawMax)
-	queryParameters = append(queryParameters, createPaymentSchedule.RepDraw)
-	queryParameters = append(queryParameters, createPaymentSchedule.RepDrawMax)
-	queryParameters = append(queryParameters, createPaymentSchedule.RepPay)
-	queryParameters = append(queryParameters, createPaymentSchedule.StartDate)
-	queryParameters = append(queryParameters, createPaymentSchedule.EndDate)
+	queryParameters = append(queryParameters, createDealerCredit.UniqueID)
+	queryParameters = append(queryParameters, createDealerCredit.Customer)
+	queryParameters = append(queryParameters, createDealerCredit.DealerName)
+	queryParameters = append(queryParameters, createDealerCredit.DealerDBA)
+	queryParameters = append(queryParameters, createDealerCredit.ExactAmount)
+	queryParameters = append(queryParameters, createDealerCredit.PerKWAmount)
+	queryParameters = append(queryParameters, createDealerCredit.ApprovedBy)
+	queryParameters = append(queryParameters, createDealerCredit.Notes)
+	queryParameters = append(queryParameters, createDealerCredit.TotalAmount)
+	queryParameters = append(queryParameters, createDealerCredit.SysSize)
+	queryParameters = append(queryParameters, createDealerCredit.StartDate)
+	queryParameters = append(queryParameters, createDealerCredit.EndDate)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.CreatePaymentScheduleFunction, queryParameters)
+	result, err = db.CallDBFunction(db.CreateDealerCreditFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add Referral Data in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Create Dealer Credit", http.StatusInternalServerError, nil)

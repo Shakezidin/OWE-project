@@ -597,41 +597,24 @@ var apiRoutes = ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
-<<<<<<< HEAD
-		"/owe-commisions-service/v1/create_referraldata",
-		apiHandler.HandleCreateReferralDataRequest,
-		false,
-=======
 		"/owe-commisions-service/v1/get_users_by_role",
 		apiHandler.HandleGetUsersByRoleDataRequest,
 		true,
->>>>>>> origin
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
 	},
 	{
 		strings.ToUpper("POST"),
-<<<<<<< HEAD
-		"/owe-commisions-service/v1/create_dealercredit",
-		apiHandler.HandleCreateDealerCreditRequest,
-		false,
-=======
 		"/owe-commisions-service/v1/create_rebate_data",
 		apiHandler.HandleCreateRebateDataRequest,
 		true,
->>>>>>> origin
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
 	},
 	{
 		strings.ToUpper("POST"),
-<<<<<<< HEAD
-		"/owe-commisions-service/v1/create_noncommdlrpay",
-		apiHandler.HandleCreateNonCommDlrPayRequest,
-		false,
-=======
 		"/owe-commisions-service/v1/update_rebate_data",
 		apiHandler.HandleUpdateRebateDataRequest,
 		true,
@@ -689,7 +672,24 @@ var apiRoutes = ApiRoutes{
 		"/owe-commisions-service/v1/update_loan_fee_adder_archive",
 		apiHandler.HandleUpdateLoanFeeAdderArchiveRequest,
 		true,
->>>>>>> origin
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/create_referraldata",
+		apiHandler.HandleCreateReferralDataRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/create_dealercredit",
+		apiHandler.HandleCreateDealerCreditRequest,
+		true,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},

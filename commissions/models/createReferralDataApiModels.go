@@ -1,7 +1,6 @@
 package models
 
 type CreateReferralData struct {
-	ID                   int     `json:"id"`
 	UniqueID             string  `json:"unique_id"`
 	NewCustomer          string  `json:"new_customer"`
 	ReferrerSerial       string  `json:"referrer_serial"`
