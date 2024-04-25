@@ -44,6 +44,8 @@ interface Endpoints {
   update_paymentschedule: string;
   update_timelinesla: string;
   update_loantype: string;
+  // user management
+  Get_User_onboarding_list: string;
 }
 
 export const EndPoints: Endpoints = {
@@ -86,4 +88,7 @@ export const EndPoints: Endpoints = {
 
   // /get form Data
   get_newFormData: "get_newformdata",
+
+  //user management
+  Get_User_onboarding_list: "get_users_onboarding",
 };
