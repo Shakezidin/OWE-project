@@ -51,6 +51,21 @@ export const postCaller = async ( endpoint: string, postData: any): Promise<any>
   }
 };
 
+export const getCaller = async ( endpoint: string): Promise<any> => {
+  const config: AxiosRequestConfig = {
+    headers: {
+      Authorization: `${localStorage.getItem("token")}`,
+      "Content-Type": "application/json",
+    },
+  };
+  try {
+    const response: AxiosResponse = await axios.get(`${BASE_URL}/${endpoint}`, config);
+    return response.data; // Return the data from the response
+  } catch (error) {
+    throw new Error('Failed to fetch data');
+  }
+};
+
 
 export const putCaller = async (endpoint: string, data: any) => {
   const response = await fetch(`${BASE_URL}/${endpoint}`, {
