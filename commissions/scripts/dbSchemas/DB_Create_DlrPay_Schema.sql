@@ -306,7 +306,7 @@ CREATE TABLE ap_calc_dealer_80_20_pay_calc (
 		twenty_Percent_PPW   Float
 );
 
-CREATE TABLE 80_20_dlr_pay_calc (  
+CREATE TABLE E80_20_dlr_pay_calc (  
     Dealer   text,
     Partner   text,
     Instl   text,
@@ -429,7 +429,7 @@ CREATE TABLE 80_20_dlr_pay_calc (
     R2_Comm_Status_Check      Float
 );
 
-CREATE TABLE   80_20_dlr_pay_pr_data (
+CREATE TABLE   E80_20_dlr_pay_pr_data (
         Home_Owne   Text,
         Current_Status Text,
         Status_Date   Date,

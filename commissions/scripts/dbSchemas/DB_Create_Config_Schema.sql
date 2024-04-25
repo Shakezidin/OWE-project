@@ -44,6 +44,41 @@ CREATE TABLE zipcodes (
     PRIMARY KEY (id)
 );
 
+CREATE TABLE  IF NOT EXISTS user_roles (
+    role_id SERIAL,
+    role_name VARCHAR(50) NOT NULL UNIQUE,
+    PRIMARY KEY (role_id)
+);
+
+CREATE TABLE IF NOT EXISTS user_details(
+    user_id SERIAL,
+    name VARCHAR(255) NOT NULL,
+    user_code VARCHAR(255),
+    mobile_number VARCHAR(20) NOT NULL UNIQUE,
+    email_id VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    password_change_required BOOLEAN,
+    reporting_manager INT,
+    dealer_owner INT,
+    role_id INT,
+    user_status VARCHAR(255) NOT NULL,
+    user_designation VARCHAR(255),
+    description VARCHAR(255),
+    street_address VARCHAR(255),
+    state INT,
+    city VARCHAR(50),
+    zipcode INT,
+    country VARCHAR(50),
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
+    FOREIGN KEY (reporting_manager) REFERENCES user_details(user_id),
+    FOREIGN KEY (dealer_owner) REFERENCES user_details(user_id),
+    FOREIGN KEY (role_id) REFERENCES user_roles(role_id),
+    FOREIGN KEY (state) REFERENCES states(state_id),
+    FOREIGN KEY (zipcode) REFERENCES zipcodes(id),
+	PRIMARY KEY (user_id)
+);
+
 CREATE TABLE partners (
     partner_id serial NOT NULL,
     partner_name character varying,
