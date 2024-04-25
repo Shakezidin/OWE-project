@@ -261,11 +261,13 @@ const CommissionRate: React.FC = () => {
 
                   ))
                 }
-                <th>
-                  <div className="action-header">
-                    <p>Action</p>
-                  </div>
-                </th>
+             {
+              viewArchived===true?null:   <th>
+              <div className="action-header">
+                <p>Action</p>
+              </div>
+            </th>
+             }
               </tr>
             </thead>
             <tbody>
@@ -306,17 +308,21 @@ const CommissionRate: React.FC = () => {
                     <td>{el.rate}</td>
                     <td>{el.start_date}</td>
                     <td>{el.end_date}</td>
-                    <td>
-                      <div className="action-icon">
-                        <div className="" style={{ cursor: "pointer" }} onClick={() => handleArchiveClick(el.record_id)}>
-                          <img src={ICONS.ARCHIVE} alt="" />
-                        </div>
-                        <div className="" style={{ cursor: "pointer" }} onClick={() => handleEditCommission(el)}>
-                          <img src={ICONS.editIcon} alt="" />
-                        </div>
+                  {
+                    viewArchived===true?null:  <td>
+                    <div className="action-icon">
+                      <div className="action-archive" style={{ cursor: "pointer" }} onClick={() => handleArchiveClick(el.record_id)}>
+                        <img src={ICONS.ARCHIVE} alt="" />
+                        <span className="tooltiptext">Archive</span>
                       </div>
+                      <div className="action-archive" style={{ cursor: "pointer" }} onClick={() => handleEditCommission(el)}>
+                        <img src={ICONS.editIcon} alt="" />
+                        <span className="tooltiptext">Edit</span>
+                      </div>
+                    </div>
 
-                    </td>
+                  </td>
+                  }
                   </tr>
                 ))
                 : null}

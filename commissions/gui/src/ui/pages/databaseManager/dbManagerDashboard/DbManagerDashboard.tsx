@@ -61,8 +61,11 @@ const DbManagerDashboard = () => {
           </div>
           <div className="DashBarchart-section">
             <DashBarLineChart />
+            <div className="identity1">
+                <Boxes color="#FB7955"/> <p>Historical Records</p>
+                <Boxes color="#0088FE"/> <p>Total Records</p>
+                </div>
           </div>
-
         </div>
 
 

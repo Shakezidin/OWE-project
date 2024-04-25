@@ -169,7 +169,8 @@ const itemsPerPage = 5;
           title="Activity List"
           onPressFilter={() => filter()}
           onPressImport={() => { }}
-          
+          showImportIcon={false}
+          showSelectIcon={true}
         />
         {filterOPen && <FilterModal handleClose={filterClose}
           columns={UserActivityColumn}
