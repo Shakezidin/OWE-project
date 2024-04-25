@@ -30,8 +30,9 @@ function PieChartWithPaddingAngle({ data }: PieChartProps) { // Destructure data
   const totalValue = data.reduce((acc, cur) => acc + cur.value, 0);
 
   return (
-    <div style={{ width: "100%" }}>
-      <PieChart width={300} height={400} style={{ margin: "-75px 0 0 62px", cursor: "pointer" }}>
+    <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+  <div style={{ position: "relative", width: "300px", height: "400px", marginTop: "-75px", marginLeft: "40px" }}>
+    <PieChart width={300} height={400}>
         <Pie
           data={data}
           cx={120}
@@ -42,6 +43,7 @@ function PieChartWithPaddingAngle({ data }: PieChartProps) { // Destructure data
           paddingAngle={0}
           dataKey="value"
           onClick={handleClick}
+          isAnimationActive= {true}
         >
           <Label
             content={() => (
@@ -76,6 +78,7 @@ function PieChartWithPaddingAngle({ data }: PieChartProps) { // Destructure data
           ))}
         </Pie>
       </PieChart>
+    </div>
     </div>
   );
 }

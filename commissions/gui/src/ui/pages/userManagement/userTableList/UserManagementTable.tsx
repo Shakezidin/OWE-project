@@ -19,7 +19,7 @@ import { UserDropdownModel, UserRoleBasedListModel } from "../../../../core/mode
 interface UserTableProos {
   userDropdownData: UserDropdownModel[];
   userRoleBasedList: UserRoleBasedListModel[];
-  selectedOption: string;
+  selectedOption: UserDropdownModel;
   handleSelectChange: (data:UserDropdownModel) => void;
 
  // onChange: (text: string) => void;
@@ -58,7 +58,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
 
   /** render table based on dropdown */
   const renderComponent = () => {
-    switch (selectedOption) {
+    switch (selectedOption.label) {
       case "Admin":
         return <UserTable data={userRoleBasedList} />;
       case "DB User":
@@ -85,15 +85,13 @@ const UserManagementTable: React.FC<UserTableProos> = ({
     <>
       <div className="ManagerUser-container">
         <div className="admin-user">
-          <p>{selectedOption?.toUpperCase()}</p>
+          <p>{selectedOption.label?.toUpperCase()}</p>
         </div>
         <div className="delete-icon-container">
           <div className="create-input-field">
             <SelectOption
               options={userDropdownData}
-              value={userDropdownData.find(
-                (option) => option.label === selectedOption
-              )}
+              value={selectedOption}
               onChange={(data:any )=>{
                 handleSelectChange(data)
               }}
