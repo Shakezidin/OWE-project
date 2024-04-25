@@ -12,7 +12,7 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
 }) => {
   return (
     <div className="create-input-container">
-      {createUserOnboarding?.role_name === "rm" && (
+      {createUserOnboarding?.role_name === "Regional Manager" && (
         <div className="create-input-field">
           <Input
             type={"text"}
@@ -24,7 +24,7 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
           />
         </div>
       )}
-      {createUserOnboarding?.role_name === "sales_rep_m" && (
+      {createUserOnboarding?.role_name === "Sale Representative" && (
         <>
           <div className="create-input-field">
             <Input
@@ -48,18 +48,8 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
           </div>
         </>
       )}
-      {createUserOnboarding?.role_name === "sales_m" && (
+      {createUserOnboarding?.role_name === "Sales Manager" && (
         <>
-          <div className="create-input-field">
-            <Input
-              type={"text"}
-              label="Add Region"
-              value={createUserOnboarding.add_region}
-              placeholder={"Add Region"}
-              onChange={(e) => onChange(e)}
-              name={"add_region"}
-            />
-          </div>
           <div className="create-input-field">
             <Input
               type={"text"}

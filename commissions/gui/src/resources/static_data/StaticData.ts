@@ -37,7 +37,7 @@ export const userSelectData = [
   { value: "Partner", label: "Partner" },
   { value: "Regional Manager", label: "Regional Manager" },
   { value: "Dealer Owner", label: "Dealer Owner" },
-  { value: "Sale Representative", label: "Sales Representative Manager" },
+  { value: "Sale Representative", label: "Sales Representative" },
   { value: "Sales Manager", label: "Sales Manager" },
 ];
 

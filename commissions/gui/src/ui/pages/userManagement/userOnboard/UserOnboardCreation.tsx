@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cross_button.svg";
 import Input from "../../../components/text_input/Input";
 import { ActionButton } from "../../../components/button/ActionButton";
-import { UserAdmin } from "../../../../core/models/UserManagement/UserAdmin";
 import { useDispatch } from "react-redux";
 import { updateUserForm } from "../../../../redux/apiSlice/userManagementSlice/createUserSlice";
 import {
@@ -14,11 +13,14 @@ import { ICONS } from "../../../icons/Icons";
 import SelectTable from "./SeletTable";
 import UserBasedInput from "./UserBasedInput";
 import SelectOption from "../../../components/selectOption/SelectOption";
+import { CreateUserModel } from "../../../../core/models/api_models/UserManagementModel";
+import { useAppSelector } from "../../../../redux/hooks";
+import { stat } from "fs";
 
 interface ButtonProps {
   editMode: boolean;
   handleClose: () => void;
-  userOnboard: UserAdmin | null;
+  userOnboard: CreateUserModel | null;
 }
 
 const UserOnboardingCreation: React.FC<ButtonProps> = ({
@@ -27,36 +29,27 @@ const UserOnboardingCreation: React.FC<ButtonProps> = ({
   editMode,
 }) => {
   const dispatch = useDispatch();
-  const [createUserOnboarding, setCreateOnboarding] = useState<UserAdmin>({
-    first_name: "Ankita",
-    last_name: "Chauhan",
-    email_id: "Vinay@yopmail.com",
-    mobile_number: "9911477443",
-    password: "1234",
-    designation: "Developer",
-    assigned_dealer_name: "369 Solar",
-    role_name: "admin",
-    add_region: "",
-    team_name: "",
-    report_to: "",
-    reporting_to: "",
-  });
-  // const [newFormData, setNewFormData] = useState<any>([])
-  // const getNewFormData = async () => {
-  //   const res = await postCaller(EndPoints.get_newFormData, tableData)
-  //   setNewFormData(res.data)
+  const [createUserOnboarding, setCreateOnboarding] = useState<CreateUserModel>(
+    {
+      first_name: "",
+      last_name: "",
+      email_id: "",
+      mobile_number: "",
+      password: "",
+      designation: "",
+      description: "",
+      assigned_dealer_name: "",
+      role_name: "",
+      add_region: "",
+      team_name: "",
+      report_to: "",
+      reporting_to: "",
+    }
+  );
 
-  // }
-  // useEffect(() => {
-  //   getNewFormData()
-  // }, [])
+  const formData = useAppSelector((state) => state.createOnboardUser);
 
-  // useEffect(() => {
-  //   if (userOnboard) {
-  //     setCreateOnboarding(userOnboard);
-  //   }
-  // }, [userOnboard]);
-
+  console.log("formdata...", formData);
   const [selectTable, setSelectTable] = useState<boolean>(false);
 
   const handleChange = (newValue: any, fieldName: string) => {
@@ -81,23 +74,10 @@ const UserOnboardingCreation: React.FC<ButtonProps> = ({
 
   const handleUserSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      dispatch(updateUserForm(createUserOnboarding));
-      console.log(createUserOnboarding);
-      // const res = await postCaller(EndPoints.update_commission, createUserOnboarding);
-      // if (res.status === 200) {
-      //   alert(res.message)
-      //   handleClose()
-      //   window.location.reload()
-      // }
-      // else {
-      //   alert(res.message)
-      // }
-    } catch (error) {
-      console.error("Error submitting form:", error);
-    }
+    dispatch(updateUserForm(createUserOnboarding));
   };
 
+  /** render ui */
   return (
     <div className="transparent-model">
       <form onSubmit={(e) => handleUserSubmit(e)} className="modal">
@@ -138,7 +118,6 @@ const UserOnboardingCreation: React.FC<ButtonProps> = ({
                       (option) =>
                         option?.value === createUserOnboarding.role_name
                     )}
-                    
                   />
                 </div>
               </div>
@@ -163,7 +142,9 @@ const UserOnboardingCreation: React.FC<ButtonProps> = ({
                     name={"mobile_number"}
                   />
                 </div>
-                {createUserOnboarding.role_name === "admin" || createUserOnboarding.role_name === "dealer_owner" ? null : (
+                {createUserOnboarding.role_name === "admin" ||
+                createUserOnboarding.role_name === "SubDealer Owner" ||
+                createUserOnboarding.role_name === "Dealer Owner" ? null : (
                   <div className="create-input-field">
                     <label className="inputLabel">Dealer Owner</label>
                     <SelectOption

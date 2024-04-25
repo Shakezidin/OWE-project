@@ -1,9 +1,9 @@
 // src/features/createUserSlice.ts
 
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { UserAdmin } from "../../../core/models/UserManagement/UserAdmin";
+import { CreateUserModel } from "../../../core/models/api_models/UserManagementModel";
 
-const initialState: UserAdmin = {
+const initialState: CreateUserModel = {
   first_name: "",
   last_name: "",
   email_id: "",
@@ -16,13 +16,14 @@ const initialState: UserAdmin = {
   report_to: "",
   team_name: "",
   reporting_to: "",
+  description:''
 };
 
 const createUserSlice = createSlice({
-  name: "form",
+  name: "CreateOnboardUser",
   initialState,
   reducers: {
-    updateUserForm(state, action: PayloadAction<Partial<UserAdmin>>) {
+    updateUserForm(state, action: PayloadAction<Partial<CreateUserModel>>) {
       return { ...state, ...action.payload };
     },
     userResetForm(state) {

@@ -17,16 +17,11 @@ const UserManagement: React.FC = () => {
   const [selectedOption, setSelectedOption] = useState(
     userSelectData[0]
   );
-  // const [selectedOptionValue, setSelectedOptionValue] = useState<string>(
-  //   userSelectData[0].value
-  // );
 
   const dispatch = useAppDispatch();
   const { userOnboardingList, userRoleBasedList } = useAppSelector(
     (state) => state.userManagement
   );
-
-  //console.log(userRoleBasedList)
 
   /** fetch onboarding users data*/
   useEffect(() => {
