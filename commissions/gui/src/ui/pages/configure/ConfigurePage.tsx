@@ -1,20 +1,54 @@
-import { IoFilter } from "react-icons/io5";
 import { ICONS } from "../../icons/Icons";
-import { LuArrowUpRight } from "react-icons/lu";
-import { RiMoneyDollarCircleLine } from "react-icons/ri";
-import "./configure.css";
+import Breadcrumb from "../../components/breadcrumb/Breadcrumb";
+import { TfiArrowCircleRight } from "react-icons/tfi";
+import { FaPlus, FaMinus } from "react-icons/fa6";
+import "./ConfigurePage.css";
 
 const ConfigurePage: React.FC = () => {
+  const dealerData = [
+    { title: "Commision Rate" },
+    { title: "Dealer OverRides" },
+    { title: "Marketing Fees" },
+    { title: "Adder Validation" },
+    { title: "Sales Types" },
+    { title: "Tier Loan Fee" },
+    { title: "Dealer OverRides" },
+    { title: "Payment Scheduler" },
+    { title: "Time Line SLA " },
+    { title: "Loan Type" },
+    { title: "Auto Adder" },
+    { title: "Loan Fee Addr" },
+    { title: "Rebate Data" },
+    { title: "Referal Data" },
+    { title: "Dealer Credit" },
+    { title: "NON-Comm" },
+    { title: "DLR-OTH" },
+  ];
+  const commonData = [
+    { title: "Commision Rate" },
+    { title: "Dealer OverRides" },
+    { title: "Marketing Fees" },
+    { title: "Adder Validation" },
+    { title: "Sales Types" },
+    { title: "Tier Loan Fee" },
+    { title: "Dealer OverRides" },
+    { title: "Dealer OverRides" },
+    { title: "Auto Addr" },
+    { title: "Adder Validation" },
+    { title: "Tier Loan Fee" },
+    { title: "Dealer OverRides" },
+  ];
   return (
     <>
       <div className="configure-container">
         <div className="configure-header">
           <div className="configure-name">
             <h3>Configure</h3>
-          </div>
-          <div className="spacer"></div>
-          <div className="configure-header-icons">
-            <IoFilter className="io-filter" />
+            <Breadcrumb
+              head="Configure"
+              linkPara="Commissions"
+              linkparaSecond="Configure"
+            />
           </div>
           <div className="iconsSection-filter">
             <button type="button">
@@ -26,274 +60,37 @@ const ConfigurePage: React.FC = () => {
         <div className="configure-main">
           <div className="configure-main-section">
             <div className="dealer-pay">
-              <p>Dealer Pay</p>
+              <div className="configure-card-title">
+                <p className="payer-type">Dealer Pay</p>
+                <FaPlus className="accordion-icon" />
+              </div>
               <div className="configure-cards">
-                <div className="pay-card">
-                  <div className="pay-img">
-                    <div
-                      className="pay-card-img"
-                      style={{ backgroundColor: "#FFF1E4" }}
-                    >
-                      <RiMoneyDollarCircleLine
-                        color="#FD7C05"
-                        className="pay-dollar-img"
-                      />
+                {
+                  dealerData.map((dealer, index) => (
+                    <div className="pay-card" key={index}>
+                      <p>{dealer.title}</p>
+                      <TfiArrowCircleRight />
                     </div>
-                    <LuArrowUpRight className="pay-card-arrow" />
-                  </div>
-                  <p>Commission Rate</p>
-                </div>
-                <div className="pay-card">
-                  <div className="pay-img">
-                    <div
-                      className="pay-card-img"
-                      style={{ backgroundColor: "#ECEFFB" }}
-                    >
-                      <RiMoneyDollarCircleLine
-                        color="#294FD4"
-                        className="pay-dollar-img"
-                      />
-                    </div>
-                    <LuArrowUpRight className="pay-card-arrow" />
-                  </div>
-                  <p>Dealer OverRides</p>
-                </div>
-                <div className="pay-card">
-                  <div className="pay-img">
-                    <div
-                      className="pay-card-img"
-                      style={{ backgroundColor: "#E0F6FF" }}
-                    >
-                      <RiMoneyDollarCircleLine
-                        color="#04A5E8"
-                        className="pay-dollar-img"
-                      />
-                    </div>
-                    <LuArrowUpRight className="pay-card-arrow" />
-                  </div>
-                  <p>Marketing Fees</p>
-                </div>
-                <div className="pay-card">
-                  <div className="pay-img">
-                    <div
-                      className="pay-card-img"
-                      style={{ backgroundColor: "#FFEAEA" }}
-                    >
-                      <RiMoneyDollarCircleLine
-                        color="#D81C1C"
-                        className="pay-dollar-img"
-                      />
-                    </div>
-                    <LuArrowUpRight className="pay-card-arrow" />
-                  </div>
-                  <p>Adder validation</p>
-                </div>
-                <div className="pay-card">
-                  <div className="pay-img">
-                    <div
-                      className="pay-card-img"
-                      style={{ backgroundColor: "#DCEBFF" }}
-                    >
-                      <RiMoneyDollarCircleLine
-                        color="#2E7CE2"
-                        className="pay-dollar-img"
-                      />
-                    </div>
-                    <LuArrowUpRight className="pay-card-arrow" />
-                  </div>
-                  <p>Sale Types</p>
-                </div>
+                  ))
+                }
               </div>
             </div>
-            <div className="Rep-pay">
-              <p>Rep Pay</p>
-              <div className="configure-cards">
-                <div className="pay-card">
-                  <div className="pay-img">
-                    <div
-                      className="pay-card-img"
-                      style={{ backgroundColor: "#FFF1E4" }}
-                    >
-                      <RiMoneyDollarCircleLine
-                        color="#FD7C05"
-                        className="pay-dollar-img"
-                      />
-                    </div>
-                    <LuArrowUpRight className="pay-card-arrow" />
-                  </div>
-                  <p>Tier Loan Fee</p>
-                </div>
-                <div className="pay-card">
-                  <div className="pay-img">
-                    <div
-                      className="pay-card-img"
-                      style={{ backgroundColor: "#ECEFFB" }}
-                    >
-                      <RiMoneyDollarCircleLine
-                        color="#294FD4"
-                        className="pay-dollar-img"
-                      />
-                    </div>
-                    <LuArrowUpRight className="pay-card-arrow" />
-                  </div>
-                  <p>Dealer Tier</p>
-                </div>
-                <div className="pay-card">
-                  <div className="pay-img">
-                    <div
-                      className="pay-card-img"
-                      style={{ backgroundColor: "#E0F6FF" }}
-                    >
-                      <RiMoneyDollarCircleLine
-                        color="#04A5E8"
-                        className="pay-dollar-img"
-                      />
-                    </div>
-                    <LuArrowUpRight className="pay-card-arrow" />
-                  </div>
-                  <p>Payment Scheduler</p>
-                </div>
-                <div className="pay-card">
-                  <div className="pay-img">
-                    <div
-                      className="pay-card-img"
-                      style={{ backgroundColor: "#FFEAEA" }}
-                    >
-                      <RiMoneyDollarCircleLine
-                        color="#D81C1C"
-                        className="pay-dollar-img"
-                      />
-                    </div>
-                    <LuArrowUpRight className="pay-card-arrow" />
-                  </div>
-                  <p>Time Line SLA</p>
-                </div>
-              </div>
+          </div>
+
+          <div className="common">
+            <div className="configure-card-title">
+              <p className="payer-type">Common</p>
+              <FaMinus className="accordion-icon" />
             </div>
-            <div className="common">
-              <p>Common</p>
-              <div className="configure-cards">
-                <div className="pay-card">
-                  <div className="pay-img">
-                    <div
-                      className="pay-card-img"
-                      style={{ backgroundColor: "#FFF1E4" }}
-                    >
-                      <RiMoneyDollarCircleLine
-                        color="#FD7C05"
-                        className="pay-dollar-img"
-                      />
-                    </div>
-                    <LuArrowUpRight className="pay-card-arrow" />
+            <div className="configure-cards">
+              {
+                commonData.map((common, index) => (
+                  <div className="pay-card" key={index}>
+                     <p>{common.title}</p>
+                      <TfiArrowCircleRight />
                   </div>
-                  <p>Loan Type</p>
-                </div>
-                <div className="pay-card">
-                  <div className="pay-img">
-                    <div
-                      className="pay-card-img"
-                      style={{ backgroundColor: "#ECEFFB" }}
-                    >
-                      <RiMoneyDollarCircleLine
-                        color="#294FD4"
-                        className="pay-dollar-img"
-                      />
-                    </div>
-                    <LuArrowUpRight className="pay-card-arrow" />
-                  </div>
-                  <p>Auto Adder</p>
-                </div>
-                <div className="pay-card">
-                  <div className="pay-img">
-                    <div
-                      className="pay-card-img"
-                      style={{ backgroundColor: "#E0F6FF" }}
-                    >
-                      <RiMoneyDollarCircleLine
-                        color="#04A5E8"
-                        className="pay-dollar-img"
-                      />
-                    </div>
-                    <LuArrowUpRight className="pay-card-arrow" />
-                  </div>
-                  <p>Loan Fee Addr</p>
-                </div>
-                <div className="pay-card">
-                  <div className="pay-img">
-                    <div
-                      className="pay-card-img"
-                      style={{ backgroundColor: "#FFEAEA" }}
-                    >
-                      <RiMoneyDollarCircleLine
-                        color="#D81C1C"
-                        className="pay-dollar-img"
-                      />
-                    </div>
-                    <LuArrowUpRight className="pay-card-arrow" />
-                  </div>
-                  <p>Rebate Data</p>
-                </div>
-                <div className="pay-card">
-                  <div className="pay-img">
-                    <div
-                      className="pay-card-img"
-                      style={{ backgroundColor: "#FFEAEA" }}
-                    >
-                      <RiMoneyDollarCircleLine
-                        color="#D81C1C"
-                        className="pay-dollar-img"
-                      />
-                    </div>
-                    <LuArrowUpRight className="pay-card-arrow" />
-                  </div>
-                  <p>Referal Data</p>
-                </div>
-                <div className="pay-card">
-                  <div className="pay-img">
-                    <div
-                      className="pay-card-img"
-                      style={{ backgroundColor: "#FFEAEA" }}
-                    >
-                      <RiMoneyDollarCircleLine
-                        color="#D81C1C"
-                        className="pay-dollar-img"
-                      />
-                    </div>
-                    <LuArrowUpRight className="pay-card-arrow" />
-                  </div>
-                  <p>Dealer Credit</p>
-                </div>
-                <div className="pay-card">
-                  <div className="pay-img">
-                    <div
-                      className="pay-card-img"
-                      style={{ backgroundColor: "#FFEAEA" }}
-                    >
-                      <RiMoneyDollarCircleLine
-                        color="#D81C1C"
-                        className="pay-dollar-img"
-                      />
-                    </div>
-                    <LuArrowUpRight className="pay-card-arrow" />
-                  </div>
-                  <p>NON-Comm</p>
-                </div>
-                <div className="pay-card">
-                  <div className="pay-img">
-                    <div
-                      className="pay-card-img"
-                      style={{ backgroundColor: "#FFEAEA" }}
-                    >
-                      <RiMoneyDollarCircleLine
-                        color="#D81C1C"
-                        className="pay-dollar-img"
-                      />
-                    </div>
-                    <LuArrowUpRight className="pay-card-arrow" />
-                  </div>
-                  <p>DLR-OTH</p>
-                </div>
-              </div>
+                ))
+              }
             </div>
           </div>
         </div>
