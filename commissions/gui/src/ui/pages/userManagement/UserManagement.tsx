@@ -14,9 +14,12 @@ const UserManagement: React.FC = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const userName = localStorage.getItem("userName");
-  const [selectedOption, setSelectedOption] = useState<string>(
-    userSelectData[0].label
+  const [selectedOption, setSelectedOption] = useState(
+    userSelectData[0]
   );
+  // const [selectedOptionValue, setSelectedOptionValue] = useState<string>(
+  //   userSelectData[0].value
+  // );
 
   const dispatch = useAppDispatch();
   const { userOnboardingList, userRoleBasedList } = useAppSelector(
@@ -34,15 +37,28 @@ const UserManagement: React.FC = () => {
     fetchData();
   }, []);
 
+  /** role based get data */
   useEffect(()=>{
-      dispatch(fetchUserListBasedOnRole());
+    const data = {
+      page_number: 1,
+      page_size: 10,
+      filters: [
+        {
+          Column: "role_name",
+          Operation: "=",
+          Data: selectedOption.value,
+        },
+      ],
+    }
+
+      dispatch(fetchUserListBasedOnRole(data));
   },[selectedOption])
 
   /** handle dropdown value */
   const handleSelectChange = (
     selectedOption: UserDropdownModel
   ) => {
-    setSelectedOption(selectedOption ? selectedOption.label : "");
+    setSelectedOption(selectedOption);
   };
   return (
     <>

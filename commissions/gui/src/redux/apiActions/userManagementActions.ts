@@ -42,18 +42,11 @@ export const fetchUserOnboarding = createAsyncThunk(
 /** get list user based */
 export const fetchUserListBasedOnRole = createAsyncThunk(
   "user/user_list_based_on_Role",
-  async () => {
-    const response = await postCaller(EndPoints.Get_User_list_based_on_Role, {
-      page_number: 1,
-      page_size: 15,
-      filters: [
-        {
-          Column: "role_name",
-          Operation: "=",
-          Data: "admin",
-        },
-      ],
-    });
+  async (data: any) => {
+    const response = await postCaller(
+      EndPoints.Get_User_list_based_on_Role,
+      JSON.stringify(data)
+    );
     if (response.status !== HTTP_STATUS.OK) {
       throw new Error("Failed to fetch onboarding data");
     }
