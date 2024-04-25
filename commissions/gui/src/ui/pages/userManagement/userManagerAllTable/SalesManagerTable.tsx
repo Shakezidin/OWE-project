@@ -2,9 +2,10 @@ import React from "react";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import { ICONS } from "../../../icons/Icons";
 import { FaArrowDown } from "react-icons/fa6";
+import { UserRoleBasedListModel } from "../../../../core/models/api_models/UserManagementModel";
 
 interface SaleManagerProps {
-  data: { [key: string]: any }[];
+  data: UserRoleBasedListModel[];
 }
 
 const SalesManagerTable: React.FC<SaleManagerProps> = ({ data }) => {
@@ -81,8 +82,8 @@ const SalesManagerTable: React.FC<SaleManagerProps> = ({ data }) => {
 
           <tbody>
             {data?.length > 0
-              ? data?.map((el, i) => (
-                  <tr key={i}>
+              ? data?.map((el: UserRoleBasedListModel) => (
+                  <tr key={el.email_id}>
                     <td>
                       <CheckBox
                         checked={true}
@@ -91,27 +92,27 @@ const SalesManagerTable: React.FC<SaleManagerProps> = ({ data }) => {
                       />
                     </td>
                     <td style={{ color: "var( --fade-gray-black)" }}>
-                      {el.code}
+                      {el.user_code}
                     </td>
                     <td style={{ color: "var( --fade-gray-black)" }}>
                       {el.name}
                     </td>
                     <td style={{ color: "var( --fade-gray-black)" }}>
-                      {el.role}
+                      {el.role_name}
                     </td>
                     <td style={{ color: "var( --fade-gray-black)" }}>
-                      {el.dealer}
+                      {el.dealer_owner}
                     </td>
                     <td style={{ color: "var( --fade-gray-black)" }}>
-                      {el.reporting}
+                      {el.reporting_manager}
                     </td>
                     <td style={{ color: "var( --fade-gray-black)" }}>
-                      {el.email}
+                      {el.email_id}
                     </td>
                     <td style={{ color: "var( --fade-gray-black)" }}>
-                      {el.pn}
+                      {el.mobile_number}
                     </td>
-                    <td>{el.des}</td>
+                    <td>{el.description}</td>
                     <td>
                       <div className="action-icon">
                         <div className="" style={{ cursor: "pointer" }}>

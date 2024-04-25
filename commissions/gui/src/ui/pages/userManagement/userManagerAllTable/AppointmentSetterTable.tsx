@@ -3,13 +3,13 @@ import { ICONS } from "../../../icons/Icons";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import "../../configure/configure.css";
 import { FaArrowDown } from "react-icons/fa6";
+import { UserRoleBasedListModel } from "../../../../core/models/api_models/UserManagementModel";
 
 interface AppointmentSetterProps {
-  data: { [key: string]: any }[];
+  data: UserRoleBasedListModel[];
 }
 
-const AppointmentSetterTable: React.FC<AppointmentSetterProps> = ({data}) => {
-
+const AppointmentSetterTable: React.FC<AppointmentSetterProps> = ({ data }) => {
   return (
     <>
       {/* <UserHeaderSection  name="Appointment Setter"/> */}
@@ -17,7 +17,6 @@ const AppointmentSetterTable: React.FC<AppointmentSetterProps> = ({data}) => {
         className="UserManageTable"
         style={{ overflowX: "auto", whiteSpace: "nowrap" }}
       >
-
         <table>
           <thead style={{ background: "#F5F5F5" }}>
             <tr>
@@ -68,8 +67,8 @@ const AppointmentSetterTable: React.FC<AppointmentSetterProps> = ({data}) => {
 
           <tbody>
             {data.length > 0
-              ? data.map((el, i) => (
-                  <tr key={i}>
+              ? data.map((el: UserRoleBasedListModel) => (
+                  <tr key={el.email_id}>
                     <td>
                       <CheckBox
                         checked={true}
@@ -86,15 +85,15 @@ const AppointmentSetterTable: React.FC<AppointmentSetterProps> = ({data}) => {
                       {el.name}
                     </td>
                     <td style={{ color: "var( --fade-gray-black)" }}>
-                      {el.sd}
+                      {el.startData}
                     </td>
                     <td style={{ color: "var( --fade-gray-black)" }}>
-                      {el.ed}
+                      {el.endDate}
                     </td>
                     <td style={{ color: "var( --fade-gray-black)" }}>
-                      {el.pay}
+                      {el.amount}
                     </td>
-                    <td>{el.des}</td>
+                    <td>{el.description}</td>
 
                     <td>
                       <div className="action-icon">

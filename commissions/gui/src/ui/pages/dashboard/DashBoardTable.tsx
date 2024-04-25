@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "../userManagement/user.css";
 import "../configure/configure.css";
 import { CiEdit } from "react-icons/ci";
@@ -9,18 +9,26 @@ import "../../components/pagination/Pagination";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { setCurrentPage } from "../../../redux/apiSlice/paginationslice/paginationSlice";
 import Pagination from "../../components/pagination/Pagination";
-import { BiSupport } from "react-icons/bi";
+import HelpDashboard from "./HelpDashboard";
+import { CommissionModel } from "../../../core/models/configuration/create/CommissionModel";
+import ProjectBreakdown from "./ProjectBreakdown";
+
 // import { installers, partners, respTypeData, statData } from "../../../../../core/models/data_models/SelectDataModel";
 
 const DashBoardTable: React.FC = () => {
+  const [editedCommission, setEditedCommission] =
+    useState<CommissionModel | null>(null);
+  const [open, setOpen] = useState<boolean>(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const [editMode, setEditMode] = useState(false);
+
   const dataUser = [
     {
       pi: "1234567890",
       dn: "Josh Morton",
       sr: "Josh Morton",
       cn: "josh Morton",
-      cm: "Percentage",
-      pg: "18/20",
       amt: "$123,456",
       pipeline: "$100,362",
       cd: "$300,652",
@@ -57,8 +65,6 @@ const DashBoardTable: React.FC = () => {
       dn: "Josh Morton",
       sr: "Josh Morton",
       cn: "josh Morton",
-      cm: "Percentage",
-      pg: "90/10",
       amt: "$123,456",
       pipeline: "$100,362",
       cd: "$300,652",
@@ -76,8 +82,6 @@ const DashBoardTable: React.FC = () => {
       dn: "Josh Morton",
       sr: "Josh Morton",
       cn: "josh Morton",
-      cm: "Percentage",
-      pg: "18/20",
       amt: "$123,456",
       pipeline: "$100,362",
       cd: "$300,652",
@@ -114,8 +118,6 @@ const DashBoardTable: React.FC = () => {
       dn: "Josh Morton",
       sr: "Josh Morton",
       cn: "josh Morton",
-      cm: "Percentage",
-      pg: "90/10",
       amt: "$123,456",
       pipeline: "$100,362",
       cd: "$300,652",
@@ -133,8 +135,6 @@ const DashBoardTable: React.FC = () => {
       dn: "Josh Morton",
       sr: "Josh Morton",
       cn: "josh Morton",
-      cm: "Percentage",
-      pg: "18/20",
       amt: "$123,456",
       pipeline: "$100,362",
       cd: "$300,652",
@@ -254,18 +254,6 @@ const DashBoardTable: React.FC = () => {
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Commision Model</p>{" "}
-                    <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Percentage</p>{" "}
-                    <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
                     <p>Amt Prepaid</p>{" "}
                     <FaArrowDown style={{ color: "#667085" }} />
                   </div>
@@ -342,12 +330,18 @@ const DashBoardTable: React.FC = () => {
                           // indeterminate={isAnyRowSelected && !isAllRowsSelected}
                         />
                       </td>
-                      <td style={{ color: "black" }}>{el.pi}</td>
-                      <td style={{ color: "#101828" }}>{el.dn}</td>
-                      <td style={{ color: "#101828" }}>{el.sr}</td>
-                      <td style={{ color: "#101828" }}>{el.cn}</td>
-                      <td style={{ color: "#101828" }}>{el.cm}</td>
-                      <td style={{ color: "#101828" }}>{el.pg}</td>
+                      <td style={{ fontWeight: "500", color: "black" }}>
+                        {el.pi}
+                      </td>
+                      <td style={{ fontWeight: "500", color: "#101828" }}>
+                        {el.dn}
+                      </td>
+                      <td style={{ fontWeight: "500", color: "#101828" }}>
+                        {el.sr}
+                      </td>
+                      <td style={{ fontWeight: "500", color: "#101828" }}>
+                        {el.cn}
+                      </td>
                       <td style={{ color: "#0493CE" }}>{el.amt}</td>
                       <td style={{ color: "#0493CE" }}>{el.pipeline}</td>
                       <td style={{ color: "#0493CE" }}>{el.cd}</td>
@@ -359,7 +353,28 @@ const DashBoardTable: React.FC = () => {
                       <td>{el.ajh}</td>
                       <td>{el.rl}</td>
                       <td>{el.epc}</td>
-                      <td style={{cursor: "pointer"}}><BiSupport /></td>
+
+                      <td>
+                        <div className="action-icon">
+                          <div
+                            className=""
+                            style={{ cursor: "pointer", textAlign: "center" }}
+                          >
+                            <IoIosHelpCircleOutline
+                              onClick={() => {
+                                handleOpen();
+                              }}
+                            />
+                          </div>
+                          {open && (
+                            <ProjectBreakdown
+                              commission={editedCommission}
+                              editMode={editMode}
+                              handleClose={handleClose}
+                            />
+                          )}
+                        </div>
+                      </td>
                     </tr>
                   ))
                 : null}

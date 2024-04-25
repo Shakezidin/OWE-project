@@ -98,6 +98,7 @@ const CreateWebHook: React.FC = () => {
           onPressImport={() => { }}
           showImportIcon={false}
           showSelectIcon={true}
+          showFilterIcon={true}
         />
         {/* {filterOPen && <FilterDealer handleClose={filterClose}
           columns={columns}

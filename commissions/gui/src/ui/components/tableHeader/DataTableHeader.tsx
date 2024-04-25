@@ -10,6 +10,7 @@ import Select from "react-select"; interface TableProps {
     onPressImport: () => void;
     showImportIcon: boolean;
     showSelectIcon: boolean;
+    showFilterIcon: boolean;
 }
 interface OptionType {
     value: string;
@@ -50,7 +51,7 @@ const DataTableHeader = (props: TableProps) => {
                                 marginTop: "px",
                                 borderRadius: "8px",
                                 outline: "none",
-                                // height: "2rem",
+                                color: "black",
                                 width: "200px",
                                 fontSize: "13px",
                                 border: "1px solid #d0d5dd",
@@ -64,9 +65,11 @@ const DataTableHeader = (props: TableProps) => {
                 </div>
 
                 <div className="iconsSection-filter">
+                {props.showFilterIcon && (
                     <button type="button" onClick={onPressFilter}>
                         <img src={ICONS.filtercomm} alt="" style={{ width: "15px", height: "15px" }} />
                     </button>
+                    )}
                 </div>
                 <div className="iconsSection2">
                     {props.showImportIcon && (

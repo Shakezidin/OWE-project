@@ -73,6 +73,7 @@ import crossIconUser from '../../resources/assets/user-cross.svg'
 import userIconImg from '../../resources/assets/user-icon-img.svg'
 import logo from  "../../resources/assets/logo.svg"
 import ellipse from '../../resources/assets/ellipse.svg'
+import closeIcon from '../../resources/assets/closeIcon.svg'
 export const ICONS = {
   BACKGROUND: require("../../resources/assets/background.png"),
   LOGO:logo,
@@ -158,5 +159,6 @@ projectrackingIcon:projectrack,
 commission80:comm,
 repayIcon:repay,
 crossIconUser: crossIconUser,
-userIconImg: userIconImg
+userIconImg: userIconImg,
+closeIcon:closeIcon
 };

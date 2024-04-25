@@ -166,14 +166,6 @@ table thead tr th {
   /* line-height: 18px; */
 }
 
-/* table thead tr th:last-child{
-  position: fixed;
-  transform: translate(-50,-50%);
-  top: 0;
-  left: 50%;
-  right: 0;
-} */
-
 .table-header {
   display: flex;
   align-items: center;
@@ -189,7 +181,6 @@ table tbody tr {
 table tbody tr td {
   padding: 0.8rem 1.875rem 0.8rem 1.6rem;
   font-size: 12px;
-  text-align: center;
   width: auto;
   color: var(--coloumn-text-color);
 }

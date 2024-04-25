@@ -57,7 +57,7 @@ const data = [
 export default class BarChartComponent extends PureComponent {
   render() {
     return (
-      <div className="">
+      <div className="" style={{ width: "100%",}}>
         <div className="dash-section" style={{ padding: "1rem" }}>
           <p>Total Table Record</p>
         </div>
@@ -73,11 +73,12 @@ export default class BarChartComponent extends PureComponent {
                 bottom: 36,
               }}
             >
-              <CartesianGrid vertical={false} />
+              <CartesianGrid vertical={false}/>
               <XAxis
                 dataKey="name"
                 tickLine={false}
                 tick={{ fill: "#000000", fontWeight: 500, fontSize: "10px" }}
+                axisLine={{ stroke: "rgb(204, 204, 204)" }}
               />
               <YAxis
                 axisLine={false}

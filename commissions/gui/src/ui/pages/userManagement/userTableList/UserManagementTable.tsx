@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { } from "react";
 import "../../userManagement/user.css";
 import { ICONS } from "../../../icons/Icons";
 import "../../configure/configure.css";
-import { userSelectData } from "../../../../resources/static_data/StaticData";
 import UserTable from "../userManagerAllTable/UserTable";
 import AppointmentSetterTable from "../userManagerAllTable/AppointmentSetterTable";
 import PartnerTable from "../userManagerAllTable/PartnerTable";
@@ -14,25 +13,23 @@ import "./UserHeader.css";
 import Pagination from "../../../components/pagination/Pagination";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
-import { dataUser, appointmentList, partnerList, RMManagerList, dealerList, saleReprestList, SaleManagerList } from "../../../../resources/static_data/StaticUserList";
 import SelectOption from "../../../components/selectOption/SelectOption";
+import { UserDropdownModel, UserRoleBasedListModel } from "../../../../core/models/api_models/UserManagementModel";
 
-// interface props {
-//   name: string;
-// }
-const UserHeaderSection = () => {
+interface UserTableProos {
+  userDropdownData: UserDropdownModel[];
+  userRoleBasedList: UserRoleBasedListModel[];
+  selectedOption: UserDropdownModel;
+  handleSelectChange: (data:UserDropdownModel) => void;
 
-
-  const [selectedOption, setSelectedOption] = useState<string>(
-    userSelectData[0].label
-  );
-
-  const handleSelectChange = (
-    selectedOption: { value: string; label: string } | null
-  ) => {
-    setSelectedOption(selectedOption ? selectedOption.label : "");
-  };
-
+ // onChange: (text: string) => void;
+}
+const UserManagementTable: React.FC<UserTableProos> = ({
+  userDropdownData,
+  userRoleBasedList,
+  selectedOption,
+  handleSelectChange,
+}) => {
   const dispatch = useAppDispatch();
 
   const currentPage = useAppSelector(
@@ -53,31 +50,31 @@ const UserHeaderSection = () => {
   const goToPrevPage = () => {
     dispatch(setCurrentPage(currentPage - 1));
   };
-  const totalPages = Math.ceil(dataUser?.length / itemsPerPage);
+  const totalPages = Math.ceil(userRoleBasedList?.length / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentPageData = dataUser?.slice(startIndex, endIndex);
+  const currentPageData = userRoleBasedList?.slice(startIndex, endIndex);
 
   /** render table based on dropdown */
   const renderComponent = () => {
-    switch (selectedOption) {
+    switch (selectedOption.label) {
       case "Admin":
-        return <UserTable data={dataUser} />;
+        return <UserTable data={userRoleBasedList} />;
       case "DB User":
-        return <UserTable data={dataUser} />;
+        return <UserTable data={userRoleBasedList} />;
       case "Appointment Setter":
-        return <AppointmentSetterTable data={appointmentList} />;
+        return <AppointmentSetterTable data={userRoleBasedList} />;
       case "Partner":
-        return <PartnerTable data={partnerList} />;
+        return <PartnerTable data={userRoleBasedList} />;
       case "Regional Manager":
-        return <RegionalManagerTable data={RMManagerList} />;
+        return <RegionalManagerTable data={userRoleBasedList} />;
       case "Dealer Owner":
-        return <DealerOwnerTable data={dealerList} />;
+        return <DealerOwnerTable data={userRoleBasedList} />;
       case "Sales Representative Manager":
-        return <SalesRepresentativeTable data={saleReprestList} />;
+        return <SalesRepresentativeTable data={userRoleBasedList} />;
       case "Sales Manager":
-        return <SalesManagerTable data={SaleManagerList} />;
+        return <SalesManagerTable data={userRoleBasedList} />;
       default:
         return null;
     }
@@ -88,27 +85,26 @@ const UserHeaderSection = () => {
     <>
       <div className="ManagerUser-container">
         <div className="admin-user">
-          <p>{selectedOption?.toUpperCase()}</p>
+          <p>{selectedOption.label?.toUpperCase()}</p>
         </div>
         <div className="delete-icon-container">
           <div className="create-input-field">
             <SelectOption
-              options={userSelectData}
-              value={userSelectData.find(
-                (option) => option.label === selectedOption
-              )}
-              onChange={handleSelectChange}
-             
+              options={userDropdownData}
+              value={selectedOption}
+              onChange={(data:any )=>{
+                handleSelectChange(data)
+              }}
             />
           </div>
 
-          <div className="iconsSection-delete" style={{marginTop:".2rem"}}>
+          <div className="iconsSection-delete" style={{ marginTop: ".2rem" }}>
             <button type="button">
               <img src={ICONS.deleteIcon} alt="" />
             </button>
-            </div>
+          </div>
 
-          <div className="iconsSection-filter" style={{marginTop:".2rem"}}>
+          <div className="iconsSection-filter" style={{ marginTop: ".2rem" }}>
             <button type="button">
               <img src={ICONS.FILTER} alt="" />
             </button>
@@ -119,10 +115,10 @@ const UserHeaderSection = () => {
 
       <div className="user-page-heading-container">
         <p className="page-heading">
-          {currentPage} - {totalPages} of {dataUser?.length} item
+          {currentPage} - {totalPages} of {userRoleBasedList?.length} item
         </p>
 
-        {dataUser?.length > 0 ? (
+        {userRoleBasedList?.length > 0 ? (
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages} // You need to calculate total pages
@@ -137,4 +133,4 @@ const UserHeaderSection = () => {
   );
 };
 
-export default UserHeaderSection;
+export default UserManagementTable;
