@@ -2,7 +2,6 @@ import React from "react";
 import "../dashboard/dasboard.css";
 import { CommissionModel } from "../../../core/models/configuration/create/CommissionModel";
 import { ICONS } from "../../icons/Icons";
-import { ReactComponent as CROSS_BUTTON } from "../../../resources/assets/cross_button.svg";
 
 interface ButtonProps {
     editMode: boolean;
@@ -12,20 +11,19 @@ interface ButtonProps {
 
 const ProjectBreakdown: React.FC<ButtonProps> = ({ editMode, handleClose, commission }) => {
     return (
-        <div className="break-down">
-            <div className="transparent-model">
-                <form action="" className="modal">
+       
+            <div className="transparent-model-down" >
+                <form action="" className="modal-down" >
                     <div className="breakdown-container">
-                        <div className="createUserCrossButton" onClick={handleClose}>
-                            <img src={ICONS.closeIcon} alt="" style={{width:"24px", height:"24px"}}/>
-                        </div>
                         <div className="project-section">
-                            <h3>Project Breakdown</h3>
                             <h4>Customer Name</h4>
                             <h5>Project ID</h5>
                         </div>
+                        <div className="breakdown-img" onClick={handleClose} >
+                            <img src={ICONS.closeIcon} alt=""  />
+                        </div>
                     </div>
-                    <div className="modal-body">
+                    <div className="modal-body-down">
                         <div className="breakdown-table">
                             <table>
                                 <thead>
@@ -95,13 +93,25 @@ const ProjectBreakdown: React.FC<ButtonProps> = ({ editMode, handleClose, commis
                                         <td>Split Expected Comm</td>
                                         <td>$8,175.95</td>
                                     </tr>
+                                    <tr>
+                                        <td>ONYX - Dealer - 30%</td>
+                                        <td>$2,641.13</td>
+                                    </tr>
+                                    <tr>
+                                        <td>ONYX - Sales rep - 20%</td>
+                                        <td>$1,760.75</td>
+                                    </tr>
+                                    <tr>
+                                        <td>P&S - 30%</td>
+                                        <td>$2,641.13</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </form>
             </div>
-        </div>
+      
     );
 };
 

@@ -19,9 +19,12 @@ const DashBoardTable: React.FC = () => {
   const [editedCommission, setEditedCommission] =
     useState<CommissionModel | null>(null);
   const [open, setOpen] = useState<boolean>(false);
+  const [openIcon, setOpenIcon] = useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [editMode, setEditMode] = useState(false);
+  const handleIconOpen = () => setOpenIcon(true);
+  const handleIconClose = () => setOpenIcon(false);
 
   const dataUser = [
     {
@@ -330,8 +333,24 @@ const DashBoardTable: React.FC = () => {
                           // indeterminate={isAnyRowSelected && !isAllRowsSelected}
                         />
                       </td>
-                      <td style={{ fontWeight: "500", color: "black" }}>
+                      <td
+                        style={{
+                          fontWeight: "500",
+                          color: "black",
+                          cursor: "pointer",
+                        }}
+                        onClick={() => {
+                          handleOpen();
+                        }}
+                      >
                         {el.pi}
+                        {open && (
+                          <ProjectBreakdown
+                            commission={editedCommission}
+                            editMode={editMode}
+                            handleClose={handleClose}
+                          />
+                        )}
                       </td>
                       <td style={{ fontWeight: "500", color: "#101828" }}>
                         {el.dn}
@@ -360,19 +379,15 @@ const DashBoardTable: React.FC = () => {
                             className=""
                             style={{ cursor: "pointer", textAlign: "center" }}
                           >
-                            <IoIosHelpCircleOutline
-                              onClick={() => {
-                                handleOpen();
-                              }}
-                            />
+                            <IoIosHelpCircleOutline onClick={()=> handleIconOpen()}/>
+                            {openIcon && (
+                          <HelpDashboard
+                            commission={editedCommission}
+                            editMode={editMode}
+                            handleClose={handleClose}
+                          />
+                        )}
                           </div>
-                          {open && (
-                            <ProjectBreakdown
-                              commission={editedCommission}
-                              editMode={editMode}
-                              handleClose={handleClose}
-                            />
-                          )}
                         </div>
                       </td>
                     </tr>

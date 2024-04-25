@@ -115,20 +115,6 @@ const TechnicalSupport = () => {
               </div>
 
               <div className="rate-input-container">
-                <div
-                  className="rate-input-field"
-                  style={{ width: "130px", marginRight: "1rem" }}
-                >
-                  <Input
-                    type={"number"}
-                    label="Project ID"
-                    value={""}
-                    name="rate"
-                    placeholder={"Enter"}
-                    onChange={(e) => {}}
-                  />
-                </div>
-
                 <div className="rate-input-field">
                   {/* <Input
                     type={"file"}
