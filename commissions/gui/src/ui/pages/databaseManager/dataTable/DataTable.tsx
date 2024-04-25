@@ -169,6 +169,7 @@ const DataTablle: React.FC = () => {
           onPressImport={() => { }}
           showImportIcon={false}
           showSelectIcon={true}
+          showFilterIcon={true}
         />
 
 
@@ -206,6 +207,7 @@ const DataTablle: React.FC = () => {
                     <p>Column 1</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
+                
                 <th>
                   <div className="table-header">
                     <p>Column 2</p> <FaArrowDown style={{ color: "#667085" }} />
@@ -239,11 +241,11 @@ const DataTablle: React.FC = () => {
               </tr>
             </thead>
 
-            <tbody>
+            <tbody >
               {currentPageData?.length > 0
                 ? currentPageData?.map((el, i) => (
-                  <tr key={i} className={selectedRows.has(i) ? "selected" : ""}>
-                    <td>
+                  <tr key={i} className={selectedRows.has(i) ? "selected" : ""} >
+                    <td style={{ fontWeight: "500", color: "black",textAlign: "left" }}>
                       <CheckBox
                         checked={selectedRows.has(i)}
                         onChange={() =>
@@ -256,19 +258,20 @@ const DataTablle: React.FC = () => {
                         }
                       />
                     </td>
-                    <td style={{ fontWeight: "500", color: "black" }}>
+                    <td style={{ fontWeight: "500", color: "black", textAlign: "left"}}>
                       {el.col1}
                     </td>
-                    <td style={{ fontWeight: "500", color: "black" }}>{el.col2}</td>
-                    <td style={{ fontWeight: "500", color: "black" }}>{el.col3}</td>
-                    <td style={{ fontWeight: "500", color: "black" }}>{el.col4}</td>
-                    <td style={{fontWeight: "500", color:"#0493CE"}}>{el.col5}</td>
-                    <td style={{fontWeight: "500", color:"#0493CE"}}>{el.col6}</td>
-                   <td style={{ fontWeight: "500", color:"#0493CE"}}>{el.col7}</td>
+                    <td style={{ fontWeight: "500", color: "black", textAlign: "left" }}>{el.col2}</td>
+                    <td style={{ fontWeight: "500", color: "black", textAlign: "left" }}>{el.col3}</td>
+                    <td style={{ fontWeight: "500", color: "black", textAlign: "left" }}>{el.col4}</td>
+                    <td style={{fontWeight: "500", color:"#0493CE", textAlign: "left"}}>{el.col5}</td>
+                    <td style={{fontWeight: "500", color:"#0493CE", textAlign: "left"}}>{el.col6}</td>
+                   <td style={{ fontWeight: "500", color:"#0493CE", textAlign: "left"}}>{el.col7}</td>
                   </tr>
                 ))
                 : null}
             </tbody>
+            
           </table>
         </div>
         <div className="page-heading-container">

@@ -171,6 +171,7 @@ const UserActivity: React.FC = () => {
           onPressImport={() => { }}
           showImportIcon={false}
           showSelectIcon={true}
+          showFilterIcon= {false}
         />
         {filterOPen && <FilterModal handleClose={filterClose}
           columns={UserActivityColumn}
@@ -182,11 +183,11 @@ const UserActivity: React.FC = () => {
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }} >
+
           <table>
             <thead>
               <tr>
                 <th>
-                  <div>
                     <CheckBox
                       checked={selectAllChecked}
                       onChange={() =>
@@ -199,7 +200,6 @@ const UserActivity: React.FC = () => {
                       }
                       indeterminate={isAnyRowSelected && !isAllRowsSelected}
                     />
-                  </div>
                 </th>
                 <th>
                   <div className="table-header">
@@ -229,7 +229,7 @@ const UserActivity: React.FC = () => {
               {currentPageData?.length > 0
                 ? currentPageData?.map((el, i) => (
                   <tr key={i}>
-                    <td>
+                    <td style={{ fontWeight: "500", color: "black",textAlign: "left" }}>
                       <CheckBox
                         checked={selectedRows.has(i)}
                         onChange={() =>
@@ -242,18 +242,19 @@ const UserActivity: React.FC = () => {
                         }
                       />
                     </td>
-                    <td style={{ fontWeight: "500", color: "black" }}>
+                    <td style={{ fontWeight: "500", color: "black",textAlign: "left" }}>
                       {el.uname}
                     </td>
-                    <td>{el.dbname}</td>
-                    <td>{el.date}</td>
-                    <td>{el.query}</td>
+                    <td style={{ fontWeight: "500", color: "black",textAlign: "left" }}>{el.dbname}</td>
+                    <td style={{ fontWeight: "500", color: "black",textAlign: "left" }}>{el.date}</td>
+                    <td style={{ fontWeight: "500", color: "black",textAlign: "left" }}>{el.query}</td>
 
                   </tr>
                 ))
                 : null}
             </tbody>
           </table>
+
         </div>
 
 

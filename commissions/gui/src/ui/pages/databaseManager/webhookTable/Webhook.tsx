@@ -173,6 +173,7 @@ const Webhook: React.FC = () => {
           onPressImport={() => { }}
           showImportIcon={false}
           showSelectIcon={false}
+          showFilterIcon={true}
         />
 
         <div
@@ -212,9 +213,9 @@ const Webhook: React.FC = () => {
                     <td style={{ fontWeight: "500", color: "black" , textAlign: "left"}}>
                       {el.col1}
                     </td>
-                    <td style={{ fontWeight: "500", color: "black" }}>{el.col2}</td>
-                    <td style={{ fontWeight: "500", color: "black" }}>{el.col3}</td>
-                    <td style={{ fontWeight: "500", color: "black"}}>{el.col4}</td>
+                    <td style={{ fontWeight: "500", color: "black", textAlign: "left" }}>{el.col2}</td>
+                    <td style={{ fontWeight: "500", color: "black", textAlign: "left" }}>{el.col3}</td>
+                    <td style={{ fontWeight: "500", color: "black", textAlign: "left"}}>{el.col4}</td>
                   </tr>
                 ))
                 : null}
