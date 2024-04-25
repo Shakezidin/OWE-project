@@ -58,6 +58,8 @@ interface Endpoints {
   //user management
   Get_User_onboarding_list: string;
   Get_User_list_based_on_Role: string;
+  get_user_by_role:string,
+
 }
 
 export const EndPoints: Endpoints = {
@@ -115,4 +117,5 @@ export const EndPoints: Endpoints = {
   //user management
   Get_User_onboarding_list: "get_users_onboarding",
   Get_User_list_based_on_Role: "get_users",
+  get_user_by_role:"get_users_by_role"
 };

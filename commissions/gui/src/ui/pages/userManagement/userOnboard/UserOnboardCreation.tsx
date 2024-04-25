@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cross_button.svg";
 import Input from "../../../components/text_input/Input";
 import { ActionButton } from "../../../components/button/ActionButton";
@@ -14,6 +14,8 @@ import { ICONS } from "../../../icons/Icons";
 import SelectTable from "./SeletTable";
 import UserBasedInput from "./UserBasedInput";
 import SelectOption from "../../../components/selectOption/SelectOption";
+import { getUsersByRole } from "../../../../redux/apiSlice/userManagementSlice/getRoleByUserSlice";
+import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 
 interface ButtonProps {
   editMode: boolean;
@@ -26,7 +28,8 @@ const UserOnboardingCreation: React.FC<ButtonProps> = ({
   userOnboard,
   editMode,
 }) => {
-  const dispatch = useDispatch();
+  const {users} = useAppSelector((state) => state.userByRole);
+  const dispatch = useAppDispatch();
   const [createUserOnboarding, setCreateOnboarding] = useState<UserAdmin>({
     first_name: "Ankita",
     last_name: "Chauhan",
@@ -97,6 +100,14 @@ const UserOnboardingCreation: React.FC<ButtonProps> = ({
       console.error("Error submitting form:", error);
     }
   };
+
+  useEffect(() => {
+    if(createUserOnboarding.role_name !== "dealer_owner" && createUserOnboarding.role_name !== "admin")
+        dispatch(getUsersByRole("Dealer Owner"));
+}, [createUserOnboarding.role_name]);
+
+ 
+ console.log(users)
 
   return (
     <div className="transparent-model">
