@@ -1,7 +1,7 @@
 /**************************************************************************
- * File       	   : apiGetAutoAdderData.go
- * DESCRIPTION     : This file contains functions for get AutoAdder data handler
- * DATE            : 22-Jan-2024
+ * File       	   : apiGetDebateData.go
+ * DESCRIPTION     : This file contains functions for get debate data handler
+ * DATE            : 24-Apr-2024
  **************************************************************************/
 
 package services
@@ -19,12 +19,12 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:		HandleGetAutoAdderDataRequest
- * DESCRIPTION:     handler for get AutoAdder data request
+ * FUNCTION:		HandleGetRebateDataRequest
+ * DESCRIPTION:     handler for get Debate data request
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
-func HandleGetAutoAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
+func HandleGetRebateDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err          error
 		dataReq      models.DataRequestBody
@@ -34,11 +34,11 @@ func HandleGetAutoAdderDataRequest(resp http.ResponseWriter, req *http.Request) 
 		filter       string
 	)
 
-	log.EnterFn(0, "HandleGetAutoAdderDataRequest")
-	defer func() { log.ExitFn(0, "HandleGetAutoAdderDataRequest", err) }()
+	log.EnterFn(0, "HandleGetRebateDataRequest")
+	defer func() { log.ExitFn(0, "HandleGetRebateDataRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in get AutoAdder data request")
+		err = fmt.Errorf("HTTP Request body is null in get Debate data request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -46,28 +46,28 @@ func HandleGetAutoAdderDataRequest(resp http.ResponseWriter, req *http.Request) 
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get AutoAdder data request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get debate data request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal get AutoAdder data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get AutoAdder data Request body", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal get debate data request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal get debate data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	tableName := db.TableName_auto_adder
 	query = `
-		 SELECT ad.id as record_id, ad.unique_id, ad.type_aa_mktg, ad.gc, ad.exact_amount, ad.per_kw_amount, ad.rep_doll_divby_per, ad.description_rep_visible,
-		 ad.notes_not_rep_visible, ad.type, ud1.name as rep_1_name, ud2.name as rep_2_name, ad.sys_size, st.name, ad.rep_count, ad.per_rep_addr_share, ad.per_rep_ovrd_share,
-		 ad.r1_pay_scale, ad.rep_1_def_resp, ad.r1_addr_resp, ad.r2_pay_scale, ad.rep_2_def_resp, ad.r2_addr_resp, ad.contract_amount, ad.project_base_cost, ad.crt_addr,
-		 ad.r1_loan_fee, ad.r1_rebate, ad.r1_referral, ad.r1_r_plus_r, ad.total_comm, ad.start_date, ad.end_date
-		 FROM auto_adder ad
-		 JOIN states st ON st.state_id = ad.state_id
-		 JOIN user_details ud1 ON ud1.user_id = ad.rep_1
-		 JOIN user_details ud2 ON ud2.user_id = ad.rep_2`
+			SELECT rd.id as record_id, rd.unique_id, rd.customer_verf, rd.type_rd_mktg, rd.item, rd.amount, rd.rep_doll_divby_per, rd.notes, rd.type, 
+			ud1.name as rep_1_name, ud2.name as rep_2_name, rd.sys_size, rd.rep_count, st.name, rd.per_rep_addr_share, rd.per_rep_ovrd_share,
+			rd.r1_pay_scale, rd.rep_1_def_resp, rd.r1_addr_resp, rd.r2_pay_scale, rd.per_rep_def_ovrd, rd."r1_rebate_credit_$", rd.r1_rebate_credit_perc, 
+			rd."r2_rebate_credit_$", rd.r2_rebate_credit_perc,  rd.start_date, rd.end_date
+			FROM rebate_data rd
+			JOIN states st ON st.state_id = rd.state_id
+			JOIN user_details ud1 ON ud1.user_id = rd.rep_1
+			JOIN user_details ud2 ON ud2.user_id = rd.rep_2`
 
 	filter, whereEleList = PrepareAutoAdderFilters(tableName, dataReq)
 	if filter != "" {
@@ -81,7 +81,7 @@ func HandleGetAutoAdderDataRequest(resp http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	AutoAdderList := models.GetAutoAdderList{}
+	RebateDataList := models.GetRebateDataList{}
 
 	for _, item := range data {
 		RecordId, ok := item["record_id"].(int64)
@@ -96,32 +96,32 @@ func HandleGetAutoAdderDataRequest(resp http.ResponseWriter, req *http.Request) 
 			Unique_id = ""
 		}
 
-		// type_aa_mktg
-		Type_aa_mktg, ok := item["type_aa_mktg"].(string)
-		if !ok || Type_aa_mktg == "" {
-			log.FuncErrorTrace(0, "Failed to get type_aa_mktg for Record ID %v. Item: %+v\n", RecordId, item)
-			Type_aa_mktg = ""
+		// customer_verf
+		Customer_verf, ok := item["customer_verf"].(string)
+		if !ok || Customer_verf == "" {
+			log.FuncErrorTrace(0, "Failed to get customer_verf for Record ID %v. Item: %+v\n", RecordId, item)
+			Customer_verf = ""
 		}
 
-		// gc
-		Gc, ok := item["gc"].(string)
-		if !ok || Gc == "" {
-			log.FuncErrorTrace(0, "Failed to get gc for Record ID %v. Item: %+v\n", RecordId, item)
-			Gc = ""
+		// type_rd_mktg
+		Type_rd_mktg, ok := item["type_rd_mktg"].(string)
+		if !ok || Type_rd_mktg == "" {
+			log.FuncErrorTrace(0, "Failed to get Type_rd_mktg for Record ID %v. Item: %+v\n", RecordId, item)
+			Type_rd_mktg = ""
 		}
 
-		// exact_amount
-		Exact_amount, ok := item["exact_amount"].(string)
-		if !ok || Exact_amount == "" {
-			log.FuncErrorTrace(0, "Failed to get exact_amount for Record ID %v. Item: %+v\n", RecordId, item)
-			Exact_amount = ""
+		// item
+		Item, ok := item["item"].(string)
+		if !ok || Item == "" {
+			log.FuncErrorTrace(0, "Failed to get item for Record ID %v. Item: %+v\n", RecordId, item)
+			Item = ""
 		}
 
-		// per_kw_amount
-		Per_kw_amount, ok := item["per_kw_amount"].(float64)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get per_kw_amount for Record ID %v. Item: %+v\n", RecordId, item)
-			Per_kw_amount = 0.0
+		// amount
+		Amount, ok := item["amount"].(string)
+		if !ok || Amount == "" {
+			log.FuncErrorTrace(0, "Failed to get amount for Record ID %v. Item: %+v\n", RecordId, item)
+			Amount = ""
 		}
 
 		// rep_doll_divby_per
@@ -131,24 +131,17 @@ func HandleGetAutoAdderDataRequest(resp http.ResponseWriter, req *http.Request) 
 			Rep_doll_divby_per = 0.0
 		}
 
-		// description_rep_visible
-		Description_rep_visible, ok := item["description_rep_visible"].(string)
-		if !ok || Description_rep_visible == "" {
-			log.FuncErrorTrace(0, "Failed to get description_rep_visible value for Record ID %v. Item: %+v\n", RecordId, item)
-			Description_rep_visible = ""
-		}
-
-		// notes_not_rep_visible
-		Notes_not_rep_visible, ok := item["notes_not_rep_visible"].(string)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get notes_not_rep_visible for Record ID %v. Item: %+v\n", RecordId, item)
-			Notes_not_rep_visible = ""
+		// notes
+		Notes, ok := item["notes"].(string)
+		if !ok || Notes == "" {
+			log.FuncErrorTrace(0, "Failed to get Notes value for Record ID %v. Item: %+v\n", RecordId, item)
+			Notes = ""
 		}
 
 		// type
 		Type, ok := item["type"].(string)
-		if ok || Type == "" {
-			log.FuncErrorTrace(0, "Failed to get type for Record ID %v. Item: %+v\n", RecordId, item)
+		if !ok || Type == "" {
+			log.FuncErrorTrace(0, "Failed to get notes_not_rep_visible for Record ID %v. Item: %+v\n", RecordId, item)
 			Type = ""
 		}
 
@@ -173,18 +166,18 @@ func HandleGetAutoAdderDataRequest(resp http.ResponseWriter, req *http.Request) 
 			Sys_size = 0.0
 		}
 
-		// name
-		StateName, ok := item["name"].(string)
-		if !ok || StateName == "" {
-			log.FuncErrorTrace(0, "Failed to get name for Record ID %v. Item: %+v\n", RecordId, item)
-			StateName = ""
-		}
-
 		// rep_count
 		Rep_count, ok := item["rep_count"].(float64)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get rep_count for Record ID %v. Item: %+v\n", RecordId, item)
 			Rep_count = 0.0
+		}
+
+		// name
+		StateName, ok := item["name"].(string)
+		if !ok || StateName == "" {
+			log.FuncErrorTrace(0, "Failed to get state name for Record ID %v. Item: %+v\n", RecordId, item)
+			StateName = ""
 		}
 
 		// per_rep_addr_share
@@ -229,74 +222,39 @@ func HandleGetAutoAdderDataRequest(resp http.ResponseWriter, req *http.Request) 
 			R2_pay_scale = 0.0
 		}
 
-		// rep_2_def_resp
-		Rep_2_def_resp, ok := item["rep_2_def_resp"].(string)
-		if !ok || Rep_2_def_resp == "" {
-			log.FuncErrorTrace(0, "Failed to get rep_2_def_resp for Record ID %v. Item: %+v\n", RecordId, item)
-			Rep_2_def_resp = ""
+		// per_rep_def_ovrd
+		Per_rep_def_ovrd, ok := item["per_rep_def_ovrd"].(string)
+		if !ok || Per_rep_def_ovrd == "" {
+			log.FuncErrorTrace(0, "Failed to get per_rep_def_ovrd for Record ID %v. Item: %+v\n", RecordId, item)
+			Per_rep_def_ovrd = ""
 		}
 
-		// r2_addr_resp
-		R2_addr_resp, ok := item["r2_addr_resp"].(string)
-		if !ok || R2_addr_resp == "" {
-			log.FuncErrorTrace(0, "Failed to get r2_addr_resp for Record ID %v. Item: %+v\n", RecordId, item)
-			R2_addr_resp = ""
+		// r1_rebate_credit_$
+		R1_rebate_credit, ok := item["r1_rebate_credit_$"].(string)
+		if !ok || R1_rebate_credit == "" {
+			log.FuncErrorTrace(0, "Failed to get r1_rebate_credit_$ for Record ID %v. Item: %+v\n", RecordId, item)
+			R1_rebate_credit = ""
 		}
 
-		// contract_amount
-		Contract_amount, ok := item["contract_amount"].(float64)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get contract_amount for Record ID %v. Item: %+v\n", RecordId, item)
-			Contract_amount = 0.0
+		// r1_rebate_credit_perc
+		R1_rebate_credit_perc, ok := item["r1_rebate_credit_perc"].(string)
+		if !ok || R1_rebate_credit_perc == "" {
+			log.FuncErrorTrace(0, "Failed to get r1_rebate_credit_perc for Record ID %v. Item: %+v\n", RecordId, item)
+			R1_rebate_credit_perc = ""
 		}
 
 		// project_base_cost
-		Project_base_cost, ok := item["project_base_cost"].(float64)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get project_base_cost for Record ID %v. Item: %+v\n", RecordId, item)
-			Project_base_cost = 0.0
+		R2_rebate_credit, ok := item["r2_rebate_credit_$"].(string)
+		if !ok || R2_rebate_credit == "" {
+			log.FuncErrorTrace(0, "Failed to get R2_rebate_credit for Record ID %v. Item: %+v\n", RecordId, item)
+			R2_rebate_credit = ""
 		}
 
 		// crt_addr
-		Crt_addr, ok := item["crt_addr"].(float64)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get crt_addr for Record ID %v. Item: %+v\n", RecordId, item)
-			Crt_addr = 0.0
-		}
-
-		// r1_loan_fee
-		R1_loan_fee, ok := item["r1_loan_fee"].(float64)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get r1_loan_fee for Record ID %v. Item: %+v\n", RecordId, item)
-			R1_loan_fee = 0.0
-		}
-
-		// r1_rebate
-		R1_rebate, ok := item["r1_rebate"].(float64)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get r1_rebate for Record ID %v. Item: %+v\n", RecordId, item)
-			R1_rebate = 0.0
-		}
-
-		// r1_referral
-		R1_referral, ok := item["r1_referral"].(float64)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get r1_referral for Record ID %v. Item: %+v\n", RecordId, item)
-			R1_referral = 0.0
-		}
-
-		// r1_r_plus_r
-		R1_r_plus_r, ok := item["r1_r_plus_r"].(float64)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get r1_r_plus_r for Record ID %v. Item: %+v\n", RecordId, item)
-			R1_r_plus_r = 0.0
-		}
-
-		// total_comm
-		Total_comm, ok := item["total_comm"].(float64)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get total_comm for Record ID %v. Item: %+v\n", RecordId, item)
-			Total_comm = 0.0
+		R2_rebate_credit_perc, ok := item["r2_rebate_credit_perc"].(string)
+		if !ok || R2_rebate_credit_perc == "" {
+			log.FuncErrorTrace(0, "Failed to get R2_rebate_credit_perc for Record ID %v. Item: %+v\n", RecordId, item)
+			R2_rebate_credit_perc = ""
 		}
 
 		// start_date
@@ -313,57 +271,51 @@ func HandleGetAutoAdderDataRequest(resp http.ResponseWriter, req *http.Request) 
 			EndDate = ""
 		}
 
-		AutoAdderData := models.GetAutoAdderData{
-			RecordId:              RecordId,
-			UniqueID:              Unique_id,
-			TypeAAMktg:            Type_aa_mktg,
-			GC:                    Gc,
-			ExactAmount:           Exact_amount,
-			PerKWAmount:           Per_kw_amount,
-			RepDollDivbyPer:       Rep_doll_divby_per,
-			DescriptionRepVisible: Description_rep_visible,
-			NotesNotRepVisible:    Notes_not_rep_visible,
-			Type:                  Type,
-			Rep1:                  Rep_1_name,
-			Rep2:                  Rep_2_name,
-			SysSize:               Sys_size,
-			State:                 StateName,
-			RepCount:              Rep_count,
-			PerRepAddrShare:       Per_rep_addr_share,
-			PerRepOvrdShare:       Per_rep_ovrd_share,
-			R1PayScale:            R1_pay_scale,
-			Rep1DefResp:           Rep_1_def_resp,
-			R1AddrResp:            R1_addr_resp,
-			R2PayScale:            R2_pay_scale,
-			Rep2DefResp:           Rep_2_def_resp,
-			R2AddrResp:            R2_addr_resp,
-			ContractAmount:        Contract_amount,
-			ProjectBaseCost:       Project_base_cost,
-			CrtAddr:               Crt_addr,
-			R1LoanFee:             R1_loan_fee,
-			R1Rebate:              R1_rebate,
-			R1Referral:            R1_referral,
-			R1RPlusR:              R1_r_plus_r,
-			TotalComm:             Total_comm,
-			StartDate:             Start_date,
-			EndDate:               EndDate,
+		RebateData := models.GetRebateData{
+			RecordId:           RecordId,
+			UniqueId:           Unique_id,
+			CustomerVerf:       Customer_verf,
+			TypeRdMktg:         Type_rd_mktg,
+			Item:               Item,
+			Amount:             Amount,
+			RepDollDivbyPer:    Rep_doll_divby_per,
+			Notes:              Notes,
+			Type:               Type,
+			Rep_1_Name:         Rep_1_name,
+			Rep_2_Name:         Rep_2_name,
+			SysSize:            Sys_size,
+			RepCount:           Rep_count,
+			State:              StateName,
+			PerRepAddrShare:    Per_rep_addr_share,
+			PerRepOvrdShare:    Per_rep_ovrd_share,
+			R1PayScale:         R1_pay_scale,
+			Rep1DefResp:        Rep_1_def_resp,
+			R1AddrResp:         R1_addr_resp,
+			R2PayScale:         R2_pay_scale,
+			PerRepDefOvrd:      Per_rep_def_ovrd,
+			R1RebateCredit:     R1_rebate_credit,
+			R1RebateCreditPerc: R1_rebate_credit_perc,
+			R2RebateCredit:     R2_rebate_credit,
+			R2RebateCreditPerc: R2_rebate_credit_perc,
+			StartDate:          Start_date,
+			EndDate:            EndDate,
 		}
 
-		AutoAdderList.AutoAdderList = append(AutoAdderList.AutoAdderList, AutoAdderData)
+		RebateDataList.RebateDataList = append(RebateDataList.RebateDataList, RebateData)
 	}
 
 	// Send the response
-	log.FuncInfoTrace(0, "Number of AutoAdder List fetched : %v list %+v", len(AutoAdderList.AutoAdderList), AutoAdderList)
-	FormAndSendHttpResp(resp, "AutoAdder Data", http.StatusOK, AutoAdderList)
+	log.FuncInfoTrace(0, "Number of AutoAdder List fetched : %v list %+v", len(RebateDataList.RebateDataList), RebateDataList)
+	FormAndSendHttpResp(resp, "AutoAdder Data", http.StatusOK, RebateDataList)
 }
 
 /******************************************************************************
- * FUNCTION:		PrepareAutoAdderFilters
+ * FUNCTION:		PrepareRebateDataFilters
  * DESCRIPTION:     handler for prepare filter
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
-func PrepareAutoAdderFilters(tableName string, dataFilter models.DataRequestBody) (filters string, whereEleList []interface{}) {
+func PrepareDebateDataFilters(tableName string, dataFilter models.DataRequestBody) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PrepareAutoAdderFilters")
 	defer func() { log.ExitFn(0, "PrepareAutoAdderFilters", nil) }()
 
@@ -394,44 +346,44 @@ func PrepareAutoAdderFilters(tableName string, dataFilter models.DataRequestBody
 			case "unique_id":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.unique_id) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-			case "type_aa_mktg":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.type_aa_mktg) %s LOWER($%d)", operator, len(whereEleList)+1))
+			case "customer_verf":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.customer_verf) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-			case "gc":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.gc) %s LOWER($%d)", operator, len(whereEleList)+1))
+			case "type_rd_mktg":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.type_rd_mktg) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "exact_amount":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.exact_amount) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-			case "per_kw_amount":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.per_kw_amount) %s LOWER($%d)", operator, len(whereEleList)+1))
+			case "item":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.item) %s LOWER($%d)", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "amount":
+				filtersBuilder.WriteString(fmt.Sprintf("ad.amount %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "rep_doll_divby_per":
 				filtersBuilder.WriteString(fmt.Sprintf("ad.rep_doll_divby_per %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-			case "description_rep_visible":
-				filtersBuilder.WriteString(fmt.Sprintf("ad.description_rep_visible %s $%d", operator, len(whereEleList)+1))
-				whereEleList = append(whereEleList, value)
-			case "notes_not_rep_visible":
-				filtersBuilder.WriteString(fmt.Sprintf("ad.notes_not_rep_visible %s $%d", operator, len(whereEleList)+1))
+			case "notes":
+				filtersBuilder.WriteString(fmt.Sprintf("ad.notes %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "type":
 				filtersBuilder.WriteString(fmt.Sprintf("ad.type %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-			case "rep_1_name":
+			case "rep1_name":
 				filtersBuilder.WriteString(fmt.Sprintf("rep_1_name %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-			case "rep_2_name":
+			case "rep2_name":
 				filtersBuilder.WriteString(fmt.Sprintf("rep_2_name %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "sys_size":
 				filtersBuilder.WriteString(fmt.Sprintf("ad.sys_size %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-			case "state":
-				filtersBuilder.WriteString(fmt.Sprintf("st.name %s $%d", operator, len(whereEleList)+1))
-				whereEleList = append(whereEleList, value)
 			case "rep_count":
 				filtersBuilder.WriteString(fmt.Sprintf("ad.rep_count %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "state":
+				filtersBuilder.WriteString(fmt.Sprintf("st.name %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "per_rep_addr_share":
 				filtersBuilder.WriteString(fmt.Sprintf("ad.per_rep_addr_share %s $%d", operator, len(whereEleList)+1))
@@ -451,35 +403,23 @@ func PrepareAutoAdderFilters(tableName string, dataFilter models.DataRequestBody
 			case "r2_pay_scale":
 				filtersBuilder.WriteString(fmt.Sprintf("ad.r2_pay_scale %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-			case "rep_2_def_resp":
-				filtersBuilder.WriteString(fmt.Sprintf("ad.rep_2_def_resp %s $%d", operator, len(whereEleList)+1))
+			case "per_rep_def_ovrd":
+				filtersBuilder.WriteString(fmt.Sprintf("ad.per_rep_def_ovrd %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-			case "r2_addr_resp":
-				filtersBuilder.WriteString(fmt.Sprintf("ad.r2_addr_resp %s $%d", operator, len(whereEleList)+1))
+			case "r1_rebate_credit":
+				filtersBuilder.WriteString(fmt.Sprintf("ad.r1_rebate_credit %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "contract_amount":
 				filtersBuilder.WriteString(fmt.Sprintf("ad.contract_amount %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-			case "project_base_cost":
-				filtersBuilder.WriteString(fmt.Sprintf("ad.project_base_cost %s $%d", operator, len(whereEleList)+1))
+			case "r1_rebate_credit_perc":
+				filtersBuilder.WriteString(fmt.Sprintf("ad.r1_rebate_credit_perc %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-			case "crt_addr":
-				filtersBuilder.WriteString(fmt.Sprintf("ad.crt_addr %s $%d", operator, len(whereEleList)+1))
+			case "r2_rebate_credit":
+				filtersBuilder.WriteString(fmt.Sprintf("ad.r2_rebate_credit %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-			case "r1_loan_fee":
-				filtersBuilder.WriteString(fmt.Sprintf("ad.r1_loan_fee %s $%d", operator, len(whereEleList)+1))
-				whereEleList = append(whereEleList, value)
-			case "r1_rebate":
-				filtersBuilder.WriteString(fmt.Sprintf("ad.r1_rebate %s $%d", operator, len(whereEleList)+1))
-				whereEleList = append(whereEleList, value)
-			case "r1_referral":
-				filtersBuilder.WriteString(fmt.Sprintf("ad.r1_referral %s $%d", operator, len(whereEleList)+1))
-				whereEleList = append(whereEleList, value)
-			case "r1_r_plus_r":
-				filtersBuilder.WriteString(fmt.Sprintf("ad.r1_r_plus_r %s $%d", operator, len(whereEleList)+1))
-				whereEleList = append(whereEleList, value)
-			case "total_comm":
-				filtersBuilder.WriteString(fmt.Sprintf("ad.total_comm %s $%d", operator, len(whereEleList)+1))
+			case "r2_rebate_credit_perc":
+				filtersBuilder.WriteString(fmt.Sprintf("ad.r2_rebate_credit_perc %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "start_date":
 				filtersBuilder.WriteString(fmt.Sprintf("ad.start_date %s $%d", operator, len(whereEleList)+1))

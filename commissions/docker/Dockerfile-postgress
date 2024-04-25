@@ -10,6 +10,12 @@ FROM postgres:latest
 EXPOSE 5432
 
 COPY ./dbSchemas/DB_Create_Schema.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_Create_OWEDB_Schema.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_Create_Config_Schema.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_Create_DlrPay_Schema.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_Create_AR_Schema.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_Create_RepPay_Schema.sql /docker-entrypoint-initdb.d/
+
 COPY ./dbSchemas/rawData/rebate_items.csv /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/rawData/rebate_type.csv /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/rawData/timeline_sla.csv /docker-entrypoint-initdb.d/
@@ -66,6 +72,13 @@ COPY ./dbSchemas/DB_ProcUpdateLoanTypeArchive.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcCreateNewAutoAdder.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcUpdateAutoAdder.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcUpdateUser.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcCreateNewRebateData.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcUpdateRebateData.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcUpdateRebateDataArchive.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcCreateNewLoanFeeAdder.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcUpdateLoanFeeAdder.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcUpdateLoanFeeAdderArchive.sql /docker-entrypoint-initdb.d/
+
 
 RUN chmod +x /docker-entrypoint-initdb.d/DB_Create_Schema.sql
 
