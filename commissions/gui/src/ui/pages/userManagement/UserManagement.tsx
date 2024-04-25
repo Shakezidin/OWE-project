@@ -5,7 +5,6 @@ import UserOnboardingCreation from "./userOnboard/UserOnboardCreation";
 import { AddNewButton } from "../../components/button/AddNewButton";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { fetchUserOnboarding } from "../../../redux/apiSlice/userManagementSlice/userManagementSlice";
-import { OnboardingChartModel } from "../../../core/models/api_models/UserManagementModel";
 
 const UserManagement: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -14,11 +13,17 @@ const UserManagement: React.FC = () => {
   const userName = localStorage.getItem("userName");
 
   const dispatch = useAppDispatch();
-  const { userOnboardingList } = useAppSelector((state) => state.userManagement);
+  const { userOnboardingList } = useAppSelector(
+    (state) => state.userManagement
+  );
 
-  console.log("userOnboardingList....", userOnboardingList)
+  /** fetch onboarding users data*/
   useEffect(() => {
-    dispatch(fetchUserOnboarding());
+    const fetchData = async () => {
+      dispatch(fetchUserOnboarding()); // Using dispatch
+    };
+
+    fetchData();
   }, []);
 
   return (
@@ -44,7 +49,7 @@ const UserManagement: React.FC = () => {
         />
       )}
       <div className="barchart-section">
-        <UserPieChart onboardingList={ userOnboardingList } />
+        <UserPieChart onboardingList={userOnboardingList} />
       </div>
 
       <div className="onboardrow">

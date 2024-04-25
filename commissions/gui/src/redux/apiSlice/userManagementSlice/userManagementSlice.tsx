@@ -10,6 +10,7 @@ const initialState: UserOnboardingStateModel = {
   loading: false,
   error: null,
 };
+const COLORS = ['#5e5ef0', '#ff3f66', '#fb7955', '#ffa133',"#5edd74", "#52cafe", '#0181ff'];
 
 export const fetchUserOnboarding = createAsyncThunk(
   "user/userOnboarding",
@@ -20,11 +21,11 @@ export const fetchUserOnboarding = createAsyncThunk(
     }
 
     const {usermgmt_onboarding_list} = response.data;
-    const mapList:OnboardingChartModel[] =  usermgmt_onboarding_list.map((el: UserOnboardingModel)=>{
+    const mapList:OnboardingChartModel[] =  usermgmt_onboarding_list.map((el: UserOnboardingModel, index: number)=>{
       return {
           name: el.role_name,
           value: el.user_count,
-          fill: "#5e5ef0",
+          fill: COLORS[index],
       }
   });
     return mapList
