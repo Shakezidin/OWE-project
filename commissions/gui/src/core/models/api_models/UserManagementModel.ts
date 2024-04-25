@@ -4,7 +4,12 @@ export interface UserOnboardingModel {
 }
 
 export interface OnboardingChartModel {
-  name: string,
-  value: number,
-  fill: string
+  name: string;
+  value: number;
+  fill: string;
+}
+
+export interface UserDropdownModel {
+  label: string;
+  value: string;
 }

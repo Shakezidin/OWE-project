@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { } from "react";
 import "../../userManagement/user.css";
 import { ICONS } from "../../../icons/Icons";
 import "../../configure/configure.css";
-import { userSelectData } from "../../../../resources/static_data/StaticData";
 import UserTable from "../userManagerAllTable/UserTable";
 import AppointmentSetterTable from "../userManagerAllTable/AppointmentSetterTable";
 import PartnerTable from "../userManagerAllTable/PartnerTable";
@@ -14,25 +13,30 @@ import "./UserHeader.css";
 import Pagination from "../../../components/pagination/Pagination";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
-import { dataUser, appointmentList, partnerList, RMManagerList, dealerList, saleReprestList, SaleManagerList } from "../../../../resources/static_data/StaticUserList";
+import {
+  dataUser,
+  appointmentList,
+  partnerList,
+  RMManagerList,
+  dealerList,
+  saleReprestList,
+  SaleManagerList,
+} from "../../../../resources/static_data/StaticUserList";
 import SelectOption from "../../../components/selectOption/SelectOption";
+import { UserDropdownModel } from "../../../../core/models/api_models/UserManagementModel";
 
-// interface props {
-//   name: string;
-// }
-const UserHeaderSection = () => {
+interface UserTableProos {
+  userDropdownData: UserDropdownModel[];
+  selectedOption: string;
+  handleSelectChange: (data:UserDropdownModel) => void;
 
-
-  const [selectedOption, setSelectedOption] = useState<string>(
-    userSelectData[0].label
-  );
-
-  const handleSelectChange = (
-    selectedOption: { value: string; label: string } | null
-  ) => {
-    setSelectedOption(selectedOption ? selectedOption.label : "");
-  };
-
+ // onChange: (text: string) => void;
+}
+const UserManagementTable: React.FC<UserTableProos> = ({
+  userDropdownData,
+  selectedOption,
+  handleSelectChange,
+}) => {
   const dispatch = useAppDispatch();
 
   const currentPage = useAppSelector(
@@ -93,22 +97,23 @@ const UserHeaderSection = () => {
         <div className="delete-icon-container">
           <div className="create-input-field">
             <SelectOption
-              options={userSelectData}
-              value={userSelectData.find(
+              options={userDropdownData}
+              value={userDropdownData.find(
                 (option) => option.label === selectedOption
               )}
-              onChange={handleSelectChange}
-             
+              onChange={(data:any )=>{
+                handleSelectChange(data)
+              }}
             />
           </div>
 
-          <div className="iconsSection-delete" style={{marginTop:".2rem"}}>
+          <div className="iconsSection-delete" style={{ marginTop: ".2rem" }}>
             <button type="button">
               <img src={ICONS.deleteIcon} alt="" />
             </button>
-            </div>
+          </div>
 
-          <div className="iconsSection-filter" style={{marginTop:".2rem"}}>
+          <div className="iconsSection-filter" style={{ marginTop: ".2rem" }}>
             <button type="button">
               <img src={ICONS.FILTER} alt="" />
             </button>
@@ -137,4 +142,4 @@ const UserHeaderSection = () => {
   );
 };
 
-export default UserHeaderSection;
+export default UserManagementTable;
