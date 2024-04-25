@@ -1,22 +1,23 @@
 import React, { useState } from "react";
 import "../userManagement/user.css";
-import "../configure/configure.css"
+import "../configure/configure.css";
 import { CiEdit } from "react-icons/ci";
 import { FaArrowDown } from "react-icons/fa6";
 import CheckBox from "../../components/chekbox/CheckBox";
 import { IoIosHelpCircleOutline } from "react-icons/io";
-import "../../components/pagination/Pagination"
+import "../../components/pagination/Pagination";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { setCurrentPage } from "../../../redux/apiSlice/paginationslice/paginationSlice";
 import Pagination from "../../components/pagination/Pagination";
 import HelpDashboard from "./HelpDashboard";
 import { CommissionModel } from "../../../core/models/configuration/create/CommissionModel";
+import ProjectBreakdown from "./ProjectBreakdown";
 
 // import { installers, partners, respTypeData, statData } from "../../../../../core/models/data_models/SelectDataModel";
 
-
 const DashBoardTable: React.FC = () => {
-  const [editedCommission, setEditedCommission] = useState<CommissionModel | null>(null);
+  const [editedCommission, setEditedCommission] =
+    useState<CommissionModel | null>(null);
   const [open, setOpen] = useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -159,16 +160,16 @@ const DashBoardTable: React.FC = () => {
       rl: "$20.00",
       epc: "2.444",
     },
-
   ];
   const dispatch = useAppDispatch();
-  const currentPage = useAppSelector((state: any) => state.paginationType.currentPage);
+  const currentPage = useAppSelector(
+    (state: any) => state.paginationType.currentPage
+  );
   const itemsPerPage = 10;
 
   const paginate = (pageNumber: number) => {
     dispatch(setCurrentPage(pageNumber));
   };
-
 
   const goToNextPage = () => {
     dispatch(setCurrentPage(currentPage + 1));
@@ -187,7 +188,8 @@ const DashBoardTable: React.FC = () => {
       <div className="dashBoard-container">
         <div
           className="TableContainer"
-          style={{ overflowX: "auto", whiteSpace: "nowrap" }}>
+          style={{ overflowX: "auto", whiteSpace: "nowrap" }}
+        >
           <table>
             <thead>
               <tr style={{ background: "#fcfcfc" }}>
@@ -195,51 +197,58 @@ const DashBoardTable: React.FC = () => {
                   <div>
                     <CheckBox
                       checked={true}
-                      onChange={() => { }
-                      }
-                    // indeterminate={isAnyRowSelected && !isAllRowsSelected}
+                      onChange={() => {}}
+                      // indeterminate={isAnyRowSelected && !isAllRowsSelected}
                     />
                   </div>
                 </th>
 
                 <th>
                   <div className="table-header">
-                    <p>Project ID</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Project ID</p>{" "}
+                    <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Dealer Name</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Dealer Name</p>{" "}
+                    <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Sales Representative</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Sales Representative</p>{" "}
+                    <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Customer Name</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Customer Name</p>{" "}
+                    <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Amt Prepaid</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Amt Prepaid</p>{" "}
+                    <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Pipeline Remaining</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Pipeline Remaining</p>{" "}
+                    <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Current Due</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Current Due</p>{" "}
+                    <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Project Status</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Project Status</p>{" "}
+                    <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
@@ -249,7 +258,8 @@ const DashBoardTable: React.FC = () => {
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Sys. Size</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Sys. Size</p>{" "}
+                    <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
@@ -282,53 +292,66 @@ const DashBoardTable: React.FC = () => {
                     <p>Action</p>
                   </div>
                 </th>
-
               </tr>
             </thead>
             <tbody>
               {dataUser.length > 0
                 ? dataUser.map((el, i) => (
-                  <tr key={i}>
-                    <td>
-                      <CheckBox
-                        checked={true}
-                        onChange={() => { }
-                        }
-                      // indeterminate={isAnyRowSelected && !isAllRowsSelected}
-                      />
-                    </td>
-                    <td style={{ fontWeight: "500", color: "black" }}>{el.pi}</td>
-                    <td style={{ fontWeight: "500", color: "#101828" }}>{el.dn}</td>
-                    <td style={{ fontWeight: "500", color: "#101828" }}>{el.sr}</td>
-                    <td style={{ fontWeight: "500", color: "#101828" }}>{el.cn}</td>
-                    <td style={{ color: "#0493CE" }}>{el.amt}</td>
-                    <td style={{ color: "#0493CE" }}>{el.pipeline}</td>
-                    <td style={{ color: "#0493CE" }}>{el.cd}</td>
-                    <td style={{ color: "green" }}>{el.ps}</td>
-                    <td>{el.state}</td>
-                    <td>{el.sysSize}</td>
-                    <td>{el.type}</td>
-                    <td>{el.adder}</td>
-                    <td>{el.ajh}</td>
-                    <td>{el.rl}</td>
-                    <td>{el.epc}</td>
+                    <tr key={i}>
+                      <td>
+                        <CheckBox
+                          checked={true}
+                          onChange={() => {}}
+                          // indeterminate={isAnyRowSelected && !isAllRowsSelected}
+                        />
+                      </td>
+                      <td style={{ fontWeight: "500", color: "black" }}>
+                        {el.pi}
+                      </td>
+                      <td style={{ fontWeight: "500", color: "#101828" }}>
+                        {el.dn}
+                      </td>
+                      <td style={{ fontWeight: "500", color: "#101828" }}>
+                        {el.sr}
+                      </td>
+                      <td style={{ fontWeight: "500", color: "#101828" }}>
+                        {el.cn}
+                      </td>
+                      <td style={{ color: "#0493CE" }}>{el.amt}</td>
+                      <td style={{ color: "#0493CE" }}>{el.pipeline}</td>
+                      <td style={{ color: "#0493CE" }}>{el.cd}</td>
+                      <td style={{ color: "green" }}>{el.ps}</td>
+                      <td>{el.state}</td>
+                      <td>{el.sysSize}</td>
+                      <td>{el.type}</td>
+                      <td>{el.adder}</td>
+                      <td>{el.ajh}</td>
+                      <td>{el.rl}</td>
+                      <td>{el.epc}</td>
 
-                    <td>
-                      <div className="action-icon">
-                        <div className="" style={{ cursor: "pointer", textAlign: "center" }}>
-                          <IoIosHelpCircleOutline onClick={() => {
-                            handleOpen()
-                          }} />
+                      <td>
+                        <div className="action-icon">
+                          <div
+                            className=""
+                            style={{ cursor: "pointer", textAlign: "center" }}
+                          >
+                            <IoIosHelpCircleOutline
+                              onClick={() => {
+                                handleOpen();
+                              }}
+                            />
+                          </div>
+                          {open && (
+                            <ProjectBreakdown
+                              commission={editedCommission}
+                              editMode={editMode}
+                              handleClose={handleClose}
+                            />
+                          )}
                         </div>
-                        {open && <HelpDashboard
-                          commission={editedCommission}
-                          editMode={editMode}
-                          handleClose={handleClose}
-                        />}
-                      </div>
-                    </td>
-                  </tr>
-                ))
+                      </td>
+                    </tr>
+                  ))
                 : null}
             </tbody>
           </table>
@@ -337,16 +360,16 @@ const DashBoardTable: React.FC = () => {
           <p className="page-heading">
             {currentPage} - {totalPages} of {dataUser?.length} item
           </p>
-          {
-            dataUser?.length > 0 ? <Pagination
+          {dataUser?.length > 0 ? (
+            <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
               currentPageData={currentPageData}
               paginate={paginate}
               goToNextPage={goToNextPage}
               goToPrevPage={goToPrevPage}
-            /> : null
-          }
+            />
+          ) : null}
         </div>
       </div>
     </>
