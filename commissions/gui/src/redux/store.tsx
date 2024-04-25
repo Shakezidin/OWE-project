@@ -24,6 +24,7 @@ import createtimeLineSlaReducer from './apiSlice/configSlice/config_post_slice/c
 import createloanTypeReducer from './apiSlice/configSlice/config_post_slice/createLoanTypeSlice'
 import paginationReducer from './apiSlice/paginationslice/paginationSlice'
 import createUserReducer from './apiSlice/userManagementSlice/createUserSlice'
+import userManagementSlice from "./apiSlice/userManagementSlice/userManagementSlice";
 
 export const store = configureStore({
   reducer: {
@@ -52,7 +53,9 @@ export const store = configureStore({
     createtimelineSla: createtimeLineSlaReducer,
     createloanType: createloanTypeReducer,
     paginationType:paginationReducer,
-    createUserType: createUserReducer
+    createUserType: createUserReducer,
+    //user management
+    userManagement:userManagementSlice
   },
 });
 

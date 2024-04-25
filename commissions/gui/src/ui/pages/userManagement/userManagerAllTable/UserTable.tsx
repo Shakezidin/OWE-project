@@ -8,7 +8,6 @@ interface UserTableProps {
 }
 const UserTable: React.FC<UserTableProps> = ({data}) => {
 
-  console.log(data)
   return (
     <div
       className="UserManageTable"
