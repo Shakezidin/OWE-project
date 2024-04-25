@@ -31,7 +31,7 @@ function PieChartWithPaddingAngle({ data }: PieChartProps) { // Destructure data
 
   return (
     <div style={{ width: "100%" }}>
-      <PieChart width={300} height={400} style={{ margin: "-75px 0 0 39px", cursor: "pointer" }}>
+      <PieChart width={300} height={400} style={{ margin: "-75px 0 0 62px", cursor: "pointer" }}>
         <Pie
           data={data}
           cx={120}

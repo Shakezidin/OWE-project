@@ -46,7 +46,7 @@ const Input: FC<InputProps> = ({
         {isTypePassword ? (
           <EYE_ICON
             className="eyeIcon"
-            style={{ marginRight: ".5rem" }}
+           style={{marginRight:"0.5rem"}}
             onClick={onClickEyeIcon}
           />
         ) : (

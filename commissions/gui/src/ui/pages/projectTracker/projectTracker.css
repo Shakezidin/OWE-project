@@ -29,10 +29,11 @@
     justify-content: space-between;
     gap: 1rem;
     margin-top: 1rem;
+    
 }
 .project-card{
     padding: 1rem;
-    width: 24%;
+    flex: 0 1 24%;
     height: 146px;
     border-radius: 12px;
 }
@@ -59,6 +60,7 @@
     display: flex;
     align-items: center;
     gap: 1rem;
+    
     justify-content: space-between;
     margin-top: 1rem;
 }
@@ -135,11 +137,13 @@
     align-items: center;
     padding: 1rem;
     justify-content: space-between;
+
 }
 .status-body{
     border-bottom: 1px solid var(--border-color);
     display: flex;
     padding: 1rem;
+ 
 }
 .head--row-status{
     width: 10%;
@@ -160,6 +164,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
     /* gap: 0rem; */
 }
 .status-bg-img{

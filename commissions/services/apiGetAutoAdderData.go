@@ -133,7 +133,7 @@ func HandleGetAutoAdderDataRequest(resp http.ResponseWriter, req *http.Request) 
 
 		// description_rep_visible
 		Description_rep_visible, ok := item["description_rep_visible"].(string)
-		if ok || Description_rep_visible == "" {
+		if !ok || Description_rep_visible == "" {
 			log.FuncErrorTrace(0, "Failed to get description_rep_visible value for Record ID %v. Item: %+v\n", RecordId, item)
 			Description_rep_visible = ""
 		}

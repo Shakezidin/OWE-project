@@ -1,14 +1,12 @@
 .Db-manager-container {
   margin-bottom: 2rem;
   display: flex;
-  justify-content: space-between;
-
   align-items: center;
   gap: 15px;
 }
 .runner-section {
   width: 233px;
-  height: 354px;
+  height: 374px;
   gap: 0px;
   border-radius: 16px;
   opacity: 0px;
@@ -46,7 +44,7 @@
   width: 100px;
   height: 36px;
   margin-top: 30px;
-  margin-bottom: 9px;
+  margin-bottom: 5px;
   border-radius: 100px;
   opacity: 0px;
   border: none;
@@ -60,7 +58,7 @@
 .since-section h3 {
   margin-top: 0.5rem;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 18px;
   color: #ffffff;
 }
@@ -74,6 +72,7 @@
   width: 80%;
   border-radius: 16px;
   border: 1px solid #d0d5dd;
+  
 }
 .dash-section {
   font-size: 18px;
@@ -117,7 +116,7 @@
     font-weight: 600;
     line-height: 24px;
     text-align: left;
-    
+    color: #263747;
 }
 
 
@@ -199,7 +198,8 @@
     padding: .3rem .7rem;
     font-size: 12px;
     cursor: pointer;
-    color: #000000 !important;
+    color: #101828 !important;
+    background-color: #ffffff;
     font-weight: 500;
     border-radius: .25rem;
     z-index: 2; 
@@ -208,10 +208,27 @@
   .identity{
     display: flex;
     flex-direction: row;
-    gap: 5px;
-    margin-left: 70px;
+    gap: 10px;
+    margin-left: 98px;
     margin-top: -40px;
   }
   .identity p{
-    margin-top: -5px;
+    margin-top: -1px;
+    font-size: 12px;
+    color: #000000;
+  }
+  .identity1{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin-left: 380px;
+    margin-top: -1px;
+    margin-bottom: 12px;
+  }
+  .identity1 p{
+    margin-top: 1px;
+    font-size: 12px;
+    color: #333333;
+    font-weight: 400;
+    line-height: 14.52px;
   }

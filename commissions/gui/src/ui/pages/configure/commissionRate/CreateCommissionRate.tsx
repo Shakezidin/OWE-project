@@ -14,6 +14,7 @@ import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoin
 import { updateForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createCommissionSlice";
 import { CommissionModel } from "../../../../core/models/configuration/create/CommissionModel";
 import SelectOption from "../../../components/selectOption/SelectOption";
+import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
 
 // const success = Swal.mixin(toastData.success)
 // const error = Swal.mixin(toastData.error)
@@ -86,7 +87,7 @@ const CreateCommissionRate: React.FC<ButtonProps> = ({
           EndPoints.update_commission,
           createCommission
         );
-        if (res.status === 200) {
+        if (res.status ===HTTP_STATUS.OK) {
           alert(res.message);
           handleClose();
           window.location.reload();
@@ -99,7 +100,7 @@ const CreateCommissionRate: React.FC<ButtonProps> = ({
           EndPoints.create_commission,
           cleanedFormData
         );
-        if (res.status === 200) {
+        if (res.status === HTTP_STATUS.OK) {
           alert(res.message);
           handleClose();
           window.location.reload()

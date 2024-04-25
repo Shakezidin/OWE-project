@@ -44,7 +44,18 @@ interface Endpoints {
   update_paymentschedule: string;
   update_timelinesla: string;
   update_loantype: string;
-  // user management
+  update_commission_archive: string;
+  update_dealer_archive: string;
+  update_vadders_archive: string;
+  update_marketingfee_archive: string;
+  update_saletype_archive: string;
+  update_dealertier_archive: string;
+  update_tierloanfee_archive: string;
+  update_paymentschedule_archive: string;
+  update_timelinesla_archive: string;
+  update_loantype_archive: string;
+
+  //user management
   Get_User_onboarding_list: string;
 }
 
@@ -86,6 +97,17 @@ export const EndPoints: Endpoints = {
   update_timelinesla: "update_timelinesla",
   update_loantype: "update_loantype",
 
+  //archive config point
+  update_commission_archive: "update_commission_archive",
+  update_dealer_archive: "update_dealer_archive",
+  update_vadders_archive: "update_vadders_archive",
+  update_marketingfee_archive: "update_marketingfee_archive",
+  update_saletype_archive: "update_saletype_archive",
+  update_dealertier_archive: "update_dealertier_archive",
+  update_tierloanfee_archive: "update_tierloanfee_archive",
+  update_paymentschedule_archive: "update_paymentschedule_archive",
+  update_timelinesla_archive: "update_timelinesla_archive",
+  update_loantype_archive: "update_loantype_archive",
   // /get form Data
   get_newFormData: "get_newformdata",
 

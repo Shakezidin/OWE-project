@@ -36,6 +36,7 @@ const MarketingFees: React.FC = () => {
   const [editMode, setEditMode] = useState(false);
   const [editedMarketing, setEditedMarketing] = useState<MarketingFeeModel | null>(null);
   const itemsPerPage = 10;
+  const [viewArchived, setViewArchived] = useState<boolean>(false);
   const [sortKey, setSortKey] =  useState("");
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
@@ -127,6 +128,7 @@ const MarketingFees: React.FC = () => {
           isAnyRowSelected={isAnyRowSelected}
           onPressViewArchive={() => { }}
           onPressArchive={() => { }}
+          viewArchive={viewArchived}
           onPressFilter={() => filter()}
           onPressImport={() => { }}
           onpressExport={() => { }}

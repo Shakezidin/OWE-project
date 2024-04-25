@@ -39,6 +39,7 @@ const RebeteData: React.FC = () => {
   const [editMode, setEditMode] = useState(false);
   const [editedCommission, setEditedCommission] = useState<CommissionModel | null>(null);
   const itemsPerPage = 5;
+  const [viewArchived, setViewArchived] = useState<boolean>(false);
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
 
   useEffect(() => {
@@ -119,6 +120,7 @@ const RebeteData: React.FC = () => {
           onPressFilter={() => filter()}
           onPressImport={() => { }}
           checked={isAllRowsSelected}
+          viewArchive={viewArchived}
           isAnyRowSelected={isAnyRowSelected}
           onpressExport={() => handleExportOpen()}
           onpressAddNew={() => handleAddCommission()}

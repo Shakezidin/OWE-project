@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { RiDeleteBin5Line } from "react-icons/ri";
 import "../../configure/configure.css";
-import { CiEdit } from "react-icons/ci";
-// import CreateDealer from "./CreateDealer";
-
 import { FaArrowDown } from "react-icons/fa6";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import { fetchCommissions } from "../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice";
@@ -14,6 +10,10 @@ import DataTableHeader from "../../../components/tableHeader/DataTableHeader";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import { toggleAllRows, toggleRowSelection } from "../../../components/chekbox/checkHelper";
 import FilterData from "./FilterData";
+import { Column } from "../../../../core/models/data_models/FilterSelectModel";
+import Pagination from "../../../components/pagination/Pagination";
+import { DataTableColumn } from "../../../../resources/static_data/DataTableColumn";
+import FilterModal from "../../../components/FilterModal/FilterModal";
 
 
 
@@ -21,7 +21,6 @@ import FilterData from "./FilterData";
 const DataTablle: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
-
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const filterClose = () => setFilterOpen(false);
@@ -32,7 +31,6 @@ const DataTablle: React.FC = () => {
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
-  const [columns, setColumns] = useState<string[]>([]);
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
   const itemsPerPage = 5;
 
@@ -44,6 +42,8 @@ const DataTablle: React.FC = () => {
     dispatch(fetchCommissions(pageNumber));
 
   }, [dispatch, currentPage]);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
 
   const paginate = (pageNumber: number) => {
     dispatch(setCurrentPage(pageNumber));
@@ -57,24 +57,18 @@ const DataTablle: React.FC = () => {
   const goToPrevPage = () => {
     dispatch(setCurrentPage(currentPage - 1));
   };
-  const getColumnNames = () => {
-    if (dealerList?.length > 0) {
-      const keys = Object?.keys(dealerList[0]);
-      setColumns(keys);
-    }
-  };
-  
+
+
   const filter = () => {
-    setFilterOpen(true)
-    getColumnNames()
+    setFilterOpen(true);
   }
+
+
   const handleEditDealer = (dealerData: DealerModel) => {
     setEditMode(true);
     // setEditDealer(dealerData);
     handleOpen()
   };
-  const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === dealerList?.length;
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -111,8 +105,60 @@ const DataTablle: React.FC = () => {
       col6: "$100,320",
       col7: "$100,320"
     },
+    {
+      col1: "1234567890",
+      col2: "Josh Morton",
+      col3: "Josh Morton",
+      col4: "Josh Morton",
+      col5: "$120,450",
+      col6: "$100,320",
+      col7: "$100,320"
+    },
+    {
+      col1: "1234567890",
+      col2: "Josh Morton",
+      col3: "Josh Morton",
+      col4: "Josh Morton",
+      col5: "$120,450",
+      col6: "$100,320",
+      col7: "$100,320"
+    },
+    {
+      col1: "1234567890",
+      col2: "Josh Morton",
+      col3: "Josh Morton",
+      col4: "Josh Morton",
+      col5: "$120,450",
+      col6: "$100,320",
+      col7: "$100,320"
+    },
+    {
+      col1: "1234567890",
+      col2: "Josh Morton",
+      col3: "Josh Morton",
+      col4: "Josh Morton",
+      col5: "$120,450",
+      col6: "$100,320",
+      col7: "$100,320"
+    },
+    {
+      col1: "1234567890",
+      col2: "Josh Morton",
+      col3: "Josh Morton",
+      col4: "Josh Morton",
+      col5: "$120,450",
+      col6: "$100,320",
+      col7: "$100,320"
+    },
   ]
+  const totalPages = Math.ceil(dataDb.length / itemsPerPage );
 
+  const currentPageData = dataDb.slice(startIndex, endIndex);
+  const isAnyRowSelected = selectedRows.size > 0;
+  const isAllRowsSelected = selectedRows.size === dataDb.length;
+  const fetchFunction = (req: any) => {
+    // dispatch(fetchPaySchedule(req));
+   };
   return (
     <div className="comm">
       <Breadcrumb head="Data" linkPara="Database Manager" linkparaSecond="Data" />
@@ -121,10 +167,16 @@ const DataTablle: React.FC = () => {
           title="Table Name"
           onPressFilter={() => filter()}
           onPressImport={() => { }}
+          showImportIcon={false}
+          showSelectIcon={true}
         />
 
-             {filterOPen && <FilterData handleClose={filterClose}  
-            
+
+             {filterOPen && <FilterModal handleClose={filterClose}  
+               columns={DataTableColumn} 
+               fetchFunction={fetchFunction}
+               page_number = {currentPage}
+               page_size = {itemsPerPage}
              />}
         <div
           className="TableContainer"
@@ -145,7 +197,7 @@ const DataTablle: React.FC = () => {
                           setSelectAllChecked
                         )
                       }
-                    // indeterminate={isAnyRowSelected && !isAllRowsSelected}
+                    indeterminate={isAnyRowSelected && !isAllRowsSelected}
                     />
                   </div>
                 </th>
@@ -188,9 +240,9 @@ const DataTablle: React.FC = () => {
             </thead>
 
             <tbody>
-              {dataDb?.length > 0
-                ? dataDb?.map((el, i) => (
-                  <tr key={i}>
+              {currentPageData?.length > 0
+                ? currentPageData?.map((el, i) => (
+                  <tr key={i} className={selectedRows.has(i) ? "selected" : ""}>
                     <td>
                       <CheckBox
                         checked={selectedRows.has(i)}
@@ -207,17 +259,34 @@ const DataTablle: React.FC = () => {
                     <td style={{ fontWeight: "500", color: "black" }}>
                       {el.col1}
                     </td>
-                    <td>{el.col2}</td>
-                    <td>{el.col3}</td>
-                    <td>{el.col4}</td>
-                    <td style={{color:"#0493CE"}}>{el.col5}</td>
-                    <td style={{color:"#0493CE"}}>{el.col6}</td>
-                   <td style={{color:"#0493CE"}}>{el.col7}</td>
+                    <td style={{ fontWeight: "500", color: "black" }}>{el.col2}</td>
+                    <td style={{ fontWeight: "500", color: "black" }}>{el.col3}</td>
+                    <td style={{ fontWeight: "500", color: "black" }}>{el.col4}</td>
+                    <td style={{fontWeight: "500", color:"#0493CE"}}>{el.col5}</td>
+                    <td style={{fontWeight: "500", color:"#0493CE"}}>{el.col6}</td>
+                   <td style={{ fontWeight: "500", color:"#0493CE"}}>{el.col7}</td>
                   </tr>
                 ))
                 : null}
             </tbody>
           </table>
+        </div>
+        <div className="page-heading-container">
+      
+      <p className="page-heading">
+       {currentPage} - {totalPages} of {currentPageData?.length} item
+      </p>
+ 
+   {
+    dataDb?.length > 0 ? <Pagination
+      currentPage={currentPage}
+      totalPages={totalPages} // You need to calculate total pages
+      paginate={paginate}
+      goToNextPage={goToNextPage}
+      goToPrevPage={goToPrevPage}
+      currentPageData={currentPageData}
+    /> : null
+  }
         </div>
       </div>
     </div>

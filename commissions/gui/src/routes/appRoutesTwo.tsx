@@ -1,26 +1,39 @@
 import colorConfig from "../config/colorConfig";
 import { ICONS } from "../ui/icons/Icons";
 import { ROUTES } from "./routes";
+import { CiWallet } from "react-icons/ci";
+import { BiSupport } from "react-icons/bi";
+import { RiUserSettingsLine } from "react-icons/ri";
+import { GoProjectRoadmap } from "react-icons/go";
+import { FaHandHoldingDollar } from "react-icons/fa6";
+import { BsDatabaseGear } from "react-icons/bs";
+import { MdOutlinePayment } from "react-icons/md";
+import { FiServer } from "react-icons/fi";
+import { FcDataConfiguration } from "react-icons/fc";
+import { GrDocumentConfig } from "react-icons/gr";
+
+
 const appRoutesTwo = [
   {
     commission: [
       {
-        path: ROUTES.COMMISSION_DASHBOARD,
+        path:  ROUTES.COMMISSION_DASHBOARD,
         sidebarProps: {
           displayText: "Dealer Pay",
-          icon: (
-            <img
-              src={ICONS.dealerpayIcon}
-              className="icon-image"
-              alt=""
-              style={{
-                height: "18px",
-                width: "18px",
-                marginLeft: "2px",
-                marginRight: "2px",
-              }}
-            />
-          ),
+          icon: <MdOutlinePayment size={20} style={{marginLeft: "5px"}} color="black"/>
+          // icon: (
+          //   <img
+          //     src={ICONS.dealerpayIcon}
+          //     className="icon-image"
+          //     alt=""
+          //     style={{
+          //       height: "18px",
+          //       width: "18px",
+          //       marginLeft: "2px",
+          //       marginRight: "2px",
+          //     }}
+          //   />
+          // ),
         },
       },
     ],
@@ -32,14 +45,7 @@ const appRoutesTwo = [
         path: "#",
         sidebarProps: {
           displayText: "Rep. Pay",
-          icon: (
-            <img
-              src={ICONS.repayIcon}
-              alt=""
-              className="icon-image"
-              style={{ marginLeft: "2px", marginRight: "2px" }}
-            />
-          ),
+          icon:<CiWallet size={20}  style={{marginLeft: "5px"}} color="black"/>
         },
       },
     ],
@@ -51,14 +57,15 @@ const appRoutesTwo = [
         path: "#",
         sidebarProps: {
           displayText: "AR",
-          icon: (
-            <img
-              src={ICONS.dash}
-              alt=""
-              className="children-icon-image"
-              style={{ marginLeft: "2px", marginRight: "2px" }}
-            />
-          ),
+          icon: <FiServer size={18}  style={{marginLeft: "5px"}}  color="black"/>
+          // icon: (
+          //   <img
+          //     src={ICONS.dash}
+          //     alt=""
+          //     className="children-icon-image"
+          //     style={{ marginLeft: "2px", marginRight: "2px" }}
+          //   />
+          // ),
         },
       },
     ],
@@ -70,7 +77,8 @@ const appRoutesTwo = [
         path: "#",
         sidebarProps: {
           displayText: "DB Manager",
-          icon: <img src={ICONS.dbmanagerIcon} alt="" className="icon-image" />,
+          icon: 
+          <BsDatabaseGear size={20} style={{marginLeft: "3px"}} color="black"/>,
         },
         child: [
           {
@@ -79,7 +87,7 @@ const appRoutesTwo = [
               displayText: "Dashboard",
               icon: (
                 <div
-                  className="ellipse"
+                  className="ellipsee"
                   style={{
                     backgroundColor: colorConfig.childrenicon,
                   }}
@@ -93,7 +101,7 @@ const appRoutesTwo = [
               displayText: "Data",
               icon: (
                 <div
-                  className="ellipse"
+                  className="ellipsee"
                   style={{
                     backgroundColor: colorConfig.childrenicon,
                   }}
@@ -107,7 +115,7 @@ const appRoutesTwo = [
               displayText: "User Activity",
               icon: (
                 <div
-                  className="ellipse"
+                  className="ellipsee"
                   style={{
                     backgroundColor: colorConfig.childrenicon,
                   }}
@@ -126,14 +134,7 @@ const appRoutesTwo = [
         path: "##",
         sidebarProps: {
           displayText: "Project Tracking",
-          icon: (
-            <img
-              src={ICONS.projectrackingIcon}
-              className="icon-image"
-              alt=""
-              style={{ height: "20px", width: "20px" }}
-            />
-          ),
+          icon:  <GoProjectRoadmap size={18} style={{marginLeft: "3px"}} color="black"/>
         },
         child: [
           {
@@ -142,7 +143,7 @@ const appRoutesTwo = [
               displayText: "Performance",
               icon: (
                 <div
-                  className="ellipse"
+                  className="ellipsee"
                   style={{
                     backgroundColor: colorConfig.childrenicon,
                   }}
@@ -151,12 +152,12 @@ const appRoutesTwo = [
             },
           },
           {
-            path: ROUTES.PROJECT,
+            path:  ROUTES.PROJECT,
             sidebarProps: {
               displayText: "Project Detail",
               icon: (
                 <div
-                  className="ellipse"
+                  className="ellipsee"
                   style={{
                     backgroundColor: colorConfig.childrenicon,
                   }}
@@ -172,24 +173,18 @@ const appRoutesTwo = [
   {
     other: [
       {
-        path: ROUTES.USER_MANAEMENT,
+        path:   ROUTES.USER_MANAEMENT,
 
         sidebarProps: {
           displayText: "User Management",
-          icon: <img src={ICONS.userMan} className="icon-image" alt="" />,
+          icon:<RiUserSettingsLine size={20} color="black" style={{flexShrink: "0", }}/>
         },
       },
       {
         path: "#",
         sidebarProps: {
           displayText: "Configure",
-          icon: (
-            <img
-              src={ICONS.config}
-              alt=""
-              style={{ height: "16px", width: "16px" }}
-            />
-          ),
+          icon: <GrDocumentConfig size={20} color="black" style={{flexShrink: "0", }}/> 
         },
         child: [
           {
@@ -419,17 +414,25 @@ const appRoutesTwo = [
       },
 
       {
-        path: ROUTES.TECHNICAL_SUPPORT,
+        path:  ROUTES.TECHNICAL_SUPPORT,
 
         sidebarProps: {
           displayText: "Technical Support",
-          icon: (
-            <img src={ICONS.techIcon} className="children-icon-image" alt="" />
-          ),
+          icon: <BiSupport size={20} color="black"  style={{flexShrink: "0",}}/>,
         },
       },
     ],
   },
 ];
+
+// const newArr =[
+//   {
+//     path:"",
+//     label:"Dealer Pay",
+//     children:[{name:"Comission",icon:"",path:""}],
+//     icon:"",
+//     hasChildren:true,
+//   }
+// ]
 
 export default appRoutesTwo;

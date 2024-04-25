@@ -103,13 +103,13 @@ const UserHeaderSection = () => {
             />
           </div>
 
-          <div className="iconsSection-delete">
+          <div className="iconsSection-delete" style={{marginTop:".2rem"}}>
             <button type="button">
               <img src={ICONS.deleteIcon} alt="" />
             </button>
             </div>
 
-          <div className="iconsSection-filter">
+          <div className="iconsSection-filter" style={{marginTop:".2rem"}}>
             <button type="button">
               <img src={ICONS.FILTER} alt="" />
             </button>

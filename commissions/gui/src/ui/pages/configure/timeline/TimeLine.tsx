@@ -36,6 +36,7 @@ const TimeLine = () => {
   const [editMode, setEditMode] = useState(false);
   const [editedTimeLineSla, setEditedTimeLineSla] = useState<TimeLineSlaModel | null>(null);
   const itemsPerPage = 10;
+  const [viewArchived, setViewArchived] = useState<boolean>(false);
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
   const [sortKey, setSortKey] = useState("");
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
@@ -127,6 +128,7 @@ const TimeLine = () => {
           onPressFilter={() => filter()}
           onPressImport={() => { }}
           checked={isAllRowsSelected}
+          viewArchive={viewArchived}
           isAnyRowSelected={isAnyRowSelected}
           onpressExport={() => { }}
           onpressAddNew={() => handleTimeLineSla()}

@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from "react";
-
 import "../../configure/configure.css";
-
+import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-import { fetchDealer } from "../../../../redux/apiSlice/configSlice/config_get_slice/dealerSlice";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
-import DataTableHeader from "../../../components/tableHeader/DataTableHeader";
-
 import CheckBox from "../../../components/chekbox/CheckBox";
 import { toggleAllRows, toggleRowSelection } from "../../../components/chekbox/checkHelper";
 import { FaArrowDown } from "react-icons/fa6";
 import { DealerModel } from "../../../../core/models/configuration/create/DealerModel";
-// import CreateDealer from "./CreateDealer";
-
-
+import { fetchCommissions } from "../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice";
+import Pagination from "../../../components/pagination/Pagination";
+import UserActivityFilter from "./UserActivityFilter";
+import { UserActivityColumn } from "../../../../resources/static_data/UserActivityColumn";
+import DataTableHeader from "../../../components/tableHeader/DataTableHeader";
+import FilterModal from "../../../components/FilterModal/FilterModal";
 
 
 const UserActivity: React.FC = () => {
@@ -30,37 +29,62 @@ const UserActivity: React.FC = () => {
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
-  const [columns, setColumns] = useState<string[]>([]);
+  // const [columns, setColumns] = useState<string[]>([]);
+  const currentPage = useAppSelector((state) => state.paginationType.currentPage);
+const itemsPerPage = 5;
+
+
 
   useEffect(() => {
     const pageNumber = {
-      page_number: 1,
-      page_size: 10,
+      page_number: currentPage,
+      page_size: itemsPerPage,
     };
-    dispatch(fetchDealer(pageNumber));
-  }, [dispatch]);
+    dispatch(fetchCommissions(pageNumber));
+
+  }, [dispatch, currentPage]);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+
+  const paginate = (pageNumber: number) => {
+    dispatch(setCurrentPage(pageNumber));
+  };
+
+
+  const goToNextPage = () => {
+    dispatch(setCurrentPage(currentPage + 1));
+  };
+
+  const goToPrevPage = () => {
+    dispatch(setCurrentPage(currentPage - 1));
+  };
+
   const handleAddDealer = () => {
     setEditMode(false);
     // setEditDealer(null);
     handleOpen()
   };
-  const getColumnNames = () => {
-    if (dealerList.length > 0) {
-      const keys = Object.keys(dealerList[0]);
-      setColumns(keys);
-    }
-  };
+  // const getColumnNames = () => {
+  //   if (dealerList.length > 0) {
+  //     const keys = Object.keys(dealerList[0]);
+  //     setColumns(keys);
+  //   }
+  // };
+  // const filter = () => {
+  //   setFilterOpen(true)
+  //   getColumnNames()
+  // }
+
+
   const filter = () => {
-    setFilterOpen(true)
-    getColumnNames()
+    setFilterOpen(true);
   }
   const handleEditDealer = (dealerData: DealerModel) => {
     setEditMode(true);
     // setEditDealer(dealerData);
     handleOpen()
   };
-  const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === dealerList?.length;
+  
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -88,7 +112,54 @@ const UserActivity: React.FC = () => {
         date: "10/04/2024  3:00AM",
         query: "Data not found in server",
       },
+      {
+        uname: "Roi William",
+        dbname: "DB_Name",
+        date: "10/04/2024  3:00AM",
+        query: "Data not found in server",
+      },
+      {
+          uname: "Roi William",
+          dbname: "DB_Name",
+          date: "10/04/2024  3:00AM",
+          query: "Data not found in server",
+        },
+        {
+          uname: "Roi William",
+          dbname: "DB_Name",
+          date: "10/04/2024  3:00AM",
+          query: "Data not found in server",
+        },
+        {
+          uname: "Roi William",
+          dbname: "DB_Name",
+          date: "10/04/2024  3:00AM",
+          query: "Data not found in server",
+        },
+        {
+            uname: "Roi William",
+            dbname: "DB_Name",
+            date: "10/04/2024  3:00AM",
+            query: "Data not found in server",
+          },
+          {
+            uname: "Roi William",
+            dbname: "DB_Name",
+            date: "10/04/2024  3:00AM",
+            query: "Data not found in server",
+          },
   ]
+
+
+  const totalPages = Math.ceil(dataDb.length / itemsPerPage );
+
+  const currentPageData = dataDb.slice(startIndex, endIndex);
+  const isAnyRowSelected = selectedRows.size > 0;
+  const isAllRowsSelected = selectedRows.size === dataDb.length;
+  const fetchFunction = (req: any) => {
+    // dispatch(fetchPaySchedule(req));
+   };
+
 
   return (
     <div className="comm">
@@ -98,11 +169,15 @@ const UserActivity: React.FC = () => {
           title="Activity List"
           onPressFilter={() => filter()}
           onPressImport={() => { }}
+          showImportIcon={false}
+          showSelectIcon={true}
         />
-        {/* {filterOPen && <FilterDealer handleClose={filterClose}
-          columns={columns}
-          page_number={1}
-          page_size={5} />} */}
+        {filterOPen && <FilterModal handleClose={filterClose}
+          columns={UserActivityColumn}
+          fetchFunction={fetchFunction}
+          page_number={currentPage}
+          page_size={itemsPerPage} />}
+
 
         <div
           className="TableContainer"
@@ -122,7 +197,7 @@ const UserActivity: React.FC = () => {
                           setSelectAllChecked
                         )
                       }
-                    // indeterminate={isAnyRowSelected && !isAllRowsSelected}
+                    indeterminate={isAnyRowSelected && !isAllRowsSelected}
                     />
                   </div>
                 </th>
@@ -151,8 +226,8 @@ const UserActivity: React.FC = () => {
             </thead>
 
             <tbody>
-              {dataDb?.length > 0
-                ? dataDb?.map((el, i) => (
+            {currentPageData?.length > 0
+                ? currentPageData?.map((el, i) => (
                   <tr key={i}>
                     <td>
                       <CheckBox
@@ -180,16 +255,25 @@ const UserActivity: React.FC = () => {
             </tbody>
           </table>
         </div>
+        <div className="page-heading-container">
+      
+      <p className="page-heading">
+       {currentPage} - {totalPages} of {currentPageData?.length} item
+      </p>
+ 
+   {
+    dataDb?.length > 0 ? <Pagination
+      currentPage={currentPage}
+      totalPages={totalPages} // You need to calculate total pages
+      paginate={paginate}
+      goToNextPage={goToNextPage}
+      goToPrevPage={goToPrevPage}
+      currentPageData={currentPageData}
+    /> : null
+  }
+   </div>
       </div>
-      {/* {
-        dataDb?.length > 0 ? <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages} // You need to calculate total pages
-          paginate={paginate}
-          goToNextPage={goToNextPage}
-          goToPrevPage={goToPrevPage}
-        /> : null
-      } */}
+    
     </div>
   );
 };
