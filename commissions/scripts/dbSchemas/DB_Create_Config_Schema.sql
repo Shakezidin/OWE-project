@@ -541,3 +541,74 @@ CREATE TABLE rebate_data (
     FOREIGN KEY (rep_2) REFERENCES user_details(user_id)
 );
 
+CREATE TABLE referral_data (
+    id serial NOT NULL,
+    unique_id varchar NOT NULL UNIQUE,
+    new_customer text,
+    referrer_serial text,
+    referrer_name text,
+    amount text,
+    rep_doll_divby_per float,
+    notes text,
+    type text,
+    rep_1 INT,
+    rep_2 INT,
+    sys_size float,
+    rep_count float,
+    state_id INT,
+    per_rep_addr_share float,
+    per_rep_ovrd_share float,
+    r1_pay_scale float,
+    r1_referral_credit_$ text,
+    r1_referral_credit_perc text,
+    r1_addr_resp text,
+    r2_pay_scale float,
+    r2_referral_credit_$ text,
+    r2_referral_credit_perc text,
+    r2_addr_resp text,
+    start_date character varying NOT NULL,
+    end_date character varying, 
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
+	FOREIGN KEY (state_id) REFERENCES states(state_id),
+    FOREIGN KEY (rep_1) REFERENCES user_details(user_id),
+    FOREIGN KEY (rep_2) REFERENCES user_details(user_id)
+);
+
+CREATE TABLE dealer_credit (
+    id serial NOT NULL,
+    unique_id varchar NOT NULL UNIQUE,
+    customer  text,
+    dealer_id INT,
+    dealer_dba  text,
+    exact_amtount  text,
+    per_kw_amount  float,
+    approved_by text,
+    notes text,
+    total_amount float,
+    sys_size float,
+    start_date character varying NOT NULL,
+    end_date character varying, 
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
+    FOREIGN KEY (dealer_id) REFERENCES user_details(user_id)
+);
+CREATE TABLE noncomm_dlrpay (
+    id serial NOT NULL,
+    unique_id varchar NOT NULL UNIQUE,
+	customer   text,
+    dealer_id INT,
+    dealer_dba  text,
+	exact_amtount  text,
+    approved_by text,
+    notes text,
+	balance  float,
+	paid_amount  float,
+	dba  text,
+    start_date character varying NOT NULL,
+    end_date character varying, 
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
+	FOREIGN KEY (dealer_id) REFERENCES user_details(user_id)
+);
+

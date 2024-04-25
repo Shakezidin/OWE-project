@@ -19,7 +19,6 @@
   margin-top: 2px;
   width: 20px;
   height: 20px;
- 
 }
 .profile-section {
   display: flex;
@@ -28,13 +27,11 @@
   /* height: 520px; */
   border-radius: 16px;
   padding-bottom: 2rem;
-
 }
 .profile-sec-button {
   padding: 1rem;
   background-color: white;
   border-radius: 16px;
-  
 }
 /* .profile-sec-button button {
   background-color: white;
@@ -53,7 +50,6 @@
   display: flex;
   flex-direction: column;
   padding: 1rem;
- 
 }
 .tab {
   padding: 0.5rem;
@@ -63,15 +59,15 @@
   border-radius: 8px;
   cursor: pointer;
   border: none;
-  
+
   outline: none;
   background-color: transparent;
   text-align: left;
   font-weight: 500;
 }
-.active-profile{
-background-color: #E9F0FF;
-font-weight: 600;
+.active-profile {
+  background-color: #e9f0ff;
+  font-weight: 600;
 }
 .vertical {
   border-left: 1px solid #dbdddf;
@@ -86,7 +82,6 @@ font-weight: 600;
   font-weight: 500;
   line-height: 27px;
   text-align: left;
-  
 }
 .admin-section {
   display: flex;
@@ -183,55 +178,50 @@ font-weight: 600;
 .user-profile-container {
   margin-top: 2rem;
   width: 954px;
-height: 468px;
-top: 93px;
-left: 303px;
-gap: 0px;
-opacity: 0px;
-background: #FFFFFF;
-border-radius: 24px;
-padding: 0.5rem;
+  height: 468px;
+  top: 93px;
+  left: 303px;
+  gap: 0px;
+  opacity: 0px;
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 0.5rem;
 }
 .user-profile-cross {
   display: flex;
   justify-content: right;
   cursor: pointer;
   padding: 0.5rem;
-
 }
 .create-user {
   margin-left: 3rem;
 }
-.create-user h3{
-font-size: 28px;
-font-weight: 600;
-line-height: 44px;
-text-align: left;
-
+.create-user h3 {
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 44px;
+  text-align: left;
 }
 .create-user p {
-font-size: 12px;
-font-weight: 300;
-line-height: 10.9px;
-text-align: left;
-
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 10.9px;
+  text-align: left;
 }
 
-.cam-icon{
+.cam-icon {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 133px;
-height: 133px;
-margin-top: 5rem;
-
+  height: 133px;
+  margin-top: 5rem;
 }
-.image-circle{
+.image-circle {
   width: 100px;
   height: 100px;
   border-radius: 50%;
-  background: #D9D9D9;
-
+  background: #d9d9d9;
 }
 .image-button {
   margin-top: 0.5rem;
@@ -239,23 +229,60 @@ margin-top: 5rem;
 
 .image-button button {
   border: none;
-font-size: 12px;
-font-weight: 500;
-text-align: left;
-background: #0493CE;
-padding: 12px;
-color: white;
-border-radius: 8px;
-
+  font-size: 12px;
+  font-weight: 500;
+  text-align: left;
+  background: #0493ce;
+  padding: 12px;
+  color: white;
+  border-radius: 8px;
 }
 .vertical-create {
   border-left: 1px solid #dbdddf;
   height: 250px;
   margin-top: 1.5rem;
-  padding: 2rem;
+  margin-left: 2rem;
+  padding: 1rem;
 }
 
 .image-circle {
   text-align: center;
   padding: 1rem;
+}
+
+.reset-Update-support {
+  display: flex;
+  /* justify-content: right; */
+  /* padding: 1rem; */
+  margin-top: 1rem;
+}
+.reset-Update-support button {
+  width: 280px;
+  height: 48px;
+  font-size: 14px;
+  font-weight: 500;
+  /* line-height: 11.96px; */
+  text-align: center;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-decoration: none;
+  display: inline-block;
+  margin: 4px 2px;
+  cursor: pointer;
+  background-color: #0493ce;
+  border-radius: 8px;
+}
+
+.user-create-profile-section {
+  display: flex;
+  gap: 2rem;
+  padding: 2rem;
+  margin-left: 5rem;
+}
+.create-account-section {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-top: 0.5rem;
 }

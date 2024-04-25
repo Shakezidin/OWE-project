@@ -143,7 +143,7 @@ table {
   width: 100%;
   background-color: var(--white-color);
   border-collapse: collapse;
-  /* overflow: hidden; */
+  overflow: hidden;
   position: relative;
   /* border-top-left-radius: 1rem;
   border-top-right-radius: 1rem; */
@@ -181,7 +181,6 @@ table tbody tr {
 table tbody tr td {
   padding: 0.8rem 1.875rem 0.8rem 1.6rem;
   font-size: 12px;
-  text-align: center;
   width: auto;
   color: var(--coloumn-text-color);
 }
@@ -199,30 +198,6 @@ table tbody tr td {
   justify-content: flex-end;
 }
 
-.action-archive {
-  position: relative;
-  display: inline-block;
-}
-
-.action-archive .tooltiptext {
-  visibility: hidden;
-  width: 80px;
-  /* height: 30px; */
-  background-color:var(--active-text-color);
-  color:var(--white-color);
-  text-align: center;
-  border-radius: 6px;
- 
-  /* Position the action-archive */
-  position: absolute;
-  left: -60px;
-  z-index: 1000 !important;
-  top: 1.5rem;
-}
-
-.action-archive:hover .tooltiptext {
-  visibility: visible;
-}
 .action-icon {
   display: flex;
   align-items: center;
@@ -260,102 +235,3 @@ table tbody tr td {
 
 /* checkbox design  */
 
-/* Configuration Page css  */
-.configure-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.5rem;
-  /* padding: 10px 0; */
-}
-.configure-name h3 {
-  font-size: 20px;
-  font-weight: 600;
-  line-height: 30px;
-  text-align: left;
-  color: var(--page-heading-color);
-  margin-bottom: -10px;
-}
-.spacer {
-  flex: 1;
-}
-.configure-header-icons {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
-  background-color: var(--white-color);
-  padding: 0.44rem;
-  border: 1px solid var(--button-border-color);
-  border-radius: 8px;
-  color: var(--btn-text-color);
-  cursor: pointer;
-}
-.io-filter{
-  height: 22px;
-  width: 22px;
-}
-.configure-main {
-  margin-top: 10px;
-  height: auto;
-  background: var(--white-color);
-  padding: 30px;
-  border-radius: 16px;
-}
-.configure-main-section p{
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--page-heading-color);
-}
-.configure-cards{
-  display: flex;
-  gap: 18px;
-  flex-wrap: wrap;
-  margin: 10px 0;
-  /* justify-content: space-between; */
-}
-.pay-card {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  width: 202px;
-  height: 108px;
-  border: 1px solid var(--button-border-color);
-  border-radius: 12px;
-  padding: 15px;
-  cursor: pointer;
-}
-.pay-card:hover{
-  box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
-  transform: scale(1.02);
-  transition: transform 0.1s ease-in-out;
-}
-.pay-card p {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--coloumn-text-color)
-}
-.pay-img {
-  display: flex;
-  justify-content: space-between;
-}
-.pay-card-img{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 42px;
-  width: 42px;
-  border-radius: 8px;
-}
-.pay-dollar-img{
-  height: 24px;
-  width: 24px;
-}
-.pay-card-arrow{
-  height: 20px;
-  width: 24px;
-  color: var(--arrow-icon-color);
-}
-.Rep-pay{
-  margin: 24px 0;
-}
