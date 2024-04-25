@@ -182,7 +182,7 @@ const Header: React.FC<Toggleprops> = ({
                         </div>
                         
                           <div
-                            className="tablink"
+                         
                             style={
                               {
                                 // color: "black",
