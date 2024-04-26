@@ -1,6 +1,7 @@
 import {
   CreateUserModel,
   OnboardingChartModel,
+  UserDropdownModel,
   UserRoleBasedListModel,
 } from "../api_models/UserManagementModel";
 
@@ -15,4 +16,5 @@ export interface CreateOnboardUserStateModel {
   error: string | null;
   loading: boolean;
   formData: CreateUserModel;
+  dealerOwenerList: UserDropdownModel[];
 }

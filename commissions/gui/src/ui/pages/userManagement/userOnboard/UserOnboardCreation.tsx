@@ -13,17 +13,23 @@ import { ICONS } from "../../../icons/Icons";
 import SelectTable from "./SeletTable";
 import UserBasedInput from "./UserBasedInput";
 import SelectOption from "../../../components/selectOption/SelectOption";
-import { CreateUserModel } from "../../../../core/models/api_models/UserManagementModel";
+import { CreateUserModel, DealerOwner } from "../../../../core/models/api_models/UserManagementModel";
 import { useAppSelector } from "../../../../redux/hooks";
 
-interface ButtonProps {
+interface createUserProps {
   editMode: boolean;
   handleClose: () => void;
   userOnboard: CreateUserModel | null;
+  onSubmitCreateUser: () => void;
+  onChangeRole: (role: string)=> void
+  dealerList:any[]
 }
 
-const UserOnboardingCreation: React.FC<ButtonProps> = ({
+const UserOnboardingCreation: React.FC<createUserProps> = ({
   handleClose,
+  onSubmitCreateUser,
+  onChangeRole,
+  dealerList,
   userOnboard,
   editMode,
 }) => {
@@ -31,6 +37,7 @@ const UserOnboardingCreation: React.FC<ButtonProps> = ({
   const {formData} = useAppSelector((state) => state.createOnboardUser);
   const [selectTable, setSelectTable] = useState<boolean>(false);
 
+  /** handle change for role */
   const handleChange = (newValue: any, fieldName: string) => {
 
     dispatch(updateUserForm({ field: 'assigned_dealer_name', value:''}));
@@ -38,7 +45,21 @@ const UserOnboardingCreation: React.FC<ButtonProps> = ({
     dispatch(updateUserForm({ field: 'team_name', value:''}));
     dispatch(updateUserForm({ field: 'report_to', value:''}));
     const {value }= newValue;
+    onChangeRole(value)
     dispatch(updateUserForm({ field: fieldName, value}));
+  };
+
+  const handleChangeForDealer = (newValue: any, fieldName: string) => {
+
+    // dispatch(updateUserForm({ field: 'assigned_dealer_name', value:''}));
+    // dispatch(updateUserForm({ field: 'add_region', value:''}));
+    // dispatch(updateUserForm({ field: 'team_name', value:''}));
+    // dispatch(updateUserForm({ field: 'report_to', value:''}));
+    const {value }= newValue;
+    onChangeRole(value)
+    dispatch(updateUserForm({ field: fieldName, value}));
+    
+    
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -46,16 +67,12 @@ const UserOnboardingCreation: React.FC<ButtonProps> = ({
     dispatch(updateUserForm({ field: name, value }));
 };
 
-
-  const handleUserSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    //dispatch(updateUserForm(createUserOnboarding));
-  };
-
   /** render ui */
   return (
     <div className="transparent-model">
-      <form onSubmit={(e) => handleUserSubmit(e)} className="modal">
+      <form onSubmit={() =>
+        onSubmitCreateUser()
+      } className="modal">
         <div className="createUserCrossButton" onClick={handleClose}>
           <CROSS_BUTTON />
         </div>
@@ -123,9 +140,9 @@ const UserOnboardingCreation: React.FC<ButtonProps> = ({
                   <div className="create-input-field">
                     <label className="inputLabel">Dealer Owner</label>
                     <SelectOption
-                      options={dealer}
+                      options={dealerList}
                       onChange={(newValue) =>
-                        handleChange(newValue, "assigned_dealer_name")
+                        handleChangeForDealer(newValue, "assigned_dealer_name")
                       }
                       value={dealer?.find(
                         (option) =>
@@ -228,7 +245,8 @@ const UserOnboardingCreation: React.FC<ButtonProps> = ({
             onClick={handleClose}
             type={"button"}
           />
-          <ActionButton title={"Save"} onClick={() => {}} type={"submit"} />
+          <ActionButton title={"Save"} onClick={() => {
+          }} type={"submit"} />
         </div>
       </form>
     </div>
@@ -236,3 +254,4 @@ const UserOnboardingCreation: React.FC<ButtonProps> = ({
 };
 
 export default UserOnboardingCreation;
+

@@ -3,29 +3,47 @@ import { postCaller } from "../../infrastructure/web_api/services/apiUrl";
 import { EndPoints } from "../../infrastructure/web_api/api_client/EndPoints";
 import { HTTP_STATUS } from "../../core/models/api_models/RequestModel";
 import {
-  OnboardingChartModel,
-  UserOnboardingModel,
+  DealerOwner,
+  UserDropdownModel,
 } from "../../core/models/api_models/UserManagementModel";
 
 /** get dealer */
-export const fetchUserOnboarding = createAsyncThunk(
-  "user/userOnboarding",
-  async () => {
-    const response = await postCaller(EndPoints.get_user_by_role, {});
+export const fetchDealerOwner = createAsyncThunk(
+  "user/get_dealer_owner",
+  async (data: DealerOwner) => {
+    const response = await postCaller(
+      EndPoints.get_user_by_role,
+      JSON.stringify(data)
+    );
     if (response.status !== HTTP_STATUS.OK) {
-      throw new Error("Failed to fetch onboarding data");
+      throw new Error(response.message);
     }
 
-    const { usermgmt_onboarding_list } = response.data;
-    const mapList: OnboardingChartModel[] = usermgmt_onboarding_list.map(
-      (el: UserOnboardingModel, index: number) => {
+    const { users_name_list } = response.data;
+    const mapList: UserDropdownModel[] = users_name_list.map(
+      (el: { name: string }) => {
         return {
-          name: el.role_name,
-          value: el.user_count,
-          fill: "",
+          label: el.name,
+          value: el.name,
         };
       }
     );
     return mapList;
+  }
+);
+
+/**cretae user */
+export const cretaeUserOnboarding = createAsyncThunk(
+  "user/create_onboarding_user",
+  async (data: any): Promise<any> => {
+    console.log("param create user...", data);
+    const response = await postCaller(EndPoints.create_user, {});
+    if (response.status !== HTTP_STATUS.OK) {
+      throw new Error(response.message);
+    }
+
+    console.log(response);
+
+    return response.data;
   }
 );

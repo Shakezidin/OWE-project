@@ -4,24 +4,27 @@ import UserPieChart from "./pieChart/UserPieChart";
 import UserOnboardingCreation from "./userOnboard/UserOnboardCreation";
 import { AddNewButton } from "../../components/button/AddNewButton";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import { fetchUserListBasedOnRole, fetchUserOnboarding } from "../../../redux/apiActions/userManagementActions";
+import {
+  fetchUserListBasedOnRole,
+  fetchUserOnboarding,
+} from "../../../redux/apiActions/userManagementActions";
 import { userSelectData } from "../../../resources/static_data/StaticData";
 import { UserDropdownModel } from "../../../core/models/api_models/UserManagementModel";
 import UserManagementTable from "./userTableList/UserManagementTable";
+import { cretaeUserOnboarding, fetchDealerOwner } from "../../../redux/apiActions/createUserSliceActions";
 
 const UserManagement: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const userName = localStorage.getItem("userName");
-  const [selectedOption, setSelectedOption] = useState(
-    userSelectData[0]
-  );
+  const [selectedOption, setSelectedOption] = useState(userSelectData[0]);
 
   const dispatch = useAppDispatch();
   const { userOnboardingList, userRoleBasedList } = useAppSelector(
     (state) => state.userManagement
   );
+  const { dealerOwenerList } = useAppSelector((state) => state.createOnboardUser);
 
   /** fetch onboarding users data*/
   useEffect(() => {
@@ -33,7 +36,7 @@ const UserManagement: React.FC = () => {
   }, []);
 
   /** role based get data */
-  useEffect(()=>{
+  useEffect(() => {
     const data = {
       page_number: 1,
       page_size: 10,
@@ -44,17 +47,16 @@ const UserManagement: React.FC = () => {
           Data: selectedOption.value,
         },
       ],
-    }
+    };
 
-      dispatch(fetchUserListBasedOnRole(data));
-  },[selectedOption])
+    dispatch(fetchUserListBasedOnRole(data));
+  }, [selectedOption]);
 
   /** handle dropdown value */
-  const handleSelectChange = (
-    selectedOption: UserDropdownModel
-  ) => {
+  const handleSelectChange = (selectedOption: UserDropdownModel) => {
     setSelectedOption(selectedOption);
   };
+
   return (
     <>
       <div className="management-section">
@@ -73,8 +75,19 @@ const UserManagement: React.FC = () => {
       {open && (
         <UserOnboardingCreation
           handleClose={handleClose}
+          dealerList={dealerOwenerList}
           editMode={false}
           userOnboard={null}
+          onSubmitCreateUser={() => {
+            //dispatch(cretaeUserOnboarding({})) dispatch(fetchDealerOwner({}))
+          }}
+          onChangeRole={(role)=>{
+
+            dispatch(fetchDealerOwner({
+              role:'Dealer Owner'
+            }))
+        
+          }}
         />
       )}
       <div className="barchart-section">
@@ -82,11 +95,12 @@ const UserManagement: React.FC = () => {
       </div>
 
       <div className="onboardrow">
-        <UserManagementTable 
-        userRoleBasedList={userRoleBasedList}
-        userDropdownData={userSelectData} 
-        selectedOption={selectedOption} 
-        handleSelectChange={handleSelectChange}/>
+        <UserManagementTable
+          userRoleBasedList={userRoleBasedList}
+          userDropdownData={userSelectData}
+          selectedOption={selectedOption}
+          handleSelectChange={handleSelectChange}
+        />
       </div>
     </>
   );

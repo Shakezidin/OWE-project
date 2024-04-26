@@ -14,6 +14,12 @@ export interface UserDropdownModel {
   value: string;
 }
 
+export interface DealerOwner {
+  role: string;
+  name?: string;
+  sub_role?: string;
+}
+
 export interface UserRoleBasedListModel {
   name: string;
   user_code: string;
@@ -47,8 +53,27 @@ export interface CreateUserModel {
   assigned_dealer_name: string;
   role_name: string;
   add_region: string;
-  report_to: string;
   team_name: string;
   reporting_to: string;
-  description: string
+  description: string;
+}
+
+export interface createUserParamModel {
+  name: string;
+  email_id: string;
+  mobile_number: string;
+  password: string;
+  designation: string;
+  role_name: string;
+  user_code: string;
+  password_change_required: boolean;
+  reporting_manager: string;
+  dealer_owner: string;
+  user_status: string;
+  description: string;
+  street_address: string;
+  state: string;
+  city: string;
+  zipcode: string;
+  country: string;
 }
