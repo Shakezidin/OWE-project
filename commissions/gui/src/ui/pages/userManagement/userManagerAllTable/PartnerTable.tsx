@@ -20,9 +20,9 @@ const PartnerTable: React.FC<PartnerProps>= ({data}) => {
         style={{ overflowX: "auto", whiteSpace: "nowrap" }}
       >
         <table>
-          <thead style={{ background: "#F5F5F5" }}>
+          <thead >
             <tr>
-              <th>
+              <th style={{paddingRight:0}}>
                 <div>
                   <CheckBox
                     checked={true}
@@ -32,7 +32,7 @@ const PartnerTable: React.FC<PartnerProps>= ({data}) => {
                 </div>
               </th>
 
-              <th>
+              <th style={{paddingLeft:"10px"}}>
                 <div className="table-header">
                   <p>Name</p> <FaArrowDown style={{ color: "#667085" }} />
                 </div>
@@ -51,17 +51,17 @@ const PartnerTable: React.FC<PartnerProps>= ({data}) => {
           </thead>
 
           <tbody>
-            {data.length > 0
+            {data?.length > 0
               ? data.map((el: UserRoleBasedListModel) => (
                   <tr key={el.email_id}>
-                    <td>
+                    <td style={{paddingRight:0}}>
                       <CheckBox
                         checked={true}
                         onChange={() => {}}
                         // indeterminate={isAnyRowSelected && !isAllRowsSelected}
                       />
                     </td>
-                    <td style={{ color: "var( --fade-gray-black)" }}>
+                    <td style={{ color:"black",paddingLeft:"10px" ,fontWeight:"500"}}>
                       {el.name}
                     </td>
                     <td>{el.description}</td>

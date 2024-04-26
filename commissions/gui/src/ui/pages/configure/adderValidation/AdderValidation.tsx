@@ -20,6 +20,7 @@ import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
 import Swal from "sweetalert2";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
+import Loading from "../../../components/loader/Loading";
 
 
 const AdderValidation = () => {
@@ -195,12 +196,11 @@ const AdderValidation = () => {
   const fetchFunction = (req: any) => {
     dispatch(fetchAdderV(req));
    };
-  if (loading) {
-    return <div>Loading...</div>;
+   if (error) {
+    return <div className="loader-container"><Loading/></div>;
   }
-
-  if (error) {
-    return <div>Error: {error}</div>;
+  if (loading) {
+    return <div className="loader-container"><Loading/> {loading}</div>;
   }
 
   return (
@@ -308,22 +308,24 @@ const AdderValidation = () => {
             </tbody>
           </table>
         </div>
+        {
+            adderVList?.length > 0 ?
         <div className="page-heading-container">
 
           <p className="page-heading">
             {currentPage} - {totalPages} of {currentPageData?.length} item
           </p>
-          {
-            adderVList?.length > 0 ? <Pagination
+         <Pagination
               currentPage={currentPage}
               totalPages={totalPages} // You need to calculate total pages
               paginate={paginate}
               currentPageData={currentPageData}
               goToNextPage={goToNextPage}
               goToPrevPage={goToPrevPage}
-            /> : null
-          }
+            /> 
         </div>
+        : null
+      }
       </div>
     </div>
   );

@@ -18,6 +18,8 @@ import { Column } from "../../../../core/models/data_models/FilterSelectModel";
 import { SalesTypeColumn } from "../../../../resources/static_data/configureHeaderData/SalesTypeColumn";
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
 import FilterModal from "../../../components/FilterModal/FilterModal";
+import Loading from "../../../components/loader/Loading";
+import DataNotFound from "../../../components/loader/DataNotFound";
 
 const SaleType = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -108,14 +110,12 @@ const SaleType = () => {
   const fetchFunction = (req: any) => {
     dispatch(fetchSalesType(req));
    };
+   if (error) {
+    return <div className="loader-container"><Loading/></div>;
+  }
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="loader-container"><Loading/> {loading}</div>;
   }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
- 
   return (
     <div className="comm">
        <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Sale Type"/>
@@ -213,27 +213,38 @@ const SaleType = () => {
                       </td>
                     </tr>
                   ))
-                : null}
+                : 
+                <tr style={{border:0}}>
+                <td colSpan={10}>
+                <div className="data-not-found">
+                <DataNotFound/>
+                <h3>Data Not Found</h3>
+                </div>
+                </td>
+              </tr>
+                }
             </tbody>
           </table>
         </div>
+        {
+    salesTypeList?.length > 0 ?
         <div className="page-heading-container">
       
       <p className="page-heading">
        {currentPage} - {totalPages} of {currentPageData?.length} item
       </p>
  
-   {
-    salesTypeList?.length > 0 ? <Pagination
+    <Pagination
       currentPage={currentPage}
       totalPages={totalPages} // You need to calculate total pages
       paginate={paginate}
       goToNextPage={goToNextPage}
       currentPageData={currentPageData}
       goToPrevPage={goToPrevPage}
-    /> : null
-  }
+    />
    </div>
+    : null
+  }
       </div>
      
     </div>

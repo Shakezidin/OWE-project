@@ -19,9 +19,9 @@ const SalesRepresentativeTable: React.FC<SalesRepresentativeProps> = ({
         style={{ overflowX: "auto", whiteSpace: "nowrap" }}
       >
         <table>
-          <thead style={{ background: "#F5F5F5" }}>
+          <thead>
             <tr>
-              <th>
+              <th style={{paddingRight:0}}>
                 <div>
                   <CheckBox
                     checked={true}
@@ -30,7 +30,7 @@ const SalesRepresentativeTable: React.FC<SalesRepresentativeProps> = ({
                   />
                 </div>
               </th>
-              <th>
+              <th style={{paddingLeft:"10px"}}>
                 <div className="table-header">
                   <p>Code</p> <FaArrowDown style={{ color: "#667085" }} />
                 </div>
@@ -91,35 +91,35 @@ const SalesRepresentativeTable: React.FC<SalesRepresentativeProps> = ({
             {data?.length > 0
               ? data?.map((el: UserRoleBasedListModel) => (
                   <tr key={el.email_id}>
-                    <td>
+                    <td style={{paddingRight:0}}>
                       <CheckBox
                         checked={true}
                         onChange={() => {}}
                         // indeterminate={isAnyRowSelected && !isAllRowsSelected}
                       />
                     </td>
-                    <td style={{ color: "var( --fade-gray-black)" }}>
+                    <td style={{ color: "black",paddingLeft:"10px",fontWeight:"500" }}>
                       {el.user_code}
                     </td>
-                    <td style={{ color: "var( --fade-gray-black)" }}>
+                    <td >
                       {el.name}
                     </td>
-                    <td style={{ color: "var( --fade-gray-black)" }}>
+                    <td>
                       {el.role_name}
                     </td>
-                    <td style={{ color: "var( --fade-gray-black)" }}>
+                    <td >
                       {el.dealer_owner}
                     </td>
-                    <td style={{ color: "var( --fade-gray-black)" }}>
+                    <td>
                       {el.designation}
                     </td>
-                    <td style={{ color: "var( --fade-gray-black)" }}>
+                    <td >
                       {el.reporting_manager}
                     </td>
-                    <td style={{ color: "var( --fade-gray-black)" }}>
+                    <td>
                       {el.email_id}
                     </td>
-                    <td style={{ color: "var( --fade-gray-black)" }}>
+                    <td>
                       {el.mobile_number}
                     </td>
                     <td>{el.description}</td>
