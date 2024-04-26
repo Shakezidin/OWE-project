@@ -80,7 +80,7 @@ const Header: React.FC<Toggleprops> = ({
             }}
           >
             <MdKeyboardArrowRight
-              style={{ fontSize: "1.2rem", color: "black" }}
+              style={{ fontSize: "1.2rem", color: "#23B364" }}
             />
           </div>
         )}

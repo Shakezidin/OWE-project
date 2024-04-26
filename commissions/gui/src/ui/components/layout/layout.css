@@ -2,7 +2,7 @@
 
 /* header style  */
 .header-width {
-  width: calc(100% - 220px);
+  width: calc(100% - 240px);
   flex-grow: 1;
  
   /* height: 100vh; */
