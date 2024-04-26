@@ -65,6 +65,9 @@ const (
 	UpdateLoanTypeArchiveFunction        string = "update_loan_type_archive"
 	UpdateAutoAdderFunction              string = "update_auto_adder"
 	UpdateUserFunction                   string = "update_user"
+	UpdateReferralDataArchiveFunction    string = "update_referral_data_archive"
+	UpdateDealerCreditArchiveFunction    string = "update_dealer_credit_archive"
+	UpdateNonCommDlrPayArchiveFunction   string = "update_noncomm_dlr_pay_archive"
 	TableName_teams                      string = "teams"
 	TableName_commission_rates           string = "commission_rates"
 	TableName_users_details              string = "user_details"
@@ -85,7 +88,8 @@ const (
 	TableName_auto_adder                 string = "auto_adder"
 	TableName_user_roles                 string = "user_roles"
 	TableName_referral_data              string = "referral_data"
-	TableName_dealer_credit_data         string = ""
+	TableName_dealer_credit_data         string = "dealer_credit"
+	TableName_noncomm_dlr_pay            string = "noncomm_dlr_pay"
 )
 
 /******************************************************************************
