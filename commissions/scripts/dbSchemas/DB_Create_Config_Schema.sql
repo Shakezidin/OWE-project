@@ -12,7 +12,7 @@ CREATE TABLE appointment_setters (
     team_id INT,
     first_name character varying,
     last_name character varying,
-    pay_rate  double precision,
+    pay_rate double precision,
     start_date character varying NOT NULL,
     end_date character varying,
     description character varying,
@@ -44,7 +44,7 @@ CREATE TABLE zipcodes (
     PRIMARY KEY (id)
 );
 
-CREATE TABLE  IF NOT EXISTS user_roles (
+CREATE TABLE IF NOT EXISTS user_roles (
     role_id SERIAL,
     role_name VARCHAR(50) NOT NULL UNIQUE,
     PRIMARY KEY (role_id)
@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS user_details(
     FOREIGN KEY (role_id) REFERENCES user_roles(role_id),
     FOREIGN KEY (state) REFERENCES states(state_id),
     FOREIGN KEY (zipcode) REFERENCES zipcodes(id),
-	PRIMARY KEY (user_id)
+    PRIMARY KEY (user_id)
 );
 
 CREATE TABLE partners (
@@ -134,7 +134,6 @@ CREATE TABLE commission_rates (
     FOREIGN KEY (installer_id) REFERENCES partners(partner_id),
     FOREIGN KEY (sale_type_id) REFERENCES sale_type(id),
     FOREIGN KEY (rep_type) REFERENCES rep_type(id),
-
     PRIMARY KEY (id)
 );
 
@@ -151,6 +150,7 @@ CREATE TABLE dealer_override (
     FOREIGN KEY (dealer_id) REFERENCES user_details(user_id),
     PRIMARY KEY (id)
 );
+
 CREATE TABLE source (
     id serial NOT NULL,
     name character varying,
@@ -195,7 +195,7 @@ CREATE TABLE v_adders (
 
 CREATE TABLE loan_type (
     id serial NOT NULL,
-    product_code  character varying,
+    product_code character varying,
     active integer,
     adder integer,
     description character varying,
@@ -204,7 +204,6 @@ CREATE TABLE loan_type (
     updated_at timestamp without time zone,
     PRIMARY KEY (id)
 );
-
 
 CREATE TABLE tier (
     id serial NOT NULL,
@@ -246,7 +245,6 @@ CREATE TABLE tier_loan_fee (
     FOREIGN KEY (installer_id) REFERENCES partners(partner_id),
     FOREIGN KEY (state_id) REFERENCES states(state_id),
     FOREIGN KEY (finance_type) REFERENCES loan_type(id),
-
     PRIMARY KEY (id)
 );
 
@@ -255,7 +253,7 @@ CREATE TABLE payment_schedule (
     rep_id INT,
     partner_id INT,
     installer_id INT,
-    sale_type_id INT, 
+    sale_type_id INT,
     state_id INT,
     rl character varying,
     draw character varying,
@@ -278,7 +276,7 @@ CREATE TABLE payment_schedule (
 
 CREATE TABLE timeline_sla (
     id serial NOT NULL,
-    type_m2m  character varying,
+    type_m2m character varying,
     state_id INT,
     days integer,
     start_date character varying NOT NULL,
@@ -302,7 +300,6 @@ CREATE TABLE rebate_type (
     PRIMARY KEY (id)
 );
 
-
 CREATE TABLE rebate_items (
     id serial NOT NULL,
     item character varying,
@@ -319,7 +316,7 @@ CREATE TABLE dealer_pay_export (
     sale_type_id INT,
     loan_type INT,
     unique_id character varying,
-    home_owner	character varying,
+    home_owner character varying,
     street_address character varying,
     city INT,
     state INT,
@@ -328,22 +325,22 @@ CREATE TABLE dealer_pay_export (
     phone_number character varying,
     rep_1 INT,
     rep_2 INT,
-    appt_setter	INT,
+    appt_setter INT,
     sys_size DOUBLE PRECISION,
-    kwh	 DOUBLE PRECISION,
+    kwh DOUBLE PRECISION,
     contract DOUBLE PRECISION,
     epc DOUBLE PRECISION,
     created_date character varying,
     contract_date character varying,
     site_survey_date character varying,
     ntp_date character varying,
-    perm_sub_date character varying,	
-    perm_app_date character varying,	
-    ic_sub_date character varying,	
-    ic_app_date character varying,	
+    perm_sub_date character varying,
+    perm_app_date character varying,
+    ic_sub_date character varying,
+    ic_app_date character varying,
     proj_status_crm INT,
-    cancel_date	character varying,
-    pv_install_date	character varying,
+    cancel_date character varying,
+    pv_install_date character varying,
     elec_Install_date character varying,
     fin_date character varying,
     pto_date character varying,
@@ -359,7 +356,7 @@ CREATE TABLE dealer_pay_export (
     FOREIGN KEY (rep_1) REFERENCES user_details(user_id),
     FOREIGN KEY (rep_2) REFERENCES user_details(user_id),
     FOREIGN KEY (appt_setter) REFERENCES appointment_setters(setters_id),
-    FOREIGN KEY (proj_status_crm) REFERENCES  project_status(id),
+    FOREIGN KEY (proj_status_crm) REFERENCES project_status(id),
     PRIMARY KEY (id)
 );
 
@@ -373,23 +370,22 @@ CREATE TABLE sale_adders (
     per_kw_amt DOUBLE PRECISION,
     rep_percent integer,
     description character varying,
-    FOREIGN KEY (dealer_pay_export_id) REFERENCES  dealer_pay_export(id),
-    FOREIGN KEY (adder_type) REFERENCES  adder_type(id),
+    FOREIGN KEY (dealer_pay_export_id) REFERENCES dealer_pay_export(id),
+    FOREIGN KEY (adder_type) REFERENCES adder_type(id),
     PRIMARY KEY (id)
 );
 
-
 CREATE TABLE customer_rebates (
-	id serial NOT NULL,
-	dealer_pay_export_id INT,
-	date character varying,
-	type INT,	
-	item_id INT,	 
-	amount  double precision,	
-	rep_percent  integer,
-	description character varying,
-	FOREIGN KEY (dealer_pay_export_id) REFERENCES  dealer_pay_export(id),
-	FOREIGN KEY (item_id) REFERENCES  rebate_items(id),
+    id serial NOT NULL,
+    dealer_pay_export_id INT,
+    date character varying,
+    type INT,
+    item_id INT,
+    amount double precision,
+    rep_percent integer,
+    description character varying,
+    FOREIGN KEY (dealer_pay_export_id) REFERENCES dealer_pay_export(id),
+    FOREIGN KEY (item_id) REFERENCES rebate_items(id),
     PRIMARY KEY (id)
 );
 
@@ -411,18 +407,17 @@ CREATE TABLE referrer_details (
     PRIMARY KEY (referrer_id)
 );
 
-
 CREATE TABLE referral_bonus (
-	id serial NOT NULL,
-	dealer_pay_export_id INT,
-	referrer_id character varying,
-	date character varying,	 
-	amount character varying,	
-	rep_percent  integer,
-	description character varying,	
-	FOREIGN KEY (dealer_pay_export_id) REFERENCES  dealer_pay_export(id),
-    FOREIGN KEY (referrer_id) REFERENCES  referrer_details(referrer_id),
-	PRIMARY KEY (id)
+    id serial NOT NULL,
+    dealer_pay_export_id INT,
+    referrer_id character varying,
+    date character varying,
+    amount character varying,
+    rep_percent integer,
+    description character varying,
+    FOREIGN KEY (dealer_pay_export_id) REFERENCES dealer_pay_export(id),
+    FOREIGN KEY (referrer_id) REFERENCES referrer_details(referrer_id),
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE auto_adder (
@@ -458,7 +453,7 @@ CREATE TABLE auto_adder (
     r1_r_plus_r float,
     total_comm float,
     start_date character varying NOT NULL,
-    end_date character varying,   
+    end_date character varying,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     FOREIGN KEY (state_id) REFERENCES states(state_id),
@@ -469,14 +464,14 @@ CREATE TABLE auto_adder (
 CREATE TABLE loan_fee_adder (
     id serial NOT NULL,
     unique_id varchar NOT NULL UNIQUE,
-	type_mktg text,
-	dealer_id INT,
-	installer_id INT,
+    type_mktg text,
+    dealer_id INT,
+    installer_id INT,
     state_id INT,
-	contract_dol_dol  float,
-	dealer_tier INT,
-	owe_cost  float,
-	addr_amount  float,
+    contract_dol_dol float,
+    dealer_tier INT,
+    owe_cost float,
+    addr_amount float,
     per_kw_amount float,
     rep_doll_divby_per float,
     description_rep_visible text,
@@ -495,16 +490,16 @@ CREATE TABLE loan_fee_adder (
     rep_2_def_resp text,
     r2_addr_resp text,
     start_date character varying NOT NULL,
-    end_date character varying,   
+    end_date character varying,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     FOREIGN KEY (state_id) REFERENCES states(state_id),
     FOREIGN KEY (rep_1) REFERENCES user_details(user_id),
     FOREIGN KEY (rep_2) REFERENCES user_details(user_id),
-	FOREIGN KEY (dealer_id) REFERENCES user_details(user_id),
-	FOREIGN KEY (installer_id) REFERENCES partners(partner_id),
-	FOREIGN KEY (dealer_tier) REFERENCES tier(id)
-	);
+    FOREIGN KEY (dealer_id) REFERENCES user_details(user_id),
+    FOREIGN KEY (installer_id) REFERENCES partners(partner_id),
+    FOREIGN KEY (dealer_tier) REFERENCES tier(id)
+);
 
 CREATE TABLE rebate_data (
     id serial NOT NULL,
@@ -520,8 +515,8 @@ CREATE TABLE rebate_data (
     rep_2 INT,
     sys_size float,
     rep_count float,
-	state_id INT,
-	per_rep_addr_share float,
+    state_id INT,
+    per_rep_addr_share float,
     per_rep_ovrd_share float,
     r1_pay_scale float,
     rep_1_def_resp text,
@@ -533,7 +528,7 @@ CREATE TABLE rebate_data (
     r2_rebate_credit_$ text,
     r2_rebate_credit_perc text,
     start_date character varying NOT NULL,
-    end_date character varying,   
+    end_date character varying,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     FOREIGN KEY (state_id) REFERENCES states(state_id),
@@ -567,10 +562,10 @@ CREATE TABLE referral_data (
     r2_referral_credit_perc text,
     r2_addr_resp text,
     start_date character varying NOT NULL,
-    end_date character varying, 
+    end_date character varying,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
-	FOREIGN KEY (state_id) REFERENCES states(state_id),
+    FOREIGN KEY (state_id) REFERENCES states(state_id),
     FOREIGN KEY (rep_1) REFERENCES user_details(user_id),
     FOREIGN KEY (rep_2) REFERENCES user_details(user_id)
 );
@@ -578,37 +573,270 @@ CREATE TABLE referral_data (
 CREATE TABLE dealer_credit (
     id serial NOT NULL,
     unique_id varchar NOT NULL UNIQUE,
-    customer  text,
+    customer text,
     dealer_id INT,
-    dealer_dba  text,
-    exact_amtount  text,
-    per_kw_amount  float,
+    dealer_dba text,
+    exact_amtount text,
+    per_kw_amount float,
     approved_by text,
     notes text,
     total_amount float,
     sys_size float,
     start_date character varying NOT NULL,
-    end_date character varying, 
+    end_date character varying,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     FOREIGN KEY (dealer_id) REFERENCES user_details(user_id)
 );
+
 CREATE TABLE noncomm_dlrpay (
     id serial NOT NULL,
     unique_id varchar NOT NULL UNIQUE,
-	customer   text,
+    customer text,
     dealer_id INT,
-    dealer_dba  text,
-	exact_amtount  text,
+    dealer_dba text,
+    exact_amtount text,
     approved_by text,
     notes text,
-	balance  float,
-	paid_amount  float,
-	dba  text,
+    balance float,
+    paid_amount float,
+    dba text,
     start_date character varying NOT NULL,
-    end_date character varying, 
+    end_date character varying,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
-	FOREIGN KEY (dealer_id) REFERENCES user_details(user_id)
+    FOREIGN KEY (dealer_id) REFERENCES user_details(user_id)
 );
+
+CREATE TABLE dlr_oth(
+    id serial NOT NULL,
+    unique_id varchar NOT NULL UNIQUE,
+    payee text,
+    amount text,
+    description character varying,
+    balance float,
+    paid_amount float,
+    is_archived BOOLEAN DEFAULT FALSE,
+    Start_Date character varying NOT NULL,
+    End_Date character varying
+);
+
+
+/*
+CREATE TABLE DLR_OTH(
+    id serial NOT NULL,
+    Unique_ID text Primary Key,
+    Payee Text,
+    Amount Float,
+    Description Text,
+    Balance Float,
+    Paid_Amt Float,
+    Start_Date Date,
+    End_Date Date
+);
+
+CREATE TABLE Adjustments (
+    unique_id character varying PRIMARY KEY,
+    customer character varying,
+    partner character varying,
+    installer character varying,
+    state character varying,
+    sys_size DOUBLE PRECISION,
+    bl character varying,
+    epc FLOAT,
+    date date,
+    amount float,
+    notes character varying
+);
+
+CREATE TABLE Reconsilation (
+    unique_id character varying PRIMARY KEY,
+    customer character varying,
+    partner character varying,
+    state character varying,
+    sys_size DOUBLE PRECISION,
+    status character varying,
+    date date,
+    amount float,
+    notes character varying
+);
+
+CREATE TABLE AR_payment_tracking (
+    Unique_ID Text PRIMARY KEY,
+    Customer_Name text,
+    Partner text,
+    Date date,
+    Amount float,
+    Payment_Type_Stage Text,
+    Bank_CED Text,
+    Total_Paid float,
+    state text
+);
+
+CREATE TABLE AR_Schedule (
+    Partner text,
+    Installer text,
+    Sale_Type text,
+    State text,
+    Red_Line Float,
+    Calc_Date Date,
+    Permit_Pay float,
+    Permit_Max float,
+    Install_Pay float,
+    PTO_Pay float,
+    Start_Date Date,
+    End_Date Date
+);
+
+CREATE TABLE REP_PAY_SETTINGS (
+    Name Text,
+    State character varying,
+    Pay_Scale Text,
+    Position Text,
+    B_E Text,
+    Start_Date Date,
+    End_Date Date,
+    Rate float
+);
+
+CREATE TABLE LEADER_OVERRIDE (
+    Team_Name Text,
+    Leader_Name Text,
+    Type Text,
+    Term Float,
+    Qual Float,
+    Sales_Q Float,
+    Team_kW_Q Float,
+    Pay_Rate Float,
+    Start_Date Date,
+    End_Date Date
+);
+
+CREATE TABLE COMMISSION_RATES (
+    Partner Text,
+    Installer Text,
+    State Text,
+    Sale_Type Text,
+    Sale_Price Float,
+    Rep_Type Text,
+    RL Float,
+    Rate Float,
+    Start_Date Date,
+    End_Date Date
+);
+
+CREATE TABLE ADDER_RESPONSIBILITY (
+    Pay_Scale Text,
+    Percentage Float
+);
+
+CREATE TABLE ADDER_CREDITS (
+    Pay_Scale Text,
+    Type Text,
+    MAX_Value Float,
+    MAX_Percent Float
+);
+
+CREATE TABLE LOAN_FEES (
+    Dealer Text,
+    Installer Text,
+    State Text,
+    Loan_Type Text,
+    Cost Float,
+    DLR_MU Float,
+    DLR_Cost Float,
+    Start_Date Date,
+    End_Date Date
+);
+
+CREATE TABLE INSTALL_COST (
+    Cost Float,
+    Start_Date Date,
+    End_Dtae Date
+);
+
+CREATE TABLE APPT_SETTERS (
+    Name Text,
+    Team Text,
+    Pay_Rate float,
+    Start_Date Date,
+    End_Date Date
+);
+
+CREATE CREATE TABLE ADDERS_Data (
+    Unique_ID Text primary Key,
+    Date Date,
+    Adder_Type Text,
+    GC Text,
+    Eaxct_Amt Float,
+    Per_KW_Amt Float,
+    Description_Repvisibale Text,
+    Notes_No_Repvisibale Text,
+    Sys_Size Float,
+    Adder_Calc Float
+);
+
+CREATE TABLE Auto_Adder (
+    Unique_ID Text primary Key,
+    Date Date,
+    Adder_Type Text,
+    GC Text,
+    Eaxct_Amt Float,
+    Per_KW_Amt Float,
+    Description_Repvisibale Text,
+    Notes_No_Repvisibale Text
+);
+
+CREATE TABLE Loan_Fee_Adder(
+    Unique_ID Text primary Key,
+    Date Date,
+    Loan_Type Text,
+    Dealer Text,
+    Installer Text,
+    State Text,
+    Contract_Value Float,
+    Dlr_Tier Text,
+    OWE_Cost Float,
+    Adder_Amt Float,
+    Per_KW_Amt Float,
+    Rep_Value Float,
+    Description_Repvisibale Text,
+    Notes_No_Repvisibale Text,
+    Type Text
+);
+
+CREATE TABLE AR_Import(
+    Custmoer_Name Text,
+    Unique_ID Text Primary Key,
+    Date Date,
+    Amount Float,
+    Notes Text,
+    Created Date
+);
+
+CREATE TABLE PaySkdNew (
+    Dealer Text,
+    Partner Text,
+    Installer Text,
+    Sale_Type Text,
+    ST Text,
+    RL Float,
+    Draw Float,
+    Draw_Max Float,
+    Rep_Draw Float,
+    Rep_Draw_Max Float,
+    Rep_Pay Float,
+    Start_Date Date,
+    End_Date Date
+);
+
+CREATE TABLE Rate_Adjustments(
+    Pay_Scale Text,
+    Position Text,
+    Adjustment Float,
+    Min_Rate Float,
+    Max_Rate Float
+);
+*/
+
 

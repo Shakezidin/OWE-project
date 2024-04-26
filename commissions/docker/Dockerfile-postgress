@@ -30,6 +30,7 @@ COPY ./dbSchemas/rawData/teams.csv /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/rawData/appointment_setters.csv /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/rawData/project_status.csv /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/rawData/adder_type.csv /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/rawData/commission_rates.csv /docker-entrypoint-initdb.d/
 
 COPY ./dbSchemas/DB_ProcCreateNewUser.sql /docker-entrypoint-initdb.d/ 
 COPY ./dbSchemas/DB_ProcCreateNewTeam.sql /docker-entrypoint-initdb.d/
@@ -78,7 +79,9 @@ COPY ./dbSchemas/DB_ProcUpdateRebateDataArchive.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcCreateNewLoanFeeAdder.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcUpdateLoanFeeAdder.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcUpdateLoanFeeAdderArchive.sql /docker-entrypoint-initdb.d/
-
+COPY ./dbSchemas/DB_ProcCreateNewDLR_OTH.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcUpdateDLR_OTH.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcUpdateDLR_OTHArchive.sql /docker-entrypoint-initdb.d/
 
 RUN chmod +x /docker-entrypoint-initdb.d/DB_Create_Schema.sql
 
