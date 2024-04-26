@@ -1,4 +1,7 @@
-import { CreateUserModel } from "../core/models/api_models/UserManagementModel";
+import {
+  CreateUserModel,
+  CreateUserParamModel,
+} from "../core/models/api_models/UserManagementModel";
 
 // validationUtils.ts
 export const validateName = (name: string): boolean => {
@@ -73,4 +76,52 @@ export const validateForm = (
   // Add more validations for other fields
 
   return errors;
+};
+
+/** create user object */
+export const createUserObject = (
+  formData: CreateUserModel
+): CreateUserParamModel => {
+  let createObject: CreateUserParamModel = {
+    name: formData.first_name + formData.last_name,
+    email_id: formData.email_id,
+    mobile_number: formData.mobile_number,
+    designation: "SE",
+    description: formData.description,
+  };
+  if (
+    formData.role_name === "Appointment Setter" ||
+    formData.role_name === "Patner"
+  ) {
+    createObject = {
+      ...createObject,
+      dealer_owner: formData.assigned_dealer_name,
+    };
+  }
+
+  if (formData.role_name === "Regional Manager") {
+    createObject = {
+      ...createObject,
+      dealer_owner: formData.assigned_dealer_name,
+      region: formData.add_region, //TODO: need to discuss
+    };
+  }
+
+  if (formData.role_name === "Sale Representative") {
+    createObject = {
+      ...createObject,
+      dealer_owner: formData.assigned_dealer_name,
+      reporting_manager: formData.report_to,
+      team_name: formData.team_name,
+    };
+  }
+  if (formData.role_name === "Sales Manager") {
+    createObject = {
+      ...createObject,
+      dealer_owner: formData.assigned_dealer_name,
+      reporting_manager: formData.report_to,
+    };
+  }
+  console.log("createObject", createObject);
+  return createObject;
 };

@@ -9,10 +9,11 @@ import {
   fetchUserOnboarding,
 } from "../../../redux/apiActions/userManagementActions";
 import { userSelectData } from "../../../resources/static_data/StaticData";
-import { UserDropdownModel } from "../../../core/models/api_models/UserManagementModel";
+import { CreateUserParamModel, UserDropdownModel } from "../../../core/models/api_models/UserManagementModel";
 import UserManagementTable from "./userTableList/UserManagementTable";
 import { cretaeUserOnboarding, fetchDealerOwner, fetchRegionList } from "../../../redux/apiActions/createUserSliceActions";
-import { validateForm } from "../../../utiles/Validation";
+import { createUserObject, validateForm } from "../../../utiles/Validation";
+import { unwrapResult } from "@reduxjs/toolkit";
 
 const UserManagement: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -77,7 +78,7 @@ const UserManagement: React.FC = () => {
         role:'Dealer Owner'
       }))
     }else{
-      console.log(role, value)
+     if(formData.role_name === 'Sales Manager' || formData.role_name === 'Sale Representative')
      await dispatch(fetchRegionList({
         role:'Dealer Owner',
         name: value,
@@ -96,27 +97,21 @@ const UserManagement: React.FC = () => {
     if (Object.keys(formErrors).length === 0) {
       // Submit the form
       console.log('Form submitted:', formData);
+      createUserRequest()
     }else{
+      //const firstKey = Object.keys(formErrors)[0]; //Todo: change in future
       alert('All fields are mandatory')
     }
   
   };
 
   const createUserRequest = async ()=>{
-
-    await dispatch(cretaeUserOnboarding({
-      name: formData.first_name + formData.last_name,
-      email_id: formData.email_id,
-      mobile_number: formData.mobile_number,
-      designation: 'SE',
-      role_name: formData.role_name,
-      reporting_manager: formData.add_region,
-      dealer_owner: formData.assigned_dealer_name,
-      description: formData.description
-    }))
+    let data = createUserObject(formData)
+    const actionResult = await dispatch(cretaeUserOnboarding(data))
+    const result = unwrapResult(actionResult);
+    console.log(result)
   }
 
- 
   return (
     <>
       <div className="management-section">

@@ -60,9 +60,11 @@ export interface CreateUserParamModel {
   name: string;
   email_id: string;
   mobile_number: string;
-  designation: string;
-  role_name: string;
-  reporting_manager: string;
-  dealer_owner: string;
-  description: string;
+  designation?: string;
+  role_name?: string;
+  reporting_manager?: string;
+  dealer_owner?: string;
+  description?: string;
+  team_name?: string;
+  region?: string;
 }

@@ -63,6 +63,8 @@ export const cretaeUserOnboarding = createAsyncThunk(
   async (data: CreateUserParamModel): Promise<any> => {
     console.log("param create user...", data);
     const response = await postCaller(EndPoints.create_user, data);
+
+    console.log("checking error", response);
     if (response.status !== HTTP_STATUS.OK) {
       throw new Error(response.message);
     }
