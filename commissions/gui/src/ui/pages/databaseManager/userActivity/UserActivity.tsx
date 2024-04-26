@@ -187,7 +187,7 @@ const UserActivity: React.FC = () => {
           <table>
             <thead>
               <tr>
-                <th>
+                <th style={{paddingRight:0}}>
                     <CheckBox
                       checked={selectAllChecked}
                       onChange={() =>
@@ -201,7 +201,7 @@ const UserActivity: React.FC = () => {
                       indeterminate={isAnyRowSelected && !isAllRowsSelected}
                     />
                 </th>
-                <th>
+                <th style={{paddingLeft:"0px"}}>
                   <div className="table-header">
                     <p>User Name</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
@@ -229,7 +229,7 @@ const UserActivity: React.FC = () => {
               {currentPageData?.length > 0
                 ? currentPageData?.map((el, i) => (
                   <tr key={i}>
-                    <td style={{ fontWeight: "500", color: "black",textAlign: "left" }}>
+                    <td style={{ paddingRight:0 }}>
                       <CheckBox
                         checked={selectedRows.has(i)}
                         onChange={() =>
@@ -242,12 +242,12 @@ const UserActivity: React.FC = () => {
                         }
                       />
                     </td>
-                    <td style={{ fontWeight: "500", color: "black",textAlign: "left" }}>
+                    <td style={{ fontWeight: "500", color: "black",paddingLeft:"0px",textAlign:"left" }}>
                       {el.uname}
                     </td>
-                    <td style={{ fontWeight: "500", color: "black",textAlign: "left" }}>{el.dbname}</td>
-                    <td style={{ fontWeight: "500", color: "black",textAlign: "left" }}>{el.date}</td>
-                    <td style={{ fontWeight: "500", color: "black",textAlign: "left" }}>{el.query}</td>
+                    <td style={{ textAlign: "left" }}>{el.dbname}</td>
+                    <td style={{ textAlign: "left" }} >{el.date}</td>
+                    <td style={{ textAlign: "left" }}>{el.query}</td>
 
                   </tr>
                 ))
