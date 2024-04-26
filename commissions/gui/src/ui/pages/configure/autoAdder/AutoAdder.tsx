@@ -20,6 +20,7 @@ import { CommissionModel } from "../../../../core/models/configuration/create/Co
 import { FaArrowDown } from "react-icons/fa6";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import CreateAutoAdder from "./CreateAutoAdder";
+import Loading from "../../../components/loader/Loading";
 interface Column {
   name: string;
   displayName: string;
@@ -100,12 +101,11 @@ const AutoAdder: React.FC = () => {
     handleOpen()
   };
 
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
-
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div className="loader-container"><Loading/></div>;
+  }
+  if (loading) {
+    return <div className="loader-container"><Loading/> {loading}</div>;
   }
 
   const currentPageData = commissionList?.slice(startIndex, endIndex);
@@ -148,7 +148,7 @@ const AutoAdder: React.FC = () => {
           <table>
             <thead>
               <tr>
-                <th >
+                <th style={{paddingRight:0}}>
                   <div>
                     <CheckBox
                       checked={selectAllChecked}
@@ -164,7 +164,7 @@ const AutoAdder: React.FC = () => {
                     />
                   </div>
                 </th>
-                <th >
+                <th style={{paddingLeft:"10px"}}>
                   <div className="table-header" >
                     <p>Type</p> <FaArrowDown style={{color: "#667085", fontSize:"12px"}} />
                   </div>
@@ -338,7 +338,7 @@ const AutoAdder: React.FC = () => {
                     key={i}
                     className={selectedRows.has(i) ? "selected" : ""}
                   >
-                    <td>
+                    <td style={{paddingRight:"0"}}>
                       <CheckBox
                         checked={selectedRows.has(i)}
                         onChange={() =>
@@ -351,7 +351,7 @@ const AutoAdder: React.FC = () => {
                         }
                       />
                     </td>
-                    <td style={{ fontWeight: "500", color: "black" }}>
+                    <td style={{ fontWeight: "500", color: "black",paddingLeft:"10px" }}>
                       {el.partner}
                     </td>
                     <td>{el.installer}</td>
@@ -402,23 +402,25 @@ const AutoAdder: React.FC = () => {
             </tbody>
           </table>
         </div>
+        {
+    commissionList?.length > 0 ?
         <div className="page-heading-container">
       
       <p className="page-heading">
        {currentPage} - {totalPages} of {currentPageData?.length} item
       </p>
  
-   {
-    commissionList?.length > 0 ? <Pagination
+ <Pagination
       currentPage={currentPage}
       totalPages={totalPages} // You need to calculate total pages
       paginate={paginate}
       currentPageData={currentPageData}
       goToNextPage={goToNextPage}
       goToPrevPage={goToPrevPage}
-    /> : null
-  }
+    /> 
    </div>
+   : null
+  }
       </div>
     
     </div>

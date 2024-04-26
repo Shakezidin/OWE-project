@@ -21,7 +21,7 @@ const ProjectPerformence = () => {
                   <div className="project-icon-img" style={{ backgroundColor: el.iconBgColor }}>
                     <img src={el.icon} alt="" className='icon-image' />
                   </div>
-                  <h2>{el.name}</h2>
+                  <h2 style={{color:el.color}}>{el.name}</h2>
                 </div>
                 <div className="project-card-body">
                   <div className="project-body-details">

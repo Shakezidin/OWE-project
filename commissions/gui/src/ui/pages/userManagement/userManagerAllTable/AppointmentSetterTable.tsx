@@ -20,7 +20,7 @@ const AppointmentSetterTable: React.FC<AppointmentSetterProps> = ({ data }) => {
         <table>
           <thead style={{ background: "#F5F5F5" }}>
             <tr>
-              <th>
+              <th style={{paddingRight:0}}>
                 <div>
                   <CheckBox
                     checked={true}
@@ -30,7 +30,7 @@ const AppointmentSetterTable: React.FC<AppointmentSetterProps> = ({ data }) => {
                 </div>
               </th>
 
-              <th>
+              <th style={{paddingLeft:"10px"}}>
                 <div className="table-header">
                   <p>Name</p> <FaArrowDown style={{ color: "#667085" }} />
                 </div>
@@ -66,10 +66,10 @@ const AppointmentSetterTable: React.FC<AppointmentSetterProps> = ({ data }) => {
           </thead>
 
           <tbody>
-            {data.length > 0
+            {data?.length > 0
               ? data.map((el: UserRoleBasedListModel) => (
                   <tr key={el.email_id}>
-                    <td>
+                    <td style={{paddingRight:0}}>
                       <CheckBox
                         checked={true}
                         onChange={() => {}}
@@ -78,8 +78,9 @@ const AppointmentSetterTable: React.FC<AppointmentSetterProps> = ({ data }) => {
                     </td>
                     <td
                       style={{
-                        fontWeight: "none",
-                        color: "var( --fade-gray-black)",
+                        fontWeight: "500",
+                        color:"black",
+                      paddingLeft:"10px"
                       }}
                     >
                       {el.name}

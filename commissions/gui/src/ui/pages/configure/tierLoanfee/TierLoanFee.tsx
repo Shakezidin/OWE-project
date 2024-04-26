@@ -18,6 +18,8 @@ import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/pagin
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
 import { TierLoanColumn } from "../../../../resources/static_data/configureHeaderData/TierLoanFeeColumn";
 import FilterModal from "../../../components/FilterModal/FilterModal";
+import Loading from "../../../components/loader/Loading";
+import DataNotFound from "../../../components/loader/DataNotFound";
 const TierLoanFee = () => {
   const dispatch = useAppDispatch();
   const tierloanList = useAppSelector(
@@ -108,12 +110,11 @@ const TierLoanFee = () => {
   const fetchFunction = (req: any) => {
     dispatch(fetchTearLoan(req));
    };
-  if (loading) {
-    return <div>Loading...</div>;
+   if (error) {
+    return <div className="loader-container"><Loading/></div>;
   }
-
-  if (error) {
-    return <div>Error: {error}</div>;
+  if (loading) {
+    return <div className="loader-container"><Loading/> {loading}</div>;
   }
   return (
     <div className="comm">
@@ -219,27 +220,36 @@ const TierLoanFee = () => {
                       </td>
                     </tr>
                   ))
-                : null}
+                :  <tr style={{border:0}}>
+                <td colSpan={10}>
+                <div className="data-not-found">
+                <DataNotFound/>
+                <h3>Data Not Found</h3>
+                </div>
+                </td>
+              </tr>}
             </tbody>
           </table>
         </div>
+        {
+    tierloanList?.length > 0 ?
         <div className="page-heading-container">
       
       <p className="page-heading">
        {currentPage} - {totalPages} of {currentPageData?.length} item
       </p>
  
-   {
-    tierloanList?.length > 0 ? <Pagination
+   <Pagination
       currentPage={currentPage}
       totalPages={totalPages} // You need to calculate total pages
       paginate={paginate}
       currentPageData={currentPageData}
       goToNextPage={goToNextPage}
       goToPrevPage={goToPrevPage}
-    /> : null
-  }
+    /> 
    </div>
+   : null
+  }
       </div>
     </div>
   );
