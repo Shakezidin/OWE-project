@@ -12,6 +12,7 @@ import Pagination from "../../components/pagination/Pagination";
 import HelpDashboard from "./HelpDashboard";
 import { CommissionModel } from "../../../core/models/configuration/create/CommissionModel";
 import ProjectBreakdown from "./ProjectBreakdown";
+import { BiSupport } from "react-icons/bi";
 
 // import { installers, partners, respTypeData, statData } from "../../../../../core/models/data_models/SelectDataModel";
 
@@ -19,9 +20,12 @@ const DashBoardTable: React.FC = () => {
   const [editedCommission, setEditedCommission] =
     useState<CommissionModel | null>(null);
   const [open, setOpen] = useState<boolean>(false);
+  const [openIcon, setOpenIcon] = useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [editMode, setEditMode] = useState(false);
+  const handleIconOpen = () => setOpenIcon(true);
+  const handleIconClose = () => setOpenIcon(false);
 
   const dataUser = [
     {
@@ -29,112 +33,8 @@ const DashBoardTable: React.FC = () => {
       dn: "Josh Morton",
       sr: "Josh Morton",
       cn: "josh Morton",
-      amt: "$123,456",
-      pipeline: "$100,362",
-      cd: "$300,652",
-      ps: "Active",
-      state: "Texas",
-      sysSize: "10.5",
-      type: "loan",
-      adder: "$62,500",
-      ajh: "12 Days",
-      rl: "$20.00",
-      epc: "2.444",
-    },
-    {
-      pi: "1234567890",
-      dn: "Josh Morton",
-      sr: "Josh Morton",
-      cn: "josh Morton",
-      cm: "RL",
-      pg: "-",
-      amt: "$123,456",
-      pipeline: "$100,362",
-      cd: "$300,652",
-      ps: "Active",
-      state: "Texas",
-      sysSize: "10.5",
-      type: "loan",
-      adder: "$62,500",
-      ajh: "12 Days",
-      rl: "$20.00",
-      epc: "2.444",
-    },
-    {
-      pi: "1234567890",
-      dn: "Josh Morton",
-      sr: "Josh Morton",
-      cn: "josh Morton",
-      amt: "$123,456",
-      pipeline: "$100,362",
-      cd: "$300,652",
-      ps: "Active",
-      state: "Texas",
-      sysSize: "10.5",
-      type: "loan",
-      adder: "$62,500",
-      ajh: "12 Days",
-      rl: "$20.00",
-      epc: "2.444",
-    },
-    {
-      pi: "1234567890",
-      dn: "Josh Morton",
-      sr: "Josh Morton",
-      cn: "josh Morton",
-      amt: "$123,456",
-      pipeline: "$100,362",
-      cd: "$300,652",
-      ps: "Active",
-      state: "Texas",
-      sysSize: "10.5",
-      type: "loan",
-      adder: "$62,500",
-      ajh: "12 Days",
-      rl: "$20.00",
-      epc: "2.444",
-    },
-    {
-      pi: "1234567890",
-      dn: "Josh Morton",
-      sr: "Josh Morton",
-      cn: "josh Morton",
-      cm: "RL",
-      pg: "-",
-      amt: "$123,456",
-      pipeline: "$100,362",
-      cd: "$300,652",
-      ps: "Active",
-      state: "Texas",
-      sysSize: "10.5",
-      type: "loan",
-      adder: "$62,500",
-      ajh: "12 Days",
-      rl: "$20.00",
-      epc: "2.444",
-    },
-    {
-      pi: "1234567890",
-      dn: "Josh Morton",
-      sr: "Josh Morton",
-      cn: "josh Morton",
-      amt: "$123,456",
-      pipeline: "$100,362",
-      cd: "$300,652",
-      ps: "Active",
-      state: "Texas",
-      sysSize: "10.5",
-      type: "loan",
-      adder: "$62,500",
-      ajh: "12 Days",
-      rl: "$20.00",
-      epc: "2.444",
-    },
-    {
-      pi: "1234567890",
-      dn: "Josh Morton",
-      sr: "Josh Morton",
-      cn: "josh Morton",
+      cm: "Percentage",
+      pg: "18/20",
       amt: "$123,456",
       pipeline: "$100,362",
       cd: "$300,652",
@@ -172,7 +72,140 @@ const DashBoardTable: React.FC = () => {
       sr: "Josh Morton",
       cn: "josh Morton",
       cm: "Percentage",
-      pg: "90/10",
+      pg: "70/30",
+      amt: "$123,456",
+      pipeline: "$100,362",
+      cd: "$300,652",
+      ps: "Active",
+      state: "Texas",
+      sysSize: "10.5",
+      type: "loan",
+      adder: "$62,500",
+      ajh: "12 Days",
+      rl: "$20.00",
+      epc: "2.444",
+    },
+    {
+      pi: "1234567890",
+      dn: "Josh Morton",
+      sr: "Josh Morton",
+      cn: "josh Morton",
+      cm: "RL",
+      pg: "-",
+      amt: "$123,456",
+      pipeline: "$100,362",
+      cd: "$300,652",
+      ps: "Active",
+      state: "Texas",
+      sysSize: "10.5",
+      type: "loan",
+      adder: "$62,500",
+      ajh: "12 Days",
+      rl: "$20.00",
+      epc: "2.444",
+    },
+    {
+      pi: "1234567890",
+      dn: "Josh Morton",
+      sr: "Josh Morton",
+      cn: "josh Morton",
+      cm: "Percentage",
+      pg: "18/20",
+      amt: "$123,456",
+      pipeline: "$100,362",
+      cd: "$300,652",
+      ps: "Active",
+      state: "Texas",
+      sysSize: "10.5",
+      type: "loan",
+      adder: "$62,500",
+      ajh: "12 Days",
+      rl: "$20.00",
+      epc: "2.444",
+    },
+    {
+      pi: "1234567890",
+      dn: "Josh Morton",
+      sr: "Josh Morton",
+      cn: "josh Morton",
+      cm: "RL",
+      pg: "-",
+      amt: "$123,456",
+      pipeline: "$100,362",
+      cd: "$300,652",
+      ps: "Active",
+      state: "Texas",
+      sysSize: "10.5",
+      type: "loan",
+      adder: "$62,500",
+      ajh: "12 Days",
+      rl: "$20.00",
+      epc: "2.444",
+    },
+    {
+      pi: "1234567890",
+      dn: "Josh Morton",
+      sr: "Josh Morton",
+      cn: "josh Morton",
+      cm: "Percentage",
+      pg: "70/30",
+      amt: "$123,456",
+      pipeline: "$100,362",
+      cd: "$300,652",
+      ps: "Active",
+      state: "Texas",
+      sysSize: "10.5",
+      type: "loan",
+      adder: "$62,500",
+      ajh: "12 Days",
+      rl: "$20.00",
+      epc: "2.444",
+    },
+    {
+      pi: "1234567890",
+      dn: "Josh Morton",
+      sr: "Josh Morton",
+      cn: "josh Morton",
+      cm: "RL",
+      pg: "-",
+      amt: "$123,456",
+      pipeline: "$100,362",
+      cd: "$300,652",
+      ps: "Active",
+      state: "Texas",
+      sysSize: "10.5",
+      type: "loan",
+      adder: "$62,500",
+      ajh: "12 Days",
+      rl: "$20.00",
+      epc: "2.444",
+    },
+    {
+      pi: "1234567890",
+      dn: "Josh Morton",
+      sr: "Josh Morton",
+      cn: "josh Morton",
+      cm: "Percentage",
+      pg: "18/20",
+      amt: "$123,456",
+      pipeline: "$100,362",
+      cd: "$300,652",
+      ps: "Active",
+      state: "Texas",
+      sysSize: "10.5",
+      type: "loan",
+      adder: "$62,500",
+      ajh: "12 Days",
+      rl: "$20.00",
+      epc: "2.444",
+    },
+    {
+      pi: "1234567890",
+      dn: "Josh Morton",
+      sr: "Josh Morton",
+      cn: "josh Morton",
+      cm: "RL",
+      pg: "-",
       amt: "$123,456",
       pipeline: "$100,362",
       cd: "$300,652",
@@ -208,6 +241,7 @@ const DashBoardTable: React.FC = () => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentPageData = dataUser?.slice(startIndex, endIndex);
+
   return (
     <>
       <div className="dashBoard-container">
@@ -228,7 +262,7 @@ const DashBoardTable: React.FC = () => {
                   </div>
                 </th>
 
-                <th>
+                <th style={{ padding: "0px" }}>
                   <div className="table-header">
                     <p>Project ID</p>{" "}
                     <FaArrowDown style={{ color: "#667085" }} />
@@ -249,6 +283,18 @@ const DashBoardTable: React.FC = () => {
                 <th>
                   <div className="table-header">
                     <p>Customer Name</p>{" "}
+                    <FaArrowDown style={{ color: "#667085" }} />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>Commssion Model</p>{" "}
+                    <FaArrowDown style={{ color: "#667085" }} />
+                  </div>
+                </th>
+                <th>
+                  <div className="table-header">
+                    <p>Percentage</p>{" "}
                     <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
@@ -299,7 +345,7 @@ const DashBoardTable: React.FC = () => {
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>AJH</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>AHJ</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
@@ -314,7 +360,7 @@ const DashBoardTable: React.FC = () => {
                 </th>
                 <th>
                   <div className="action-header">
-                    <p>Action</p>
+                    <p>Help</p>
                   </div>
                 </th>
               </tr>
@@ -330,7 +376,16 @@ const DashBoardTable: React.FC = () => {
                           // indeterminate={isAnyRowSelected && !isAllRowsSelected}
                         />
                       </td>
-                      <td style={{ fontWeight: "500", color: "black" }}>
+                      <td
+                        style={{
+                          fontWeight: "500",
+                          color: "black",
+                          cursor: "pointer",
+                        }}
+                        onClick={() => {
+                          handleOpen();
+                        }}
+                      >
                         {el.pi}
                       </td>
                       <td style={{ fontWeight: "500", color: "#101828" }}>
@@ -353,7 +408,6 @@ const DashBoardTable: React.FC = () => {
                       <td>{el.ajh}</td>
                       <td>{el.rl}</td>
                       <td>{el.epc}</td>
-
                       <td>
                         <div className="action-icon">
                           <div
@@ -361,18 +415,9 @@ const DashBoardTable: React.FC = () => {
                             style={{ cursor: "pointer", textAlign: "center" }}
                           >
                             <IoIosHelpCircleOutline
-                              onClick={() => {
-                                handleOpen();
-                              }}
+                              onClick={() => handleIconOpen()}
                             />
                           </div>
-                          {open && (
-                            <ProjectBreakdown
-                              commission={editedCommission}
-                              editMode={editMode}
-                              handleClose={handleClose}
-                            />
-                          )}
                         </div>
                       </td>
                     </tr>
@@ -396,6 +441,22 @@ const DashBoardTable: React.FC = () => {
             />
           ) : null}
         </div>
+        {open && (
+          <ProjectBreakdown
+            commission={editedCommission}
+            editMode={editMode}
+            handleClose={() => {
+              setOpen(false);
+            }}
+          />
+        )}
+        {openIcon && (
+          <HelpDashboard
+            commission={editedCommission}
+            editMode={editMode}
+            handleClose={handleIconClose}
+          />
+        )}
       </div>
     </>
   );

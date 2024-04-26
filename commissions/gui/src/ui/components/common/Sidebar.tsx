@@ -18,6 +18,7 @@ import { GoProjectRoadmap } from "react-icons/go";
 import { FaHandHoldingDollar } from "react-icons/fa6";
 import { BsDatabaseGear } from "react-icons/bs";
 import { MdKeyboardArrowLeft } from "react-icons/md";
+import { LuWallet } from "react-icons/lu";
 
  
 import { FiServer } from "react-icons/fi";
@@ -86,7 +87,7 @@ const Sidebar: React.FC<Toggleprops> = ({
         id
       });
     }
-    console.log(name, "containse");
+    
   };
 
  
@@ -161,11 +162,11 @@ const Sidebar: React.FC<Toggleprops> = ({
                     location.pathname === oth.path ? "active-link-bg" : ""
                   }`}
                 >
-                <MdOutlinePayment size={20} style={{marginLeft: "5px", flexShrink:"0"}} color="#092D04" />
+                <MdOutlinePayment size={20} style={{marginLeft: "5px", flexShrink:"0"}}  className={location.pathname === oth.path ? "sidebaricon" : "sidebariconn"} />
                   {toggleOpen ? null : (
                     <Link to={oth.path}>
                       {" "}
-                      <p className={`tablink`}>
+                      <p className={location.pathname === oth.path ? "tablink" : "tablinkk"}>
                         {oth.sidebarProps.displayText}
                       </p>
                     </Link>
@@ -193,13 +194,14 @@ const Sidebar: React.FC<Toggleprops> = ({
                       className=""
                       style={{
                         display: "block",
-                        background: "#AFEB24",
+                        background: "#E1F5EA",
                         padding: "11px 12px",
-                        color: "black",
+                        color: "#23B364",
                         width: "100%",
                         fontWeight: "500",
                         borderBottom: "1px solid #E8E8E8",
                         fontSize: "13px",
+                        borderRight:"3px solid #23B364"
                       }}
                     >
                       {" "}
@@ -249,12 +251,14 @@ const Sidebar: React.FC<Toggleprops> = ({
                     location.pathname === oth.path ? "active-link-bg" : ""
                   }`}
                 >
-                  <CiWallet size={20}  style={{marginLeft: "5px", flexShrink:"0"}} color="black" />
+                  <LuWallet size={20}  style={{marginLeft: "5px", flexShrink:"0"}}  className={location.pathname === oth.path ? "sidebaricon" : "sidebariconn"} />
                   
                   {/* {oth.sidebarProps.icon && oth.sidebarProps.icon} */}
-                  {toggleOpen ? null : (
-                    <p className={`tablink`}>{oth.sidebarProps.displayText}</p>
-                  )}
+                  {!toggleOpen && (
+                    <p className={location.pathname === oth.path ? "tablink" : "tablinkk"}>
+                     {oth.sidebarProps.displayText}
+                     </p>
+                      )}
 
                   <div
                     className="tip"
@@ -280,14 +284,14 @@ const Sidebar: React.FC<Toggleprops> = ({
                       className=""
                       style={{
                         display: "block",
-                        background: "#AFEB24",
-                            padding: "11px 12px",
-                        
-                        color: "black",
+                        background: "#E1F5EA",
+                        padding: "11px 12px",
+                        color: "#23B364",
                         width: "100%",
                         fontWeight: "500",
                         borderBottom: "1px solid #E8E8E8",
                         fontSize: "13px",
+                        borderRight:"3px solid #23B364"
                       }}
                     >
                       {" "}
@@ -336,9 +340,9 @@ const Sidebar: React.FC<Toggleprops> = ({
                     location.pathname === oth.path ? "active-link-bg" : ""
                   }`}
                 >
-                   <FiLayers   size={20}  style={{marginLeft: "5px", flexShrink:"0"}} color="black"/> 
+                   <FiLayers   size={20}  style={{marginLeft: "5px", flexShrink:"0"}}  className={location.pathname === oth.path ? "sidebaricon" : "sidebariconn"}/> 
                   {toggleOpen ? null : (
-                    <p className={`tablink`}>{oth.sidebarProps.displayText}</p>
+                    <p  className={location.pathname === oth.path ? "tablink" : "tablinkk"}>{oth.sidebarProps.displayText}</p>
                   )}
                   <div
                     className="tip"
@@ -364,13 +368,14 @@ const Sidebar: React.FC<Toggleprops> = ({
                       className=""
                       style={{
                         display: "block",
-                        background: "#AFEB24",
-                       padding: "11px 12px",
-                        color: "black",
+                        background: "#E1F5EA",
+                        padding: "11px 12px",
+                        color: "#23B364",
                         width: "100%",
                         fontWeight: "500",
                         borderBottom: "1px solid #E8E8E8",
                         fontSize: "13px",
+                        borderRight:"3px solid #23B364"
                       }}
                     >
                       {" "}
@@ -433,10 +438,10 @@ const Sidebar: React.FC<Toggleprops> = ({
                       }}
                     >
                       <div className={`side-icon-container-1`}>
-                        {item.sidebarProps.icon && item.sidebarProps.icon}
+                      <div>  {item.sidebarProps.icon && item.sidebarProps.icon}</div>
                         {toggleOpen ? null : (
                           <p
-                            className={`tablink`}
+                            className={`tablinkk`}
                             style={{ color: repay ? "#0069A3" : "#101828" }}
                           >
                             {item.sidebarProps.displayText}
@@ -452,7 +457,6 @@ const Sidebar: React.FC<Toggleprops> = ({
                           top: cords.top,
                           left: cords.left,
                           display: cords.opacity && cords.id===4 ? "block" : "none",
-
                           maxHeight: "300px",
                           minWidth: "150px",
                           overflowY: "scroll",
@@ -464,17 +468,18 @@ const Sidebar: React.FC<Toggleprops> = ({
                         }}
                       >
                         <Link
-                    to ="#"
+                       to ="#"
                       className=""
                       style={{
                         display: "block",
-                        background: "#AFEB24",
-                            padding: "13px 12px",
-                        color: "black",
+                        background: "#E1F5EA",
+                        padding: "13.5px 12px",
+                        color: "#23B364",
                         width: "100%",
                         fontWeight: "500",
                         borderBottom: "1px solid #E8E8E8",
                         fontSize: "13px",
+                        borderRight:"3px solid #23B364"
                      
                       }}
                     >
@@ -531,9 +536,9 @@ const Sidebar: React.FC<Toggleprops> = ({
                             }`}
                             
                           >
-                               {accr.sidebarProps.icon}
+                              <div  className={location.pathname === accr.path ? "ellipseee" : "ellipsee"} >{accr.sidebarProps.icon}</div> 
                             {toggleOpen ? null : (
-                              <p className={`tablink`}>
+                              <p  className={location.pathname === accr.path ? "tablink" : "tablinkk"}>
                                 {accr.sidebarProps?.displayText}
                               </p>
                             )}
@@ -622,13 +627,14 @@ const Sidebar: React.FC<Toggleprops> = ({
                       className=""
                       style={{
                         display: "block",
-                        background: "#AFEB24",
-                        padding: "13px 12px",
-                        color: "black",
+                        background: "#E1F5EA",
+                        padding: "13.5px 12px",
+                        color: "#23B364",
                         width: "100%",
                         fontWeight: "500",
                         borderBottom: "1px solid #E8E8E8",
                         fontSize: "13px",
+                        borderRight:"3px solid #23B364"
                       }}
                     >
                       {" "}
@@ -658,10 +664,10 @@ const Sidebar: React.FC<Toggleprops> = ({
                         })}
                       </div>
                       <div className={`side-icon-container-1`}>
-                        {item.sidebarProps.icon && item.sidebarProps.icon}
+                       <div  > {item.sidebarProps.icon && item.sidebarProps.icon}</div>
                         {toggleOpen ? null : (
                           <p
-                            className={`tablink`}
+                          className={location.pathname === item.path ? "tablink" : "tablinkk"}
                             style={{ color: project ? "#0069A3" : "#101828" }}
                           >
                             {item.sidebarProps.displayText}
@@ -695,11 +701,11 @@ const Sidebar: React.FC<Toggleprops> = ({
                             }`}
                           >
                           
-                          <div className={`side-icon-container-1`}>
-                        {accr.sidebarProps.icon && accr.sidebarProps.icon}
+                      <div className={`side-icon-container-1`}>
+                      <div className={location.pathname === accr.path ? "ellipseee" : "ellipsee"} >  {accr.sidebarProps.icon && accr.sidebarProps.icon}</div>
                         {toggleOpen ? null : (
                           <p
-                            className={`tablink`}
+                          className={location.pathname === accr.path ? "tablink" : "tablinkk"}
                             style={{ color: project ? "#0069A3" : "#101828" }}
                           >
                             {accr.sidebarProps.displayText}
@@ -737,13 +743,14 @@ const Sidebar: React.FC<Toggleprops> = ({
                       className=""
                       style={{
                         display: "block",
-                        background: "#AFEB24",
-                            padding: "10px 12px",
-                        color: "black",
+                        background: "#E1F5EA",
+                        padding: "11px 12px",
+                        color: "#23B364",
                         width: "100%",
                         fontWeight: "500",
                         borderBottom: "1px solid #E8E8E8",
                         fontSize: "13px",
+                        borderRight:"4px solid #23B364"
                       }}
                     >
                       {" "}
@@ -810,11 +817,11 @@ const Sidebar: React.FC<Toggleprops> = ({
                       }}
                     >
                       <div className={`side-icon-container-1`}>
-                        {item.sidebarProps.icon && item.sidebarProps.icon}
+                    <div className={location.pathname === item.path ? "sidebaricon" : "sidebariconn"}>{item.sidebarProps.icon && item.sidebarProps.icon}</div>
                         {toggleOpen ? null : (
                           <p
-                            className={`tablink`}
-                            style={{ color: project ? "#0069A3" : "#101828" }}
+                          className={location.pathname === item.path ? "tablink" : "tablinkk"}
+                             
                           >
                             {item.sidebarProps.displayText}
                           </p>
@@ -844,13 +851,14 @@ const Sidebar: React.FC<Toggleprops> = ({
                           className=""
                           style={{
                             display: "block",
-                            background: "#AFEB24",
+                            background: "#E1F5EA",
                             padding: "13px 12px",
-                            color: "black",
+                            color: "#23B364",
                             width: "100%",
                             fontWeight: "500",
                             borderBottom: "1px solid #E8E8E8",
                             fontSize: "13px",
+                            borderRight:"3px solid #23B364"
                           }}
                         >
                           {" "}
@@ -919,9 +927,9 @@ const Sidebar: React.FC<Toggleprops> = ({
                               }, 500);
                             }}
                           >
-                            {accr.sidebarProps.icon && accr.sidebarProps.icon}
+                            <div className={location.pathname === accr.path ? "sidebaricon" : "sidebariconn"}>{accr.sidebarProps.icon && accr.sidebarProps.icon}</div>
                             {toggleOpen ? null : (
-                              <p className={`tablink`}>
+                              <p  className={location.pathname === accr.path ? "tablink" : "tablinkk"}>
                                 {accr.sidebarProps?.displayText}  
                               </p>
                             )}
@@ -949,13 +957,14 @@ const Sidebar: React.FC<Toggleprops> = ({
                                 className=""
                                 style={{
                                   display: "block",
-                                  background: "#AFEB24",
+                                  background: "#E1F5EA",
                                   padding: "11px 12px",
-                                  color: "black",
+                                  color: "#23B364",
                                   width: "100%",
                                   fontWeight: "500",
                                   borderBottom: "1px solid #E8E8E8",
                                   fontSize: "13px",
+                                  borderRight:"3px solid #23B364"
                                 }}
                               >
                                 {" "}
@@ -1015,9 +1024,9 @@ const Sidebar: React.FC<Toggleprops> = ({
                         location.pathname === item.path ? "active-link-bg" : ""
                       }`}
                     >
-                      {item.sidebarProps.icon && item.sidebarProps.icon}
+                    <div className={location.pathname === item.path ? "sidebaricon" : "sidebariconn"}> {item.sidebarProps.icon && item.sidebarProps.icon}</div> 
                       {toggleOpen ? null : (
-                        <p className={`tablink`}>
+                        <p  className={location.pathname === item.path ? "tablink" : "tablinkk"}>
                           {item.sidebarProps.displayText}
                         </p>
                       )}
@@ -1045,13 +1054,14 @@ const Sidebar: React.FC<Toggleprops> = ({
                           className=""
                           style={{
                             display: "block",
-                            background: "#AFEB24",
-                            padding: "11px 12px",
-                            color: "black",
+                            background: "#E1F5EA",
+                            padding: "13.5px 12px",
+                            color: "#23B364",
                             width: "100%",
                             fontWeight: "500",
                             borderBottom: "1px solid #E8E8E8",
                             fontSize: "13px",
+                            borderRight:"3px solid #23B364"
                           }}
                         >
                           {" "}

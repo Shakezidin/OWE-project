@@ -11,7 +11,7 @@ import { MdOutlinePayment } from "react-icons/md";
 import { FiServer } from "react-icons/fi";
 import { FcDataConfiguration } from "react-icons/fc";
 import { GrDocumentConfig } from "react-icons/gr";
-
+import { RiFileList3Line } from "react-icons/ri";
 
 const appRoutesTwo = [
   {
@@ -20,7 +20,7 @@ const appRoutesTwo = [
         path:  ROUTES.COMMISSION_DASHBOARD,
         sidebarProps: {
           displayText: "Dealer Pay",
-          icon: <MdOutlinePayment size={20} style={{marginLeft: "5px"}} color="black"/>
+          icon: <MdOutlinePayment size={20} style={{marginLeft: "5px"}}  className="hover-icon"/>
           // icon: (
           //   <img
           //     src={ICONS.dealerpayIcon}
@@ -45,7 +45,7 @@ const appRoutesTwo = [
         path: ROUTES.REPPAY_DASHBOARD,
         sidebarProps: {
           displayText: "Rep. Pay",
-          icon:<CiWallet size={20}  style={{marginLeft: "5px"}} color="black"/>
+          icon:<CiWallet size={20}  style={{marginLeft: "5px"}}  className="hover-icon"/>
         },
       },
     ],
@@ -57,7 +57,7 @@ const appRoutesTwo = [
         path: "#",
         sidebarProps: {
           displayText: "AR",
-          icon: <FiServer size={18}  style={{marginLeft: "5px"}}  color="black"/>
+          icon: <FiServer size={18}  style={{marginLeft: "5px"}}   className="hover-icon"/>
           // icon: (
           //   <img
           //     src={ICONS.dash}
@@ -87,10 +87,8 @@ const appRoutesTwo = [
               displayText: "Dashboard",
               icon: (
                 <div
-                  className="ellipsee"
-                  style={{
-                    backgroundColor: colorConfig.childrenicon,
-                  }}
+                  
+                   
                 ></div>
               ),
             },
@@ -101,7 +99,7 @@ const appRoutesTwo = [
               displayText: "Data",
               icon: (
                 <div
-                  className="ellipsee"
+                  
                   style={{
                     backgroundColor: colorConfig.childrenicon,
                   }}
@@ -115,7 +113,7 @@ const appRoutesTwo = [
               displayText: "User Activity",
               icon: (
                 <div
-                  className="ellipsee"
+                 
                   style={{
                     backgroundColor: colorConfig.childrenicon,
                   }}
@@ -134,33 +132,28 @@ const appRoutesTwo = [
         path: "##",
         sidebarProps: {
           displayText: "Project Tracking",
-          icon:  <GoProjectRoadmap size={18} style={{marginLeft: "3px"}} color="black"/>
+          icon:  <RiFileList3Line size={20} style={{marginLeft: "3px"}} color="black"/>
         },
         child: [
           {
-            path: "#",
+            path: ROUTES.PROJECT,
             sidebarProps: {
               displayText: "Performance",
               icon: (
                 <div
-                  className="ellipsee"
-                  style={{
-                    backgroundColor: colorConfig.childrenicon,
-                  }}
+                 
                 ></div>
               ),
             },
           },
           {
-            path:  ROUTES.PROJECT,
+            path: "#",
             sidebarProps: {
               displayText: "Project Detail",
               icon: (
                 <div
-                  className="ellipsee"
-                  style={{
-                    backgroundColor: colorConfig.childrenicon,
-                  }}
+                 
+                   
                 ></div>
               ),
             },
@@ -177,14 +170,14 @@ const appRoutesTwo = [
 
         sidebarProps: {
           displayText: "User Management",
-          icon:<RiUserSettingsLine size={20} color="black" style={{flexShrink: "0", }}/>
+          icon:<RiUserSettingsLine size={20}  style={{flexShrink: "0",}}/>
         },
       },
       {
         path: "#",
         sidebarProps: {
           displayText: "Configure",
-          icon: <GrDocumentConfig size={20} color="black" style={{flexShrink: "0", }}/> 
+          icon: <GrDocumentConfig size={18}  style={{flexShrink: "0"}} /> 
         },
         child: [
           {
@@ -418,7 +411,7 @@ const appRoutesTwo = [
 
         sidebarProps: {
           displayText: "Technical Support",
-          icon: <BiSupport size={20} color="black"  style={{flexShrink: "0",}}/>,
+          icon: <BiSupport size={20}   style={{flexShrink: "0"}}/>,
         },
       },
     ],

@@ -50,7 +50,23 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-
+.loader-container{
+  display: flex;
+  justify-content: center;
+  height: 80vh;
+}
+.data-not-found{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 4rem;
+}
+.data-not-found h2{
+font-size: 18px;
+font-weight: 600;
+color: #979797;
+}
 /* Firefox */
 input[type="number"] {
   -moz-appearance: textfield;
@@ -90,10 +106,18 @@ height: 16px !important;
   width: 9px;
   height: 9px;
   border-radius: 50%;
-  color:rgb(171 165 165);
+  background-color:rgb(171 165 165);
   margin-left:27px;
 }
 
+
+.ellipseee {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background-color: #23B364;
+  margin-left:27px;
+}
 .user-btn {
   background-color: #04a5e8;
   outline: none;

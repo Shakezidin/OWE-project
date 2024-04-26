@@ -55,18 +55,28 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	if (len(createUserReq.Name) <= 0) || (len(createUserReq.EmailId) <= 0) ||
-		(len(createUserReq.MobileNumber) <= 0) || (len(createUserReq.Password) <= 0) ||
+		(len(createUserReq.MobileNumber) <= 0) ||
+		//(len(createUserReq.Password) <= 0) ||
 		(len(createUserReq.Designation) <= 0) || (len(createUserReq.RoleName) <= 0) ||
-		(len(createUserReq.UserCode) <= 0) || (len(createUserReq.ReportingManager) <= 0) ||
+		//(len(createUserReq.UserCode) <= 0) ||
+		(len(createUserReq.ReportingManager) <= 0) ||
 		(len(createUserReq.UserStatus) <= 0) || (len(createUserReq.Description) <= 0) ||
-		(len(createUserReq.DealerOwner) <= 0) || (len(createUserReq.StreetAddress) <= 0) ||
-		(len(createUserReq.State) <= 0) || (len(createUserReq.City) <= 0) ||
-		(len(createUserReq.Zipcode) <= 0) || (len(createUserReq.Country) <= 0) {
+		(len(createUserReq.DealerOwner) <= 0) {
+		//(len(createUserReq.StreetAddress) <= 0) ||
+		//(len(createUserReq.State) <= 0) || (len(createUserReq.City) <= 0) ||
+		//(len(createUserReq.Zipcode) <= 0) || (len(createUserReq.Country) <= 0){
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
+	createUserReq.Password = "Welcome@123"
+	createUserReq.PasswordChangeReq = true
+	//createUserReq.StreetAddress = ""
+	//createUserReq.State = ""
+	//createUserReq.City = ""
+	//createUserReq.Zipcode = ""
+	//createUserReq.Country = ""
 
 	hashedPassBytes, err := GenerateHashPassword(createUserReq.Password)
 	if err != nil || hashedPassBytes == nil {
@@ -76,7 +86,6 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	queryParameters = append(queryParameters, createUserReq.Name)
-	queryParameters = append(queryParameters, createUserReq.UserCode)
 	queryParameters = append(queryParameters, createUserReq.MobileNumber)
 	queryParameters = append(queryParameters, createUserReq.EmailId)
 	queryParameters = append(queryParameters, string(hashedPassBytes))
