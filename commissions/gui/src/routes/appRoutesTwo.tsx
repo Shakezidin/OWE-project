@@ -42,7 +42,7 @@ const appRoutesTwo = [
   {
     repay: [
       {
-        path: "#",
+        path: ROUTES.REPPAY_DASHBOARD,
         sidebarProps: {
           displayText: "Rep. Pay",
           icon:<CiWallet size={20}  style={{marginLeft: "5px"}}  className="hover-icon"/>

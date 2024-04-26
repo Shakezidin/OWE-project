@@ -59,11 +59,11 @@ const TableHeader = (props: TableProps) => {
             <img src={ICONS.filtercomm} alt="" style={{width:"15px", height:"15px"}}/>
           </button>
         </div>
-        <div className="iconsSection2">
+        {/* <div className="iconsSection2">
           <button type="button" onClick={onPressImport}>
             <img src={ICONS.importIcon} alt="" /> Import
           </button>
-        </div>
+        </div> */}
         <div className="iconsSection2">
           <button type="button" onClick={onpressExport}>
             <img src={ICONS.exportIcon} alt="" />

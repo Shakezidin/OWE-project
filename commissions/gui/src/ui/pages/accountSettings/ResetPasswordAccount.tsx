@@ -16,7 +16,7 @@ const ResetPasswordAccount = () => {
               <Input
                 type={"text"}
                 label="Current Password"
-                value={"createMarketing.fee_rate"}
+                value={""}
                 name="fee_rate"
                 placeholder={"Enter"}
                 onChange={(e) => {}}
@@ -26,7 +26,7 @@ const ResetPasswordAccount = () => {
               <Input
                 type={"text"}
                 label="New Password"
-                value={"createMarketing.fee_rate"}
+                value={""}
                 name="fee_rate"
                 placeholder={"Enter"}
                 onChange={(e) => {}}
@@ -36,7 +36,7 @@ const ResetPasswordAccount = () => {
               <Input
                 type={"text"}
                 label="Confirm Password"
-                value={"createMarketing.fee_rate"}
+                value={""}
                 name="fee_rate"
                 placeholder={"Enter"}
                 onChange={(e) => {}}

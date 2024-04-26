@@ -18,6 +18,8 @@ import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/pagin
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
 import { LoanTypeColumns } from "../../../../resources/static_data/configureHeaderData/LoanTypeColumn";
 import FilterModal from "../../../components/FilterModal/FilterModal";
+import Loading from "../../../components/loader/Loading";
+import DataNotFound from "../../../components/loader/DataNotFound";
 
 const LoanType = () => {
   const dispatch = useAppDispatch();
@@ -110,12 +112,11 @@ const LoanType = () => {
   const fetchFunction = (req: any) => {
     dispatch(fetchLoanType(req));
    };
-  if (loading) {
-    return <div>Loading...</div>;
+   if (error) {
+    return <div className="loader-container"><Loading/></div>;
   }
-
-  if (error) {
-    return <div>Error: {error}</div>;
+  if (loading) {
+    return <div className="loader-container"><Loading/> {loading}</div>;
   }
  
  
@@ -229,27 +230,37 @@ const LoanType = () => {
                     </td>
                   </tr>
                 ))
-                : null}
+                :  <tr style={{border:0}}>
+                <td colSpan={10}>
+                <div className="data-not-found">
+                <DataNotFound/>
+                <h3>Data Not Found</h3>
+                </div>
+                </td>
+              </tr>
+                }
             </tbody>
           </table>
         </div>
+         
+   {
+    loanTypeList?.length > 0 ?
         <div className="page-heading-container">
       
       <p className="page-heading">
        {currentPage} - {totalPages} of {currentPageData?.length} item
       </p>
- 
-   {
-    loanTypeList?.length > 0 ? <Pagination
+ <Pagination
       currentPage={currentPage}
       totalPages={totalPages} // You need to calculate total pages
       paginate={paginate}
       goToNextPage={goToNextPage}
       currentPageData={currentPageData}
       goToPrevPage={goToPrevPage}
-    /> : null
-  }
+    /> 
    </div>
+   : null
+  }
       </div>
     </div>
   );
