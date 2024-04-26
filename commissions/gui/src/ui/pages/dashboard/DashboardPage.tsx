@@ -112,7 +112,7 @@ export const DashboardPage: React.FC = () => {
                   )}
                 </div>
                 <div
-                  className={`filter-line ${
+                  className={`filter-disable ${
                     active === 1 ? "active-filter-line" : ""
                   }`}
                   // onClick={() => setActive(1)}
@@ -124,7 +124,7 @@ export const DashboardPage: React.FC = () => {
                   )}
                 </div>
                 <div
-                  className={`filter-line ${
+                  className={`filter-disable ${
                     active === 2 ? "active-filter-line" : ""
                   }`}
                   // onClick={() => setActive(2)}
