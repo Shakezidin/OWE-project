@@ -15,7 +15,6 @@ import UserBasedInput from "./UserBasedInput";
 import SelectOption from "../../../components/selectOption/SelectOption";
 import { CreateUserModel } from "../../../../core/models/api_models/UserManagementModel";
 import { useAppSelector } from "../../../../redux/hooks";
-import { stat } from "fs";
 
 interface ButtonProps {
   editMode: boolean;
@@ -29,52 +28,45 @@ const UserOnboardingCreation: React.FC<ButtonProps> = ({
   editMode,
 }) => {
   const dispatch = useDispatch();
-  const [createUserOnboarding, setCreateOnboarding] = useState<CreateUserModel>(
-    {
-      first_name: "",
-      last_name: "",
-      email_id: "",
-      mobile_number: "",
-      password: "",
-      designation: "",
-      description: "",
-      assigned_dealer_name: "",
-      role_name: "",
-      add_region: "",
-      team_name: "",
-      report_to: "",
-      reporting_to: "",
-    }
-  );
+  // const [createUserOnboarding, setCreateOnboarding] = useState<CreateUserModel>(
+  //   {
+  //     first_name: "",
+  //     last_name: "",
+  //     email_id: "",
+  //     mobile_number: "",
+  //     password: "",
+  //     designation: "",
+  //     description: "",
+  //     assigned_dealer_name: "",
+  //     role_name: "",
+  //     add_region: "",
+  //     team_name: "",
+  //     report_to: "",
+  //     reporting_to: "",
+  //   }
+  // );
 
-  const formData = useAppSelector((state) => state.createOnboardUser);
+  const {formData} = useAppSelector((state) => state.createOnboardUser);
 
   console.log("formdata...", formData);
   const [selectTable, setSelectTable] = useState<boolean>(false);
 
   const handleChange = (newValue: any, fieldName: string) => {
-    setCreateOnboarding((prevData) => ({
-      ...prevData,
-      [fieldName]: newValue ? newValue.value : "",
-    }));
-  };
+    const {value }= newValue;
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setCreateOnboarding((prevData) => ({
-      ...prevData,
-      [name]:
-        name === "Email_ID" || name === "Phone_Number"
-          ? parseFloat(value)
-          : value,
-    }));
+    console.log(newValue, fieldName)
+    dispatch(updateUserForm({ field: fieldName, value}));
   };
+  
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    dispatch(updateUserForm({ field: name, value }));
+};
+
 
   const handleUserSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    dispatch(updateUserForm(createUserOnboarding));
+    //dispatch(updateUserForm(createUserOnboarding));
   };
 
   /** render ui */
@@ -93,7 +85,7 @@ const UserOnboardingCreation: React.FC<ButtonProps> = ({
                   <Input
                     type={"text"}
                     label="First Name"
-                    value={createUserOnboarding.first_name}
+                    value={formData.first_name}
                     placeholder={"Enter Name"}
                     onChange={(e) => handleInputChange(e)}
                     name={"first_name"}
@@ -103,7 +95,7 @@ const UserOnboardingCreation: React.FC<ButtonProps> = ({
                   <Input
                     type={"text"}
                     label="Last Name"
-                    value={createUserOnboarding.last_name}
+                    value={formData.last_name}
                     placeholder={"Enter"}
                     onChange={(e) => handleInputChange(e)}
                     name={"last_name"}
@@ -116,7 +108,7 @@ const UserOnboardingCreation: React.FC<ButtonProps> = ({
                     onChange={(newValue) => handleChange(newValue, "role_name")}
                     value={userSelectData?.find(
                       (option) =>
-                        option?.value === createUserOnboarding.role_name
+                        option?.value === formData.role_name
                     )}
                   />
                 </div>
@@ -126,7 +118,7 @@ const UserOnboardingCreation: React.FC<ButtonProps> = ({
                   <Input
                     type={"text"}
                     label="Email ID"
-                    value={createUserOnboarding.email_id}
+                    value={formData.email_id}
                     placeholder={"email@mymail.com"}
                     onChange={(e) => handleInputChange(e)}
                     name={"email_id"}
@@ -136,15 +128,15 @@ const UserOnboardingCreation: React.FC<ButtonProps> = ({
                   <Input
                     type={"text"}
                     label="Phone Number"
-                    value={createUserOnboarding.mobile_number}
+                    value={formData.mobile_number}
                     placeholder={"Phone Number"}
                     onChange={(e) => handleInputChange(e)}
                     name={"mobile_number"}
                   />
                 </div>
-                {createUserOnboarding.role_name === "admin" ||
-                createUserOnboarding.role_name === "SubDealer Owner" ||
-                createUserOnboarding.role_name === "Dealer Owner" ? null : (
+                {formData.role_name === "admin" ||
+                formData.role_name === "SubDealer Owner" ||
+                formData.role_name === "Dealer Owner" ? null : (
                   <div className="create-input-field">
                     <label className="inputLabel">Dealer Owner</label>
                     <SelectOption
@@ -155,14 +147,14 @@ const UserOnboardingCreation: React.FC<ButtonProps> = ({
                       value={dealer?.find(
                         (option) =>
                           option?.value ===
-                          createUserOnboarding.assigned_dealer_name
+                        formData.assigned_dealer_name
                       )}
                     />
                   </div>
                 )}
               </div>
               <UserBasedInput
-                createUserOnboarding={createUserOnboarding}
+                createUserOnboarding={formData}
                 onChange={(e: any) => handleInputChange(e)}
               />
               <div className="">
@@ -239,7 +231,7 @@ const UserOnboardingCreation: React.FC<ButtonProps> = ({
                   id=""
                   rows={3}
                   // onChange={(e) => handlemarketingInputChange(e)}
-                  value={createUserOnboarding.designation}
+                  value={formData.designation}
                   onChange={(e) => handleInputChange(e)}
                   placeholder="Type"
                 ></textarea>

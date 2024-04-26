@@ -1,4 +1,5 @@
 import {
+  CreateUserModel,
   OnboardingChartModel,
   UserRoleBasedListModel,
 } from "../api_models/UserManagementModel";
@@ -8,4 +9,10 @@ export interface UserOnboardingStateModel {
   loading: boolean;
   userOnboardingList: OnboardingChartModel[];
   userRoleBasedList: UserRoleBasedListModel[];
+}
+
+export interface CreateOnboardUserStateModel {
+  error: string | null;
+  loading: boolean;
+  formData: CreateUserModel;
 }
