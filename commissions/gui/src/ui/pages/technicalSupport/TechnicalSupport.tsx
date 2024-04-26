@@ -35,11 +35,8 @@ const TechnicalSupport = () => {
           <div className="touch-info">
             <p>Get In Touch with us for more Information</p>
           </div>
-          <div
-            className="create-input-container"
-            style={{ width: "100%", display: "flex", marginTop: "1rem" }}
-          >
-            <div className="create-input-field" style={{ width: "290px" }}>
+          <div className="create-input-container-support">
+            <div className="create-input-field-support">
               <Input
                 type={"text"}
                 label="First Name"
@@ -49,7 +46,7 @@ const TechnicalSupport = () => {
                 onChange={(e) => {}}
               />
             </div>
-            <div className="create-input-field" style={{ width: "290px" }}>
+            <div className="create-input-field-support">
               <Input
                 type={"text"}
                 label="Last Name"
@@ -60,11 +57,8 @@ const TechnicalSupport = () => {
               />
             </div>
           </div>
-          <div
-            className="create-input-container"
-            style={{ width: "100%", display: "flex", marginTop: "1rem" }}
-          >
-            <div className="create-input-field" style={{ width: "290px" }}>
+          <div className="create-input-container-support">
+            <div className="create-input-field-support">
               <Input
                 type={"text"}
                 label="Email"
@@ -74,7 +68,7 @@ const TechnicalSupport = () => {
                 onChange={(e) => {}}
               />
             </div>
-            <div className="create-input-field" style={{ width: "290px" }}>
+            <div className="create-input-field-support">
               <Input
                 type={"text"}
                 label="Phone Number"
@@ -85,75 +79,61 @@ const TechnicalSupport = () => {
               />
             </div>
           </div>
-          <div className="" style={{ marginRight: "8rem" }}>
-            <div
-              className=""
-              style={{ display: "flex", gap: "10rem", marginTop: "1rem" }}
-            >
-              <div className="create-input-field">
-                <label className="inputLabel">Issue</label>
-                <Select
-                  // options={repTypeOption(newFormData) || respTypeData}
-                  isSearchable
-                  styles={{
-                    control: (baseStyles, state) => ({
-                      ...baseStyles,
-                      marginTop: "4.5px",
-                      borderRadius: "8px",
-                      outline: "none",
-                      fontSize: "13px",
-                      height: "2.25rem",
-                      width: "290px",
-                      border: "1px solid #d0d5dd",
-                    }),
 
-                    indicatorSeparator: () => ({
-                      display: "none", // Hide the indicator separator
-                    }),
-                  }}
-                />
-              </div>
+          <div className="create-input-container-support">
+            <div className="create-input-field-support">
+              <label className="inputLabel">Issue</label>
+              <Select
+                // options={repTypeOption(newFormData) || respTypeData}
+                isSearchable
+                styles={{
+                  control: (baseStyles, state) => ({
+                    ...baseStyles,
+                    marginTop: "4.5px",
+                    borderRadius: "8px",
+                    outline: "none",
+                    fontSize: "13px",
+                    // height: "2.25rem",
 
-              <div className="rate-input-container">
-                <div className="rate-input-field">
-                  {/* <Input
-                    type={"file"}
-                    label="Attach File"
-                    value={""}
-                    name="rl"
-                    placeholder={"Select File"}
-                    onChange={(e) => { }}
-                    
-                  /> */}
-                  <label>
-                    <p>Attach File</p>
-                  </label>
-                  <div className="file-input-container">
-                    <input
-                      type="file"
-                      ref={fileInputRef}
-                      onChange={handleFileInputChange}
-                      className="file-input"
-                    />
-                    <div className="custom-button-container">
-                      <span className="file-input-placeholder">
-                        Select File
-                      </span>
-                      <button
-                        className="custom-button"
-                        onClick={handleButtonClick}
-                      >
-                        Browse
-                      </button>
-                    </div>
+                    border: "1px solid #d0d5dd",
+                  }),
+
+                  indicatorSeparator: () => ({
+                    display: "none", // Hide the indicator separator
+                  }),
+                }}
+              />
+            </div>
+
+            <div className="rate-input-container">
+              <div className="rate-input-field">
+                <label>
+                  <p>Attach File</p>
+                </label>
+                <div className="file-input-container">
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleFileInputChange}
+                    className="file-input"
+                  />
+                  <div className="custom-button-container">
+                    <span className="file-input-placeholder">Select File</span>
+                    <button
+                      className="custom-button"
+                      onClick={handleButtonClick}
+                    >
+                      Browse
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+
           <div
-            className="create-input-field-note"
-            style={{ marginTop: "1rem" }}
+            className="create-input-field-note-support"
+            style={{ marginTop: "0.3rem" }}
           >
             <label htmlFor="" className="inputLabel">
               Message
@@ -175,9 +155,8 @@ const TechnicalSupport = () => {
           </div>
         </div>
       </div>
-{/* <ProjectBreakdown/> */}
-{/* <CreateProfileUser/> */}
-     
+      {/* <ProjectBreakdown/> */}
+      {/* <CreateProfileUser/> */}
     </>
   );
 };

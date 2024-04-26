@@ -247,6 +247,9 @@
   white-space: nowrap;
  
 }
+.breakdown-table tbody {
+  font-weight: 700;
+}
 .createUserCrossButtonBreak {
   display: flex;
   align-items: flex-end;

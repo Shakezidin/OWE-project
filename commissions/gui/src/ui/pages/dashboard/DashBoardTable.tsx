@@ -384,7 +384,7 @@ const DashBoardTable: React.FC = () => {
                           <HelpDashboard
                             commission={editedCommission}
                             editMode={editMode}
-                            handleClose={handleClose}
+                            handleClose={handleIconClose}
                           />
                         )}
                           </div>

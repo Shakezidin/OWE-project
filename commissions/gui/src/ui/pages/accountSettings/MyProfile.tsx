@@ -54,10 +54,10 @@ const MyProfile = () => {
                         <div className=''>
                             <p>Personal Information</p>
                         </div>
-                        {/* <div className="edit-section">
+                        <div className="edit-section">
                             <img src={ICONS.editIcon} alt="" />
                             <p>Edit</p>
-                        </div> */}
+                        </div>
                     </div>
 
                     <div className="create-input-container" style={{ padding: "0.5rem", marginLeft: "1rem" }}>
