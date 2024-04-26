@@ -612,3 +612,277 @@ CREATE TABLE noncomm_dlrpay (
 	FOREIGN KEY (dealer_id) REFERENCES user_details(user_id)
 );
 
+
+   
+CREATE TABLE
+    IF NOT EXISTS adjustments (
+	unique_id   character varying PRIMARY KEY,
+	customer	character varying,
+	partner		character varying,
+	installer	character varying,
+	state		character varying,
+	sys_size	DOUBLE PRECISION,
+	bl			character varying,
+	epc			FLOAT,
+	date		date,
+	amount		float,
+	notes		character varying
+);
+
+
+       CREATE TABLE
+    IF NOT EXISTS reconsilation (
+	unique_id   character varying PRIMARY KEY,
+	customer	character varying,
+	partner		character varying,
+	state		character varying,
+	sys_size	DOUBLE PRECISION,
+	status		character varying,
+	date		date,
+	amount		float,
+	notes		character varying
+);
+
+
+    CREATE TABLE
+    IF NOT EXISTS ar_payment_tracking (
+Unique ID	Text PRIMARY KEY,
+Customer Name	text,  // needs to be lookup based on filter
+Partner		text,
+Date	 	date,
+Amount         	float,
+Payment_Type_Stage	
+Bank_CED	 
+Total Paid 	 float,		// Need to be calculated
+state 		text
+);
+
+
+  
+  CREATE TABLE AR_Schedule (
+	Partner		text,
+	Installer	text,
+	Sale_Type	text,
+	State		text,
+	Red_Line	Float,
+	Calc_Date	Date,
+	Permit_Pay	 float,
+	Permit_Max	 float,
+	Install_Pay	  float,
+	PTO_Pay		float,
+	Start_Date		Date,
+	End_Date	Date
+);
+
+Select * from AR_Schedule;
+
+
+
+     
+
+ CREATE TABLE   REP_PAY_SETTINGS (
+    Name   Text,
+   State   character varying ,	
+  Pay_Scale     Text,	
+  Position      Text,
+  B_E	Text,
+  Start_Date	Date,
+  End_Date	   Date,
+  Rate   float
+);
+
+Select * from REP_PAY_SETTINGS;
+
+
+                     
+  CREATE TABLE  LEADER_OVERRIDE (
+              Team_Name     Text,	
+           Leader_Name	   Text,
+            Type	  Text, 
+            Term	  Float,
+          Qual	          Float,
+        Sales_Q	          Float,
+        Team_kW_Q	  Float,
+        Pay_Rate	   Float,
+       Start_Date          Date,	
+       End_Date           Date 
+
+       );
+
+   SELECT * FROM LEADER_OVERRIDE;
+
+        
+ CREATE TABLE   COMMISSION_RATES (
+    Partner      Text,
+     Installer    Text,
+     State         Text,
+     Sale_Type   Text,
+    Sale_Price     Float,
+     Rep_Type    Text,
+      RL      Float,
+     Rate    Float,
+    Start_Date      Date,
+     End_Date    Date
+
+);
+
+SELECT * FROM COMMISSION_RATES ;
+
+
+
+         CREATE TABLE   ADDER_RESPONSIBILITY ( 	
+        Pay_Scale   Text,
+        Percentage Float
+          );
+   
+   SELECT * FROM ADDER_RESPONSIBILITY;
+
+
+
+   CREATE TABLE   ADDER_CREDITS (
+            Pay_Scale    Text,	
+                Type	Text,
+            MAX_Value     Float,
+           MAX_Percent   Float
+
+              );
+			  
+	SELECT * FROM ADDER_CREDITS;
+
+
+ CREATE TABLE   LOAN_FEES ( 
+     Dealer	   Text,
+      Installer	     Text,
+       State	 Text,
+       Loan_Type     Text,
+        Cost	Float,
+     DLR_MU     Float,	
+     DLR_Cost     Float,
+    Start_Date    Date,
+   End_Date     Date
+);
+ 
+SELECT * FROM LOAN_FEES;
+
+
+
+ CREATE TABLE   INSTALL_COST (
+                Cost	    Float,
+                Start_Date   Date,
+                End_Dtae      Date
+              );	
+
+     SELECT * FROM INSTALL_COST;
+
+
+
+   CREATE TABLE  APPT_SETTERS (
+          Name    Text,
+          Team     Text,
+          Pay_Rate      float,
+         Start_Date      Date,
+        End_Date          Date
+
+);
+  SELECT * FROM APPT_SETTERS;
+
+
+  
+  CREATE CREATE TABLE  ADDERS_Data (
+	  Unique_ID     Text primary Key,
+        Date      Date,
+         Adder_Type      Text,
+	    GC       Text,
+         Eaxct_Amt    Float,
+      Per_KW_Amt      Float,
+       Description_Repvisibale      Text,
+      Notes_No_Repvisibale    Text,
+	Sys_Size         Float,
+       Adder_Calc    Float
+
+);
+ SELECT * FROM ADDERS_Data;
+
+ CREATE TABLE  Auto_Adder (
+	  Unique_ID   Text primary Key,
+          Date      Date,
+         Adder_Type      Text,
+	    GC       Text,
+         Eaxct_Amt    Float,
+       Per_KW_Amt      Float,
+       Description_Repvisibale      Text,
+      Notes_No_Repvisibale    Text
+      );
+	  
+SELECT * FROM Auto_Adder;
+
+ CREATE TABLE  Loan_Fee_Adder(
+     Unique_ID     Text primary Key,
+      Date      Date,
+      Loan_Type     Text,
+      Dealer      Text,
+      Installer     Text,
+     State      Text,
+  Contract_Value    Float,
+  Dlr_Tier     Text,
+ OWE_Cost      Float,
+     Adder_Amt    Float,
+    Per_KW_Amt      Float,
+    Rep_Value           Float,
+    Description_Repvisibale      Text,
+     Notes_No_Repvisibale    Text,
+	Type     Text
+);
+
+Select * From Loan_Fee_Adder;
+
+       
+CREATE TABLE AR_Import(
+	Custmoer_Name   Text,
+	Unique_ID     Text Primary Key,
+	Date     Date,
+	Amount    Float,
+	Notes   Text,
+	Created  Date
+);
+ SELECT * FROM AR_Import;
+
+ CREATE TABLE   PaySkdNew (
+  Dealer   Text,	
+  Partner      Text,
+  Installer    Text,   
+  Sale_Type   Text, 
+  ST	Text,
+  RL	Float,
+  Draw    Float,
+  Draw_Max   Float, 	
+  Rep_Draw   Float,
+  Rep_Draw_Max  Float,	 
+  Rep_Pay    Float, 	
+  Start_Date    Date,	
+  End_Date    Date
+
+);
+
+SELECT * FROM PaySkdNew;
+
+
+CREATE TABLE  Rate_Adjustments(
+    Pay_Scale   Text,
+    Position   Text,
+    Adjustment Float,
+    Min_Rate    Float,
+   Max_Rate    Float
+);
+SELECT * From Rate_Adjustments;
+
+CREATE TABLE  DLR_OTH(
+  Unique_ID   text Primary Key,
+  Payee  Text,
+  Amount  Float,
+  Date    Date,
+  Description  Text,
+  Balance   Float,
+  Paid_Amt  Float
+);
+Select * from DLR_OTH;
