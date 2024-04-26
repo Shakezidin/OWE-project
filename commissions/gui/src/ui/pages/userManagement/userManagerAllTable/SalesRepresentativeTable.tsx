@@ -6,10 +6,12 @@ import { UserRoleBasedListModel } from "../../../../core/models/api_models/UserM
 
 interface SalesRepresentativeProps {
   data: UserRoleBasedListModel[];
+  onClickEdit: (item: UserRoleBasedListModel)=> void;
+  onClickDelete: (item: UserRoleBasedListModel)=> void;
 }
 
 const SalesRepresentativeTable: React.FC<SalesRepresentativeProps> = ({
-  data,
+  data, onClickEdit, onClickDelete
 }) => {
   return (
     <>
@@ -125,10 +127,10 @@ const SalesRepresentativeTable: React.FC<SalesRepresentativeProps> = ({
                     <td>{el.description}</td>
                     <td>
                       <div className="action-icon">
-                        <div className="" style={{ cursor: "pointer" }}>
+                        <div className="" style={{ cursor: "pointer" }} onClick={()=> onClickDelete(el)}>
                           <img src={ICONS.deleteIcon} alt="" />
                         </div>
-                        <div className="" style={{ cursor: "pointer" }}>
+                        <div className="" style={{ cursor: "pointer" }} onClick={()=> onClickEdit(el)}>
                           <img src={ICONS.editIcon} alt="" />
                         </div>
                       </div>

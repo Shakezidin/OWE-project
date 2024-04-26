@@ -19,7 +19,8 @@ const SelectOption: React.FC<Props> = ({ options, value, onChange }) => {
       options={options}
       isSearchable
       onChange={onChange}
-      value={value}
+      placeholder="Select"
+      value={value ? value: {label:'Select',value:'Select'} }
       styles={{
         control: (baseStyles, state) => ({
           ...baseStyles,

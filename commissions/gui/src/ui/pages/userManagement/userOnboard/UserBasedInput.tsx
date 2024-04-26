@@ -1,46 +1,54 @@
 import React from "react";
 import Input from "../../../components/text_input/Input";
+import SelectOption from "../../../components/selectOption/SelectOption";
 
 interface inputSelectProps {
   onChange: any;
-  createUserOnboarding: any;
+  formData: any;
+  regionList: any[];
+  handleChangeForRegion: (value: any, name: string) => void;
 }
 
 const UserBasedInput: React.FC<inputSelectProps> = ({
-  createUserOnboarding,
+  formData,
   onChange,
+  regionList,
+  handleChangeForRegion,
 }) => {
   return (
     <div className="create-input-container">
-      {createUserOnboarding?.role_name === "rm" && (
+      {formData?.role_name === "Regional Manager" && (
         <div className="create-input-field">
           <Input
             type={"text"}
-            label="Add Region"
-            value={createUserOnboarding.add_region}
-            placeholder={"Add Region"}
+            label="Region"
+            value={formData.add_region}
+            placeholder={"Region"}
             onChange={(e) => onChange(e)}
             name={"add_region"}
           />
         </div>
       )}
-      {createUserOnboarding?.role_name === "sales_rep_m" && (
+      {formData?.role_name === "Sale Representative" && (
         <>
           <div className="create-input-field">
-            <Input
-              type={"text"}
-              label="Report To"
-              value={createUserOnboarding.report_to}
-              placeholder={"Report To"}
-              onChange={(e) => onChange(e)}
-              name={"report_to"}
+            <label className="inputLabel">Report to</label>
+            <SelectOption
+              options={regionList}
+              onChange={(newValue) =>
+                handleChangeForRegion(newValue, "report_to")
+              }
+              value={regionList?.find(
+                (option) => option?.value === formData.report_to
+
+              )}
             />
           </div>
           <div className="create-input-field">
             <Input
               type={"text"}
               label="Team Name"
-              value={createUserOnboarding.team_name}
+              value={formData.team_name}
               placeholder={"Team Name"}
               onChange={(e) => onChange(e)}
               name={"team_name"}
@@ -48,26 +56,19 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
           </div>
         </>
       )}
-      {createUserOnboarding?.role_name === "sales_m" && (
+      {formData?.role_name === "Sales Manager" && (
         <>
           <div className="create-input-field">
-            <Input
-              type={"text"}
-              label="Add Region"
-              value={createUserOnboarding.add_region}
-              placeholder={"Add Region"}
-              onChange={(e) => onChange(e)}
-              name={"add_region"}
-            />
-          </div>
-          <div className="create-input-field">
-            <Input
-              type={"text"}
-              label="Reporting To"
-              value={createUserOnboarding.reporting_to}
-              placeholder={"Reporting To"}
-              onChange={(e) => onChange(e)}
-              name={"reporting_to"}
+            <label className="inputLabel">Report to</label>
+            <SelectOption
+              options={regionList}
+              onChange={(newValue) =>
+                handleChangeForRegion(newValue, "report_to")
+              }
+              value={regionList?.find(
+                (option) => option?.value === formData.report_to
+
+              )}
             />
           </div>
         </>

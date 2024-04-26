@@ -53,9 +53,9 @@ export const store = configureStore({
     createtimelineSla: createtimeLineSlaReducer,
     createloanType: createloanTypeReducer,
     paginationType:paginationReducer,
-    createUserType: createUserReducer,
     //user management
-    userManagement:userManagementSlice
+    userManagement:userManagementSlice,
+    createOnboardUser: createUserReducer,
   },
 });
 
