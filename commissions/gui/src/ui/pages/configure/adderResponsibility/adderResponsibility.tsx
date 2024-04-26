@@ -123,7 +123,7 @@ const AdderResponsibility = () => {
       <Breadcrumb head="" linkPara="" linkparaSecond="Adder Responsbility" />
       <div className="commissionContainer">
         <TableHeader
-          title="Leader Override"
+          title="Adder Responsbility"
           onPressViewArchive={() => { }}
           onPressArchive={() => { }}
           onPressFilter={() => filter()}
@@ -178,7 +178,7 @@ const AdderResponsibility = () => {
                 </th>
               </tr>
             </thead>
-            <tbody >
+            {/* <tbody >
               {currentPageData?.length > 0
                 ? currentPageData?.map((el: any, i: any) => (
                   <tr
@@ -221,7 +221,7 @@ const AdderResponsibility = () => {
                   </tr>
                 ))
                 : null}
-            </tbody>
+            </tbody> */}
 
           </table>
         </div>

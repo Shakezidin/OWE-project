@@ -11,7 +11,9 @@ const ConfigurePage: React.FC = () => {
 
   const dealerData = [
     { title: "Dealer OverRides", route: ROUTES.CONFIG_DEALER_OVER },
+    { title: "Adders", route: ROUTES.CONFIG_ADDER},
     { title: "Time Line SLA", route: ROUTES.CONFIG_TIMELINE },
+    { title: "Loan Fee Addr", route: ROUTES.CONFIG_LOAN_FEE},
     { title: "Rebate Data", route: ROUTES.CONFIG_REBET_DATA },
     { title: "Referal Data", route: ROUTES.CONFIG_REFERAL_DATA },
     { title: "Dealer Credit", route: ROUTES.CONFIG_DEALER_CREDIT },
@@ -23,7 +25,7 @@ const ConfigurePage: React.FC = () => {
 
   const AR = [
     { title: "AR" , route:"#"},
-    { title: "AR Schedule",route:"#" },
+    { title: "AR Schedule",route:ROUTES.CONFIG_AR_SCHEDULE },
     { title: "AR Import",route:"#"},
     { title: "Adjustment", route:"#"},
     { title: "Reconcile", route:"#"},
@@ -37,7 +39,7 @@ const ConfigurePage: React.FC = () => {
     { title: "Adder Responsibility", route:ROUTES.CONFIG_ADDER_RESPONSIBILITY},
     { title: "Adder Credit", route:ROUTES.CONFIG_ADDER_CREDITS},
     { title: "Marketing Fees", route: ROUTES.CONFIG_MARKETING},
-    { title: "Loan Fee", route:ROUTES.CONFIG_LOAN_FEE},
+    { title: "Loan Fee", route:ROUTES.CONFIG_LOAN_FEES},
     { title: "Tier Loan Fee", route: ROUTES.CONFIG_TIER_LOAN_FEE},
     { title: "Dealer Tier", route: ROUTES.CONFIG_DEALER_TIER},
     { title: "Adder Data", route: "#"},
@@ -45,8 +47,8 @@ const ConfigurePage: React.FC = () => {
     { title: "Commision Rates", route: ROUTES.CONFIG_COMMISSION_RATE},
     { title: "Sales Types", route: ROUTES.CONFIG_SALE},
     { title: "Loan Type", route: ROUTES.CONFIG_LOAN},
-    { title: "Adders", route: ROUTES.CONFIG_ADDER},
-    { title: "Loan Fee Addr", route: ROUTES.CONFIG_LOAN_FEE},
+
+    
   ];
 
   return (

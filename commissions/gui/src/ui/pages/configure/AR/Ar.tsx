@@ -123,7 +123,7 @@ const AR = () => {
       <Breadcrumb head="" linkPara="Configure" linkparaSecond="AR" />
       <div className="commissionContainer">
         <TableHeader
-          title="Rep Pay Settings"
+          title="AR"
           onPressViewArchive={() => { }}
           onPressArchive={() => { }}
           onPressFilter={() => filter()}
@@ -178,7 +178,7 @@ const AR = () => {
                 </th>
               </tr>
             </thead>
-            <tbody >
+            {/* <tbody >
               {currentPageData?.length > 0
                 ? currentPageData?.map((el: any, i: any) => (
                   <tr
@@ -221,7 +221,7 @@ const AR = () => {
                   </tr>
                 ))
                 : null}
-            </tbody>
+            </tbody> */}
 
           </table>
         </div>

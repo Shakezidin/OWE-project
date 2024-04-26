@@ -178,7 +178,7 @@ const ARSchedule = () => {
                 </th>
               </tr>
             </thead>
-            <tbody >
+            {/* <tbody >
               {currentPageData?.length > 0
                 ? currentPageData?.map((el: any, i: any) => (
                   <tr
@@ -221,7 +221,7 @@ const ARSchedule = () => {
                   </tr>
                 ))
                 : null}
-            </tbody>
+            </tbody> */}
 
           </table>
         </div>

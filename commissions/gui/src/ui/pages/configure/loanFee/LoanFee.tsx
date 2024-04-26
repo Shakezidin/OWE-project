@@ -123,7 +123,7 @@ const LoanFee = () => {
       <Breadcrumb head="" linkPara="Configure" linkparaSecond="Loan Fee" />
       <div className="commissionContainer">
         <TableHeader
-          title="Leader Override"
+          title="Loan Fee"
           onPressViewArchive={() => { }}
           onPressArchive={() => { }}
           onPressFilter={() => filter()}
@@ -178,7 +178,7 @@ const LoanFee = () => {
                 </th>
               </tr>
             </thead>
-            <tbody >
+            {/* <tbody >
               {currentPageData?.length > 0
                 ? currentPageData?.map((el: any, i: any) => (
                   <tr
@@ -221,7 +221,7 @@ const LoanFee = () => {
                   </tr>
                 ))
                 : null}
-            </tbody>
+            </tbody> */}
 
           </table>
         </div>

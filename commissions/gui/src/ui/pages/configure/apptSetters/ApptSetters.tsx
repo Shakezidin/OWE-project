@@ -120,10 +120,10 @@ const ApptSetters = () => {
 
   return (
     <div className="comm">
-      <Breadcrumb head="" linkPara="" linkparaSecond="Learder Override" />
+      <Breadcrumb head="" linkPara="Configure" linkparaSecond="Appt Setters" />
       <div className="commissionContainer">
         <TableHeader
-          title="Leader Override"
+          title="Appt Setters"
           onPressViewArchive={() => { }}
           onPressArchive={() => { }}
           onPressFilter={() => filter()}

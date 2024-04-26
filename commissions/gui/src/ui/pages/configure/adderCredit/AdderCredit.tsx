@@ -123,7 +123,7 @@ const AdderCredit = () => {
       <Breadcrumb head="" linkPara="Configure" linkparaSecond="Adder Credit" />
       <div className="commissionContainer">
         <TableHeader
-          title="Rep Pay Settings"
+          title="Adder Credit"
           onPressViewArchive={() => { }}
           onPressArchive={() => { }}
           onPressFilter={() => filter()}
@@ -178,7 +178,7 @@ const AdderCredit = () => {
                 </th>
               </tr>
             </thead>
-            <tbody >
+            {/* <tbody >
               {currentPageData?.length > 0
                 ? currentPageData?.map((el: any, i: any) => (
                   <tr
@@ -221,7 +221,7 @@ const AdderCredit = () => {
                   </tr>
                 ))
                 : null}
-            </tbody>
+            </tbody> */}
 
           </table>
         </div>

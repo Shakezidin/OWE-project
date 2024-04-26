@@ -137,7 +137,7 @@ function App() {
                 <Route path={ROUTES.CONFIG_LEADER_OVERRIDE} element = {<LeaderOverride/>}/>
                 <Route path={ROUTES.CONFIG_ADDER_CREDITS} element = {<AdderCredit/>}/>
                 <Route path={ROUTES.CONFIG_ADDER_RESPONSIBILITY} element = {<AdderResponsibility/>}/>
-                <Route path={ROUTES.CONFIG_LOAN_FEE} element = {<LoanFee/>}/>
+                <Route path={ROUTES.CONFIG_LOAN_FEES} element = {<LoanFee/>}/>
             </Route>
        
       </Routes>
