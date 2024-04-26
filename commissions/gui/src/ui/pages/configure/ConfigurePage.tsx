@@ -19,25 +19,25 @@ const ConfigurePage: React.FC = () => {
     { title: "DLR-OTH", route: ROUTES.CONFIG_DLE_OTH_PAY },
   ];
 
-  const repData = [{ title: "Rep Pay"}, { title: "Rate Adjutments"}];
+  const repData = [{ title: "Rep Pay", route:ROUTES.CONFIG_REP_PAY_SETTINGS}, { title: "Rate Adjustments", route:ROUTES.CONFIG_RATE_ADJUSTMENTS}];
 
   const AR = [
-    { title: "AR" },
-    { title: "AR Schedule"},
-    { title: "AR Import"},
-    { title: "Adjustment"},
-    { title: "Reconcile"},
-    { title: "Install cost"},
+    { title: "AR" , route:"#"},
+    { title: "AR Schedule",route:"#" },
+    { title: "AR Import",route:"#"},
+    { title: "Adjustment", route:"#"},
+    { title: "Reconcile", route:"#"},
+    { title: "Install cost", route:ROUTES.CONFIG_INSTALL_COST},
   ];
 
   const commonData = [
     { title: "Payment Schedule", route: ROUTES.CONFIG_PAYMENT_SCHEDULE},
-    { title: "Leader Override"},
-    { title: "Appt Setters"},
-    { title: "Adder Responsibility"},
-    { title: "Adder Credit"},
+    { title: "Leader Override", route:ROUTES.CONFIG_LEADER_OVERRIDE},
+    { title: "Appt Setters", route:"#"},
+    { title: "Adder Responsibility", route:ROUTES.CONFIG_ADDER_RESPONSIBILITY},
+    { title: "Adder Credit", route:ROUTES.CONFIG_ADDER_CREDITS},
     { title: "Marketing Fees", route: ROUTES.CONFIG_MARKETING},
-    { title: "Loan Fee", },
+    { title: "Loan Fee", route:ROUTES.CONFIG_LOAN_FEE},
     { title: "Tier Loan Fee", route: ROUTES.CONFIG_TIER_LOAN_FEE},
     { title: "Dealer Tier", route: ROUTES.CONFIG_DEALER_TIER},
     { title: "Adder Data", route: "#"},
@@ -101,7 +101,7 @@ const ConfigurePage: React.FC = () => {
                   const randomCardColor = cardColors[colorIndex]; 
                   const randomArrowColor = arrowColors[colorIndex];
                   return (
-                    <Link to={"#"}
+                    <Link to={rep.route}
                       className="pay-card"
                       key={index}
                       style={{ backgroundColor: randomCardColor }}
@@ -130,7 +130,7 @@ const ConfigurePage: React.FC = () => {
                   const randomCardColor = cardColors[colorIndex]; 
                   const randomArrowColor = arrowColors[colorIndex];
                   return (
-                    <Link to={"#"}
+                    <Link to={ar.route}
                       className="pay-card"
                       key={index}
                       style={{ backgroundColor: randomCardColor }}
@@ -159,7 +159,7 @@ const ConfigurePage: React.FC = () => {
                   const randomCardColor = cardColors[colorIndex]; 
                   const randomArrowColor = arrowColors[colorIndex];
                   return (
-                    <Link to={"#"}
+                    <Link to={common.route}
                       className="pay-card"
                       key={index}
                       style={{ backgroundColor: randomCardColor }}
