@@ -22,9 +22,9 @@ INSERT INTO user_roles (role_name) VALUES ('Regional Manager');
 INSERT INTO user_roles (role_name) VALUES ('Sales Manager');
 INSERT INTO user_roles (role_name) VALUES ('Sale Representative');
 INSERT INTO user_roles (role_name) VALUES ('Appointment Setter');
-INSERT INTO user_details (name, user_code, mobile_number, email_id, password, password_change_required, reporting_manager, role_id, user_status, user_designation, description) VALUES ('Shushank Sharma', 'OWE001', '0987654321', 'shushank22@gmail.com', '$2a$10$5DPnnf5GqDE1dI8L/fM79OsY7XjzmLbw3rkSVONPz.92CqHUkXYHC', false, NULL, 1, 'Active', 'CTO', 'Chief Technical Officer');
+INSERT INTO user_details (name, user_code, mobile_number, email_id, password, password_change_required, reporting_manager, role_id, user_status, user_designation, description) VALUES ('Shushank Sharma', 'OWE001', '0987654321', 'shushank22@gmail.com', '$2a$10$5DPnnf5GqDE1dI8L/fM79OsY7XjzmLbw3rkSVONPz.92CqHUkXYHC', false, NULL, 1, 'Active', 'Software Engineer', 'SE');
 INSERT INTO user_details (name, user_code, mobile_number, email_id, password, password_change_required, reporting_manager, role_id, user_status, user_designation, description) VALUES ('Jaitunjai Singh', 'OWE002', '0987654322', 'Jai22@gmail.com', '$2a$10$5DPnnf5GqDE1dI8L/fM79OsY7XjzmLbw3rkSVONPz.92CqHUkXYHC', false, 1, 1, 'Active', 'Software Engineer', 'SE');
-INSERT INTO user_details (name, user_code, mobile_number, email_id, password, password_change_required, reporting_manager, role_id, user_status, user_designation, description) VALUES ('M Asif', 'OWE003', '0987654323', 'asif22@gmail.com', '$2a$10$5DPnnf5GqDE1dI8L/fM79OsY7XjzmLbw3rkSVONPz.92CqHUkXYHC', false, 2, 1, 'Active', 'CEO', 'Chief Exec Officer');
+INSERT INTO user_details (name, user_code, mobile_number, email_id, password, password_change_required, reporting_manager, role_id, user_status, user_designation, description) VALUES ('M Asif', 'OWE003', '0987654323', 'asif22@gmail.com', '$2a$10$5DPnnf5GqDE1dI8L/fM79OsY7XjzmLbw3rkSVONPz.92CqHUkXYHC', false, 2, 1, 'Active', 'Software Engineer', 'SE');
 INSERT INTO partners (partner_name,description) VALUES ('PartnerABC','Example Partner Description');
 INSERT INTO tier (tier_name) VALUES ('TierName123');
 INSERT INTO loan_type (product_code,active,adder,description) VALUES ('P123',1,10,'Example Loan Type Description');
@@ -97,7 +97,6 @@ INSERT INTO loan_type (product_code,active,adder,description) VALUES ('P123',1,1
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewLoanFeeAdder.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateLoanFeeAdder.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateLoanFeeAdderArchive.sql';
-
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewReferralData.sql;'
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewDealerCredit.sql;'
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewNonCommDlrPay.sql;'
@@ -105,3 +104,6 @@ INSERT INTO loan_type (product_code,active,adder,description) VALUES ('P123',1,1
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateNonCommDlrPayArchive.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateReferralDataArchive.sql';
 
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewDLR_OTH.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateDLR_OTH.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateDLR_OTHArchive.sql';

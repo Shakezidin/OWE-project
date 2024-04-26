@@ -92,7 +92,7 @@ BEGIN
     -- Get the state_id based on the provided state_name
     SELECT id INTO v_dealer_tier_id
     FROM tier
-    WHERE tier_nam = p_dealer_tier;
+    WHERE tier_name = p_dealer_tier;
 
     -- Check if the state exists
     IF v_dealer_tier_id IS NULL THEN

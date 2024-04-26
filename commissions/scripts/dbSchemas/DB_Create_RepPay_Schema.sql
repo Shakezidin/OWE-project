@@ -480,3 +480,4 @@ CREATE TABLE E80_20_ap_calc_comm_pay_calc(
 	appt_set_status_check	float
 );
 Select * from E80_20_ap_calc_comm_pay_calc;
+*/

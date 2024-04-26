@@ -676,10 +676,19 @@ var apiRoutes = ApiRoutes{
 			types.RoleAdmin,
 		},
 	},
-	{
+  {
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_referraldata",
 		apiHandler.HandleCreateReferralDataRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_referraldata",
+		apiHandler.HandleUpdateReferralDataRequest,
 		true,
 		[]types.UserRoles{
 			types.RoleAdmin,
@@ -748,10 +757,18 @@ var apiRoutes = ApiRoutes{
 			types.RoleAdmin,
 		},
 	},
-	{
-		strings.ToUpper("POST"),
+  	strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_noncommdlrpay_archive",
 		apiHandler.HandleUpdateNonCommDlrPayArchiveRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/create_dlr_oth",
+		apiHandler.HandleCreateDLROTHDataRequest,
 		true,
 		[]types.UserRoles{
 			types.RoleAdmin,
