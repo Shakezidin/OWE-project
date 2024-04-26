@@ -69,6 +69,8 @@ const (
 	UpdateLoanFeeAdderFunction           string = "update_loan_fee_adder"
 	UpdateLoanFeeAdderArchiveFunction    string = "update_loan_fee_adder_archive"
 	UpdateReferralDataFunction           string = "update_new_referral_data"
+	UpdateDLR_OTHFunction                string = "update_dlr_oth"
+	UpdateDLR_OTHArchiveFunction         string = "update_dlr_oth_archive"
 	TableName_teams                      string = "teams"
 	TableName_commission_rates           string = "commission_rates"
 	TableName_users_details              string = "user_details"

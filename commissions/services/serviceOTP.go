@@ -19,6 +19,7 @@ const (
 	ForgotPassOtpExpireInMin = 5
 	FromEmailId              = "ourworldenergy17@gmail.com"
 	FromPassword             = "qilkzsylqrpjwppj"
+	createUserReqPassword    = "Welcome@123"
 )
 
 type OtpInfo struct {

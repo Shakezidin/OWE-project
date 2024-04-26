@@ -109,5 +109,10 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	err = SendMailToClient(createUserReq.EmailId, createUserReq.Name)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to sent email with err: %v", err)
+	}
+
 	FormAndSendHttpResp(resp, "User Created Successfully", http.StatusOK, nil)
 }
