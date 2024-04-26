@@ -4,6 +4,7 @@ export const ROUTES = {
   RESETPASSWORD: "/resetPassword",
   OTP: "/otp",
   COMMISSION_DASHBOARD: "/commission/dashboard",
+  REPPAY_DASHBOARD: "/reppay/dashboard",
   CONFIG_COMMISSION_RATE: "/commission/config/commissionRate",
   CONFIG_DEALER_OVER: "/commission/config/dealerOverrides",
   CONFIG_DEALER_TIER: "/commission/config/dealerTier",

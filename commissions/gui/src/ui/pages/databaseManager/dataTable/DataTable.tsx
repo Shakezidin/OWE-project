@@ -245,7 +245,7 @@ const DataTablle: React.FC = () => {
               {currentPageData?.length > 0
                 ? currentPageData?.map((el, i) => (
                   <tr key={i} className={selectedRows.has(i) ? "selected" : ""} >
-                    <td style={{ fontWeight: "500", color: "black",textAlign: "left" }}>
+                    <td style={{  color: "black",textAlign: "left" }}>
                       <CheckBox
                         checked={selectedRows.has(i)}
                         onChange={() =>
@@ -258,15 +258,15 @@ const DataTablle: React.FC = () => {
                         }
                       />
                     </td>
-                    <td style={{ fontWeight: "500", color: "black", textAlign: "left"}}>
+                    <td style={{  color: "black", textAlign: "left"}}>
                       {el.col1}
                     </td>
-                    <td style={{ fontWeight: "500", color: "black", textAlign: "left" }}>{el.col2}</td>
-                    <td style={{ fontWeight: "500", color: "black", textAlign: "left" }}>{el.col3}</td>
-                    <td style={{ fontWeight: "500", color: "black", textAlign: "left" }}>{el.col4}</td>
-                    <td style={{fontWeight: "500", color:"#0493CE", textAlign: "left"}}>{el.col5}</td>
-                    <td style={{fontWeight: "500", color:"#0493CE", textAlign: "left"}}>{el.col6}</td>
-                   <td style={{ fontWeight: "500", color:"#0493CE", textAlign: "left"}}>{el.col7}</td>
+                    <td style={{  color: "black", textAlign: "left" }}>{el.col2}</td>
+                    <td style={{  color: "black", textAlign: "left" }}>{el.col3}</td>
+                    <td style={{  color: "black", textAlign: "left" }}>{el.col4}</td>
+                    <td style={{ color:"#0493CE", textAlign: "left"}}>{el.col5}</td>
+                    <td style={{ color:"#0493CE", textAlign: "left"}}>{el.col6}</td>
+                   <td style={{  color:"#0493CE", textAlign: "left"}}>{el.col7}</td>
                   </tr>
                 ))
                 : null}

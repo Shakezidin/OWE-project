@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import "./dbManagerDash.css";
 import { BiChevronDown } from "react-icons/bi";
@@ -19,7 +19,6 @@ const DbManagerDashboard = () => {
       navigate(`/userManagement`);
     }
   };
-
 
   const data = [
     { name: "Group A", value: 200, Historical_Records: 100, Total_Records: 150 },
@@ -69,22 +68,25 @@ const DbManagerDashboard = () => {
       </div>
 
 
+
       <div className="webhook-container">
+
         <div className="status-section">
           <p>Webhooks Status</p>
 
-          <div className="search-container-data">
-            <input
-              type="text"
-              placeholder="Table 1 Data"
-              className="search-input-data"
-            />
-            <BiChevronDown className="dropdown-icon" />
+          <div className="Payroll-section-up">
+            <select name="" id="dropdown" className="dash-select-up">
+              <option value="Today">Table1 Data</option>
+              <option value="This Week">Table2 Data</option>
+              <option value="All">Table3 Data</option>
+            </select>
+            <BiChevronDown className="top-icon"/>
           </div>
 
 
+
         </div>
-        
+
         <div className="container-graph">
 
           <div className="create-container">
@@ -92,7 +94,7 @@ const DbManagerDashboard = () => {
               <p>Create Webhooks</p>
 
               <div className="Payroll-section">
-                <select name="" id="" className="dash-select" onChange={handleSelectChange}>
+                <select name="" id="" className="dash-select">
                   <option value="Today">Today</option>
                   <option value="This Week">This Week</option>
                   <option value="All">All</option>
@@ -131,8 +133,8 @@ const DbManagerDashboard = () => {
             </div>
             <div className="PieBarchart-section">
               <div className="PieChart-container">
-              <PieChartWithPaddingAngle data={data1} />
-            </div>
+                <PieChartWithPaddingAngle data={data1} />
+              </div>
             </div>
             <div className="identity">
               <Boxes color="#FB7955" /> <p>30% Fail</p>
@@ -158,8 +160,8 @@ const DbManagerDashboard = () => {
             </div>
             <div className="PieBarchart-section">
               <div className="PieChart-container">
-              <PieChartWithPaddingAngle data={data2} />
-            </div>
+                <PieChartWithPaddingAngle data={data2} />
+              </div>
             </div>
             <div className="identity">
               <Boxes color="#FB7955" /> <p>30% Fail</p>
