@@ -1,8 +1,11 @@
-.configure-header {
+/* .configure-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 0.5rem;
+  }
+  .configure-name{
+    padding: 10px 5px;
   }
   .configure-name h3 {
     font-size: 20px;
@@ -10,7 +13,6 @@
     line-height: 30px;
     text-align: left;
     color: var(--page-heading-color);
-    margin-bottom: -7px;
   }
   .spacer {
     flex: 1;
@@ -31,10 +33,10 @@
     margin-top: 10px;
     height: 100%;
     background: var(--white-color);
-    padding: 30px;
+    padding: 20px 30px;
     border-radius: 16px;
   }
-  .dealer-pay, .Rep-pay, .common p{
+  .dealer-pay, .rep-pay, .AR, .common p{
     font-size: 16px;
     font-weight: 600;
     color: var(--page-heading-color);
@@ -89,6 +91,121 @@
     justify-content: space-between;
     align-items: center;
     border-bottom: .5px solid var(--button-border-color);
+  }
+  .accordion-icon{
+    color: var(--secondary-text-color);
+    cursor: pointer;
+  }
+  .payer-type{
+    padding-bottom: 5px;
+  } */
+
+
+  .configure-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .configure-name{
+    padding: 10px 5px;
+  }
+  .configure-name h3 {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 30px;
+    text-align: left;
+    color: var(--page-heading-color);
+  }
+  .spacer {
+    flex: 1;
+  }
+  .configure-header-icons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: var(--white-color);
+    padding: 0.44rem;
+    border: 1px solid var(--button-border-color);
+    border-radius: 8px;
+    color: var(--btn-text-color);
+    cursor: pointer;
+  }
+  .configure-main {
+    margin-top: 10px;
+    height: 100%;
+    background: var(--white-color);
+    padding: 20px 30px;
+    border-radius: 16px;
+  }
+  .payer-type{
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--page-heading-color);
+  }
+  .configure-cards{
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin: 14px 0;
+  }
+  .card-items{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .card-heading{
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 16px;
+    width: 110px;
+    color: var( --coloumn-text-color);
+  }
+  .card-p{
+    font-size: 11px;
+    font-weight: 400;
+    color: #7D7D7D;
+    flex: 1;
+  }
+  .arrow-right{
+    height: 24px;
+    width: 24px;
+  }
+  .arrow-wrapper{
+    background: var(--white-color);
+    height: 34px;
+    width: 34px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .pay-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 187px;
+    height: 83px;
+    border: none;
+    border-radius: 8px;
+    padding: 12px;
+    cursor: pointer;
+    background: rgb(216, 216, 216);
+  }
+  .pay-card:hover{
+    transform: scale(1.08);
+    transition: transform 0.4s ease;
+  }
+.rep-pay, .common{
+  margin: 24px 0;
+}
+  .configure-card-title{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #F1F1F1;
+    padding-bottom: 5px;
   }
   .accordion-icon{
     color: var(--secondary-text-color);
