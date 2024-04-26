@@ -23,7 +23,6 @@ const UserActivity: React.FC = () => {
   const handleClose = () => setOpen(false);
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const dealerList = useAppSelector((state) => state.dealer.Dealers_list);
   const loading = useAppSelector((state) => state.dealer.loading);
   const error = useAppSelector((state) => state.dealer.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
@@ -59,31 +58,10 @@ const UserActivity: React.FC = () => {
     dispatch(setCurrentPage(currentPage - 1));
   };
 
-  const handleAddDealer = () => {
-    setEditMode(false);
-    // setEditDealer(null);
-    handleOpen()
-  };
-  // const getColumnNames = () => {
-  //   if (dealerList.length > 0) {
-  //     const keys = Object.keys(dealerList[0]);
-  //     setColumns(keys);
-  //   }
-  // };
-  // const filter = () => {
-  //   setFilterOpen(true)
-  //   getColumnNames()
-  // }
-
 
   const filter = () => {
     setFilterOpen(true);
   }
-  const handleEditDealer = (dealerData: DealerModel) => {
-    setEditMode(true);
-    // setEditDealer(dealerData);
-    handleOpen()
-  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -193,7 +171,7 @@ const UserActivity: React.FC = () => {
                       onChange={() =>
                         toggleAllRows(
                           selectedRows,
-                          dealerList,
+                          dataDb,
                           setSelectedRows,
                           setSelectAllChecked
                         )
@@ -229,7 +207,7 @@ const UserActivity: React.FC = () => {
               {currentPageData?.length > 0
                 ? currentPageData?.map((el, i) => (
                   <tr key={i}>
-                    <td style={{ fontWeight: "500", color: "black",textAlign: "left" }}>
+                    <td style={{  color: "black",textAlign: "left" }}>
                       <CheckBox
                         checked={selectedRows.has(i)}
                         onChange={() =>
@@ -242,12 +220,12 @@ const UserActivity: React.FC = () => {
                         }
                       />
                     </td>
-                    <td style={{ fontWeight: "500", color: "black",textAlign: "left" }}>
+                    <td style={{  color: "black",textAlign: "left" }}>
                       {el.uname}
                     </td>
-                    <td style={{ fontWeight: "500", color: "black",textAlign: "left" }}>{el.dbname}</td>
-                    <td style={{ fontWeight: "500", color: "black",textAlign: "left" }}>{el.date}</td>
-                    <td style={{ fontWeight: "500", color: "black",textAlign: "left" }}>{el.query}</td>
+                    <td style={{  color: "black",textAlign: "left" }}>{el.dbname}</td>
+                    <td style={{  color: "black",textAlign: "left" }}>{el.date}</td>
+                    <td style={{  color: "black",textAlign: "left" }}>{el.query}</td>
 
                   </tr>
                 ))

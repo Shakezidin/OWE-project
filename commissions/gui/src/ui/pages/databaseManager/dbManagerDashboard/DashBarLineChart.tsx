@@ -7,6 +7,7 @@ import {
   CartesianGrid,
   Legend,
   ResponsiveContainer,
+  Tooltip,
 } from "recharts";
 
 const data = [
@@ -72,8 +73,10 @@ export default class BarChartComponent extends PureComponent {
                 left: 20,
                 bottom: 36,
               }}
+              
             >
               <CartesianGrid vertical={false}/>
+              <Tooltip/>
               <XAxis
                 dataKey="name"
                 tickLine={false}
