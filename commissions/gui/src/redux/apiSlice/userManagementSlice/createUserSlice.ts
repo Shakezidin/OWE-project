@@ -1,5 +1,3 @@
-// src/features/createUserSlice.ts
-
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { CreateOnboardUserStateModel } from "../../../core/models/data_models/UserManagementStateModel";
 import {
@@ -16,15 +14,16 @@ const initialState: CreateOnboardUserStateModel = {
     last_name: "",
     email_id: "",
     mobile_number: "",
-    password: "",
     assigned_dealer_name: "",
     role_name: "",
     add_region: "",
     team_name: "",
     description: "",
+    report_to:''
   },
   dealerOwenerList: [],
   regionList: [],
+  createUserResult: null,
 };
 
 const createUserSlice = createSlice({
@@ -108,6 +107,7 @@ const createUserSlice = createSlice({
         (state: CreateOnboardUserStateModel, action) => {
           state.loading = true;
           state.error = null;
+          state.createUserResult = action.payload;
         }
       )
       .addCase(

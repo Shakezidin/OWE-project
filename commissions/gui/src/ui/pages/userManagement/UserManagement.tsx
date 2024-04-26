@@ -12,7 +12,7 @@ import { userSelectData } from "../../../resources/static_data/StaticData";
 import { UserDropdownModel } from "../../../core/models/api_models/UserManagementModel";
 import UserManagementTable from "./userTableList/UserManagementTable";
 import { cretaeUserOnboarding, fetchDealerOwner, fetchRegionList } from "../../../redux/apiActions/createUserSliceActions";
-import { getRoles } from "@testing-library/react";
+import { validateForm } from "../../../utiles/Validation";
 
 const UserManagement: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -86,10 +86,35 @@ const UserManagement: React.FC = () => {
     }
   }
 
-  const onSubmitCreateUser = (event: React.FormEvent<HTMLFormElement>) => {
+  const onSubmitCreateUser = (event: any) => {
     event.preventDefault(); 
     console.log(formData)
+
+    const formErrors = validateForm(formData);
+    console.log("formErrors",formErrors);
+
+    if (Object.keys(formErrors).length === 0) {
+      // Submit the form
+      console.log('Form submitted:', formData);
+    }else{
+      alert('All fields are mandatory')
+    }
+  
   };
+
+  const createUserRequest = async ()=>{
+
+    await dispatch(cretaeUserOnboarding({
+      name: formData.first_name + formData.last_name,
+      email_id: formData.email_id,
+      mobile_number: formData.mobile_number,
+      designation: 'SE',
+      role_name: formData.role_name,
+      reporting_manager: formData.add_region,
+      dealer_owner: formData.assigned_dealer_name,
+      description: formData.description
+    }))
+  }
 
  
   return (

@@ -39,7 +39,8 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
                 handleChangeForRegion(newValue, "report_to")
               }
               value={regionList?.find(
-                (option) => option?.value === formData.assigned_dealer_name
+                (option) => option?.value === formData.report_to
+
               )}
             />
           </div>
@@ -65,7 +66,8 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
                 handleChangeForRegion(newValue, "report_to")
               }
               value={regionList?.find(
-                (option) => option?.value === formData.assigned_dealer_name
+                (option) => option?.value === formData.report_to
+
               )}
             />
           </div>

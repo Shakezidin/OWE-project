@@ -18,4 +18,5 @@ export interface CreateOnboardUserStateModel {
   formData: CreateUserModel;
   dealerOwenerList: UserDropdownModel[];
   regionList: UserDropdownModel[];
+  createUserResult: any | null;
 }

@@ -48,30 +48,21 @@ export interface CreateUserModel {
   last_name: string;
   email_id: string;
   mobile_number: string;
-  password: string;
   assigned_dealer_name: string;
   role_name: string;
   add_region: string;
   team_name: string;
   description: string;
+  report_to: string;
 }
 
-export interface createUserParamModel {
+export interface CreateUserParamModel {
   name: string;
   email_id: string;
   mobile_number: string;
-  password: string;
   designation: string;
   role_name: string;
-  user_code: string;
-  password_change_required: boolean;
   reporting_manager: string;
   dealer_owner: string;
-  user_status: string;
   description: string;
-  street_address: string;
-  state: string;
-  city: string;
-  zipcode: string;
-  country: string;
 }

@@ -3,6 +3,7 @@ import { postCaller } from "../../infrastructure/web_api/services/apiUrl";
 import { EndPoints } from "../../infrastructure/web_api/api_client/EndPoints";
 import { HTTP_STATUS } from "../../core/models/api_models/RequestModel";
 import {
+  CreateUserParamModel,
   DealerOwner,
   UserDropdownModel,
 } from "../../core/models/api_models/UserManagementModel";
@@ -59,9 +60,9 @@ export const fetchRegionList = createAsyncThunk(
 /**cretae user */
 export const cretaeUserOnboarding = createAsyncThunk(
   "user/create_onboarding_user",
-  async (data: any): Promise<any> => {
+  async (data: CreateUserParamModel): Promise<any> => {
     console.log("param create user...", data);
-    const response = await postCaller(EndPoints.create_user, {});
+    const response = await postCaller(EndPoints.create_user, data);
     if (response.status !== HTTP_STATUS.OK) {
       throw new Error(response.message);
     }
