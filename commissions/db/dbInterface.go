@@ -84,6 +84,8 @@ const (
 	TableName_tier                       string = "tier"
 	TableName_auto_adder                 string = "auto_adder"
 	TableName_user_roles                 string = "user_roles"
+	TableName_referral_data              string = "referral_data"
+	TableName_dealer_credit_data         string = ""
 )
 
 /******************************************************************************
