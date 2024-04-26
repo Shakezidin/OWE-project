@@ -4,6 +4,7 @@
   align-items: center;
   gap: 15px;
 }
+
 .runner-section {
   width: 233px;
   height: 374px;
@@ -14,6 +15,7 @@
   text-align: center;
   padding-top: 5rem;
 }
+
 .runner-section h3 {
   font-family: Poppins;
   font-size: 20px;
@@ -21,12 +23,14 @@
   line-height: 30px;
   color: #b9e5fe;
 }
+
 .runner-section p {
   font-size: 13px;
   font-weight: 500;
   line-height: 21px;
   color: #ffffff;
 }
+
 .active-button {
   margin-top: 1rem;
   width: 181px;
@@ -55,6 +59,7 @@
   line-height: 21px;
   cursor: pointer;
 }
+
 .since-section h3 {
   margin-top: 0.5rem;
   font-size: 12px;
@@ -62,41 +67,47 @@
   line-height: 18px;
   color: #ffffff;
 }
+
 .since-section p {
   font-size: 12px;
   font-weight: 600;
   line-height: 18px;
 }
+
 .DashBarchart-section {
   background-color: white;
   width: 80%;
   border-radius: 16px;
-  border: 1px solid #d0d5dd;
-  
+  border: 1px solid #ffffff;
 }
+
 .dash-section {
   font-size: 18px;
   font-weight: 600;
   line-height: 24px;
   text-align: left;
 }
+
 .webhook-container {
-  margin-top: 1rem;
+  margin-top: -0.9rem;
   padding: 1rem;
   background-color: white;
   border-radius: 16px;
 }
+
 .status-section {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
+
 .status-section p {
   font-size: 16px;
   font-weight: 600;
   line-height: 24px;
   color: #263747;
 }
+
 .create-container {
   border: 1px solid #D0D5DD;
   width: 32.23%;
@@ -105,163 +116,186 @@
   opacity: 0px;
   align-items: center;
 }
+
 .Create-section {
   display: flex;
   padding: 1rem;
   justify-content: space-between;
   align-items: center;
 }
+
 .Create-section p {
-    font-size: 16px;
-    font-weight: 600;
-    line-height: 24px;
-    text-align: left;
-    color: #263747;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  text-align: left;
+  color: #263747;
+}
+
+.container-graph {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: row;
+  gap: 1px;
+  justify-content: space-between;
+}
+
+.Payroll-section {
+  display: flex;
+  height: 36px;
+  background-color: white;
+  padding: 0 3px 0 12px;
+  gap: 0.5rem;
+  align-items: center;
+  border-radius: 8px;
+  border: 1px solid #b6b5b5;
+  z-index: 1;
+}
+
+.Payroll-section1 {
+  display: flex;
+  height: 36px;
+  background-color: white;
+  padding: 0 6px 0 12px;
+  gap: 0.5rem;
+  align-items: center;
+  border-radius: 8px;
+  border: 1px solid #b6b5b5;
+  margin-left: 41px;
+  /* Add z-index to ensure the dropdown appears above other elements */
+  z-index: 1;
+  /* You can adjust the value as needed */
+}
+
+.dash-select {
+  position: relative;
+  border: none;
+  outline: none;
+  padding: .3rem .7rem;
+  font-size: 12px;
+  cursor: pointer;
+  color: #101828 !important;
+  background-color: #ffffff !important;
+  font-weight: 500;
+  border-radius: .25rem;
+  z-index: 2;
+  line-height: 20px;
+}
+
+.identity {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  text-align: center;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 24%;
+  margin-top: -128px;
+}
+
+.identity p {
+  margin-top: -1px;
+  font-size: 12px;
+  color: #000000;
+}
+
+.identity1 {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  text-align: center;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 39%;
+  margin-bottom: 15px;
+}
+
+.identity1 p {
+  margin-top: 1px;
+  font-size: 12px;
+  color: #333333;
+  font-weight: 400;
+  line-height: 14.52px;
+}
+
+.PieBarchart-section {
+  width: 100%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+  /* Adjust margin-top as needed */
+}
+
+.PieChart-container {
+  width: 300px;
+  height: 400px;
+  position: relative;
+  overflow: hidden;
+}
+
+.PieChartWithPaddingAngle {
+  width: 100%;
+  height: 100%;
+  transform-origin: top left;
+  /* Set transform origin to top left corner */
+  transform: scale(1);
+  /* Set initial scale */
+  transition: transform 0.3s ease;
+  /* Add transition for smooth scaling */
 }
 
 
+.Payroll-section-up {
+  display: flex;
+  height: 36px;
+  width: 212px;
+  background-color: white;
+  padding: 0 6px 0 12px;
+  gap: 0.5rem;
+  align-items: center;
+  border-radius: 8px;
+  border: 1px solid #b6b5b5;
+  margin-left: 41px;
+  z-index: 1;
+}
 
-  .search-container-data {
-    position: relative;
-    display: inline-block;
-  }
+.dash-select-up {
+  position: relative;
+  border: none;
+  outline: none;
+  padding: .3rem .7rem;
+  font-size: 12px;
+  cursor: pointer;
+  color: #101828 !important;
+  background-color: #ffffff;
+  font-weight: 500;
+  border-radius: .25rem;
+  z-index: 2;
+  line-height: 20px;
+  margin-left: -6px;
+  width: 200px;
+}
 
-  .search-container-data input {
-    padding: 0.6rem;
-    border-radius: 8px;
-    border: 2px solid #d0d5dd;
-  }
+#dropdown {
+  appearance: none; /* Remove default styles */
+  -webkit-appearance: none; /* Remove default styles for Safari */
+  -moz-appearance: none; /* Remove default styles for Firefox */
+  background-image: url(''); /* Remove default dropdown arrow */
+}
 
-  .search-container-data ::placeholder {
-      color: #101828;
-     font-size: 14px;
-     font-weight: 500;
-  }
-
-  .dropdown-icon {
-    position: absolute;
-    top: 5%;
-    right: 10px;
-    font-size: 2rem;
-    transform: translateY(-50%);
-    cursor: pointer;
-    color: gray;
-  }
-
-
-
-
-
-
-
-
-
-
-
-  .container-graph{
-    margin-top: 10px;
-    display: flex;
-    flex-direction: row;
-    gap: 1px;
-    justify-content: space-between;
-  }
-  
-   .Payroll-section {
-    display: flex;
-    height: 36px;
-    background-color: white;
-    padding: 0 3px 0 12px;
-    gap: 0.5rem;
-    align-items: center;
-    border-radius: 8px;
-    border: 1px solid #b6b5b5;
-    z-index: 1; 
-  }
-  .Payroll-section1 {
-    display: flex;
-    height: 36px;
-    background-color: white;
-    padding: 0 6px 0 12px;
-    gap: 0.5rem;
-    align-items: center;
-    border-radius: 8px;
-    border: 1px solid #b6b5b5;
-    margin-left: 41px;
-    /* Add z-index to ensure the dropdown appears above other elements */
-    z-index: 1; /* You can adjust the value as needed */
-  }
-   
-  .dash-select {
-    position: relative;
-    border: none;
-    outline: none;
-    padding: .3rem .7rem;
-    font-size: 12px;
-    cursor: pointer;
-    color: #101828 !important;
-    background-color: #ffffff;
-    font-weight: 500;
-    border-radius: .25rem;
-    z-index: 2; 
-    line-height: 20px;
-  }
-
-  .identity {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    text-align: center;
-    align-items: center;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 24%;
-    margin-top: -128px;
-  }
-  
-  .identity p {
-    margin-top: -1px;
-    font-size: 12px;
-    color: #000000;
-  }
-  
-  .identity1{
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    text-align: center;
-    align-items: center;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 39%;
-    margin-bottom: 15px;
-  }
-  .identity1 p{
-    margin-top: 1px;
-    font-size: 12px;
-    color: #333333;
-    font-weight: 400;
-    line-height: 14.52px;
-  }
-  .PieBarchart-section {
-    width: 100%;
-    position: relative;
-    display: flex;
-    justify-content: center;
-    margin-top: 1rem; /* Adjust margin-top as needed */
-  }
-  
-  .PieChart-container {
-    width: 300px;
-    height: 400px;
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .PieChartWithPaddingAngle {
-    width: 100%;
-    height: 100%;
-    transform-origin: top left; /* Set transform origin to top left corner */
-    transform: scale(1); /* Set initial scale */
-    transition: transform 0.3s ease; /* Add transition for smooth scaling */
-  }
-  
+#dropdown::-ms-expand {
+  display: none; /* Remove default arrow in IE10+ */
+}
+.top-icon {
+  width: 69px;
+  height: 50px;
+  padding: 8.22px 5.64px 8px 5.64px;
+  gap: 0px;
+  opacity: 0px;
+  color: #6D6D6D;
+  margin-left: 49px;
+  cursor: pointer;
+}

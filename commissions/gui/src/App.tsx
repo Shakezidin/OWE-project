@@ -48,6 +48,7 @@ import UserActivity from "./ui/pages/databaseManager/userActivity/UserActivity";
 import DbManagerDashboard from "./ui/pages/databaseManager/dbManagerDashboard/DbManagerDashboard";
 import Webhook from "./ui/pages/databaseManager/webhookTable/Webhook";
 import ConfigurePage from "./ui/pages/configure/ConfigurePage";
+import { RepPayDashboardPage } from "./ui/pages/reppay/reppaydashboard/reppaydashboard";
 
 
 function App() {
@@ -91,6 +92,7 @@ function App() {
            
 
                 <Route  path={ROUTES.COMMISSION_DASHBOARD} element={<DashboardPage/>}/>
+                <Route  path={ROUTES.REPPAY_DASHBOARD} element={<RepPayDashboardPage/>}/>
                 <Route  path={ROUTES.CONFIG_COMMISSION_RATE} element={<CommissionRate/>}/>
                 <Route  path={ROUTES.CONFIG_DEALER_OVER} element={<DealerOverRides/>}/>
                 <Route  path={ROUTES.CONFIG_MARKETING} element={<MarketingFees/>}/>
