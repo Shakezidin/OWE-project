@@ -28,36 +28,19 @@ const UserOnboardingCreation: React.FC<ButtonProps> = ({
   editMode,
 }) => {
   const dispatch = useDispatch();
-  // const [createUserOnboarding, setCreateOnboarding] = useState<CreateUserModel>(
-  //   {
-  //     first_name: "",
-  //     last_name: "",
-  //     email_id: "",
-  //     mobile_number: "",
-  //     password: "",
-  //     designation: "",
-  //     description: "",
-  //     assigned_dealer_name: "",
-  //     role_name: "",
-  //     add_region: "",
-  //     team_name: "",
-  //     report_to: "",
-  //     reporting_to: "",
-  //   }
-  // );
-
   const {formData} = useAppSelector((state) => state.createOnboardUser);
-
-  console.log("formdata...", formData);
   const [selectTable, setSelectTable] = useState<boolean>(false);
 
   const handleChange = (newValue: any, fieldName: string) => {
-    const {value }= newValue;
 
-    console.log(newValue, fieldName)
+    dispatch(updateUserForm({ field: 'assigned_dealer_name', value:''}));
+    dispatch(updateUserForm({ field: 'add_region', value:''}));
+    dispatch(updateUserForm({ field: 'team_name', value:''}));
+    dispatch(updateUserForm({ field: 'report_to', value:''}));
+    const {value }= newValue;
     dispatch(updateUserForm({ field: fieldName, value}));
   };
-  
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     dispatch(updateUserForm({ field: name, value }));
@@ -231,7 +214,7 @@ const UserOnboardingCreation: React.FC<ButtonProps> = ({
                   id=""
                   rows={3}
                   // onChange={(e) => handlemarketingInputChange(e)}
-                  value={formData.designation}
+                  value={formData.description}
                   onChange={(e) => handleInputChange(e)}
                   placeholder="Type"
                 ></textarea>
