@@ -9,7 +9,7 @@ import {
   fetchUserOnboarding,
 } from "../../../redux/apiActions/userManagementActions";
 import { userSelectData } from "../../../resources/static_data/StaticData";
-import { UserDropdownModel } from "../../../core/models/api_models/UserManagementModel";
+import { UserDropdownModel, UserRoleBasedListModel } from "../../../core/models/api_models/UserManagementModel";
 import UserManagementTable from "./userTableList/UserManagementTable";
 import { cretaeUserOnboarding, fetchDealerOwner, fetchRegionList } from "../../../redux/apiActions/createUserSliceActions";
 import { createUserObject, validateForm } from "../../../utiles/Validation";
@@ -153,8 +153,11 @@ const UserManagement: React.FC = () => {
           userRoleBasedList={userRoleBasedList}
           userDropdownData={userSelectData}
           selectedOption={selectedOption}
-          handleSelectChange={handleSelectChange}
-        />
+          handleSelectChange={handleSelectChange} 
+          onClickEdit={(item: UserRoleBasedListModel)=>{
+            console.log("row data",item)
+          }}       
+           />
       </div>
     </>
   );

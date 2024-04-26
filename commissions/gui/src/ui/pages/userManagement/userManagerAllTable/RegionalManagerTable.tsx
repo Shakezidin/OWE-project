@@ -6,9 +6,11 @@ import { UserRoleBasedListModel } from "../../../../core/models/api_models/UserM
 
 interface RegionalManagerProps {
   data: UserRoleBasedListModel[];
+  onClickEdit: (item: UserRoleBasedListModel)=> void;
+  onClickDelete: (item: UserRoleBasedListModel)=> void;
 }
 
-const RegionalManagerTable: React.FC<RegionalManagerProps> = ({ data }) => {
+const RegionalManagerTable: React.FC<RegionalManagerProps> = ({ data, onClickDelete, onClickEdit }) => {
   return (
     <>
       {/* <UserHeaderSection  name="Regional Manager"/> */}
@@ -114,10 +116,10 @@ const RegionalManagerTable: React.FC<RegionalManagerProps> = ({ data }) => {
                     <td>{el.description}</td>
                     <td>
                       <div className="action-icon">
-                        <div className="" style={{ cursor: "pointer" }}>
+                        <div className="" style={{ cursor: "pointer" }}  onClick={()=> onClickDelete(el)}>
                           <img src={ICONS.deleteIcon} alt="" />
                         </div>
-                        <div className="" style={{ cursor: "pointer" }}>
+                        <div className="" style={{ cursor: "pointer" }}  onClick={()=> onClickEdit(el)}>
                           <img src={ICONS.editIcon} alt="" />
                         </div>
                       </div>

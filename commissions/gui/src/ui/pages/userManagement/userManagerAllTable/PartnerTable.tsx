@@ -8,9 +8,11 @@ import { UserRoleBasedListModel } from "../../../../core/models/api_models/UserM
 
 interface PartnerProps {
   data: UserRoleBasedListModel[];
+  onClickEdit: (item: UserRoleBasedListModel)=> void;
+  onClickDelete: (item: UserRoleBasedListModel)=> void;
 }
 
-const PartnerTable: React.FC<PartnerProps>= ({data}) => {
+const PartnerTable: React.FC<PartnerProps>= ({data, onClickDelete,onClickEdit}) => {
  
   return (
     <>
@@ -67,10 +69,10 @@ const PartnerTable: React.FC<PartnerProps>= ({data}) => {
                     <td>{el.description}</td>
                     <td>
                       <div className="action-icon">
-                        <div className="" style={{ cursor: "pointer" }}>
+                        <div className="" style={{ cursor: "pointer" }} onClick={()=> onClickDelete(el)}>
                           <img src={ICONS.deleteIcon} alt="" />
                         </div>
-                        <div className="" style={{ cursor: "pointer" }}>
+                        <div className="" style={{ cursor: "pointer" }} onClick={()=> onClickEdit(el)}>
                           <img src={ICONS.editIcon} alt="" />
                         </div>
                       </div>

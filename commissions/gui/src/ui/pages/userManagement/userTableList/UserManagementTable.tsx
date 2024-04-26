@@ -1,4 +1,4 @@
-import React, { } from "react";
+import React from "react";
 import "../../userManagement/user.css";
 import { ICONS } from "../../../icons/Icons";
 import "../../configure/configure.css";
@@ -14,21 +14,24 @@ import Pagination from "../../../components/pagination/Pagination";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 import SelectOption from "../../../components/selectOption/SelectOption";
-import { UserDropdownModel, UserRoleBasedListModel } from "../../../../core/models/api_models/UserManagementModel";
+import {
+  UserDropdownModel,
+  UserRoleBasedListModel,
+} from "../../../../core/models/api_models/UserManagementModel";
 
 interface UserTableProos {
   userDropdownData: UserDropdownModel[];
   userRoleBasedList: UserRoleBasedListModel[];
   selectedOption: UserDropdownModel;
-  handleSelectChange: (data:UserDropdownModel) => void;
-
- // onChange: (text: string) => void;
+  handleSelectChange: (data: UserDropdownModel) => void;
+  onClickEdit: (item: UserRoleBasedListModel) => void;
 }
 const UserManagementTable: React.FC<UserTableProos> = ({
   userDropdownData,
   userRoleBasedList,
   selectedOption,
   handleSelectChange,
+  onClickEdit,
 }) => {
   const dispatch = useAppDispatch();
 
@@ -60,21 +63,85 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   const renderComponent = () => {
     switch (selectedOption.label) {
       case "Admin":
-        return <UserTable data={userRoleBasedList} />;
+        return (
+          <UserTable
+            data={userRoleBasedList}
+            onClickEdit={(item: UserRoleBasedListModel) => {
+              onClickEdit(item);
+            }}
+            onClickDelete={(item: UserRoleBasedListModel) => {}}
+          />
+        );
       case "DB User":
-        return <UserTable data={userRoleBasedList} />;
+        return (
+          <UserTable
+            data={userRoleBasedList}
+            onClickEdit={(item: UserRoleBasedListModel) => {
+              onClickEdit(item);
+            }}
+            onClickDelete={(item: UserRoleBasedListModel) => {}}
+          />
+        );
       case "Appointment Setter":
-        return <AppointmentSetterTable data={userRoleBasedList} />;
+        return (
+          <AppointmentSetterTable
+            data={userRoleBasedList}
+            onClickEdit={(item: UserRoleBasedListModel) => {
+              onClickEdit(item);
+            }}
+            onClickDelete={(item: UserRoleBasedListModel) => {}}
+          />
+        );
       case "Partner":
-        return <PartnerTable data={userRoleBasedList} />;
+        return (
+          <PartnerTable
+            data={userRoleBasedList}
+            onClickEdit={(item: UserRoleBasedListModel) => {
+              onClickEdit(item);
+            }}
+            onClickDelete={(item: UserRoleBasedListModel) => {}}
+          />
+        );
       case "Regional Manager":
-        return <RegionalManagerTable data={userRoleBasedList} />;
+        return (
+          <RegionalManagerTable
+            data={userRoleBasedList}
+            onClickEdit={(item: UserRoleBasedListModel) => {
+              onClickEdit(item);
+            }}
+            onClickDelete={(item: UserRoleBasedListModel) => {}}
+          />
+        );
       case "Dealer Owner":
-        return <DealerOwnerTable data={userRoleBasedList} />;
+        return (
+          <DealerOwnerTable
+            data={userRoleBasedList}
+            onClickEdit={(item: UserRoleBasedListModel) => {
+              onClickEdit(item);
+            }}
+            onClickDelete={(item: UserRoleBasedListModel) => {}}
+          />
+        );
       case "Sales Representative Manager":
-        return <SalesRepresentativeTable data={userRoleBasedList} />;
+        return (
+          <SalesRepresentativeTable
+            data={userRoleBasedList}
+            onClickEdit={(item: UserRoleBasedListModel) => {
+              onClickEdit(item);
+            }}
+            onClickDelete={(item: UserRoleBasedListModel) => {}}
+          />
+        );
       case "Sales Manager":
-        return <SalesManagerTable data={userRoleBasedList} />;
+        return (
+          <SalesManagerTable
+            data={userRoleBasedList}
+            onClickEdit={(item: UserRoleBasedListModel) => {
+              onClickEdit(item);
+            }}
+            onClickDelete={(item: UserRoleBasedListModel) => {}}
+          />
+        );
       default:
         return null;
     }
@@ -92,8 +159,8 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             <SelectOption
               options={userDropdownData}
               value={selectedOption}
-              onChange={(data:any )=>{
-                handleSelectChange(data)
+              onChange={(data: any) => {
+                handleSelectChange(data);
               }}
             />
           </div>
@@ -110,19 +177,18 @@ const UserManagementTable: React.FC<UserTableProos> = ({
       <div className="user-page-heading-container">
         {userRoleBasedList?.length > 0 ? (
           <>
-           <p className="page-heading">
-          {currentPage} - {totalPages} of {userRoleBasedList?.length} item
-        </p>
-        <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages} // You need to calculate total pages
-            paginate={paginate}
-            goToNextPage={goToNextPage}
-            currentPageData={currentPageData}
-            goToPrevPage={goToPrevPage}
-          />
+            <p className="page-heading">
+              {currentPage} - {totalPages} of {userRoleBasedList?.length} item
+            </p>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages} // You need to calculate total pages
+              paginate={paginate}
+              goToNextPage={goToNextPage}
+              currentPageData={currentPageData}
+              goToPrevPage={goToPrevPage}
+            />
           </>
-         
         ) : null}
       </div>
     </>
