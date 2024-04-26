@@ -86,6 +86,7 @@ export const DashboardPage: React.FC = () => {
                 Payroll Date
               </label>
               <input type="date" className="payroll-date"  />
+              <input type="date" className="payroll-date"  />
             </div>
             
             <div className="dash-head-input">
@@ -114,7 +115,7 @@ export const DashboardPage: React.FC = () => {
                   className={`filter-line ${
                     active === 1 ? "active-filter-line" : ""
                   }`}
-                  onClick={() => setActive(1)}
+                  // onClick={() => setActive(1)}
                 >
                   {active === 1 ? (
                     <img src={ICONS.viewActive} alt="" />
@@ -126,7 +127,7 @@ export const DashboardPage: React.FC = () => {
                   className={`filter-line ${
                     active === 2 ? "active-filter-line" : ""
                   }`}
-                  onClick={() => setActive(2)}
+                  // onClick={() => setActive(2)}
                 >
                   {active === 2 ? (
                     <img src={ICONS.FILTERACTIVE} alt="" />
