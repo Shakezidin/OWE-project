@@ -72,6 +72,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
     const { name, value } = e.target;
     dispatch(updateUserForm({ field: name, value }));
   };
+  console.log(formData)
 
   /** render ui */
   return (
@@ -125,6 +126,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                     placeholder={"email@mymail.com"}
                     onChange={(e) => handleInputChange(e)}
                     name={"email_id"}
+                    disabled={formData.isEdit}
                   />
                 </div>
                 <div className="create-input-field">
@@ -137,7 +139,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                     name={"mobile_number"}
                   />
                 </div>
-                {formData.role_name === "admin" ||
+                {formData.role_name === "Admin" ||
                 formData.role_name === "SubDealer Owner" ||
                 formData.role_name === "Dealer Owner" ? null : (
                   <div className="create-input-field">

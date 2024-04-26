@@ -10,6 +10,7 @@ const initialState: CreateOnboardUserStateModel = {
   loading: false,
   error: null,
   formData: {
+    isEdit: false,
     first_name: "",
     last_name: "",
     email_id: "",

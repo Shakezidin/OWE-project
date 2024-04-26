@@ -41,9 +41,11 @@ export interface UserRoleBasedListModel {
   endDate: string;
   amount: string;
   region: string;
+  team_name: string;
 }
 
 export interface CreateUserModel {
+  isEdit: boolean;
   first_name: string;
   last_name: string;
   email_id: string;

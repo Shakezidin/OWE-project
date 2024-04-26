@@ -31,7 +31,7 @@ export const payPartnerData = [
 export const payInstallerNameData = [{ value: "OWE", label: "OWE" }];
 export const paySaleTypeData = [{ value: "BATTERY", label: "BATTERY" }];
 export const userSelectData = [
-  { value: "admin", label: "Admin" },
+  { value: "Admin", label: "Admin" },
   { value: "SubDealer Owner", label: "DB User" },
   { value: "Appointment Setter", label: "Appointment Setter" },
   { value: "Partner", label: "Partner" },

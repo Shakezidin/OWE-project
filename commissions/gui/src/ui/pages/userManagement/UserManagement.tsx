@@ -14,7 +14,7 @@ import UserManagementTable from "./userTableList/UserManagementTable";
 import { cretaeUserOnboarding, fetchDealerOwner, fetchRegionList } from "../../../redux/apiActions/createUserSliceActions";
 import { createUserObject, validateForm } from "../../../utiles/Validation";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { userResetForm } from "../../../redux/apiSlice/userManagementSlice/createUserSlice";
+import { updateUserForm, userResetForm } from "../../../redux/apiSlice/userManagementSlice/createUserSlice";
 
 const UserManagement: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -155,7 +155,21 @@ const UserManagement: React.FC = () => {
           selectedOption={selectedOption}
           handleSelectChange={handleSelectChange} 
           onClickEdit={(item: UserRoleBasedListModel)=>{
-            console.log("row data",item)
+            // console.log("row data",item)
+            const [firstName, lastName] = item.name.split(' ');
+
+            dispatch(updateUserForm({ field: "isEdit", value: true}))
+            dispatch(updateUserForm({ field: "first_name", value: firstName }))
+            dispatch(updateUserForm({ field: "last_name", value: lastName }))
+            dispatch(updateUserForm({ field: "email_id", value: item.email_id }))
+            dispatch(updateUserForm({ field: "mobile_number", value: item.mobile_number }))
+            dispatch(updateUserForm({ field: "assigned_dealer_name", value: item.dealer_owner }))
+            dispatch(updateUserForm({ field: "role_name", value: item.role_name }))
+            dispatch(updateUserForm({ field: "add_region", value: item.region }))
+            dispatch(updateUserForm({ field: "team_name", value: item.team_name }))
+            dispatch(updateUserForm({ field: "description", value: item.description }))
+            dispatch(updateUserForm({ field: "report_to", value: item.reporting_manager }))
+            setOpen(true)
           }}       
            />
       </div>
