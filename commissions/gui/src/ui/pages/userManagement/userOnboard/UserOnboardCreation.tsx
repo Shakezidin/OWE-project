@@ -149,7 +149,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                       }
                       value={dealerList?.find(
                         (option) =>
-                          option?.value === formData.assigned_dealer_name ? formData.assigned_dealer_name:''
+                          option?.value === formData.assigned_dealer_name
                       )}
                     />
                   </div>
