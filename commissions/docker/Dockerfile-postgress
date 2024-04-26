@@ -79,6 +79,11 @@ COPY ./dbSchemas/DB_ProcUpdateRebateDataArchive.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcCreateNewLoanFeeAdder.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcUpdateLoanFeeAdder.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcUpdateLoanFeeAdderArchive.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcCreateNewReferralData.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcCreateNewDealerCredit.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcUpdateDealerCreditArchive.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcUpdateNonCommDlrPayArchive.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcUpdateReferralDataArchive.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcCreateNewDLR_OTH.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcUpdateDLR_OTH.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcUpdateDLR_OTHArchive.sql /docker-entrypoint-initdb.d/

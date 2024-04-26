@@ -1,12 +1,12 @@
 /**************************************************************************
- *	Function	: updateReferralDataApiModels.go
- *	DESCRIPTION : Files contains struct for update AutoAdder models
- *	DATE        : 20-Jan-2024
+ *	Function	: getReferralDataApiModels.go
+ *	DESCRIPTION : Files contains struct for get referral data models
+ *	DATE        : 25-Apr-2024
  **************************************************************************/
 
 package models
 
-type UpdateReferralData struct {
+type GetReferralData struct {
 	RecordId             int64   `json:"record_id"`
 	UniqueID             string  `json:"unique_id"`
 	NewCustomer          string  `json:"new_customer"`
@@ -35,7 +35,6 @@ type UpdateReferralData struct {
 	EndDate              *string `json:"end_date"`
 }
 
-type UpdateReferralDataArchive struct {
-	RecordId   []int64 `json:"record_id"`
-	IsArchived bool    `json:"is_archived"`
+type GetReferralDataList struct {
+	ReferralDataList []GetReferralData `json:"referral_data_list"`
 }

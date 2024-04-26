@@ -24,7 +24,6 @@ import (
 	apiHandler "OWEApp/services"
 
 	"github.com/google/uuid"
-	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 type CfgFilePaths struct {
@@ -570,6 +569,14 @@ var apiRoutes = ApiRoutes{
 			types.RoleAdmin,
 		},
 	},
+	{strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_autoadder_archive",
+		apiHandler.HandleUpdateAutoAdderArchiveRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
 	{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_user",
@@ -669,10 +676,90 @@ var apiRoutes = ApiRoutes{
 			types.RoleAdmin,
 		},
 	},
+  {
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/create_referraldata",
+		apiHandler.HandleCreateReferralDataRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
 	{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_referraldata",
 		apiHandler.HandleUpdateReferralDataRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/create_dealercredit",
+		apiHandler.HandleCreateDealerCreditRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/create_noncommdlrpay",
+		apiHandler.HandleCreateNonCommDlrPayRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"), //Changed to POST
+		"/owe-commisions-service/v1/get_referraldata",
+		apiHandler.apiGetReferralData,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"), //Changed to POST
+		"/owe-commisions-service/v1/get_dealercredit",
+		apiHandler.apiGetDealerCreditData,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"), //Changed to POST
+		"/owe-commisions-service/v1/get_noncommdlrpay",
+		apiHandler.apiGetNonCommDlrPayData,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_referraldata_archive",
+		apiHandler.HandleUpdateReferralDataArchiveRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_dealercredit_archive",
+		apiHandler.HandleUpdateCreditDealerArchiveRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+  	strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_noncommdlrpay_archive",
+		apiHandler.HandleUpdateNonCommDlrPayArchiveRequest,
 		true,
 		[]types.UserRoles{
 			types.RoleAdmin,

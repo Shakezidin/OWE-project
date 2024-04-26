@@ -89,6 +89,9 @@ const (
 	TableName_auto_adder                 string = "auto_adder"
 	TableName_user_roles                 string = "user_roles"
 	TableName_loan_fee_adder             string = "loan_fee_adder"
+	TableName_referral_data              string = "referral_data"
+	TableName_dealer_credit_data         string = "dealer_credit"
+	TableName_noncomm_dlr_pay            string = "noncomm_dlr_pay"
 )
 
 /******************************************************************************
