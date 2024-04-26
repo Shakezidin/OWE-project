@@ -105,9 +105,8 @@ const TechnicalSupport = () => {
               />
             </div>
 
-            <div className="rate-input-container">
-              <div className="rate-input-field">
-                <label>
+            <div className="create-input-field-support" style={{marginTop:".4rem"}}>
+                <label className="inputLabel">
                   <p>Attach File</p>
                 </label>
                 <div className="file-input-container">
@@ -126,7 +125,7 @@ const TechnicalSupport = () => {
                       Browse
                     </button>
                   </div>
-                </div>
+             
               </div>
             </div>
           </div>

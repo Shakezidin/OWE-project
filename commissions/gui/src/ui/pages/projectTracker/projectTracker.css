@@ -59,6 +59,7 @@
 .project-card-body{
     display: flex;
     align-items: center;
+    /* flex-wrap: wrap; */
     gap: 1rem;
     justify-content: space-between;
     margin-top: 1rem;
@@ -71,11 +72,14 @@
     display: flex;
     /* align-items: center; */
     justify-content: center;
+    /* flex-wrap: wrap; */
     border-radius: 8px;
     flex-direction: column;
     padding-left: 1rem;
 }
-
+.project-body-details h2,p{
+    font-size: 14px;
+}
 .project-ruppes-card{
     border: 1px solid var(--border-color);
     /* width: 32%; */

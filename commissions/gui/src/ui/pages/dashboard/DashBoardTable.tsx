@@ -20,12 +20,15 @@ const DashBoardTable: React.FC = () => {
   const [editedCommission, setEditedCommission] =
     useState<CommissionModel | null>(null);
   const [open, setOpen] = useState<boolean>(false);
+
   const [openIcon, setOpenIcon] = useState<boolean>(false);
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-  const [editMode, setEditMode] = useState(false);
+
+
   const handleIconOpen = () => setOpenIcon(true);
   const handleIconClose = () => setOpenIcon(false);
+  const handleClose = () => setOpen(false);
+  const [editMode, setEditMode] = useState(false);
 
   const dataUser = [
     {
@@ -218,6 +221,7 @@ const DashBoardTable: React.FC = () => {
       rl: "$20.00",
       epc: "2.444",
     },
+
   ];
   const dispatch = useAppDispatch();
   const currentPage = useAppSelector(
@@ -241,7 +245,6 @@ const DashBoardTable: React.FC = () => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentPageData = dataUser?.slice(startIndex, endIndex);
-
   return (
     <>
       <div className="dashBoard-container">
@@ -262,7 +265,7 @@ const DashBoardTable: React.FC = () => {
                   </div>
                 </th>
 
-                <th style={{ padding: "0px" }}>
+                <th style={{padding: "0px"}}>
                   <div className="table-header">
                     <p>Project ID</p>{" "}
                     <FaArrowDown style={{ color: "#667085" }} />
@@ -376,27 +379,14 @@ const DashBoardTable: React.FC = () => {
                           // indeterminate={isAnyRowSelected && !isAllRowsSelected}
                         />
                       </td>
-                      <td
-                        style={{
-                          fontWeight: "500",
-                          color: "black",
-                          cursor: "pointer",
-                        }}
-                        onClick={() => {
+                      <td   onClick={() => {
                           handleOpen();
-                        }}
-                      >
-                        {el.pi}
-                      </td>
-                      <td style={{ fontWeight: "500", color: "#101828" }}>
-                        {el.dn}
-                      </td>
-                      <td style={{ fontWeight: "500", color: "#101828" }}>
-                        {el.sr}
-                      </td>
-                      <td style={{ fontWeight: "500", color: "#101828" }}>
-                        {el.cn}
-                      </td>
+                        }} style={{color: "101828", paddingLeft: "0",cursor:"pointer"}}>{el.pi}</td>
+                      <td style={{color: "#101828"}}>{el.dn}</td>
+                      <td style={{color: "#101828"}}>{el.sr}</td>
+                      <td style={{color: "#101828"}}>{el.cn}</td>
+                      <td style={{color: "#101828"}}>{el.cm}</td>
+                      <td style={{color: "#101828"}}>{el.pg}</td>
                       <td style={{ color: "#0493CE" }}>{el.amt}</td>
                       <td style={{ color: "#0493CE" }}>{el.pipeline}</td>
                       <td style={{ color: "#0493CE" }}>{el.cd}</td>
@@ -409,16 +399,9 @@ const DashBoardTable: React.FC = () => {
                       <td>{el.rl}</td>
                       <td>{el.epc}</td>
                       <td>
-                        <div className="action-icon">
-                          <div
-                            className=""
-                            style={{ cursor: "pointer", textAlign: "center" }}
-                          >
-                            <IoIosHelpCircleOutline
+                        <IoIosHelpCircleOutline
                               onClick={() => handleIconOpen()}
                             />
-                          </div>
-                        </div>
                       </td>
                     </tr>
                   ))
@@ -441,7 +424,8 @@ const DashBoardTable: React.FC = () => {
             />
           ) : null}
         </div>
-        {open && (
+      </div>
+ {open && (
           <ProjectBreakdown
             commission={editedCommission}
             editMode={editMode}
@@ -457,7 +441,6 @@ const DashBoardTable: React.FC = () => {
             handleClose={handleIconClose}
           />
         )}
-      </div>
     </>
   );
 };

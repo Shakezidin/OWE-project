@@ -127,7 +127,7 @@
 }
 .Personal-container {
   margin-top: 1rem;
-  width: 960px;
+  /* width: 960px; */
   height: 250px;
   opacity: 0px;
   border: 1px solid #e0e0e0;
@@ -151,7 +151,7 @@
   padding: 1rem;
 }
 .reset-Update button {
-  width: 280px;
+  /* width: 280px; */
   height: 48px;
   font-size: 14px;
   font-weight: 500;
@@ -177,10 +177,9 @@
 
 .user-profile-container {
   margin-top: 2rem;
-  width: 954px;
+  /* width: 954px; */
   height: 468px;
-  top: 93px;
-  left: 303px;
+  
   gap: 0px;
   opacity: 0px;
   background: #ffffff;
@@ -213,7 +212,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 133px;
+  /* width: 133px; */
   height: 133px;
   margin-top: 5rem;
 }
@@ -257,7 +256,7 @@
   margin-top: 1rem;
 }
 .reset-Update-support button {
-  width: 280px;
+  /* width: 280px; */
   height: 48px;
   font-size: 14px;
   font-weight: 500;
