@@ -19,7 +19,7 @@ const initialState: CreateOnboardUserStateModel = {
     add_region: "",
     team_name: "",
     description: "",
-    report_to:''
+    report_to: "",
   },
   dealerOwenerList: [],
   regionList: [],
@@ -43,8 +43,9 @@ const createUserSlice = createSlice({
         },
       };
     },
-    userResetForm(state) {
-      state.formData = initialState.formData;
+    userResetForm() {
+      console.log("inititaste reset");
+      return initialState;
     },
   },
   extraReducers: (builder) => {

@@ -90,7 +90,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                     type={"text"}
                     label="First Name"
                     value={formData.first_name}
-                    placeholder={"Enter Name"}
+                    placeholder={"Enter First Name"}
                     onChange={(e) => handleInputChange(e)}
                     name={"first_name"}
                   />
@@ -100,7 +100,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                     type={"text"}
                     label="Last Name"
                     value={formData.last_name}
-                    placeholder={"Enter"}
+                    placeholder={"Enter Last Name"}
                     onChange={(e) => handleInputChange(e)}
                     name={"last_name"}
                   />

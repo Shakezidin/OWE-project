@@ -9,16 +9,15 @@ import {
   fetchUserOnboarding,
 } from "../../../redux/apiActions/userManagementActions";
 import { userSelectData } from "../../../resources/static_data/StaticData";
-import { CreateUserParamModel, UserDropdownModel } from "../../../core/models/api_models/UserManagementModel";
+import { UserDropdownModel } from "../../../core/models/api_models/UserManagementModel";
 import UserManagementTable from "./userTableList/UserManagementTable";
 import { cretaeUserOnboarding, fetchDealerOwner, fetchRegionList } from "../../../redux/apiActions/createUserSliceActions";
 import { createUserObject, validateForm } from "../../../utiles/Validation";
 import { unwrapResult } from "@reduxjs/toolkit";
+import { userResetForm } from "../../../redux/apiSlice/userManagementSlice/createUserSlice";
 
 const UserManagement: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
   const userName = localStorage.getItem("userName");
   const [selectedOption, setSelectedOption] = useState(userSelectData[0]);
 
@@ -28,6 +27,11 @@ const UserManagement: React.FC = () => {
   );
   const { formData, dealerOwenerList, regionList } = useAppSelector((state) => state.createOnboardUser);
 
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => {
+    dispatch(userResetForm())
+    setOpen(false)
+  };
   /** fetch onboarding users data*/
   useEffect(() => {
     const fetchData = async () => {
