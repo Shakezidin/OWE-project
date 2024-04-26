@@ -88,7 +88,7 @@ export const LoginPage = () => {
           credentials.isRememberMe.toString()
         );
         dispatch(loginSuccess({ email_id, role_name, access_token }));
-        navigate("/commission/dashboard");
+        navigate("/dashboard");
       } catch (error) {
         alert("Please enter vaild credentails.");
       }
@@ -96,7 +96,7 @@ export const LoginPage = () => {
   };
 
   if (isAuthenticated) {
-    navigate("/commission/dashboard");
+    navigate("/dashboard");
   }
   /** UI render */
 

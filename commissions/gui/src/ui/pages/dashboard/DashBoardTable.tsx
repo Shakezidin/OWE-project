@@ -20,7 +20,13 @@ const DashBoardTable: React.FC = () => {
   const [editedCommission, setEditedCommission] =
     useState<CommissionModel | null>(null);
   const [open, setOpen] = useState<boolean>(false);
+
+  const [openIcon, setOpenIcon] = useState<boolean>(false);
   const handleOpen = () => setOpen(true);
+
+
+  const handleIconOpen = () => setOpenIcon(true);
+  const handleIconClose = () => setOpenIcon(false);
   const handleClose = () => setOpen(false);
   const [editMode, setEditMode] = useState(false);
 
@@ -373,7 +379,9 @@ const DashBoardTable: React.FC = () => {
                           // indeterminate={isAnyRowSelected && !isAllRowsSelected}
                         />
                       </td>
-                      <td style={{color: "101828", paddingLeft: "0"}}>{el.pi}</td>
+                      <td   onClick={() => {
+                          handleOpen();
+                        }} style={{color: "101828", paddingLeft: "0",cursor:"pointer"}}>{el.pi}</td>
                       <td style={{color: "#101828"}}>{el.dn}</td>
                       <td style={{color: "#101828"}}>{el.sr}</td>
                       <td style={{color: "#101828"}}>{el.cn}</td>
@@ -391,14 +399,9 @@ const DashBoardTable: React.FC = () => {
                       <td>{el.rl}</td>
                       <td>{el.epc}</td>
                       <td>
-                        <BiSupport />
-                          {open && (
-                            <ProjectBreakdown
-                              commission={editedCommission}
-                              editMode={editMode}
-                              handleClose={handleClose}
+                        <IoIosHelpCircleOutline
+                              onClick={() => handleIconOpen()}
                             />
-                          )}
                       </td>
                     </tr>
                   ))
@@ -422,6 +425,22 @@ const DashBoardTable: React.FC = () => {
           ) : null}
         </div>
       </div>
+ {open && (
+          <ProjectBreakdown
+            commission={editedCommission}
+            editMode={editMode}
+            handleClose={() => {
+              setOpen(false);
+            }}
+          />
+        )}
+        {openIcon && (
+          <HelpDashboard
+            commission={editedCommission}
+            editMode={editMode}
+            handleClose={handleIconClose}
+          />
+        )}
     </>
   );
 };

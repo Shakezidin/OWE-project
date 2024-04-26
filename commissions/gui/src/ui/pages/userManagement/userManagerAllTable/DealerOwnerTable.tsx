@@ -20,7 +20,7 @@ const DealerOwnerTable: React.FC<DealerProps> = ({ data }) => {
         <table>
           <thead style={{ background: "#F5F5F5" }}>
             <tr>
-              <th>
+              <th style={{paddingRight:0}}>
                 <div>
                   <CheckBox
                     checked={true}
@@ -30,7 +30,7 @@ const DealerOwnerTable: React.FC<DealerProps> = ({ data }) => {
                 </div>
               </th>
 
-              <th>
+              <th style={{paddingLeft:"10px"}}>
                 <div className="table-header">
                   <p>Code</p> <FaArrowDown style={{ color: "#667085" }} />
                 </div>
@@ -69,26 +69,26 @@ const DealerOwnerTable: React.FC<DealerProps> = ({ data }) => {
             {data.length > 0
               ? data.map((el: UserRoleBasedListModel) => (
                   <tr key={el.email_id}>
-                    <td>
+                    <td style={{paddingRight:0}}>
                       <CheckBox
                         checked={true}
                         onChange={() => {}}
                         // indeterminate={isAnyRowSelected && !isAllRowsSelected}
                       />
                     </td>
-                    <td style={{ color: "var( --fade-gray-black)" }}>
+                    <td style={{ color: "black",fontWeight:"500", paddingLeft:"10px" }}>
                       {el.user_code}
                     </td>
-                    <td style={{ color: "var( --fade-gray-black)" }}>
+                    <td >
                       {el.name}
                     </td>
-                    <td style={{ color: "var( --fade-gray-black)" }}>
+                    <td >
                       {el.email_id}
                     </td>
-                    <td style={{ color: "var( --fade-gray-black)" }}>
+                    <td >
                       {el.mobile_number}
                     </td>
-                    <td style={{ color: "var( --fade-gray-black)" }}>
+                    <td >
                       {el.description}
                     </td>
                     <td>

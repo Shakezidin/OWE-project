@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import "../configure.css";
-import CreateCommissionRate from "./CreateCommissionRate";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import { ICONS } from "../../../icons/Icons";
 import TableHeader from "../../../components/tableHeader/TableHeader";
@@ -15,16 +13,18 @@ import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/pagin
 import { CommissionModel } from "../../../../core/models/configuration/create/CommissionModel";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
-import { Commissioncolumns } from "../../../../resources/static_data/configureHeaderData/CommissionColumn";
 import FilterModal from "../../../components/FilterModal/FilterModal";
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
 import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
 import Swal from 'sweetalert2';
-import Loading from "../../../components/loader/Loading";
-import DataNotFound from "../../../components/loader/DataNotFound";
+import  "../../configure/configure.css";
 
-const CommissionRate: React.FC = () => {
+
+const RepDashBoardTable = () => {
+
+
+
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
   const [exportOPen, setExportOpen] = React.useState<boolean>(false);
@@ -34,7 +34,7 @@ const CommissionRate: React.FC = () => {
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const commissionList = useAppSelector((state) => state.comm.commissionsList);
-  const loading = useAppSelector((state) => state.comm.loading);
+  // const loading = useAppSelector((state) => state.comm.loading);
   const error = useAppSelector((state) => state.comm.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
@@ -86,64 +86,6 @@ const CommissionRate: React.FC = () => {
   const isAnyRowSelected = selectedRows?.size > 0;
   const isAllRowsSelected = selectedRows?.size === commissionList?.length;
 
-  const handleArchiveAllClick = async () => {
-    const confirmationResult = await Swal.fire({
-      title: 'Are you sure?',
-      text: 'This action will archive all selected rows.',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, archive all'
-    });
-    if (confirmationResult.isConfirmed) {
-      // Extract record IDs from selected rows
-      const archivedRows = Array.from(selectedRows).map(index => commissionList[index].record_id);
-
-      // Check if any rows are selected
-      if (archivedRows.length > 0) {
-        // Perform API call to archive all selected rows
-        const newValue = {
-          record_id: archivedRows,
-          is_archived: true
-        };
-
-        const pageNumber = {
-          page_number: currentPage,
-          page_size: itemsPerPage,
-        };
-
-        const res = await postCaller(EndPoints.update_commission_archive, newValue);
-        if (res.status === HTTP_STATUS.OK) {
-          // If API call is successful, refetch commissions
-          dispatch(fetchCommissions(pageNumber));
-          const remainingSelectedRows = Array.from(selectedRows).filter(index => !archivedRows.includes(commissionList[index].record_id));
-          const isAnyRowSelected = remainingSelectedRows.length > 0;
-          setSelectAllChecked(isAnyRowSelected);
-          setSelectedRows(new Set());
-          Swal.fire({
-            title: 'Archived!',
-            text: 'All selected rows have been archived.',
-            icon: 'success',
-            timer: 2000,
-            showConfirmButton: false
-          });
-        }
-        else {
-          Swal.fire({
-            title: 'Error!',
-            text: 'Failed to archive selected rows. Please try again later.',
-            icon: 'error',
-            timer: 2000,
-            showConfirmButton: false
-          });
-        }
-      }
-
-    }
-  };
-
-
 
   const handleArchiveClick = async (record_id: any) => {
     const archived: number[] = [record_id];
@@ -165,12 +107,6 @@ const CommissionRate: React.FC = () => {
     // setSelectedRows(newSelectedRows);
   };
 
-  const handleViewArchiveToggle = () => {
-    setViewArchived(!viewArchived);
-    // When toggling, reset the selected rows
-    setSelectedRows(new Set());
-    setSelectAllChecked(false);
-  };
   const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
@@ -194,50 +130,54 @@ const CommissionRate: React.FC = () => {
       }
     });
   }
-  const fetchFunction = (req: any) => {
-    dispatch(fetchCommissions(req));
-  };
   if (error) {
-    return <div className="loader-container"><Loading/></div>;
+    return <div>{error}</div>;
   }
-  if (loading) {
-    return <div className="loader-container"><Loading/> {loading}</div>;
-  }
+  // if (loading) {
+  //   return <div>Loading... {loading}</div>;
+  // }
 
-  console.log("gjshadgjsadj",Commissioncolumns)
+  const Commissioncolumns = [
+    { name: 'partner', displayName: 'Unique ID', type: 'string', isCheckbox: true },
+    { name: 'installer', displayName: 'Home Owner', type: 'string', isCheckbox: false },
+    { name: 'state', displayName: 'Current Status', type: 'string', isCheckbox: false },
+    { name: 'sale_type', displayName: 'Status Date', type: 'string', isCheckbox: false },
+    { name: 'sale_price', displayName: 'Owe Contractor', type: 'number', isCheckbox: false },
+    { name: 'rep_type', displayName: 'DBA', type: 'string', isCheckbox: false },
+    { name: 'rl', displayName: 'Commission Model', type: 'number', isCheckbox: false },
+    { name: 'rate', displayName: 'Percentage', type: 'number', isCheckbox: false },
+    { name: 'start_date', displayName: 'Type', type: 'date', isCheckbox: false },
+    { name: 'end_date', displayName: 'Today', type: 'date', isCheckbox: false },
+
+    { name: 'installer', displayName: 'Amount', type: 'string', isCheckbox: false },
+    { name: 'state', displayName: 'Finance Type', type: 'string', isCheckbox: false },
+    { name: 'sale_type', displayName: 'Sys Size', type: 'string', isCheckbox: false },
+    { name: 'sale_price', displayName: 'Contract', type: 'number', isCheckbox: false },
+    { name: 'rep_type', displayName: 'Loan Fee', type: 'string', isCheckbox: false },
+    { name: 'rl', displayName: 'EPC', type: 'number', isCheckbox: false },
+    { name: 'rate', displayName: 'Address', type: 'number', isCheckbox: false },
+    { name: 'start_date', displayName: 'R+R', type: 'date', isCheckbox: false },
+    { name: 'end_date', displayName: 'Comm Rate', type: 'date', isCheckbox: false },
+
+    { name: 'installer', displayName: 'Net EPC', type: 'string', isCheckbox: false },
+    { name: 'state', displayName: 'Credit', type: 'string', isCheckbox: false },
+    { name: 'sale_type', displayName: 'Rep 2', type: 'string', isCheckbox: false },
+    { name: 'sale_price', displayName: 'Net Comm', type: 'number', isCheckbox: false },
+    { name: 'rep_type', displayName: 'Draw AMT', type: 'string', isCheckbox: false },
+    { name: 'rl', displayName: 'Amt Paid', type: 'number', isCheckbox: false },
+    { name: 'rate', displayName: 'Balance', type: 'number', isCheckbox: false },
+    { name: 'start_date', displayName: 'Dealer Code', type: 'date', isCheckbox: false },
+    { name: 'end_date', displayName: 'Contract date', type: 'date', isCheckbox: false },
+
+    { name: 'start_date', displayName: 'State', type: 'date', isCheckbox: false },
+    { name: 'end_date', displayName: 'Sub Total', type: 'date', isCheckbox: false },
+  ];
+  
+
+
   return (
-
     <div className="comm">
-      <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Commission Rate" />
       <div className="commissionContainer">
-
-        <TableHeader
-          title="Commisstion Rate"
-          onPressViewArchive={() => handleViewArchiveToggle()}
-          onPressArchive={handleArchiveAllClick}
-          checked={isAllRowsSelected}
-          viewArchive={viewArchived}
-          isAnyRowSelected={isAnyRowSelected}
-          onPressFilter={() => filter()}
-          onPressImport={() => { }}
-          onpressExport={() => handleExportOpen()}
-          onpressAddNew={() => handleAddCommission()}
-        />
-        {exportOPen && (<div className="export-modal">
-          <CSVLink style={{ color: "white", fontSize: "12px" }} data={currentPageData} filename={"table.csv"}>Export CSV</CSVLink>
-        </div>)}
-        {filterOPen && <FilterModal handleClose={filterClose}
-          columns={Commissioncolumns}
-          page_number={currentPage}
-          page_size={itemsPerPage}
-          fetchFunction={fetchFunction}
-        />
-        }
-        {open && <CreateCommissionRate
-          commission={editedCommission}
-          editMode={editMode}
-          handleClose={handleClose}
-        />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
@@ -274,6 +214,10 @@ const CommissionRate: React.FC = () => {
              }
               </tr>
             </thead>
+
+
+
+
             <tbody>
               {currentPageData?.length > 0
                 ? currentPageData?.map((el: any, i: any) => (
@@ -312,16 +256,35 @@ const CommissionRate: React.FC = () => {
                     <td>{el.rate}</td>
                     <td>{el.start_date}</td>
                     <td>{el.end_date}</td>
+                    
+                    <td style={{ color: 'blue' }}>${el.rl}</td>
+                    <td>{el.state}</td>
+                    <td>{el.sale_type}</td>
+                    <td>{el.sale_price}</td>
+                    <td>{el.rep_type}</td>
+                    <td>{el.rl}</td>
+                    <td>{el.rate}</td>
+                    <td>{el.start_date}</td>
+                    <td>{el.end_date}</td>
+
+                    <td>{el.installer}</td>
+                    <td>{el.state}</td>
+                    <td>{el.sale_type}</td>
+                    <td>{el.sale_price}</td>
+                    <td>{el.rep_type}</td>
+                    <td>{el.rl}</td>
+                    <td>{el.rate}</td>
+                    <td>{el.start_date}</td>
+                    <td>{el.end_date}</td>
+
+                    <td>{el.start_date}</td>
+                    <td>{el.end_date}</td>
                   {
                     viewArchived===true?null:  <td>
                     <div className="action-icon">
                       <div className="action-archive" style={{ cursor: "pointer" }} onClick={() => handleArchiveClick(el.record_id)}>
-                        <img src={ICONS.ARCHIVE} alt="" />
-                        <span className="tooltiptext">Archive</span>
-                      </div>
-                      <div className="action-archive" style={{ cursor: "pointer" }} onClick={() => handleEditCommission(el)}>
-                        <img src={ICONS.editIcon} alt="" />
-                        <span className="tooltiptext">Edit</span>
+                        <img src={ICONS.techIcon} alt="" style={{textAlign: "left"}}/>
+                        {/* <span className="tooltiptext">Archive</span> */}
                       </div>
                     </div>
 
@@ -329,39 +292,32 @@ const CommissionRate: React.FC = () => {
                   }
                   </tr>
                 ))
-                :  <tr style={{border:0}}>
-                <td colSpan={10}>
-                <div className="data-not-found">
-                <DataNotFound/>
-                <h3>Data Not Found</h3>
-                </div>
-                </td>
-              </tr>
-                }
+                : null}
             </tbody>
           </table>
         </div>
-        {
-            commissionList?.length > 0 ?
+
+
         <div className="page-heading-container">
           <p className="page-heading">
             {currentPage} - {totalPages} of {currentPageData?.length} item
           </p>
 
-         <Pagination
+          {
+            commissionList?.length > 0 ? <Pagination
               currentPage={currentPage}
               totalPages={totalPages} // You need to calculate total pages
               paginate={paginate}
               currentPageData={currentPageData}
               goToNextPage={goToNextPage}
               goToPrevPage={goToPrevPage}
-            /> 
+            /> : null
+          }
         </div>
-: null
-}
+
       </div>
     </div>
   );
 };
 
-export default CommissionRate;
+export default RepDashBoardTable;

@@ -186,7 +186,7 @@ const DataTablle: React.FC = () => {
           <table>
             <thead>
               <tr>
-                <th>
+                <th style={{paddingRight:0}}>
                   <div>
                     <CheckBox
                       checked={selectAllChecked}
@@ -202,7 +202,7 @@ const DataTablle: React.FC = () => {
                     />
                   </div>
                 </th>
-                <th>
+                <th style={{paddingLeft:"10px"}}>
                   <div className="table-header">
                     <p>Column 1</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
@@ -245,7 +245,7 @@ const DataTablle: React.FC = () => {
               {currentPageData?.length > 0
                 ? currentPageData?.map((el, i) => (
                   <tr key={i} className={selectedRows.has(i) ? "selected" : ""} >
-                    <td style={{ fontWeight: "500", color: "black",textAlign: "left" }}>
+                    <td style={{textAlign: "left",paddingRight:0 }}>
                       <CheckBox
                         checked={selectedRows.has(i)}
                         onChange={() =>
@@ -258,15 +258,15 @@ const DataTablle: React.FC = () => {
                         }
                       />
                     </td>
-                    <td style={{ fontWeight: "500", color: "black", textAlign: "left"}}>
+                    <td style={{ fontWeight: "500", color: "black", textAlign: "left",paddingLeft:"10px"}}>
                       {el.col1}
                     </td>
-                    <td style={{ fontWeight: "500", color: "black", textAlign: "left" }}>{el.col2}</td>
-                    <td style={{ fontWeight: "500", color: "black", textAlign: "left" }}>{el.col3}</td>
-                    <td style={{ fontWeight: "500", color: "black", textAlign: "left" }}>{el.col4}</td>
-                    <td style={{fontWeight: "500", color:"#0493CE", textAlign: "left"}}>{el.col5}</td>
-                    <td style={{fontWeight: "500", color:"#0493CE", textAlign: "left"}}>{el.col6}</td>
-                   <td style={{ fontWeight: "500", color:"#0493CE", textAlign: "left"}}>{el.col7}</td>
+                    <td style={{ textAlign: "left" }}>{el.col2}</td>
+                    <td style={{ textAlign: "left" }}>{el.col3}</td>
+                    <td style={{ textAlign: "left" }}>{el.col4}</td>
+                    <td style={{ textAlign: "left"}}>{el.col5}</td>
+                    <td style={{ textAlign: "left"}}>{el.col6}</td>
+                   <td style={{ textAlign: "left"}}>{el.col7}</td>
                   </tr>
                 ))
                 : null}

@@ -17,6 +17,8 @@ import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/pagin
 import { DealerTableData } from "../../../../resources/static_data/configureHeaderData/DealerTableData";
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
 import FilterModal from "../../../components/FilterModal/FilterModal";
+import DataNotFound from "../../../components/loader/DataNotFound";
+import Loading from "../../../components/loader/Loading";
 
 const DealerOverRides: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -105,12 +107,11 @@ const DealerOverRides: React.FC = () => {
   const fetchFunction = (req: any) => {
     dispatch(fetchDealer(req));
    };
-  if (loading) {
-    return <div>Loading...</div>;
+   if (error) {
+    return <div className="loader-container"><Loading/></div>;
   }
-
-  if (error) {
-    return <div>Error: {error}</div>;
+  if (loading) {
+    return <div className="loader-container"><Loading/> {loading}</div>;
   }
 
   return (
@@ -211,27 +212,36 @@ const DealerOverRides: React.FC = () => {
                       </td>
                     </tr>
                   ))
-                : null}
+                : <tr style={{border:0}}>
+                  <td colSpan={10}>
+                  <div className="data-not-found">
+                  <DataNotFound/>
+                  <h2>Data Not Found</h2>
+                  </div>
+                  </td>
+                </tr>
+                }
             </tbody>
           </table>
         </div>
+        
+       {
+        dealerList?.length > 0 ?
         <div className="page-heading-container">
       
           <p className="page-heading">
            {currentPage} - {totalPages} of {currentPageData?.length} item
           </p>
-     
-       {
-        dealerList?.length > 0 ? <Pagination
+      <Pagination
           currentPage={currentPage}
           totalPages={totalPages} // You need to calculate total pages
           paginate={paginate}
           currentPageData={currentPageData}
           goToNextPage={goToNextPage}
           goToPrevPage={goToPrevPage}
-        /> : null
-      }
+        /> 
        </div>
+       :null}
       </div>
     </div>
   );
