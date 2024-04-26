@@ -17,6 +17,8 @@ import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/pagin
 import { MarketingFeesColumn } from "../../../../resources/static_data/configureHeaderData/MarketingFeeColumn";
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
 import FilterModal from "../../../components/FilterModal/FilterModal";
+import Loading from "../../../components/loader/Loading";
+import DataNotFound from "../../../components/loader/DataNotFound";
 
 const MarketingFees: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -110,12 +112,11 @@ const MarketingFees: React.FC = () => {
   const fetchFunction = (req: any) => {
     dispatch(fetchmarketingFees(req));
    };
-  if (loading) {
-    return <div>Loading...</div>;
+   if (error) {
+    return <div className="loader-container"><Loading/></div>;
   }
-
-  if (error) {
-    return <div>Error: {error}</div>;
+  if (loading) {
+    return <div className="loader-container"><Loading/> {loading}</div>;
   }
 
   return (
@@ -225,17 +226,26 @@ const MarketingFees: React.FC = () => {
                     </td>
                   </tr>
                 ))
-                : null}
+                :  <tr style={{border:0}}>
+                <td colSpan={10}>
+                <div className="data-not-found">
+                <DataNotFound/>
+                <h3>Data Not Found</h3>
+                </div>
+                </td>
+              </tr>
+                }
             </tbody>
           </table>
         </div>
+        {
+            marketingFeesList?.length > 0 ?
         <div className="page-heading-container">
           <p className="page-heading">
             {currentPage} - {totalPages} of {currentPageData?.length} item
           </p>
 
-          {
-            marketingFeesList?.length > 0 ? <Pagination
+          <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
               currentPageData={currentPageData}
@@ -243,9 +253,10 @@ const MarketingFees: React.FC = () => {
               paginate={paginate}
               goToNextPage={goToNextPage}
               goToPrevPage={goToPrevPage}
-            /> : null
-          }
+            /> 
         </div>
+        : null
+      }
       </div>
     </div>
   );

@@ -54,10 +54,10 @@ const MyProfile = () => {
                         <div className=''>
                             <p>Personal Information</p>
                         </div>
-                        {/* <div className="edit-section">
+                        <div className="edit-section">
                             <img src={ICONS.editIcon} alt="" />
                             <p>Edit</p>
-                        </div> */}
+                        </div>
                     </div>
 
                     <div className="create-input-container" style={{ padding: "0.5rem", marginLeft: "1rem" }}>
@@ -65,7 +65,7 @@ const MyProfile = () => {
                             <Input
                                 type={"text"}
                                 label="First Name"
-                                value={"createMarketing.fee_rate"}
+                                value={""}
                                 name="fee_rate"
                                 placeholder={"Enter"}
                                 onChange={(e) => { }}
@@ -75,7 +75,7 @@ const MyProfile = () => {
                             <Input
                                 type={"text"}
                                 label="Last Name"
-                                value={"createMarketing.fee_rate"}
+                                value={""}
                                 name="fee_rate"
                                 placeholder={"Enter"}
                                 onChange={(e) => { }}
@@ -87,7 +87,7 @@ const MyProfile = () => {
                             <Input
                                 type={"text"}
                                 label="Email"
-                                value={"createMarketing.fee_rate"}
+                                value={""}
                                 name="fee_rate"
                                 placeholder={"Enter"}
                                 onChange={(e) => { }}
@@ -97,7 +97,7 @@ const MyProfile = () => {
                             <Input
                                 type={"text"}
                                 label="Phone Number"
-                                value={"createMarketing.fee_rate"}
+                                value={""}
                                 name="fee_rate"
                                 placeholder={"Enter"}
                                 onChange={(e) => { }}
@@ -122,7 +122,7 @@ const MyProfile = () => {
                             <Input
                                 type={"text"}
                                 label="Street"
-                                value={"createMarketing.fee_rate"}
+                                value={""}
                                 name="fee_rate"
                                 placeholder={"Enter"}
                                 onChange={(e) => { }}
@@ -181,7 +181,7 @@ const MyProfile = () => {
                             <Input
                                 type={"text"}
                                 label="Zip Code"
-                                value={"createMarketing.fee_rate"}
+                                value={""}
                                 name="fee_rate"
                                 placeholder={"Enter"}
                                 onChange={(e) => { }}
@@ -191,7 +191,7 @@ const MyProfile = () => {
                             <Input
                                 type={"text"}
                                 label="Country"
-                                value={"createMarketing.fee_rate"}
+                                value={""}
                                 name="fee_rate"
                                 placeholder={"Enter"}
                                 onChange={(e) => { }}

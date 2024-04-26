@@ -7,9 +7,11 @@ import { UserRoleBasedListModel } from "../../../../core/models/api_models/UserM
 
 interface AppointmentSetterProps {
   data: UserRoleBasedListModel[];
+  onClickEdit: (item: UserRoleBasedListModel)=> void;
+  onClickDelete: (item: UserRoleBasedListModel)=> void;
 }
 
-const AppointmentSetterTable: React.FC<AppointmentSetterProps> = ({ data }) => {
+const AppointmentSetterTable: React.FC<AppointmentSetterProps> = ({ data, onClickDelete, onClickEdit }) => {
   return (
     <>
       {/* <UserHeaderSection  name="Appointment Setter"/> */}
@@ -20,7 +22,7 @@ const AppointmentSetterTable: React.FC<AppointmentSetterProps> = ({ data }) => {
         <table>
           <thead style={{ background: "#F5F5F5" }}>
             <tr>
-              <th>
+              <th style={{paddingRight:0}}>
                 <div>
                   <CheckBox
                     checked={true}
@@ -30,7 +32,7 @@ const AppointmentSetterTable: React.FC<AppointmentSetterProps> = ({ data }) => {
                 </div>
               </th>
 
-              <th>
+              <th style={{paddingLeft:"10px"}}>
                 <div className="table-header">
                   <p>Name</p> <FaArrowDown style={{ color: "#667085" }} />
                 </div>
@@ -66,10 +68,10 @@ const AppointmentSetterTable: React.FC<AppointmentSetterProps> = ({ data }) => {
           </thead>
 
           <tbody>
-            {data.length > 0
+            {data?.length > 0
               ? data.map((el: UserRoleBasedListModel) => (
                   <tr key={el.email_id}>
-                    <td>
+                    <td style={{paddingRight:0}}>
                       <CheckBox
                         checked={true}
                         onChange={() => {}}
@@ -78,8 +80,9 @@ const AppointmentSetterTable: React.FC<AppointmentSetterProps> = ({ data }) => {
                     </td>
                     <td
                       style={{
-                        fontWeight: "none",
-                        color: "var( --fade-gray-black)",
+                        fontWeight: "500",
+                        color:"black",
+                      paddingLeft:"10px"
                       }}
                     >
                       {el.name}
@@ -97,10 +100,10 @@ const AppointmentSetterTable: React.FC<AppointmentSetterProps> = ({ data }) => {
 
                     <td>
                       <div className="action-icon">
-                        <div className="" style={{ cursor: "pointer" }}>
+                        <div className="" style={{ cursor: "pointer" }} onClick={()=> onClickDelete(el)}>
                           <img src={ICONS.deleteIcon} alt="" />
                         </div>
-                        <div className="" style={{ cursor: "pointer" }}>
+                        <div className="" style={{ cursor: "pointer" }} onClick={()=> onClickEdit(el)}>
                           <img src={ICONS.editIcon} alt="" />
                         </div>
                       </div>

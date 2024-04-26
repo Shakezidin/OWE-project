@@ -16,6 +16,8 @@ import { CommissionModel } from "../../../../core/models/configuration/create/Co
 import { FaArrowDown } from "react-icons/fa6";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import CreateRebateData from "./CreateRebateData";
+import Loading from "../../../components/loader/Loading";
+import DataNotFound from "../../../components/loader/DataNotFound";
 interface Column {
   name: string;
   displayName: string;
@@ -97,12 +99,11 @@ const RebeteData: React.FC = () => {
     handleOpen()
   };
 
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
-
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div className="loader-container"><Loading/></div>;
+  }
+  if (loading) {
+    return <div className="loader-container"><Loading/> {loading}</div>;
   }
 
   const currentPageData = commissionList?.slice(startIndex, endIndex);
@@ -145,7 +146,7 @@ const RebeteData: React.FC = () => {
           <table>
             <thead>
               <tr>
-                <th >
+                <th style={{paddingRight:0}}>
                   <div>
                     <CheckBox
                       checked={selectAllChecked}
@@ -161,7 +162,7 @@ const RebeteData: React.FC = () => {
                     />
                   </div>
                 </th>
-                <th >
+                <th style={{paddingLeft:"10px"}}>
                   <div className="table-header" >
                     <p>Customer ver</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
                   </div>
@@ -305,7 +306,7 @@ const RebeteData: React.FC = () => {
                     key={i}
                     className={selectedRows.has(i) ? "selected" : ""}
                   >
-                    <td>
+                    <td style={{paddingRight:0}}>
                       <CheckBox
                         checked={selectedRows.has(i)}
                         onChange={() =>
@@ -318,7 +319,7 @@ const RebeteData: React.FC = () => {
                         }
                       />
                     </td>
-                    <td style={{ fontWeight: "500", color: "black" }}>
+                    <td style={{ fontWeight: "500", color: "black",paddingLeft:"10px" }}>
                       {el.partner}
                     </td>
                     <td>{el.installer}</td>
@@ -359,27 +360,37 @@ const RebeteData: React.FC = () => {
                     </td>
                   </tr>
                 ))
-                : null}
+                :  <tr style={{border:0}}>
+                <td colSpan={10}>
+                <div className="data-not-found">
+                <DataNotFound/>
+                <h3>Data Not Found</h3>
+                </div>
+                </td>
+              </tr>
+                }
             </tbody>
           </table>
         </div>
+        {
+    commissionList?.length > 0 ?
         <div className="page-heading-container">
       
       <p className="page-heading">
        {currentPage} - {totalPages} of {currentPageData?.length} item
       </p>
  
-   {
-    commissionList?.length > 0 ? <Pagination
+    <Pagination
       currentPage={currentPage}
       totalPages={totalPages} // You need to calculate total pages
       paginate={paginate}
       goToNextPage={goToNextPage}
       goToPrevPage={goToPrevPage}
       currentPageData={currentPageData}
-    /> : null
-  }
+    /> 
    </div>
+   : null
+  }
       </div>
       
     </div>

@@ -2,12 +2,14 @@ import React from "react";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import { ICONS } from "../../../icons/Icons";
 import { FaArrowDown } from "react-icons/fa6";
-import { UserRoleBasedListModel } from "../../../../core/models/api_models/UserManagementModel";
+import {  UserRoleBasedListModel } from "../../../../core/models/api_models/UserManagementModel";
 
 interface UserTableProps {
   data: UserRoleBasedListModel[];
+  onClickEdit: (item: UserRoleBasedListModel)=> void;
+  onClickDelete: (item: UserRoleBasedListModel)=> void;
 }
-const UserTable: React.FC<UserTableProps> = ({data}) => {
+const UserTable: React.FC<UserTableProps> = ({data, onClickDelete, onClickEdit}) => {
 
   return (
     <div
@@ -17,16 +19,16 @@ const UserTable: React.FC<UserTableProps> = ({data}) => {
       <table>
         <thead>
           <tr style={{ backgroundColor: "#F5F5F5" }}>
-            <th>
+            <th style={{paddingRight:0}}>
               <div>
                 <CheckBox
-                  checked={true}
+                  checked={false}
                   onChange={() => {}}
                   // indeterminate={isAnyRowSelected && !isAllRowsSelected}
                 />
               </div>
             </th>
-            <th>
+            <th style={{paddingLeft:"10px"}}>
               <div className="table-header">
                 <p>Code</p> <FaArrowDown style={{ color: "#667085" }} />
               </div>
@@ -74,36 +76,40 @@ const UserTable: React.FC<UserTableProps> = ({data}) => {
           {data?.length > 0
             ? data?.map((el: UserRoleBasedListModel, i: number) => (
                 <tr key={el.email_id}>
-                  <td>
+                  <td style={{paddingRight:0}}>
                     <CheckBox
-                      checked={true}
+                      checked={false}
                       onChange={() => {}}
                       // indeterminate={isAnyRowSelected && !isAllRowsSelected}
                     />
                   </td>
-                  <td style={{ color: "var( --fade-gray-black)" }}>
+                  <td style={{ color:"black",fontWeight:"500",paddingLeft:"10px" }}>
                     {el.user_code}
                   </td>
-                  <td style={{ color: "var( --fade-gray-black)" }}>
+                  <td >
                     {el.name}
                   </td>
-                  <td style={{ color: "var( --fade-gray-black)" }}>
+                  <td>
                     {el.role_name}
                   </td>
-                  <td style={{ color: "var( --fade-gray-black)" }}>
+                  <td >
                     {el.reporting_manager}
                   </td>
-                  <td style={{ color: "var( --fade-gray-black)" }}>
+                  <td >
                     {el.email_id}
                   </td>
-                  <td style={{ color: "var( --fade-gray-black)" }}>{el.mobile_number}</td>
+                  <td >{el.mobile_number}</td>
                   <td>{el.description}</td>
                   <td>
                     <div className="action-icon">
-                      <div className="" style={{ cursor: "pointer" }}>
+                      <div className="" style={{ cursor: "pointer" }} onClick={()=> {
+                        onClickDelete(el)
+                      }}>
                         <img src={ICONS.deleteIcon} alt="" />
                       </div>
-                      <div className="" style={{ cursor: "pointer" }}>
+                      <div className="" style={{ cursor: "pointer" }} onClick={()=> {
+                        onClickEdit(el)
+                      }}>
                         <img src={ICONS.editIcon} alt="" />
                       </div>
                     </div>

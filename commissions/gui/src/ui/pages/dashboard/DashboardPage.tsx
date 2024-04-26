@@ -3,20 +3,22 @@ import "./dasboard.css";
 import Select from "react-select";
 import DashboardTotal from "./DashboardTotal";
 import { ICONS } from "../../icons/Icons";
-import Breadcrumb from "../../components/breadcrumb/Breadcrumb";
 import DashBoardTable from "./DashBoardTable";
 import DashBoardChart from "./DashBoardChart";
 import { payRollData } from "../../../resources/static_data/StaticData";
 import { comissionValueData } from "../../../resources/static_data/StaticData";
+import { RiFilterLine } from "react-icons/ri";
+import FilterModal from "../../components/FilterModal/FilterModal";
 
 export const DashboardPage: React.FC = () => {
   const [active, setActive] = React.useState<number>(0);
+  const [filterModal, setFilterModal] = React.useState<boolean>(false);
 
   const [selectedOption, setSelectedOption] = useState<string>(
-    payRollData[0].label,
+    payRollData[0].label
   );
   const [selectedOption2, setSelectedOption2] = useState<string>(
-    comissionValueData[0].label,
+    comissionValueData[0].label
   );
   const handleSelectChange = (
     selectedOption: { value: string; label: string } | null
@@ -28,20 +30,15 @@ export const DashboardPage: React.FC = () => {
   ) => {
     setSelectedOption2(selectedOption2 ? selectedOption2.value : "");
   };
-
+  const filterClose = () => {
+    setFilterModal(false);
+  };
 
   return (
     <>
       <div className="Dashboard-section-container">
         <div className="Dashboard-container">
-          <div className="Dashboard-wel">
-            <h3>Dashboard</h3>
-            {/* <Breadcrumb
-              head="Dashboard"
-              linkPara="Commission"
-              linkparaSecond="Dashboard"
-            /> */}
-          </div>
+          <div className="Dashboard-wel"></div>
           <div className="dashboard-payroll">
             <div className="dash-head-input">
               <label className="inputLabel" style={{ color: "#344054" }}>
@@ -77,7 +74,7 @@ export const DashboardPage: React.FC = () => {
                   menu: (baseStyles) => ({
                     ...baseStyles,
                     width: "6rem",
-                  })
+                  }),
                 }}
               />
             </div>
@@ -85,15 +82,20 @@ export const DashboardPage: React.FC = () => {
               <label className="inputLabel" style={{ color: "#344054" }}>
                 Payroll Date
               </label>
-              <input type="date" className="payroll-date"  />
-              <input type="date" className="payroll-date"  />
+              <label className="payroll-label">Start:</label>
+              <input type="date" className="payroll-date" />
+              <label className="payroll-label">End:</label>
+              <input type="date" className="payroll-date" />
             </div>
-            
+
             <div className="dash-head-input">
               <label className="inputLabel" style={{ color: "#344054" }}>
                 Set Default
               </label>
-              <label className="inputLabel chart-view" style={{ color: "#344054" }}>
+              <label
+                className="inputLabel dashboard-chart-view"
+                style={{ color: "#344054" }}
+              >
                 Chart View
               </label>
             </div>
@@ -124,16 +126,10 @@ export const DashboardPage: React.FC = () => {
                   )}
                 </div>
                 <div
-                  className={`filter-disable ${
-                    active === 2 ? "active-filter-line" : ""
-                  }`}
-                  // onClick={() => setActive(2)}
+                  className="filter-line"
+                  onClick={() => setFilterModal(true)}
                 >
-                  {active === 2 ? (
-                    <img src={ICONS.FILTERACTIVE} alt="" />
-                  ) : (
-                    <img src={ICONS.FILTER} alt="" />
-                  )}
+                  <img src={ICONS.FILTER} alt="" />
                 </div>
               </div>
             </div>
@@ -143,7 +139,15 @@ export const DashboardPage: React.FC = () => {
           <DashboardTotal />
           {/* <DonutChart /> */}
         </div>
-
+        {filterModal && (
+          <FilterModal
+            handleClose={filterClose}
+            columns={[]}
+            page_number={1}
+            page_size={10}
+            fetchFunction={() => {}}
+          />
+        )}
         <div className="" style={{ marginTop: "20px" }}>
           {active === 0 && <DashBoardTable />}
           {active === 1 && <DashBoardChart />}

@@ -6,9 +6,11 @@ import { UserRoleBasedListModel } from "../../../../core/models/api_models/UserM
 
 interface SaleManagerProps {
   data: UserRoleBasedListModel[];
+  onClickEdit: (item: UserRoleBasedListModel)=> void;
+  onClickDelete: (item: UserRoleBasedListModel)=> void;
 }
 
-const SalesManagerTable: React.FC<SaleManagerProps> = ({ data }) => {
+const SalesManagerTable: React.FC<SaleManagerProps> = ({ data, onClickEdit, onClickDelete }) => {
   return (
     <>
       {/* <UserHeaderSection  name="Sale Manager"/> */}
@@ -19,7 +21,7 @@ const SalesManagerTable: React.FC<SaleManagerProps> = ({ data }) => {
         <table>
           <thead style={{ background: "#F5F5F5" }}>
             <tr>
-              <th>
+              <th style={{paddingRight:0}}>
                 <div>
                   <CheckBox
                     checked={true}
@@ -28,7 +30,7 @@ const SalesManagerTable: React.FC<SaleManagerProps> = ({ data }) => {
                   />
                 </div>
               </th>
-              <th>
+              <th style={{paddingLeft:"10px"}}>
                 <div className="table-header">
                   <p>Code</p> <FaArrowDown style={{ color: "#667085" }} />
                 </div>
@@ -84,41 +86,41 @@ const SalesManagerTable: React.FC<SaleManagerProps> = ({ data }) => {
             {data?.length > 0
               ? data?.map((el: UserRoleBasedListModel) => (
                   <tr key={el.email_id}>
-                    <td>
+                    <td style={{paddingRight:0}}>
                       <CheckBox
                         checked={true}
                         onChange={() => {}}
                         // indeterminate={isAnyRowSelected && !isAllRowsSelected}
                       />
                     </td>
-                    <td style={{ color: "var( --fade-gray-black)" }}>
+                    <td style={{ color: "black",paddingLeft:0 ,fontWeight:"500"}}>
                       {el.user_code}
                     </td>
-                    <td style={{ color: "var( --fade-gray-black)" }}>
+                    <td>
                       {el.name}
                     </td>
-                    <td style={{ color: "var( --fade-gray-black)" }}>
+                    <td >
                       {el.role_name}
                     </td>
-                    <td style={{ color: "var( --fade-gray-black)" }}>
+                    <td >
                       {el.dealer_owner}
                     </td>
-                    <td style={{ color: "var( --fade-gray-black)" }}>
+                    <td>
                       {el.reporting_manager}
                     </td>
-                    <td style={{ color: "var( --fade-gray-black)" }}>
+                    <td>
                       {el.email_id}
                     </td>
-                    <td style={{ color: "var( --fade-gray-black)" }}>
+                    <td >
                       {el.mobile_number}
                     </td>
                     <td>{el.description}</td>
                     <td>
                       <div className="action-icon">
-                        <div className="" style={{ cursor: "pointer" }}>
+                        <div className="" style={{ cursor: "pointer" }} onClick={()=> onClickDelete(el)}>
                           <img src={ICONS.deleteIcon} alt="" />
                         </div>
-                        <div className="" style={{ cursor: "pointer" }}>
+                        <div className="" style={{ cursor: "pointer" }}onClick={()=> onClickEdit(el)}>
                           <img src={ICONS.editIcon} alt="" />
                         </div>
                       </div>
