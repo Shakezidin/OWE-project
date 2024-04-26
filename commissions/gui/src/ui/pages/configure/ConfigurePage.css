@@ -1,216 +1,109 @@
-/* .configure-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  .configure-name{
-    padding: 10px 5px;
-  }
-  .configure-name h3 {
-    font-size: 20px;
-    font-weight: 600;
-    line-height: 30px;
-    text-align: left;
-    color: var(--page-heading-color);
-  }
-  .spacer {
-    flex: 1;
-  }
-  .configure-header-icons {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 0.5rem;
-    background-color: var(--white-color);
-    padding: 0.44rem;
-    border: 1px solid var(--button-border-color);
-    border-radius: 8px;
-    color: var(--btn-text-color);
-    cursor: pointer;
-  }
-  .configure-main {
-    margin-top: 10px;
-    height: 100%;
-    background: var(--white-color);
-    padding: 20px 30px;
-    border-radius: 16px;
-  }
-  .dealer-pay, .rep-pay, .AR, .common p{
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--page-heading-color);
-  }
-  .configure-cards{
-    display: flex;
-    gap: 14px;
-    flex-wrap: wrap;
-    margin: 14px 0;
-  }
-  .pay-card {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 145px;
-    height: 58px;
-    border: 1px solid var(--button-border-color);
-    border-radius: 8px;
-    padding: 12px;
-    cursor: pointer;
-  }
-  .pay-card:hover, .rep-card:hover{
-    box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
-    transform: scale(1.05);
-    transition: transform 0.2s ease-in-out;
-  }
-  .pay-card p{
-    width: 70px;
-    font-size: 12px;
-    font-weight: 450;
-    color: var(--coloumn-text-color)
-  }
-  .pay-card-img{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 42px;
-    width: 42px;
-    border-radius: 8px;
-  }
-  .pay-dollar-img{
-    height: 24px;
-    width: 24px;
-  }
-  .pay-card-arrow{
-    height: 20px;
-    width: 24px;
-    color: var(--arrow-icon-color);
-  }
-  .configure-card-title{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: .5px solid var(--button-border-color);
-  }
-  .accordion-icon{
-    color: var(--secondary-text-color);
-    cursor: pointer;
-  }
-  .payer-type{
-    padding-bottom: 5px;
-  } */
-
-
-  .configure-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  .configure-name{
-    padding: 10px 5px;
-  }
-  .configure-name h3 {
-    font-size: 20px;
-    font-weight: 600;
-    line-height: 30px;
-    text-align: left;
-    color: var(--page-heading-color);
-  }
-  .spacer {
-    flex: 1;
-  }
-  .configure-header-icons {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 0.5rem;
-    background-color: var(--white-color);
-    padding: 0.44rem;
-    border: 1px solid var(--button-border-color);
-    border-radius: 8px;
-    color: var(--btn-text-color);
-    cursor: pointer;
-  }
-  .configure-main {
-    margin-top: 10px;
-    height: 100%;
-    background: var(--white-color);
-    padding: 20px 30px;
-    border-radius: 16px;
-  }
-  .payer-type{
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--page-heading-color);
-  }
-  .configure-cards{
-    display: flex;
-    gap: 14px;
-    flex-wrap: wrap;
-    margin: 14px 0;
-  }
-  .card-items{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .card-heading{
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 16px;
-    width: 110px;
-    color: var( --coloumn-text-color);
-  }
-  .card-p{
-    font-size: 11px;
-    font-weight: 400;
-    color: #7D7D7D;
-    flex: 1;
-  }
-  .arrow-right{
-    height: 24px;
-    width: 24px;
-  }
-  .arrow-wrapper{
-    background: var(--white-color);
-    height: 34px;
-    width: 34px;
-    border-radius: 8px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  .pay-card {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 187px;
-    height: 83px;
-    border: none;
-    border-radius: 8px;
-    padding: 12px;
-    cursor: pointer;
-    background: rgb(216, 216, 216);
-  }
-  .pay-card:hover{
-    transform: scale(1.08);
-    transition: transform 0.4s ease;
-  }
-.rep-pay, .common{
+.configure-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+.configure-name {
+  padding: 10px 5px;
+}
+.configure-name h3 {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 30px;
+  text-align: left;
+  color: var(--page-heading-color);
+}
+.spacer {
+  flex: 1;
+}
+.configure-header-icons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--white-color);
+  padding: 0.44rem;
+  border: 1px solid var(--button-border-color);
+  border-radius: 8px;
+  color: var(--btn-text-color);
+  cursor: pointer;
+}
+.configure-main {
+  margin-top: 10px;
+  height: 100%;
+  background: var(--white-color);
+  padding: 20px 30px;
+  border-radius: 16px;
+}
+.payer-type {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--page-heading-color);
+}
+.configure-cards {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin: 14px 0;
+}
+.card-heading {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 16px;
+  width: 110px;
+  color: var(--coloumn-text-color);
+}
+.card-p {
+  font-size: 11px;
+  font-weight: 400;
+  color: #7d7d7d;
+  flex: 1;
+}
+.arrow-right {
+  height: 24px;
+  width: 24px;
+}
+.arrow-wrapper {
+  background: var(--white-color);
+  height: 34px;
+  width: 34px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.pay-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 187px;
+  height: 83px;
+  border: none;
+  border-radius: 8px;
+  padding: 14px;
+  cursor: pointer;
+  background: rgb(216, 216, 216);
+}
+.pay-card:hover {
+  transform: scale(1.08);
+  transition: transform 0.4s ease;
+}
+.rep-pay,
+.common {
   margin: 24px 0;
 }
-  .configure-card-title{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #F1F1F1;
-    padding-bottom: 5px;
-  }
-  .accordion-icon{
-    color: var(--secondary-text-color);
-    cursor: pointer;
-  }
-  .payer-type{
-    padding-bottom: 5px;
-  }
+.configure-card-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f1f1f1;
+  padding-bottom: 5px;
+}
+.accordion-icon {
+  color: var(--secondary-text-color);
+  cursor: pointer;
+}
+.payer-type {
+  padding-bottom: 5px;
+}
