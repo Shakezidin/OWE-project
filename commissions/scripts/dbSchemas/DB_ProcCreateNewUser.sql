@@ -1,7 +1,5 @@
--- Create a stored procedure to create a new user account
 CREATE OR REPLACE FUNCTION create_new_user(
     p_name VARCHAR(255),
-    p_user_code VARCHAR(255),
     p_mobile_number VARCHAR(20),
     p_email_id VARCHAR(255),
     p_password VARCHAR(255),
@@ -28,61 +26,90 @@ DECLARE
     v_dealer_owner_id INT;
     v_state_id INT;
     v_zipcode_id INT;
+    v_max_user_code INT;
+    v_new_user_code VARCHAR(255);
 BEGIN
     -- Get the role_id based on the provided role_name
-    SELECT role_id INTO v_role_id
-    FROM user_roles
-    WHERE role_name = p_role_name;
+    IF p_role_name IS NOT NULL THEN
+        SELECT role_id INTO v_role_id
+        FROM user_roles
+        WHERE role_name = p_role_name;
 
-    -- Check if the role exists
-    IF NOT FOUND THEN
-        RAISE EXCEPTION 'Invalid Role % not found', p_role_name;
+        -- Check if the role exists
+        IF NOT FOUND THEN
+            RAISE EXCEPTION 'Invalid Role % not found', p_role_name;
+        END IF;
+    ELSE
+        v_role_id := NULL;
     END IF;
 
     -- Check if the user with the same email already exists
-    SELECT user_id INTO v_user_details_id
-    FROM user_details
-    WHERE email_id = p_email_id;
+    IF p_email_id IS NOT NULL THEN
+        SELECT user_id INTO v_user_details_id
+        FROM user_details
+        WHERE email_id = p_email_id;
 
-    IF v_user_details_id IS NOT NULL THEN
-        RAISE EXCEPTION 'User with email % already exists', p_email_id;
+        IF v_user_details_id IS NOT NULL THEN
+            RAISE EXCEPTION 'User with email % already exists', p_email_id;
+        END IF;
     END IF;
 
     -- Get the reporting manager's user_id based on the provided email
-    SELECT user_id INTO v_reporting_manager_id
-    FROM user_details
-    WHERE name = p_reporting_manager;
+    IF p_reporting_manager IS NOT NULL THEN
+        SELECT user_id INTO v_reporting_manager_id
+        FROM user_details
+        WHERE name = p_reporting_manager;
 
-    IF NOT FOUND THEN
-        RAISE EXCEPTION 'Reporting manager with name % not found', p_reporting_manager;
+        IF NOT FOUND THEN
+            RAISE EXCEPTION 'Reporting manager with name % not found', p_reporting_manager;
+        END IF;
+    ELSE
+        v_reporting_manager_id := NULL;
     END IF;
 
     -- Get the dealer owner's user_id based on the provided email
-    SELECT user_id INTO v_dealer_owner_id
-    FROM user_details
-    WHERE name = p_dealer_owner;
+    IF p_dealer_owner IS NOT NULL THEN
+        SELECT user_id INTO v_dealer_owner_id
+        FROM user_details
+        WHERE name = p_dealer_owner;
 
-    IF NOT FOUND THEN
-        RAISE EXCEPTION 'Dealer owner with name % not found', p_dealer_owner;
+        IF NOT FOUND THEN
+            RAISE EXCEPTION 'Dealer owner with name % not found', p_dealer_owner;
+        END IF;
+    ELSE
+        v_dealer_owner_id := NULL;
     END IF;
 
     -- Get the state id based on the provided state name
-    SELECT state_id INTO v_state_id
-    FROM states
-    WHERE name = p_state;
+    IF p_state IS NOT NULL AND p_state != '' THEN
+        SELECT state_id INTO v_state_id
+        FROM states
+        WHERE name = p_state;
 
-    IF NOT FOUND THEN
-        RAISE EXCEPTION 'state id with name % not found', p_state;
+        IF NOT FOUND THEN
+            RAISE EXCEPTION 'State with name % not found', p_state;
+        END IF;
+    ELSE
+        v_state_id := NULL;
     END IF;
 
-    -- Get the reporting manager's user_id based on the provided email
-    SELECT id INTO v_zipcode_id
-    FROM zipcodes
-    WHERE zipcode = p_zipcode;
+    -- Get the state id based on the provided state name
+    IF p_zipcode IS NOT NULL AND p_zipcode != '' THEN
+        SELECT id INTO v_zipcode_id
+        FROM zipcodes
+        WHERE zipcode = p_zipcode;
 
-    IF NOT FOUND THEN
-        RAISE EXCEPTION 'zipcode id with zipcode % not found', p_zipcode;
+        IF NOT FOUND THEN
+            RAISE EXCEPTION 'Zipcode with zipcode % not found', p_zipcode;
+        END IF;
+    ELSE
+        v_zipcode_id := NULL;
     END IF;
+
+    -- Fetch the maximum user code and increment it
+    SELECT MAX(CAST(SUBSTRING(user_code FROM 4) AS INT)) INTO v_max_user_code FROM user_details;
+    v_new_user_code := 'OUR' || LPAD(COALESCE(v_max_user_code + 1, 1)::TEXT, 5, '0');
+
 
     BEGIN
         -- Insert a new user into user_details table
@@ -107,7 +134,7 @@ BEGIN
         )
         VALUES (
             p_name,
-            p_user_code,
+            v_new_user_code,
             p_mobile_number,
             p_email_id,
             p_password,

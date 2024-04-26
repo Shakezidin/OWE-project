@@ -10,11 +10,11 @@ import (
 	"OWEApp/db"
 	log "OWEApp/logger"
 	models "OWEApp/models"
+	"errors"
 	"strings"
 
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 )
 
@@ -26,10 +26,8 @@ import (
  ******************************************************************************/
 func HandleGetUsersByRoleDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err     error
-		dataReq models.GetUsers
-		data    []map[string]interface{}
-		query   string
+		err   error
+		query string
 	)
 
 	log.EnterFn(0, "HandleGetUsersByRoleDataRequest")
@@ -42,103 +40,72 @@ func HandleGetUsersByRoleDataRequest(resp http.ResponseWriter, req *http.Request
 		return
 	}
 
-	reqBody, err := ioutil.ReadAll(req.Body)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get users data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+	var dataReq models.GetUsers
+	if err := json.NewDecoder(req.Body).Decode(&dataReq); err != nil {
+		log.FuncErrorTrace(0, "Failed to decode HTTP Request body from get users data request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to decode HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
-	err = json.Unmarshal(reqBody, &dataReq)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal get users data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get users data Request body", http.StatusBadRequest, nil)
-		return
-	}
-
-	if dataReq.Role == "" && dataReq.Name == "" {
-		// No parameters provided, return list of users
+	var data []map[string]interface{}
+	switch {
+	case dataReq.Role != "" && dataReq.Name == "" && dataReq.SubRole == "":
+		// Only role provided, return all user names for the given role
 		query = `
-		SELECT name
-		FROM user_details`
-	} else if dataReq.Role != "" && dataReq.Name == "" {
-		// Only role provided, return data based on role
-		if dataReq.Role == "admin" || dataReq.Role == "dealer owner" {
-			// Send the response
-			log.FuncInfoTrace(0, "for role admin and dealer owner no users list will be there")
-			FormAndSendHttpResp(resp, "Users Data", http.StatusOK, nil)
-			return
-		}
-
-		query = `
-		WITH role_data AS (
-			SELECT role_id
-			FROM user_roles
-			WHERE LOWER(role_name) = LOWER($1)
-		)
-		SELECT ud.name
-		FROM user_details ud
-		INNER JOIN role_data ON ud.role_id = role_data.role_id`
-
-		data, err = db.ReteriveFromDB(query, []interface{}{dataReq.Role})
+				SELECT name
+				FROM user_details
+				WHERE role_id IN (
+					SELECT role_id
+					FROM user_roles
+					WHERE LOWER(role_name) = LOWER($1)
+				)`
+		data, err = db.ReteriveFromDB(query, []interface{}{strings.ToLower(dataReq.Role)})
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get Users data from DB err: %v", err)
 			FormAndSendHttpResp(resp, "Failed to get users Data from DB", http.StatusBadRequest, nil)
 			return
 		}
 
-		usersNameList := models.GetUsersNameList{}
-
-		for _, item := range data {
-			// Name
-			Name, nameOk := item["name"].(string)
-			if !nameOk || Name == "" {
-				log.FuncErrorTrace(0, "Failed to get Name for Item: %+v\n", item)
-				Name = ""
-			}
-			usersData := models.GetUsersName{
-				Name: Name,
-			}
-
-			usersNameList.UsersNameList = append(usersNameList.UsersNameList, usersData)
-		}
-
-		// Send the response
-		log.FuncInfoTrace(0, "Number of users List fetched : %v list %+v", len(usersNameList.UsersNameList), usersNameList)
-		FormAndSendHttpResp(resp, "Users Data", http.StatusOK, usersNameList)
-		return
-	} else if dataReq.Name != "" && dataReq.Role != "" {
-		// Both role and name provided, return data based on both
+	case dataReq.Role != "" && dataReq.Name != "" && dataReq.SubRole != "":
+		// Role, name, and sub_role provided, return users with specified conditions
 		query = `
-		WITH role_data AS (
+		WITH subrole_data AS (
 			SELECT role_id
 			FROM user_roles
-			WHERE LOWER(role_name) = LOWER($1)
+			WHERE LOWER(role_name) LIKE LOWER($1)
+		),
+		dealer_owner_data AS (
+			SELECT user_id
+			FROM user_details
+			WHERE LOWER(name) LIKE LOWER($2)
 		)
 		SELECT ud.name
 		FROM user_details ud
-		INNER JOIN role_data ON ud.role_id = role_data.role_id
-		WHERE LOWER(ud.name) = LOWER($2)`
-	}
+		WHERE ud.role_id IN (SELECT role_id FROM subrole_data)
+		AND ud.dealer_owner IN (SELECT user_id FROM dealer_owner_data)`
+		data, err = db.ReteriveFromDB(query, []interface{}{"%" + strings.ToLower(dataReq.SubRole) + "%", "%" + strings.ToLower(dataReq.Name) + "%"})
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get Users data from DB err: %v", err)
+			FormAndSendHttpResp(resp, "Failed to get users Data from DB", http.StatusBadRequest, nil)
+			return
+		}
 
-	data, err = db.ReteriveFromDB(query, []interface{}{dataReq.Role, strings.ToLower(dataReq.Name)})
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get Users data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get users Data from DB", http.StatusBadRequest, nil)
+	default:
+		err = errors.New("invalid combination of parameters provided")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid combination of parameters provided", http.StatusBadRequest, nil)
 		return
 	}
-
 	usersNameList := models.GetUsersNameList{}
-
 	for _, item := range data {
 		// Name
-		Name, nameOk := item["name"].(string)
-		if !nameOk || Name == "" {
+		name, nameOk := item["name"].(string)
+		if !nameOk || name == "" {
 			log.FuncErrorTrace(0, "Failed to get Name for Item: %+v\n", item)
-			Name = ""
+			name = ""
 		}
 		usersData := models.GetUsersName{
-			Name: Name,
+			Name: name,
 		}
 
 		usersNameList.UsersNameList = append(usersNameList.UsersNameList, usersData)
