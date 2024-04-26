@@ -103,23 +103,17 @@ const UserManagementTable: React.FC<UserTableProos> = ({
               <img src={ICONS.deleteIcon} alt="" />
             </button>
           </div>
-
-          <div className="iconsSection-filter" style={{ marginTop: ".2rem" }}>
-            <button type="button">
-              <img src={ICONS.FILTER} alt="" />
-            </button>
-          </div>
         </div>
       </div>
       {selectedOption && renderComponent()}
 
       <div className="user-page-heading-container">
-        <p className="page-heading">
+        {userRoleBasedList?.length > 0 ? (
+          <>
+           <p className="page-heading">
           {currentPage} - {totalPages} of {userRoleBasedList?.length} item
         </p>
-
-        {userRoleBasedList?.length > 0 ? (
-          <Pagination
+        <Pagination
             currentPage={currentPage}
             totalPages={totalPages} // You need to calculate total pages
             paginate={paginate}
@@ -127,6 +121,8 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             currentPageData={currentPageData}
             goToPrevPage={goToPrevPage}
           />
+          </>
+         
         ) : null}
       </div>
     </>

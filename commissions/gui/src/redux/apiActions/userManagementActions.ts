@@ -52,6 +52,9 @@ export const fetchUserListBasedOnRole = createAsyncThunk(
     }
 
     const { users_data_list } = response.data;
+    if (users_data_list && users_data_list.length === 0) {
+      return [];
+    }
 
     return users_data_list;
   }
