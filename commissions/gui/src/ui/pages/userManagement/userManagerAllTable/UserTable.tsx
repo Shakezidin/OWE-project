@@ -2,9 +2,10 @@ import React from "react";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import { ICONS } from "../../../icons/Icons";
 import { FaArrowDown } from "react-icons/fa6";
+import { UserRoleBasedListModel } from "../../../../core/models/api_models/UserManagementModel";
 
 interface UserTableProps {
-  data: { [key: string]: any }[];
+  data: UserRoleBasedListModel[];
 }
 const UserTable: React.FC<UserTableProps> = ({data}) => {
 
@@ -71,8 +72,8 @@ const UserTable: React.FC<UserTableProps> = ({data}) => {
 
         <tbody>
           {data?.length > 0
-            ? data?.map((el, i) => (
-                <tr key={i}>
+            ? data?.map((el: UserRoleBasedListModel, i: number) => (
+                <tr key={el.email_id}>
                   <td>
                     <CheckBox
                       checked={true}
@@ -81,22 +82,22 @@ const UserTable: React.FC<UserTableProps> = ({data}) => {
                     />
                   </td>
                   <td style={{ color: "var( --fade-gray-black)" }}>
-                    {el.code}
+                    {el.user_code}
                   </td>
                   <td style={{ color: "var( --fade-gray-black)" }}>
                     {el.name}
                   </td>
                   <td style={{ color: "var( --fade-gray-black)" }}>
-                    {el.role}
+                    {el.role_name}
                   </td>
                   <td style={{ color: "var( --fade-gray-black)" }}>
-                    {el.reporting}
+                    {el.reporting_manager}
                   </td>
                   <td style={{ color: "var( --fade-gray-black)" }}>
-                    {el.email}
+                    {el.email_id}
                   </td>
-                  <td style={{ color: "var( --fade-gray-black)" }}>{el.pn}</td>
-                  <td>{el.des}</td>
+                  <td style={{ color: "var( --fade-gray-black)" }}>{el.mobile_number}</td>
+                  <td>{el.description}</td>
                   <td>
                     <div className="action-icon">
                       <div className="" style={{ cursor: "pointer" }}>

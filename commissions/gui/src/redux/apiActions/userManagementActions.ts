@@ -16,7 +16,7 @@ const COLORS = [
   "#52cafe",
   "#0181ff",
 ];
-
+/** get user onboadring users */
 export const fetchUserOnboarding = createAsyncThunk(
   "user/userOnboarding",
   async () => {
@@ -36,5 +36,23 @@ export const fetchUserOnboarding = createAsyncThunk(
       }
     );
     return mapList;
+  }
+);
+
+/** get list user based */
+export const fetchUserListBasedOnRole = createAsyncThunk(
+  "user/user_list_based_on_Role",
+  async (data: any) => {
+    const response = await postCaller(
+      EndPoints.Get_User_list_based_on_Role,
+      JSON.stringify(data)
+    );
+    if (response.status !== HTTP_STATUS.OK) {
+      throw new Error("Failed to fetch onboarding data");
+    }
+
+    const { users_data_list } = response.data;
+
+    return users_data_list;
   }
 );

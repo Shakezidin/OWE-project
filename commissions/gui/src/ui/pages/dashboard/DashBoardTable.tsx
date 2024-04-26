@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "../userManagement/user.css";
 import "../configure/configure.css";
 import { CiEdit } from "react-icons/ci";
@@ -9,18 +9,26 @@ import "../../components/pagination/Pagination";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { setCurrentPage } from "../../../redux/apiSlice/paginationslice/paginationSlice";
 import Pagination from "../../components/pagination/Pagination";
-import { BiSupport } from "react-icons/bi";
+import HelpDashboard from "./HelpDashboard";
+import { CommissionModel } from "../../../core/models/configuration/create/CommissionModel";
+import ProjectBreakdown from "./ProjectBreakdown";
+
 // import { installers, partners, respTypeData, statData } from "../../../../../core/models/data_models/SelectDataModel";
 
 const DashBoardTable: React.FC = () => {
+  const [editedCommission, setEditedCommission] =
+    useState<CommissionModel | null>(null);
+  const [open, setOpen] = useState<boolean>(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const [editMode, setEditMode] = useState(false);
+
   const dataUser = [
     {
       pi: "1234567890",
       dn: "Josh Morton",
       sr: "Josh Morton",
       cn: "josh Morton",
-      cm: "Percentage",
-      pg: "18/20",
       amt: "$123,456",
       pipeline: "$100,362",
       cd: "$300,652",
@@ -39,7 +47,7 @@ const DashBoardTable: React.FC = () => {
       sr: "Josh Morton",
       cn: "josh Morton",
       cm: "RL",
-      pg: "70/30",
+      pg: "-",
       amt: "$123,456",
       pipeline: "$100,362",
       cd: "$300,652",
@@ -57,8 +65,6 @@ const DashBoardTable: React.FC = () => {
       dn: "Josh Morton",
       sr: "Josh Morton",
       cn: "josh Morton",
-      cm: "Percentage",
-      pg: "90/10",
       amt: "$123,456",
       pipeline: "$100,362",
       cd: "$300,652",
@@ -76,65 +82,6 @@ const DashBoardTable: React.FC = () => {
       dn: "Josh Morton",
       sr: "Josh Morton",
       cn: "josh Morton",
-      cm: "Percentage",
-      pg: "18/20",
-      amt: "$123,456",
-      pipeline: "$100,362",
-      cd: "$300,652",
-      ps: "Active",
-      state: "Texas",
-      sysSize: "10.5",
-      type: "loan",
-      adder: "$62,500",
-      ajh: "12 Days",
-      rl: "$20.00",
-      epc: "2.444",
-    },
-    {
-      pi: "1234567890",
-      dn: "Josh Morton",
-      sr: "Josh Morton",
-      cn: "josh Morton",
-      cm: "RL",
-      pg: "70/30",
-      amt: "$123,456",
-      pipeline: "$100,362",
-      cd: "$300,652",
-      ps: "Active",
-      state: "Texas",
-      sysSize: "10.5",
-      type: "loan",
-      adder: "$62,500",
-      ajh: "12 Days",
-      rl: "$20.00",
-      epc: "2.444",
-    },
-    {
-      pi: "1234567890",
-      dn: "Josh Morton",
-      sr: "Josh Morton",
-      cn: "josh Morton",
-      cm: "Percentage",
-      pg: "90/10",
-      amt: "$123,456",
-      pipeline: "$100,362",
-      cd: "$300,652",
-      ps: "Active",
-      state: "Texas",
-      sysSize: "10.5",
-      type: "loan",
-      adder: "$62,500",
-      ajh: "12 Days",
-      rl: "$20.00",
-      epc: "2.444",
-    },
-    {
-      pi: "1234567890",
-      dn: "Josh Morton",
-      sr: "Josh Morton",
-      cn: "josh Morton",
-      cm: "Percentage",
-      pg: "18/20",
       amt: "$123,456",
       pipeline: "$100,362",
       cd: "$300,652",
@@ -153,7 +100,60 @@ const DashBoardTable: React.FC = () => {
       sr: "Josh Morton",
       cn: "josh Morton",
       cm: "RL",
-      pg: "70/30",
+      pg: "-",
+      amt: "$123,456",
+      pipeline: "$100,362",
+      cd: "$300,652",
+      ps: "Active",
+      state: "Texas",
+      sysSize: "10.5",
+      type: "loan",
+      adder: "$62,500",
+      ajh: "12 Days",
+      rl: "$20.00",
+      epc: "2.444",
+    },
+    {
+      pi: "1234567890",
+      dn: "Josh Morton",
+      sr: "Josh Morton",
+      cn: "josh Morton",
+      amt: "$123,456",
+      pipeline: "$100,362",
+      cd: "$300,652",
+      ps: "Active",
+      state: "Texas",
+      sysSize: "10.5",
+      type: "loan",
+      adder: "$62,500",
+      ajh: "12 Days",
+      rl: "$20.00",
+      epc: "2.444",
+    },
+    {
+      pi: "1234567890",
+      dn: "Josh Morton",
+      sr: "Josh Morton",
+      cn: "josh Morton",
+      amt: "$123,456",
+      pipeline: "$100,362",
+      cd: "$300,652",
+      ps: "Active",
+      state: "Texas",
+      sysSize: "10.5",
+      type: "loan",
+      adder: "$62,500",
+      ajh: "12 Days",
+      rl: "$20.00",
+      epc: "2.444",
+    },
+    {
+      pi: "1234567890",
+      dn: "Josh Morton",
+      sr: "Josh Morton",
+      cn: "josh Morton",
+      cm: "RL",
+      pg: "-",
       amt: "$123,456",
       pipeline: "$100,362",
       cd: "$300,652",
@@ -221,7 +221,7 @@ const DashBoardTable: React.FC = () => {
                 <th>
                   <div>
                     <CheckBox
-                      checked={true}
+                      checked={false}
                       onChange={() => {}}
                       // indeterminate={isAnyRowSelected && !isAllRowsSelected}
                     />
@@ -249,18 +249,6 @@ const DashBoardTable: React.FC = () => {
                 <th>
                   <div className="table-header">
                     <p>Customer Name</p>{" "}
-                    <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Commision Model</p>{" "}
-                    <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Percentage</p>{" "}
                     <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
@@ -337,17 +325,23 @@ const DashBoardTable: React.FC = () => {
                     <tr key={i}>
                       <td>
                         <CheckBox
-                          checked={true}
+                          checked={false}
                           onChange={() => {}}
                           // indeterminate={isAnyRowSelected && !isAllRowsSelected}
                         />
                       </td>
-                      <td style={{ color: "black" }}>{el.pi}</td>
-                      <td style={{ color: "#101828" }}>{el.dn}</td>
-                      <td style={{ color: "#101828" }}>{el.sr}</td>
-                      <td style={{ color: "#101828" }}>{el.cn}</td>
-                      <td style={{ color: "#101828" }}>{el.cm}</td>
-                      <td style={{ color: "#101828" }}>{el.pg}</td>
+                      <td style={{ fontWeight: "500", color: "black" }}>
+                        {el.pi}
+                      </td>
+                      <td style={{ fontWeight: "500", color: "#101828" }}>
+                        {el.dn}
+                      </td>
+                      <td style={{ fontWeight: "500", color: "#101828" }}>
+                        {el.sr}
+                      </td>
+                      <td style={{ fontWeight: "500", color: "#101828" }}>
+                        {el.cn}
+                      </td>
                       <td style={{ color: "#0493CE" }}>{el.amt}</td>
                       <td style={{ color: "#0493CE" }}>{el.pipeline}</td>
                       <td style={{ color: "#0493CE" }}>{el.cd}</td>
@@ -359,7 +353,28 @@ const DashBoardTable: React.FC = () => {
                       <td>{el.ajh}</td>
                       <td>{el.rl}</td>
                       <td>{el.epc}</td>
-                      <td style={{cursor: "pointer"}}><BiSupport /></td>
+
+                      <td>
+                        <div className="action-icon">
+                          <div
+                            className=""
+                            style={{ cursor: "pointer", textAlign: "center" }}
+                          >
+                            <IoIosHelpCircleOutline
+                              onClick={() => {
+                                handleOpen();
+                              }}
+                            />
+                          </div>
+                          {open && (
+                            <ProjectBreakdown
+                              commission={editedCommission}
+                              editMode={editMode}
+                              handleClose={handleClose}
+                            />
+                          )}
+                        </div>
+                      </td>
                     </tr>
                   ))
                 : null}

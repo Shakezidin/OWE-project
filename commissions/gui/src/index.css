@@ -23,7 +23,6 @@
   --check-color: #2196f3;
   --green-color: #8fcd00;
   --coloumn-text-color:#101828;
-
   --row-bg-color:#f6f6f6;
   --arrow-icon-color:#667085;
   --button-border-color: #D0D5DD;
@@ -91,10 +90,18 @@ height: 16px !important;
   width: 9px;
   height: 9px;
   border-radius: 50%;
-  color:rgb(171 165 165);
+  background-color:rgb(171 165 165);
   margin-left:27px;
 }
 
+
+.ellipseee {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background-color: #23B364;
+  margin-left:27px;
+}
 .user-btn {
   background-color: #04a5e8;
   outline: none;
