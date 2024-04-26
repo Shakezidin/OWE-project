@@ -5,6 +5,7 @@ import { CreateOnboardUserStateModel } from "../../../core/models/data_models/Us
 import {
   cretaeUserOnboarding,
   fetchDealerOwner,
+  fetchRegionList,
 } from "../../apiActions/createUserSliceActions";
 
 const initialState: CreateOnboardUserStateModel = {
@@ -16,15 +17,14 @@ const initialState: CreateOnboardUserStateModel = {
     email_id: "",
     mobile_number: "",
     password: "",
-    designation: "",
     assigned_dealer_name: "",
     role_name: "",
     add_region: "",
     team_name: "",
-    reporting_to: "",
     description: "",
   },
   dealerOwenerList: [],
+  regionList: [],
 };
 
 const createUserSlice = createSlice({
@@ -72,6 +72,30 @@ const createUserSlice = createSlice({
           state.error = action.error.message ?? "Unable to fetch dealer Owener";
         }
       )
+      /** get region list */
+      .addCase(
+        fetchRegionList.pending,
+        (state: CreateOnboardUserStateModel) => {
+          state.loading = true;
+          state.error = null;
+        }
+      )
+      .addCase(
+        fetchRegionList.fulfilled,
+        (state: CreateOnboardUserStateModel, action) => {
+          state.loading = true;
+          state.error = null;
+          state.regionList = action.payload;
+        }
+      )
+      .addCase(
+        fetchRegionList.rejected,
+        (state: CreateOnboardUserStateModel, action) => {
+          state.loading = false;
+          state.error = action.error.message ?? "Unable to fetch dealer Owener";
+        }
+      )
+      /** create user */
       .addCase(
         cretaeUserOnboarding.pending,
         (state: CreateOnboardUserStateModel) => {

@@ -5,7 +5,6 @@ import { ActionButton } from "../../../components/button/ActionButton";
 import { useDispatch } from "react-redux";
 import { updateUserForm } from "../../../../redux/apiSlice/userManagementSlice/createUserSlice";
 import {
-  dealer,
   userSelectData,
 } from "../../../../resources/static_data/StaticData";
 import CheckBox from "../../../components/chekbox/CheckBox";
@@ -13,16 +12,19 @@ import { ICONS } from "../../../icons/Icons";
 import SelectTable from "./SeletTable";
 import UserBasedInput from "./UserBasedInput";
 import SelectOption from "../../../components/selectOption/SelectOption";
-import { CreateUserModel, DealerOwner } from "../../../../core/models/api_models/UserManagementModel";
+import {
+  CreateUserModel,
+} from "../../../../core/models/api_models/UserManagementModel";
 import { useAppSelector } from "../../../../redux/hooks";
 
 interface createUserProps {
   editMode: boolean;
   handleClose: () => void;
   userOnboard: CreateUserModel | null;
-  onSubmitCreateUser: () => void;
-  onChangeRole: (role: string)=> void
-  dealerList:any[]
+  onSubmitCreateUser: (e: any) => void;
+  onChangeRole: (role: string, value: string) => void;
+  dealerList: any[];
+  regionList: any[];
 }
 
 const UserOnboardingCreation: React.FC<createUserProps> = ({
@@ -30,49 +32,51 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
   onSubmitCreateUser,
   onChangeRole,
   dealerList,
+  regionList,
   userOnboard,
   editMode,
 }) => {
   const dispatch = useDispatch();
-  const {formData} = useAppSelector((state) => state.createOnboardUser);
+  const { formData } = useAppSelector((state) => state.createOnboardUser);
   const [selectTable, setSelectTable] = useState<boolean>(false);
 
   /** handle change for role */
   const handleChange = (newValue: any, fieldName: string) => {
-
-    dispatch(updateUserForm({ field: 'assigned_dealer_name', value:''}));
-    dispatch(updateUserForm({ field: 'add_region', value:''}));
-    dispatch(updateUserForm({ field: 'team_name', value:''}));
-    dispatch(updateUserForm({ field: 'report_to', value:''}));
-    const {value }= newValue;
-    onChangeRole(value)
-    dispatch(updateUserForm({ field: fieldName, value}));
+    dispatch(updateUserForm({ field: "assigned_dealer_name", value: "" }));
+    dispatch(updateUserForm({ field: "add_region", value: "" }));
+    dispatch(updateUserForm({ field: "team_name", value: "" }));
+    dispatch(updateUserForm({ field: "report_to", value: "" }));
+    const { value } = newValue;
+    onChangeRole("Role", value);
+    dispatch(updateUserForm({ field: fieldName, value }));
   };
 
+  /**handle change for dealer */
   const handleChangeForDealer = (newValue: any, fieldName: string) => {
-
-    // dispatch(updateUserForm({ field: 'assigned_dealer_name', value:''}));
-    // dispatch(updateUserForm({ field: 'add_region', value:''}));
-    // dispatch(updateUserForm({ field: 'team_name', value:''}));
-    // dispatch(updateUserForm({ field: 'report_to', value:''}));
-    const {value }= newValue;
-    onChangeRole(value)
-    dispatch(updateUserForm({ field: fieldName, value}));
-    
-    
+    const { value } = newValue;
+    onChangeRole("Dealer", value);
+    dispatch(updateUserForm({ field: fieldName, value }));
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
+  /**handle change for dealer */
+  const handleChangeForRegion = (newValue: any, fieldName: string) => {
+    const { value } = newValue;
+    dispatch(updateUserForm({ field: fieldName, value }));
+  };
+
+  const handleInputChange = (
+    e:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     dispatch(updateUserForm({ field: name, value }));
-};
+  };
 
   /** render ui */
   return (
     <div className="transparent-model">
-      <form onSubmit={() =>
-        onSubmitCreateUser()
-      } className="modal">
+      <form onSubmit={(e) => onSubmitCreateUser(e)} className="modal">
         <div className="createUserCrossButton" onClick={handleClose}>
           <CROSS_BUTTON />
         </div>
@@ -107,8 +111,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                     options={userSelectData}
                     onChange={(newValue) => handleChange(newValue, "role_name")}
                     value={userSelectData?.find(
-                      (option) =>
-                        option?.value === formData.role_name
+                      (option) => option?.value === formData.role_name
                     )}
                   />
                 </div>
@@ -144,19 +147,23 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                       onChange={(newValue) =>
                         handleChangeForDealer(newValue, "assigned_dealer_name")
                       }
-                      value={dealer?.find(
+                      value={dealerList?.find(
                         (option) =>
-                          option?.value ===
-                        formData.assigned_dealer_name
+                          option?.value === formData.assigned_dealer_name
                       )}
                     />
                   </div>
                 )}
               </div>
               <UserBasedInput
-                createUserOnboarding={formData}
-                onChange={(e: any) => handleInputChange(e)}
-              />
+                formData={formData}
+                onChange={(e: any) => handleInputChange(e)} 
+                regionList={regionList} 
+                handleChangeForRegion={(value: any, name: string)=>{
+                  handleChangeForRegion(value, name)
+                }}
+
+                />
               <div className="">
                 <div className="" style={{ display: "flex", gap: "0.5rem" }}>
                   <CheckBox
@@ -245,8 +252,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
             onClick={handleClose}
             type={"button"}
           />
-          <ActionButton title={"Save"} onClick={() => {
-          }} type={"submit"} />
+          <ActionButton title={"Save"} onClick={() => {}} type={"submit"} />
         </div>
       </form>
     </div>
@@ -254,4 +260,3 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
 };
 
 export default UserOnboardingCreation;
-

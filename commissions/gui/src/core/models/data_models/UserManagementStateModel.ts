@@ -17,4 +17,5 @@ export interface CreateOnboardUserStateModel {
   loading: boolean;
   formData: CreateUserModel;
   dealerOwenerList: UserDropdownModel[];
+  regionList: UserDropdownModel[];
 }

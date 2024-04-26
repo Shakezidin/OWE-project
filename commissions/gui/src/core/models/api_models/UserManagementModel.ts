@@ -49,12 +49,10 @@ export interface CreateUserModel {
   email_id: string;
   mobile_number: string;
   password: string;
-  designation: string;
   assigned_dealer_name: string;
   role_name: string;
   add_region: string;
   team_name: string;
-  reporting_to: string;
   description: string;
 }
 

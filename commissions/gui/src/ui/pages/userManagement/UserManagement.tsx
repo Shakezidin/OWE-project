@@ -11,7 +11,8 @@ import {
 import { userSelectData } from "../../../resources/static_data/StaticData";
 import { UserDropdownModel } from "../../../core/models/api_models/UserManagementModel";
 import UserManagementTable from "./userTableList/UserManagementTable";
-import { cretaeUserOnboarding, fetchDealerOwner } from "../../../redux/apiActions/createUserSliceActions";
+import { cretaeUserOnboarding, fetchDealerOwner, fetchRegionList } from "../../../redux/apiActions/createUserSliceActions";
+import { getRoles } from "@testing-library/react";
 
 const UserManagement: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -21,10 +22,10 @@ const UserManagement: React.FC = () => {
   const [selectedOption, setSelectedOption] = useState(userSelectData[0]);
 
   const dispatch = useAppDispatch();
-  const { userOnboardingList, userRoleBasedList } = useAppSelector(
+  const { userOnboardingList, userRoleBasedList, } = useAppSelector(
     (state) => state.userManagement
   );
-  const { dealerOwenerList } = useAppSelector((state) => state.createOnboardUser);
+  const { formData, dealerOwenerList, regionList } = useAppSelector((state) => state.createOnboardUser);
 
   /** fetch onboarding users data*/
   useEffect(() => {
@@ -57,6 +58,40 @@ const UserManagement: React.FC = () => {
     setSelectedOption(selectedOption);
   };
 
+  /** get sub role */
+  const getSubRole = (): string=>{
+    console.log(formData)
+    let subrole = ''
+    if (formData.role_name === 'Sales Manager'){
+      subrole = 'Regional Manager'
+    }else if (formData.role_name === 'Sale Representative'){
+      subrole = 'Sales Manager'
+    }
+
+    return subrole;
+  }
+
+  const onChangeRole = async (role: string, value: string)=>{
+    if(role === 'Role'){
+     await dispatch(fetchDealerOwner({
+        role:'Dealer Owner'
+      }))
+    }else{
+      console.log(role, value)
+     await dispatch(fetchRegionList({
+        role:'Dealer Owner',
+        name: value,
+        sub_role: getSubRole()
+      }))
+    }
+  }
+
+  const onSubmitCreateUser = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault(); 
+    console.log(formData)
+  };
+
+ 
   return (
     <>
       <div className="management-section">
@@ -76,17 +111,12 @@ const UserManagement: React.FC = () => {
         <UserOnboardingCreation
           handleClose={handleClose}
           dealerList={dealerOwenerList}
+          regionList={regionList}
           editMode={false}
           userOnboard={null}
-          onSubmitCreateUser={() => {
-            //dispatch(cretaeUserOnboarding({})) dispatch(fetchDealerOwner({}))
-          }}
-          onChangeRole={(role)=>{
-
-            dispatch(fetchDealerOwner({
-              role:'Dealer Owner'
-            }))
-        
+          onSubmitCreateUser={(e)=> onSubmitCreateUser(e)}
+          onChangeRole={(role, value)=>{
+           onChangeRole(role, value)
           }}
         />
       )}
