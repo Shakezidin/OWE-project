@@ -97,8 +97,6 @@ const UserManagement: React.FC = () => {
     event.preventDefault(); 
     console.log(formData)
 
-    //console.log(selectedRows)
-
    const formErrors = validateForm(formData);
     console.log("formErrors",formErrors);
 
@@ -162,6 +160,11 @@ const UserManagement: React.FC = () => {
           userDropdownData={userSelectData}
           selectedOption={selectedOption}
           handleSelectChange={handleSelectChange}
+          onClickDelete={(item:UserRoleBasedListModel)=>{
+            console.log(selectedRows)
+
+            alert('hi')
+          }}
           onClickEdit={(item: UserRoleBasedListModel) => {
             // console.log("row data",item)
             const [firstName, lastName] = item.name.split(' ');

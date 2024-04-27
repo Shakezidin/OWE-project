@@ -25,6 +25,7 @@ interface UserTableProos {
   selectedOption: UserDropdownModel;
   handleSelectChange: (data: UserDropdownModel) => void;
   onClickEdit: (item: UserRoleBasedListModel) => void;
+  onClickDelete: (item: UserRoleBasedListModel) => void;
   selectAllChecked: boolean,
   selectedRows: Set<number>,
   setSelectedRows: React.Dispatch<React.SetStateAction<Set<number>>>,
@@ -37,6 +38,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   selectedOption,
   handleSelectChange,
   onClickEdit,
+  onClickDelete,
   selectAllChecked,
   selectedRows,
   setSelectedRows,
@@ -78,7 +80,9 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             onClickEdit={(item: UserRoleBasedListModel) => {
               onClickEdit(item);
             }}
-            onClickDelete={(item: UserRoleBasedListModel) => {}}
+            onClickDelete={(item: UserRoleBasedListModel) => {
+              onClickDelete(item)
+            }}
             selectedRows={selectedRows}
           selectAllChecked={selectAllChecked}
           setSelectedRows={setSelectedRows}
@@ -92,7 +96,9 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             onClickEdit={(item: UserRoleBasedListModel) => {
               onClickEdit(item);
             }}
-            onClickDelete={(item: UserRoleBasedListModel) => {}}
+            onClickDelete={(item: UserRoleBasedListModel) => {
+              onClickDelete(item)
+            }}
             selectedRows={selectedRows}
             selectAllChecked={selectAllChecked}
             setSelectedRows={setSelectedRows}
