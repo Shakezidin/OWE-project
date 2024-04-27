@@ -18,6 +18,7 @@ import { FaArrowDown } from "react-icons/fa6";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import Loading from "../../../components/loader/Loading";
 import DataNotFound from "../../../components/loader/DataNotFound";
+import { ROUTES } from "../../../../routes/routes";
 
 
 interface Column {
@@ -113,7 +114,7 @@ const NonCommDlrPay: React.FC = () => {
 
   return (
     <div className="comm">
-      <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="NON-Comm" />
+      <Breadcrumb head="Commission" linkPara="Configure" route={ROUTES.CONFIG_PAGE} linkparaSecond="NON-Comm" />
       <div className="commissionContainer">
         <TableHeader
           title="NON-Comm"

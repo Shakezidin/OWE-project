@@ -20,6 +20,11 @@ import { TierLoanColumn } from "../../../../resources/static_data/configureHeade
 import FilterModal from "../../../components/FilterModal/FilterModal";
 import Loading from "../../../components/loader/Loading";
 import DataNotFound from "../../../components/loader/DataNotFound";
+import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
+import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
+import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
+import Swal from "sweetalert2";
+import { ROUTES } from "../../../../routes/routes";
 const TierLoanFee = () => {
   const dispatch = useAppDispatch();
   const tierloanList = useAppSelector(
@@ -45,9 +50,10 @@ const TierLoanFee = () => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
+      archived: viewArchived ? true : undefined,
     };
     dispatch(fetchTearLoan(pageNumber));
-  }, [dispatch,currentPage]);
+  }, [dispatch,currentPage,viewArchived]);
 
 
   const handleAddTierLoan = () => {
@@ -107,6 +113,81 @@ const TierLoanFee = () => {
       }
     });
   }
+  const handleArchiveAllClick = async () => {
+    const confirmationResult = await Swal.fire({
+      title: 'Are you sure?',
+      text: 'This action will archive all selected rows.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, archive all'
+    });
+    if (confirmationResult.isConfirmed) {
+      const archivedRows = Array.from(selectedRows).map(index => tierloanList[index].record_id);
+      if (archivedRows.length > 0) {
+        const newValue = {
+          record_id: archivedRows,
+          is_archived: true
+        };
+
+        const pageNumber = {
+          page_number: currentPage,
+          page_size: itemsPerPage,
+        };
+
+        const res = await postCaller(EndPoints.update_tierloanfee_archive, newValue);
+        if (res.status === HTTP_STATUS.OK) {
+          // If API call is successful, refetch commissions
+          dispatch(fetchTearLoan(pageNumber));
+          const remainingSelectedRows = Array.from(selectedRows).filter(index => !archivedRows.includes(tierloanList[index].record_id));
+          const isAnyRowSelected = remainingSelectedRows.length > 0;
+          setSelectAllChecked(isAnyRowSelected);
+          setSelectedRows(new Set());
+          Swal.fire({
+            title: 'Archived!',
+            text: 'All selected rows have been archived.',
+            icon: 'success',
+            timer: 2000,
+            showConfirmButton: false
+          });
+        }
+        else {
+          Swal.fire({
+            title: 'Error!',
+            text: 'Failed to archive selected rows. Please try again later.',
+            icon: 'error',
+            timer: 2000,
+            showConfirmButton: false
+          });
+        }
+      }
+
+    }
+  };
+  const handleArchiveClick = async (record_id: any) => {
+    const archived: number[] = [record_id];
+    let newValue = {
+      record_id: archived,
+      is_archived: true
+    }
+    const pageNumber = {
+      page_number: currentPage,
+      page_size: itemsPerPage,
+
+    };
+    const res = await postCaller(EndPoints.update_tierloanfee_archive, newValue);
+    if (res.status === HTTP_STATUS.OK) {
+      dispatch(fetchTearLoan(pageNumber))
+    }
+  };
+
+  const handleViewArchiveToggle = () => {
+    setViewArchived(!viewArchived);
+    // When toggling, reset the selected rows
+    setSelectedRows(new Set());
+    setSelectAllChecked(false);
+  };
   const fetchFunction = (req: any) => {
     dispatch(fetchTearLoan(req));
    };
@@ -118,12 +199,12 @@ const TierLoanFee = () => {
   }
   return (
     <div className="comm">
-       <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Tier Loan Fee"/>
+       <Breadcrumb head="Commission" linkPara="Configure" route={ROUTES.CONFIG_PAGE} linkparaSecond="Tier Loan Fee"/>
       <div className="commissionContainer">
         <TableHeader
           title="Tier Loan Fee"
-          onPressViewArchive={() => {}}
-          onPressArchive={() => {}}
+          onPressViewArchive={() =>handleViewArchiveToggle()}
+          onPressArchive={() => handleArchiveAllClick()}
           checked={isAllRowsSelected}
           isAnyRowSelected={isAnyRowSelected}
           onPressFilter={() => filter()}
@@ -170,11 +251,13 @@ const TierLoanFee = () => {
                 />
                 ))
               }
-              <th>
-                  <div className="action-header">
-                    <p>Action</p>
-                  </div>
-                </th>
+             {
+              viewArchived===true?null:   <th>
+              <div className="action-header">
+                <p>Action</p>
+              </div>
+            </th>
+             }
               </tr>
             </thead>
             <tbody>
@@ -206,18 +289,23 @@ const TierLoanFee = () => {
                       <td>{el.dlr_cost}</td>
                       <td>{el.start_date}</td>
                       <td>{el.end_date}</td>
-                      <td
+                    {
+                      viewArchived===true?null:  <td
                         
                       >
                       <div className="action-icon">
-                <div className="">
+                <div className="action-archive" style={{cursor:"pointer"}} onClick={()=>handleArchiveClick(el.record_id)}>
                 <img src={ICONS.ARCHIVE} alt="" />
+                <span className="tooltiptext">Archive</span>
                 </div>
-                     <div className="" style={{cursor:"pointer"}} onClick={()=>handleEditTierLoan(el)}>
+                     <div className="action-archive" style={{cursor:"pointer"}} onClick={()=>handleEditTierLoan(el)}>
                      <img src={ICONS.editIcon} alt="" />
+                     <span className="tooltiptext">Edit</span>
+                     
                      </div>
                       </div>
                       </td>
+                    }
                     </tr>
                   ))
                 :  <tr style={{border:0}}>

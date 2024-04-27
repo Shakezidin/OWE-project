@@ -18,6 +18,7 @@ import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import CreateRebateData from "./CreateRebateData";
 import Loading from "../../../components/loader/Loading";
 import DataNotFound from "../../../components/loader/DataNotFound";
+import { ROUTES } from "../../../../routes/routes";
 interface Column {
   name: string;
   displayName: string;
@@ -112,7 +113,7 @@ const RebeteData: React.FC = () => {
 
   return (
     <div className="comm">
-      <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="rebate-data"/>
+      <Breadcrumb head="Commission" linkPara="Configure" route={ROUTES.CONFIG_PAGE} linkparaSecond="rebate-data"/>
       <div className="commissionContainer">
         <TableHeader
           title="Rebate Data"

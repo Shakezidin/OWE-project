@@ -16,6 +16,7 @@ import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
 import { LeaderOverrideColumns} from "../../../../resources/static_data/configureHeaderData/LeaderOverrideColumn";
 import FilterModal from "../../../components/FilterModal/FilterModal";
+import { ROUTES } from "../../../../routes/routes";
 const LeaderOverride = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -120,7 +121,7 @@ const LeaderOverride = () => {
 
   return (
     <div className="comm">
-      <Breadcrumb head="" linkPara="" linkparaSecond="Learder Override" />
+      <Breadcrumb head="" linkPara="Configure" route={ROUTES.CONFIG_PAGE} linkparaSecond="Learder Override" />
       <div className="commissionContainer">
         <TableHeader
           title="Leader Override"

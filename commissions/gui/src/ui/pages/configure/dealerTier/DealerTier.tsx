@@ -22,6 +22,11 @@ import SortableHeader from "../../../components/tableHeader/SortableHeader";
 import FilterModal from "../../../components/FilterModal/FilterModal";
 import DataNotFound from "../../../components/loader/DataNotFound";
 import Loading from "../../../components/loader/Loading";
+import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
+import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
+import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
+import Swal from "sweetalert2";
+import { ROUTES } from "../../../../routes/routes";
 const DealerTier = () => {
   const dispatch = useAppDispatch();
   // const getData = useAppSelector(state=>state.comm.data)
@@ -50,9 +55,10 @@ const DealerTier = () => {
     const pageNumber = {
       page_number: currentPage,
       page_size:itemsPerPage,
+      archived: viewArchived ? true : undefined,
     };
     dispatch(fetchDealerTier(pageNumber));
-  }, [dispatch,currentPage]);
+  }, [dispatch,currentPage,viewArchived]);
   console.log(dealerTierList);
 
   const filter = ()=>{
@@ -111,6 +117,81 @@ const DealerTier = () => {
       }
     });
   }
+  const handleArchiveAllClick = async () => {
+    const confirmationResult = await Swal.fire({
+      title: 'Are you sure?',
+      text: 'This action will archive all selected rows.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, archive all'
+    });
+    if (confirmationResult.isConfirmed) {
+      const archivedRows = Array.from(selectedRows).map(index => dealerTierList[index].record_id);
+      if (archivedRows.length > 0) {
+        const newValue = {
+          record_id: archivedRows,
+          is_archived: true
+        };
+
+        const pageNumber = {
+          page_number: currentPage,
+          page_size: itemsPerPage,
+        };
+
+        const res = await postCaller(EndPoints.update_dealertier_archive, newValue);
+        if (res.status === HTTP_STATUS.OK) {
+          // If API call is successful, refetch commissions
+          dispatch(fetchDealerTier(pageNumber));
+          const remainingSelectedRows = Array.from(selectedRows).filter(index => !archivedRows.includes(dealerTierList[index].record_id));
+          const isAnyRowSelected = remainingSelectedRows.length > 0;
+          setSelectAllChecked(isAnyRowSelected);
+          setSelectedRows(new Set());
+          Swal.fire({
+            title: 'Archived!',
+            text: 'All selected rows have been archived.',
+            icon: 'success',
+            timer: 2000,
+            showConfirmButton: false
+          });
+        }
+        else {
+          Swal.fire({
+            title: 'Error!',
+            text: 'Failed to archive selected rows. Please try again later.',
+            icon: 'error',
+            timer: 2000,
+            showConfirmButton: false
+          });
+        }
+      }
+
+    }
+  };
+  const handleArchiveClick = async (record_id: any) => {
+    const archived: number[] = [record_id];
+    let newValue = {
+      record_id: archived,
+      is_archived: true
+    }
+    const pageNumber = {
+      page_number: currentPage,
+      page_size: itemsPerPage,
+
+    };
+    const res = await postCaller(EndPoints.update_dealertier_archive, newValue);
+    if (res.status === HTTP_STATUS.OK) {
+      dispatch(fetchDealerTier(pageNumber))
+    }
+  };
+
+  const handleViewArchiveToggle = () => {
+    setViewArchived(!viewArchived);
+    // When toggling, reset the selected rows
+    setSelectedRows(new Set());
+    setSelectAllChecked(false);
+  };
   const fetchFunction = (req: any) => {
     dispatch(fetchDealerTier(req));
    };
@@ -124,12 +205,12 @@ const DealerTier = () => {
 
   return (
     <div className="comm">
-       <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Dealer Tier"/>
+       <Breadcrumb head="Commission" linkPara="Configure" route={ROUTES.CONFIG_PAGE} linkparaSecond="Dealer Tier"/>
       <div className="commissionContainer">
         <TableHeader
           title="Dealer Tier"
-          onPressViewArchive={() => {}}
-          onPressArchive={() => {}}
+          onPressViewArchive={() =>handleViewArchiveToggle()}
+          onPressArchive={() => handleArchiveAllClick()}
           checked={isAllRowsSelected}
           isAnyRowSelected={isAnyRowSelected}
           onPressFilter={() => filter()}
@@ -174,11 +255,13 @@ const DealerTier = () => {
                 />
                 ))
               }
-                <th>
-                  <div className="action-header">
-                    <p>Action</p>
-                  </div>
-                </th>
+              {
+                viewArchived===true?null:  <th>
+                <div className="action-header">
+                  <p>Action</p>
+                </div>
+              </th>
+              }
               </tr>
             </thead>
             <tbody>
@@ -205,19 +288,23 @@ const DealerTier = () => {
                       <td>{el.tier}</td>
                       <td>{el.start_date}</td>
                       <td>{el.end_date}</td>
-                      <td
+                     {
+                      viewArchived===true?null: <td
                        
                       >
                          <div className="action-icon">
-                         <div className="" style={{ cursor: "pointer" }}>
+                         <div className="action-archive" style={{ cursor: "pointer" }} onClick={()=>handleArchiveClick(el.record_id)}>
                            <img src={ICONS.ARCHIVE} alt="" />
+                           <span className="tooltiptext">Archive</span>
                            </div>
                      
-                       <div className="" style={{cursor:"pointer"}} onClick={()=>handleEditDealerTier(el)}>
+                       <div className="action-archive" style={{cursor:"pointer"}} onClick={()=>handleEditDealerTier(el)}>
                        <img src={ICONS.editIcon} alt="" />
+                       <span className="tooltiptext">Edit</span>
                        </div>
                          </div>
                       </td>
+                     }
                     </tr>
                   ))
                 : <tr style={{border:0}}>

@@ -24,6 +24,7 @@ import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import CreateDlrOth from "./CreateDlrOth";
 import Loading from "../../../components/loader/Loading";
 import DataNotFound from "../../../components/loader/DataNotFound";
+import { ROUTES } from "../../../../routes/routes";
 interface Column {
   name: string;
   displayName: string;
@@ -117,7 +118,7 @@ const DlrOthPay: React.FC = () => {
 
   return (
     <div className="comm">
-      <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="DLR-OTH"/>
+      <Breadcrumb head="Commission" linkPara="Configure" route={ROUTES.CONFIG_PAGE} linkparaSecond="DLR-OTH"/>
       <div className="commissionContainer">
         <TableHeader
           title="DLR-OTH"

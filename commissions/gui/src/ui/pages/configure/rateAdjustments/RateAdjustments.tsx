@@ -16,6 +16,7 @@ import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
 import { RateAdjustmentsColumns } from "../../../../resources/static_data/configureHeaderData/RateAdjustmentsColumn";
 import FilterModal from "../../../components/FilterModal/FilterModal";
+import { ROUTES } from "../../../../routes/routes";
 
 const RateAdjustments = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -120,7 +121,7 @@ const RateAdjustments = () => {
 
   return (
     <div className="comm">
-      <Breadcrumb head="" linkPara="Configure" linkparaSecond="Rate Adjustments" />
+      <Breadcrumb head="" linkPara="Configure" route={ROUTES.CONFIG_PAGE} linkparaSecond="Rate Adjustments" />
       <div className="commissionContainer">
         <TableHeader
           title="Rate Adjustments"

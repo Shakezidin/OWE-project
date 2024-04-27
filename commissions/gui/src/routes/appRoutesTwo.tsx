@@ -136,7 +136,7 @@ const appRoutesTwo = [
         },
         child: [
           {
-            path: ROUTES.PROJECT,
+            path: ROUTES.PROJECT_PERFORMANCE,
             sidebarProps: {
               displayText: "Performance",
               icon: (
@@ -147,7 +147,7 @@ const appRoutesTwo = [
             },
           },
           {
-            path: "#",
+            path: ROUTES.PROJECT_STATUS,
             sidebarProps: {
               displayText: "Project Detail",
               icon: (

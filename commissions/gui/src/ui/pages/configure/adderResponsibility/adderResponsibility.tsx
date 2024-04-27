@@ -16,6 +16,7 @@ import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
 import { AdderResponsibilityColumns } from "../../../../resources/static_data/configureHeaderData/adderResponsibilityColumn";
 import FilterModal from "../../../components/FilterModal/FilterModal";
+import { ROUTES } from "../../../../routes/routes";
 const AdderResponsibility = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -120,7 +121,7 @@ const AdderResponsibility = () => {
 
   return (
     <div className="comm">
-      <Breadcrumb head="" linkPara="" linkparaSecond="Adder Responsbility" />
+      <Breadcrumb head="" linkPara="Configure" route={ROUTES.CONFIG_PAGE} linkparaSecond="Adder Responsbility" />
       <div className="commissionContainer">
         <TableHeader
           title="Adder Responsbility"

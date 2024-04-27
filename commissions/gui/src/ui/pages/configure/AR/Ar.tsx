@@ -16,6 +16,7 @@ import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
 import { ARColumns} from "../../../../resources/static_data/configureHeaderData/ARColumn";
 import FilterModal from "../../../components/FilterModal/FilterModal";
+import { ROUTES } from "../../../../routes/routes";
 const AR = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -120,7 +121,7 @@ const AR = () => {
 
   return (
     <div className="comm">
-      <Breadcrumb head="" linkPara="Configure" linkparaSecond="AR" />
+      <Breadcrumb head="" linkPara="Configure" route={ROUTES.CONFIG_PAGE} linkparaSecond="AR" />
       <div className="commissionContainer">
         <TableHeader
           title="AR"
