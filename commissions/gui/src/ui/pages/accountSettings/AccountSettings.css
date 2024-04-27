@@ -3,6 +3,10 @@
   gap: 1rem;
   align-items: center;
   padding: 0.5rem;
+  width: 100%;
+}
+.account-section-main {
+  width: 100%;
 }
 .titlehed {
   background-color: #333333;
@@ -22,34 +26,24 @@
 }
 .profile-section {
   display: flex;
-  gap: 3rem;
   background-color: white;
   /* height: 520px; */
   border-radius: 16px;
   padding-bottom: 2rem;
+  /* width: 700px; */
+  gap: 3rem;
 }
 .profile-sec-button {
   padding: 1rem;
   background-color: white;
   border-radius: 16px;
 }
-/* .profile-sec-button button {
-  background-color: white;
-  width: 120px;
-  height: 32px;
-  top: 166px;
-  border-radius: 8px;
-  opacity: 0px;
-  text-align: left;
-  border: none;
-  padding: 8px 0px 8px 12px;
-  margin: 0.5rem;
-  cursor: pointer;
-} */
+
 .tab-links {
   display: flex;
   flex-direction: column;
   padding: 1rem;
+  /* width: 15%; */
 }
 .tab {
   padding: 0.5rem;
@@ -59,11 +53,13 @@
   border-radius: 8px;
   cursor: pointer;
   border: none;
-
   outline: none;
   background-color: transparent;
   text-align: left;
   font-weight: 500;
+}
+.tab-content {
+  width: 77%;
 }
 .active-profile {
   background-color: #e9f0ff;
@@ -71,27 +67,27 @@
 }
 .vertical {
   border-left: 1px solid #dbdddf;
-  height: 650px !important;
+  /* height: 650px !important; */
   margin-top: 1.5rem;
-
   /* border: 1px 0px 0px 0px; */
+
 }
 .myProf-section {
-  margin-top: 1.5rem;
+  margin-top: 1rem;
   font-size: 18px;
   font-weight: 500;
-  line-height: 27px;
   text-align: left;
+  padding: 1rem;
+
 }
 .admin-section {
   display: flex;
   text-align: center;
-  align-items: center;
   padding: 1rem 0rem 1rem 1rem;
   gap: 1rem;
   align-items: center;
   margin-top: 1rem;
-  width: 960px;
+  width: 100%;
   height: 114px;
   border: 1px solid #e0e0e0;
   border-radius: 16px;
@@ -127,11 +123,14 @@
 }
 .Personal-container {
   margin-top: 1rem;
-  /* width: 960px; */
+  /* width: 800px; */
   height: 250px;
   opacity: 0px;
   border: 1px solid #e0e0e0;
   border-radius: 16px;
+}
+.create-input-container{
+  width: 100%;
 }
 .caleb-container {
   display: flex;
@@ -152,34 +151,45 @@
 }
 .reset-Update button {
   /* width: 280px; */
+  width: 270px;
   height: 48px;
   font-size: 14px;
   font-weight: 500;
-  line-height: 11.96px;
   text-align: center;
   border: none;
-  color: white;
+  color: black;
   padding: 15px 32px;
   text-decoration: none;
   display: inline-block;
   margin: 4px 2px;
   cursor: pointer;
-  background-color: #0493ce;
+  /* background-color: #0493ce; */
   border-radius: 8px;
+  transition: background-color  0.5s ease, color 0.5s ease;
+
+}
+.reset-Update :hover {
+  background-color: #0493ce;
+  color: white;
 }
 
 .profile-reset {
   display: flex;
   justify-content: right;
-  gap: 2rem;
+  gap: 1rem;
   margin-top: 1rem;
+
+}
+.profile-reset :hover{
+
+  background-color: #333333;
 }
 
 .user-profile-container {
   margin-top: 2rem;
   /* width: 954px; */
   height: 468px;
-  
+
   gap: 0px;
   opacity: 0px;
   background: #ffffff;
@@ -271,6 +281,11 @@
   cursor: pointer;
   background-color: #0493ce;
   border-radius: 8px;
+  transition: background-color  0.5s ease, color 0.5s ease;
+
+}
+.reset-Update-support :hover {
+  background-color: #333333;
 }
 
 .user-create-profile-section {
@@ -284,4 +299,19 @@
   justify-content: space-between;
   gap: 2rem;
   margin-top: 0.5rem;
+}
+
+.create-input-field-profile {
+  width: 40%;
+}
+.create-input-field-profile input:hover {
+  border: 1px solid #0493ce;
+  border-radius: 8px;
+}
+.create-input-field-address {
+  width: 30%;
+}
+.create-input-field-address input:hover {
+  border: 1px solid #0493ce;
+  border-radius: 8px;
 }

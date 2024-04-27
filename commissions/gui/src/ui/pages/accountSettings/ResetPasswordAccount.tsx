@@ -11,8 +11,8 @@ const ResetPasswordAccount = () => {
         </div>
 
         <div className='Personal-container'>
-          <div className="create-input-container" style={{ padding: "0.5rem", marginLeft: "1rem" }}>
-            <div className="create-input-field">
+          <div className="create-input-container" style={{padding:"1rem"}}>
+            <div className="create-input-field-profile">
               <Input
                 type={"text"}
                 label="Current Password"
@@ -22,7 +22,7 @@ const ResetPasswordAccount = () => {
                 onChange={(e) => {}}
                 />
             </div>
-            <div className="create-input-field">
+            <div className="create-input-field-profile">
               <Input
                 type={"text"}
                 label="New Password"
@@ -32,7 +32,7 @@ const ResetPasswordAccount = () => {
                 onChange={(e) => {}}
                 />
             </div>
-            <div className="create-input-field">
+            <div className="create-input-field-profile">
               <Input
                 type={"text"}
                 label="Confirm Password"
