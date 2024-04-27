@@ -11,10 +11,11 @@ import {
 import { userSelectData } from "../../../resources/static_data/StaticData";
 import { UserDropdownModel, UserRoleBasedListModel } from "../../../core/models/api_models/UserManagementModel";
 import UserManagementTable from "./userTableList/UserManagementTable";
-import { cretaeUserOnboarding, fetchDealerOwner, fetchRegionList } from "../../../redux/apiActions/createUserSliceActions";
+import { createUserOnboarding, fetchDealerOwner, fetchRegionList } from "../../../redux/apiActions/createUserSliceActions";
 import { createUserObject, validateForm } from "../../../utiles/Validation";
 import { updateUserForm, userResetForm } from "../../../redux/apiSlice/userManagementSlice/createUserSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
+import { HTTP_STATUS } from "../../../core/models/api_models/RequestModel";
 
 const UserManagement: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -27,7 +28,7 @@ const UserManagement: React.FC = () => {
   const { userOnboardingList, userRoleBasedList, } = useAppSelector(
     (state) => state.userManagement
   );
-  const { formData, dealerOwenerList, regionList, createUserResult, error } = useAppSelector((state) => state.createOnboardUser);
+  const { formData, dealerOwenerList, regionList, createUserResult} = useAppSelector((state) => state.createOnboardUser);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
@@ -41,7 +42,7 @@ const UserManagement: React.FC = () => {
     };
 
     fetchData();
-  }, []);
+  }, [createUserResult]);
 
   /** role based get data */
   useEffect(() => {
@@ -58,7 +59,7 @@ const UserManagement: React.FC = () => {
     };
 
     dispatch(fetchUserListBasedOnRole(data));
-  }, [selectedOption]);
+  }, [selectedOption, createUserResult]);
 
   /** handle dropdown value */
   const handleSelectChange = (selectedOption: UserDropdownModel) => {
@@ -78,6 +79,7 @@ const UserManagement: React.FC = () => {
     return subrole;
   }
 
+  /** check role  */
   const onChangeRole = async (role: string, value: string)=>{
     if(role === 'Role'){
      await dispatch(fetchDealerOwner({
@@ -93,6 +95,7 @@ const UserManagement: React.FC = () => {
     }
   }
 
+  /** submit button */
   const onSubmitCreateUser = (event: any) => {
     event.preventDefault(); 
     console.log(formData)
@@ -101,7 +104,6 @@ const UserManagement: React.FC = () => {
     console.log("formErrors",formErrors);
 
     if (Object.keys(formErrors).length === 0) {
-      // Submit the form
       createUserRequest()
     }else{
       //const firstKey = Object.keys(formErrors)[0]; //Todo: change in future
@@ -110,14 +112,22 @@ const UserManagement: React.FC = () => {
   
   };
 
+  /** API call to submit */
   const createUserRequest = async ()=>{
     let data = createUserObject(formData)
-    const actionResult =  await dispatch(cretaeUserOnboarding(data))
-    // const result = unwrapResult(actionResult);
+    const actionResult =  await dispatch(createUserOnboarding(data))
+    const result = unwrapResult(actionResult);
 
-    console.log("result....",actionResult)
+    if (result.status === HTTP_STATUS.OK){
+      handleClose();
+      alert(result.message)
+    }else{
+      alert(result.message)
+    }
+
   }
 
+  /** render UI */
   return (
     <>
       <div className="management-section">

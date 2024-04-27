@@ -319,3 +319,53 @@ height: 16px !important;
 }
 /* FileInputComponent.css */
 /* FileInputComponent.css */
+
+
+
+
+/* React Date Picker CSS */
+
+.DateRangePickerInput__showClearDates {
+  padding-right: 0
+}
+.DayPickerKeyboardShortcuts_show__bottomRight {
+  visibility: hidden;
+}
+.DateInput{
+  width: 93px;
+}
+.DateInput_input{
+  padding: 0 7px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.DateRangePickerInput__withBorder{
+  border: none;
+}
+.CalendarMonth_table tbody tr td {
+  padding: 0;
+} 
+.DayPicker_transitionContainer__horizontal{
+  height: 320px !important;
+}
+.DateRangePickerInput_arrow{
+  vertical-align: unset;
+}
+.DateRangePickerInput_arrow_svg {
+  height: 16px;
+  width: 16px;
+}
+.DateRangePicker_picker__portal{
+  top: -40%;
+  left: 7%;
+  height: 150%;
+} 
+.DayPicker_portal__horizontal{
+  margin: 0;
+  padding: 0;
+}
+.DateRangePickerInput_clearDates{
+  /* margin: -2px; */
+  visibility: hidden;
+}
