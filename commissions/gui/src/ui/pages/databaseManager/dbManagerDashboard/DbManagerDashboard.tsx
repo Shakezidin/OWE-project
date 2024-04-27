@@ -6,6 +6,7 @@ import DashBarLineChart from "../../databaseManager/dbManagerDashboard/DashBarLi
 import PieChartWithPaddingAngle from "./PieChartWithPaddingAngle";
 import { useNavigate } from "react-router-dom";
 import Boxes from "./Boxes";
+import Select from "react-select";
 
 const DbManagerDashboard = () => {
   const navigate = useNavigate();
@@ -32,10 +33,19 @@ const DbManagerDashboard = () => {
     { name: "Group A", value: 100, Historical_Records: 100, Total_Records: 150 },
     { name: "Group B", value: 300, Historical_Records: 250, Total_Records: 300 },
   ];
+  const options = [
+    { value: 'today', label: 'Today' },
+    { value: 'this_week', label: 'This week' },
+    { value: 'all', label: 'All' }
+  ];
+  const options1 = [
+    { value: 'today', label: 'Table1 Data' },
+    { value: 'this_week', label: 'Table2 Data' },
+    { value: 'all', label: 'Table3 Data' }
+  ];
 
   return (
     <>
-      {/* <CreateWebHook/> */}
       <div className="common">
         <Breadcrumb
           head="Dashboard"
@@ -75,14 +85,27 @@ const DbManagerDashboard = () => {
         <div className="status-section">
           <p>Webhooks Status</p>
 
-          <div className="Payroll-section-up">
-            <select name="" id="dropdown" className="dash-select-up">
-              <option value="Today">Table1 Data</option>
-              <option value="This Week">Table2 Data</option>
-              <option value="All">Table3 Data</option>
-            </select>
-            <BiChevronDown className="top-icon"/>
-          </div>
+          
+          <Select
+            options={options1}
+            styles={{
+              control: (baseStyles, state) => ({
+                ...baseStyles,
+                marginTop: "px",
+                borderRadius: "8px",
+                outline: "none",
+                color: "black",
+                width: "212px",
+                height: "36px",
+                fontSize: "12px",
+                border: "1px solid #d0d5dd",
+                fontWeight: "500"
+              }),
+              indicatorSeparator: () => ({
+                display: 'none' // Hide the indicator separator
+              }),
+            }}
+          />
 
 
 
@@ -94,13 +117,25 @@ const DbManagerDashboard = () => {
             <div className="Create-section">
               <p>Create Webhooks</p>
 
-              <div className="Payroll-section">
-                <select name="" id="" className="dash-select">
-                  <option value="Today">Today</option>
-                  <option value="This Week">This Week</option>
-                  <option value="All">All</option>
-                </select>
-              </div>
+              <Select
+                options={options}
+                styles={{
+                  control: (baseStyles, state) => ({
+                    ...baseStyles,
+                    marginTop: "px",
+                    borderRadius: "8px",
+                    outline: "none",
+                    color: "black",
+                    width: "120px",
+                    fontSize: "12px",
+                    border: "1px solid #d0d5dd",
+                    fontWeight: "500"
+                  }),
+                  indicatorSeparator: () => ({
+                    display: 'none' // Hide the indicator separator
+                  }),
+                }}
+              />
 
 
             </div>
@@ -122,13 +157,25 @@ const DbManagerDashboard = () => {
             <div className="Create-section">
               <p>Update Webhooks</p>
 
-              <div className="Payroll-section1">
-                <select name="" id="" className="dash-select" onChange={handleSelectChange}>
-                  <option value="Today">Today</option>
-                  <option value="This Week">This Week</option>
-                  <option value="All">All</option>
-                </select>
-              </div>
+              <Select
+                options={options}
+                styles={{
+                  control: (baseStyles, state) => ({
+                    ...baseStyles,
+                    marginTop: "px",
+                    borderRadius: "8px",
+                    outline: "none",
+                    color: "black",
+                    width: "120px",
+                    fontSize: "12px",
+                    border: "1px solid #d0d5dd",
+                    fontWeight: "500"
+                  }),
+                  indicatorSeparator: () => ({
+                    display: 'none' // Hide the indicator separator
+                  }),
+                }}
+              />
 
 
             </div>
@@ -149,13 +196,25 @@ const DbManagerDashboard = () => {
             <div className="Create-section">
               <p>Delete Webhooks</p>
 
-              <div className="Payroll-section">
-                <select name="" id="" className="dash-select" onChange={handleSelectChange}>
-                  <option value="Today">Today</option>
-                  <option value="This Week">This Week</option>
-                  <option value="All">All</option>
-                </select>
-              </div>
+              <Select
+                options={options}
+                styles={{
+                  control: (baseStyles, state) => ({
+                    ...baseStyles,
+                    marginTop: "px",
+                    borderRadius: "8px",
+                    outline: "none",
+                    color: "black",
+                    width: "120px",
+                    fontSize: "12px",
+                    border: "1px solid #d0d5dd",
+                    fontWeight: "500"
+                  }),
+                  indicatorSeparator: () => ({
+                    display: 'none' // Hide the indicator separator
+                  }),
+                }}
+              />
 
 
             </div>

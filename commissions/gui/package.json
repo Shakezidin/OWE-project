@@ -65,5 +65,9 @@
     "jest": "^27.5.1",
     "react-test-renderer": "^18.2.0",
     "typescript": "^3.4.5"
-  }
+  },
+  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
+  "main": "babel.config.js",
+  "author": "",
+  "license": "ISC"
 }
