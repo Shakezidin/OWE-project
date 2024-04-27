@@ -70,3 +70,140 @@ export const UserPatternTableColumn: Column[] = [
     isCheckbox: false,
   },
 ];
+
+export const UserDealerTableColumn: Column[] = [
+  { name: "code", displayName: "Code", type: "string", isCheckbox: true },
+  { name: "name", displayName: "Name", type: "string", isCheckbox: false },
+  {
+    name: "email",
+    displayName: "Email ID",
+    type: "string",
+    isCheckbox: false,
+  },
+  {
+    name: "phone_number",
+    displayName: "Phone Number",
+    type: "string",
+    isCheckbox: false,
+  },
+  {
+    name: "description",
+    displayName: "Description",
+    type: "string",
+    isCheckbox: false,
+  },
+];
+
+export const UserRegionalTableColumn: Column[] = [
+  { name: "code", displayName: "Code", type: "string", isCheckbox: true },
+  { name: "name", displayName: "Name", type: "string", isCheckbox: false },
+  { name: "role", displayName: "Role", type: "string", isCheckbox: false },
+  {
+    name: "dealer_owner",
+    displayName: "Dealer Owner",
+    type: "string",
+    isCheckbox: false,
+  },
+  {
+    name: "Region",
+    displayName: "Region",
+    type: "string",
+    isCheckbox: false,
+  },
+  {
+    name: "email",
+    displayName: "Email ID",
+    type: "string",
+    isCheckbox: false,
+  },
+  {
+    name: "phone_number",
+    displayName: "Phone Number",
+    type: "string",
+    isCheckbox: false,
+  },
+  {
+    name: "description",
+    displayName: "Description",
+    type: "string",
+    isCheckbox: false,
+  },
+];
+
+export const UserSaleMangerTableColumn: Column[] = [
+  { name: "code", displayName: "Code", type: "string", isCheckbox: true },
+  { name: "name", displayName: "Name", type: "string", isCheckbox: false },
+  { name: "role", displayName: "Role", type: "string", isCheckbox: false },
+  {
+    name: "dealer_owner",
+    displayName: "Dealer Owner",
+    type: "string",
+    isCheckbox: false,
+  },
+  {
+    name: "repoting_to",
+    displayName: "Repoting To",
+    type: "string",
+    isCheckbox: false,
+  },
+  {
+    name: "email",
+    displayName: "Email ID",
+    type: "string",
+    isCheckbox: false,
+  },
+  {
+    name: "phone_number",
+    displayName: "Phone Number",
+    type: "string",
+    isCheckbox: false,
+  },
+  {
+    name: "description",
+    displayName: "Description",
+    type: "string",
+    isCheckbox: false,
+  },
+];
+
+export const UserSaleRepresentTableColumn: Column[] = [
+  { name: "code", displayName: "Code", type: "string", isCheckbox: true },
+  { name: "name", displayName: "Name", type: "string", isCheckbox: false },
+  { name: "role", displayName: "Role", type: "string", isCheckbox: false },
+  {
+    name: "dealer_owner",
+    displayName: "Dealer Owner",
+    type: "string",
+    isCheckbox: false,
+  },
+  {
+    name: "team_name",
+    displayName: "Team Name",
+    type: "string",
+    isCheckbox: false,
+  },
+  {
+    name: "repoting_to",
+    displayName: "Repoting To",
+    type: "string",
+    isCheckbox: false,
+  },
+  {
+    name: "email",
+    displayName: "Email ID",
+    type: "string",
+    isCheckbox: false,
+  },
+  {
+    name: "phone_number",
+    displayName: "Phone Number",
+    type: "string",
+    isCheckbox: false,
+  },
+  {
+    name: "description",
+    displayName: "Description",
+    type: "string",
+    isCheckbox: false,
+  },
+];
