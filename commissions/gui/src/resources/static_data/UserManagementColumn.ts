@@ -59,3 +59,14 @@ export const UserAppointmentTableColumn: Column[] = [
     isCheckbox: false,
   },
 ];
+
+export const UserPatternTableColumn: Column[] = [
+  { name: "code", displayName: "Code", type: "string", isCheckbox: true },
+  { name: "name", displayName: "Name", type: "string", isCheckbox: false },
+  {
+    name: "details",
+    displayName: "Details",
+    type: "string",
+    isCheckbox: false,
+  },
+];

@@ -127,6 +127,10 @@ const UserManagementTable: React.FC<UserTableProos> = ({
               onClickEdit(item);
             }}
             onClickDelete={(item: UserRoleBasedListModel) => {}}
+            selectedRows={selectedRows}
+            selectAllChecked={selectAllChecked}
+            setSelectedRows={setSelectedRows}
+            setSelectAllChecked={setSelectAllChecked}
           />
         );
       case "Regional Manager":
