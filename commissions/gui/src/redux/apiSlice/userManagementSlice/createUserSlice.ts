@@ -1,7 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { CreateOnboardUserStateModel } from "../../../core/models/data_models/UserManagementStateModel";
 import {
-  cretaeUserOnboarding,
+  createUserOnboarding,
   fetchDealerOwner,
   fetchRegionList,
 } from "../../apiActions/createUserSliceActions";
@@ -98,14 +98,14 @@ const createUserSlice = createSlice({
       )
       /** create user */
       .addCase(
-        cretaeUserOnboarding.pending,
+        createUserOnboarding.pending,
         (state: CreateOnboardUserStateModel) => {
           state.loading = true;
           state.error = null;
         }
       )
       .addCase(
-        cretaeUserOnboarding.fulfilled,
+        createUserOnboarding.fulfilled,
         (state: CreateOnboardUserStateModel, action) => {
           state.loading = true;
           state.error = null;
@@ -113,7 +113,7 @@ const createUserSlice = createSlice({
         }
       )
       .addCase(
-        cretaeUserOnboarding.rejected,
+        createUserOnboarding.rejected,
         (state: CreateOnboardUserStateModel, action) => {
           state.loading = false;
           state.error =

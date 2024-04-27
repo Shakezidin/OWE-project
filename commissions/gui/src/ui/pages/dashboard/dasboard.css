@@ -2,14 +2,14 @@
   width: 100%;
   /* height: 87vh; */
 }
-.Dashboard-container {
+.DashboardPage-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 2rem;
   padding: 10px 0;
 }
-.Dashboard-wel h6 {
+.DashboardPage-wel h6 {
   font-size: 12px;
   font-weight: 400;
   line-height: 18px;
@@ -17,13 +17,13 @@
   text-align: left;
   color: #393851;
 }
-.Dashboard-wel h3 {
+.DashboardPage-wel h3 {
   font-size: 20px;
   font-weight: 600;
   line-height: 30px;
   text-align: left;
   color: #263747;
-  margin-bottom: -10px;
+  /* margin-bottom: -10px; */
 }
 .commission-section-dash {
   display: flex;
