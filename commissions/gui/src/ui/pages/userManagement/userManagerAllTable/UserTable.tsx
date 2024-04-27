@@ -36,7 +36,7 @@ const UserTable: React.FC<UserTableProps> = ({data, onClickDelete, onClickEdit, 
   };
 
   if (sortKey) {
-    data.sort((a: any, b: any) => {
+    data?.sort((a: any, b: any) => {
       const aValue = a[sortKey];
       const bValue = b[sortKey];
       if (typeof aValue === 'string' && typeof bValue === 'string') {
@@ -72,8 +72,8 @@ const UserTable: React.FC<UserTableProps> = ({data, onClickDelete, onClickEdit, 
                 selectedRows={selectedRows}
                 setSelectedRows={setSelectedRows}
                 sortKey={item.name}
-              sortDirection={sortKey === item.name ? sortDirection : undefined}
-               onClick={() => handleSort(item.name)}
+              sortDirection={"desc"}
+               onClick={() => {}}
               />
 
               ))
