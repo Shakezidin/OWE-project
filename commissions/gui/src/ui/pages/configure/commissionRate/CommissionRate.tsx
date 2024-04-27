@@ -31,7 +31,7 @@ const CommissionRate: React.FC = () => {
   const [exportOPen, setExportOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const handleExportOpen = () => setExportOpen(!exportOPen)
+  const handleExportOpen = () => <CSVLink data={currentPageData} filename={"table.csv"}/>
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const commissionList = useAppSelector((state) => state.comm.commissionsList);
@@ -212,12 +212,10 @@ const CommissionRate: React.FC = () => {
           isAnyRowSelected={isAnyRowSelected}
           onPressFilter={() => filter()}
           onPressImport={() => { }}
-          onpressExport={() => handleExportOpen()}
+          onpressExport={() =>handleExportOpen()}
           onpressAddNew={() => handleAddCommission()}
         />
-        {exportOPen && (<div className="export-modal">
-          <CSVLink style={{ color: "white", fontSize: "12px" }} data={currentPageData} filename={"table.csv"}>Export CSV</CSVLink>
-        </div>)}
+       
         {filterOPen && <FilterModal handleClose={filterClose}
           columns={Commissioncolumns}
           page_number={currentPage}

@@ -71,9 +71,7 @@ color: #979797;
 input[type="number"] {
   -moz-appearance: textfield;
 }
-li {
-  list-style: none;
-}
+
 /* image icon srtyle  */
 /* img{
   cursor: pointer;
