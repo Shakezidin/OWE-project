@@ -9,7 +9,7 @@ import {
 } from "../../../../resources/static_data/StaticData";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import { ICONS } from "../../../icons/Icons";
-import SelectTable from "./SeletTable";
+import SelectTable from "../userTableList/SeletTable";
 import UserBasedInput from "./UserBasedInput";
 import SelectOption from "../../../components/selectOption/SelectOption";
 import {

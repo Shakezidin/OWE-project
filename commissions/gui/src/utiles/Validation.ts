@@ -83,13 +83,12 @@ export const createUserObject = (
   formData: CreateUserModel
 ): CreateUserParamModel => {
   let createObject: CreateUserParamModel = {
-    name: formData.first_name + formData.last_name,
+    name: formData.first_name + " " + formData.last_name,
     email_id: formData.email_id,
     mobile_number: formData.mobile_number,
     role_name: formData.role_name,
     designation: "SE",
     description: formData.description,
-    user_status: "Active",
   };
   if (
     formData.role_name === "Appointment Setter" ||
@@ -124,6 +123,6 @@ export const createUserObject = (
       reporting_manager: formData.report_to,
     };
   }
-  console.log("createObject", createObject);
+  //console.log("createObject", createObject);
   return createObject;
 };

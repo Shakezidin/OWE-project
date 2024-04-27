@@ -3,13 +3,22 @@ import CheckBox from "../../../components/chekbox/CheckBox";
 import { ICONS } from "../../../icons/Icons";
 import { FaArrowDown } from "react-icons/fa6";
 import {  UserRoleBasedListModel } from "../../../../core/models/api_models/UserManagementModel";
+import { toggleRowSelection } from "../../../components/chekbox/checkHelper";
 
 interface UserTableProps {
   data: UserRoleBasedListModel[];
   onClickEdit: (item: UserRoleBasedListModel)=> void;
   onClickDelete: (item: UserRoleBasedListModel)=> void;
+
+  selectAllChecked: boolean,
+  selectedRows: Set<number>,
+  setSelectedRows: React.Dispatch<React.SetStateAction<Set<number>>>,
+  setSelectAllChecked: React.Dispatch<React.SetStateAction<boolean>>,
 }
-const UserTable: React.FC<UserTableProps> = ({data, onClickDelete, onClickEdit}) => {
+const UserTable: React.FC<UserTableProps> = ({data, onClickDelete, onClickEdit,  selectAllChecked,
+  selectedRows,
+  setSelectedRows,
+  setSelectAllChecked}) => {
 
   return (
     <div
@@ -78,9 +87,22 @@ const UserTable: React.FC<UserTableProps> = ({data, onClickDelete, onClickEdit})
                 <tr key={el.email_id}>
                   <td style={{paddingRight:0}}>
                     <CheckBox
-                      checked={false}
-                      onChange={() => {}}
-                      // indeterminate={isAnyRowSelected && !isAllRowsSelected}
+                   checked={selectedRows.has(i)}
+                   onChange={() => {
+                     // If there's only one row of data and the user clicks its checkbox, select all rows
+                     toggleRowSelection(
+                      i,
+                      selectedRows,
+                      setSelectedRows,
+                      setSelectAllChecked
+                    );
+                    //  if (data?.length === 1) {
+                    //    setSelectAllChecked(true);
+                    //    setSelectedRows(new Set([0]));
+                    //  } else {
+                       
+                    //  }
+                   }}
                     />
                   </td>
                   <td style={{ color:"black",fontWeight:"500",paddingLeft:"10px" }}>
