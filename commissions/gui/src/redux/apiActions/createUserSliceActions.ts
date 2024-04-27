@@ -61,16 +61,10 @@ export const fetchRegionList = createAsyncThunk(
 export const cretaeUserOnboarding = createAsyncThunk(
   "user/create_onboarding_user",
   async (data: CreateUserParamModel): Promise<any> => {
-    console.log("param create user...", data);
     const response = await postCaller(EndPoints.create_user, data);
-
-    console.log("checking error", response);
     if (response.status !== HTTP_STATUS.OK) {
       throw new Error(response.message);
     }
-
-    console.log(response);
-
     return response.data;
   }
 );
