@@ -30,8 +30,8 @@
 }
 
 .hover-children:hover{
-  font-weight: 700;
-   
+  font-weight: 500;
+  color: #23B364;
   transition: 0.5s all;
 
 
