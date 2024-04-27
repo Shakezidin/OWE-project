@@ -8,6 +8,7 @@ import { UserRoleBasedListModel } from "../../../../core/models/api_models/UserM
 import { UserPatternTableColumn } from "../../../../resources/static_data/UserManagementColumn";
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
 import { toggleRowSelection } from "../../../components/chekbox/checkHelper";
+import DataNotFound from "../../../components/loader/DataNotFound";
 
 interface PartnerProps {
   data: UserRoleBasedListModel[];
@@ -138,7 +139,14 @@ const PartnerTable: React.FC<PartnerProps>= ({data, onClickDelete,onClickEdit, s
                     </td>
                   </tr>
                 ))
-              : null}
+              :  <tr style={{border:0}}>
+              <td colSpan={10}>
+              <div className="data-not-found">
+              <DataNotFound/>
+              <h3>Data Not Found</h3>
+              </div>
+              </td>
+            </tr>}
           </tbody>
         </table>
       </div>
