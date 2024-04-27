@@ -134,7 +134,7 @@ const ProjectStatus = () => {
         <p>Apr 26th,2024</p>
       </div>
         <img src={ICONS.curveGraph} alt="" />
-  
+      time
       </div>
   
       <img src={ICONS.linearGraph} alt="" />
