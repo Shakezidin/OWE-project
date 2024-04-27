@@ -1,16 +1,63 @@
-import React from "react";
+import React, { useState } from "react";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import { ICONS } from "../../../icons/Icons";
 import { FaArrowDown } from "react-icons/fa6";
 import { UserRoleBasedListModel } from "../../../../core/models/api_models/UserManagementModel";
+import { UserSaleMangerTableColumn } from "../../../../resources/static_data/UserManagementColumn";
+import SortableHeader from "../../../components/tableHeader/SortableHeader";
+import { toggleRowSelection } from "../../../components/chekbox/checkHelper";
 
 interface SaleManagerProps {
   data: UserRoleBasedListModel[];
   onClickEdit: (item: UserRoleBasedListModel)=> void;
   onClickDelete: (item: UserRoleBasedListModel)=> void;
+  selectAllChecked: boolean;
+  selectedRows: Set<number>;
+  setSelectedRows: React.Dispatch<React.SetStateAction<Set<number>>>;
+  setSelectAllChecked: React.Dispatch<React.SetStateAction<boolean>>;
+  
 }
 
-const SalesManagerTable: React.FC<SaleManagerProps> = ({ data, onClickEdit, onClickDelete }) => {
+const SalesManagerTable: React.FC<SaleManagerProps> = ({ data, onClickEdit, onClickDelete,
+  selectAllChecked,
+  selectedRows,
+  setSelectedRows,
+  setSelectAllChecked, }) => {
+  const [sortKey, setSortKey] = useState("");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
+
+  const isAnyRowSelected = selectedRows?.size > 0;
+  const isAllRowsSelected = selectedRows?.size === data?.length;
+
+  const handleSort = (key: any) => {
+    if (sortKey === key) {
+      setSortDirection(sortDirection === "desc" ? "asc" : "desc");
+    } else {
+      setSortKey(key);
+      setSortDirection("asc");
+    }
+  };
+
+  if (sortKey) {
+    data?.sort((a: any, b: any) => {
+      const aValue = a[sortKey];
+      const bValue = b[sortKey];
+      if (typeof aValue === "string" && typeof bValue === "string") {
+        return sortDirection === "asc"
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
+      } else {
+        // Ensure numeric values for arithmetic operations
+        const numericAValue =
+          typeof aValue === "number" ? aValue : parseFloat(aValue);
+        const numericBValue =
+          typeof bValue === "number" ? bValue : parseFloat(bValue);
+        return sortDirection === "asc"
+          ? numericAValue - numericBValue
+          : numericBValue - numericAValue;
+      }
+    });
+  }
   return (
     <>
       {/* <UserHeaderSection  name="Sale Manager"/> */}
@@ -19,83 +66,59 @@ const SalesManagerTable: React.FC<SaleManagerProps> = ({ data, onClickEdit, onCl
         style={{ overflowX: "auto", whiteSpace: "nowrap" }}
       >
         <table>
-          <thead style={{ background: "#F5F5F5" }}>
-            <tr>
-              <th style={{paddingRight:0}}>
-                <div>
-                  <CheckBox
-                    checked={true}
-                    onChange={() => {}}
-                    // indeterminate={isAnyRowSelected && !isAllRowsSelected}
-                  />
-                </div>
-              </th>
-              <th style={{paddingLeft:"10px"}}>
-                <div className="table-header">
-                  <p>Code</p> <FaArrowDown style={{ color: "#667085" }} />
-                </div>
-              </th>
-              <th>
-                <div className="table-header">
-                  <p>Name</p> <FaArrowDown style={{ color: "#667085" }} />
-                </div>
-              </th>
-              <th>
-                <div className="table-header">
-                  <p>Role</p> <FaArrowDown style={{ color: "#667085" }} />
-                </div>
-              </th>
-              <th>
-                <div className="table-header">
-                  <p>Dealer Owner</p>{" "}
-                  <FaArrowDown style={{ color: "#667085" }} />
-                </div>
-              </th>
-              <th>
-                <div className="table-header">
-                  <p>Repoting To</p>{" "}
-                  <FaArrowDown style={{ color: "#667085" }} />
-                </div>
-              </th>
-              <th>
-                <div className="table-header">
-                  <p>Email ID</p> <FaArrowDown style={{ color: "#667085" }} />
-                </div>
-              </th>
-              <th>
-                <div className="table-header">
-                  <p>Phone Number</p>{" "}
-                  <FaArrowDown style={{ color: "#667085" }} />
-                </div>
-              </th>
-              <th>
-                <div className="table-header">
-                  <p>Description</p>{" "}
-                  <FaArrowDown style={{ color: "#667085" }} />
-                </div>
-              </th>
-              <th>
-                <div className="action-header">
-                  <p>Action</p>
-                </div>
-              </th>
-            </tr>
-          </thead>
+        <thead>
+          <tr style={{ backgroundColor: "#F5F5F5" }}>
+            {UserSaleMangerTableColumn.map((item, key) => (
+              <SortableHeader
+                key={key}
+                isCheckbox={item.isCheckbox}
+                titleName={item.displayName}
+                data={data}
+                isAllRowsSelected={isAllRowsSelected}
+                isAnyRowSelected={isAnyRowSelected}
+                selectAllChecked={selectAllChecked}
+                setSelectAllChecked={setSelectAllChecked}
+                selectedRows={selectedRows}
+                setSelectedRows={setSelectedRows}
+                sortKey={item.name}
+                sortDirection={"desc"}
+                onClick={() => {}}
+              />
+            ))}
+            <th>
+              <div className="action-header">
+                <p>Action</p>
+              </div>
+            </th>
+          </tr>
+        </thead>
 
           <tbody>
             {data?.length > 0
-              ? data?.map((el: UserRoleBasedListModel) => (
+              ? data?.map((el: UserRoleBasedListModel, i: number) => (
                   <tr key={el.email_id}>
-                    <td style={{paddingRight:0}}>
+                   <td>
+                    <div className="flex-check">
                       <CheckBox
-                        checked={true}
-                        onChange={() => {}}
-                        // indeterminate={isAnyRowSelected && !isAllRowsSelected}
+                        checked={selectedRows.has(i)}
+                        onChange={() => {
+                          // If there's only one row of data and the user clicks its checkbox, select all rows
+                          if (data?.length === 1) {
+                            setSelectAllChecked(true);
+                            setSelectedRows(new Set([0]));
+                          } else {
+                            toggleRowSelection(
+                              i,
+                              selectedRows,
+                              setSelectedRows,
+                              setSelectAllChecked
+                            );
+                          }
+                        }}
                       />
-                    </td>
-                    <td style={{ color: "black",paddingLeft:0 ,fontWeight:"500"}}>
                       {el.user_code}
-                    </td>
+                    </div>
+                  </td>
                     <td>
                       {el.name}
                     </td>
@@ -120,9 +143,9 @@ const SalesManagerTable: React.FC<SaleManagerProps> = ({ data, onClickEdit, onCl
                         <div className="" style={{ cursor: "pointer" }} onClick={()=> onClickDelete(el)}>
                           <img src={ICONS.deleteIcon} alt="" />
                         </div>
-                        <div className="" style={{ cursor: "pointer" }}onClick={()=> onClickEdit(el)}>
+                        {/* <div className="" style={{ cursor: "pointer" }}onClick={()=> onClickEdit(el)}>
                           <img src={ICONS.editIcon} alt="" />
-                        </div>
+                        </div> */}
                       </div>
                     </td>
                   </tr>
