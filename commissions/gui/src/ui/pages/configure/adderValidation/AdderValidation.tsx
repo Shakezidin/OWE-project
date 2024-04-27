@@ -22,6 +22,7 @@ import Swal from "sweetalert2";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
 import Loading from "../../../components/loader/Loading";
 import { ROUTES } from "../../../../routes/routes";
+import DataNotFound from "../../../components/loader/DataNotFound";
 
 
 const AdderValidation = () => {
@@ -307,7 +308,14 @@ const AdderValidation = () => {
                     </td>
                   </tr>
                 ))
-                : null}
+                : <tr style={{border:0}}>
+                <td colSpan={10}>
+                <div className="data-not-found">
+                <DataNotFound/>
+                <h3>Data Not Found</h3>
+                </div>
+                </td>
+              </tr>}
             </tbody>
           </table>
         </div>
