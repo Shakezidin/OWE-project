@@ -122,7 +122,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             onClickDelete={(item: UserRoleBasedListModel) => {}}
           />
         );
-      case "Sales Representative Manager":
+      case "Sales Representative":
         return (
           <SalesRepresentativeTable
             data={userRoleBasedList}

@@ -25,7 +25,7 @@ const UserManagement: React.FC = () => {
   const { userOnboardingList, userRoleBasedList, } = useAppSelector(
     (state) => state.userManagement
   );
-  const { formData, dealerOwenerList, regionList } = useAppSelector((state) => state.createOnboardUser);
+  const { formData, dealerOwenerList, regionList, createUserResult } = useAppSelector((state) => state.createOnboardUser);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
@@ -112,8 +112,8 @@ const UserManagement: React.FC = () => {
   const createUserRequest = async ()=>{
     let data = createUserObject(formData)
     const actionResult = await dispatch(cretaeUserOnboarding(data))
-    const result = unwrapResult(actionResult);
-    console.log(result)
+   // const result = unwrapResult(actionResult);
+    console.log(actionResult)
   }
 
   return (

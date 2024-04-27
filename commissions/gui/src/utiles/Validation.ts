@@ -86,8 +86,10 @@ export const createUserObject = (
     name: formData.first_name + formData.last_name,
     email_id: formData.email_id,
     mobile_number: formData.mobile_number,
+    role_name: formData.role_name,
     designation: "SE",
     description: formData.description,
+    user_status: "Active",
   };
   if (
     formData.role_name === "Appointment Setter" ||
