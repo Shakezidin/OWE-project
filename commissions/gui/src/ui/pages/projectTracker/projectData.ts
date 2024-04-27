@@ -112,97 +112,242 @@ export const projectStatusHeadData = [
 ]
 export const newStatusData = [
   {
-    name: "Site Survey",
-    number:"2",
+    name: "Sales",
+    number:"1",
+    color:"white",
+    numColor:"#0493CE",
+    bgColor:"#0493CE",
     childStatusData: [
         {
+            name: "10 Apr",
+            process:"Completed",
+            bgColor:"#57B93A",
+            color:"white",
+            borderColor:"#EBFCE5"
+        },
+      
+    ],
+  },
+  {
+    name: "NTP",
+    number:"2",
+    color:"white",
+    numColor:"#0493CE",
+    bgColor:"#0493CE",
+    childStatusData: [
+        {
+            name: "10 Apr",
+            process:"Current Stage",
+            bgColor:"#0493CE",
+            data:"In Progress",
+            color:"white",
+            borderColor:"#EBFCE5"
+          
+        },
+       
+    ],
+  },
+  {
+    name: "Site Survey",
+    number:"3",
+    bgColor:"#D8D9E0",
+    color:"#101828",
+   
+    numColor:"#101828",
+    childStatusData: [
+        {
+          bgColor:"#E9E9E9",
             name: "ETA 20",
-            process:"Inprocess"
+            process:"Scheduled",
+            color:"#101828",
+            data:"data is not available",
+            borderColor:"#A5AAB2"
           
         },
         {
-            name: "ETA 20",
-            process:"Submit"
+          bgColor:"#E9E9E9",
+            name: "ETA 22",
+            process:"Completed",
+            color:"#101828",
+            data:"data is not available",
+            borderColor:"#A5AAB2"
           
         },
-        {
-            name: "ETA 20",
-            process:"Approved"
-          
-        },
-        {
-            name: "ETA 20",
-            process:"Completed"
-        },
+       
+    ],
+  },
+  {
+    name: "Roofing",
+    number:"4",
+    color:"#101828",
+   
+    numColor:"#101828",
+    bgColor:"#D8D9E0",
+    childStatusData: [
+      
+       
+    ],
+  },
+  {
+    name: "Electrical",
+    number:"5",
+    color:"#101828",
+   
+    numColor:"#101828",
+    bgColor:"#D8D9E0",
+    childStatusData: [
+      
+       
     ],
   },
   {
     name: "Permit Submitted",
-    number:"3",
+    number:"6",
+    bgColor:"#D8D9E0",
+    color:"#101828",
+   
+    numColor:"#101828",
     childStatusData: [
         {
+          bgColor:"#E9E9E9",
             name: "ETA 20",
-            process:"Inprocess"
+            color:"#101828",
+            process:"Pending",
+            borderColor:"#A5AAB2",
+            data:"data is not available",
           
         },
         {
-            name: "ETA 20",
-            process:"Submit"
+          bgColor:"#E9E9E9",
+            name: "ETA 22",
+            color:"#101828",
+            process:"Submitted",
+            borderColor:"#A5AAB2",
+            data:"data is not available",
           
         },
         {
-            name: "ETA 20",
-            process:"Approved"
+          bgColor:"#E9E9E9",
+            name: "ETA 25",
+            color:"#101828",
+            data:"data is not available",
+            process:"Approved",
+            borderColor:"#A5AAB2"
           
         },
-        {
-            name: "ETA 20",
-            process:"Completed"
-        },
+       
 ],
   },
   {
-    name: "Install Ready",
-    number:"4",
+    name: "IC Permit Submitted",
+    number:"7",
+    color:"#101828",
+   
+    numColor:"#101828",
+    bgColor:"#D8D9E0",
     childStatusData: [
+
         {
+          bgColor:"#E9E9E9",
             name: "ETA 20",
-            process:"Inprocess"
+            color:"#101828",
+            process:"Pending",
+            borderColor:"#A5AAB2",
+            data:"data is not available",
           
         },
         {
-            name: "ETA 20",
-            process:"Installed Ready"
+          bgColor:"#E9E9E9",
+            name: "ETA 22",
+            color:"#101828",
+            process:"Submitted",
+            data:"data is not available",
+            borderColor:"#A5AAB2"
           
         },
         {
-            name: "ETA 20",
-            process:"Install Completed"
+          bgColor:"#E9E9E9",
+          color:"#101828",
+            name: "ETA 25",
+            data:"data is not available",
+            process:"Approved",
+            borderColor:"#A5AAB2"
           
         },
+       
+],
+  },
+  {
+    name: "Install",
+    bgColor:"#D8D9E0",
+    number:"8",
+    color:"#101828",
+   
+    numColor:"#101828",
+    childStatusData: [
+       
       
        
 
     ],
   },
   {
-    name: "PTO",
-    number:"5",
+    name: "Final Inspection",
+    number:"9",
+    color:"#101828",
+   
+    numColor:"#101828",
+    bgColor:"#D8D9E0",
     childStatusData: [
         
         {
+          bgColor:"#E9E9E9",
             name: "ETA 20",
-            process:"Inprocess"
+            color:"#101828",
+            process:"Submitted",
+            borderColor:"#A5AAB2",
+            data:"data is not available",
           
         },
         {
-            name: "ETA 20",
-            process:"Submited"
+          bgColor:"#E9E9E9",
+            name: "ETA 22",
+            color:"#101828",
+            process:"Approved",
+            data:"data is not available",
+            borderColor:"#A5AAB2"
           
         },
+    
+
+],
+  },
+  {
+    name: "PTO",
+    number:"10",
+    color:"#101828",
+   
+    numColor:"#101828",
+    bgColor:"#D8D9E0",
+    childStatusData: [
+        
         {
+          bgColor:"#E9E9E9",
             name: "ETA 20",
-            process:"Completed"
+            process:"Submitted",
+            borderColor:"#A5AAB2",
+            data:"data is not available",
+            color:"#101828",
+          
+        },
+       
+        {
+          bgColor:"#E9E9E9",
+            name: "ETA 22",
+            process:"Completed",
+            color:"#101828",
+            borderColor:"#A5AAB2",
+            data:"data is not available",
           
         }
 
