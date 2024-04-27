@@ -24,6 +24,7 @@ import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import CreateDealerCredit from "./CreateDealerCredit";
 import Loading from "../../../components/loader/Loading";
 import DataNotFound from "../../../components/loader/DataNotFound";
+import { ROUTES } from "../../../../routes/routes";
 interface Column {
   name: string;
   displayName: string;
@@ -116,7 +117,7 @@ const DealerCredit: React.FC = () => {
 
   return (
     <div className="comm">
-      <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="dealer-credit"/>
+      <Breadcrumb head="Commission" linkPara="Configure" route={ROUTES.CONFIG_PAGE} linkparaSecond="dealer-credit"/>
       <div className="commissionContainer">
         <TableHeader
           title="Dealer Credit"

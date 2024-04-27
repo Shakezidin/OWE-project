@@ -16,6 +16,7 @@ import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
 import { ARScheduleColumns} from "../../../../resources/static_data/configureHeaderData/ARScheduleColumn";
 import FilterModal from "../../../components/FilterModal/FilterModal";
+import { ROUTES } from "../../../../routes/routes";
 const ARSchedule = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -120,7 +121,7 @@ const ARSchedule = () => {
 
   return (
     <div className="comm">
-      <Breadcrumb head="" linkPara="Configure" linkparaSecond="AR Schedule" />
+      <Breadcrumb head="" linkPara="Configure" route={ROUTES.CONFIG_PAGE} linkparaSecond="AR Schedule" />
       <div className="commissionContainer">
         <TableHeader
           title="AR Schedule"

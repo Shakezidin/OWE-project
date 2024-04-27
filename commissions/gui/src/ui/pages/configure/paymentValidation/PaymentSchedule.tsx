@@ -22,6 +22,7 @@ import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
 import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
 import Swal from "sweetalert2";
+import { ROUTES } from "../../../../routes/routes";
 
 const PaymentSchedule = () => {
   const dispatch = useAppDispatch();
@@ -202,7 +203,7 @@ const PaymentSchedule = () => {
  
   return (
     <div className="comm">
-         <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Payment Scheduler"/>
+         <Breadcrumb head="Commission" linkPara="Configure" route={ROUTES.CONFIG_PAGE} linkparaSecond="Payment Scheduler"/>
       <div className="commissionContainer">
         <TableHeader
           title="Payment Scheduler"

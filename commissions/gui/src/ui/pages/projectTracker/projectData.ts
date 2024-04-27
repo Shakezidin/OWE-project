@@ -59,7 +59,57 @@ export const projectDashData = [
     arrow: ICONS.arrowGreen,
   },
 ];
+export const projectStatusHeadData = [
+{
+  name:"State",
+  para:"Arizona",
+  viewButton:false,
+  bgColor:"#E9F8FF",
 
+},
+{
+  name:"Adder",
+  para:"$65,000",
+  bgColor:"#E9EBFF",
+  viewButton:true,
+},
+{
+  name:"AJH",
+  para:"NA",
+  viewButton:false,
+  bgColor:"#E9FFF7",
+},
+{
+  name:"EPC",
+  para:"NA",
+  viewButton:false,
+  bgColor:"#F9E7F9",
+},
+{
+  name:"Sys Size",
+  para:"NA",
+  viewButton:false,
+  bgColor:"#FFE9E9",
+},
+{
+  name:"Contract Amount",
+  para:"NA",
+  viewButton:false,
+  bgColor:"#FFF6E4",
+},
+{
+  name:"Finance Partner",
+  para:"NA",
+  viewButton:false,
+  bgColor:"#E4F1FF",
+},
+{
+  name:"Net EPC",
+  para:"NA",
+  viewButton:false,
+  bgColor:"#FBF6DA",
+},
+]
 export const newStatusData = [
   {
     name: "Site Survey",

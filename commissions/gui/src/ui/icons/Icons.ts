@@ -74,6 +74,9 @@ import userIconImg from "../../resources/assets/user-icon-img.svg";
 import logo from "../../resources/assets/logo.svg";
 import ellipse from "../../resources/assets/ellipse.svg";
 import closeIcon from "../../resources/assets/closeIcon.svg";
+import arrowDown from '../../resources/assets/arrow-down.svg'
+import linearGraph from '../../resources/assets/linear-graph.svg'
+import curveGraph from '../../resources/assets/curvegraph.svg'
 export const ICONS = {
   BACKGROUND: require("../../resources/assets/background.png"),
   LOGO: logo,
@@ -161,4 +164,7 @@ export const ICONS = {
   crossIconUser: crossIconUser,
   userIconImg: userIconImg,
   closeIcon: closeIcon,
+  arrowDown:arrowDown,
+  linearGraph:linearGraph,
+  curveGraph:curveGraph
 };

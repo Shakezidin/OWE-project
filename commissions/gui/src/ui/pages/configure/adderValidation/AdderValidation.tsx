@@ -21,6 +21,7 @@ import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
 import Swal from "sweetalert2";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
 import Loading from "../../../components/loader/Loading";
+import { ROUTES } from "../../../../routes/routes";
 
 
 const AdderValidation = () => {
@@ -205,7 +206,7 @@ const AdderValidation = () => {
 
   return (
     <div className="comm">
-      <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="AdderV" />
+      <Breadcrumb head="Commission" linkPara="Configure" route={ROUTES.CONFIG_PAGE} linkparaSecond="AdderV" />
       <div className="commissionContainer">
         <TableHeader
           title="Adder Validation"

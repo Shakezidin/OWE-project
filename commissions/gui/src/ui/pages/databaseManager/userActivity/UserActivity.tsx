@@ -141,7 +141,7 @@ const UserActivity: React.FC = () => {
 
   return (
     <div className="comm">
-      <Breadcrumb head="User Activity" linkPara="Database Manager" linkparaSecond="User Activity" />
+      <Breadcrumb head="User Activity" linkPara="Database Manager" route={""} linkparaSecond="User Activity" />
       <div className="commissionContainer">
         <DataTableHeader
           title="Activity List"

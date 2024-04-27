@@ -23,6 +23,7 @@ import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
 import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
 import Swal from "sweetalert2";
+import { ROUTES } from "../../../../routes/routes";
 
 const MarketingFees: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -206,7 +207,7 @@ console.log(err)
 
   return (
     <div className="comm">
-      <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Marketing Fees" />
+      <Breadcrumb head="Commission" linkPara="Configure" route={ROUTES.CONFIG_PAGE} linkparaSecond="Marketing Fees" />
       <div className="commissionContainer">
         <TableHeader
           title="Marketing Fees"

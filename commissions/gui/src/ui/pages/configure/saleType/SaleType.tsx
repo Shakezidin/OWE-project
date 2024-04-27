@@ -24,6 +24,7 @@ import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
 import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
 import Swal from "sweetalert2";
+import { ROUTES } from "../../../../routes/routes";
 
 const SaleType = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -198,7 +199,7 @@ const SaleType = () => {
   }
   return (
     <div className="comm">
-       <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Sale Type"/>
+       <Breadcrumb head="Commission" linkPara="Configure" route={ROUTES.CONFIG_PAGE} linkparaSecond="Sale Type"/>
       <div className="commissionContainer">
         <TableHeader
           title="Sale Types"

@@ -23,6 +23,7 @@ import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
 import Swal from 'sweetalert2';
 import Loading from "../../../components/loader/Loading";
 import DataNotFound from "../../../components/loader/DataNotFound";
+import { ROUTES } from "../../../../routes/routes";
 
 const CommissionRate: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -199,7 +200,7 @@ const CommissionRate: React.FC = () => {
   return (
 
     <div className="comm">
-      <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Commission Rate" />
+      <Breadcrumb head="Commission" linkPara="Configure" route={ROUTES.CONFIG_PAGE} linkparaSecond="Commission Rate" />
       <div className="commissionContainer">
 
         <TableHeader
