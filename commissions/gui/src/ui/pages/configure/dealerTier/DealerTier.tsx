@@ -20,6 +20,8 @@ import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import { DealerTierColumn } from "../../../../resources/static_data/configureHeaderData/DealerTierColumn";
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
 import FilterModal from "../../../components/FilterModal/FilterModal";
+import DataNotFound from "../../../components/loader/DataNotFound";
+import Loading from "../../../components/loader/Loading";
 const DealerTier = () => {
   const dispatch = useAppDispatch();
   // const getData = useAppSelector(state=>state.comm.data)
@@ -112,12 +114,11 @@ const DealerTier = () => {
   const fetchFunction = (req: any) => {
     dispatch(fetchDealerTier(req));
    };
-  if (loading) {
-    return <div>Loading...</div>;
+   if (error) {
+    return <div className="loader-container"><Loading/></div>;
   }
-
-  if (error) {
-    return <div>Error: {error}</div>;
+  if (loading) {
+    return <div className="loader-container"><Loading/> {loading}</div>;
   }
 
 
@@ -219,27 +220,37 @@ const DealerTier = () => {
                       </td>
                     </tr>
                   ))
-                : null}
+                : <tr style={{border:0}}>
+                <td colSpan={10}>
+                <div className="data-not-found">
+                <DataNotFound/>
+                <h2>Data Not Found</h2>
+                </div>
+                </td>
+              </tr>
+                }
             </tbody>
           </table>
         </div>
+        
+   {
+    dealerTierList?.length > 0 ?
         <div className="page-heading-container">
       
       <p className="page-heading">
        {currentPage} - {totalPages} of {currentPageData?.length} item
       </p>
- 
-   {
-    dealerTierList?.length > 0 ? <Pagination
+  <Pagination
       currentPage={currentPage}
       totalPages={totalPages} // You need to calculate total pages
       paginate={paginate}
       goToNextPage={goToNextPage}
       goToPrevPage={goToPrevPage}
       currentPageData={currentPageData}
-    /> : null
-  }
+    /> 
    </div>
+   : null
+  }
       </div>
    
     </div>

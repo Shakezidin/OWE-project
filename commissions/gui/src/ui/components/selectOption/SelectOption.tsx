@@ -27,7 +27,7 @@ const SelectOption: React.FC<Props> = ({ options, value, onChange }) => {
           borderRadius: "8px",
           outline: "none",
           fontSize: "13px",
-          height: "2.2rem",
+          height: "2.25rem",
           border: "1px solid #d0d5dd",
         }),
         indicatorSeparator: () => ({

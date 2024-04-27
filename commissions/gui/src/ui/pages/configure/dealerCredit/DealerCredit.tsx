@@ -22,6 +22,8 @@ import { CommissionModel } from "../../../../core/models/configuration/create/Co
 import { FaArrowDown } from "react-icons/fa6";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import CreateDealerCredit from "./CreateDealerCredit";
+import Loading from "../../../components/loader/Loading";
+import DataNotFound from "../../../components/loader/DataNotFound";
 interface Column {
   name: string;
   displayName: string;
@@ -102,14 +104,12 @@ const DealerCredit: React.FC = () => {
     handleOpen()
   };
 
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
-
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div className="loader-container"><Loading/></div>;
   }
-
+  if (loading) {
+    return <div className="loader-container"><Loading/> {loading}</div>;
+  }
   const currentPageData = commissionList?.slice(startIndex, endIndex);
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === commissionList.length;
@@ -150,7 +150,7 @@ const DealerCredit: React.FC = () => {
           <table>
             <thead>
               <tr>
-                <th >
+                <th style={{paddingRight:"0"}}>
                   <div>
                     <CheckBox
                       checked={selectAllChecked}
@@ -166,7 +166,7 @@ const DealerCredit: React.FC = () => {
                     />
                   </div>
                 </th>
-                <th >
+                <th style={{paddingLeft:"10px"}}>
                   <div className="table-header" >
                     <p>Customer</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
@@ -235,7 +235,7 @@ const DealerCredit: React.FC = () => {
                     key={i}
                     className={selectedRows.has(i) ? "selected" : ""}
                   >
-                    <td>
+                    <td style={{paddingRight:"0"}}>
                       <CheckBox
                         checked={selectedRows.has(i)}
                         onChange={() =>
@@ -248,7 +248,7 @@ const DealerCredit: React.FC = () => {
                         }
                       />
                     </td>
-                    <td style={{ fontWeight: "500", color: "black" }}>
+                    <td style={{ fontWeight: "500", color: "black", paddingLeft:"10px"}}>
                       {el.partner}
                     </td>
                     <td>{el.installer}</td>
@@ -274,27 +274,37 @@ const DealerCredit: React.FC = () => {
                     </td>
                   </tr>
                 ))
-                : null}
+                :  <tr style={{border:0}}>
+                <td colSpan={10}>
+                <div className="data-not-found">
+                <DataNotFound/>
+                <h3>Data Not Found</h3>
+                </div>
+                </td>
+              </tr>
+                }
             </tbody>
           </table>
         </div>
+        {
+    commissionList?.length > 0 ?
         <div className="page-heading-container">
       
       <p className="page-heading">
        {currentPage} - {totalPages} of {currentPageData?.length} item
       </p>
  
-   {
-    commissionList?.length > 0 ? <Pagination
+  <Pagination
       currentPage={currentPage}
       totalPages={totalPages} // You need to calculate total pages
       paginate={paginate}
       currentPageData={currentPageData}
       goToNextPage={goToNextPage}
       goToPrevPage={goToPrevPage}
-    /> : null
-  }
+    />
    </div>
+    : null
+  }
       </div>
     
     </div>
