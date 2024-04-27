@@ -138,7 +138,7 @@ const SalesManagerTable: React.FC<SaleManagerProps> = ({ data, onClickEdit, onCl
                     <td >
                       {el.mobile_number}
                     </td>
-                    <td>{el.description}</td>
+                    <td>{el.description ? el.description:'NA'}</td>
                     <td>
                       <div className="action-icon">
                         <div className="" style={{ cursor: "pointer" }} onClick={()=> onClickDelete(el)}>

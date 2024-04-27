@@ -126,7 +126,7 @@ const UserTable: React.FC<UserTableProps> = ({
                   <td>{el.reporting_manager}</td>
                   <td>{el.email_id}</td>
                   <td>{el.mobile_number}</td>
-                  <td>{el.description}</td>
+                  <td>{el.description ? el.description:'NA'}</td>
                   <td>
                     <div className="action-icon">
                       <div

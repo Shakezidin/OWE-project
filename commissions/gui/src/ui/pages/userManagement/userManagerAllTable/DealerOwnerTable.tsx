@@ -130,7 +130,7 @@ const DealerOwnerTable: React.FC<DealerProps> = ({ data, onClickDelete, onClickE
                       {el.mobile_number}
                     </td>
                     <td >
-                      {el.description}
+                      {el.description ? el.description:'NA'}
                     </td>
                     <td>
                       <div className="action-icon">

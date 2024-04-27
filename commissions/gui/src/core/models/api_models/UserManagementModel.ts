@@ -37,7 +37,7 @@ export interface UserRoleBasedListModel {
   city: string;
   zipcode: string;
   country: string;
-  startData: string;
+  startDate: string;
   endDate: string;
   amount: string;
   region: string;

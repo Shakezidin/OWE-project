@@ -124,13 +124,13 @@ const AppointmentSetterTable: React.FC<AppointmentSetterProps> = ({ data, onClic
                       {el.name}
                     </td>
                     <td>
-                      {el.startData}
+                      {el.startDate ? el.startDate: 'NA'} 
                     </td>
                     <td >
-                      {el.endDate}
+                      {el.endDate ? el.endDate : 'NA'}
                     </td>
                     <td>
-                      {el.amount}
+                      {el.amount ? el.amount : 'NA'}
                     </td>
                     <td>{el.description}</td>
                     <td>
