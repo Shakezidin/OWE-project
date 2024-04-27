@@ -10,7 +10,7 @@ interface DataItem {
 }
 
 interface PieChartProps {
-  data: DataItem[]; // Define data as prop
+  data: DataItem[];
 }
 
 const COLORS = ["#FB7955", "#0088FE"];
@@ -33,7 +33,20 @@ function PieChartWithPaddingAngle({ data }: PieChartProps) { // Destructure data
     <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
       <div style={{ position: "relative", width: "300px", height: "400px", marginTop: "-75px", marginLeft: "40px" }}>
         <PieChart width={300} height={400}>
-          <Tooltip formatter={(value: number, name: string, props: any) => [`${value} webhooks`, props]} />
+          {/* <Tooltip formatter={(value: number, name: string, props: any) => [`${value} webhooks`, props]} /> */}
+          <Tooltip
+            content={({ payload }) => {
+              if (payload && payload.length > 0) {
+                const { value } = payload[0];
+                return (
+                  <div style={{ backgroundColor: 'black', color: 'white', borderRadius: '10px', padding: '5px' }}>
+                    {value} webhooks
+                  </div>
+                );
+              }
+              return null;
+            }}
+          />
           <Pie
             data={data}
             cx={120}

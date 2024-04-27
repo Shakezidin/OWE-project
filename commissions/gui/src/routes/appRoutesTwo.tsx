@@ -13,6 +13,7 @@ import { FcDataConfiguration } from "react-icons/fc";
 import { GrDocumentConfig } from "react-icons/gr";
 import { RiFileList3Line } from "react-icons/ri";
 
+
 const appRoutesTwo = [
   {
     commission: [
@@ -42,7 +43,7 @@ const appRoutesTwo = [
   {
     repay: [
       {
-        path: "#",
+        path: ROUTES.REPPAY_DASHBOARD,
         sidebarProps: {
           displayText: "Rep. Pay",
           icon:<CiWallet size={20}  style={{marginLeft: "5px"}}  className="hover-icon"/>
