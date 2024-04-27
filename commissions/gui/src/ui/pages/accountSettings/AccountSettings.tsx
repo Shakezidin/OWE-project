@@ -51,6 +51,7 @@ const AccountSettings = () => {
           </div>
           <div className="vertical"></div>
           <div className="tab-content">
+        
             {activeTab === 0 && (
               <div>
                 <MyProfile />

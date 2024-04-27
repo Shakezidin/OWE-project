@@ -8,7 +8,7 @@ const BreakdownAccordion = () => {
         <div className="breakdown-table"  >
           <table>
            
-            <tbody style={{backgroundColor:"lightseagreen"}}>
+            <tbody style={{backgroundColor:"lightpink"}}>
               <tr>
                 <td>Small System Size</td>
                 <td>21250</td>

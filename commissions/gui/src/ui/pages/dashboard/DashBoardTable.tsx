@@ -398,8 +398,8 @@ const DashBoardTable: React.FC = () => {
                       <td>{el.ajh}</td>
                       <td>{el.rl}</td>
                       <td>{el.epc}</td>
-                      <td>
-                        <IoIosHelpCircleOutline
+                      <td style={{cursor:"pointer"}}>
+                        <BiSupport
                               onClick={() => handleIconOpen()}
                             />
                       </td>

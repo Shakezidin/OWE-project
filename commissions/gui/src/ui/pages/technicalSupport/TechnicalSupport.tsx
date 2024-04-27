@@ -1,15 +1,62 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import Input from "../../components/text_input/Input";
 import { ICONS } from "../../icons/Icons";
 import "./support.css";
 import Select from "react-select";
 import { ActionButton } from "../../components/button/ActionButton";
-import CreateProfileUser from "../accountSettings/CreateProfileUser";
-import ProjectBreakdown from "../dashboard/ProjectBreakdown";
+import { SupportModel } from "../../../core/models/supportModel/SupportModel";
 
-const TechnicalSupport = () => {
+interface IState {
+  user: SupportModel
+}
+
+const TechnicalSupport: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [error, setFormError] = useState({})
+  const [selectedOption, setSelectedOption] = useState(null);
 
+  const [state, setState] = useState<IState>({
+    user: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      message: "",
+      phoneNum: ""
+
+    }
+  })
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>): void => {
+    setState({
+      user: {
+        ...state.user,
+        [event.target.name]: event.target.value,
+      }
+    })
+  }
+
+  const handleSubmit = () => {
+    //alert("Email Send Successfully")
+
+    if (state.user.firstName.length === 0) {
+      alert('please provide first name')
+    } else if (state.user.lastName.length === 0) {
+      alert('please provide last name')
+    } else {
+
+      console.log(state.user)
+    }
+
+  }
+
+  const options = [
+    { value: "option1", label: "Option 1" },
+    { value: "option2", label: "Option 2" },
+    { value: "option3", label: "Option 3" }
+  ];
+  const handleSelectChange = (selectedOption: any) => {
+    setSelectedOption(selectedOption);
+  };
   const handleFileInputChange = (e: any) => {
     const file = e.target.files?.[0];
     console.log(file);
@@ -18,6 +65,9 @@ const TechnicalSupport = () => {
   const handleButtonClick = () => {
     fileInputRef.current?.click(); // Trigger file input click event
   };
+
+
+
   return (
     <>
       <div className="support-cont-section">
@@ -40,20 +90,20 @@ const TechnicalSupport = () => {
               <Input
                 type={"text"}
                 label="First Name"
-                value={""}
-                name="fee_rate"
+                value={state.user.firstName}
+                name="firstName"
                 placeholder={"Enter"}
-                onChange={(e) => {}}
+                onChange={handleChange}
               />
             </div>
             <div className="create-input-field-support">
               <Input
                 type={"text"}
                 label="Last Name"
-                value={""}
-                name="fee_rate"
+                value={state.user.lastName}
+                name="lastName"
                 placeholder={"Enter"}
-                onChange={(e) => {}}
+                onChange={handleChange}
               />
             </div>
           </div>
@@ -62,20 +112,20 @@ const TechnicalSupport = () => {
               <Input
                 type={"text"}
                 label="Email"
-                value={""}
-                name="fee_rate"
+                value={state.user.email}
+                name="email"
                 placeholder={"Enter"}
-                onChange={(e) => {}}
+                onChange={handleChange}
               />
             </div>
             <div className="create-input-field-support">
               <Input
                 type={"text"}
                 label="Phone Number"
-                value={""}
-                name="fee_rate"
+                value={state.user.phoneNum}
+                name="phoneNum"
                 placeholder={"Enter"}
-                onChange={(e) => {}}
+                onChange={handleChange}
               />
             </div>
           </div>
@@ -84,6 +134,7 @@ const TechnicalSupport = () => {
             <div className="create-input-field-support">
               <label className="inputLabel">Issue</label>
               <Select
+                options={options}
                 // options={repTypeOption(newFormData) || respTypeData}
                 isSearchable
                 styles={{
@@ -105,27 +156,27 @@ const TechnicalSupport = () => {
               />
             </div>
 
-            <div className="create-input-field-support" style={{marginTop:".4rem"}}>
-                <label className="inputLabel">
-                  <p>Attach File</p>
-                </label>
-                <div className="file-input-container">
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    onChange={handleFileInputChange}
-                    className="file-input"
-                  />
-                  <div className="custom-button-container">
-                    <span className="file-input-placeholder">Select File</span>
-                    <button
-                      className="custom-button"
-                      onClick={handleButtonClick}
-                    >
-                      Browse
-                    </button>
-                  </div>
-             
+            <div className="create-input-field-support" style={{ marginTop: ".2rem" }}>
+              <label className="inputLabel">
+                <p>Attach File</p>
+              </label>
+              <div className="file-input-container">
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileInputChange}
+                  className="file-input"
+                />
+                <div className="custom-button-container">
+                  <span className="file-input-placeholder">Select File</span>
+                  <button
+                    className="custom-button"
+                    onClick={handleButtonClick}
+                  >
+                    Browse
+                  </button>
+                </div>
+
               </div>
             </div>
           </div>
@@ -139,23 +190,24 @@ const TechnicalSupport = () => {
             </label>
             <br />
             <textarea
-              name="description"
+              name="message"
               id=""
               rows={4}
-              onChange={(e) => {}}
-              value={""}
+              value={state.user.message}
               placeholder="Type here..."
               style={{ marginTop: "0.3rem" }}
+              onChange={handleChange}
             ></textarea>
           </div>
 
           <div className="reset-Update-support">
-            <ActionButton title={"Submit"} type="submit" onClick={() => {}} />
+            <ActionButton title={"Submit"} type="submit" onClick={() => {
+              handleSubmit()
+            }} />
           </div>
         </div>
       </div>
-      {/* <ProjectBreakdown/> */}
-      {/* <CreateProfileUser/> */}
+
     </>
   );
 };
