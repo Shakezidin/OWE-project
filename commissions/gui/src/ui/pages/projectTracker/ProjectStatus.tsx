@@ -128,16 +128,20 @@ const ProjectStatus = () => {
       <p>Overall Progress</p>
     </div>
     <div className="">
-      {/* <div className="curve-graph-pos">
+      <div className="curve-graph-pos">
       <div className="curve-head-pos">
       <p style={{fontWeight:"600"}}>25%</p>
         <p>Apr 26th,2024</p>
       </div>
         <img src={ICONS.curveGraph} alt="" />
   
-      </div> */}
-      {/* <div className="curve-graph-pos"> */}
-      <ResponsiveContainer width={500} height={200} >
+      </div>
+  
+      <img src={ICONS.linearGraph} alt="" />
+    </div>
+      </div>
+    </div>
+    {/* <ResponsiveContainer width={500} height={200} >
         <LineChart
           width={100}
           height={100}
@@ -156,14 +160,7 @@ const ProjectStatus = () => {
           <Line yAxisId="left" type="monotone" dataKey="pv" stroke="#8884d8" activeDot={{ r: 8 }} />
          
         </LineChart>
-      </ResponsiveContainer>
-       
-      {/* </div> */}
-      {/* <img src={ICONS.linearGraph} alt="" /> */}
-    </div>
-      </div>
-    </div>
-
+      </ResponsiveContainer> */}
       <div className="project-heading"style={{padding:"1rem"}} >
      <div className="">
      <h2>Project Stages</h2>

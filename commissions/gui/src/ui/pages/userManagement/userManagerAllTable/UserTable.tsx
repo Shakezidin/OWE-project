@@ -91,15 +91,28 @@ const UserTable: React.FC<UserTableProps> = ({data, onClickDelete, onClickEdit, 
             ? data?.map((el: UserRoleBasedListModel, i: number) => (
               <tr key={el.email_id}>
               <td >
-                <CheckBox
-                  checked={false}
-                  onChange={() => {}}
-                  // indeterminate={isAnyRowSelected && !isAllRowsSelected}
+             <div className="flex-check">
+             <CheckBox
+           checked={selectedRows.has(i)}
+           onChange={() => {
+             // If there's only one row of data and the user clicks its checkbox, select all rows
+             if (data?.length === 1) {
+               setSelectAllChecked(true);
+               setSelectedRows(new Set([0]));
+             } else {
+               toggleRowSelection(
+                 i,
+                 selectedRows,
+                 setSelectedRows,
+                 setSelectAllChecked
+               );
+             }
+           }}
                 />
+                      {el.user_code}
+             </div>
               </td>
-              <td style={{ color:"black",fontWeight:"500", }}>
-                {el.user_code}
-              </td>
+             
               <td >
                 {el.name}
               </td>
