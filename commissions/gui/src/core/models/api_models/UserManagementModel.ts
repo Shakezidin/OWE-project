@@ -56,6 +56,7 @@ export interface CreateUserModel {
   team_name: string;
   description: string;
   report_to: string;
+  user_status?: string;
 }
 
 export interface CreateUserParamModel {
@@ -69,4 +70,5 @@ export interface CreateUserParamModel {
   description?: string;
   team_name?: string;
   region?: string;
+  user_status?: string;
 }

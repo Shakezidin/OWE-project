@@ -68,8 +68,8 @@ const DealerOwnerTable: React.FC<DealerProps> = ({ data, onClickDelete, onClickE
           </thead>
 
           <tbody>
-            {data.length > 0
-              ? data.map((el: UserRoleBasedListModel) => (
+            {data?.length > 0
+              ? data?.map((el: UserRoleBasedListModel) => (
                   <tr key={el.email_id}>
                     <td style={{paddingRight:0}}>
                       <CheckBox

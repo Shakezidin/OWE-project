@@ -13,19 +13,21 @@ import { UserDropdownModel, UserRoleBasedListModel } from "../../../core/models/
 import UserManagementTable from "./userTableList/UserManagementTable";
 import { cretaeUserOnboarding, fetchDealerOwner, fetchRegionList } from "../../../redux/apiActions/createUserSliceActions";
 import { createUserObject, validateForm } from "../../../utiles/Validation";
-import { unwrapResult } from "@reduxjs/toolkit";
 import { updateUserForm, userResetForm } from "../../../redux/apiSlice/userManagementSlice/createUserSlice";
+import { unwrapResult } from "@reduxjs/toolkit";
 
 const UserManagement: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
   const userName = localStorage.getItem("userName");
   const [selectedOption, setSelectedOption] = useState(userSelectData[0]);
+  const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
+  const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
 
   const dispatch = useAppDispatch();
   const { userOnboardingList, userRoleBasedList, } = useAppSelector(
     (state) => state.userManagement
   );
-  const { formData, dealerOwenerList, regionList } = useAppSelector((state) => state.createOnboardUser);
+  const { formData, dealerOwenerList, regionList, createUserResult, error } = useAppSelector((state) => state.createOnboardUser);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
@@ -95,12 +97,11 @@ const UserManagement: React.FC = () => {
     event.preventDefault(); 
     console.log(formData)
 
-    const formErrors = validateForm(formData);
+   const formErrors = validateForm(formData);
     console.log("formErrors",formErrors);
 
     if (Object.keys(formErrors).length === 0) {
       // Submit the form
-      console.log('Form submitted:', formData);
       createUserRequest()
     }else{
       //const firstKey = Object.keys(formErrors)[0]; //Todo: change in future
@@ -111,9 +112,10 @@ const UserManagement: React.FC = () => {
 
   const createUserRequest = async ()=>{
     let data = createUserObject(formData)
-    const actionResult = await dispatch(cretaeUserOnboarding(data))
-    const result = unwrapResult(actionResult);
-    console.log(result)
+    const actionResult =  await dispatch(cretaeUserOnboarding(data))
+    // const result = unwrapResult(actionResult);
+
+    console.log("result....",actionResult)
   }
 
   return (
@@ -150,28 +152,37 @@ const UserManagement: React.FC = () => {
 
       <div className="onboardrow">
         <UserManagementTable
+          selectedRows={selectedRows}
+          selectAllChecked={selectAllChecked}
+          setSelectedRows={setSelectedRows} 
+          setSelectAllChecked={setSelectAllChecked}
           userRoleBasedList={userRoleBasedList}
           userDropdownData={userSelectData}
           selectedOption={selectedOption}
-          handleSelectChange={handleSelectChange} 
-          onClickEdit={(item: UserRoleBasedListModel)=>{
+          handleSelectChange={handleSelectChange}
+          onClickDelete={(item:UserRoleBasedListModel)=>{
+            console.log(selectedRows)
+
+            alert('hi')
+          }}
+          onClickEdit={(item: UserRoleBasedListModel) => {
             // console.log("row data",item)
             const [firstName, lastName] = item.name.split(' ');
 
-            dispatch(updateUserForm({ field: "isEdit", value: true}))
-            dispatch(updateUserForm({ field: "first_name", value: firstName }))
-            dispatch(updateUserForm({ field: "last_name", value: lastName }))
-            dispatch(updateUserForm({ field: "email_id", value: item.email_id }))
-            dispatch(updateUserForm({ field: "mobile_number", value: item.mobile_number }))
-            dispatch(updateUserForm({ field: "assigned_dealer_name", value: item.dealer_owner }))
-            dispatch(updateUserForm({ field: "role_name", value: item.role_name }))
-            dispatch(updateUserForm({ field: "add_region", value: item.region }))
-            dispatch(updateUserForm({ field: "team_name", value: item.team_name }))
-            dispatch(updateUserForm({ field: "description", value: item.description }))
-            dispatch(updateUserForm({ field: "report_to", value: item.reporting_manager }))
-            setOpen(true)
-          }}       
-           />
+            dispatch(updateUserForm({ field: "isEdit", value: true }));
+            dispatch(updateUserForm({ field: "first_name", value: firstName }));
+            dispatch(updateUserForm({ field: "last_name", value: lastName }));
+            dispatch(updateUserForm({ field: "email_id", value: item.email_id }));
+            dispatch(updateUserForm({ field: "mobile_number", value: item.mobile_number }));
+            dispatch(updateUserForm({ field: "assigned_dealer_name", value: item.dealer_owner }));
+            dispatch(updateUserForm({ field: "role_name", value: item.role_name }));
+            dispatch(updateUserForm({ field: "add_region", value: item.region }));
+            dispatch(updateUserForm({ field: "team_name", value: item.team_name }));
+            dispatch(updateUserForm({ field: "description", value: item.description }));
+            dispatch(updateUserForm({ field: "report_to", value: item.reporting_manager }));
+            setOpen(true);
+          } } 
+          />
       </div>
     </>
   );

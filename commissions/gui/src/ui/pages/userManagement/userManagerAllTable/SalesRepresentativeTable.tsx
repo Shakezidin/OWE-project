@@ -13,6 +13,7 @@ interface SalesRepresentativeProps {
 const SalesRepresentativeTable: React.FC<SalesRepresentativeProps> = ({
   data, onClickEdit, onClickDelete
 }) => {
+  console.log(data)
   return (
     <>
       {/* <UserHeaderSection  name="Sales Representative"/> */}
