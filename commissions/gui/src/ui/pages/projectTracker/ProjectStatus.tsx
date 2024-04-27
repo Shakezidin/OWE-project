@@ -197,7 +197,7 @@ const ProjectStatus = () => {
        </div>
      
     {
-      item.childStatusData.map((el:any,i:any)=>(
+      item.childStatusData.map((el:any,index:any)=>(
         <div className="notch-corner" style={{background:el.bgColor,color:"#101828"}}>
         <div className="">
     <div className="" style={{}}>
@@ -206,7 +206,7 @@ const ProjectStatus = () => {
       </span> 
      
     </div>
-         <p className='stage-1-para' style={{color:el.color,fontSize:"10px"}}>2024</p>
+         <p className='stage-1-para' style={{color:el.color,fontSize:"10px"}}>{i===0 || i==1?null:"Apr"} 2024</p>
  
         </div>
         <div className="border-notch" style={{border:"1px solid ",borderColor:el.borderColor}}></div>
