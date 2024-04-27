@@ -30,3 +30,32 @@ export const UserManagementTableColumn: Column[] = [
     isCheckbox: false,
   },
 ];
+
+export const UserAppointmentTableColumn: Column[] = [
+  { name: "code", displayName: "Code", type: "string", isCheckbox: true },
+  { name: "name", displayName: "Name", type: "string", isCheckbox: false },
+  {
+    name: "start_date",
+    displayName: "Start Date",
+    type: "string",
+    isCheckbox: false,
+  },
+  {
+    name: "end_date",
+    displayName: "End Date",
+    type: "string",
+    isCheckbox: false,
+  },
+  {
+    name: "pay_rate",
+    displayName: "Pay Rate",
+    type: "string",
+    isCheckbox: false,
+  },
+  {
+    name: "description",
+    displayName: "Description",
+    type: "string",
+    isCheckbox: false,
+  },
+];
