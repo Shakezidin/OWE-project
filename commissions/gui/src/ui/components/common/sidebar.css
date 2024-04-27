@@ -3,7 +3,7 @@
 }
 
 .side-bar-container {
-  width: 220px;
+  width: 240px;
   background-color: var(--white-color);
   display: flex;
   position: fixed;
@@ -92,7 +92,7 @@
   margin-bottom: 1rem;
 }
 .icon-shape {
-  background-color: #AFEB24;
+  background-color: #e1f5ea;
   width: 16px;
   height: 40px;
   display: flex;
@@ -136,6 +136,7 @@
   display: flex;
   justify-content: space-between;
   padding: 0.7rem 1.5rem 0.7rem 1.5rem;
+  border-radius: 7px;
 }
 
 .side-accordian:hover{
@@ -150,7 +151,7 @@
   /* margin-top: 1rem; */
   cursor: pointer;
   padding: 0.7rem 1.2rem 0.7rem 1.5rem;
-  
+  border-radius: 7px;
   /* justify-content: space-between; */
 }
 
@@ -203,7 +204,7 @@
   /* border-right: 2px solid var(--active-text-color); */
  
   background-color: #E1F5EA;
-  color:#23B364;
+  color:#23B364 ;
   ;
   
 }

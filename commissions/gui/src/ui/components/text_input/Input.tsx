@@ -42,6 +42,7 @@ const Input: FC<InputProps> = ({
           value={value}
           onChange={onChange}
           className="input"
+          disabled={disabled}
         />
         {isTypePassword ? (
           <EYE_ICON

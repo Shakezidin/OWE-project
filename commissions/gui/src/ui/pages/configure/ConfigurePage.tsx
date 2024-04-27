@@ -1,33 +1,54 @@
-import { ICONS } from "../../icons/Icons";
-import Breadcrumb from "../../components/breadcrumb/Breadcrumb";
-import { TfiArrowCircleRight } from "react-icons/tfi";
+
 import { FaPlus, FaMinus } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import { ROUTES } from "../../../routes/routes";
+import { RiArrowRightUpLine } from "react-icons/ri";
 import "./ConfigurePage.css";
 
 const ConfigurePage: React.FC = () => {
-  const dealerData = [
-    { title: "Commision Rate", route: ROUTES.CONFIG_COMMISSION_RATE },
-    { title: "Dealer OverRides", route: ROUTES.CONFIG_DEALER_OVER },
-    { title: "Marketing Fees", route: ROUTES.CONFIG_MARKETING },
-    { title: "Adder Validation", route: ROUTES.CONFIG_ADDER },
-    { title: "Sales Types", route: ROUTES.CONFIG_SALE },
-    { title: "Tier Loan Fee", route: ROUTES.CONFIG_TIER_LOAN_FEE },
-    { title: "Dealer OverRides", route: ROUTES.CONFIG_DEALER_OVER },
-    { title: "Payment Scheduler", route: ROUTES.CONFIG_PAYMENT_SCHEDULE },
-  ];
+  const cardColors = ["#E8EFF9", "#F6ECEF", "#E6F8EF", "#FBF6DA", "#EAE6F8"];
+  const arrowColors = ["#1963C6", "#D1275A", "#06BA63", "#EBAA04", "#5121FA"];
 
-  const commonData = [
+  const dealerData = [
+    { title: "Dealer OverRides", route: ROUTES.CONFIG_DEALER_OVER },
+    { title: "Adders", route: ROUTES.CONFIG_ADDER},
     { title: "Time Line SLA", route: ROUTES.CONFIG_TIMELINE },
-    { title: "Loan Type", route: ROUTES.CONFIG_LOAN },
-    { title: "Auto Adder", route: ROUTES.CONFIG_AUTO_ADDER },
-    { title: "Loan Fee Addr", route: ROUTES.CONFIG_LOAN_FEE },
+    { title: "Loan Fee Addr", route: ROUTES.CONFIG_LOAN_FEE},
     { title: "Rebate Data", route: ROUTES.CONFIG_REBET_DATA },
     { title: "Referal Data", route: ROUTES.CONFIG_REFERAL_DATA },
     { title: "Dealer Credit", route: ROUTES.CONFIG_DEALER_CREDIT },
     { title: "NON-Comm", route: ROUTES.CONFIG_NON_COMM_DLR_PAY },
     { title: "DLR-OTH", route: ROUTES.CONFIG_DLE_OTH_PAY },
+  ];
+
+  const repData = [{ title: "Rep Pay", route:ROUTES.CONFIG_REP_PAY_SETTINGS}, { title: "Rate Adjustments", route:ROUTES.CONFIG_RATE_ADJUSTMENTS}];
+
+  const AR = [
+    { title: "AR" , route:"#"},
+    { title: "AR Schedule",route:ROUTES.CONFIG_AR_SCHEDULE },
+    { title: "AR Import",route:"#"},
+    { title: "Adjustment", route:"#"},
+    { title: "Reconcile", route:"#"},
+    { title: "Install cost", route:ROUTES.CONFIG_INSTALL_COST},
+  ];
+
+  const commonData = [
+    { title: "Payment Schedule", route: ROUTES.CONFIG_PAYMENT_SCHEDULE},
+    { title: "Leader Override", route:ROUTES.CONFIG_LEADER_OVERRIDE},
+    { title: "Appt Setters", route:"#"},
+    { title: "Adder Responsibility", route:ROUTES.CONFIG_ADDER_RESPONSIBILITY},
+    { title: "Adder Credit", route:ROUTES.CONFIG_ADDER_CREDITS},
+    { title: "Marketing Fees", route: ROUTES.CONFIG_MARKETING},
+    { title: "Loan Fee", route:ROUTES.CONFIG_LOAN_FEES},
+    { title: "Tier Loan Fee", route: ROUTES.CONFIG_TIER_LOAN_FEE},
+    { title: "Dealer Tier", route: ROUTES.CONFIG_DEALER_TIER},
+    { title: "Adder Data", route: "#"},
+    { title: "Auto Adder", route: ROUTES.CONFIG_AUTO_ADDER},
+    { title: "Commision Rates", route: ROUTES.CONFIG_COMMISSION_RATE},
+    { title: "Sales Types", route: ROUTES.CONFIG_SALE},
+    { title: "Loan Type", route: ROUTES.CONFIG_LOAN},
+
+    
   ];
 
   return (
@@ -36,16 +57,6 @@ const ConfigurePage: React.FC = () => {
         <div className="configure-header">
           <div className="configure-name">
             <h3>Configure</h3>
-            <Breadcrumb
-              head="Configure"
-              linkPara="Commissions"
-              linkparaSecond="Configure"
-            />
-          </div>
-          <div className="iconsSection-filter">
-            <button type="button">
-              <img src={ICONS.FILTER} alt="" />
-            </button>
           </div>
         </div>
 
@@ -57,17 +68,85 @@ const ConfigurePage: React.FC = () => {
                 <FaPlus className="accordion-icon" />
               </div>
               <div className="configure-cards">
-                {dealerData.map((dealer, index) => (
-                  <div className="pay-card" key={index}>
-                    {dealer.route ? (
-                      <Link to={dealer.route}><p>{dealer.title}</p></Link>
-                    ) : (
-                      <p>{dealer.title}</p>
-                    )}
-                    <TfiArrowCircleRight />
-                  </div>
-                ))}
+                {dealerData.map((dealer, index) => {
+                  const colorIndex = index % Math.min(cardColors.length, arrowColors.length);
+                  const randomCardColor = cardColors[colorIndex]; 
+                  const randomArrowColor = arrowColors[colorIndex];
+                  return (
+                    <Link to={dealer?.route}
+                      className="pay-card"
+                      key={index}
+                      style={{ backgroundColor: randomCardColor }}
+                    >
+                        <h4 className="card-heading">{dealer.title}</h4>
+                      <div
+                        className="arrow-wrapper"
+                        style={{ color: randomArrowColor }}
+                      >
+                        <RiArrowRightUpLine className="arrow-right" />
+                      </div>
+                    </Link>
+                  );
+                })}
               </div>
+            </div>
+          </div>
+
+          <div className="rep-pay">
+            <div className="configure-card-title">
+              <p className="payer-type">Rep Pay</p>
+              <FaMinus className="accordion-icon" />
+            </div>
+            <div className="configure-cards">
+            {repData.map((rep, index) => {
+                  const colorIndex = index % Math.min(cardColors.length, arrowColors.length);
+                  const randomCardColor = cardColors[colorIndex]; 
+                  const randomArrowColor = arrowColors[colorIndex];
+                  return (
+                    <Link to={rep.route}
+                      className="pay-card"
+                      key={index}
+                      style={{ backgroundColor: randomCardColor }}
+                    >
+                        <h4 className="card-heading">{rep.title}</h4>
+                      <div
+                        className="arrow-wrapper"
+                        style={{ color: randomArrowColor }}
+                      >
+                        <RiArrowRightUpLine className="arrow-right" />
+                      </div>
+                    </Link>
+                  );
+                })}
+            </div>
+          </div>
+
+          <div className="AR">
+            <div className="configure-card-title">
+              <p className="payer-type">AR</p>
+              <FaPlus className="accordion-icon" />
+            </div>
+            <div className="configure-cards">
+            {AR.map((ar, index) => {
+                  const colorIndex = index % Math.min(cardColors.length, arrowColors.length);
+                  const randomCardColor = cardColors[colorIndex]; 
+                  const randomArrowColor = arrowColors[colorIndex];
+                  return (
+                    <Link to={ar.route}
+                      className="pay-card"
+                      key={index}
+                      style={{ backgroundColor: randomCardColor }}
+                    >
+                        <h4 className="card-heading">{ar.title}</h4>
+                      <div
+                        className="arrow-wrapper"
+                        style={{ color: randomArrowColor }}
+                      >
+                        <RiArrowRightUpLine className="arrow-right" />
+                      </div>
+                    </Link>
+                  );
+                })}
             </div>
           </div>
 
@@ -77,16 +156,26 @@ const ConfigurePage: React.FC = () => {
               <FaMinus className="accordion-icon" />
             </div>
             <div className="configure-cards">
-              {commonData.map((common, index) => (
-                <div className="pay-card" key={index}>
-                  {common.route ? (
-                    <Link to={common.route}><p>{common.title}</p></Link>
-                  ) : (
-                    <p>{common.title}</p>
-                  )}
-                  <TfiArrowCircleRight />
-                </div>
-              ))}
+            {commonData.map((common, index) => {
+                  const colorIndex = index % Math.min(cardColors.length, arrowColors.length);
+                  const randomCardColor = cardColors[colorIndex]; 
+                  const randomArrowColor = arrowColors[colorIndex];
+                  return (
+                    <Link to={common.route}
+                      className="pay-card"
+                      key={index}
+                      style={{ backgroundColor: randomCardColor }}
+                    >
+                        <h4 className="card-heading">{common.title}</h4>
+                      <div
+                        className="arrow-wrapper"
+                        style={{ color: randomArrowColor }}
+                      >
+                        <RiArrowRightUpLine className="arrow-right" />
+                      </div>
+                    </Link>
+                  );
+                })}
             </div>
           </div>
         </div>
@@ -96,4 +185,3 @@ const ConfigurePage: React.FC = () => {
 };
 
 export default ConfigurePage;
-

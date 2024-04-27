@@ -49,6 +49,15 @@ import DbManagerDashboard from "./ui/pages/databaseManager/dbManagerDashboard/Db
 import Webhook from "./ui/pages/databaseManager/webhookTable/Webhook";
 import ConfigurePage from "./ui/pages/configure/ConfigurePage";
 import { RepPayDashboardPage } from "./ui/pages/reppay/reppaydashboard/reppaydashboard";
+import RepPaySettings from "./ui/pages/configure/repPaySettings/RepPaySettings";
+import RateAdjustments from "./ui/pages/configure/rateAdjustments/RateAdjustments";
+import ARSchedule from "./ui/pages/configure/ARSchedule/ARSchedule";
+import AR from "./ui/pages/configure/AR/Ar";
+import InstallCost from "./ui/pages/configure/installCost/installCost";
+import LeaderOverride from "./ui/pages/configure/leaderOverride/LeaderOverride";
+import AdderCredit from "./ui/pages/configure/adderCredit/AdderCredit";
+import AdderResponsibility from "./ui/pages/configure/adderResponsibility/adderResponsibility";
+import LoanFee from "./ui/pages/configure/loanFee/LoanFee";
 
 
 function App() {
@@ -120,6 +129,15 @@ function App() {
                 <Route  path={ROUTES.TECHNICAL_SUPPORT} element={<TechnicalSupport/>}/>
                 <Route  path={ROUTES.DB_MANAGER_WEB_HOOKS} element={<Webhook/>}/>
                 <Route  path={ROUTES.CONFIG_PAGE} element={<ConfigurePage/>}/>
+                <Route  path={ROUTES.CONFIG_REP_PAY_SETTINGS} element={<RepPaySettings/>}/>
+                <Route path={ROUTES.CONFIG_RATE_ADJUSTMENTS} element = {<RateAdjustments/>}/>
+                <Route path={ROUTES.CONFIG_AR} element = {<AR/>}/>
+                <Route path={ROUTES.CONFIG_AR_SCHEDULE} element = {<ARSchedule/>}/>
+                <Route path={ROUTES.CONFIG_INSTALL_COST} element = {<InstallCost/>}/>
+                <Route path={ROUTES.CONFIG_LEADER_OVERRIDE} element = {<LeaderOverride/>}/>
+                <Route path={ROUTES.CONFIG_ADDER_CREDITS} element = {<AdderCredit/>}/>
+                <Route path={ROUTES.CONFIG_ADDER_RESPONSIBILITY} element = {<AdderResponsibility/>}/>
+                <Route path={ROUTES.CONFIG_LOAN_FEES} element = {<LoanFee/>}/>
             </Route>
        
       </Routes>
