@@ -13,7 +13,7 @@ export interface UserOnboardingStateModel {
 }
 
 export interface CreateOnboardUserStateModel {
-  error: string | null;
+  error: string | null | any;
   loading: boolean;
   formData: CreateUserModel;
   dealerOwenerList: UserDropdownModel[];
