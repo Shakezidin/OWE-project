@@ -21,6 +21,7 @@ import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
 import Swal from "sweetalert2";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
 import Loading from "../../../components/loader/Loading";
+import { ROUTES } from "../../../../routes/routes";
 
 
 const AdderValidation = () => {
@@ -205,7 +206,7 @@ const AdderValidation = () => {
 
   return (
     <div className="comm">
-      <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="AdderV" />
+      <Breadcrumb head="Commission" linkPara="Configure" route={ROUTES.CONFIG_PAGE} linkparaSecond="AdderV" />
       <div className="commissionContainer">
         <TableHeader
           title="Adder Validation"
@@ -294,11 +295,13 @@ const AdderValidation = () => {
 
                     <td>
                       <div className="action-icon">
-                        <div className="" style={{ cursor: "pointer" }} onClick={()=>handleArchiveClick(el.record_id)}>
+                        <div className="action-archive" style={{ cursor: "pointer" }} onClick={()=>handleArchiveClick(el.record_id)}>
                           <img src={ICONS.ARCHIVE} alt="" />
+                          <span className="tooltiptext">Archive</span>
                         </div>
-                        <div className="" style={{ cursor: "pointer" }} onClick={() => handleEditVAdder(el)}>
+                        <div className="action-archive" style={{ cursor: "pointer" }} onClick={() => handleEditVAdder(el)}>
                           <img src={ICONS.editIcon} alt="" />
+                          <span className="tooltiptext">Edit</span>
                         </div>
                       </div>
                     </td>

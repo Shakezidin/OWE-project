@@ -24,6 +24,7 @@ import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import CreateReferalData from "./CreateReferalData";
 import Loading from "../../../components/loader/Loading";
 import DataNotFound from "../../../components/loader/DataNotFound";
+import { ROUTES } from "../../../../routes/routes";
 interface Column {
   name: string;
   displayName: string;
@@ -117,7 +118,7 @@ const ReferalData: React.FC = () => {
 
   return (
     <div className="comm">
-      <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Referal-data"/>
+      <Breadcrumb head="Commission" linkPara="Configure" route={ROUTES.CONFIG_PAGE} linkparaSecond="Referal-data"/>
       <div className="commissionContainer">
         <TableHeader
           title="Referal Data"

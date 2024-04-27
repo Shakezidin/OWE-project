@@ -9,7 +9,7 @@ import {
 } from "../../../../resources/static_data/StaticData";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import { ICONS } from "../../../icons/Icons";
-import SelectTable from "./SeletTable";
+import SelectTable from "../userTableList/SeletTable";
 import UserBasedInput from "./UserBasedInput";
 import SelectOption from "../../../components/selectOption/SelectOption";
 import {
@@ -33,8 +33,6 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
   onChangeRole,
   dealerList,
   regionList,
-  userOnboard,
-  editMode,
 }) => {
   const dispatch = useDispatch();
   const { formData } = useAppSelector((state) => state.createOnboardUser);
@@ -72,7 +70,6 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
     const { name, value } = e.target;
     dispatch(updateUserForm({ field: name, value }));
   };
-  console.log(formData)
 
   /** render ui */
   return (

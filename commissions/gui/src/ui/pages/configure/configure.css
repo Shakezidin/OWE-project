@@ -1,9 +1,9 @@
 .comm {
-  background: var(--children-bg-color);
+  /* background: var(--children-bg-color);
   width: 100%;
   height: 87.5vh;
   border-radius: 1rem;
-  position: relative;
+  position: relative; */
 }
 
 .export-modal {
@@ -120,7 +120,7 @@
   height: 60vh;
   background: var(--white-color);
   /* border-radius: 16px; */
-  overflow-y: hidden;
+  /* overflow-y: hidden; */
   scrollbar-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1);
   scrollbar-width: thin;
 }
@@ -154,9 +154,9 @@
  
   /* Position the action-archive */
   position: absolute;
-  left: -60px;
-  z-index: 1000 !important;
-  top: 1.5rem;
+  left: -80px;
+ 
+  top: 0.5rem;
 }
 
 .action-archive:hover .tooltiptext {

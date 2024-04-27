@@ -1,6 +1,6 @@
 // api.ts
 
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse, isAxiosError } from 'axios';
 import {
   HTTP_METHOD,
   HTTP_STATUS,
@@ -47,6 +47,11 @@ export const postCaller = async ( endpoint: string, postData: any): Promise<any>
     const response: AxiosResponse = await axios.post(`${BASE_URL}/${endpoint}`, postData, config);
     return response.data; // Return the data from the response
   } catch (error) {
+
+    console.log('axios error', error)
+    if (isAxiosError(error) && error.response) {
+      return error.response.data
+    }
     throw new Error('Failed to fetch data');
   }
 };

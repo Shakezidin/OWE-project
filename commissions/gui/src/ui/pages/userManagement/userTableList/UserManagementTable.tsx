@@ -25,6 +25,12 @@ interface UserTableProos {
   selectedOption: UserDropdownModel;
   handleSelectChange: (data: UserDropdownModel) => void;
   onClickEdit: (item: UserRoleBasedListModel) => void;
+  onClickDelete: (item: UserRoleBasedListModel) => void;
+  selectAllChecked: boolean,
+  selectedRows: Set<number>,
+  setSelectedRows: React.Dispatch<React.SetStateAction<Set<number>>>,
+  setSelectAllChecked: React.Dispatch<React.SetStateAction<boolean>>,
+
 }
 const UserManagementTable: React.FC<UserTableProos> = ({
   userDropdownData,
@@ -32,6 +38,11 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   selectedOption,
   handleSelectChange,
   onClickEdit,
+  onClickDelete,
+  selectAllChecked,
+  selectedRows,
+  setSelectedRows,
+  setSelectAllChecked
 }) => {
   const dispatch = useAppDispatch();
 
@@ -69,7 +80,13 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             onClickEdit={(item: UserRoleBasedListModel) => {
               onClickEdit(item);
             }}
-            onClickDelete={(item: UserRoleBasedListModel) => {}}
+            onClickDelete={(item: UserRoleBasedListModel) => {
+              onClickDelete(item)
+            }}
+            selectedRows={selectedRows}
+          selectAllChecked={selectAllChecked}
+          setSelectedRows={setSelectedRows}
+          setSelectAllChecked={setSelectAllChecked}
           />
         );
       case "DB User":
@@ -79,7 +96,13 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             onClickEdit={(item: UserRoleBasedListModel) => {
               onClickEdit(item);
             }}
-            onClickDelete={(item: UserRoleBasedListModel) => {}}
+            onClickDelete={(item: UserRoleBasedListModel) => {
+              onClickDelete(item)
+            }}
+            selectedRows={selectedRows}
+            selectAllChecked={selectAllChecked}
+            setSelectedRows={setSelectedRows}
+            setSelectAllChecked={setSelectAllChecked}
           />
         );
       case "Appointment Setter":
@@ -90,6 +113,10 @@ const UserManagementTable: React.FC<UserTableProos> = ({
               onClickEdit(item);
             }}
             onClickDelete={(item: UserRoleBasedListModel) => {}}
+            selectedRows={selectedRows}
+            selectAllChecked={selectAllChecked}
+            setSelectedRows={setSelectedRows}
+            setSelectAllChecked={setSelectAllChecked}
           />
         );
       case "Partner":
@@ -100,6 +127,10 @@ const UserManagementTable: React.FC<UserTableProos> = ({
               onClickEdit(item);
             }}
             onClickDelete={(item: UserRoleBasedListModel) => {}}
+            selectedRows={selectedRows}
+            selectAllChecked={selectAllChecked}
+            setSelectedRows={setSelectedRows}
+            setSelectAllChecked={setSelectAllChecked}
           />
         );
       case "Regional Manager":
@@ -110,6 +141,10 @@ const UserManagementTable: React.FC<UserTableProos> = ({
               onClickEdit(item);
             }}
             onClickDelete={(item: UserRoleBasedListModel) => {}}
+            selectedRows={selectedRows}
+            selectAllChecked={selectAllChecked}
+            setSelectedRows={setSelectedRows}
+            setSelectAllChecked={setSelectAllChecked}
           />
         );
       case "Dealer Owner":
@@ -120,9 +155,13 @@ const UserManagementTable: React.FC<UserTableProos> = ({
               onClickEdit(item);
             }}
             onClickDelete={(item: UserRoleBasedListModel) => {}}
+            selectedRows={selectedRows}
+            selectAllChecked={selectAllChecked}
+            setSelectedRows={setSelectedRows}
+            setSelectAllChecked={setSelectAllChecked}
           />
         );
-      case "Sales Representative Manager":
+      case "Sales Representative":
         return (
           <SalesRepresentativeTable
             data={userRoleBasedList}
@@ -130,6 +169,11 @@ const UserManagementTable: React.FC<UserTableProos> = ({
               onClickEdit(item);
             }}
             onClickDelete={(item: UserRoleBasedListModel) => {}}
+            selectedRows={selectedRows}
+            selectAllChecked={selectAllChecked}
+            setSelectedRows={setSelectedRows}
+            setSelectAllChecked={setSelectAllChecked}
+            
           />
         );
       case "Sales Manager":
@@ -140,6 +184,10 @@ const UserManagementTable: React.FC<UserTableProos> = ({
               onClickEdit(item);
             }}
             onClickDelete={(item: UserRoleBasedListModel) => {}}
+            selectedRows={selectedRows}
+            selectAllChecked={selectAllChecked}
+            setSelectedRows={setSelectedRows}
+            setSelectAllChecked={setSelectAllChecked}
           />
         );
       default:

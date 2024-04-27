@@ -16,6 +16,7 @@ import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
 import { AdderCreditsColumn } from "../../../../resources/static_data/configureHeaderData/adderCreditsColumn";
 import FilterModal from "../../../components/FilterModal/FilterModal";
+import { ROUTES } from "../../../../routes/routes";
 const AdderCredit = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -120,7 +121,7 @@ const AdderCredit = () => {
 
   return (
     <div className="comm">
-      <Breadcrumb head="" linkPara="Configure" linkparaSecond="Adder Credit" />
+      <Breadcrumb head="" linkPara="Configure" route={ROUTES.CONFIG_PAGE} linkparaSecond="Adder Credit" />
       <div className="commissionContainer">
         <TableHeader
           title="Adder Credit"

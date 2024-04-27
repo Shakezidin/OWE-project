@@ -8,9 +8,7 @@
     padding: 16px;
     border-radius: 16px;
 }
-.project-status-container{
-   height: 380px;
-}
+
 /* performance css  */
 .project-heading{
     display: flex;
@@ -19,7 +17,7 @@
 }
 
 .project-heading h2{
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 600;
     color: var(--page-heading-color);
 }
@@ -131,11 +129,83 @@
 
 
 /* project status css  */
-
-.search-input-container{
+.project-status-head-card{
     display: flex;
+    justify-content: space-between;
     gap: 1rem;
+    padding: 1rem 1rem 1.5rem 1rem;
     align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    /* flex-wrap: wrap; */
+}
+.project-status-body{
+    display: flex;
+    /* flex: 2; */
+    flex: 1.8;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: space-between;
+}
+.project-status-body-card{
+    border-radius: 6px;
+    height: 70px;
+    width: 23%;
+    /* flex: 1; */
+    display: flex;
+    align-items: center;
+    padding: .5rem;
+    justify-content: space-between;
+}
+.para-head{
+    font-size: 14px;
+    font-weight: 600;
+}
+.span-para{
+    font-size: 12px;
+
+}
+.view-flex{
+    display: flex;
+    align-items: center;
+    gap: .3rem;
+    color: #333333;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.status-graph-heading p{
+    font-size: 12px;
+    color: #2E2E2E;
+}
+.percent-head{
+    color: #0493CE;
+    font-size: 24px;
+    font-weight: 600;
+}
+.curve-head-pos{
+    position: absolute;
+    left: 28%;
+    top: 12%;
+}
+.curve-head-pos p{
+    font-size: 10px;
+    color: white;
+    font-weight: normal;
+   
+}
+.curve-graph-pos{
+    position: absolute;
+    transform: translate(-50%,-50%);
+    left: 70%;
+}
+.project-status-graph{
+    border: 1px solid var(--border-color);
+    height: 156px;
+    padding: 1rem;
+    position: relative;
+    /* flex: 1; */
+    width: 379px;
+    border-radius: 8px;
 }
 .project-status-table{
     display: flex;
@@ -221,22 +291,41 @@ padding: 1rem ;
     /* margin-top: 1rem/; */
 }
 .progress-box{
-    width: 20px;
-    height: 20px;
+    width: 16px;
+    height: 16px;
     background-color: #04A5E8;
     border-radius: .25rem;
 }
 .progress-box-body{
     display: flex;
-   gap: .5rem;
+   gap: .4rem;
    margin-top: 1rem;
     align-items: center;
 }
 .progress-box-body p{
-    font-size: 12px;
+    font-size: 11px;
 }
 @media (max-width:1400px) {
     .date-para{
         font-size: 11px
     }
+}
+@media (max-width:1200px) {
+    .project-status-head-card{
+        flex-direction: column;
+        /* justify-content: flex-start; */
+    }
+   .project-status-body{
+    width: 100%;
+    justify-content: flex-start;
+   /* flex-direction: column; */
+   }
+   .project-status-body-card{
+
+/* width: 50%; */
+   }
+   .project-status-graph{
+    width: 100%;
+   }
+
 }

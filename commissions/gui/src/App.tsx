@@ -41,7 +41,6 @@ import LoanFeeAddr from "./ui/pages/configure/loanFeeAddr/LoanFeeAddr";
 import UserManagement from "./ui/pages/userManagement/UserManagement";
 import AccountSettings from "./ui/pages/accountSettings/AccountSettings";
 import Report from "./ui/pages/report/Report";
-import Project from "./ui/pages/projectTracker/ProjectTracker";
 import TechnicalSupport from "./ui/pages/technicalSupport/TechnicalSupport";
 import DataTablle from "./ui/pages/databaseManager/dataTable/DataTable";
 import UserActivity from "./ui/pages/databaseManager/userActivity/UserActivity";
@@ -58,6 +57,8 @@ import LeaderOverride from "./ui/pages/configure/leaderOverride/LeaderOverride";
 import AdderCredit from "./ui/pages/configure/adderCredit/AdderCredit";
 import AdderResponsibility from "./ui/pages/configure/adderResponsibility/adderResponsibility";
 import LoanFee from "./ui/pages/configure/loanFee/LoanFee";
+import ProjectPerformence from "./ui/pages/projectTracker/ProjectPerformence";
+import ProjectStatus from "./ui/pages/projectTracker/ProjectStatus";
 
 
 function App() {
@@ -122,7 +123,8 @@ function App() {
                 <Route  path={ROUTES.USER_MANAEMENT} element={<UserManagement/>}/>
                 <Route  path={ROUTES.ACCOUNT_SETTING} element={<AccountSettings/>}/>
                 <Route  path={ROUTES.REPORT} element={<Report/>}/>
-                <Route  path={ROUTES.PROJECT} element={<Project/>}/>
+                <Route  path={ROUTES.PROJECT_PERFORMANCE} element={<ProjectPerformence/>}/>
+                <Route  path={ROUTES.PROJECT_STATUS} element={<ProjectStatus/>}/>
                 <Route  path={ROUTES.DB_MANAGER_DASHBOARD} element={<DbManagerDashboard/>}/>
                 <Route  path={ROUTES.DB_MANAGER_DATA_TABLE} element={<DataTablle/>}/>
                 <Route  path={ROUTES.DB_MANAGER_USER_ACTIVITY} element={<UserActivity/>}/>

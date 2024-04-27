@@ -7,6 +7,7 @@ import {
   DealerOwner,
   UserDropdownModel,
 } from "../../core/models/api_models/UserManagementModel";
+import { isAxiosError } from "axios";
 
 /** get dealer */
 export const fetchDealerOwner = createAsyncThunk(
@@ -58,19 +59,27 @@ export const fetchRegionList = createAsyncThunk(
   }
 );
 /**cretae user */
-export const cretaeUserOnboarding = createAsyncThunk(
-  "user/create_onboarding_user",
-  async (data: CreateUserParamModel): Promise<any> => {
-    console.log("param create user...", data);
-    const response = await postCaller(EndPoints.create_user, data);
+// export const createUserOnboarding = createAsyncThunk(
+//   "user/create_onboarding_user",
+//   async (data: CreateUserParamModel) => {
+//     const response = await postCaller(EndPoints.create_user, data);
+//     // if (response.status !== HTTP_STATUS.OK) {
+//     //   throw new Error(response.message);
+//     // }
+//     console.log(response);
+//     return response;
+//   }
+// );
 
-    console.log("checking error", response);
-    if (response.status !== HTTP_STATUS.OK) {
-      throw new Error(response.message);
+export const createUserOnboarding = createAsyncThunk(
+  "user/create_onboarding_users",
+  async (data: CreateUserParamModel, { rejectWithValue }): Promise<any> => {
+    try {
+      const response = await postCaller(EndPoints.create_user, data);
+      console.log(response);
+      return response;
+    } catch (error) {
+      return rejectWithValue((error as Error).message);
     }
-
-    console.log(response);
-
-    return response.data;
   }
 );

@@ -25,6 +25,7 @@ import CreateCommissionRate from "../commissionRate/CreateCommissionRate";
 import CreateLoanFeeAddr from "./CreateLoanFeeAddr";
 import Loading from "../../../components/loader/Loading";
 import DataNotFound from "../../../components/loader/DataNotFound";
+import { ROUTES } from "../../../../routes/routes";
 interface Column {
   name: string;
   displayName: string;
@@ -118,7 +119,7 @@ const LoanFeeAddr: React.FC = () => {
 
   return (
     <div className="comm">
-      <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="loan-fee-addr"/>
+      <Breadcrumb head="Commission" linkPara="Configure" route={ROUTES.CONFIG_PAGE} linkparaSecond="loan-fee-addr"/>
       <div className="commissionContainer">
         <TableHeader
           title="Loan Fee Addr"

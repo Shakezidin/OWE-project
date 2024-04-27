@@ -41,6 +41,7 @@ const DbManagerDashboard = () => {
           head="Dashboard"
           linkPara="Database Manager"
           linkparaSecond="Dashboard"
+          route={""}
         />
       </div>
 

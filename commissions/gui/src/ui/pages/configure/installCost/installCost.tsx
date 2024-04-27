@@ -16,6 +16,7 @@ import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
 import { InstallCostColumns} from "../../../../resources/static_data/configureHeaderData/InstallCostColumn";
 import FilterModal from "../../../components/FilterModal/FilterModal";
+import { ROUTES } from "../../../../routes/routes";
 const InstallCost = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -120,7 +121,7 @@ const InstallCost = () => {
 
   return (
     <div className="comm">
-      <Breadcrumb head="" linkPara="Configure" linkparaSecond="Install Cost" />
+      <Breadcrumb head="" linkPara="Configure" route={ROUTES.CONFIG_PAGE} linkparaSecond="Install Cost" />
       <div className="commissionContainer">
         <TableHeader
           title="Install Cost"

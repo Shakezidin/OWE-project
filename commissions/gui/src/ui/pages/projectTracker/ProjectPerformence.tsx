@@ -2,10 +2,13 @@ import React from 'react'
 import { cardData, projectDashData } from './projectData'
 import { ICONS } from '../../icons/Icons'
 import '../projectTracker/projectTracker.css'
+import Breadcrumb from '../../components/breadcrumb/Breadcrumb'
 const ProjectPerformence = () => {
   return (
-    <div>
-         <div className="project-heading">
+  <div className="">
+      <Breadcrumb head="" linkPara="Project Tracking" route={""} linkparaSecond="Performance" />
+    <div className="project-container">
+    <div className="project-heading">
           <h2>Performance</h2>
           <div className="iconsSection-filter">
             <button type="button" >
@@ -64,7 +67,9 @@ const ProjectPerformence = () => {
             ))
           }
         </div>
+       </div>
     </div>
+
   )
 }
 
