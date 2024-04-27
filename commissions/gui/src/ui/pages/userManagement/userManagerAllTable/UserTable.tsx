@@ -34,8 +34,11 @@ const UserTable: React.FC<UserTableProps> = ({
 
   const handleSort = (key: any) => {
     if (sortKey === key) {
+
+      console.log('1.................')
       setSortDirection(sortDirection === "desc" ? "asc" : "desc");
     } else {
+      console.log(sortKey,'2.................', key)
       setSortKey(key);
       setSortDirection("asc");
     }
@@ -83,8 +86,8 @@ const UserTable: React.FC<UserTableProps> = ({
                 selectedRows={selectedRows}
                 setSelectedRows={setSelectedRows}
                 sortKey={item.name}
-                sortDirection={"desc"}
-                onClick={() => {}}
+                sortDirection={sortKey === item.name ? sortDirection : undefined}
+                onClick={() => handleSort(item.name)}
               />
             ))}
             <th>

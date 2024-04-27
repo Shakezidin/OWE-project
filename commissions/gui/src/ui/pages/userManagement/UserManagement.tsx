@@ -102,12 +102,11 @@ const UserManagement: React.FC = () => {
 
    const formErrors = validateForm(formData);
     console.log("formErrors",formErrors);
-
     if (Object.keys(formErrors).length === 0) {
       createUserRequest()
     }else{
       //const firstKey = Object.keys(formErrors)[0]; //Todo: change in future
-      alert('All fields are mandatory')
+      alert(Object.keys(formErrors)[0] + ' is required.')
     }
   
   };
