@@ -1,7 +1,7 @@
 /**************************************************************************
  *	Function	: createDLR_OTHApiModels.go
  *	DESCRIPTION : Files contains struct for create dlr_oth models
- *	DATE        : 26-Jan-2024
+ *	DATE        : 26-JApr-2024
  **************************************************************************/
 
 package models

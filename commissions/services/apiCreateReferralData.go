@@ -25,10 +25,10 @@ import (
  ******************************************************************************/
 func HandleCreateReferralDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err             error
-		ReferralData    models.CreateReferralData
-		queryParameters []interface{}
-		result          []interface{}
+		err                error
+		createReferralData models.CreateReferralData
+		queryParameters    []interface{}
+		result             []interface{}
 	)
 
 	log.EnterFn(0, "HandleCreateReferralDataRequest")
@@ -48,7 +48,7 @@ func HandleCreateReferralDataRequest(resp http.ResponseWriter, req *http.Request
 		return
 	}
 
-	err = json.Unmarshal(reqBody, &ReferralData)
+	err = json.Unmarshal(reqBody, &createReferralData)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal create Referral Data request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to unmarshal create Referral Data request", http.StatusBadRequest, nil)
@@ -120,31 +120,31 @@ func HandleCreateReferralDataRequest(resp http.ResponseWriter, req *http.Request
 	}
 
 	// Populate query parameters in the correct order
-	queryParameters = append(queryParameters, ReferralData.UniqueID)
-	queryParameters = append(queryParameters, ReferralData.NewCustomer)
-	queryParameters = append(queryParameters, ReferralData.ReferrerSerial)
-	queryParameters = append(queryParameters, ReferralData.ReferrerName)
-	queryParameters = append(queryParameters, ReferralData.Amount)
-	queryParameters = append(queryParameters, ReferralData.RepDollDivbyPer)
-	queryParameters = append(queryParameters, ReferralData.Notes)
-	queryParameters = append(queryParameters, ReferralData.Type)
-	queryParameters = append(queryParameters, ReferralData.Rep1Name)
-	queryParameters = append(queryParameters, ReferralData.Rep2Name)
-	queryParameters = append(queryParameters, ReferralData.SysSize)
-	queryParameters = append(queryParameters, ReferralData.RepCount)
-	queryParameters = append(queryParameters, ReferralData.State)
-	queryParameters = append(queryParameters, ReferralData.PerRepAddrShare)
-	queryParameters = append(queryParameters, ReferralData.PerRepOvrdShare)
-	queryParameters = append(queryParameters, ReferralData.R1PayScale)
-	queryParameters = append(queryParameters, ReferralData.R1ReferralCredit)
-	queryParameters = append(queryParameters, ReferralData.R1ReferralCreditPerc)
-	queryParameters = append(queryParameters, ReferralData.R1AddrResp)
-	queryParameters = append(queryParameters, ReferralData.R2PayScale)
-	queryParameters = append(queryParameters, ReferralData.R2ReferralCredit)
-	queryParameters = append(queryParameters, ReferralData.R2ReferralCreditPerc)
-	queryParameters = append(queryParameters, ReferralData.R2AddrResp)
-	queryParameters = append(queryParameters, ReferralData.StartDate)
-	queryParameters = append(queryParameters, ReferralData.EndDate)
+	queryParameters = append(queryParameters, createReferralData.UniqueID)
+	queryParameters = append(queryParameters, createReferralData.NewCustomer)
+	queryParameters = append(queryParameters, createReferralData.ReferrerSerial)
+	queryParameters = append(queryParameters, createReferralData.ReferrerName)
+	queryParameters = append(queryParameters, createReferralData.Amount)
+	queryParameters = append(queryParameters, createReferralData.RepDollDivbyPer)
+	queryParameters = append(queryParameters, createReferralData.Notes)
+	queryParameters = append(queryParameters, createReferralData.Type)
+	queryParameters = append(queryParameters, createReferralData.Rep1Name)
+	queryParameters = append(queryParameters, createReferralData.Rep2Name)
+	queryParameters = append(queryParameters, createReferralData.SysSize)
+	queryParameters = append(queryParameters, createReferralData.RepCount)
+	queryParameters = append(queryParameters, createReferralData.State)
+	queryParameters = append(queryParameters, createReferralData.PerRepAddrShare)
+	queryParameters = append(queryParameters, createReferralData.PerRepOvrdShare)
+	queryParameters = append(queryParameters, createReferralData.R1PayScale)
+	queryParameters = append(queryParameters, createReferralData.R1ReferralCredit)
+	queryParameters = append(queryParameters, createReferralData.R1ReferralCreditPerc)
+	queryParameters = append(queryParameters, createReferralData.R1AddrResp)
+	queryParameters = append(queryParameters, createReferralData.R2PayScale)
+	queryParameters = append(queryParameters, createReferralData.R2ReferralCredit)
+	queryParameters = append(queryParameters, createReferralData.R2ReferralCreditPerc)
+	queryParameters = append(queryParameters, createReferralData.R2AddrResp)
+	queryParameters = append(queryParameters, createReferralData.StartDate)
+	queryParameters = append(queryParameters, createReferralData.EndDate)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.CreateReferralDataFunction, queryParameters)

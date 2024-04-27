@@ -1,7 +1,7 @@
 CREATE OR REPLACE FUNCTION create_new_dealer_credit(
     p_unique_id varchar NOT NULL UNIQUE,
     p_customer  text,
-    p_dealer_id INT,
+    p_dealer_name character varying,
     p_dealer_dba  text,
     p_exact_amount  text,
     p_per_kw_amount  float,
@@ -21,7 +21,7 @@ BEGIN
     -- Retrieve the user_id for the given dealer_id
 SELECT user_id INTO v_dealer_id
 FROM user_details
-WHERE dealer_owner = p_dealer_id;
+WHERE name = p_dealer_name;
 
 -- Check if the dealer_id exists
 IF v_dealer_id IS NULL THEN

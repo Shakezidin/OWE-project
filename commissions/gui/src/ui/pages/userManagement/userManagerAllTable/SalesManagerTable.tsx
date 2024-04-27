@@ -6,9 +6,11 @@ import { UserRoleBasedListModel } from "../../../../core/models/api_models/UserM
 
 interface SaleManagerProps {
   data: UserRoleBasedListModel[];
+  onClickEdit: (item: UserRoleBasedListModel)=> void;
+  onClickDelete: (item: UserRoleBasedListModel)=> void;
 }
 
-const SalesManagerTable: React.FC<SaleManagerProps> = ({ data }) => {
+const SalesManagerTable: React.FC<SaleManagerProps> = ({ data, onClickEdit, onClickDelete }) => {
   return (
     <>
       {/* <UserHeaderSection  name="Sale Manager"/> */}
@@ -115,10 +117,10 @@ const SalesManagerTable: React.FC<SaleManagerProps> = ({ data }) => {
                     <td>{el.description}</td>
                     <td>
                       <div className="action-icon">
-                        <div className="" style={{ cursor: "pointer" }}>
+                        <div className="" style={{ cursor: "pointer" }} onClick={()=> onClickDelete(el)}>
                           <img src={ICONS.deleteIcon} alt="" />
                         </div>
-                        <div className="" style={{ cursor: "pointer" }}>
+                        <div className="" style={{ cursor: "pointer" }}onClick={()=> onClickEdit(el)}>
                           <img src={ICONS.editIcon} alt="" />
                         </div>
                       </div>

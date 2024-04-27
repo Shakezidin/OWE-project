@@ -60,7 +60,7 @@ func HandleGetDealerCreditDataRequest(resp http.ResponseWriter, req *http.Reques
 
 	tableName := db.TableName_dealer_credit
 	query = `SELECT dc.id AS record_id, dc.unique_id, dc.customer, dc.start_date,
-    	dc.end_date, dc.dealer_id, ud.name AS dealer_dba, dc.exact_amtount, dc.per_kw_amount,
+    	dc.end_date, ud.name AS dealer_name , dc.dealer_dba, dc.exact_amtount, dc.per_kw_amount,
    	 	dc.approved_by, dc.notes, dc.total_amount, dc.sys_size
 		FROM dealer_credit dc
 		JOIN user_details ud ON ud.user_id = dc.dealer_id;`
@@ -77,7 +77,7 @@ func HandleGetDealerCreditDataRequest(resp http.ResponseWriter, req *http.Reques
 		return
 	}
 
-	DealerCreditDataList := models.GetDealerCreditDataList{}
+	DealerCreditDataList := models.GetDealerCreditList{}
 
 	for _, item := range data {
 		RecordId, ok := item["record_id"].(int64)
@@ -99,11 +99,11 @@ func HandleGetDealerCreditDataRequest(resp http.ResponseWriter, req *http.Reques
 			Customer = ""
 		}
 
-		// dealer_id
-		DealerID, ok := item["dealer_id"].(int)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get dealer_id for Record ID %v. Item: %+v\n", RecordId, item)
-			DealerID = 0
+		// dealer_name
+		DealerName, nameOk := item["dealer_name"].(string)
+		if !nameOk || DealerName == "" {
+			log.FuncErrorTrace(0, "Failed to get dealer name for Record ID %v. Item: %+v\n", RecordId, item)
+			DealerName = ""
 		}
 
 		// dealer_dba
@@ -169,11 +169,11 @@ func HandleGetDealerCreditDataRequest(resp http.ResponseWriter, req *http.Reques
 			EndDate = nil
 		}
 
-		DealerCreditData := models.DealerCreditData{
+		DealerCreditData := models.GetDealerCredit{
 			RecordId:    RecordId,
 			UniqueID:    UniqueID,
 			Customer:    Customer,
-			DealerID:    DealerID,
+			DealerName:  DealerName,
 			DealerDBA:   DealerDBA,
 			ExactAmount: ExactAmount,
 			PerKWAmount: PerKWAmount,
@@ -184,11 +184,11 @@ func HandleGetDealerCreditDataRequest(resp http.ResponseWriter, req *http.Reques
 			StartDate:   StartDate,
 			EndDate:     EndDate,
 		}
-		DealerCreditDataList.DealerCreditDataList = append(DealerCreditDataList.DealerCreditDataList, DealerCreditData)
+		DealerCreditDataList.DealerCreditList = append(DealerCreditDataList.DealerCreditList, DealerCreditData)
 	}
 
 	// Send the response
-	log.FuncInfoTrace(0, "Number of Dealer Credit List fetched : %v list %+v", len(DealerCreditDataList.DealerCreditDataList), DealerCreditDataList)
+	log.FuncInfoTrace(0, "Number of Dealer Credit List fetched : %v list %+v", len(DealerCreditDataList.DealerCreditList), DealerCreditDataList)
 	FormAndSendHttpResp(resp, "Dealer Credit Data", http.StatusOK, DealerCreditDataList)
 }
 
@@ -232,13 +232,13 @@ func PrepareDealerCreditFilters(tableName string, dataFilter models.DataRequestB
 			case "customer":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(dc.customer) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-			case "dealer_id":
-				filtersBuilder.WriteString(fmt.Sprintf("dc.dealer_id %s $%d", operator, len(whereEleList)+1))
+			case "dealer_name":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud.name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "dealer_dba":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(dc.dealer_dba) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-			case "exact_amount":
+			case "exact_amtount":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(dc.exact_amount) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "per_kw_amount":

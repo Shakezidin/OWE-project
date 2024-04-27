@@ -4,30 +4,34 @@ import UserPieChart from "./pieChart/UserPieChart";
 import UserOnboardingCreation from "./userOnboard/UserOnboardCreation";
 import { AddNewButton } from "../../components/button/AddNewButton";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import { fetchUserListBasedOnRole, fetchUserOnboarding } from "../../../redux/apiActions/userManagementActions";
+import {
+  fetchUserListBasedOnRole,
+  fetchUserOnboarding,
+} from "../../../redux/apiActions/userManagementActions";
 import { userSelectData } from "../../../resources/static_data/StaticData";
-import { UserDropdownModel } from "../../../core/models/api_models/UserManagementModel";
+import { UserDropdownModel, UserRoleBasedListModel } from "../../../core/models/api_models/UserManagementModel";
 import UserManagementTable from "./userTableList/UserManagementTable";
+import { cretaeUserOnboarding, fetchDealerOwner, fetchRegionList } from "../../../redux/apiActions/createUserSliceActions";
+import { createUserObject, validateForm } from "../../../utiles/Validation";
+import { unwrapResult } from "@reduxjs/toolkit";
+import { updateUserForm, userResetForm } from "../../../redux/apiSlice/userManagementSlice/createUserSlice";
 
 const UserManagement: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
   const userName = localStorage.getItem("userName");
-  const [selectedOption, setSelectedOption] = useState(
-    userSelectData[0]
-  );
-  // const [selectedOptionValue, setSelectedOptionValue] = useState<string>(
-  //   userSelectData[0].value
-  // );
+  const [selectedOption, setSelectedOption] = useState(userSelectData[0]);
 
   const dispatch = useAppDispatch();
-  const { userOnboardingList, userRoleBasedList } = useAppSelector(
+  const { userOnboardingList, userRoleBasedList, } = useAppSelector(
     (state) => state.userManagement
   );
+  const { formData, dealerOwenerList, regionList } = useAppSelector((state) => state.createOnboardUser);
 
-  //console.log(userRoleBasedList)
-
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => {
+    dispatch(userResetForm())
+    setOpen(false)
+  };
   /** fetch onboarding users data*/
   useEffect(() => {
     const fetchData = async () => {
@@ -38,7 +42,7 @@ const UserManagement: React.FC = () => {
   }, []);
 
   /** role based get data */
-  useEffect(()=>{
+  useEffect(() => {
     const data = {
       page_number: 1,
       page_size: 10,
@@ -49,17 +53,69 @@ const UserManagement: React.FC = () => {
           Data: selectedOption.value,
         },
       ],
-    }
+    };
 
-      dispatch(fetchUserListBasedOnRole(data));
-  },[selectedOption])
+    dispatch(fetchUserListBasedOnRole(data));
+  }, [selectedOption]);
 
   /** handle dropdown value */
-  const handleSelectChange = (
-    selectedOption: UserDropdownModel
-  ) => {
+  const handleSelectChange = (selectedOption: UserDropdownModel) => {
     setSelectedOption(selectedOption);
   };
+
+  /** get sub role */
+  const getSubRole = (): string=>{
+    console.log(formData)
+    let subrole = ''
+    if (formData.role_name === 'Sales Manager'){
+      subrole = 'Regional Manager'
+    }else if (formData.role_name === 'Sale Representative'){
+      subrole = 'Sales Manager'
+    }
+
+    return subrole;
+  }
+
+  const onChangeRole = async (role: string, value: string)=>{
+    if(role === 'Role'){
+     await dispatch(fetchDealerOwner({
+        role:'Dealer Owner'
+      }))
+    }else{
+     if(formData.role_name === 'Sales Manager' || formData.role_name === 'Sale Representative')
+     await dispatch(fetchRegionList({
+        role:'Dealer Owner',
+        name: value,
+        sub_role: getSubRole()
+      }))
+    }
+  }
+
+  const onSubmitCreateUser = (event: any) => {
+    event.preventDefault(); 
+    console.log(formData)
+
+    const formErrors = validateForm(formData);
+    console.log("formErrors",formErrors);
+
+    if (Object.keys(formErrors).length === 0) {
+      // Submit the form
+      console.log('Form submitted:', formData);
+      createUserRequest()
+    }else{
+      //const firstKey = Object.keys(formErrors)[0]; //Todo: change in future
+      alert('All fields are mandatory')
+    }
+  
+  };
+
+  const createUserRequest = async ()=>{
+    let data = createUserObject(formData)
+    const actionResult = await dispatch(cretaeUserOnboarding(data))
+    const result = unwrapResult(actionResult);
+    console.log(result)
+  }
+
   return (
     <>
       <div className="management-section">
@@ -78,8 +134,14 @@ const UserManagement: React.FC = () => {
       {open && (
         <UserOnboardingCreation
           handleClose={handleClose}
+          dealerList={dealerOwenerList}
+          regionList={regionList}
           editMode={false}
           userOnboard={null}
+          onSubmitCreateUser={(e)=> onSubmitCreateUser(e)}
+          onChangeRole={(role, value)=>{
+           onChangeRole(role, value)
+          }}
         />
       )}
       <div className="barchart-section">
@@ -87,11 +149,29 @@ const UserManagement: React.FC = () => {
       </div>
 
       <div className="onboardrow">
-        <UserManagementTable 
-        userRoleBasedList={userRoleBasedList}
-        userDropdownData={userSelectData} 
-        selectedOption={selectedOption} 
-        handleSelectChange={handleSelectChange}/>
+        <UserManagementTable
+          userRoleBasedList={userRoleBasedList}
+          userDropdownData={userSelectData}
+          selectedOption={selectedOption}
+          handleSelectChange={handleSelectChange} 
+          onClickEdit={(item: UserRoleBasedListModel)=>{
+            // console.log("row data",item)
+            const [firstName, lastName] = item.name.split(' ');
+
+            dispatch(updateUserForm({ field: "isEdit", value: true}))
+            dispatch(updateUserForm({ field: "first_name", value: firstName }))
+            dispatch(updateUserForm({ field: "last_name", value: lastName }))
+            dispatch(updateUserForm({ field: "email_id", value: item.email_id }))
+            dispatch(updateUserForm({ field: "mobile_number", value: item.mobile_number }))
+            dispatch(updateUserForm({ field: "assigned_dealer_name", value: item.dealer_owner }))
+            dispatch(updateUserForm({ field: "role_name", value: item.role_name }))
+            dispatch(updateUserForm({ field: "add_region", value: item.region }))
+            dispatch(updateUserForm({ field: "team_name", value: item.team_name }))
+            dispatch(updateUserForm({ field: "description", value: item.description }))
+            dispatch(updateUserForm({ field: "report_to", value: item.reporting_manager }))
+            setOpen(true)
+          }}       
+           />
       </div>
     </>
   );

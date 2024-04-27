@@ -56,14 +56,14 @@ func HandleCreateNonCommDlrPayRequest(resp http.ResponseWriter, req *http.Reques
 	}
 
 	// Validate float64 fields
-	if createNonCommDlrPay.Balance <= 0 {
+	if createNonCommDlrPay.Balance <= float64(0) {
 		err = fmt.Errorf("Invalid balance value: %f, Not Allowed", createNonCommDlrPay.Balance)
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Invalid balance value Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
-	if createNonCommDlrPay.PaidAmount <= 0 {
+	if createNonCommDlrPay.PaidAmount <= float64(0) {
 		err = fmt.Errorf("Invalid paid amount value: %f, Not Allowed", createNonCommDlrPay.PaidAmount)
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Invalid paid amount value Not Allowed", http.StatusBadRequest, nil)
@@ -73,7 +73,7 @@ func HandleCreateNonCommDlrPayRequest(resp http.ResponseWriter, req *http.Reques
 	// Validate string fields
 	if len(createNonCommDlrPay.UniqueID) <= 0 ||
 		len(createNonCommDlrPay.Customer) <= 0 ||
-		len(createNonCommDlrPay.Dealer) <= 0 ||
+		len(createNonCommDlrPay.DealerName) <= 0 ||
 		len(createNonCommDlrPay.DealerDBA) <= 0 ||
 		len(createNonCommDlrPay.ExactAmount) <= 0 ||
 		len(createNonCommDlrPay.ApprovedBy) <= 0 ||
@@ -89,7 +89,7 @@ func HandleCreateNonCommDlrPayRequest(resp http.ResponseWriter, req *http.Reques
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, createNonCommDlrPay.UniqueID)
 	queryParameters = append(queryParameters, createNonCommDlrPay.Customer)
-	queryParameters = append(queryParameters, createNonCommDlrPay.Dealer)
+	queryParameters = append(queryParameters, createNonCommDlrPay.DealerName)
 	queryParameters = append(queryParameters, createNonCommDlrPay.DealerDBA)
 	queryParameters = append(queryParameters, createNonCommDlrPay.ExactAmount)
 	queryParameters = append(queryParameters, createNonCommDlrPay.ApprovedBy)

@@ -1,16 +1,16 @@
 CREATE OR REPLACE FUNCTION create_new_non_comm_dlr_pay(
-    unique_id varchar NOT NULL UNIQUE,
-	customer   text,
-    dealer_id INT,
-    dealer_dba  text,
-	exact_amtount  text,
-    approved_by text,
-    notes text,
-	balance  float,
-	paid_amount  float,
-	dba  text,
-    start_date character varying NOT NULL,
-    end_date character varying,
+    p_unique_id varchar NOT NULL UNIQUE,
+	p_customer   text,
+    p_dealer_name text,
+    p_dealer_dba  text,
+	p_exact_amtount  text,
+    p_approved_by text,
+    p_notes text,
+	p_balance  float,
+	p_paid_amount  float,
+	p_dba  text,
+    p_start_date character varying NOT NULL,
+    p_end_date character varying,
     OUT v_non_comm_dlr_pay_id    INT
 )
 RETURNS INT
@@ -21,7 +21,7 @@ BEGIN
     -- Retrieve the user_id for the given dealer_id
 SELECT user_id INTO v_dealer_id
 FROM user_details
-WHERE dealer_owner = dealer_id;
+WHERE name = dealer_name;
 
 -- Check if the dealer_id exists
 IF v_dealer_id IS NULL THEN
@@ -43,18 +43,18 @@ INSERT INTO noncomm_dlrpay (
     end_date
 )
 VALUES (
-   unique_id,
-   customer,
-   dealer_id,
-   dealer_dba,
-   exact_amtount,
-   approved_by,
-   notes,
-   balance,
-   paid_amount,
-   dba,
-   start_date,
-   end_date
+   p_unique_id,
+   p_customer,
+   v_dealer_id,
+   p_dealer_dba,
+   p_exact_amtount,
+   p_approved_by,
+   p_notes,
+   p_balance,
+   p_paid_amount,
+   p_dba,
+   p_start_date,
+   p_end_date
 )
 RETURNING id INTO v_non_comm_dlr_pay_id;
 END;

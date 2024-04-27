@@ -77,7 +77,7 @@ func HandleUpdateAutoAdderArchiveRequest(resp http.ResponseWriter, req *http.Req
 	queryParameters = append(queryParameters, updateAutoAdderArcReq.IsArchived)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.UpdateAddAdderArchiveFunction, queryParameters)
+	result, err = db.CallDBFunction(db.UpdateAutoAdderArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Update auto adder Archive in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Update auto adder Archive", http.StatusInternalServerError, nil)

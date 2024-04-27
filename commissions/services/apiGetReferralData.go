@@ -61,10 +61,10 @@ func HandleGetReferralDataRequest(resp http.ResponseWriter, req *http.Request) {
 	tableName := db.TableName_referral_data
 	query = `SELECT ad.id AS record_id, ad.unique_id, ad.new_customer, ad.start_date,
     ad.end_date,  ad.referrer_serial, ad.referrer_name, ad.amount, ad.rep_doll_divby_per, ad.notes,
-    ad.type, ud1.name AS rep_1_name, ud2.name AS rep_2_name, ad.sys_size, st.name AS state, ad.rep_count,
-    ad.per_rep_addr_share, ad.per_rep_ovrd_share, ad.r1_pay_scale, ad.r1_referral_credit_$ AS r1_referral_credit,
+    ad.type, ad.sys_size, ad.rep_count, ad.per_rep_addr_share, ad.per_rep_ovrd_share, ad.r1_pay_scale, ad.r1_referral_credit_$ AS r1_referral_credit,
     ad.r1_referral_credit_perc AS r1_referral_credit_perc, ad.r1_addr_resp, ad.r2_pay_scale,
     ad.r2_referral_credit_$ AS r2_referral_credit, ad.r2_referral_credit_perc AS r2_referral_credit_perc, ad.r2_addr_resp
+ 	ud1.name AS rep_1_name, ud2.name AS rep_2_name, st.name AS state
 	FROM referral_data ad
 	JOIN states st ON st.state_id = ad.state_id
 	JOIN user_details ud1 ON ud1.user_id = ad.rep_1

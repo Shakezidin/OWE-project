@@ -3,7 +3,7 @@ package models
 type CreateNonCommDlrPay struct {
 	UniqueID    string  `json:"unique_id"`
 	Customer    string  `json:"customer"`
-	Dealer      string  `json:"dealer"`
+	DealerName  string  `json:"dealer_name"`
 	DealerDBA   string  `json:"dealer_dba"`
 	ExactAmount string  `json:"exact_amount"`
 	ApprovedBy  string  `json:"approved_by"`

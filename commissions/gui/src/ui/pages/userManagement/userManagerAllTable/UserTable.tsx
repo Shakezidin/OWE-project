@@ -2,12 +2,14 @@ import React from "react";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import { ICONS } from "../../../icons/Icons";
 import { FaArrowDown } from "react-icons/fa6";
-import { UserRoleBasedListModel } from "../../../../core/models/api_models/UserManagementModel";
+import {  UserRoleBasedListModel } from "../../../../core/models/api_models/UserManagementModel";
 
 interface UserTableProps {
   data: UserRoleBasedListModel[];
+  onClickEdit: (item: UserRoleBasedListModel)=> void;
+  onClickDelete: (item: UserRoleBasedListModel)=> void;
 }
-const UserTable: React.FC<UserTableProps> = ({data}) => {
+const UserTable: React.FC<UserTableProps> = ({data, onClickDelete, onClickEdit}) => {
 
   return (
     <div
@@ -100,10 +102,14 @@ const UserTable: React.FC<UserTableProps> = ({data}) => {
                   <td>{el.description}</td>
                   <td>
                     <div className="action-icon">
-                      <div className="" style={{ cursor: "pointer" }}>
+                      <div className="" style={{ cursor: "pointer" }} onClick={()=> {
+                        onClickDelete(el)
+                      }}>
                         <img src={ICONS.deleteIcon} alt="" />
                       </div>
-                      <div className="" style={{ cursor: "pointer" }}>
+                      <div className="" style={{ cursor: "pointer" }} onClick={()=> {
+                        onClickEdit(el)
+                      }}>
                         <img src={ICONS.editIcon} alt="" />
                       </div>
                     </div>

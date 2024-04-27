@@ -24,6 +24,7 @@ import (
 	apiHandler "OWEApp/services"
 
 	"github.com/google/uuid"
+	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 type CfgFilePaths struct {
@@ -676,7 +677,7 @@ var apiRoutes = ApiRoutes{
 			types.RoleAdmin,
 		},
 	},
-  {
+	{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_referraldata",
 		apiHandler.HandleCreateReferralDataRequest,
@@ -715,7 +716,7 @@ var apiRoutes = ApiRoutes{
 	{
 		strings.ToUpper("POST"), //Changed to POST
 		"/owe-commisions-service/v1/get_referraldata",
-		apiHandler.apiGetReferralData,
+		apiHandler.HandleGetReferralDataRequest,
 		true,
 		[]types.UserRoles{
 			types.RoleAdmin,
@@ -724,7 +725,7 @@ var apiRoutes = ApiRoutes{
 	{
 		strings.ToUpper("POST"), //Changed to POST
 		"/owe-commisions-service/v1/get_dealercredit",
-		apiHandler.apiGetDealerCreditData,
+		apiHandler.HandleGetDealerCreditDataRequest,
 		true,
 		[]types.UserRoles{
 			types.RoleAdmin,
@@ -733,7 +734,7 @@ var apiRoutes = ApiRoutes{
 	{
 		strings.ToUpper("POST"), //Changed to POST
 		"/owe-commisions-service/v1/get_noncommdlrpay",
-		apiHandler.apiGetNonCommDlrPayData,
+		apiHandler.HandleGetNonCommDlrPayDataRequest,
 		true,
 		[]types.UserRoles{
 			types.RoleAdmin,
@@ -757,7 +758,8 @@ var apiRoutes = ApiRoutes{
 			types.RoleAdmin,
 		},
 	},
-  	strings.ToUpper("POST"),
+	{
+		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_noncommdlrpay_archive",
 		apiHandler.HandleUpdateNonCommDlrPayArchiveRequest,
 		true,
@@ -769,6 +771,33 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_dlr_oth",
 		apiHandler.HandleCreateDLROTHDataRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_dlr_oth",
+		apiHandler.HandleUpdateDLROTHDataRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_dlr_oth_data",
+		apiHandler.HandleGetDLROTHDataRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_dlr_oth_archive",
+		apiHandler.HandleUpdateDLROTHArchiveRequest,
 		true,
 		[]types.UserRoles{
 			types.RoleAdmin,

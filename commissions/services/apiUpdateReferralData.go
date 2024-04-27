@@ -56,15 +56,15 @@ func HandleUpdateReferralDataRequest(resp http.ResponseWriter, req *http.Request
 		return
 	}
 
-	if (len(updateReferralDataReq.UniqueId) <= 0) || (len(updateReferralDataReq.NewCustomer) <= 0) ||
+	if (len(updateReferralDataReq.UniqueID) <= 0) || (len(updateReferralDataReq.NewCustomer) <= 0) ||
 		(len(updateReferralDataReq.ReferrerSerial) <= 0) || (len(updateReferralDataReq.ReferrerName) <= 0) ||
 		(len(updateReferralDataReq.Amount) <= 0) || (len(updateReferralDataReq.Notes) <= 0) ||
 		(len(updateReferralDataReq.Type) <= 0) || (len(updateReferralDataReq.Rep1Name) <= 0) ||
 		(len(updateReferralDataReq.Rep2Name) <= 0) || (len(updateReferralDataReq.State) <= 0) ||
 		(len(updateReferralDataReq.R1ReferralCredit) <= 0) || (len(updateReferralDataReq.R1ReferralCreditPerc) <= 0) ||
 		(len(updateReferralDataReq.R1AddrResp) <= 0) || (len(updateReferralDataReq.R2ReferralCredit) <= 0) ||
-		(len(updateReferralDataReq.R2ReferralCreditPerc) <= 0) || (len(updateReferralDataReq.R2AddrResp) <= 0) || 
-		(len(updateReferralDataReq.StartDate) <= 0) || (len(updateReferralDataReq.EndDate) <= 0) {
+		(len(updateReferralDataReq.R2ReferralCreditPerc) <= 0) || (len(updateReferralDataReq.R2AddrResp) <= 0) ||
+		(len(updateReferralDataReq.StartDate) <= 0) || (len(*updateReferralDataReq.EndDate) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
@@ -123,7 +123,7 @@ func HandleUpdateReferralDataRequest(resp http.ResponseWriter, req *http.Request
 
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, updateReferralDataReq.RecordId)
-	queryParameters = append(queryParameters, updateReferralDataReq.UniqueId)
+	queryParameters = append(queryParameters, updateReferralDataReq.UniqueID)
 	queryParameters = append(queryParameters, updateReferralDataReq.NewCustomer)
 	queryParameters = append(queryParameters, updateReferralDataReq.ReferrerSerial)
 	queryParameters = append(queryParameters, updateReferralDataReq.ReferrerName)

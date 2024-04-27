@@ -66,21 +66,21 @@ func HandleCreateDealerCreditRequest(resp http.ResponseWriter, req *http.Request
 		return
 	}
 
-	if createDealerCredit.PerKWAmount <= 0 {
+	if createDealerCredit.PerKWAmount <= float64(0) {
 		err = fmt.Errorf("Invalid PerKWAmount price Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Invalid PerKWAmount price Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
-	if createDealerCredit.TotalAmount <= 0 {
+	if createDealerCredit.TotalAmount <= float64(0) {
 		err = fmt.Errorf("Invalid TotalAmount value: %f, Not Allowed", createDealerCredit.TotalAmount)
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Invalid TotalAmount value Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
-	if createDealerCredit.SysSize <= 0 {
+	if createDealerCredit.SysSize <= float64(0) {
 		err = fmt.Errorf("Invalid SysSize value: %f, Not Allowed", createDealerCredit.SysSize)
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Invalid SysSize value Not Allowed", http.StatusBadRequest, nil)

@@ -7,11 +7,12 @@
 package models
 
 type GetNonCommDlrPay struct {
+	RecordId    int64   `json:"record_id"`
 	UniqueID    string  `json:"unique_id"`
 	Customer    string  `json:"customer"`
-	Dealer      string  `json:"dealer"`
+	DealerName  string  `json:"dealer_name"`
 	DealerDBA   string  `json:"dealer_dba"`
-	ExactAmount string  `json:"exact_amount"`
+	ExactAmount string  `json:"exact_amtount"`
 	ApprovedBy  string  `json:"approved_by"`
 	Notes       string  `json:"notes"`
 	Balance     float64 `json:"balance"`

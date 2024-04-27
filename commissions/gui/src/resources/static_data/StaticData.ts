@@ -34,13 +34,13 @@ export const payPartnerData = [
 export const payInstallerNameData = [{ value: "OWE", label: "OWE" }];
 export const paySaleTypeData = [{ value: "BATTERY", label: "BATTERY" }];
 export const userSelectData = [
-  { value: "admin", label: "Admin" },
+  { value: "Admin", label: "Admin" },
   { value: "SubDealer Owner", label: "DB User" },
   { value: "Appointment Setter", label: "Appointment Setter" },
   { value: "Partner", label: "Partner" },
   { value: "Regional Manager", label: "Regional Manager" },
   { value: "Dealer Owner", label: "Dealer Owner" },
-  { value: "Sale Representative", label: "Sales Representative Manager" },
+  { value: "Sale Representative", label: "Sales Representative" },
   { value: "Sales Manager", label: "Sales Manager" },
 ];
 

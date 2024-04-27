@@ -60,10 +60,10 @@ func HandleGetNonCommDlrPayDataRequest(resp http.ResponseWriter, req *http.Reque
 
 	tableName := db.TableName_noncomm_dlr_pay
 	query = `SELECT ndp.id AS record_id, ndp.unique_id, ndp.customer, ndp.start_date,
-    	ndp.end_date, ndp.dealer_id, ud.name AS dealer_dba, ndp.exact_amtount,
+    	ndp.end_date, ndp.dealer_dba, ud.name as dealer_name, ndp.exact_amtount,
     	ndp.approved_by, ndp.notes, ndp.balance, ndp.paid_amount, ndp.dba
 		FROM noncomm_dlrpay ndp
-		JOIN user_details ud ON ud.user_id = ndp.dealer_id;`
+		JOIN user_details ud ON ndp.dealer_id = ud.user_id;`
 
 	filter, whereEleList = PrepareNonCommDlrPayFilters(tableName, dataReq)
 	if filter != "" {
@@ -77,7 +77,7 @@ func HandleGetNonCommDlrPayDataRequest(resp http.ResponseWriter, req *http.Reque
 		return
 	}
 
-	NonCommDlrPayDataList := models.GetNonCommDlrPayDataList{}
+	NonCommDlrPayDataList := models.GetNonCommDlrPayList{}
 
 	for _, item := range data {
 		RecordId, ok := item["record_id"].(int64)
@@ -99,11 +99,11 @@ func HandleGetNonCommDlrPayDataRequest(resp http.ResponseWriter, req *http.Reque
 			Customer = ""
 		}
 
-		// dealer_id
-		DealerID, ok := item["dealer_id"].(int)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get dealer_id for Record ID %v. Item: %+v\n", RecordId, item)
-			DealerID = 0
+		// dealer_name
+		DealerName, nameOk := item["dealer_name"].(string)
+		if !nameOk || DealerName == "" {
+			log.FuncErrorTrace(0, "Failed to get dealer name for Record ID %v. Item: %+v\n", RecordId, item)
+			DealerName = ""
 		}
 
 		// dealer_dba
@@ -169,11 +169,11 @@ func HandleGetNonCommDlrPayDataRequest(resp http.ResponseWriter, req *http.Reque
 			EndDate = nil
 		}
 
-		NonCommDlrPayData := models.NonCommDlrPayData{
+		NonCommDlrPayData := models.GetNonCommDlrPay{
 			RecordId:    RecordId,
 			UniqueID:    UniqueID,
 			Customer:    Customer,
-			DealerID:    DealerID,
+			DealerName:  DealerName,
 			DealerDBA:   DealerDBA,
 			ExactAmount: ExactAmount,
 			ApprovedBy:  ApprovedBy,
@@ -184,11 +184,11 @@ func HandleGetNonCommDlrPayDataRequest(resp http.ResponseWriter, req *http.Reque
 			StartDate:   StartDate,
 			EndDate:     EndDate,
 		}
-		NonCommDlrPayDataList.NonCommDlrPayDataList = append(NonCommDlrPayDataList.NonCommDlrPayDataList, NonCommDlrPayData)
+		NonCommDlrPayDataList.NonCommDlrPayList = append(NonCommDlrPayDataList.NonCommDlrPayList, NonCommDlrPayData)
 	}
 
 	// Send the response
-	log.FuncInfoTrace(0, "Number of Non Comm Dealer Pay List fetched : %v list %+v", len(NonCommDlrPayDataList.NonCommDlrPayDataList), NonCommDlrPayDataList)
+	log.FuncInfoTrace(0, "Number of Non Comm Dealer Pay List fetched : %v list %+v", len(NonCommDlrPayDataList.NonCommDlrPayList), NonCommDlrPayDataList)
 	FormAndSendHttpResp(resp, "Non Comm Dealer Pay Data", http.StatusOK, NonCommDlrPayDataList)
 }
 
@@ -232,13 +232,13 @@ func PrepareNonCommDlrPayFilters(tableName string, dataFilter models.DataRequest
 			case "customer":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(dc.customer) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-			case "dealer_id":
-				filtersBuilder.WriteString(fmt.Sprintf("dc.dealer_id %s $%d", operator, len(whereEleList)+1))
+			case "dealer_name":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud.name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "dealer_dba":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(dc.dealer_dba) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-			case "exact_amtount": // Fixed spelling error here
+			case "exact_amtount":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(dc.exact_amtount) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "approved_by":

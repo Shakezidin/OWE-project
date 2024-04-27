@@ -26,7 +26,7 @@ CREATE OR REPLACE FUNCTION create_new_referral_data(
     p_end_date                character varying,
     OUT v_referral_data_id    INT
 )
-RETURN INT
+RETURNS INT
 AS $$
 DECLARE
     v_rep_1_id INT;
