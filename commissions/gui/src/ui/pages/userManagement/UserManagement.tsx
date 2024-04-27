@@ -11,7 +11,7 @@ import {
 import { userSelectData } from "../../../resources/static_data/StaticData";
 import { UserDropdownModel, UserRoleBasedListModel } from "../../../core/models/api_models/UserManagementModel";
 import UserManagementTable from "./userTableList/UserManagementTable";
-import { createUserOnboarding, fetchDealerOwner, fetchRegionList } from "../../../redux/apiActions/createUserSliceActions";
+import { createUserOnboarding, deleteUserOnboarding, fetchDealerOwner, fetchRegionList } from "../../../redux/apiActions/createUserSliceActions";
 import { createUserObject, validateForm } from "../../../utiles/Validation";
 import { updateUserForm, userResetForm } from "../../../redux/apiSlice/userManagementSlice/createUserSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
@@ -28,7 +28,7 @@ const UserManagement: React.FC = () => {
   const { userOnboardingList, userRoleBasedList, } = useAppSelector(
     (state) => state.userManagement
   );
-  const { formData, dealerOwenerList, regionList, createUserResult} = useAppSelector((state) => state.createOnboardUser);
+  const { formData, dealerOwenerList, regionList, createUserResult, deleteUserResult} = useAppSelector((state) => state.createOnboardUser);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
@@ -42,7 +42,7 @@ const UserManagement: React.FC = () => {
     };
 
     fetchData();
-  }, [createUserResult]);
+  }, [createUserResult, deleteUserResult]);
 
   /** role based get data */
   useEffect(() => {
@@ -59,7 +59,7 @@ const UserManagement: React.FC = () => {
     };
 
     dispatch(fetchUserListBasedOnRole(data));
-  }, [selectedOption, createUserResult]);
+  }, [selectedOption, createUserResult,deleteUserResult]);
 
   /** handle dropdown value */
   const handleSelectChange = (selectedOption: UserDropdownModel) => {
@@ -124,7 +124,27 @@ const UserManagement: React.FC = () => {
     }else{
       alert(result.message)
     }
+  }
 
+   /** API call to submit */
+   const deleteUserRequest = async ()=>{
+    
+    const deleteRows = Array.from(selectedRows).map(index => userRoleBasedList[index].user_code);
+    if (deleteRows.length === 0){
+      return
+    }
+    console.log(deleteRows)
+    const actionResult =  await dispatch(deleteUserOnboarding({user_codes:deleteRows}))
+    const result = unwrapResult(actionResult);
+
+    if (result.status === HTTP_STATUS.OK){
+      handleClose();
+      setSelectedRows(new Set());
+      setSelectAllChecked(false)
+      alert(result.message)
+    }else{
+      alert(result.message)
+    }
   }
 
   /** render UI */
@@ -170,10 +190,9 @@ const UserManagement: React.FC = () => {
           userDropdownData={userSelectData}
           selectedOption={selectedOption}
           handleSelectChange={handleSelectChange}
-          onClickDelete={(item:UserRoleBasedListModel)=>{
+          onClickDelete={()=>{
             console.log(selectedRows)
-
-            alert('hi')
+            deleteUserRequest()
           }}
           onClickEdit={(item: UserRoleBasedListModel) => {
             // console.log("row data",item)

@@ -72,3 +72,7 @@ export interface CreateUserParamModel {
   region?: string;
   user_status?: string;
 }
+
+export interface DeleteUserModel {
+  user_codes: string[];
+}

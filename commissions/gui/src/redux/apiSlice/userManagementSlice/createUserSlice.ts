@@ -2,6 +2,7 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { CreateOnboardUserStateModel } from "../../../core/models/data_models/UserManagementStateModel";
 import {
   createUserOnboarding,
+  deleteUserOnboarding,
   fetchDealerOwner,
   fetchRegionList,
 } from "../../apiActions/createUserSliceActions";
@@ -25,6 +26,7 @@ const initialState: CreateOnboardUserStateModel = {
   dealerOwenerList: [],
   regionList: [],
   createUserResult: null,
+  deleteUserResult: null,
 };
 
 const createUserSlice = createSlice({
@@ -114,6 +116,31 @@ const createUserSlice = createSlice({
       )
       .addCase(
         createUserOnboarding.rejected,
+        (state: CreateOnboardUserStateModel, action) => {
+          state.loading = false;
+          state.error =
+            action.error.message ?? "Unable to create Onboarding User";
+        }
+      )
+      /** delete */
+      /** create user */
+      .addCase(
+        deleteUserOnboarding.pending,
+        (state: CreateOnboardUserStateModel) => {
+          state.loading = true;
+          state.error = null;
+        }
+      )
+      .addCase(
+        deleteUserOnboarding.fulfilled,
+        (state: CreateOnboardUserStateModel, action) => {
+          state.loading = true;
+          state.error = null;
+          state.deleteUserResult = action.payload;
+        }
+      )
+      .addCase(
+        deleteUserOnboarding.rejected,
         (state: CreateOnboardUserStateModel, action) => {
           state.loading = false;
           state.error =

@@ -19,4 +19,5 @@ export interface CreateOnboardUserStateModel {
   dealerOwenerList: UserDropdownModel[];
   regionList: UserDropdownModel[];
   createUserResult: any | null;
+  deleteUserResult: any | null;
 }
