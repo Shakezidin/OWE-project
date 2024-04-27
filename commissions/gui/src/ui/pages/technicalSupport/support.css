@@ -36,7 +36,19 @@
 .create-input-field-support {
   /* width: 290px; */
   width: 50%;
+  display: flex;
+  display: block;
 }
+
+
+.create-input-field-support label {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+  text-align: left; 
+  margin-bottom: -5px;
+}
+
 .vertical-support {
   border-left: 1px solid #dbdddf;
   height: 450px;
@@ -54,6 +66,13 @@
   font-weight: 600;
   line-height: 27px;
   text-align: left;
+}
+.touch-info p {
+font-size: 18px;
+font-weight: 600;
+line-height: 27px;
+text-align: left;
+
 }
 .reset-Update-support {
   display: flex;
@@ -105,18 +124,26 @@
   align-items: center;
 }
 
+.inputLabel p{
+font-size: 12px;
+font-weight: 400;
+/* line-height: 18px; */
+text-align: left;
+
+}
 .custom-button {
   /* Define your button styles */
   background: linear-gradient(180deg, #f6f6f6 0%, #c1c1c1 100%);
   color: #000000;
-  padding: 5px 5px;
+  padding: 5px 15px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-size: 10px;
   font-weight: 500;
-  line-height: 15px;
-  text-align: left;
+  line-height: 18px;
+  margin-right: 10px;
+  /* text-align: left; */
 }
 
 .file-input-placeholder {

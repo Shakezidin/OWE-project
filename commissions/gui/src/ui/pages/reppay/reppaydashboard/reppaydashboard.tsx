@@ -8,25 +8,37 @@ import RepDashBoardTable from "./RepDashboardTable";
 import RepDashBoardChart from "./RepDashboardChart";
 import RepDashBoardFilter from "./RepFilter";
 import RepPayDashboardTotal from "./RepPayDashboardTotal";
+import FilterModal from "../../../components/FilterModal/FilterModal";
+import { Column } from "../../../../core/models/data_models/FilterSelectModel";
+import DropdownWithCheckboxes from "./DropdownCheck";
 
 export const RepPayDashboardPage: React.FC = () => {
 
   const [active, setActive] = React.useState<number>(0);
- 
+  const [filterModal, setFilterModal] = React.useState<boolean>(false);
+
   const [selectedOption, setSelectedOption] = useState<string>(
-    payRollData[0].label,
+    payRollData[0].label
   );
   const [selectedOption2, setSelectedOption2] = useState<string>(
-    comissionValueData[0].label,
+    comissionValueData[0].label
   );
-  
+  const handleSelectChange = (
+    selectedOption: { value: string; label: string } | null
+  ) => {
+    setSelectedOption(selectedOption ? selectedOption.value : "");
+  };
   const handleSelectChange2 = (
     selectedOption2: { value: string; label: string } | null
   ) => {
     setSelectedOption2(selectedOption2 ? selectedOption2.value : "");
   };
+  const filterClose = () => {
+    setFilterModal(false);
+  };
 
   const includeData = [
+    { value: "All", label: "All" },
     { value: "AP-DTH", label: "AP-DTH" },
     { value: "AP-PDA", label: "AP-PDA" },
     { value: "AP-ADV", label: "AP-ADV" },
@@ -36,60 +48,40 @@ export const RepPayDashboardPage: React.FC = () => {
     { value: "LEADER", label: "LEADER" }
 ];
 
+
 const [selectedOption3, setSelectedOption3] = useState<string>(
   includeData[0].label,
 );
+const handleSelectChange3 = (
+  selectedOption3: { value: string; label: string } | null
+) => {
+  setSelectedOption3(selectedOption3 ? selectedOption3.value : "");
+};
+const [open, setOpen] = useState<boolean>(false);
+const handleOpen = () => setOpen(true);
  
   return (
     <>
-      <div className="Dashboard-section-container">
-        <div className="Dashboard-container">
+      <div className="rep-Dashboard-section-container">
+        <div className="rep-Dashboard-container">
         <div className="manage-user">
           <p>Welcome, Bruce Wills</p>
           <h2>Your Dashboard</h2>
         </div>
-          <div className="dashboard-payroll">
+          <div className="rep-dashboard-payroll">
 
-          <div className="dash-head-input">
+          <div className="rep-dash-head-input">
               <label className="inputLabel" style={{ color: "#344054" }}>
                 Include
               </label>
-              <Select
-                options={includeData}
-                value={includeData.find(
-                  (option) => option.value === selectedOption3
-                )}
-                onChange={handleSelectChange2}
-                styles={{
-                  control: (baseStyles, state) => ({
-                    ...baseStyles,
-                    fontSize: "13px",
-                    fontWeight: "500",
-                    borderRadius: ".40rem",
-                    border: "none",
-                    outline: "none",
-                    width: "6rem",
-                    minHeight: "unset",
-                    height: "30px",
-                    alignContent: "center",
-                    backgroundColor: "#ECECEC",
-                  }),
-                  indicatorSeparator: () => ({
-                    display: "none",
-                  }),
-                  option: (baseStyles) => ({
-                    ...baseStyles,
-                    fontSize: "13px",
-                  }),
-                  menu: (baseStyles) => ({
-                    ...baseStyles,
-                    width: "6rem",
-                  })
-                }}
+              <DropdownWithCheckboxes
+                includeData={includeData}
+                selectedOption3={selectedOption3}
+                handleSelectChange3={handleSelectChange3}
               />
             </div>
 
-            <div className="dash-head-input">
+            <div className="rep-dash-head-input">
               <label className="inputLabel" style={{ color: "#344054" }}>
                 Commission Model
               </label>
@@ -128,27 +120,27 @@ const [selectedOption3, setSelectedOption3] = useState<string>(
               />
             </div>
 
-            <div className="dash-head-input">
+            <div className="rep-dash-head-input">
               <label className="inputLabel" style={{ color: "#344054" }}>
                 Payroll Date
               </label>
-              <input type="date" className="payroll-date"  />
+              <input type="date" className="rep-payroll-date"  />
             </div>
             
-            <div className="dash-head-input">
+            <div className="rep-dash-head-input">
               <label className="inputLabel" style={{ color: "#344054" }}>
                 Set Default
               </label>
-              <label className="inputLabel chart-view" style={{ color: "#344054" }}>
+              <label className="inputLabel rep-chart-view" style={{ color: "#344054" }}>
                 Chart View
               </label>
             </div>
 
             <div className="Line-container">
-              <div className="line-graph">
+              <div className="rep-line-graph">
                 <div
-                  className={`filter-line ${
-                    active === 0 ? "active-filter-line" : ""
+                  className={`rep-filter-line ${
+                    active === 0 ? "rep-active-filter-line" : ""
                   }`}
                   onClick={() => setActive(0)}
                 >
@@ -159,10 +151,10 @@ const [selectedOption3, setSelectedOption3] = useState<string>(
                   )}
                 </div>
                 <div
-                  className={`filter-line ${
-                    active === 1 ? "active-filter-line" : ""
+                  className={`filter-disable ${
+                    active === 1 ? "rep-active-filter-line" : ""
                   }`}
-                  onClick={() => setActive(1)}
+                  // onClick={() => setActive(1)}
                 >
                   {active === 1 ? (
                     <img src={ICONS.viewActive} alt="" />
@@ -171,29 +163,36 @@ const [selectedOption3, setSelectedOption3] = useState<string>(
                   )}
                 </div>
                 <div
-                  className={`filter-line ${
-                    active === 2 ? "active-filter-line" : ""
-                  }`}
-                  onClick={() => setActive(2)}
+                  className="rep-filter-line"
+                  onClick={() => setFilterModal(true)}
                 >
-                  {active === 2 ? (
-                    <img src={ICONS.FILTERACTIVE} alt="" />
-                  ) : (
-                    <img src={ICONS.FILTER} alt="" />
-                  )}
+                  <img src={ICONS.FILTER} alt="" />
                 </div>
               </div>
             </div>
-
           </div>
         </div>
         <div className="">
-            <RepPayDashboardTotal/>
+          <RepPayDashboardTotal />
+          {/* <DonutChart /> */}
         </div>
+        {filterModal && (
+          <FilterModal
+            handleClose={filterClose}
+            columns={[]}
+            page_number={1}
+            page_size={10}
+            fetchFunction={() => {}}
+          />
+        )}
         <div className="" style={{ marginTop: "20px" }}>
           {active === 0 && <RepDashBoardTable/>}
           {active === 1 && <RepDashBoardChart/>}
-          {active === 2 && <RepDashBoardFilter/>}
+          {active === 2 
+
+          //  <RepDashBoardFilter/>
+           
+          }
         </div>
       </div>
     </>

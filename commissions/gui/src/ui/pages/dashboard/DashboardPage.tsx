@@ -9,8 +9,37 @@ import { payRollData } from "../../../resources/static_data/StaticData";
 import { comissionValueData } from "../../../resources/static_data/StaticData";
 import { RiFilterLine } from "react-icons/ri";
 import FilterModal from "../../components/FilterModal/FilterModal";
+import "react-dates/lib/css/_datepicker.css";
+import "react-dates/initialize";
+import { DateRangePicker, FocusedInputShape } from "react-dates";
+
+interface DateRangePickerProps {
+  startDate: moment.Moment | null;
+  startDateId: string;
+  endDate: moment.Moment | null;
+  endDateId: string;
+  onDatesChange: ({
+    startDate,
+    endDate,
+  }: {
+    startDate: moment.Moment | null;
+    endDate: moment.Moment | null;
+  }) => void;
+  focusedInput: FocusedInputShape | null;
+  onFocusChange: (focusedInput: FocusedInputShape | null) => void;
+  displayFormat: string;
+  block?: boolean;
+  showClearDates?: boolean;
+  transitionDuration?: number;
+  withPortal?: boolean;
+  withFullScreenPortal?: boolean;
+}
 
 export const DashboardPage: React.FC = () => {
+  const [startDate, setStartDate] = useState<moment.Moment | null>(null);
+  const [endDate, setEndDate] = useState<moment.Moment | null>(null);
+  const [focusedInput, setFocusedInput] = useState<FocusedInputShape | null>(null);
+
   const [active, setActive] = React.useState<number>(0);
   const [filterModal, setFilterModal] = React.useState<boolean>(false);
 
@@ -37,8 +66,10 @@ export const DashboardPage: React.FC = () => {
   return (
     <>
       <div className="Dashboard-section-container">
-        <div className="Dashboard-container">
-          <div className="Dashboard-wel"></div>
+        <div className="DashboardPage-container">
+          <div className="DashboardPage-wel">
+            <h3>Dashboard</h3>
+          </div>
           <div className="dashboard-payroll">
             <div className="dash-head-input">
               <label className="inputLabel" style={{ color: "#344054" }}>
@@ -63,6 +94,7 @@ export const DashboardPage: React.FC = () => {
                     height: "30px",
                     alignContent: "center",
                     backgroundColor: "#ECECEC",
+                    cursor: "pointer"
                   }),
                   indicatorSeparator: () => ({
                     display: "none",
@@ -82,10 +114,31 @@ export const DashboardPage: React.FC = () => {
               <label className="inputLabel" style={{ color: "#344054" }}>
                 Payroll Date
               </label>
-              <label className="payroll-label">Start:</label>
+              {/* <label className="payroll-label">Start:</label>
               <input type="date" className="payroll-date" />
               <label className="payroll-label">End:</label>
-              <input type="date" className="payroll-date" />
+              <input type="date" className="payroll-date" /> */}
+              <div className="calendar-component2">
+                <DateRangePicker
+                  startDate={startDate}
+                  startDateId="s_id"
+                  endDate={endDate}
+                  endDateId="e_id"
+                  onDatesChange={({ startDate, endDate }) => {
+                    setStartDate(startDate);
+                    setEndDate(endDate);
+                  }}
+                  focusedInput={focusedInput}
+                  onFocusChange={(focusedInput) =>
+                    setFocusedInput(focusedInput)
+                  }
+                  displayFormat="DD/MM/YYYY"
+                  block
+                  showClearDates
+                  transitionDuration={1000}  
+                  withPortal
+                />
+              </div>
             </div>
 
             <div className="dash-head-input">

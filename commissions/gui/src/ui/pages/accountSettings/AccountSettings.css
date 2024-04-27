@@ -31,7 +31,7 @@
   border-radius: 16px;
   padding-bottom: 2rem;
   /* width: 700px; */
-  gap: 3rem;
+  gap: 2rem;
 }
 .profile-sec-button {
   padding: 1rem;
@@ -59,7 +59,8 @@
   font-weight: 500;
 }
 .tab-content {
-  width: 77%;
+  width: 75%;
+  
 }
 .active-profile {
   background-color: #e9f0ff;
@@ -70,14 +71,14 @@
   /* height: 650px !important; */
   margin-top: 1.5rem;
   /* border: 1px 0px 0px 0px; */
-
+margin-left: 2rem;
 }
 .myProf-section {
-  margin-top: 1rem;
+  margin-top: 1.5rem;
   font-size: 18px;
   font-weight: 500;
   text-align: left;
-  padding: 1rem;
+  /* padding: 1rem; */
 
 }
 .admin-section {
@@ -157,20 +158,20 @@
   font-weight: 500;
   text-align: center;
   border: none;
-  color: black;
+  color: white;
   padding: 15px 32px;
   text-decoration: none;
   display: inline-block;
   margin: 4px 2px;
   cursor: pointer;
-  /* background-color: #0493ce; */
+  background-color: #0493ce;
   border-radius: 8px;
-  transition: background-color  0.5s ease, color 0.5s ease;
 
 }
 .reset-Update :hover {
-  background-color: #0493ce;
-  color: white;
+  transition: background-color  0.5s ease, color 0.5s ease;
+background-color: #333333;
+ 
 }
 
 .profile-reset {

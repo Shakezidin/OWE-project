@@ -5,7 +5,7 @@ import '../projectTracker/projectTracker.css'
 import Breadcrumb from '../../components/breadcrumb/Breadcrumb'
 const ProjectPerformence = () => {
   return (
-  <div className="">
+  <div className="" style={{height:"79vh"}}>
       <Breadcrumb head="" linkPara="Project Tracking" route={""} linkparaSecond="Performance" />
     <div className="project-container">
     <div className="project-heading">
@@ -28,12 +28,12 @@ const ProjectPerformence = () => {
                 </div>
                 <div className="project-card-body">
                   <div className="project-body-details">
-                    <h2>60</h2>
-                    <p>Sales</p>
+                    <h2 style={{fontSize:"14px"}}>60</h2>
+                    <p style={{fontSize:"14px"}}>Sales</p>
                   </div>
                   <div className="project-body-details">
-                    <h2>120</h2>
-                    <p>Sales KW</p>
+                    <h2 style={{fontSize:"14px"}}>120</h2>
+                    <p style={{fontSize:"14px"}}>Sales KW</p>
                   </div>
                 </div>
               </div>
