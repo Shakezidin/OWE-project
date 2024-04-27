@@ -294,11 +294,13 @@ const AdderValidation = () => {
 
                     <td>
                       <div className="action-icon">
-                        <div className="" style={{ cursor: "pointer" }} onClick={()=>handleArchiveClick(el.record_id)}>
+                        <div className="action-archive" style={{ cursor: "pointer" }} onClick={()=>handleArchiveClick(el.record_id)}>
                           <img src={ICONS.ARCHIVE} alt="" />
+                          <span className="tooltiptext">Archive</span>
                         </div>
-                        <div className="" style={{ cursor: "pointer" }} onClick={() => handleEditVAdder(el)}>
+                        <div className="action-archive" style={{ cursor: "pointer" }} onClick={() => handleEditVAdder(el)}>
                           <img src={ICONS.editIcon} alt="" />
+                          <span className="tooltiptext">Edit</span>
                         </div>
                       </div>
                     </td>

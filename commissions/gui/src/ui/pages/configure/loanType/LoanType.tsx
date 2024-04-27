@@ -20,6 +20,10 @@ import { LoanTypeColumns } from "../../../../resources/static_data/configureHead
 import FilterModal from "../../../components/FilterModal/FilterModal";
 import Loading from "../../../components/loader/Loading";
 import DataNotFound from "../../../components/loader/DataNotFound";
+import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
+import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
+import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
+import Swal from "sweetalert2";
 
 const LoanType = () => {
   const dispatch = useAppDispatch();
@@ -42,16 +46,17 @@ const LoanType = () => {
   const [editedLoanData, setEditedLoanData] = useState<LoanTypeModel | null>(null);
   const itemsPerPage = 10;
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
-  const [sortKey, setSortKey] =  useState("");
+  const [sortKey, setSortKey] = useState("");
   const [viewArchived, setViewArchived] = useState<boolean>(false);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
+      archived: viewArchived ? true : undefined,
     };
     dispatch(fetchLoanType(pageNumber));
-  }, [dispatch,currentPage]);
+  }, [dispatch, currentPage, viewArchived]);
   const paginate = (pageNumber: number) => {
     dispatch(setCurrentPage(pageNumber));
   };
@@ -70,15 +75,15 @@ const LoanType = () => {
     handleOpen()
   };
 
-  const filter = ()=>{
+  const filter = () => {
     setFilterOpen(true)
- 
+
   }
   const totalPages = Math.ceil(loanTypeList?.length / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const handleEditLoan = (loanData:LoanTypeModel) => {
+  const handleEditLoan = (loanData: LoanTypeModel) => {
     setEditMode(true);
     setEditedLoanData(loanData);
     handleOpen()
@@ -86,7 +91,7 @@ const LoanType = () => {
   const currentPageData = loanTypeList?.slice(startIndex, endIndex);
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === loanTypeList.length;
-  const handleSort = (key:any) => {
+  const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
     } else {
@@ -96,7 +101,7 @@ const LoanType = () => {
   };
 
   if (sortKey) {
-    currentPageData.sort((a:any, b:any) => {
+    currentPageData.sort((a: any, b: any) => {
       const aValue = a[sortKey];
       const bValue = b[sortKey];
       if (typeof aValue === 'string' && typeof bValue === 'string') {
@@ -109,26 +114,101 @@ const LoanType = () => {
       }
     });
   }
+  const handleArchiveAllClick = async () => {
+    const confirmationResult = await Swal.fire({
+      title: 'Are you sure?',
+      text: 'This action will archive all selected rows.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, archive all'
+    });
+    if (confirmationResult.isConfirmed) {
+      const archivedRows = Array.from(selectedRows).map(index => loanTypeList[index].record_id);
+      if (archivedRows.length > 0) {
+        const newValue = {
+          record_id: archivedRows,
+          is_archived: true
+        };
+
+        const pageNumber = {
+          page_number: currentPage,
+          page_size: itemsPerPage,
+        };
+
+        const res = await postCaller(EndPoints.update_loantype_archive, newValue);
+        if (res.status === HTTP_STATUS.OK) {
+          // If API call is successful, refetch commissions
+          dispatch(fetchLoanType(pageNumber));
+          const remainingSelectedRows = Array.from(selectedRows).filter(index => !archivedRows.includes(loanTypeList[index].record_id));
+          const isAnyRowSelected = remainingSelectedRows.length > 0;
+          setSelectAllChecked(isAnyRowSelected);
+          setSelectedRows(new Set());
+          Swal.fire({
+            title: 'Archived!',
+            text: 'All selected rows have been archived.',
+            icon: 'success',
+            timer: 2000,
+            showConfirmButton: false
+          });
+        }
+        else {
+          Swal.fire({
+            title: 'Error!',
+            text: 'Failed to archive selected rows. Please try again later.',
+            icon: 'error',
+            timer: 2000,
+            showConfirmButton: false
+          });
+        }
+      }
+
+    }
+  };
+  const handleArchiveClick = async (record_id: any) => {
+    const archived: number[] = [record_id];
+    let newValue = {
+      record_id: archived,
+      is_archived: true
+    }
+    const pageNumber = {
+      page_number: currentPage,
+      page_size: itemsPerPage,
+
+    };
+    const res = await postCaller(EndPoints.update_loantype_archive, newValue);
+    if (res.status === HTTP_STATUS.OK) {
+      dispatch(fetchLoanType(pageNumber))
+    }
+  };
+
+  const handleViewArchiveToggle = () => {
+    setViewArchived(!viewArchived);
+    // When toggling, reset the selected rows
+    setSelectedRows(new Set());
+    setSelectAllChecked(false);
+  };
   const fetchFunction = (req: any) => {
     dispatch(fetchLoanType(req));
-   };
-   if (error) {
-    return <div className="loader-container"><Loading/></div>;
+  };
+  if (error) {
+    return <div className="loader-container"><Loading /></div>;
   }
   if (loading) {
-    return <div className="loader-container"><Loading/> {loading}</div>;
+    return <div className="loader-container"><Loading /> {loading}</div>;
   }
- 
- 
+
+
   return (
     <div className="comm">
-       <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Loan Type"/>
+      <Breadcrumb head="Commission" linkPara="Configure" linkparaSecond="Loan Type" />
       <div className="commissionContainer">
 
         <TableHeader
           title="Loan Type"
-          onPressViewArchive={() => { }}
-          onPressArchive={() => { }}
+          onPressViewArchive={() =>handleViewArchiveToggle()}
+          onPressArchive={() => handleArchiveAllClick()}
           checked={isAllRowsSelected}
           isAnyRowSelected={isAnyRowSelected}
           onPressFilter={() => filter()}
@@ -138,14 +218,14 @@ const LoanType = () => {
           onpressAddNew={() => handleAddLoan()}
         />
         {filterOPen && <FilterModal handleClose={filterClose}
-         columns={LoanTypeColumns}
-         page_number = {currentPage}
-         fetchFunction={fetchFunction}
-         page_size = {itemsPerPage} />}
+          columns={LoanTypeColumns}
+          page_number={currentPage}
+          fetchFunction={fetchFunction}
+          page_size={itemsPerPage} />}
         {open && <CreateLoanType
-         loanData={editedLoanData}
-         editMode={editMode}
-         handleClose={handleClose} />}
+          loanData={editedLoanData}
+          editMode={editMode}
+          handleClose={handleClose} />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
@@ -153,11 +233,11 @@ const LoanType = () => {
           <table>
             <thead>
               <tr>
-             
-            
+
+
                 {
-                LoanTypeColumns?.map((item,key)=>(
-                  <SortableHeader
+                  LoanTypeColumns?.map((item, key) => (
+                    <SortableHeader
                       key={key}
                       isCheckbox={item.isCheckbox}
                       titleName={item.displayName}
@@ -172,41 +252,42 @@ const LoanType = () => {
                       sortDirection={sortKey === item.name ? sortDirection : undefined}
                       onClick={() => handleSort(item.name)}
                     />
-                ))
-              }
-                <th>
-                  <div className="action-header">
-                    <p>Action</p> 
-                  </div>
-                </th>
+                  ))
+                }
+                {
+                  viewArchived === true ? null : <th>
+                    <div className="action-header">
+                      <p>Action</p>
+                    </div>
+                  </th>
+                }
               </tr>
             </thead>
             <tbody>
               {currentPageData?.length > 0
                 ? currentPageData?.map((el: any, i: any) => (
                   <tr key={i}>
-                    
+
                     <td style={{ fontWeight: "500", color: "black" }}>
-                 <div className="flex-check">
-                 <CheckBox
-                        checked={selectedRows.has(i)}
-                        onChange={() =>
-                          toggleRowSelection(
-                            i,
-                            selectedRows,
-                            setSelectedRows,
-                            setSelectAllChecked
-                          )
-                        }
-                      />
-                      {el.product_code}
-                 </div>
+                      <div className="flex-check">
+                        <CheckBox
+                          checked={selectedRows.has(i)}
+                          onChange={() =>
+                            toggleRowSelection(
+                              i,
+                              selectedRows,
+                              setSelectedRows,
+                              setSelectAllChecked
+                            )
+                          }
+                        />
+                        {el.product_code}
+                      </div>
                     </td>
                     <td>
-                    <CheckBox
-                        checked={el.active===1}
-                        onChange={() =>
-                          {}
+                      <CheckBox
+                        checked={el.active === 1}
+                        onChange={() => { }
                         }
                       />
                     </td>
@@ -214,53 +295,56 @@ const LoanType = () => {
                       {el.adder}
                     </td>
                     <td>{el.description}</td>
-                    <td
-                    
-                    >
-                   <div className="action-icon">
-               <div className="">
-               <img src={ICONS.ARCHIVE} alt="" />
-               </div>
-                    
-                    <div className="" style={{cursor:"pointer"}} onClick={()=>handleEditLoan(el)}>
-                    <img src={ICONS.editIcon} alt="" />
-                   
-                     </div>
-                   </div>
-                    </td>
+                    {
+                      viewArchived === true ? null : <td
+
+                      >
+                        <div className="action-icon" >
+                          <div className="action-archive" style={{ cursor: "pointer" }} onClick={() => handleArchiveClick(el.record_id)}>
+                            <img src={ICONS.ARCHIVE} alt="" />
+                            <span className="tooltiptext">Archive</span>
+                          </div>
+
+                          <div className="action-archive" style={{ cursor: "pointer" }} onClick={() => handleEditLoan(el)}>
+                            <img src={ICONS.editIcon} alt="" />
+                            <span className="tooltiptext">Edit</span>
+                          </div>
+                        </div>
+                      </td>
+                    }
                   </tr>
                 ))
-                :  <tr style={{border:0}}>
-                <td colSpan={10}>
-                <div className="data-not-found">
-                <DataNotFound/>
-                <h3>Data Not Found</h3>
-                </div>
-                </td>
-              </tr>
-                }
+                : <tr style={{ border: 0 }}>
+                  <td colSpan={10}>
+                    <div className="data-not-found">
+                      <DataNotFound />
+                      <h3>Data Not Found</h3>
+                    </div>
+                  </td>
+                </tr>
+              }
             </tbody>
           </table>
         </div>
-         
-   {
-    loanTypeList?.length > 0 ?
-        <div className="page-heading-container">
-      
-      <p className="page-heading">
-       {currentPage} - {totalPages} of {currentPageData?.length} item
-      </p>
- <Pagination
-      currentPage={currentPage}
-      totalPages={totalPages} // You need to calculate total pages
-      paginate={paginate}
-      goToNextPage={goToNextPage}
-      currentPageData={currentPageData}
-      goToPrevPage={goToPrevPage}
-    /> 
-   </div>
-   : null
-  }
+
+        {
+          loanTypeList?.length > 0 ?
+            <div className="page-heading-container">
+
+              <p className="page-heading">
+                {currentPage} - {totalPages} of {currentPageData?.length} item
+              </p>
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages} // You need to calculate total pages
+                paginate={paginate}
+                goToNextPage={goToNextPage}
+                currentPageData={currentPageData}
+                goToPrevPage={goToPrevPage}
+              />
+            </div>
+            : null
+        }
       </div>
     </div>
   );

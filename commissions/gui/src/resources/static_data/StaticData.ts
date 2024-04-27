@@ -1,10 +1,13 @@
+interface Option {
+  value: string;
+  label: string;
+}
 export const partners = [{ value: "OWE", label: "OWE" }];
-
 export const installers = [{ value: "OWE", label: "OWE" }];
 export const statData = [{ value: "Alaska", label: "Alaska" }];
 
 export const respTypeData = [{ value: "EMPLOYEE", label: "EMPLOYEE" }];
-export const subDealer = [
+export const subDealer:Option[] = [
   { value: "Sub Dealer Name1", label: "Sub Dealer Name1" },
 ];
 export const dealer = [{ value: "Shushank Sharma", label: "Shushank Sharma" }];

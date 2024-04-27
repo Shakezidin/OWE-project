@@ -45,6 +45,7 @@ const CommissionRate: React.FC = () => {
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
   const [sortKey, setSortKey] = useState("");
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -97,12 +98,8 @@ const CommissionRate: React.FC = () => {
       confirmButtonText: 'Yes, archive all'
     });
     if (confirmationResult.isConfirmed) {
-      // Extract record IDs from selected rows
       const archivedRows = Array.from(selectedRows).map(index => commissionList[index].record_id);
-
-      // Check if any rows are selected
       if (archivedRows.length > 0) {
-        // Perform API call to archive all selected rows
         const newValue = {
           record_id: archivedRows,
           is_archived: true
@@ -142,9 +139,6 @@ const CommissionRate: React.FC = () => {
 
     }
   };
-
-
-
   const handleArchiveClick = async (record_id: any) => {
     const archived: number[] = [record_id];
     let newValue = {
@@ -160,9 +154,6 @@ const CommissionRate: React.FC = () => {
     if (res.status === HTTP_STATUS.OK) {
       dispatch(fetchCommissions(pageNumber))
     }
-    // const newSelectedRows = new Set(selectedRows);
-    // newSelectedRows.delete(record_id);
-    // setSelectedRows(newSelectedRows);
   };
 
   const handleViewArchiveToggle = () => {
@@ -204,7 +195,7 @@ const CommissionRate: React.FC = () => {
     return <div className="loader-container"><Loading/> {loading}</div>;
   }
 
-  console.log("gjshadgjsadj",Commissioncolumns)
+ 
   return (
 
     <div className="comm">

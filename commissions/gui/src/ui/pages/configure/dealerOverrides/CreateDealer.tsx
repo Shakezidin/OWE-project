@@ -118,7 +118,7 @@ const CreateDealer: React.FC<dealerProps> = ({
                 <div className="create-input-field">
                   <label className="inputLabel">Sub Dealer</label>
                   <SelectOption
-                    options={subDealerOption(newFormData)}
+                    options={subDealerOption(newFormData)||subDealer}
                     onChange={(newValue) =>
                       handleChange(newValue, "sub_dealer")
                     }
