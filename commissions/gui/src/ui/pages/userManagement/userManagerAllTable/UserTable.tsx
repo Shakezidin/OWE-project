@@ -137,7 +137,7 @@ const UserTable: React.FC<UserTableProps> = ({
                       >
                         <img src={ICONS.deleteIcon} alt="" />
                       </div>
-                      <div
+                      {/* <div
                         className=""
                         style={{ cursor: "pointer" }}
                         onClick={() => {
@@ -145,7 +145,7 @@ const UserTable: React.FC<UserTableProps> = ({
                         }}
                       >
                         <img src={ICONS.editIcon} alt="" />
-                      </div>
+                      </div> */}
                     </div>
                   </td>
                 </tr>

@@ -136,9 +136,9 @@ const DealerOwnerTable: React.FC<DealerProps> = ({ data, onClickDelete, onClickE
                         <div className="" style={{ cursor: "pointer" }} onClick={()=> onClickDelete(el)}>
                           <img src={ICONS.deleteIcon} alt="" />
                         </div>
-                        <div className="" style={{ cursor: "pointer" }} onClick={()=> onClickEdit(el)}>
+                        {/* <div className="" style={{ cursor: "pointer" }} onClick={()=> onClickEdit(el)}>
                           <img src={ICONS.editIcon} alt="" />
-                        </div>
+                        </div> */}
                       </div>
                     </td>
                   </tr>

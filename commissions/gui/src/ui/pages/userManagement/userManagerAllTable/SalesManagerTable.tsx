@@ -143,9 +143,9 @@ const SalesManagerTable: React.FC<SaleManagerProps> = ({ data, onClickEdit, onCl
                         <div className="" style={{ cursor: "pointer" }} onClick={()=> onClickDelete(el)}>
                           <img src={ICONS.deleteIcon} alt="" />
                         </div>
-                        <div className="" style={{ cursor: "pointer" }}onClick={()=> onClickEdit(el)}>
+                        {/* <div className="" style={{ cursor: "pointer" }}onClick={()=> onClickEdit(el)}>
                           <img src={ICONS.editIcon} alt="" />
-                        </div>
+                        </div> */}
                       </div>
                     </td>
                   </tr>
