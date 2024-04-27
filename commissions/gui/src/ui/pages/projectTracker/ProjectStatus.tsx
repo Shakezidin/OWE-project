@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import '../projectTracker/projectTracker.css'
 import Input from '../../components/text_input/Input'
@@ -54,14 +54,27 @@ const projectOption:Option[]=[
   },
 ]
 const ProjectStatus = () => {
-  const [activePopups, setActivePopups] = useState<boolean>(false); // State to store active popups for each row
+  const [activePopups, setActivePopups] = useState<boolean>(false);
+  const menuRef = useRef()
+   // State to store active popups for each row
+   const handleClickOutside=()=>{
+    setActivePopups(false)
+   }
+   useEffect(() => {
+    if (activePopups) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [activePopups]);
+
 
  
 
-
   return (
   <div className="">
-    
           <Breadcrumb head="Project Tracking" linkPara="Project Tracking" route={""} linkparaSecond="Performance" />
       <div className='project-container'style={{padding:"0rem 0 1rem 0"}} >
       <div className="project-heading" style={{borderBottom:"1px solid #E1E1E1",padding:"1rem"}}>
@@ -88,7 +101,7 @@ const ProjectStatus = () => {
               <span className='span-para'>{el.para}</span>
               </div>
               {
-                el.viewButton===true?<div className='view-flex' onClick={()=>setActivePopups(!activePopups)}>
+                el.viewButton===true?<div className='view-flex' onClick={()=>setActivePopups(true)}>
                   <p>View</p>
                 
                   <img src={ICONS.arrowDown} alt="" />

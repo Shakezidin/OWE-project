@@ -5,7 +5,7 @@ import '../projectTracker/projectTracker.css'
 import Breadcrumb from '../../components/breadcrumb/Breadcrumb'
 const ProjectPerformence = () => {
   return (
-  <div className="">
+  <div className="" style={{height:"79vh"}}>
       <Breadcrumb head="" linkPara="Project Tracking" route={""} linkparaSecond="Performance" />
     <div className="project-container">
     <div className="project-heading">
