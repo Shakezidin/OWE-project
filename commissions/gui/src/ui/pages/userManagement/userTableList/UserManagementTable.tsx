@@ -30,7 +30,7 @@ interface UserTableProos {
   selectedRows: Set<number>,
   setSelectedRows: React.Dispatch<React.SetStateAction<Set<number>>>,
   setSelectAllChecked: React.Dispatch<React.SetStateAction<boolean>>,
-
+  onClickMultiDelete: ()=> void;
 }
 const UserManagementTable: React.FC<UserTableProos> = ({
   userDropdownData,
@@ -42,7 +42,8 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   selectAllChecked,
   selectedRows,
   setSelectedRows,
-  setSelectAllChecked
+  setSelectAllChecked,
+  onClickMultiDelete
 }) => {
   const dispatch = useAppDispatch();
 
@@ -112,7 +113,9 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             onClickEdit={(item: UserRoleBasedListModel) => {
               onClickEdit(item);
             }}
-            onClickDelete={(item: UserRoleBasedListModel) => {}}
+            onClickDelete={(item: UserRoleBasedListModel) => {
+              onClickDelete(item)
+            }}
             selectedRows={selectedRows}
             selectAllChecked={selectAllChecked}
             setSelectedRows={setSelectedRows}
@@ -126,7 +129,9 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             onClickEdit={(item: UserRoleBasedListModel) => {
               onClickEdit(item);
             }}
-            onClickDelete={(item: UserRoleBasedListModel) => {}}
+            onClickDelete={(item: UserRoleBasedListModel) => {
+              onClickDelete(item)
+            }}
             selectedRows={selectedRows}
             selectAllChecked={selectAllChecked}
             setSelectedRows={setSelectedRows}
@@ -140,7 +145,9 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             onClickEdit={(item: UserRoleBasedListModel) => {
               onClickEdit(item);
             }}
-            onClickDelete={(item: UserRoleBasedListModel) => {}}
+            onClickDelete={(item: UserRoleBasedListModel) => {
+              onClickDelete(item)
+            }}
             selectedRows={selectedRows}
             selectAllChecked={selectAllChecked}
             setSelectedRows={setSelectedRows}
@@ -154,7 +161,9 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             onClickEdit={(item: UserRoleBasedListModel) => {
               onClickEdit(item);
             }}
-            onClickDelete={(item: UserRoleBasedListModel) => {}}
+            onClickDelete={(item: UserRoleBasedListModel) => {
+              onClickDelete(item)
+            }}
             selectedRows={selectedRows}
             selectAllChecked={selectAllChecked}
             setSelectedRows={setSelectedRows}
@@ -168,7 +177,9 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             onClickEdit={(item: UserRoleBasedListModel) => {
               onClickEdit(item);
             }}
-            onClickDelete={(item: UserRoleBasedListModel) => {}}
+            onClickDelete={(item: UserRoleBasedListModel) => {
+              onClickDelete(item)
+            }}
             selectedRows={selectedRows}
             selectAllChecked={selectAllChecked}
             setSelectedRows={setSelectedRows}
@@ -183,7 +194,9 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             onClickEdit={(item: UserRoleBasedListModel) => {
               onClickEdit(item);
             }}
-            onClickDelete={(item: UserRoleBasedListModel) => {}}
+            onClickDelete={(item: UserRoleBasedListModel) => {
+              onClickDelete(item)
+            }}
             selectedRows={selectedRows}
             selectAllChecked={selectAllChecked}
             setSelectedRows={setSelectedRows}
@@ -213,7 +226,10 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             />
           </div>
 
-          <div className="iconsSection-delete" style={{ marginTop: ".2rem" }}>
+          <div className="iconsSection-delete" style={{ marginTop: ".2rem" }} onClick={()=>{
+            onClickMultiDelete()
+          }}>
+            
             <button type="button">
               <img src={ICONS.deleteIcon} alt="" />
             </button>

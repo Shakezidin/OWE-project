@@ -5,6 +5,7 @@ import { HTTP_STATUS } from "../../core/models/api_models/RequestModel";
 import {
   CreateUserParamModel,
   DealerOwner,
+  DeleteUserModel,
   UserDropdownModel,
 } from "../../core/models/api_models/UserManagementModel";
 import { isAxiosError } from "axios";
@@ -59,23 +60,26 @@ export const fetchRegionList = createAsyncThunk(
   }
 );
 /**cretae user */
-// export const createUserOnboarding = createAsyncThunk(
-//   "user/create_onboarding_user",
-//   async (data: CreateUserParamModel) => {
-//     const response = await postCaller(EndPoints.create_user, data);
-//     // if (response.status !== HTTP_STATUS.OK) {
-//     //   throw new Error(response.message);
-//     // }
-//     console.log(response);
-//     return response;
-//   }
-// );
 
 export const createUserOnboarding = createAsyncThunk(
   "user/create_onboarding_users",
   async (data: CreateUserParamModel, { rejectWithValue }): Promise<any> => {
     try {
       const response = await postCaller(EndPoints.create_user, data);
+      console.log(response);
+      return response;
+    } catch (error) {
+      return rejectWithValue((error as Error).message);
+    }
+  }
+);
+
+/** delete user */
+export const deleteUserOnboarding = createAsyncThunk(
+  "user/delete_onboarding_users",
+  async (data: DeleteUserModel, { rejectWithValue }): Promise<any> => {
+    try {
+      const response = await postCaller(EndPoints.delete_users, data);
       console.log(response);
       return response;
     } catch (error) {

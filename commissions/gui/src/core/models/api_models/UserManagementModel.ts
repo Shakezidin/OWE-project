@@ -37,7 +37,7 @@ export interface UserRoleBasedListModel {
   city: string;
   zipcode: string;
   country: string;
-  startData: string;
+  startDate: string;
   endDate: string;
   amount: string;
   region: string;
@@ -71,4 +71,8 @@ export interface CreateUserParamModel {
   team_name?: string;
   region?: string;
   user_status?: string;
+}
+
+export interface DeleteUserModel {
+  user_codes: string[];
 }

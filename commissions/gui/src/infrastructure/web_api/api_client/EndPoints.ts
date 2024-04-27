@@ -60,6 +60,7 @@ interface Endpoints {
   Get_User_list_based_on_Role: string;
   get_user_by_role: string;
   create_user: string;
+  delete_users: string;
 }
 
 export const EndPoints: Endpoints = {
@@ -119,4 +120,5 @@ export const EndPoints: Endpoints = {
   Get_User_list_based_on_Role: "get_users",
   get_user_by_role: "get_users_by_role",
   create_user: "create_user",
+  delete_users: "delete_users",
 };

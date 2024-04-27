@@ -5,6 +5,7 @@ import { UserRoleBasedListModel } from "../../../../core/models/api_models/UserM
 import { toggleRowSelection } from "../../../components/chekbox/checkHelper";
 import { UserManagementTableColumn } from "../../../../resources/static_data/UserManagementColumn";
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
+import DataNotFound from "../../../components/loader/DataNotFound";
 
 interface UserTableProps {
   data: UserRoleBasedListModel[];
@@ -33,8 +34,11 @@ const UserTable: React.FC<UserTableProps> = ({
 
   const handleSort = (key: any) => {
     if (sortKey === key) {
+
+      console.log('1.................')
       setSortDirection(sortDirection === "desc" ? "asc" : "desc");
     } else {
+      console.log(sortKey,'2.................', key)
       setSortKey(key);
       setSortDirection("asc");
     }
@@ -82,8 +86,8 @@ const UserTable: React.FC<UserTableProps> = ({
                 selectedRows={selectedRows}
                 setSelectedRows={setSelectedRows}
                 sortKey={item.name}
-                sortDirection={"desc"}
-                onClick={() => {}}
+                sortDirection={sortKey === item.name ? sortDirection : undefined}
+                onClick={() => handleSort(item.name)}
               />
             ))}
             <th>
@@ -125,7 +129,7 @@ const UserTable: React.FC<UserTableProps> = ({
                   <td>{el.reporting_manager}</td>
                   <td>{el.email_id}</td>
                   <td>{el.mobile_number}</td>
-                  <td>{el.description}</td>
+                  <td>{el.description ? el.description:'NA'}</td>
                   <td>
                     <div className="action-icon">
                       <div
@@ -150,7 +154,14 @@ const UserTable: React.FC<UserTableProps> = ({
                   </td>
                 </tr>
               ))
-            : null}
+            :  <tr style={{border:0}}>
+            <td colSpan={10}>
+            <div className="data-not-found">
+            <DataNotFound/>
+            <h3>Data Not Found</h3>
+            </div>
+            </td>
+          </tr>}
         </tbody>
       </table>
     </div>
