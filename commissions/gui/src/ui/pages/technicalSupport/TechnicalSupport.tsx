@@ -40,9 +40,20 @@ const TechnicalSupport: React.FC = () => {
 
     if (state.user.firstName.length === 0) {
       alert('please provide first name')
+
     } else if (state.user.lastName.length === 0) {
       alert('please provide last name')
-    } else {
+    }
+    else if (state.user.email.length === 0) {
+      alert('please provide Email name')
+    }
+    else if (state.user.phoneNum.length === 0) {
+      alert('please provide Phone number')
+    }
+    else if (state.user.message.length === 0) {
+      alert('please provide message')
+    }
+     else {
 
       console.log(state.user)
     }
