@@ -219,6 +219,7 @@ const Sidebar: React.FC<Toggleprops> = ({
                       borderTopRightRadius: "4px",
                       borderLeft: "1px solid #D9D9D9",
                       color: "#092D04",
+                       
                     }}
                   >
                     <Link
@@ -234,6 +235,7 @@ const Sidebar: React.FC<Toggleprops> = ({
                         borderBottom: "1px solid #E8E8E8",
                         fontSize: "13px",
                         borderRight: "3px solid #23B364",
+                        cursor: "default",
                       }}
                     >
                       {" "}
@@ -355,6 +357,7 @@ const Sidebar: React.FC<Toggleprops> = ({
                         borderBottom: "1px solid #E8E8E8",
                         fontSize: "13px",
                         borderRight: "3px solid #23B364",
+                        cursor: "default",
                       }}
                     >
                       {" "}
@@ -473,6 +476,7 @@ const Sidebar: React.FC<Toggleprops> = ({
                         borderBottom: "1px solid #E8E8E8",
                         fontSize: "13px",
                         borderRight: "3px solid #23B364",
+                        cursor: "default",
                       }}
                     >
                       {" "}
@@ -597,6 +601,7 @@ const Sidebar: React.FC<Toggleprops> = ({
                             borderBottom: "1px solid #E8E8E8",
                             fontSize: "13px",
                             borderRight: "3px solid #23B364",
+                            cursor: "default",
                           }}
                         >
                           {" "}
@@ -776,6 +781,7 @@ const Sidebar: React.FC<Toggleprops> = ({
                             borderBottom: "1px solid #E8E8E8",
                             fontSize: "13px",
                             borderRight: "3px solid #23B364",
+                            cursor:"default"
                           }}
                         >
                           {" "}
@@ -970,7 +976,7 @@ const Sidebar: React.FC<Toggleprops> = ({
                   to={oth.path}
                   onMouseEnter={(e) =>
                     toggleOpen &&
-                    handleMouseover(e, oth.sidebarProps.displayText, [], 3)
+                    handleMouseover(e, oth.sidebarProps.displayText, [], index+8)
                   }
                   onMouseLeave={() => {
                     timeOut.current = setTimeout(() => {
@@ -1021,7 +1027,7 @@ const Sidebar: React.FC<Toggleprops> = ({
                       top: cords.top,
                       left: cords.left,
                       display:
-                        cords.opacity && cords.id === 3 ? "block" : "none",
+                        cords.opacity && cords.id === index+8 ? "block" : "none",
 
                       maxHeight: "300px",
                       minWidth: "150px",
@@ -1046,6 +1052,7 @@ const Sidebar: React.FC<Toggleprops> = ({
                         borderBottom: "1px solid #E8E8E8",
                         fontSize: "13px",
                         borderRight: "3px solid #23B364",
+                        cursor: "default",
                       }}
                     >
                       {" "}
