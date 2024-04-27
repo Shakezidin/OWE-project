@@ -25,11 +25,12 @@ interface UserTableProos {
   selectedOption: UserDropdownModel;
   handleSelectChange: (data: UserDropdownModel) => void;
   onClickEdit: (item: UserRoleBasedListModel) => void;
-  onClickDelete: () => void;
+  onClickDelete: (item: UserRoleBasedListModel) => void;
   selectAllChecked: boolean,
   selectedRows: Set<number>,
   setSelectedRows: React.Dispatch<React.SetStateAction<Set<number>>>,
   setSelectAllChecked: React.Dispatch<React.SetStateAction<boolean>>,
+  onClickMultiDelete: ()=> void;
 }
 const UserManagementTable: React.FC<UserTableProos> = ({
   userDropdownData,
@@ -41,7 +42,8 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   selectAllChecked,
   selectedRows,
   setSelectedRows,
-  setSelectAllChecked
+  setSelectAllChecked,
+  onClickMultiDelete
 }) => {
   const dispatch = useAppDispatch();
 
@@ -79,8 +81,8 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             onClickEdit={(item: UserRoleBasedListModel) => {
               onClickEdit(item);
             }}
-            onClickDelete={() => {
-              onClickDelete()
+            onClickDelete={(item: UserRoleBasedListModel) => {
+              onClickDelete(item)
             }}
             selectedRows={selectedRows}
           selectAllChecked={selectAllChecked}
@@ -95,8 +97,8 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             onClickEdit={(item: UserRoleBasedListModel) => {
               onClickEdit(item);
             }}
-            onClickDelete={() => {
-              onClickDelete()
+            onClickDelete={(item: UserRoleBasedListModel) => {
+              onClickDelete(item)
             }}
             selectedRows={selectedRows}
             selectAllChecked={selectAllChecked}
@@ -111,8 +113,8 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             onClickEdit={(item: UserRoleBasedListModel) => {
               onClickEdit(item);
             }}
-            onClickDelete={() => {
-              onClickDelete()
+            onClickDelete={(item: UserRoleBasedListModel) => {
+              onClickDelete(item)
             }}
             selectedRows={selectedRows}
             selectAllChecked={selectAllChecked}
@@ -127,8 +129,8 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             onClickEdit={(item: UserRoleBasedListModel) => {
               onClickEdit(item);
             }}
-            onClickDelete={() => {
-              onClickDelete()
+            onClickDelete={(item: UserRoleBasedListModel) => {
+              onClickDelete(item)
             }}
             selectedRows={selectedRows}
             selectAllChecked={selectAllChecked}
@@ -143,8 +145,8 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             onClickEdit={(item: UserRoleBasedListModel) => {
               onClickEdit(item);
             }}
-            onClickDelete={() => {
-              onClickDelete()
+            onClickDelete={(item: UserRoleBasedListModel) => {
+              onClickDelete(item)
             }}
             selectedRows={selectedRows}
             selectAllChecked={selectAllChecked}
@@ -159,8 +161,8 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             onClickEdit={(item: UserRoleBasedListModel) => {
               onClickEdit(item);
             }}
-            onClickDelete={() => {
-              onClickDelete()
+            onClickDelete={(item: UserRoleBasedListModel) => {
+              onClickDelete(item)
             }}
             selectedRows={selectedRows}
             selectAllChecked={selectAllChecked}
@@ -175,8 +177,8 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             onClickEdit={(item: UserRoleBasedListModel) => {
               onClickEdit(item);
             }}
-            onClickDelete={() => {
-              onClickDelete()
+            onClickDelete={(item: UserRoleBasedListModel) => {
+              onClickDelete(item)
             }}
             selectedRows={selectedRows}
             selectAllChecked={selectAllChecked}
@@ -192,8 +194,8 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             onClickEdit={(item: UserRoleBasedListModel) => {
               onClickEdit(item);
             }}
-            onClickDelete={() => {
-              onClickDelete()
+            onClickDelete={(item: UserRoleBasedListModel) => {
+              onClickDelete(item)
             }}
             selectedRows={selectedRows}
             selectAllChecked={selectAllChecked}
@@ -225,7 +227,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
           </div>
 
           <div className="iconsSection-delete" style={{ marginTop: ".2rem" }} onClick={()=>{
-            onClickDelete()
+            onClickMultiDelete()
           }}>
             
             <button type="button">
