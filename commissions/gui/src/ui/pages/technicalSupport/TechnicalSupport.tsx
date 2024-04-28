@@ -4,10 +4,14 @@ import { ICONS } from "../../icons/Icons";
 import "./support.css";
 import Select from "react-select";
 import { ActionButton } from "../../components/button/ActionButton";
+import SelectOption from "../../components/selectOption/SelectOption";
 
 const TechnicalSupport: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedState, setSelectedState] = useState<string | null>(null);
+  const [stateOptions, setStateOptions] = useState<any[]>([]);
+
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -41,6 +45,10 @@ const TechnicalSupport: React.FC = () => {
     if (!Object.values(newErrors).some((error) => error)) {
       console.log("Form submitted successfully");
     }
+  };
+
+  const handleStateChange = (selectedOption: any) => {
+    setSelectedState(selectedOption.value);
   };
 
   const options = [
@@ -147,32 +155,17 @@ const TechnicalSupport: React.FC = () => {
             <div className="create-input-container-support">
               <div className="create-input-field-support">
                 <label className="inputLabel">Issue</label>
-                <Select
-                  options={options}
-                  isSearchable
-                  styles={{
-                    control: (baseStyles, state) => ({
-                      ...baseStyles,
-                      marginTop: "4.5px",
-                      borderRadius: "8px",
-                      outline: "none",
-                      fontSize: "10px",
-                      // height: "2.25rem",
-
-                      border: "1px solid #d0d5dd",
-                    }),
-
-                    indicatorSeparator: () => ({
-                      display: "none", // Hide the indicator separator
-                    }),
-                  }}
+                <SelectOption
+                  onChange={handleStateChange}
+                  options={stateOptions}
+                  value={stateOptions?.find((option) => option.value === " ")}
                 />
               </div>
 
               <div
                 className="create-input-field-support"
                 style={{ marginTop: ".2rem" }}
-                >
+                 >
                 <label className="inputLabel">
                   <p>Attach File</p>
                 </label>
@@ -187,8 +180,10 @@ const TechnicalSupport: React.FC = () => {
                     <span className="file-input-placeholder">Select File</span>
                     <button
                       className="custom-button"
+                      
                       onClick={handleButtonClick}
                     >
+                      <img src={ICONS.browserIcon} alt=""/>
                       Browse
                     </button>
                   </div>
@@ -199,7 +194,7 @@ const TechnicalSupport: React.FC = () => {
             <div
               className="create-input-field-note-support"
               style={{ marginTop: "0.3rem" }} >
-              <label htmlFor="" className="inputLabel">
+              <label htmlFor="" className="inputLabel-support">
                 Message
               </label>
               <br />

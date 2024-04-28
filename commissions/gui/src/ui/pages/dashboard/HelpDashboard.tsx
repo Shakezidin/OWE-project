@@ -156,12 +156,14 @@ const HelpDashboard: React.FC<ButtonProps> = ({
                     onChange={handleFileInputChange}
                     className="file-input"
                   />
-                  <div className="custom-button-container">
+                   <div className="custom-button-container">
                     <span className="file-input-placeholder">Select File</span>
                     <button
-                      className="custom-button-dash"
+                      className="custom-button"
+                      
                       onClick={handleButtonClick}
                     >
+                      <img src={ICONS.browserIcon} alt=""/>
                       Browse
                     </button>
                   </div>

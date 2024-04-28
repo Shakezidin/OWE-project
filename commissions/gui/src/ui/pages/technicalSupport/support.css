@@ -38,6 +38,7 @@
   width: 50%;
   display: flex;
   display: block;
+  padding-top: 0.5rem;
 }
 
 
@@ -47,6 +48,7 @@
   line-height: 18px;
   text-align: left; 
   margin-bottom: -5px;
+  /* background-color: #0493CE; */
 }
 
 .vertical-support {
@@ -125,6 +127,7 @@ text-align: left;
 }
 
 .inputLabel p{
+
 font-size: 12px;
 font-weight: 400;
 /* line-height: 18px; */
@@ -132,9 +135,12 @@ text-align: left;
 
 }
 .custom-button {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
   /* Define your button styles */
-  background: linear-gradient(180deg, #f6f6f6 0%, #c1c1c1 100%);
-  color: #000000;
+  background: #0493CE;
+  color: white;
   padding: 5px 15px;
   border: none;
   border-radius: 5px;
@@ -142,7 +148,7 @@ text-align: left;
   font-size: 10px;
   font-weight: 500;
   line-height: 18px;
-  margin-right: 10px;
+  margin-right: 8px;
   /* text-align: left; */
 }
 
@@ -164,6 +170,10 @@ text-align: left;
 .create-input-field-note-support {
   width: 100%;
   max-width: 100%;
+  font-size: 12px;
+  font-weight: 400;
+  color: #212121;
+  padding-top: 0.5rem;
 }
 .create-input-field-note-support textarea {
   width: 100%;

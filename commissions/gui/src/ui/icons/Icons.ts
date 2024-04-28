@@ -77,6 +77,7 @@ import closeIcon from "../../resources/assets/closeIcon.svg";
 import arrowDown from '../../resources/assets/arrow-down.svg'
 import linearGraph from '../../resources/assets/linear-graph.svg'
 import curveGraph from '../../resources/assets/curvegraph.svg'
+import browserIcon from '../../resources/assets/browser.svg'
 export const ICONS = {
   BACKGROUND: require("../../resources/assets/background.png"),
   LOGO: logo,
@@ -166,5 +167,6 @@ export const ICONS = {
   closeIcon: closeIcon,
   arrowDown:arrowDown,
   linearGraph:linearGraph,
-  curveGraph:curveGraph
+  curveGraph:curveGraph,
+  browserIcon: browserIcon
 };

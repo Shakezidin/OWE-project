@@ -194,7 +194,7 @@
 .help-section-container {
   display: flex;
   justify-content: space-between;
-  padding: 0.5rem;
+  padding: 1rem;
 }
 
 .help-section {
@@ -216,11 +216,23 @@
   padding: 0.5rem;
   cursor: pointer;
 }
+
+.create-input-field input{
+  background-color: #F8F8F8;
+  width: 100%;
+  
+}
 .create-input-field-help {
-  width: 32%;
-  margin-top: 0.5rem;
+  width: 80%;
+
+  /* margin-top: 0.5rem; */
   /* margin: 1rem; */
   padding: 0.5rem 2rem 0.5rem 2rem;
+
+}
+.create-input-field-help input {
+  background-color: #F8F8F8;
+  width: 250px;
 }
 .help-line {
   width: 950px;
@@ -330,6 +342,8 @@
   /* background-color: #263747; */
   width: 100%;
   margin-top: 0.5rem;
+  background-color: #F8F8F8;
+  
 }
 .inputLabeldash p{
   font-size: 13px;
