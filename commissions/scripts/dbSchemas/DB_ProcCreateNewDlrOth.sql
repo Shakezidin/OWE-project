@@ -9,36 +9,30 @@ CREATE OR REPLACE FUNCTION create_new_dlr_oth(
     p_end_date                character varying,
     OUT v_dlr_oth_id    INT
 )
-RETURN INT
+RETURNS INT
 AS $$
 BEGIN
     -- Insert data into dlr_oth table
-INSERT INTO dlr_oth (
-    unique_id,
-    payee,
-    amount,
-    description,
-    balance,
-    paid_amount,
-    start_date,
-    end_date
-)
-VALUES (
-   p_unique_id,
-   p_payee,
-   p_amount,
-   p_description,
-   p_balance,
-   p_paid_amount,
-   p_start_date,
-   p_end_date
-)
-RETURNING id INTO v_dlr_oth_id;
+    INSERT INTO dlr_oth (
+        unique_id,
+        payee,
+        amount,
+        description,
+        balance,
+        paid_amount,
+        start_date,
+        end_date
+    )
+    VALUES (
+       p_unique_id,
+       p_payee,
+       p_amount,
+       p_description,
+       p_balance,
+       p_paid_amount,
+       p_start_date,
+       p_end_date
+    )
+    RETURNING id INTO v_dlr_oth_id;
 END;
 $$ LANGUAGE plpgsql;
-
-
-
-
-
-

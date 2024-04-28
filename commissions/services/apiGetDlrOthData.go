@@ -60,8 +60,8 @@ func HandleGetDLROTHDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	tableName := db.TableName_dealer_tier
 	query = ` 
-	 SELECT do.id as record_id, do.unique_id, do.payee, do.amount, do.description, do.balance, do.paid_amount, do.is_archived, do.start_date, do.end_date
-	 FROM dlr_oth do`
+	 SELECT dh.id as record_id, dh.unique_id, dh.payee, dh.amount, dh.description, dh.balance, dh.paid_amount, dh.is_archived, dh.start_date, dh.end_date
+	 FROM dlr_oth dh`
 
 	filter, whereEleList = PrepareDLROTHFilters(tableName, dataReq)
 	if filter != "" {
@@ -205,22 +205,22 @@ func PrepareDLROTHFilters(tableName string, dataFilter models.DataRequestBody) (
 			}
 			switch column {
 			case "unique_id":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(do.unique_id) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(dh.unique_id) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "payee":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(do.payee) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(dh.payee) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "amount":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(do.amount) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(dh.amount) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "description":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(do.description) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(dh.description) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "balance":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(do.balance) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(dh.balance) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "paid_amount":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(do.paid_amount) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(dh.paid_amount) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
@@ -236,14 +236,14 @@ func PrepareDLROTHFilters(tableName string, dataFilter models.DataRequestBody) (
 		} else {
 			filtersBuilder.WriteString(" WHERE ")
 		}
-		filtersBuilder.WriteString("do.is_archived = TRUE")
+		filtersBuilder.WriteString("dh.is_archived = TRUE")
 	} else {
 		if whereAdded {
 			filtersBuilder.WriteString(" AND ")
 		} else {
 			filtersBuilder.WriteString(" WHERE ")
 		}
-		filtersBuilder.WriteString("do.is_archived = FALSE")
+		filtersBuilder.WriteString("dh.is_archived = FALSE")
 	}
 
 	// Add pagination logic

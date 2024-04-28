@@ -6,6 +6,7 @@ import { UserRoleBasedListModel } from "../../../../core/models/api_models/UserM
 import { UserSaleRepresentTableColumn } from "../../../../resources/static_data/UserManagementColumn";
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
 import { toggleRowSelection } from "../../../components/chekbox/checkHelper";
+import DataNotFound from "../../../components/loader/DataNotFound";
 
 interface SalesRepresentativeProps {
   data: UserRoleBasedListModel[];
@@ -142,7 +143,7 @@ const SalesRepresentativeTable: React.FC<SalesRepresentativeProps> = ({
                     <td>
                       {el.mobile_number}
                     </td>
-                    <td>{el.description}</td>
+                    <td>{el.description ? el.description:'NA'}</td>
                     <td>
                       <div className="action-icon">
                         <div className="" style={{ cursor: "pointer" }} onClick={()=> onClickDelete(el)}>
@@ -155,7 +156,14 @@ const SalesRepresentativeTable: React.FC<SalesRepresentativeProps> = ({
                     </td>
                   </tr>
                 ))
-              : null}
+              :  <tr style={{border:0}}>
+              <td colSpan={10}>
+              <div className="data-not-found">
+              <DataNotFound/>
+              <h3>Data Not Found</h3>
+              </div>
+              </td>
+            </tr>}
           </tbody>
         </table>
       </div>

@@ -97,7 +97,7 @@ func UpdatePassword(newPassword string, userEmailId string) (err error) {
 	whereEleList = append(whereEleList, isPasswordChnageReq)
 	whereEleList = append(whereEleList, userEmailId)
 
-	err = db.UpdateDataInDB(query, whereEleList)
+	err, _ = db.UpdateDataInDB(query, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to update the new password err: %v", err)
 		return err

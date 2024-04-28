@@ -80,43 +80,43 @@ func ReteriveFromDB(query string,
  * INPUT:			query, whereEleList
  * RETURNS:    		err
  ******************************************************************************/
-func UpdateDataInDB(query string, whereEleList []interface{}) (err error) {
+func UpdateDataInDB(query string, whereEleList []interface{}) (err error, rows int64) {
 
 	log.EnterFn(0, "UpdateDataInDB")
 	defer func() { log.ExitFn(0, "UpdateDataInDB", err) }()
 
 	log.FuncDebugTrace(0, "UpdateDataInDB Query %v whereParams %+v", query, whereEleList)
-
+	rows = 0
 	con, err := getDBConnection(OWEDB)
 	if err != nil {
 		log.FuncErrorTrace(0, "UpdateDataInDB Failed to get %v Connection with err = %v", OWEDB, err)
-		return err
+		return err, rows
 	}
 
 	stmtIns, err := con.CtxH.Prepare(query)
 	if err != nil {
 		log.FuncErrorTrace(0, "UpdateDataInDB Prepare Failed with error = %v", err)
-		return err
+		return err, rows
 	}
 
 	res, err := stmtIns.Exec(whereEleList...)
 	if err != nil {
 		log.FuncErrorTrace(0, "UpdateDataInDB Exec Failed with error = %v", err)
-		return err
+		return err, rows
 	}
 
 	if stmtIns != nil {
 		defer stmtIns.Close()
 	}
 
-	rows, err := res.RowsAffected()
+	rows, err = res.RowsAffected()
 	if err != nil {
 		log.FuncErrorTrace(0, "UpdateDataInDB Failed to get the RowsAffected error = %v", err)
 	} else {
 		log.FuncDebugTrace(0, "UpdateDataInDB Update the rows = %v", rows)
 	}
 
-	return err
+	return err, rows
 }
 
 /******************************************************************************

@@ -32,7 +32,7 @@ const UserPieChart:React.FC<UserPieChartProps> = ({ onboardingList }) => {
 
   return (
  
-    <div className="PieChart-container" style={{display:"flex", width:'100%', gap:"2rem"}} >
+    <div className="PieChart-container" style={{display:"flex", width:'100%', gap:"1.2rem"}} >
       <div className="pie-section" style={{width:"50%",height:"55vh", background:"white", borderRadius:"16px", padding:"1rem"}} >
         <div className="pieChart-section">
           <h2>Onboarding Detail</h2>

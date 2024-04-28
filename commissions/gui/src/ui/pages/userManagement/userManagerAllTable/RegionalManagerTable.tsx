@@ -6,6 +6,7 @@ import { UserRoleBasedListModel } from "../../../../core/models/api_models/UserM
 import { UserRegionalTableColumn } from "../../../../resources/static_data/UserManagementColumn";
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
 import { toggleRowSelection } from "../../../components/chekbox/checkHelper";
+import DataNotFound from "../../../components/loader/DataNotFound";
 
 interface RegionalManagerProps {
   data: UserRoleBasedListModel[];
@@ -136,7 +137,7 @@ const RegionalManagerTable: React.FC<RegionalManagerProps> = ({ data, onClickDel
                     <td >
                       {el.mobile_number}
                     </td>
-                    <td>{el.description}</td>
+                    <td>{el.description ? el.description:'NA'}</td>
                     <td>
                       <div className="action-icon">
                         <div className="" style={{ cursor: "pointer" }}  onClick={()=> onClickDelete(el)}>
@@ -149,7 +150,14 @@ const RegionalManagerTable: React.FC<RegionalManagerProps> = ({ data, onClickDel
                     </td>
                   </tr>
                 ))
-              : null}
+              :  <tr style={{border:0}}>
+              <td colSpan={10}>
+              <div className="data-not-found">
+              <DataNotFound/>
+              <h3>Data Not Found</h3>
+              </div>
+              </td>
+            </tr>}
           </tbody>
         </table>
       </div>

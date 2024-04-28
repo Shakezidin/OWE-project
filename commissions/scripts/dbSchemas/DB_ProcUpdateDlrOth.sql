@@ -25,11 +25,13 @@ BEGIN
         start_date = p_start_date,
         end_date = p_end_date
     WHERE
-        id = p_id;
+        id = p_id
     RETURNING id INTO v_dlr_oth_id;
-IF NOT FOUND THEN
+
+    IF NOT FOUND THEN
         RAISE EXCEPTION 'Record with ID % not found in dlr_oth table', p_id;
     END IF;
+
 EXCEPTION
     WHEN OTHERS THEN
         -- Handle the exception, you can log or re-raise as needed

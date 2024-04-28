@@ -10,6 +10,7 @@ import (
 	"OWEApp/db"
 	log "OWEApp/logger"
 	models "OWEApp/models"
+	"strings"
 
 	"encoding/json"
 	"fmt"
@@ -57,11 +58,12 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	if (len(createUserReq.Name) <= 0) || (len(createUserReq.EmailId) <= 0) ||
 		(len(createUserReq.MobileNumber) <= 0) ||
 		//(len(createUserReq.Password) <= 0) ||
-		(len(createUserReq.Designation) <= 0) || (len(createUserReq.RoleName) <= 0) ||
+		(len(createUserReq.Designation) <= 0) || (len(createUserReq.RoleName) <= 0) {
 		//(len(createUserReq.UserCode) <= 0) ||
-		(len(createUserReq.ReportingManager) <= 0) ||
-		(len(createUserReq.UserStatus) <= 0) || (len(createUserReq.Description) <= 0) ||
-		(len(createUserReq.DealerOwner) <= 0) {
+		//(len(createUserReq.ReportingManager) <= 0) ||
+		//(len(createUserReq.UserStatus) <= 0) ||
+		//(len(createUserReq.Description) <= 0) ||
+		//(len(createUserReq.DealerOwner) <= 0) {
 		//(len(createUserReq.StreetAddress) <= 0) ||
 		//(len(createUserReq.State) <= 0) || (len(createUserReq.City) <= 0) ||
 		//(len(createUserReq.Zipcode) <= 0) || (len(createUserReq.Country) <= 0){
@@ -104,6 +106,14 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 
 	_, err = db.CallDBFunction(db.CreateUserFunction, queryParameters)
 	if err != nil {
+		// Check if the error message contains "User with email"
+		if strings.Contains(err.Error(), "User with email") {
+			// Handle the case where provided user data violates unique constraint
+			log.FuncErrorTrace(0, "Failed to Add User in DB with err: %v", err)
+			FormAndSendHttpResp(resp, "Failed to Add User, provided user details email id or mobile number already exist.", http.StatusConflict, nil)
+			return
+		}
+		// Handle other errors
 		log.FuncErrorTrace(0, "Failed to Add User in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Create User", http.StatusInternalServerError, nil)
 		return

@@ -71,8 +71,8 @@ CREATE TABLE IF NOT EXISTS user_details(
     country VARCHAR(50),
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
-    FOREIGN KEY (reporting_manager) REFERENCES user_details(user_id),
-    FOREIGN KEY (dealer_owner) REFERENCES user_details(user_id),
+    FOREIGN KEY (reporting_manager) REFERENCES user_details(user_id) ON DELETE SET NULL,
+    FOREIGN KEY (dealer_owner) REFERENCES user_details(user_id) ON DELETE SET NULL,
     FOREIGN KEY (role_id) REFERENCES user_roles(role_id),
     FOREIGN KEY (state) REFERENCES states(state_id),
     FOREIGN KEY (zipcode) REFERENCES zipcodes(id),
@@ -563,6 +563,7 @@ CREATE TABLE referral_data (
     r2_addr_resp text,
     start_date character varying NOT NULL,
     end_date character varying,
+    is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     FOREIGN KEY (state_id) REFERENCES states(state_id),
@@ -576,7 +577,7 @@ CREATE TABLE dealer_credit (
     customer text,
     dealer_id INT,
     dealer_dba text,
-    exact_amtount text,
+    exact_amount text,
     per_kw_amount float,
     approved_by text,
     notes text,
@@ -584,6 +585,7 @@ CREATE TABLE dealer_credit (
     sys_size float,
     start_date character varying NOT NULL,
     end_date character varying,
+    is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     FOREIGN KEY (dealer_id) REFERENCES user_details(user_id)
@@ -595,7 +597,7 @@ CREATE TABLE noncomm_dlrpay (
     customer text,
     dealer_id INT,
     dealer_dba text,
-    exact_amtount text,
+    exact_amount text,
     approved_by text,
     notes text,
     balance float,
@@ -603,6 +605,7 @@ CREATE TABLE noncomm_dlrpay (
     dba text,
     start_date character varying NOT NULL,
     end_date character varying,
+    is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     FOREIGN KEY (dealer_id) REFERENCES user_details(user_id)
@@ -617,23 +620,141 @@ CREATE TABLE dlr_oth(
     balance float,
     paid_amount float,
     is_archived BOOLEAN DEFAULT FALSE,
-    Start_Date character varying NOT NULL,
-    End_Date character varying
+    start_date character varying NOT NULL,
+    end_date character varying,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone
 );
 
+CREATE TABLE rep_pay_settings (
+    id serial NOT NULL,
+    unique_id varchar NOT NULL UNIQUE,
+    name character varying,
+    state_id INT,
+    pay_scale text,
+    position text,
+    b_e text,
+    is_archived BOOLEAN DEFAULT FALSE,
+    start_date character varying NOT NULL,
+    end_date character varying,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
+    FOREIGN KEY (state_id) REFERENCES states(state_id)
+);
+
+CREATE TABLE rate_adjustments(
+    id serial NOT NULL,
+    unique_id varchar NOT NULL UNIQUE,
+    pay_scale text,
+    position text,
+    adjustment text,
+    min_rate float,
+    max_rate float,
+    is_archived BOOLEAN DEFAULT FALSE,
+    start_date character varying NOT NULL,
+    end_date character varying,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone
+);
+
+CREATE TABLE ar_schedule (
+    id serial NOT NULL,
+    unique_id varchar NOT NULL UNIQUE,
+    partner INT,
+    installer INT,
+    sale_type_id INT,
+    state_id INT,
+    red_line text,
+    calc_date text,
+    permit_pay text,
+    permit_max text,
+    installe_pay text,
+    pto_pay text,
+    is_archived BOOLEAN DEFAULT FALSE,
+    start_date character varying NOT NULL,
+    end_date character varying,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
+    FOREIGN KEY (partner) REFERENCES partners(partner_id),
+    FOREIGN KEY (installer) REFERENCES partners(partner_id),
+    FOREIGN KEY (sale_type_id) REFERENCES sale_type(id),
+    FOREIGN KEY (state_id) REFERENCES states(state_id)
+);
+
+CREATE TABLE install_cost (
+    id serial NOT NULL,
+    unique_id varchar NOT NULL UNIQUE,
+    coat float,
+    is_archived BOOLEAN DEFAULT FALSE,
+    start_date character varying NOT NULL,
+    end_date character varying,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone
+);
+
+CREATE TABLE leader_override (
+    id serial NOT NULL,
+    unique_id varchar NOT NULL UNIQUE,
+    team_id INT,
+    leader_name text,
+    type text,
+    term text,
+    qual text,
+    sales_q float,
+    team_kw_q float,
+    pay_rate character varying,
+    is_archived BOOLEAN DEFAULT FALSE,
+    start_date character varying NOT NULL,
+    end_date character varying,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
+    FOREIGN KEY (team_id) REFERENCES teams(team_id)
+);
+
+CREATE TABLE adder_responsibility (
+    id serial NOT NULL,
+    unique_id varchar NOT NULL UNIQUE,
+    pay_scale text,
+    percentage Float,
+    is_archived BOOLEAN DEFAULT FALSE,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone
+);
+
+CREATE TABLE adder_credit (
+    id serial NOT NULL,
+    unique_id varchar NOT NULL UNIQUE,
+    pay_scale text,
+    type text,
+    min_rate float,
+    max_rate float,
+    is_archived BOOLEAN DEFAULT FALSE,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone
+);
+
+CREATE TABLE loan_fee (
+    id serial NOT NULL,
+    unique_id varchar NOT NULL UNIQUE,
+    dealer_id INT,
+    installer INT,
+    state_id INT,
+    loan_type INT,
+    owe_cost float,
+    dlr_mu character varying,
+    dlr_cost character varying,
+    is_archived BOOLEAN DEFAULT FALSE,
+    start_date character varying NOT NULL,
+    end_date character varying,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
+    FOREIGN KEY (state_id) REFERENCES states(state_id),
+    FOREIGN KEY (dealer_id) REFERENCES user_details(user_id),
+    FOREIGN KEY (installer) REFERENCES partners(partner_id),
+    FOREIGN KEY (loan_type) REFERENCES loan_type(id)
+);
 
 /*
-CREATE TABLE DLR_OTH(
-    id serial NOT NULL,
-    Unique_ID text Primary Key,
-    Payee Text,
-    Amount Float,
-    Description Text,
-    Balance Float,
-    Paid_Amt Float,
-    Start_Date Date,
-    End_Date Date
-);
 
 CREATE TABLE Adjustments (
     unique_id character varying PRIMARY KEY,

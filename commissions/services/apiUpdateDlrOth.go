@@ -65,7 +65,7 @@ func HandleUpdateDLROTHDataRequest(resp http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	if float64(updateDLR_OTHReq.Record_Id) <= float64(0) {
+	if updateDLR_OTHReq.Record_Id <= int64(0) {
 		err = fmt.Errorf("Invalid record_id Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Invalid Sale price Not Allowed", http.StatusBadRequest, nil)
@@ -94,6 +94,7 @@ func HandleUpdateDLROTHDataRequest(resp http.ResponseWriter, req *http.Request) 
 	}
 
 	// Populate query parameters in the correct order
+	queryParameters = append(queryParameters, updateDLR_OTHReq.Record_Id)
 	queryParameters = append(queryParameters, updateDLR_OTHReq.Unique_Id)
 	queryParameters = append(queryParameters, updateDLR_OTHReq.Payee)
 	queryParameters = append(queryParameters, updateDLR_OTHReq.Amount)

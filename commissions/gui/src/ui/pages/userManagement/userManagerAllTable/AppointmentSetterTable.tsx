@@ -6,6 +6,7 @@ import { UserRoleBasedListModel } from "../../../../core/models/api_models/UserM
 import { UserAppointmentTableColumn } from "../../../../resources/static_data/UserManagementColumn";
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
 import { toggleRowSelection } from "../../../components/chekbox/checkHelper";
+import DataNotFound from "../../../components/loader/DataNotFound";
 
 interface AppointmentSetterProps {
   data: UserRoleBasedListModel[];
@@ -123,13 +124,13 @@ const AppointmentSetterTable: React.FC<AppointmentSetterProps> = ({ data, onClic
                       {el.name}
                     </td>
                     <td>
-                      {el.startData}
+                      {el.startDate ? el.startDate: 'NA'} 
                     </td>
                     <td >
-                      {el.endDate}
+                      {el.endDate ? el.endDate : 'NA'}
                     </td>
                     <td>
-                      {el.amount}
+                      {el.amount ? el.amount : 'NA'}
                     </td>
                     <td>{el.description}</td>
                     <td>
@@ -156,7 +157,14 @@ const AppointmentSetterTable: React.FC<AppointmentSetterProps> = ({ data, onClic
                   </td>
                   </tr>
                 ))
-              : null}
+              :  <tr style={{border:0}}>
+              <td colSpan={10}>
+              <div className="data-not-found">
+              <DataNotFound/>
+              <h3>Data Not Found</h3>
+              </div>
+              </td>
+            </tr>}
           </tbody>
         </table>
       </div>

@@ -56,44 +56,48 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if (len(updateUserReq.Name) <= 0) || (len(updateUserReq.EmailId) <= 0) ||
-		(len(updateUserReq.MobileNumber) <= 0) || (len(updateUserReq.Country) <= 0) ||
-		(len(updateUserReq.Designation) <= 0) || (len(updateUserReq.RoleName) <= 0) ||
-		(len(updateUserReq.UserCode) <= 0) || (len(updateUserReq.ReportingManager) <= 0) ||
-		(len(updateUserReq.UserStatus) <= 0) || (len(updateUserReq.Description) <= 0) ||
-		(len(updateUserReq.DealerOwner) <= 0) || (len(updateUserReq.StreetAddress) <= 0) ||
-		(len(updateUserReq.State) <= 0) || (len(updateUserReq.City) <= 0) ||
-		(len(updateUserReq.Zipcode) <= 0) {
+	if len(updateUserReq.Name) <= 0 {
+		//(len(updateUserReq.EmailId) <= 0) || can not update this
+		//(len(updateUserReq.MobileNumber) <= 0) || can not update this
+		//(len(updateUserReq.Country) <= 0) ||
+		//(len(updateUserReq.Designation) <= 0) ||
+		//(len(updateUserReq.RoleName) <= 0) ||
+		//(len(updateUserReq.ReportingManager) <= 0) ||
+		//(len(updateUserReq.DealerOwner) <= 0) ||
+		//(len(updateUserReq.StreetAddress) <= 0) ||
+		//(len(updateUserReq.State) <= 0) ||
+		//(len(updateUserReq.City) <= 0) ||
+		//(len(updateUserReq.Zipcode) <= 0) {\
+		//(len(updateUserReq.UserStatus) <= 0) ||
+		//(len(updateUserReq.Description) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
-	if updateUserReq.RecordId <= int64(0) {
-		err = fmt.Errorf("Invalid Record Id, unable to proceed")
+	if len(updateUserReq.UserCode) <= 0 {
+		err = fmt.Errorf("Invalid UserCode, unable to proceed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Record Id, Update failed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid UserCode, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
 	// Populate query parameters in the correct order
-	queryParameters = append(queryParameters, updateUserReq.RecordId)
 	queryParameters = append(queryParameters, updateUserReq.Name)
-	queryParameters = append(queryParameters, updateUserReq.UserCode)
-	queryParameters = append(queryParameters, updateUserReq.MobileNumber)
-	queryParameters = append(queryParameters, updateUserReq.EmailId)
-	queryParameters = append(queryParameters, updateUserReq.PasswordChangeReq)
-	queryParameters = append(queryParameters, updateUserReq.ReportingManager)
-	queryParameters = append(queryParameters, updateUserReq.DealerOwner)
-	queryParameters = append(queryParameters, updateUserReq.RoleName)
-	queryParameters = append(queryParameters, updateUserReq.UserStatus)
-	queryParameters = append(queryParameters, updateUserReq.Designation)
-	queryParameters = append(queryParameters, updateUserReq.Description)
-	queryParameters = append(queryParameters, updateUserReq.StreetAddress)
-	queryParameters = append(queryParameters, updateUserReq.State)
-	queryParameters = append(queryParameters, updateUserReq.City)
-	queryParameters = append(queryParameters, updateUserReq.Zipcode)
-	queryParameters = append(queryParameters, updateUserReq.Country)
+	//queryParameters = append(queryParameters, updateUserReq.MobileNumber)
+	//queryParameters = append(queryParameters, updateUserReq.EmailId)
+	//queryParameters = append(queryParameters, updateUserReq.PasswordChangeReq)
+	//queryParameters = append(queryParameters, updateUserReq.ReportingManager)
+	//queryParameters = append(queryParameters, updateUserReq.DealerOwner)
+	//queryParameters = append(queryParameters, updateUserReq.RoleName)
+	//queryParameters = append(queryParameters, updateUserReq.UserStatus)
+	//queryParameters = append(queryParameters, updateUserReq.Designation)
+	//queryParameters = append(queryParameters, updateUserReq.Description)
+	//queryParameters = append(queryParameters, updateUserReq.StreetAddress)
+	//queryParameters = append(queryParameters, updateUserReq.State)
+	//queryParameters = append(queryParameters, updateUserReq.City)
+	//queryParameters = append(queryParameters, updateUserReq.Zipcode)
+	//queryParameters = append(queryParameters, updateUserReq.Country)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateUserFunction, queryParameters)

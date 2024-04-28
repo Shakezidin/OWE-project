@@ -22,22 +22,22 @@ export const validateForm = (
   const errors: { [key: string]: boolean } = {};
 
   if (!validateName(formData.first_name)) {
-    errors.name = true;
+    errors.FirstName = true;
   }
 
   if (!validateName(formData.last_name)) {
-    errors.name = true;
+    errors.LastName = true;
   }
 
   if (!validateEmail(formData.email_id)) {
-    errors.email = true;
+    errors.Email = true;
   }
 
   if (!validateMobileNumber(formData.mobile_number)) {
-    errors.mobileNumber = true;
+    errors.PhoneNumber = true;
   }
   if (formData.role_name.length === 0) {
-    errors.role_name = true;
+    errors.Role = true;
   }
 
   if (
@@ -45,32 +45,32 @@ export const validateForm = (
     formData.role_name === "Patner"
   ) {
     if (formData.assigned_dealer_name.length === 0) {
-      errors.assigned_dealer_name = true;
+      errors.DealerOwner = true;
     }
   }
 
   if (formData.role_name === "Regional Manager") {
     if (formData.assigned_dealer_name.length === 0) {
-      errors.assigned_dealer_name = true;
+      errors.DealerOwner = true;
     } else if (formData.add_region.length === 0) {
-      errors.add_region = true;
+      errors.Region = true;
     }
   }
 
   if (formData.role_name === "Sale Representative") {
     if (formData.assigned_dealer_name.length === 0) {
-      errors.assigned_dealer_name = true;
+      errors.DealerOwner = true;
     } else if (formData.report_to.length === 0) {
-      errors.report_to = true;
+      errors.ReportTo = true;
     } else if (formData.team_name.length === 0) {
-      errors.team_name = true;
+      errors.Team_name = true;
     }
   }
   if (formData.role_name === "Sales Manager") {
     if (formData.assigned_dealer_name.length === 0) {
-      errors.assigned_dealer_name = true;
+      errors.DealerOwner = true;
     } else if (formData.report_to.length === 0) {
-      errors.report_to = true;
+      errors.ReportTo = true;
     }
   }
   // Add more validations for other fields

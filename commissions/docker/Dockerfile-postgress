@@ -81,12 +81,16 @@ COPY ./dbSchemas/DB_ProcUpdateLoanFeeAdder.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcUpdateLoanFeeAdderArchive.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcCreateNewReferralData.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcCreateNewDealerCredit.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcUpdateDealerCredit.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcUpdateDealerCreditArchive.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateNonCommDlrPayArchive.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcCreateNewNonCommDlrPay.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcUpdateReferralData.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcUpdateReferralDataArchive.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcCreateNewDLR_OTH.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateDLR_OTH.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateDLR_OTHArchive.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcCreateNewDlrOth.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcUpdateDlrOth.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcUpdateDlrOthArchive.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcUpdateNonCommDlrPay.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcUpdateNonCommDlrPayArchive.sql /docker-entrypoint-initdb.d/
 
 RUN chmod +x /docker-entrypoint-initdb.d/DB_Create_Schema.sql
 
