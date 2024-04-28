@@ -2,7 +2,7 @@
 /*Table to store the teams information for appointment setters*/
 CREATE TABLE teams (
     team_id serial NOT NULL,
-    team_name character varying UNIQUE,
+    team_name leacharacter varying UNIQUE,
     PRIMARY KEY (team_id)
 );
 

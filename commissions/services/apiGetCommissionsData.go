@@ -26,12 +26,15 @@ import (
  ******************************************************************************/
 func HandleGetCommissionsDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err          error
-		dataReq      models.DataRequestBody
-		data         []map[string]interface{}
-		whereEleList []interface{}
-		query        string
-		filter       string
+		err             error
+		dataReq         models.DataRequestBody
+		data            []map[string]interface{}
+		whereEleList    []interface{}
+		query           string
+		queryWithFiler  string
+		queryForAlldata string
+		filter          string
+		RecordCount     int64
 	)
 
 	log.EnterFn(0, "HandleGetCommissionsDataRequest")
@@ -68,12 +71,12 @@ func HandleGetCommissionsDataRequest(resp http.ResponseWriter, req *http.Request
 	JOIN sale_type sl ON sl.id = cr.sale_type_id
 	JOIN rep_type rp ON rp.id = cr.rep_type`
 
-	filter, whereEleList = PrepareCommissionFilters(tableName, dataReq)
+	filter, whereEleList = PrepareCommissionFilters(tableName, dataReq, false)
 	if filter != "" {
-		query += filter
+		queryWithFiler = query + filter
 	}
 
-	data, err = db.ReteriveFromDB(query, whereEleList)
+	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get commissions data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get commissions data from DB", http.StatusBadRequest, nil)
@@ -88,6 +91,7 @@ func HandleGetCommissionsDataRequest(resp http.ResponseWriter, req *http.Request
 			log.FuncErrorTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
 			continue
 		}
+
 		// Partner
 		Partner, ok := item["partner_name"].(string)
 		if !ok || Partner == "" {
@@ -179,13 +183,24 @@ func HandleGetCommissionsDataRequest(resp http.ResponseWriter, req *http.Request
 			StartDate:  StartDate,
 			EndDate:    EndDate,
 		}
-
 		commissionsList.CommissionsList = append(commissionsList.CommissionsList, commissionData)
 	}
 
+	filter, whereEleList = PrepareCommissionFilters(tableName, dataReq, true)
+	if filter != "" {
+		queryForAlldata = query + filter
+	}
+
+	data, err = db.ReteriveFromDB(queryForAlldata, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get commissions data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get commissions data from DB", http.StatusBadRequest, nil)
+		return
+	}
+	RecordCount = int64(len(data))
 	// Send the response
 	log.FuncInfoTrace(0, "Number of commissions List fetched : %v list %+v", len(commissionsList.CommissionsList), commissionsList)
-	FormAndSendHttpResp(resp, "Commissions Data", http.StatusOK, commissionsList)
+	FormAndSendHttpResp(resp, "Commissions Data", http.StatusOK, commissionsList, RecordCount)
 }
 
 /******************************************************************************
@@ -194,7 +209,7 @@ func HandleGetCommissionsDataRequest(resp http.ResponseWriter, req *http.Request
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
-func PrepareCommissionFilters(tableName string, dataFilter models.DataRequestBody) (filters string, whereEleList []interface{}) {
+func PrepareCommissionFilters(tableName string, dataFilter models.DataRequestBody, forDataCount bool) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PrepareCommissionFilters")
 	defer func() { log.ExitFn(0, "PrepareCommissionFilters", nil) }()
 
@@ -272,10 +287,14 @@ func PrepareCommissionFilters(tableName string, dataFilter models.DataRequestBod
 		filtersBuilder.WriteString("cr.is_archived = FALSE")
 	}
 
-	// Add pagination logic
-	if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
-		offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
-		filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+	if forDataCount == true {
+		filtersBuilder.WriteString(" GROUP BY cr.id, pt1.partner_name, pt2.partner_name, st.name, sl.type_name, cr.sale_price, rp.rep_type, cr.rl, cr.rate, cr.start_date, cr.end_date")
+	} else {
+		// Add pagination logic
+		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
+			filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+		}
 	}
 
 	filters = filtersBuilder.String()

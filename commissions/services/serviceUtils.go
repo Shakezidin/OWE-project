@@ -78,14 +78,20 @@ func CompareHashPassword(hashPassword string, password string) (err error) {
 	return err
 }
 
-func FormAndSendHttpResp(httpResp http.ResponseWriter, message string, httpStatusCode int, data types.Data) {
+func FormAndSendHttpResp(httpResp http.ResponseWriter, message string, httpStatusCode int, data types.Data, dbRecCount ...int64) {
 	log.EnterFn(0, "FormAndSendHttpResp")
 	defer func() { log.ExitFn(0, "FormAndSendHttpResp", nil) }()
+	// Check if dbRecCount is provided
+	var count int64
+	if len(dbRecCount) > 0 {
+		count = dbRecCount[0]
+	}
 
 	response := types.ApiResponse{
-		Status:  httpStatusCode,
-		Message: message,
-		Data:    data,
+		Status:     httpStatusCode,
+		Message:    message,
+		DbRecCount: count,
+		Data:       data,
 	}
 
 	jsonResp, err := json.Marshal(response)

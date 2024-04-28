@@ -31,7 +31,8 @@ type Data interface {
 }
 
 type ApiResponse struct {
-	Status  int    `json:"status"`
-	Message string `json:"message"`
-	Data    Data   `json:"data"`
+	Status     int    `json:"status"`
+	Message    string `json:"message"`
+	DbRecCount int64  `json:"dbRecCount"`
+	Data       Data   `json:"data"`
 }
