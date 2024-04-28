@@ -17,14 +17,7 @@
   text-align: left;
   color: #393851;
 }
-.DashboardPage-wel h3 {
-  font-size: 20px;
-  font-weight: 600;
-  line-height: 30px;
-  text-align: left;
-  color: #263747;
-  /* margin-bottom: -10px; */
-}
+
 .commission-section-dash {
   display: flex;
   justify-content: space-between;
@@ -159,7 +152,7 @@
   justify-content: center;
 }
 .active-filter-line {
-  background-color: #263747;
+  background-color: #19B87E;
 }
 .active-filter-line img {
   fill: white;
@@ -188,24 +181,21 @@
   width: 65%;
   height: 86vh;
   background-color: white;
-  border: 1px solid gray;
+  border: 1px solid var(--border-color);
 }
 .help-section-container {
   display: flex;
   justify-content: space-between;
-  padding: 1rem;
+  padding: 1rem 1rem 0 1rem;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .help-section {
   display: flex;
   justify-content: space-between;
   /* padding: 1rem; */
-  margin-left: 1rem;
-}
-.help-section h3 {
-  font-size: 28px;
-  font-weight: 600;
-  /* line-height: 44px; */
+  padding: 0 1rem 0 1rem;
+  /* margin-left: 1rem; */
 }
 .create-input-container {
   text-align: left;
@@ -214,19 +204,19 @@
   padding: 0.5rem;
   cursor: pointer;
 }
+.help-input-container{
+  padding: 1rem 2rem 1rem 2rem;
+  display: flex;
+  gap: 1rem;
+  flex-direction: column;
+}
 .create-input-field-help {
-  width: 280px;
-  margin-left: 2rem;
-  margin-top: 0.5rem;
+  /* width: 280px; */
+  /* margin-left: 2rem; */
+  flex: 1;
+  /* margin-top: 0.5rem; */
 }
-.help-line {
-  width: 950px;
-  top: 335px;
-  margin-left: 2rem;
-  gap: 0px;
-  border: 1px solid #d9d9d9;
-  margin-top: 1rem;
-}
+
 
 .breakdown-container {
   display: flex;

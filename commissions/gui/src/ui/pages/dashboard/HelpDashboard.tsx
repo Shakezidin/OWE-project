@@ -19,8 +19,8 @@ const HelpDashboard: React.FC<ButtonProps> = ({
     <>
       <div className="transparent-model-down">
       
-          <div className="section-help">
-            <div className="help-section-container" style={{ display: "flex" }}>
+          <div className="modal">
+            <div className="help-section-container" style={{ display: "flex",alignItems:"center" }}>
               <div className="help-section">
                 <h3>Help</h3>
               </div>
@@ -28,10 +28,12 @@ const HelpDashboard: React.FC<ButtonProps> = ({
                 <img src={ICONS.crossIconUser} alt="" />
               </div>
             </div>
-            <div className="create-input-container">
+       <div className="modal-body">
+       <div className="help-input-container">
+          <div className="create-input-container">
               <div
                 className="create-input-field"
-                style={{ width: "610px", marginLeft: "2rem" }}
+                style={{}}
               >
                 <Input
                   type={"text"}
@@ -137,12 +139,12 @@ const HelpDashboard: React.FC<ButtonProps> = ({
 
             <div
               className="create-input-field-note"
-              style={{ marginTop: "0.5rem", textAlign: "left" }}
+              style={{  }}
             >
               <label
                 htmlFor=""
                 className="inputLabel"
-                style={{ marginLeft: "2rem" }}
+              
               >
                 Message
               </label>
@@ -154,16 +156,14 @@ const HelpDashboard: React.FC<ButtonProps> = ({
                 onChange={(e) => {}}
                 value={""}
                 placeholder="Type here..."
-                style={{
-                  width: "940px",
-                  marginLeft: "2rem",
-                  marginTop: "0.5rem",
-                  alignItems: "end",
-                }}
+                
               ></textarea>
             </div>
 
-            <div
+          
+          </div>
+       </div>
+          <div
               className="createUserActionButton"
               style={{ marginTop: "1rem" }}
             >

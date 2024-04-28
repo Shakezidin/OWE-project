@@ -161,7 +161,7 @@ const DataTablle: React.FC = () => {
    };
   return (
     <div className="comm">
-      <Breadcrumb head="Data" linkPara="Database Manager" route={""} linkparaSecond="Data" />
+      <Breadcrumb head="" linkPara="Database Manager" route={""} linkparaSecond="Data" />
       <div className="commissionContainer">
         <DataTableHeader
           title="Table Name"

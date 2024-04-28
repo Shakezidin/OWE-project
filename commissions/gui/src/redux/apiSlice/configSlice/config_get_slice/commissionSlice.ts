@@ -7,13 +7,14 @@ interface CommissionsState {
   commissionsList: CommissionModel[];
   loading: boolean;
   error: string | null;
+  dbCount:number
  
 }
 const initialState: CommissionsState = {
   commissionsList: [],
   loading: false,
   error: null,
-  
+  dbCount:0
 };
 
 export const fetchCommissions = createAsyncThunk(
@@ -42,6 +43,7 @@ const commissionSlice = createSlice({
       .addCase(fetchCommissions.fulfilled, (state, action) => {
         state.loading = false;
         state.error = null;
+        state.dbCount=action?.payload?.dbRecCount
         if (
           action.payload &&
           action.payload.data &&

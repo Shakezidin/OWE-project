@@ -116,7 +116,7 @@ const CreateDealer: React.FC<dealerProps> = ({
             <div className="createProfileTextView">
               <div className="create-input-container">
                 <div className="create-input-field">
-                  <label className="inputLabel">Sub Dealer</label>
+                  <label className="inputLabel-select">Sub Dealer</label>
                   <SelectOption
                     options={subDealerOption(newFormData)||subDealer}
                     onChange={(newValue) =>
@@ -130,7 +130,7 @@ const CreateDealer: React.FC<dealerProps> = ({
                   />
                 </div>
                 <div className="create-input-field">
-                  <label className="inputLabel">Dealer</label>
+                  <label className="inputLabel-select">Dealer</label>
                   <SelectOption
                     options={dealerOption(newFormData)}
                     onChange={(newValue) => handleChange(newValue, "dealer")}

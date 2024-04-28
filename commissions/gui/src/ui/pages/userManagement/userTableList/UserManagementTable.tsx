@@ -213,7 +213,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
     <>
       <div className="ManagerUser-container">
         <div className="admin-user">
-          <p>{selectedOption.label?.toUpperCase()}</p>
+          <h3>{selectedOption.label?.toUpperCase()}</h3>
         </div>
         <div className="delete-icon-container">
           <div className="create-input-field">

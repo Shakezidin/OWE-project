@@ -33,9 +33,9 @@ const TableHeader = (props: TableProps) => {
   console.log(viewArchive)
   return (
     <div className="commissionSection">
-      <div className="rateSection">
-        <h2>{title}</h2>
-      </div>
+      
+        <h3>{title}</h3>
+   
       <div className="iconContainer">
       <div className="iconsSection2">
           <button type="button" onClick={onPressViewArchive}>
@@ -74,11 +74,11 @@ const TableHeader = (props: TableProps) => {
           <button
             type="button"
             style={{
-              background: "black",
+              background: `var(--active-text-color)`,
               color: "white",
-              border: "1px solid black",
+              border: "1px solid var(--active-text-color)",
             }}
-            className="hover-btn"
+            // className="hover-btn"
             onClick={onpressAddNew}
           >
              <img src={ICONS.AddIcon} alt=""  style={{width:"14px", height:"14px"}}/> Add New

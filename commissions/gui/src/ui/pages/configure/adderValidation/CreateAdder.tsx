@@ -119,7 +119,7 @@ const CreateAdder: React.FC<vadderProps> = ({
                   />
                 </div>
                 <div className=" rate-input-field">
-                  <label className="inputLabel">Adder Type</label>
+                  <label className="inputLabel-select">Adder Type</label>
                   <SelectOption
                     options={adderTypeOption(newFormData)}
                    
@@ -145,7 +145,7 @@ const CreateAdder: React.FC<vadderProps> = ({
                   />
                 </div>
                 <div className=" rate-input-field">
-                  <label className="inputLabel">Price Type</label>
+                  <label className="inputLabel-select">Price Type</label>
                   <SelectOption
                     options={priceTypeOption(newFormData)}
                     onChange={(newValue) =>

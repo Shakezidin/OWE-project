@@ -134,7 +134,8 @@ export const LoginPage = () => {
               <span className="loginLogText">Log In</span>
               <br />
 
-              <Input
+           <div className="login-input">
+           <Input
                 type={"text"}
                 name={"email_id"}
                 value={credentials.email_id}
@@ -158,6 +159,7 @@ export const LoginPage = () => {
                   setShowPassword(!showPassword);
                 }}
               />
+           </div>
 
               <br />
               <div className="loginSwitchView">

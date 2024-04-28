@@ -130,7 +130,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
               <div className="createProfileTextView">
                 <div className="create-input-container">
                   <div className="create-input-field">
-                    <label className="inputLabel">Partner</label>
+                    <label className="inputLabel-select">Partner</label>
                     <SelectOption
                       options={partnerOption(newFormData)}
                       onChange={(newValue) => handleChange(newValue, "partner")}
@@ -141,7 +141,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                     />
                   </div>
                   <div className="create-input-field">
-                    <label className="inputLabel">Installer</label>
+                    <label className="inputLabel-select">Installer</label>
                     <div className="">
                       <SelectOption
                         options={installerOption(newFormData)}
@@ -156,7 +156,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                     </div>
                   </div>
                   <div className="create-input-field">
-                    <label className="inputLabel">State</label>
+                    <label className="inputLabel-select">State</label>
                     <SelectOption
                       options={stateOption(newFormData)}
                       onChange={(newValue) => handleChange(newValue, "state")}
@@ -189,7 +189,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                     />
                   </div>
                   <div className="create-input-field">
-                    <label className="inputLabel">Representative Type</label>
+                    <label className="inputLabel-select">Representative Type</label>
                     <SelectOption
                       options={repTypeOption(newFormData)}
                       onChange={(newValue) =>
