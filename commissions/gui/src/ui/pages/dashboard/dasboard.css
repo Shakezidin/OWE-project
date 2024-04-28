@@ -185,15 +185,16 @@
 .section-help {
   position: fixed;
   border-radius: 24px;
-  width: 65%;
-  height: 86vh;
+  /* width: 60%; */
+  /* height: 98vh; */
   background-color: white;
   border: 1px solid gray;
+  /* bottom: 25px; */
 }
 .help-section-container {
   display: flex;
   justify-content: space-between;
-  padding: 1rem;
+  padding: 0.5rem;
 }
 
 .help-section {
@@ -208,16 +209,18 @@
   /* line-height: 44px; */
 }
 .create-input-container {
-  text-align: left;
+  /* text-align: left; */
+  width: 100%;
 }
 .help-icon {
   padding: 0.5rem;
   cursor: pointer;
 }
 .create-input-field-help {
-  width: 280px;
-  margin-left: 2rem;
+  width: 32%;
   margin-top: 0.5rem;
+  /* margin: 1rem; */
+  padding: 0.5rem 2rem 0.5rem 2rem;
 }
 .help-line {
   width: 950px;
@@ -312,3 +315,53 @@
   height: calc(100% - 70px); 
   overflow-y: auto;
 }
+
+.create-input-help {
+  width: 100%;
+  padding: 0.5rem 2rem 0.5rem 2rem;
+
+}
+.create-input-help textarea {
+  border: 1px solid #d0d5dd;
+  outline: none;
+  padding: 0.5rem;
+  font-size: 13px !important;
+  border-radius: 0.5rem;
+  /* background-color: #263747; */
+  width: 100%;
+  margin-top: 0.5rem;
+}
+.inputLabeldash p{
+  font-size: 13px;
+  font-weight: 500;
+  /* line-height: 18px; */
+  text-align: left;
+  
+  }
+
+  .custom-button-dash {
+    /* Define your button styles */
+    background: linear-gradient(180deg, #f6f6f6 0%, #c1c1c1 100%);
+    color: #000000;
+    padding: 5px 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: 500;
+    line-height: 18px;
+    margin-right: 10px;
+    /* text-align: left; */
+  }
+
+  .createUserActionButtonDash {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-top: 1px solid #d0d5dd;
+    padding: 24px 0 24px 0;
+    gap: 1rem;
+  }
+  .createUserActionButtonDash :hover {
+    background-color: #263747;
+  }

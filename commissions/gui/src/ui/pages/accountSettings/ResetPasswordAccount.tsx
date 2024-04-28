@@ -5,7 +5,7 @@ import './AccountSettings.css'
 const ResetPasswordAccount = () => {
   return (
     <>
-      <div className='myProf-section'>
+      <div className='' style={{width:"90%", padding:"1rem"}}>
         <div className=''>
           <p>Settings</p>
         </div>
