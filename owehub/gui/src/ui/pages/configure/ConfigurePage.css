@@ -1,0 +1,119 @@
+.configure-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+.configure-name {
+  padding: 10px 5px;
+}
+.configure-name h3 {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 30px;
+  text-align: left;
+  color: var(--page-heading-color);
+}
+.spacer {
+  flex: 1;
+}
+.configure-header-icons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--white-color);
+  padding: 0.44rem;
+  border: 1px solid var(--button-border-color);
+  border-radius: 8px;
+  color: var(--btn-text-color);
+  cursor: pointer;
+}
+.configure-main {
+  margin-top: 10px;
+  height: 100%;
+  background: var(--white-color);
+  padding: 20px 30px;
+  border-radius: 16px;
+}
+.payer-type {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--page-heading-color);
+}
+.configure-cards {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin: 14px 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 1.5s ease-in-out; 
+}
+.configure-cards.open {
+  max-height: 1000px; 
+}
+.configure-cards:not(.open) {
+  transition-duration: .3s;
+}
+
+.card-heading {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 16px;
+  width: 110px;
+  color: var(--coloumn-text-color);
+}
+.card-p {
+  font-size: 11px;
+  font-weight: 400;
+  color: #7d7d7d;
+  flex: 1;
+}
+.arrow-right {
+  height: 24px;
+  width: 24px;
+}
+.arrow-wrapper {
+  background: var(--white-color);
+  height: 34px;
+  width: 34px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.pay-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 183px;
+  height: 83px;
+  border: none;
+  border-radius: 8px;
+  padding: 14px;
+  cursor: pointer;
+  background: rgb(216, 216, 216);
+}
+.pay-card:hover {
+  transform: scale(1.08);
+  transition: transform 0.4s ease;
+}
+.rep-pay,
+.common {
+  margin: 24px 0;
+}
+.configure-card-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f1f1f1;
+  padding-bottom: 5px;
+  cursor: pointer;
+}
+.accordion-icon {
+  color: var(--secondary-text-color);
+}
+.payer-type {
+  padding-bottom: 5px;
+} 

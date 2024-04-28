@@ -1,0 +1,12 @@
+.delete-icon-container {
+  width: 50%;
+  display: flex;
+  align-self: flex-end;
+}
+
+.user-page-heading-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 1.875rem 1rem 1.875rem;
+  background-color: white;
+}

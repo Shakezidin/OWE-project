@@ -75,8 +75,6 @@ export const LoginPage = () => {
     } else {
       const actionResult = await dispatch(loginAction(credentials));
       const result = unwrapResult(actionResult);
-
-      console.log('reseult.....', result)
       if (result.status === HTTP_STATUS.OK) {
         toast.success(result.message);
         const { email_id, user_name, role_name, access_token } = result.data;

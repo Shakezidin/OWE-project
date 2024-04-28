@@ -1,0 +1,3 @@
+FROM registry.access.redhat.com/ubi7/ubi:latest
+MAINTAINER OWE_TEAM
+ RUN yum -y install lsof &&  yum -y install net-tools* && yum -y install gdb && yum -y install python2 && yum -y install vim && yum -y install sysvinit-tools* && yum -y install psmisc*
