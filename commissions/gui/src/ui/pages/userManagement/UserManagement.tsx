@@ -17,6 +17,7 @@ import { updateUserForm, userResetForm } from "../../../redux/apiSlice/userManag
 import { unwrapResult } from "@reduxjs/toolkit";
 import { HTTP_STATUS } from "../../../core/models/api_models/RequestModel";
 import Loading from "../../components/loader/Loading";
+import { toast } from "react-toastify";
 
 const UserManagement: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -108,7 +109,7 @@ const UserManagement: React.FC = () => {
       createUserRequest()
     }else{
       //const firstKey = Object.keys(formErrors)[0]; //Todo: change in future
-      alert(Object.keys(formErrors)[0] + ' is required.')
+      toast.info(Object.keys(formErrors)[0] + ' is required.')
     }
   
   };
@@ -121,9 +122,9 @@ const UserManagement: React.FC = () => {
 
     if (result.status === HTTP_STATUS.OK){
       handleClose();
-      alert(result.message)
+      toast.success(result.message)
     }else{
-      alert(result.message)
+      toast.warning(result.message)
     }
   }
 
@@ -137,9 +138,9 @@ const UserManagement: React.FC = () => {
       handleClose();
       setSelectedRows(new Set());
       setSelectAllChecked(false)
-      alert(result.message)
+      toast.success(result.message)
     }else{
-      alert(result.message)
+      toast.warning(result.message)
     }
   }
 
@@ -196,7 +197,7 @@ const UserManagement: React.FC = () => {
           if(deleteRows.length > 0){
             deleteUserRequest(deleteRows)
           }else{
-            alert('Please select user.')
+            toast.info('Please select user')
           }
           }}
           onClickEdit={(item: UserRoleBasedListModel) => {

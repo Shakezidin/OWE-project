@@ -9,7 +9,11 @@ import Input from "../../components/text_input/Input";
 import { ActionButton } from "../../components/button/ActionButton";
 import { resetPassword } from "../../../core/models/api_models/AuthModel";
 import { useAppDispatch } from "../../../redux/hooks";
-import { generateOTP } from "../../../redux/apiSlice/authSlice/resetPasswordSlice";
+import { generateOTP } from "../../../redux/apiActions/authActions";
+import { unwrapResult } from "@reduxjs/toolkit";
+import { HTTP_STATUS } from "../../../core/models/api_models/RequestModel";
+import { toast } from "react-toastify";
+import { updateEmail } from "../../../redux/apiSlice/authSlice/resetPasswordSlice";
 
 const ResetPassword = () => {
   const navigate = useNavigate();
@@ -24,14 +28,25 @@ const ResetPassword = () => {
       [name]: value,
     }));
   };
-  const handleEmailSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleEmailSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (credentials.email_id.length === 0) {
-      alert("Please enter email Id.");
+      toast.warning('Please enter email Id.')
     } else {
-      dispatch(generateOTP({ email_id: credentials.email_id }));
-      navigate("/otp");
+
+      const actionResult = await dispatch(generateOTP({ email_id: credentials.email_id }));
+      const result = unwrapResult(actionResult);
+      if (result.status === HTTP_STATUS.OK) {
+       
+        dispatch(updateEmail(credentials.email_id))
+         toast.success(result.message);
+         navigate("/otp");
+      }else{
+        toast.success(result.message);
+      }
+    
+     
     }
   };
   return (
@@ -76,7 +91,7 @@ const ResetPassword = () => {
 
               <br />
               <ActionButton
-                title="Request Reset Link"
+                title="Request OTP"
                 type="submit"
                 onClick={() => {}}
               />

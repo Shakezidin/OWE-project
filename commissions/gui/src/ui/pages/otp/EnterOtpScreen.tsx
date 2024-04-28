@@ -8,13 +8,17 @@ import { ActionButton } from "../../components/button/ActionButton";
 import { otpModel } from "../../../core/models/api_models/AuthModel";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import { generateOTP } from "../../../redux/apiSlice/authSlice/resetPasswordSlice";
+import { generateOTP } from "../../../redux/apiActions/authActions";
+import { unwrapResult } from "@reduxjs/toolkit";
+import { HTTP_STATUS } from "../../../core/models/api_models/RequestModel";
+import { toast } from "react-toastify";
 
 const EnterOtpScreen = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const resetStates = useAppSelector((state) => state.resetPassword);
+  const {email} = useAppSelector((state) => state.resetPassword);
 
+  console.log('email',email)
   const [otpCred, setOtpCred] = useState<otpModel>({
     email_id: "",
     otp: "",
@@ -28,7 +32,7 @@ const EnterOtpScreen = () => {
       [name]: value,
     }));
   };
-  const handleOtpSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleOtpSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log(otpCred);
 
@@ -42,14 +46,19 @@ const EnterOtpScreen = () => {
       alert("New password and confirm password does not matched");
     } else {
       const data = {
-        email_id: "shushank22@gmail.com", //TODO: Need to fetch from redux and navigation
+        email_id: email, //TODO: Need to fetch from redux and navigation
         otp: otpCred.otp,
         new_password: otpCred.new_password,
       };
 
-      dispatch(generateOTP(data));
-      alert("Password reset successfully..");
-      navigate("/login");
+      const actionResult = await dispatch(generateOTP(data));
+      const result = unwrapResult(actionResult);
+      if (result.status === HTTP_STATUS.OK) {
+        toast.success(result.message)
+        navigate("/login");
+      }else{
+        toast.success(result.message)
+      }
     }
   };
   return (
