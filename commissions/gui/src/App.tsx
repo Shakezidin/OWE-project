@@ -59,10 +59,11 @@ import AdderResponsibility from "./ui/pages/configure/adderResponsibility/adderR
 import LoanFee from "./ui/pages/configure/loanFee/LoanFee";
 import ProjectPerformence from "./ui/pages/projectTracker/ProjectPerformence";
 import ProjectStatus from "./ui/pages/projectTracker/ProjectStatus";
+import { useAppDispatch } from "./redux/hooks";
 
 
 function App() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(initializeAuth());
@@ -71,7 +72,7 @@ function App() {
     (state: RootState) => state.auth.isAuthenticated
   );
 
-  return (
+    return (
     <BrowserRouter>
       <Routes>
         <Route

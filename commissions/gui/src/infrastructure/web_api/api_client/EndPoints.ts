@@ -64,7 +64,7 @@ interface Endpoints {
 }
 
 export const EndPoints: Endpoints = {
-  login: `/login`,
+  login: `login`,
   resetPassword: "forgot_password",
   // get config endpoints
   commission: "get_commissions",
