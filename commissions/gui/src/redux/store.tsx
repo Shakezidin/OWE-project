@@ -25,7 +25,7 @@ import createloanTypeReducer from './apiSlice/configSlice/config_post_slice/crea
 import paginationReducer from './apiSlice/paginationslice/paginationSlice'
 import createUserReducer from './apiSlice/userManagementSlice/createUserSlice'
 import userManagementSlice from "./apiSlice/userManagementSlice/userManagementSlice";
-import getRoleByUserSlice from "./apiSlice/userManagementSlice/getRoleByUserSlice";
+
 export const store = configureStore({
   reducer: {
     appState: appStateSlice,
