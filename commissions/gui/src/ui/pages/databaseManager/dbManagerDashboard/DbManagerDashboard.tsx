@@ -48,8 +48,8 @@ const DbManagerDashboard = () => {
     <>
       <div className="common">
         <Breadcrumb
-          head="Dashboard"
-          linkPara="Database Manager"
+          head="DB Manager"
+          linkPara="DB Manager"
           linkparaSecond="Dashboard"
           route={""}
         />

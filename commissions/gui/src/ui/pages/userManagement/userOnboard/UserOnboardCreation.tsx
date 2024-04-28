@@ -106,7 +106,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                   />
                 </div>
                 <div className="create-input-field">
-                  <label className="inputLabel">Role</label>
+                  <label className="inputLabel-select">Role</label>
                   <SelectOption
                     options={userSelectData}
                     onChange={(newValue) => handleChange(newValue, "role_name")}
@@ -142,7 +142,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                 formData.role_name === "SubDealer Owner" ||
                 formData.role_name === "Dealer Owner" ? null : (
                   <div className="create-input-field">
-                    <label className="inputLabel">Dealer Owner</label>
+                    <label className="inputLabel-select">Dealer Owner</label>
                     <SelectOption
                       options={dealerList}
                       onChange={(newValue) =>

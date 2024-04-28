@@ -119,7 +119,7 @@ const CreateTierLoan:React.FC<tierLoanProps> = ({handleClose,tierEditedData,edit
                     />
                   </div>
                   <div className="create-input-field">
-                    <label className="inputLabel">Installer</label>
+                    <label className="inputLabel-select">Installer</label>
                     <SelectOption
                       options={installerOption(newFormData)}
                       onChange={(newValue) => handleChange(newValue, 'installer')}
@@ -127,7 +127,7 @@ const CreateTierLoan:React.FC<tierLoanProps> = ({handleClose,tierEditedData,edit
                     />
                   </div>
                   <div className="create-input-field">
-                    <label className="inputLabel">State</label>
+                    <label className="inputLabel-select">State</label>
                     <SelectOption
                       options={stateOption(newFormData)}
                      
@@ -149,7 +149,7 @@ const CreateTierLoan:React.FC<tierLoanProps> = ({handleClose,tierEditedData,edit
                     />
                   </div>
                   <div className="create-input-field">
-                    <label className="inputLabel">OWE Cost</label>
+                    <label className="inputLabel-select">OWE Cost</label>
                     <SelectOption
                       options={oweCostOption(newFormData)}
                       onChange={(newValue) => handleChange(newValue, 'owe_cost')}

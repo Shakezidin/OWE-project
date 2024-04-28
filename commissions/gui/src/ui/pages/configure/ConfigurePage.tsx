@@ -75,9 +75,7 @@ const ConfigurePage = () => {
     <>
       <div className="configure-container">
         <div className="configure-header">
-          <div className="configure-name">
             <h3>Configure</h3>
-          </div>
         </div>
         <div className="configure-main">
           <div className="configure-main-section">

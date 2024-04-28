@@ -34,9 +34,9 @@ const DataTableHeader = (props: TableProps) => {
     ];
     return (
         <div className="commissionSection">
-            <div className="rateSection">
-                <h2>{title}</h2>
-            </div>
+    
+                <h3>{title}</h3>
+           
             <div className="data-header-section">
                 <div className="search-container-data">
                 {props.showSelectIcon && (

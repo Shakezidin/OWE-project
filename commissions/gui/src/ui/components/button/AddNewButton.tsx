@@ -18,14 +18,19 @@ interface ActionButtonProps {
 export const AddNewButton = (props: ActionButtonProps) => {
   const { title, onClick } = props;
   return (
-   <div className="add_view_button" onClick={onClick}>
-    <img src={ICONS.AddIcon} alt=""/>
-    <br/>
+     <div className="iconsSection2">
      <button
-      type={'button'}
-    >
-      {title}
-    </button>
+       type="button"
+       style={{
+         background: `var(--active-text-color)`,
+         color: "white",
+         border: "1px solid var(--active-text-color)",
+       }}
+       // className="hover-btn"
+       onClick={onClick}
+     >
+        <img src={ICONS.AddIcon} alt=""  style={{width:"14px", height:"14px"}}/>    {title}
+     </button>
    </div>
   );
 };

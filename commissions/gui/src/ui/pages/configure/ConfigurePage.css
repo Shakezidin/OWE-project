@@ -4,16 +4,8 @@
   align-items: center;
   gap: 0.5rem;
 }
-.configure-name {
-  padding: 10px 5px;
-}
-.configure-name h3 {
-  font-size: 20px;
-  font-weight: 600;
-  line-height: 30px;
-  text-align: left;
-  color: var(--page-heading-color);
-}
+
+
 .spacer {
   flex: 1;
 }
@@ -99,10 +91,7 @@
   transform: scale(1.08);
   transition: transform 0.4s ease;
 }
-.rep-pay,
-.common {
-  margin: 24px 0;
-}
+
 .configure-card-title {
   display: flex;
   justify-content: space-between;

@@ -24,6 +24,7 @@ import Swal from 'sweetalert2';
 import Loading from "../../../components/loader/Loading";
 import DataNotFound from "../../../components/loader/DataNotFound";
 import { ROUTES } from "../../../../routes/routes";
+import PaginationComponent from "../../../components/pagination/PaginationComponent";
 
 const CommissionRate: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -31,12 +32,13 @@ const CommissionRate: React.FC = () => {
   const [exportOPen, setExportOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const handleExportOpen = () => <CSVLink data={currentPageData} filename={"table.csv"}/>
+  const handleExportOpen = () => <CSVLink data={currentPageData} filename={"table.csv"} />
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const commissionList = useAppSelector((state) => state.comm.commissionsList);
   const loading = useAppSelector((state) => state.comm.loading);
   const error = useAppSelector((state) => state.comm.error);
+  const dbCount = useAppSelector((state) => state.comm.dbCount);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
@@ -46,33 +48,37 @@ const CommissionRate: React.FC = () => {
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
   const [sortKey, setSortKey] = useState("");
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
-
+  const [pageSize1, setPageSize1] = useState(10); // Set your desired page size here
+  // const pageSize = 10;
+  const [currentPage1,setCurrentPage1] = useState(1)
   useEffect(() => {
     const pageNumber = {
-      page_number: currentPage,
-      page_size: itemsPerPage,
+      page_number: currentPage1,
+      page_size: pageSize1,
       archived: viewArchived ? true : undefined,
     };
     dispatch(fetchCommissions(pageNumber));
 
-  }, [dispatch, currentPage, itemsPerPage, viewArchived]);
+  }, [dispatch, currentPage1, pageSize1, viewArchived]);
+  const handlePageChange = (page: number) => {
+    setCurrentPage1(page)
+  };
+  const handleItemsPerPageChange = (e: any) => {
+    const newItemsPerPage = parseInt(e.target.value, 10);
+    setPageSize1(newItemsPerPage);
+  setCurrentPage1(1) // Reset to the first page when changing items per page
+  };
 
-  const paginate = (pageNumber: number) => {
-    dispatch(setCurrentPage(pageNumber));
-  };
-  const goToNextPage = () => {
-    dispatch(setCurrentPage(currentPage + 1));
-  };
-  const goToPrevPage = () => {
-    dispatch(setCurrentPage(currentPage - 1));
-  };
   const filter = () => {
     setFilterOpen(true)
   }
+  console.log(dbCount)
 
-  const totalPages = Math.ceil(commissionList?.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
+  // const totalPages = Math.ceil(dbCount / itemsPerPage);
+  const totalPages1 = Math.ceil(dbCount / pageSize1);
+  const startIndex = (currentPage - 1) * pageSize1;
+  const endIndex = startIndex + pageSize1;
+  console.log(currentPage)
   const handleAddCommission = () => {
     setEditMode(false);
     setEditedCommission(null);
@@ -190,13 +196,13 @@ const CommissionRate: React.FC = () => {
     dispatch(fetchCommissions(req));
   };
   if (error) {
-    return <div className="loader-container"><Loading/></div>;
+    return <div className="loader-container"><Loading /></div>;
   }
   if (loading) {
-    return <div className="loader-container"><Loading/> {loading}</div>;
+    return <div className="loader-container"><Loading /> {loading}</div>;
   }
 
- 
+
   return (
 
     <div className="comm">
@@ -212,10 +218,10 @@ const CommissionRate: React.FC = () => {
           isAnyRowSelected={isAnyRowSelected}
           onPressFilter={() => filter()}
           onPressImport={() => { }}
-          onpressExport={() =>handleExportOpen()}
+          onpressExport={() => handleExportOpen()}
           onpressAddNew={() => handleAddCommission()}
         />
-       
+
         {filterOPen && <FilterModal handleClose={filterClose}
           columns={Commissioncolumns}
           page_number={currentPage}
@@ -255,13 +261,13 @@ const CommissionRate: React.FC = () => {
 
                   ))
                 }
-             {
-              viewArchived===true?null:   <th>
-              <div className="action-header">
-                <p>Action</p>
-              </div>
-            </th>
-             }
+                {
+                  viewArchived === true ? null : <th>
+                    <div className="action-header">
+                      <p>Action</p>
+                    </div>
+                  </th>
+                }
               </tr>
             </thead>
             <tbody>
@@ -269,7 +275,8 @@ const CommissionRate: React.FC = () => {
                 ? currentPageData?.map((el: any, i: any) => (
                   <tr
                     key={i}
-                    className={selectedRows.has(i) ? "selected" : ""}
+                    style={{ background: selectedRows.has(i) ? "#56565610" : "" }}
+
                   >
                     <td style={{ fontWeight: "500", color: "black" }}>
                       <div className="flex-check">
@@ -302,50 +309,59 @@ const CommissionRate: React.FC = () => {
                     <td>{el.rate}</td>
                     <td>{el.start_date}</td>
                     <td>{el.end_date}</td>
-                  {
-                    viewArchived===true?null:  <td>
-                    <div className="action-icon">
-                      <div className="action-archive" style={{ cursor: "pointer" }} onClick={() => handleArchiveClick(el.record_id)}>
-                        <img src={ICONS.ARCHIVE} alt="" />
-                        <span className="tooltiptext">Archive</span>
-                      </div>
-                      <div className="action-archive" style={{ cursor: "pointer" }} onClick={() => handleEditCommission(el)}>
-                        <img src={ICONS.editIcon} alt="" />
-                        <span className="tooltiptext">Edit</span>
-                      </div>
-                    </div>
+                    {
+                      viewArchived === true ? null : <td>
+                        <div className="action-icon">
+                          <div className="action-archive" style={{ cursor: "pointer" }} onClick={() => handleArchiveClick(el.record_id)}>
+                            <img src={ICONS.ARCHIVE} alt="" />
+                            <span className="tooltiptext">Archive</span>
+                          </div>
+                          <div className="action-archive" style={{ cursor: "pointer" }} onClick={() => handleEditCommission(el)}>
+                            <img src={ICONS.editIcon} alt="" />
+                            <span className="tooltiptext">Edit</span>
+                          </div>
+                        </div>
 
-                  </td>
-                  }
+                      </td>
+                    }
                   </tr>
                 ))
-                :  <tr style={{border:0}}>
-                <td colSpan={10}>
-                <div className="data-not-found">
-                <DataNotFound/>
-                <h3>Data Not Found</h3>
-                </div>
-                </td>
-              </tr>
-                }
+                : <tr style={{ border: 0 }}>
+                  <td colSpan={10}>
+                    <div className="data-not-found">
+                      <DataNotFound />
+                      <h3>Data Not Found</h3>
+                    </div>
+                  </td>
+                </tr>
+              }
             </tbody>
           </table>
         </div>
+      
         {
             commissionList?.length > 0 ?
         <div className="page-heading-container">
           <p className="page-heading">
-            {currentPage} - {totalPages} of {currentPageData?.length} item
+            {currentPage} - {totalPages1} of {currentPageData?.length} item
           </p>
 
-         <Pagination
+         {/* <Pagination
               currentPage={currentPage}
-              totalPages={totalPages} // You need to calculate total pages
+              totalPages={totalPages} 
               paginate={paginate}
               currentPageData={currentPageData}
               goToNextPage={goToNextPage}
               goToPrevPage={goToPrevPage}
-            /> 
+            />  */}
+              <PaginationComponent
+          currentPage={currentPage1}
+          itemsPerPage={pageSize1}
+          totalPages={totalPages1}
+          onPageChange={handlePageChange}
+          handleItemsPerPageChange={handleItemsPerPageChange}
+
+        />
         </div>
 : null
 }

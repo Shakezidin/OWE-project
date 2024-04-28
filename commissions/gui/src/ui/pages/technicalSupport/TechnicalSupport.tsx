@@ -72,9 +72,7 @@ const TechnicalSupport: React.FC = () => {
     <>
       <div className="support-cont-section">
         <div className="support-container">
-          <div className="support-section">
             <h3>Support</h3>
-          </div>
           <div className="supportImage">
             <img src={ICONS.supportImage} alt="" />
           </div>

@@ -114,7 +114,7 @@ const CreateDealerTier:React.FC<dealerProps> = ({handleClose,editMode,editDealer
                                     />
                                 </div>
                                 <div className="create-input-field">
-                                    <label className="inputLabel">Tier</label>
+                                    <label className="inputLabel-select">Tier</label>
                                     <SelectOption
                                         options={dealertierOption(newFormData)}
                                         onChange={(newValue) => handleChange(newValue, 'tier')}

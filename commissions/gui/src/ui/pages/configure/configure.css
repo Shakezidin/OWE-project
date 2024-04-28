@@ -1,29 +1,3 @@
-.comm {
-  /* background: var(--children-bg-color);
-  width: 100%;
-  height: 87.5vh;
-  border-radius: 1rem;
-  position: relative; */
-}
-
-.export-modal {
-  background-color: var(--check-color);
-  width: 8%;
-  position: absolute;
-  z-index: 10;
-  transform: translate(-50%, -50%);
-  left: 84.5%;
-  padding: 1rem;
-  top: 20%;
-
-  height: 2rem;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-bottom-left-radius: 16px;
-  border-bottom-right-radius: 16px;
-}
 
 .commissionContainer {
   background-color: var(--white-color);
@@ -36,7 +10,7 @@
 .commissionSection {
   display: flex;
   align-items: center;
-  padding: 20px;
+  padding: 16px 18px 16px 16px;
   justify-content: space-between;
   border-bottom: 1px solid var(--border-color);
 }
@@ -55,16 +29,6 @@
   gap: 1rem;
 }
 
-.rateSection {
-  display: flex;
-  gap: 0.3rem;
-  flex-direction: column;
-}
-
-.rateSection h2 {
-  font-size: 18px !important;
-  font-weight: 600;
-}
 
 .iconsSection2 {
   display: flex;
@@ -96,6 +60,7 @@
   border: 1px solid var(--active-text-color) !important;
   color: var(--white-color) !important;
   transition: 0.4s all linear;
+  opacity: .6;
 }
 
 .iconsSection-filter button {
@@ -186,7 +151,7 @@ table thead tr th {
   text-align: left;
   font-size: 13px;
   font-weight: 500;
-  padding: 0.8rem 1.875rem 0.8rem 1.6rem;
+  padding: 0.8rem 1rem 0.8rem 1rem;
   /* line-height: 18px; */
 }
 
@@ -200,18 +165,22 @@ table thead tr th {
 
 table tbody tr {
   border-bottom: 1px solid var(--border-color);
-}
+  cursor: pointer;
 
+}
+table tbody tr:hover{
+  transition: .4s all linear;
+  background-color:#66708520;
+}
 table tbody tr td {
-  padding: 0.8rem 1.875rem 0.8rem 1.6rem;
+  padding: 0.8rem 1rem 0.8rem 1rem;
   font-size: 12px;
   width: auto;
   color: var(--coloumn-text-color);
 }
 
 .selected {
-  /* background-color: var(--input-border-color); */
-  background-color: var(--white-color);
+  background-color: red !important;
   transition: 0.4s all linear;
 }
 
