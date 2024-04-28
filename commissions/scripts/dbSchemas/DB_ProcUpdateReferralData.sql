@@ -27,10 +27,10 @@ CREATE OR REPLACE FUNCTION update_new_referral_data(
     p_end_date                character varying,
     OUT v_referral_data_id    INT
 )
-RETURN INT
+RETURNS INT
 AS $$
 BEGIN
-    UPDATE rebate_data
+    UPDATE referral_data
     SET 
         unique_id = p_unique_id,
         new_customer = p_new_customer,

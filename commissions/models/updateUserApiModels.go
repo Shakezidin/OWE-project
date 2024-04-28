@@ -7,9 +7,7 @@
 package models
 
 type UpdateUserReq struct {
-	RecordId          int64  `json:"record_id"`
 	Name              string `json:"name"`
-	UserCode          string `json:"user_code"`
 	EmailId           string `json:"email_id"`
 	MobileNumber      string `json:"mobile_number"`
 	Designation       string `json:"designation"`
@@ -24,4 +22,9 @@ type UpdateUserReq struct {
 	City              string `json:"city"`
 	Zipcode           string `json:"zipcode"`
 	Country           string `json:"country"`
+	UserCode          string `json:"user_code"`
+}
+
+type DeleteUsers struct {
+	UserCodes []string `json:"user_codes"`
 }

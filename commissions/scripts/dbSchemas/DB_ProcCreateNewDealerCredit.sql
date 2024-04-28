@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION create_new_dealer_credit(
-    p_unique_id varchar NOT NULL UNIQUE,
+    p_unique_id character varying,
     p_customer  text,
     p_dealer_name character varying,
     p_dealer_dba  text,
@@ -9,7 +9,7 @@ CREATE OR REPLACE FUNCTION create_new_dealer_credit(
     p_notes text,
     p_total_amount float,
     p_sys_size float,
-    p_start_date character varying NOT NULL,
+    p_start_date character varying,
     p_end_date character varying,
     OUT v_dealer_credit_id INT
 )
@@ -25,7 +25,7 @@ WHERE name = p_dealer_name;
 
 -- Check if the dealer_id exists
 IF v_dealer_id IS NULL THEN
-        RAISE EXCEPTION 'Dealer with ID % not found', p_dealer_id;
+        RAISE EXCEPTION 'Dealer with ID % not found', p_dealer_name;
 END IF;
 
     -- Insert data into dealer_credit table

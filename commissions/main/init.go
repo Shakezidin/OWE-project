@@ -464,7 +464,7 @@ var apiRoutes = ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/update_marketing_fees_archive",
+		"/owe-commisions-service/v1/update_marketingfee_archive",
 		apiHandler.HandleUpdateMarketingFeesArchiveRequest,
 		true,
 		[]types.UserRoles{
@@ -482,7 +482,7 @@ var apiRoutes = ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/update_vadders_archive",
+		"/owe-commisions-service/v1/update_v_adder_archive",
 		apiHandler.HandleUpdateVAddersArchiveRequest,
 		true,
 		[]types.UserRoles{
@@ -706,8 +706,26 @@ var apiRoutes = ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_dealercredit",
+		apiHandler.HandleUpdateDealerCreditRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_noncommdlrpay",
 		apiHandler.HandleCreateNonCommDlrPayRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_noncommdlrpay",
+		apiHandler.HandleUpdateNonCommDlrPayRequest,
 		true,
 		[]types.UserRoles{
 			types.RoleAdmin,
@@ -803,6 +821,42 @@ var apiRoutes = ApiRoutes{
 			types.RoleAdmin,
 		},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/delete_users",
+		apiHandler.HandleDeleteUsersRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/create_rep_pay_settings",
+		apiHandler.HandleCreateRepPaySettingsDataRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_rep_pay_settings",
+		apiHandler.HandleUpdateRepPaySettingsDataRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	// {
+	// 	strings.ToUpper("POST"),
+	// 	"/owe-commisions-service/v1/get_rep_pay_settings",
+	// 	apiHandler.HandleGetRepPaySettingsDataRequest,
+	// 	true,
+	// 	[]types.UserRoles{
+	// 		types.RoleAdmin,
+	// 	},
+	// },
 }
 
 /******************************************************************************

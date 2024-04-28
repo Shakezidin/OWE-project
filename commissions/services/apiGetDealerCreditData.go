@@ -60,10 +60,10 @@ func HandleGetDealerCreditDataRequest(resp http.ResponseWriter, req *http.Reques
 
 	tableName := db.TableName_dealer_credit
 	query = `SELECT dc.id AS record_id, dc.unique_id, dc.customer, dc.start_date,
-    	dc.end_date, ud.name AS dealer_name , dc.dealer_dba, dc.exact_amtount, dc.per_kw_amount,
-   	 	dc.approved_by, dc.notes, dc.total_amount, dc.sys_size
-		FROM dealer_credit dc
-		JOIN user_details ud ON ud.user_id = dc.dealer_id;`
+    dc.end_date, ud.name AS dealer_name , dc.dealer_dba, dc.exact_amount, dc.per_kw_amount,
+    dc.approved_by, dc.notes, dc.total_amount, dc.sys_size
+	FROM dealer_credit dc
+	JOIN user_details ud ON ud.user_id = dc.dealer_id;`
 
 	filter, whereEleList = PrepareDealerFilters(tableName, dataReq)
 	if filter != "" {

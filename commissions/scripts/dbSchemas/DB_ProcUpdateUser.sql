@@ -1,10 +1,6 @@
 CREATE OR REPLACE FUNCTION update_user(
     p_record_id INT,
     p_name VARCHAR(255),
-    p_user_code VARCHAR(255),
-    p_mobile_number VARCHAR(20),
-    p_email_id VARCHAR(255),
-    p_password_change_req BOOLEAN,
     p_reporting_manager VARCHAR(255),
     p_dealer_owner VARCHAR(255),
     p_role_name VARCHAR(50),
@@ -16,50 +12,29 @@ CREATE OR REPLACE FUNCTION update_user(
     p_city VARCHAR(255),
     p_zipcode VARCHAR(255),
     p_country VARCHAR(255),
+    p_user_code VARCHAR(255),
     OUT v_user_id INT
 )
 RETURNS INT 
 AS $$
-DECLARE
-    v_email_exists BOOLEAN;
-    v_current_email VARCHAR(255);
 BEGIN
-    -- Get the current email of the user
-    SELECT email_id INTO v_current_email
-    FROM user_details
-    WHERE user_id = p_record_id;
-
-    -- Check if the provided email is different from the current email
-    IF v_current_email != p_email_id THEN
-        -- Check if the user with the same email already exists
-        SELECT EXISTS(SELECT 1 FROM user_details WHERE email_id = p_email_id) INTO v_email_exists;
-
-        IF v_email_exists THEN
-            RAISE EXCEPTION 'User with email % already exists', p_email_id;
-        END IF;
-    END IF;
-
     -- Update user details
     UPDATE user_details
     SET 
         name = p_name,
-        user_code = p_user_code,
-        mobile_number = p_mobile_number, 
-        email_id = p_email_id,
-        password_change_required = p_password_change_req,
-        reporting_manager = (SELECT user_id FROM user_details WHERE LOWER(name) = LOWER(p_reporting_manager) LIMIT 1),
-        dealer_owner = (SELECT user_id FROM user_details WHERE LOWER(name) = LOWER(p_dealer_owner) LIMIT 1),
-        role_id = (SELECT role_id FROM user_roles WHERE LOWER(role_name) = LOWER(p_role_name) LIMIT 1),
-        user_status = p_user_status,
-        user_designation = p_designation,
-        description = p_description,
-        street_address = p_street_address,
-        state = (SELECT state_id FROM states WHERE LOWER(name) = LOWER(p_state) LIMIT 1),
-        city = p_city,
-        zipcode = (SELECT id FROM zipcodes WHERE LOWER(zipcode) = LOWER(p_zipcode) LIMIT 1),
-        country = p_country,
+        reporting_manager = CASE WHEN p_reporting_manager IS NOT NULL AND p_reporting_manager != '' THEN (SELECT user_id FROM user_details WHERE LOWER(name) = LOWER(p_reporting_manager) LIMIT 1) ELSE NULL END,
+        dealer_owner = CASE WHEN p_dealer_owner IS NOT NULL AND p_dealer_owner != '' THEN (SELECT user_id FROM user_details WHERE LOWER(name) = LOWER(p_dealer_owner) LIMIT 1) ELSE NULL END,
+        role_id = CASE WHEN p_role_name IS NOT NULL AND p_role_name != '' THEN (SELECT role_id FROM user_roles WHERE LOWER(role_name) = LOWER(p_role_name) LIMIT 1) ELSE NULL END,
+        user_status = COALESCE(NULLIF(p_user_status, ''), NULL),
+        user_designation = COALESCE(NULLIF(p_designation, ''), NULL),
+        description = COALESCE(NULLIF(p_description, ''), NULL),
+        street_address = COALESCE(NULLIF(p_street_address, ''), NULL),
+        state = CASE WHEN p_state IS NOT NULL AND p_state != '' THEN (SELECT state_id FROM states WHERE LOWER(name) = LOWER(p_state) LIMIT 1) ELSE NULL END,
+        city = COALESCE(NULLIF(p_city, ''), NULL),
+        zipcode = CASE WHEN p_zipcode IS NOT NULL AND p_zipcode != '' THEN (SELECT id FROM zipcodes WHERE LOWER(zipcode) = LOWER(p_zipcode) LIMIT 1) ELSE NULL END,
+        country = COALESCE(NULLIF(p_country, ''), NULL),
         updated_at = CURRENT_TIMESTAMP
-    WHERE user_id = p_record_id
+    WHERE user_code = p_user_code
     RETURNING user_id INTO v_user_id;
     
     IF NOT FOUND THEN

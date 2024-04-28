@@ -55,7 +55,7 @@ BEGIN
     END IF;
 
     -- Get the reporting manager's user_id based on the provided email
-    IF p_reporting_manager IS NOT NULL THEN
+    IF p_reporting_manager IS NOT NULL AND p_reporting_manager != '' THEN
         SELECT user_id INTO v_reporting_manager_id
         FROM user_details
         WHERE name = p_reporting_manager;
@@ -68,7 +68,7 @@ BEGIN
     END IF;
 
     -- Get the dealer owner's user_id based on the provided email
-    IF p_dealer_owner IS NOT NULL THEN
+    IF p_dealer_owner IS NOT NULL AND p_dealer_owner != '' THEN
         SELECT user_id INTO v_dealer_owner_id
         FROM user_details
         WHERE name = p_dealer_owner;
@@ -108,7 +108,7 @@ BEGIN
 
     -- Fetch the maximum user code and increment it
     SELECT MAX(CAST(SUBSTRING(user_code FROM 4) AS INT)) INTO v_max_user_code FROM user_details;
-    v_new_user_code := 'OUR' || LPAD(COALESCE(v_max_user_code + 1, 1)::TEXT, 5, '0');
+    v_new_user_code := 'OWE' || LPAD(COALESCE(v_max_user_code + 1, 1)::TEXT, 5, '0');
 
 
     BEGIN
@@ -155,7 +155,7 @@ BEGIN
 
     EXCEPTION
         WHEN unique_violation THEN
-            RAISE EXCEPTION 'User with email % already exists', p_email_id;
+            RAISE EXCEPTION 'User with email % or mobile_number % already exists', p_email_id, p_mobile_number;
         WHEN others THEN
             RAISE EXCEPTION 'An error occurred while creating the user: %', SQLERRM;
     END;
