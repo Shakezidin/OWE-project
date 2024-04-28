@@ -130,7 +130,7 @@ const CreateMarketingFees: React.FC<marketingProps> = ({
             <div className="createProfileTextView">
               <div className="create-input-container">
                 <div className="create-input-field">
-                  <label className="inputLabel">Source</label>
+                  <label className="inputLabel-select">Source</label>
                   <SelectOption
                     options={sourceOption(newFormData)}
                     onChange={(newValue) => handleChange(newValue, "source")}
@@ -140,7 +140,7 @@ const CreateMarketingFees: React.FC<marketingProps> = ({
                   />
                 </div>
                 <div className="create-input-field">
-                  <label className="inputLabel">DBA</label>
+                  <label className="inputLabel-select">DBA</label>
                   <SelectOption
                     options={dbaOption(newFormData)}
                     onChange={(newValue) => handleChange(newValue, "dba")}
@@ -152,7 +152,7 @@ const CreateMarketingFees: React.FC<marketingProps> = ({
                   />
                 </div>
                 <div className="create-input-field">
-                  <label className="inputLabel">State</label>
+                  <label className="inputLabel-select">State</label>
                   <SelectOption
                     options={stateOption(newFormData)}
                     onChange={(newValue) => handleChange(newValue, "state")}
@@ -175,7 +175,7 @@ const CreateMarketingFees: React.FC<marketingProps> = ({
                   />
                 </div>
                 <div className="create-input-field">
-                  <label className="inputLabel">Chg DLR</label>
+                  <label className="inputLabel-select">Chg DLR</label>
                   <SelectOption
                     options={chg_dlrOption(newFormData)}
                     

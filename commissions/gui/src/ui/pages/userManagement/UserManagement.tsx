@@ -150,7 +150,7 @@ const UserManagement: React.FC = () => {
       <div className="management-section">
         <div className="manage-user">
           <p>Welcome, {userName}</p>
-          <h2>User Management</h2>
+          <h3>User Management</h3>
         </div>
 
         <AddNewButton

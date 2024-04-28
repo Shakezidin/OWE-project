@@ -15,7 +15,9 @@ interface Props {
 
 const SelectOption: React.FC<Props> = ({ options, value, onChange }) => {
   return (
-    <Select
+   <div className="">
+         {/* {label && <label className="inputLabel">{label}</label>} */}
+     <Select
       options={options}
       isSearchable
       onChange={onChange}
@@ -24,7 +26,7 @@ const SelectOption: React.FC<Props> = ({ options, value, onChange }) => {
       styles={{
         control: (baseStyles, state) => ({
           ...baseStyles,
-          marginTop: "4px",
+          marginTop: "20px",
           borderRadius: "8px",
           outline: "none",
           fontSize: "13px",
@@ -38,12 +40,9 @@ const SelectOption: React.FC<Props> = ({ options, value, onChange }) => {
           ...baseStyles,
           fontSize: "13px",
         }),
-       
-        // menu:()=>({
-        //   fontSize:"13px"
-        // })
       }}
     />
+   </div>
   );
 };
 

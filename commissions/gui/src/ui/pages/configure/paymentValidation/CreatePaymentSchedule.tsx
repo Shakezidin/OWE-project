@@ -129,7 +129,7 @@ const CreatePaymentSchedule:React.FC<payScheduleProps> = ({handleClose,editMode,
                                     />
                                 </div>
                                 <div className="create-input-field">
-                                <label className="inputLabel">Partner</label>
+                                <label className="inputLabel-select">Partner</label>
                                     <SelectOption
                                         options={partnerOption(newFormData)}
                                         onChange={(newValue) => handleChange(newValue, 'partner')}
@@ -137,7 +137,7 @@ const CreatePaymentSchedule:React.FC<payScheduleProps> = ({handleClose,editMode,
                                     />
                                 </div>
                                 <div className="create-input-field">
-                                <label className="inputLabel">Installer</label>
+                                <label className="inputLabel-select">Installer</label>
                                     <SelectOption
                                         options={installerOption(newFormData)}
                                         onChange={(newValue) => handleChange(newValue, 'installer_name')}
@@ -156,7 +156,7 @@ const CreatePaymentSchedule:React.FC<payScheduleProps> = ({handleClose,editMode,
                                     />
                                 </div>
                                 <div className="create-input-field">
-                                <label className="inputLabel">ST</label>
+                                <label className="inputLabel-select">ST</label>
                                     <SelectOption
                                         options={stateOption(newFormData)}
                                         onChange={(newValue) => handleChange(newValue, 'state')}

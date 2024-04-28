@@ -2,22 +2,19 @@
     display: flex;
     /* align-items: center; */
     flex-direction: column;
+
     padding-bottom: .5rem;
 }
 .bread-link{
     display: flex;
-    align-items: center;
+    align-items: center !important;
     gap: .2rem;
+
 }
 .bread-link a{
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 500;
 }
 .bread-link span{
-    margin-top: .1rem;
-}
-.bread-head{
-    color: #263747;
-    font-size: 20px;
-    font-weight: 600;
+    /* margin-top: .1rem; */
 }

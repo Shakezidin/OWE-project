@@ -1,7 +1,23 @@
 .pagination-container {
   display: flex;
+  align-items: center;
+  gap: 1rem;
 
 
+}
+.page-per-item{
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+}
+.page-per-item select{
+  border-radius: .25rem;
+  outline: none;
+  border: 1px solid black;
+}
+
+.record-label{
+  font-size: 14px;
 }
 .pagination {
   display: flex;

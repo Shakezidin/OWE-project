@@ -65,8 +65,7 @@ const handleOpen = () => setOpen(true);
       <div className="rep-Dashboard-section-container">
         <div className="rep-Dashboard-container">
         <div className="manage-user">
-          <p>Welcome, Bruce Wills</p>
-          <h2>Your Dashboard</h2>
+          <h3>Dashboard</h3>
         </div>
           <div className="rep-dashboard-payroll">
 

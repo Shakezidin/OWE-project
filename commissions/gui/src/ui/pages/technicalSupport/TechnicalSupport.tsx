@@ -71,11 +71,30 @@ const TechnicalSupport: React.FC = () => {
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
-        <div className="support-cont-section">
-          <div className="support-container">
-            <div className="support-section">
-              <h3>Support</h3>
+      <div className="support-cont-section">
+        <div className="support-container">
+            <h3>Support</h3>
+          <div className="supportImage">
+            <img src={ICONS.supportImage} alt="" />
+          </div>
+        </div>
+
+        <div className="vertical-support"></div>
+        <div className="touch-container">
+          <div className="touch-info">
+            <p>Get In Touch with us for more Information</p>
+          </div>
+          <div className="create-input-container-support">
+            <div className="create-input-field-support">
+              <Input
+                type={"text"}
+                label="First Name"
+                value={state.user.firstName}
+                name="firstName"
+                placeholder={"Enter"}
+                onChange={handleChange}
+              />
+
             </div>
             <div className="supportImage">
               <img src={ICONS.supportImage} alt="" />

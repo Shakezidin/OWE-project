@@ -115,7 +115,7 @@ const CreateTimeLine:React.FC<timeLineProps> = ({handleClose,editMode,timeLineSl
                                     />
                                 </div>
                                 <div className="create-input-field">
-                                <label className="inputLabel">ST</label>
+                                <label className="inputLabel-select">ST</label>
                                     <SelectOption
                                         options={stateOption(newFormData)}
                                         onChange={(newValue) => handleChange(newValue, 'state')}

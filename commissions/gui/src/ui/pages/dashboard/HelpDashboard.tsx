@@ -29,14 +29,32 @@ const HelpDashboard: React.FC<ButtonProps> = ({
   return (
     <>
       <div className="transparent-model-down">
-
-        <div className="section-help">
-          <div className="help-section-container" style={{ display: "flex" }}>
-            <div className="help-section">
-              <h3>Help</h3>
+      
+          <div className="modal">
+            <div className="help-section-container" style={{ display: "flex",alignItems:"center" }}>
+              <div className="help-section">
+                <h3>Help</h3>
+              </div>
+              <div className="help-icon" onClick={handleClose}>
+                <img src={ICONS.crossIconUser} alt="" />
+              </div>
             </div>
-            <div className="help-icon" onClick={handleClose}>
-              <img src={ICONS.crossIconUser} alt="" />
+       <div className="modal-body">
+       <div className="help-input-container">
+          <div className="create-input-container">
+              <div
+                className="create-input-field"
+                style={{}}
+              >
+                <Input
+                  type={"text"}
+                  label="Project ID"
+                  value={""}
+                  name="fee_rate"
+                  placeholder={"Enter"}
+                  onChange={(e) => {}}
+                />
+              </div>
             </div>
           </div>
           <div className="create-input-container">
@@ -145,35 +163,15 @@ const HelpDashboard: React.FC<ButtonProps> = ({
               />
             </div>
             <div
-                className="create-input-field-help"  >
-                <label className="inputLabeldash">
-                  <p>Attach File</p>
-                </label>
-                <div className="file-input-container">
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    onChange={handleFileInputChange}
-                    className="file-input"
-                  />
-                   <div className="custom-button-container">
-                    <span className="file-input-placeholder">Select File</span>
-                    <button
-                      className="custom-button"
-                      
-                      onClick={handleButtonClick}
-                    >
-                      <img src={ICONS.browserIcon} alt=""/>
-                      Browse
-                    </button>
-                  </div>
-                </div>
-              </div>
-          </div>
-          
 
-          <div
-              className="create-input-help"
+              className="create-input-field-note"
+              style={{  }}
+            >
+              <label
+                htmlFor=""
+                className="inputLabel"
+              
+
               >
               <label htmlFor="" className="inputLabel">
                 Message
@@ -185,22 +183,25 @@ const HelpDashboard: React.FC<ButtonProps> = ({
                 rows={4}
                 // value={message}
                 placeholder="Type here..."
-              
-                // onChange={(e) => setMessage(e.target.value)}
               ></textarea>
               
               
-            </div>
-            
-
+                </div>
+          
+          </div>
+       </div>
           <div
-            className="createUserActionButtonDash"  >
-            <ActionButton
-              title={"Cancel"}
-              type="reset"
-              onClick={handleClose}
-            />
-            <ActionButton title={"Submit"} type="submit" onClick={() => { }} />
+              className="createUserActionButton"
+              style={{ marginTop: "1rem" }}
+            >
+              <ActionButton
+                title={"Cancel"}
+                type="reset"
+                onClick={handleClose}
+              />
+              <ActionButton title={"Submit"} type="submit" onClick={() => {}} />
+            </div>
+
           </div>
         </div>
       </div>

@@ -139,8 +139,8 @@ text-align: left;
   gap: 0.5rem;
   align-items: center;
   /* Define your button styles */
-  background: #0493CE;
-  color: white;
+  background:var(--check-color);
+  color:var(--white-color);
   padding: 5px 15px;
   border: none;
   border-radius: 5px;
