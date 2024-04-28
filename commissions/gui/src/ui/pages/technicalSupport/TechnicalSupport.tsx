@@ -23,8 +23,9 @@ const TechnicalSupport: React.FC = () => {
     message: "",
   });
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const phoneRegex = /^\d{10}$/;
+  const phoneRegex = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
+
+  const emailRegex=/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,43 +38,10 @@ const TechnicalSupport: React.FC = () => {
       message: message ? "" : "Message is required",
     };
     setErrors(newErrors);
-
-    // If there are no errors, submit the form
     if (!Object.values(newErrors).some((error) => error)) {
-      // Your form submission logic here
       console.log("Form submitted successfully");
     }
   };
-  // const handleChange = (event: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>): void => {
-  //   setState({
-  //     user: {
-  //       ...state.user,
-  //       [event.target.name]: event.target.value,
-  //     }
-  //   })
-  // }
-
-  //   if (state.user.firstName.length === 0) {
-  //     alert('please provide first name')
-
-  //   } else if (state.user.lastName.length === 0) {
-  //     alert('please provide last name')
-  //   }
-  //   else if (state.user.email.length === 0) {
-  //     alert('please provide Email name')
-  //   }
-  //   else if (state.user.phoneNum.length === 0) {
-  //     alert('please provide Phone number')
-  //   }
-  //   else if (state.user.message.length === 0) {
-  //     alert('please provide message')
-  //   }
-  //    else {
-
-  //     console.log(state.user)
-  //   }
-
-  // }
 
   const options = [
     { value: "option1", label: "OWE" },
@@ -121,7 +89,9 @@ const TechnicalSupport: React.FC = () => {
                   value={firstName}
                   name="firstName"
                   placeholder={"Enter"}
-                  onChange={(e) => setFirstName(e.target.value)}
+                  onChange={(e) => {setFirstName(e.target.value);
+                    setErrors({ ...errors, firstName: "" });
+                  }}
                 />
                 {errors.firstName && (
                   <span className="error">{errors.firstName}</span>
@@ -134,7 +104,9 @@ const TechnicalSupport: React.FC = () => {
                   value={lastName}
                   name="lastName"
                   placeholder={"Enter"}
-                  onChange={(e) => setLastName(e.target.value)}
+                  onChange={(e) => {setLastName(e.target.value);
+                    setErrors({ ...errors, lastName: "" });
+                  }}
                 />
                 {errors.lastName && (
                   <span className="error">{errors.lastName}</span>
@@ -149,18 +121,22 @@ const TechnicalSupport: React.FC = () => {
                   value={email}
                   name="email"
                   placeholder={"Enter"}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {setEmail(e.target.value);
+                    setErrors({ ...errors, email: "" });
+                  }}
                 />
                 {errors.email && <span className="error">{errors.email}</span>}
               </div>
               <div className="create-input-field-support">
                 <Input
-                  type={"text"}
+                  type={"number"}
                   label="Phone Number"
                   value={phoneNumber}
                   name="phoneNum"
                   placeholder={"Enter"}
-                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  onChange={(e) => {setPhoneNumber(e.target.value);
+                    setErrors({ ...errors, phoneNumber: "" });
+                  }}
                 />
                 {errors.phoneNumber && (
                   <span className="error">{errors.phoneNumber}</span>
@@ -173,8 +149,6 @@ const TechnicalSupport: React.FC = () => {
                 <label className="inputLabel">Issue</label>
                 <Select
                   options={options}
-                  
-                  // options={repTypeOption(newFormData) || respTypeData}
                   isSearchable
                   styles={{
                     control: (baseStyles, state) => ({
@@ -236,7 +210,9 @@ const TechnicalSupport: React.FC = () => {
                 value={message}
                 placeholder="Type here..."
                 style={{ marginTop: "0.3rem" }}
-                onChange={(e) => setMessage(e.target.value)}
+                onChange={(e) => {setMessage(e.target.value);
+                  setErrors({ ...errors, message: "" });
+                }}
               ></textarea>
               {errors.message && (
                 <span className="error">{errors.message}</span>

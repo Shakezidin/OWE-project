@@ -5,13 +5,13 @@ import './AccountSettings.css'
 const ResetPasswordAccount = () => {
   return (
     <>
-      <div className='' style={{width:"90%", padding:"1rem"}}>
+      <div className='' style={{flex:"1", padding:"1rem"}}>
         <div className=''>
           <p>Settings</p>
         </div>
 
         <div className='Personal-container'>
-          <div className="create-input-container" style={{padding:"1rem"}}>
+          <div className="create-input-container" style={{padding:"1rem "}}>
             <div className="create-input-field-profile">
               <Input
                 type={"text"}
