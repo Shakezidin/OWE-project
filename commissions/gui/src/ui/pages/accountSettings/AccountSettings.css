@@ -3,7 +3,7 @@
   gap: 1rem;
   align-items: center;
   padding: 0.5rem;
-  width: 100%;
+  /* width: 100%; */
 }
 .account-section-main {
   width: 100%;
@@ -31,7 +31,8 @@
   border-radius: 16px;
   padding-bottom: 2rem;
   /* width: 700px; */
-  gap: 2rem;
+  gap: 1rem;
+ 
 }
 .profile-sec-button {
   padding: 1rem;
@@ -43,7 +44,7 @@
   display: flex;
   flex-direction: column;
   padding: 1rem;
-  /* width: 15%; */
+  width: 15%;
 }
 .tab {
   padding: 0.5rem;
@@ -59,7 +60,7 @@
   font-weight: 500;
 }
 .tab-content {
-  width: 75%;
+  width: 80%;
   
 }
 .active-profile {
@@ -68,17 +69,17 @@
 }
 .vertical {
   border-left: 1px solid #dbdddf;
-  /* height: 650px !important; */
   margin-top: 1.5rem;
   /* border: 1px 0px 0px 0px; */
-margin-left: 2rem;
+/* margin-left: 2rem; */
 }
 .myProf-section {
-  margin-top: 1.5rem;
+  /* margin-top: 1.5rem; */
   font-size: 18px;
   font-weight: 500;
   text-align: left;
-  /* padding: 1rem; */
+  padding: 1rem;
+  margin-right: 2rem;
 
 }
 .admin-section {
@@ -117,7 +118,6 @@ margin-left: 2rem;
   cursor: pointer;
 }
 .edit-section p {
-  font-family: Poppins;
   font-size: 12px;
   font-weight: 500;
   line-height: 18px;
@@ -151,9 +151,10 @@ margin-left: 2rem;
   padding: 1rem;
 }
 .reset-Update button {
+
   /* width: 280px; */
-  width: 270px;
-  height: 48px;
+  width: 28%;
+  height: 44px;
   font-size: 14px;
   font-weight: 500;
   text-align: center;
@@ -161,8 +162,8 @@ margin-left: 2rem;
   color: white;
   padding: 15px 32px;
   text-decoration: none;
-  display: inline-block;
-  margin: 4px 2px;
+  /* margin: 4px px; */
+  margin-right: 0.5rem;
   cursor: pointer;
   background-color: #0493ce;
   border-radius: 8px;
@@ -170,7 +171,7 @@ margin-left: 2rem;
 }
 .reset-Update :hover {
   transition: background-color  0.5s ease, color 0.5s ease;
-background-color: #333333;
+background-color: #0470a0;
  
 }
 
@@ -179,11 +180,10 @@ background-color: #333333;
   justify-content: right;
   gap: 1rem;
   margin-top: 1rem;
-
 }
 .profile-reset :hover{
 
-  background-color: #333333;
+  background-color: #0470a0;
 }
 
 .user-profile-container {
@@ -286,7 +286,7 @@ background-color: #333333;
 
 }
 .reset-Update-support :hover {
-  background-color: #333333;
+  background-color: #0470a0;
 }
 
 .user-create-profile-section {
@@ -304,6 +304,7 @@ background-color: #333333;
 
 .create-input-field-profile {
   width: 40%;
+  /* padding: 1rem; */
 }
 .create-input-field-profile input:hover {
   border: 1px solid #0493ce;
@@ -315,4 +316,18 @@ background-color: #333333;
 .create-input-field-address input:hover {
   border: 1px solid #0493ce;
   border-radius: 8px;
+}
+
+.Personal-container-detail {
+  margin-top: 1rem;
+  /* width: 800px; */
+  height: 280px;
+  opacity: 0px;
+  border: 1px solid #e0e0e0;
+  border-radius: 16px;
+}
+
+.create-input-field-profile-password {
+  width: 31.5%;
+  padding: 1rem;
 }
