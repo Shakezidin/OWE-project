@@ -64,6 +64,7 @@ export const LoginPage = () => {
 
   /** handle login action */
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+  try{
     e.preventDefault();
 
     if (credentials.email_id.length === 0) {
@@ -92,6 +93,10 @@ export const LoginPage = () => {
         toast.error(result.message);
       }
     }
+  }
+  catch(err){
+    console.log(err)
+  }
   };
 
   // if (isAuthenticated) {
