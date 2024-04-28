@@ -16,6 +16,7 @@ import { createUserObject, validateForm } from "../../../utiles/Validation";
 import { updateUserForm, userResetForm } from "../../../redux/apiSlice/userManagementSlice/createUserSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { HTTP_STATUS } from "../../../core/models/api_models/RequestModel";
+import Loading from "../../components/loader/Loading";
 
 const UserManagement: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -25,10 +26,11 @@ const UserManagement: React.FC = () => {
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
 
   const dispatch = useAppDispatch();
-  const { userOnboardingList, userRoleBasedList, } = useAppSelector(
+  const { loading, userOnboardingList, userRoleBasedList, } = useAppSelector(
     (state) => state.userManagement
   );
   const { formData, dealerOwenerList, regionList, createUserResult, deleteUserResult} = useAppSelector((state) => state.createOnboardUser);
+
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
@@ -127,12 +129,7 @@ const UserManagement: React.FC = () => {
 
    /** API call to submit */
    const deleteUserRequest = async (deleteRows: string[])=>{
-    
-   
-    // if (deleteRows.length === 0){
-    //   return
-    // }
-   
+
     const actionResult =  await dispatch(deleteUserOnboarding({user_codes:deleteRows}))
     const result = unwrapResult(actionResult);
 
@@ -162,6 +159,7 @@ const UserManagement: React.FC = () => {
           }}
         />
       </div>
+      {loading && <div><Loading/> {loading}</div>}
       {open && (
         <UserOnboardingCreation
           handleClose={handleClose}

@@ -16,6 +16,7 @@ import {
   CreateUserModel,
 } from "../../../../core/models/api_models/UserManagementModel";
 import { useAppSelector } from "../../../../redux/hooks";
+import Loading from "../../../components/loader/Loading";
 
 interface createUserProps {
   editMode: boolean;
@@ -35,7 +36,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
   regionList,
 }) => {
   const dispatch = useDispatch();
-  const { formData } = useAppSelector((state) => state.createOnboardUser);
+  const { loading, formData } = useAppSelector((state) => state.createOnboardUser);
   const [selectTable, setSelectTable] = useState<boolean>(false);
 
   /** handle change for role */
@@ -74,6 +75,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
   /** render ui */
   return (
     <div className="transparent-model">
+      {loading && <div><Loading/> {loading}</div>}
       <form onSubmit={(e) => onSubmitCreateUser(e)} className="modal">
         <div className="createUserCrossButton" onClick={handleClose}>
           <CROSS_BUTTON />

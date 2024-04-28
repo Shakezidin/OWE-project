@@ -15,11 +15,13 @@ import { ReactComponent as UNDER_LINE } from "../../../resources/assets/BlueAndG
 import Input from "../../components/text_input/Input";
 import { ActionButton } from "../../components/button/ActionButton";
 import { Credentials } from "../../../core/models/api_models/AuthModel";
-import { loginSuccess } from "../../../redux/apiSlice/authSlice/authSlice";
-import { login } from "../../../infrastructure/web_api/services/apiUrl";
-import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { ROUTES } from "../../../routes/routes";
+import { toast } from "react-toastify";
+import { loginAction } from "../../../redux/apiActions/authActions";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
+import { unwrapResult } from "@reduxjs/toolkit";
+import { HTTP_STATUS } from "../../../core/models/api_models/RequestModel";
 
 export const LoginPage = () => {
   const navigate = useNavigate();
@@ -30,14 +32,10 @@ export const LoginPage = () => {
   });
 
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState<string>("");
-  const isAuthenticated = useSelector(
-    (state: RootState) => state.auth.isAuthenticated
-  );
-  const dispatch = useDispatch();
+ 
+  const dispatch = useAppDispatch();
 
   const handleInputChange = (name: string, value: any) => {
-    //const { name, value } = e.target;
     setCredentials((prevState) => ({
       ...prevState,
       [name]: value,
@@ -69,15 +67,19 @@ export const LoginPage = () => {
     e.preventDefault();
 
     if (credentials.email_id.length === 0) {
-      alert("Please enter email id");
+      toast.warn("Please enter email id");
     } else if (!isValidEmail(credentials.email_id)) {
-      alert("Please enter vaild email id");
+      toast.warning("Please enter vaild email id");
     } else if (credentials.password.length === 0) {
-      alert("Please enter the password");
+      toast.warning("Please enter the password");
     } else {
-      try {
-        const response = await login(credentials);
-        const { email_id, user_name, role_name, access_token } = response.data;
+      const actionResult = await dispatch(loginAction(credentials));
+      const result = unwrapResult(actionResult);
+
+      console.log('reseult.....', result)
+      if (result.status === HTTP_STATUS.OK) {
+        toast.success(result.message);
+        const { email_id, user_name, role_name, access_token } = result.data;
         localStorage.setItem("email", email_id);
         localStorage.setItem("userName", user_name);
         localStorage.setItem("role", role_name);
@@ -87,17 +89,16 @@ export const LoginPage = () => {
           "isRememberMe",
           credentials.isRememberMe.toString()
         );
-        dispatch(loginSuccess({ email_id, role_name, access_token }));
         navigate("/dashboard");
-      } catch (error) {
-        alert("Please enter vaild credentails.");
+      } else {
+        toast.error(result.message);
       }
     }
   };
 
-  if (isAuthenticated) {
-    navigate("/dashboard");
-  }
+  // if (isAuthenticated) {
+  //   navigate("/dashboard");
+  // }
   /** UI render */
 
   return (
@@ -143,7 +144,6 @@ export const LoginPage = () => {
                   handleInputChange(name, value);
                 }}
               />
-              <br />
               <Input
                 type={showPassword ? "text" : "password"}
                 value={credentials.password}

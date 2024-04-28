@@ -63,7 +63,7 @@ const createUserSlice = createSlice({
       .addCase(
         fetchDealerOwner.fulfilled,
         (state: CreateOnboardUserStateModel, action) => {
-          state.loading = true;
+          state.loading = false;
           state.error = null;
           state.dealerOwenerList = action.payload;
         }
@@ -86,7 +86,7 @@ const createUserSlice = createSlice({
       .addCase(
         fetchRegionList.fulfilled,
         (state: CreateOnboardUserStateModel, action) => {
-          state.loading = true;
+          state.loading = false;
           state.error = null;
           state.regionList = action.payload;
         }
@@ -109,7 +109,7 @@ const createUserSlice = createSlice({
       .addCase(
         createUserOnboarding.fulfilled,
         (state: CreateOnboardUserStateModel, action) => {
-          state.loading = true;
+          state.loading = false;
           state.error = null;
           state.createUserResult = action.payload;
         }
@@ -134,7 +134,7 @@ const createUserSlice = createSlice({
       .addCase(
         deleteUserOnboarding.fulfilled,
         (state: CreateOnboardUserStateModel, action) => {
-          state.loading = true;
+          state.loading = false;
           state.error = null;
           state.deleteUserResult = action.payload;
         }
