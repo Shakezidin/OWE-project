@@ -32,7 +32,7 @@ const ResetPassword = () => {
     e.preventDefault();
 
     if (credentials.email_id.length === 0) {
-      alert("Please enter email Id.");
+      toast.warning('Please enter email Id.')
     } else {
 
       const actionResult = await dispatch(generateOTP({ email_id: credentials.email_id }));
