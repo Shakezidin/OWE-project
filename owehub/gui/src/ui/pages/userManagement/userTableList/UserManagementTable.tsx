@@ -227,7 +227,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             />
           </div>
 
-          <div className="iconsSection-delete" style={{ marginTop: ".2rem" }} onClick={()=>{
+          <div className="iconsSection-delete" style={{ marginTop: "1.2rem" }} onClick={()=>{
             onClickMultiDelete()
           }}>
             

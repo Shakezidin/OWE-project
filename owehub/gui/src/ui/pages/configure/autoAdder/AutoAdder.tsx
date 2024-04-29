@@ -22,6 +22,11 @@ import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import CreateAutoAdder from "./CreateAutoAdder";
 import Loading from "../../../components/loader/Loading";
 import { ROUTES } from "../../../../routes/routes";
+import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
+import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
+import { AutoAdderColumn } from "../../../../resources/static_data/configureHeaderData/AutoAdderColumn";
+import SortableHeader from "../../../components/tableHeader/SortableHeader";
+import PaginationComponent from "../../../components/pagination/PaginationComponent";
 interface Column {
   name: string;
   displayName: string;
@@ -37,56 +42,56 @@ const AutoAdder: React.FC = () => {
   const handleExportOpen = () => setExportOpen(!exportOPen)
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const commissionList = useAppSelector((state) => state.comm.commissionsList);
-  const loading = useAppSelector((state) => state.comm.loading);
-  const error = useAppSelector((state) => state.comm.error);
+  const commissionList = useAppSelector((state:any) => state.comm.commissionsList);
+  const loading = useAppSelector((state:any) => state.comm.loading);
+  const error = useAppSelector((state:any) => state.comm.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
   const [editedCommission, setEditedCommission] = useState<CommissionModel | null>(null);
   const itemsPerPage = 5;
-  const currentPage = useAppSelector((state) => state.paginationType.currentPage);
+  const currentPage = useAppSelector((state:any) => state.paginationType.currentPage);
   const [viewArchived, setViewArchived] = useState<boolean>(false);
+  const [sortKey, setSortKey] = useState("");
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [pageSize1, setPageSize1] = useState(10); // Set your desired page size here
+  // const pageSize = 10;
+  const [currentPage1,setCurrentPage1] = useState(1)
   useEffect(() => {
     const pageNumber = {
-      page_number: currentPage,
-      page_size: itemsPerPage,
+      page_number: currentPage1,
+      page_size: pageSize1,
+      archived: viewArchived ? true : undefined,
 
     };
     dispatch(fetchCommissions(pageNumber));
 
-  }, [dispatch, currentPage]);
+  }, [dispatch, currentPage1,viewArchived,pageSize1]);
 
+  const handlePageChange = (page: number) => {
+    setCurrentPage1(page)
+  };
+  const handleItemsPerPageChange = (e: any) => {
+    const newItemsPerPage = parseInt(e.target.value, 10);
+    setPageSize1(newItemsPerPage);
+  setCurrentPage1(1) // Reset to the first page when changing items per page
+  };
+
+  const filter = () => {
+    setFilterOpen(true)
+  }
   const paginate = (pageNumber: number) => {
     dispatch(setCurrentPage(pageNumber));
   };
+  const pageNumber = {
+    page_number: currentPage,
+    page_size: itemsPerPage,
 
-
-  const goToNextPage = () => {
-    dispatch(setCurrentPage(currentPage + 1));
   };
 
-  const goToPrevPage = () => {
-    dispatch(setCurrentPage(currentPage - 1));
-  };
-  const columns: Column[] = [
-    // { name: "record_id", displayName: "Record ID", type: "number" },
-    { name: "partner", displayName: "Partner", type: "string" },
-    { name: "installer", displayName: "Installer", type: "string" },
-    { name: "state", displayName: "State", type: "string" },
-    { name: "sale_type", displayName: "Sale Type", type: "string" },
-    { name: "sale_price", displayName: "Sale Price", type: "number" },
-    { name: "rep_type", displayName: "Rep Type", type: "string" },
-    { name: "rl", displayName: "RL", type: "number" },
-    { name: "rate", displayName: "Rate", type: "number" },
-    { name: "start_date", displayName: "Start Date", type: "date" },
-    { name: "end_date", displayName: "End Date", type: "date" }
-  ];
-  const filter = ()=>{
-    setFilterOpen(true)
-  }
- 
-  const totalPages = Math.ceil(commissionList?.length / itemsPerPage);
+
+ const dbCount = 10
+  const totalPages1 = Math.ceil(dbCount / pageSize1);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -101,6 +106,33 @@ const AutoAdder: React.FC = () => {
     setEditedCommission(commission);
     handleOpen()
   };
+  
+  const currentPageData = commissionList?.slice(startIndex, endIndex);
+  const isAnyRowSelected = selectedRows.size > 0;
+  const isAllRowsSelected = selectedRows.size === commissionList.length;
+  const handleSort = (key: any) => {
+    if (sortKey === key) {
+      setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
+    } else {
+      setSortKey(key);
+      setSortDirection('asc');
+    }
+  };
+
+  if (sortKey) {
+    currentPageData.sort((a: any, b: any) => {
+      const aValue = a[sortKey];
+      const bValue = b[sortKey];
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        return sortDirection === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+      } else {
+        // Ensure numeric values for arithmetic operations
+        const numericAValue = typeof aValue === 'number' ? aValue : parseFloat(aValue);
+        const numericBValue = typeof bValue === 'number' ? bValue : parseFloat(bValue);
+        return sortDirection === 'asc' ? numericAValue - numericBValue : numericBValue - numericAValue;
+      }
+    });
+  }
 
   if (error) {
     return <div className="loader-container"><Loading/></div>;
@@ -109,9 +141,6 @@ const AutoAdder: React.FC = () => {
     return <div className="loader-container"><Loading/> {loading}</div>;
   }
 
-  const currentPageData = commissionList?.slice(startIndex, endIndex);
-  const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === commissionList.length;
 
   return (
     <div className="comm">
@@ -149,7 +178,25 @@ const AutoAdder: React.FC = () => {
           <table>
             <thead>
               <tr>
-              
+              {
+                AutoAdderColumn.map((item,key)=>(
+                  <SortableHeader
+                  key={key}
+                  isCheckbox={item.isCheckbox}
+                  titleName={item.displayName}
+                  data={commissionList}
+                  isAllRowsSelected={isAllRowsSelected}
+                  isAnyRowSelected={isAnyRowSelected}
+                  selectAllChecked={selectAllChecked}
+                  setSelectAllChecked={setSelectAllChecked}
+                  selectedRows={selectedRows}
+                  setSelectedRows={setSelectedRows}
+                  sortKey={item.name}
+                  sortDirection={sortKey === item.name ? sortDirection : undefined}
+                  onClick={() => handleSort(item.name)}
+                />
+                ))
+              }
                 <th>
                   <div className="action-header">
                     <p>Action</p>
@@ -164,7 +211,8 @@ const AutoAdder: React.FC = () => {
                     key={i}
                     className={selectedRows.has(i) ? "selected" : ""}
                   >
-                    <td style={{paddingRight:"0"}}>
+                    <td >
+                      <div className="flex-check">
                       <CheckBox
                         checked={selectedRows.has(i)}
                         onChange={() =>
@@ -176,11 +224,12 @@ const AutoAdder: React.FC = () => {
                           )
                         }
                       />
-                    </td>
-                    <td style={{ fontWeight: "500", color: "black",paddingLeft:"10px" }}>
+                      
                       {el.partner}
+               
+                      </div>
                     </td>
-                    <td>{el.installer}</td>
+                  <td>{el.installer}</td>
                     <td>{el.state}</td>
                     <td>{el.sale_type}</td>
                     <td>{el.sale_price}</td>
@@ -233,17 +282,24 @@ const AutoAdder: React.FC = () => {
         <div className="page-heading-container">
       
       <p className="page-heading">
-       {currentPage} - {totalPages} of {currentPageData?.length} item
+       {currentPage} - {totalPages1} of {currentPageData?.length} item
       </p>
- 
- <Pagination
+      <PaginationComponent
+          currentPage={currentPage1}
+          itemsPerPage={pageSize1}
+          totalPages={totalPages1}
+          onPageChange={handlePageChange}
+          handleItemsPerPageChange={handleItemsPerPageChange}
+
+        />
+ {/* <Pagination
       currentPage={currentPage}
-      totalPages={totalPages} // You need to calculate total pages
+      totalPages={totalPages} 
       paginate={paginate}
       currentPageData={currentPageData}
       goToNextPage={goToNextPage}
       goToPrevPage={goToPrevPage}
-    /> 
+    />  */}
    </div>
    : null
   }
