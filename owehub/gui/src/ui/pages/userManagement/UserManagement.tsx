@@ -30,6 +30,7 @@ import Loading from "../../components/loader/Loading";
 import { toast } from "react-toastify";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { TYPE_OF_USER } from "../../../resources/static_data/TypeOfUser";
+import { showAlert } from "../../components/alert/ShowAlert";
 
 const UserManagement: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -153,19 +154,24 @@ const UserManagement: React.FC = () => {
 
   /** API call to submit */
   const deleteUserRequest = async (deleteRows: string[]) => {
-    const actionResult = await dispatch(
-      deleteUserOnboarding({ user_codes: deleteRows })
-    );
-    const result = unwrapResult(actionResult);
 
-    if (result.status === HTTP_STATUS.OK) {
-      handleClose();
-      setSelectedRows(new Set());
-      setSelectAllChecked(false);
-      toast.success(result.message);
-    } else {
-      toast.warning(result.message);
-    }
+    const confirmed = await showAlert('Delete User', 'Are you sure you want to delete user?', 'Yes', 'No');
+    if (confirmed) {
+      const actionResult = await dispatch(
+        deleteUserOnboarding({ user_codes: deleteRows })
+      );
+      const result = unwrapResult(actionResult);
+  
+      if (result.status === HTTP_STATUS.OK) {
+        handleClose();
+        setSelectedRows(new Set());
+        setSelectAllChecked(false);
+        toast.success(result.message);
+      } else {
+        toast.warning(result.message);
+      }
+    } 
+   
   };
 
   /** render UI */
@@ -217,7 +223,7 @@ const UserManagement: React.FC = () => {
           selectedOption={selectedOption}
           handleSelectChange={handleSelectChange}
           onClickDelete={(item: UserRoleBasedListModel) => {
-            console.log(item.user_code);
+            console.log(item.user_code); 
             deleteUserRequest([item.user_code]);
           }}
           onClickMultiDelete={() => {
