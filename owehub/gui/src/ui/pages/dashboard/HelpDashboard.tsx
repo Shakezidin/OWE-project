@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useRef} from "react";
 import "../dashboard/dasboard.css";
 import { ICONS } from "../../icons/Icons";
 import Input from "../../components/text_input/Input";
@@ -15,6 +15,16 @@ const HelpDashboard: React.FC<ButtonProps> = ({
   handleClose,
   commission,
 }) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const handleFileInputChange = (e: any) => {
+    const file = e.target.files?.[0];
+    console.log(file);
+  };
+
+
+  const handleButtonClick = () => {
+    fileInputRef.current?.click(); // Trigger file input click event
+  };
   return (
     <>
       <div className="transparent-model-down">
@@ -134,6 +144,30 @@ const HelpDashboard: React.FC<ButtonProps> = ({
                   placeholder={"Enter"}
                   onChange={(e) => {}}
                 />
+              </div>
+              <div className="create-input-field-help">
+                <label className="inputLabel">
+                  <p>Attach File</p>
+                </label>
+                <div className="file-input-container">
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleFileInputChange}
+                    className="file-input"
+                  />
+                  <div className="custom-button-container">
+                    <span className="file-input-placeholder">Select File</span>
+                    <button
+                      className="custom-button"
+                      
+                      onClick={handleButtonClick}
+                    >
+                      <img src={ICONS.browserIcon} alt=""/>
+                      Browse
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
 

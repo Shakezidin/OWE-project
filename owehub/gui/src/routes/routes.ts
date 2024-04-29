@@ -5,6 +5,7 @@ export const ROUTES = {
   OTP: "/otp",
   COMMISSION_DASHBOARD: "/dashboard",
   REPPAY_DASHBOARD: "/reppay/dashboard",
+  AR_DASHBOARD: "/ar/dashboard",
   CONFIG_COMMISSION_RATE: "/config/commissionRate",
   CONFIG_DEALER_OVER: "/config/dealerOverrides",
   CONFIG_DEALER_TIER: "/config/dealerTier",
@@ -32,6 +33,11 @@ export const ROUTES = {
   CONFIG_ADDER_CREDITS:"/config/adder-credits",
   CONFIG_ADDER_RESPONSIBILITY:"/config/adder-responsibility",
   CONFIG_LOAN_FEES:"/config/loan-fees",
+  CONFIG_AR_IMPORT:"/config/ar-import",
+  CONFIG_ADJUSTMENTS:"/config/adjustments",
+  CONFIG_LOAN_FEE_ADDER:"/config/loan-fee-adder",
+  CONFIG_RECONCILE:"/config/reconcile",
+
   // other routes
   REPORT: "/report",
   DATABASE_CONTROLLER: "/databaseController",
