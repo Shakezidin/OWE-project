@@ -296,12 +296,12 @@
   z-index: 100;
 
 }
-.modal-down {
+.modal-down-break {
   background-color: #fefefe;
   border-radius: 16px;
   width: 40%;
   max-width: 900px;
-  height: 650px;
+  height: 600px;
   overflow: hidden; 
 
 }

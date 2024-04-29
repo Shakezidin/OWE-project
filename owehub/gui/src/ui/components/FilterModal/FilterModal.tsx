@@ -193,7 +193,7 @@ const FilterModal: React.FC<TableProps> = ({
                             {filters?.map((filter, index) => (
                                 <div className="create-input-container" key={index}>
                                     <div className="create-input-field">
-                                        <label className="inputLabel">Column Name</label>
+                                        <label className="inputLabel-select">Column Name</label>
                                         <div className="">
                                             <SelectOption
                                                 options={[
@@ -215,7 +215,7 @@ const FilterModal: React.FC<TableProps> = ({
                                         </div>
                                     </div>
                                     <div className="create-input-field">
-                                        <label className="inputLabel">Operation</label>
+                                        <label className="inputLabel-select">Operation</label>
                                         <OperationSelect
                                             options={options}
                                             columnType={
