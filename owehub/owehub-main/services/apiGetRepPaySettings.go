@@ -1,0 +1,253 @@
+/**************************************************************************
+ * File       	   : apiGetRepPaySettingsData.go
+ * DESCRIPTION     : This file contains functions for get RepPaySettings type data handler
+ * DATE            : 22-Jan-2024
+ **************************************************************************/
+
+package services
+
+import (
+	"OWEApp/shared/db"
+	log "OWEApp/shared/logger"
+	models "OWEApp/shared/models"
+	"strings"
+
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"net/http"
+)
+
+/******************************************************************************
+ * FUNCTION:		HandleGetRepPaySettingsDataRequest
+ * DESCRIPTION:     handler for get RepPaySettings data request
+ * INPUT:			resp, req
+ * RETURNS:    		void
+ ******************************************************************************/
+func HandleGetRepPaySettingsDataRequest(resp http.ResponseWriter, req *http.Request) {
+	var (
+		err          error
+		dataReq      models.DataRequestBody
+		data         []map[string]interface{}
+		whereEleList []interface{}
+		query        string
+		filter       string
+	)
+
+	log.EnterFn(0, "HandleGetRepPaySettingsDataRequest")
+	defer func() { log.ExitFn(0, "HandleGetRepPaySettingsDataRequest", err) }()
+
+	if req.Body == nil {
+		err = fmt.Errorf("HTTP Request body is null in get RepPaySettings data request")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		return
+	}
+
+	reqBody, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get RepPaySettings data request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		return
+	}
+
+	err = json.Unmarshal(reqBody, &dataReq)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to unmarshal get RepPaySettings data request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal get RepPaySettings data Request body", http.StatusBadRequest, nil)
+		return
+	}
+
+	tableName := db.TableName_RepPaySettingss
+	query = `
+	 SELECT rs.id AS record_id, rs.unique_id, rs.name, st.name AS state_name, rs.pay_scale, rs.position,
+	 rs.b_e, rs.is_archived, rs.start_date, rs.end_date
+	 FROM rep_pay_settings rs
+	 JOIN states st ON st.state_id = rs.state_id`
+
+	filter, whereEleList = PrepareRepPaySettingsFilters(tableName, dataReq)
+	if filter != "" {
+		query += filter
+	}
+
+	data, err = db.ReteriveFromDB(query, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get RepPaySettings data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get RepPaySettings data from DB", http.StatusBadRequest, nil)
+		return
+	}
+
+	RepPaySettingsList := models.GetRepPaySettingsList{}
+
+	// Assuming you have data as a slice of maps, as in your previous code
+	for _, item := range data {
+		RecordId, Ok := item["record_id"].(int64)
+		if !Ok {
+			RecordId = 0.0
+		}
+		Unique_id, Ok := item["unique_id"].(string)
+		if !Ok || Unique_id == "" {
+			Unique_id = ""
+		}
+
+		Name, nameOk := item["name"].(string)
+		if !nameOk || Name == "" {
+			Name = ""
+		}
+
+		State_name, state_nameOk := item["state_name"].(string)
+		if !state_nameOk || State_name == "" {
+			State_name = ""
+		}
+
+		Pay_scale, pay_scaleOk := item["pay_scale"].(string)
+		if !pay_scaleOk || Pay_scale == "" {
+			Pay_scale = ""
+		}
+
+		Position, positionOk := item["position"].(string)
+		if !positionOk || Position == "" {
+			Position = ""
+		}
+
+		B_e, b_eOk := item["b_e"].(string)
+		if !b_eOk || B_e == "" {
+			B_e = ""
+		}
+
+		Is_archived, archivedOk := item["is_archived"].(bool)
+		if !archivedOk || !Is_archived {
+			Is_archived = false
+		}
+
+		Start_date, start_dateOk := item["start_date"].(string)
+		if !start_dateOk || Start_date == "" {
+			Start_date = ""
+		}
+
+		End_date, end_dateOk := item["end_date"].(string)
+		if !end_dateOk || End_date == "" {
+			End_date = ""
+		}
+
+		// Create a new GetSaleTypeData object
+		RepPaySettingsData := models.GetRepPaySettingsData{
+			RecordId:    RecordId,
+			UniqueID:    Unique_id,
+			Name:        Name,
+			State:       State_name,
+			PayScale:    Pay_scale,
+			Position:    Position,
+			B_E:         B_e,
+			Is_archived: Is_archived,
+			StartDate:   Start_date,
+			EndDate:     End_date,
+		}
+
+		RepPaySettingsList.RepPaySettingsList = append(RepPaySettingsList.RepPaySettingsList, RepPaySettingsData)
+	}
+	// Send the response
+	log.FuncInfoTrace(0, "Number of RepPaySettings List fetched : %v list %+v", len(RepPaySettingsList.RepPaySettingsList), RepPaySettingsList)
+	FormAndSendHttpResp(resp, "RepPaySettings Data", http.StatusOK, RepPaySettingsList)
+}
+
+/******************************************************************************
+ * FUNCTION:		PrepareRepPaySettingsFilters
+ * DESCRIPTION:     handler for create select query
+ * INPUT:			resp, req
+ * RETURNS:    		void
+ ******************************************************************************/
+func PrepareRepPaySettingsFilters(tableName string, dataFilter models.DataRequestBody) (filters string, whereEleList []interface{}) {
+	log.EnterFn(0, "PrepareMarketingFeesFilters")
+	defer func() { log.ExitFn(0, "PrepareMarketingFeesFilters", nil) }()
+
+	var filtersBuilder strings.Builder
+	whereAdded := false // Flag to track if WHERE clause has been added
+
+	// Check if there are filters
+	if len(dataFilter.Filters) > 0 {
+		filtersBuilder.WriteString(" WHERE ")
+		whereAdded = true // Set flag to true as WHERE clause is added
+
+		for i, filter := range dataFilter.Filters {
+			if i > 0 {
+				filtersBuilder.WriteString(" AND ")
+			}
+
+			// Check if the column is a foreign key
+			column := filter.Column
+
+			// Determine the operator and value based on the filter operation
+			operator := GetFilterDBMappedOperator(filter.Operation)
+			value := filter.Data
+
+			// For "stw" and "edw" operations, modify the value with '%'
+			if filter.Operation == "stw" || filter.Operation == "edw" || filter.Operation == "cont" {
+				value = GetFilterModifiedValue(filter.Operation, filter.Data.(string))
+			}
+
+			// Build the filter condition using correct db column name
+			switch column {
+			case "name":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(rs.name) %s LOWER($%d)", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "state":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(st.state_name) %s LOWER($%d)", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "pay_scale":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(rs.pay_scale) %s LOWER($%d)", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "position":
+				filtersBuilder.WriteString(fmt.Sprintf("rs.position %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "b_e":
+				filtersBuilder.WriteString(fmt.Sprintf("rs.b_e %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "start_date":
+				filtersBuilder.WriteString(fmt.Sprintf("rs.start_date %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "end_date":
+				filtersBuilder.WriteString(fmt.Sprintf("rs.end_date %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			default:
+				// For other columns, handle them accordingly
+				filtersBuilder.WriteString("LOWER(")
+				filtersBuilder.WriteString(column)
+				filtersBuilder.WriteString(") ")
+				filtersBuilder.WriteString(operator)
+				filtersBuilder.WriteString(" LOWER($")
+				filtersBuilder.WriteString(fmt.Sprintf("%d", len(whereEleList)+1))
+				filtersBuilder.WriteString(")")
+				whereEleList = append(whereEleList, value)
+			}
+		}
+	}
+
+	// Handle the Archived field
+	if dataFilter.Archived {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+		}
+		filtersBuilder.WriteString("rs.is_archived = TRUE")
+	} else {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+		}
+		filtersBuilder.WriteString("rs.is_archived = FALSE")
+	}
+
+	// Add pagination logic
+	if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+		offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
+		filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+	}
+
+	filters = filtersBuilder.String()
+
+	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
+	return filters, whereEleList
+}

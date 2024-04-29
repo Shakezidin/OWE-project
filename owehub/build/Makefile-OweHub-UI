@@ -1,0 +1,21 @@
+CPATH=${PWD}
+
+SERVICE_PATH=${PWD}/../
+
+docker: ## Create Docker Image
+	@echo "Building GUI Frontend Docker Image"
+		cd $(SERVICE_PATH)/ || exit 1 ; \
+		docker build -f docker/Dockerfile-owe-ui -t owehub-ui:v1 .;
+
+dockerpush: ## Create Docker Image
+	@echo "Build and push GUI Frontend Docker Image"
+	@echo "Registry Name $(DOCKER_REGISTRY)"
+		cd $(SERVICE_PATH)/ || exit 1 ; \
+		docker build -f docker/Dockerfile-owe-ui -t owehub-ui:v1 .; \
+        docker push owehub-ui:v1 ; 
+
+dockerpushclean:
+	@echo "Clean GUI frontend Client Images"
+	echo "Removing Image owehub-ui:v1" ; \
+	cd $(SERVICE_PATH)/ ; \
+	docker rmi owehub-ui:v1 ; 
