@@ -38,8 +38,13 @@
   border: none;
   outline: none;
   background: #ECECEC;
-  padding: 5px 8px;
+  padding: 8px;
   cursor: pointer;
+  text-wrap: nowrap;
+}
+.rep-calendar-component2{
+  cursor: pointer;
+  text-wrap: nowrap;
 }
 .rep-line-graph {
   display: flex;
@@ -60,7 +65,7 @@
   justify-content: center;
 }
 .rep-active-filter-line {
-  background-color: #263747;
+  background-color: #19B87E;
 }
 .rep-active-filter-line img {
   fill: white;

@@ -453,3 +453,6 @@ height: 16px !important;
   background-color: #0056b3;
 }
 
+.DateRangePickerInput__showClearDates{
+  display: inline-flex;
+}

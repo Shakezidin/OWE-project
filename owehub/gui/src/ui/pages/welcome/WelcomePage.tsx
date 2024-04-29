@@ -266,11 +266,41 @@ export const WelcomePage = () => {
           <div id="welcomeFooterUpperView">
             <img id="welcomeWhiteLogo" src={WhiteLogo} alt="logo" />
             <div id="welcomeSocialMedia">
-              <Facebook />
-              <Linkedin />
-              <Twitter />
-              <YouTube />
-              <Instagram />
+              <a
+                href="https://www.facebook.com/ourworldenergy/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Facebook />
+              </a>
+              <a
+                href="https://www.linkedin.com/company/our-world-energy/mycompany/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Linkedin />
+              </a>
+              <a
+                href="https://twitter.com/OurWorldEnergy"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Twitter />
+              </a>
+              <a
+                href="https://www.youtube.com/@ourworldenergy6794"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <YouTube />
+              </a>
+              <a
+                href="https://www.instagram.com/ourworldenergyaz/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Instagram />
+              </a>
             </div>
             <div id="welcomeContact">
               <span className="welcomeContactText">About</span>

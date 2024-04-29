@@ -55,7 +55,7 @@ const appRoutesTwo = [
   {
     ar: [
       {
-        path: "#",
+        path: ROUTES.AR_DASHBOARD,
         sidebarProps: {
           displayText: "AR",
           icon: <FiServer size={18}  style={{marginLeft: "5px"}}   className="hover-icon"/>

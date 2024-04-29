@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FiChevronDown } from 'react-icons/fi'; // Assuming you want to use the FiChevronDown icon
-import './DropdownWithCheckboxes.css';
+import './ArDropdownWithCheckboxes.css';
 
 interface Option {
   label: string;
@@ -8,17 +8,15 @@ interface Option {
 }
 
 const options: Option[] = [
-  { value: "All", label: "All" },
-  { value: "AP-DTH", label: "AP-DTH" },
-  { value: "AP-PDA", label: "AP-PDA" },
-  { value: "AP-ADV", label: "AP-ADV" },
-  { value: "AP-DED", label: "AP-DED" },
-  { value: "REP-COMM", label: "REP-COMM" },
-  { value: "REP BONUS", label: "REP BONUS" },
-  { value: "LEADER", label: "LEADER" }
+    { value: "All", label: "All" },
+    { value: "Shaky", label: "AP-DTH" },
+    { value: "Cancel", label: "AP-PDA" },
+    { value: "QC/Permit/NTP", label: "AP-ADV" },
+    { value: "Install", label: "AP-DED" },
+    { value: "PTO", label: "AR-COMM" },
 ];
 
-const DropdownWithCheckboxes = () => {
+const ArDropdownWithCheckboxes = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
 
@@ -37,18 +35,18 @@ const DropdownWithCheckboxes = () => {
   };
 
   return (
-    <div className="dropdown-container">
-      <div className="dropdown-toggle" onClick={toggleDropdown}>
+    <div className="ar-dropdown-container">
+      <div className="ar-dropdown-toggle" onClick={toggleDropdown}>
         {/* {selectedOptions.length > 0
           ? `(${selectedOptions})`
           : 'Select'} */}
           Select
-        <FiChevronDown className='drop-icon'/>
+        <FiChevronDown className='ar-drop-icon'/>
       </div>
       {isOpen && (
-        <div className="dropdown-menu">
+        <div className="ar-dropdown-menu">
           {options.map((option) => (
-            <div key={option.value} className="dropdown-item">
+            <div key={option.value} className="ar-dropdown-item">
               <input
                 type="checkbox"
                 checked={selectedOptions.includes(option.value)}
@@ -63,4 +61,4 @@ const DropdownWithCheckboxes = () => {
   );
 };
 
-export default DropdownWithCheckboxes;
+export default ArDropdownWithCheckboxes;

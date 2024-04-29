@@ -36,11 +36,11 @@ const ConfigurePage = () => {
     {
       title: "AR",
       data: [
-        { title: "AR", route: "#" },
+        { title: "AR", route: ROUTES.CONFIG_AR },
         { title: "AR Schedule", route: ROUTES.CONFIG_AR_SCHEDULE },
-        { title: "AR Import", route: "#" },
-        { title: "Adjustment", route: "#" },
-        { title: "Reconcile", route: "#" },
+        { title: "AR Import", route: ROUTES.CONFIG_AR_IMPORT },
+        { title: "Adjustment", route: ROUTES.CONFIG_ADJUSTMENTS },
+        { title: "Reconcile", route: ROUTES.CONFIG_RECONCILE},
         { title: "Install cost", route: ROUTES.CONFIG_INSTALL_COST },
       ],
       state: useState(true),
