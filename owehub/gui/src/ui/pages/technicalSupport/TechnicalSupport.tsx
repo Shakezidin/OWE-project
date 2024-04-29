@@ -6,12 +6,11 @@ import Select from "react-select";
 import { ActionButton } from "../../components/button/ActionButton";
 import SelectOption from "../../components/selectOption/SelectOption";
 
-const TechnicalSupport = () => {
+const TechnicalSupport: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedOption, setSelectedOption] = useState(null);
   const [selectedState, setSelectedState] = useState<string | null>(null);
-  const [stateOptions, setStateOptions] = useState([]);
-
+  const [stateOptions, setStateOptions] = useState<any[]>([]);
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -27,11 +26,13 @@ const TechnicalSupport = () => {
     message: "",
   });
 
-  const phoneRegex = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
+  const phoneRegex =
+    /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
-  const emailRegex=/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  const emailRegex =
+    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Validation logic
     const newErrors = {
@@ -47,7 +48,7 @@ const TechnicalSupport = () => {
     }
   };
 
-  const handleStateChange = (selectedOption) => {
+  const handleStateChange = (selectedOption: any) => {
     setSelectedState(selectedOption.value);
   };
 
@@ -56,14 +57,13 @@ const TechnicalSupport = () => {
     { value: "option2", label: "OWE 2" },
     { value: "option3", label: "OWE 3" },
   ];
-  const handleSelectChange = (selectedOption) => {
+  const handleSelectChange = (selectedOption: any) => {
     setSelectedOption(selectedOption);
   };
-  const handleFileInputChange = (e) => {
+  const handleFileInputChange = (e: any) => {
     const file = e.target.files?.[0];
     console.log(file);
   };
-
 
   const handleButtonClick = () => {
     fileInputRef.current?.click(); // Trigger file input click event
@@ -97,7 +97,8 @@ const TechnicalSupport = () => {
                   value={firstName}
                   name="firstName"
                   placeholder={"Enter"}
-                  onChange={(e) => {setFirstName(e.target.value);
+                  onChange={(e) => {
+                    setFirstName(e.target.value);
                     setErrors({ ...errors, firstName: "" });
                   }}
                 />
@@ -112,7 +113,8 @@ const TechnicalSupport = () => {
                   value={lastName}
                   name="lastName"
                   placeholder={"Enter"}
-                  onChange={(e) => {setLastName(e.target.value);
+                  onChange={(e) => {
+                    setLastName(e.target.value);
                     setErrors({ ...errors, lastName: "" });
                   }}
                 />
@@ -129,7 +131,8 @@ const TechnicalSupport = () => {
                   value={email}
                   name="email"
                   placeholder={"Enter"}
-                  onChange={(e) => {setEmail(e.target.value);
+                  onChange={(e) => {
+                    setEmail(e.target.value);
                     setErrors({ ...errors, email: "" });
                   }}
                 />
@@ -142,7 +145,8 @@ const TechnicalSupport = () => {
                   value={phoneNumber}
                   name="phoneNum"
                   placeholder={"Enter"}
-                  onChange={(e) => {setPhoneNumber(e.target.value);
+                  onChange={(e) => {
+                    setPhoneNumber(e.target.value);
                     setErrors({ ...errors, phoneNumber: "" });
                   }}
                 />
@@ -154,7 +158,7 @@ const TechnicalSupport = () => {
 
             <div className="create-input-container-support">
               <div className="create-input-field-support">
-                <label className="inputLabel">Issue</label>
+                <label className="inputLabel-select">Issue</label>
                 <SelectOption
                   onChange={handleStateChange}
                   options={stateOptions}
@@ -164,8 +168,8 @@ const TechnicalSupport = () => {
 
               <div
                 className="create-input-field-support"
-                style={{ marginTop: ".2rem" }}
-                 >
+                
+              >
                 <label className="inputLabel">
                   <p>Attach File</p>
                 </label>
@@ -180,10 +184,9 @@ const TechnicalSupport = () => {
                     <span className="file-input-placeholder">Select File</span>
                     <button
                       className="custom-button"
-                      
                       onClick={handleButtonClick}
                     >
-                      <img src={ICONS.browserIcon} alt=""/>
+                      <img src={ICONS.browserIcon} alt="" />
                       Browse
                     </button>
                   </div>
@@ -193,7 +196,8 @@ const TechnicalSupport = () => {
 
             <div
               className="create-input-field-note-support"
-              style={{ marginTop: "0.3rem" }} >
+              style={{ marginTop: "0.3rem" }}
+            >
               <label htmlFor="" className="inputLabel-support">
                 Message
               </label>
@@ -205,7 +209,8 @@ const TechnicalSupport = () => {
                 value={message}
                 placeholder="Type here..."
                 style={{ marginTop: "0.3rem" }}
-                onChange={(e) => {setMessage(e.target.value);
+                onChange={(e) => {
+                  setMessage(e.target.value);
                   setErrors({ ...errors, message: "" });
                 }}
               ></textarea>
