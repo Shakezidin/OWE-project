@@ -279,49 +279,49 @@ const DashBoardTable: React.FC = () => {
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Sales Representative</p>{" "}
+                    <p>Sales Rep</p>{" "}
                     <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Customer Name</p>{" "}
+                    <p>Cust Name</p>{" "}
                     <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Commssion Model</p>{" "}
+                    <p>Comm Model</p>{" "}
                     <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Percentage</p>{" "}
+                    <p>Percent</p>{" "}
                     <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Amt Prepaid</p>{" "}
+                    <p>Amt Prep</p>{" "}
                     <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Pipeline Remaining</p>{" "}
+                    <p>Pipe Rem</p>{" "}
                     <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Current Due</p>{" "}
+                    <p>Curr Due</p>{" "}
                     <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Project Status</p>{" "}
+                    <p>Proj Status</p>{" "}
                     <FaArrowDown style={{ color: "#667085" }} />
                   </div>
                 </th>
@@ -398,10 +398,8 @@ const DashBoardTable: React.FC = () => {
                       <td>{el.ajh}</td>
                       <td>{el.rl}</td>
                       <td>{el.epc}</td>
-                      <td style={{cursor:"pointer"}}>
-                        <BiSupport
-                              onClick={() => handleIconOpen()}
-                            />
+                      <td style={{cursor:"pointer", color: "#101828"}} onClick={() => handleIconOpen()}>
+                        <BiSupport className="bi-support-icon" />
                       </td>
                     </tr>
                   ))
