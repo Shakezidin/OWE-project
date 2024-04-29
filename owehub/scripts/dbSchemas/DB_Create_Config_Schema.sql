@@ -754,6 +754,9 @@ CREATE TABLE loan_fee (
     FOREIGN KEY (loan_type) REFERENCES loan_type(id)
 );
 
+CREATE TABLE rate_adjustment (
+
+)
 /*
 
 CREATE TABLE Adjustments (
