@@ -10,7 +10,7 @@ const TechnicalSupport = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedOption, setSelectedOption] = useState(null);
   const [selectedState, setSelectedState] = useState<string | null>(null);
-  const [stateOptions, setStateOptions] = useState<any[]>([]);
+  const [stateOptions, setStateOptions] = useState([]);
 
 
   const [firstName, setFirstName] = useState("");
@@ -31,7 +31,7 @@ const TechnicalSupport = () => {
 
   const emailRegex=/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     // Validation logic
     const newErrors = {
@@ -47,7 +47,7 @@ const TechnicalSupport = () => {
     }
   };
 
-  const handleStateChange = (selectedOption: any) => {
+  const handleStateChange = (selectedOption) => {
     setSelectedState(selectedOption.value);
   };
 
@@ -56,10 +56,10 @@ const TechnicalSupport = () => {
     { value: "option2", label: "OWE 2" },
     { value: "option3", label: "OWE 3" },
   ];
-  const handleSelectChange = (selectedOption: any) => {
+  const handleSelectChange = (selectedOption) => {
     setSelectedOption(selectedOption);
   };
-  const handleFileInputChange = (e: any) => {
+  const handleFileInputChange = (e) => {
     const file = e.target.files?.[0];
     console.log(file);
   };
