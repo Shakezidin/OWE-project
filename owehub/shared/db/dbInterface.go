@@ -107,6 +107,7 @@ const (
 	TableName_noncomm_dlr_pay            string = "noncomm_dlrpay"
 	TableName_dealer_credit              string = "dealer_credit"
 	TableName_RepPaySettingss            string = "rep_pay_settings"
+	TableName_SalesArCalc                string = "sales_ar_calc"
 	ViewName_ConsolidatedDataView        string = "consolidated_data_view"
 )
 
