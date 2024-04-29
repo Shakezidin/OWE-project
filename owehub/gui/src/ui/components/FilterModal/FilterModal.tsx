@@ -167,7 +167,7 @@ const FilterModal: React.FC<TableProps> = ({
         <div className="transparent-model">
             <div className="modal">
                 <div className="filter-section">
-                    <h3 className="createProfileText">Filter</h3>
+                    <h3 className="createProfileText" style={{margin:0}}>Filter</h3>
                     <div className="iconsSection2">
                         <button
                             type="button"
