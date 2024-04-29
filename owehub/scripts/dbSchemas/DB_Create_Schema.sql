@@ -109,3 +109,6 @@ INSERT INTO loan_type (product_code,active,adder,description) VALUES ('P123',1,1
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewDlrOth.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateDlrOth.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateDlrOthArchive.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewRepPaySettings.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateRepPaySettings.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateRepPaySettingsArchive.sql';

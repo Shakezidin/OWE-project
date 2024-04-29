@@ -32,7 +32,7 @@ func ExecArInitialCalculation(resultChan chan string) {
 	viewName := db.ViewName_ConsolidatedDataView
 	query := "SELECT * from " + viewName
 
-	dataList, err := db.ReteriveFromDB(query, nil)
+	_, err = db.ReteriveFromDB(query, nil)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get commissions data from DB err: %v", err)
 		resultChan <- "FAILURE"
