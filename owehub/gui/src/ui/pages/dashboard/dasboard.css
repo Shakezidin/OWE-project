@@ -219,6 +219,11 @@
   /* margin-top: 0.5rem; */
 
 }
+.bi-support-icon{
+  height: 14px;
+  width: 14px;
+  stroke-width: 0.2;
+}
 
 
 .breakdown-container {
