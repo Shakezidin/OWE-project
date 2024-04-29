@@ -15,13 +15,12 @@ import { ReactComponent as UNDER_LINE } from "../../../resources/assets/BlueAndG
 import Input from "../../components/text_input/Input";
 import { ActionButton } from "../../components/button/ActionButton";
 import { Credentials } from "../../../core/models/api_models/AuthModel";
-import { RootState } from "../../../redux/store";
 import { ROUTES } from "../../../routes/routes";
 import { toast } from "react-toastify";
 import { loginAction } from "../../../redux/apiActions/authActions";
-import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import { unwrapResult } from "@reduxjs/toolkit";
+import { useAppDispatch } from "../../../redux/hooks";
 import { HTTP_STATUS } from "../../../core/models/api_models/RequestModel";
+import { unwrapResult } from "@reduxjs/toolkit";
 
 export const LoginPage = () => {
   const navigate = useNavigate();
@@ -51,7 +50,7 @@ export const LoginPage = () => {
     if (localRememberMe === "true") {
       handleInputChange("email_id", localEmail);
       handleInputChange("password", localPassword);
-      handleInputChange("isRememberMe", localRememberMe);
+      handleInputChange("isRememberMe", localRememberMe === 'true');
     }
   }, []);
 
@@ -78,12 +77,15 @@ export const LoginPage = () => {
       const result = unwrapResult(actionResult);
       if (result.status === HTTP_STATUS.OK) {
         toast.success(result.message);
-        const { email_id, user_name, role_name, access_token } = result.data;
+        const { email_id, user_name, role_name, access_token,time_to_expire_minutes
+        } = result.data;
         localStorage.setItem("email", email_id);
         localStorage.setItem("userName", user_name);
         localStorage.setItem("role", role_name);
         localStorage.setItem("token", access_token);
         localStorage.setItem("password", credentials.password);
+        localStorage.setItem('expirationTime', (Date.now() + parseInt(time_to_expire_minutes) * 60 * 1000).toString()); // Expiration time is 480 minutes from now
+
         localStorage.setItem(
           "isRememberMe",
           credentials.isRememberMe.toString()

@@ -7,11 +7,12 @@ import DashBoardTable from "./DashBoardTable";
 import DashBoardChart from "./DashBoardChart";
 import { payRollData } from "../../../resources/static_data/StaticData";
 import { comissionValueData } from "../../../resources/static_data/StaticData";
-import { RiFilterLine } from "react-icons/ri";
 import FilterModal from "../../components/FilterModal/FilterModal";
 import "react-dates/lib/css/_datepicker.css";
 import "react-dates/initialize";
 import { DateRangePicker, FocusedInputShape } from "react-dates";
+import { useAppDispatch } from "../../../redux/hooks";
+import { logout } from "../../../redux/apiSlice/authSlice/authSlice";
 
 interface DateRangePickerProps {
   startDate: moment.Moment | null;
@@ -49,6 +50,9 @@ export const DashboardPage: React.FC = () => {
   const [selectedOption2, setSelectedOption2] = useState<string>(
     comissionValueData[0].label
   );
+
+  const dispatch = useAppDispatch()
+
   const handleSelectChange = (
     selectedOption: { value: string; label: string } | null
   ) => {
@@ -62,6 +66,28 @@ export const DashboardPage: React.FC = () => {
   const filterClose = () => {
     setFilterModal(false);
   };
+
+  /** temp solution for session logout */
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const expirationTime = localStorage.getItem('expirationTime');
+
+    if (token && expirationTime) {
+      const currentTime = Date.now();
+      if (currentTime < parseInt(expirationTime, 10)) {
+        // Token is still valid
+        // Schedule logout after 480 minutes
+        const timeout = setTimeout(() => {
+         dispatch(logout())
+        }, 480 * 60 * 1000); // 480 minutes in milliseconds
+
+        return () => clearTimeout(timeout);
+      } else {
+        // Token has expired
+        dispatch(logout())
+      }
+    }
+  }, []);
 
   return (
     <>
