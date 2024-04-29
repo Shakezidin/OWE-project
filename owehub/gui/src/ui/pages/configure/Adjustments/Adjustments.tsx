@@ -3,7 +3,7 @@ import TableHeader from "../../../components/tableHeader/TableHeader";
 import { ICONS } from "../../../icons/Icons";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import { fetchTimeLineSla } from "../../../../redux/apiSlice/configSlice/config_get_slice/timeLineSlice";
-// import CreateTimeLine from "./CreateTimeLine";
+
 import CheckBox from "../../../components/chekbox/CheckBox";
 import {
   toggleRowSelection,
@@ -14,11 +14,10 @@ import { TimeLineSlaModel } from "../../../../core/models/configuration/create/T
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
-import { RepPaySettingsColumns} from "../../../../resources/static_data/configureHeaderData/RepPaySettingsColumn";
+import { AdjustmentsColumns} from "../../../../resources/static_data/configureHeaderData/AdjustmentsColumn";
 import FilterModal from "../../../components/FilterModal/FilterModal";
 import { ROUTES } from "../../../../routes/routes";
-
-const RepPaySettings = () => {
+const Adjustments  = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
 
@@ -122,10 +121,10 @@ const RepPaySettings = () => {
 
   return (
     <div className="comm">
-      <Breadcrumb head="" linkPara="Configure" route={ROUTES.CONFIG_PAGE} linkparaSecond="Rep Pay Settings" />
+      <Breadcrumb head="" linkPara="Configure" route={ROUTES.CONFIG_PAGE} linkparaSecond="Adjustments" />
       <div className="commissionContainer">
         <TableHeader
-          title="Rep Pay Settings"
+          title="Adjustments"
           onPressViewArchive={() => { }}
           onPressArchive={() => { }}
           onPressFilter={() => filter()}
@@ -137,7 +136,7 @@ const RepPaySettings = () => {
           onpressAddNew={() => handleTimeLineSla()}
         />
         {filterOPen && <FilterModal handleClose={filterClose}
-          columns={RepPaySettingsColumns}
+          columns={AdjustmentsColumns}
           page_number={currentPage}
           fetchFunction={fetchFunction}
           page_size={itemsPerPage} />}
@@ -155,7 +154,7 @@ const RepPaySettings = () => {
               <tr>
 
                 {
-                  RepPaySettingsColumns?.map((item, key) => (
+                  AdjustmentsColumns?.map((item, key) => (
                     <SortableHeader
                       key={key}
                       isCheckbox={item.isCheckbox}
@@ -181,33 +180,31 @@ const RepPaySettings = () => {
               </tr>
             </thead>
             {/* <tbody >
-              {currentPageData?.length > 0
-                ? currentPageData?.map((el: any, i: any) => (
-                  <tr
-                    key={i}
-                    className={selectedRows.has(i) ? "selected" : ""}
-                  >
+            
+                  <tr>
 
                     <td style={{ fontWeight: "500", color: "black" }}>
                       <div className="flex-check">
+                      <td>
                         <CheckBox
-                          checked={selectedRows.has(i)}
-                          onChange={() =>
-                            toggleRowSelection(
-                              i,
-                              selectedRows,
-                              setSelectedRows,
-                              setSelectAllChecked
-                            )
-                          }
+                          checked={false}
+                          onChange={() => {}}
+                          // indeterminate={isAnyRowSelected && !isAllRowsSelected}
                         />
-                        {el.type_m2m}
+                      </td>
+                        AMF
                       </div>
                     </td>
-                    <td>{el.state}</td>
-                    <td>{el.days}</td>
-                    <td>{el.start_date}</td>
-                    <td>{el.end_date}</td>
+                    <td>Leader Name</td>
+                    <td>Type</td>
+                    <td>Term</td>
+                    <td>Qual</td>
+                    <td>Sales Q</td>
+                    <td>Team kW Q</td>
+                    <td>Pay Rate</td>
+                    <td>Start</td>
+                    <td>End</td>
+                    
                     <td
 
                     >
@@ -215,14 +212,14 @@ const RepPaySettings = () => {
                         <div className="">
                           <img src={ICONS.ARCHIVE} alt="" />
                         </div>
-                        <div className="" onClick={() => handleEditTimeLineSla(el)} style={{ cursor: "pointer" }}>
+                        <div className=""  style={{ cursor: "pointer" }}>
                           <img src={ICONS.editIcon} alt="" />
                         </div>
                       </div>
                     </td>
                   </tr>
-                ))
-                : null}
+                
+                 
             </tbody> */}
 
           </table>
@@ -252,4 +249,4 @@ const RepPaySettings = () => {
   );
 };
 
-export default RepPaySettings;
+export default Adjustments;
