@@ -188,14 +188,24 @@
   justify-content: space-between;
   padding: 1rem 1rem 0 1rem;
   border-bottom: 1px solid var(--border-color);
+  background-color: #0493ce;
 }
 
 .help-section {
   display: flex;
   justify-content: space-between;
   /* padding: 1rem; */
-  padding: 0 1rem 0 1rem;
+  padding: 0 1rem 1rem 1rem;
   /* margin-left: 1rem; */
+ 
+}
+.help-section h3{
+font-size: 28px;
+font-weight: 600;
+/* line-height: 44px; */
+text-align: left;
+color: white;
+
 }
 .create-input-container {
   /* text-align: left; */
@@ -211,6 +221,15 @@
   display: flex;
   gap: 1rem;
   flex-direction: column;
+  
+}
+.create-input-container input{
+  background-color: #F8F8F8;
+
+}
+.create-input-field-help input {
+  background-color: #F8F8F8;
+
 }
 .create-input-field-help {
   /* width: 280px; */
@@ -336,6 +355,29 @@
   
   }
 
+  .inputLabel-help {
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 18px;
+    text-align: left;
+    
+  }
+  .file-input-container-help {
+    position: relative;
+    border: 1px solid #ced4da; /* Show border */
+    border-radius: 8px;
+    padding: 4px;
+    /* width: 290px; */
+    margin-top: 0.1rem;
+    height: 38px;
+    border-style: dashed;
+    border-color: #0493ce;
+    background-color: #E8F8FF;
+  }
+
+
+  
+
   .custom-button-dash {
     /* Define your button styles */
     background: linear-gradient(180deg, #f6f6f6 0%, #c1c1c1 100%);
@@ -361,4 +403,7 @@
   }
   .createUserActionButtonDash :hover {
     background-color: #263747;
+  }
+  .create-input-field-note textarea{
+    background-color:#F8F8F8;
   }
