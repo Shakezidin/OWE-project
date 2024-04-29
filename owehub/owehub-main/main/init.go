@@ -848,10 +848,19 @@ var apiRoutes = ApiRoutes{
 			types.RoleAdmin,
 		},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_rep_pay_settings",
+		apiHandler.HandleGetRepPaySettingsDataRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
 	// {
 	// 	strings.ToUpper("POST"),
-	// 	"/owe-commisions-service/v1/get_rep_pay_settings",
-	// 	apiHandler.HandleGetRepPaySettingsDataRequest,
+	// 	"/owe-commisions-service/v1/update_rep_pay_settings_archive",
+	// 	apiHandler.HandleUpdateRepPaySettingsArchiveRequest,
 	// 	true,
 	// 	[]types.UserRoles{
 	// 		types.RoleAdmin,

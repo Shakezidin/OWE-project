@@ -17,6 +17,7 @@ import SortableHeader from "../../../components/tableHeader/SortableHeader";
 import { RepPaySettingsColumns} from "../../../../resources/static_data/configureHeaderData/RepPaySettingsColumn";
 import FilterModal from "../../../components/FilterModal/FilterModal";
 import { ROUTES } from "../../../../routes/routes";
+
 const RepPaySettings = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
