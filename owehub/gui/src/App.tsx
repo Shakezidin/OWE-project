@@ -59,10 +59,14 @@ import AdderResponsibility from "./ui/pages/configure/adderResponsibility/adderR
 import LoanFee from "./ui/pages/configure/loanFee/LoanFee";
 import ProjectPerformence from "./ui/pages/projectTracker/ProjectPerformence";
 import ProjectStatus from "./ui/pages/projectTracker/ProjectStatus";
+<<<<<<< HEAD
 import ArImport from "./ui/pages/configure/arImport/ArImport";
 import Adjustments from "./ui/pages/configure/Adjustments/Adjustments";
 import Reconcile from "./ui/pages/configure/Reconcile/Reconcile";
 
+=======
+import ApptSetters from "./ui/pages/configure/apptSetters/ApptSetters";
+>>>>>>> 311b3d212eb11862667b11c64359f8ef24a09088
 import { useAppDispatch } from "./redux/hooks";
 import { ARDashboardPage } from "./ui/pages/ar/ardashboard/ardashboard";
 
@@ -151,6 +155,7 @@ function App() {
                 <Route path={ROUTES.CONFIG_ADJUSTMENTS} element = {<Adjustments/>}/>
                 <Route path={ROUTES.CONFIG_RECONCILE} element = {<Reconcile/>}/>
 
+                <Route path={ROUTES.CONFIG_APPSETTERS} element = {<ApptSetters/>}/>
             </Route>
        
       </Routes>

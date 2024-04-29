@@ -239,6 +239,7 @@ height: 16px !important;
 }
 .create-input-container {
   display: flex;
+  flex-wrap: wrap;
   gap: 20px;
 }
 .createUserActionButton {
