@@ -60,6 +60,7 @@ import LoanFee from "./ui/pages/configure/loanFee/LoanFee";
 import ProjectPerformence from "./ui/pages/projectTracker/ProjectPerformence";
 import ProjectStatus from "./ui/pages/projectTracker/ProjectStatus";
 import { useAppDispatch } from "./redux/hooks";
+import { ARDashboardPage } from "./ui/pages/ar/ardashboard/ardashboard";
 
 
 function App() {
@@ -104,6 +105,7 @@ function App() {
 
                 <Route  path={ROUTES.COMMISSION_DASHBOARD} element={<DashboardPage/>}/>
                 <Route  path={ROUTES.REPPAY_DASHBOARD} element={<RepPayDashboardPage/>}/>
+                <Route  path={ROUTES.AR_DASHBOARD} element={<ARDashboardPage/>}  />
                 <Route  path={ROUTES.CONFIG_COMMISSION_RATE} element={<CommissionRate/>}/>
                 <Route  path={ROUTES.CONFIG_DEALER_OVER} element={<DealerOverRides/>}/>
                 <Route  path={ROUTES.CONFIG_MARKETING} element={<MarketingFees/>}/>

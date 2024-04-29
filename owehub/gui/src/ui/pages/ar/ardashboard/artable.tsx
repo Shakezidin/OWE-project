@@ -1,29 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-import { ICONS } from "../../../icons/Icons";
-import TableHeader from "../../../components/tableHeader/TableHeader";
 import { fetchCommissions } from "../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import {
   toggleRowSelection,
 } from "../../../components/chekbox/checkHelper";
-import { CSVLink } from 'react-csv';
 import Pagination from "../../../components/pagination/Pagination";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 import { CommissionModel } from "../../../../core/models/configuration/create/CommissionModel";
-import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
-import FilterModal from "../../../components/FilterModal/FilterModal";
-import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
-import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
-import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
-import Swal from 'sweetalert2';
 import  "../../configure/configure.css";
 import HelpDashboard from "../../dashboard/HelpDashboard";
 import { BiSupport } from "react-icons/bi";
 
 
-const RepDashBoardTable = () => {
+const ArDashBoardTable = () => {
 
 
   const [openIcon, setOpenIcon] = useState<boolean>(false);
@@ -79,35 +70,10 @@ const RepDashBoardTable = () => {
     handleOpen()
   };
 
-  const handleEditCommission = (commission: CommissionModel) => {
-    setEditMode(true);
-    setEditedCommission(commission);
-    handleOpen()
-  };
   const currentPageData = commissionList?.slice(startIndex, endIndex);
   const isAnyRowSelected = selectedRows?.size > 0;
   const isAllRowsSelected = selectedRows?.size === commissionList?.length;
 
-
-  const handleArchiveClick = async (record_id: any) => {
-    const archived: number[] = [record_id];
-    let newValue = {
-      record_id: archived,
-      is_archived: true
-    }
-    const pageNumber = {
-      page_number: currentPage,
-      page_size: itemsPerPage,
-
-    };
-    const res = await postCaller(EndPoints.update_commission_archive, newValue);
-    if (res.status === HTTP_STATUS.OK) {
-      dispatch(fetchCommissions(pageNumber))
-    }
-    // const newSelectedRows = new Set(selectedRows);
-    // newSelectedRows.delete(record_id);
-    // setSelectedRows(newSelectedRows);
-  };
 
   const handleSort = (key: any) => {
     if (sortKey === key) {
@@ -323,4 +289,4 @@ const RepDashBoardTable = () => {
   );
 };
 
-export default RepDashBoardTable;
+export default ArDashBoardTable;

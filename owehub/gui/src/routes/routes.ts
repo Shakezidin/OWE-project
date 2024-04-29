@@ -5,6 +5,7 @@ export const ROUTES = {
   OTP: "/otp",
   COMMISSION_DASHBOARD: "/dashboard",
   REPPAY_DASHBOARD: "/reppay/dashboard",
+  AR_DASHBOARD: "/ar/dashboard",
   CONFIG_COMMISSION_RATE: "/config/commissionRate",
   CONFIG_DEALER_OVER: "/config/dealerOverrides",
   CONFIG_DEALER_TIER: "/config/dealerTier",
