@@ -24,7 +24,7 @@ const SelectOption: React.FC<Props> = ({ options, value, onChange }) => {
       placeholder="Select"
       value={value ? value: {label:'Select',value:'Select'} }
       styles={{
-        control: (baseStyles, state) => ({
+        control: (baseStyles:any, state:any) => ({
           ...baseStyles,
           marginTop: "20px",
           borderRadius: "8px",

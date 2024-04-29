@@ -22,6 +22,8 @@ interface Endpoints {
   paySchedule: string;
   timeLineSla: string;
   loanType: string;
+  autoAdder:string;
+
   // post config
   create_commission: string;
   create_dealer: string;
@@ -33,8 +35,10 @@ interface Endpoints {
   create_tierloanfee: string;
   create_timelinesla: string;
   create_loantype: string;
+  create_autoadder:string;
   get_newFormData: string;
   update_commission: string;
+  update_autoadder: string;
   update_dealer: string;
   update_vadders: string;
   update_marketingfee: string;
@@ -77,8 +81,12 @@ export const EndPoints: Endpoints = {
   paySchedule: "get_paymentschedules",
   timeLineSla: "get_timelineslas",
   loanType: "get_loantypes",
+  autoAdder:"get_autoadder",
+
   // post config endpoint
   create_commission: "create_commission",
+  create_autoadder:"create_autoadder",
+  update_autoadder:"update_autoadder",
   create_dealer: "create_dealer",
   create_dealertier: "create_dealertier",
   create_loantype: "create_loantype",

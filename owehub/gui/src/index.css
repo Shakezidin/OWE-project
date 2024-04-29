@@ -311,7 +311,7 @@ height: 16px !important;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 1rem 0rem 0;
+  padding: 1rem 2.2rem 0 2.2rem;
 
   /* padding: "1rem 2rem 0rem 2rem"; */
 }
