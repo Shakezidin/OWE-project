@@ -11,12 +11,174 @@ import (
 	log "OWEApp/shared/logger"
 	"database/sql"
 	"reflect"
+	"time"
 
 	"fmt"
 	"strings"
 
 	_ "github.com/lib/pq"
 )
+
+/******************************************************************************
+ * FUNCTION:        AddSingleRecordInDB
+ * DESCRIPTION:     This function will insert single records in DB
+ * INPUT:			dbName, tableName, parameters map
+ * RETURNS:    		err
+ ******************************************************************************/
+func AddSingleRecordInDB(tableName string, data map[string]interface{}) (err error) {
+	defer func() { log.ExitFn(0, "AddSingleRecordInDB", err) }()
+	log.EnterFn(0, "AddSingleRecordInDB")
+
+	log.FuncDebugTrace(0, "Inserting in DB table: %v", tableName)
+
+	con, err := getDBConnection(OWEDB)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get %v Connection with err = %v", OWEDB, err)
+		return err
+	}
+
+	var dataList []interface{}
+	col := ""
+	colIndex := ""
+	itr := 1
+	for key, value := range data {
+		col += fmt.Sprintf("%v, ", key)
+		colIndex += fmt.Sprintf("$%d, ", itr)
+
+		switch values := value.(type) {
+		case []uint8:
+			valIns := fmt.Sprintf("%s", values)
+			dataList = append(dataList, valIns)
+		case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64:
+			dataList = append(dataList, values)
+		case float32:
+			dataList = append(dataList, float64(values))
+		case float64:
+			dataList = append(dataList, values)
+		case string:
+			dataList = append(dataList, values)
+		case bool:
+			dataList = append(dataList, values)
+		case time.Time:
+			if values.IsZero() {
+				dataList = append(dataList, nil) // Insert NULL for empty timestamp
+			} else {
+				dataList = append(dataList, values)
+			}
+		default:
+			dataList = append(dataList, fmt.Sprintf("%v", values))
+		}
+
+		itr += 1
+	}
+
+	query := fmt.Sprintf("INSERT INTO %v (%v) VALUES(%v)",
+		tableName, col[0:(len(col)-2)], colIndex[0:(len(colIndex)-2)])
+
+	log.FuncDebugTrace(0, "query = %v ", query)
+
+	stmtIns, err := con.CtxH.Prepare(query)
+	if err == nil {
+		_, err = stmtIns.Exec(dataList...)
+		if stmtIns != nil {
+			defer stmtIns.Close()
+		}
+	}
+
+	if err != nil {
+		log.FuncErrorTrace(0, "Insert in DB Failed error = %v", err)
+		return err
+	}
+	return err
+}
+
+/******************************************************************************
+ * FUNCTION:        AddMultipleRecordInDB
+ * DESCRIPTION:     This function will insert multiple records in DB
+ * INPUT:			tableName, data
+ * RETURNS:    		err
+ ******************************************************************************/
+func AddMultipleRecordInDB(tableName string, data []map[string]interface{}) (err error) {
+	defer func() { log.ExitFn(0, "AddMultipleRecordInDB", err) }()
+	log.EnterFn(0, "AddMultipleRecordInDB")
+
+	if len(data) <= 0 {
+		log.FuncErrorTrace(0, "Empty data received")
+		return nil
+	}
+
+	log.FuncDebugTrace(0, "Inserting in DB table: %v", tableName)
+
+	con, err := getDBConnection(OWEDB)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get %v Connection with err = %v", OWEDB, err)
+		return err
+	}
+
+	keys := make([]string, 0, len(data[0]))
+	for key := range data[0] {
+		keys = append(keys, key)
+	}
+	col := strings.Join(keys, ", ")
+
+	var dataList []interface{}
+	colIndex := ""
+	itr := 1
+	for _, record := range data {
+		recordColIndex := ""
+		for _, key := range keys {
+			recordColIndex += fmt.Sprintf("$%d, ", itr)
+			switch values := record[key].(type) {
+			case []uint8:
+				// Assuming []uint8 is for binary data, you can handle this case as needed
+				valIns := fmt.Sprintf("%s", values)
+				dataList = append(dataList, valIns)
+			case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64:
+				dataList = append(dataList, values)
+			case float32:
+				dataList = append(dataList, float64(values))
+			case float64:
+				dataList = append(dataList, values)
+			case string:
+				dataList = append(dataList, values)
+			case bool:
+				dataList = append(dataList, values)
+			case time.Time:
+				if values.IsZero() {
+					dataList = append(dataList, nil) // Insert NULL for empty timestamp
+				} else {
+					dataList = append(dataList, values)
+				}
+			default:
+				// If the type is not one of the expected types, convert to a string
+				dataList = append(dataList, fmt.Sprintf("%v", values))
+			}
+
+			itr += 1
+		}
+		colIndex += " (" + recordColIndex[0:(len(recordColIndex)-2)] + "), "
+	}
+
+	query := fmt.Sprintf("INSERT INTO %v (%v) VALUES %v",
+		tableName, col, colIndex[0:(len(colIndex)-2)])
+
+	//log.FuncDebugTrace(0, "query = %v dataList = %v", query, dataList)
+
+	stmtIns, err := con.CtxH.Prepare(query)
+	if err != nil {
+		log.FuncErrorTrace(0, "Prepare statement failed: %v", err)
+		return err
+	}
+	defer stmtIns.Close()
+
+	_, err = stmtIns.Exec(dataList...)
+	if err != nil {
+		log.FuncErrorTrace(0, "Insert in DB Failed error = %v", err)
+		return err
+	}
+
+	return nil
+}
 
 /******************************************************************************
  * FUNCTION:        ReteriveFromDB
