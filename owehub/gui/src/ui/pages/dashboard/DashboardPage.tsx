@@ -7,7 +7,6 @@ import DashBoardTable from "./DashBoardTable";
 import DashBoardChart from "./DashBoardChart";
 import { payRollData } from "../../../resources/static_data/StaticData";
 import { comissionValueData } from "../../../resources/static_data/StaticData";
-import { RiFilterLine } from "react-icons/ri";
 import FilterModal from "../../components/FilterModal/FilterModal";
 import "react-dates/lib/css/_datepicker.css";
 import "react-dates/initialize";
