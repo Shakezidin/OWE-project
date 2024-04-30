@@ -15,10 +15,8 @@ import { LoginPage } from "./ui/pages/login/LoginPage";
 import MainLayout from "./ui/components/layout/MainLayout";
 import EnterOtpScreen from "./ui/pages/otp/EnterOtpScreen";
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./redux/store";
-import { initializeAuth } from "./redux/apiSlice/authSlice/authSlice";
-
+import { initializeAuth, logout } from "./redux/apiSlice/authSlice/authSlice";
 import { DashboardPage } from "./ui/pages/dashboard/DashboardPage";
 import { ROUTES } from "./routes/routes";
 import CommissionRate from "./ui/pages/configure/commissionRate/CommissionRate";
@@ -63,7 +61,7 @@ import ArImport from "./ui/pages/configure/arImport/ArImport";
 import Adjustments from "./ui/pages/configure/Adjustments/Adjustments";
 import Reconcile from "./ui/pages/configure/Reconcile/Reconcile";
 
-import { useAppDispatch } from "./redux/hooks";
+import { useAppDispatch, useAppSelector } from "./redux/hooks";
 import { ARDashboardPage } from "./ui/pages/ar/ardashboard/ardashboard";
 
 
@@ -73,9 +71,35 @@ function App() {
   useEffect(() => {
     dispatch(initializeAuth());
   }, [dispatch]);
-  const isAuthenticated = useSelector(
+  const isAuthenticated = useAppSelector(
     (state: RootState) => state.auth.isAuthenticated
   );
+
+    /** temp solution for session logout */
+    useEffect(() => {
+      const token = localStorage.getItem('token');
+      const expirationTime = localStorage.getItem('expirationTime');
+  
+      if (token && expirationTime) {
+        const currentTime = Date.now();
+        if (currentTime < parseInt(expirationTime, 10)) {
+          // Token is still valid
+          console.log('valid tokens....')
+          // Schedule logout after 480 minutes
+          const timeout = setTimeout(() => {
+           dispatch(logout())
+          }, 480 * 60 * 1000); // 480 minutes in milliseconds
+  
+          return () => {
+            console.log('clear interval.....')
+            clearTimeout(timeout);
+          }
+        } else {
+          // Token has expired
+          dispatch(logout())
+        }
+      }
+    }, []);
 
     return (
     <BrowserRouter>
