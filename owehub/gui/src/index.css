@@ -339,6 +339,9 @@ height: 16px !important;
 
 
 /* React Date Picker CSS */
+.date-picker{
+  margin-right: 15px;
+}
 
 .DateRangePickerInput__showClearDates {
   padding-right: 0
@@ -381,7 +384,19 @@ height: 16px !important;
   padding: 0;
 }
 .DateRangePickerInput_clearDates{
-  visibility: hidden;
+  /* visibility: hidden; */
+  padding: 0;
+  margin: 0;
+  padding-bottom: 4px;
+  margin-right: -12px;
+  background: none;
+}
+.DateRangePickerInput_clearDates:hover{
+  background: none;
+  border-radius: unset;
+}
+.DateRangePickerInput_clearDates_svg {
+  width: 12px;
 }
 
 
