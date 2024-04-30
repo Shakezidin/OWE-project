@@ -3,14 +3,14 @@ import TableHeader from "../../../components/tableHeader/TableHeader";
 import { ICONS } from "../../../icons/Icons";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import { fetchTimeLineSla } from "../../../../redux/apiSlice/configSlice/config_get_slice/timeLineSlice";
-// import CreateTimeLine from "./CreateTimeLine";
+import CreateRepPaySettings from "./CreateRepPaySettings";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import {
   toggleRowSelection,
 } from "../../../components/chekbox/checkHelper";
 import Pagination from "../../../components/pagination/Pagination";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
-import { TimeLineSlaModel } from "../../../../core/models/configuration/create/TimeLineSlaModel";
+import { RepPaySettingsModel } from "../../../../core/models/configuration/create/RepPaySettingsModel";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
@@ -36,7 +36,7 @@ const RepPaySettings = () => {
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
-  const [editedTimeLineSla, setEditedTimeLineSla] = useState<TimeLineSlaModel | null>(null);
+  const [editedTimeLineSla, setEditedTimeLineSla] = useState<RepPaySettingsModel | null>(null);
   const itemsPerPage = 10;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
@@ -104,11 +104,11 @@ const RepPaySettings = () => {
     handleOpen()
   };
 
-  const handleEditTimeLineSla = (timeLineSlaData: TimeLineSlaModel) => {
-    setEditMode(true);
-    setEditedTimeLineSla(timeLineSlaData);
-    handleOpen()
-  };
+  // const handleEditTimeLineSla = (timeLineSlaData: TimeLineSlaModel) => {
+  //   setEditMode(true);
+  //   setEditedTimeLineSla(timeLineSlaData);
+  //   handleOpen()
+  // };
   const fetchFunction = (req: any) => {
     dispatch(fetchTimeLineSla(req));
    };
@@ -116,10 +116,7 @@ const RepPaySettings = () => {
 //     return <div>Loading...</div>;
 //   }
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
+ 
   return (
     <div className="comm">
       <Breadcrumb head="" linkPara="Configure" route={ROUTES.CONFIG_PAGE} linkparaSecond="Rep Pay Settings" />
@@ -141,10 +138,10 @@ const RepPaySettings = () => {
           page_number={currentPage}
           fetchFunction={fetchFunction}
           page_size={itemsPerPage} />}
-        {/* {open && <CreateTimeLine
-          timeLineSlaData={editedTimeLineSla}
+        {open && <CreateRepPaySettings
+          
           editMode={editMode}
-          handleClose={handleClose} />} */}
+          handleClose={handleClose} />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}

@@ -12,7 +12,7 @@ import Pagination from "../../../components/pagination/Pagination";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 import { TimeLineSlaModel } from "../../../../core/models/configuration/create/TimeLineSlaModel";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
-
+import CreatedAdjustments from "./CreateAdjustments";
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
 import { AdjustmentsColumns} from "../../../../resources/static_data/configureHeaderData/AdjustmentsColumn";
 import FilterModal from "../../../components/FilterModal/FilterModal";
@@ -140,10 +140,10 @@ const Adjustments  = () => {
           page_number={currentPage}
           fetchFunction={fetchFunction}
           page_size={itemsPerPage} />}
-        {/* {open && <CreateTimeLine
-          timeLineSlaData={editedTimeLineSla}
+        {open && <CreatedAdjustments
+         
           editMode={editMode}
-          handleClose={handleClose} />} */}
+          handleClose={handleClose} />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}

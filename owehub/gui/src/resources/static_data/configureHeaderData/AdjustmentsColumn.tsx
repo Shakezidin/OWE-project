@@ -1,8 +1,8 @@
 import { Column } from "../../../core/models/data_models/FilterSelectModel";
 
 export   const AdjustmentsColumns: Column[] = [
-    { name: "uniqueID", displayName: "Unique ID", type: "string",isCheckbox:false },
-    { name: "customer_name", displayName: "Customer", type: "string",isCheckbox:true },
+    { name: "uniqueID", displayName: "Unique ID", type: "string",isCheckbox:true},
+    { name: "customer_name", displayName: "Customer", type: "string",isCheckbox:false },
     { name: "partner", displayName: "Partner", type: "string",isCheckbox:false },
     { name: "Installer", displayName: "Installer", type: "string",isCheckbox:false },
     { name: "st", displayName: "ST", type: "string",isCheckbox:false },
