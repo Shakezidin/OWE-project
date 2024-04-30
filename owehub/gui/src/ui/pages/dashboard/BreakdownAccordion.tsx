@@ -3,7 +3,7 @@ import React from "react";
 const BreakdownAccordion = () => {
   return (
     <>
-    <div className="" style={{position:"relative", width:"155%"}}>
+    <div className="" style={{position:"relative", width:"147%"}}>
       <div className="modal-body-down">
         <div className="breakdown-table"  >
           <table>

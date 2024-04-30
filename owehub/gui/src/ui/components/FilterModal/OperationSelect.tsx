@@ -2,6 +2,7 @@
 import React from "react";
 import Select from "react-select";
 import { getOperationsForColumnType, optionOperation } from "../../../core/models/data_models/FilterSelectModel";
+import SelectOption from "../selectOption/SelectOption";
 
 
 const OperationSelect: React.FC<{
@@ -17,7 +18,7 @@ const OperationSelect: React.FC<{
 
   return (
     <div className="">
-      <Select
+      <SelectOption
         options={operations}
        
          value={operations.find(el=>el.value===value)}
@@ -25,20 +26,8 @@ const OperationSelect: React.FC<{
         onChange={(selectedOption: any) => {
           onChange(selectedOption.value);
         }}
-        styles={{
-          control: (baseStyles, state) => ({
-            ...baseStyles,
-            marginTop: "4.5px",
-            borderRadius: "8px",
-            outline: "none",
-            fontSize:"13px",
-            height: "2.25rem",
-            border: "1px solid #d0d5dd",
-          }),
-          indicatorSeparator: () => ({
-            display: 'none' // Hide the indicator separator
-          }),
-        }}
+       
+        
       />
       {errors[`operation${index}`] && <span style={{ color: "red", fontSize: "12px" }}>{errors[`operation${index}`]}</span>}
     </div>

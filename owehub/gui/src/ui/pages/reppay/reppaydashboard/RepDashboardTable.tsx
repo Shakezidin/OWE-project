@@ -19,12 +19,14 @@ import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoin
 import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
 import Swal from 'sweetalert2';
 import  "../../configure/configure.css";
+import HelpDashboard from "../../dashboard/HelpDashboard";
+import { BiSupport } from "react-icons/bi";
 
 
 const RepDashBoardTable = () => {
 
 
-
+  const [openIcon, setOpenIcon] = useState<boolean>(false);
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
   const [exportOPen, setExportOpen] = React.useState<boolean>(false);
@@ -172,6 +174,9 @@ const RepDashBoardTable = () => {
     { name: 'start_date', displayName: 'State', type: 'date', isCheckbox: false },
     { name: 'end_date', displayName: 'Sub Total', type: 'date', isCheckbox: false },
   ];
+
+  const handleIconOpen = () => setOpenIcon(true);
+  const handleIconClose = () => setOpenIcon(false);
   
 
 
@@ -208,15 +213,12 @@ const RepDashBoardTable = () => {
              {
               viewArchived===true?null:   <th>
               <div className="action-header">
-                <p>Action</p>
+                <p>Help</p>
               </div>
             </th>
              }
               </tr>
             </thead>
-
-
-
 
             <tbody>
               {currentPageData?.length > 0
@@ -279,17 +281,11 @@ const RepDashBoardTable = () => {
 
                     <td>{el.start_date}</td>
                     <td>{el.end_date}</td>
-                  {
-                    viewArchived===true?null:  <td>
-                    <div className="action-icon">
-                      <div className="action-archive" style={{ cursor: "pointer" }} onClick={() => handleArchiveClick(el.record_id)}>
-                        <img src={ICONS.techIcon} alt="" style={{textAlign: "left"}}/>
-                        {/* <span className="tooltiptext">Archive</span> */}
-                      </div>
-                    </div>
-
-                  </td>
-                  }
+                    <td style={{height: "14px", width: "14px",stroke:"0.2",cursor:"pointer"}}>
+                        <BiSupport
+                              onClick={() => handleIconOpen()}
+                            />
+                      </td>
                   </tr>
                 ))
                 : null}
@@ -313,6 +309,13 @@ const RepDashBoardTable = () => {
               goToPrevPage={goToPrevPage}
             /> : null
           }
+          {openIcon && (
+          <HelpDashboard
+            commission={editedCommission}
+            editMode={editMode}
+            handleClose={handleIconClose}
+          />
+        )}
         </div>
 
       </div>

@@ -4,7 +4,7 @@
 }
 .DashboardPage-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   gap: 2rem;
   padding: 10px 0;
@@ -219,6 +219,11 @@
   /* margin-top: 0.5rem; */
 
 }
+.bi-support-icon{
+  height: 14px;
+  width: 14px;
+  stroke-width: 0.2;
+}
 
 
 .breakdown-container {
@@ -291,12 +296,12 @@
   z-index: 100;
 
 }
-.modal-down {
+.modal-down-break {
   background-color: #fefefe;
   border-radius: 16px;
   width: 40%;
   max-width: 900px;
-  height: 650px;
+  height: 600px;
   overflow: hidden; 
 
 }

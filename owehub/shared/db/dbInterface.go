@@ -121,6 +121,7 @@ const (
 	TableName_AdderResponsibility            string = "adder_responsibility"
 	TableName_AdderCredit                    string = "adder_credit"
 	TableName_LoanFee                        string = "loan_fee"
+	TableName_SalesArCalc                    string = "sales_arc_calc"
 )
 
 /******************************************************************************

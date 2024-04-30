@@ -7,11 +7,12 @@ import DashBoardTable from "./DashBoardTable";
 import DashBoardChart from "./DashBoardChart";
 import { payRollData } from "../../../resources/static_data/StaticData";
 import { comissionValueData } from "../../../resources/static_data/StaticData";
-import { RiFilterLine } from "react-icons/ri";
 import FilterModal from "../../components/FilterModal/FilterModal";
 import "react-dates/lib/css/_datepicker.css";
 import "react-dates/initialize";
 import { DateRangePicker, FocusedInputShape } from "react-dates";
+import { useAppDispatch } from "../../../redux/hooks";
+import { logout } from "../../../redux/apiSlice/authSlice/authSlice";
 
 interface DateRangePickerProps {
   startDate: moment.Moment | null;
@@ -49,6 +50,9 @@ export const DashboardPage: React.FC = () => {
   const [selectedOption2, setSelectedOption2] = useState<string>(
     comissionValueData[0].label
   );
+
+  const dispatch = useAppDispatch()
+
   const handleSelectChange = (
     selectedOption: { value: string; label: string } | null
   ) => {
@@ -63,13 +67,35 @@ export const DashboardPage: React.FC = () => {
     setFilterModal(false);
   };
 
+  /** temp solution for session logout */
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const expirationTime = localStorage.getItem('expirationTime');
+
+    if (token && expirationTime) {
+      const currentTime = Date.now();
+      if (currentTime < parseInt(expirationTime, 10)) {
+        // Token is still valid
+        // Schedule logout after 480 minutes
+        const timeout = setTimeout(() => {
+         dispatch(logout())
+        }, 480 * 60 * 1000); // 480 minutes in milliseconds
+
+        return () => clearTimeout(timeout);
+      } else {
+        // Token has expired
+        dispatch(logout())
+      }
+    }
+  }, []);
+
   return (
     <>
       <div className="Dashboard-section-container">
         <div className="DashboardPage-container">
-          <div className="DashboardPage-wel">
+          {/* <div className="DashboardPage-wel">
             <h3>Dashboard</h3>
-          </div>
+          </div> */}
           <div className="dashboard-payroll">
             <div className="dash-head-input">
               <label className="inputLabel" style={{ color: "#344054" }}>
@@ -118,7 +144,7 @@ export const DashboardPage: React.FC = () => {
               <input type="date" className="payroll-date" />
               <label className="payroll-label">End:</label>
               <input type="date" className="payroll-date" /> */}
-              <div className="calendar-component2">
+              <div className="date-picker">
                 <DateRangePicker
                   startDate={startDate}
                   startDateId="s_id"
@@ -129,7 +155,7 @@ export const DashboardPage: React.FC = () => {
                     setEndDate(endDate);
                   }}
                   focusedInput={focusedInput}
-                  onFocusChange={(focusedInput) =>
+                  onFocusChange={(focusedInput) => 
                     setFocusedInput(focusedInput)
                   }
                   displayFormat="DD/MM/YYYY"
@@ -137,6 +163,7 @@ export const DashboardPage: React.FC = () => {
                   showClearDates
                   transitionDuration={1000}  
                   withPortal
+                  isOutsideRange={() => false}
                 />
               </div>
             </div>
