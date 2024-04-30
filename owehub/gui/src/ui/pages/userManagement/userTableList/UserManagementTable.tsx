@@ -91,6 +91,22 @@ const UserManagementTable: React.FC<UserTableProos> = ({
           setSelectAllChecked={setSelectAllChecked}
           />
         );
+        case TYPE_OF_USER.FINANCE_ADMIN:
+          return (
+            <UserTable
+              data={[]}
+              onClickEdit={(item: UserRoleBasedListModel) => {
+                onClickEdit(item);
+              }}
+              onClickDelete={(item: UserRoleBasedListModel) => {
+                onClickDelete(item)
+              }}
+              selectedRows={selectedRows}
+            selectAllChecked={selectAllChecked}
+            setSelectedRows={setSelectedRows}
+            setSelectAllChecked={setSelectAllChecked}
+            />
+          );
       case TYPE_OF_USER.DB_USER:
         return (
           <UserTable
