@@ -186,7 +186,8 @@ const handleOpen = () => setOpen(true);
                 <div
                   className={`rep-filter-line ${
                     active === 0 ? "rep-active-filter-line" : ""
-                  }`}
+   
+                 }`}
                   onClick={() => setActive(0)}
                 >
                   {active === 0 ? (
