@@ -223,14 +223,7 @@ color: white;
   flex-direction: column;
   
 }
-.create-input-container input{
-  background-color: #F8F8F8;
 
-}
-.create-input-field-help input {
-  background-color: #F8F8F8;
-
-}
 .create-input-field-help {
   /* width: 280px; */
   /* margin-left: 2rem; */
@@ -344,7 +337,7 @@ color: white;
   /* background-color: #263747; */
   width: 100%;
   margin-top: 0.5rem;
-  background-color: #F8F8F8;
+  background-color:white;
   
 }
 .inputLabeldash p{
@@ -404,6 +397,4 @@ color: white;
   .createUserActionButtonDash :hover {
     background-color: #263747;
   }
-  .create-input-field-note textarea{
-    background-color:#F8F8F8;
-  }
+ 

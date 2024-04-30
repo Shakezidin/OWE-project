@@ -148,7 +148,7 @@ const CreatePaymentSchedule:React.FC<payScheduleProps> = ({handleClose,editMode,
 
                             <div className="create-input-container">
                                 <div className="create-input-field">
-                                <label className="inputLabel">Sales Type</label>
+                                <label className="inputLabel-select">Sales Type</label>
                                     <SelectOption
                                         options={salesTypeOption(newFormData)}
                                         onChange={(newValue) => handleChange(newValue, 'sale_type')}
