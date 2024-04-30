@@ -19,8 +19,8 @@ import { ROUTES } from "../../../routes/routes";
 import { toast } from "react-toastify";
 import { loginAction } from "../../../redux/apiActions/authActions";
 import { useAppDispatch } from "../../../redux/hooks";
-import { unwrapResult } from "@reduxjs/toolkit";
 import { HTTP_STATUS } from "../../../core/models/api_models/RequestModel";
+import { unwrapResult } from "@reduxjs/toolkit";
 
 export const LoginPage = () => {
   const navigate = useNavigate();
@@ -50,7 +50,7 @@ export const LoginPage = () => {
     if (localRememberMe === "true") {
       handleInputChange("email_id", localEmail);
       handleInputChange("password", localPassword);
-      handleInputChange("isRememberMe", localRememberMe);
+      handleInputChange("isRememberMe", localRememberMe === 'true');
     }
   }, []);
 
@@ -84,7 +84,8 @@ export const LoginPage = () => {
         localStorage.setItem("role", role_name);
         localStorage.setItem("token", access_token);
         localStorage.setItem("password", credentials.password);
-        localStorage.setItem('expirationTime',time_to_expire_minutes);
+        localStorage.setItem('expirationTime', (Date.now() + parseInt(time_to_expire_minutes) * 60 * 1000).toString()); // Expiration time is 480 minutes from now
+
         localStorage.setItem(
           "isRememberMe",
           credentials.isRememberMe.toString()

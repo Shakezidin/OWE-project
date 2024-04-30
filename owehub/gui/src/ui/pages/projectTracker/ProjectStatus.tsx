@@ -199,6 +199,7 @@ const ProjectStatus = () => {
                   {
                     item.childStatusData.map((el: any, index: any) => (
                       <div className="notch-corner" style={{ background: el.bgColor, color: "#101828" }}>
+                            <div className="child-corner"></div>
                         <div className="" style={{display:"flex",flexDirection:"column",alignItems:"center"}}>
                           <span className='date-para' style={{ color: el.color, fontSize: "11px" }} >
                             ETA
@@ -223,6 +224,7 @@ const ProjectStatus = () => {
               </>
             ))
           }
+           
         </div>
       </div>
     </div>
