@@ -1,27 +1,18 @@
 import React, { useEffect, useRef, useState } from "react";
-import appRoutesTwo from "../../../routes/appRoutesTwo";
 import "./sidebar.css";
 import { ICONS } from "../../icons/Icons";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { MdOutlinePayment } from "react-icons/md";
-import { CiWallet } from "react-icons/ci";
 import { FiLayers } from "react-icons/fi";
 import {
   MdKeyboardArrowDown,
   MdKeyboardArrowRight,
   MdKeyboardArrowUp,
 } from "react-icons/md";
-import colorConfig from "../../../config/colorConfig";
-import { BiSupport } from "react-icons/bi";
-import { RiUserSettingsLine } from "react-icons/ri";
-import { GoProjectRoadmap } from "react-icons/go";
-import { FaHandHoldingDollar } from "react-icons/fa6";
-import { BsDatabaseGear } from "react-icons/bs";
 import { MdKeyboardArrowLeft } from "react-icons/md";
 import { LuWallet } from "react-icons/lu";
+import { createSideMenuList } from "../../../routes/SideMenuOption";
 
-import { FiServer } from "react-icons/fi";
-import { logout } from "../../../redux/apiSlice/authSlice/authSlice";
 interface Child {
   path: string;
   sidebarProps: {
@@ -35,13 +26,7 @@ interface Toggleprops {
   setSidebarChange: React.Dispatch<React.SetStateAction<number>>;
   sidebarChange: number;
 }
-const Sidebar: React.FC<Toggleprops> = ({
-  toggleOpen,
-  setToggleOpen,
-  setSidebarChange,
-  sidebarChange,
-}) => {
-  const [open, setOpen] = useState<boolean>(false);
+const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
   const [repay, setRepay] = useState<boolean>(false);
   const [db, setDb] = useState<boolean>(false);
   const [project, setProject] = useState<boolean>(false);
@@ -54,7 +39,6 @@ const Sidebar: React.FC<Toggleprops> = ({
     child: Child[];
     id?: number;
   }>({ left: 0, top: 0, opacity: 0, text: "", child: [], id: -1 });
-  const [configure, setConfigure] = useState<boolean>(false);
 
   const location = useLocation();
   const timeOut = useRef<NodeJS.Timeout | null>(null);
@@ -92,9 +76,9 @@ const Sidebar: React.FC<Toggleprops> = ({
     if (toggleOpen) {
       setDb(false);
       setProject(false);
-      setConfigure(false);
     }
   }, [toggleOpen]);
+
   return (
     <div
       style={{ zIndex: "20" }}
@@ -125,7 +109,7 @@ const Sidebar: React.FC<Toggleprops> = ({
             <div
               className={`icon-shape ${toggleOpen ? "icon-shape-active" : ""}`}
               onClick={() => setToggleOpen(!toggleOpen)}
-              style={{ position: "absolute", top: "10px", left:"223px" }}
+              style={{ position: "absolute", top: "10px", left: "223px" }}
             >
               {toggleOpen ? (
                 <MdKeyboardArrowRight color="black" />
@@ -137,10 +121,10 @@ const Sidebar: React.FC<Toggleprops> = ({
             </div>
           )}
         </div>
-        {appRoutesTwo.map((el, i) => (
+        {createSideMenuList().map((el, i) => (
           <div className="" key={i}>
             <div className="" style={{ marginTop: toggleOpen ? 0 : ".4rem" }}>
-              {el.commission?.map((oth, index) => (
+              {el.commission?.map((oth: any, index: number) => (
                 <Link
                   key={index}
                   style={{ paddingLeft: toggleOpen ? ".8rem" : "" }}
@@ -162,9 +146,9 @@ const Sidebar: React.FC<Toggleprops> = ({
                 >
                   <div
                     style={{
-                      display:"flex",
-                      alignItems:"center",
-                      justifyContent:"center",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
                       flexShrink: 0,
                       width: 24,
                       height: 24,
@@ -179,7 +163,7 @@ const Sidebar: React.FC<Toggleprops> = ({
                   >
                     <MdOutlinePayment
                       size={20}
-                      style={{ marginLeft: !toggleOpen?"5px":"" }}
+                      style={{ marginLeft: !toggleOpen ? "5px" : "" }}
                       className={
                         location.pathname === oth.path
                           ? "sidebaricon"
@@ -219,7 +203,6 @@ const Sidebar: React.FC<Toggleprops> = ({
                       borderTopRightRadius: "4px",
                       borderLeft: "1px solid #D9D9D9",
                       color: "#092D04",
-                       
                     }}
                   >
                     <Link
@@ -241,33 +224,13 @@ const Sidebar: React.FC<Toggleprops> = ({
                       {" "}
                       {cords.text}
                     </Link>
-
-                    {/* {cords.child.map((ch, ind) => {
-                      return (
-                        <Link
-                          to={ch.path}
-                          key={ind}
-                          style={{
-                            display: "block",
-                            marginBlock: "6px",
-                            color: "black",
-                            padding: "6px 12px",
-                            width: "100%",
-                            fontSize: "12px",
-                          }}
-                        >
-                          {" "}
-                          {ch.sidebarProps.displayText}{" "}
-                        </Link>
-                      );
-                    })} */}
                   </div>
                 </Link>
               ))}
             </div>
 
             <div className="" style={{ marginTop: toggleOpen ? 0 : ".4rem" }}>
-              {el.repay?.map((oth, index) => (
+              {el.repay?.map((oth: any, index: number) => (
                 <Link
                   key={index}
                   style={{ paddingLeft: toggleOpen ? ".8rem" : "" }}
@@ -285,11 +248,11 @@ const Sidebar: React.FC<Toggleprops> = ({
                     location.pathname === oth.path ? "active-link-bg" : ""
                   }`}
                 >
-                    <div
+                  <div
                     style={{
-                      display:"flex",
-                      alignItems:"center",
-                      justifyContent:"center",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
                       flexShrink: 0,
                       width: 24,
                       height: 24,
@@ -302,15 +265,15 @@ const Sidebar: React.FC<Toggleprops> = ({
                           : "transparent",
                     }}
                   >
-                  <LuWallet
-                    size={20}
-                    style={{ marginLeft: !toggleOpen?"5px":"" }}
-                    className={
-                      location.pathname === oth.path
-                        ? "sidebaricon"
-                        : "sidebariconn"
-                    }
-                  />
+                    <LuWallet
+                      size={20}
+                      style={{ marginLeft: !toggleOpen ? "5px" : "" }}
+                      className={
+                        location.pathname === oth.path
+                          ? "sidebaricon"
+                          : "sidebariconn"
+                      }
+                    />
                   </div>
 
                   {/* {oth.sidebarProps.icon && oth.sidebarProps.icon} */}
@@ -363,32 +326,13 @@ const Sidebar: React.FC<Toggleprops> = ({
                       {" "}
                       {cords.text}
                     </Link>
-
-                    {/* {cords.child.map((ch, ind) => {
-                      return (
-                        <span
-                          key={ind}
-                          style={{
-                            display: "block",
-                            marginBlock: "6px",
-                            color: "black",
-                            padding: "6px 12px",
-                            width: "100%",
-                            fontSize: "12px",
-                          }}
-                        >
-                          {" "}
-                          {ch.sidebarProps.displayText}{" "}
-                        </span>
-                      );
-                    })} */}
                   </div>
                 </Link>
               ))}
             </div>
 
             <div className="" style={{ marginTop: toggleOpen ? 0 : ".2rem" }}>
-              {el.ar?.map((oth, index) => (
+              {el.ar?.map((oth: any, index: number) => (
                 <Link
                   key={index}
                   style={{ paddingLeft: toggleOpen ? ".8rem" : "" }}
@@ -406,11 +350,11 @@ const Sidebar: React.FC<Toggleprops> = ({
                     location.pathname === oth.path ? "active-link-bg" : ""
                   }`}
                 >
-                     <div
+                  <div
                     style={{
-                      display:"flex",
-                      alignItems:"center",
-                      justifyContent:"center",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
                       flexShrink: 0,
                       width: 24,
                       height: 24,
@@ -423,16 +367,15 @@ const Sidebar: React.FC<Toggleprops> = ({
                           : "transparent",
                     }}
                   >
-                  
-                  <FiLayers
-                    size={20}
-                    style={{ marginLeft: !toggleOpen?"5px":"" }}
-                    className={
-                      location.pathname === oth.path
-                        ? "sidebaricon"
-                        : "sidebariconn"
-                    }
-                  />
+                    <FiLayers
+                      size={20}
+                      style={{ marginLeft: !toggleOpen ? "5px" : "" }}
+                      className={
+                        location.pathname === oth.path
+                          ? "sidebaricon"
+                          : "sidebariconn"
+                      }
+                    />
                   </div>
                   {toggleOpen ? null : (
                     <p
@@ -482,31 +425,12 @@ const Sidebar: React.FC<Toggleprops> = ({
                       {" "}
                       {cords.text}
                     </Link>
-
-                    {/* {cords.child.map((ch, ind) => {
-                      return (
-                        <span
-                          key={ind}
-                          style={{
-                            display: "block",
-                            marginBlock: "6px",
-                            color: "black",
-                            padding: "6px 12px",
-                            width: "100%",
-                            fontSize: "12px",
-                          }}
-                        >
-                          {" "}
-                          {ch.sidebarProps.displayText}{" "}
-                        </span>
-                      );
-                    })} */}
                   </div>
                 </Link>
               ))}
             </div>
 
-            {el.db?.map((item, index) => (
+            {el.db?.map((item: any, index: number) => (
               <div key={index}>
                 {item.child ? (
                   <>
@@ -537,25 +461,27 @@ const Sidebar: React.FC<Toggleprops> = ({
                         }, 500);
                       }}
                     >
-                      <div className={`side-icon-container-1`}      >
-                        <div className="" style={{
-                      display:"flex",
-                      alignItems:"center",
-                      justifyContent:"center",
-                      flexShrink: 0,
-                      width: 24,
-                      height: 24,
-                      borderRadius: 4,
-                      marginLeft: !toggleOpen?"":"-1px",
-                      background:
-                        toggleOpen && location.pathname === item.path
-                          ? "rgb(235 255 244)"
-                          : toggleOpen
-                          ? "#E9EEF2"               
-                          : "transparent",
-                          // marginLeft: "3px", 
-
-                    }}  >
+                      <div className={`side-icon-container-1`}>
+                        <div
+                          className=""
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            flexShrink: 0,
+                            width: 24,
+                            height: 24,
+                            borderRadius: 4,
+                            marginLeft: !toggleOpen ? "" : "-1px",
+                            background:
+                              toggleOpen && location.pathname === item.path
+                                ? "rgb(235 255 244)"
+                                : toggleOpen
+                                ? "#E9EEF2"
+                                : "transparent",
+                            // marginLeft: "3px",
+                          }}
+                        >
                           {" "}
                           {item.sidebarProps.icon && item.sidebarProps.icon}
                         </div>
@@ -645,7 +571,7 @@ const Sidebar: React.FC<Toggleprops> = ({
                     </Link>
                     {db && (
                       <div className={`side-accordian-item`}>
-                        {item?.child?.map((accr, ele) => (
+                        {item?.child?.map((accr: any, ele: number) => (
                           <Link
                             key={ele}
                             to={accr?.path}
@@ -694,18 +620,7 @@ const Sidebar: React.FC<Toggleprops> = ({
                         location.pathname === item.path ? "active-link-bg" : ""
                       }`}
                     >
-                      <div >
-                      {/* <BsDatabaseGear
-                        size={20}
-                        className={
-                          location.pathname === item.path
-                            ? "sidebaricon"
-                            : "sidebariconn"
-                        }
-                        style={{ marginLeft: !toggleOpen?"5px":"" }}
-                       
-                      /> */}
-                      </div>
+                      <div></div>
                       {toggleOpen ? null : (
                         <p className={`tablink`}>
                           {item.sidebarProps.displayText}
@@ -717,7 +632,7 @@ const Sidebar: React.FC<Toggleprops> = ({
               </div>
             ))}
 
-            {el.project?.map((item, index) => (
+            {el.project?.map((item: any, index: number) => (
               <div key={index}>
                 {item.child ? (
                   <>
@@ -781,7 +696,7 @@ const Sidebar: React.FC<Toggleprops> = ({
                             borderBottom: "1px solid #E8E8E8",
                             fontSize: "13px",
                             borderRight: "3px solid #23B364",
-                            cursor:"default"
+                            cursor: "default",
                           }}
                         >
                           {" "}
@@ -811,22 +726,23 @@ const Sidebar: React.FC<Toggleprops> = ({
                         })}
                       </div>
                       <div className={`side-icon-container-1`}>
-                        <div style={{
-                      display:"flex",
-                      alignItems:"center",
-                      justifyContent:"center",
-                      flexShrink: 0,
-                      width: 24,
-                      height: 24,
-                      borderRadius: 4,
-                      background:
-                        toggleOpen && location.pathname === item.path
-                          ? "rgb(235 255 244)"
-                          : toggleOpen
-                          ? "#E9EEF2"
-                          : "transparent",
-                         
-                    }} >
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            flexShrink: 0,
+                            width: 24,
+                            height: 24,
+                            borderRadius: 4,
+                            background:
+                              toggleOpen && location.pathname === item.path
+                                ? "rgb(235 255 244)"
+                                : toggleOpen
+                                ? "#E9EEF2"
+                                : "transparent",
+                          }}
+                        >
                           {" "}
                           {item.sidebarProps.icon && item.sidebarProps.icon}
                         </div>
@@ -858,7 +774,7 @@ const Sidebar: React.FC<Toggleprops> = ({
                     </Link>
                     {project && (
                       <div className={`side-accordian-item`}>
-                        {item?.child?.map((accr, ele) => (
+                        {item?.child?.map((accr: any, ele: number) => (
                           <Link
                             key={ele}
                             to={accr?.path}
@@ -938,7 +854,6 @@ const Sidebar: React.FC<Toggleprops> = ({
                       }}
                     >
                       {" "}
-                     
                       {cords.text}
                     </Link>
 
@@ -969,14 +884,19 @@ const Sidebar: React.FC<Toggleprops> = ({
             ))}
 
             <div className="" style={{ marginTop: toggleOpen ? 0 : "-2px" }}>
-              {el.other?.map((oth, index) => (
+              {el.other?.map((oth: any, index: number) => (
                 <Link
                   key={index}
                   style={{ paddingLeft: toggleOpen ? ".8rem" : "" }}
                   to={oth.path}
                   onMouseEnter={(e) =>
                     toggleOpen &&
-                    handleMouseover(e, oth.sidebarProps.displayText, [], index+8)
+                    handleMouseover(
+                      e,
+                      oth.sidebarProps.displayText,
+                      [],
+                      index + 8
+                    )
                   }
                   onMouseLeave={() => {
                     timeOut.current = setTimeout(() => {
@@ -987,29 +907,32 @@ const Sidebar: React.FC<Toggleprops> = ({
                     location.pathname === oth.path ? "active-link-bg" : ""
                   }`}
                 >
-                  <div   className={
+                  <div
+                    className={
                       location.pathname === oth.path
                         ? "sidebaricon"
                         : "sidebariconn"
-                    } style={{
-                      display:"flex",
-                      alignItems:"center",
-                      justifyContent:"center",
+                    }
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
                       flexShrink: 0,
                       width: 24,
                       height: 24,
                       borderRadius: 4,
-                      marginLeft: !toggleOpen?"":"-1px",
+                      marginLeft: !toggleOpen ? "" : "-1px",
                       background:
                         toggleOpen && location.pathname === oth.path
                           ? "rgb(235 255 244)"
                           : toggleOpen
                           ? "#E9EEF2"
                           : "transparent",
-                     }} >
-                  {oth.sidebarProps.icon && oth.sidebarProps.icon}
+                    }}
+                  >
+                    {oth.sidebarProps.icon && oth.sidebarProps.icon}
                   </div>
-                  
+
                   {toggleOpen ? null : (
                     <p
                       className={
@@ -1027,7 +950,9 @@ const Sidebar: React.FC<Toggleprops> = ({
                       top: cords.top,
                       left: cords.left,
                       display:
-                        cords.opacity && cords.id === index+8 ? "block" : "none",
+                        cords.opacity && cords.id === index + 8
+                          ? "block"
+                          : "none",
 
                       maxHeight: "300px",
                       minWidth: "150px",
@@ -1058,33 +983,114 @@ const Sidebar: React.FC<Toggleprops> = ({
                       {" "}
                       {cords.text}
                     </Link>
-
-                    {/* {cords.child.map((ch, ind) => {
-                      return (
-                        <span
-                          key={ind}
-                          style={{
-                            display: "block",
-                            marginBlock: "6px",
-                            color: "black",
-                            padding: "6px 12px",
-                            width: "100%",
-                            fontSize: "12px",
-                          }}
-                        >
-                          {" "}
-                          {ch.sidebarProps.displayText}{" "}
-                        </span>
-                      );
-                    })} */}
                   </div>
                 </Link>
               ))}
             </div>
+            <div className="" style={{ marginTop: toggleOpen ? 0 : "-2px" }}>
+              {el.support?.map((oth: any, index: number) => (
+                <Link
+                  key={index}
+                  style={{ paddingLeft: toggleOpen ? ".8rem" : "" }}
+                  to={oth.path}
+                  onMouseEnter={(e) =>
+                    toggleOpen &&
+                    handleMouseover(
+                      e,
+                      oth.sidebarProps.displayText,
+                      [],
+                      index + 8
+                    )
+                  }
+                  onMouseLeave={() => {
+                    timeOut.current = setTimeout(() => {
+                      setCords((prev) => ({ ...prev, opacity: 0, id: -1 }));
+                    }, 500);
+                  }}
+                  className={`side-icon-container ${
+                    location.pathname === oth.path ? "active-link-bg" : ""
+                  }`}
+                >
+                  <div
+                    className={
+                      location.pathname === oth.path
+                        ? "sidebaricon"
+                        : "sidebariconn"
+                    }
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                      width: 24,
+                      height: 24,
+                      borderRadius: 4,
+                      marginLeft: !toggleOpen ? "" : "-1px",
+                      background:
+                        toggleOpen && location.pathname === oth.path
+                          ? "rgb(235 255 244)"
+                          : toggleOpen
+                          ? "#E9EEF2"
+                          : "transparent",
+                    }}
+                  >
+                    {oth.sidebarProps.icon && oth.sidebarProps.icon}
+                  </div>
 
+                  {toggleOpen ? null : (
+                    <p
+                      className={
+                        location.pathname === oth.path ? "tablink" : "tablinkk"
+                      }
+                    >
+                      {oth.sidebarProps.displayText}
+                    </p>
+                  )}
+                  <div
+                    className="tip"
+                    style={{
+                      backgroundColor: "#fff",
+                      position: "fixed",
+                      top: cords.top,
+                      left: cords.left,
+                      display:
+                        cords.opacity && cords.id === index + 8
+                          ? "block"
+                          : "none",
 
-            
- 
+                      maxHeight: "300px",
+                      minWidth: "150px",
+                      overflowY: "scroll",
+                      borderTopLeftRadius: "4px",
+                      borderTopRightRadius: "4px",
+                      borderLeft: "1px solid #D9D9D9",
+
+                      color: "black",
+                    }}
+                  >
+                    <Link
+                      to="#"
+                      className=""
+                      style={{
+                        display: "block",
+                        background: "#E1F5EA",
+                        padding: "11px 12px",
+                        color: "#23B364",
+                        width: "100%",
+                        fontWeight: "500",
+                        borderBottom: "1px solid #E8E8E8",
+                        fontSize: "13px",
+                        borderRight: "3px solid #23B364",
+                        cursor: "default",
+                      }}
+                    >
+                      {" "}
+                      {cords.text}
+                    </Link>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
         ))}
       </div>
