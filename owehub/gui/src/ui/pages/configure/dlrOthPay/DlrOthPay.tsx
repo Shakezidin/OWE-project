@@ -25,6 +25,8 @@ import CreateDlrOth from "./CreateDlrOth";
 import Loading from "../../../components/loader/Loading";
 import DataNotFound from "../../../components/loader/DataNotFound";
 import { ROUTES } from "../../../../routes/routes";
+import { DlrOthPayColumn } from "../../../../resources/static_data/configureHeaderData/DlrOthPayColumn";
+import SortableHeader from "../../../components/tableHeader/SortableHeader";
 interface Column {
   name: string;
   displayName: string;
@@ -50,6 +52,8 @@ const DlrOthPay: React.FC = () => {
   const itemsPerPage = 5;
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
   const [viewArchived, setViewArchived] = useState<boolean>(false);
+  const [sortKey, setSortKey] = useState("");
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -105,17 +109,40 @@ const DlrOthPay: React.FC = () => {
     handleOpen()
   };
 
+
+
+  const currentPageData = commissionList?.slice(startIndex, endIndex);
+  const isAnyRowSelected = selectedRows.size > 0;
+  const isAllRowsSelected = selectedRows.size === commissionList.length;
+  const handleSort = (key: any) => {
+    if (sortKey === key) {
+      setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
+    } else {
+      setSortKey(key);
+      setSortDirection('asc');
+    }
+  };
+
+  if (sortKey) {
+    currentPageData.sort((a: any, b: any) => {
+      const aValue = a[sortKey];
+      const bValue = b[sortKey];
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        return sortDirection === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+      } else {
+        // Ensure numeric values for arithmetic operations
+        const numericAValue = typeof aValue === 'number' ? aValue : parseFloat(aValue);
+        const numericBValue = typeof bValue === 'number' ? bValue : parseFloat(bValue);
+        return sortDirection === 'asc' ? numericAValue - numericBValue : numericBValue - numericAValue;
+      }
+    });
+  }
   if (error) {
     return <div className="loader-container"><Loading/></div>;
   }
   if (loading) {
     return <div className="loader-container"><Loading/> {loading}</div>;
   }
-
-  const currentPageData = commissionList?.slice(startIndex, endIndex);
-  const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === commissionList.length;
-
   return (
     <div className="comm">
       <Breadcrumb head="Commission" linkPara="Configure" route={ROUTES.CONFIG_PAGE} linkparaSecond="DLR-OTH"/>
@@ -152,58 +179,25 @@ const DlrOthPay: React.FC = () => {
           <table>
             <thead>
               <tr>
-                <th style={{paddingRight:0}}>
-                  <div>
-                    <CheckBox
-                      checked={selectAllChecked}
-                      onChange={() =>
-                        toggleAllRows(
-                          selectedRows,
-                          commissionList,
-                          setSelectedRows,
-                          setSelectAllChecked
-                        )
-                      }
-                      indeterminate={isAnyRowSelected && !isAllRowsSelected}
-                    />
-                  </div>
-                </th>
-                <th style={{paddingLeft:"10px"}}>
-                  <div className="table-header" >
-                    <p>Payee</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Amount</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Description</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Balance</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Paid Amt.</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-                  </div>
-                </th>
-                
-                <th>
-                  <div className="table-header">
-                    <p>Start Dt.</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>End Dt.</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-                  </div>
-                </th>
+               {
+                DlrOthPayColumn.map((item,key)=>(
+                  <SortableHeader
+                  key={key}
+                  isCheckbox={item.isCheckbox}
+                  titleName={item.displayName}
+                  data={commissionList}
+                  isAllRowsSelected={isAllRowsSelected}
+                  isAnyRowSelected={isAnyRowSelected}
+                  selectAllChecked={selectAllChecked}
+                  setSelectAllChecked={setSelectAllChecked}
+                  selectedRows={selectedRows}
+                  setSelectedRows={setSelectedRows}
+                  sortKey={item.name}
+                  sortDirection={sortKey === item.name ? sortDirection : undefined}
+                  onClick={() => handleSort(item.name)}
+                />
+                ))
+               }
                 <th>
                   <div className="action-header">
                     <p>Action</p> 
@@ -218,8 +212,9 @@ const DlrOthPay: React.FC = () => {
                     key={i}
                     className={selectedRows.has(i) ? "selected" : ""}
                   >
-                    <td style={{paddingRight:0}}>
-                      <CheckBox
+                    <td style={{fontWeight: "500", color: "black"}}>
+                    <div className="flex-check">
+                    <CheckBox
                         checked={selectedRows.has(i)}
                         onChange={() =>
                           toggleRowSelection(
@@ -230,10 +225,10 @@ const DlrOthPay: React.FC = () => {
                           )
                         }
                       />
+                       {el.partner}
+                    </div>
                     </td>
-                    <td style={{ fontWeight: "500", color: "black",paddingLeft:"10px" }}>
-                      {el.partner}
-                    </td>
+                 
                     <td>{el.installer}</td>
                     <td>{el.state}</td>
                     <td>{el.sale_type}</td>

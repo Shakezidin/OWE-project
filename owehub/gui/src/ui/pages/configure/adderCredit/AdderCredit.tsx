@@ -17,6 +17,7 @@ import SortableHeader from "../../../components/tableHeader/SortableHeader";
 import { AdderCreditsColumn } from "../../../../resources/static_data/configureHeaderData/adderCreditsColumn";
 import FilterModal from "../../../components/FilterModal/FilterModal";
 import { ROUTES } from "../../../../routes/routes";
+import CreateAdderCredit from "./CreateAdderCredit";
 const AdderCredit = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -140,10 +141,11 @@ const AdderCredit = () => {
           page_number={currentPage}
           fetchFunction={fetchFunction}
           page_size={itemsPerPage} />}
-        {/* {open && <CreateTimeLine
-          timeLineSlaData={editedTimeLineSla}
+
+        {open && <CreateAdderCredit
           editMode={editMode}
-          handleClose={handleClose} />} */}
+          handleClose={handleClose} />}
+
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}

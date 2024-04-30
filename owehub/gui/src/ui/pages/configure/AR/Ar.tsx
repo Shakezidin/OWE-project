@@ -4,6 +4,7 @@ import { ICONS } from "../../../icons/Icons";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import { fetchTimeLineSla } from "../../../../redux/apiSlice/configSlice/config_get_slice/timeLineSlice";
 // import CreateTimeLine from "./CreateTimeLine";
+import CreateAr from "./CreateAr"
 import CheckBox from "../../../components/chekbox/CheckBox";
 import {
   toggleRowSelection,
@@ -140,10 +141,10 @@ const AR = () => {
           page_number={currentPage}
           fetchFunction={fetchFunction}
           page_size={itemsPerPage} />}
-        {/* {open && <CreateTimeLine
-          timeLineSlaData={editedTimeLineSla}
+        {open && <CreateAr
+   
           editMode={editMode}
-          handleClose={handleClose} />} */}
+          handleClose={handleClose} />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}

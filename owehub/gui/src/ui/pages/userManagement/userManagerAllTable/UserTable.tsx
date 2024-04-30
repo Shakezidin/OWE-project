@@ -26,45 +26,44 @@ const UserTable: React.FC<UserTableProps> = ({
   setSelectedRows,
   setSelectAllChecked,
 }) => {
-  const [sortKey, setSortKey] = useState("");
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
-
   const isAnyRowSelected = selectedRows?.size > 0;
   const isAllRowsSelected = selectedRows?.size === data?.length;
-
-  const handleSort = (key: any) => {
+  const [sortKey, setSortKey] = useState("");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
+  
+  const handleSort = (key: string) => {
     if (sortKey === key) {
-
-      console.log('1.................')
       setSortDirection(sortDirection === "desc" ? "asc" : "desc");
     } else {
-      console.log(sortKey,'2.................', key)
       setSortKey(key);
       setSortDirection("asc");
     }
   };
-
+  
+  let sortedData = [...data]; // Create a shallow copy of the original data array
+  
   if (sortKey) {
-    data?.sort((a: any, b: any) => {
+    sortedData.sort((a: any, b: any) => {
       const aValue = a[sortKey];
       const bValue = b[sortKey];
+  
       if (typeof aValue === "string" && typeof bValue === "string") {
         return sortDirection === "asc"
           ? aValue.localeCompare(bValue)
           : bValue.localeCompare(aValue);
       } else {
         // Ensure numeric values for arithmetic operations
-        const numericAValue =
-          typeof aValue === "number" ? aValue : parseFloat(aValue);
-        const numericBValue =
-          typeof bValue === "number" ? bValue : parseFloat(bValue);
+        const numericAValue = typeof aValue === "number" ? aValue : parseFloat(aValue);
+        const numericBValue = typeof bValue === "number" ? bValue : parseFloat(bValue);
         return sortDirection === "asc"
           ? numericAValue - numericBValue
           : numericBValue - numericAValue;
       }
     });
   }
-
+  
+  // Now sortedData contains the modified and sorted array based on sortKey and sortDirection
+  
   return (
     <div
       className="UserManageTable"

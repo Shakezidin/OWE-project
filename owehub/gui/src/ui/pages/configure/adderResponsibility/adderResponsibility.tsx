@@ -17,6 +17,7 @@ import SortableHeader from "../../../components/tableHeader/SortableHeader";
 import { AdderResponsibilityColumns } from "../../../../resources/static_data/configureHeaderData/adderResponsibilityColumn";
 import FilterModal from "../../../components/FilterModal/FilterModal";
 import { ROUTES } from "../../../../routes/routes";
+import CreateAdderResponsibility from "./CreateAdderResponsibility";
 const AdderResponsibility = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -140,10 +141,11 @@ const AdderResponsibility = () => {
           page_number={currentPage}
           fetchFunction={fetchFunction}
           page_size={itemsPerPage} />}
-        {/* {open && <CreateTimeLine
-          timeLineSlaData={editedTimeLineSla}
+
+        {open && <CreateAdderResponsibility
           editMode={editMode}
-          handleClose={handleClose} />} */}
+          handleClose={handleClose} />}
+          
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}

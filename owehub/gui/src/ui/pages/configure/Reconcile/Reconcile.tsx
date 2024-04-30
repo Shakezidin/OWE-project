@@ -11,11 +11,12 @@ import Pagination from "../../../components/pagination/Pagination";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 import { TimeLineSlaModel } from "../../../../core/models/configuration/create/TimeLineSlaModel";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
-
+import CreateReconcile from "./CreateReconcile";
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
 import { ReconcileColumns} from "../../../../resources/static_data/configureHeaderData/ReconcileColumn";
 import FilterModal from "../../../components/FilterModal/FilterModal";
 import { ROUTES } from "../../../../routes/routes";
+
 const Reconcile = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -113,10 +114,7 @@ const Reconcile = () => {
 //   if (loading) {
 //     return <div>Loading...</div>;
 //   }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+ 
 
   return (
     <div className="comm">
@@ -139,10 +137,10 @@ const Reconcile = () => {
           page_number={currentPage}
           fetchFunction={fetchFunction}
           page_size={itemsPerPage} />}
-        {/* {open && <CreateTimeLine
-          timeLineSlaData={editedTimeLineSla}
+        {open && <CreateReconcile
+         
           editMode={editMode}
-          handleClose={handleClose} />} */}
+          handleClose={handleClose} />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}

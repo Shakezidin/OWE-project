@@ -1,7 +1,7 @@
 
 ./stop-OweApp-Backend-svc.sh
 
-rm -rf /var/log/owe/owehub-*
+rm -rf /home/log/owe/owehub-*
 
 ./buildApp_Main.sh make_clean
 ./buildApp_Main.sh make_all
@@ -13,4 +13,4 @@ rm -rf /var/log/owe/owehub-*
 
 docker images
 
-./stop-OweApp-Backend-svc.sh
+./start-OweApp-Backend-svc.sh

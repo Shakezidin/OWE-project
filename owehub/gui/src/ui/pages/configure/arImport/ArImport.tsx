@@ -12,7 +12,7 @@ import Pagination from "../../../components/pagination/Pagination";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 import { TimeLineSlaModel } from "../../../../core/models/configuration/create/TimeLineSlaModel";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
-
+import CreatedArImport from "./CreateArImport";
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
 import { ARImportColumns} from "../../../../resources/static_data/configureHeaderData/ARImportColumn";
 import FilterModal from "../../../components/FilterModal/FilterModal";
@@ -121,10 +121,10 @@ const ArImport  = () => {
 
   return (
     <div className="comm">
-      <Breadcrumb head="" linkPara="Configure" route={ROUTES.CONFIG_PAGE} linkparaSecond="AR" />
+      <Breadcrumb head="" linkPara="Configure" route={ROUTES.CONFIG_PAGE} linkparaSecond="AR Import" />
       <div className="commissionContainer">
         <TableHeader
-          title="AR"
+          title="AR Import"
           onPressViewArchive={() => { }}
           onPressArchive={() => { }}
           onPressFilter={() => filter()}
@@ -140,10 +140,9 @@ const ArImport  = () => {
           page_number={currentPage}
           fetchFunction={fetchFunction}
           page_size={itemsPerPage} />}
-        {/* {open && <CreateTimeLine
-          timeLineSlaData={editedTimeLineSla}
+        {open && <CreatedArImport
           editMode={editMode}
-          handleClose={handleClose} />} */}
+          handleClose={handleClose} />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
