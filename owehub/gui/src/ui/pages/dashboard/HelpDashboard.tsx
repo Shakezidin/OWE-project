@@ -35,7 +35,7 @@ const HelpDashboard: React.FC<ButtonProps> = ({
                 <h3>Help</h3>
               </div>
               <div className="help-icon" onClick={handleClose}>
-                <img src={ICONS.whiteCross} alt="" />
+                <img src={ICONS.closeIcon} alt="" />
               </div>
             </div>
        <div className="modal-body">
@@ -163,7 +163,7 @@ const HelpDashboard: React.FC<ButtonProps> = ({
                       
                       onClick={handleButtonClick}
                     >
-                      <img src={ICONS.browserIcon} alt=""/>
+                      {/* <img src={ICONS.browserIcon} alt=""/> */}
                       Browse
                     </button>
                   </div>
