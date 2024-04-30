@@ -77,8 +77,8 @@ import closeIcon from "../../resources/assets/closeIcon.svg";
 import arrowDown from '../../resources/assets/arrow-down.svg'
 import linearGraph from '../../resources/assets/linear-graph.svg'
 import curveGraph from '../../resources/assets/curvegraph.svg'
-import browserIcon from '../../resources/assets/Cloud-upload.svg'
-import whiteCross from '../../resources/assets/whiteCross.svg'
+// import browserIcon from '../../resources/assets/Cloud-upload.svg'
+// import whiteCross from '../../resources/assets/w'
 export const ICONS = {
   BACKGROUND: require("../../resources/assets/background.png"),
   LOGO: logo,
@@ -169,6 +169,6 @@ export const ICONS = {
   arrowDown:arrowDown,
   linearGraph:linearGraph,
   curveGraph:curveGraph,
-  browserIcon: browserIcon,
-  whiteCross: whiteCross
+  // browserIcon: browserIcon,
+  // whiteCross: whiteCross
 };

@@ -200,7 +200,7 @@ const TechnicalSupport: React.FC = () => {
                       className="custom-button"
                       onClick={handleButtonClick}
                     >
-                      <img src={ICONS.browserIcon} alt="" />
+                      {/* <img src={ICONS.browserIcon} alt="" /> */}
                       Browse
                     </button>
                   </div>
