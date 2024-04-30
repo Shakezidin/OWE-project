@@ -88,7 +88,7 @@ function App() {
           // Schedule logout after 480 minutes
           const timeout = setTimeout(() => {
            dispatch(logout())
-          }, 480 * 60 * 1000); // 480 minutes in milliseconds
+          }, parseInt(expirationTime) * 60 * 1000); // 480 minutes in milliseconds
   
           return () => {
             console.log('clear interval.....')
