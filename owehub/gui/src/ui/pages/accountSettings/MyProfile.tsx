@@ -168,7 +168,7 @@ const MyProfile = () => {
                 )}
               </div>
               <div className="create-input-field-address">
-                <label className="inputLabel">State</label>
+                <label className="inputLabel-select">State</label>
                 <SelectOption
                   onChange={handleStateChange}
                   options={stateOptions}
@@ -176,7 +176,7 @@ const MyProfile = () => {
                 />
               </div>
               <div className="create-input-field-address">
-                <label className="inputLabel">City</label>
+                <label className="inputLabel-select">City</label>
                 <SelectOption
                   onChange={handleStateChange}
                   options={stateOptions}
