@@ -37,7 +37,7 @@ export const ROUTES = {
   CONFIG_ADJUSTMENTS:"/config/adjustments",
   CONFIG_LOAN_FEE_ADDER:"/config/loan-fee-adder",
   CONFIG_RECONCILE:"/config/reconcile",
-
+  CONFIG_APPSETTERS:"/config/app-setter",
   // other routes
   REPORT: "/report",
   DATABASE_CONTROLLER: "/databaseController",

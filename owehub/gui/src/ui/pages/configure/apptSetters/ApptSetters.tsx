@@ -17,6 +17,7 @@ import SortableHeader from "../../../components/tableHeader/SortableHeader";
 import { ApptSettersColumn } from "../../../../resources/static_data/configureHeaderData/ApptSettersColumn";
 import FilterModal from "../../../components/FilterModal/FilterModal";
 import { ROUTES } from "../../../../routes/routes";
+import CreateAppSetters from "./CreateAppSetters";
 const ApptSetters = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -140,10 +141,10 @@ const ApptSetters = () => {
           page_number={currentPage}
           fetchFunction={fetchFunction}
           page_size={itemsPerPage} />}
-        {/* {open && <CreateTimeLine
-          timeLineSlaData={editedTimeLineSla}
+
+        {open && <CreateAppSetters
           editMode={editMode}
-          handleClose={handleClose} />} */}
+          handleClose={handleClose} />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}

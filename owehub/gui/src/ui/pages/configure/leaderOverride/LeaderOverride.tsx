@@ -17,6 +17,8 @@ import SortableHeader from "../../../components/tableHeader/SortableHeader";
 import { LeaderOverrideColumns} from "../../../../resources/static_data/configureHeaderData/LeaderOverrideColumn";
 import FilterModal from "../../../components/FilterModal/FilterModal";
 import { ROUTES } from "../../../../routes/routes";
+import CreateLeaderOverride from "./CreateLeaderOverride";
+
 const LeaderOverride = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -34,7 +36,7 @@ const LeaderOverride = () => {
   const error = useAppSelector((state) => state.timelineSla.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
-  const [editMode, setEditMode] = useState(false);
+  const [editMode, setEditMode] = useState<boolean>(false);
   const [editedTimeLineSla, setEditedTimeLineSla] = useState<TimeLineSlaModel | null>(null);
   const itemsPerPage = 10;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
@@ -140,10 +142,12 @@ const LeaderOverride = () => {
           page_number={currentPage}
           fetchFunction={fetchFunction}
           page_size={itemsPerPage} />}
-        {/* {open && <CreateTimeLine
-          timeLineSlaData={editedTimeLineSla}
-          editMode={editMode}
-          handleClose={handleClose} />} */}
+        {open && (
+          <CreateLeaderOverride
+            editMode={editMode}
+            handleClose={handleClose}
+          />
+        )}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}

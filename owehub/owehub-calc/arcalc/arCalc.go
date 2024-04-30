@@ -21,27 +21,120 @@ import (
  *****************************************************************************/
 func ExecArInitialCalculation(resultChan chan string) {
 	var (
-		err error
+		err        error
+		query      string
+		dataList   []map[string]interface{}
+		configList map[string][]map[string]interface{}
+		arDataList []map[string]interface{}
 	)
 	log.EnterFn(0, "ExecArInitialCalculation")
 	defer func() { log.ExitFn(0, "ExecArInitialCalculation", err) }()
 
 	/* Feth Config from DB */
+	configList = make(map[string][]map[string]interface{})
+
+	query = "SELECT * from " + db.TableName_loan_fee_adder
+	configList[db.TableName_loan_fee_adder], err = db.ReteriveFromDB(query, nil)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get Loan Fee Addr data from DB err: %v", err)
+		resultChan <- "FAILURE"
+		return
+	}
 
 	/* Fetch Data for Calculation From DB */
-	viewName := db.ViewName_ConsolidatedDataView
-	query := "SELECT * from " + viewName
-
-	_, err = db.ReteriveFromDB(query, nil)
+	query = "SELECT * from " + db.ViewName_ConsolidatedDataView
+	dataList, err = db.ReteriveFromDB(query, nil)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get commissions data from DB err: %v", err)
 		resultChan <- "FAILURE"
 		return
 	}
 
-	//for data, _
+	for _, data := range dataList {
+		var arData map[string]interface{}
+		arData, err = CalculateARProject(data)
+		if err != nil || arData == nil {
+			uniqueID, ok := data["unique_id"]
+			if !ok {
+				log.FuncErrorTrace(0, "Failed to calculate AR Data for unique id : %+v err: %+v", uniqueID, err)
+			} else {
+				log.FuncErrorTrace(0, "Failed to calculate AR Data err : %+v", err)
+			}
+		} else {
+			arDataList = append(arDataList, arData)
+		}
+	}
+
+	/* Update Calculated and Fetched data AR.Data Table */
+	err = db.AddMultipleRecordInDB(db.TableName_SalesArCalc, arDataList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to insert initial AR Data in DB err: %v", err)
+	}
 
 	resultChan <- "SUCCESS"
+}
+
+/******************************************************************************
+ * FUNCTION:        CalculateARProject
+ * DESCRIPTION:     calculate the calculated data for ARCalc
+ * RETURNS:        	outData
+ *****************************************************************************/
+func CalculateARProject(data map[string]interface{}) (outData map[string]interface{}, err error) {
+
+	outData = make(map[string]interface{})
+
+	outData["serial_num"] = data["unique_id"]
+	outData["dealer"] = data["dealer"]
+	outData["partner"] = data["partner"]
+	outData["instl"] = data["installer"]
+	outData["source"] = data["source"]
+	//outData["type"] = data[""]
+	outData["loan_type"] = data["loan_type"]
+	outData["unique_id"] = data["unique_id"]
+	outData["home_owner"] = data["home_owner"]
+	outData["street_address"] = data["address"]
+	outData["st"] = data["state"]
+	//outData["email"] = data[""]
+	outData["rep_1"] = data["primary_sales_rep"]
+	outData["rep_2"] = data["secondary_sales_rep"]
+	//outData["appt_setter"] = data[""]
+	outData["sys_size"] = data["system_size"]
+	//outData["kwh"] = data[""]
+	outData["contract"] = data["contract_total"]
+	outData["epc"] = data["net_epc"]
+	outData["wc"] = data["wc_1"]
+	//outData["pp"] = data[""]
+	outData["ntp"] = data["ntp_date"]
+	outData["perm_sub"] = data["permit_submitted_date"]
+	outData["perm_app"] = data["permit_approved_date"]
+	outData["ic_sub"] = data["ic_submitted_date"]
+	outData["ic_app"] = data["ic_approved_date"]
+	outData["cancel"] = data["cancelled_date"]
+	outData["inst_sys"] = data["pv_install_completed_date"]
+	//outData["inst_elec"] = data[""]
+	//outData["fca"] = data[""]
+	outData["pto"] = data["pto_date"]
+
+	/* Calculated Fields */
+	outData["status"] = common.CalculateProjectStatus(outData["unique_id"].(string), outData["pto"].(string), outData["inst_sys"].(string),
+		outData["cancel"].(string), outData["perm_sub"].(string), outData["ntp"].(string), outData["wc"].(string))
+	outData["status_date"] = common.CalculateProjectStatusDate(outData["unique_id"].(string), outData["pto"].(string), outData["inst_sys"].(string),
+		outData["cancel"].(string), outData["perm_sub"].(string), outData["ntp"].(string), outData["wc"].(string))
+	outData["contract_calc"] = common.CalculateContractAmount(outData["epc"].(string), outData["contract"].(string), outData["sys_size"].(float64))
+	//outData["loan_fee"] = CalculateLoanFee()
+	outData["owe_ar"] = CalculateOweAR(outData["contract_calc"].(string), outData["loan_fee"].(string))
+	//outData["total_paid"] =
+
+	return outData, err
+}
+
+/******************************************************************************
+ * FUNCTION:        CalculateLoanFee
+ * DESCRIPTION:     calculates the "loan_fee" value based on the provided data
+ * RETURNS:        	loan fee
+ *****************************************************************************/
+func CalculateLoanFee(dealer, loanFee string) float64 {
+	return 0.0
 }
 
 /******************************************************************************

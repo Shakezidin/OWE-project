@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import "./dasboard.css";
 import Select from "react-select";
 import DashboardTotal from "./DashboardTotal";
@@ -7,7 +7,6 @@ import DashBoardTable from "./DashBoardTable";
 import DashBoardChart from "./DashBoardChart";
 import { payRollData } from "../../../resources/static_data/StaticData";
 import { comissionValueData } from "../../../resources/static_data/StaticData";
-import { RiFilterLine } from "react-icons/ri";
 import FilterModal from "../../components/FilterModal/FilterModal";
 import "react-dates/lib/css/_datepicker.css";
 import "react-dates/initialize";
@@ -49,6 +48,8 @@ export const DashboardPage: React.FC = () => {
   const [selectedOption2, setSelectedOption2] = useState<string>(
     comissionValueData[0].label
   );
+
+
   const handleSelectChange = (
     selectedOption: { value: string; label: string } | null
   ) => {
@@ -67,9 +68,9 @@ export const DashboardPage: React.FC = () => {
     <>
       <div className="Dashboard-section-container">
         <div className="DashboardPage-container">
-          <div className="DashboardPage-wel">
+          {/* <div className="DashboardPage-wel">
             <h3>Dashboard</h3>
-          </div>
+          </div> */}
           <div className="dashboard-payroll">
             <div className="dash-head-input">
               <label className="inputLabel" style={{ color: "#344054" }}>
@@ -118,7 +119,7 @@ export const DashboardPage: React.FC = () => {
               <input type="date" className="payroll-date" />
               <label className="payroll-label">End:</label>
               <input type="date" className="payroll-date" /> */}
-              <div className="calendar-component2">
+              <div className="date-picker">
                 <DateRangePicker
                   startDate={startDate}
                   startDateId="s_id"
@@ -129,7 +130,7 @@ export const DashboardPage: React.FC = () => {
                     setEndDate(endDate);
                   }}
                   focusedInput={focusedInput}
-                  onFocusChange={(focusedInput) =>
+                  onFocusChange={(focusedInput) => 
                     setFocusedInput(focusedInput)
                   }
                   displayFormat="DD/MM/YYYY"
@@ -137,6 +138,7 @@ export const DashboardPage: React.FC = () => {
                   showClearDates
                   transitionDuration={1000}  
                   withPortal
+                  isOutsideRange={() => false}
                 />
               </div>
             </div>

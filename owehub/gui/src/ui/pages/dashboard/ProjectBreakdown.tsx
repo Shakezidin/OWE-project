@@ -16,7 +16,7 @@ const ProjectBreakdown: React.FC<ButtonProps> = ({editMode,handleClose,commissio
 
   return (
     <div className="transparent-model-down">
-      <form action="" className="modal-down">
+      <form action="" className="modal-down-break">
         <div className="breakdown-container">
           <div className="project-section">
             <h4>Customer Name</h4>
