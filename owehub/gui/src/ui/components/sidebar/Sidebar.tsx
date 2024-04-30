@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import appRoutesTwo from "../../../routes/appRoutesTwo";
-import "../common/sidebar.css";
+import "./sidebar.css";
 import { ICONS } from "../../icons/Icons";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { MdOutlinePayment } from "react-icons/md";

@@ -1,12 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cross_button.svg";
 import Input from "../../../components/text_input/Input";
 import { ActionButton } from "../../../components/button/ActionButton";
 import { useDispatch } from "react-redux";
 import { updateUserForm } from "../../../../redux/apiSlice/userManagementSlice/createUserSlice";
-import {
-  userSelectData,
-} from "../../../../resources/static_data/StaticData";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import { ICONS } from "../../../icons/Icons";
 import SelectTable from "../userTableList/SeletTable";
@@ -17,6 +14,7 @@ import {
 } from "../../../../core/models/api_models/UserManagementModel";
 import { useAppSelector } from "../../../../redux/hooks";
 import Loading from "../../../components/loader/Loading";
+import { ALL_USER_ROLE_LIST } from "../../../../resources/static_data/TypeOfUser";
 
 interface createUserProps {
   editMode: boolean;
@@ -108,9 +106,9 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                 <div className="create-input-field">
                   <label className="inputLabel-select">Role</label>
                   <SelectOption
-                    options={userSelectData}
+                    options={ALL_USER_ROLE_LIST}
                     onChange={(newValue) => handleChange(newValue, "role_name")}
-                    value={userSelectData?.find(
+                    value={ALL_USER_ROLE_LIST?.find(
                       (option) => option?.value === formData.role_name
                     )}
                   />
