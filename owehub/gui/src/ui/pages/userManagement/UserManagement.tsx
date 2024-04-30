@@ -8,7 +8,6 @@ import {
   fetchUserListBasedOnRole,
   fetchUserOnboarding,
 } from "../../../redux/apiActions/userManagementActions";
-import { userSelectData } from "../../../resources/static_data/StaticData";
 import {
   UserDropdownModel,
   UserRoleBasedListModel,
@@ -29,13 +28,13 @@ import { HTTP_STATUS } from "../../../core/models/api_models/RequestModel";
 import Loading from "../../components/loader/Loading";
 import { toast } from "react-toastify";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { TYPE_OF_USER } from "../../../resources/static_data/TypeOfUser";
+import { TYPE_OF_USER, ALL_USER_ROLE_LIST } from "../../../resources/static_data/TypeOfUser";
 import { showAlert } from "../../components/alert/ShowAlert";
 
 const UserManagement: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
   const userName = localStorage.getItem("userName");
-  const [selectedOption, setSelectedOption] = useState(userSelectData[0]);
+  const [selectedOption, setSelectedOption] = useState(ALL_USER_ROLE_LIST[0]);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
 
@@ -219,7 +218,7 @@ const UserManagement: React.FC = () => {
           setSelectedRows={setSelectedRows}
           setSelectAllChecked={setSelectAllChecked}
           userRoleBasedList={userRoleBasedList}
-          userDropdownData={userSelectData}
+          userDropdownData={ALL_USER_ROLE_LIST}
           selectedOption={selectedOption}
           handleSelectChange={handleSelectChange}
           onClickDelete={(item: UserRoleBasedListModel) => {
