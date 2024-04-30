@@ -857,15 +857,123 @@ var apiRoutes = ApiRoutes{
 			types.RoleAdmin,
 		},
 	},
-	// {
-	// 	strings.ToUpper("POST"),
-	// 	"/owe-commisions-service/v1/update_rep_pay_settings_archive",
-	// 	apiHandler.HandleUpdateRepPaySettingsArchiveRequest,
-	// 	true,
-	// 	[]types.UserRoles{
-	// 		types.RoleAdmin,
-	// 	},
-	// },
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_rep_pay_settings_archive",
+		apiHandler.HandleUpdateRepPaySettingsArchiveRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/create_adder_responsibility",
+		apiHandler.HandleCreateAdderResponsibilityDataRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_adder_responsibility",
+		apiHandler.HandleUpdateAdderResponsibilityDataRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_adder_responsibility",
+		apiHandler.HandleGetAdderResponsibilityDataRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_adder_responsibility_archive",
+		apiHandler.HandleUpdateAdderResponsibilityArchiveRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/create_adder_credit",
+		apiHandler.HandleCreateAdderCreditDataRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_adder_credit",
+		apiHandler.HandleUpdateAdderCreditDataRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_adder_credit",
+		apiHandler.HandleGetAdderCreditDataRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_adder_credit_archive",
+		apiHandler.HandleUpdateAdderCreditArchiveRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/create_loan_fee",
+		apiHandler.HandleCreateLoanFeeDataRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_loan_fee",
+		apiHandler.HandleUpdateLoanFeeDataRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_loan_fee",
+		apiHandler.HandleGetLoanFeeDataRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_loan_fee_archive",
+		apiHandler.HandleUpdateLoanFeeArchiveRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
 }
 
 /******************************************************************************
