@@ -2,6 +2,8 @@ import React, { useRef, useState } from "react";
 import Input from "../../components/text_input/Input";
 import { ICONS } from "../../icons/Icons";
 import "./support.css";
+import emailjs from "@emailjs/browser";
+
 import Select from "react-select";
 import { ActionButton } from "../../components/button/ActionButton";
 import SelectOption from "../../components/selectOption/SelectOption";
@@ -11,6 +13,7 @@ const TechnicalSupport: React.FC = () => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [selectedState, setSelectedState] = useState<string | null>(null);
   const [stateOptions, setStateOptions] = useState<any[]>([]);
+  const form = useRef<HTMLFormElement>(null);
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -46,6 +49,20 @@ const TechnicalSupport: React.FC = () => {
     if (!Object.values(newErrors).some((error) => error)) {
       console.log("Form submitted successfully");
     }
+    if (form.current) {
+      emailjs
+        .sendForm("service_nof7okz", "template_y3qbqr8", form.current, {
+          publicKey: "iVTsTUymXutcfakaX",
+        })
+        .then(
+          (response: any) => {
+            console.log("SUCCESS!", response);
+          },
+          (error: any) => {
+            console.error("FAILED...", error);
+          }
+        );
+    }
   };
 
   const handleStateChange = (selectedOption: any) => {
@@ -71,7 +88,7 @@ const TechnicalSupport: React.FC = () => {
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
+      <form ref={form} onSubmit={handleSubmit}>
         <div className="support-cont-section">
           <div className="support-container">
             <div className="support-section">
@@ -95,7 +112,7 @@ const TechnicalSupport: React.FC = () => {
                   type={"text"}
                   label="First Name"
                   value={firstName}
-                  name="firstName"
+                  name="user_name"
                   placeholder={"Enter"}
                   onChange={(e) => {
                     setFirstName(e.target.value);
@@ -166,10 +183,7 @@ const TechnicalSupport: React.FC = () => {
                 />
               </div>
 
-              <div
-                className="create-input-field-support"
-                
-              >
+              <div className="create-input-field-support">
                 <label className="inputLabel">
                   <p>Attach File</p>
                 </label>
