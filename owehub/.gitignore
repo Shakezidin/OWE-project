@@ -1,0 +1,10 @@
+# Ignore binary files
+*.bin
+
+# Ignore Docker-related files
+/docker/docker-compose-backend.yaml
+/docker/docker-compose-backend.yaml
+
+# Ignore Go module files
+go.mod
+go.sum
