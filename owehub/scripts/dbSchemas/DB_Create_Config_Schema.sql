@@ -6,7 +6,7 @@ CREATE TABLE teams (
     PRIMARY KEY (team_id)
 );
 
-/*Table to store the appointment setters on  boarding information*/
+/*Table to store thrae appointment setters on  boarding information*/
 CREATE TABLE appointment_setters (
     setters_id serial NOT NULL,
     team_id INT,
@@ -668,7 +668,7 @@ CREATE TABLE ar_schedule (
     calc_date text,
     permit_pay text,
     permit_max text,
-    installe_pay text,
+    install_pay text,
     pto_pay text,
     is_archived BOOLEAN DEFAULT FALSE,
     start_date character varying NOT NULL,
@@ -684,7 +684,7 @@ CREATE TABLE ar_schedule (
 CREATE TABLE install_cost (
     id serial NOT NULL,
     unique_id varchar NOT NULL UNIQUE,
-    coat float,
+    cost float,
     is_archived BOOLEAN DEFAULT FALSE,
     start_date character varying NOT NULL,
     end_date character varying,
@@ -752,6 +752,30 @@ CREATE TABLE loan_fee (
     FOREIGN KEY (dealer_id) REFERENCES user_details(user_id),
     FOREIGN KEY (installer) REFERENCES partners(partner_id),
     FOREIGN KEY (loan_type) REFERENCES loan_type(id)
+);
+
+
+CREATE TABLE adjustments (
+     id serial NOT NULL,
+     unique_id varchar NOT NULL UNIQUE,
+     customer character varying,
+     partner INT,
+     installer INT,
+     state INT,
+     sys_size DOUBLE PRECISION,
+     bl character varying,
+     epc FLOAT,
+     date DATE,
+     amount FLOAT,
+     notes character varying,
+     is_archived BOOLEAN DEFAULT FALSE,
+     start_date character varying,
+     end_date character varying,
+     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+     updated_at timestamp without time zone,
+     FOREIGN KEY (state) REFERENCES states(state_id),
+     FOREIGN KEY (installer) REFERENCES partners(partner_id),
+     FOREIGN KEY (partner) REFERENCES partners(partner_id)
 );
 
 /*
