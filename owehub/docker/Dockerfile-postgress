@@ -95,6 +95,16 @@ COPY ./dbSchemas/DB_ProcUpdateNonCommDlrPayArchive.sql /docker-entrypoint-initdb
 COPY ./dbSchemas/DB_ProcCreateNewRepPaySettings.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcUpdateRepPaySettings.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcUpdateRepPaySettingsArchive.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcCreateNewAdjustments.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcUpdateAdjustmentsArchive.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcCreateNewArSchedule.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcUpdateArScheduleArchive.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcCreateNewInstallCost.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcUpdateInstallCostArchive.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcCreateNewRateAdjustments.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcUpdateRateAdjustmentsArchive.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcCreateNewLeaderOverride.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcUpdateLeaderOverrideArchive.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcCreateNewAdderResponsibility.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcUpdateAdderResponsibility.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcUpdateAdderResponsibilityArchive.sql /docker-entrypoint-initdb.d/
@@ -104,6 +114,8 @@ COPY ./dbSchemas/DB_ProcUpdateAdderCreditArchive.sql /docker-entrypoint-initdb.d
 COPY ./dbSchemas/DB_ProcCreateNewLoanFee.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcUpdateLoanFee.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcUpdateLoanFeeArchive.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcCreateNewReconcile.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcUpdateReconcileArchive.sql /docker-entrypoint-initdb.d/
 
 RUN chmod +x /docker-entrypoint-initdb.d/DB_Create_Schema.sql
 
