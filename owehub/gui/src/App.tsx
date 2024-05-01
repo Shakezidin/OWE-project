@@ -6,7 +6,7 @@
  * Path: /
  */
 
-import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
 import WelcomePage from "./ui/pages/welcome/WelcomePage";
 import ResetPassword from "./ui/pages/resetPassword/ResetPassword";
@@ -68,7 +68,6 @@ import { toast } from "react-toastify";
 
 function App() {
   const dispatch = useAppDispatch();
-  // const location = useLocation();
 
   useEffect(() => {
     dispatch(initializeAuth());
@@ -107,7 +106,7 @@ function App() {
           toast.error("Session time expired. Please login again..")
         }
       }
-   }, []);
+   }, [dispatch]);
 
     return (
     <BrowserRouter>

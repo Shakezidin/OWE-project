@@ -14,7 +14,7 @@ import Pagination from "../../components/pagination/Pagination";
 // import { installers, partners, respTypeData, statData } from "../../../../../core/models/data_models/SelectDataModel";
 
 const DashBoardTable: React.FC = () => {
-  const [editedCommission, setEditedCommission] =
+  const [editedCommission] =
     useState<CommissionModel | null>(null);
   const [open, setOpen] = useState<boolean>(false);
 
@@ -23,7 +23,7 @@ const DashBoardTable: React.FC = () => {
 
   const handleIconOpen = () => setOpenIcon(true);
   const handleIconClose = () => setOpenIcon(false);
-  const handleClose = () => setOpen(false);
+ // const handleClose = () => setOpen(false);
   const [editMode, setEditMode] = useState(false);
 
   const dataUser = [
