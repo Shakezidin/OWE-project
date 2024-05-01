@@ -16,7 +16,7 @@ import MainLayout from "./ui/components/layout/MainLayout";
 import EnterOtpScreen from "./ui/pages/otp/EnterOtpScreen";
 import { useEffect } from "react";
 import { RootState } from "./redux/store";
-import { initializeAuth, logout } from "./redux/apiSlice/authSlice/authSlice";
+import { initializeAuth } from "./redux/apiSlice/authSlice/authSlice";
 import { DashboardPage } from "./ui/pages/dashboard/DashboardPage";
 import { ROUTES } from "./routes/routes";
 import CommissionRate from "./ui/pages/configure/commissionRate/CommissionRate";
@@ -63,7 +63,6 @@ import Reconcile from "./ui/pages/configure/Reconcile/Reconcile";
 import ApptSetters from "./ui/pages/configure/apptSetters/ApptSetters";
 import { ARDashboardPage } from "./ui/pages/ar/ardashboard/ardashboard";
 import { useAppDispatch, useAppSelector } from "./redux/hooks";
-import { toast } from "react-toastify";
 
 
 function App() {
@@ -75,29 +74,6 @@ function App() {
   const isAuthenticated = useAppSelector(
     (state: RootState) => state.auth.isAuthenticated
   );
-
-    /** TODO: temp solution for session logout. Need to change in future */
-    useEffect(() => {
-      const token = localStorage.getItem('token');
-      const expirationTime = localStorage.getItem('expirationTime');
-      const expirationTimeInMin = localStorage.getItem('expirationTimeInMin')
-
-      if (token && expirationTime && expirationTimeInMin) {
-        const currentTime = Date.now();
-        if (currentTime < parseInt(expirationTime, 10)) {
-          const timeout = setTimeout(() => {
-           dispatch(logout())
-           toast.error("Session time expired. Please login again..")
-          }, parseInt(expirationTimeInMin) * 60 * 1000); // 480 minutes in milliseconds
-  
-          return () => clearTimeout(timeout);
-        } else {
-          // Token has expired
-          dispatch(logout())
-          toast.error("Session time expired. Please login again..")
-        }
-      }
-   }, [dispatch]);
 
     return (
     <BrowserRouter>
@@ -124,9 +100,7 @@ function App() {
         />
         <Route path={ROUTES.RESETPASSWORD} element={<ResetPassword />} />
         <Route path={ROUTES.OTP} element={<EnterOtpScreen />} />
-              <Route
-              element={<MainLayout/>}
-            >
+              <Route element={<MainLayout/>} >
 
                 <Route  path={ROUTES.COMMISSION_DASHBOARD} element={<DashboardPage/>} />
                 <Route  path={ROUTES.REPPAY_DASHBOARD} element={<RepPayDashboardPage/>} />
