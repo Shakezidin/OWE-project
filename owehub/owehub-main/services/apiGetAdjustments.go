@@ -188,7 +188,7 @@ func HandleGetAdjustmentsDataRequest(resp http.ResponseWriter, req *http.Request
 		}
 
 		adjustmentData := models.GetAdjustments{
-			RecordId:      RecordIdowehub-main/services/apiGetAdjustments.go,
+			RecordId:      RecordId,
 			UniqueId:      UniqueId,
 			Customer:      Customer,
 			PartnerName:   PartnerName,
