@@ -100,6 +100,9 @@ INSERT INTO loan_type (product_code,active,adder,description) VALUES ('P123',1,1
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewReferralData.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewDealerCredit.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewNonCommDlrPay.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewApptSetters.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateApptSetters.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateApptSettersArchive.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateDealerCredit.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateDealerCreditArchive.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateReferralData.sql';
@@ -121,4 +124,10 @@ INSERT INTO loan_type (product_code,active,adder,description) VALUES ('P123',1,1
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewLoanFee.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateLoanFee.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateLoanFeeArchive.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewArImport.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateArImport.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateArImportArchive.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewAR.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateAR.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateARArchive.sql';
 

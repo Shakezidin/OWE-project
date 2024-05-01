@@ -49,6 +49,9 @@ const (
 	CreateAdderResponsibilityFunction        string = "create_new_adder_responsibility"
 	CreateAdderCreditFunction                string = "create_new_adder_credit"
 	CreateLoanFeeFunction                    string = "create_new_loan_fee"
+	CreateArImportFunction                   string = "create_new_ar_import"
+	CreateArFunction                         string = "create_new_ar"
+	CreateApptSettersFunction                string = "create_new_appt_setters"
 	UpdateCommissionFunction                 string = "update_commission"
 	UpdateCommissionArchiveFunction          string = "update_commission_archive"
 	UpdateDealerOverrideFunction             string = "update_dealer_override"
@@ -93,6 +96,12 @@ const (
 	UpdateAdderCreditArchiveFunction         string = "update_adder_credit_archive"
 	UpdateLoanFeeFunction                    string = "update_loan_fee"
 	UpdateLoanFeeArchiveFunction             string = "update_loan_fee_archive"
+	UpdateArImportFunction                   string = "update_ar_import"
+	UpdateArImportArchiveFunction            string = "update_ar_import_archive"
+	UpdateArFunction                         string = "update_ar"
+	UpdateArArchiveFunction                  string = "update_ar_archive"
+	UpdateApptSettersFunction                string = "update_appt_setters"
+	UpdateApptSettersArchiveFunction         string = "update_appt_setters_archive"
 	TableName_teams                          string = "teams"
 	TableName_commission_rates               string = "commission_rates"
 	TableName_users_details                  string = "user_details"
@@ -122,6 +131,9 @@ const (
 	TableName_AdderCredit                    string = "adder_credit"
 	TableName_LoanFee                        string = "loan_fee"
 	TableName_SalesArCalc                    string = "sales_arc_calc"
+	TableName_ArImport                       string = "ar_import"
+	TableName_Ar                             string = "ar"
+	TableName_Appt_Setters                   string = "appt_setters"
 )
 
 /******************************************************************************

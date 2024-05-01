@@ -623,7 +623,8 @@ CREATE TABLE dlr_oth(
     start_date character varying NOT NULL,
     end_date character varying,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
-    updated_at timestamp without time zone
+    updated_at timestamp without time zone,
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE rep_pay_settings (
@@ -639,7 +640,8 @@ CREATE TABLE rep_pay_settings (
     end_date character varying,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
-    FOREIGN KEY (state_id) REFERENCES states(state_id)
+    FOREIGN KEY (state_id) REFERENCES states(state_id),
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE rate_adjustments(
@@ -654,7 +656,8 @@ CREATE TABLE rate_adjustments(
     start_date character varying NOT NULL,
     end_date character varying,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
-    updated_at timestamp without time zone
+    updated_at timestamp without time zone,
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE ar_schedule (
@@ -678,7 +681,8 @@ CREATE TABLE ar_schedule (
     FOREIGN KEY (partner) REFERENCES partners(partner_id),
     FOREIGN KEY (installer) REFERENCES partners(partner_id),
     FOREIGN KEY (sale_type_id) REFERENCES sale_type(id),
-    FOREIGN KEY (state_id) REFERENCES states(state_id)
+    FOREIGN KEY (state_id) REFERENCES states(state_id),
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE install_cost (
@@ -689,7 +693,8 @@ CREATE TABLE install_cost (
     start_date character varying NOT NULL,
     end_date character varying,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
-    updated_at timestamp without time zone
+    updated_at timestamp without time zone,
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE leader_override (
@@ -708,7 +713,8 @@ CREATE TABLE leader_override (
     end_date character varying,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
-    FOREIGN KEY (team_id) REFERENCES teams(team_id)
+    FOREIGN KEY (team_id) REFERENCES teams(team_id),
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE adder_responsibility (
@@ -718,7 +724,8 @@ CREATE TABLE adder_responsibility (
     percentage Float,
     is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
-    updated_at timestamp without time zone
+    updated_at timestamp without time zone,
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE adder_credit (
@@ -730,7 +737,8 @@ CREATE TABLE adder_credit (
     max_rate float,
     is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
-    updated_at timestamp without time zone
+    updated_at timestamp without time zone,
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE loan_fee (
@@ -751,37 +759,53 @@ CREATE TABLE loan_fee (
     FOREIGN KEY (state_id) REFERENCES states(state_id),
     FOREIGN KEY (dealer_id) REFERENCES user_details(user_id),
     FOREIGN KEY (installer) REFERENCES partners(partner_id),
-    FOREIGN KEY (loan_type) REFERENCES loan_type(id)
+    FOREIGN KEY (loan_type) REFERENCES loan_type(id),
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE ar_import(
+    id serial NOT NULL,
+    unique_id varchar NOT NULL UNIQUE,
+    customer text,
+    date character varying,
+    amount text,
+    notes text,
+    is_archived BOOLEAN DEFAULT FALSE,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE ar (
+    id serial NOT NULL,
+    unique_id varchar NOT NULL UNIQUE,
+    pay_scale text,
+    position text,
+    adjustment text,
+    min_rate float,
+    max_rate float,
+    is_archived BOOLEAN DEFAULT FALSE,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE appt_setters (
+    id serial NOT NULL,
+    unique_id varchar NOT NULL UNIQUE,
+    name character varying,
+    team_id INT,
+    pay_rate character varying,
+    is_archived BOOLEAN DEFAULT FALSE,
+    start_date character varying NOT NULL,
+    end_date character varying,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
+    FOREIGN KEY (team_id) REFERENCES teams(team_id),
+    PRIMARY KEY (id)
 );
 
 /*
-
-CREATE TABLE Adjustments (
-    unique_id character varying PRIMARY KEY,
-    customer character varying,
-    partner character varying,
-    installer character varying,
-    state character varying,
-    sys_size DOUBLE PRECISION,
-    bl character varying,
-    epc FLOAT,
-    date date,
-    amount float,
-    notes character varying
-);
-
-CREATE TABLE Reconsilation (
-    unique_id character varying PRIMARY KEY,
-    customer character varying,
-    partner character varying,
-    state character varying,
-    sys_size DOUBLE PRECISION,
-    status character varying,
-    date date,
-    amount float,
-    notes character varying
-);
-
 CREATE TABLE AR_payment_tracking (
     Unique_ID Text PRIMARY KEY,
     Customer_Name text,
@@ -876,14 +900,6 @@ CREATE TABLE INSTALL_COST (
     End_Dtae Date
 );
 
-CREATE TABLE APPT_SETTERS (
-    Name Text,
-    Team Text,
-    Pay_Rate float,
-    Start_Date Date,
-    End_Date Date
-);
-
 CREATE CREATE TABLE ADDERS_Data (
     Unique_ID Text primary Key,
     Date Date,
@@ -926,14 +942,7 @@ CREATE TABLE Loan_Fee_Adder(
     Type Text
 );
 
-CREATE TABLE AR_Import(
-    Custmoer_Name Text,
-    Unique_ID Text Primary Key,
-    Date Date,
-    Amount Float,
-    Notes Text,
-    Created Date
-);
+
 
 CREATE TABLE PaySkdNew (
     Dealer Text,
