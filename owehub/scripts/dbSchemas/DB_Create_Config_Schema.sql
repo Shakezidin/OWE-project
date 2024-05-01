@@ -13,9 +13,10 @@ CREATE TABLE appointment_setters (
     first_name character varying,
     last_name character varying,
     pay_rate double precision,
+    description character varying,
+    is_archived BOOLEAN DEFAULT FALSE,
     start_date character varying NOT NULL,
     end_date character varying,
-    description character varying,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     PRIMARY KEY (setters_id),
@@ -777,6 +778,24 @@ CREATE TABLE adjustments (
      FOREIGN KEY (installer) REFERENCES partners(partner_id),
      FOREIGN KEY (partner) REFERENCES partners(partner_id)
 );
+
+CREATE TABLE reconcile (
+    id serial NOT NULL,
+    unique_id varchar NOT NULL UNIQUE,
+    customer character varying,
+    partner_id INT,
+    state_id INT,
+    sys_size float,
+    status character varying,
+    date date,
+    amount float,
+    notes text,
+    is_archived BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (partner_id) REFERENCES partners(partner_id),
+    FOREIGN KEY (state_id) REFERENCES states(state_id),
+    PRIMARY KEY (id)
+);
+ 
 
 /*
 

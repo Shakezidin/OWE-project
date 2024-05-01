@@ -973,6 +973,42 @@ var apiRoutes = ApiRoutes{
 			types.RoleAdmin,
 		},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/create_reconcile",
+		apiHandler.HandleCreateReconcileRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	// {
+	// 	strings.ToUpper("POST"),
+	// 	"/owe-commisions-service/v1/update_reconcile",
+	// 	apiHandler.HandleUpdateLoanFeeDataRequest,
+	// 	true,
+	// 	[]types.UserRoles{
+	// 		types.RoleAdmin,
+	// 	},
+	// },
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_reconcile",
+		apiHandler.HandleGetReconcileRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_reconcile_archive",
+		apiHandler.HandleUpdateRebateDataArchiveRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
 }
 
 /******************************************************************************
