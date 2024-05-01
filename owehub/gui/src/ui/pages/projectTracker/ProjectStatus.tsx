@@ -165,7 +165,7 @@ const ProjectStatus = () => {
           </div>
         </div>
 
-        <div className="project-heading" style={{ padding: "1rem" }} >
+        <div className="project-heading" style={{ padding: "22px" }} >
           <div className="">
             <h3>Project Stages</h3>
             <div className="progress-box-container">
