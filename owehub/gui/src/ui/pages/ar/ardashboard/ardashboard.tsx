@@ -5,6 +5,9 @@ import { comissionValueData, payRollData } from "../../../../resources/static_da
 import FilterModal from "../../../components/FilterModal/FilterModal";
 import ArDashBoardTable from "./artable";
 import ArDropdownWithCheckboxes from "./Dropdown";
+import "react-date-range/dist/styles.css"; // main style file
+import "react-date-range/dist/theme/default.css"; // theme css file
+import { DateRangePicker } from "react-date-range";
 
 
 
@@ -12,7 +15,12 @@ export const ARDashboardPage: React.FC = () => {
 
   const [active, setActive] = React.useState<number>(0);
   const [filterModal, setFilterModal] = React.useState<boolean>(false);
-
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectionRange, setSelectionRange] = useState({
+    startDate: new Date(),
+    endDate: new Date(),
+    key: "selection",
+  });
 
   const [selectedOption, setSelectedOption] = useState<string>(
     payRollData[0].label
@@ -41,6 +49,21 @@ export const ARDashboardPage: React.FC = () => {
     { value: "Install", label: "Install" },
     { value: "PTO", label: "PTO" },
   ];
+  const handleToggleDatePicker = () => {
+    setShowDatePicker(!showDatePicker);
+  };
+  const handleSelect = (ranges: any) => {
+    setSelectionRange(ranges.selection);
+  };
+
+
+  const handleResetDates = () => {
+    setSelectionRange({
+      startDate: new Date(),
+      endDate: new Date(),
+      key: "selection",
+    });
+  };
 
 
   const [selectedOption3, setSelectedOption3] = useState<string>(
@@ -79,7 +102,29 @@ export const ARDashboardPage: React.FC = () => {
               <label className="inputLabel" style={{ color: "#344054", fontWeight: "600", fontSize: "12px" }}>
                 Today
               </label>
-              <input type="date" className="ar-payroll-date" />
+
+              <div style={{ position: "relative", top: "-1px" }}>
+                <label className="ar-date-button" onClick={handleToggleDatePicker}>
+                  Select Dates
+                </label>
+                {showDatePicker && (
+                  <div className="ar-calender-container">
+                    <DateRangePicker
+                      ranges={[selectionRange]}
+                      onChange={handleSelect}
+                    />
+                    <button className="ar-reset-calender" onClick={handleResetDates}>
+                      Reset
+                    </button>
+                    <button
+                      className="ar-close-calender"
+                      onClick={handleToggleDatePicker}
+                    >
+                      Close
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="Line-container">
