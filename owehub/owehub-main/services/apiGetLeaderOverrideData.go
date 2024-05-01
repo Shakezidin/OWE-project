@@ -58,9 +58,9 @@ func HandleGetLeaderOverrideDataRequest(resp http.ResponseWriter, req *http.Requ
 		return
 	}
 
-	tableName := db.TableName_leader_override
+	tableName := db.TableName_marketing_fees
 	query = `
-	SELECT lo.id as record_id, lo.unique_id, lo.leader_name, lo.type, lo.term, lo.qual, lo.sales_q, lo.team_kw_q, lo.pay_rate, lo.start_date, lo.end_date, ts.team_name
+	SELECT lo.id as record_id, lo.unique_id, lo.leader_name, lo.type, lo.term, lo.qual, lo.sales_q, lo.team_kw_q, lo.pay_rate, l0.start_date, lo.end_date, ts.team_name
 	FROM leader_override lo
 	JOIN teams ts ON ts.team_id = lo.team_id`
 
@@ -146,12 +146,6 @@ func HandleGetLeaderOverrideDataRequest(resp http.ResponseWriter, req *http.Requ
 			PayRate = ""
 		}
 
-		IsArchived, ok := item["is_archived"].(bool)
-		if !ok || !IsArchived {
-			log.FuncErrorTrace(0, "Failed to get is_archived value for Record ID %v. Item: %+v\n", RecordId, item)
-			IsArchived = false
-		}
-
 		// StartDate
 		StartDate, startOk := item["start_date"].(string)
 		if !startOk || StartDate == "" {
@@ -177,7 +171,6 @@ func HandleGetLeaderOverrideDataRequest(resp http.ResponseWriter, req *http.Requ
 			SalesQ:     SalesQ,
 			TeamKwQ:    TeamKwQ,
 			PayRate:    PayRate,
-			IsArchived: IsArchived,
 			StartDate:  StartDate,
 			EndDate:    EndDate,
 		}
@@ -226,37 +219,37 @@ func PrepareLeaderOverrideFilters(tableName string, dataFilter models.DataReques
 			}
 			switch column {
 			case "unique_id":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(lo.unique_id) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.unique_id) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "team_name":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(lo.team_name) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.team_name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "leader_name":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(lo.leader_name) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.leader_name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "type":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(lo.type) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.type) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "term":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(lo.term) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.term) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "qual":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(lo.qual) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.qual) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "sales_q":
-				filtersBuilder.WriteString(fmt.Sprintf("lo.sales_q %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("ad.sales_q %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "team_kw_q":
-				filtersBuilder.WriteString(fmt.Sprintf("lo.team_kw_q %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("ad.team_kw_q %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "pay_rate":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(lo.pay_rate) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.pay_rate) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "start_date":
-				filtersBuilder.WriteString(fmt.Sprintf("lo.start_date %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("ad.start_date %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "end_date":
-				filtersBuilder.WriteString(fmt.Sprintf("lo.end_date %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("ad.end_date %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))

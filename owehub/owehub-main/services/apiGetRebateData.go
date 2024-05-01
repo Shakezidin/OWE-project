@@ -1,5 +1,5 @@
 /**************************************************************************
- * File       	   : apiGetRebateData.go
+ * File       	   : apiGetDebateData.go
  * DESCRIPTION     : This file contains functions for get debate data handler
  * DATE            : 24-Apr-2024
  **************************************************************************/
