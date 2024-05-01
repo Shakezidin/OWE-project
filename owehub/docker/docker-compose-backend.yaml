@@ -1,8 +1,7 @@
-version: '3.0'
+version: "3.0"
 services:
-
-##############DATABASE#####################
- service-postgres:
+  ##############DATABASE#####################
+  service-postgres:
     image: postgres_db_latest:v1
     container_name: postgres_db_latest_1
     restart: always
@@ -12,7 +11,7 @@ services:
     volumes:
       - /home/postgresql/data/:/var/lib/postgresql/data
     ports:
-      - '5432:5432'
+      - "5432:5432"
     networks:
       owe_net:
         ipv4_address: 172.30.0.211
@@ -64,4 +63,4 @@ networks:
     ipam:
       driver: default
       config:
-      - subnet: 172.30.0.1/24
+        - subnet: 172.30.0.1/24

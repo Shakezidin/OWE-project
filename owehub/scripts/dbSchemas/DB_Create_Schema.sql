@@ -112,6 +112,16 @@ INSERT INTO loan_type (product_code,active,adder,description) VALUES ('P123',1,1
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewRepPaySettings.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateRepPaySettings.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateRepPaySettingsArchive.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewAdjustments.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateAdjustmentsArchive.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewArSchedule.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateArScheduleArchive.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewInstallCost.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateInstallCostArchive.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewRateAdjustments.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateRateAdjustmentsArchive.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewLeaderOverride.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateLeaderOverrideArchive.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewAdderResponsibility.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateAdderResponsibility.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateAdderResponsibilityArchive.sql';
@@ -121,4 +131,6 @@ INSERT INTO loan_type (product_code,active,adder,description) VALUES ('P123',1,1
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewLoanFee.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateLoanFee.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateLoanFeeArchive.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcCreateNewReconcile.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateReconcileArchive.sql';
 
