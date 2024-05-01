@@ -62,7 +62,7 @@ func HandleGetAdjustmentsDataRequest(resp http.ResponseWriter, req *http.Request
 		return
 	}
 
-	tableName := db.TableName_reconcile
+	tableName := db.TableName_adjustments
 	query = `
 		SELECT ad.id as record_id, ad.unique_id, ad.customer, ad.sys_size, ad.bl, ad.epc, ad.date, ad.notes, ad.amount, ad.start_date, ad.end_date, pr_partner.partner_name AS partner_name, pr_installer.partner_name AS installer_name, st.name AS state_name  
 		FROM adjustments ad
