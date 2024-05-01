@@ -9,11 +9,11 @@ DECLARE
 BEGIN
     FOR leader_override_id IN SELECT unnest(p_ids)
     LOOP
-      UPDATE leader_override lo
+      UPDATE leader_override
         SET
             is_archived = p_is_archived,
             updated_at = CURRENT_TIMESTAMP
-        WHERE lo.id = leader_override_id;
+        WHERE id = leader_override_id;
 
         IF NOT FOUND THEN
                 RAISE EXCEPTION 'Record with ID % not found', leader_override_id;

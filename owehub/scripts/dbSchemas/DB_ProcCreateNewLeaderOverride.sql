@@ -7,7 +7,7 @@ CREATE OR REPLACE FUNCTION create_new_leader_override (
        p_qual character varying,
        p_sales_q double precision,
        p_team_kw_q double precision,
-       p_pay_rate double precision,
+       p_pay_rate character varying,
        p_start_date character varying,
        p_end_date character varying,
        OUT v_leader_override_id INT

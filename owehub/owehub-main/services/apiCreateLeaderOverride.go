@@ -81,8 +81,8 @@ func HandleCreateLeaderOverrideRequest(resp http.ResponseWriter, req *http.Reque
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, createLeaderOverrideReq.UniqueID)
 	queryParameters = append(queryParameters, createLeaderOverrideReq.TeamName)
-	queryParameters = append(queryParameters, createLeaderOverrideReq.LeaderName)
 	queryParameters = append(queryParameters, createLeaderOverrideReq.Type)
+	queryParameters = append(queryParameters, createLeaderOverrideReq.LeaderName)
 	queryParameters = append(queryParameters, createLeaderOverrideReq.Term)
 	queryParameters = append(queryParameters, createLeaderOverrideReq.Qual)
 	queryParameters = append(queryParameters, createLeaderOverrideReq.SalesQ)

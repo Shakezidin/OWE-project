@@ -13,4 +13,4 @@ rm -rf /var/log/owe/owehub-*
 
 docker images
 
-./stop-OweApp-Backend-svc.sh
+./start-OweApp-Backend-svc.sh
