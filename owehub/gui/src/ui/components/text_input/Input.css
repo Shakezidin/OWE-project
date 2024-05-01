@@ -9,7 +9,7 @@
   font-size: 13px;
   font-weight: 400;
   flex: 1;
-  height: 2.25rem;
+  height: 2.27rem;
   color: #000;
   padding: 0px 14px;
   line-height: 14.5px;
@@ -24,10 +24,10 @@
   flex: 1;
   align-items: center;
   border: 1px solid #d0d5dd;
-  margin-top: 13.5px;
+  margin-top: 5.5px;
   border-radius: 8px;
   overflow: hidden;
-  background: #fff;
+  background: white !important;
 }
 
 input::placeholder {
@@ -36,6 +36,7 @@ input::placeholder {
   font-style: normal;
   font-weight: 400;
   line-height: 14.5px;
+ 
   /* 103.571% */
 }
 
@@ -43,7 +44,7 @@ input::placeholder {
   color: #000000;
   font-size: 13px;
   font-weight: 500;
-  line-height: 14.5px
+  line-height: 14.5px;
   /* text-align: left; */
 }
 
@@ -60,12 +61,13 @@ input::placeholder {
 }
 
 /* Input field focus */
-input :focus {}
+input :focus {
+}
 
 .error {
   color: #db4437;
   font-size: 14px;
   font-weight: 400;
-  margin-left: 12px;
+  /* margin-left: 12px; */
   margin-top: 4px;
 }

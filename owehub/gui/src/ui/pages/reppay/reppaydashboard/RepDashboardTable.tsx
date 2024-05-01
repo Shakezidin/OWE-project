@@ -19,12 +19,15 @@ import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoin
 import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
 import Swal from 'sweetalert2';
 import  "../../configure/configure.css";
+import HelpDashboard from "../../dashboard/HelpDashboard";
+import { BiSupport } from "react-icons/bi";
+import PaginationComponent from "../../../components/pagination/PaginationComponent";
 
 
 const RepDashBoardTable = () => {
 
-
-
+  const [pageSize1, setPageSize1] = useState(10);
+  const [openIcon, setOpenIcon] = useState<boolean>(false);
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
   const [exportOPen, setExportOpen] = React.useState<boolean>(false);
@@ -45,28 +48,25 @@ const RepDashBoardTable = () => {
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
   const [sortKey, setSortKey] = useState("");
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [currentPage1,setCurrentPage1] = useState(1)
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
-      page_size: itemsPerPage,
+      page_size: pageSize1,
       archived: viewArchived ? true : undefined,
     };
     dispatch(fetchCommissions(pageNumber));
 
-  }, [dispatch, currentPage, itemsPerPage, viewArchived]);
+  }, [dispatch, currentPage, pageSize1, viewArchived]);
 
-  const paginate = (pageNumber: number) => {
-    dispatch(setCurrentPage(pageNumber));
+  const handleItemsPerPageChange = (e: any) => {
+    const newItemsPerPage = parseInt(e.target.value, 10);
+    setPageSize1(newItemsPerPage);
+  setCurrentPage1(1) // Reset to the first page when changing items per page
   };
-  const goToNextPage = () => {
-    dispatch(setCurrentPage(currentPage + 1));
+  const handlePageChange = (page: number) => {
+    setCurrentPage1(page)
   };
-  const goToPrevPage = () => {
-    dispatch(setCurrentPage(currentPage - 1));
-  };
-  const filter = () => {
-    setFilterOpen(true)
-  }
 
   const totalPages = Math.ceil(commissionList?.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -85,27 +85,8 @@ const RepDashBoardTable = () => {
   const currentPageData = commissionList?.slice(startIndex, endIndex);
   const isAnyRowSelected = selectedRows?.size > 0;
   const isAllRowsSelected = selectedRows?.size === commissionList?.length;
+  const totalPages1 = Math.ceil(commissionList?.length / pageSize1);
 
-
-  const handleArchiveClick = async (record_id: any) => {
-    const archived: number[] = [record_id];
-    let newValue = {
-      record_id: archived,
-      is_archived: true
-    }
-    const pageNumber = {
-      page_number: currentPage,
-      page_size: itemsPerPage,
-
-    };
-    const res = await postCaller(EndPoints.update_commission_archive, newValue);
-    if (res.status === HTTP_STATUS.OK) {
-      dispatch(fetchCommissions(pageNumber))
-    }
-    // const newSelectedRows = new Set(selectedRows);
-    // newSelectedRows.delete(record_id);
-    // setSelectedRows(newSelectedRows);
-  };
 
   const handleSort = (key: any) => {
     if (sortKey === key) {
@@ -140,17 +121,17 @@ const RepDashBoardTable = () => {
   const Commissioncolumns = [
     { name: 'partner', displayName: 'Unique ID', type: 'string', isCheckbox: true },
     { name: 'installer', displayName: 'Home Owner', type: 'string', isCheckbox: false },
-    { name: 'state', displayName: 'Current Status', type: 'string', isCheckbox: false },
+    { name: 'state', displayName: 'Curr Status', type: 'string', isCheckbox: false },
     { name: 'sale_type', displayName: 'Status Date', type: 'string', isCheckbox: false },
     { name: 'sale_price', displayName: 'Owe Contractor', type: 'number', isCheckbox: false },
     { name: 'rep_type', displayName: 'DBA', type: 'string', isCheckbox: false },
-    { name: 'rl', displayName: 'Commission Model', type: 'number', isCheckbox: false },
-    { name: 'rate', displayName: 'Percentage', type: 'number', isCheckbox: false },
+    { name: 'rl', displayName: 'Comm Model', type: 'number', isCheckbox: false },
+    { name: 'rate', displayName: 'Percent', type: 'number', isCheckbox: false },
     { name: 'start_date', displayName: 'Type', type: 'date', isCheckbox: false },
     { name: 'end_date', displayName: 'Today', type: 'date', isCheckbox: false },
 
     { name: 'installer', displayName: 'Amount', type: 'string', isCheckbox: false },
-    { name: 'state', displayName: 'Finance Type', type: 'string', isCheckbox: false },
+    { name: 'state', displayName: 'Fin Type', type: 'string', isCheckbox: false },
     { name: 'sale_type', displayName: 'Sys Size', type: 'string', isCheckbox: false },
     { name: 'sale_price', displayName: 'Contract', type: 'number', isCheckbox: false },
     { name: 'rep_type', displayName: 'Loan Fee', type: 'string', isCheckbox: false },
@@ -167,11 +148,14 @@ const RepDashBoardTable = () => {
     { name: 'rl', displayName: 'Amt Paid', type: 'number', isCheckbox: false },
     { name: 'rate', displayName: 'Balance', type: 'number', isCheckbox: false },
     { name: 'start_date', displayName: 'Dealer Code', type: 'date', isCheckbox: false },
-    { name: 'end_date', displayName: 'Contract date', type: 'date', isCheckbox: false },
+    { name: 'end_date', displayName: 'Contr date', type: 'date', isCheckbox: false },
 
     { name: 'start_date', displayName: 'State', type: 'date', isCheckbox: false },
     { name: 'end_date', displayName: 'Sub Total', type: 'date', isCheckbox: false },
   ];
+
+  const handleIconOpen = () => setOpenIcon(true);
+  const handleIconClose = () => setOpenIcon(false);
   
 
 
@@ -208,15 +192,12 @@ const RepDashBoardTable = () => {
              {
               viewArchived===true?null:   <th>
               <div className="action-header">
-                <p>Action</p>
+                <p>Help</p>
               </div>
             </th>
              }
               </tr>
             </thead>
-
-
-
 
             <tbody>
               {currentPageData?.length > 0
@@ -257,7 +238,7 @@ const RepDashBoardTable = () => {
                     <td>{el.start_date}</td>
                     <td>{el.end_date}</td>
                     
-                    <td style={{ color: 'blue' }}>${el.rl}</td>
+                    <td style={{ color: '#0096D3' }}>${el.rl}</td>
                     <td>{el.state}</td>
                     <td>{el.sale_type}</td>
                     <td>{el.sale_price}</td>
@@ -279,17 +260,11 @@ const RepDashBoardTable = () => {
 
                     <td>{el.start_date}</td>
                     <td>{el.end_date}</td>
-                  {
-                    viewArchived===true?null:  <td>
-                    <div className="action-icon">
-                      <div className="action-archive" style={{ cursor: "pointer" }} onClick={() => handleArchiveClick(el.record_id)}>
-                        <img src={ICONS.techIcon} alt="" style={{textAlign: "left"}}/>
-                        {/* <span className="tooltiptext">Archive</span> */}
-                      </div>
-                    </div>
-
-                  </td>
-                  }
+                    <td style={{height: "14px", width: "14px",stroke:"0.2",cursor:"pointer"}}>
+                        <BiSupport
+                              onClick={() => handleIconOpen()}
+                            />
+                      </td>
                   </tr>
                 ))
                 : null}
@@ -304,15 +279,31 @@ const RepDashBoardTable = () => {
           </p>
 
           {
-            commissionList?.length > 0 ? <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages} // You need to calculate total pages
-              paginate={paginate}
-              currentPageData={currentPageData}
-              goToNextPage={goToNextPage}
-              goToPrevPage={goToPrevPage}
-            /> : null
+            // commissionList?.length > 0 ? <Pagination
+            //   currentPage={currentPage}
+            //   totalPages={totalPages} // You need to calculate total pages
+            //   paginate={paginate}
+            //   currentPageData={currentPageData}
+            //   goToNextPage={goToNextPage}
+            //   goToPrevPage={goToPrevPage}
+            // /> : null
+
+            <PaginationComponent
+            currentPage={currentPage}
+            itemsPerPage={pageSize1}
+            totalPages={totalPages1}
+            onPageChange={handlePageChange}
+            handleItemsPerPageChange={handleItemsPerPageChange}  
+          />
+
           }
+          {openIcon && (
+          <HelpDashboard
+            commission={editedCommission}
+            editMode={editMode}
+            handleClose={handleIconClose}
+          />
+        )}
         </div>
 
       </div>

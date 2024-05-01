@@ -4,11 +4,6 @@
   align-items: center;
   gap: 0.5rem;
 }
-
-
-.spacer {
-  flex: 1;
-}
 .configure-header-icons {
   display: flex;
   justify-content: center;

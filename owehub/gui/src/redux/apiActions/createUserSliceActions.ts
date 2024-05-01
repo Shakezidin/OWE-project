@@ -8,7 +8,6 @@ import {
   DeleteUserModel,
   UserDropdownModel,
 } from "../../core/models/api_models/UserManagementModel";
-import { isAxiosError } from "axios";
 
 /** get dealer */
 export const fetchDealerOwner = createAsyncThunk(

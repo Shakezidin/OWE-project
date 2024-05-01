@@ -10,10 +10,10 @@ import { ActionButton } from "../../components/button/ActionButton";
 import { resetPassword } from "../../../core/models/api_models/AuthModel";
 import { useAppDispatch } from "../../../redux/hooks";
 import { generateOTP } from "../../../redux/apiActions/authActions";
-import { unwrapResult } from "@reduxjs/toolkit";
 import { HTTP_STATUS } from "../../../core/models/api_models/RequestModel";
 import { toast } from "react-toastify";
 import { updateEmail } from "../../../redux/apiSlice/authSlice/resetPasswordSlice";
+import { unwrapResult } from "@reduxjs/toolkit";
 
 const ResetPassword = () => {
   const navigate = useNavigate();

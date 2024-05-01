@@ -23,6 +23,8 @@ import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoin
 import Loading from "../../../components/loader/Loading";
 import { ROUTES } from "../../../../routes/routes";
 import DataNotFound from "../../../components/loader/DataNotFound";
+import { showAlert, successSwal } from "../../../components/alert/ShowAlert";
+import AdderVRow from "./AdderVRow";
 
 
 const AdderValidation = () => {
@@ -50,7 +52,7 @@ const AdderValidation = () => {
     handleOpen()
   };
 
-  const handleEditVAdder = (vAdderData: AdderVModel) => {
+  const handleEdit = (vAdderData: AdderVModel) => {
     setEditMode(true);
     setEditedVAdder(vAdderData);
     handleOpen()
@@ -84,7 +86,7 @@ const AdderValidation = () => {
       archived: viewArchived ? true : undefined,
     };
     dispatch(fetchAdderV(pageNumber));
-  }, [dispatch, currentPage,viewArchived]);
+  }, [dispatch, currentPage, viewArchived]);
   const currentPageData = adderVList?.slice(startIndex, endIndex);
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === adderVList.length;
@@ -96,84 +98,55 @@ const AdderValidation = () => {
       setSortDirection('asc');
     }
   };
-  const handleArchiveAllClick = async () => {
-    const confirmationResult = await Swal.fire({
-      title: 'Are you sure?',
-      text: 'This action will archive all selected rows.',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, archive all'
-    });
-    if (confirmationResult.isConfirmed) {
-      // Extract record IDs from selected rows
-      const archivedRows = Array.from(selectedRows).map(index => adderVList[index].record_id);
+  const pageNumber = {
+    page_number: currentPage,
+    page_size: itemsPerPage,
 
-      // Check if any rows are selected
+  };
+  // acrhived function 
+  const handleArchiveAllClick = async () => {
+    const confirmed = await showAlert('Are Your Sure', 'This action will archive all selected rows?', 'Yes', 'No');
+    if (confirmed) {
+      const archivedRows = Array.from(selectedRows).map(index => adderVList[index].record_id);
       if (archivedRows.length > 0) {
-        // Perform API call to archive all selected rows
         const newValue = {
           record_id: archivedRows,
           is_archived: true
         };
-
-        const pageNumber = {
-          page_number: currentPage,
-          page_size: itemsPerPage,
-        };
-
-        const res = await postCaller(EndPoints.update_vadders_archive, newValue);
+        const res = await postCaller(EndPoints.update_commission_archive, newValue);
         if (res.status === HTTP_STATUS.OK) {
-          // If API call is successful, refetch commissions
           dispatch(fetchAdderV(pageNumber));
           const remainingSelectedRows = Array.from(selectedRows).filter(index => !archivedRows.includes(adderVList[index].record_id));
           const isAnyRowSelected = remainingSelectedRows.length > 0;
           setSelectAllChecked(isAnyRowSelected);
           setSelectedRows(new Set());
-          Swal.fire({
-            title: 'Archived!',
-            text: 'All selected rows have been archived.',
-            icon: 'success',
-            timer: 2000,
-            showConfirmButton: false
-          });
+          await successSwal("Archived", "All Selected rows have been archived", "success", 2000, false);
         }
         else {
-          Swal.fire({
-            title: 'Error!',
-            text: 'Failed to archive selected rows. Please try again later.',
-            icon: 'error',
-            timer: 2000,
-            showConfirmButton: false
-          });
+          await successSwal("Error", "Failed to archive selected rows. Please try again later.", "error", 2000, false);
         }
       }
-
     }
   };
-
-
-
   const handleArchiveClick = async (record_id: any) => {
-    const archived: number[] = [record_id];
-    let newValue = {
-      record_id: archived,
-      is_archived: true
+    const confirmed = await showAlert('Are Your Sure', 'This action will archive selected rows?', 'Yes', 'No');
+    if (confirmed) {
+      const archived: number[] = [record_id];
+      let newValue = {
+        record_id: archived,
+        is_archived: true
+      }
+      const res = await postCaller(EndPoints.update_commission_archive, newValue);
+      if (res.status === HTTP_STATUS.OK) {
+        dispatch(fetchAdderV(pageNumber))
+        await successSwal("Archived", "Selected rows have been archived", "success", 2000, false);
+      }
+      else {
+        await successSwal("Error", "Failed to archive selected rows. Please try again later.", "error", 2000, false);
+      }
     }
-    const pageNumber = {
-      page_number: currentPage,
-      page_size: itemsPerPage,
-
-    };
-    const res = await postCaller(EndPoints.update_vadders_archive, newValue);
-    if (res.status === HTTP_STATUS.OK) {
-      dispatch(fetchAdderV(pageNumber))
-    }
-    // const newSelectedRows = new Set(selectedRows);
-    // newSelectedRows.delete(record_id);
-    // setSelectedRows(newSelectedRows);
   };
+
 
   const handleViewArchiveToggle = () => {
     setViewArchived(!viewArchived);
@@ -197,12 +170,12 @@ const AdderValidation = () => {
   }
   const fetchFunction = (req: any) => {
     dispatch(fetchAdderV(req));
-   };
-   if (error) {
-    return <div className="loader-container"><Loading/></div>;
+  };
+  if (error) {
+    return <div className="loader-container"><Loading /></div>;
   }
   if (loading) {
-    return <div className="loader-container"><Loading/> {loading}</div>;
+    return <div className="loader-container"><Loading /> {loading}</div>;
   }
 
   return (
@@ -227,116 +200,46 @@ const AdderValidation = () => {
           fetchFunction={fetchFunction}
           page_size={itemsPerPage} />
 
-          }
+        }
         {open && <CreateAdder
           vAdderData={editedVAdder}
           editMode={editMode}
+          pageNumber={currentPage}
+          pageSize={itemsPerPage}
           handleClose={handleClose} />}
-        <div
-          className="TableContainer"
-          style={{ overflowX: "auto", whiteSpace: "nowrap" }}
-        >
-          <table>
-            <thead>
-              <tr>
-             
-                {
-                  AdderVColumns.map((item, key) => (
-                    <SortableHeader
-                    key={key}
-                    isCheckbox={item.isCheckbox}
-                    titleName={item.displayName}
-                    data={adderVList}
-                    isAllRowsSelected={isAllRowsSelected}
-                    isAnyRowSelected={isAnyRowSelected}
-                    selectAllChecked={selectAllChecked}
-                    setSelectAllChecked={setSelectAllChecked}
-                    selectedRows={selectedRows}
-                    setSelectedRows={setSelectedRows}
-                    sortKey={item.name}
-                    sortDirection={sortKey === item.name ? sortDirection : undefined}
-                    onClick={() => handleSort(item.name)}
-                  />
-                  ))
-                }
-
-                <th>
-                  <div className="action-header">
-                    <p>Action</p>
-                  </div>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentPageData?.length > 0
-                ? currentPageData?.map((el: any, i: any) => (
-                  <tr key={i}>
-                
-                    <td style={{ fontWeight: "500", color: "black" }}>
-                   <div className="flex-check">
-                   <CheckBox
-                        checked={selectedRows.has(i)}
-                        onChange={() =>
-                          toggleRowSelection(
-                            i,
-                            selectedRows,
-                            setSelectedRows,
-                            setSelectAllChecked
-                          )
-                        }
-                      />
-                      {el.adder_name}
-                   </div>
-                    </td>
-                    <td>{el.adder_type}</td>
-                    <td>{el.price_type}</td>
-                    <td>{el.price_amount}</td>
-                    <td>{el.description}</td>
-                    <td>{el.active}</td>
-
-                    <td>
-                      <div className="action-icon">
-                        <div className="action-archive" style={{ cursor: "pointer" }} onClick={()=>handleArchiveClick(el.record_id)}>
-                          <img src={ICONS.ARCHIVE} alt="" />
-                          <span className="tooltiptext">Archive</span>
-                        </div>
-                        <div className="action-archive" style={{ cursor: "pointer" }} onClick={() => handleEditVAdder(el)}>
-                          <img src={ICONS.editIcon} alt="" />
-                          <span className="tooltiptext">Edit</span>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-                : <tr style={{border:0}}>
-                <td colSpan={10}>
-                <div className="data-not-found">
-                <DataNotFound/>
-                <h3>Data Not Found</h3>
-                </div>
-                </td>
-              </tr>}
-            </tbody>
-          </table>
-        </div>
+        <AdderVRow
+          handleArchiveClick={handleArchiveClick}
+          handleEdit={handleEdit}
+          handleSort={handleSort}
+          isAllRowsSelected={isAllRowsSelected}
+          isAnyRowSelected={isAnyRowSelected}
+          viewArchived={viewArchived}
+          selectAllChecked={selectAllChecked}
+          selectedRows={selectedRows}
+          setSelectAllChecked={setSelectAllChecked}
+          setSelectedRows={setSelectedRows}
+          sortDirection={sortDirection}
+          sortKey={sortKey}
+          currentPageData={currentPageData}
+        />
         {
-            adderVList?.length > 0 ?
-        <div className="page-heading-container">
+          adderVList?.length > 0 ?
+            <div className="page-heading-container">
 
-          <p className="page-heading">
-            {currentPage} - {totalPages} of {currentPageData?.length} item
-          </p>
-         <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages} // You need to calculate total pages
-              paginate={paginate}
-              currentPageData={currentPageData}
-              goToNextPage={goToNextPage}
-              goToPrevPage={goToPrevPage}
-            /> 
-        </div>
-        : null
-      }
+              <p className="page-heading">
+                {currentPage} - {totalPages} of {currentPageData?.length} item
+              </p>
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages} // You need to calculate total pages
+                paginate={paginate}
+                currentPageData={currentPageData}
+                goToNextPage={goToNextPage}
+                goToPrevPage={goToPrevPage}
+              />
+            </div>
+            : null
+        }
       </div>
     </div>
   );

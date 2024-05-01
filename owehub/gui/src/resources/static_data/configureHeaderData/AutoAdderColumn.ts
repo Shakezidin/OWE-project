@@ -4,35 +4,37 @@ export   const AutoAdderColumn: Column[] = [
     // { name: "record_id", displayName: "Record ID", type: "number" },
     { name: "type", displayName: "Type", type: "string" ,isCheckbox:true},
     { name: "gc", displayName: "GC", type: "string" ,isCheckbox:false},
-    { name: "exact", displayName: "Adder Name", type: "string" ,isCheckbox:false},
-    { name: "adder_name", displayName: "Adder Name", type: "string" ,isCheckbox:false},
-    { name: "adder_name", displayName: "Adder Name", type: "string" ,isCheckbox:false},
-    { name: "adder_name", displayName: "Adder Name", type: "string" ,isCheckbox:false},
-    { name: "adder_name", displayName: "Adder Name", type: "string" ,isCheckbox:false}, 
-    { name: "adder_name", displayName: "Adder Name", type: "string" ,isCheckbox:false},
-    { name: "adder_name", displayName: "Adder Name", type: "string" ,isCheckbox:false},
-     { name: "adder_name", displayName: "Adder Name", type: "string" ,isCheckbox:false},
-    { name: "adder_name", displayName: "Adder Name", type: "string" ,isCheckbox:false},
+    { name: "exact", displayName: "Exact", type: "string" ,isCheckbox:false},
+    { name: "per_kw_amt", displayName: "Per KW Amt", type: "string" ,isCheckbox:false},
+    { name: "rep", displayName: "REP $ / %", type: "string" ,isCheckbox:false},
+    { name: "description", displayName: "Description", type: "string" ,isCheckbox:false},
+    { name: "notes", displayName: "Notes", type: "string" ,isCheckbox:false}, 
+    { name: "type", displayName: "Type", type: "string" ,isCheckbox:false},
+    { name: "rep_1", displayName: "Rep1", type: "string" ,isCheckbox:false},
+     { name: "rep_2", displayName: "Rep2", type: "string" ,isCheckbox:false},
+    { name: "sys_size", displayName: "Sys Size", type: "string" ,isCheckbox:false},
+    { name: "state", displayName: "State", type: "string" ,isCheckbox:false},
+    { name: "rep_count", displayName: "Rep Count", type: "string" ,isCheckbox:false},
+    { name: "per_rep_addr", displayName: "Per Rep Addr", type: "string" ,isCheckbox:false},
+    { name: "per_rep_ovrd", displayName: "Per Rep Ovrd", type: "string" ,isCheckbox:false},
+    { name: "share", displayName: "Share", type: "string" ,isCheckbox:false},
+    { name: "r1_pay_scale", displayName: "R1 Pay Scale", type: "string" ,isCheckbox:false},
+    { name: "rep1_def_resp", displayName: "Rep 1 Def Resp", type: "string" ,isCheckbox:false},
+    { name: "r1_addr_resp", displayName: "R1 Addr Resp", type: "string" ,isCheckbox:false},
+    { name: "r2_pay_scale", displayName: "R2 Pay Scale", type: "string" ,isCheckbox:false},
+    { name: "rep2_def_resp", displayName: "Rep 2 Def Resp", type: "string" ,isCheckbox:false},
+    { name: "r2_addr_resp", displayName: "R2 Addr Resp", type: "string" ,isCheckbox:false},
+    { name: "contract_amount", displayName: "Contract Amount", type: "number" ,isCheckbox:false},
+    { name: "project_base", displayName: "Project Base", type: "string" ,isCheckbox:false},
+    { name: "cr1_addr", displayName: "CR1 ADDR", type: "string" ,isCheckbox:false},
+    { name: "r1_loan_fee", displayName: "R1 Loan Fee", type: "string" ,isCheckbox:false},
+    { name: "r1_rebate", displayName: "R1 Rebate", type: "string" ,isCheckbox:false},
+    { name: "r1_referral", displayName: "R1 Referral", type: "string" ,isCheckbox:false},
+    { name: "r1_r+r", displayName: "R1 R+R", type: "string" ,isCheckbox:false},
+    { name: "total_comm", displayName: "Total Comm", type: "string" ,isCheckbox:false},
 
-    { name: "adder_name", displayName: "Adder Name", type: "string" ,isCheckbox:false},
-    { name: "adder_name", displayName: "Adder Name", type: "string" ,isCheckbox:false},
-    { name: "adder_name", displayName: "Adder Name", type: "string" ,isCheckbox:false},
-    { name: "adder_name", displayName: "Adder Name", type: "string" ,isCheckbox:false},
-    { name: "adder_name", displayName: "Adder Name", type: "string" ,isCheckbox:false},
-    { name: "adder_name", displayName: "Adder Name", type: "string" ,isCheckbox:false},
-    { name: "adder_name", displayName: "Adder Name", type: "string" ,isCheckbox:false},
-    { name: "adder_name", displayName: "Adder Name", type: "string" ,isCheckbox:false},
-    { name: "adder_name", displayName: "Adder Name", type: "string" ,isCheckbox:false},
-    { name: "adder_name", displayName: "Adder Name", type: "string" ,isCheckbox:false},
-    { name: "adder_name", displayName: "Adder Name", type: "string" ,isCheckbox:false},
-    { name: "adder_name", displayName: "Adder Name", type: "string" ,isCheckbox:false},
-    { name: "adder_name", displayName: "Adder Name", type: "string" ,isCheckbox:false},
-    { name: "adder_name", displayName: "Adder Name", type: "string" ,isCheckbox:false},
-    { name: "adder_name", displayName: "Adder Name", type: "string" ,isCheckbox:false},
-    { name: "adder_name", displayName: "Adder Name", type: "string" ,isCheckbox:false},
-    { name: "adder_name", displayName: "Adder Name", type: "string" ,isCheckbox:false},
-    { name: "adder_name", displayName: "Adder Name", type: "string" ,isCheckbox:false},
-     { name: "adder_name", displayName: "Adder Name", type: "string" ,isCheckbox:false},
+    { name: "start_date", displayName: "Start Date", type: "date" ,isCheckbox:false},
+    { name: "end_date", displayName: "End Date", type: "date",isCheckbox:false }
 
   ];
 
@@ -40,179 +42,16 @@ export   const AutoAdderColumn: Column[] = [
 
 
 
-//   <th style={{paddingRight:0}}>
-//   <div>
-//     <CheckBox
-//       checked={selectAllChecked}
-//       onChange={() =>
-//         toggleAllRows(
-//           selectedRows,
-//           commissionList,
-//           setSelectedRows,
-//           setSelectAllChecked
-//         )
-//       }
-//       indeterminate={isAnyRowSelected && !isAllRowsSelected}
-//     />
-//   </div>
-// </th>
-// <th style={{paddingLeft:"10px"}}>
-//   <div className="table-header" >
-//     <p>Type</p> <FaArrowDown style={{color: "#667085", fontSize:"12px"}} />
-//   </div>
-// </th>
-// <th>
-//   <div className="table-header">
-//     <p>GC</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-//   </div>
-// </th>
-// <th>
-//   <div className="table-header">
-//     <p>Exact Amt.</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-//   </div>
-// </th>
-// <th>
-//   <div className="table-header">
-//     <p>Per KW Amt.</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-//   </div>
-// </th>
-// <th>
-//   <div className="table-header">
-//     <p>REP $ / %</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-//   </div>
-// </th>
-// <th>
-//   <div className="table-header">
-//     <p>Description</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-//   </div>
-// </th>
-// <th>
-//   <div className="table-header">
-//     <p>Notes</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-//   </div>
-// </th>
-// <th>
-//   <div className="table-header">
-//     <p>Type</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-//   </div>
-// </th>
-// <th>
-//   <div className="table-header">
-//     <p>Rep1</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-//   </div>
-// </th>
-// <th>
-//   <div className="table-header">
-//     <p>Rep2</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-//   </div>
-// </th>
-// <th>
-//   <div className="table-header">
-//     <p>Sys Size</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-//   </div>
-// </th>
-// <th>
-//   <div className="table-header">
-//     <p>State</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-//   </div>
-// </th>
-// <th>
-//   <div className="table-header">
-//     <p>Rep Count</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-//   </div>
-// </th>
-// <th>
-//   <div className="table-header">
-//     <p>Per Rep Addr</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-//   </div>
-// </th>
-// <th>
-//   <div className="table-header">
-//     <p>Per Rep Ovrd</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-//   </div>
-// </th>
-// <th>
-//   <div className="table-header">
-//     <p>Share</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-//   </div>
-// </th>
-// <th>
-//   <div className="table-header">
-//     <p>R1 Pay Scale</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-//   </div>
-// </th>
-// <th>
-//   <div className="table-header">
-//     <p>Rep 1 Def Resp</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-//   </div>
-// </th>
-// <th>
-//   <div className="table-header">
-//     <p>R1 Addr Resp</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-//   </div>
-// </th>
-// <th>
-//   <div className="table-header">
-//     <p>R2 Pay Scale</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-//   </div>
-// </th>
-// <th>
-//   <div className="table-header">
-//     <p>Rep 2 Def Resp</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-//   </div>
-// </th>
-// <th>
-//   <div className="table-header">
-//     <p>R1 Addr Resp</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-//   </div>
-// </th>
-// <th>
-//   <div className="table-header">
-//     <p>Contract Amount</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-//   </div>
-// </th>
-// <th>
-//   <div className="table-header">
-//     <p>Project Base</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-//   </div>
-// </th>
-// <th>
-//   <div className="table-header">
-//     <p>CR1 ADDR</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-//   </div>
-// </th>
-// <th>
-//   <div className="table-header">
-//     <p>R1 Loan Fee</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-//   </div>
-// </th>
-// <th>
-//   <div className="table-header">
-//     <p>R1 Rebate</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-//   </div>
-// </th>
-// <th>
-//   <div className="table-header">
-//     <p>R1 Referral </p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-//   </div>
-// </th>
-// <th>
-//   <div className="table-header">
-//     <p>R1 R+R</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-//   </div>
-// </th>
-// <th>
-//   <div className="table-header">
-//     <p>Total Comm</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-//   </div>
-// </th>
-// <th>
-//   <div className="table-header">
-//     <p>Start Dt.</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-//   </div>
-// </th>
-// <th>
-//   <div className="table-header">
-//     <p>End Dt.</p> <FaArrowDown style={{color:"#667085" , fontSize:"12px"}} />
-//   </div>
-// </th>
+
+
+
+
+
+
+
+
+
+
+
+
+  

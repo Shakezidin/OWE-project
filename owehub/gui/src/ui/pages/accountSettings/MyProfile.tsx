@@ -9,7 +9,6 @@ const MyProfile = () => {
   const [selectedState, setSelectedState] = useState<string | null>(null);
 
   useEffect(() => {
-    // Simulate fetching state options from an API
     fetchStateOptions()
       .then((options) => {
         setStateOptions(options);
@@ -20,8 +19,7 @@ const MyProfile = () => {
   }, []);
 
   const fetchStateOptions = async () => {
-    // Replace this with your actual API call to fetch state options
-    // For demonstration, I'm just returning some hardcoded options
+ 
     const response = await fetch("https://api.example.com/states");
     const data = await response.json();
     return data.map((state: string) => ({ value: state, label: state }));
@@ -32,34 +30,25 @@ const MyProfile = () => {
   };
 
   const [street, setStreet] = useState("");
-  // const [state, setState] = useState("");
-  // const [city, setCity] = useState("");
   const [zipCode, setZipCode] = useState("");
   const [country, setCountry] = useState("");
 
   const [errors, setErrors] = useState({
     street: "",
-    // lastName: "",
-    // email: "",
     zipCode: "",
     country: "",
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Validation logic
     const newErrors = {
       street: street ? "" : "Street is required",
-      // lastName: lastName ? "" : "Last name is required",
-      // email: emailRegex.test(email) ? "" : "Invalid email address",
       zipCode: country ? "" : "Zip Code is required",
       country: country ? "" : "Country is required",
     };
     setErrors(newErrors);
 
-    // If there are no errors, submit the form
     if (!Object.values(newErrors).some((error) => error)) {
-      // Your form submission logic here
       console.log("Form submitted successfully");
     }
   };
@@ -179,7 +168,7 @@ const MyProfile = () => {
                 )}
               </div>
               <div className="create-input-field-address">
-                <label className="inputLabel">State</label>
+                <label className="inputLabel-select">State</label>
                 <SelectOption
                   onChange={handleStateChange}
                   options={stateOptions}
@@ -187,7 +176,7 @@ const MyProfile = () => {
                 />
               </div>
               <div className="create-input-field-address">
-                <label className="inputLabel">City</label>
+                <label className="inputLabel-select">City</label>
                 <SelectOption
                   onChange={handleStateChange}
                   options={stateOptions}

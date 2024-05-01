@@ -15,7 +15,6 @@ services:
     networks:
       owe_net:
         ipv4_address: 172.30.0.211
-
   ############### OWE HUB CALC #####################
   service-owehub-calc:
     restart: always

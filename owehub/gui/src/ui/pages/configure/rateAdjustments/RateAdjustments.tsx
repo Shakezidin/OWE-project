@@ -3,7 +3,7 @@ import TableHeader from "../../../components/tableHeader/TableHeader";
 import { ICONS } from "../../../icons/Icons";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import { fetchTimeLineSla } from "../../../../redux/apiSlice/configSlice/config_get_slice/timeLineSlice";
-// import CreateTimeLine from "./CreateTimeLine";
+import CreateRateAdjustments from "./createRateAdjustments";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import {
   toggleRowSelection,
@@ -17,6 +17,7 @@ import SortableHeader from "../../../components/tableHeader/SortableHeader";
 import { RateAdjustmentsColumns } from "../../../../resources/static_data/configureHeaderData/RateAdjustmentsColumn";
 import FilterModal from "../../../components/FilterModal/FilterModal";
 import { ROUTES } from "../../../../routes/routes";
+
 
 const RateAdjustments = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -140,10 +141,10 @@ const RateAdjustments = () => {
           page_number={currentPage}
           fetchFunction={fetchFunction}
           page_size={itemsPerPage} />}
-        {/* {open && <CreateTimeLine
-          timeLineSlaData={editedTimeLineSla}
+        {open && <CreateRateAdjustments
+         
           editMode={editMode}
-          handleClose={handleClose} />} */}
+          handleClose={handleClose} />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
