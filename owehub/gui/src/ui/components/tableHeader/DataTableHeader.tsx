@@ -4,26 +4,24 @@ import { IoAddSharp } from "react-icons/io5";
 import "../../pages/configure/configure.css";
 import { BiSearch, BiChevronDown } from 'react-icons/bi';
 import '../tableHeader/dataTableHeader.css'
-import Select from "react-select"; interface TableProps {
+import Select from "react-select";
+ interface TableProps {
     title: string;
     onPressFilter: () => void;
     onPressImport: () => void;
     showImportIcon: boolean;
     showSelectIcon: boolean;
     showFilterIcon: boolean;
-}
+    selectMarginLeft?: string;
+    selectMarginLeft1?: string;
+  }
 interface OptionType {
     value: string;
     label: string;
 }
 
 const DataTableHeader = (props: TableProps) => {
-    const {
-        title,
-        onPressFilter,
-        onPressImport,
-
-    } = props;
+    const { title, onPressFilter, onPressImport, selectMarginLeft, selectMarginLeft1 } = props;
 
 
 
@@ -47,14 +45,15 @@ const DataTableHeader = (props: TableProps) => {
                         value={""}
                         styles={{
                             control: (baseStyles, state) => ({
-                                ...baseStyles,
-                                marginTop: "px",
-                                borderRadius: "8px",
-                                outline: "none",
-                                color: "black",
-                                width: "200px",
-                                fontSize: "13px",
-                                border: "1px solid #d0d5dd",
+                              ...baseStyles,
+                              marginTop: "px",
+                              borderRadius: "8px",
+                              outline: "none",
+                              color: "black",
+                              width: "200px",
+                              fontSize: "13px",
+                              border: "1px solid #d0d5dd",
+                              marginRight: selectMarginLeft
                             }),
                             indicatorSeparator: () => ({
                                 display: 'none' // Hide the indicator separator
@@ -64,7 +63,7 @@ const DataTableHeader = (props: TableProps) => {
                 )}
                 </div>
 
-                <div className="iconsSection-filter">
+                <div className="iconsSection-filter" style={{marginRight: selectMarginLeft1}}>
                 {props.showFilterIcon && (
                     <button type="button" onClick={onPressFilter}>
                         <img src={ICONS.filtercomm} alt="" style={{ width: "15px", height: "15px" }} />
