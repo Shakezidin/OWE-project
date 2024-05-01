@@ -6,7 +6,7 @@
  * Path: /
  */
 
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
 
 import WelcomePage from "./ui/pages/welcome/WelcomePage";
 import ResetPassword from "./ui/pages/resetPassword/ResetPassword";
@@ -63,10 +63,12 @@ import Reconcile from "./ui/pages/configure/Reconcile/Reconcile";
 import ApptSetters from "./ui/pages/configure/apptSetters/ApptSetters";
 import { ARDashboardPage } from "./ui/pages/ar/ardashboard/ardashboard";
 import { useAppDispatch, useAppSelector } from "./redux/hooks";
+import { toast } from "react-toastify";
 
 
 function App() {
   const dispatch = useAppDispatch();
+  // const location = useLocation();
 
   useEffect(() => {
     dispatch(initializeAuth());
@@ -75,11 +77,12 @@ function App() {
     (state: RootState) => state.auth.isAuthenticated
   );
 
-    /** temp solution for session logout */
+    /** TODO: temp solution for session logout. Need to change in future */
     useEffect(() => {
       const token = localStorage.getItem('token');
       const expirationTime = localStorage.getItem('expirationTime');
   
+      console.log('checking sesssion...')
       if (token && expirationTime) {
         const currentTime = Date.now();
         if (currentTime < parseInt(expirationTime, 10)) {
@@ -88,6 +91,7 @@ function App() {
           // Schedule logout after 480 minutes
           const timeout = setTimeout(() => {
            dispatch(logout())
+           toast.error("Session time expired. Please login again..")
           }, parseInt(expirationTime) * 60 * 1000); // 480 minutes in milliseconds
   
           return () => {
@@ -97,9 +101,10 @@ function App() {
         } else {
           // Token has expired
           dispatch(logout())
+          toast.error("Session time expired. Please login again..")
         }
       }
-    }, []);
+   }, [dispatch]);
 
     return (
     <BrowserRouter>

@@ -85,12 +85,11 @@ export const LoginPage = () => {
         localStorage.setItem("token", access_token);
         localStorage.setItem("password", credentials.password);
         localStorage.setItem('expirationTime', (Date.now() + parseInt(time_to_expire_minutes) * 60 * 1000).toString()); // Expiration time is 480 minutes from now
-
-        localStorage.setItem(
-          "isRememberMe",
-          credentials.isRememberMe.toString()
-        );
-        navigate("/dashboard");
+        localStorage.setItem("isRememberMe", credentials.isRememberMe.toString());
+       // navigate("/dashboard");
+      setTimeout(() => {
+        window.location.reload()
+      }, 1000);
       } else {
         toast.error(result.message);
       }
@@ -101,9 +100,6 @@ export const LoginPage = () => {
   }
   };
 
-  // if (isAuthenticated) {
-  //   navigate("/dashboard");
-  // }
   /** UI render */
 
   return (
