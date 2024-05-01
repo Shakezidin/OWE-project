@@ -170,6 +170,7 @@ const handleOpen = () => setOpen(true);
 
             <div className="Line-container">
               <div className="rep-line-graph">
+                
                 <div
                   className={`rep-filter-line ${
                     active === 0 ? "rep-active-filter-line" : ""
