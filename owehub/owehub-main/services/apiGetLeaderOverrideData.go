@@ -168,6 +168,7 @@ func HandleGetLeaderOverrideDataRequest(resp http.ResponseWriter, req *http.Requ
 
 		// Create a new GetMarketingFeesData object
 		leaderOverrideData := models.GetLeaderOverride{
+			RecordId: RecordId,
 			UniqueID:   UniqueID,
 			TeamName:   TeamName,
 			LeaderName: LeaderName,

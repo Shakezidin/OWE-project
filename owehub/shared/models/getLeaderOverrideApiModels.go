@@ -7,6 +7,7 @@
 package models
 
 type GetLeaderOverride struct {
+	RecordId   int64   `json:"record_id"`
 	UniqueID   string  `json:"unique_id"`
 	TeamName   string  `json:"team_name"`
 	LeaderName string  `json:"leader_name"`
