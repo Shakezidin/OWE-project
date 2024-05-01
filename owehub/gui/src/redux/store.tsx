@@ -25,6 +25,7 @@ import createloanTypeReducer from './apiSlice/configSlice/config_post_slice/crea
 import paginationReducer from './apiSlice/paginationslice/paginationSlice'
 import createUserReducer from './apiSlice/userManagementSlice/createUserSlice'
 import userManagementSlice from "./apiSlice/userManagementSlice/userManagementSlice";
+import arAdjusments from "./apiSlice/configSlice/config_get_slice/arAdjusments";
 
 export const store = configureStore({
   reducer: {
@@ -56,6 +57,7 @@ export const store = configureStore({
     //user management
     userManagement:userManagementSlice,
     createOnboardUser: createUserReducer,
+    arAdjusments
   },
 });
 

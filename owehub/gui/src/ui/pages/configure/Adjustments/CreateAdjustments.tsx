@@ -1,218 +1,265 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cross_button.svg";
 import Input from "../../../components/text_input/Input";
-
 import { ActionButton } from "../../../components/button/ActionButton";
-import { updatePayForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createPayScheduleSlice";
-import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
-import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
-import { useDispatch } from "react-redux";
-import { installerOption, partnerOption, salesTypeOption, stateOption, } from "../../../../core/models/data_models/SelectDataModel";
-import Select from 'react-select';
-import {paySaleTypeData } from "../../../../resources/static_data/StaticData";
-import { PayScheduleModel } from "../../../../core/models/configuration/create/PayScheduleModel";
-import SelectOption from "../../../components/selectOption/SelectOption";
+
+import { useAppDispatch } from "../../../../redux/hooks";
+import { createAdjustments } from "../../../../redux/apiActions/arAdjustmentsAction";
+import { format } from "date-fns";
 interface payScheduleProps {
-    handleClose: () => void,
-    editMode:boolean,
-    
+  handleClose: () => void,
+  editMode: boolean,
+
 }
 
 
-const CreatedAdjustments:React.FC<payScheduleProps> = ({handleClose,editMode}) => {
-    const dispatch = useDispatch();
+const CreatedAdjustments: React.FC<payScheduleProps> = ({ handleClose, editMode }) => {
+  const dispatch = useAppDispatch();
 
-    // const [createPayData, setCreatePayData] = useState<PayScheduleModel>(
-    //     {
-    //         record_id: payEditedData? payEditedData?.record_id: 0,
-    //         partner: payEditedData? payEditedData?.partner: "Shushank Sharma",
-    //         partner_name:payEditedData? payEditedData?.partner_name: "FFS",
-    //         installer_name: payEditedData? payEditedData?.installer_name:"OWE",
-    //         sale_type: payEditedData? payEditedData?.sale_type:"BATTERY",
-    //         state: payEditedData? payEditedData?.state:"Alabama",
-    //         rl: payEditedData? payEditedData?.rl:"40",
-    //         draw:payEditedData? payEditedData?.draw: "50%",
-    //         draw_max: payEditedData? payEditedData?.draw_max:"50%",
-    //         rep_draw:payEditedData? payEditedData?.rep_draw: "2000.00",
-    //         rep_draw_max:payEditedData? payEditedData?.rep_draw_max: "2000.00",
-    //         rep_pay:payEditedData? payEditedData?.rep_pay: "Yes",
-    //         start_date: payEditedData? payEditedData?.start_date:"2024-04-01",
-    //         end_date: payEditedData? payEditedData?.end_date:"2024-04-30"
-    //       }
-    // )
-    const [newFormData,setNewFormData] = useState<any>([])
-   
-    const tableData = {
-      tableNames: ["partners", "states","installers","sale_type"]
+
+  const [newFormData, setNewFormData] = useState({
+    uniqueId: "",
+    customer: "",
+    partnerName: "",
+    installerName: "",
+    sysSize: "",
+    bl: "",
+    epc: "",
+    date: "",
+    amount: "",
+    notes: "",
+    startDate: "",
+    endDate: "",
+    stateName: ""
+  })
+
+  const tableData = {
+    tableNames: ["partners", "states", "installers", "sale_type"]
+  }
+  // const getNewFormData = async () => {
+  //   const res = await postCaller(EndPoints.get_newFormData, tableData)
+  //   setNewFormData(res.data)
+
+  // }
+  // useEffect(() => {
+  //   getNewFormData()
+  // }, [])
+
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value, name } = e.target
+    if (name === "amount" || name==="epc"||name==="sysSize" ) {
+      if (value==="" ||  value==="0"|| Number(value) ) {
+        setNewFormData(prev => ({ ...prev, [name]: value }))
+      }
     }
-   const getNewFormData=async()=>{
-    const res = await postCaller(EndPoints.get_newFormData,tableData)
-    setNewFormData(res.data)
-    
-   }
-   useEffect(()=>{
-  getNewFormData()
-   },[])
+    else {
+      setNewFormData(prev => ({ ...prev, [name]: value }))
+    }
+  }
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    dispatch(createAdjustments({
+      unique_id: newFormData.uniqueId,
+      customer: newFormData.customer,
+      partner_name: newFormData.partnerName,
+      state_name: newFormData.stateName,
+      installer_name: newFormData.installerName,
+      sys_size: parseFloat(newFormData.sysSize),
+      bl: newFormData.bl,
+      epc: parseFloat(newFormData.epc),
+      date: new Date(newFormData.date),
+      notes: newFormData.notes,
+      amount: parseFloat(newFormData.amount),
+      start_date: format(new Date(newFormData.startDate), 'yyyy-MM-dd'),
+      end_date: format(new Date(newFormData.endDate), 'yyyy-MM-dd')
+    }))
+  }
 
 
- 
- 
-    return (
-        <div className="transparent-model">
-             <form  className="modal">
 
-                <div className="createUserCrossButton" onClick={handleClose}>
-                    <CROSS_BUTTON />
+  return (
+    <div className="transparent-model">
+      <form className="modal" onSubmit={handleSubmit} >
 
-                </div>
-             
-                    <h3 className="createProfileText">{editMode===false?"Rep Pay Settings":"Update RepPay Settings"}</h3>
-                
-                  <div className="modal-body">
-                  <div className="createProfileInputView">
-                        <div className="createProfileTextView">
-                        <div className="create-input-container">
-                  <div className="create-input-field">
-                    <Input
-                      type={"text"}
-                      label="Unique ID"
-                      value={""}
-                      name="dealer_tier"
-                      placeholder={"Enter"}
-                      onChange={() => {}}
-                    />
-                  </div>
-                  <div className="create-input-field">
-                    <Input
-                      type={"text"}
-                      label="Customer"
-                      value={""}
-                      name="dealer_tier"
-                      placeholder={"Enter"}
-                      onChange={() => {}}
-                    />
-                  </div>
-                  <div className="create-input-field">
-                    <Input
-                      type={"text"}
-                      label="Partner"
-                      value={""}
-                      name="dealer_tier"
-                      placeholder={"Enter"}
-                      onChange={() => {}}
-                    />
-                  </div>
-                 
-                </div>
+        <div className="createUserCrossButton" onClick={handleClose}>
+          <CROSS_BUTTON />
 
-             
-                         
-                <div className="create-input-container">
-                  <div className="create-input-field">
-                    <Input
-                      type={"text"}
-                      label="Installer"
-                      value={""}
-                      name="dealer_tier"
-                      placeholder={"Enter"}
-                      onChange={() => {}}
-                    />
-                  </div>
-                  <div className="create-input-field">
-                    <Input
-                      type={"text"}
-                      label="ST"
-                      value={""}
-                      name="dealer_tier"
-                      placeholder={"Enter"}
-                      onChange={() => {}}
-                    />
-                  </div>
-                  <div className="create-input-field">
-                    <Input
-                      type={"text"}
-                      label="Sys. Size"
-                      value={""}
-                      name="dealer_tier"
-                      placeholder={"Enter"}
-                      onChange={() => {}}
-                    />
-                  </div>
-                </div>    
-
-                    <div className="create-input-container">
-                  <div className="create-input-field">
-                    <Input
-                      type={"text"}
-                      label="BL"
-                      value={""}
-                      name="dealer_tier"
-                      placeholder={"Enter"}
-                      onChange={() => {}}
-                    />
-                  </div>
-                  <div className="create-input-field">
-                    <Input
-                      type={"text"}
-                      label="Epc"
-                      value={""}
-                      name="dealer_tier"
-                      placeholder={"Enter"}
-                      onChange={() => {}}
-                    />
-                  </div>
-                  <div className="create-input-field">
-                    <Input
-                      type={"date"}
-                      label="Date"
-                      value={""}
-                      name="dealer_tier"
-                      placeholder={"Enter"}
-                      onChange={() => {}}
-                    />
-                  </div>
-                </div>    
-
-                   <div className="create-input-container">
-                  <div className="create-input-field">
-                    <Input
-                      type={"text"}
-                      label="Amount"
-                      value={""}
-                      name="dealer_tier"
-                      placeholder={"Enter"}
-                      onChange={() => {}}
-                    />
-                  </div>
-                  <div className="create-input-field">
-                    <Input
-                      type={"text"}
-                      label="Notes"
-                      value={""}
-                      name="dealer_tier"
-                      placeholder={"Enter"}
-                      onChange={() => {}}
-                    />
-                  </div>
-                  
-                </div>                         
-             </div>
-        </div>                  
-     </div>
-                        <div className="createUserActionButton">
-                        <ActionButton title={"Cancel"} type="reset"
-                           onClick={() => handleClose()} />
-                            <ActionButton title={editMode===false?"Save":"Update"} type="submit"
-                                onClick={() => { }} />
-                        </div>
-
-                  
-             
-           
-                </form>
         </div>
-    );
+
+        <h3 className="createProfileText">{editMode === false ? "Rep Pay Settings" : "Update RepPay Settings"}</h3>
+
+        <div className="modal-body">
+          <div className="createProfileInputView">
+            <div className="createProfileTextView">
+              <div className="create-input-container">
+                <div className="create-input-field">
+                  <Input
+                    type={"text"}
+                    label="Unique ID"
+                    value={newFormData.uniqueId}
+                    name="uniqueId"
+                    placeholder={"Enter"}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="create-input-field">
+                  <Input
+                    type={"text"}
+                    label="Customer"
+                    value={newFormData.customer}
+                    name="customer"
+                    placeholder={"Enter"}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="create-input-field">
+                  <Input
+                    type={"text"}
+                    label="Partner"
+                    value={newFormData.partnerName}
+                    name="partnerName"
+                    placeholder={"Enter"}
+                    onChange={handleChange}
+                  />
+                </div>
+
+              </div>
+
+
+
+              <div className="create-input-container">
+                <div className="create-input-field">
+                  <Input
+                    type={"text"}
+                    label="Installer"
+                    value={newFormData.installerName}
+                    name="installerName"
+                    placeholder={"Enter"}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="create-input-field">
+                  <Input
+                    type={"text"}
+                    label="State"
+                    value={newFormData.stateName}
+                    name="stateName"
+                    placeholder={"Enter"}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="create-input-field">
+                  <Input
+                    type={"text"}
+                    label="Sys. Size"
+                    value={newFormData.sysSize}
+                    name="sysSize"
+                    placeholder={"Enter"}
+                    onChange={handleChange}
+                  />
+                </div>
+
+
+              </div>
+
+              <div className="create-input-container">
+                <div className="create-input-field">
+                  <Input
+                    type={"text"}
+                    label="BL"
+                    value={newFormData.bl}
+                    name="bl"
+                    placeholder={"Enter"}
+                    onChange={handleChange}
+                  />
+                </div>
+
+                <div className="create-input-field">
+                  <Input
+                    type={"text"}
+                    label="Epc"
+                    value={newFormData.epc}
+                    name="epc"
+                    placeholder={"Enter"}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="create-input-field">
+                  <Input
+                    type={"date"}
+                    label="Date"
+                    value={newFormData.date}
+                    name="date"
+                    placeholder={"Enter"}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+
+              <div className="create-input-container">
+                <div className="create-input-field">
+                  <Input
+                    type={"text"}
+                    label="Amount"
+                    value={newFormData.amount}
+                    name="amount"
+                    placeholder={"Enter"}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="create-input-field">
+                  <Input
+                    type={"text"}
+                    label="Notes"
+                    value={newFormData.notes}
+                    name="notes"
+                    placeholder={"Enter"}
+                    onChange={handleChange}
+                  />
+                </div>
+
+
+                <div className="create-input-field">
+                  <Input
+                    type={"date"}
+                    label="Start Date"
+                    value={newFormData.startDate}
+                    name="startDate"
+                    placeholder={"Enter"}
+                    onChange={handleChange}
+                  />
+                </div>
+
+                <div className="create-input-field">
+                  <Input
+                    type={"date"}
+                    label="End Date"
+                    value={newFormData.endDate}
+                    name="endDate"
+                    placeholder={"Enter"}
+                    onChange={handleChange}
+                  />
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="createUserActionButton">
+          <ActionButton title={"Cancel"} type="reset"
+            onClick={() => handleClose()} />
+          <ActionButton title={editMode === false ? "Save" : "Update"} type="submit"
+            onClick={() => { }} />
+        </div>
+
+
+
+
+      </form>
+    </div>
+  );
 };
 
 export default CreatedAdjustments;
