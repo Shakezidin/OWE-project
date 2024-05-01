@@ -69,7 +69,7 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({ handleClose, editMode 
       sys_size: parseFloat(newFormData.sysSize),
       bl: newFormData.bl,
       epc: parseFloat(newFormData.epc),
-      date: new Date(newFormData.date),
+      date: "2024-04-30T12:00:00Z",
       notes: newFormData.notes,
       amount: parseFloat(newFormData.amount),
       start_date: format(new Date(newFormData.startDate), 'yyyy-MM-dd'),

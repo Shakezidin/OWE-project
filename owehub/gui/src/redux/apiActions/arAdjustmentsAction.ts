@@ -16,7 +16,7 @@ interface IRateCreateParams {
     sys_size: number;
     bl: string;
     epc: number;
-    date: Date;
+    date: string;
     notes: string;
     amount: number;
     start_date: string;
