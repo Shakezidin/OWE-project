@@ -97,13 +97,13 @@ func HandleCreateReconcileRequest(resp http.ResponseWriter, req *http.Request) {
 	// Call the database function
 	result, err = db.CallDBFunction(db.CreateReconcileFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Add rebate data in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Create rebate data", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to Add Reconcile data in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to Create Reconcile data", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "commissions created with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "Commissions Created Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "Reconcile created with Id: %+v", data["result"])
+	FormAndSendHttpResp(resp, "Reconcile Created Successfully", http.StatusOK, nil)
 }

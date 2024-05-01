@@ -22,7 +22,7 @@ import (
 
 /******************************************************************************
  * FUNCTION:		HandleUpdateRebateDataArchiveRequest
- * DESCRIPTION:     handler for update RebateDatas Archive request
+ * DESCRIPTION:     handler for update Reconcile Archive request
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
@@ -39,7 +39,7 @@ func HandleUpdateRebateDataArchiveRequest(resp http.ResponseWriter, req *http.Re
 	defer func() { log.ExitFn(0, "HandleUpdateRebateDataArchiveRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in update RebateDatas Archive request")
+		err = fmt.Errorf("HTTP Request body is null in update Reconcile Archive request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -47,15 +47,15 @@ func HandleUpdateRebateDataArchiveRequest(resp http.ResponseWriter, req *http.Re
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update RebateDatas Archive request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update Reconcile Archive request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &updateRebateDataArcReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal update RebateDatas Archive request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal update RebateDatas Archive request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal update Reconcile Archive request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal update Reconcile Archive request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -77,14 +77,14 @@ func HandleUpdateRebateDataArchiveRequest(resp http.ResponseWriter, req *http.Re
 	queryParameters = append(queryParameters, updateRebateDataArcReq.IsArchived)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.UpdateRebateDataArchiveFunction, queryParameters)
+	result, err = db.CallDBFunction(db.UpdateReconcileArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Update RebateDatas Archive in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Update RebateDatas Archive", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to Update Reconcile Archive in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to Update Reconcile Archive", http.StatusInternalServerError, nil)
 		return
 	}
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "RebateDatas Archive updated with Id: %+v", data)
-	FormAndSendHttpResp(resp, "RebateDatas Archive Updated Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "Reconcile Archive updated with Id: %+v", data)
+	FormAndSendHttpResp(resp, "Reconcile Archive Updated Successfully", http.StatusOK, nil)
 }

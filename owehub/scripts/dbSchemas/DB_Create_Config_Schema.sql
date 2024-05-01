@@ -791,6 +791,8 @@ CREATE TABLE reconcile (
     amount float,
     notes text,
     is_archived BOOLEAN DEFAULT FALSE,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
     FOREIGN KEY (partner_id) REFERENCES partners(partner_id),
     FOREIGN KEY (state_id) REFERENCES states(state_id),
     PRIMARY KEY (id)
