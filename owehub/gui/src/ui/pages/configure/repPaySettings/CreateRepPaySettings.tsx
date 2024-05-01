@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
-
 import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cross_button.svg";
 import Input from "../../../components/text_input/Input";
-
 import { ActionButton } from "../../../components/button/ActionButton";
 import { updatePayForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createPayScheduleSlice";
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
@@ -11,8 +9,9 @@ import { useDispatch } from "react-redux";
 import { installerOption, partnerOption, salesTypeOption, stateOption, } from "../../../../core/models/data_models/SelectDataModel";
 import Select from 'react-select';
 import {paySaleTypeData } from "../../../../resources/static_data/StaticData";
-import { PayScheduleModel } from "../../../../core/models/configuration/create/PayScheduleModel";
+import { repPaySettingModel } from "../../../../core/models/configuration/create/repPaySettingModel";
 import SelectOption from "../../../components/selectOption/SelectOption";
+
 interface createRepPayProps {
     handleClose: () => void,
     editMode:boolean,
@@ -22,39 +21,63 @@ interface createRepPayProps {
 
 const CreateRepPaySettings:React.FC<createRepPayProps> = ({handleClose,editMode}) => {
     const dispatch = useDispatch();
-
-    // const [createPayData, setCreatePayData] = useState<PayScheduleModel>(
-    //     {
-    //         record_id: payEditedData? payEditedData?.record_id: 0,
-    //         partner: payEditedData? payEditedData?.partner: "Shushank Sharma",
-    //         partner_name:payEditedData? payEditedData?.partner_name: "FFS",
-    //         installer_name: payEditedData? payEditedData?.installer_name:"OWE",
-    //         sale_type: payEditedData? payEditedData?.sale_type:"BATTERY",
-    //         state: payEditedData? payEditedData?.state:"Alabama",
-    //         rl: payEditedData? payEditedData?.rl:"40",
-    //         draw:payEditedData? payEditedData?.draw: "50%",
-    //         draw_max: payEditedData? payEditedData?.draw_max:"50%",
-    //         rep_draw:payEditedData? payEditedData?.rep_draw: "2000.00",
-    //         rep_draw_max:payEditedData? payEditedData?.rep_draw_max: "2000.00",
-    //         rep_pay:payEditedData? payEditedData?.rep_pay: "Yes",
-    //         start_date: payEditedData? payEditedData?.start_date:"2024-04-01",
-    //         end_date: payEditedData? payEditedData?.end_date:"2024-04-30"
-    //       }
-    // )
+    const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
     const [newFormData,setNewFormData] = useState<any>([])
-   
-    const tableData = {
-      tableNames: ["partners", "states","installers","sale_type"]
-    }
-   const getNewFormData=async()=>{
-    const res = await postCaller(EndPoints.get_newFormData,tableData)
-    setNewFormData(res.data)
-    
-   }
-   useEffect(()=>{
-  getNewFormData()
-   },[])
+  const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
+    const [createRePayData, setCreatePayData] = useState<repPaySettingModel>(
+        {
+            name:"",
+            state:"",
+            pay_scale:"",
+            position:"",
+            be:"",
+            start:"",
+            end:"",
+          }
+    )
 
+
+    const handleChange = (newValue: any, fieldName: string) => {
+        setCreatePayData((prevData) => ({
+            ...prevData,
+            [fieldName]: newValue ? newValue.value : '',
+        }));
+    };
+    const handlePayInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setCreatePayData((prevData) => ({
+            ...prevData,
+            [name]: value,
+        }));
+    };
+    const [viewArchived, setViewArchived] = useState<boolean>(false);
+    
+  
+
+
+   const handleViewArchiveToggle = () => {
+    setViewArchived(!viewArchived);
+    // When toggling, reset the selected rows
+    setSelectedRows(new Set());
+    setSelectAllChecked(false);
+  };
+
+
+
+  const tableData = {
+    tableNames: ["partners", "states","installers","sale_type"]
+  }
+
+ const getNewFormData=async()=>{
+  const res = await postCaller(EndPoints.get_newFormData,tableData)
+  setNewFormData(res.data)
+  
+ }
+  useEffect(()=>{
+ getNewFormData()
+ },[])
+
+  
 
  
  
@@ -76,31 +99,29 @@ const CreateRepPaySettings:React.FC<createRepPayProps> = ({handleClose,editMode}
                   <div className="create-input-field">
                     <Input
                       type={"text"}
-                      label="Dealer Tier"
-                      value={""}
-                      name="dealer_tier"
+                      label="Name"
+                      value={createRePayData.name}
+                      name="name"
                       placeholder={"Enter"}
-                      onChange={() => {}}
+                      onChange={(e) => handlePayInputChange(e)}
                     />
                   </div>
                   <div className="create-input-field">
-                    <Input
-                      type={"text"}
-                      label="State"
-                      value={""}
-                      name="dealer_tier"
-                      placeholder={"Enter"}
-                      onChange={() => {}}
-                    />
-                  </div>
-                  <div className="create-input-field">
-                    <Input
-                      type={"text"}
-                      label="Pay Scale"
-                      value={""}
-                      name="dealer_tier"
-                      placeholder={"Enter"}
-                      onChange={() => {}}
+                                <label className="inputLabel-select">ST</label>
+                                    <SelectOption
+                                        options={stateOption(newFormData)}
+                                        onChange={(newValue) => handleChange(newValue, 'state')}
+                                        value={stateOption(newFormData)?.find((option) => option.value === createRePayData.state)}
+                                    />
+                                </div>
+                        <div className="create-input-field">
+                          <Input
+                          type={"text"}
+                          label="Pay Scale"
+                          value={createRePayData.pay_scale}
+                          name="pay_scale"
+                          placeholder={"Enter"}
+                          onChange={(e) => handlePayInputChange(e)}
                     />
                   </div>
                  
@@ -113,30 +134,30 @@ const CreateRepPaySettings:React.FC<createRepPayProps> = ({handleClose,editMode}
                     <Input
                       type={"text"}
                       label="Position"
-                      value={""}
-                      name="dealer_tier"
+                      value={createRePayData.position}
+                      name="position"
                       placeholder={"Enter"}
-                      onChange={() => {}}
+                      onChange={(e) => handlePayInputChange(e)}
                     />
                   </div>
                   <div className="create-input-field">
                     <Input
                       type={"text"}
                       label="BE"
-                      value={""}
-                      name="dealer_tier"
+                      value={createRePayData.be}
+                      name="be"
                       placeholder={"Enter"}
-                      onChange={() => {}}
+                      onChange={(e) => handlePayInputChange(e)}
                     />
                   </div>
                   <div className="create-input-field">
                     <Input
-                      type={"text"}
+                      type={"date"}
                       label="Start"
-                      value={""}
-                      name="dealer_tier"
+                      value={createRePayData.start}
+                      name="start"
                       placeholder={"Enter"}
-                      onChange={() => {}}
+                      onChange={(e) => handlePayInputChange(e)}
                     />
                   </div>
                  
@@ -145,12 +166,12 @@ const CreateRepPaySettings:React.FC<createRepPayProps> = ({handleClose,editMode}
                 <div className="create-input-container">
                   <div className="create-input-field">
                     <Input
-                      type={"text"}
+                      type={"date"}
                       label="End"
-                      value={""}
-                      name="dealer_tier"
+                      value={createRePayData.end}
+                      name="end"
                       placeholder={"Enter"}
-                      onChange={() => {}}
+                      onChange={(e) => handlePayInputChange(e)}
                     />
                   </div>
                    
