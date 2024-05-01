@@ -37,13 +37,13 @@ const EnterOtpScreen = () => {
     console.log(otpCred);
 
     if (otpCred.otp.length === 0) {
-      alert("Please enter OTP");
+      toast.warning('Please enter OTP')
     } else if (otpCred.new_password.length === 0) {
-      alert("Please enter new password");
+      toast.warning('Please enter new password')
     } else if (otpCred.confirm_password.length === 0) {
-      alert("Please enter confirm password");
+      toast.warning('Please enter confirm password')
     } else if (otpCred.new_password !== otpCred.confirm_password) {
-      alert("New password and confirm password does not matched");
+      toast.warning('New password and confirm password does not matched')
     } else {
       const data = {
         email_id: email, //TODO: Need to fetch from redux and navigation

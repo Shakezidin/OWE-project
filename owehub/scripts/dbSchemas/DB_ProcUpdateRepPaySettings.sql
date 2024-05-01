@@ -20,7 +20,8 @@ BEGIN
         position = p_position,
         b_e = p_b_e,
         start_date = p_start_date,
-        end_date = p_end_date
+        end_date = p_end_date,
+        updated_at = CURRENT_TIMESTAMP
     WHERE id = p_id
     RETURNING id INTO v_rep_pay_settings_id;
 IF NOT FOUND THEN

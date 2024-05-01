@@ -25,6 +25,7 @@ import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoin
 import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
 import Swal from "sweetalert2";
 import { ROUTES } from "../../../../routes/routes";
+import { showAlert, successSwal } from "../../../components/alert/ShowAlert";
 
 const LoanType = () => {
   const dispatch = useAppDispatch();
@@ -116,16 +117,8 @@ const LoanType = () => {
     });
   }
   const handleArchiveAllClick = async () => {
-    const confirmationResult = await Swal.fire({
-      title: 'Are you sure?',
-      text: 'This action will archive all selected rows.',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, archive all'
-    });
-    if (confirmationResult.isConfirmed) {
+    const confirmed = await showAlert('Are Your Sure', 'This action will archive all selected rows?', 'Yes', 'No');
+    if (confirmed) {
       const archivedRows = Array.from(selectedRows).map(index => loanTypeList[index].record_id);
       if (archivedRows.length > 0) {
         const newValue = {
@@ -138,7 +131,7 @@ const LoanType = () => {
           page_size: itemsPerPage,
         };
 
-        const res = await postCaller(EndPoints.update_loantype_archive, newValue);
+        const res = await postCaller(EndPoints.update_dealer_archive, newValue);
         if (res.status === HTTP_STATUS.OK) {
           // If API call is successful, refetch commissions
           dispatch(fetchLoanType(pageNumber));
@@ -146,42 +139,37 @@ const LoanType = () => {
           const isAnyRowSelected = remainingSelectedRows.length > 0;
           setSelectAllChecked(isAnyRowSelected);
           setSelectedRows(new Set());
-          Swal.fire({
-            title: 'Archived!',
-            text: 'All selected rows have been archived.',
-            icon: 'success',
-            timer: 2000,
-            showConfirmButton: false
-          });
+          await successSwal("Archived", "All Selected rows have been archived", "success", 2000, false);
         }
         else {
-          Swal.fire({
-            title: 'Error!',
-            text: 'Failed to archive selected rows. Please try again later.',
-            icon: 'error',
-            timer: 2000,
-            showConfirmButton: false
-          });
+          await successSwal("Archived", "All Selected rows have been archived", "error", 2000, false);
         }
       }
 
     }
   };
   const handleArchiveClick = async (record_id: any) => {
-    const archived: number[] = [record_id];
-    let newValue = {
-      record_id: archived,
-      is_archived: true
+    const confirmed = await showAlert('Are Your Sure', 'This action will archive all selected rows?', 'Yes', 'No');
+    if (confirmed){
+      const archived: number[] = [record_id];
+      let newValue = {
+        record_id: archived,
+        is_archived: true
+      }
+      const pageNumber = {
+        page_number: currentPage,
+        page_size: itemsPerPage,
+  
+      };
+      const res = await postCaller(EndPoints.update_dealer_archive, newValue);
+      if (res.status === HTTP_STATUS.OK) {
+        dispatch(fetchLoanType(pageNumber))
+        await successSwal("Archived", "All Selected rows have been archived", "success", 2000, false);
+      }else{
+        await successSwal("Archived", "All Selected rows have been archived", "error", 2000, false);
+      }
     }
-    const pageNumber = {
-      page_number: currentPage,
-      page_size: itemsPerPage,
-
-    };
-    const res = await postCaller(EndPoints.update_loantype_archive, newValue);
-    if (res.status === HTTP_STATUS.OK) {
-      dispatch(fetchLoanType(pageNumber))
-    }
+  
   };
 
   const handleViewArchiveToggle = () => {
@@ -222,10 +210,13 @@ const LoanType = () => {
           columns={LoanTypeColumns}
           page_number={currentPage}
           fetchFunction={fetchFunction}
-          page_size={itemsPerPage} />}
+          page_size={itemsPerPage}
+           />}
         {open && <CreateLoanType
           loanData={editedLoanData}
           editMode={editMode}
+          page_number={currentPage}
+          page_size={itemsPerPage}
           handleClose={handleClose} />}
         <div
           className="TableContainer"

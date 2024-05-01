@@ -18,6 +18,7 @@ import {
   UserDropdownModel,
   UserRoleBasedListModel,
 } from "../../../../core/models/api_models/UserManagementModel";
+import { TYPE_OF_USER } from "../../../../resources/static_data/TypeOfUser";
 
 interface UserTableProos {
   userDropdownData: UserDropdownModel[];
@@ -74,7 +75,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   /** render table based on dropdown */
   const renderComponent = () => {
     switch (selectedOption.label) {
-      case "Admin":
+      case TYPE_OF_USER.ADMIN:
         return (
           <UserTable
             data={userRoleBasedList}
@@ -90,7 +91,23 @@ const UserManagementTable: React.FC<UserTableProos> = ({
           setSelectAllChecked={setSelectAllChecked}
           />
         );
-      case "DB User":
+        case TYPE_OF_USER.FINANCE_ADMIN:
+          return (
+            <UserTable
+              data={[]}
+              onClickEdit={(item: UserRoleBasedListModel) => {
+                onClickEdit(item);
+              }}
+              onClickDelete={(item: UserRoleBasedListModel) => {
+                onClickDelete(item)
+              }}
+              selectedRows={selectedRows}
+            selectAllChecked={selectAllChecked}
+            setSelectedRows={setSelectedRows}
+            setSelectAllChecked={setSelectAllChecked}
+            />
+          );
+      case TYPE_OF_USER.DB_USER:
         return (
           <UserTable
             data={userRoleBasedList}
@@ -106,7 +123,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             setSelectAllChecked={setSelectAllChecked}
           />
         );
-      case "Appointment Setter":
+      case TYPE_OF_USER.APPOINTMENT_SETTER:
         return (
           <AppointmentSetterTable
             data={userRoleBasedList}
@@ -122,7 +139,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             setSelectAllChecked={setSelectAllChecked}
           />
         );
-      case "Partner":
+      case TYPE_OF_USER.PARTNER:
         return (
           <PartnerTable
             data={userRoleBasedList}
@@ -138,7 +155,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             setSelectAllChecked={setSelectAllChecked}
           />
         );
-      case "Regional Manager":
+      case TYPE_OF_USER.REGIONAL_MANGER:
         return (
           <RegionalManagerTable
             data={userRoleBasedList}
@@ -154,7 +171,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             setSelectAllChecked={setSelectAllChecked}
           />
         );
-      case "Dealer Owner":
+      case TYPE_OF_USER.DEALER_OWNER:
         return (
           <DealerOwnerTable
             data={userRoleBasedList}
@@ -170,7 +187,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             setSelectAllChecked={setSelectAllChecked}
           />
         );
-      case "Sales Representative":
+      case TYPE_OF_USER.SALES_REPRESENTATIVE:
         return (
           <SalesRepresentativeTable
             data={userRoleBasedList}
@@ -187,7 +204,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             
           />
         );
-      case "Sales Manager":
+      case TYPE_OF_USER.SALE_MANAGER:
         return (
           <SalesManagerTable
             data={userRoleBasedList}
@@ -226,7 +243,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             />
           </div>
 
-          <div className="iconsSection-delete" style={{ marginTop: ".2rem" }} onClick={()=>{
+          <div className="iconsSection-delete" style={{ marginTop: "1.2rem" }} onClick={()=>{
             onClickMultiDelete()
           }}>
             

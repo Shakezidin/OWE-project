@@ -51,12 +51,10 @@ export const fetchUserListBasedOnRole = createAsyncThunk(
     if (response.status !== HTTP_STATUS.OK) {
       throw new Error("Failed to fetch onboarding data");
     }
-
     const { users_data_list } = response.data;
-    if (users_data_list && users_data_list.length === 0) {
+    if (!users_data_list || users_data_list.length === 0) {
       return [];
     }
-
     return users_data_list;
   }
 );

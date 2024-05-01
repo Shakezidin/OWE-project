@@ -5,11 +5,17 @@ import { ROUTES } from "../../../routes/routes";
 import { RiArrowRightUpLine } from "react-icons/ri";
 import "./ConfigurePage.css";
 
-const ConfigurePage = () => {
+interface AccordionSection {
+  title: string;
+  data: { title: string; route: string }[];
+  state: [boolean, React.Dispatch<React.SetStateAction<boolean>>] | undefined;
+}
+
+const ConfigurePage: React.FC = () => {
   const cardColors = ["#E8EFF9", "#F6ECEF", "#E6F8EF", "#FBF6DA", "#EAE6F8"];
   const arrowColors = ["#1963C6", "#D1275A", "#06BA63", "#EBAA04", "#5121FA"];
 
-  const accordionSections = [
+  const accordionSections: AccordionSection[] = [
     {
       title: "Dealer Pay",
       data: [
@@ -23,7 +29,7 @@ const ConfigurePage = () => {
         { title: "NON-Comm", route: ROUTES.CONFIG_NON_COMM_DLR_PAY },
         { title: "DLR-OTH", route: ROUTES.CONFIG_DLE_OTH_PAY },
       ],
-      state: useState(true),
+      state: useState<boolean>(true),
     },
     {
       title: "Rep Pay",
@@ -31,26 +37,26 @@ const ConfigurePage = () => {
         { title: "Rep Pay", route: ROUTES.CONFIG_REP_PAY_SETTINGS },
         { title: "Rate Adjustments", route: ROUTES.CONFIG_RATE_ADJUSTMENTS },
       ],
-      state: useState(true),
+      state: useState<boolean>(true),
     },
     {
       title: "AR",
       data: [
-        { title: "AR", route: "#" },
+        { title: "AR", route: ROUTES.CONFIG_AR },
         { title: "AR Schedule", route: ROUTES.CONFIG_AR_SCHEDULE },
-        { title: "AR Import", route: "#" },
-        { title: "Adjustment", route: "#" },
-        { title: "Reconcile", route: "#" },
+        { title: "AR Import", route: ROUTES.CONFIG_AR_IMPORT },
+        { title: "Adjustment", route: ROUTES.CONFIG_ADJUSTMENTS },
+        { title: "Reconcile", route: ROUTES.CONFIG_RECONCILE},
         { title: "Install cost", route: ROUTES.CONFIG_INSTALL_COST },
       ],
-      state: useState(true),
+      state: useState<boolean>(true),
     },
     {
       title: "Common",
       data: [
         { title: "Payment Schedule", route: ROUTES.CONFIG_PAYMENT_SCHEDULE },
         { title: "Leader Override", route: ROUTES.CONFIG_LEADER_OVERRIDE },
-        { title: "Appt Setters", route: "#" },
+        { title: "Appt Setters", route: ROUTES.CONFIG_APPSETTERS },
         { title: "Adder Responsibility", route: ROUTES.CONFIG_ADDER_RESPONSIBILITY },
         { title: "Adder Credit", route: ROUTES.CONFIG_ADDER_CREDITS },
         { title: "Marketing Fees", route: ROUTES.CONFIG_MARKETING },
@@ -63,23 +69,24 @@ const ConfigurePage = () => {
         { title: "Sales Types", route: ROUTES.CONFIG_SALE },
         { title: "Loan Type", route: ROUTES.CONFIG_LOAN },
       ],
-      state: useState(true),
+      state: useState<boolean>(true),
     },
   ];
 
-  const toggleAccordion = (setState: any) => () => {
-    setState((prevState: any) => !prevState);
+  const toggleAccordion = (setState: React.Dispatch<React.SetStateAction<boolean>>) => () => {
+    setState((prevState: boolean) => !prevState);
   };
 
   return (
     <>
       <div className="configure-container">
         <div className="configure-header">
-            <h3>Configure</h3>
+          <h3>Configure</h3>
         </div>
         <div className="configure-main">
           <div className="configure-main-section">
             {accordionSections.map(({ title, data, state }, index) => {
+              if (!state) return null;
               const [isOpen, setIsOpen] = state;
               return (
                 <div key={index} className={`${title.toLowerCase()} ${isOpen ? "open" : ""}`}>

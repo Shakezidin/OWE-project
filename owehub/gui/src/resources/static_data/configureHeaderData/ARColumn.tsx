@@ -1,11 +1,12 @@
 import { Column } from "../../../core/models/data_models/FilterSelectModel";
 
-export   const ARColumns: Column[] = [
+export const ARColumns: Column[] = [
     
-    { name: "payscale", displayName: "PayScale", type: "string",isCheckbox:true },
-    { name: "position", displayName: "Position", type: "string",isCheckbox:false },
-    { name: "adjustment", displayName: "Adjustment", type: "string",isCheckbox:false },
-    { name: "min_rate", displayName: "MIN Rate", type: "string",isCheckbox:false },
-    { name: "max_rate", displayName: "Max Rate", type: "string",isCheckbox:false },
+    { name: "customer_name", displayName: "Customer Name", type: "string",isCheckbox:true },
+    { name: "uniqueID", displayName: "UniqueID", type: "string",isCheckbox:false },
+    { name: "Date", displayName: "Date", type: "string",isCheckbox:false },
+    { name: "amount", displayName: "Amount", type: "string",isCheckbox:false },
+    { name: "note", displayName: "Notes", type: "string",isCheckbox:false },
+    
     
   ];
