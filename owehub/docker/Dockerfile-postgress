@@ -72,6 +72,7 @@ COPY ./dbSchemas/DB_ProcUpdateTimelineSlaArchive.sql /docker-entrypoint-initdb.d
 COPY ./dbSchemas/DB_ProcUpdateLoanTypeArchive.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcCreateNewAutoAdder.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcUpdateAutoAdder.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcUpdateAutoAdderArchive.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcUpdateUser.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcCreateNewRebateData.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcUpdateRebateData.sql /docker-entrypoint-initdb.d/
