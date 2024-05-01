@@ -1036,15 +1036,15 @@ var apiRoutes = ApiRoutes{
 			types.RoleAdmin,
 		},
 	},
-	//{
-	//	strings.ToUpper("POST"),
-	//	"/owe-commisions-service/v1/update_adjustments",
-	//	apiHandler.HandleGetadjustmentsDataRequest,
-	//	true,
-	//	[]types.UserRoles{
-	//		types.RoleAdmin,
-	//	},
-	//},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_adjustments",
+		apiHandler.HandleUpdateAdjustmentsRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
 	{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_arschedule",
@@ -1108,15 +1108,15 @@ var apiRoutes = ApiRoutes{
 			types.RoleAdmin,
 		},
 	},
-	//{
-	//	strings.ToUpper("POST"),
-	//	"/owe-commisions-service/v1/update_arschedule",
-	//	apiHandler.HandleGetadjustmentsDataRequest,
-	//	true,
-	//	[]types.UserRoles{
-	//		types.RoleAdmin,
-	//	},
-	//},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_installcost",
+		apiHandler.HandleUpdateInstallCostDataRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
 	{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_rateadjustments",
@@ -1180,15 +1180,15 @@ var apiRoutes = ApiRoutes{
 			types.RoleAdmin,
 		},
 	},
-	//{
-	//	strings.ToUpper("POST"),
-	//	"/owe-commisions-service/v1/update_leaderoverride",
-	//	apiHandler.HandleGetadjustmentsDataRequest,
-	//	true,
-	//	[]types.UserRoles{
-	//		types.RoleAdmin,
-	//	},
-	//},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_leaderoverride",
+		apiHandler.HandleUpdateLeaderOverrideRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
 	{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_reconcile",

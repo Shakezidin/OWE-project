@@ -133,4 +133,6 @@ INSERT INTO loan_type (product_code,active,adder,description) VALUES ('P123',1,1
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateLoanFeeArchive.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewReconcile.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateReconcileArchive.sql';
-
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateLeaderOverride.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateInstallCost.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateAdjustments.sql';

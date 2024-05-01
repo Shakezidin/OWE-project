@@ -13,7 +13,7 @@ type UpdateAdjustments struct {
 	UniqueId      string    `json:"unique_id"`
 	Customer      string    `json:"customer"`
 	PartnerName   string    `json:"partner_name"`
-	InstallerName int       `json:"installer_name"`
+	InstallerName string       `json:"installer_name"`
 	StateName     string    `json:"state_name"`
 	SysSize       float64   `json:"sys_size"`
 	Bl            string    `json:"bl"`
