@@ -10,8 +10,6 @@ import {
   toggleRowSelection,
 } from "../../../components/chekbox/checkHelper";
 import { CSVLink } from 'react-csv';
-import Pagination from "../../../components/pagination/Pagination";
-import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 import { CommissionModel } from "../../../../core/models/configuration/create/CommissionModel";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
@@ -20,37 +18,38 @@ import FilterModal from "../../../components/FilterModal/FilterModal";
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
 import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
-import Swal from 'sweetalert2';
 import Loading from "../../../components/loader/Loading";
 import DataNotFound from "../../../components/loader/DataNotFound";
 import { ROUTES } from "../../../../routes/routes";
 import PaginationComponent from "../../../components/pagination/PaginationComponent";
+import { showAlert, successSwal } from "../../../components/alert/ShowAlert";
+import CommissionRowComponent from "./CommissionRowComponent";
 
 const CommissionRate: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
-  const [exportOPen, setExportOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const handleExportOpen = () => <CSVLink data={currentPageData} filename={"table.csv"} />
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const commissionList = useAppSelector((state) => state.comm.commissionsList);
-  const loading = useAppSelector((state) => state.comm.loading);
-  const error = useAppSelector((state) => state.comm.error);
-  const dbCount = useAppSelector((state) => state.comm.dbCount);
+  const commissionList = useAppSelector((state:any) => state.comm.commissionsList);
+  const loading = useAppSelector((state:any) => state.comm.loading);
+  const error = useAppSelector((state:any) => state.comm.error);
+  const dbCount = useAppSelector((state:any) => state.comm.dbCount);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
   const [editedCommission, setEditedCommission] = useState<CommissionModel | null>(null);
   const itemsPerPage = 10;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
-  const currentPage = useAppSelector((state) => state.paginationType.currentPage);
+  const currentPage = useAppSelector((state:any) => state.paginationType.currentPage);
   const [sortKey, setSortKey] = useState("");
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [pageSize1, setPageSize1] = useState(10); // Set your desired page size here
-  // const pageSize = 10;
-  const [currentPage1,setCurrentPage1] = useState(1)
+  const [currentPage1, setCurrentPage1] = useState(1)
+  
+  // api call in useEffect 
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage1,
@@ -58,27 +57,26 @@ const CommissionRate: React.FC = () => {
       archived: viewArchived ? true : undefined,
     };
     dispatch(fetchCommissions(pageNumber));
-
   }, [dispatch, currentPage1, pageSize1, viewArchived]);
+
+// pagination funtion 
   const handlePageChange = (page: number) => {
     setCurrentPage1(page)
   };
   const handleItemsPerPageChange = (e: any) => {
     const newItemsPerPage = parseInt(e.target.value, 10);
     setPageSize1(newItemsPerPage);
-  setCurrentPage1(1) // Reset to the first page when changing items per page
+    setCurrentPage1(1) // Reset to the first page when changing items per page
   };
-
-  const filter = () => {
-    setFilterOpen(true)
-  }
-  console.log(dbCount)
-
-  // const totalPages = Math.ceil(dbCount / itemsPerPage);
+  
   const totalPages1 = Math.ceil(dbCount / pageSize1);
   const startIndex = (currentPage - 1) * pageSize1;
   const endIndex = startIndex + pageSize1;
-  console.log(currentPage)
+
+// toggle modal 
+  const filter = () => {
+    setFilterOpen(true)
+  }
   const handleAddCommission = () => {
     setEditMode(false);
     setEditedCommission(null);
@@ -90,85 +88,69 @@ const CommissionRate: React.FC = () => {
     setEditedCommission(commission);
     handleOpen()
   };
+
+  //  pagination slice 
   const currentPageData = commissionList?.slice(startIndex, endIndex);
   const isAnyRowSelected = selectedRows?.size > 0;
   const isAllRowsSelected = selectedRows?.size === commissionList?.length;
+  const pageNumber = {
+    page_number: currentPage,
+    page_size: itemsPerPage,
 
-  const handleArchiveAllClick = async () => {
-    const confirmationResult = await Swal.fire({
-      title: 'Are you sure?',
-      text: 'This action will archive all selected rows.',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, archive all'
-    });
-    if (confirmationResult.isConfirmed) {
-      const archivedRows = Array.from(selectedRows).map(index => commissionList[index].record_id);
-      if (archivedRows.length > 0) {
-        const newValue = {
-          record_id: archivedRows,
-          is_archived: true
-        };
-
-        const pageNumber = {
-          page_number: currentPage,
-          page_size: itemsPerPage,
-        };
-
-        const res = await postCaller(EndPoints.update_commission_archive, newValue);
-        if (res.status === HTTP_STATUS.OK) {
-          // If API call is successful, refetch commissions
-          dispatch(fetchCommissions(pageNumber));
-          const remainingSelectedRows = Array.from(selectedRows).filter(index => !archivedRows.includes(commissionList[index].record_id));
-          const isAnyRowSelected = remainingSelectedRows.length > 0;
-          setSelectAllChecked(isAnyRowSelected);
-          setSelectedRows(new Set());
-          Swal.fire({
-            title: 'Archived!',
-            text: 'All selected rows have been archived.',
-            icon: 'success',
-            timer: 2000,
-            showConfirmButton: false
-          });
-        }
-        else {
-          Swal.fire({
-            title: 'Error!',
-            text: 'Failed to archive selected rows. Please try again later.',
-            icon: 'error',
-            timer: 2000,
-            showConfirmButton: false
-          });
-        }
-      }
-
-    }
   };
-  const handleArchiveClick = async (record_id: any) => {
+
+// acrhived function 
+const handleArchiveAllClick = async () => {
+  const confirmed = await showAlert('Are Your Sure', 'This action will archive all selected rows?', 'Yes', 'No');
+  if (confirmed) {
+    const archivedRows = Array.from(selectedRows).map(index => commissionList[index].record_id);
+    if (archivedRows.length > 0) {
+      const newValue = {
+        record_id: archivedRows,
+        is_archived: true
+      };
+      const res = await postCaller(EndPoints.update_commission_archive, newValue);
+      if (res.status === HTTP_STATUS.OK) {
+        dispatch(fetchCommissions(pageNumber));
+        const remainingSelectedRows = Array.from(selectedRows).filter(index => !archivedRows.includes(commissionList[index].record_id));
+        const isAnyRowSelected = remainingSelectedRows.length > 0;
+        setSelectAllChecked(isAnyRowSelected);
+        setSelectedRows(new Set());
+        await successSwal("Archived", "All Selected rows have been archived", "success", 2000, false);
+      }
+      else {
+        await successSwal("Error", "Failed to archive selected rows. Please try again later.", "error", 2000, false);
+      }
+    }
+  }
+};
+const handleArchiveClick = async (record_id: any) => {
+  const confirmed = await showAlert('Are Your Sure', 'This action will archive selected rows?', 'Yes', 'No');
+  if (confirmed) {
     const archived: number[] = [record_id];
     let newValue = {
       record_id: archived,
       is_archived: true
     }
-    const pageNumber = {
-      page_number: currentPage,
-      page_size: itemsPerPage,
-
-    };
     const res = await postCaller(EndPoints.update_commission_archive, newValue);
     if (res.status === HTTP_STATUS.OK) {
       dispatch(fetchCommissions(pageNumber))
+      await successSwal("Archived", "Selected rows have been archived", "success", 2000, false);
     }
-  };
+    else {
+      await successSwal("Error", "Failed to archive selected rows. Please try again later.", "error", 2000, false);
+    }
+  }
+};
 
-  const handleViewArchiveToggle = () => {
-    setViewArchived(!viewArchived);
-    // When toggling, reset the selected rows
-    setSelectedRows(new Set());
-    setSelectAllChecked(false);
-  };
+const handleViewArchiveToggle = () => {
+  setViewArchived(!viewArchived);
+  // When toggling, reset the selected rows
+  setSelectedRows(new Set());
+  setSelectAllChecked(false);
+};
+
+// sorting function 
   const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
@@ -192,6 +174,8 @@ const CommissionRate: React.FC = () => {
       }
     });
   }
+
+  // filter function  
   const fetchFunction = (req: any) => {
     dispatch(fetchCommissions(req));
   };
@@ -202,13 +186,10 @@ const CommissionRate: React.FC = () => {
     return <div className="loader-container"><Loading /> {loading}</div>;
   }
 
-
   return (
-
     <div className="comm">
       <Breadcrumb head="Commission" linkPara="Configure" route={ROUTES.CONFIG_PAGE} linkparaSecond="Commission Rate" />
       <div className="commissionContainer">
-
         <TableHeader
           title="Commisstion Rate"
           onPressViewArchive={() => handleViewArchiveToggle()}
@@ -233,138 +214,43 @@ const CommissionRate: React.FC = () => {
           commission={editedCommission}
           editMode={editMode}
           handleClose={handleClose}
+          pageNumber={currentPage1}
+          pageSize={pageSize1}
         />}
-        <div
-          className="TableContainer"
-          style={{ overflowX: "auto", whiteSpace: "nowrap" }}
-        >
-          <table>
-            <thead>
-              <tr>
-                {
-                  Commissioncolumns?.map((item, key) => (
-                    <SortableHeader
-                      key={key}
-                      isCheckbox={item.isCheckbox}
-                      titleName={item.displayName}
-                      data={commissionList}
-                      isAllRowsSelected={isAllRowsSelected}
-                      isAnyRowSelected={isAnyRowSelected}
-                      selectAllChecked={selectAllChecked}
-                      setSelectAllChecked={setSelectAllChecked}
-                      selectedRows={selectedRows}
-                      setSelectedRows={setSelectedRows}
-                      sortKey={item.name}
-                      sortDirection={sortKey === item.name ? sortDirection : undefined}
-                      onClick={() => handleSort(item.name)}
-                    />
-
-                  ))
-                }
-                {
-                  viewArchived === true ? null : <th>
-                    <div className="action-header">
-                      <p>Action</p>
-                    </div>
-                  </th>
-                }
-              </tr>
-            </thead>
-            <tbody>
-              {currentPageData?.length > 0
-                ? currentPageData?.map((el: any, i: any) => (
-                  <tr
-                    key={i}
-                    style={{ background: selectedRows.has(i) ? "#56565610" : "" }}
-
-                  >
-                    <td style={{ fontWeight: "500", color: "black" }}>
-                      <div className="flex-check">
-                        <CheckBox
-                          checked={selectedRows.has(i)}
-                          onChange={() => {
-                            // If there's only one row of data and the user clicks its checkbox, select all rows
-                            if (currentPageData?.length === 1) {
-                              setSelectAllChecked(true);
-                              setSelectedRows(new Set([0]));
-                            } else {
-                              toggleRowSelection(
-                                i,
-                                selectedRows,
-                                setSelectedRows,
-                                setSelectAllChecked
-                              );
-                            }
-                          }}
-                        />
-                        {el.partner}
-                      </div>
-                    </td>
-                    <td>{el.installer}</td>
-                    <td>{el.state}</td>
-                    <td>{el.sale_type}</td>
-                    <td>{el.sale_price}</td>
-                    <td>{el.rep_type}</td>
-                    <td>{el.rl}</td>
-                    <td>{el.rate}</td>
-                    <td>{el.start_date}</td>
-                    <td>{el.end_date}</td>
-                    {
-                      viewArchived === true ? null : <td>
-                        <div className="action-icon">
-                          <div className="action-archive" style={{ cursor: "pointer" }} onClick={() => handleArchiveClick(el.record_id)}>
-                            <img src={ICONS.ARCHIVE} alt="" />
-                            <span className="tooltiptext">Archive</span>
-                          </div>
-                          <div className="action-archive" style={{ cursor: "pointer" }} onClick={() => handleEditCommission(el)}>
-                            <img src={ICONS.editIcon} alt="" />
-                            <span className="tooltiptext">Edit</span>
-                          </div>
-                        </div>
-
-                      </td>
-                    }
-                  </tr>
-                ))
-                : <tr style={{ border: 0 }}>
-                  <td colSpan={10}>
-                    <div className="data-not-found">
-                      <DataNotFound />
-                      <h3>Data Not Found</h3>
-                    </div>
-                  </td>
-                </tr>
-              }
-            </tbody>
-          </table>
-        </div>
+      <CommissionRowComponent
+      handleArchiveClick={handleArchiveClick}
+      handleEditCommission={handleEditCommission}
+      handleSort={handleSort}
+      isAllRowsSelected={isAllRowsSelected}
+      isAnyRowSelected={isAnyRowSelected}
+      viewArchived={viewArchived}
+      selectAllChecked={selectAllChecked}
+      selectedRows={selectedRows}
+      setSelectAllChecked={setSelectAllChecked}
+      setSelectedRows={setSelectedRows}
+      sortDirection={sortDirection}
+      sortKey={sortKey}
+      currentPageData={currentPageData}
       
+      />
+      
+      {/* pagination component  */}
         {
-            commissionList?.length > 0 ?
-        <div className="page-heading-container">
-          <p className="page-heading">
-            {currentPage} - {totalPages1} of {currentPageData?.length} item
-          </p>
-
-         {/* <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages} 
-              paginate={paginate}
-              currentPageData={currentPageData}
-              goToNextPage={goToNextPage}
-              goToPrevPage={goToPrevPage}
-            />  */}
+          commissionList?.length > 0 ?
+            <div className="page-heading-container">
+              <p className="page-heading">
+                {currentPage} - {totalPages1} of {currentPageData?.length} item
+              </p>
               <PaginationComponent
-          currentPage={currentPage1}
-          itemsPerPage={pageSize1}
-          totalPages={totalPages1}
-          onPageChange={handlePageChange}
-          handleItemsPerPageChange={handleItemsPerPageChange}
-
-        />
-        </div>
-: null
-}
+                currentPage={currentPage1}
+                itemsPerPage={pageSize1}
+                totalPages={totalPages1}
+                onPageChange={handlePageChange}
+                handleItemsPerPageChange={handleItemsPerPageChange}
+              />
+            </div>
+            : null
+        }
       </div>
     </div>
   );

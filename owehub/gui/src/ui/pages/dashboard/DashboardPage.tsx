@@ -1,63 +1,56 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./dasboard.css";
 import Select from "react-select";
 import DashboardTotal from "./DashboardTotal";
 import { ICONS } from "../../icons/Icons";
 import DashBoardTable from "./DashBoardTable";
 import DashBoardChart from "./DashBoardChart";
-import { payRollData } from "../../../resources/static_data/StaticData";
 import { comissionValueData } from "../../../resources/static_data/StaticData";
 import FilterModal from "../../components/FilterModal/FilterModal";
-import "react-dates/lib/css/_datepicker.css";
-import "react-dates/initialize";
-import { DateRangePicker, FocusedInputShape } from "react-dates";
-import { useAppDispatch } from "../../../redux/hooks";
-import { logout } from "../../../redux/apiSlice/authSlice/authSlice";
-
-interface DateRangePickerProps {
-  startDate: moment.Moment | null;
-  startDateId: string;
-  endDate: moment.Moment | null;
-  endDateId: string;
-  onDatesChange: ({
-    startDate,
-    endDate,
-  }: {
-    startDate: moment.Moment | null;
-    endDate: moment.Moment | null;
-  }) => void;
-  focusedInput: FocusedInputShape | null;
-  onFocusChange: (focusedInput: FocusedInputShape | null) => void;
-  displayFormat: string;
-  block?: boolean;
-  showClearDates?: boolean;
-  transitionDuration?: number;
-  withPortal?: boolean;
-  withFullScreenPortal?: boolean;
-}
+import "react-date-range/dist/styles.css"; // main style file
+import "react-date-range/dist/theme/default.css"; // theme css file
+import { DateRangePicker } from "react-date-range";
 
 export const DashboardPage: React.FC = () => {
-  const [startDate, setStartDate] = useState<moment.Moment | null>(null);
-  const [endDate, setEndDate] = useState<moment.Moment | null>(null);
-  const [focusedInput, setFocusedInput] = useState<FocusedInputShape | null>(null);
+  const [selectionRange, setSelectionRange] = useState({
+    startDate: new Date(),
+    endDate: new Date(),
+    key: "selection",
+  });
+  const [showDatePicker, setShowDatePicker] = useState(false);
+
+  const handleSelect = (ranges: any) => {
+    setSelectionRange(ranges.selection);
+  };
+
+  const handleToggleDatePicker = () => {
+    setShowDatePicker(!showDatePicker);
+  };
+
+  const handleResetDates = () => {
+    setSelectionRange({
+      startDate: new Date(),
+      endDate: new Date(),
+      key: "selection",
+    });
+  };
 
   const [active, setActive] = React.useState<number>(0);
   const [filterModal, setFilterModal] = React.useState<boolean>(false);
 
-  const [selectedOption, setSelectedOption] = useState<string>(
+ /* const [selectedOption, setSelectedOption] = useState<string>(
     payRollData[0].label
-  );
+  );*/
   const [selectedOption2, setSelectedOption2] = useState<string>(
     comissionValueData[0].label
   );
 
-  const dispatch = useAppDispatch()
-
-  const handleSelectChange = (
+  
+ /* const handleSelectChange = (
     selectedOption: { value: string; label: string } | null
   ) => {
     setSelectedOption(selectedOption ? selectedOption.value : "");
-  };
+  };*/
   const handleSelectChange2 = (
     selectedOption2: { value: string; label: string } | null
   ) => {
@@ -66,28 +59,6 @@ export const DashboardPage: React.FC = () => {
   const filterClose = () => {
     setFilterModal(false);
   };
-
-  /** temp solution for session logout */
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    const expirationTime = localStorage.getItem('expirationTime');
-
-    if (token && expirationTime) {
-      const currentTime = Date.now();
-      if (currentTime < parseInt(expirationTime, 10)) {
-        // Token is still valid
-        // Schedule logout after 480 minutes
-        const timeout = setTimeout(() => {
-         dispatch(logout())
-        }, 480 * 60 * 1000); // 480 minutes in milliseconds
-
-        return () => clearTimeout(timeout);
-      } else {
-        // Token has expired
-        dispatch(logout())
-      }
-    }
-  }, []);
 
   return (
     <>
@@ -120,7 +91,7 @@ export const DashboardPage: React.FC = () => {
                     height: "30px",
                     alignContent: "center",
                     backgroundColor: "#ECECEC",
-                    cursor: "pointer"
+                    cursor: "pointer",
                   }),
                   indicatorSeparator: () => ({
                     display: "none",
@@ -144,7 +115,7 @@ export const DashboardPage: React.FC = () => {
               <input type="date" className="payroll-date" />
               <label className="payroll-label">End:</label>
               <input type="date" className="payroll-date" /> */}
-              <div className="date-picker">
+              {/* <div className="date-picker">
                 <DateRangePicker
                   startDate={startDate}
                   startDateId="s_id"
@@ -165,6 +136,28 @@ export const DashboardPage: React.FC = () => {
                   withPortal
                   isOutsideRange={() => false}
                 />
+              </div> */}
+              <div style={{ position: "relative", top: "-1px" }}>
+                <label className="date-button" onClick={handleToggleDatePicker}>
+                  Select Dates
+                </label>
+                {showDatePicker && (
+                  <div className="calender-container">
+                    <DateRangePicker
+                      ranges={[selectionRange]}
+                      onChange={handleSelect}
+                    />
+                    <button className="reset-calender" onClick={handleResetDates}>
+                      Reset
+                    </button>
+                    <button
+                      className="close-calender"
+                      onClick={handleToggleDatePicker}
+                    >
+                      Close
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -228,6 +221,7 @@ export const DashboardPage: React.FC = () => {
             fetchFunction={() => {}}
           />
         )}
+
         <div className="" style={{ marginTop: "20px" }}>
           {active === 0 && <DashBoardTable />}
           {active === 1 && <DashBoardChart />}

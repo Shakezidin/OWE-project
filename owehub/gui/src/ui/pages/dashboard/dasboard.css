@@ -17,7 +17,52 @@
   text-align: left;
   color: #393851;
 }
-
+.date-button{
+  border-radius: 0.40rem;
+  border: none;
+  outline: none;
+  background: #ECECEC;
+  padding: 6px;
+  cursor: pointer;
+  text-wrap: nowrap;
+  color: rgb(52, 64, 84);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 14.5px;
+}
+.calender-container{
+  position: absolute;
+  z-index: 999;
+  right: -7%;
+  top: 130%;
+  background-color: #fff;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4);
+  border-radius: 0.40rem;
+}
+.close-calender{
+  background: #3D91FF;
+  color: white;
+  font-size: 12px;
+  padding: 4px 15px;
+  border-radius: 50px;
+  cursor: pointer;
+  position: relative;
+  left: 410px;
+  bottom: 10px;
+  border: none;
+}
+.reset-calender{
+  background: #3D91FF;
+  color: white;
+  font-size: 12px;
+  padding: 4px 15px;
+  border-radius: 50px;
+  cursor: pointer;
+  position: relative;
+  left: 400px;
+  bottom: 10px;
+  border: none;
+}
 .commission-section-dash {
   display: flex;
   justify-content: space-between;
@@ -188,14 +233,24 @@
   justify-content: space-between;
   padding: 1rem 1rem 0 1rem;
   border-bottom: 1px solid var(--border-color);
+  background-color: #0493ce;
 }
 
 .help-section {
   display: flex;
   justify-content: space-between;
   /* padding: 1rem; */
-  padding: 0 1rem 0 1rem;
+  padding: 0 1rem 1rem 1rem;
   /* margin-left: 1rem; */
+ 
+}
+.help-section h3{
+font-size: 28px;
+font-weight: 600;
+/* line-height: 44px; */
+text-align: left;
+color: white;
+
 }
 .create-input-container {
   /* text-align: left; */
@@ -211,7 +266,9 @@
   display: flex;
   gap: 1rem;
   flex-direction: column;
+  
 }
+
 .create-input-field-help {
   /* width: 280px; */
   /* margin-left: 2rem; */
@@ -325,7 +382,7 @@
   /* background-color: #263747; */
   width: 100%;
   margin-top: 0.5rem;
-  background-color: #F8F8F8;
+  background-color:white;
   
 }
 .inputLabeldash p{
@@ -335,6 +392,29 @@
   text-align: left;
   
   }
+
+  .inputLabel-help {
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 18px;
+    text-align: left;
+    
+  }
+  .file-input-container-help {
+    position: relative;
+    border: 1px solid #ced4da; /* Show border */
+    border-radius: 8px;
+    padding: 4px;
+    /* width: 290px; */
+    margin-top: 0.1rem;
+    height: 38px;
+    border-style: dashed;
+    border-color: #0493ce;
+    background-color: #E8F8FF;
+  }
+
+
+  
 
   .custom-button-dash {
     /* Define your button styles */
@@ -362,3 +442,4 @@
   .createUserActionButtonDash :hover {
     background-color: #263747;
   }
+ 

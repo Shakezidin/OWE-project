@@ -18,9 +18,11 @@ import { Credentials } from "../../../core/models/api_models/AuthModel";
 import { ROUTES } from "../../../routes/routes";
 import { toast } from "react-toastify";
 import { loginAction } from "../../../redux/apiActions/authActions";
-import { useAppDispatch } from "../../../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { HTTP_STATUS } from "../../../core/models/api_models/RequestModel";
 import { unwrapResult } from "@reduxjs/toolkit";
+import { RootState } from "../../../redux/store";
+import Loading from "../../components/loader/Loading";
 
 export const LoginPage = () => {
   const navigate = useNavigate();
@@ -33,6 +35,7 @@ export const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
  
   const dispatch = useAppDispatch();
+  const { loading } = useAppSelector((state: RootState) => state.auth);
 
   const handleInputChange = (name: string, value: any) => {
     setCredentials((prevState) => ({
@@ -85,12 +88,11 @@ export const LoginPage = () => {
         localStorage.setItem("token", access_token);
         localStorage.setItem("password", credentials.password);
         localStorage.setItem('expirationTime', (Date.now() + parseInt(time_to_expire_minutes) * 60 * 1000).toString()); // Expiration time is 480 minutes from now
-
-        localStorage.setItem(
-          "isRememberMe",
-          credentials.isRememberMe.toString()
-        );
-        navigate("/dashboard");
+        localStorage.setItem("isRememberMe", credentials.isRememberMe.toString());
+       // navigate("/dashboard");
+      setTimeout(() => {
+        window.location.reload()
+      }, 1000);
       } else {
         toast.error(result.message);
       }
@@ -101,9 +103,6 @@ export const LoginPage = () => {
   }
   };
 
-  // if (isAuthenticated) {
-  //   navigate("/dashboard");
-  // }
   /** UI render */
 
   return (
@@ -201,6 +200,11 @@ export const LoginPage = () => {
             </div>
           </form>
         </div>
+        {loading && (
+        <div>
+          <Loading /> {loading}
+        </div>
+      )}
       </div>
     </div>
   );

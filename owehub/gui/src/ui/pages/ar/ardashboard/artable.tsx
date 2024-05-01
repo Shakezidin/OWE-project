@@ -12,11 +12,13 @@ import SortableHeader from "../../../components/tableHeader/SortableHeader";
 import  "../../configure/configure.css";
 import HelpDashboard from "../../dashboard/HelpDashboard";
 import { BiSupport } from "react-icons/bi";
+import PaginationComponent from "../../../components/pagination/PaginationComponent";
+
 
 
 const ArDashBoardTable = () => {
 
-
+const [pageSize1, setPageSize1] = useState(10);
   const [openIcon, setOpenIcon] = useState<boolean>(false);
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -38,37 +40,30 @@ const ArDashBoardTable = () => {
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
   const [sortKey, setSortKey] = useState("");
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [currentPage1,setCurrentPage1] = useState(1)
   useEffect(() => {
     const pageNumber = {
-      page_number: currentPage,
-      page_size: itemsPerPage,
+      page_number: currentPage1,
+      page_size: pageSize1,
       archived: viewArchived ? true : undefined,
     };
     dispatch(fetchCommissions(pageNumber));
 
-  }, [dispatch, currentPage, itemsPerPage, viewArchived]);
+  }, [dispatch, currentPage1, pageSize1, viewArchived]);
+  const handleItemsPerPageChange = (e: any) => {
+    const newItemsPerPage = parseInt(e.target.value, 10);
+    setPageSize1(newItemsPerPage);
+  setCurrentPage1(1) // Reset to the first page when changing items per page
+  };
+  const handlePageChange = (page: number) => {
+    setCurrentPage1(page)
+  };
 
-  const paginate = (pageNumber: number) => {
-    dispatch(setCurrentPage(pageNumber));
-  };
-  const goToNextPage = () => {
-    dispatch(setCurrentPage(currentPage + 1));
-  };
-  const goToPrevPage = () => {
-    dispatch(setCurrentPage(currentPage - 1));
-  };
-  const filter = () => {
-    setFilterOpen(true)
-  }
 
-  const totalPages = Math.ceil(commissionList?.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const handleAddCommission = () => {
-    setEditMode(false);
-    setEditedCommission(null);
-    handleOpen()
-  };
+  const totalPages1 = Math.ceil(commissionList?.length / pageSize1);
+  const startIndex = (currentPage - 1) * pageSize1;
+  const endIndex = startIndex + pageSize1;
+ 
 
   const currentPageData = commissionList?.slice(startIndex, endIndex);
   const isAnyRowSelected = selectedRows?.size > 0;
@@ -106,39 +101,26 @@ const ArDashBoardTable = () => {
   // }
 
   const Commissioncolumns = [
-    { name: 'partner', displayName: 'Unique ID', type: 'string', isCheckbox: true },
-    { name: 'installer', displayName: 'Home Owner', type: 'string', isCheckbox: false },
-    { name: 'state', displayName: 'Current Status', type: 'string', isCheckbox: false },
-    { name: 'sale_type', displayName: 'Status Date', type: 'string', isCheckbox: false },
-    { name: 'sale_price', displayName: 'Owe Contractor', type: 'number', isCheckbox: false },
-    { name: 'rep_type', displayName: 'DBA', type: 'string', isCheckbox: false },
-    { name: 'rl', displayName: 'Commission Model', type: 'number', isCheckbox: false },
-    { name: 'rate', displayName: 'Percentage', type: 'number', isCheckbox: false },
-    { name: 'start_date', displayName: 'Type', type: 'date', isCheckbox: false },
-    { name: 'end_date', displayName: 'Today', type: 'date', isCheckbox: false },
+    { name: 'partner', displayName: 'Partner', type: 'string', isCheckbox: true },
+    { name: 'installer', displayName: 'Installer', type: 'string', isCheckbox: false },
+    { name: 'installer', displayName: 'Type', type: 'string', isCheckbox: false },
+    { name: 'sale_type', displayName: 'Service', type: 'string', isCheckbox: false },
+    { name: 'sale_price', displayName: 'Homr Owner', type: 'number', isCheckbox: false },
+    { name: 'rep_type', displayName: 'Strt Add', type: 'string', isCheckbox: false },
+    { name: 'rl', displayName: 'City', type: 'number', isCheckbox: false },
+    { name: 'rate', displayName: 'ST', type: 'number', isCheckbox: false },
+    { name: 'start_date', displayName: 'ZIP', type: 'date', isCheckbox: false },
+    { name: 'end_date', displayName: 'KW', type: 'date', isCheckbox: false },
 
-    { name: 'installer', displayName: 'Amount', type: 'string', isCheckbox: false },
-    { name: 'state', displayName: 'Finance Type', type: 'string', isCheckbox: false },
-    { name: 'sale_type', displayName: 'Sys Size', type: 'string', isCheckbox: false },
-    { name: 'sale_price', displayName: 'Contract', type: 'number', isCheckbox: false },
-    { name: 'rep_type', displayName: 'Loan Fee', type: 'string', isCheckbox: false },
-    { name: 'rl', displayName: 'EPC', type: 'number', isCheckbox: false },
-    { name: 'rate', displayName: 'Address', type: 'number', isCheckbox: false },
-    { name: 'start_date', displayName: 'R+R', type: 'date', isCheckbox: false },
-    { name: 'end_date', displayName: 'Comm Rate', type: 'date', isCheckbox: false },
-
-    { name: 'installer', displayName: 'Net EPC', type: 'string', isCheckbox: false },
-    { name: 'state', displayName: 'Credit', type: 'string', isCheckbox: false },
-    { name: 'sale_type', displayName: 'Rep 2', type: 'string', isCheckbox: false },
-    { name: 'sale_price', displayName: 'Net Comm', type: 'number', isCheckbox: false },
-    { name: 'rep_type', displayName: 'Draw AMT', type: 'string', isCheckbox: false },
-    { name: 'rl', displayName: 'Amt Paid', type: 'number', isCheckbox: false },
-    { name: 'rate', displayName: 'Balance', type: 'number', isCheckbox: false },
-    { name: 'start_date', displayName: 'Dealer Code', type: 'date', isCheckbox: false },
-    { name: 'end_date', displayName: 'Contract date', type: 'date', isCheckbox: false },
-
-    { name: 'start_date', displayName: 'State', type: 'date', isCheckbox: false },
-    { name: 'end_date', displayName: 'Sub Total', type: 'date', isCheckbox: false },
+    { name: 'installer', displayName: 'Contract Date', type: 'string', isCheckbox: false },
+    { name: 'state', displayName: 'Inst Date', type: 'string', isCheckbox: false },
+    { name: 'sale_type', displayName: 'Curr Stat', type: 'string', isCheckbox: false },
+    { name: 'sale_price', displayName: 'Stat Date', type: 'number', isCheckbox: false },
+    { name: 'rep_type', displayName: 'Contract', type: 'string', isCheckbox: false },
+    { name: 'rl', displayName: 'AR Total', type: 'number', isCheckbox: false },
+    { name: 'rate', displayName: 'Amt Paid', type: 'number', isCheckbox: false },
+    { name: 'start_date', displayName: 'Curr Due', type: 'date', isCheckbox: false },
+    { name: 'end_date', displayName: 'Est. Pipeline', type: 'date', isCheckbox: false },
   ];
 
   const handleIconOpen = () => setOpenIcon(true);
@@ -225,26 +207,13 @@ const ArDashBoardTable = () => {
                     <td>{el.start_date}</td>
                     <td>{el.end_date}</td>
                     
-                    <td style={{ color: 'blue' }}>${el.rl}</td>
+                    <td>${el.rl}</td>
                     <td>{el.state}</td>
                     <td>{el.sale_type}</td>
                     <td>{el.sale_price}</td>
                     <td>{el.rep_type}</td>
                     <td>{el.rl}</td>
                     <td>{el.rate}</td>
-                    <td>{el.start_date}</td>
-                    <td>{el.end_date}</td>
-
-                    <td>{el.installer}</td>
-                    <td>{el.state}</td>
-                    <td>{el.sale_type}</td>
-                    <td>{el.sale_price}</td>
-                    <td>{el.rep_type}</td>
-                    <td>{el.rl}</td>
-                    <td>{el.rate}</td>
-                    <td>{el.start_date}</td>
-                    <td>{el.end_date}</td>
-
                     <td>{el.start_date}</td>
                     <td>{el.end_date}</td>
                     <td style={{height: "14px", width: "14px",stroke:"0.2",cursor:"pointer"}}>
@@ -262,10 +231,10 @@ const ArDashBoardTable = () => {
 
         <div className="page-heading-container">
           <p className="page-heading">
-            {currentPage} - {totalPages} of {currentPageData?.length} item
+            {currentPage} - {totalPages1} of {currentPageData?.length} item
           </p>
 
-          {
+          {/* {
             commissionList?.length > 0 ? <Pagination
               currentPage={currentPage}
               totalPages={totalPages} // You need to calculate total pages
@@ -274,7 +243,15 @@ const ArDashBoardTable = () => {
               goToNextPage={goToNextPage}
               goToPrevPage={goToPrevPage}
             /> : null
-          }
+          } */}
+           <PaginationComponent
+          currentPage={currentPage1}
+          itemsPerPage={pageSize1}
+          totalPages={totalPages1}
+          onPageChange={handlePageChange}
+          handleItemsPerPageChange={handleItemsPerPageChange}
+
+        />
           {openIcon && (
           <HelpDashboard
             commission={editedCommission}

@@ -7,20 +7,27 @@ import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoin
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import { useDispatch } from "react-redux";
 import { LoanTypeModel } from "../../../../core/models/configuration/create/LoanTypeModel";
+import { useAppDispatch } from "../../../../redux/hooks";
+import { validateConfigForm } from "../../../../utiles/configFormValidation";
+import { fetchLoanType } from "../../../../redux/apiSlice/configSlice/config_get_slice/loanTypeSlice";
+import { errorSwal, successSwal } from "../../../components/alert/ShowAlert";
 
 interface loanProps {
   handleClose: () => void;
   editMode: boolean;
   loanData: LoanTypeModel | null;
+  page_number: number;
+  page_size: number;
 }
 
 const CreateLoanType: React.FC<loanProps> = ({
   handleClose,
   editMode,
   loanData,
+  page_number, page_size
 }) => {
-  const dispatch = useDispatch();
-
+  const dispatch = useAppDispatch();
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [createLoanTypeData, setCreateLoanTypeData] = useState<LoanTypeModel>({
     record_id: loanData ? loanData?.record_id : 0,
     product_code: loanData ? loanData?.product_code : "Prd2",
@@ -29,6 +36,11 @@ const CreateLoanType: React.FC<loanProps> = ({
     description: loanData ? loanData?.description : "description",
   });
 
+  const page = {
+    page_number: page_number,
+    page_size: page_size,
+
+};
   const handleOptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setCreateLoanTypeData((prevData) => ({
@@ -43,12 +55,31 @@ const CreateLoanType: React.FC<loanProps> = ({
     const { name, value } = e.target;
     setCreateLoanTypeData((prevData) => ({
       ...prevData,
-      [name]: value,
+      [name]: name === "adder"
+      ? parseFloat(value)
+      : value,
     }));
+    setErrors(prevErrors => ({
+      ...prevErrors,
+      [name]: ''
+  }));
   };
 
   const submitLoanType = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const validationRules = {
+      product_code: [{ condition: (value: any) => !!value, message: "Product Code Name is required" }],
+      adder: [{ condition: (value: any) => !!value, message: "Adder is required" }],
+
+      description: [{ condition: (value: any) => !!value, message: "Description is required" }],
+     
+
+  };
+  const { isValid, errors } = validateConfigForm(createLoanTypeData!, validationRules);
+  if (!isValid) {
+      setErrors(errors);
+      return;
+  }
     try {
       dispatch(updateLoanTypeForm(createLoanTypeData));
       if (createLoanTypeData.record_id) {
@@ -57,11 +88,11 @@ const CreateLoanType: React.FC<loanProps> = ({
           createLoanTypeData
         );
         if (res.status === 200) {
-          alert(res.message);
-          handleClose();
-          window.location.reload();
+          await successSwal("", res.message, "success", 2000, false);
+          handleClose()
+          dispatch(fetchLoanType(page))
         } else {
-          alert(res.message);
+          await errorSwal("", res.message, "success", 2000, false);
         }
       } else {
         const { record_id, ...cleanedFormData } = createLoanTypeData;
@@ -70,11 +101,11 @@ const CreateLoanType: React.FC<loanProps> = ({
           cleanedFormData
         );
         if (res.status === 200) {
-          alert(res.message);
-          handleClose();
-          window.location.reload();
+          await successSwal("", res.message, "success", 2000, false);
+                    handleClose()
+                    dispatch(fetchLoanType(page))
         } else {
-          alert(res.message);
+          await errorSwal("", res.message, "success", 2000, false);
         }
       }
     } catch (error) {
@@ -105,6 +136,7 @@ const CreateLoanType: React.FC<loanProps> = ({
                     placeholder={"Enter"}
                     onChange={(e) => handleloanTypeChange(e)}
                   />
+                     {errors.product_code && <span className="error">{errors.product_code}</span>}
                 </div>
                 {/* Radio buttons for Yes/No */}
                 <div className="create-input-field">
@@ -137,13 +169,14 @@ const CreateLoanType: React.FC<loanProps> = ({
 
                 <div className="create-input-field">
                   <Input
-                    type={"text"}
+                    type={"number"}
                     label="Adder"
                     value={createLoanTypeData.adder}
                     name="adder"
                     placeholder={"Enter"}
                     onChange={(e) => handleloanTypeChange(e)}
                   />
+                     {errors.adder && <span className="error">{errors.adder}</span>}
                 </div>
               </div>
               <div className="create-input-field-note">
@@ -159,6 +192,7 @@ const CreateLoanType: React.FC<loanProps> = ({
                   value={createLoanTypeData.description}
                   placeholder="Type"
                 ></textarea>
+                   {errors.description && <span className="error">{errors.description}</span>}
               </div>
             </div>
           </div>

@@ -7,7 +7,7 @@ export const installers = [{ value: "OWE", label: "OWE" }];
 export const statData = [{ value: "Alaska", label: "Alaska" }];
 
 export const respTypeData = [{ value: "EMPLOYEE", label: "EMPLOYEE" }];
-export const subDealer:Option[] = [
+export const subDealer: Option[] = [
   { value: "Sub Dealer Name1", label: "Sub Dealer Name1" },
 ];
 export const dealer = [{ value: "Shushank Sharma", label: "Shushank Sharma" }];
@@ -33,16 +33,6 @@ export const payPartnerData = [
 ];
 export const payInstallerNameData = [{ value: "OWE", label: "OWE" }];
 export const paySaleTypeData = [{ value: "BATTERY", label: "BATTERY" }];
-export const userSelectData = [
-  { value: "Admin", label: "Admin" },
-  { value: "SubDealer Owner", label: "DB User" },
-  { value: "Appointment Setter", label: "Appointment Setter" },
-  { value: "Partner", label: "Partner" },
-  { value: "Regional Manager", label: "Regional Manager" },
-  { value: "Dealer Owner", label: "Dealer Owner" },
-  { value: "Sale Representative", label: "Sales Representative" },
-  { value: "Sales Manager", label: "Sales Manager" },
-];
 
 export const payRollData = [
   { value: "02/04/2024", label: "02/04/2024" },
