@@ -1009,6 +1009,186 @@ var apiRoutes = ApiRoutes{
 			types.RoleAdmin,
 		},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_adjustments",
+		apiHandler.HandleGetAdjustmentsDataRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/create_adjustments",
+		apiHandler.HandleCreateAdjustmentsRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_adjustments_archive",
+		apiHandler.HandleUpdateAdjustmentsArchiveRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	//{
+	//	strings.ToUpper("POST"),
+	//	"/owe-commisions-service/v1/update_adjustments",
+	//	apiHandler.HandleGetadjustmentsDataRequest,
+	//	true,
+	//	[]types.UserRoles{
+	//		types.RoleAdmin,
+	//	},
+	//},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_arschedule",
+		apiHandler.HandleGetArScheduleDataRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/create_arschedule",
+		apiHandler.HandleCreateArScheduleRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_arschedule_archive",
+		apiHandler.HandleUpdateArScheduleArchiveRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	//{
+	//	strings.ToUpper("POST"),
+	//	"/owe-commisions-service/v1/update_arschedule",
+	//	apiHandler.HandleGetadjustmentsDataRequest,
+	//	true,
+	//	[]types.UserRoles{
+	//		types.RoleAdmin,
+	//	},
+	//},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_installcost",
+		apiHandler.HandleGetInstallCostDataRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/create_installcost",
+		apiHandler.HandleCreateInstallCostRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_installcost_archive",
+		apiHandler.HandleUpdateInstallCostArchiveRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	//{
+	//	strings.ToUpper("POST"),
+	//	"/owe-commisions-service/v1/update_arschedule",
+	//	apiHandler.HandleGetadjustmentsDataRequest,
+	//	true,
+	//	[]types.UserRoles{
+	//		types.RoleAdmin,
+	//	},
+	//},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_rateadjustments",
+		apiHandler.HandleGetRateAdjustmentsRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/create_rateadjustments",
+		apiHandler.HandleCreateRateAdjustmentsRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_rateadjustments_archive",
+		apiHandler.HandleUpdateRateAdjustmentsArchiveRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	//{
+	//	strings.ToUpper("POST"),
+	//	"/owe-commisions-service/v1/update_rateadjustments",
+	//	apiHandler.HandleGetadjustmentsDataRequest,
+	//	true,
+	//	[]types.UserRoles{
+	//		types.RoleAdmin,
+	//	},
+	//},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_leaderoverride",
+		apiHandler.HandleGetLeaderOverrideDataRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/create_leaderoverride",
+		apiHandler.HandleCreateLeaderOverrideRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_leaderoverride_archive",
+		apiHandler.HandleUpdateLeaderOverrideArchiveRequest,
+		true,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	//{
+	//	strings.ToUpper("POST"),
+	//	"/owe-commisions-service/v1/update_leaderoverride",
+	//	apiHandler.HandleGetadjustmentsDataRequest,
+	//	true,
+	//	[]types.UserRoles{
+	//		types.RoleAdmin,
+	//	},
+	//},
 }
 
 /******************************************************************************
