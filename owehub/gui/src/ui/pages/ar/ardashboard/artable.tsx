@@ -105,7 +105,7 @@ const [pageSize1, setPageSize1] = useState(10);
     { name: 'installer', displayName: 'Installer', type: 'string', isCheckbox: false },
     { name: 'installer', displayName: 'Type', type: 'string', isCheckbox: false },
     { name: 'sale_type', displayName: 'Service', type: 'string', isCheckbox: false },
-    { name: 'sale_price', displayName: 'Homr Owner', type: 'number', isCheckbox: false },
+    { name: 'sale_price', displayName: 'Home Owner', type: 'number', isCheckbox: false },
     { name: 'rep_type', displayName: 'Strt Add', type: 'string', isCheckbox: false },
     { name: 'rl', displayName: 'City', type: 'number', isCheckbox: false },
     { name: 'rate', displayName: 'ST', type: 'number', isCheckbox: false },

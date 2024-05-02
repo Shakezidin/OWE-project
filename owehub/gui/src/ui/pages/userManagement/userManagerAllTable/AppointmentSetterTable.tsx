@@ -132,7 +132,9 @@ const AppointmentSetterTable: React.FC<AppointmentSetterProps> = ({ data, onClic
                     <td>
                       {el.amount ? el.amount : 'NA'}
                     </td>
-                    <td>{el.description}</td>
+                    <td style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+                    {el.description ? el.description : 'NA'}
+                  </td>
                     <td>
                     <div className="action-icon">
                       <div

@@ -57,6 +57,7 @@ function PieChartWithPaddingAngle({ data }: PieChartProps) { // Destructure data
             paddingAngle={0}
             dataKey="value"
             onClick={handleClick}
+            focusable={false}
           >
             <Label
               content={() => (
