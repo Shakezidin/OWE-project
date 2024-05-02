@@ -32,6 +32,7 @@ const UserTable: React.FC<UserTableProps> = ({
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   
   const handleSort = (key: string) => {
+    console.log(key)
     if (sortKey === key) {
       setSortDirection(sortDirection === "desc" ? "asc" : "desc");
     } else {
@@ -61,6 +62,8 @@ const UserTable: React.FC<UserTableProps> = ({
       }
     });
   }
+
+  console.log("sortedData", sortedData)
   
   // Now sortedData contains the modified and sorted array based on sortKey and sortDirection
   
@@ -98,8 +101,8 @@ const UserTable: React.FC<UserTableProps> = ({
         </thead>
 
         <tbody>
-          {data?.length > 0
-            ? data?.map((el: UserRoleBasedListModel, i: number) => (
+          {sortedData?.length > 0
+            ? sortedData?.map((el: UserRoleBasedListModel, i: number) => (
                 <tr key={el.email_id}>
                   <td>
                     <div className="flex-check">

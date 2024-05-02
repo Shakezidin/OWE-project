@@ -19,8 +19,6 @@ interface IRateCreateParams {
     date: string;
     notes: string;
     amount: number;
-    start_date: string;
-    end_date: string;
 }
 
 export const getAdjustments = createAsyncThunk("fetch/rate-adjustments", async (params: Ipaginate, { rejectWithValue }) => {

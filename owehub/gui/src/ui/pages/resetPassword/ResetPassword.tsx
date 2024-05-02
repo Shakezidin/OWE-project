@@ -8,12 +8,13 @@ import { useNavigate } from "react-router-dom";
 import Input from "../../components/text_input/Input";
 import { ActionButton } from "../../components/button/ActionButton";
 import { resetPassword } from "../../../core/models/api_models/AuthModel";
-import { useAppDispatch } from "../../../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { generateOTP } from "../../../redux/apiActions/authActions";
 import { HTTP_STATUS } from "../../../core/models/api_models/RequestModel";
 import { toast } from "react-toastify";
 import { updateEmail } from "../../../redux/apiSlice/authSlice/resetPasswordSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
+import Loading from "../../components/loader/Loading";
 
 const ResetPassword = () => {
   const navigate = useNavigate();
@@ -21,6 +22,8 @@ const ResetPassword = () => {
   const [credentials, setCredentials] = useState<resetPassword>({
     email_id: "",
   });
+  const { loading } = useAppSelector((state) => state.resetPassword);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setCredentials((prevState) => ({
@@ -28,6 +31,7 @@ const ResetPassword = () => {
       [name]: value,
     }));
   };
+  /** on submit  */
   const handleEmailSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -45,7 +49,6 @@ const ResetPassword = () => {
       }else{
         toast.success(result.message);
       }
-    
      
     }
   };
@@ -98,6 +101,11 @@ const ResetPassword = () => {
             </div>
           </form>
         </div>
+        {loading && (
+        <div>
+          <Loading /> {loading}
+        </div>
+      )}
       </div>
     </div>
   );

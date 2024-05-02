@@ -26,6 +26,7 @@ import paginationReducer from './apiSlice/paginationslice/paginationSlice'
 import createUserReducer from './apiSlice/userManagementSlice/createUserSlice'
 import userManagementSlice from "./apiSlice/userManagementSlice/userManagementSlice";
 import arAdjusments from "./apiSlice/configSlice/config_get_slice/arAdjusments";
+import repPaySettingsSlice from "./apiSlice/configSlice/config_get_slice/repPaySettingsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -42,6 +43,7 @@ export const store = configureStore({
     paySchedule: payScheduleReducer,
     timelineSla: timeLineSlaReducer,
     loanType: loanTypeReducer,
+    repaySettings:repPaySettingsSlice,
     // post slice define 
     createCommission: createCommissionReducer,
     createMarketing: createMarketingReduce,

@@ -6,7 +6,7 @@
  * Path: /
  */
 
-import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
 import WelcomePage from "./ui/pages/welcome/WelcomePage";
 import ResetPassword from "./ui/pages/resetPassword/ResetPassword";
@@ -16,7 +16,7 @@ import MainLayout from "./ui/components/layout/MainLayout";
 import EnterOtpScreen from "./ui/pages/otp/EnterOtpScreen";
 import { useEffect } from "react";
 import { RootState } from "./redux/store";
-import { initializeAuth, logout } from "./redux/apiSlice/authSlice/authSlice";
+import { initializeAuth } from "./redux/apiSlice/authSlice/authSlice";
 import { DashboardPage } from "./ui/pages/dashboard/DashboardPage";
 import { ROUTES } from "./routes/routes";
 import CommissionRate from "./ui/pages/configure/commissionRate/CommissionRate";
@@ -63,12 +63,11 @@ import Reconcile from "./ui/pages/configure/Reconcile/Reconcile";
 import ApptSetters from "./ui/pages/configure/apptSetters/ApptSetters";
 import { ARDashboardPage } from "./ui/pages/ar/ardashboard/ardashboard";
 import { useAppDispatch, useAppSelector } from "./redux/hooks";
-import { toast } from "react-toastify";
-
+import { TYPE_OF_USER } from "./resources/static_data/TypeOfUser";
 
 function App() {
   const dispatch = useAppDispatch();
-  // const location = useLocation();
+  const role = localStorage.getItem("role");
 
   useEffect(() => {
     dispatch(initializeAuth());
@@ -77,36 +76,86 @@ function App() {
     (state: RootState) => state.auth.isAuthenticated
   );
 
-    /** TODO: temp solution for session logout. Need to change in future */
-    useEffect(() => {
-      const token = localStorage.getItem('token');
-      const expirationTime = localStorage.getItem('expirationTime');
-  
-      console.log('checking sesssion...')
-      if (token && expirationTime) {
-        const currentTime = Date.now();
-        if (currentTime < parseInt(expirationTime, 10)) {
-          // Token is still valid
-          console.log('valid tokens....')
-          // Schedule logout after 480 minutes
-          const timeout = setTimeout(() => {
-           dispatch(logout())
-           toast.error("Session time expired. Please login again..")
-          }, parseInt(expirationTime) * 60 * 1000); // 480 minutes in milliseconds
-  
-          return () => {
-            console.log('clear interval.....')
-            clearTimeout(timeout);
-          }
-        } else {
-          // Token has expired
-          dispatch(logout())
-          toast.error("Session time expired. Please login again..")
-        }
-      }
-   }, [dispatch]);
-
+  /**config and user manangement routes*/
+  const configAndUserManagementRoutes = () => {
     return (
+      <Route>
+        <Route
+          path={ROUTES.CONFIG_COMMISSION_RATE}
+          element={<CommissionRate />}
+        />
+        <Route path={ROUTES.CONFIG_DEALER_OVER} element={<DealerOverRides />} />
+        <Route path={ROUTES.CONFIG_MARKETING} element={<MarketingFees />} />
+        <Route path={ROUTES.CONFIG_DEALER_TIER} element={<DealerTier />} />
+        <Route path={ROUTES.CONFIG_LOAN} element={<LoanType />} />
+        <Route path={ROUTES.CONFIG_SALE} element={<SaleType />} />
+        <Route path={ROUTES.CONFIG_ADDER} element={<AdderValidation />} />
+        <Route
+          path={ROUTES.CONFIG_PAYMENT_SCHEDULE}
+          element={<PaymentSchedule />}
+        />
+        <Route path={ROUTES.CONFIG_TIER_LOAN_FEE} element={<TierLoanFee />} />
+        <Route path={ROUTES.CONFIG_TIMELINE} element={<TimeLine />} />
+        <Route path={ROUTES.CONFIG_AUTO_ADDER} element={<AutoAdder />} />
+        <Route path={ROUTES.CONFIG_DEALER_CREDIT} element={<DealerCredit />} />
+        <Route path={ROUTES.CONFIG_REBET_DATA} element={<RebateData />} />
+        <Route path={ROUTES.CONFIG_REFERAL_DATA} element={<ReferalData />} />
+        <Route path={ROUTES.CONFIG_DLE_OTH_PAY} element={<DlrOthPay />} />
+        <Route
+          path={ROUTES.CONFIG_NON_COMM_DLR_PAY}
+          element={<NonCommDlrPay />}
+        />
+        <Route path={ROUTES.CONFIG_LOAN_FEE} element={<LoanFeeAddr />} />
+        <Route path={ROUTES.CONFIG_PAGE} element={<ConfigurePage />} />
+        <Route
+          path={ROUTES.CONFIG_REP_PAY_SETTINGS}
+          element={<RepPaySettings />}
+        />
+        <Route
+          path={ROUTES.CONFIG_RATE_ADJUSTMENTS}
+          element={<RateAdjustments />}
+        />
+        <Route path={ROUTES.CONFIG_AR} element={<AR />} />
+        <Route path={ROUTES.CONFIG_AR_SCHEDULE} element={<ARSchedule />} />
+        <Route path={ROUTES.CONFIG_INSTALL_COST} element={<InstallCost />} />
+        <Route
+          path={ROUTES.CONFIG_LEADER_OVERRIDE}
+          element={<LeaderOverride />}
+        />
+        <Route path={ROUTES.CONFIG_ADDER_CREDITS} element={<AdderCredit />} />
+        <Route
+          path={ROUTES.CONFIG_ADDER_RESPONSIBILITY}
+          element={<AdderResponsibility />}
+        />
+        <Route path={ROUTES.CONFIG_LOAN_FEES} element={<LoanFee />} />
+        <Route path={ROUTES.CONFIG_AR_IMPORT} element={<ArImport />} />
+        <Route path={ROUTES.CONFIG_ADJUSTMENTS} element={<Adjustments />} />
+        <Route path={ROUTES.CONFIG_RECONCILE} element={<Reconcile />} />
+        <Route path={ROUTES.CONFIG_APPSETTERS} element={<ApptSetters />} />
+
+        <Route path={ROUTES.USER_MANAEMENT} element={<UserManagement />} />
+      </Route>
+    );
+  };
+
+  /** rapu and project management routes */
+  const repayAndProjectManagement = () => {
+    return (
+      <Route>
+        <Route
+          path={ROUTES.REPPAY_DASHBOARD}
+          element={<RepPayDashboardPage />}
+        />
+        <Route
+          path={ROUTES.PROJECT_PERFORMANCE}
+          element={<ProjectPerformence />}
+        />
+        <Route path={ROUTES.PROJECT_STATUS} element={<ProjectStatus />} />
+      </Route>
+    );
+  };
+
+  return (
     <BrowserRouter>
       <Routes>
         <Route
@@ -131,56 +180,42 @@ function App() {
         />
         <Route path={ROUTES.RESETPASSWORD} element={<ResetPassword />} />
         <Route path={ROUTES.OTP} element={<EnterOtpScreen />} />
-              <Route
-              element={<MainLayout/>}
-            >
+        <Route element={<MainLayout />}>
+          <Route
+            path={ROUTES.COMMISSION_DASHBOARD}
+            element={<DashboardPage />}
+          />
+          <Route path={ROUTES.AR_DASHBOARD} element={<ARDashboardPage />} />
 
-                <Route  path={ROUTES.COMMISSION_DASHBOARD} element={<DashboardPage/>} />
-                <Route  path={ROUTES.REPPAY_DASHBOARD} element={<RepPayDashboardPage/>} />
-                <Route  path={ROUTES.AR_DASHBOARD} element={<ARDashboardPage/>}  />
-                <Route  path={ROUTES.CONFIG_COMMISSION_RATE} element={<CommissionRate/>} />
-                <Route  path={ROUTES.CONFIG_DEALER_OVER} element={<DealerOverRides/>} />
-                <Route  path={ROUTES.CONFIG_MARKETING} element={<MarketingFees/>} />
-                <Route  path={ROUTES.CONFIG_DEALER_TIER} element={<DealerTier/>} />
-                <Route  path={ROUTES.CONFIG_LOAN} element={<LoanType/>} />
-                <Route  path={ROUTES.CONFIG_SALE} element={<SaleType/>} />
-                <Route  path={ROUTES.CONFIG_ADDER} element={<AdderValidation/>} />
-                <Route  path={ROUTES.CONFIG_PAYMENT_SCHEDULE} element={<PaymentSchedule/>} />
-                <Route  path={ROUTES.CONFIG_TIER_LOAN_FEE} element={<TierLoanFee/>} />
-                <Route  path={ROUTES.CONFIG_TIMELINE} element={<TimeLine/>} />
-                <Route  path={ROUTES.CONFIG_AUTO_ADDER} element={<AutoAdder/>} />
-                <Route  path={ROUTES.CONFIG_DEALER_CREDIT} element={<DealerCredit/>} />
-                <Route  path={ROUTES.CONFIG_REBET_DATA} element={<RebateData/>} />
-                <Route  path={ROUTES.CONFIG_REFERAL_DATA} element={<ReferalData/>} />
-                <Route  path={ROUTES.CONFIG_DLE_OTH_PAY} element={<DlrOthPay/>} />
-                <Route  path={ROUTES.CONFIG_NON_COMM_DLR_PAY} element={<NonCommDlrPay/>} />
-                <Route  path={ROUTES.CONFIG_LOAN_FEE} element={<LoanFeeAddr/>}  />
-                <Route  path={ROUTES.USER_MANAEMENT} element={<UserManagement/>} />
-                <Route  path={ROUTES.ACCOUNT_SETTING} element={<AccountSettings/>} />
-                <Route  path={ROUTES.REPORT} element={<Report/>}  />
-                <Route  path={ROUTES.PROJECT_PERFORMANCE} element={<ProjectPerformence/>} />
-                <Route  path={ROUTES.PROJECT_STATUS} element={<ProjectStatus/>} />
-                <Route  path={ROUTES.DB_MANAGER_DASHBOARD} element={<DbManagerDashboard/>} />
-                <Route  path={ROUTES.DB_MANAGER_DATA_TABLE} element={<DataTablle/>} />
-                <Route  path={ROUTES.DB_MANAGER_USER_ACTIVITY} element={<UserActivity/>} />
-                <Route  path={ROUTES.TECHNICAL_SUPPORT} element={<TechnicalSupport/>} />
-                <Route  path={ROUTES.DB_MANAGER_WEB_HOOKS} element={<Webhook/>} />
-                <Route  path={ROUTES.CONFIG_PAGE} element={<ConfigurePage/>} />
-                <Route  path={ROUTES.CONFIG_REP_PAY_SETTINGS} element={<RepPaySettings/>} />
-                <Route  path={ROUTES.CONFIG_RATE_ADJUSTMENTS} element = {<RateAdjustments/>} />
-                <Route  path={ROUTES.CONFIG_AR} element = {<AR/>} />
-                <Route  path={ROUTES.CONFIG_AR_SCHEDULE} element = {<ARSchedule/>} />
-                <Route  path={ROUTES.CONFIG_INSTALL_COST} element = {<InstallCost/>} />
-                <Route  path={ROUTES.CONFIG_LEADER_OVERRIDE} element = {<LeaderOverride/>} />
-                <Route  path={ROUTES.CONFIG_ADDER_CREDITS} element = {<AdderCredit/>} />
-                <Route  path={ROUTES.CONFIG_ADDER_RESPONSIBILITY} element = {<AdderResponsibility/>} />
-                <Route  path={ROUTES.CONFIG_LOAN_FEES} element = {<LoanFee/>} />
-                <Route  path={ROUTES.CONFIG_AR_IMPORT} element= {<ArImport/>} />
-                <Route  path={ROUTES.CONFIG_ADJUSTMENTS} element = {<Adjustments/>} />
-                <Route  path={ROUTES.CONFIG_RECONCILE} element = {<Reconcile/>} />
-                <Route  path={ROUTES.CONFIG_APPSETTERS} element = {<ApptSetters/>} />
-            </Route>
-       
+          {role === TYPE_OF_USER.ADMIN ? (
+            configAndUserManagementRoutes()
+          ) : (
+            <></>
+          )}
+          {role === TYPE_OF_USER.DEALER_OWNER ||
+          role === TYPE_OF_USER.FINANCE_ADMIN ||
+          role === TYPE_OF_USER.ADMIN ? (
+            repayAndProjectManagement()
+          ) : (
+            <></>
+          )}
+          <Route path={ROUTES.ACCOUNT_SETTING} element={<AccountSettings />} />
+          <Route path={ROUTES.REPORT} element={<Report />} />
+          <Route
+            path={ROUTES.DB_MANAGER_DASHBOARD}
+            element={<DbManagerDashboard />}
+          />
+          <Route path={ROUTES.DB_MANAGER_DATA_TABLE} element={<DataTablle />} />
+          <Route
+            path={ROUTES.DB_MANAGER_USER_ACTIVITY}
+            element={<UserActivity />}
+          />
+          <Route
+            path={ROUTES.TECHNICAL_SUPPORT}
+            element={<TechnicalSupport />}
+          />
+          <Route path={ROUTES.DB_MANAGER_WEB_HOOKS} element={<Webhook />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

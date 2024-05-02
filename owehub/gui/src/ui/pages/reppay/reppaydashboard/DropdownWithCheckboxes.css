@@ -54,6 +54,7 @@
     line-height: 20px;
     font-weight: 500;
     font-size: 12px;
+    margin-bottom: 1px;
   }
   
   .dropdown-item input[type="checkbox"] {
@@ -63,6 +64,7 @@
     height: 20px;
     border-radius: 6px;
     border: 1px solid #0493CE;
+    margin-bottom: 7px;
   }
   .drop-icon{
     color: rgba(102, 100, 100, 0.4);

@@ -41,7 +41,7 @@
   margin-top: 4px;
   overflow-y: auto;
   width: 130px;
-  height: 192px;
+  height: 196px;
   box-sizing: border-box;
 }
 
@@ -54,6 +54,8 @@
   line-height: 20px;
   font-weight: 500;
   font-size: 12px;
+  gap: 2px;
+  margin-bottom: 3.3px;
 }
 
 .ar-dropdown-item input[type="checkbox"] {

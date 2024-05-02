@@ -72,8 +72,6 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({ handleClose, editMode 
       date: "2024-04-30T12:00:00Z",
       notes: newFormData.notes,
       amount: parseFloat(newFormData.amount),
-      start_date: format(new Date(newFormData.startDate), 'yyyy-MM-dd'),
-      end_date: format(new Date(newFormData.endDate), 'yyyy-MM-dd')
     }))
   }
 
@@ -219,30 +217,6 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({ handleClose, editMode 
                     onChange={handleChange}
                   />
                 </div>
-
-
-                <div className="create-input-field">
-                  <Input
-                    type={"date"}
-                    label="Start Date"
-                    value={newFormData.startDate}
-                    name="startDate"
-                    placeholder={"Enter"}
-                    onChange={handleChange}
-                  />
-                </div>
-
-                <div className="create-input-field">
-                  <Input
-                    type={"date"}
-                    label="End Date"
-                    value={newFormData.endDate}
-                    name="endDate"
-                    placeholder={"Enter"}
-                    onChange={handleChange}
-                  />
-                </div>
-
               </div>
             </div>
           </div>
