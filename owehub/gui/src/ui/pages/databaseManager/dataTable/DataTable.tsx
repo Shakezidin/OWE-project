@@ -64,11 +64,6 @@ const DataTablle: React.FC = () => {
   }
 
 
-  const handleEditDealer = (dealerData: DealerModel) => {
-    setEditMode(true);
-    // setEditDealer(dealerData);
-    handleOpen()
-  };
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -170,6 +165,8 @@ const DataTablle: React.FC = () => {
           showImportIcon={false}
           showSelectIcon={true}
           showFilterIcon={true}
+          selectMarginLeft="-10px"
+          selectMarginLeft1="-20px"
         />
 
 

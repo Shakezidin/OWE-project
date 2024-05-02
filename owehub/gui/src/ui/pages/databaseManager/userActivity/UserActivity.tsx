@@ -13,14 +13,12 @@ import UserActivityFilter from "./UserActivityFilter";
 import { UserActivityColumn } from "../../../../resources/static_data/UserActivityColumn";
 import DataTableHeader from "../../../components/tableHeader/DataTableHeader";
 import FilterModal from "../../../components/FilterModal/FilterModal";
+import ChangePassword from "../../resetPassword/ChangePassword/ChangePassword";
 
 
 const UserActivity: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
-
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const loading = useAppSelector((state) => state.dealer.loading);
@@ -149,15 +147,9 @@ const UserActivity: React.FC = () => {
           onPressImport={() => { }}
           showImportIcon={false}
           showSelectIcon={true}
-          showFilterIcon= {false}
+          showFilterIcon={false}
+          selectMarginLeft="-37px"
         />
-        {filterOPen && <FilterModal handleClose={filterClose}
-          columns={UserActivityColumn}
-          fetchFunction={fetchFunction}
-          page_number={currentPage}
-          page_size={itemsPerPage} />}
-
-
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }} >
@@ -165,21 +157,21 @@ const UserActivity: React.FC = () => {
           <table>
             <thead>
               <tr>
-                <th style={{paddingRight:0}}>
-                    <CheckBox
-                      checked={selectAllChecked}
-                      onChange={() =>
-                        toggleAllRows(
-                          selectedRows,
-                          dataDb,
-                          setSelectedRows,
-                          setSelectAllChecked
-                        )
-                      }
-                      indeterminate={isAnyRowSelected && !isAllRowsSelected}
-                    />
+                <th style={{ paddingRight: 0 }}>
+                  <CheckBox
+                    checked={selectAllChecked}
+                    onChange={() =>
+                      toggleAllRows(
+                        selectedRows,
+                        dataDb,
+                        setSelectedRows,
+                        setSelectAllChecked
+                      )
+                    }
+                    indeterminate={isAnyRowSelected && !isAllRowsSelected}
+                  />
                 </th>
-                <th style={{paddingLeft:"0px"}}>
+                <th style={{ paddingLeft: "0px" }}>
                   <div className="table-header">
                     <p>User Name</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
@@ -207,7 +199,7 @@ const UserActivity: React.FC = () => {
               {currentPageData?.length > 0
                 ? currentPageData?.map((el, i) => (
                   <tr key={i}>
-                    <td style={{ paddingRight:0 }}>
+                    <td style={{ paddingRight: 0 }}>
                       <CheckBox
                         checked={selectedRows.has(i)}
                         onChange={() =>
@@ -220,7 +212,7 @@ const UserActivity: React.FC = () => {
                         }
                       />
                     </td>
-                    <td style={{ fontWeight: "500", color: "black",paddingLeft:"0px",textAlign:"left" }}>
+                    <td style={{ fontWeight: "500", color: "black", paddingLeft: "0px", textAlign: "left" }}>
                       {el.uname}
                     </td>
                     <td style={{ textAlign: "left" }}>{el.dbname}</td>
