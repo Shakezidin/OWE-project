@@ -88,13 +88,13 @@ const handleSubmit = (e: React.FormEvent) => {
   dispatch(createRepaySettings({
     
       unique_id: "1234567skdrwfs89",
-      name: "John Doe",
-      state: "Alabama",
-      pay_scale: "Hourly",
-      position: "Sales Representative",
-      b_e: "Business Entity",
-      start_date: "2024-04-29",
-      end_date: "2024-10-29"
+      name: createRePayData.name,
+      state: createRePayData.state,
+      pay_scale: createRePayData.pay_scale,
+      position: createRePayData.position,
+      b_e: createRePayData.b_e,
+      start_date: createRePayData.start_date,
+      end_date: createRePayData.end_date,
     
   }))
 }
