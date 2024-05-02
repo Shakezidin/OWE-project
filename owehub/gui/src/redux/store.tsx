@@ -26,6 +26,7 @@ import paginationReducer from './apiSlice/paginationslice/paginationSlice'
 import createUserReducer from './apiSlice/userManagementSlice/createUserSlice'
 import userManagementSlice from "./apiSlice/userManagementSlice/userManagementSlice";
 import repPaySettingsSlice from "./apiSlice/configSlice/config_get_slice/repPaySettingsSlice";
+import arAdjusments from "./apiSlice/configSlice/config_get_slice/arAdjusments";
 
 export const store = configureStore({
   reducer: {
@@ -59,6 +60,7 @@ export const store = configureStore({
     userManagement:userManagementSlice,
     createOnboardUser: createUserReducer,
 
+    arAdjusments
   },
 });
 

@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { ICONS } from "../../../icons/Icons";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-import { fetchTimeLineSla } from "../../../../redux/apiSlice/configSlice/config_get_slice/timeLineSlice";
+
+import { getAdjustments } from "../../../../redux/apiActions/arAdjustmentsAction";
 
 import CheckBox from "../../../components/chekbox/CheckBox";
 import {
@@ -17,6 +18,8 @@ import SortableHeader from "../../../components/tableHeader/SortableHeader";
 import { AdjustmentsColumns} from "../../../../resources/static_data/configureHeaderData/AdjustmentsColumn";
 import FilterModal from "../../../components/FilterModal/FilterModal";
 import { ROUTES } from "../../../../routes/routes";
+import { Adjustment } from "../../../../core/models/api_models/ArAdjustMentsModel";
+import { format } from "date-fns";
 const Adjustments  = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -27,11 +30,11 @@ const Adjustments  = () => {
 
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const timelinesla_list = useAppSelector(
-    (state) => state.timelineSla.timelinesla_list
+  const {data:arAdjustmentsList,isLoading,error} = useAppSelector(
+    (state) => state.arAdjusments
   );
 //   const loading = useAppSelector((state) => state.timelineSla.loading);
-  const error = useAppSelector((state) => state.timelineSla.error);
+
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
@@ -46,7 +49,7 @@ const Adjustments  = () => {
       page_number: currentPage,
       page_size: itemsPerPage,
     };
-    dispatch(fetchTimeLineSla(pageNumber));
+    dispatch(getAdjustments(pageNumber));
   }, [dispatch, currentPage]);
 
   const filter = () => {
@@ -66,14 +69,14 @@ const Adjustments  = () => {
   const goToPrevPage = () => {
     dispatch(setCurrentPage(currentPage - 1));
   };
-  const totalPages = Math.ceil(timelinesla_list?.length / itemsPerPage);
+  const totalPages = Math.ceil(arAdjustmentsList?.length / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   
   const currentPageData = commissionList?.slice(startIndex, endIndex);
   const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === timelinesla_list?.length;
+  const isAllRowsSelected = selectedRows.size === arAdjustmentsList?.length;
   const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
@@ -109,11 +112,11 @@ const Adjustments  = () => {
     handleOpen()
   };
   const fetchFunction = (req: any) => {
-    dispatch(fetchTimeLineSla(req));
+    dispatch(getAdjustments(req));
    };
-//   if (loading) {
-//     return <div>Loading...</div>;
-//   }
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -159,7 +162,7 @@ const Adjustments  = () => {
                       key={key}
                       isCheckbox={item.isCheckbox}
                       titleName={item.displayName}
-                      data={timelinesla_list}
+                      data={arAdjustmentsList}
                       isAllRowsSelected={isAllRowsSelected}
                       isAnyRowSelected={isAnyRowSelected}
                       selectAllChecked={selectAllChecked}
@@ -179,48 +182,60 @@ const Adjustments  = () => {
                 </th>
               </tr>
             </thead>
-            {/* <tbody >
+            <tbody >
+              {
+                arAdjustmentsList.map((item:Adjustment,ind:number)=>{
+                  return <tr key={item.unique_id}>
+
+                  <td style={{paddingRight:0,textAlign:"left"}}>
+                    <div className="flex-check">
+                    <td style={{paddingInline:0}}>
+                      <CheckBox
+                         checked={selectedRows.has(ind)}
+                         onChange={() =>
+                           toggleRowSelection(
+                             ind,
+                             selectedRows,
+                             setSelectedRows,
+                             setSelectAllChecked
+                           )
+                         }
+                      />
+                    </td>
+                      {item.unique_id}
+                    </div>
+                  </td>
+                  <td>{item.customer}</td>
+                  <td>{item.partner_name}</td>
+                  <td>{item.installer_name}</td>
+                  <td> {item.state_name} </td>
+                  <td> {item.sys_size} </td>
+                  <td> {item.bl} </td>
+                  <td> {item.epc} </td>
+                  <td> {item.date && format(new Date(item.date),"yyyy-MM-dd")} </td>
+                  <td>{item.amount }</td>
+                  <td>{item.notes }</td>
+                  
+                  <td
+
+                  >
+                    <div className="action-icon">
+                      <div className="">
+                        <img src={ICONS.ARCHIVE} alt="" />
+                      </div>
+                      <div className=""  style={{ cursor: "pointer" }}>
+                        <img src={ICONS.editIcon} alt="" />
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                })
+              }
             
-                  <tr>
-
-                    <td style={{ fontWeight: "500", color: "black" }}>
-                      <div className="flex-check">
-                      <td>
-                        <CheckBox
-                          checked={false}
-                          onChange={() => {}}
-                          // indeterminate={isAnyRowSelected && !isAllRowsSelected}
-                        />
-                      </td>
-                        AMF
-                      </div>
-                    </td>
-                    <td>Leader Name</td>
-                    <td>Type</td>
-                    <td>Term</td>
-                    <td>Qual</td>
-                    <td>Sales Q</td>
-                    <td>Team kW Q</td>
-                    <td>Pay Rate</td>
-                    <td>Start</td>
-                    <td>End</td>
-                    
-                    <td
-
-                    >
-                      <div className="action-icon">
-                        <div className="">
-                          <img src={ICONS.ARCHIVE} alt="" />
-                        </div>
-                        <div className=""  style={{ cursor: "pointer" }}>
-                          <img src={ICONS.editIcon} alt="" />
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
+                  
                 
                  
-            </tbody> */}
+            </tbody>
 
           </table>
         </div>
@@ -231,7 +246,7 @@ const Adjustments  = () => {
           </p>
 
           {
-            timelinesla_list?.length > 0 ? <Pagination
+            arAdjustmentsList?.length > 0 ? <Pagination
               currentPage={currentPage}
               totalPages={totalPages} // You need to calculate total pages
               paginate={paginate}
