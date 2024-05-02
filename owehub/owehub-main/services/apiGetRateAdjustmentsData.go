@@ -149,7 +149,6 @@ func HandleGetRateAdjustmentsRequest(resp http.ResponseWriter, req *http.Request
 			Adjustment: Adjustment,
 			MinRate:    MinRate,
 			MaxRate:    MaxRate,
-			IsArchived: IsArchived,
 			StartDate:  StartDate,
 			EndDate:    EndDate,
 		}

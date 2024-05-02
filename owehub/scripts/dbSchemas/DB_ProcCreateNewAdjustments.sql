@@ -7,7 +7,7 @@ CREATE OR REPLACE FUNCTION create_new_adjustments(
     p_sys_size           DOUBLE PRECISION,
     p_bl                 character varying,
     p_epc                DOUBLE PRECISION,
-    p_date               DATE,
+    p_date               character varying,
     p_notes              character varying,
     p_amount             DOUBLE PRECISION,
     p_start_date         character varying,

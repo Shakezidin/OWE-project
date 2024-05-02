@@ -57,7 +57,8 @@ func HandleCreateReconcileRequest(resp http.ResponseWriter, req *http.Request) {
 
 	if (len(createReconcileReq.UniqueId) <= 0) || (len(createReconcileReq.Customer) <= 0) ||
 		(len(createReconcileReq.PartnerName) <= 0) || (len(createReconcileReq.StateName) <= 0) ||
-		(len(createReconcileReq.Status) <= 0) || (len(createReconcileReq.Notes) <= 0) {
+		(len(createReconcileReq.Status) <= 0) || (len(createReconcileReq.Notes) <= 0) ||
+		(len(createReconcileReq.Date) <= 0){
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
@@ -74,12 +75,6 @@ func HandleCreateReconcileRequest(resp http.ResponseWriter, req *http.Request) {
 		err = fmt.Errorf("Invalid Amount Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Invalid SysAmountSize Not Allowed", http.StatusBadRequest, nil)
-		return
-	}
-	if createReconcileReq.Date.IsZero() {
-		err = fmt.Errorf("Date value is required")
-		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Date value is required", http.StatusBadRequest, nil)
 		return
 	}
 

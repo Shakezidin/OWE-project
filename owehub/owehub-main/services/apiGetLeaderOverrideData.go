@@ -178,7 +178,6 @@ func HandleGetLeaderOverrideDataRequest(resp http.ResponseWriter, req *http.Requ
 			SalesQ:     SalesQ,
 			TeamKwQ:    TeamKwQ,
 			PayRate:    PayRate,
-			IsArchived: IsArchived,
 			StartDate:  StartDate,
 			EndDate:    EndDate,
 		}

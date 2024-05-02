@@ -8,7 +8,7 @@ CREATE OR REPLACE FUNCTION update_adjustments (
     p_sys_size DOUBLE PRECISION,
     p_bl VARCHAR,
     p_epc DOUBLE PRECISION,
-    p_date DATE,
+    p_date VARCHAR,
     p_notes VARCHAR,
     p_amount DOUBLE PRECISION,
     p_start_date              VARCHAR,

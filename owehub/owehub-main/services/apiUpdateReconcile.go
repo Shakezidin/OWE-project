@@ -57,7 +57,8 @@ func HandleUpdateReconcileRequest(resp http.ResponseWriter, req *http.Request) {
 
 	if (len(updateReconcileReq.UniqueId) <= 0) || (len(updateReconcileReq.Customer) <= 0) ||
 		(len(updateReconcileReq.PartnerName) <= 0) || (len(updateReconcileReq.StateName) <= 0) ||
-		(len(updateReconcileReq.Status) <= 0) || (len(updateReconcileReq.Notes) <= 0) {
+		(len(updateReconcileReq.Status) <= 0) || (len(updateReconcileReq.Notes) <= 0) ||
+		(len(updateReconcileReq.Date) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
@@ -81,12 +82,6 @@ func HandleUpdateReconcileRequest(resp http.ResponseWriter, req *http.Request) {
 		err = fmt.Errorf("Invalid Amount Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Invalid SysAmountSize Not Allowed", http.StatusBadRequest, nil)
-		return
-	}
-	if updateReconcileReq.Date.IsZero() {
-		err = fmt.Errorf("Date value is required")
-		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Date value is required", http.StatusBadRequest, nil)
 		return
 	}
 

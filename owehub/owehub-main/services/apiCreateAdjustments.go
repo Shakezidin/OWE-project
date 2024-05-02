@@ -59,7 +59,7 @@ func HandleCreateAdjustmentsRequest(resp http.ResponseWriter, req *http.Request)
 		(len(createAdjustmentsReq.PartnerName) <= 0) || (len(createAdjustmentsReq.InstallerName) <= 0) ||
 		(len(createAdjustmentsReq.StateName) <= 0) || (len(createAdjustmentsReq.Bl) <= 0) ||
 		(len(createAdjustmentsReq.Notes) <= 0) || (len(createAdjustmentsReq.StartDate) <= 0) ||
-		(len(createAdjustmentsReq.EndDate) <= 0) {
+		(len(createAdjustmentsReq.EndDate) <= 0) || (len(createAdjustmentsReq.Date) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
@@ -82,12 +82,6 @@ func HandleCreateAdjustmentsRequest(resp http.ResponseWriter, req *http.Request)
 		err = fmt.Errorf("Invalid epc Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Invalid Epc Not Allowed", http.StatusBadRequest, nil)
-		return
-	}
-	if createAdjustmentsReq.Date.IsZero() {
-		err = fmt.Errorf("Date value is required")
-		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Date value is required", http.StatusBadRequest, nil)
 		return
 	}
 
