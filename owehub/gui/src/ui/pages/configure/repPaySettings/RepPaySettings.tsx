@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { ICONS } from "../../../icons/Icons";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-import {  fetchRepaySettings} from "../../../../redux/apiSlice/configSlice/config_get_slice/repPaySettingsSlice";
+import {  fetchRepaySettings} from "../../../../redux/apiActions/repPayAction";
 import CreateRepPaySettings from "./CreateRepPaySettings";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import {
