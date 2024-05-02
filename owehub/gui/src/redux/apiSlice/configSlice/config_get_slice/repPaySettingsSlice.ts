@@ -1,7 +1,7 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
-import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
+import { createSlice } from "@reduxjs/toolkit";
+
 import {  RepPaySettingsModel} from "../../../../core/models/configuration/create/RepPaySettingsModel";
+import { fetchRepaySettings } from "../../../apiActions/repPayAction";
 
 
 interface repaySettings {
@@ -15,14 +15,7 @@ const initialState: repaySettings = {
   error: null,
 };
 
-export const fetchRepaySettings = createAsyncThunk(
-  "repaySettings/fetchrepaySettings",
-  async (data: any) => {
-    const response = await postCaller(EndPoints.repPaySettings, data);
 
-    return response;
-  }
-);
 
 const repaySettingSlice = createSlice({
   name: "repaySettings",

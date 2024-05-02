@@ -9,7 +9,7 @@
 import React, { useEffect, useState } from "react";
 import "./LoginPage.css";
 import { ICONS } from "../../icons/Icons";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ReactComponent as LOGO_SMALL } from "../../../resources/assets/commisson_small_logo.svg";
 import { ReactComponent as UNDER_LINE } from "../../../resources/assets/BlueAndGreenUnderline.svg";
 import Input from "../../components/text_input/Input";
@@ -90,7 +90,8 @@ export const LoginPage = () => {
         localStorage.setItem("expirationTimeInMin", time_to_expire_minutes);
         localStorage.setItem('expirationTime', (Date.now() + parseInt(time_to_expire_minutes) * 60 * 1000).toString()); // Expiration time is 480 minutes from now
         localStorage.setItem("isRememberMe", credentials.isRememberMe.toString());
-        navigate("/dashboard");
+        // navigate("/dashboard");
+        window.location.reload()
     
       } else {
         toast.error(result.message);
@@ -185,14 +186,9 @@ export const LoginPage = () => {
                   </label>
                   <div className="loginRBM">Remember Me</div>
                 </div>
-                <button
-                  className="reset-password"
-                  onClick={() => {
-                    navigate(ROUTES.RESETPASSWORD);
-                  }}
-                >
+                <Link to={ROUTES.RESETPASSWORD} className="reset-password">
                   Recover Password
-                </button>
+                </Link>
               </div>
               <br />
               <ActionButton title="Log In" type="submit" onClick={() => {}} />

@@ -65,15 +65,15 @@ import { ARDashboardPage } from "./ui/pages/ar/ardashboard/ardashboard";
 import { useAppDispatch, useAppSelector } from "./redux/hooks";
 import { TYPE_OF_USER } from "./resources/static_data/TypeOfUser";
 
+
 function App() {
   const dispatch = useAppDispatch();
-  const role = localStorage.getItem("role");
 
   useEffect(() => {
     dispatch(initializeAuth());
   }, [dispatch]);
-  const isAuthenticated = useAppSelector(
-    (state: RootState) => state.auth.isAuthenticated
+  const { isAuthenticated, role_name }= useAppSelector(
+    (state: RootState) => state.auth
   );
 
   /**config and user manangement routes*/
@@ -187,18 +187,19 @@ function App() {
           />
           <Route path={ROUTES.AR_DASHBOARD} element={<ARDashboardPage />} />
 
-          {role === TYPE_OF_USER.ADMIN ? (
-            configAndUserManagementRoutes()
+      
+          {role_name === TYPE_OF_USER.ADMIN ? (
+             configAndUserManagementRoutes()
           ) : (
             <></>
           )}
-          {role === TYPE_OF_USER.DEALER_OWNER ||
-          role === TYPE_OF_USER.FINANCE_ADMIN ||
-          role === TYPE_OF_USER.ADMIN ? (
+          {role_name === TYPE_OF_USER.DEALER_OWNER ||
+          role_name === TYPE_OF_USER.FINANCE_ADMIN ||
+          role_name === TYPE_OF_USER.ADMIN ? (
             repayAndProjectManagement()
           ) : (
             <></>
-          )}
+          )} 
           <Route path={ROUTES.ACCOUNT_SETTING} element={<AccountSettings />} />
           <Route path={ROUTES.REPORT} element={<Report />} />
           <Route
