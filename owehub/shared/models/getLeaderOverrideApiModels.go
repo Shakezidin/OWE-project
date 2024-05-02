@@ -17,7 +17,6 @@ type GetLeaderOverride struct {
 	SalesQ     float64 `json:"sales_q"`
 	TeamKwQ    float64 `json:"team_kw_q"`
 	PayRate    string  `json:"pay_rate"`
-	IsArchived bool    `json:"is_archived"`
 	StartDate  string  `json:"start_date"`
 	EndDate    string  `json:"end_date"`
 }

@@ -17,7 +17,6 @@ type GetReconcile struct {
 	Date        string  `json:"date"`
 	Amount      float64 `json:"amount"`
 	Notes       string  `json:"notes"`
-	IsArchived  bool    `json:"is_archived"`
 }
 
 type GetReconcileList struct {
