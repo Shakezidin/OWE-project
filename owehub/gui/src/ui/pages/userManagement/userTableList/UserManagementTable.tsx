@@ -53,11 +53,19 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   const [currentPage1, setCurrentPage1] = useState(1)
 
   useEffect(() => {
-    const pageNumber = {
+    const data = {
       page_number: currentPage1,
       page_size: pageSize1,
+      filters: [
+        {
+          Column: "role_name",
+          Operation: "=",
+          Data: selectedOption.value,
+        },
+      ],
     };
-    dispatch(fetchUserListBasedOnRole(pageNumber));
+    dispatch(fetchUserListBasedOnRole(data));
+
   }, [dispatch, currentPage1, pageSize1]);
 
   const handlePageChange = (page: number) => {
