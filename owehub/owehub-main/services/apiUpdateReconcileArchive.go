@@ -1,6 +1,6 @@
 /**************************************************************************
 * File			: apiUpdateRebateDataArchive.go
-* DESCRIPTION	: This file contains functions for update RebateData archive
+* DESCRIPTION	: This file contains functions for update ReconcileData archive
 						setter handler
 * DATE			: 23-Jan-2024
 **************************************************************************/
@@ -21,7 +21,7 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:		HandleUpdateRebateDataArchiveRequest
+ * FUNCTION:		HandleUpdateReconcileDataArchiveRequest
  * DESCRIPTION:     handler for update Reconcile Archive request
  * INPUT:			resp, req
  * RETURNS:    		void

@@ -1,6 +1,6 @@
 /**************************************************************************
-* File			: apiCreateRReconcile.go
-* DESCRIPTION	: This file contains functions for create rebate data handler
+* File			: apiCreateReconcile.go
+* DESCRIPTION	: This file contains functions for create Reconcile data handler
 * DATE			: 24-Apr-2024
 **************************************************************************/
 
@@ -18,8 +18,8 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:		HandleCreateRReconcileRequest
- * DESCRIPTION:     handler for create rebate data request
+ * FUNCTION:		HandleCreateReconcileRequest
+ * DESCRIPTION:     handler for create Reconcile data request
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
@@ -35,7 +35,7 @@ func HandleCreateReconcileRequest(resp http.ResponseWriter, req *http.Request) {
 	defer func() { log.ExitFn(0, "HandleCreateReconcileRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in create rebate data request")
+		err = fmt.Errorf("HTTP Request body is null in create Reconcile data request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -43,15 +43,15 @@ func HandleCreateReconcileRequest(resp http.ResponseWriter, req *http.Request) {
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create rebate data request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create Reconcile data request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &createReconcileReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal create rebate data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal create rebate data request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal create Reconcile data request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal create Reconcile data request", http.StatusBadRequest, nil)
 		return
 	}
 

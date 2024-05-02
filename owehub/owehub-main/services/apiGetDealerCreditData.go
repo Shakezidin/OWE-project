@@ -1,6 +1,6 @@
 /**************************************************************************
  * File       	   : apiGetDealerCreditData.go
- * DESCRIPTION     : This file contains functions to get Referral data handler
+ * DESCRIPTION     : This file contains functions to get DealerCredit data handler
  * DATE            : 22-Jan-2024
  **************************************************************************/
 
@@ -20,7 +20,7 @@ import (
 
 /******************************************************************************
  * FUNCTION:		HandleGetDealerCreditDataRequest
- * DESCRIPTION:     handler for get Referral data request
+ * DESCRIPTION:     handler for get DealerCredit data request
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
@@ -38,7 +38,7 @@ func HandleGetDealerCreditDataRequest(resp http.ResponseWriter, req *http.Reques
 	defer func() { log.ExitFn(0, "HandleGetDealerCreditDataRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in get Dealer Credit data request")
+		err = fmt.Errorf("HTTP Request body is null in get DealerCredit Credit data request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return

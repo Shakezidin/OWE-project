@@ -188,7 +188,7 @@ func HandleGetReconcileRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 	RecordCount = int64(len(data))
 	// Send the response
-	log.FuncInfoTrace(0, "Number of commissions List fetched : %v list %+v", len(reconcileList.ReconcileList), reconcileList)
+	log.FuncInfoTrace(0, "Number of reconcile List fetched : %v list %+v", len(reconcileList.ReconcileList), reconcileList)
 	FormAndSendHttpResp(resp, "reconcile", http.StatusOK, reconcileList, RecordCount)
 }
 

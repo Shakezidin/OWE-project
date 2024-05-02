@@ -61,7 +61,8 @@ BEGIN
         end_date = p_end_date  
     WHERE id = p_id
     RETURNING id INTO v_rebate_data_id;
-IF NOT FOUND THEN
+
+    IF NOT FOUND THEN
         RAISE EXCEPTION 'Record with ID % not found in rebate_data table', p_id;
     END IF;
 

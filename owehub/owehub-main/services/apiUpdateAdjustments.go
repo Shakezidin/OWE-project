@@ -126,6 +126,6 @@ func HandleUpdateAdjustmentsRequest(resp http.ResponseWriter, req *http.Request)
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "commissions Updated with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "Commissions Updated Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "adjustments Updated with Id: %+v", data["result"])
+	FormAndSendHttpResp(resp, "adjustments Updated Successfully", http.StatusOK, nil)
 }

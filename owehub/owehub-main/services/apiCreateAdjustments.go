@@ -69,7 +69,7 @@ func HandleCreateAdjustmentsRequest(resp http.ResponseWriter, req *http.Request)
 	if createAdjustmentsReq.SysSize <= float64(0) {
 		err = fmt.Errorf("Invalid SysSize Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid SysSize === Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid SysSize Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 	if createAdjustmentsReq.Epc <= float64(0) {
@@ -117,6 +117,6 @@ func HandleCreateAdjustmentsRequest(resp http.ResponseWriter, req *http.Request)
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "commissions created with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "Commissions Created Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "Adjustments created with Id: %+v", data["result"])
+	FormAndSendHttpResp(resp, "Adjustments Created Successfully", http.StatusOK, nil)
 }
