@@ -20,6 +20,8 @@ import FilterModal from "../../../components/FilterModal/FilterModal";
 import { ROUTES } from "../../../../routes/routes";
 import { Adjustment } from "../../../../core/models/api_models/ArAdjustMentsModel";
 import { format } from "date-fns";
+
+import Loading from "../../../components/loader/Loading";
 const Adjustments  = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -115,7 +117,7 @@ const Adjustments  = () => {
     dispatch(getAdjustments(req));
    };
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className="loader-container"> <Loading/> </div>;
   }
 
   if (error) {

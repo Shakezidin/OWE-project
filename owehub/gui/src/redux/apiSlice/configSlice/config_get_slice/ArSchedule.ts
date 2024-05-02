@@ -3,25 +3,33 @@ import {
   getArscheduleList,
   IARSchedule,
   createArSchedule,
+  updateArchSchedule
 } from "../../../apiActions/arScheduleAction";
+import { toast } from "react-toastify";
 
 interface IState {
   data: IARSchedule[];
   error: string;
   isLoading: boolean;
   isFormSubmitting: boolean;
+  isSuccess:number
 }
 const initialState: IState = {
   isLoading: false,
   isFormSubmitting: false,
   error: "",
   data: [],
+  isSuccess:0
 };
 
 const arSchedule = createSlice({
   name: "arSchedule",
   initialState,
-  reducers: {},
+  reducers: {
+    resetSuccess:(state)=>{
+      state.isSuccess = 0
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getArscheduleList.pending, (state, action) => {
@@ -40,12 +48,26 @@ const arSchedule = createSlice({
       })
       .addCase(createArSchedule.fulfilled, (state, action) => {
         state.isFormSubmitting = false;
+        state.isSuccess=1
+        toast.success("Form submission completed")
       })
       .addCase(createArSchedule.rejected, (state, action) => {
         state.isFormSubmitting = true;
         state.error = action.payload as string;
-      });
+      })
+      .addCase(updateArchSchedule.pending,(state, action) => {
+        state.isFormSubmitting = true;
+      })
+      .addCase(updateArchSchedule.fulfilled, (state, action) => {
+        state.isFormSubmitting = false;
+        state.isSuccess=1
+        toast.success("Details updated successfully")
+      })
+      .addCase(updateArchSchedule.rejected, (state, action) => {
+        state.isFormSubmitting = true;
+        state.error = action.payload as string;
+      })
   },
 });
-
+export const {resetSuccess} =  arSchedule.actions
 export default arSchedule.reducer;

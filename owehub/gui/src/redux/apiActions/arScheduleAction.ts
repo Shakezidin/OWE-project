@@ -38,6 +38,10 @@ interface SolarInstallation {
     start_date: string;
     end_date: string;
 }
+
+interface IUpdateParams extends SolarInstallation{
+    record_id:number
+}
 export const getArscheduleList = createAsyncThunk("get/arschedule",async(param:Ipaginate,{rejectWithValue})=>{
     try {
         const data = await postCaller("get_arschedule",param)
@@ -60,4 +64,15 @@ export const createArSchedule = createAsyncThunk("create/arschedule",async(param
         return rejectWithValue((error as Error).message)
     }
 
+})
+
+
+export const updateArchSchedule = createAsyncThunk("update/arschedule",async(param:IUpdateParams,{rejectWithValue,dispatch})=>{
+    try {
+        const data = await postCaller("update_arschedule",param)
+        await dispatch(getArscheduleList({page_number:1,page_size:10}))
+        return data.data
+    } catch (error) {
+        return rejectWithValue((error as Error).message)
+    }
 })

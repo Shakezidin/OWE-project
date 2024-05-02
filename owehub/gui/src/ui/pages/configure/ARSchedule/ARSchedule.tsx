@@ -18,9 +18,15 @@ import FilterModal from "../../../components/FilterModal/FilterModal";
 import { ROUTES } from "../../../../routes/routes";
 import { getArscheduleList, IARSchedule } from "../../../../redux/apiActions/arScheduleAction";
 import CreatedArSchedule from "./CreateArSchedeul";
+import Loading from "../../../components/loader/Loading";
+import { showAlert, successSwal } from "../../../components/alert/ShowAlert";
+import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
+import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
+import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 const ARSchedule = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
+
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -59,7 +65,7 @@ const ARSchedule = () => {
     dispatch(setCurrentPage(pageNumber));
   };
 
-  const commissionList = useAppSelector((state) => state.ArSchedule.data);
+  const {data:commissionList,isLoading} = useAppSelector((state) => state.ArSchedule);
   const goToNextPage = () => {
     dispatch(setCurrentPage(currentPage + 1));
   };
@@ -104,21 +110,47 @@ const ARSchedule = () => {
     handleOpen()
   };
 
-  const handleEditTimeLineSla = (timeLineSlaData: IARSchedule) => {
+  const handleEditTimeLineSla = (data: IARSchedule) => {
     setEditMode(true);
-    setEditedTimeLineSla(timeLineSlaData);
+    setEditedTimeLineSla(data);
     handleOpen()
   };
   const fetchFunction = (req: any) => {
     dispatch(getArscheduleList(req));
    };
-//   if (loading) {
-//     return <div>Loading...</div>;
-//   }
+
+
+   const handleArchiveClick = async (record_id: any) => {
+    const confirmed = await showAlert('Are Your Sure', 'This action will archive all selected rows?', 'Yes', 'No');
+    if (confirmed){
+      const archived: number[] = [record_id];
+      let newValue = {
+        record_id: archived,
+        is_archived: true
+      }
+      const pageNumber = {
+        page_number: currentPage,
+        page_size: itemsPerPage,
+  
+      };
+      const res = await postCaller("update_arschedule_archive", newValue);
+      if (res.status === HTTP_STATUS.OK) {
+        dispatch(getArscheduleList(pageNumber))
+        await successSwal("Archived", "All Selected rows have been archived", "success", 2000, false);
+      }else{
+        await successSwal("Archived", "All Selected rows have been archived", "error", 2000, false);
+      }
+    }
+  
+  };
+  if (isLoading) {
+    return <div className="loader-container">  <Loading/> </div>;
+  }
 
   if (error) {
     return <div>Error: {error}</div>;
   }
+
 
   return (
     <div className="comm">
@@ -143,6 +175,7 @@ const ARSchedule = () => {
           page_size={itemsPerPage} />}
         {open && <CreatedArSchedule
           editMode={editMode}
+          editData={editedTimeLineSla}
           handleClose={handleClose} />}
         <div
           className="TableContainer"
@@ -185,7 +218,7 @@ const ARSchedule = () => {
                     className={selectedRows.has(i) ? "selected" : ""}
                   >
 
-                    <td style={{ fontWeight: "500", color: "black" }}>
+                    <td style={{ fontWeight: "500", color: "black",}}>
                       <div className="flex-check">
                         <CheckBox
                           checked={selectedRows.has(i)}
@@ -198,18 +231,27 @@ const ARSchedule = () => {
                             )
                           }
                         />
-                        {el.record_id}
+                        
+                      <td>{el.partner_name}</td>
                       </div>
                     </td>
-                    {/* <td>{el.state}</td>
-                    <td>{el.days}</td> */}
+                    
+                    <td>{el.installer_name}</td>
+                    <td>{el.sale_type_name}</td>
+                    <td>{el.state_name}</td>
+                    <td>{el.red_line}</td>
+                    <td>{el.calc_date}</td>
+                    <td>{el.permit_pay}</td>
+                    <td>{el.permit_max}</td>
+                    <td>{el.install_pay}</td>
+                    <td>{el.pto_pay}</td>
                     <td>{el.start_date}</td>
                     <td>{el.end_date}</td>
                     <td
 
                     >
                       <div className="action-icon">
-                        <div className="">
+                        <div className="" style={{cursor:"pointer"}}  onClick={()=>handleArchiveClick(el.record_id)}>
                           <img src={ICONS.ARCHIVE} alt="" />
                         </div>
                         <div className="" onClick={() => handleEditTimeLineSla(el)} style={{ cursor: "pointer" }}>
