@@ -10,7 +10,6 @@ import FilterModal from "../../components/FilterModal/FilterModal";
 import "react-date-range/dist/styles.css"; // main style file
 import "react-date-range/dist/theme/default.css"; // theme css file
 import { DateRangePicker } from "react-date-range";
-import { useAppSelector } from "../../../redux/hooks";
 import ChangePassword from "../resetPassword/ChangePassword/ChangePassword";
 
 export const DashboardPage: React.FC = () => {
