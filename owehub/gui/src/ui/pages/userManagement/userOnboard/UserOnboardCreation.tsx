@@ -138,7 +138,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                 </div>
                 {formData.role_name === "Admin" ||
                 formData.role_name === "SubDealer Owner" ||
-                formData.role_name === "Dealer Owner" ? null : (
+                formData.role_name === "Dealer Owner" || formData.role_name === "Finance" ? null : (
                   <div className="create-input-field">
                     <label className="inputLabel-select">Dealer Owner</label>
                     <SelectOption

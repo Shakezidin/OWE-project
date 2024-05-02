@@ -38,6 +38,7 @@ interface Endpoints {
   create_timelinesla: string;
   create_loantype: string;
   create_autoadder: string;
+  create_repaysettings:string;
   get_newFormData: string;
   update_commission: string;
   update_autoadder: string;
@@ -100,6 +101,7 @@ export const EndPoints: Endpoints = {
   create_tierloanfee: "create_tierloanfee",
   create_vadder: "create_vadder",
   create_timelinesla: "create_timelinesla",
+  create_repaysettings:"create_repaysettings",
 
   // update config point
   update_commission: "update_commission",

@@ -90,10 +90,9 @@ export const LoginPage = () => {
         localStorage.setItem("expirationTimeInMin", time_to_expire_minutes);
         localStorage.setItem('expirationTime', (Date.now() + parseInt(time_to_expire_minutes) * 60 * 1000).toString()); // Expiration time is 480 minutes from now
         localStorage.setItem("isRememberMe", credentials.isRememberMe.toString());
-        localStorage.setItem('is_password_change_required',is_password_change_required)
-       
-        navigate(ROUTES.COMMISSION_DASHBOARD);
-        
+        localStorage.setItem('is_password_change_required',is_password_change_required)  
+        // navigate("/dashboard");
+        window.location.reload()
     
       } else {
         toast.error(result.message);
