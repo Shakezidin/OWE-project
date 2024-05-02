@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FiChevronDown } from 'react-icons/fi'; // Assuming you want to use the FiChevronDown icon
 import './DropdownWithCheckboxes.css';
 
@@ -21,6 +21,24 @@ const options: Option[] = [
 const DropdownWithCheckboxes = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -37,7 +55,7 @@ const DropdownWithCheckboxes = () => {
   };
 
   return (
-    <div className="dropdown-container">
+    <div className="dropdown-container" ref={dropdownRef}>
       <div className="dropdown-toggle" onClick={toggleDropdown}>
         {/* {selectedOptions.length > 0
           ? `(${selectedOptions})`
