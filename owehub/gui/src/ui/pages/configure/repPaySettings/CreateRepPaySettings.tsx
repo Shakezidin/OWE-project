@@ -13,6 +13,7 @@ import { repPaySettingModel } from "../../../../core/models/configuration/create
 import SelectOption from "../../../components/selectOption/SelectOption";
 import { format } from "date-fns";
 import { createRepaySettings } from "../../../../redux/apiActions/repPayAction";
+import { useAppDispatch } from "../../../../redux/hooks";
 
 interface createRepPayProps {
     handleClose: () => void,
@@ -22,13 +23,13 @@ interface createRepPayProps {
 
 
 const CreateRepPaySettings:React.FC<createRepPayProps> = ({handleClose,editMode}) => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
     const [newFormData,setNewFormData] = useState<any>([])
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
     const [createRePayData, setCreatePayData] = useState<repPaySettingModel>(
         {
-            unique_id:"133efgfdgd4",
+            unique_id:"1234567sfsfds89kjj",
             name:"",
             state:"",
             pay_scale:"",
@@ -81,32 +82,28 @@ const CreateRepPaySettings:React.FC<createRepPayProps> = ({handleClose,editMode}
  },[])
 
  
- const submitRepPaySettings = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
-
-  try {
-    console.log(createRePayData)
-    const res = await postCaller(EndPoints.create_paymentschedule,createRePayData );
+ 
+const handleSubmit = (e: React.FormEvent) => {
+  e.preventDefault()
+  dispatch(createRepaySettings({
     
-    if (res?.status === 200) {
-      alert(res.message); // Display success message
-      handleClose(); // Close any modal or form
-      window.location.reload(); // Reload the page (consider using a more React-friendly approach)
-    } else {
-      alert(res.message); // Display error message from API
-    }
-  } catch (error) {
-    console.error('Error submitting form:', error);
-    // Handle any unexpected errors (e.g., network issues)
-    alert('An error occurred while submitting the form. Please try again.');
-  }
-};
-  
+      unique_id: "1234567skdrwfs89",
+      name: "John Doe",
+      state: "Alabama",
+      pay_scale: "Hourly",
+      position: "Sales Representative",
+      b_e: "Business Entity",
+      start_date: "2024-04-29",
+      end_date: "2024-10-29"
+    
+  }))
+}
+
  
  
     return (
         <div className="transparent-model">
-             <form  className="modal"  onSubmit={(e)=>submitRepPaySettings(e)}>
+             <form  className="modal"  onSubmit={handleSubmit}>
 
                 <div className="createUserCrossButton" onClick={handleClose}>
                     <CROSS_BUTTON />

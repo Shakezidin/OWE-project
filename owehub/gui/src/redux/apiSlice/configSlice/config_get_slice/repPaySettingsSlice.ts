@@ -1,18 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import {  RepPaySettingsModel} from "../../../../core/models/configuration/create/RepPaySettingsModel";
-import { fetchRepaySettings } from "../../../apiActions/repPayAction";
+import { fetchRepaySettings, createRepaySettings } from "../../../apiActions/repPayAction";
 
 
 interface repaySettings {
   repPaySettingsList: RepPaySettingsModel[];
   loading: boolean;
   error: string | null;
+  isFormSubmitting:boolean
 }
 const initialState: repaySettings = {
   repPaySettingsList: [],
   loading: false,
   error: null,
+  isFormSubmitting:false,
 };
 
 
@@ -46,7 +48,17 @@ const repaySettingSlice = createSlice({
         state.loading = false;
         state.error =
           action.error.message ?? "Failed to fetch RepPaySettings Data";
-      });
+      })
+      .addCase(createRepaySettings.pending, (state, action) => {
+        state.isFormSubmitting = true
+    })
+    .addCase(createRepaySettings.fulfilled, (state) => {
+        state.isFormSubmitting = false
+    })
+    .addCase(createRepaySettings.rejected, (state, action) => {
+        state.isFormSubmitting = false
+        state.error = action.payload as string
+    })
   },
 });
 

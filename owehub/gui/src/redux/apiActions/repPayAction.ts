@@ -4,6 +4,7 @@ import { postCaller } from "../../infrastructure/web_api/services/apiUrl";
 import { EndPoints } from "../../infrastructure/web_api/api_client/EndPoints";
 
 interface RepayCreateParams {
+     unique_id:string;
      name:string,
      state:string,
      pay_scale:String,
@@ -26,12 +27,13 @@ export const fetchRepaySettings = createAsyncThunk(
     'create/repay-settings',
     async (params: RepayCreateParams, { rejectWithValue }) => {
       try {
-        const response = await postCaller(EndPoints.create_repaysettings, params);
-        return response.data; // Assuming your API response contains a 'data' property
+        const response = await postCaller(EndPoints.create_repaysettings,params );
+        return response.data;  
   
       } catch (error) {
-        // If an error occurs, reject the promise with an error message
         return rejectWithValue((error as Error).message);
       }
     }
   );
+
+ 
