@@ -65,6 +65,7 @@ import { ARDashboardPage } from "./ui/pages/ar/ardashboard/ardashboard";
 import { useAppDispatch, useAppSelector } from "./redux/hooks";
 import { TYPE_OF_USER } from "./resources/static_data/TypeOfUser";
 
+
 function App() {
   const dispatch = useAppDispatch();
   const role = localStorage.getItem("role");

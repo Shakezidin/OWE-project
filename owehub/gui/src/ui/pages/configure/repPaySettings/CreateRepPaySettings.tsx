@@ -11,6 +11,8 @@ import Select from 'react-select';
 import {paySaleTypeData } from "../../../../resources/static_data/StaticData";
 import { repPaySettingModel } from "../../../../core/models/configuration/create/repPaySettingModel";
 import SelectOption from "../../../components/selectOption/SelectOption";
+import { format } from "date-fns";
+import { createRepaySettings } from "../../../../redux/apiActions/repPayAction";
 
 interface createRepPayProps {
     handleClose: () => void,
@@ -26,13 +28,14 @@ const CreateRepPaySettings:React.FC<createRepPayProps> = ({handleClose,editMode}
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
     const [createRePayData, setCreatePayData] = useState<repPaySettingModel>(
         {
+            unique_id:"133efgfdgd4",
             name:"",
             state:"",
             pay_scale:"",
             position:"",
-            be:"",
-            start:"",
-            end:"",
+            b_e:"",
+            start_date:"",
+            end_date:"",
           }
     )
 
@@ -77,13 +80,33 @@ const CreateRepPaySettings:React.FC<createRepPayProps> = ({handleClose,editMode}
  getNewFormData()
  },[])
 
-  
+ 
+ const submitRepPaySettings = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
 
+  try {
+    console.log(createRePayData)
+    const res = await postCaller(EndPoints.create_paymentschedule,createRePayData );
+    
+    if (res?.status === 200) {
+      alert(res.message); // Display success message
+      handleClose(); // Close any modal or form
+      window.location.reload(); // Reload the page (consider using a more React-friendly approach)
+    } else {
+      alert(res.message); // Display error message from API
+    }
+  } catch (error) {
+    console.error('Error submitting form:', error);
+    // Handle any unexpected errors (e.g., network issues)
+    alert('An error occurred while submitting the form. Please try again.');
+  }
+};
+  
  
  
     return (
         <div className="transparent-model">
-             <form  className="modal">
+             <form  className="modal"  onSubmit={(e)=>submitRepPaySettings(e)}>
 
                 <div className="createUserCrossButton" onClick={handleClose}>
                     <CROSS_BUTTON />
@@ -144,8 +167,8 @@ const CreateRepPaySettings:React.FC<createRepPayProps> = ({handleClose,editMode}
                     <Input
                       type={"text"}
                       label="BE"
-                      value={createRePayData.be}
-                      name="be"
+                      value={createRePayData.b_e}
+                      name="b_e"
                       placeholder={"Enter"}
                       onChange={(e) => handlePayInputChange(e)}
                     />
@@ -154,8 +177,8 @@ const CreateRepPaySettings:React.FC<createRepPayProps> = ({handleClose,editMode}
                     <Input
                       type={"date"}
                       label="Start"
-                      value={createRePayData.start}
-                      name="start"
+                      value={createRePayData.start_date}
+                      name="start_date"
                       placeholder={"Enter"}
                       onChange={(e) => handlePayInputChange(e)}
                     />
@@ -168,8 +191,8 @@ const CreateRepPaySettings:React.FC<createRepPayProps> = ({handleClose,editMode}
                     <Input
                       type={"date"}
                       label="End"
-                      value={createRePayData.end}
-                      name="end"
+                      value={createRePayData.end_date}
+                      name="end_date"
                       placeholder={"Enter"}
                       onChange={(e) => handlePayInputChange(e)}
                     />
