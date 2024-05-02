@@ -86,6 +86,11 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
+/* Edge: Hide native eye icon */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
 /* image icon srtyle  */
 /* img{
   cursor: pointer;
