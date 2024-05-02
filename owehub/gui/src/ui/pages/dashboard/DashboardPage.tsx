@@ -10,8 +10,17 @@ import FilterModal from "../../components/FilterModal/FilterModal";
 import "react-date-range/dist/styles.css"; // main style file
 import "react-date-range/dist/theme/default.css"; // theme css file
 import { DateRangePicker } from "react-date-range";
+import { useAppSelector } from "../../../redux/hooks";
+import ChangePassword from "../resetPassword/ChangePassword/ChangePassword";
 
 export const DashboardPage: React.FC = () => {
+
+  const [isOpenChangePassword, setIsOpenChangePassword] = useState(true);
+
+
+  const { is_password_change_required } = useAppSelector((state) => state.auth);
+
+  console.log("is_password_change_required", is_password_change_required)
   const [selectionRange, setSelectionRange] = useState({
     startDate: new Date(),
     endDate: new Date(),
@@ -221,6 +230,10 @@ export const DashboardPage: React.FC = () => {
             fetchFunction={() => {}}
           />
         )}
+        {isOpenChangePassword &&  <ChangePassword handleOpenNClose={()=>{
+          setIsOpenChangePassword(!isOpenChangePassword)
+        }}/>}
+       
 
         <div className="" style={{ marginTop: "20px" }}>
           {active === 0 && <DashBoardTable />}
