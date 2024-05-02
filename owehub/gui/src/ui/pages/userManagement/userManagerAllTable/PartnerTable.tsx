@@ -12,20 +12,20 @@ import DataNotFound from "../../../components/loader/DataNotFound";
 
 interface PartnerProps {
   data: UserRoleBasedListModel[];
-  onClickEdit: (item: UserRoleBasedListModel)=> void;
-  onClickDelete: (item: UserRoleBasedListModel)=> void;
+  onClickEdit: (item: UserRoleBasedListModel) => void;
+  onClickDelete: (item: UserRoleBasedListModel) => void;
   selectAllChecked: boolean;
   selectedRows: Set<number>;
   setSelectedRows: React.Dispatch<React.SetStateAction<Set<number>>>;
   setSelectAllChecked: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const PartnerTable: React.FC<PartnerProps>= ({data, onClickDelete,onClickEdit, selectAllChecked,
+const PartnerTable: React.FC<PartnerProps> = ({ data, onClickDelete, onClickEdit, selectAllChecked,
   selectedRows,
   setSelectedRows,
-  setSelectAllChecked,}) => {
+  setSelectAllChecked, }) => {
 
-    const [sortKey, setSortKey] = useState("");
+  const [sortKey, setSortKey] = useState("");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
 
   const isAnyRowSelected = selectedRows?.size > 0;
@@ -61,7 +61,7 @@ const PartnerTable: React.FC<PartnerProps>= ({data, onClickDelete,onClickEdit, s
     });
   }
 
- 
+
   return (
     <>
       {/* <UserHeaderSection name="Partner" /> */}
@@ -70,38 +70,38 @@ const PartnerTable: React.FC<PartnerProps>= ({data, onClickDelete,onClickEdit, s
         style={{ overflowX: "auto", whiteSpace: "nowrap" }}
       >
         <table>
-        <thead>
-          <tr style={{ backgroundColor: "#F5F5F5" }}>
-            {UserPatternTableColumn.map((item, key) => (
-              <SortableHeader
-                key={key}
-                isCheckbox={item.isCheckbox}
-                titleName={item.displayName}
-                data={data}
-                isAllRowsSelected={isAllRowsSelected}
-                isAnyRowSelected={isAnyRowSelected}
-                selectAllChecked={selectAllChecked}
-                setSelectAllChecked={setSelectAllChecked}
-                selectedRows={selectedRows}
-                setSelectedRows={setSelectedRows}
-                sortKey={item.name}
-                sortDirection={"desc"}
-                onClick={() => {}}
-              />
-            ))}
-            <th>
-              <div className="action-header">
-                <p>Action</p>
-              </div>
-            </th>
-          </tr>
-        </thead>
+          <thead>
+            <tr style={{ backgroundColor: "#F5F5F5" }}>
+              {UserPatternTableColumn.map((item, key) => (
+                <SortableHeader
+                  key={key}
+                  isCheckbox={item.isCheckbox}
+                  titleName={item.displayName}
+                  data={data}
+                  isAllRowsSelected={isAllRowsSelected}
+                  isAnyRowSelected={isAnyRowSelected}
+                  selectAllChecked={selectAllChecked}
+                  setSelectAllChecked={setSelectAllChecked}
+                  selectedRows={selectedRows}
+                  setSelectedRows={setSelectedRows}
+                  sortKey={item.name}
+                  sortDirection={"desc"}
+                  onClick={() => { }}
+                />
+              ))}
+              <th>
+                <div className="action-header">
+                  <p>Action</p>
+                </div>
+              </th>
+            </tr>
+          </thead>
 
           <tbody>
             {data?.length > 0
               ? data.map((el: UserRoleBasedListModel, i: number) => (
-                  <tr key={el.email_id}>
-                   <td>
+                <tr key={el.email_id}>
+                  <td>
                     <div className="flex-check">
                       <CheckBox
                         checked={selectedRows.has(i)}
@@ -123,30 +123,32 @@ const PartnerTable: React.FC<PartnerProps>= ({data, onClickDelete,onClickEdit, s
                       {el.user_code}
                     </div>
                   </td>
-                    <td style={{ color:"black",paddingLeft:"10px" ,fontWeight:"500"}}>
-                      {el.name}
-                    </td>
-                    <td>{el.description ? el.description: 'NA'}</td>
-                    <td>
-                      <div className="action-icon">
-                        <div className="" style={{ cursor: "pointer" }} onClick={()=> onClickDelete(el)}>
-                          <img src={ICONS.deleteIcon} alt="" />
-                        </div>
-                        {/* <div className="" style={{ cursor: "pointer" }} onClick={()=> onClickEdit(el)}>
+                  <td style={{ color: "black", paddingLeft: "10px", fontWeight: "500" }}>
+                    {el.name}
+                  </td>
+                  <td style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+                    {el.description ? el.description : 'NA'}
+                  </td>
+                  <td>
+                    <div className="action-icon">
+                      <div className="" style={{ cursor: "pointer" }} onClick={() => onClickDelete(el)}>
+                        <img src={ICONS.deleteIcon} alt="" />
+                      </div>
+                      {/* <div className="" style={{ cursor: "pointer" }} onClick={()=> onClickEdit(el)}>
                           <img src={ICONS.editIcon} alt="" />
                         </div> */}
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              :  <tr style={{border:0}}>
-              <td colSpan={10}>
-              <div className="data-not-found">
-              <DataNotFound/>
-              <h3>Data Not Found</h3>
-              </div>
-              </td>
-            </tr>}
+                    </div>
+                  </td>
+                </tr>
+              ))
+              : <tr style={{ border: 0 }}>
+                <td colSpan={10}>
+                  <div className="data-not-found">
+                    <DataNotFound />
+                    <h3>Data Not Found</h3>
+                  </div>
+                </td>
+              </tr>}
           </tbody>
         </table>
       </div>

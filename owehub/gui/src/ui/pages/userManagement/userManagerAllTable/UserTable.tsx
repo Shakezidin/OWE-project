@@ -30,7 +30,7 @@ const UserTable: React.FC<UserTableProps> = ({
   const isAllRowsSelected = selectedRows?.size === data?.length;
   const [sortKey, setSortKey] = useState("");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
-  
+
   const handleSort = (key: string) => {
     console.log(key)
     if (sortKey === key) {
@@ -40,14 +40,14 @@ const UserTable: React.FC<UserTableProps> = ({
       setSortDirection("asc");
     }
   };
-  
+
   let sortedData = [...data]; // Create a shallow copy of the original data array
-  
+
   if (sortKey) {
     sortedData.sort((a: any, b: any) => {
       const aValue = a[sortKey];
       const bValue = b[sortKey];
-  
+
       if (typeof aValue === "string" && typeof bValue === "string") {
         return sortDirection === "asc"
           ? aValue.localeCompare(bValue)
@@ -64,9 +64,9 @@ const UserTable: React.FC<UserTableProps> = ({
   }
 
   console.log("sortedData", sortedData)
-  
+
   // Now sortedData contains the modified and sorted array based on sortKey and sortDirection
-  
+
   return (
     <div
       className="UserManageTable"
@@ -103,47 +103,49 @@ const UserTable: React.FC<UserTableProps> = ({
         <tbody>
           {sortedData?.length > 0
             ? sortedData?.map((el: UserRoleBasedListModel, i: number) => (
-                <tr key={el.email_id}>
-                  <td>
-                    <div className="flex-check">
-                      <CheckBox
-                        checked={selectedRows.has(i)}
-                        onChange={() => {
-                          // If there's only one row of data and the user clicks its checkbox, select all rows
-                          if (data?.length === 1) {
-                            setSelectAllChecked(true);
-                            setSelectedRows(new Set([0]));
-                          } else {
-                            toggleRowSelection(
-                              i,
-                              selectedRows,
-                              setSelectedRows,
-                              setSelectAllChecked
-                            );
-                          }
-                        }}
-                      />
-                      {el.user_code}
+              <tr key={el.email_id}>
+                <td>
+                  <div className="flex-check">
+                    <CheckBox
+                      checked={selectedRows.has(i)}
+                      onChange={() => {
+                        // If there's only one row of data and the user clicks its checkbox, select all rows
+                        if (data?.length === 1) {
+                          setSelectAllChecked(true);
+                          setSelectedRows(new Set([0]));
+                        } else {
+                          toggleRowSelection(
+                            i,
+                            selectedRows,
+                            setSelectedRows,
+                            setSelectAllChecked
+                          );
+                        }
+                      }}
+                    />
+                    {el.user_code}
+                  </div>
+                </td>
+                <td>{el.name}</td>
+                <td>{el.role_name}</td>
+                <td>{el.reporting_manager}</td>
+                <td>{el.email_id}</td>
+                <td>{el.mobile_number}</td>
+                <td style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+                  {el.description ? el.description : 'NA'}
+                </td>
+                <td>
+                  <div className="action-icon">
+                    <div
+                      className=""
+                      style={{ cursor: "pointer" }}
+                      onClick={() => {
+                        onClickDelete(el);
+                      }}
+                    >
+                      <img src={ICONS.deleteIcon} alt="" />
                     </div>
-                  </td>
-                  <td>{el.name}</td>
-                  <td>{el.role_name}</td>
-                  <td>{el.reporting_manager}</td>
-                  <td>{el.email_id}</td>
-                  <td>{el.mobile_number}</td>
-                  <td>{el.description ? el.description:'NA'}</td>
-                  <td>
-                    <div className="action-icon">
-                      <div
-                        className=""
-                        style={{ cursor: "pointer" }}
-                        onClick={() => {
-                          onClickDelete(el);
-                        }}
-                      >
-                        <img src={ICONS.deleteIcon} alt="" />
-                      </div>
-                      {/* <div
+                    {/* <div
                         className=""
                         style={{ cursor: "pointer" }}
                         onClick={() => {
@@ -152,18 +154,18 @@ const UserTable: React.FC<UserTableProps> = ({
                       >
                         <img src={ICONS.editIcon} alt="" />
                       </div> */}
-                    </div>
-                  </td>
-                </tr>
-              ))
-            :  <tr style={{border:0}}>
-            <td colSpan={10}>
-            <div className="data-not-found">
-            <DataNotFound/>
-            <h3>Data Not Found</h3>
-            </div>
-            </td>
-          </tr>}
+                  </div>
+                </td>
+              </tr>
+            ))
+            : <tr style={{ border: 0 }}>
+              <td colSpan={10}>
+                <div className="data-not-found">
+                  <DataNotFound />
+                  <h3>Data Not Found</h3>
+                </div>
+              </td>
+            </tr>}
         </tbody>
       </table>
     </div>

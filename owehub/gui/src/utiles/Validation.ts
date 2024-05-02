@@ -13,9 +13,8 @@ export const validateEmail = (email: string): boolean => {
 };
 
 export const validateMobileNumber = (mobileNumber: string): boolean => {
-  return /^[0-9]{10}$/.test(mobileNumber.trim());
+  return /^[0-9]{10,13}$/.test(mobileNumber.trim());
 };
-
 export const validateForm = (
   formData: CreateUserModel
 ): { [key: string]: boolean } => {

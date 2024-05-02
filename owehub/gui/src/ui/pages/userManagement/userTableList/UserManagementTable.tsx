@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "../../userManagement/user.css";
 import { ICONS } from "../../../icons/Icons";
 import "../../configure/configure.css";
@@ -19,6 +19,8 @@ import {
   UserRoleBasedListModel,
 } from "../../../../core/models/api_models/UserManagementModel";
 import { TYPE_OF_USER } from "../../../../resources/static_data/TypeOfUser";
+import PaginationComponent from "../../../components/pagination/PaginationComponent";
+import { fetchUserListBasedOnRole } from "../../../../redux/apiActions/userManagementActions";
 
 interface UserTableProos {
   userDropdownData: UserDropdownModel[];
@@ -47,30 +49,35 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   onClickMultiDelete
 }) => {
   const dispatch = useAppDispatch();
+  const [pageSize1, setPageSize1] = useState(10); // Set your desired page size here
+  const [currentPage1, setCurrentPage1] = useState(1)
+
+  useEffect(() => {
+    const pageNumber = {
+      page_number: currentPage1,
+      page_size: pageSize1,
+    };
+    dispatch(fetchUserListBasedOnRole(pageNumber));
+  }, [dispatch, currentPage1, pageSize1]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage1(page)
+  };
+  const handleItemsPerPageChange = (e: any) => {
+    const newItemsPerPage = parseInt(e.target.value, 10);
+    setPageSize1(newItemsPerPage);
+    setCurrentPage1(1) // Reset to the first page when changing items per page
+  };
 
   const currentPage = useAppSelector(
     (state) => state.paginationType.currentPage
   );
 
-  /** pagination */
-  const itemsPerPage = 10;
+  const totalPages = Math.ceil(userRoleBasedList?.length / pageSize1);
 
-  const paginate = (pageNumber: number) => {
-    dispatch(setCurrentPage(pageNumber));
-  };
+  const startIndex = (currentPage - 1) * pageSize1;
+  const endIndex = startIndex + pageSize1;
 
-  const goToNextPage = () => {
-    dispatch(setCurrentPage(currentPage + 1));
-  };
-
-  const goToPrevPage = () => {
-    dispatch(setCurrentPage(currentPage - 1));
-  };
-  const totalPages = Math.ceil(userRoleBasedList?.length / itemsPerPage);
-
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentPageData = userRoleBasedList?.slice(startIndex, endIndex);
 
   /** render table based on dropdown */
   const renderComponent = () => {
@@ -261,14 +268,13 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             <p className="page-heading">
               {currentPage} - {totalPages} of {userRoleBasedList?.length} item
             </p>
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages} // You need to calculate total pages
-              paginate={paginate}
-              goToNextPage={goToNextPage}
-              currentPageData={currentPageData}
-              goToPrevPage={goToPrevPage}
-            />
+            <PaginationComponent
+                currentPage={currentPage1}
+                itemsPerPage={pageSize1}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+                handleItemsPerPageChange={handleItemsPerPageChange}
+              />
           </>
         ) : null}
       </div>
