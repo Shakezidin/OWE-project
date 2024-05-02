@@ -64,6 +64,7 @@ import ApptSetters from "./ui/pages/configure/apptSetters/ApptSetters";
 import { ARDashboardPage } from "./ui/pages/ar/ardashboard/ardashboard";
 import { useAppDispatch, useAppSelector } from "./redux/hooks";
 import { TYPE_OF_USER } from "./resources/static_data/TypeOfUser";
+import AdderData from "./ui/pages/configure/adderData/AdderData";
 
 
 function App() {
@@ -132,6 +133,7 @@ function App() {
         <Route path={ROUTES.CONFIG_ADJUSTMENTS} element={<Adjustments />} />
         <Route path={ROUTES.CONFIG_RECONCILE} element={<Reconcile />} />
         <Route path={ROUTES.CONFIG_APPSETTERS} element={<ApptSetters />} />
+        <Route path={ROUTES.CONFIG_ADDERDATA} element={<AdderData/>}/>
 
         <Route path={ROUTES.USER_MANAEMENT} element={<UserManagement />} />
       </Route>
