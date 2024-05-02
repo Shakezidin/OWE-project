@@ -36,10 +36,11 @@ const arSchedule = createSlice({
         state.isLoading = true;
       })
       .addCase(getArscheduleList.fulfilled, (state, action) => {
-        state.isLoading = true;
+        state.isLoading = false;
         state.data = action.payload;
       })
       .addCase(getArscheduleList.rejected, (state, action) => {
+        state.isLoading = false;
         state.error = action.payload as string;
       })
 
@@ -52,7 +53,7 @@ const arSchedule = createSlice({
         toast.success("Form submission completed")
       })
       .addCase(createArSchedule.rejected, (state, action) => {
-        state.isFormSubmitting = true;
+        state.isFormSubmitting = false;
         state.error = action.payload as string;
       })
       .addCase(updateArchSchedule.pending,(state, action) => {
@@ -64,7 +65,7 @@ const arSchedule = createSlice({
         toast.success("Details updated successfully")
       })
       .addCase(updateArchSchedule.rejected, (state, action) => {
-        state.isFormSubmitting = true;
+        state.isFormSubmitting = false;
         state.error = action.payload as string;
       })
   },

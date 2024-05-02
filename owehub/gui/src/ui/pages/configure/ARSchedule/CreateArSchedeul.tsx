@@ -81,7 +81,7 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
     const data = {
       unique_id: formData.uniqueId,
       partner_name: formData.partner,
-      sale_type_name: "BATTERY",
+      sale_type_name: formData.saleType||"BATTERY",
       install_pay: formData.installPay,
       installer_name: formData.installer,
       start_date: format(new Date(formData.start), "yyyy-MM-dd"),
