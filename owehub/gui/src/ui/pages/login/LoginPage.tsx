@@ -80,7 +80,7 @@ export const LoginPage = () => {
       const result = unwrapResult(actionResult);
       if (result.status === HTTP_STATUS.OK) {
         toast.success(result.message);
-        const { email_id, user_name, role_name, access_token,time_to_expire_minutes
+        const { email_id, user_name, role_name, access_token,time_to_expire_minutes,is_password_change_required
         } = result.data;
         localStorage.setItem("email", email_id);
         localStorage.setItem("userName", user_name);
@@ -90,8 +90,9 @@ export const LoginPage = () => {
         localStorage.setItem("expirationTimeInMin", time_to_expire_minutes);
         localStorage.setItem('expirationTime', (Date.now() + parseInt(time_to_expire_minutes) * 60 * 1000).toString()); // Expiration time is 480 minutes from now
         localStorage.setItem("isRememberMe", credentials.isRememberMe.toString());
-        // navigate("/dashboard");
-        window.location.reload()
+        localStorage.setItem('is_password_change_required',is_password_change_required)  
+        navigate(ROUTES.COMMISSION_DASHBOARD);
+       // window.location.reload()
     
       } else {
         toast.error(result.message);

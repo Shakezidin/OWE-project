@@ -26,6 +26,7 @@ import paginationReducer from './apiSlice/paginationslice/paginationSlice'
 import createUserReducer from './apiSlice/userManagementSlice/createUserSlice'
 import userManagementSlice from "./apiSlice/userManagementSlice/userManagementSlice";
 import repPaySettingsSlice from "./apiSlice/configSlice/config_get_slice/repPaySettingsSlice";
+import ChangePasswordSlice from "./apiSlice/authSlice/ChangePasswordSlice";
 import arAdjusments from "./apiSlice/configSlice/config_get_slice/arAdjusments";
 
 export const store = configureStore({
@@ -33,6 +34,7 @@ export const store = configureStore({
     appState: appStateSlice,
     auth: authReducer,
     resetPassword: resetPasswordSlice,
+    changePassword:ChangePasswordSlice,
     comm: commissionReducer,
     dealer: dealerReducer,
     marketing: marketingReducer,
