@@ -11,6 +11,7 @@ CREATE OR REPLACE FUNCTION update_reconcile(
     p_notes VARCHAR,
     OUT v_reconcile_id INT
 )
+
 RETURNS INT 
 AS $$
 BEGIN
