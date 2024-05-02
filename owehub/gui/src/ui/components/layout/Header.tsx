@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./layout.css";
 import "../layout/layout.css";
 import {
@@ -59,6 +59,30 @@ const Header: React.FC<Toggleprops> = ({
         window.removeEventListener('scroll', handleScroll);
     };
 }, [scrolled]);
+
+
+
+// Code for if we click anywhere outside dropdown he will close
+
+const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setOPenIcon(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+
+
+
   return (
     <div className={`${scrolled ? 'header-scrolled' : ''} header-content`}>
       <div className="header-icon">
@@ -148,6 +172,7 @@ const Header: React.FC<Toggleprops> = ({
               <div className="">
                 <div
                   className="down-circle"
+                  ref={dropdownRef}
                   onClick={() => setOPenIcon(!openIcon)}
                 >
                   {openIcon ? (

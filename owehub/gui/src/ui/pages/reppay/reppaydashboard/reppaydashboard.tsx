@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "./repdasboard.css";
 import Select from "react-select";
 import { ICONS } from "../../../icons/Icons";
@@ -71,15 +71,34 @@ const handleSelectChange3 = (
 ) => {
   setSelectedOption3(selectedOption3 ? selectedOption3.value : "");
 };
-const [open, setOpen] = useState<boolean>(false);
-const handleOpen = () => setOpen(true);
+
+
+// used for close date click outside anywhere
+const datePickerRef = useRef<HTMLDivElement>(null);
+
+useEffect(() => {
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      datePickerRef.current &&
+      !datePickerRef.current.contains(event.target as Node)
+    ) {
+      setShowDatePicker(false);
+    }
+  };
+
+  document.addEventListener("mousedown", handleClickOutside);
+
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, []);
  
   return (
     <>
       <div className="rep-Dashboard-section-container">
         <div className="rep-Dashboard-container">
         <div className="manage-user">
-          <h3>Dashboard</h3>
+         
         </div>
           <div className="rep-dashboard-payroll">
 
@@ -135,7 +154,7 @@ const handleOpen = () => setOpen(true);
               </label>
 
 
-              <div style={{ position: "relative", top: "-1px" }}>
+              <div style={{ position: "relative", top: "-1px" }} ref={datePickerRef}>
                 <label className="rep-date-button" onClick={handleToggleDatePicker}>
                   Select Dates
                 </label>
