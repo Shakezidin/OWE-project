@@ -15,12 +15,9 @@ import ChangePassword from "../resetPassword/ChangePassword/ChangePassword";
 
 export const DashboardPage: React.FC = () => {
 
-  const [isOpenChangePassword, setIsOpenChangePassword] = useState(true);
+  const [isOpenChangePassword, setIsOpenChangePassword] = useState(localStorage.getItem('is_password_change_required') === 'true');
 
 
-  const { is_password_change_required } = useAppSelector((state) => state.auth);
-
-  console.log("is_password_change_required", is_password_change_required)
   const [selectionRange, setSelectionRange] = useState({
     startDate: new Date(),
     endDate: new Date(),

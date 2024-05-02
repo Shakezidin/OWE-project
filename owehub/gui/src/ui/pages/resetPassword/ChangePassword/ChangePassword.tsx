@@ -34,17 +34,15 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({handleOpenNClose}) => {
             toast.info('Confirm password does not matched with New password.')
         }else{
 
-            const actionResult = await dispatch(changePasswordAction({ new_password: newPassword, confirmPassword: confirmPassword }));
+            const actionResult = await dispatch(changePasswordAction({ new_password: newPassword, current_password: currentPassword }));
             const result = unwrapResult(actionResult);
             if (result.status === HTTP_STATUS.OK) {
-
-                console.log("result", result)
                toast.success(result.message);
                localStorage.setItem('is_password_change_required','false')
                window.location.reload()
              
             }else{
-              toast.success(result.message);
+              toast.error(result.message);
             }
         }
     };
