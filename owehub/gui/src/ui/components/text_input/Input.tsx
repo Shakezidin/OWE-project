@@ -53,7 +53,7 @@ const Input: FC<InputProps> = ({
           disabled={disabled}
         />
         {isTypePassword && type === "text" ? (
-          <EYE_OFF_ICON
+          <EYE_ICON
             className="eyeIcon"
             style={{ marginRight: "0.5rem" }}
             onClick={onClickEyeIcon}
@@ -62,7 +62,7 @@ const Input: FC<InputProps> = ({
           <></>
         )}
         {isTypePassword && type === "password" ? (
-          <EYE_ICON
+          <EYE_OFF_ICON
             className="eyeIcon"
             style={{ marginRight: "0.5rem" }}
             onClick={onClickEyeIcon}
