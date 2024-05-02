@@ -162,7 +162,6 @@ export const newStatusData = [
             color:"#101828",
             data:"data is not available",
             borderColor:"#A5AAB2"
-          
         },
         {
           bgColor:"#E9E9E9",
@@ -171,21 +170,17 @@ export const newStatusData = [
             color:"#101828",
             data:"data is not available",
             borderColor:"#A5AAB2"
-          
         },
-       
     ],
   },
   {
     name: "Roofing",
     number:"4",
     color:"#101828",
-   
     numColor:"#101828",
     bgColor:"#D8D9E0",
     childStatusData: [
       
-       
     ],
   },
   {

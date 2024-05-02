@@ -3,61 +3,30 @@ import "./repdasboard.css";
 import Select from "react-select";
 import { ICONS } from "../../../icons/Icons";
 import { comissionValueData, payRollData } from "../../../../resources/static_data/StaticData";
-import DashboardTotal from "../../dashboard/DashboardTotal";
 import RepDashBoardTable from "./RepDashboardTable";
 import RepDashBoardChart from "./RepDashboardChart";
-import RepDashBoardFilter from "./RepFilter";
 import RepPayDashboardTotal from "./RepPayDashboardTotal";
 import FilterModal from "../../../components/FilterModal/FilterModal";
-import { Column } from "../../../../core/models/data_models/FilterSelectModel";
 import DropdownWithCheckboxes from "./DropdownCheck";
-import "react-dates/lib/css/_datepicker.css";
-import "react-dates/initialize";
-import { DateRangePicker, FocusedInputShape } from "react-dates";
+import "react-date-range/dist/styles.css"; // main style file
+import "react-date-range/dist/theme/default.css"; // theme css file
+import { DateRangePicker } from "react-date-range";
 
-interface DateRangePickerProps {
-  startDate: moment.Moment | null;
-  startDateId: string;
-  endDate: moment.Moment | null;
-  endDateId: string;
-  onDatesChange: ({
-    startDate,
-    endDate,
-  }: {
-    startDate: moment.Moment | null;
-    endDate: moment.Moment | null;
-  }) => void;
-  focusedInput: FocusedInputShape | null;
-  onFocusChange: (focusedInput: FocusedInputShape | null) => void;
-  displayFormat: string;
-  block?: boolean;
-  showClearDates?: boolean;
-  transitionDuration?: number;
-  withPortal?: boolean;
-  withFullScreenPortal?: boolean;
-}
 
 
 export const RepPayDashboardPage: React.FC = () => {
-  const [startDate, setStartDate] = useState<moment.Moment | null>(null);
-  const [endDate, setEndDate] = useState<moment.Moment | null>(null);
-  const [focusedInput, setFocusedInput] = useState<FocusedInputShape | null>(null);
-
 
   const [active, setActive] = React.useState<number>(0);
   const [filterModal, setFilterModal] = React.useState<boolean>(false);
-
-  const [selectedOption, setSelectedOption] = useState<string>(
-    payRollData[0].label
-  );
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectionRange, setSelectionRange] = useState({
+    startDate: new Date(),
+    endDate: new Date(),
+    key: "selection",
+  });
   const [selectedOption2, setSelectedOption2] = useState<string>(
     comissionValueData[0].label
   );
-  const handleSelectChange = (
-    selectedOption: { value: string; label: string } | null
-  ) => {
-    setSelectedOption(selectedOption ? selectedOption.value : "");
-  };
   const handleSelectChange2 = (
     selectedOption2: { value: string; label: string } | null
   ) => {
@@ -65,6 +34,21 @@ export const RepPayDashboardPage: React.FC = () => {
   };
   const filterClose = () => {
     setFilterModal(false);
+  };
+  const handleToggleDatePicker = () => {
+    setShowDatePicker(!showDatePicker);
+  };
+  const handleSelect = (ranges: any) => {
+    setSelectionRange(ranges.selection);
+  };
+
+
+  const handleResetDates = () => {
+    setSelectionRange({
+      startDate: new Date(),
+      endDate: new Date(),
+      key: "selection",
+    });
   };
 
   const includeData = [
@@ -149,26 +133,29 @@ const handleOpen = () => setOpen(true);
               <label className="inputLabel" style={{ color: "#344054" }}>
                 Payroll Date
               </label>
-              <div className="rep-calendar-component2">
-                <DateRangePicker
-                  startDate={startDate}
-                  startDateId="s_id"
-                  endDate={endDate}
-                  endDateId="e_id"
-                  onDatesChange={({ startDate, endDate }) => {
-                    setStartDate(startDate);
-                    setEndDate(endDate);
-                  }}
-                  focusedInput={focusedInput}
-                  onFocusChange={(focusedInput) =>
-                    setFocusedInput(focusedInput)
-                  }
-                  displayFormat="DD/MM/YYYY"
-                  block
-                  showClearDates
-                  transitionDuration={1000}  
-                  withPortal
-                />
+
+
+              <div style={{ position: "relative", top: "-1px" }}>
+                <label className="rep-date-button" onClick={handleToggleDatePicker}>
+                  Select Dates
+                </label>
+                {showDatePicker && (
+                  <div className="rep-calender-container">
+                    <DateRangePicker
+                      ranges={[selectionRange]}
+                      onChange={handleSelect}
+                    />
+                    <button className="rep-reset-calender" onClick={handleResetDates}>
+                      Reset
+                    </button>
+                    <button
+                      className="rep-close-calender"
+                      onClick={handleToggleDatePicker}
+                    >
+                      Close
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
             
@@ -183,6 +170,7 @@ const handleOpen = () => setOpen(true);
 
             <div className="Line-container">
               <div className="rep-line-graph">
+                
                 <div
                   className={`rep-filter-line ${
                     active === 0 ? "rep-active-filter-line" : ""

@@ -5,7 +5,6 @@ import DashboardTotal from "./DashboardTotal";
 import { ICONS } from "../../icons/Icons";
 import DashBoardTable from "./DashBoardTable";
 import DashBoardChart from "./DashBoardChart";
-import { payRollData } from "../../../resources/static_data/StaticData";
 import { comissionValueData } from "../../../resources/static_data/StaticData";
 import FilterModal from "../../components/FilterModal/FilterModal";
 import "react-date-range/dist/styles.css"; // main style file
@@ -39,18 +38,19 @@ export const DashboardPage: React.FC = () => {
   const [active, setActive] = React.useState<number>(0);
   const [filterModal, setFilterModal] = React.useState<boolean>(false);
 
-  const [selectedOption, setSelectedOption] = useState<string>(
+ /* const [selectedOption, setSelectedOption] = useState<string>(
     payRollData[0].label
-  );
+  );*/
   const [selectedOption2, setSelectedOption2] = useState<string>(
     comissionValueData[0].label
   );
 
-  const handleSelectChange = (
+  
+ /* const handleSelectChange = (
     selectedOption: { value: string; label: string } | null
   ) => {
     setSelectedOption(selectedOption ? selectedOption.value : "");
-  };
+  };*/
   const handleSelectChange2 = (
     selectedOption2: { value: string; label: string } | null
   ) => {
@@ -221,6 +221,7 @@ export const DashboardPage: React.FC = () => {
             fetchFunction={() => {}}
           />
         )}
+
         <div className="" style={{ marginTop: "20px" }}>
           {active === 0 && <DashBoardTable />}
           {active === 1 && <DashBoardChart />}

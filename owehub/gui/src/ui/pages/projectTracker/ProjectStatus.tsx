@@ -77,7 +77,7 @@ const ProjectStatus = () => {
     <div className="">
       <Breadcrumb head="Project Tracking" linkPara="Project Tracking" route={""} linkparaSecond="Details" />
       <div className='project-container' style={{ padding: "0rem 0 1rem 0" }} >
-        <div className="project-heading" style={{ borderBottom: "1px solid #E1E1E1", padding: "0rem 1rem 1rem 1rem" }}>
+        <div className="project-heading" style={{ borderBottom: "1px solid #E1E1E1",padding: "0 22px 15px 22px" }}>
           <h3 style={{marginTop:"1rem"}}>Project Status</h3>
           <div className="" style={{ width: "25%" }}>
             <div className="">
@@ -165,7 +165,7 @@ const ProjectStatus = () => {
           </div>
         </div>
 
-        <div className="project-heading" style={{ padding: "1rem" }} >
+        <div className="project-heading" style={{ padding: "22px" }} >
           <div className="">
             <h3>Project Stages</h3>
             <div className="progress-box-container">
@@ -195,7 +195,6 @@ const ProjectStatus = () => {
                     <div className="status-number" style={{ background: "#FFFFF", color: item.numColor }}>{item.number}</div>
                     <p className='stage-1-para' style={{ color: item.color }}>{item.name}</p>
                   </div>
-
                   {
                     item.childStatusData.map((el: any, index: any) => (
                       <div className="notch-corner" style={{ background: el.bgColor, color: "#101828" }}>

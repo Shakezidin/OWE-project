@@ -23,6 +23,7 @@ interface Endpoints {
   timeLineSla: string;
   loanType: string;
   autoAdder:string;
+  repPaySettings:string;
 
   // post config
   create_commission: string;
@@ -36,6 +37,7 @@ interface Endpoints {
   create_timelinesla: string;
   create_loantype: string;
   create_autoadder:string;
+  create_repaysettings:string;
   get_newFormData: string;
   update_commission: string;
   update_autoadder: string;
@@ -82,6 +84,7 @@ export const EndPoints: Endpoints = {
   timeLineSla: "get_timelineslas",
   loanType: "get_loantypes",
   autoAdder:"get_autoadder",
+  repPaySettings:"get_rep_pay_settings",
 
   // post config endpoint
   create_commission: "create_commission",
@@ -96,6 +99,7 @@ export const EndPoints: Endpoints = {
   create_tierloanfee: "create_tierloanfee",
   create_vadder: "create_vadder",
   create_timelinesla: "create_timelinesla",
+  create_repaysettings:"create_repaysettings",
 
   // update config point
   update_commission: "update_commission",
@@ -120,6 +124,7 @@ export const EndPoints: Endpoints = {
   update_paymentschedule_archive: "update_paymentschedule_archive",
   update_timelinesla_archive: "update_timelinesla_archive",
   update_loantype_archive: "update_loantype_archive",
+
   // /get form Data
   get_newFormData: "get_newformdata",
 

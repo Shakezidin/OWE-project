@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { ICONS } from "../../../icons/Icons";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-import { fetchTimeLineSla } from "../../../../redux/apiSlice/configSlice/config_get_slice/timeLineSlice";
+import {  fetchRepaySettings} from "../../../../redux/apiActions/repPayAction";
 import CreateRepPaySettings from "./CreateRepPaySettings";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import {
@@ -12,11 +12,13 @@ import Pagination from "../../../components/pagination/Pagination";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 import { RepPaySettingsModel } from "../../../../core/models/configuration/create/RepPaySettingsModel";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
-
+import Swal from "sweetalert2";
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
 import { RepPaySettingsColumns} from "../../../../resources/static_data/configureHeaderData/RepPaySettingsColumn";
 import FilterModal from "../../../components/FilterModal/FilterModal";
 import { ROUTES } from "../../../../routes/routes";
+import DataNotFound from "../../../components/loader/DataNotFound";
+
 
 const RepPaySettings = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -36,7 +38,7 @@ const RepPaySettings = () => {
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
-  const [editedTimeLineSla, setEditedTimeLineSla] = useState<RepPaySettingsModel | null>(null);
+  const [editedRepPaySettings, setRepPaySettings] = useState<RepPaySettingsModel | null>(null);
   const itemsPerPage = 10;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
@@ -47,7 +49,7 @@ const RepPaySettings = () => {
       page_number: currentPage,
       page_size: itemsPerPage,
     };
-    dispatch(fetchTimeLineSla(pageNumber));
+    dispatch(fetchRepaySettings(pageNumber));
   }, [dispatch, currentPage]);
 
   const filter = () => {
@@ -59,10 +61,13 @@ const RepPaySettings = () => {
     dispatch(setCurrentPage(pageNumber));
   };
 
-  const commissionList = useAppSelector((state) => state.comm.commissionsList);
+  const {repPaySettingsList} = useAppSelector((state) => state.repaySettings);
+  console.log(repPaySettingsList,"repay")
   const goToNextPage = () => {
     dispatch(setCurrentPage(currentPage + 1));
   };
+
+  console.log(repPaySettingsList, "settings")
 
   const goToPrevPage = () => {
     dispatch(setCurrentPage(currentPage - 1));
@@ -72,7 +77,7 @@ const RepPaySettings = () => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   
-  const currentPageData = commissionList?.slice(startIndex, endIndex);
+  const currentPageData = repPaySettingsList?.slice(startIndex, endIndex);
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === timelinesla_list?.length;
   const handleSort = (key: any) => {
@@ -84,34 +89,89 @@ const RepPaySettings = () => {
     }
   };
 
-  if (sortKey) {
-    currentPageData.sort((a: any, b: any) => {
-      const aValue = a[sortKey];
-      const bValue = b[sortKey];
-      if (typeof aValue === 'string' && typeof bValue === 'string') {
-        return sortDirection === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
-      } else {
-        // Ensure numeric values for arithmetic operations
-        const numericAValue = typeof aValue === 'number' ? aValue : parseFloat(aValue);
-        const numericBValue = typeof bValue === 'number' ? bValue : parseFloat(bValue);
-        return sortDirection === 'asc' ? numericAValue - numericBValue : numericBValue - numericAValue;
-      }
-    });
-  }
-  const handleTimeLineSla = () => {
+  // if (sortKey) {
+  //   currentPageData.sort((a: any, b: any) => {
+  //     const aValue = a[sortKey];
+  //     const bValue = b[sortKey];
+  //     if (typeof aValue === 'string' && typeof bValue === 'string') {
+  //       return sortDirection === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+  //     } else {
+  //       // Ensure numeric values for arithmetic operations
+  //       const numericAValue = typeof aValue === 'number' ? aValue : parseFloat(aValue);
+  //       const numericBValue = typeof bValue === 'number' ? bValue : parseFloat(bValue);
+  //       return sortDirection === 'asc' ? numericAValue - numericBValue : numericBValue - numericAValue;
+  //     }
+  //   });
+  // }
+  const handleRepPaySettings = () => {
     setEditMode(false);
-    setEditedTimeLineSla(null);
+    setRepPaySettings(null);
     handleOpen()
   };
 
-  // const handleEditTimeLineSla = (timeLineSlaData: TimeLineSlaModel) => {
-  //   setEditMode(true);
-  //   setEditedTimeLineSla(timeLineSlaData);
-  //   handleOpen()
-  // };
+  const handleArchiveAllClick = async () => {
+    const confirmationResult = await Swal.fire({
+      title: 'Are you sure?',
+      text: 'This action will archive all selected rows.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, archive all'
+    });
+    // if (confirmationResult.isConfirmed) {
+    //   const archivedRows = Array.from(selectedRows).map(index => payScheduleList[index].record_id);
+    //   if (archivedRows.length > 0) {
+    //     const newValue = {
+    //       record_id: archivedRows,
+    //       is_archived: true
+    //     };
+
+    //     const pageNumber = {
+    //       page_number: currentPage,
+    //       page_size: itemsPerPage,
+    //     };
+
+    //     const res = await postCaller(EndPoints.update_paymentschedule_archive, newValue);
+    //     if (res.status === HTTP_STATUS.OK) {
+    //       // If API call is successful, refetch commissions
+    //       dispatch(fetchPaySchedule(pageNumber));
+    //       const remainingSelectedRows = Array.from(selectedRows).filter(index => !archivedRows.includes(payScheduleList[index].record_id));
+    //       const isAnyRowSelected = remainingSelectedRows.length > 0;
+    //       setSelectAllChecked(isAnyRowSelected);
+    //       setSelectedRows(new Set());
+    //       Swal.fire({
+    //         title: 'Archived!',
+    //         text: 'All selected rows have been archived.',
+    //         icon: 'success',
+    //         timer: 2000,
+    //         showConfirmButton: false
+    //       });
+    //     }
+    //     else {
+    //       Swal.fire({
+    //         title: 'Error!',
+    //         text: 'Failed to archive selected rows. Please try again later.',
+    //         icon: 'error',
+    //         timer: 2000,
+    //         showConfirmButton: false
+    //       });
+    //     }
+    //   }
+
+    // }
+  };
+  const handleViewArchiveToggle = () => {
+    setViewArchived(!viewArchived);
+    // When toggling, reset the selected rows
+    setSelectedRows(new Set());
+    setSelectAllChecked(false);
+  };
+
   const fetchFunction = (req: any) => {
-    dispatch(fetchTimeLineSla(req));
+    dispatch(fetchRepaySettings(req));
    };
+  
 //   if (loading) {
 //     return <div>Loading...</div>;
 //   }
@@ -123,23 +183,22 @@ const RepPaySettings = () => {
       <div className="commissionContainer">
         <TableHeader
           title="Rep Pay Settings"
-          onPressViewArchive={() => { }}
-          onPressArchive={() => { }}
+          onPressViewArchive={() => handleViewArchiveToggle()}
+          onPressArchive={() =>handleArchiveAllClick()}
           onPressFilter={() => filter()}
           onPressImport={() => { }}
           checked={isAllRowsSelected}
           viewArchive={viewArchived}
           isAnyRowSelected={isAnyRowSelected}
           onpressExport={() => { }}
-          onpressAddNew={() => handleTimeLineSla()}
+          onpressAddNew={() => handleRepPaySettings()}
         />
         {filterOPen && <FilterModal handleClose={filterClose}
           columns={RepPaySettingsColumns}
           page_number={currentPage}
           fetchFunction={fetchFunction}
           page_size={itemsPerPage} />}
-        {open && <CreateRepPaySettings
-          
+        {open && <CreateRepPaySettings    
           editMode={editMode}
           handleClose={handleClose} />}
         <div
@@ -177,17 +236,14 @@ const RepPaySettings = () => {
                 </th>
               </tr>
             </thead>
-            {/* <tbody >
+            <tbody>
               {currentPageData?.length > 0
                 ? currentPageData?.map((el: any, i: any) => (
-                  <tr
-                    key={i}
-                    className={selectedRows.has(i) ? "selected" : ""}
-                  >
-
-                    <td style={{ fontWeight: "500", color: "black" }}>
-                      <div className="flex-check">
-                        <CheckBox
+                    <tr key={i}>
+                    
+                      <td style={{ fontWeight: "500",color:"black" }}>
+                     <div className="flex-check">
+                     <CheckBox
                           checked={selectedRows.has(i)}
                           onChange={() =>
                             toggleRowSelection(
@@ -198,33 +254,38 @@ const RepPaySettings = () => {
                             )
                           }
                         />
-                        {el.type_m2m}
-                      </div>
-                    </td>
-                    <td>{el.state}</td>
-                    <td>{el.days}</td>
-                    <td>{el.start_date}</td>
-                    <td>{el.end_date}</td>
-                    <td
-
-                    >
-                      <div className="action-icon">
-                        <div className="">
-                          <img src={ICONS.ARCHIVE} alt="" />
-                        </div>
-                        <div className="" onClick={() => handleEditTimeLineSla(el)} style={{ cursor: "pointer" }}>
-                          <img src={ICONS.editIcon} alt="" />
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-                : null}
-            </tbody> */}
+                        {el.partner_name}
+                     </div>
+                        </td>
+                      <td>{el.partner}</td>
+                      <td>{el.installer_name}</td>
+                      <td>{el.sale_type}</td>
+                      <td>{el.state}</td>
+                      <td>{el.rl}</td>
+                      <td>{el.draw}</td>
+                      <td>{el.draw_max}</td>
+                      <td>{el.rep_draw}</td>
+                      <td>{el.rep_draw_max}</td>
+                      <td>{el.rep_pay}</td>
+                      <td>{el.start_date}</td>
+                      <td>{el.end_date}</td>
+                      
+                    </tr>
+                  ))
+                :  <tr style={{border:0}}>
+                <td colSpan={10}>
+                <div className="data-not-found">
+                <DataNotFound/>
+                <h3>Data Not Found</h3>
+                </div>
+                </td>
+              </tr>
+                }
+            </tbody>
 
           </table>
         </div>
-        <div className="page-heading-container">
+        {/* <div className="page-heading-container">
 
           <p className="page-heading">
             {currentPage} - {totalPages} of {currentPageData?.length} item
@@ -240,7 +301,7 @@ const RepPaySettings = () => {
               goToPrevPage={goToPrevPage}
             /> : null
           }
-        </div>
+        </div> */}
 
       </div>
 

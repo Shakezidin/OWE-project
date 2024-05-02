@@ -12,11 +12,12 @@ import { generateOTP } from "../../../redux/apiActions/authActions";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { HTTP_STATUS } from "../../../core/models/api_models/RequestModel";
 import { toast } from "react-toastify";
+import Loading from "../../components/loader/Loading";
 
 const EnterOtpScreen = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const {email} = useAppSelector((state) => state.resetPassword);
+  const {email, loading } = useAppSelector((state) => state.resetPassword);
 
   console.log('email',email)
   const [otpCred, setOtpCred] = useState<otpModel>({
@@ -57,7 +58,7 @@ const EnterOtpScreen = () => {
         toast.success(result.message)
         navigate("/login");
       }else{
-        toast.success(result.message)
+        toast.error(result.message)
       }
     }
   };
@@ -122,6 +123,11 @@ const EnterOtpScreen = () => {
             </div>
           </form>
         </div>
+        {loading && (
+        <div>
+          <Loading /> {loading}
+        </div>
+      )}
       </div>
     </div>
   );

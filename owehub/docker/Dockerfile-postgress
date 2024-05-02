@@ -85,6 +85,9 @@ COPY ./dbSchemas/DB_ProcCreateNewDealerCredit.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcUpdateDealerCredit.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcUpdateDealerCreditArchive.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcCreateNewNonCommDlrPay.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcCreateNewApptSetters.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcUpdateApptSetters.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcUpdateApptSettersArchive.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcUpdateReferralData.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcUpdateReferralDataArchive.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcCreateNewDlrOth.sql /docker-entrypoint-initdb.d/
@@ -114,6 +117,12 @@ COPY ./dbSchemas/DB_ProcUpdateAdderCreditArchive.sql /docker-entrypoint-initdb.d
 COPY ./dbSchemas/DB_ProcCreateNewLoanFee.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcUpdateLoanFee.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcUpdateLoanFeeArchive.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcCreateNewArImport.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcUpdateArImport.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcUpdateArImportArchive.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcCreateNewAR.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcUpdateAR.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/DB_ProcUpdateARArchive.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcCreateNewReconcile.sql /docker-entrypoint-initdb.d/
 COPY ./dbSchemas/DB_ProcUpdateReconcileArchive.sql /docker-entrypoint-initdb.d/
 

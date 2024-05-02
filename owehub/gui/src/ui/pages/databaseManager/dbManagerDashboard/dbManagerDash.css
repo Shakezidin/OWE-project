@@ -110,7 +110,7 @@
 }
 
 .create-container {
-  border: 1px solid #D0D5DD;
+  border: 1px solid #d0d5dd;
   width: 32.23%;
   height: 394px;
   border-radius: 16px;
@@ -172,13 +172,13 @@
   position: relative;
   border: none;
   outline: none;
-  padding: .3rem .7rem;
+  padding: 0.3rem 0.7rem;
   font-size: 12px;
   cursor: pointer;
   color: #101828 !important;
   background-color: #ffffff !important;
   font-weight: 500;
-  border-radius: .25rem;
+  border-radius: 0.25rem;
   z-index: 2;
   line-height: 20px;
 }
@@ -248,7 +248,6 @@
   /* Add transition for smooth scaling */
 }
 
-
 .Payroll-section-up {
   display: flex;
   height: 36px;
@@ -267,13 +266,13 @@
   position: relative;
   border: none;
   outline: none;
-  padding: .3rem .7rem;
+  padding: 0.3rem 0.7rem;
   font-size: 12px;
   cursor: pointer;
   color: #101828 !important;
   background-color: #ffffff;
   font-weight: 500;
-  border-radius: .25rem;
+  border-radius: 0.25rem;
   z-index: 2;
   line-height: 20px;
   margin-left: -6px;
@@ -284,7 +283,7 @@
   appearance: none; /* Remove default styles */
   -webkit-appearance: none; /* Remove default styles for Safari */
   -moz-appearance: none; /* Remove default styles for Firefox */
-  background-image: url(''); /* Remove default dropdown arrow */
+  /* background-image: url(''); Remove default dropdown arrow */
 }
 
 #dropdown::-ms-expand {
@@ -296,7 +295,7 @@
   padding: 8.22px 5.64px 8px 5.64px;
   gap: 0px;
   opacity: 0px;
-  color: #6D6D6D;
+  color: #6d6d6d;
   margin-left: 49px;
   cursor: pointer;
 }
