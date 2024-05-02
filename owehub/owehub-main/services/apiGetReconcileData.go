@@ -11,7 +11,6 @@ import (
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	"strings"
-	"time"
 
 	"encoding/json"
 	"fmt"
@@ -139,10 +138,10 @@ func HandleGetReconcileRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 
 		// Date
-		DateStr, ok := item["date"].(time.Time)
-		if !ok || DateStr.IsZero() {
+		DateStr, ok := item["date"].(string)
+		if !ok || DateStr == "" {
 			log.FuncErrorTrace(0, "Failed to get date for Unique ID %v. Item: %+v\n", UniqueId, item)
-			DateStr = time.Time{}
+			DateStr = ""
 		}
 
 		// Amount
@@ -170,7 +169,6 @@ func HandleGetReconcileRequest(resp http.ResponseWriter, req *http.Request) {
 			Date:        DateStr,
 			Amount:      Amount,
 			Notes:       Notes,
-			IsArchived:  IsArchived,
 		}
 		reconcileList.ReconcileList = append(reconcileList.ReconcileList, reconcileData)
 	}
@@ -188,7 +186,7 @@ func HandleGetReconcileRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 	RecordCount = int64(len(data))
 	// Send the response
-	log.FuncInfoTrace(0, "Number of commissions List fetched : %v list %+v", len(reconcileList.ReconcileList), reconcileList)
+	log.FuncInfoTrace(0, "Number of reconcile List fetched : %v list %+v", len(reconcileList.ReconcileList), reconcileList)
 	FormAndSendHttpResp(resp, "reconcile", http.StatusOK, reconcileList, RecordCount)
 }
 
@@ -244,7 +242,7 @@ func PrepareReconcileFilters(tableName string, dataFilter models.DataRequestBody
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(re.status) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "date":
-				filtersBuilder.WriteString(fmt.Sprintf("re.date %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(re.date) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "amount":
 				filtersBuilder.WriteString(fmt.Sprintf("re.amount %s $%d", operator, len(whereEleList)+1))

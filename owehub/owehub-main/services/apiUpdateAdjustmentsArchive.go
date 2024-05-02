@@ -85,6 +85,6 @@ func HandleUpdateAdjustmentsArchiveRequest(resp http.ResponseWriter, req *http.R
 	}
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "Adjustmentss Archive updated with Id: %+v", data)
-	FormAndSendHttpResp(resp, "Adjustmentss Archive Updated Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "Adjustments Archive updated with Id: %+v", data)
+	FormAndSendHttpResp(resp, "Adjustments Archive Updated Successfully", http.StatusOK, nil)
 }

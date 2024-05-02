@@ -93,6 +93,6 @@ func HandleCreateArScheduleRequest(resp http.ResponseWriter, req *http.Request) 
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "commissions created with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "Commissions Created Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "ArSchedule created with Id: %+v", data["result"])
+	FormAndSendHttpResp(resp, "ArSchedule Created Successfully", http.StatusOK, nil)
 }

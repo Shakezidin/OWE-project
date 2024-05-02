@@ -1,6 +1,6 @@
 /**************************************************************************
-* File			: apiCreateRReconcile.go
-* DESCRIPTION	: This file contains functions for create rebate data handler
+* File			: apiCreateReconcile.go
+* DESCRIPTION	: This file contains functions for create Reconcile data handler
 * DATE			: 24-Apr-2024
 **************************************************************************/
 
@@ -18,8 +18,8 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:		HandleCreateRReconcileRequest
- * DESCRIPTION:     handler for create rebate data request
+ * FUNCTION:		HandleCreateReconcileRequest
+ * DESCRIPTION:     handler for create Reconcile data request
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
@@ -35,7 +35,7 @@ func HandleCreateReconcileRequest(resp http.ResponseWriter, req *http.Request) {
 	defer func() { log.ExitFn(0, "HandleCreateReconcileRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in create rebate data request")
+		err = fmt.Errorf("HTTP Request body is null in create Reconcile data request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -43,21 +43,22 @@ func HandleCreateReconcileRequest(resp http.ResponseWriter, req *http.Request) {
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create rebate data request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create Reconcile data request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &createReconcileReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal create rebate data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal create rebate data request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal create Reconcile data request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal create Reconcile data request", http.StatusBadRequest, nil)
 		return
 	}
 
 	if (len(createReconcileReq.UniqueId) <= 0) || (len(createReconcileReq.Customer) <= 0) ||
 		(len(createReconcileReq.PartnerName) <= 0) || (len(createReconcileReq.StateName) <= 0) ||
-		(len(createReconcileReq.Status) <= 0) || (len(createReconcileReq.Notes) <= 0) {
+		(len(createReconcileReq.Status) <= 0) || (len(createReconcileReq.Notes) <= 0) ||
+		(len(createReconcileReq.Date) <= 0){
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
@@ -76,12 +77,6 @@ func HandleCreateReconcileRequest(resp http.ResponseWriter, req *http.Request) {
 		FormAndSendHttpResp(resp, "Invalid SysAmountSize Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
-	if createReconcileReq.Date.IsZero() {
-		err = fmt.Errorf("Date value is required")
-		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Date value is required", http.StatusBadRequest, nil)
-		return
-	}
 
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, createReconcileReq.UniqueId)
@@ -97,13 +92,13 @@ func HandleCreateReconcileRequest(resp http.ResponseWriter, req *http.Request) {
 	// Call the database function
 	result, err = db.CallDBFunction(db.CreateReconcileFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Add rebate data in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Create rebate data", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to Add Reconcile data in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to Create Reconcile data", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "commissions created with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "Commissions Created Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "Reconcile created with Id: %+v", data["result"])
+	FormAndSendHttpResp(resp, "Reconcile Created Successfully", http.StatusOK, nil)
 }

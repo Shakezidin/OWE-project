@@ -98,6 +98,6 @@ func HandleCreateRateAdjustmentsRequest(resp http.ResponseWriter, req *http.Requ
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "commissions created with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "Commissions Created Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "RateAdjustments created with Id: %+v", data["result"])
+	FormAndSendHttpResp(resp, "RateAdjustments Created Successfully", http.StatusOK, nil)
 }

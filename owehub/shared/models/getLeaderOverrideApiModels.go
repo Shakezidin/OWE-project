@@ -7,6 +7,7 @@
 package models
 
 type GetLeaderOverride struct {
+	RecordId   int64   `json:"record_id"`
 	UniqueID   string  `json:"unique_id"`
 	TeamName   string  `json:"team_name"`
 	LeaderName string  `json:"leader_name"`
@@ -16,7 +17,6 @@ type GetLeaderOverride struct {
 	SalesQ     float64 `json:"sales_q"`
 	TeamKwQ    float64 `json:"team_kw_q"`
 	PayRate    string  `json:"pay_rate"`
-	IsArchived bool    `json:"is_archived"`
 	StartDate  string  `json:"start_date"`
 	EndDate    string  `json:"end_date"`
 }

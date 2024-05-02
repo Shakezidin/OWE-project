@@ -125,7 +125,6 @@ func HandleGetInstallCostDataRequest(resp http.ResponseWriter, req *http.Request
 			UniqueId:   UniqueId,
 			RecordId:   RecordId,
 			Cost:       Cost,
-			IsArchived: IsArchived,
 			StartDate:  StartDate,
 			EndDate:    EndDate,
 		}

@@ -201,7 +201,6 @@ func HandleGetArScheduleDataRequest(resp http.ResponseWriter, req *http.Request)
 			PermitMax:     PermitMax,
 			InstallPay:    InstallPay,
 			PtoPay:        PtoPay,
-			IsArchived:    IsArchived,
 			StartDate:     StartDate,
 			EndDate:       EndDate,
 		}

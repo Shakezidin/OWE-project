@@ -14,7 +14,6 @@ type GetRateAdjustments struct {
 	Adjustment string  `json:"adjustment"`
 	MinRate    float64 `json:"min_rate"`
 	MaxRate    float64 `json:"max_rate"`
-	IsArchived bool    `json:"is_archived"`
 	StartDate  string  `json:"start_date"`
 	EndDate    string  `json:"end_date"`
 }
