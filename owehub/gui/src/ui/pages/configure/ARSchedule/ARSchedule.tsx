@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { ICONS } from "../../../icons/Icons";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-import { fetchTimeLineSla } from "../../../../redux/apiSlice/configSlice/config_get_slice/timeLineSlice";
 // import CreateTimeLine from "./CreateTimeLine";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import {
@@ -17,6 +16,8 @@ import SortableHeader from "../../../components/tableHeader/SortableHeader";
 import { ARScheduleColumns} from "../../../../resources/static_data/configureHeaderData/ARScheduleColumn";
 import FilterModal from "../../../components/FilterModal/FilterModal";
 import { ROUTES } from "../../../../routes/routes";
+import { getArscheduleList, IARSchedule } from "../../../../redux/apiActions/arScheduleAction";
+import CreatedArSchedule from "./CreateArSchedeul";
 const ARSchedule = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -27,15 +28,15 @@ const ARSchedule = () => {
 
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const timelinesla_list = useAppSelector(
-    (state) => state.timelineSla.timelinesla_list
+  const {data} = useAppSelector(
+    (state) => state.ArSchedule
   );
 //   const loading = useAppSelector((state) => state.timelineSla.loading);
   const error = useAppSelector((state) => state.timelineSla.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
-  const [editedTimeLineSla, setEditedTimeLineSla] = useState<TimeLineSlaModel | null>(null);
+  const [editedTimeLineSla, setEditedTimeLineSla] = useState<IARSchedule | null>(null);
   const itemsPerPage = 10;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
@@ -46,7 +47,7 @@ const ARSchedule = () => {
       page_number: currentPage,
       page_size: itemsPerPage,
     };
-    dispatch(fetchTimeLineSla(pageNumber));
+    dispatch(getArscheduleList(pageNumber));
   }, [dispatch, currentPage]);
 
   const filter = () => {
@@ -58,7 +59,7 @@ const ARSchedule = () => {
     dispatch(setCurrentPage(pageNumber));
   };
 
-  const commissionList = useAppSelector((state) => state.comm.commissionsList);
+  const commissionList = useAppSelector((state) => state.ArSchedule.data);
   const goToNextPage = () => {
     dispatch(setCurrentPage(currentPage + 1));
   };
@@ -66,14 +67,14 @@ const ARSchedule = () => {
   const goToPrevPage = () => {
     dispatch(setCurrentPage(currentPage - 1));
   };
-  const totalPages = Math.ceil(timelinesla_list?.length / itemsPerPage);
+  const totalPages = Math.ceil(data?.length / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   
   const currentPageData = commissionList?.slice(startIndex, endIndex);
   const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === timelinesla_list?.length;
+  const isAllRowsSelected = selectedRows.size === data?.length;
   const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
@@ -103,13 +104,13 @@ const ARSchedule = () => {
     handleOpen()
   };
 
-  const handleEditTimeLineSla = (timeLineSlaData: TimeLineSlaModel) => {
+  const handleEditTimeLineSla = (timeLineSlaData: IARSchedule) => {
     setEditMode(true);
     setEditedTimeLineSla(timeLineSlaData);
     handleOpen()
   };
   const fetchFunction = (req: any) => {
-    dispatch(fetchTimeLineSla(req));
+    dispatch(getArscheduleList(req));
    };
 //   if (loading) {
 //     return <div>Loading...</div>;
@@ -140,26 +141,23 @@ const ARSchedule = () => {
           page_number={currentPage}
           fetchFunction={fetchFunction}
           page_size={itemsPerPage} />}
-        {/* {open && <CreateTimeLine
-          timeLineSlaData={editedTimeLineSla}
+        {open && <CreatedArSchedule
           editMode={editMode}
-          handleClose={handleClose} />} */}
+          handleClose={handleClose} />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
         >
           <table>
-
             <thead >
               <tr>
-
                 {
                   ARScheduleColumns?.map((item, key) => (
                     <SortableHeader
                       key={key}
                       isCheckbox={item.isCheckbox}
                       titleName={item.displayName}
-                      data={timelinesla_list}
+                      data={data}
                       isAllRowsSelected={isAllRowsSelected}
                       isAnyRowSelected={isAnyRowSelected}
                       selectAllChecked={selectAllChecked}
@@ -179,9 +177,9 @@ const ARSchedule = () => {
                 </th>
               </tr>
             </thead>
-            {/* <tbody >
+            <tbody >
               {currentPageData?.length > 0
-                ? currentPageData?.map((el: any, i: any) => (
+                ? currentPageData?.map((el:IARSchedule, i:number) => (
                   <tr
                     key={i}
                     className={selectedRows.has(i) ? "selected" : ""}
@@ -200,11 +198,11 @@ const ARSchedule = () => {
                             )
                           }
                         />
-                        {el.type_m2m}
+                        {el.record_id}
                       </div>
                     </td>
-                    <td>{el.state}</td>
-                    <td>{el.days}</td>
+                    {/* <td>{el.state}</td>
+                    <td>{el.days}</td> */}
                     <td>{el.start_date}</td>
                     <td>{el.end_date}</td>
                     <td
@@ -222,7 +220,7 @@ const ARSchedule = () => {
                   </tr>
                 ))
                 : null}
-            </tbody> */}
+            </tbody>
 
           </table>
         </div>
@@ -233,7 +231,7 @@ const ARSchedule = () => {
           </p>
 
           {
-            timelinesla_list?.length > 0 ? <Pagination
+            data?.length > 0 ? <Pagination
               currentPage={currentPage}
               totalPages={totalPages} // You need to calculate total pages
               paginate={paginate}
