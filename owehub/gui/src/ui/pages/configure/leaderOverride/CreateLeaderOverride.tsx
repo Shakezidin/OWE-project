@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cross_button.svg";
 import Input from "../../../components/text_input/Input";
-
+import {resetSuccess} from "../../../../redux/apiSlice/configSlice/config_get_slice/leaderOverride"
 import { ActionButton } from "../../../components/button/ActionButton";
 import { updatePayForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createPayScheduleSlice";
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
@@ -19,7 +19,7 @@ import { paySaleTypeData } from "../../../../resources/static_data/StaticData";
 import { PayScheduleModel } from "../../../../core/models/configuration/create/PayScheduleModel";
 import SelectOption from "../../../components/selectOption/SelectOption";
 import { format } from "date-fns";
-import { useAppDispatch } from "../../../../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import {
   createleaderOverride,
   ILeaderRow,
@@ -53,6 +53,7 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
     uniqueId: editData?.unique_id || "",
   });
   const [newFormData, setNewFormData] = useState<any>([]);
+  const  {isSuccess} = useAppSelector(state=>state.leaderOverride)
 
   const tableData = {
     tableNames: ["partners", "states", "installers", "sale_type"],
@@ -112,6 +113,15 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
   };
   useEffect(() => {
     getNewFormData();
+  }, []);
+
+  useEffect(() => {
+    if (isSuccess) {
+      handleClose();
+    }
+    return () => {
+      isSuccess && dispatch(resetSuccess());
+    };
   }, []);
 
   return (
