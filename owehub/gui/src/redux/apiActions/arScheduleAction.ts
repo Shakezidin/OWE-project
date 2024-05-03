@@ -58,6 +58,9 @@ export const getArscheduleList = createAsyncThunk("get/arschedule",async(param:I
 export const createArSchedule = createAsyncThunk("create/arschedule",async(param:SolarInstallation,{rejectWithValue,dispatch})=>{
     try {
         const data = await postCaller("create_arschedule",param)
+        if (data.status === 500 || data instanceof Error) {
+            return rejectWithValue((data as Error).message);
+          }
         await dispatch(getArscheduleList({page_number:1,page_size:10}))
         return data.data
     } catch (error) {
@@ -70,6 +73,9 @@ export const createArSchedule = createAsyncThunk("create/arschedule",async(param
 export const updateArchSchedule = createAsyncThunk("update/arschedule",async(param:IUpdateParams,{rejectWithValue,dispatch})=>{
     try {
         const data = await postCaller("update_arschedule",param)
+        if (data.status === 500 || data instanceof Error) {
+            return rejectWithValue((data as Error).message);
+          }
         await dispatch(getArscheduleList({page_number:1,page_size:10}))
         return data.data
     } catch (error) {

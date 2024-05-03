@@ -36,6 +36,9 @@ export const getAdjustments = createAsyncThunk("fetch/rate-adjustments", async (
 export const createAdjustments = createAsyncThunk("create/rate-adjustments", async (params: IRateCreateParams, { rejectWithValue, dispatch }) => {
     try {
         const data = await postCaller("create_adjustments", params)
+        if(data instanceof Error){
+            return rejectWithValue((data as Error).message)
+        }
         await dispatch(getAdjustments({ page_number: 1, page_size: 10 }))
         return data.data
     } catch (error) {
