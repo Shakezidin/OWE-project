@@ -752,14 +752,15 @@ CREATE TABLE adder_data (
     gc text,
     exact_amount text,
     per_kw_amt DOUBLE PRECISION,
-    rep_percent integer,
+    rep_percent DOUBLE PRECISION,
     description character varying,
     notes character varying,
     sys_size DOUBLE PRECISION,
     adder_cal DOUBLE PRECISION,
     is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
-    updated_at timestamp without time zone
+    updated_at timestamp without time zone,
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE loan_fee (

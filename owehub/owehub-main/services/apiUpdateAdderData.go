@@ -90,7 +90,7 @@ func HandleUpdateAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 		FormAndSendHttpResp(resp, "Invalid Adder Cal Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
-	if updateAdderDataReq.RepPercent <= 0 {
+	if updateAdderDataReq.RepPercent <= float64(0) {
 		err = fmt.Errorf("Invalid rep percent Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Invalid Rep Percent Not Allowed", http.StatusBadRequest, nil)

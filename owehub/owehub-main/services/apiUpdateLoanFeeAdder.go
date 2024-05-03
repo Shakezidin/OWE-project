@@ -36,7 +36,7 @@ func HandleUpdateLoanFeeAdderDataRequest(resp http.ResponseWriter, req *http.Req
 	defer func() { log.ExitFn(0, "HandleUpdateLoanFeeAdderDataRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in update loanfee adder request")
+		err = fmt.Errorf("HTTP Request body is null in update loan fee adder request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -67,81 +67,81 @@ func HandleUpdateLoanFeeAdderDataRequest(resp http.ResponseWriter, req *http.Req
 		(len(UpdateLoanFeeAdderReq.EndDate) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if UpdateLoanFeeAdderReq.RecordId <= int64(0) {
 		err = fmt.Errorf("Invalid Record Id, unable to proceed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Record Id, Update failed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Record Id, Update failed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if UpdateLoanFeeAdderReq.Contract <= float64(0) {
-		err = fmt.Errorf("Invalid Sale price Not Allowed")
+		err = fmt.Errorf("Invalid contract Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Sale price Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Contract Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if UpdateLoanFeeAdderReq.OweCost <= float64(0) {
-		err = fmt.Errorf("Invalid Rate list Not Allowed")
+		err = fmt.Errorf("Invalid Owe cost Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Rate list Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Owwe Cost Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if UpdateLoanFeeAdderReq.AddrAmount <= float64(0) {
-		err = fmt.Errorf("Invalid Rate Not Allowed")
+		err = fmt.Errorf("Invalid addr amount Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Rate Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Addr Amount Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if UpdateLoanFeeAdderReq.PerKwAmount <= float64(0) {
-		err = fmt.Errorf("Invalid Rate Not Allowed")
+		err = fmt.Errorf("Invalid PerKwAmount Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Rate Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid PerKwAmount Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if UpdateLoanFeeAdderReq.RepDollDivbyPer <= float64(0) {
-		err = fmt.Errorf("Invalid Rate Not Allowed")
+		err = fmt.Errorf("Invalid RepDollDivbyPer Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Rate Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid RepDollDivbyPer Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if UpdateLoanFeeAdderReq.SysSize <= float64(0) {
-		err = fmt.Errorf("Invalid Rate Not Allowed")
+		err = fmt.Errorf("Invalid sys size Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Rate Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Sys Size Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if UpdateLoanFeeAdderReq.RepCount <= float64(0) {
-		err = fmt.Errorf("Invalid Rate Not Allowed")
+		err = fmt.Errorf("Invalid rep count Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Rate Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Rep Count Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if UpdateLoanFeeAdderReq.PerRepAddrShare <= float64(0) {
-		err = fmt.Errorf("Invalid Rate Not Allowed")
+		err = fmt.Errorf("Invalid PerRepAddrShare Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Rate Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid PerRepAddrShare Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if UpdateLoanFeeAdderReq.PerRepOvrdShare <= float64(0) {
-		err = fmt.Errorf("Invalid Rate Not Allowed")
+		err = fmt.Errorf("Invalid PerRepOvrdShare Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Rate Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid PerRepOvrdShare Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if UpdateLoanFeeAdderReq.R1PayScale <= float64(0) {
-		err = fmt.Errorf("Invalid Rate Not Allowed")
+		err = fmt.Errorf("Invalid R1PayScale Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Rate Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid R1PayScale Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if UpdateLoanFeeAdderReq.R2PayScale <= float64(0) {
-		err = fmt.Errorf("Invalid Rate Not Allowed")
+		err = fmt.Errorf("Invalid R2PayScale Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Rate Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid R2PayScale Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -179,13 +179,13 @@ func HandleUpdateLoanFeeAdderDataRequest(resp http.ResponseWriter, req *http.Req
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateLoanFeeAdderFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Add loan fee adder in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Update loan fee adder", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to update loan fee adder in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to update loan fee adder", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "loan fee adder Updated with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "loan fee adder Updated Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "Loan Fee Adder Updated with Id: %+v", data["result"])
+	FormAndSendHttpResp(resp, "Loan Fee Adder Updated Successfully", http.StatusOK, nil)
 }

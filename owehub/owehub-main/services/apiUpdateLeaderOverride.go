@@ -102,8 +102,8 @@ func HandleUpdateLeaderOverrideRequest(resp http.ResponseWriter, req *http.Reque
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateLeaderOverrideFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Update leader override in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Update leader override", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to update leader override in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to update leader override", http.StatusInternalServerError, nil)
 		return
 	}
 

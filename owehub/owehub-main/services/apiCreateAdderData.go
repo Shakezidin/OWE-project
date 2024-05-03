@@ -107,7 +107,7 @@ func HandleCreateAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 	// Call the database function
 	result, err = db.CallDBFunction(db.CreateAdderDataFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Add AdderData in DB with err: %v", err)
+		log.FuncErrorTrace(0, "Failed to Add adder data in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Create AdderData", http.StatusInternalServerError, nil)
 		return
 	}
