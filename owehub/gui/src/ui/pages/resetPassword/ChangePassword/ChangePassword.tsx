@@ -9,6 +9,7 @@ import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { ICONS } from '../../../icons/Icons';
 import { useNavigate } from 'react-router-dom';
 import { FaArrowLeft } from "react-icons/fa6";
+import { logout } from '../../../../redux/apiSlice/authSlice/authSlice';
 
 interface ChangePasswordProps {
     handleOpenNClose: ()=> void
@@ -118,8 +119,8 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({handleOpenNClose}) => {
               const result = unwrapResult(actionResult);
               if (result.status === HTTP_STATUS.OK) {
                   showToast(result.message, 'success');
-                  localStorage.setItem('is_password_change_required', 'false');
-                  window.location.reload();
+                 // localStorage.setItem('is_password_change_required', 'false');
+                 dispatch(logout())
               } else {
                   showToast(result.message, 'error');
               }
@@ -127,11 +128,14 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({handleOpenNClose}) => {
       }
   };
 
-
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/login");
+  };
 
     const handleClose = () => {
         handleOpenNClose();
-        navigate('/login');
+        handleLogout();
     }
    
 
