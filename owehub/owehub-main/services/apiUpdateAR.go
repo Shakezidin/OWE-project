@@ -43,7 +43,7 @@ func HandleUpdateARDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from rpdate Ar request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update Ar request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
