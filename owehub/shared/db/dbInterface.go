@@ -65,6 +65,8 @@ const (
 	UpdateDealerOverrideArchiveFunction      string = "update_dealer_override_archive"
 	UpdateMarketingFeeFunction               string = "update_marketing_fee"
 	UpdateMarketingFeesArchiveFunction       string = "update_marketing_fees_archive"
+	UpdateAdderDataFunction                  string = "update_adder_data"
+	UpdateAdderDataArchiveFunction           string = "update_adder_data_archive"
 	UpdateVAddersFunction                    string = "update_v_adders"
 	UpdateVAddersArchiveFunction             string = "update_v_adders_archive"
 	UpdateSaleTypeFunction                   string = "update_sale_type"
