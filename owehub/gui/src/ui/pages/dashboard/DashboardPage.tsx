@@ -87,9 +87,9 @@ export const DashboardPage: React.FC = () => {
     <>
       <div className="Dashboard-section-container">
         <div className="DashboardPage-container">
-          <div className="DashboardPage-wel">
+          {/* <div className="DashboardPage-wel">
             <h3>Dashboard</h3>
-          </div>
+          </div> */}
           <div className="dashboard-payroll">
             <div className="dash-head-input">
               <label className="inputLabel" style={{ color: "#344054" }}>
