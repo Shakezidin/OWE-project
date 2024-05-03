@@ -104,11 +104,9 @@ dispatch(updateArchSchedule({...data,record_id:editData?.record_id!}))
   useEffect(() => {
     if (isSuccess) {
       handleClose()
+      dispatch(resetSuccess())
     }
 
-    return (() => {
-      isSuccess && dispatch(resetSuccess())
-    })
   }, [isSuccess])
 
   console.log(formData,"formDaaaa")

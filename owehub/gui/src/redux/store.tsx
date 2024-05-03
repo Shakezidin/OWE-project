@@ -34,6 +34,7 @@ import leaderOverride from "./apiSlice/configSlice/config_get_slice/leaderOverri
 import adderDataSlice from "./apiSlice/configSlice/config_get_slice/adderDataSlice";
 import rateAdjustmentsSlice from "./apiSlice/configSlice/config_get_slice/rateAdjustmentsSlice";
 import reconcileSlice from "./apiSlice/configSlice/config_get_slice/reconcileSlice";
+import loanFeeSlice from "./apiSlice/configSlice/config_get_slice/loanFeeSlice";
 
 export const store = configureStore({
   reducer: {
@@ -74,6 +75,7 @@ export const store = configureStore({
     adderDataSlice,
     rateAdjustment:rateAdjustmentsSlice,
     reconcile:reconcileSlice,
+    loanFeeSlice
 
   },
 });

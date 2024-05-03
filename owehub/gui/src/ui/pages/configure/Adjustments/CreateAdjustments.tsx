@@ -49,7 +49,7 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({ handleClose, editMode 
   }
   const getNewFormData = async () => {
     const res = await postCaller(EndPoints.get_newFormData, tableData)
-    setNewFormData(prev => ({ prev, ...res.data }))
+    setNewFormData(prev => ({ ...prev, ...res.data }))
   }
   React.useEffect(() => {
     getNewFormData()
@@ -91,9 +91,9 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({ handleClose, editMode 
   useEffect(() => {
     if (isSuccess) {
       handleClose()
+      isSuccess && dispatch(resetSuccess()) 
     }
-    return (() => { isSuccess && dispatch(resetSuccess()) })
-  }, [])
+  }, [isSuccess])
   return (
     <div className="transparent-model">
       <form className="modal" onSubmit={handleSubmit} >
