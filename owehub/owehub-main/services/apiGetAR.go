@@ -130,13 +130,6 @@ func HandleGetARDataRequest(resp http.ResponseWriter, req *http.Request) {
 			MaxRate = 0.0
 		}
 
-		// is_archived
-		IsArchived, ok := item["is_archived"].(bool)
-		if !ok || !IsArchived {
-			log.FuncErrorTrace(0, "Failed to get is_archived value for Record ID %v. Item: %+v\n", RecordId, item)
-			IsArchived = false
-		}
-
 		aRData := models.GetARReq{
 			RecordId:    RecordId,
 			UniqueId:    Unique_id,
@@ -145,7 +138,6 @@ func HandleGetARDataRequest(resp http.ResponseWriter, req *http.Request) {
 			Adjustment:  Adjustment,
 			MinRate:     MinRate,
 			MaxRate:     MaxRate,
-			Is_Archived: IsArchived,
 		}
 
 		ARList.ARList = append(ARList.ARList, aRData)
@@ -255,7 +247,7 @@ func PrepareARFilters(tableName string, dataFilter models.DataRequestBody, forDa
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY id, unique_id, pay_scale, position, adjustment, min_rate, max_rate, is_archived")
+		filtersBuilder.WriteString(" GROUP BY id, unique_id, pay_scale, position, adjustment, min_rate, max_rate")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {

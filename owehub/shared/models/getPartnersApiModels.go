@@ -7,6 +7,7 @@
 package models
 
 type GetPartnerData struct {
+	Record_Id   int64  `json:"record_id"`
 	PartnerName string `json:"partner_name"`
 	Description string `json:"description"`
 }

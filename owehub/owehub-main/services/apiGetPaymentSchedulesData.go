@@ -26,19 +26,22 @@ import (
  ******************************************************************************/
 func HandleGetPaymentSchedulesDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err          error
-		dataReq      models.DataRequestBody
-		data         []map[string]interface{}
-		whereEleList []interface{}
-		query        string
-		filter       string
+		err             error
+		dataReq         models.DataRequestBody
+		data            []map[string]interface{}
+		whereEleList    []interface{}
+		query           string
+		queryWithFiler  string
+		queryForAlldata string
+		filter          string
+		RecordCount     int64
 	)
 
-	log.EnterFn(0, "HandleGetCommissionsDataRequest")
-	defer func() { log.ExitFn(0, "HandleGetCommissionsDataRequest", err) }()
+	log.EnterFn(0, "HandleGetPaymentSchedulesDataRequest")
+	defer func() { log.ExitFn(0, "HandleGetPaymentSchedulesDataRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in get Commissions data request")
+		err = fmt.Errorf("HTTP Request body is null in get payment shedule data request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -68,12 +71,12 @@ func HandleGetPaymentSchedulesDataRequest(resp http.ResponseWriter, req *http.Re
 	JOIN sale_type sl ON sl.id = ps.sale_type_id 
 	JOIN user_details ud ON ud.user_id = ps.rep_id`
 
-	filter, whereEleList = PreparePaymentScheduleFilters(tableName, dataReq)
+	filter, whereEleList = PreparePaymentScheduleFilters(tableName, dataReq, false)
 	if filter != "" {
-		query += filter
+		queryWithFiler = query + filter
 	}
 
-	data, err = db.ReteriveFromDB(query, whereEleList)
+	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get payment schedules data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get payment schedules data from DB", http.StatusBadRequest, nil)
@@ -205,9 +208,22 @@ func HandleGetPaymentSchedulesDataRequest(resp http.ResponseWriter, req *http.Re
 
 		paymentScheduleList.PaymentScheduleList = append(paymentScheduleList.PaymentScheduleList, paySchData)
 	}
+
+	filter, whereEleList = PreparePaymentScheduleFilters(tableName, dataReq, true)
+	if filter != "" {
+		queryForAlldata = query + filter
+	}
+
+	data, err = db.ReteriveFromDB(queryForAlldata, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get payment shedule data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get payment shedule data from DB", http.StatusBadRequest, nil)
+		return
+	}
+	RecordCount = int64(len(data))
 	// Send the response
 	log.FuncInfoTrace(0, "Number of payment schedules List fetched : %v list %+v", len(paymentScheduleList.PaymentScheduleList), paymentScheduleList)
-	FormAndSendHttpResp(resp, "Payment Schedules Data", http.StatusOK, paymentScheduleList)
+	FormAndSendHttpResp(resp, "Payment Schedules Data", http.StatusOK, paymentScheduleList, RecordCount)
 }
 
 /******************************************************************************
@@ -216,7 +232,7 @@ func HandleGetPaymentSchedulesDataRequest(resp http.ResponseWriter, req *http.Re
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
-func PreparePaymentScheduleFilters(tableName string, dataFilter models.DataRequestBody) (filters string, whereEleList []interface{}) {
+func PreparePaymentScheduleFilters(tableName string, dataFilter models.DataRequestBody, forDataCount bool) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PreparePaymentScheduleFilters")
 	defer func() { log.ExitFn(0, "PreparePaymentScheduleFilters", nil) }()
 
@@ -303,10 +319,14 @@ func PreparePaymentScheduleFilters(tableName string, dataFilter models.DataReque
 		filtersBuilder.WriteString("ps.is_archived = FALSE")
 	}
 
-	// Add pagination logic
-	if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
-		offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
-		filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+	if forDataCount == true {
+		filtersBuilder.WriteString(" GROUP BY ps.id, ud.name, pt1.partner_name, pt2.partner_name, st.name, sl.type_name, ps.rl, ps.draw, ps.draw_max, ps.rep_draw, ps.rep_draw_max, ps.rep_pay, ps.start_date, ps.end_date")
+	} else {
+		// Add pagination logic
+		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
+			filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+		}
 	}
 
 	filters = filtersBuilder.String()

@@ -26,12 +26,15 @@ import (
  ******************************************************************************/
 func HandleGetLeaderOverrideDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err          error
-		dataReq      models.DataRequestBody
-		data         []map[string]interface{}
-		whereEleList []interface{}
-		query        string
-		filter       string
+		err             error
+		dataReq         models.DataRequestBody
+		data            []map[string]interface{}
+		whereEleList    []interface{}
+		query           string
+		queryWithFiler  string
+		queryForAlldata string
+		filter          string
+		RecordCount     int64
 	)
 
 	log.EnterFn(0, "HandleGetLeaderOverrideDataRequest")
@@ -64,12 +67,12 @@ func HandleGetLeaderOverrideDataRequest(resp http.ResponseWriter, req *http.Requ
 	FROM leader_override lo
 	JOIN teams ts ON ts.team_id = lo.team_id`
 
-	filter, whereEleList = PrepareLeaderOverrideFilters(tableName, dataReq)
+	filter, whereEleList = PrepareLeaderOverrideFilters(tableName, dataReq, false)
 	if filter != "" {
-		query += filter
+		queryWithFiler = query + filter
 	}
 
-	data, err = db.ReteriveFromDB(query, whereEleList)
+	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get LeaderOverride data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get LeaderOverride data from DB", http.StatusBadRequest, nil)
@@ -146,12 +149,6 @@ func HandleGetLeaderOverrideDataRequest(resp http.ResponseWriter, req *http.Requ
 			PayRate = ""
 		}
 
-		IsArchived, ok := item["is_archived"].(bool)
-		if !ok || !IsArchived {
-			log.FuncErrorTrace(0, "Failed to get is_archived value for Record ID %v. Item: %+v\n", RecordId, item)
-			IsArchived = false
-		}
-
 		// StartDate
 		StartDate, startOk := item["start_date"].(string)
 		if !startOk || StartDate == "" {
@@ -168,7 +165,7 @@ func HandleGetLeaderOverrideDataRequest(resp http.ResponseWriter, req *http.Requ
 
 		// Create a new GetMarketingFeesData object
 		leaderOverrideData := models.GetLeaderOverride{
-			RecordId: RecordId,
+			RecordId:   RecordId,
 			UniqueID:   UniqueID,
 			TeamName:   TeamName,
 			LeaderName: LeaderName,
@@ -186,9 +183,22 @@ func HandleGetLeaderOverrideDataRequest(resp http.ResponseWriter, req *http.Requ
 		LeaderOverrideList.LeaderOverrideList = append(LeaderOverrideList.LeaderOverrideList, leaderOverrideData)
 	}
 
+	filter, whereEleList = PrepareLeaderOverrideFilters(tableName, dataReq, true)
+	if filter != "" {
+		queryForAlldata = query + filter
+	}
+
+	data, err = db.ReteriveFromDB(queryForAlldata, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get leader override data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get leader override data from DB", http.StatusBadRequest, nil)
+		return
+	}
+	RecordCount = int64(len(data))
+
 	// Send the response
 	log.FuncInfoTrace(0, "Number of LeaderOverride List fetched : %v list %+v", len(LeaderOverrideList.LeaderOverrideList), LeaderOverrideList)
-	FormAndSendHttpResp(resp, "LeaderOverride Data", http.StatusOK, LeaderOverrideList)
+	FormAndSendHttpResp(resp, "LeaderOverride Data", http.StatusOK, LeaderOverrideList, RecordCount)
 }
 
 /******************************************************************************
@@ -197,15 +207,17 @@ func HandleGetLeaderOverrideDataRequest(resp http.ResponseWriter, req *http.Requ
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
-func PrepareLeaderOverrideFilters(tableName string, dataFilter models.DataRequestBody) (filters string, whereEleList []interface{}) {
+func PrepareLeaderOverrideFilters(tableName string, dataFilter models.DataRequestBody, forDataCount bool) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PrepareLeaderOverrideFilters")
 	defer func() { log.ExitFn(0, "PrepareLeaderOverrideFilters", nil) }()
 
 	var filtersBuilder strings.Builder
+	whereAdded := false // Flag to track if WHERE clause has been added
 
 	// Check if there are filters
 	if len(dataFilter.Filters) > 0 {
 		filtersBuilder.WriteString(" WHERE ")
+		whereAdded = true // Set flag to true as WHERE clause is added
 
 		for i, filter := range dataFilter.Filters {
 			// Check if the column is a foreign key
@@ -266,10 +278,31 @@ func PrepareLeaderOverrideFilters(tableName string, dataFilter models.DataReques
 		}
 	}
 
-	// Add pagination logic
-	if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
-		offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
-		filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+	// Handle the Archived field
+	if dataFilter.Archived {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+		}
+		filtersBuilder.WriteString("lo.is_archived = TRUE")
+	} else {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+		}
+		filtersBuilder.WriteString("lo.is_archived = FALSE")
+	}
+
+	if forDataCount == true {
+		filtersBuilder.WriteString(" GROUP BY lo.id, lo.unique_id, lo.leader_name, lo.type, lo.term, lo.qual, lo.sales_q, lo.team_kw_q, lo.pay_rate, lo.start_date, lo.end_date, ts.team_name")
+	} else {
+		// Add pagination logic
+		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
+			filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+		}
 	}
 
 	filters = filtersBuilder.String()

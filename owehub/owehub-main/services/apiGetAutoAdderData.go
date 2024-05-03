@@ -26,12 +26,15 @@ import (
  ******************************************************************************/
 func HandleGetAutoAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err          error
-		dataReq      models.DataRequestBody
-		data         []map[string]interface{}
-		whereEleList []interface{}
-		query        string
-		filter       string
+		err             error
+		dataReq         models.DataRequestBody
+		data            []map[string]interface{}
+		whereEleList    []interface{}
+		query           string
+		queryWithFiler  string
+		queryForAlldata string
+		filter          string
+		RecordCount     int64
 	)
 
 	log.EnterFn(0, "HandleGetAutoAdderDataRequest")
@@ -69,12 +72,12 @@ func HandleGetAutoAdderDataRequest(resp http.ResponseWriter, req *http.Request) 
 		 JOIN user_details ud1 ON ud1.user_id = ad.rep_1
 		 JOIN user_details ud2 ON ud2.user_id = ad.rep_2`
 
-	filter, whereEleList = PrepareAutoAdderFilters(tableName, dataReq)
+	filter, whereEleList = PrepareAutoAdderFilters(tableName, dataReq, false)
 	if filter != "" {
-		query += filter
+		queryWithFiler = query + filter
 	}
 
-	data, err = db.ReteriveFromDB(query, whereEleList)
+	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get AutoAdder data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get AutoAdder data from DB", http.StatusBadRequest, nil)
@@ -352,9 +355,21 @@ func HandleGetAutoAdderDataRequest(resp http.ResponseWriter, req *http.Request) 
 		AutoAdderList.AutoAdderList = append(AutoAdderList.AutoAdderList, AutoAdderData)
 	}
 
+	filter, whereEleList = PrepareAutoAdderFilters(tableName, dataReq, true)
+	if filter != "" {
+		queryForAlldata = query + filter
+	}
+
+	data, err = db.ReteriveFromDB(queryForAlldata, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get auto adder data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get auto adder data from DB", http.StatusBadRequest, nil)
+		return
+	}
+	RecordCount = int64(len(data))
 	// Send the response
 	log.FuncInfoTrace(0, "Number of AutoAdder List fetched : %v list %+v", len(AutoAdderList.AutoAdderList), AutoAdderList)
-	FormAndSendHttpResp(resp, "AutoAdder Data", http.StatusOK, AutoAdderList)
+	FormAndSendHttpResp(resp, "AutoAdder Data", http.StatusOK, AutoAdderList, RecordCount)
 }
 
 /******************************************************************************
@@ -363,15 +378,17 @@ func HandleGetAutoAdderDataRequest(resp http.ResponseWriter, req *http.Request) 
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
-func PrepareAutoAdderFilters(tableName string, dataFilter models.DataRequestBody) (filters string, whereEleList []interface{}) {
+func PrepareAutoAdderFilters(tableName string, dataFilter models.DataRequestBody, forDataCount bool) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PrepareAutoAdderFilters")
 	defer func() { log.ExitFn(0, "PrepareAutoAdderFilters", nil) }()
 
 	var filtersBuilder strings.Builder
+	// whereAdded := false // Flag to track if WHERE clause has been added
 
 	// Check if there are filters
 	if len(dataFilter.Filters) > 0 {
 		filtersBuilder.WriteString(" WHERE ")
+		// whereAdded = true // Set flag to true as WHERE clause is added
 
 		for i, filter := range dataFilter.Filters {
 			// Check if the column is a foreign key
@@ -419,10 +436,10 @@ func PrepareAutoAdderFilters(tableName string, dataFilter models.DataRequestBody
 				filtersBuilder.WriteString(fmt.Sprintf("ad.type %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "rep_1_name":
-				filtersBuilder.WriteString(fmt.Sprintf("rep_1_name %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("ud1.name %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "rep_2_name":
-				filtersBuilder.WriteString(fmt.Sprintf("rep_2_name %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("ud1.name %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "sys_size":
 				filtersBuilder.WriteString(fmt.Sprintf("ad.sys_size %s $%d", operator, len(whereEleList)+1))
@@ -494,10 +511,31 @@ func PrepareAutoAdderFilters(tableName string, dataFilter models.DataRequestBody
 		}
 	}
 
-	// Add pagination logic
-	if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
-		offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
-		filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+	// Handle the Archived field
+	// if dataFilter.Archived {
+	// 	if whereAdded {
+	// 		filtersBuilder.WriteString(" AND ")
+	// 	} else {
+	// 		filtersBuilder.WriteString(" WHERE ")
+	// 	}
+	// 	filtersBuilder.WriteString("ad.is_archived = TRUE")
+	// } else {
+	// 	if whereAdded {
+	// 		filtersBuilder.WriteString(" AND ")
+	// 	} else {
+	// 		filtersBuilder.WriteString(" WHERE ")
+	// 	}
+	// 	filtersBuilder.WriteString("ad.is_archived = FALSE")
+	// }
+
+	if forDataCount == true {
+		filtersBuilder.WriteString(" GROUP BY ad.id, ad.unique_id, ad.type_aa_mktg, ad.gc, ad.exact_amount, ad.per_kw_amount, ad.rep_doll_divby_per, ad.description_rep_visible, ad.notes_not_rep_visible, ad.type, ud1.name, ud2.name, ad.sys_size, st.name, ad.rep_count, ad.per_rep_addr_share, ad.per_rep_ovrd_share, ad.r1_pay_scale, ad.rep_1_def_resp, ad.r1_addr_resp, ad.r2_pay_scale, ad.rep_2_def_resp, ad.r2_addr_resp, ad.contract_amount, ad.project_base_cost, ad.crt_addr, ad.r1_loan_fee, ad.r1_rebate, ad.r1_referral, ad.r1_r_plus_r, ad.total_comm, ad.start_date, ad.end_date")
+	} else {
+		// Add pagination logic
+		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
+			filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+		}
 	}
 
 	filters = filtersBuilder.String()

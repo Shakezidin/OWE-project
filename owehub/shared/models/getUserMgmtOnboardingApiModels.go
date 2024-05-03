@@ -7,6 +7,7 @@
 package models
 
 type GetUsMgmtOnbData struct {
+	Record_Id int64  `json:"record_id"`
 	RoleName  string `json:"role_name"`
 	UserCount int64  `json:"user_count"`
 }

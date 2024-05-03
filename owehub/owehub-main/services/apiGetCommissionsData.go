@@ -61,7 +61,7 @@ func HandleGetCommissionsDataRequest(resp http.ResponseWriter, req *http.Request
 		return
 	}
 
-	tableName := db.TableName_commission_rates
+	tableName := db.TableName_rebate_data
 	query = `
 	SELECT cr.id as record_id, pt1.partner_name as partner_name, pt2.partner_name as installer_name, st.name, sl.type_name as sale_type, cr.sale_price, rp.rep_type, cr.rl, cr.rate, cr.start_date, cr.end_date
 	FROM commission_rates cr
@@ -134,13 +134,6 @@ func HandleGetCommissionsDataRequest(resp http.ResponseWriter, req *http.Request
 			RepType = ""
 		}
 
-		// is_archived
-		IsArchived, ok := item["is_archived"].(bool)
-		if !ok || !IsArchived {
-			log.FuncErrorTrace(0, "Failed to get is_archived value for Record ID %v. Item: %+v\n", RecordId, item)
-			IsArchived = false
-		}
-
 		// RL
 		RL, ok := item["rl"].(float64)
 		if !ok {
@@ -177,7 +170,6 @@ func HandleGetCommissionsDataRequest(resp http.ResponseWriter, req *http.Request
 			SaleType:   SaleType,
 			SalePrice:  SalePrice,
 			RepType:    RepType,
-			IsArchived: IsArchived,
 			RL:         RL,
 			Rate:       Rate,
 			StartDate:  StartDate,

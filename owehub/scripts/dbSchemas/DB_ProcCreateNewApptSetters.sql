@@ -1,9 +1,8 @@
--- Create a stored procedure to new appointment setter
 CREATE OR REPLACE FUNCTION create_appt_setters(
     p_unique_id character varying,
-	p_name character varying,
+    p_name character varying,
     p_team_name character varying,
-    p_pay_rate  character varying,
+    p_pay_rate character varying,
     p_start_date character varying,
     p_end_date character varying,
     OUT v_setters_id INT
