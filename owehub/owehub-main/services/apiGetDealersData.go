@@ -26,12 +26,15 @@ import (
  ******************************************************************************/
 func HandleGetDealersDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err          error
-		dataReq      models.DataRequestBody
-		data         []map[string]interface{}
-		whereEleList []interface{}
-		query        string
-		filter       string
+		err             error
+		dataReq         models.DataRequestBody
+		data            []map[string]interface{}
+		whereEleList    []interface{}
+		query           string
+		queryWithFiler  string
+		queryForAlldata string
+		filter          string
+		RecordCount     int64
 	)
 
 	log.EnterFn(0, "HandleGetDealersDataRequest")
@@ -64,12 +67,12 @@ func HandleGetDealersDataRequest(resp http.ResponseWriter, req *http.Request) {
 	FROM dealer_override dor
 	JOIN user_details ud ON ud.user_id = dor.dealer_id`
 
-	filter, whereEleList = PrepareDealerFilters(tableName, dataReq)
+	filter, whereEleList = PrepareDealerFilters(tableName, dataReq, false)
 	if filter != "" {
-		query += filter
+		queryWithFiler = query + filter
 	}
 
-	data, err = db.ReteriveFromDB(query, whereEleList)
+	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get dealers data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get dealers data from DB", http.StatusBadRequest, nil)
@@ -107,13 +110,6 @@ func HandleGetDealersDataRequest(resp http.ResponseWriter, req *http.Request) {
 			PayRate = ""
 		}
 
-		// is_archived
-		IsArchived, ok := item["is_archived"].(bool)
-		if !ok || !IsArchived {
-			log.FuncErrorTrace(0, "Failed to get is_archived value for Record ID %v. Item: %+v\n", RecordId, item)
-			IsArchived = false
-		}
-
 		// StartDate
 		StartDate, ok := item["start_date"].(string)
 		if !ok || StartDate == "" {
@@ -140,9 +136,22 @@ func HandleGetDealersDataRequest(resp http.ResponseWriter, req *http.Request) {
 		dealersList.DealersList = append(dealersList.DealersList, dealerData)
 	}
 
+	filter, whereEleList = PrepareDealerFilters(tableName, dataReq, true)
+	if filter != "" {
+		queryForAlldata = query + filter
+	}
+
+	data, err = db.ReteriveFromDB(queryForAlldata, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get dealer data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get dealer data from DB", http.StatusBadRequest, nil)
+		return
+	}
+	RecordCount = int64(len(data))
+
 	// Send the response
 	log.FuncInfoTrace(0, "Number of dealers List fetched : %v list %+v", len(dealersList.DealersList), dealersList)
-	FormAndSendHttpResp(resp, "dealers Data", http.StatusOK, dealersList)
+	FormAndSendHttpResp(resp, "dealers Data", http.StatusOK, dealersList, RecordCount)
 }
 
 /******************************************************************************
@@ -151,7 +160,7 @@ func HandleGetDealersDataRequest(resp http.ResponseWriter, req *http.Request) {
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
-func PrepareDealerFilters(tableName string, dataFilter models.DataRequestBody) (filters string, whereEleList []interface{}) {
+func PrepareDealerFilters(tableName string, dataFilter models.DataRequestBody, forDataCount bool) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PrepareDealerFilters")
 	defer func() { log.ExitFn(0, "PrepareDealerFilters", nil) }()
 
@@ -216,10 +225,14 @@ func PrepareDealerFilters(tableName string, dataFilter models.DataRequestBody) (
 		filtersBuilder.WriteString("dor.is_archived = FALSE")
 	}
 
-	// Add pagination logic
-	if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
-		offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
-		filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+	if forDataCount == true {
+		filtersBuilder.WriteString(" GROUP BY dor.id, dor.sub_dealer, ud.name, dor.pay_rate, dor.start_date, dor.end_date")
+	} else {
+		// Add pagination logic
+		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
+			filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+		}
 	}
 
 	filters = filtersBuilder.String()

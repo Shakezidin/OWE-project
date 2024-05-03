@@ -88,7 +88,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/change_password",
 		apiHandler.HandleChangePassRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -97,7 +97,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_user",
 		apiHandler.HandleCreateUserRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -106,7 +106,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_team",
 		apiHandler.HandleCreateTeamRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -115,7 +115,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_appointment_setter",
 		apiHandler.HandleCreateAptSetterRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -124,7 +124,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"), //Changed to POST
 		"/owe-commisions-service/v1/get_teams",
 		apiHandler.HandleGetTeamDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -133,7 +133,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_commission",
 		apiHandler.HandleCreateCommissionRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -142,7 +142,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"), //Changed to POST
 		"/owe-commisions-service/v1/get_commissions",
 		apiHandler.HandleGetCommissionsDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -151,7 +151,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"), //Changed to POST
 		"/owe-commisions-service/v1/get_users",
 		apiHandler.HandleGetUsersDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -160,7 +160,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_dealer",
 		apiHandler.HandleCreateDealerRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -169,7 +169,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"), //Changed to POST
 		"/owe-commisions-service/v1/get_dealers",
 		apiHandler.HandleGetDealersDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -178,7 +178,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_marketingfee",
 		apiHandler.HandleCreateMarketingFeesRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -187,7 +187,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"), //Changed to POST
 		"/owe-commisions-service/v1/get_marketingfee",
 		apiHandler.HandleGetMarketingFeesDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -196,7 +196,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_vadder",
 		apiHandler.HandleCreateVAddersRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -205,7 +205,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"), //Changed to POST
 		"/owe-commisions-service/v1/get_vadders",
 		apiHandler.HandleGetVAdderDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -214,7 +214,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_saletype",
 		apiHandler.HandleCreateSaleTypeRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -223,7 +223,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"), //Changed to POST
 		"/owe-commisions-service/v1/get_saletypes",
 		apiHandler.HandleGetSaleTypeDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -232,7 +232,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_tierloanfee",
 		apiHandler.HandleCreateTierLoanFeeRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -241,7 +241,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"), //Changed to POST
 		"/owe-commisions-service/v1/get_tierloanfees",
 		apiHandler.HandleGetTierLoanFeesDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -250,7 +250,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_dealertier",
 		apiHandler.HandleCreateDealerTierRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -259,7 +259,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"), //Changed to POST
 		"/owe-commisions-service/v1/get_dealerstier",
 		apiHandler.HandleGetDealersTierDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -268,7 +268,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_paymentschedule",
 		apiHandler.HandleCreatePaymentScheduleRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -277,7 +277,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"), //Changed to POST
 		"/owe-commisions-service/v1/get_paymentschedules",
 		apiHandler.HandleGetPaymentSchedulesDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -286,7 +286,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_timelinesla",
 		apiHandler.HandleCreateTimelineSlaRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -295,7 +295,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_timelineslas",
 		apiHandler.HandleGetTimelineSlasDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -304,7 +304,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_partner",
 		apiHandler.HandleCreatePartnerRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -313,7 +313,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_partners",
 		apiHandler.HandleGetPartnerDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -322,7 +322,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_state",
 		apiHandler.HandleCreateStateRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -331,7 +331,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_states",
 		apiHandler.HandleGetStatesDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -340,7 +340,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_loantype",
 		apiHandler.HandleCreateLoanTypeRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -349,7 +349,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_loantypes",
 		apiHandler.HandleGetLoanTypesDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -358,7 +358,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_newformdata",
 		apiHandler.HandleGetNewFormDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -367,7 +367,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_commission",
 		apiHandler.HandleUpdateCommissionRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -376,7 +376,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_dealer",
 		apiHandler.HandleUpdateDealerRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -385,7 +385,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_marketingfee",
 		apiHandler.HandleUpdateMarketingFeeRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -394,7 +394,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_vadders",
 		apiHandler.HandleUpdateVAddersRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -403,7 +403,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_saletype",
 		apiHandler.HandleUpdateSaleTypeRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -412,7 +412,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_tierloanfee",
 		apiHandler.HandleUpdateTierLoanFeeRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -421,7 +421,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_dealertier",
 		apiHandler.HandleUpdateDealerTierRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -430,7 +430,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_paymentschedule",
 		apiHandler.HandleUpdatePaymentScheduleRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -439,7 +439,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_timelinesla",
 		apiHandler.HandleUpdateTimelineSlaRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -448,7 +448,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_loantype",
 		apiHandler.HandleUpdateLoanTypeRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -457,7 +457,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_commission_archive",
 		apiHandler.HandleUpdateCommissionArchiveRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -466,7 +466,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_marketingfee_archive",
 		apiHandler.HandleUpdateMarketingFeesArchiveRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -475,7 +475,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_dealer_archive",
 		apiHandler.HandleUpdateDealerArchiveRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -484,7 +484,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_v_adder_archive",
 		apiHandler.HandleUpdateVAddersArchiveRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -493,7 +493,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_saletype_archive",
 		apiHandler.HandleUpdateSaleTypeArchiveRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -502,7 +502,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_tierloanfee_archive",
 		apiHandler.HandleUpdateTierLoanFeeArchiveRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -511,7 +511,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_dealertier_archive",
 		apiHandler.HandleUpdateDealerTierArchiveRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -520,7 +520,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_paymentschedule_archive",
 		apiHandler.HandleUpdatePaymentScheduleArchiveRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -529,7 +529,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_timelinesla_archive",
 		apiHandler.HandleUpdateTimelineSlaArchiveRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -538,7 +538,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_loantype_archive",
 		apiHandler.HandleUpdateLoanTypeArchiveRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -547,7 +547,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_autoadder",
 		apiHandler.HandleCreateAutoAdderRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -556,7 +556,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_autoadder",
 		apiHandler.HandleGetAutoAdderDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -565,7 +565,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_autoadder",
 		apiHandler.HandleUpdateAutoAdderRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -573,7 +573,7 @@ var apiRoutes = ApiRoutes{
 	{strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_autoadder_archive",
 		apiHandler.HandleUpdateAutoAdderArchiveRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -582,7 +582,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_user",
 		apiHandler.HandleUpdateUserRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -591,7 +591,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_users_onboarding",
 		apiHandler.HandleGetUserMgmtOnboardingDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -600,7 +600,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_users_by_role",
 		apiHandler.HandleGetUsersByRoleDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -609,7 +609,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_rebate_data",
 		apiHandler.HandleCreateRebateDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -618,7 +618,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_rebate_data",
 		apiHandler.HandleUpdateRebateDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -627,7 +627,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_rebate_data",
 		apiHandler.HandleGetRebateDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -636,7 +636,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_rebate_data_archive",
 		apiHandler.HandleUpdateRebateDataArchiveRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -645,7 +645,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_loan_fee_adder_data",
 		apiHandler.HandleCreateLoanFeeAdderDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -654,7 +654,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_loan_fee_adder_data",
 		apiHandler.HandleUpdateLoanFeeAdderDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -663,7 +663,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_loan_fee_adder_data",
 		apiHandler.HandleGetLoanFeeAdderDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -672,7 +672,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_loan_fee_adder_archive",
 		apiHandler.HandleUpdateLoanFeeAdderArchiveRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -681,7 +681,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_referraldata",
 		apiHandler.HandleCreateReferralDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -690,7 +690,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_referraldata",
 		apiHandler.HandleUpdateReferralDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -699,7 +699,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_dealercredit",
 		apiHandler.HandleCreateDealerCreditRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -708,7 +708,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_dealercredit",
 		apiHandler.HandleUpdateDealerCreditRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -717,7 +717,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_noncommdlrpay",
 		apiHandler.HandleCreateNonCommDlrPayRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -726,7 +726,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_noncommdlrpay",
 		apiHandler.HandleUpdateNonCommDlrPayRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -735,7 +735,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"), //Changed to POST
 		"/owe-commisions-service/v1/get_referraldata",
 		apiHandler.HandleGetReferralDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -744,7 +744,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"), //Changed to POST
 		"/owe-commisions-service/v1/get_dealercredit",
 		apiHandler.HandleGetDealerCreditDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -753,7 +753,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"), //Changed to POST
 		"/owe-commisions-service/v1/get_noncommdlrpay",
 		apiHandler.HandleGetNonCommDlrPayDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -762,7 +762,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_referraldata_archive",
 		apiHandler.HandleUpdateReferralDataArchiveRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -771,7 +771,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_dealercredit_archive",
 		apiHandler.HandleUpdateCreditDealerArchiveRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -780,7 +780,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_noncommdlrpay_archive",
 		apiHandler.HandleUpdateNonCommDlrPayArchiveRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -789,7 +789,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_dlr_oth",
 		apiHandler.HandleCreateDLROTHDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -798,7 +798,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_dlr_oth",
 		apiHandler.HandleUpdateDLROTHDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -807,7 +807,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_dlr_oth_data",
 		apiHandler.HandleGetDLROTHDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -816,7 +816,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_dlr_oth_archive",
 		apiHandler.HandleUpdateDLROTHArchiveRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -825,7 +825,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/delete_users",
 		apiHandler.HandleDeleteUsersRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -834,7 +834,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_rep_pay_settings",
 		apiHandler.HandleCreateRepPaySettingsDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -843,7 +843,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_rep_pay_settings",
 		apiHandler.HandleUpdateRepPaySettingsDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -852,7 +852,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_rep_pay_settings",
 		apiHandler.HandleGetRepPaySettingsDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -860,7 +860,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_rep_pay_settings_archive",
 		apiHandler.HandleUpdateRepPaySettingsArchiveRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -869,7 +869,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_adder_responsibility",
 		apiHandler.HandleCreateAdderResponsibilityDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -878,7 +878,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_adder_responsibility",
 		apiHandler.HandleUpdateAdderResponsibilityDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -887,7 +887,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_adder_responsibility",
 		apiHandler.HandleGetAdderResponsibilityDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -896,7 +896,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_adder_responsibility_archive",
 		apiHandler.HandleUpdateAdderResponsibilityArchiveRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -905,7 +905,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_adder_credit",
 		apiHandler.HandleCreateAdderCreditDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -914,7 +914,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_adder_credit",
 		apiHandler.HandleUpdateAdderCreditDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -923,7 +923,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_adder_credit",
 		apiHandler.HandleGetAdderCreditDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -932,7 +932,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_adder_credit_archive",
 		apiHandler.HandleUpdateAdderCreditArchiveRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -941,7 +941,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_loan_fee",
 		apiHandler.HandleCreateLoanFeeDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -950,7 +950,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_loan_fee",
 		apiHandler.HandleUpdateLoanFeeDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -959,7 +959,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_loan_fee",
 		apiHandler.HandleGetLoanFeeDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -968,7 +968,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_loan_fee_archive",
 		apiHandler.HandleUpdateLoanFeeArchiveRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -977,7 +977,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_reconcile",
 		apiHandler.HandleCreateReconcileRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -986,7 +986,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_reconcile",
 		apiHandler.HandleUpdateReconcileRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -995,7 +995,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_reconcile",
 		apiHandler.HandleGetReconcileRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -1004,7 +1004,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_reconcile_archive",
 		apiHandler.HandleUpdateRebateDataArchiveRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -1013,7 +1013,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_adjustments",
 		apiHandler.HandleGetAdjustmentsDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -1022,7 +1022,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_adjustments",
 		apiHandler.HandleCreateAdjustmentsRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -1031,7 +1031,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_adjustments_archive",
 		apiHandler.HandleUpdateAdjustmentsArchiveRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -1040,7 +1040,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_adjustments",
 		apiHandler.HandleUpdateAdjustmentsRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -1049,7 +1049,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_arschedule",
 		apiHandler.HandleGetArScheduleDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -1058,7 +1058,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_arschedule",
 		apiHandler.HandleCreateArScheduleRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -1067,7 +1067,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_arschedule_archive",
 		apiHandler.HandleUpdateArScheduleArchiveRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -1076,7 +1076,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_arschedule",
 		apiHandler.HandleUpdateArScheduleRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -1085,7 +1085,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_installcost",
 		apiHandler.HandleGetInstallCostDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -1094,7 +1094,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_installcost",
 		apiHandler.HandleCreateInstallCostRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -1103,7 +1103,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_installcost_archive",
 		apiHandler.HandleUpdateInstallCostArchiveRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -1112,7 +1112,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_installcost",
 		apiHandler.HandleUpdateInstallCostDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -1121,7 +1121,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_rateadjustments",
 		apiHandler.HandleGetRateAdjustmentsRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -1130,7 +1130,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_rateadjustments",
 		apiHandler.HandleCreateRateAdjustmentsRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -1139,7 +1139,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_rateadjustments_archive",
 		apiHandler.HandleUpdateRateAdjustmentsArchiveRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -1148,7 +1148,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_rateadjustments",
 		apiHandler.HandleUpdateRateAdjustmentsRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -1157,7 +1157,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_leaderoverride",
 		apiHandler.HandleGetLeaderOverrideDataRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -1166,7 +1166,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_leaderoverride",
 		apiHandler.HandleCreateLeaderOverrideRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -1175,7 +1175,7 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_leaderoverride_archive",
 		apiHandler.HandleUpdateLeaderOverrideArchiveRequest,
-		true,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},
@@ -1184,7 +1184,115 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_leaderoverride",
 		apiHandler.HandleUpdateLeaderOverrideRequest,
-		true,
+		false,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/create_ar_import",
+		apiHandler.HandleCreateArImportDataRequest,
+		false,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_ar_import",
+		apiHandler.HandleUpdateArImportDataRequest,
+		false,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_ar_import",
+		apiHandler.HandleGetArImportDataRequest,
+		false,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_ar_import_archive",
+		apiHandler.HandleUpdateArImportArchiveRequest,
+		false,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/create_ar",
+		apiHandler.HandleCreateARDataRequest,
+		false,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_ar",
+		apiHandler.HandleUpdateARDataRequest,
+		false,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_ar",
+		apiHandler.HandleGetARDataRequest,
+		false,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_ar_archive",
+		apiHandler.HandleUpdateARArchiveRequest,
+		false,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/create_appt_setters",
+		apiHandler.HandleCreateApptSettersDataRequest,
+		false,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_appt_setters",
+		apiHandler.HandleUpdateApptSettersDataRequest,
+		false,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_appt_setters",
+		apiHandler.HandleGetApptSettersDataRequest,
+		false,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_appt_setters_archive",
+		apiHandler.HandleUpdateApptSettersArchiveRequest,
+		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
 		},

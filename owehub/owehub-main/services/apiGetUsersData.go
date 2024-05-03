@@ -26,12 +26,15 @@ import (
  ******************************************************************************/
 func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err          error
-		dataReq      models.DataRequestBody
-		data         []map[string]interface{}
-		whereEleList []interface{}
-		query        string
-		filter       string
+		err             error
+		dataReq         models.DataRequestBody
+		data            []map[string]interface{}
+		whereEleList    []interface{}
+		query           string
+		queryWithFiler  string
+		queryForAlldata string
+		filter          string
+		RecordCount     int64
 	)
 
 	log.EnterFn(0, "HandleGetUsersDataRequest")
@@ -60,7 +63,7 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	tableName := db.TableName_users_details
 	query = `
-			SELECT ud.name AS name, 
+			SELECT ud.user_id AS record_id, ud.name AS name, 
 			ud.user_code, 
 			ud.mobile_number, 
 			ud.email_id, 
@@ -85,12 +88,12 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 			LEFT JOIN user_roles ur ON ud.role_id = ur.role_id
 			LEFT JOIN zipcodes zc ON ud.zipcode = zc.id`
 
-	filter, whereEleList = PrepareUsersDetailFilters(tableName, dataReq)
+	filter, whereEleList = PrepareUsersDetailFilters(tableName, dataReq, false)
 	if filter != "" {
-		query += filter
+		queryWithFiler = query + filter
 	}
 
-	data, err = db.ReteriveFromDB(query, whereEleList)
+	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get Users data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get users Data from DB", http.StatusBadRequest, nil)
@@ -100,6 +103,13 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 	usersDetailsList := models.GetUsersDataList{}
 
 	for _, item := range data {
+		// Record_Id
+		Record_Id, recordideOk := item["record_id"].(int64)
+		if !recordideOk || Record_Id == 0 {
+			log.FuncErrorTrace(0, "Failed to get recordId for Item: %+v\n", item)
+			Record_Id = 0
+		}
+
 		// Name
 		Name, nameOk := item["name"].(string)
 		if !nameOk || Name == "" {
@@ -206,6 +216,7 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 
 		usersData := models.GetUsersData{
+			RecordId:          Record_Id,
 			Name:              Name,
 			EmailId:           EmailID,
 			MobileNumber:      MobileNumber,
@@ -227,9 +238,22 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 		usersDetailsList.UsersDataList = append(usersDetailsList.UsersDataList, usersData)
 	}
 
+	filter, whereEleList = PrepareUsersDetailFilters(tableName, dataReq, true)
+	if filter != "" {
+		queryForAlldata = query + filter
+	}
+
+	data, err = db.ReteriveFromDB(queryForAlldata, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get user data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get user data from DB", http.StatusBadRequest, nil)
+		return
+	}
+	RecordCount = int64(len(data))
+
 	// Send the response
 	log.FuncInfoTrace(0, "Number of users List fetched : %v list %+v", len(usersDetailsList.UsersDataList), usersDetailsList)
-	FormAndSendHttpResp(resp, "Users Data", http.StatusOK, usersDetailsList)
+	FormAndSendHttpResp(resp, "Users Data", http.StatusOK, usersDetailsList, RecordCount)
 }
 
 /******************************************************************************
@@ -238,7 +262,7 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
-func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBody) (filters string, whereEleList []interface{}) {
+func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBody, forDataCount bool) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PrepareUsersDetailFilters")
 	defer func() { log.ExitFn(0, "PrepareUsersDetailFilters", nil) }()
 
@@ -300,10 +324,14 @@ func PrepareUsersDetailFilters(tableName string, dataFilter models.DataRequestBo
 		}
 	}
 
-	// Add pagination logic
-	if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
-		offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
-		filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+	if forDataCount == true {
+		filtersBuilder.WriteString(" GROUP BY ud.user_id, ud.name, ud.user_code, ud.mobile_number, ud.email_id, ud.password_change_required, ud.created_at, ud.updated_at, ud1.name, ud2.name, ud.user_status, ud.user_designation, ud.description, ud.street_address, ud.city, ud.country, st.name, ur.role_name, zc.zipcode")
+	} else {
+		// Add pagination logic
+		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
+			filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+		}
 	}
 
 	filters = filtersBuilder.String()

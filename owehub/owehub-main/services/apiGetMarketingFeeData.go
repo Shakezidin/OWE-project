@@ -26,12 +26,15 @@ import (
  ******************************************************************************/
 func HandleGetMarketingFeesDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err          error
-		dataReq      models.DataRequestBody
-		data         []map[string]interface{}
-		whereEleList []interface{}
-		query        string
-		filter       string
+		err             error
+		dataReq         models.DataRequestBody
+		data            []map[string]interface{}
+		whereEleList    []interface{}
+		query           string
+		queryWithFiler  string
+		queryForAlldata string
+		filter          string
+		RecordCount     int64
 	)
 
 	log.EnterFn(0, "HandleGetMarketingFeesDataRequest")
@@ -65,12 +68,12 @@ func HandleGetMarketingFeesDataRequest(resp http.ResponseWriter, req *http.Reque
 	JOIN states st ON st.state_id = mf.state_id
 	JOIN source sr ON sr.id = mf.source_id`
 
-	filter, whereEleList = PrepareMarketingFeesFilters(tableName, dataReq)
+	filter, whereEleList = PrepareMarketingFeesFilters(tableName, dataReq, false)
 	if filter != "" {
-		query += filter
+		queryWithFiler = query + filter
 	}
 
-	data, err = db.ReteriveFromDB(query, whereEleList)
+	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get Marketing fee data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get Marketing fee data from DB", http.StatusBadRequest, nil)
@@ -154,13 +157,6 @@ func HandleGetMarketingFeesDataRequest(resp http.ResponseWriter, req *http.Reque
 			Description = ""
 		}
 
-		// is_archived
-		IsArchived, ok := item["is_archived"].(bool)
-		if !ok || !IsArchived {
-			log.FuncErrorTrace(0, "Failed to get is_archived value for Record ID %v. Item: %+v\n", RecordId, item)
-			IsArchived = false
-		}
-
 		// Create a new GetMarketingFeesData object
 		marketingFeesData := models.GetMarketingFeesData{
 			RecordId:    RecordId,
@@ -179,9 +175,22 @@ func HandleGetMarketingFeesDataRequest(resp http.ResponseWriter, req *http.Reque
 		marketingFeesList.MarketingFeesList = append(marketingFeesList.MarketingFeesList, marketingFeesData)
 	}
 
+	filter, whereEleList = PrepareMarketingFeesFilters(tableName, dataReq, true)
+	if filter != "" {
+		queryForAlldata = query + filter
+	}
+
+	data, err = db.ReteriveFromDB(queryForAlldata, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get marketing fee data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get marketing fee data from DB", http.StatusBadRequest, nil)
+		return
+	}
+	RecordCount = int64(len(data))
+
 	// Send the response
 	log.FuncInfoTrace(0, "Number of Marketing fee List fetched : %v list %+v", len(marketingFeesList.MarketingFeesList), marketingFeesList)
-	FormAndSendHttpResp(resp, "Marketing fee Data", http.StatusOK, marketingFeesList)
+	FormAndSendHttpResp(resp, "Marketing fee Data", http.StatusOK, marketingFeesList, RecordCount)
 }
 
 /******************************************************************************
@@ -190,7 +199,7 @@ func HandleGetMarketingFeesDataRequest(resp http.ResponseWriter, req *http.Reque
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
-func PrepareMarketingFeesFilters(tableName string, dataFilter models.DataRequestBody) (filters string, whereEleList []interface{}) {
+func PrepareMarketingFeesFilters(tableName string, dataFilter models.DataRequestBody, forDataCount bool) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PrepareMarketingFeesFilters")
 	defer func() { log.ExitFn(0, "PrepareMarketingFeesFilters", nil) }()
 
@@ -270,10 +279,14 @@ func PrepareMarketingFeesFilters(tableName string, dataFilter models.DataRequest
 		filtersBuilder.WriteString("mf.is_archived = FALSE")
 	}
 
-	// Add pagination logic
-	if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
-		offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
-		filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+	if forDataCount == true {
+		filtersBuilder.WriteString(" GROUP BY mf.id, mf.dba, mf.fee_rate, mf.chg_dlr, mf.pay_src, mf.start_date, mf.end_date, mf.description, st.name, sr.name")
+	} else {
+		// Add pagination logic
+		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
+			filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+		}
 	}
 
 	filters = filtersBuilder.String()

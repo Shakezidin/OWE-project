@@ -14,7 +14,6 @@ type GetDLR_OTHData struct {
 	Description string  `json:"description"`
 	Balance     float64 `json:"balance"`
 	Paid_Amount float64 `json:"paid_amount"`
-	is_archived bool    `json:"is_archived"`
 	StartDate   string  `json:"start_date"`
 	EndDate     string  `json:"end_date"`
 }

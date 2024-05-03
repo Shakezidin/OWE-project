@@ -123,21 +123,13 @@ func HandleGetArImportDataRequest(resp http.ResponseWriter, req *http.Request) {
 			Notes = ""
 		}
 
-		// is_archived
-		IsArchived, ok := item["is_archived"].(bool)
-		if !ok || !IsArchived {
-			log.FuncErrorTrace(0, "Failed to get is_archived value for Record ID %v. Item: %+v\n", RecordId, item)
-			IsArchived = false
-		}
-
 		arImportData := models.GetArImportReq{
-			RecordId:    RecordId,
-			UniqueId:    Unique_id,
-			Customer:    Customer,
-			Date:        Date,
-			Amount:      Amount,
-			Notes:       Notes,
-			Is_Archived: IsArchived,
+			RecordId: RecordId,
+			UniqueId: Unique_id,
+			Customer: Customer,
+			Date:     Date,
+			Amount:   Amount,
+			Notes:    Notes,
 		}
 
 		ArImportList.ArImportList = append(ArImportList.ArImportList, arImportData)
@@ -244,7 +236,7 @@ func PrepareArImportFilters(tableName string, dataFilter models.DataRequestBody,
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY ai.id, ai.unique_id, ai.customer, ai.date, ai.amount, ai.notes, ai.is_archived")
+		filtersBuilder.WriteString(" GROUP BY ai.id, ai.unique_id, ai.customer, ai.date, ai.amount, ai.notes")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {

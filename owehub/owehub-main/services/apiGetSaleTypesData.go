@@ -26,12 +26,15 @@ import (
  ******************************************************************************/
 func HandleGetSaleTypeDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err          error
-		dataReq      models.DataRequestBody
-		data         []map[string]interface{}
-		whereEleList []interface{}
-		query        string
-		filter       string
+		err             error
+		dataReq         models.DataRequestBody
+		data            []map[string]interface{}
+		whereEleList    []interface{}
+		query           string
+		queryWithFiler  string
+		queryForAlldata string
+		filter          string
+		RecordCount     int64
 	)
 
 	log.EnterFn(0, "HandleGetSaleTypeDataRequest")
@@ -60,15 +63,15 @@ func HandleGetSaleTypeDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	tableName := db.TableName_sale_type
 	query = `
-	SELECT st.id as record_id, st.type_name as type_name, st.description as description
+	SELECT st.id as record_id, st.type_name, st.description, st.is_archived
 	FROM sale_type st`
 
-	filter, whereEleList = PrepareSaleTypeFilters(tableName, dataReq)
+	filter, whereEleList = PrepareSaleTypeFilters(tableName, dataReq, false)
 	if filter != "" {
-		query += filter
+		queryWithFiler = query + filter
 	}
 
-	data, err = db.ReteriveFromDB(query, whereEleList)
+	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get sale type data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get sale type data from DB", http.StatusBadRequest, nil)
@@ -95,13 +98,6 @@ func HandleGetSaleTypeDataRequest(resp http.ResponseWriter, req *http.Request) {
 			Description = ""
 		}
 
-		// is_archived
-		IsArchived, ok := item["is_archived"].(bool)
-		if !ok || !IsArchived {
-			log.FuncErrorTrace(0, "Failed to get is_archived value for Record ID %v. Item: %+v\n", RecordId, item)
-			IsArchived = false
-		}
-
 		// Create a new GetSaleTypeData object
 		saleTypeData := models.GetSaleTypeData{
 			RecordId:    RecordId,
@@ -112,9 +108,22 @@ func HandleGetSaleTypeDataRequest(resp http.ResponseWriter, req *http.Request) {
 		saleTypeList.SaleTypeList = append(saleTypeList.SaleTypeList, saleTypeData)
 	}
 
+	filter, whereEleList = PrepareSaleTypeFilters(tableName, dataReq, true)
+	if filter != "" {
+		queryForAlldata = query + filter
+	}
+
+	data, err = db.ReteriveFromDB(queryForAlldata, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get sale type data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get sale type data from DB", http.StatusBadRequest, nil)
+		return
+	}
+	RecordCount = int64(len(data))
+
 	// Send the response
 	log.FuncInfoTrace(0, "Number of sale type List fetched : %v list %+v", len(saleTypeList.SaleTypeList), saleTypeList)
-	FormAndSendHttpResp(resp, "sale type Data", http.StatusOK, saleTypeList)
+	FormAndSendHttpResp(resp, "sale type Data", http.StatusOK, saleTypeList, RecordCount)
 }
 
 /******************************************************************************
@@ -123,7 +132,7 @@ func HandleGetSaleTypeDataRequest(resp http.ResponseWriter, req *http.Request) {
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
-func PrepareSaleTypeFilters(tableName string, dataFilter models.DataRequestBody) (filters string, whereEleList []interface{}) {
+func PrepareSaleTypeFilters(tableName string, dataFilter models.DataRequestBody, forDataCount bool) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PrepareSaleTypeFilters")
 	defer func() { log.ExitFn(0, "PrepareSaleTypeFilters", nil) }()
 
@@ -180,9 +189,14 @@ func PrepareSaleTypeFilters(tableName string, dataFilter models.DataRequestBody)
 		filtersBuilder.WriteString("st.is_archived = FALSE")
 	}
 
-	// Add pagination
-	if (dataFilter.PageSize > 0) && (dataFilter.PageNumber > 0) {
-		filtersBuilder.WriteString(fmt.Sprintf(" LIMIT %d OFFSET %d", dataFilter.PageSize, (dataFilter.PageNumber-1)*dataFilter.PageSize))
+	if forDataCount == true {
+		filtersBuilder.WriteString(" GROUP BY st.id, st.type_name, st.description")
+	} else {
+		// Add pagination logic
+		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
+			filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+		}
 	}
 
 	filters = filtersBuilder.String()

@@ -26,12 +26,15 @@ import (
  ******************************************************************************/
 func HandleGetStatesDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err          error
-		dataReq      models.DataRequestBody
-		data         []map[string]interface{}
-		whereEleList []interface{}
-		query        string
-		filter       string
+		err             error
+		dataReq         models.DataRequestBody
+		data            []map[string]interface{}
+		whereEleList    []interface{}
+		query           string
+		queryWithFiler  string
+		queryForAlldata string
+		filter          string
+		RecordCount     int64
 	)
 
 	log.EnterFn(0, "HandleGetStatesDataRequest")
@@ -60,14 +63,14 @@ func HandleGetStatesDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	tableName := db.TableName_states
 	query = `
-	SELECT st.abbr, st.name FROM states st`
+	SELECT st.state_id as record_id, st.abbr, st.name FROM states st`
 
-	filter, whereEleList = PrepareFilters(tableName, dataReq)
+	filter, whereEleList = PrepareStateFilters(tableName, dataReq, false)
 	if filter != "" {
-		query += filter
+		queryWithFiler = query + filter
 	}
 
-	data, err = db.ReteriveFromDB(query, whereEleList)
+	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get partner data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get partner data from DB", http.StatusBadRequest, nil)
@@ -78,6 +81,11 @@ func HandleGetStatesDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	// Assuming you have data as a slice of maps, as in your previous code
 	for _, item := range data {
+		RecordId, Ok := item["record_id"].(int64)
+		if !Ok || RecordId == 0 {
+			RecordId = 0
+		}
+
 		abbr, Ok := item["abbr"].(string)
 		if !Ok || abbr == "" {
 			abbr = ""
@@ -90,15 +98,29 @@ func HandleGetStatesDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 		// Create a new GetSaleTypeData object
 		statesData := models.GetStatesData{
-			Abbr: abbr,
-			Name: name,
+			Record_id: RecordId,
+			Abbr:      abbr,
+			Name:      name,
 		}
 
 		statesList.StatesList = append(statesList.StatesList, statesData)
 	}
+
+	filter, whereEleList = PrepareStateFilters(tableName, dataReq, true)
+	if filter != "" {
+		queryForAlldata = query + filter
+	}
+
+	data, err = db.ReteriveFromDB(queryForAlldata, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get state data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get state data from DB", http.StatusBadRequest, nil)
+		return
+	}
+	RecordCount = int64(len(data))
 	// Send the response
 	log.FuncInfoTrace(0, "Number of states List fetched : %v list %+v", len(statesList.StatesList), statesList)
-	FormAndSendHttpResp(resp, "states Data", http.StatusOK, statesList)
+	FormAndSendHttpResp(resp, "states Data", http.StatusOK, statesList, RecordCount)
 }
 
 /******************************************************************************
@@ -107,17 +129,17 @@ func HandleGetStatesDataRequest(resp http.ResponseWriter, req *http.Request) {
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
-func PrepareStateFilters(tableName string, dataFilter models.DataRequestBody) (filters string, whereEleList []interface{}) {
+func PrepareStateFilters(tableName string, dataFilter models.DataRequestBody, forDataCount bool) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PrepareFilters")
 	defer func() { log.ExitFn(0, "PrepareFilters", nil) }()
 
 	var filtersBuilder strings.Builder
-	whereAdded := false // Flag to track if WHERE clause has been added
+	// whereAdded := false // Flag to track if WHERE clause has been added
 
 	// Check if there are filters
 	if len(dataFilter.Filters) > 0 {
 		filtersBuilder.WriteString(" WHERE ")
-		whereAdded = true // Set flag to true as WHERE clause is added
+		// whereAdded = true // Set flag to true as WHERE clause is added
 
 		for i, filter := range dataFilter.Filters {
 			if i > 0 {
@@ -147,26 +169,31 @@ func PrepareStateFilters(tableName string, dataFilter models.DataRequestBody) (f
 		}
 	}
 
-	// Handle the Archived field
-	if dataFilter.Archived {
-		if whereAdded {
-			filtersBuilder.WriteString(" AND ")
-		} else {
-			filtersBuilder.WriteString(" WHERE ")
-		}
-		filtersBuilder.WriteString("st.is_archived = TRUE")
-	} else {
-		if whereAdded {
-			filtersBuilder.WriteString(" AND ")
-		} else {
-			filtersBuilder.WriteString(" WHERE ")
-		}
-		filtersBuilder.WriteString("st.is_archived = FALSE")
-	}
+	// // Handle the Archived field
+	// if dataFilter.Archived {
+	// 	if whereAdded {
+	// 		filtersBuilder.WriteString(" AND ")
+	// 	} else {
+	// 		filtersBuilder.WriteString(" WHERE ")
+	// 	}
+	// 	filtersBuilder.WriteString("st.is_archived = TRUE")
+	// } else {
+	// 	if whereAdded {
+	// 		filtersBuilder.WriteString(" AND ")
+	// 	} else {
+	// 		filtersBuilder.WriteString(" WHERE ")
+	// 	}
+	// 	filtersBuilder.WriteString("st.is_archived = FALSE")
+	// }
 
-	// Add pagination
-	if (dataFilter.PageSize > 0) && (dataFilter.PageNumber > 0) {
-		filtersBuilder.WriteString(fmt.Sprintf(" LIMIT %d OFFSET %d", dataFilter.PageSize, (dataFilter.PageNumber-1)*dataFilter.PageSize))
+	if forDataCount == true {
+		filtersBuilder.WriteString(" GROUP BY st.state_id, st.abbr, st.name")
+	} else {
+		// Add pagination logic
+		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
+			filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+		}
 	}
 
 	filters = filtersBuilder.String()

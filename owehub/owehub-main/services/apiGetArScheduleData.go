@@ -175,12 +175,6 @@ func HandleGetArScheduleDataRequest(resp http.ResponseWriter, req *http.Request)
 			StartDate = ""
 		}
 
-		IsArchived, ok := item["is_archived"].(bool)
-		if !ok || !IsArchived {
-			log.FuncErrorTrace(0, "Failed to get is_archived value for Record ID %v. Item: %+v\n", RecordId, item)
-			IsArchived = false
-		}
-
 		// EndDate
 		EndDate, ok := item["end_date"].(string)
 		if !ok || EndDate == "" {

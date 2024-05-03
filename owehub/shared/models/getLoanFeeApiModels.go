@@ -16,7 +16,6 @@ type GetLoanFee struct {
 	OweCost     float64 `json:"owe_cost"`
 	DlrMu       string  `json:"dlr_mu"`
 	DlrCost     string  `json:"dlr_cost"`
-	Is_Archived bool    `json:"is_archived"`
 	StartDate   string  `json:"start_date"`
 	EndDate     string  `json:"end_date"`
 }

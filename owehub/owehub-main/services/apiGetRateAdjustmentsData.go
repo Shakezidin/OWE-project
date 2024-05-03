@@ -63,7 +63,7 @@ func HandleGetRateAdjustmentsRequest(resp http.ResponseWriter, req *http.Request
 
 	tableName := db.TableName_rate_adjustments
 	query = `
-	SELECT ra.id as record_id, ra.unique_id, ra.pay_scale, ra.position, ra.adjustment, ra.min_rate, ra.max_rate, ra.is_archived, ra.start_date, ra.end_date
+	SELECT ra.id as record_id, ra.unique_id, ra.pay_scale, ra.position, ra.adjustment, ra.min_rate, ra.max_rate, ra.start_date, ra.end_date
 	FROM rate_adjustments ra`
 
 	filter, whereEleList = PrepareRateAdjustmentsFilters(tableName, dataReq, false)
@@ -121,12 +121,6 @@ func HandleGetRateAdjustmentsRequest(resp http.ResponseWriter, req *http.Request
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get MaxRate for Record ID %v. Item: %+v\n", RecordId, item)
 			MaxRate = 0.0
-		}
-
-		IsArchived, ok := item["is_archived"].(bool)
-		if !ok || !IsArchived {
-			log.FuncErrorTrace(0, "Failed to get is_archived value for Record ID %v. Item: %+v\n", RecordId, item)
-			IsArchived = false
 		}
 
 		StartDate, ok := item["start_date"].(string)
@@ -248,7 +242,7 @@ func PrepareRateAdjustmentsFilters(tableName string, dataFilter models.DataReque
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY ra.id, ra.unique_id, ra.pay_scale, ra.position, ra.adjustment, ra.min_rate, ra.max_rate, ra.is_archived, ra.start_date, ra.end_date")
+		filtersBuilder.WriteString(" GROUP BY ra.id, ra.unique_id, ra.pay_scale, ra.position, ra.adjustment, ra.min_rate, ra.max_rate, ra.start_date, ra.end_date")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {

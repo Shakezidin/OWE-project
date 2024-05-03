@@ -158,6 +158,8 @@ const (
 	TableName_Appt_Setters                   string = "appt_setters"
 	TableName_Reconcile                      string = "reconcile"
 	ViewName_ConsolidatedDataView            string = "consolidated_data_view"
+	TableName_Dlr_Oth                        string = "dlr_oth"
+	TableName_rebate_data                    string = "rebate_data"
 )
 
 /******************************************************************************

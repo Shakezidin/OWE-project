@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION update_loan_fee(
+CREATE OR REPLACE FUNCTION update_loan_fee_archive(
     p_ids BIGINT[],
     p_is_archived BOOLEAN,
     OUT v_loan_fee_id BIGINT

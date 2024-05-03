@@ -26,12 +26,15 @@ import (
  ******************************************************************************/
 func HandleGetNonCommDlrPayDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err          error
-		dataReq      models.DataRequestBody
-		data         []map[string]interface{}
-		whereEleList []interface{}
-		query        string
-		filter       string
+		err             error
+		dataReq         models.DataRequestBody
+		data            []map[string]interface{}
+		whereEleList    []interface{}
+		query           string
+		queryWithFiler  string
+		queryForAlldata string
+		filter          string
+		RecordCount     int64
 	)
 
 	log.EnterFn(0, "HandleGetNonCommDlrPayDataRequest")
@@ -64,14 +67,14 @@ func HandleGetNonCommDlrPayDataRequest(resp http.ResponseWriter, req *http.Reque
     		ndp.end_date, ndp.dealer_dba, ud.name as dealer_name, ndp.exact_amount,
     		ndp.approved_by, ndp.notes, ndp.balance, ndp.paid_amount, ndp.dba
 			FROM noncomm_dlrpay ndp
-			JOIN user_details ud ON ndp.dealer_id = ud.user_id;`
+			JOIN user_details ud ON ndp.dealer_id = ud.user_id`
 
-	filter, whereEleList = PrepareNonCommDlrPayFilters(tableName, dataReq)
+	filter, whereEleList = PrepareNonCommDlrPayFilters(tableName, dataReq, false)
 	if filter != "" {
-		query += filter
+		queryWithFiler = query + filter
 	}
 
-	data, err = db.ReteriveFromDB(query, whereEleList)
+	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get Non Comm Dealer Pay data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get Non Comm Dealer Pay data from DB", http.StatusBadRequest, nil)
@@ -188,9 +191,22 @@ func HandleGetNonCommDlrPayDataRequest(resp http.ResponseWriter, req *http.Reque
 		NonCommDlrPayDataList.NonCommDlrPayList = append(NonCommDlrPayDataList.NonCommDlrPayList, NonCommDlrPayData)
 	}
 
+	filter, whereEleList = PrepareNonCommDlrPayFilters(tableName, dataReq, true)
+	if filter != "" {
+		queryForAlldata = query + filter
+	}
+
+	data, err = db.ReteriveFromDB(queryForAlldata, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get non comm dealer pay data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get non comm dealer pay data from DB", http.StatusBadRequest, nil)
+		return
+	}
+	RecordCount = int64(len(data))
+
 	// Send the response
 	log.FuncInfoTrace(0, "Number of Non Comm Dealer Pay List fetched : %v list %+v", len(NonCommDlrPayDataList.NonCommDlrPayList), NonCommDlrPayDataList)
-	FormAndSendHttpResp(resp, "Non Comm Dealer Pay Data", http.StatusOK, NonCommDlrPayDataList)
+	FormAndSendHttpResp(resp, "Non Comm Dealer Pay Data", http.StatusOK, NonCommDlrPayDataList, RecordCount)
 }
 
 /******************************************************************************
@@ -199,15 +215,17 @@ func HandleGetNonCommDlrPayDataRequest(resp http.ResponseWriter, req *http.Reque
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
-func PrepareNonCommDlrPayFilters(tableName string, dataFilter models.DataRequestBody) (filters string, whereEleList []interface{}) {
+func PrepareNonCommDlrPayFilters(tableName string, dataFilter models.DataRequestBody, forDataCount bool) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PrepareNonCommDlrPayFilters")
 	defer func() { log.ExitFn(0, "PrepareNonCommDlrPayFilters", nil) }()
 
 	var filtersBuilder strings.Builder
+	whereAdded := false // Flag to track if WHERE clause has been added
 
 	// Check if there are filters
 	if len(dataFilter.Filters) > 0 {
 		filtersBuilder.WriteString(" WHERE ")
+		whereAdded = true // Set flag to true as WHERE clause is added
 
 		for i, filter := range dataFilter.Filters {
 			// Check if the column is a foreign key
@@ -228,40 +246,40 @@ func PrepareNonCommDlrPayFilters(tableName string, dataFilter models.DataRequest
 			}
 			switch column {
 			case "unique_id":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(dc.unique_id) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ndp.unique_id) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "customer":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(dc.customer) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ndp.customer) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "dealer_name":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud.name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "dealer_dba":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(dc.dealer_dba) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ndp.dealer_dba) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "exact_amtount":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(dc.exact_amtount) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ndp.exact_amount) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "approved_by":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(dc.approved_by) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ndp.approved_by) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "notes":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(dc.notes) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ndp.notes) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "balance":
-				filtersBuilder.WriteString(fmt.Sprintf("dc.balance %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("ndp.balance %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "paid_amount":
-				filtersBuilder.WriteString(fmt.Sprintf("dc.paid_amount %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("ndp.paid_amount %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "dba":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(dc.dba) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ndp.dba) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "start_date":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(dc.start_date) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ndp.start_date) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "end_date":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(dc.end_date) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ndp.end_date) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
@@ -270,11 +288,31 @@ func PrepareNonCommDlrPayFilters(tableName string, dataFilter models.DataRequest
 
 		}
 	}
+	// Handle the Archived field
+	if dataFilter.Archived {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+		}
+		filtersBuilder.WriteString("ndp.is_archived = TRUE")
+	} else {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+		}
+		filtersBuilder.WriteString("ndp.is_archived = FALSE")
+	}
 
-	// Add pagination logic
-	if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
-		offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
-		filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+	if forDataCount == true {
+		filtersBuilder.WriteString(" GROUP BY ndp.id, ndp.unique_id, ndp.customer, ndp.start_date, ndp.end_date, ndp.dealer_dba, ud.name, ndp.exact_amount, ndp.approved_by, ndp.notes, ndp.balance, ndp.paid_amount, ndp.dba")
+	} else {
+		// Add pagination logic
+		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
+			filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+		}
 	}
 
 	filters = filtersBuilder.String()
