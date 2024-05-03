@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import '../projectTracker/projectTracker.css'
 import Input from '../../components/text_input/Input'
 import { stateData } from '../../../resources/static_data/StaticData';
-import { newStatusData, projectStatusHeadData } from './projectData';
+import { newStatusData, projectStatusHeadData,  } from './projectData';
 import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
 import SelectOption from '../../components/selectOption/SelectOption';
 import { ICONS } from '../../icons/Icons';

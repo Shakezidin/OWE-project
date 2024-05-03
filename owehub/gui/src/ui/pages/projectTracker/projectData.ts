@@ -349,3 +349,30 @@ export const newStatusData = [
 ],
   },
 ];
+
+export const projects = [
+  {
+    projectName: "Owe Project Installation",
+    salesDate: "20 Feb, 2024",
+    notchStrips: [
+      { name: "Site Survey", date: null },
+      { name: "Permit Submitted", date: null },
+      { name: "Install Ready", date: null },
+      { name: "Install Completed", date: null },
+      { name: "PTO", date: null },
+    ],
+    overallProgress: 20,
+  },
+  {
+    projectName: "Owe Project Installation",
+    salesDate: "Completed",
+    notchStrips: [
+      { name: "Site Survey", date: null },
+      { name: "Permit Submitted", date: null },
+      { name: "Install Ready", date: null },
+      { name: "Install Completed", date: null },
+      { name: "PTO", date: null },
+    ],
+    overallProgress: 28,
+  },
+];
