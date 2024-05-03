@@ -752,7 +752,7 @@ CREATE TABLE adder_data (
     gc text,
     exact_amount text,
     per_kw_amt DOUBLE PRECISION,
-    rep_percent integer,
+    rep_percent DOUBLE PRECISION,
     description character varying,
     notes character varying,
     sys_size DOUBLE PRECISION,
