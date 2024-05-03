@@ -40,3 +40,13 @@ export const fetchRateAdjustments = createAsyncThunk(
   );
 
  
+
+  export const updateRateAdjustment = createAsyncThunk("update/rateadjustment",async(param:any,{rejectWithValue,dispatch})=>{
+    try {
+        const data = await postCaller("update_rateadjustments",param)
+        await dispatch(fetchRateAdjustments({page_number:1,page_size:10}))
+        return data.data
+    } catch (error) {
+        return rejectWithValue((error as Error).message)
+    }
+})
