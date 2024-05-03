@@ -3,6 +3,7 @@ import { Column } from "../../../core/models/data_models/FilterSelectModel";
 export   const LeaderOverrideColumns: Column[] = [
     
     { name: "teamname", displayName: "Team Name", type: "string",isCheckbox:true },
+    { name: "uniqeid", displayName: "Unique Id", type: "string",isCheckbox:false },
     { name: "leadername", displayName: "Leader Name", type: "string",isCheckbox:false },
     { name: "type", displayName: "Type", type: "string",isCheckbox:false },
     { name: "term", displayName: "Term", type: "string",isCheckbox:false },

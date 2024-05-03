@@ -16,6 +16,12 @@ import SortableHeader from "../../../components/tableHeader/SortableHeader";
 import { ReconcileColumns} from "../../../../resources/static_data/configureHeaderData/ReconcileColumn";
 import FilterModal from "../../../components/FilterModal/FilterModal";
 import { ROUTES } from "../../../../routes/routes";
+import { fetchReconcile  } from "../../../../redux/apiActions/reconcileAction";
+import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
+import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
+import { showAlert, successSwal } from "../../../components/alert/ShowAlert";
+import Loading from "../../../components/loader/Loading";
+import { fetchRateAdjustments } from "../../../../redux/apiActions/RateAdjustmentsAction";
 
 const Reconcile = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -27,15 +33,15 @@ const Reconcile = () => {
 
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const timelinesla_list = useAppSelector(
-    (state) => state.timelineSla.timelinesla_list
+  const {data, isLoading} = useAppSelector(
+    (state) => state.reconcile
   );
-//   const loading = useAppSelector((state) => state.timelineSla.loading);
+
   const error = useAppSelector((state) => state.timelineSla.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
-  const [editedTimeLineSla, setEditedTimeLineSla] = useState<TimeLineSlaModel | null>(null);
+  const [editedReconcile, setEditedReconcile] = useState(null);
   const itemsPerPage = 10;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
@@ -46,7 +52,7 @@ const Reconcile = () => {
       page_number: currentPage,
       page_size: itemsPerPage,
     };
-    dispatch(fetchTimeLineSla(pageNumber));
+    dispatch(fetchReconcile(pageNumber));
   }, [dispatch, currentPage]);
 
   const filter = () => {
@@ -66,14 +72,14 @@ const Reconcile = () => {
   const goToPrevPage = () => {
     dispatch(setCurrentPage(currentPage - 1));
   };
-  const totalPages = Math.ceil(timelinesla_list?.length / itemsPerPage);
-
+  const totalPages = Math.ceil(data?.length / itemsPerPage);
+  
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   
-  const currentPageData = commissionList?.slice(startIndex, endIndex);
+  const currentPageData = data?.slice(startIndex, endIndex);
   const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === timelinesla_list?.length;
+  const isAllRowsSelected = selectedRows.size === data?.length;
   const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
@@ -99,22 +105,71 @@ const Reconcile = () => {
   }
   const handleTimeLineSla = () => {
     setEditMode(false);
-    setEditedTimeLineSla(null);
+    setEditedReconcile(null);
     handleOpen()
   };
 
-  const handleEditTimeLineSla = (timeLineSlaData: TimeLineSlaModel) => {
-    setEditMode(true);
-    setEditedTimeLineSla(timeLineSlaData);
-    handleOpen()
-  };
+  
   const fetchFunction = (req: any) => {
-    dispatch(fetchTimeLineSla(req));
+    dispatch(fetchReconcile(req));
    };
-//   if (loading) {
-//     return <div>Loading...</div>;
-//   }
+   const handleEdit = (data: any) => {
+    setEditMode(true);
+    setEditedReconcile(data);
+    handleOpen();
+  };
+
+  const handleArchiveClick = async (record_id: any) => {
+    const confirmed = await showAlert(
+      "Are Your Sure",
+      "This action will archive all selected rows?",
+      "Yes",
+      "No"
+    );
+    if (confirmed) {
+      const archived: number[] = [record_id];
+      let newValue = {
+        record_id: archived,
+        is_archived: true,
+      };
+      const pageNumber = {
+        page_number: currentPage,
+        page_size: itemsPerPage,
+      };
+      const res = await postCaller("update_reconcile_archive", newValue);
+      if (res.status === HTTP_STATUS.OK) {
+        dispatch(fetchRateAdjustments(pageNumber));
+        await successSwal(
+          "Archived",
+          "All Selected rows have been archived",
+          "success",
+          2000,
+          false
+        );
+      } else {
+        await successSwal(
+          "Archived",
+          "All Selected rows have been archived",
+          "error",
+          2000,
+          false
+        );
+      }
+    }
+  };
  
+  if (isLoading) {
+    return (
+      <div className="loader-container">
+        {" "}
+        <Loading />{" "}
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <div className="comm">
@@ -138,7 +193,7 @@ const Reconcile = () => {
           fetchFunction={fetchFunction}
           page_size={itemsPerPage} />}
         {open && <CreateReconcile
-         
+         editData={editedReconcile}
           editMode={editMode}
           handleClose={handleClose} />}
         <div
@@ -156,7 +211,7 @@ const Reconcile = () => {
                       key={key}
                       isCheckbox={item.isCheckbox}
                       titleName={item.displayName}
-                      data={timelinesla_list}
+                      data={data}
                       isAllRowsSelected={isAllRowsSelected}
                       isAnyRowSelected={isAnyRowSelected}
                       selectAllChecked={selectAllChecked}
@@ -176,48 +231,60 @@ const Reconcile = () => {
                 </th>
               </tr>
             </thead>
-            {/* <tbody >
-            
-                  <tr>
+            <tbody >
+              {currentPageData?.length > 0
+                ? currentPageData?.map((el: any, i: any) => (
+                  <tr
+                    key={i}
+                    className={selectedRows.has(i) ? "selected" : ""}
+                  >
 
                     <td style={{ fontWeight: "500", color: "black" }}>
                       <div className="flex-check">
-                      <td>
                         <CheckBox
-                          checked={false}
-                          onChange={() => {}}
-                          // indeterminate={isAnyRowSelected && !isAllRowsSelected}
+                          checked={selectedRows.has(i)}
+                          onChange={() =>
+                            toggleRowSelection(
+                              i,
+                              selectedRows,
+                              setSelectedRows,
+                              setSelectAllChecked
+                            )
+                          }
                         />
-                      </td>
-                        AMF
+                        {el.unique_id}
                       </div>
                     </td>
-                    <td>Leader Name</td>
-                    <td>Type</td>
-                    <td>Term</td>
-                    <td>Qual</td>
-                    <td>Sales Q</td>
-                    <td>Team kW Q</td>
-                    <td>Pay Rate</td>
-                    <td>Start</td>
-                    <td>End</td>
-                    
-                    <td
-
-                    >
+                    <td>{el.customer}</td>
+                    <td>{el.partner_name}</td>
+                    <td>{el.state_name}</td>
+                    <td>{el.sys_size}</td>
+                    <td>{el.status}</td>
+                    <td>{el.date}</td>
+                    <td>{el.amount}</td>
+                    <td>{el.notes}</td>
+                    <td>
                       <div className="action-icon">
-                        <div className="">
+                        <div
+                          className=""
+                          style={{ cursor: "pointer" }}
+                          onClick={() => handleArchiveClick(el.record_id)}
+                        >
                           <img src={ICONS.ARCHIVE} alt="" />
                         </div>
-                        <div className=""  style={{ cursor: "pointer" }}>
+                        <div
+                          className=""
+                          onClick={() => handleEdit(el)}
+                          style={{ cursor: "pointer" }}
+                        >
                           <img src={ICONS.editIcon} alt="" />
                         </div>
                       </div>
                     </td>
                   </tr>
-                
-                 
-            </tbody> */}
+                ))
+                : null}
+            </tbody>
 
           </table>
         </div>
@@ -228,7 +295,7 @@ const Reconcile = () => {
           </p>
 
           {
-            timelinesla_list?.length > 0 ? <Pagination
+data?.length > 0 ? <Pagination
               currentPage={currentPage}
               totalPages={totalPages} // You need to calculate total pages
               paginate={paginate}

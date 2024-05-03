@@ -29,7 +29,6 @@ const CreateRateAdjustments:React.FC<payScheduleProps> = ({handleClose,editMode}
     const [createRateAdjustmentData, setCreateRateAdjustmentPayData] = useState<rateAdjustmentModel>(
       {
           unique_id:"1234567sfsfds89kjj",
-         
           pay_scale:"",
           position:"",
           adjustment:"",
@@ -89,7 +88,7 @@ const handleSubmit = (e: React.FormEvent) => {
 
                 </div>
              
-                    <h3 className="createProfileText">{editMode===false?"Rep Pay Settings":"Update RepPay Settings"}</h3>
+                    <h3 className="createProfileText">{editMode===false?"Create Rate Adjustment":"Update Rate Adjustment"}</h3>
                 
                   <div className="modal-body">
                   <div className="createProfileInputView">

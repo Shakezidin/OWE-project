@@ -3,6 +3,19 @@ import axios from "axios";
 import { postCaller } from "../../infrastructure/web_api/services/apiUrl";
 import { EndPoints } from "../../infrastructure/web_api/api_client/EndPoints";
 
+export interface RepayEditParams {
+  unique_id:string;
+  name:string,
+  state:string,
+  pay_scale:string,
+  position:string,
+  b_e:string,
+  start_date:string,
+  end_date:string,
+  record_id:string
+}
+
+
 interface RepayCreateParams {
      unique_id:string;
      name:string,
@@ -12,6 +25,9 @@ interface RepayCreateParams {
      b_e:string,
      start_date:string,
      end_date:string
+}
+interface RepayUpdateParams extends RepayCreateParams{
+  record_id:number
 }
 export const fetchRepaySettings = createAsyncThunk(
     "repaySettings/fetchrepaySettings",
@@ -36,4 +52,12 @@ export const fetchRepaySettings = createAsyncThunk(
     }
   );
 
- 
+  export const updateRepaySettings = createAsyncThunk("update/repaysetting",async(param:any,{rejectWithValue,dispatch})=>{
+    try {
+        const data = await postCaller("update_rep_pay_settings",param)
+        await dispatch(fetchRepaySettings({page_number:1,page_size:10}))
+        return data.data
+    } catch (error) {
+        return rejectWithValue((error as Error).message)
+    }
+})
