@@ -47,7 +47,7 @@ const ResetPassword = () => {
          toast.success(result.message);
          navigate("/otp");
       }else{
-        toast.success(result.message);
+        toast.error(result.message);
       }
      
     }
