@@ -149,7 +149,7 @@ const UserActivity: React.FC = () => {
           onPressImport={() => { }}
           showImportIcon={false}
           showSelectIcon={true}
-          showFilterIcon={true}
+          showFilterIcon={false}
           selectMarginLeft="-37px"
         />
         <div
