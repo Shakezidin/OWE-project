@@ -124,20 +124,23 @@ export const ARDashboardPage: React.FC = () => {
               </label>
 
               <div style={{ position: "relative", top: "-1px" }} ref={datePickerRef}>
-                <label className="ar-date-button" onClick={handleToggleDatePicker}>
+                <label className="date-button" onClick={handleToggleDatePicker}>
                   Select Dates
                 </label>
                 {showDatePicker && (
-                  <div className="ar-calender-container">
+                  <div className="calender-container">
                     <DateRangePicker
                       ranges={[selectionRange]}
                       onChange={handleSelect}
                     />
-                    <button className="ar-reset-calender" onClick={handleResetDates}>
+                    <button
+                      className="reset-calender"
+                      onClick={handleResetDates}
+                    >
                       Reset
                     </button>
                     <button
-                      className="ar-close-calender"
+                      className="close-calender"
                       onClick={handleToggleDatePicker}
                     >
                       Close
