@@ -63,12 +63,14 @@ func HandleGetAdderCreditDataRequest(resp http.ResponseWriter, req *http.Request
 
 	tableName := db.TableName_AdderCredit
 	query = `
-	  SELECT ac.id as record_id, ac.unique_id, ac.pay_scale, ac.type, ac.min_rate, ac.max_rate, ar.is_archived
-	  FROM adder_Credit ac`
+	  SELECT ac.id as record_id, ac.unique_id, ac.pay_scale, ac.type, ac.min_rate, ac.max_rate, ac.is_archived
+	  FROM adder_credit ac`
 
 	filter, whereEleList = PrepareAdderCreditFilters(tableName, dataReq, false)
 	if filter != "" {
 		queryWithFiler = query + filter
+	} else {
+		queryWithFiler = query
 	}
 
 	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
@@ -122,21 +124,13 @@ func HandleGetAdderCreditDataRequest(resp http.ResponseWriter, req *http.Request
 			Max_rare = 0.0
 		}
 
-		// is_archived
-		IsArchived, ok := item["is_archived"].(bool)
-		if !ok || !IsArchived {
-			log.FuncErrorTrace(0, "Failed to get is_archived value for Record ID %v. Item: %+v\n", RecordId, item)
-			IsArchived = false
-		}
-
 		AdderCreditData := models.GetAdderCreditReq{
-			RecordId:    RecordId,
-			UniqueId:    Unique_id,
-			Pay_Scale:   Pay_scale,
-			Type:        Type,
-			Min_Rate:    Min_Rate,
-			Max_Rate:    Max_rare,
-			Is_Archived: IsArchived,
+			RecordId:  RecordId,
+			UniqueId:  Unique_id,
+			Pay_Scale: Pay_scale,
+			Type:      Type,
+			Min_Rate:  Min_Rate,
+			Max_Rate:  Max_rare,
 		}
 		AdderCreditList.AdderCreditList = append(AdderCreditList.AdderCreditList, AdderCreditData)
 	}
@@ -144,6 +138,8 @@ func HandleGetAdderCreditDataRequest(resp http.ResponseWriter, req *http.Request
 	filter, whereEleList = PrepareAdderCreditFilters(tableName, dataReq, true)
 	if filter != "" {
 		queryForAlldata = query + filter
+	} else {
+		queryForAlldata = query
 	}
 
 	data, err = db.ReteriveFromDB(queryForAlldata, whereEleList)
@@ -234,7 +230,7 @@ func PrepareAdderCreditFilters(tableName string, dataFilter models.DataRequestBo
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY ac.id, ac.unique_id, ac.pay_scale, ac.type, ac.min_rate, ac.max_rate, ar.is_archived")
+		filtersBuilder.WriteString(" GROUP BY ac.id, ac.unique_id, ac.pay_scale, ac.type, ac.min_rate, ac.max_rate")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {

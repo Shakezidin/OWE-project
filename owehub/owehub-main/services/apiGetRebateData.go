@@ -1,6 +1,6 @@
 /**************************************************************************
  * File       	   : apiGetRebateData.go
- * DESCRIPTION     : This file contains functions for get debate data handler
+ * DESCRIPTION     : This file contains functions for get rebate data handler
  * DATE            : 24-Apr-2024
  **************************************************************************/
 
@@ -20,25 +20,28 @@ import (
 
 /******************************************************************************
  * FUNCTION:		HandleGetRebateDataRequest
- * DESCRIPTION:     handler for get Debate data request
+ * DESCRIPTION:     handler for get rebate data request
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
 func HandleGetRebateDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err          error
-		dataReq      models.DataRequestBody
-		data         []map[string]interface{}
-		whereEleList []interface{}
-		query        string
-		filter       string
+		err             error
+		dataReq         models.DataRequestBody
+		data            []map[string]interface{}
+		whereEleList    []interface{}
+		query           string
+		queryWithFiler  string
+		queryForAlldata string
+		filter          string
+		RecordCount     int64
 	)
 
 	log.EnterFn(0, "HandleGetRebateDataRequest")
 	defer func() { log.ExitFn(0, "HandleGetRebateDataRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in get Debate data request")
+		err = fmt.Errorf("HTTP Request body is null in get rebate data request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -46,15 +49,15 @@ func HandleGetRebateDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get debate data request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get rebate data request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal get debate data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get debate data Request body", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal get rebate data request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal get rebate data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -69,15 +72,15 @@ func HandleGetRebateDataRequest(resp http.ResponseWriter, req *http.Request) {
 			JOIN user_details ud1 ON ud1.user_id = rd.rep_1
 			JOIN user_details ud2 ON ud2.user_id = rd.rep_2`
 
-	filter, whereEleList = PrepareAutoAdderFilters(tableName, dataReq)
+	filter, whereEleList = PrepareRebateDataFilters(tableName, dataReq, false)
 	if filter != "" {
-		query += filter
+		queryWithFiler = query + filter
 	}
 
-	data, err = db.ReteriveFromDB(query, whereEleList)
+	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get AutoAdder data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get AutoAdder data from DB", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get rebate data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get rebate data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -304,9 +307,21 @@ func HandleGetRebateDataRequest(resp http.ResponseWriter, req *http.Request) {
 		RebateDataList.RebateDataList = append(RebateDataList.RebateDataList, RebateData)
 	}
 
+	filter, whereEleList = PrepareRebateDataFilters(tableName, dataReq, true)
+	if filter != "" {
+		queryForAlldata = query + filter
+	}
+
+	data, err = db.ReteriveFromDB(queryForAlldata, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get rebate data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get rebate data from DB", http.StatusBadRequest, nil)
+		return
+	}
+	RecordCount = int64(len(data))
 	// Send the response
-	log.FuncInfoTrace(0, "Number of AutoAdder List fetched : %v list %+v", len(RebateDataList.RebateDataList), RebateDataList)
-	FormAndSendHttpResp(resp, "AutoAdder Data", http.StatusOK, RebateDataList)
+	log.FuncInfoTrace(0, "Number of rebate List fetched : %v list %+v", len(RebateDataList.RebateDataList), RebateDataList)
+	FormAndSendHttpResp(resp, "rebate Data", http.StatusOK, RebateDataList, RecordCount)
 }
 
 /******************************************************************************
@@ -315,15 +330,17 @@ func HandleGetRebateDataRequest(resp http.ResponseWriter, req *http.Request) {
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
-func PrepareDebateDataFilters(tableName string, dataFilter models.DataRequestBody) (filters string, whereEleList []interface{}) {
-	log.EnterFn(0, "PrepareAutoAdderFilters")
-	defer func() { log.ExitFn(0, "PrepareAutoAdderFilters", nil) }()
+func PrepareRebateDataFilters(tableName string, dataFilter models.DataRequestBody, forDataCount bool) (filters string, whereEleList []interface{}) {
+	log.EnterFn(0, "PreparerebateFilters")
+	defer func() { log.ExitFn(0, "PreparerebateFilters", nil) }()
 
 	var filtersBuilder strings.Builder
+	// whereAdded := false // Flag to track if WHERE clause has been added
 
 	// Check if there are filters
 	if len(dataFilter.Filters) > 0 {
 		filtersBuilder.WriteString(" WHERE ")
+		// whereAdded = true // Set flag to true as WHERE clause is added
 
 		for i, filter := range dataFilter.Filters {
 			// Check if the column is a foreign key
@@ -344,88 +361,88 @@ func PrepareDebateDataFilters(tableName string, dataFilter models.DataRequestBod
 			}
 			switch column {
 			case "unique_id":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.unique_id) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(rd.unique_id) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "customer_verf":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.customer_verf) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(rd.customer_verf) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "type_rd_mktg":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.type_rd_mktg) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(rd.type_rd_mktg) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "exact_amount":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.exact_amount) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(rd.exact_amount) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "item":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.item) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(rd.item) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "amount":
-				filtersBuilder.WriteString(fmt.Sprintf("ad.amount %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("rd.amount %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "rep_doll_divby_per":
-				filtersBuilder.WriteString(fmt.Sprintf("ad.rep_doll_divby_per %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("rd.rep_doll_divby_per %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "notes":
-				filtersBuilder.WriteString(fmt.Sprintf("ad.notes %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("rd.notes %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "type":
-				filtersBuilder.WriteString(fmt.Sprintf("ad.type %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("rd.type %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "rep1_name":
-				filtersBuilder.WriteString(fmt.Sprintf("rep_1_name %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("ud1.name %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "rep2_name":
-				filtersBuilder.WriteString(fmt.Sprintf("rep_2_name %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("ud2.name %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "sys_size":
-				filtersBuilder.WriteString(fmt.Sprintf("ad.sys_size %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("rd.sys_size %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "rep_count":
-				filtersBuilder.WriteString(fmt.Sprintf("ad.rep_count %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("rd.rep_count %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "state":
 				filtersBuilder.WriteString(fmt.Sprintf("st.name %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "per_rep_addr_share":
-				filtersBuilder.WriteString(fmt.Sprintf("ad.per_rep_addr_share %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("rd.per_rep_addr_share %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "per_rep_ovrd_share":
-				filtersBuilder.WriteString(fmt.Sprintf("ad.per_rep_ovrd_share %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("rd.per_rep_ovrd_share %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "r1_pay_scale":
-				filtersBuilder.WriteString(fmt.Sprintf("ad.r1_pay_scale %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("rd.r1_pay_scale %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "rep_1_def_resp":
-				filtersBuilder.WriteString(fmt.Sprintf("ad.rep_1_def_resp %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("rd.rep_1_def_resp %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "r1_addr_resp":
-				filtersBuilder.WriteString(fmt.Sprintf("ad.r1_addr_resp %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("rd.r1_addr_resp %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "r2_pay_scale":
-				filtersBuilder.WriteString(fmt.Sprintf("ad.r2_pay_scale %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("rd.r2_pay_scale %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "per_rep_def_ovrd":
-				filtersBuilder.WriteString(fmt.Sprintf("ad.per_rep_def_ovrd %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("rd.per_rep_def_ovrd %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "r1_rebate_credit":
-				filtersBuilder.WriteString(fmt.Sprintf("ad.r1_rebate_credit %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("rd.r1_rebate_credit %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "contract_amount":
-				filtersBuilder.WriteString(fmt.Sprintf("ad.contract_amount %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("rd.contract_amount %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "r1_rebate_credit_perc":
-				filtersBuilder.WriteString(fmt.Sprintf("ad.r1_rebate_credit_perc %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("rd.r1_rebate_credit_perc %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "r2_rebate_credit":
-				filtersBuilder.WriteString(fmt.Sprintf("ad.r2_rebate_credit %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("rd.r2_rebate_credit %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "r2_rebate_credit_perc":
-				filtersBuilder.WriteString(fmt.Sprintf("ad.r2_rebate_credit_perc %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("rd.r2_rebate_credit_perc %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "start_date":
-				filtersBuilder.WriteString(fmt.Sprintf("ad.start_date %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("rd.start_date %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "end_date":
-				filtersBuilder.WriteString(fmt.Sprintf("ad.end_date %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("rd.end_date %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
@@ -434,10 +451,31 @@ func PrepareDebateDataFilters(tableName string, dataFilter models.DataRequestBod
 		}
 	}
 
-	// Add pagination logic
-	if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
-		offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
-		filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+	// Handle the Archived field
+	// if dataFilter.Archived {
+	// 	if whereAdded {
+	// 		filtersBuilder.WriteString(" AND ")
+	// 	} else {
+	// 		filtersBuilder.WriteString(" WHERE ")
+	// 	}
+	// 	filtersBuilder.WriteString("rd.is_archived = TRUE")
+	// } else {
+	// 	if whereAdded {
+	// 		filtersBuilder.WriteString(" AND ")
+	// 	} else {
+	// 		filtersBuilder.WriteString(" WHERE ")
+	// 	}
+	// 	filtersBuilder.WriteString("rd.is_archived = FALSE")
+	// }
+
+	if forDataCount == true {
+		filtersBuilder.WriteString(" GROUP BY rd.id, rd.unique_id, rd.customer_verf, rd.type_rd_mktg, rd.item, rd.amount, rd.rep_doll_divby_per, rd.notes, rd.type, ud1.name, ud2.name, rd.sys_size, rd.rep_count, st.name, rd.per_rep_addr_share, rd.per_rep_ovrd_share, rd.r1_pay_scale, rd.rep_1_def_resp, rd.r1_addr_resp, rd.r2_pay_scale, rd.per_rep_def_ovrd, rd.r1_rebate_credit_$, rd.r1_rebate_credit_perc, rd.r2_rebate_credit_$, rd.r2_rebate_credit_perc,  rd.start_date, rd.end_date")
+	} else {
+		// Add pagination logic
+		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
+			filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+		}
 	}
 
 	filters = filtersBuilder.String()

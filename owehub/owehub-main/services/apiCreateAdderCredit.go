@@ -64,13 +64,13 @@ func HandleCreateAdderCreditDataRequest(resp http.ResponseWriter, req *http.Requ
 	}
 
 	if createAdderCreditReq.Min_Rate <= float64(0) {
-		err = fmt.Errorf("Invalid Sale price Not Allowed")
+		err = fmt.Errorf("Invalid Min_Rate Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Invalid Sale price Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 	if createAdderCreditReq.Max_Rate <= float64(0) {
-		err = fmt.Errorf("Invalid Rate list Not Allowed")
+		err = fmt.Errorf("Invalid Max_Rate Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Invalid Rate list Not Allowed", http.StatusBadRequest, nil)
 		return
@@ -82,7 +82,7 @@ func HandleCreateAdderCreditDataRequest(resp http.ResponseWriter, req *http.Requ
 	queryParameters = append(queryParameters, createAdderCreditReq.Type)
 	queryParameters = append(queryParameters, createAdderCreditReq.Min_Rate)
 	queryParameters = append(queryParameters, createAdderCreditReq.Max_Rate)
-	
+
 	// Call the database function
 	result, err = db.CallDBFunction(db.CreateAdderCreditFunction, queryParameters)
 	if err != nil || len(result) <= 0 {

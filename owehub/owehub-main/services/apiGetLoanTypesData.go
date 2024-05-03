@@ -26,12 +26,15 @@ import (
  ******************************************************************************/
 func HandleGetLoanTypesDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err          error
-		dataReq      models.DataRequestBody
-		data         []map[string]interface{}
-		whereEleList []interface{}
-		query        string
-		filter       string
+		err             error
+		dataReq         models.DataRequestBody
+		data            []map[string]interface{}
+		whereEleList    []interface{}
+		query           string
+		queryWithFiler  string
+		queryForAlldata string
+		filter          string
+		RecordCount     int64
 	)
 
 	log.EnterFn(0, "HandleGetLoanTypesDataRequest")
@@ -62,15 +65,15 @@ func HandleGetLoanTypesDataRequest(resp http.ResponseWriter, req *http.Request) 
 	query = `
 	SELECT lt.id as record_id, lt.product_code, lt.active, lt.adder, lt.description FROM loan_type lt`
 
-	filter, whereEleList = PrepareLoanTypesFilters(tableName, dataReq)
+	filter, whereEleList = PrepareLoanTypesFilters(tableName, dataReq, false)
 	if filter != "" {
-		query += filter
+		queryWithFiler = query + filter
 	}
 
-	data, err = db.ReteriveFromDB(query, whereEleList)
+	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get partner data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get partner data from DB", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get loan type data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get loan type data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -86,7 +89,7 @@ func HandleGetLoanTypesDataRequest(resp http.ResponseWriter, req *http.Request) 
 		// Convert fields from item
 		productCode, codeOk := item["product_code"].(string)
 		if !codeOk || productCode == "" {
-			log.FuncErrorTrace(0, "Failed to get partner code Item: %+v\n", item)
+			log.FuncErrorTrace(0, "Failed to get loan type code Item: %+v\n", item)
 			productCode = ""
 		}
 
@@ -119,9 +122,22 @@ func HandleGetLoanTypesDataRequest(resp http.ResponseWriter, req *http.Request) 
 		}
 		loansList.LoanTypeList = append(loansList.LoanTypeList, loanType)
 	}
+
+	filter, whereEleList = PrepareLoanTypesFilters(tableName, dataReq, true)
+	if filter != "" {
+		queryForAlldata = query + filter
+	}
+
+	data, err = db.ReteriveFromDB(queryForAlldata, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get loan type data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get loan type data from DB", http.StatusBadRequest, nil)
+		return
+	}
+	RecordCount = int64(len(data))
 	// Send the response
 	log.FuncInfoTrace(0, "Number of loan List fetched : %v list %+v", len(loansList.LoanTypeList), loansList)
-	FormAndSendHttpResp(resp, "Loan Data", http.StatusOK, loansList)
+	FormAndSendHttpResp(resp, "Loan Data", http.StatusOK, loansList, RecordCount)
 }
 
 /******************************************************************************
@@ -130,7 +146,7 @@ func HandleGetLoanTypesDataRequest(resp http.ResponseWriter, req *http.Request) 
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
-func PrepareLoanTypesFilters(tableName string, dataFilter models.DataRequestBody) (filters string, whereEleList []interface{}) {
+func PrepareLoanTypesFilters(tableName string, dataFilter models.DataRequestBody, forDataCount bool) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PrepareLoanTypesFilters")
 	defer func() { log.ExitFn(0, "PrepareLoanTypesFilters", nil) }()
 
@@ -187,9 +203,14 @@ func PrepareLoanTypesFilters(tableName string, dataFilter models.DataRequestBody
 		filtersBuilder.WriteString("lt.is_archived = FALSE")
 	}
 
-	// Add pagination
-	if (dataFilter.PageSize > 0) && (dataFilter.PageNumber > 0) {
-		filtersBuilder.WriteString(fmt.Sprintf(" LIMIT %d OFFSET %d", dataFilter.PageSize, (dataFilter.PageNumber-1)*dataFilter.PageSize))
+	if forDataCount == true {
+		filtersBuilder.WriteString(" GROUP BY lt.id, lt.product_code, lt.active, lt.adder, lt.description")
+	} else {
+		// Add pagination logic
+		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
+			filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+		}
 	}
 
 	filters = filtersBuilder.String()

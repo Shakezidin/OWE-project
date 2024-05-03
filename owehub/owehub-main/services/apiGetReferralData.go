@@ -26,12 +26,15 @@ import (
 ******************************************************************************/
 func HandleGetReferralDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err          error
-		dataReq      models.DataRequestBody
-		data         []map[string]interface{}
-		whereEleList []interface{}
-		query        string
-		filter       string
+		err             error
+		dataReq         models.DataRequestBody
+		data            []map[string]interface{}
+		whereEleList    []interface{}
+		query           string
+		queryWithFiler  string
+		queryForAlldata string
+		filter          string
+		RecordCount     int64
 	)
 
 	log.EnterFn(0, "HandleGetReferralDataRequest")
@@ -70,12 +73,12 @@ func HandleGetReferralDataRequest(resp http.ResponseWriter, req *http.Request) {
 		JOIN user_details ud1 ON ud1.user_id = ad.rep_1
 		JOIN user_details ud2 ON ud2.user_id = ad.rep_2`
 
-	filter, whereEleList = PrepareReferralDataFilters(tableName, dataReq)
+	filter, whereEleList = PrepareReferralDataFilters(tableName, dataReq, false)
 	if filter != "" {
-		query += filter
+		queryWithFiler = query + filter
 	}
 
-	data, err = db.ReteriveFromDB(query, whereEleList)
+	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get Referral data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get Referral data from DB", http.StatusBadRequest, nil)
@@ -297,9 +300,22 @@ func HandleGetReferralDataRequest(resp http.ResponseWriter, req *http.Request) {
 		ReferralDataList.ReferralDataList = append(ReferralDataList.ReferralDataList, ReferralData)
 	}
 
+	filter, whereEleList = PrepareReferralDataFilters(tableName, dataReq, true)
+	if filter != "" {
+		queryForAlldata = query + filter
+	}
+
+	data, err = db.ReteriveFromDB(queryForAlldata, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get referral data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get referral data from DB", http.StatusBadRequest, nil)
+		return
+	}
+	RecordCount = int64(len(data))
+
 	// Send the response
 	log.FuncInfoTrace(0, "Number of Referral Data List fetched : %v list %+v", len(ReferralDataList.ReferralDataList), ReferralDataList)
-	FormAndSendHttpResp(resp, "Referral Data", http.StatusOK, ReferralDataList)
+	FormAndSendHttpResp(resp, "Referral Data", http.StatusOK, ReferralDataList, RecordCount)
 }
 
 /******************************************************************************
@@ -308,15 +324,17 @@ func HandleGetReferralDataRequest(resp http.ResponseWriter, req *http.Request) {
 * INPUT:			resp, req
 * RETURNS:    		void
 ******************************************************************************/
-func PrepareReferralDataFilters(tableName string, dataFilter models.DataRequestBody) (filters string, whereEleList []interface{}) {
+func PrepareReferralDataFilters(tableName string, dataFilter models.DataRequestBody, forDataCount bool) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PrepareReferralDataFilters")
 	defer func() { log.ExitFn(0, "PrepareReferralDataFilters", nil) }()
 
 	var filtersBuilder strings.Builder
+	whereAdded := false // Flag to track if WHERE clause has been added
 
 	// Check if there are filters
 	if len(dataFilter.Filters) > 0 {
 		filtersBuilder.WriteString(" WHERE ")
+		whereAdded = true // Set flag to true as WHERE clause is added
 
 		for i, filter := range dataFilter.Filters {
 			// Check if the column is a foreign key
@@ -361,10 +379,10 @@ func PrepareReferralDataFilters(tableName string, dataFilter models.DataRequestB
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.type) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "rep_1_name":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.rep_1_name) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud1.name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "rep_2_name":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.rep_2_name) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud2.name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "sys_size":
 				filtersBuilder.WriteString(fmt.Sprintf("ad.sys_size %s $%d", operator, len(whereEleList)+1))
@@ -373,7 +391,7 @@ func PrepareReferralDataFilters(tableName string, dataFilter models.DataRequestB
 				filtersBuilder.WriteString(fmt.Sprintf("ad.rep_count %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "state":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.state) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(st.name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "per_rep_addr_share":
 				filtersBuilder.WriteString(fmt.Sprintf("ad.per_rep_addr_share %s $%d", operator, len(whereEleList)+1))
@@ -418,10 +436,31 @@ func PrepareReferralDataFilters(tableName string, dataFilter models.DataRequestB
 		}
 	}
 
-	// Add pagination logic
-	if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
-		offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
-		filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+	// Handle the Archived field
+	if dataFilter.Archived {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+		}
+		filtersBuilder.WriteString("ad.is_archived = TRUE")
+	} else {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+		}
+		filtersBuilder.WriteString("ad.is_archived = FALSE")
+	}
+
+	if forDataCount == true {
+		filtersBuilder.WriteString(" GROUP BY ad.id, ad.unique_id, ad.new_customer, ad.start_date, ad.end_date, ad.referrer_serial, ad.referrer_name, ad.amount, ad.rep_doll_divby_per, ad.notes, ad.type, ad.sys_size, ad.rep_count, ad.per_rep_addr_share, ad.per_rep_ovrd_share, ad.r1_pay_scale, ad.r1_referral_credit_$,ad.r1_referral_credit_perc, ad.r1_addr_resp, ad.r2_pay_scale, ad.r2_referral_credit_$, ad.r2_referral_credit_perc, ad.r2_addr_resp, ud1.name, ud2.name, st.name")
+	} else {
+		// Add pagination logic
+		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
+			filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+		}
 	}
 
 	filters = filtersBuilder.String()

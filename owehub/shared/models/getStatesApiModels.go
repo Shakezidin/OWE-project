@@ -7,8 +7,9 @@
 package models
 
 type GetStatesData struct {
-	Abbr string `json:"abbr"`
-	Name string `json:"name"`
+	Record_id int64  `json:"record_id"`
+	Abbr      string `json:"abbr"`
+	Name      string `json:"name"`
 }
 
 type GetStatesList struct {

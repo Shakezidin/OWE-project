@@ -160,12 +160,6 @@ func HandleGetAdjustmentsDataRequest(resp http.ResponseWriter, req *http.Request
 			Notes = "" // Default notes value of ""
 		}
 
-		IsArchived, ok := item["is_archived"].(bool)
-		if !ok || !IsArchived {
-			log.FuncErrorTrace(0, "Failed to get is_archived value for Record ID %v. Item: %+v\n", RecordId, item)
-			IsArchived = false
-		}
-
 		// Amount
 		Amount, ok := item["amount"].(float64)
 		if !ok {
@@ -188,6 +182,7 @@ func HandleGetAdjustmentsDataRequest(resp http.ResponseWriter, req *http.Request
 		}
 
 		adjustmentData := models.GetAdjustments{
+			RecordId:      RecordId,
 			UniqueId:      UniqueId,
 			Customer:      Customer,
 			PartnerName:   PartnerName,
@@ -199,7 +194,6 @@ func HandleGetAdjustmentsDataRequest(resp http.ResponseWriter, req *http.Request
 			Date:          DateStr,
 			Notes:         Notes,
 			Amount:        Amount,
-			IsArchived:    IsArchived,
 			StartDate:     StartDate,
 			EndDate:       EndDate,
 		}
@@ -315,7 +309,6 @@ func PrepareAdjustmentsFilters(tableName string, dataFilter models.DataRequestBo
 	}
 
 	if forDataCount == true {
-		// filtersBuilder.WriteString(" GROUP BY ad.id,  ad.unique_id, ad.customer, ad.sys_size, ad.bl, ad.epc, ad.date, ad.notes, ad.amount, pr_partner.partner_name, pr_installer.partner_name, st.name, ad.start_date, ad.end_date")
 		filtersBuilder.WriteString(" GROUP BY ad.id, ad.unique_id, ad.customer, ad.sys_size, ad.bl, ad.epc, ad.date, ad.notes, ad.amount, ad.start_date, ad.end_date, pr_partner.partner_name, pr_installer.partner_name, st.name")
 	} else {
 		// Add pagination logic

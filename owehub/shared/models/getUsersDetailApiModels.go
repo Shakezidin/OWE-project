@@ -7,6 +7,7 @@
 package models
 
 type GetUsersData struct {
+	RecordId          int64  `json:"record_id"`
 	Name              string `json:"name"`
 	UserCode          string `json:"user_code"`
 	EmailId           string `json:"email_id"`

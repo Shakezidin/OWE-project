@@ -19,7 +19,6 @@ type GetArSchedule struct {
 	PermitMax     string `json:"permit_max"`
 	InstallPay    string `json:"install_pay"`
 	PtoPay        string `json:"pto_pay"`
-	IsArchived    bool   `json:"is_archived"`
 	StartDate     string `json:"start_date"`
 	EndDate       string `json:"end_date"`
 }

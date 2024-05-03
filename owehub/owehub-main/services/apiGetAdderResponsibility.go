@@ -108,19 +108,11 @@ func HandleGetAdderResponsibilityDataRequest(resp http.ResponseWriter, req *http
 			Percentage = 0.0
 		}
 
-		// is_archived
-		IsArchived, ok := item["is_archived"].(bool)
-		if !ok || !IsArchived {
-			log.FuncErrorTrace(0, "Failed to get is_archived value for Record ID %v. Item: %+v\n", RecordId, item)
-			IsArchived = false
-		}
-
 		AdderResponsibilityData := models.GetAdderResponsibilityReq{
-			RecordId:    RecordId,
-			UniqueId:    Unique_id,
-			Pay_Scale:   Pay_scale,
-			Percentage:  Percentage,
-			Is_Archived: IsArchived,
+			RecordId:   RecordId,
+			UniqueId:   Unique_id,
+			Pay_Scale:  Pay_scale,
+			Percentage: Percentage,
 		}
 		AdderResponsibilityList.AdderResponsibilityList = append(AdderResponsibilityList.AdderResponsibilityList, AdderResponsibilityData)
 	}
@@ -212,7 +204,7 @@ func PrepareAdderResponsibilityFilters(tableName string, dataFilter models.DataR
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY ar.id, ar.unique_id, ar.pay_scale, ar.percentage, ar.is_archived")
+		filtersBuilder.WriteString(" GROUP BY ar.id, ar.unique_id, ar.pay_scale, ar.percentage")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {

@@ -26,12 +26,15 @@ import (
  ******************************************************************************/
 func HandleGetLoanFeeAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err          error
-		dataReq      models.DataRequestBody
-		data         []map[string]interface{}
-		whereEleList []interface{}
-		query        string
-		filter       string
+		err             error
+		dataReq         models.DataRequestBody
+		data            []map[string]interface{}
+		whereEleList    []interface{}
+		query           string
+		queryWithFiler  string
+		queryForAlldata string
+		filter          string
+		RecordCount     int64
 	)
 
 	log.EnterFn(0, "HandleGetLoanFeeAdderDataRequest")
@@ -60,11 +63,11 @@ func HandleGetLoanFeeAdderDataRequest(resp http.ResponseWriter, req *http.Reques
 
 	tableName := db.TableName_loan_fee_adder
 	query = `
-		  SELECT lfa.id as record_id, lfa.unique_id, lfa.type_mktg, ud3.name AS dealer_name, pt.partner_name AD installer_name, st.name AS state_name, lfa.contract_dol_dol, tr.tier_name AS dealer_tier_name,
+		  SELECT lfa.id as record_id, lfa.unique_id, lfa.type_mktg, ud3.name AS dealer_name, pt.partner_name AS installer_name, st.name AS state_name, lfa.contract_dol_dol, tr.tier_name AS dealer_tier_name,
 		  lfa.owe_cost, lfa.addr_amount, lfa.per_kw_amount, lfa.rep_doll_divby_per, lfa.description_rep_visible, lfa.notes_not_rep_visible, lfa.type, ud1.name as rep_1_name, ud2.name as rep_2_name, lfa.sys_size,
 		  lfa.rep_count, lfa.per_rep_addr_share, lfa.per_rep_ovrd_share, lfa.r1_pay_scale, lfa.rep_1_def_resp, lfa.r1_addr_resp, lfa.r2_pay_scale, lfa.rep_2_def_resp, lfa.r2_addr_resp, 
 		  lfa.start_date, lfa.end_date
-		  FROM auto_adder lfa
+		  FROM loan_fee_adder lfa
 		  JOIN states st ON st.state_id = lfa.state_id
 		  JOIN user_details ud1 ON ud1.user_id = lfa.rep_1
 		  JOIN user_details ud2 ON ud2.user_id = lfa.rep_2
@@ -72,12 +75,12 @@ func HandleGetLoanFeeAdderDataRequest(resp http.ResponseWriter, req *http.Reques
 		  JOIN partners pt ON pt.partner_id = lfa.installer_id
 		  JOIN tier tr ON tr.id = lfa.dealer_tier`
 
-	filter, whereEleList = PrepareAutoAdderFilters(tableName, dataReq)
+	filter, whereEleList = PrepareLoanFeeAdderFilters(tableName, dataReq, false)
 	if filter != "" {
-		query += filter
+		queryWithFiler = query + filter
 	}
 
-	data, err = db.ReteriveFromDB(query, whereEleList)
+	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get LoanFeeAdder from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get LoanFeeAdder from DB", http.StatusBadRequest, nil)
@@ -323,9 +326,21 @@ func HandleGetLoanFeeAdderDataRequest(resp http.ResponseWriter, req *http.Reques
 		LoanFeeAdderList.LoanFeeAdderList = append(LoanFeeAdderList.LoanFeeAdderList, LoanFeeAdderData)
 	}
 
+	filter, whereEleList = PrepareLoanFeeAdderFilters(tableName, dataReq, true)
+	if filter != "" {
+		queryForAlldata = query + filter
+	}
+
+	data, err = db.ReteriveFromDB(queryForAlldata, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get loan fee adder from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get loan fee adder from DB", http.StatusBadRequest, nil)
+		return
+	}
+	RecordCount = int64(len(data))
 	// Send the response
 	log.FuncInfoTrace(0, "Number of loan fee adder List fetched : %v list %+v", len(LoanFeeAdderList.LoanFeeAdderList), LoanFeeAdderList)
-	FormAndSendHttpResp(resp, "LoanFeeAdder", http.StatusOK, LoanFeeAdderList)
+	FormAndSendHttpResp(resp, "LoanFeeAdder", http.StatusOK, LoanFeeAdderList, RecordCount)
 }
 
 /******************************************************************************
@@ -334,15 +349,17 @@ func HandleGetLoanFeeAdderDataRequest(resp http.ResponseWriter, req *http.Reques
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
-func PrepareLoanFeeAdderFilters(tableName string, dataFilter models.DataRequestBody) (filters string, whereEleList []interface{}) {
+func PrepareLoanFeeAdderFilters(tableName string, dataFilter models.DataRequestBody, forDataCount bool) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PrepareLoanFeeAdderFilters")
 	defer func() { log.ExitFn(0, "PrepareLoanFeeAdderFilters", nil) }()
 
 	var filtersBuilder strings.Builder
+	// whereAdded := false // Flag to track if WHERE clause has been added
 
 	// Check if there are filters
 	if len(dataFilter.Filters) > 0 {
 		filtersBuilder.WriteString(" WHERE ")
+		// whereAdded = true // Set flag to true as WHERE clause is added
 
 		for i, filter := range dataFilter.Filters {
 			// Check if the column is a foreign key
@@ -361,17 +378,6 @@ func PrepareLoanFeeAdderFilters(tableName string, dataFilter models.DataRequestB
 			if i > 0 {
 				filtersBuilder.WriteString(" AND ")
 			}
-			// SELECT lfa.id as record_id, lfa.unique_id, lfa.type_mktg, ud3.name AS dealer_name, pt.partner_name AD installer_name, st.name AS state_name, lfa.contract_dol_dol, tr.tier_name AS dealer_tier_name,
-			// lfa.owe_cost, lfa.addr_amount, lfa.per_kw_amount, lfa.rep_doll_divby_per, lfa.description_rep_visible, lfa.notes_not_rep_visible, lfa.type, ud1.name as rep_1_name, ud2.name as rep_2_name, lfa.sys_size,
-			// lfa.rep_count, lfa.per_rep_addr_share, lfa.per_rep_ovrd_share, lfa.r1_pay_scale, lfa.rep_1_def_resp, lfa.r1_addr_resp, lfa.r2_pay_scale, lfa.rep_2_def_resp, lfa.r2_addr_resp,
-			// lfa.start_date, lfa.end_date
-			// FROM auto_adder lfa
-			// JOIN states st ON st.state_id = lfa.state_id
-			// JOIN user_details ud1 ON ud1.user_id = lfa.rep_1
-			// JOIN user_details ud2 ON ud2.user_id = lfa.rep_2
-			// JOIN user_details ud3 ON ud3.user_id = lfa.dealer_id
-			// JOIN partners pt ON pt.partner_id = lfa.installer_id
-			// JOIN tier tr ON tr.id = lfa.dealer_tier
 			switch column {
 			case "unique_id":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(lfa.unique_id) %s LOWER($%d)", operator, len(whereEleList)+1))
@@ -464,10 +470,31 @@ func PrepareLoanFeeAdderFilters(tableName string, dataFilter models.DataRequestB
 		}
 	}
 
-	// Add pagination logic
-	if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
-		offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
-		filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+	// // Handle the Archived field
+	// if dataFilter.Archived {
+	// 	if whereAdded {
+	// 		filtersBuilder.WriteString(" AND ")
+	// 	} else {
+	// 		filtersBuilder.WriteString(" WHERE ")
+	// 	}
+	// 	filtersBuilder.WriteString("lfa.is_archived = TRUE")
+	// } else {
+	// 	if whereAdded {
+	// 		filtersBuilder.WriteString(" AND ")
+	// 	} else {
+	// 		filtersBuilder.WriteString(" WHERE ")
+	// 	}
+	// 	filtersBuilder.WriteString("lfa.is_archived = FALSE")
+	// }
+
+	if forDataCount == true {
+		filtersBuilder.WriteString(" GROUP BY lfa.id, lfa.unique_id, lfa.type_mktg, ud3.name, pt.partner_name, st.name, lfa.contract_dol_dol, tr.tier_name, lfa.owe_cost, lfa.addr_amount, lfa.per_kw_amount, lfa.rep_doll_divby_per, lfa.description_rep_visible, lfa.notes_not_rep_visible, lfa.type, ud1.name, ud2.name, lfa.sys_size, lfa.rep_count, lfa.per_rep_addr_share, lfa.per_rep_ovrd_share, lfa.r1_pay_scale, lfa.rep_1_def_resp, lfa.r1_addr_resp, lfa.r2_pay_scale, lfa.rep_2_def_resp, lfa.r2_addr_resp, lfa.start_date, lfa.end_date")
+	} else {
+		// Add pagination logic
+		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
+			filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+		}
 	}
 
 	filters = filtersBuilder.String()

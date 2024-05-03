@@ -1,6 +1,6 @@
 /**************************************************************************
  * File       	   : apiGetDLROTHData.go
- * DESCRIPTION     : This file contains functions for get Dealers data handler
+ * DESCRIPTION     : This file contains functions for get dlr_oth data handler
  * DATE            : 22-Jan-2024
  **************************************************************************/
 
@@ -26,19 +26,22 @@ import (
  ******************************************************************************/
 func HandleGetDLROTHDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err          error
-		dataReq      models.DataRequestBody
-		data         []map[string]interface{}
-		whereEleList []interface{}
-		query        string
-		filter       string
+		err             error
+		dataReq         models.DataRequestBody
+		data            []map[string]interface{}
+		whereEleList    []interface{}
+		query           string
+		queryWithFiler  string
+		queryForAlldata string
+		filter          string
+		RecordCount     int64
 	)
 
 	log.EnterFn(0, "HandleGetDLROTHDataRequest")
 	defer func() { log.ExitFn(0, "HandleGetDLROTHDataRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in get Dealers Tier data request")
+		err = fmt.Errorf("HTTP Request body is null in get dlr_oth  data request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -46,32 +49,32 @@ func HandleGetDLROTHDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get Dealers Tier data request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get dlr_oth  data request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal get Dealers Tier data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get Dealers Tier data Request body", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal get dlr_oth  data request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal get dlr_oth  data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
-	tableName := db.TableName_dealer_tier
+	tableName := db.TableName_Dlr_Oth
 	query = ` 
 	 SELECT dh.id as record_id, dh.unique_id, dh.payee, dh.amount, dh.description, dh.balance, dh.paid_amount, dh.is_archived, dh.start_date, dh.end_date
 	 FROM dlr_oth dh`
 
-	filter, whereEleList = PrepareDLROTHFilters(tableName, dataReq)
+	filter, whereEleList = PrepareDLROTHFilters(tableName, dataReq, false)
 	if filter != "" {
-		query += filter
+		queryWithFiler = query + filter
 	}
 
-	data, err = db.ReteriveFromDB(query, whereEleList)
+	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get Dealers Tier data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get Dealers Tier data from DB", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get Dlr_oth data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get dlr_oth data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -139,13 +142,6 @@ func HandleGetDLROTHDataRequest(resp http.ResponseWriter, req *http.Request) {
 			EndDate = ""
 		}
 
-		// is_archived
-		IsArchived, ok := item["is_archived"].(bool)
-		if !ok || !IsArchived {
-			log.FuncErrorTrace(0, "Failed to get is_archived value for Record ID %v. Item: %+v\n", RecordId, item)
-			IsArchived = false
-		}
-
 		// Create a new GetDLROTHData object
 		dlr_Oth_Data := models.GetDLR_OTHData{
 			RecordId:    RecordId,
@@ -163,9 +159,22 @@ func HandleGetDLROTHDataRequest(resp http.ResponseWriter, req *http.Request) {
 		DLROTHList.DLR_OTHList = append(DLROTHList.DLR_OTHList, dlr_Oth_Data)
 	}
 
+	filter, whereEleList = PrepareDLROTHFilters(tableName, dataReq, true)
+	if filter != "" {
+		queryForAlldata = query + filter
+	}
+
+	data, err = db.ReteriveFromDB(queryForAlldata, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get dlr_oth data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get dlr_oth data from DB", http.StatusBadRequest, nil)
+		return
+	}
+	RecordCount = int64(len(data))
+
 	// Send the response
 	log.FuncInfoTrace(0, "Number of dlr_oth List fetched : %v list %+v", len(DLROTHList.DLR_OTHList), DLROTHList)
-	FormAndSendHttpResp(resp, "dlr oth Data", http.StatusOK, DLROTHList)
+	FormAndSendHttpResp(resp, "dlr oth Data", http.StatusOK, DLROTHList, RecordCount)
 }
 
 /******************************************************************************
@@ -174,7 +183,7 @@ func HandleGetDLROTHDataRequest(resp http.ResponseWriter, req *http.Request) {
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
-func PrepareDLROTHFilters(tableName string, dataFilter models.DataRequestBody) (filters string, whereEleList []interface{}) {
+func PrepareDLROTHFilters(tableName string, dataFilter models.DataRequestBody,forDataCount bool) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PrepareDLROTHFilters")
 	defer func() { log.ExitFn(0, "PrepareDLROTHFilters", nil) }()
 
@@ -246,10 +255,14 @@ func PrepareDLROTHFilters(tableName string, dataFilter models.DataRequestBody) (
 		filtersBuilder.WriteString("dh.is_archived = FALSE")
 	}
 
-	// Add pagination logic
-	if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
-		offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
-		filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+	if forDataCount == true {
+		filtersBuilder.WriteString(" GROUP BY dh.id, dh.unique_id, dh.payee, dh.amount, dh.description, dh.balance, dh.paid_amount, dh.start_date, dh.end_date")
+	} else {
+		// Add pagination logic
+		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
+			filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+		}
 	}
 
 	filters = filtersBuilder.String()

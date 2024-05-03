@@ -26,12 +26,15 @@ import (
  ******************************************************************************/
 func HandleGetDealersTierDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err          error
-		dataReq      models.DataRequestBody
-		data         []map[string]interface{}
-		whereEleList []interface{}
-		query        string
-		filter       string
+		err             error
+		dataReq         models.DataRequestBody
+		data            []map[string]interface{}
+		whereEleList    []interface{}
+		query           string
+		queryWithFiler  string
+		queryForAlldata string
+		filter          string
+		RecordCount     int64
 	)
 
 	log.EnterFn(0, "HandleGetDealersTierDataRequest")
@@ -65,12 +68,12 @@ func HandleGetDealersTierDataRequest(resp http.ResponseWriter, req *http.Request
 	JOIN tier tr ON dt.tier_id = tr.id
 	JOIN user_details ud ON dt.dealer_id = ud.user_id`
 
-	filter, whereEleList = PrepareDealerTierFilters(tableName, dataReq)
+	filter, whereEleList = PrepareDealerTierFilters(tableName, dataReq, false)
 	if filter != "" {
-		query += filter
+		queryWithFiler = query + filter
 	}
 
-	data, err = db.ReteriveFromDB(query, whereEleList)
+	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get Dealers Tier data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get Dealers Tier data from DB", http.StatusBadRequest, nil)
@@ -133,9 +136,22 @@ func HandleGetDealersTierDataRequest(resp http.ResponseWriter, req *http.Request
 		dealersTierList.DealersTierList = append(dealersTierList.DealersTierList, dealerTierData)
 	}
 
+	filter, whereEleList = PrepareDealerTierFilters(tableName, dataReq, true)
+	if filter != "" {
+		queryForAlldata = query + filter
+	}
+
+	data, err = db.ReteriveFromDB(queryForAlldata, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get dealer tier data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get dealer tier data from DB", http.StatusBadRequest, nil)
+		return
+	}
+	RecordCount = int64(len(data))
+
 	// Send the response
 	log.FuncInfoTrace(0, "Number of Dealers Tier List fetched : %v list %+v", len(dealersTierList.DealersTierList), dealersTierList)
-	FormAndSendHttpResp(resp, "Dealers Tier Data", http.StatusOK, dealersTierList)
+	FormAndSendHttpResp(resp, "Dealers Tier Data", http.StatusOK, dealersTierList, RecordCount)
 }
 
 /******************************************************************************
@@ -144,7 +160,7 @@ func HandleGetDealersTierDataRequest(resp http.ResponseWriter, req *http.Request
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
-func PrepareDealerTierFilters(tableName string, dataFilter models.DataRequestBody) (filters string, whereEleList []interface{}) {
+func PrepareDealerTierFilters(tableName string, dataFilter models.DataRequestBody, forDataCount bool) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PrepareDealerTierFilters")
 	defer func() { log.ExitFn(0, "PrepareDealerTierFilters", nil) }()
 
@@ -204,10 +220,14 @@ func PrepareDealerTierFilters(tableName string, dataFilter models.DataRequestBod
 		filtersBuilder.WriteString("dt.is_archived = FALSE")
 	}
 
-	// Add pagination logic
-	if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
-		offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
-		filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+	if forDataCount == true {
+		filtersBuilder.WriteString(" GROUP BY dt.id, dt.dealer_id, dt.tier_id, dt.start_date, dt.end_date")
+	} else {
+		// Add pagination logic
+		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
+			filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+		}
 	}
 
 	filters = filtersBuilder.String()

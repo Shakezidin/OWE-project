@@ -26,12 +26,15 @@ import (
  ******************************************************************************/
 func HandleGetPartnerDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err          error
-		dataReq      models.DataRequestBody
-		data         []map[string]interface{}
-		whereEleList []interface{}
-		query        string
-		filter       string
+		err             error
+		dataReq         models.DataRequestBody
+		data            []map[string]interface{}
+		whereEleList    []interface{}
+		query           string
+		queryWithFiler  string
+		queryForAlldata string
+		filter          string
+		RecordCount     int64
 	)
 
 	log.EnterFn(0, "HandleGetPartnerDataRequest")
@@ -60,15 +63,15 @@ func HandleGetPartnerDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	tableName := db.TableName_partners
 	query = `
-	SELECT ptr.partner_name, ptr.description
+	SELECT ptr.partner_id as record_id, ptr.partner_name, ptr.description
 	FROM partners ptr`
 
-	filter, whereEleList = PreparePartnerFilters(tableName, dataReq)
+	filter, whereEleList = PreparePartnerFilters(tableName, dataReq, false)
 	if filter != "" {
-		query += filter
+		queryWithFiler = query + filter
 	}
 
-	data, err = db.ReteriveFromDB(query, whereEleList)
+	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get partner data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get partner data from DB", http.StatusBadRequest, nil)
@@ -79,6 +82,12 @@ func HandleGetPartnerDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	// Assuming you have data as a slice of maps, as in your previous code
 	for _, item := range data {
+		RecordId, ok := item["record_id"].(int64)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
+			continue
+		}
+
 		PartnerName, Ok := item["partner_name"].(string)
 		if !Ok || PartnerName == "" {
 			PartnerName = ""
@@ -91,15 +100,29 @@ func HandleGetPartnerDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 		// Create a new GetSaleTypeData object
 		partnerData := models.GetPartnerData{
+			Record_Id:   RecordId,
 			PartnerName: PartnerName,
 			Description: Description,
 		}
 
 		partnerList.PartnersList = append(partnerList.PartnersList, partnerData)
 	}
+
+	filter, whereEleList = PreparePartnerFilters(tableName, dataReq, true)
+	if filter != "" {
+		queryForAlldata = query + filter
+	}
+
+	data, err = db.ReteriveFromDB(queryForAlldata, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get partners data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get partners data from DB", http.StatusBadRequest, nil)
+		return
+	}
+	RecordCount = int64(len(data))
 	// Send the response
 	log.FuncInfoTrace(0, "Number of partner List fetched : %v list %+v", len(partnerList.PartnersList), partnerList)
-	FormAndSendHttpResp(resp, "Partner Data", http.StatusOK, partnerList)
+	FormAndSendHttpResp(resp, "Partner Data", http.StatusOK, partnerList, RecordCount)
 }
 
 /******************************************************************************
@@ -108,17 +131,17 @@ func HandleGetPartnerDataRequest(resp http.ResponseWriter, req *http.Request) {
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
-func PreparePartnerFilters(tableName string, dataFilter models.DataRequestBody) (filters string, whereEleList []interface{}) {
+func PreparePartnerFilters(tableName string, dataFilter models.DataRequestBody, forDataCount bool) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PrepareFilters")
 	defer func() { log.ExitFn(0, "PrepareFilters", nil) }()
 
 	var filtersBuilder strings.Builder
-	whereAdded := false // Flag to track if WHERE clause has been added
+	// whereAdded := false // Flag to track if WHERE clause has been added
 
 	// Check if there are filters
 	if len(dataFilter.Filters) > 0 {
 		filtersBuilder.WriteString(" WHERE ")
-		whereAdded = true // Set flag to true as WHERE clause is added
+		// whereAdded = true // Set flag to true as WHERE clause is added
 
 		for i, filter := range dataFilter.Filters {
 			if i > 0 {
@@ -148,26 +171,31 @@ func PreparePartnerFilters(tableName string, dataFilter models.DataRequestBody) 
 		}
 	}
 
-	// Handle the Archived field
-	if dataFilter.Archived {
-		if whereAdded {
-			filtersBuilder.WriteString(" AND ")
-		} else {
-			filtersBuilder.WriteString(" WHERE ")
-		}
-		filtersBuilder.WriteString("ptr.is_archived = TRUE")
-	} else {
-		if whereAdded {
-			filtersBuilder.WriteString(" AND ")
-		} else {
-			filtersBuilder.WriteString(" WHERE ")
-		}
-		filtersBuilder.WriteString("ptr.is_archived = FALSE")
-	}
+	// // Handle the Archived field
+	// if dataFilter.Archived {
+	// 	if whereAdded {
+	// 		filtersBuilder.WriteString(" AND ")
+	// 	} else {
+	// 		filtersBuilder.WriteString(" WHERE ")
+	// 	}
+	// 	filtersBuilder.WriteString("ptr.is_archived = TRUE")
+	// } else {
+	// 	if whereAdded {
+	// 		filtersBuilder.WriteString(" AND ")
+	// 	} else {
+	// 		filtersBuilder.WriteString(" WHERE ")
+	// 	}
+	// 	filtersBuilder.WriteString("ptr.is_archived = FALSE")
+	// }
 
-	// Add pagination
-	if (dataFilter.PageSize > 0) && (dataFilter.PageNumber > 0) {
-		filtersBuilder.WriteString(fmt.Sprintf(" LIMIT %d OFFSET %d", dataFilter.PageSize, (dataFilter.PageNumber-1)*dataFilter.PageSize))
+	if forDataCount == true {
+		filtersBuilder.WriteString(" GROUP BY ptr.partner_id, ptr.partner_name, ptr.description")
+	} else {
+		// Add pagination logic
+		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
+			filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+		}
 	}
 
 	filters = filtersBuilder.String()
