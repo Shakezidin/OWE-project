@@ -38,7 +38,7 @@ func HandleUpdateDLROTHArchiveRequest(resp http.ResponseWriter, req *http.Reques
 	defer func() { log.ExitFn(0, "HandleUpdateDLROTHArchiveRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in update DLROTH Archive request")
+		err = fmt.Errorf("HTTP Request body is null in update DLROTH archive request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -78,12 +78,12 @@ func HandleUpdateDLROTHArchiveRequest(resp http.ResponseWriter, req *http.Reques
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateDLR_OTHArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Update DLROTH Archive in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Update DLROTH Archive", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to update DLROTH archive in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to update DLROTH archive", http.StatusInternalServerError, nil)
 		return
 	}
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "DLROTH Archive updated with Id: %+v", data)
+	log.DBTransDebugTrace(0, "DLROTH archive updated with Id: %+v", data)
 	FormAndSendHttpResp(resp, "DLROTH Archive Updated Successfully", http.StatusOK, nil)
 }

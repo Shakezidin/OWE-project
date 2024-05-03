@@ -1,7 +1,6 @@
 /**************************************************************************
 * File			: apiUpdateAutoAdder.go
-* DESCRIPTION	: This file contains functions for update AutoAdder
-						setter handler
+* DESCRIPTION	: This file contains functions for update auto adder handler
 * DATE			: 23-Jan-2024
 **************************************************************************/
 
@@ -36,7 +35,7 @@ func HandleUpdateAutoAdderRequest(resp http.ResponseWriter, req *http.Request) {
 	defer func() { log.ExitFn(0, "HandleUpdateAutoAdderRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in update AutoAdder request")
+		err = fmt.Errorf("HTTP Request body is null in update auto adder request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -44,15 +43,15 @@ func HandleUpdateAutoAdderRequest(resp http.ResponseWriter, req *http.Request) {
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update AutoAdder request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update auto adder request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &updateAutoAdderReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal update AutoAdder request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal update AutoAdder request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal update auto adder request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal update auto adder request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -62,125 +61,119 @@ func HandleUpdateAutoAdderRequest(resp http.ResponseWriter, req *http.Request) {
 		(len(updateAutoAdderReq.Type) <= 0) || (len(updateAutoAdderReq.Rep1DefResp) <= 0) ||
 		(len(updateAutoAdderReq.R1AddrResp) <= 0) || (len(updateAutoAdderReq.Rep2DefResp) <= 0) ||
 		(len(updateAutoAdderReq.R2AddrResp) <= 0) || (len(updateAutoAdderReq.StartDate) <= 0) ||
-		(len(updateAutoAdderReq.EndDate) <= 0) {
+		(len(updateAutoAdderReq.State) <= 0) || (len(updateAutoAdderReq.EndDate) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if updateAutoAdderReq.PerKWAmount <= float64(0) {
 		err = fmt.Errorf("Invalid perkwamount price Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Perkwamount price Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Perkwamount Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if updateAutoAdderReq.RepDollDivbyPer <= float64(0) {
 		err = fmt.Errorf("Invalid Repdolldivbyper list Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Repdolldivbyper list Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Repdolldivbyper Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if updateAutoAdderReq.SysSize <= float64(0) {
-		err = fmt.Errorf("Invalid Syssize Not Allowed")
+		err = fmt.Errorf("Invalid Sys size Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Syssize Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Sys size Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if updateAutoAdderReq.RepCount <= float64(0) {
 		err = fmt.Errorf("Invalid Repcount Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Repcount Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Rep count Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if updateAutoAdderReq.PerRepAddrShare <= float64(0) {
 		err = fmt.Errorf("Invalid Perrepaddrshare Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Perrepaddrshare Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Perrepaddrshare Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if updateAutoAdderReq.PerRepOvrdShare <= float64(0) {
 		err = fmt.Errorf("Invalid Perrepovrdshare Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Perrepovrdshare Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Perrepovrdshare Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if updateAutoAdderReq.R1PayScale <= float64(0) {
 		err = fmt.Errorf("Invalid R1payscale Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid R1payscale Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid R1payscale Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if updateAutoAdderReq.R2PayScale <= float64(0) {
 		err = fmt.Errorf("Invalid R2payscale Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid R2payscale Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid R2payscale Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if updateAutoAdderReq.ContractAmount <= float64(0) {
 		err = fmt.Errorf("Invalid Contractamount Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Contractamount Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Contractamount Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if updateAutoAdderReq.ProjectBaseCost <= float64(0) {
 		err = fmt.Errorf("Invalid Projectbasecost Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Projectbasecost Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Projectbasecost Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if updateAutoAdderReq.CrtAddr <= float64(0) {
 		err = fmt.Errorf("Invalid Crtaddr Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Crtaddr Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Crtaddr Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if updateAutoAdderReq.R1LoanFee <= float64(0) {
 		err = fmt.Errorf("Invalid R1loanfee Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid R1loanfee Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid R1loanfee Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if updateAutoAdderReq.R1Rebate <= float64(0) {
 		err = fmt.Errorf("Invalid R1rebate Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid R1rebate Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid R1rebate Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if updateAutoAdderReq.R1Referral <= float64(0) {
 		err = fmt.Errorf("Invalid R1referral Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid R1referral Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid R1referral Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if updateAutoAdderReq.R1RPlusR <= float64(0) {
 		err = fmt.Errorf("Invalid R1RPlusR Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid R1RPlusR Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid R1R Plus R Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if updateAutoAdderReq.TotalComm <= float64(0) {
 		err = fmt.Errorf("Invalid Totalcomm Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Totalcomm Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Total comm Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if updateAutoAdderReq.Rep1 <= 0 {
 		err = fmt.Errorf("Invalid Rep1 Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Rep1 Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Rep1 Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if updateAutoAdderReq.Rep2 <= 0 {
 		err = fmt.Errorf("Invalid Rep2 Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Rep2 Not Allowed", http.StatusBadRequest, nil)
-		return
-	}
-	if updateAutoAdderReq.StateID <= 0 {
-		err = fmt.Errorf("Invalid StateId Not Allowed")
-		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid StateId Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Rep2 Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	// Populate query parameters in the correct order
@@ -197,7 +190,7 @@ func HandleUpdateAutoAdderRequest(resp http.ResponseWriter, req *http.Request) {
 	queryParameters = append(queryParameters, updateAutoAdderReq.Rep1)
 	queryParameters = append(queryParameters, updateAutoAdderReq.Rep2)
 	queryParameters = append(queryParameters, updateAutoAdderReq.SysSize)
-	queryParameters = append(queryParameters, updateAutoAdderReq.StateID)
+	queryParameters = append(queryParameters, updateAutoAdderReq.State)
 	queryParameters = append(queryParameters, updateAutoAdderReq.RepCount)
 	queryParameters = append(queryParameters, updateAutoAdderReq.PerRepAddrShare)
 	queryParameters = append(queryParameters, updateAutoAdderReq.PerRepOvrdShare)
@@ -221,13 +214,13 @@ func HandleUpdateAutoAdderRequest(resp http.ResponseWriter, req *http.Request) {
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateAutoAdderFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Update AutoAdder in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Update AutoAdder", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to update auto adder in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to apdate auto adder", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "AutoAdder updated with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "AutoAdder Updated Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "auto adder updated with Id: %+v", data["result"])
+	FormAndSendHttpResp(resp, "Auto Adder Updated Successfully", http.StatusOK, nil)
 }

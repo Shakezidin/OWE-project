@@ -6,7 +6,7 @@ CREATE OR REPLACE FUNCTION create_new_adder_data(
     p_gc CHARACTER VARYING,
     p_exact_amount CHARACTER VARYING,
     p_per_kw_amt  DOUBLE PRECISION,
-    p_rep_percent INTEGER,
+    p_rep_percent DOUBLE PRECISION,
     p_description CHARACTER VARYING,
     p_notes CHARACTER VARYING,
     p_sys_size DOUBLE PRECISION,

@@ -20,7 +20,7 @@ type UpdateAutoAdder struct {
 	Rep1                  int     `json:"rep_1"`
 	Rep2                  int     `json:"rep_2"`
 	SysSize               float64 `json:"sys_size"`
-	StateID               int     `json:"state_id"`
+	State                 string  `json:"state"`
 	RepCount              float64 `json:"rep_count"`
 	PerRepAddrShare       float64 `json:"per_rep_addr_share"`
 	PerRepOvrdShare       float64 `json:"per_rep_ovrd_share"`
