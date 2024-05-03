@@ -5,18 +5,17 @@ import "../projectTracker/projectTracker.css";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-import { projects  } from './projectData';
+import { projects } from "./projectData";
 
 import Breadcrumb from "../../components/breadcrumb/Breadcrumb";
 const ProjectPerformence = () => {
-
   const getColorStyle = (date: string | null) => {
     if (!date) {
-      return { backgroundColor: "#F2F4F6", color: "#7D7D7D" }; 
+      return { backgroundColor: "#F2F4F6", color: "#7D7D7D" };
     } else if (date === "Completed") {
-      return { backgroundColor: "#57B93A", color: "white" }; 
+      return { backgroundColor: "#57B93A", color: "white" };
     } else {
-      return { backgroundColor: "#008DDA", color: "white" }; 
+      return { backgroundColor: "#008DDA", color: "white" };
     }
   };
 
@@ -113,13 +112,15 @@ const ProjectPerformence = () => {
               className="performance-search"
               type="search"
               placeholder="search "
+              disabled
+              onChange={() => {}}
             />
           </div>
-          <div className="performance-table">
-            <table style={{ width: "100%" }}>
+          <div className="performance-milestone-table">
+            <table>
               <thead>
                 <tr>
-                  <th style={{padding: "0px"}}>
+                  <th style={{ padding: "0px" }}>
                     <div className="milestone-header">
                       <p>Project Name</p>
                       <p>Milestone</p>
@@ -130,7 +131,7 @@ const ProjectPerformence = () => {
               <tbody>
                 {projects.map((project, index) => (
                   <tr key={index}>
-                    <td style={{padding: "0px"}}>
+                    <td style={{ padding: "0px" }}>
                       <div className="milestone-data">
                         <p className="install-update">{project.projectName}</p>
                         <div
