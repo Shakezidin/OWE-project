@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getInstallCost,createInstallCost, ICost } from "../../../apiActions/installCostAction";
+import { getInstallCost,createInstallCost, ICost, updateInstallCost } from "../../../apiActions/installCostAction";
 import {toast} from "react-toastify"
 
 interface IState {
@@ -49,6 +49,19 @@ const installCost = createSlice({
             toast.success("Form submission completed")
           })
           .addCase(createInstallCost.rejected, (state, action) => {
+            state.isFormSubmitting = false;
+            state.error = action.payload as string;
+          })
+
+          .addCase(updateInstallCost.pending, (state, action) => {
+            state.isFormSubmitting = true;
+          })
+          .addCase(updateInstallCost.fulfilled, (state, action) => {
+            state.isFormSubmitting = false;
+            state.isSuccess=true
+            toast.success("Form submission completed")
+          })
+          .addCase(updateInstallCost.rejected, (state, action) => {
             state.isFormSubmitting = false;
             state.error = action.payload as string;
           })

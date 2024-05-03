@@ -7,14 +7,19 @@ import { TimeLineSlaModel } from "../../../../core/models/configuration/create/T
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import { ICONS } from "../../../icons/Icons";
 import CheckBox from "../../../components/chekbox/CheckBox";
-import {
-  toggleRowSelection,
-} from "../../../components/chekbox/checkHelper";
+import { toggleRowSelection } from "../../../components/chekbox/checkHelper";
+import { showAlert, successSwal } from "../../../components/alert/ShowAlert";
+import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
+import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
+import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
 import { InstallCostColumns } from "../../../../resources/static_data/configureHeaderData/InstallCostColumn";
 import FilterModal from "../../../components/FilterModal/FilterModal";
 import { ROUTES } from "../../../../routes/routes";
-import { getInstallCost, ICost } from "../../../../redux/apiActions/installCostAction";
+import {
+  getInstallCost,
+  ICost,
+} from "../../../../redux/apiActions/installCostAction";
 import CreateInstallCost from "./CreateInstallCost";
 const InstallCost = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -33,8 +38,9 @@ const InstallCost = () => {
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
-  const [editedTimeLineSla, setEditedTimeLineSla] =
-    useState<TimeLineSlaModel | null>(null);
+  const [editedTimeLineSla, setEditedTimeLineSla] = useState<ICost | null>(
+    null
+  );
   const itemsPerPage = 10;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
   const currentPage = useAppSelector(
@@ -111,7 +117,46 @@ const InstallCost = () => {
     handleOpen();
   };
 
-  const handleEditTimeLineSla = (timeLineSlaData: TimeLineSlaModel) => {
+  const handleArchiveClick = async (record_id: any) => {
+    const confirmed = await showAlert(
+      "Are Your Sure",
+      "This action will archive all selected rows?",
+      "Yes",
+      "No"
+    );
+    if (confirmed) {
+      const archived: number[] = [record_id];
+      let newValue = {
+        record_id: archived,
+        is_archived: true,
+      };
+      const pageNumber = {
+        page_number: currentPage,
+        page_size: itemsPerPage,
+      };
+      const res = await postCaller("update_installcost_archive", newValue);
+      if (res.status === HTTP_STATUS.OK) {
+        dispatch(getInstallCost(pageNumber));
+        await successSwal(
+          "Archived",
+          "All Selected rows have been archived",
+          "success",
+          2000,
+          false
+        );
+      } else {
+        await successSwal(
+          "Archived",
+          "All Selected rows have been archived",
+          "error",
+          2000,
+          false
+        );
+      }
+    }
+  };
+
+  const handleEditTimeLineSla = (timeLineSlaData: ICost) => {
     setEditMode(true);
     setEditedTimeLineSla(timeLineSlaData);
     handleOpen();
@@ -158,7 +203,11 @@ const InstallCost = () => {
           />
         )}
         {open && (
-          <CreateInstallCost editMode={editMode} handleClose={handleClose} />
+          <CreateInstallCost
+            editData={editedTimeLineSla}
+            editMode={editMode}
+            handleClose={handleClose}
+          />
         )}
         <div
           className="TableContainer"
@@ -193,47 +242,52 @@ const InstallCost = () => {
                 </th>
               </tr>
             </thead>
-            <tbody >
+            <tbody>
               {currentPageData?.length > 0
                 ? currentPageData?.map((el: ICost, i: number) => (
-                  <tr
-                    key={i}
-                    className={selectedRows.has(i) ? "selected" : ""}
-                  >
-
-                    <td style={{ fontWeight: "500", color: "black" }}>
-                      <div className="flex-check">
-                        <CheckBox
-                          checked={selectedRows.has(i)}
-                          onChange={() =>
-                            toggleRowSelection(
-                              i,
-                              selectedRows,
-                              setSelectedRows,
-                              setSelectAllChecked
-                            )
-                          }
-                        />
-                        {el.unique_id}
-                      </div>
-                    </td>
-                    <td>{el.cost}</td>
-                    <td>{el.start_date}</td>
-                    <td>{el.end_date}</td>
-                    <td
-
+                    <tr
+                      key={i}
+                      className={selectedRows.has(i) ? "selected" : ""}
                     >
-                      <div className="action-icon">
-                        <div className="">
-                          <img src={ICONS.ARCHIVE} alt="" />
+                      <td style={{ fontWeight: "500", color: "black" }}>
+                        <div className="flex-check">
+                          <CheckBox
+                            checked={selectedRows.has(i)}
+                            onChange={() =>
+                              toggleRowSelection(
+                                i,
+                                selectedRows,
+                                setSelectedRows,
+                                setSelectAllChecked
+                              )
+                            }
+                          />
+                          {el.unique_id}
                         </div>
-                        {/* <div className="" onClick={() => handleEditTimeLineSla(el)} style={{ cursor: "pointer" }}>
-                          <img src={ICONS.editIcon} alt="" />
-                        </div> */}
-                      </div>
-                    </td>
-                  </tr>
-                ))
+                      </td>
+                      <td>{el.cost}</td>
+                      <td>{el.start_date}</td>
+                      <td>{el.end_date}</td>
+                      <td>
+                        <div className="action-icon">
+                          <div
+                            className=""
+                            style={{ cursor: "pointer" }}
+                            onClick={() => handleArchiveClick(el.record_id)}
+                          >
+                            <img src={ICONS.ARCHIVE} alt="" />
+                          </div>
+                          <div
+                            className=""
+                            onClick={() => handleEditTimeLineSla(el)}
+                            style={{ cursor: "pointer" }}
+                          >
+                            <img src={ICONS.editIcon} alt="" />
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
                 : null}
             </tbody>
           </table>

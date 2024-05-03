@@ -3,36 +3,32 @@ import React, { useEffect, useState } from "react";
 import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cross_button.svg";
 import Input from "../../../components/text_input/Input";
 import { ActionButton } from "../../../components/button/ActionButton";
-import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
-import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-import { createAdjustments } from "../../../../redux/apiActions/arAdjustmentsAction";
-import {
-  installerOption,
-  partnerOption,
-  salesTypeOption,
-  stateOption,
-} from "../../../../core/models/data_models/SelectDataModel";
 import { format } from "date-fns";
-import SelectOption from "../../../components/selectOption/SelectOption";
-import { resetSuccess } from "../../../../redux/apiSlice/configSlice/config_get_slice/arAdjusments";
-import { createInstallCost } from "../../../../redux/apiActions/installCostAction";
+import { resetSuccess } from "../../../../redux/apiSlice/configSlice/config_get_slice/installConstSlice";
+import {
+  createInstallCost,
+  ICost,
+  updateInstallCost,
+} from "../../../../redux/apiActions/installCostAction";
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
+  editData: ICost | null;
 }
 
 const CreateInstallCost: React.FC<payScheduleProps> = ({
   handleClose,
   editMode,
+  editData,
 }) => {
   const dispatch = useAppDispatch();
 
   const [newFormData, setNewFormData] = useState({
-    uniqueId: "",
-    cost: "",
-    startDate: "",
-    endDate: "",
+    uniqueId: editData?.unique_id || "",
+    cost: editData?.cost ? `${editData?.cost}` : "",
+    startDate: editData?.start_date || "",
+    endDate: editData?.end_date || "",
   });
   const { isSuccess } = useAppSelector((state) => state.installConstSlice);
 
@@ -48,19 +44,28 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
   };
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    // "unique_id": "1212",
-    // "cost": 123.45,
-    // "start_date": "2024-05-01",
-    // "end_date": "2024-05-31"
-    dispatch(
-      createInstallCost({
-        unique_id: newFormData.uniqueId,
-        cost: parseInt(newFormData.cost),
-        start_date: format(new Date(newFormData.startDate),"yyyy-MM-dd"),
-        end_date: format(new Date(newFormData.endDate ),"yyyy-MM-dd"),
-      })
-    );
+    if (editMode) {
+      dispatch(
+        updateInstallCost({
+          record_id:editData?.record_id!,
+          unique_id: newFormData.uniqueId,
+          cost: parseInt(newFormData.cost),
+          start_date: format(new Date(newFormData.startDate), "yyyy-MM-dd"),
+          end_date: format(new Date(newFormData.endDate), "yyyy-MM-dd"),
+        })
+      );
+    }
+    else{
+      dispatch(
+        createInstallCost({
+          unique_id: newFormData.uniqueId,
+          cost: parseInt(newFormData.cost),
+          start_date: format(new Date(newFormData.startDate), "yyyy-MM-dd"),
+          end_date: format(new Date(newFormData.endDate), "yyyy-MM-dd"),
+        })
+      );
+    }
+    
   };
 
   useEffect(() => {
@@ -109,15 +114,15 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
                   />
                 </div>
                 <div className="create-input-field">
-                    <Input
-                      type={"date"}
-                      label="start date"
-                      value={newFormData.startDate}
-                      name="startDate"
-                      placeholder={"Enter"}
-                      onChange={handleChange}
-                    />
-                  </div>
+                  <Input
+                    type={"date"}
+                    label="start date"
+                    value={newFormData.startDate}
+                    name="startDate"
+                    placeholder={"Enter"}
+                    onChange={handleChange}
+                  />
+                </div>
               </div>
 
               <div className="create-input-field">

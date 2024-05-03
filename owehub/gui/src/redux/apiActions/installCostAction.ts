@@ -37,3 +37,17 @@ export const createInstallCost = createAsyncThunk("create/installCost",async(par
     }
 
 })
+
+// update_installcost
+
+
+
+export const updateInstallCost = createAsyncThunk("update/installCost",async(params:ICost,{rejectWithValue})=>{
+    try {
+        const data = await postCaller("update_installcost",params)
+        return data
+    } catch (error) {
+        return rejectWithValue((error as Error).message)
+    }
+
+})
