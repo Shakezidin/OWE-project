@@ -743,6 +743,25 @@ CREATE TABLE adder_credit (
     PRIMARY KEY (id)
 );
 
+CREATE TABLE adder_data (
+    id serial NOT NULL,
+    unique_id varchar NOT NULL UNIQUE,
+    date character varying,
+    type_ad_mktg text,
+    type text,
+    gc text,
+    exact_amount text,
+    per_kw_amt DOUBLE PRECISION,
+    rep_percent integer,
+    description character varying,
+    notes character varying,
+    sys_size DOUBLE PRECISION,
+    adder_cal DOUBLE PRECISION,
+    is_archived BOOLEAN DEFAULT FALSE,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone
+);
+
 CREATE TABLE loan_fee (
     id serial NOT NULL,
     unique_id varchar NOT NULL UNIQUE,

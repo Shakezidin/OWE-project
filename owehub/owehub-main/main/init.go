@@ -635,7 +635,7 @@ var apiRoutes = ApiRoutes{
 	{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_rebate_data_archive",
-		apiHandler.HandleUpdateRebateDataArchiveRequest,
+		apiHandler.HandleUpdateRebateArchiveRequest,
 		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
@@ -1003,7 +1003,7 @@ var apiRoutes = ApiRoutes{
 	{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_reconcile_archive",
-		apiHandler.HandleUpdateRebateDataArchiveRequest,
+		apiHandler.HandleUpdateReconcileDataArchiveRequest,
 		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
@@ -1292,6 +1292,24 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/update_appt_setters_archive",
 		apiHandler.HandleUpdateApptSettersArchiveRequest,
+		false,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/create_adderdata",
+		apiHandler.HandleCreateAdderDataRequest,
+		false,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_adderdata",
+		apiHandler.HandleUpdateAdderDataRequest,
 		false,
 		[]types.UserRoles{
 			types.RoleAdmin,
