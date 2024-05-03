@@ -75,7 +75,7 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
     return () => {
       isSuccess && dispatch(resetSuccess());
     };
-  }, []);
+  }, [isSuccess]);
   return (
     <div className="transparent-model">
       <form className="modal" onSubmit={handleSubmit}>

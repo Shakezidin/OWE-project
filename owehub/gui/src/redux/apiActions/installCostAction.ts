@@ -30,12 +30,13 @@ export const getInstallCost = createAsyncThunk(
 
 export const createInstallCost = createAsyncThunk(
   "create/installCost",
-  async (params: ICostCreateparam, { rejectWithValue }) => {
+  async (params: ICostCreateparam, { rejectWithValue,dispatch }) => {
     try {
-      const data = await postCaller("create_installCost", params);
+      const data = await postCaller("create_installcost", params);
       if (data instanceof Error) {
         return rejectWithValue((data as Error).message);
       }
+      await dispatch(getInstallCost({page_number:1,page_size:10}))
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -47,9 +48,13 @@ export const createInstallCost = createAsyncThunk(
 
 export const updateInstallCost = createAsyncThunk(
   "update/installCost",
-  async (params: ICost, { rejectWithValue }) => {
+  async (params: ICost, { rejectWithValue,dispatch }) => {
     try {
       const data = await postCaller("update_installcost", params);
+      if (data instanceof Error) {
+        return rejectWithValue((data as Error).message);
+      }
+      await dispatch(getInstallCost({page_number:1,page_size:10}))
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);
