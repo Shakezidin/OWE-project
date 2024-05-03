@@ -1,7 +1,6 @@
 /**************************************************************************
 * File			: apiUpdateAdderDataArchive.go
-* DESCRIPTION	: This file contains functions for update AdderData archive
-						setter handler
+* DESCRIPTION	: This file contains functions for update adder data archive handler
 * DATE			: 24-Jan-2024
 **************************************************************************/
 
@@ -39,7 +38,7 @@ func HandleUpdateAdderDataArchiveRequest(resp http.ResponseWriter, req *http.Req
 	defer func() { log.ExitFn(0, "HandleUpdateAdderDataArchiveRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in update AdderData Archive request")
+		err = fmt.Errorf("HTTP Request body is null in update adder data archive request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -47,22 +46,22 @@ func HandleUpdateAdderDataArchiveRequest(resp http.ResponseWriter, req *http.Req
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update AdderData Archive request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update adder data archive request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &updateAdderDataArcReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal update AdderData Archive request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal update AdderData Archive request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal update adder data archive request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal update adder data archive request", http.StatusBadRequest, nil)
 		return
 	}
 
 	if len(updateAdderDataArcReq.RecordId) <= 0 {
 		err = fmt.Errorf("Record Id is empty, unable to proceed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Record Id is empty, Update Archive failed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Record Id is empty, update adder data archive failed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -79,12 +78,12 @@ func HandleUpdateAdderDataArchiveRequest(resp http.ResponseWriter, req *http.Req
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateAdderDataArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Update AdderData Archive in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Update AdderData Archive", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to update adder data archive in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to update adder data archive", http.StatusInternalServerError, nil)
 		return
 	}
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "AdderData Archive updated with Id: %+v", data)
-	FormAndSendHttpResp(resp, "AdderData Archive Updated Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "adder data archive updated with Id: %+v", data)
+	FormAndSendHttpResp(resp, "Adder Data Archive Updated Successfully", http.StatusOK, nil)
 }

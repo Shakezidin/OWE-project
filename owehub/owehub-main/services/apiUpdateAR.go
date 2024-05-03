@@ -18,7 +18,7 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:		HandleUpdateAptSetterRequest
+ * FUNCTION:		HandleUpdateARDataRequest
  * DESCRIPTION:     handler for Update Ar request
  * INPUT:			resp, req
  * RETURNS:    		void
@@ -35,7 +35,7 @@ func HandleUpdateARDataRequest(resp http.ResponseWriter, req *http.Request) {
 	defer func() { log.ExitFn(0, "HandleUpdateArDataRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in Update Ar request")
+		err = fmt.Errorf("HTTP Request body is null in rpdate Ar request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -43,15 +43,15 @@ func HandleUpdateARDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from Update Ar request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from rpdate Ar request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &UpdateArReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal Update Ar request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal Update Ar request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal update Ar request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal update Ar request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -59,27 +59,27 @@ func HandleUpdateARDataRequest(resp http.ResponseWriter, req *http.Request) {
 		(len(UpdateArReq.Position) <= 0) || (len(UpdateArReq.Adjustment) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Empty Input Fields in API, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if UpdateArReq.RecordId <= int64(0) {
 		err = fmt.Errorf("Invalid record_id Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid record_id price Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid record_id Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if UpdateArReq.MinRate <= float64(0) {
 		err = fmt.Errorf("Invalid min_rate Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid min_rate price Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid min_rate Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if UpdateArReq.MaxRate <= float64(0) {
-		err = fmt.Errorf("Invalid max_rate list Not Allowed")
+		err = fmt.Errorf("Invalid max_rate Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid max_rate list Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Max Rate Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -96,13 +96,13 @@ func HandleUpdateARDataRequest(resp http.ResponseWriter, req *http.Request) {
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateArFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Add Ar in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Update Ar", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to update Ar in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to update Ar", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "Ar Updated with Id: %+v", data["result"])
+	log.DBTransDebugTrace(0, "Ar updated with Id: %+v", data["result"])
 	FormAndSendHttpResp(resp, "Ar Updated Successfully", http.StatusOK, nil)
 }

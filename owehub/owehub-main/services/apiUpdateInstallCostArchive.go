@@ -1,7 +1,6 @@
 /**************************************************************************
 * File			: apiUpdateInstallCostArchive.go
-* DESCRIPTION	: This file contains functions for update InstallCost archive
-						setter handler
+* DESCRIPTION	: This file contains functions for update install cost archive handler
 * DATE			: 23-Jan-2024
 **************************************************************************/
 
@@ -39,7 +38,7 @@ func HandleUpdateInstallCostArchiveRequest(resp http.ResponseWriter, req *http.R
 	defer func() { log.ExitFn(0, "HandleUpdateInstallCostArchiveRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in update InstallCosts Archive request")
+		err = fmt.Errorf("HTTP Request body is null in update install cost archive request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -47,15 +46,15 @@ func HandleUpdateInstallCostArchiveRequest(resp http.ResponseWriter, req *http.R
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update InstallCosts Archive request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update install cost archive request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &updateInstallCostArcReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal update InstallCosts Archive request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal update InstallCosts Archive request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal update install cost archive request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal update install cost archive request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -79,12 +78,12 @@ func HandleUpdateInstallCostArchiveRequest(resp http.ResponseWriter, req *http.R
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateInstallCostArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Update InstallCosts Archive in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Update InstallCosts Archive", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to update install cost archive in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to update install cost archive", http.StatusInternalServerError, nil)
 		return
 	}
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "InstallCosts Archive updated with Id: %+v", data)
-	FormAndSendHttpResp(resp, "InstallCosts Archive Updated Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "install cost archive updated with Id: %+v", data)
+	FormAndSendHttpResp(resp, "Install Costs Archive Updated Successfully", http.StatusOK, nil)
 }

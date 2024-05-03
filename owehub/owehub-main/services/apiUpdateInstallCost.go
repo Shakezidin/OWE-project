@@ -1,7 +1,6 @@
 /**************************************************************************
 * File			: apiUpdateInstallCost.go
-* DESCRIPTION	: This file contains functions for create InstallCost
-						setter handler
+* DESCRIPTION	: This file contains functions for create install cost handler
 * DATE			: 01-May-2024
 **************************************************************************/
 
@@ -20,7 +19,7 @@ import (
 
 /******************************************************************************
  * FUNCTION:		HandleUpdateInstallCostDataRequest
- * DESCRIPTION:     handler for update InstallCosts request
+ * DESCRIPTION:     handler for update InstallCost request
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
@@ -32,11 +31,11 @@ func HandleUpdateInstallCostDataRequest(resp http.ResponseWriter, req *http.Requ
 		result               []interface{}
 	)
 
-	log.EnterFn(0, "HandleUpdateInstallCostRequest")
-	defer func() { log.ExitFn(0, "HandleUpdateInstallCostRequest", err) }()
+	log.EnterFn(0, "HandleUpdateInstallCostDataRequest")
+	defer func() { log.ExitFn(0, "HandleUpdateInstallCostDataRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in update InstallCosts request")
+		err = fmt.Errorf("HTTP Request body is null in update install cost request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -44,15 +43,15 @@ func HandleUpdateInstallCostDataRequest(resp http.ResponseWriter, req *http.Requ
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create InstallCosts request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update install cost request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &UpdateInstallCostReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal update InstallCosts request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal update InstallCosts request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal update install cost request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal update install cost request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -60,7 +59,7 @@ func HandleUpdateInstallCostDataRequest(resp http.ResponseWriter, req *http.Requ
 		(len(UpdateInstallCostReq.EndDate) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -74,7 +73,7 @@ func HandleUpdateInstallCostDataRequest(resp http.ResponseWriter, req *http.Requ
 	if UpdateInstallCostReq.Cost <= float64(0) {
 		err = fmt.Errorf("Invalid Cost Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Cost Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Cost Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -88,13 +87,13 @@ func HandleUpdateInstallCostDataRequest(resp http.ResponseWriter, req *http.Requ
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateInstallCostFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Update InstallCosts in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Update InstallCosts", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to update install cost in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to update install cost", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "InstallCosts Update with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "InstallCosts Update Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "install cost Updated with Id: %+v", data["result"])
+	FormAndSendHttpResp(resp, "Install Cost Updated Successfully", http.StatusOK, nil)
 }
