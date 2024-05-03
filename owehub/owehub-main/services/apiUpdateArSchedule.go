@@ -1,6 +1,6 @@
 /**************************************************************************
 * File			: apiupdateArSchedule.go
-* DESCRIPTION	: This file contains functions for update ArSchedule handler
+* DESCRIPTION	: This file contains functions for update ar schedule handler
 * DATE			: 24-Apr-2024
 **************************************************************************/
 
@@ -35,7 +35,7 @@ func HandleUpdateArScheduleRequest(resp http.ResponseWriter, req *http.Request) 
 	defer func() { log.ExitFn(0, "HandleupdateArScheduleRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in update ArSchedule request")
+		err = fmt.Errorf("HTTP Request body is null in update Ar schedule request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -43,15 +43,15 @@ func HandleUpdateArScheduleRequest(resp http.ResponseWriter, req *http.Request) 
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update ArSchedule request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update Ar schedule request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &updateArScheduleReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal update ArSchedule request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal update ArSchedule request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal update Ar schedule request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal update Ar schedule request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -64,7 +64,7 @@ func HandleUpdateArScheduleRequest(resp http.ResponseWriter, req *http.Request) 
 		(len(updateArScheduleReq.EndDate) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -94,13 +94,13 @@ func HandleUpdateArScheduleRequest(resp http.ResponseWriter, req *http.Request) 
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateArScheduleFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Add ArSchedule in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to update ArSchedule", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to update Ar schedule in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to update Ar schedule", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "ArSchedule updated with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "ArSchedule updated Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "Ar schedule updated with Id: %+v", data["result"])
+	FormAndSendHttpResp(resp, "Ar Schedule Updated Successfully", http.StatusOK, nil)
 }

@@ -39,7 +39,7 @@ func HandleUpdateAutoAdderArchiveRequest(resp http.ResponseWriter, req *http.Req
 	defer func() { log.ExitFn(0, "HandleUpdateAutoAdderArchiveRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in update auto adder Archive request")
+		err = fmt.Errorf("HTTP Request body is null in update auto adder archive request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -47,15 +47,15 @@ func HandleUpdateAutoAdderArchiveRequest(resp http.ResponseWriter, req *http.Req
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update auto adder Archive request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update auto adder archive request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &updateAutoAdderArcReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal update auto adder Archive request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal update auto adder Archive request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal update auto adder archive request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal update auto adder archive request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -79,12 +79,12 @@ func HandleUpdateAutoAdderArchiveRequest(resp http.ResponseWriter, req *http.Req
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateAutoAdderArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Update auto adder Archive in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Update auto adder Archive", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to update auto adder archive in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to update auto adder archive", http.StatusInternalServerError, nil)
 		return
 	}
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "auto adder Archive updated with Id: %+v", data)
-	FormAndSendHttpResp(resp, "Auto adder Archive Updated Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "auto adder archive updated with Id: %+v", data)
+	FormAndSendHttpResp(resp, "Auto Adder Archive Updated Successfully", http.StatusOK, nil)
 }

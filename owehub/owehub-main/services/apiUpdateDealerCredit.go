@@ -35,7 +35,7 @@ func HandleUpdateDealerCreditRequest(resp http.ResponseWriter, req *http.Request
 	defer func() { log.ExitFn(0, "HandleUpdateDealerCreditRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in Update Dealer Credit request")
+		err = fmt.Errorf("HTTP Request body is null in update dealer credit request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -43,14 +43,14 @@ func HandleUpdateDealerCreditRequest(resp http.ResponseWriter, req *http.Request
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from Update Dealer Credit request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update dealer credit request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &updateDealerCredit)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal Update Dealer Credit request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to unmarshal update dealer credit request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to unmarshal Update Dealer Credit request", http.StatusBadRequest, nil)
 		return
 	}
@@ -62,14 +62,14 @@ func HandleUpdateDealerCreditRequest(resp http.ResponseWriter, req *http.Request
 		(updateDealerCredit.EndDate != nil && len(*updateDealerCredit.EndDate) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if updateDealerCredit.RecordId <= int64(0) {
 		err = fmt.Errorf("Invalid record_id Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid record_id Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid record_id Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -83,14 +83,14 @@ func HandleUpdateDealerCreditRequest(resp http.ResponseWriter, req *http.Request
 	if updateDealerCredit.TotalAmount <= float64(0) {
 		err = fmt.Errorf("Invalid TotalAmount value: %f, Not Allowed", updateDealerCredit.TotalAmount)
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid TotalAmount value Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Total Amount value Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if updateDealerCredit.SysSize <= float64(0) {
 		err = fmt.Errorf("Invalid SysSize value: %f, Not Allowed", updateDealerCredit.SysSize)
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid SysSize value Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Sys Size value Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -111,13 +111,13 @@ func HandleUpdateDealerCreditRequest(resp http.ResponseWriter, req *http.Request
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateDealerCreditFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Add Referral Data in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Update Dealer Credit", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to update dealer credit in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to update dealer credit", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "Dealer Credit Updated with Id: %+v", data["result"])
+	log.DBTransDebugTrace(0, "dealer credit updated with Id: %+v", data["result"])
 	FormAndSendHttpResp(resp, "Dealer Credit Updated Successfully", http.StatusOK, nil)
 }
