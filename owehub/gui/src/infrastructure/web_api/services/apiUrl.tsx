@@ -49,9 +49,14 @@ export const postCaller = async ( endpoint: string, postData: any): Promise<any>
   } catch (error) {
 
     console.log('axios error', error)
-    if (isAxiosError(error) && error.response) {
-      return error.response.data
+
+    if (isAxiosError(error)) {
+      if (error.response) return error.response.data;
+
+      // handle network error
+      if (error.code === "ERR_NETWORK") return new Error("No internet connection");
     }
+
     throw new Error('Failed to fetch data');
   }
 };

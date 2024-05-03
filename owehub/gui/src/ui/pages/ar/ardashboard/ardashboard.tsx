@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "./ardashboard.css";
 import { ICONS } from "../../../icons/Icons";
 import { comissionValueData, payRollData } from "../../../../resources/static_data/StaticData";
@@ -65,6 +65,26 @@ export const ARDashboardPage: React.FC = () => {
     });
   };
 
+  // used for close date click outside anywhere
+  const datePickerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        datePickerRef.current &&
+        !datePickerRef.current.contains(event.target as Node)
+      ) {
+        setShowDatePicker(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
 
   const [selectedOption3, setSelectedOption3] = useState<string>(
     options[0].label,
@@ -82,7 +102,7 @@ export const ARDashboardPage: React.FC = () => {
       <div className="ar-Dashboard-section-container">
         <div className="ar-Dashboard-container">
           <div className="manage-user">
-            <h3>AR</h3>
+
           </div>
           <div className="dashboard-payroll">
 
@@ -103,7 +123,7 @@ export const ARDashboardPage: React.FC = () => {
                 Today
               </label>
 
-              <div style={{ position: "relative", top: "-1px" }}>
+              <div style={{ position: "relative", top: "-1px" }} ref={datePickerRef}>
                 <label className="ar-date-button" onClick={handleToggleDatePicker}>
                   Select Dates
                 </label>
@@ -125,6 +145,7 @@ export const ARDashboardPage: React.FC = () => {
                   </div>
                 )}
               </div>
+
             </div>
 
             <div className="Line-container">

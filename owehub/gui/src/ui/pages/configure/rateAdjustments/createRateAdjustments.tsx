@@ -11,8 +11,10 @@ import { useDispatch } from "react-redux";
 import { installerOption, partnerOption, salesTypeOption, stateOption, } from "../../../../core/models/data_models/SelectDataModel";
 import Select from 'react-select';
 import {paySaleTypeData } from "../../../../resources/static_data/StaticData";
-import { PayScheduleModel } from "../../../../core/models/configuration/create/PayScheduleModel";
+import { rateAdjustmentModel } from "../../../../core/models/configuration/create/RateAdjustmentModel";
 import SelectOption from "../../../components/selectOption/SelectOption";
+import { createRateAdjustments } from "../../../../redux/apiActions/RateAdjustmentsAction";
+import { useAppDispatch } from "../../../../redux/hooks";
 interface payScheduleProps {
     handleClose: () => void,
     editMode:boolean,
@@ -21,8 +23,21 @@ interface payScheduleProps {
 
 
 const CreateRateAdjustments:React.FC<payScheduleProps> = ({handleClose,editMode}) => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
+
+    const [createRateAdjustmentData, setCreateRateAdjustmentPayData] = useState<rateAdjustmentModel>(
+      {
+          unique_id:"1234567sfsfds89kjj",
+         
+          pay_scale:"",
+          position:"",
+          adjustment:"",
+          min_rate:"",
+          max_rate:"",
+           
+        }
+  )
   
     const [newFormData,setNewFormData] = useState<any>([])
    
@@ -38,12 +53,36 @@ const CreateRateAdjustments:React.FC<payScheduleProps> = ({handleClose,editMode}
   getNewFormData()
    },[])
 
-
+   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setCreateRateAdjustmentPayData((prevData) => ({
+        ...prevData,
+        [name]: value,
+    }));
+};
  
+const handleSubmit = (e: React.FormEvent) => {
+  e.preventDefault()
+  dispatch(createRateAdjustments({
+    
+    
+      unique_id: "123456789",
+      pay_scale: "Hourly",
+      position: "Software Engineer",
+      adjustment: "10%",
+      min_rate: 20.1,
+      max_rate: 20.2,
+      start_date: "2024-05-01",
+      end_date: "2024-06-01"
+    
+    
+    
+  }))
+}
  
     return (
         <div className="transparent-model">
-             <form  className="modal">
+             <form  className="modal" onSubmit={handleSubmit}>
 
                 <div className="createUserCrossButton" onClick={handleClose}>
                     <CROSS_BUTTON />
@@ -60,10 +99,10 @@ const CreateRateAdjustments:React.FC<payScheduleProps> = ({handleClose,editMode}
                     <Input
                       type={"text"}
                       label="Pay Scale"
-                      value={""}
-                      name="dealer_tier"
+                      value={createRateAdjustmentData.pay_scale}
+                      name="pay_scale"
                       placeholder={"Enter"}
-                      onChange={() => {}}
+                      onChange={(e) => handleInputChange(e)}
                     />
                   </div>
                   <div className="create-input-field">
@@ -71,9 +110,10 @@ const CreateRateAdjustments:React.FC<payScheduleProps> = ({handleClose,editMode}
                       type={"text"}
                       label="Position"
                       value={""}
-                      name="dealer_tier"
+                      name="position"
                       placeholder={"Enter"}
-                      onChange={() => {}}
+                      onChange={(e) => handleInputChange(e)}
+                      
                     />
                   </div>
                   <div className="create-input-field">
@@ -81,9 +121,9 @@ const CreateRateAdjustments:React.FC<payScheduleProps> = ({handleClose,editMode}
                       type={"text"}
                       label="Adjustment"
                       value={""}
-                      name="dealer_tier"
+                      name="adjustment"
                       placeholder={"Enter"}
-                      onChange={() => {}}
+                      onChange={(e) => handleInputChange(e)}
                     />
                   </div>
                  
@@ -97,9 +137,9 @@ const CreateRateAdjustments:React.FC<payScheduleProps> = ({handleClose,editMode}
                       type={"text"}
                       label="MIN Rate"
                       value={""}
-                      name="dealer_tier"
+                      name="min_rate"
                       placeholder={"Enter"}
-                      onChange={() => {}}
+                      onChange={(e) => handleInputChange(e)}
                     />
                   </div>
                   <div className="create-input-field">
@@ -107,9 +147,9 @@ const CreateRateAdjustments:React.FC<payScheduleProps> = ({handleClose,editMode}
                       type={"text"}
                       label="Max Rate"
                       value={""}
-                      name="dealer_tier"
+                      name="max_rate"
                       placeholder={"Enter"}
-                      onChange={() => {}}
+                      onChange={(e) => handleInputChange(e)}
                     />
                   </div>
                 

@@ -11,7 +11,6 @@ import (
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	"strings"
-	"time"
 
 	"encoding/json"
 	"fmt"
@@ -147,10 +146,10 @@ func HandleGetAdjustmentsDataRequest(resp http.ResponseWriter, req *http.Request
 		}
 
 		// Date
-		DateStr, ok := item["date"].(time.Time)
-		if !ok || DateStr.IsZero() {
+		DateStr, ok := item["date"].(string)
+		if !ok || DateStr == "" {
 			log.FuncErrorTrace(0, "Failed to get date for Unique ID %v. Item: %+v\n", UniqueId, item)
-			DateStr = time.Time{}
+			DateStr = ""
 		}
 
 		// Notes
@@ -275,7 +274,7 @@ func PrepareAdjustmentsFilters(tableName string, dataFilter models.DataRequestBo
 				filtersBuilder.WriteString(fmt.Sprintf("ad.epc %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "date":
-				filtersBuilder.WriteString(fmt.Sprintf("ad.date %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.date) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "notes":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.notes) %s LOWER($%d)", operator, len(whereEleList)+1))

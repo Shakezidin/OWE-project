@@ -1,6 +1,6 @@
 /**************************************************************************
 * File			: apiCreateNonCommDlrPayRequest.go
-* DESCRIPTION	: This file contains functions for create Referral data handler
+* DESCRIPTION	: This file contains functions for create NonCommDlrPay handler
 * DATE			: 25-Apr-2024
 **************************************************************************/
 
@@ -19,7 +19,7 @@ import (
 
 /******************************************************************************
  * FUNCTION:		HandleCreateNonCommDlrPayRequest
- * DESCRIPTION:     handler for create referral data request
+ * DESCRIPTION:     handler for create NonCommDlrPay request
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/

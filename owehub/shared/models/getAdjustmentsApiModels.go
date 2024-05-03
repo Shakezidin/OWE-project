@@ -6,8 +6,6 @@
 
 package models
 
-import "time"
-
 type GetAdjustments struct {
 	RecordId      int64     `json:"record_id"`
 	UniqueId      string    `json:"unique_id"`
@@ -18,7 +16,7 @@ type GetAdjustments struct {
 	SysSize       float64   `json:"sys_size"`
 	Bl            string    `json:"bl"`
 	Epc           float64   `json:"epc"`
-	Date          time.Time `json:"date"`
+	Date          string `json:"date"`
 	Notes         string    `json:"notes"`
 	Amount        float64   `json:"amount"`
 	StartDate     string    `json:"start_date"`

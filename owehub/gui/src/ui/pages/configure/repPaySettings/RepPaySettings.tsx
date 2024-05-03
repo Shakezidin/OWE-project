@@ -62,7 +62,7 @@ const RepPaySettings = () => {
   };
 
   const {repPaySettingsList} = useAppSelector((state) => state.repaySettings);
-  console.log(repPaySettingsList,"repay")
+  
   const goToNextPage = () => {
     dispatch(setCurrentPage(currentPage + 1));
   };
@@ -72,7 +72,7 @@ const RepPaySettings = () => {
   const goToPrevPage = () => {
     dispatch(setCurrentPage(currentPage - 1));
   };
-  const totalPages = Math.ceil(timelinesla_list?.length / itemsPerPage);
+  const totalPages = Math.ceil(repPaySettingsList?.length / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -254,21 +254,17 @@ const RepPaySettings = () => {
                             )
                           }
                         />
-                        {el.partner_name}
+                        {el?.name}
                      </div>
                         </td>
-                      <td>{el.partner}</td>
-                      <td>{el.installer_name}</td>
-                      <td>{el.sale_type}</td>
-                      <td>{el.state}</td>
-                      <td>{el.rl}</td>
-                      <td>{el.draw}</td>
-                      <td>{el.draw_max}</td>
-                      <td>{el.rep_draw}</td>
-                      <td>{el.rep_draw_max}</td>
-                      <td>{el.rep_pay}</td>
-                      <td>{el.start_date}</td>
-                      <td>{el.end_date}</td>
+                     <td>{el?.state}</td>
+                      <td>{el?.pay_scale}</td>
+                     
+                      <td>{el?.position}</td>
+                      <td>{el?.b_e}</td>
+                      <td>{el?.start_date}</td>
+                      <td>{el?.end_date}</td>
+                       
                       
                     </tr>
                   ))
@@ -285,14 +281,14 @@ const RepPaySettings = () => {
 
           </table>
         </div>
-        {/* <div className="page-heading-container">
+        <div className="page-heading-container">
 
           <p className="page-heading">
             {currentPage} - {totalPages} of {currentPageData?.length} item
           </p>
 
           {
-            timelinesla_list?.length > 0 ? <Pagination
+            repPaySettingsList?.length > 0 ? <Pagination
               currentPage={currentPage}
               totalPages={totalPages} // You need to calculate total pages
               paginate={paginate}
@@ -301,7 +297,7 @@ const RepPaySettings = () => {
               goToPrevPage={goToPrevPage}
             /> : null
           }
-        </div> */}
+        </div>
 
       </div>
 

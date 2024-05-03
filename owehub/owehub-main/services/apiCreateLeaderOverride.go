@@ -101,6 +101,6 @@ func HandleCreateLeaderOverrideRequest(resp http.ResponseWriter, req *http.Reque
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "commissions created with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "Commissions Created Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "LeaderOverride created with Id: %+v", data["result"])
+	FormAndSendHttpResp(resp, "LeaderOverride Created Successfully", http.StatusOK, nil)
 }
