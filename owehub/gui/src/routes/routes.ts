@@ -42,8 +42,8 @@ export const ROUTES = {
   // other routes
   REPORT: "/report",
   DATABASE_CONTROLLER: "/databaseController",
-  PROJECT_PERFORMANCE: "/projectTracker/performence",
-  PROJECT_STATUS: "/projectTracker/status",
+  PROJECT_PERFORMANCE: "/performance",
+  PROJECT_STATUS: "/project-management",
   USER_MANAEMENT: "/userManagement",
   TECHNICAL_SUPPORT: "/technicalSupport",
   ACCOUNT_SETTING: "/accountSetting",
