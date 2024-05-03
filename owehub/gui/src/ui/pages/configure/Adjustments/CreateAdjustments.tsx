@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cross_button.svg";
 import Input from "../../../components/text_input/Input";
 import { ActionButton } from "../../../components/button/ActionButton";
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
-import { useAppDispatch } from "../../../../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import { createAdjustments } from "../../../../redux/apiActions/arAdjustmentsAction";
 import {
   installerOption,
@@ -15,6 +15,7 @@ import {
 } from "../../../../core/models/data_models/SelectDataModel";
 import { format } from "date-fns";
 import SelectOption from "../../../components/selectOption/SelectOption";
+import { resetSuccess } from "../../../../redux/apiSlice/configSlice/config_get_slice/arAdjusments";
 interface payScheduleProps {
   handleClose: () => void,
   editMode: boolean,
@@ -41,15 +42,14 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({ handleClose, editMode 
     endDate: "",
     stateName: ""
   })
- 
+  const { isSuccess } = useAppSelector(state => state.arAdjusments)
 
   const tableData = {
     tableNames: ["partners", "states", "installers", "sale_type"]
   }
   const getNewFormData = async () => {
     const res = await postCaller(EndPoints.get_newFormData, tableData)
-    setNewFormData(prev=>({prev,...res.data}))
-
+    setNewFormData(prev => ({ prev, ...res.data }))
   }
   React.useEffect(() => {
     getNewFormData()
@@ -78,14 +78,22 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({ handleClose, editMode 
       sys_size: parseFloat(newFormData.sysSize),
       bl: newFormData.bl,
       epc: parseFloat(newFormData.epc),
-      date: "2024-04-30T12:00:00Z",
+      date: format(new Date(newFormData.date), "yyyy-MM-dd"),
       notes: newFormData.notes,
       amount: parseFloat(newFormData.amount),
+      "start_date": format(new Date(newFormData.startDate), "yyyy-MM-dd"),
+      "end_date": format(new Date(newFormData.endDate), "yyyy-MM-dd")
     }))
   }
 
 
 
+  useEffect(() => {
+    if (isSuccess) {
+      handleClose()
+    }
+    return (() => { isSuccess && dispatch(resetSuccess()) })
+  }, [])
   return (
     <div className="transparent-model">
       <form className="modal" onSubmit={handleSubmit} >
@@ -139,34 +147,15 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({ handleClose, editMode 
 
 
               <div className="create-input-container">
-                <div className="create-input-field">
-                  <Input
-                    type={"text"}
-                    label="Installer"
-                    value={newFormData.installerName}
-                    name="installerName"
-                    placeholder={"Enter"}
-                    onChange={handleChange}
-                  />
 
-
-<label className="inputLabel-select">Installer</label>
-                  <SelectOption
-                    options={installerOption(newFormData)}
-                    onChange={(newValue) => {
-                      setNewFormData(prev => ({ ...prev, installerName: newValue?.value! }))
-                    }}
-                    value={installerOption(newFormData)?.find((option) => option.value === newFormData.partnerName)}
-                  />
-                </div>
                 <div className="create-input-field">
-                <label className="inputLabel-select">Partners</label>
+                  <label className="inputLabel-select">State</label>
                   <SelectOption
                     options={stateOption(newFormData)}
                     onChange={(newValue) => {
                       setNewFormData(prev => ({ ...prev, stateName: newValue?.value! }))
                     }}
-                    value={stateOption(newFormData)?.find((option) => option.value === newFormData.partnerName)}
+                    value={stateOption(newFormData)?.find((option) => option.value === newFormData.stateName)}
                   />
                 </div>
                 <div className="create-input-field">
@@ -177,6 +166,18 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({ handleClose, editMode 
                     name="sysSize"
                     placeholder={"Enter"}
                     onChange={handleChange}
+                  />
+                </div>
+
+                <div className="create-input-field">
+
+                  <label className="inputLabel-select">Installer</label>
+                  <SelectOption
+                    options={installerOption(newFormData)}
+                    onChange={(newValue) => {
+                      setNewFormData(prev => ({ ...prev, installerName: newValue?.value! }))
+                    }}
+                    value={installerOption(newFormData)?.find((option) => option.value === newFormData.installerName)}
                   />
                 </div>
 
@@ -238,6 +239,28 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({ handleClose, editMode 
                     onChange={handleChange}
                   />
                 </div>
+
+                <div className="create-input-field">
+                  <Input
+                    type={"date"}
+                    label="startDate"
+                    value={newFormData.startDate}
+                    name="startDate"
+                    placeholder={"Enter"}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+
+              <div className="create-input-field">
+                <Input
+                  type={"date"}
+                  label="End Date"
+                  value={newFormData.endDate}
+                  name="endDate"
+                  placeholder={"Enter"}
+                  onChange={handleChange}
+                />
               </div>
             </div>
           </div>

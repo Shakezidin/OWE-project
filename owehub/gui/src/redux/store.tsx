@@ -25,11 +25,13 @@ import createloanTypeReducer from './apiSlice/configSlice/config_post_slice/crea
 import paginationReducer from './apiSlice/paginationslice/paginationSlice'
 import createUserReducer from './apiSlice/userManagementSlice/createUserSlice'
 import userManagementSlice from "./apiSlice/userManagementSlice/userManagementSlice";
-import repPaySettingsSlice from "./apiSlice/configSlice/config_get_slice/repPaySettingsSlice";
-import ChangePasswordSlice from "./apiSlice/authSlice/ChangePasswordSlice";
 import arAdjusments from "./apiSlice/configSlice/config_get_slice/arAdjusments";
-
+import repPaySettingsSlice from "./apiSlice/configSlice/config_get_slice/repPaySettingsSlice";
 import ArSchedule from "./apiSlice/configSlice/config_get_slice/ArSchedule";
+import installConstSlice from "./apiSlice/configSlice/config_get_slice/installConstSlice";
+import ChangePasswordSlice from "./apiSlice/authSlice/ChangePasswordSlice";
+import rateAdjustmentsSlice from "./apiSlice/configSlice/config_get_slice/rateAdjustmentsSlice";
+
 export const store = configureStore({
   reducer: {
     appState: appStateSlice,
@@ -63,7 +65,9 @@ export const store = configureStore({
     userManagement:userManagementSlice,
     createOnboardUser: createUserReducer,
     arAdjusments,
-    ArSchedule
+    ArSchedule,
+    installConstSlice,
+    rateAdjustment:rateAdjustmentsSlice,
   },
 });
 
