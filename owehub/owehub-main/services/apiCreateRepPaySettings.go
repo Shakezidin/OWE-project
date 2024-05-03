@@ -35,7 +35,7 @@ func HandleCreateRepPaySettingsDataRequest(resp http.ResponseWriter, req *http.R
 	defer func() { log.ExitFn(0, "HandleCreateRepPaySettingsDataRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in create RepPaySettings Data request")
+		err = fmt.Errorf("HTTP Request body is null in create rep pay settings data request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -43,15 +43,15 @@ func HandleCreateRepPaySettingsDataRequest(resp http.ResponseWriter, req *http.R
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create RepPaySettings Data request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create rep pay settings data request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &createRepPaySettingsData)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal create RepPaySettings Data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal create RepPaySettings Data request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal create rep pay settings data request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal create rep pay settings data request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -78,13 +78,13 @@ func HandleCreateRepPaySettingsDataRequest(resp http.ResponseWriter, req *http.R
 	// Call the database function
 	result, err = db.CallDBFunction(db.CreateRepPaySettingsDataFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Add RepPaySettings Data in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Create RepPaySettings Data", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to Add rep pay settings data in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to Create Rep Pay Settings Data", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "RepPaySettings Data created with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "RepPaySettings Data Created Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "New rep pay settings data created with Id: %+v", data["result"])
+	FormAndSendHttpResp(resp, "Rep Pay Settings Data Created Successfully", http.StatusOK, nil)
 }

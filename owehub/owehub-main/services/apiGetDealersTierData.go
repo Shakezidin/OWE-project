@@ -41,7 +41,7 @@ func HandleGetDealersTierDataRequest(resp http.ResponseWriter, req *http.Request
 	defer func() { log.ExitFn(0, "HandleGetDealersTierDataRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in get Dealers Tier data request")
+		err = fmt.Errorf("HTTP Request body is null in get dealers tier data request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -49,15 +49,15 @@ func HandleGetDealersTierDataRequest(resp http.ResponseWriter, req *http.Request
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get Dealers Tier data request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get dealers tier data request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal get Dealers Tier data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get Dealers Tier data Request body", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal get dealers tier data request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal get dealers tier data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -75,8 +75,8 @@ func HandleGetDealersTierDataRequest(resp http.ResponseWriter, req *http.Request
 
 	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get Dealers Tier data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get Dealers Tier data from DB", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get dealers tier data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get dealers tier data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -116,13 +116,6 @@ func HandleGetDealersTierDataRequest(resp http.ResponseWriter, req *http.Request
 			EndDate = ""
 		}
 
-		// is_archived
-		IsArchived, ok := item["is_archived"].(bool)
-		if !ok || !IsArchived {
-			log.FuncErrorTrace(0, "Failed to get is_archived value for Record ID %v. Item: %+v\n", RecordId, item)
-			IsArchived = false
-		}
-
 		// Create a new GetDealerTierData object
 		dealerTierData := models.GetDealerTierData{
 			RecordId:   RecordId,
@@ -150,7 +143,7 @@ func HandleGetDealersTierDataRequest(resp http.ResponseWriter, req *http.Request
 	RecordCount = int64(len(data))
 
 	// Send the response
-	log.FuncInfoTrace(0, "Number of Dealers Tier List fetched : %v list %+v", len(dealersTierList.DealersTierList), dealersTierList)
+	log.FuncInfoTrace(0, "Number of dealers tier List fetched : %v list %+v", len(dealersTierList.DealersTierList), dealersTierList)
 	FormAndSendHttpResp(resp, "Dealers Tier Data", http.StatusOK, dealersTierList, RecordCount)
 }
 

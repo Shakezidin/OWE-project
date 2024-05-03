@@ -18,7 +18,7 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:		HandleCreateAptSetterRequest
+ * FUNCTION:		HandleCreateARDataRequest
  * DESCRIPTION:     handler for create Ar request
  * INPUT:			resp, req
  * RETURNS:    		void
@@ -64,15 +64,15 @@ func HandleCreateARDataRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	if createArReq.MinRate <= float64(0) {
-		err = fmt.Errorf("Invalid min_rate Not Allowed")
+		err = fmt.Errorf("Invalid Min Rate Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid min_rate price Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Min Rate Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 	if createArReq.MaxRate <= float64(0) {
-		err = fmt.Errorf("Invalid max_rate list Not Allowed")
+		err = fmt.Errorf("Invalid Max Rate Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid max_rate list Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Max_Rate Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -94,6 +94,6 @@ func HandleCreateARDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "Ar created with Id: %+v", data["result"])
+	log.DBTransDebugTrace(0, "New Ar created with Id: %+v", data["result"])
 	FormAndSendHttpResp(resp, "Ar Created Successfully", http.StatusOK, nil)
 }

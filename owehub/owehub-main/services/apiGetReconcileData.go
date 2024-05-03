@@ -89,12 +89,6 @@ func HandleGetReconcileRequest(resp http.ResponseWriter, req *http.Request) {
 			continue
 		}
 
-		IsArchived, ok := item["is_archived"].(bool)
-		if !ok || !IsArchived {
-			log.FuncErrorTrace(0, "Failed to get is_archived value for Record ID %v. Item: %+v\n", RecordId, item)
-			IsArchived = false
-		}
-
 		// UniqueId
 		UniqueId, ok := item["unique_id"].(string)
 		if !ok || UniqueId == "" {
@@ -187,7 +181,7 @@ func HandleGetReconcileRequest(resp http.ResponseWriter, req *http.Request) {
 	RecordCount = int64(len(data))
 	// Send the response
 	log.FuncInfoTrace(0, "Number of reconcile List fetched : %v list %+v", len(reconcileList.ReconcileList), reconcileList)
-	FormAndSendHttpResp(resp, "reconcile", http.StatusOK, reconcileList, RecordCount)
+	FormAndSendHttpResp(resp, "Reconcile Data", http.StatusOK, reconcileList, RecordCount)
 }
 
 /******************************************************************************

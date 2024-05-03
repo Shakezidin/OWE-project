@@ -82,12 +82,12 @@ func HandleCreateVAddersRequest(resp http.ResponseWriter, req *http.Request) {
 	result, err = db.CallDBFunction(db.CreateVAddersFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add v adders in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Create v adders", http.StatusInternalServerError, nil)
+		FormAndSendHttpResp(resp, "Failed to Create V adders", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "v adders created with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "v adders Created Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "New v adders created with Id: %+v", data["result"])
+	FormAndSendHttpResp(resp, "V Adders Created Successfully", http.StatusOK, nil)
 }

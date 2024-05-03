@@ -90,11 +90,13 @@ func HandleGetPartnerDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 		PartnerName, Ok := item["partner_name"].(string)
 		if !Ok || PartnerName == "" {
+			log.FuncErrorTrace(0, "Failed to get partner name for Record ID %v. Item: %+v\n", RecordId, item)
 			PartnerName = ""
 		}
 
 		Description, descOk := item["description"].(string)
 		if !descOk || Description == "" {
+			log.FuncErrorTrace(0, "Failed to get description for Record ID %v. Item: %+v\n", RecordId, item)
 			Description = ""
 		}
 
@@ -115,8 +117,8 @@ func HandleGetPartnerDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	data, err = db.ReteriveFromDB(queryForAlldata, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get partners data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get partners data from DB", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get partner data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get partner data from DB", http.StatusBadRequest, nil)
 		return
 	}
 	RecordCount = int64(len(data))

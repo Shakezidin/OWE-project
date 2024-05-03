@@ -63,7 +63,7 @@ func HandleGetSaleTypeDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	tableName := db.TableName_sale_type
 	query = `
-	SELECT st.id as record_id, st.type_name, st.description, st.is_archived
+	SELECT st.id as record_id, st.type_name, st.description
 	FROM sale_type st`
 
 	filter, whereEleList = PrepareSaleTypeFilters(tableName, dataReq, false)
@@ -95,6 +95,7 @@ func HandleGetSaleTypeDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 		Description, descOk := item["description"].(string)
 		if !descOk || Description == "" {
+			log.FuncErrorTrace(0, "Failed to get description for Record ID %v. Item: %+v\n", RecordId, item)
 			Description = ""
 		}
 
@@ -123,7 +124,7 @@ func HandleGetSaleTypeDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	// Send the response
 	log.FuncInfoTrace(0, "Number of sale type List fetched : %v list %+v", len(saleTypeList.SaleTypeList), saleTypeList)
-	FormAndSendHttpResp(resp, "sale type Data", http.StatusOK, saleTypeList, RecordCount)
+	FormAndSendHttpResp(resp, "Sale Type Data", http.StatusOK, saleTypeList, RecordCount)
 }
 
 /******************************************************************************

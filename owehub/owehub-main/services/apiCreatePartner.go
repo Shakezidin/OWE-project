@@ -76,6 +76,6 @@ func HandleCreatePartnerRequest(resp http.ResponseWriter, req *http.Request) {
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "partner created with Id: %+v", data["result"])
+	log.DBTransDebugTrace(0, "New partner created with Id: %+v", data["result"])
 	FormAndSendHttpResp(resp, "Partner Created Successfully", http.StatusOK, nil)
 }

@@ -35,7 +35,7 @@ func HandleCreateReconcileRequest(resp http.ResponseWriter, req *http.Request) {
 	defer func() { log.ExitFn(0, "HandleCreateReconcileRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in create Reconcile data request")
+		err = fmt.Errorf("HTTP Request body is null in create reconcile data request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -43,15 +43,15 @@ func HandleCreateReconcileRequest(resp http.ResponseWriter, req *http.Request) {
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create Reconcile data request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create reconcile data request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &createReconcileReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal create Reconcile data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal create Reconcile data request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal create reconcile data request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal create reconcile data request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -66,15 +66,15 @@ func HandleCreateReconcileRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	if createReconcileReq.SysSize <= float64(0) {
-		err = fmt.Errorf("Invalid SysSize Not Allowed")
+		err = fmt.Errorf("Invalid Sys Size Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid SysSize Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Sys Size Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 	if createReconcileReq.Amount <= float64(0) {
 		err = fmt.Errorf("Invalid Amount Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid SysAmountSize Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Amount Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -92,13 +92,13 @@ func HandleCreateReconcileRequest(resp http.ResponseWriter, req *http.Request) {
 	// Call the database function
 	result, err = db.CallDBFunction(db.CreateReconcileFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Add Reconcile data in DB with err: %v", err)
+		log.FuncErrorTrace(0, "Failed to Add reconcile data in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Create Reconcile data", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "Reconcile created with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "Reconcile Created Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "New reconcile data created with Id: %+v", data["result"])
+	FormAndSendHttpResp(resp, "Reconcile Data Created Successfully", http.StatusOK, nil)
 }
