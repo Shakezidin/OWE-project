@@ -122,7 +122,7 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
     return () => {
       isSuccess && dispatch(resetSuccess());
     };
-  }, []);
+  }, [isSuccess]);
 
   return (
     <div className="transparent-model">
