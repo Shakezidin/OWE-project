@@ -35,7 +35,7 @@ func HandleCreateNonCommDlrPayRequest(resp http.ResponseWriter, req *http.Reques
 	defer func() { log.ExitFn(0, "HandleCreateNonCommDlrPayRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in create NonComm Dealer Pay request")
+		err = fmt.Errorf("HTTP Request body is null in create non comm dealer pay request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -43,30 +43,30 @@ func HandleCreateNonCommDlrPayRequest(resp http.ResponseWriter, req *http.Reques
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create NonComm Dealer Pay request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create non comm dealer pay request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &createNonCommDlrPay)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal create NonComm Dealer Pay request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal create NoncCmm Dealer Pay request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal create non comm dealer pay request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal create Non Comm Dealer Pay request", http.StatusBadRequest, nil)
 		return
 	}
 
 	// Validate float64 fields
 	if createNonCommDlrPay.Balance <= float64(0) {
-		err = fmt.Errorf("Invalid balance value: %f, Not Allowed", createNonCommDlrPay.Balance)
+		err = fmt.Errorf("Invalid balance: %f, Not Allowed", createNonCommDlrPay.Balance)
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid balance value Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Balance Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if createNonCommDlrPay.PaidAmount <= float64(0) {
 		err = fmt.Errorf("Invalid paid amount value: %f, Not Allowed", createNonCommDlrPay.PaidAmount)
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid paid amount value Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Paid Amount value Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -103,13 +103,13 @@ func HandleCreateNonCommDlrPayRequest(resp http.ResponseWriter, req *http.Reques
 	// Call the database function
 	result, err = db.CallDBFunction(db.CreateNonCommDlrPayFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Add NonComm Dealer Pay in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Create NonComm Dealer Pay", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to Add non comm dealer pay in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to Create Non Comm Dealer Pay", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "NonComm Dealer Pay created with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "NonComm Dealer Pay Created Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "New non comm dealer pay created with Id: %+v", data["result"])
+	FormAndSendHttpResp(resp, "Non Comm Dealer Pay Created Successfully", http.StatusOK, nil)
 }

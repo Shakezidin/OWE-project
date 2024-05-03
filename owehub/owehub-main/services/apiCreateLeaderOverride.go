@@ -1,6 +1,6 @@
 /**************************************************************************
 * File			: apiCreateLeaderOverride.go
-* DESCRIPTION	: This file contains functions for create LeaderOverride handler
+* DESCRIPTION	: This file contains functions for create Leader override handler
 * DATE			: 24-Apr-2024
 **************************************************************************/
 
@@ -35,7 +35,7 @@ func HandleCreateLeaderOverrideRequest(resp http.ResponseWriter, req *http.Reque
 	defer func() { log.ExitFn(0, "HandleCreateLeaderOverrideRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in create LeaderOverride request")
+		err = fmt.Errorf("HTTP Request body is null in create leader override request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -43,15 +43,15 @@ func HandleCreateLeaderOverrideRequest(resp http.ResponseWriter, req *http.Reque
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create LeaderOverride request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create leader override request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &createLeaderOverrideReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal create LeaderOverride request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal create LeaderOverride request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal create leader override request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal create Leader Override request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -66,15 +66,15 @@ func HandleCreateLeaderOverrideRequest(resp http.ResponseWriter, req *http.Reque
 	}
 
 	if createLeaderOverrideReq.SalesQ <= float64(0) {
-		err = fmt.Errorf("Invalid SalesQ Not Allowed")
+		err = fmt.Errorf("Invalid sales Q Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid SalesQ Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Sales Q Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 	if createLeaderOverrideReq.TeamKwQ <= float64(0) {
-		err = fmt.Errorf("Invalid TeamKwQ  Not Allowed")
+		err = fmt.Errorf("Invalid team Kw Q  Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid TeamKwQ Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Team Kw Q Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -94,13 +94,13 @@ func HandleCreateLeaderOverrideRequest(resp http.ResponseWriter, req *http.Reque
 	// Call the database function
 	result, err = db.CallDBFunction(db.CreateLeaderOverrideFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Add LeaderOverride in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Create LeaderOverride", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to Add leader override in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to Create Leader Override", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "LeaderOverride created with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "LeaderOverride Created Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "New leader override created with Id: %+v", data["result"])
+	FormAndSendHttpResp(resp, "Leader Override Created Successfully", http.StatusOK, nil)
 }

@@ -41,7 +41,7 @@ func HandleGetMarketingFeesDataRequest(resp http.ResponseWriter, req *http.Reque
 	defer func() { log.ExitFn(0, "HandleGetMarketingFeesDataRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in get Marketing fee data request")
+		err = fmt.Errorf("HTTP Request body is null in get marketing fee data request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -49,15 +49,15 @@ func HandleGetMarketingFeesDataRequest(resp http.ResponseWriter, req *http.Reque
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get Marketing fee data request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get marketing fee data request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal get Marketing fee data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get Marketing fee data Request body", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal get marketing fee data request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal get marketing fee data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -75,8 +75,8 @@ func HandleGetMarketingFeesDataRequest(resp http.ResponseWriter, req *http.Reque
 
 	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get Marketing fee data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get Marketing fee data from DB", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get marketing fee data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get marketing fee data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -121,7 +121,7 @@ func HandleGetMarketingFeesDataRequest(resp http.ResponseWriter, req *http.Reque
 		ChgDlrVal, ok := item["chg_dlr"].(int64)
 		ChgDlr := 0
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get chg_dlr for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get chg dlr for Record ID %v. Item: %+v\n", RecordId, item)
 			ChgDlr = 0 // Default ChgDlr value of 0
 		} else {
 			ChgDlr = int(ChgDlrVal)
@@ -131,7 +131,7 @@ func HandleGetMarketingFeesDataRequest(resp http.ResponseWriter, req *http.Reque
 		PaySrcVal, ok := item["pay_src"].(int64)
 		PaySrc := 0
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get pay_src for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get pay src for Record ID %v. Item: %+v\n", RecordId, item)
 			PaySrc = 0 // Default PaySrc value of 0
 		} else {
 			PaySrc = int(PaySrcVal)
@@ -154,6 +154,7 @@ func HandleGetMarketingFeesDataRequest(resp http.ResponseWriter, req *http.Reque
 		// Description
 		Description, descOk := item["description"].(string)
 		if !descOk || Description == "" {
+			log.FuncErrorTrace(0, "Failed to get description for Record ID %v. Item: %+v\n", RecordId, item)
 			Description = ""
 		}
 
@@ -189,7 +190,7 @@ func HandleGetMarketingFeesDataRequest(resp http.ResponseWriter, req *http.Reque
 	RecordCount = int64(len(data))
 
 	// Send the response
-	log.FuncInfoTrace(0, "Number of Marketing fee List fetched : %v list %+v", len(marketingFeesList.MarketingFeesList), marketingFeesList)
+	log.FuncInfoTrace(0, "Number of marketing fee List fetched : %v list %+v", len(marketingFeesList.MarketingFeesList), marketingFeesList)
 	FormAndSendHttpResp(resp, "Marketing fee Data", http.StatusOK, marketingFeesList, RecordCount)
 }
 

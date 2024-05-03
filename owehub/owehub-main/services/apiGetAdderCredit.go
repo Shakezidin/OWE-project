@@ -41,7 +41,7 @@ func HandleGetAdderCreditDataRequest(resp http.ResponseWriter, req *http.Request
 	defer func() { log.ExitFn(0, "HandleGetAdderCreditDataRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in get AdderCredit data request")
+		err = fmt.Errorf("HTTP Request body is null in get adder credit data request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -49,15 +49,15 @@ func HandleGetAdderCreditDataRequest(resp http.ResponseWriter, req *http.Request
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get AdderCredit data request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get adder credit data request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal get AdderCredit data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get AdderCredit data Request body", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal get adder credit data request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal get adder credit data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -75,8 +75,8 @@ func HandleGetAdderCreditDataRequest(resp http.ResponseWriter, req *http.Request
 
 	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get AdderCredit data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get AdderCredit data from DB", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get adder credit data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get adder credit data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -85,43 +85,43 @@ func HandleGetAdderCreditDataRequest(resp http.ResponseWriter, req *http.Request
 	for _, item := range data {
 		RecordId, ok := item["record_id"].(int64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get record_id for Record ID %v. Item: %+v\n", RecordId, item)
 			continue
 		}
 
 		// Unique_id
 		Unique_id, ok := item["unique_id"].(string)
 		if !ok || Unique_id == "" {
-			log.FuncErrorTrace(0, "Failed to get Unique_id for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get unique_id for Record ID %v. Item: %+v\n", RecordId, item)
 			Unique_id = ""
 		}
 
 		// Pay_scale
 		Pay_scale, ok := item["pay_scale"].(string)
 		if !ok || Pay_scale == "" {
-			log.FuncErrorTrace(0, "Failed to get Pay_scale for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get pay_scale for Record ID %v. Item: %+v\n", RecordId, item)
 			Pay_scale = ""
 		}
 
 		// Type
 		Type, ok := item["type"].(string)
 		if !ok || Type == "" {
-			log.FuncErrorTrace(0, "Failed to get Type for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get type for Record ID %v. Item: %+v\n", RecordId, item)
 			Type = ""
 		}
 
 		// Min_Rate
 		Min_Rate, ok := item["min_rate"].(float64)
 		if !ok || Min_Rate == 0.0 {
-			log.FuncErrorTrace(0, "Failed to get Min_Rate for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get min rate for Record ID %v. Item: %+v\n", RecordId, item)
 			Min_Rate = 0.0
 		}
 
 		// Max_rare
-		Max_rare, ok := item["max_rate"].(float64)
-		if !ok || Max_rare == 0.0 {
-			log.FuncErrorTrace(0, "Failed to get Max_rare for Record ID %v. Item: %+v\n", RecordId, item)
-			Max_rare = 0.0
+		Max_rate, ok := item["max_rate"].(float64)
+		if !ok || Max_rate == 0.0 {
+			log.FuncErrorTrace(0, "Failed to get max rate for Record ID %v. Item: %+v\n", RecordId, item)
+			Max_rate = 0.0
 		}
 
 		AdderCreditData := models.GetAdderCreditReq{
@@ -130,7 +130,7 @@ func HandleGetAdderCreditDataRequest(resp http.ResponseWriter, req *http.Request
 			Pay_Scale: Pay_scale,
 			Type:      Type,
 			Min_Rate:  Min_Rate,
-			Max_Rate:  Max_rare,
+			Max_Rate:  Max_rate,
 		}
 		AdderCreditList.AdderCreditList = append(AdderCreditList.AdderCreditList, AdderCreditData)
 	}
@@ -144,14 +144,14 @@ func HandleGetAdderCreditDataRequest(resp http.ResponseWriter, req *http.Request
 
 	data, err = db.ReteriveFromDB(queryForAlldata, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get AdderCredit data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get AdderCredit data from DB", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get adder credit data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get adder credit data from DB", http.StatusBadRequest, nil)
 		return
 	}
 	RecordCount = int64(len(data))
 	// Send the response
-	log.FuncInfoTrace(0, "Number of AdderCredit List fetched : %v list %+v", len(AdderCreditList.AdderCreditList), AdderCreditList)
-	FormAndSendHttpResp(resp, "AdderCredit Data", http.StatusOK, AdderCreditList, RecordCount)
+	log.FuncInfoTrace(0, "Number of adder credit List fetched : %v list %+v", len(AdderCreditList.AdderCreditList), AdderCreditList)
+	FormAndSendHttpResp(resp, "Adder Credit Data", http.StatusOK, AdderCreditList, RecordCount)
 }
 
 /******************************************************************************

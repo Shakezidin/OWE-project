@@ -165,8 +165,6 @@ table thead tr th {
 
 table tbody tr {
   border-bottom: 1px solid var(--border-color);
-  cursor: pointer;
-
 }
 table tbody tr:hover{
   transition: .4s all linear;

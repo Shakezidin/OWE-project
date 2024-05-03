@@ -20,7 +20,7 @@ import (
 
 /******************************************************************************
  * FUNCTION:		HandleCreateDealerRequest
- * DESCRIPTION:     handler for create Dealers request
+ * DESCRIPTION:     handler for create dealer request
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
@@ -36,7 +36,7 @@ func HandleCreateDealerRequest(resp http.ResponseWriter, req *http.Request) {
 	defer func() { log.ExitFn(0, "HandleCreateDealerRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in create Dealers request")
+		err = fmt.Errorf("HTTP Request body is null in create dealer request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -44,15 +44,15 @@ func HandleCreateDealerRequest(resp http.ResponseWriter, req *http.Request) {
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create Dealers request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create dealer request, err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &createDealerReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal create Dealers request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal create Dealers request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal create dealer request, err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal create dealer request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -75,13 +75,13 @@ func HandleCreateDealerRequest(resp http.ResponseWriter, req *http.Request) {
 	// Call the database function
 	result, err = db.CallDBFunction(db.CreateDealerFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Add Dealers in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Create Dealers", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to Add dealer in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to Create dealer", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "Dealers created with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "Dealers Created Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "dealer created with Id: %+v", data["result"])
+	FormAndSendHttpResp(resp, "Dealer Created Successfully", http.StatusOK, nil)
 }

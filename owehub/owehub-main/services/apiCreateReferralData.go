@@ -35,7 +35,7 @@ func HandleCreateReferralDataRequest(resp http.ResponseWriter, req *http.Request
 	defer func() { log.ExitFn(0, "HandleCreateReferralDataRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in create Referral Data request")
+		err = fmt.Errorf("HTTP Request body is null in create referral data request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -43,15 +43,15 @@ func HandleCreateReferralDataRequest(resp http.ResponseWriter, req *http.Request
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create Referral Data request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create referral data request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &createReferralData)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal create Referral Data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal create Referral Data request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal create referral data request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal create referral data request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -78,16 +78,16 @@ func HandleCreateReferralDataRequest(resp http.ResponseWriter, req *http.Request
 	}
 
 	if createReferralData.SysSize <= float64(0) {
-		err = fmt.Errorf("Invalid SysSize value: %f, Not Allowed", createReferralData.SysSize)
+		err = fmt.Errorf("Invalid Sys Size value: %f, Not Allowed", createReferralData.SysSize)
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid SysSize value Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Sys Size value Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if createReferralData.RepCount < float64(0) {
-		err = fmt.Errorf("Invalid RepCount value: %f, Not Allowed", createReferralData.RepCount)
+		err = fmt.Errorf("Invalid Rep Count value: %f, Not Allowed", createReferralData.RepCount)
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid RepCount value Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Rep Count value Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -106,16 +106,16 @@ func HandleCreateReferralDataRequest(resp http.ResponseWriter, req *http.Request
 	}
 
 	if createReferralData.R1PayScale <= float64(0) {
-		err = fmt.Errorf("Invalid R1PayScale value: %f, Not Allowed", createReferralData.R1PayScale)
+		err = fmt.Errorf("Invalid R1 Pay Scale value: %f, Not Allowed", createReferralData.R1PayScale)
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid R1PayScale value Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid R1 Pay Scale value Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if createReferralData.R2PayScale <= float64(0) {
-		err = fmt.Errorf("Invalid R2PayScale value: %f, Not Allowed", createReferralData.R2PayScale)
+		err = fmt.Errorf("Invalid R2 Pay Scale value: %f, Not Allowed", createReferralData.R2PayScale)
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid R2PayScale value Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid R2 Pay Scale value Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -149,13 +149,13 @@ func HandleCreateReferralDataRequest(resp http.ResponseWriter, req *http.Request
 	// Call the database function
 	result, err = db.CallDBFunction(db.CreateReferralDataFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Add Referral Data in DB with err: %v", err)
+		log.FuncErrorTrace(0, "Failed to Add referral data in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Create Referral Data", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "Referral Data created with Id: %+v", data["result"])
+	log.DBTransDebugTrace(0, "New referral data created with Id: %+v", data["result"])
 	FormAndSendHttpResp(resp, "Referral Data Created Successfully", http.StatusOK, nil)
 }

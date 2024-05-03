@@ -32,7 +32,7 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
       {formData?.role_name === "Sale Representative" && (
         <>
           <div className="create-input-field">
-            <label className="inputLabel">Report to</label>
+            <label className="inputLabel xyz">Report to</label>
             <SelectOption
               options={regionList}
               onChange={(newValue) =>

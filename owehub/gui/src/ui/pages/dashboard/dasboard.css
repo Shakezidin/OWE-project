@@ -29,15 +29,15 @@
   font-size: 13px;
   font-weight: 500;
   line-height: 14.5px;
+  user-select: none;
 }
 .calender-container{
   position: absolute;
   z-index: 999;
-  right: -7%;
+  right: -3%;
   top: 130%;
   background-color: #fff;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4);
-  border-radius: 0.40rem;
+  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.2);
 }
 .close-calender{
   background: #3D91FF;

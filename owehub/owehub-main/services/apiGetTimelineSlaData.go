@@ -1,6 +1,6 @@
 /**************************************************************************
- * File       	   : apiGetTierLoanFeesData.go
- * DESCRIPTION     : This file contains functions for get v adder data handler
+ * File       	   : apiGetTimeLineSlaData.go
+ * DESCRIPTION     : This file contains functions for get time line sla data handler
  * DATE            : 22-Jan-2024
  **************************************************************************/
 
@@ -91,14 +91,14 @@ func HandleGetTimelineSlasDataRequest(resp http.ResponseWriter, req *http.Reques
 		// TypeM2M
 		TypeM2M, ok := item["type_m2m"].(string)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get TypeM2M for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get type m2m for Record ID %v. Item: %+v\n", RecordId, item)
 			TypeM2M = ""
 		}
 
 		// State
 		State, ok := item["state"].(string)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get State for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get state for Record ID %v. Item: %+v\n", RecordId, item)
 			State = ""
 		}
 
@@ -106,7 +106,7 @@ func HandleGetTimelineSlasDataRequest(resp http.ResponseWriter, req *http.Reques
 		DaysVal, ok := item["days"].(int64)
 		Days := 0
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get Days for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get days for Record ID %v. Item: %+v\n", RecordId, item)
 			Days = 0 // Assigning 0 as default for Days
 		} else {
 			Days = int(DaysVal)
@@ -115,14 +115,14 @@ func HandleGetTimelineSlasDataRequest(resp http.ResponseWriter, req *http.Reques
 		// StartDate
 		StartDate, ok := item["start_date"].(string)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get StartDate for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
 			StartDate = ""
 		}
 
 		// EndDate
 		EndDate, ok := item["end_date"].(string)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get EndDate for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get end date for Record ID %v. Item: %+v\n", RecordId, item)
 			EndDate = ""
 		}
 
@@ -147,15 +147,15 @@ func HandleGetTimelineSlasDataRequest(resp http.ResponseWriter, req *http.Reques
 
 	data, err = db.ReteriveFromDB(queryForAlldata, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get time_lin sla data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get time_lin sla data from DB", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get timeline sla data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get timeline sla data from DB", http.StatusBadRequest, nil)
 		return
 	}
 	RecordCount = int64(len(data))
 
 	// Send the response
 	log.FuncInfoTrace(0, "Number of timeline sla List fetched : %v list %+v", len(timelineSlaList.TimelineSlaList), timelineSlaList)
-	FormAndSendHttpResp(resp, "timeline sla Data", http.StatusOK, timelineSlaList, RecordCount)
+	FormAndSendHttpResp(resp, "Timeline Sla Data", http.StatusOK, timelineSlaList, RecordCount)
 }
 
 /******************************************************************************

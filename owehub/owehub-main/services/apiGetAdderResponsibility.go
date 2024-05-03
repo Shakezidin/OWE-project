@@ -41,7 +41,7 @@ func HandleGetAdderResponsibilityDataRequest(resp http.ResponseWriter, req *http
 	defer func() { log.ExitFn(0, "HandleGetAdderResponsibilityDataRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in get AdderResponsibility data request")
+		err = fmt.Errorf("HTTP Request body is null in get adder responsibility data request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -49,15 +49,15 @@ func HandleGetAdderResponsibilityDataRequest(resp http.ResponseWriter, req *http
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get AdderResponsibility data request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get adder responsibility data request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal get AdderResponsibility data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get AdderResponsibility data Request body", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal get adder responsibility data request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal get adder responsibility data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -73,8 +73,8 @@ func HandleGetAdderResponsibilityDataRequest(resp http.ResponseWriter, req *http
 
 	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get AdderResponsibility data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get AdderResponsibility data from DB", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get adder responsibility data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get adder responsibility data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -90,21 +90,21 @@ func HandleGetAdderResponsibilityDataRequest(resp http.ResponseWriter, req *http
 		// Unique_id
 		Unique_id, ok := item["unique_id"].(string)
 		if !ok || Unique_id == "" {
-			log.FuncErrorTrace(0, "Failed to get Unique_id for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get unique_id for Record ID %v. Item: %+v\n", RecordId, item)
 			Unique_id = ""
 		}
 
 		// Pay_scale
 		Pay_scale, ok := item["pay_scale"].(string)
 		if !ok || Pay_scale == "" {
-			log.FuncErrorTrace(0, "Failed to get Pay_scale for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get pay scale for Record ID %v. Item: %+v\n", RecordId, item)
 			Pay_scale = ""
 		}
 
 		// Percentage
 		Percentage, ok := item["percentage"].(float64)
 		if !ok || Percentage == 0.0 {
-			log.FuncErrorTrace(0, "Failed to get Percentage for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get percentage for Record ID %v. Item: %+v\n", RecordId, item)
 			Percentage = 0.0
 		}
 
@@ -124,14 +124,14 @@ func HandleGetAdderResponsibilityDataRequest(resp http.ResponseWriter, req *http
 
 	data, err = db.ReteriveFromDB(queryForAlldata, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get AdderResponsibility data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get AdderResponsibility data from DB", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get adder responsibility data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get adder responsibility data from DB", http.StatusBadRequest, nil)
 		return
 	}
 	RecordCount = int64(len(data))
 	// Send the response
-	log.FuncInfoTrace(0, "Number of AdderResponsibility List fetched : %v list %+v", len(AdderResponsibilityList.AdderResponsibilityList), AdderResponsibilityList)
-	FormAndSendHttpResp(resp, "AdderResponsibility Data", http.StatusOK, AdderResponsibilityList, RecordCount)
+	log.FuncInfoTrace(0, "Number of adder responsibility List fetched : %v list %+v", len(AdderResponsibilityList.AdderResponsibilityList), AdderResponsibilityList)
+	FormAndSendHttpResp(resp, "Adder Responsibility Data", http.StatusOK, AdderResponsibilityList, RecordCount)
 }
 
 /******************************************************************************

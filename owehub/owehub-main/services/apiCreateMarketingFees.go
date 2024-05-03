@@ -1,7 +1,6 @@
 /**************************************************************************
 * File			: apiCreateMarketingFees.go
-* DESCRIPTION	: This file contains functions for create marketing fees
-						setter handler
+* DESCRIPTION	: This file contains functions for create marketing fees handler
 * DATE			: 23-Jan-2024
 **************************************************************************/
 
@@ -36,7 +35,7 @@ func HandleCreateMarketingFeesRequest(resp http.ResponseWriter, req *http.Reques
 	defer func() { log.ExitFn(0, "HandleCreateMarketingFeesRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in create Marketing Fees request")
+		err = fmt.Errorf("HTTP Request body is null in create marketing fee request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -44,14 +43,14 @@ func HandleCreateMarketingFeesRequest(resp http.ResponseWriter, req *http.Reques
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create Marketing Fees request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create marketing fee request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &createMarketingFees)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal create Marketing Fees request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to unmarshal create marketing fee request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to unmarshal create Marketing Fees request", http.StatusBadRequest, nil)
 		return
 	}
@@ -68,13 +67,13 @@ func HandleCreateMarketingFeesRequest(resp http.ResponseWriter, req *http.Reques
 	if createMarketingFees.ChgDlr <= 0 {
 		err = fmt.Errorf("Invalid Chg Dlr Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Rate list Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Dhg Dlr Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 	if createMarketingFees.PaySrc <= 0 {
 		err = fmt.Errorf("Invalid Pay Source Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Rate Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Pay Source Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -99,6 +98,6 @@ func HandleCreateMarketingFeesRequest(resp http.ResponseWriter, req *http.Reques
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "Marketing Fees created with Id: %+v", data["result"])
+	log.DBTransDebugTrace(0, "New marketing fees created with Id: %+v", data["result"])
 	FormAndSendHttpResp(resp, "Marketing Fees Created Successfully", http.StatusOK, nil)
 }

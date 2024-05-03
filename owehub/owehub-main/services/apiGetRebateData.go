@@ -102,7 +102,7 @@ func HandleGetRebateDataRequest(resp http.ResponseWriter, req *http.Request) {
 		// customer_verf
 		Customer_verf, ok := item["customer_verf"].(string)
 		if !ok || Customer_verf == "" {
-			log.FuncErrorTrace(0, "Failed to get customer_verf for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get customer verf for Record ID %v. Item: %+v\n", RecordId, item)
 			Customer_verf = ""
 		}
 
@@ -137,7 +137,7 @@ func HandleGetRebateDataRequest(resp http.ResponseWriter, req *http.Request) {
 		// notes
 		Notes, ok := item["notes"].(string)
 		if !ok || Notes == "" {
-			log.FuncErrorTrace(0, "Failed to get Notes value for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get notes value for Record ID %v. Item: %+v\n", RecordId, item)
 			Notes = ""
 		}
 
@@ -165,14 +165,14 @@ func HandleGetRebateDataRequest(resp http.ResponseWriter, req *http.Request) {
 		// sys_size
 		Sys_size, ok := item["sys_size"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get sys_size for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get sys size for Record ID %v. Item: %+v\n", RecordId, item)
 			Sys_size = 0.0
 		}
 
 		// rep_count
 		Rep_count, ok := item["rep_count"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get rep_count for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get rep count for Record ID %v. Item: %+v\n", RecordId, item)
 			Rep_count = 0.0
 		}
 
@@ -263,7 +263,7 @@ func HandleGetRebateDataRequest(resp http.ResponseWriter, req *http.Request) {
 		// start_date
 		Start_date, ok := item["start_date"].(string)
 		if !ok || Start_date == "" {
-			log.FuncErrorTrace(0, "Failed to get start_date for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
 			Start_date = ""
 		}
 
@@ -320,8 +320,8 @@ func HandleGetRebateDataRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 	RecordCount = int64(len(data))
 	// Send the response
-	log.FuncInfoTrace(0, "Number of rebate List fetched : %v list %+v", len(RebateDataList.RebateDataList), RebateDataList)
-	FormAndSendHttpResp(resp, "rebate Data", http.StatusOK, RebateDataList, RecordCount)
+	log.FuncInfoTrace(0, "Number of rebate data List fetched : %v list %+v", len(RebateDataList.RebateDataList), RebateDataList)
+	FormAndSendHttpResp(resp, "Rebate Data", http.StatusOK, RebateDataList, RecordCount)
 }
 
 /******************************************************************************

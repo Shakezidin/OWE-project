@@ -72,45 +72,45 @@ func HandleCreateRebateDataRequest(resp http.ResponseWriter, req *http.Request) 
 	}
 
 	if createRebateDataReq.RepDollDivbyPer <= float64(0) {
-		err = fmt.Errorf("Invalid RepDollDivbyPer Not Allowed")
+		err = fmt.Errorf("Invalid Repdolldivbyper Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Invalid RepDollDivbyPer Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 	if createRebateDataReq.SysSize <= float64(0) {
-		err = fmt.Errorf("Invalid SysSize Not Allowed")
+		err = fmt.Errorf("Invalid Sys Size Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid SysSize Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Sys Size Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 	if createRebateDataReq.RepCount <= float64(0) {
-		err = fmt.Errorf("Invalid RepCount Not Allowed")
+		err = fmt.Errorf("Invalid Rep Count Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid RepCount Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Rep Count Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 	if createRebateDataReq.PerRepAddrShare <= float64(0) {
-		err = fmt.Errorf("Invalid PerRepAddrShare Not Allowed")
+		err = fmt.Errorf("Invalid Per Rep Addr Share Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid PerRepAddrShare Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Per Rep Addr Share Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 	if createRebateDataReq.PerRepOvrdShare <= float64(0) {
-		err = fmt.Errorf("Invalid PerRepOvrdShare Not Allowed")
+		err = fmt.Errorf("Invalid Per Rep Ovrd Share Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid PerRepOvrdShare Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Per Rep Ovrd Share Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 	if createRebateDataReq.R1PayScale <= float64(0) {
-		err = fmt.Errorf("Invalid R1PayScale Not Allowed")
+		err = fmt.Errorf("Invalid R1 Pay Scale Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid R1PayScale Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid R1 Pay Scale Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 	if createRebateDataReq.R2PayScale <= float64(0) {
-		err = fmt.Errorf("Invalid R2PayScale Not Allowed")
+		err = fmt.Errorf("Invalid R2 Pay Scale Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid R2PayScale Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid R2 Pay Scale Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -146,12 +146,12 @@ func HandleCreateRebateDataRequest(resp http.ResponseWriter, req *http.Request) 
 	result, err = db.CallDBFunction(db.CreateRebateDataFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add rebate data in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Create rebate data", http.StatusInternalServerError, nil)
+		FormAndSendHttpResp(resp, "Failed to Create Rebate Data", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "commissions created with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "Commissions Created Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "New rebate data created with Id: %+v", data["result"])
+	FormAndSendHttpResp(resp, "Rebate Data Created Successfully", http.StatusOK, nil)
 }

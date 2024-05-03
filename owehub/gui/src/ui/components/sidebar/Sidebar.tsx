@@ -12,6 +12,8 @@ import {
 import { MdKeyboardArrowLeft } from "react-icons/md";
 import { LuWallet } from "react-icons/lu";
 import { createSideMenuList } from "../../../routes/SideMenuOption";
+import { GrDocumentPerformance } from "react-icons/gr";
+import { AiOutlineProject } from "react-icons/ai";
 
 interface Child {
   path: string;
@@ -123,6 +125,113 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
         </div>
         {createSideMenuList().map((el, i) => (
           <div className="" key={i}>
+
+              <div className="" style={{ marginTop: toggleOpen ? 0 : ".4rem" }}>
+              {el.performance?.map((oth: any, index: number) => (
+                <Link
+                  key={index}
+                  style={{ paddingLeft: toggleOpen ? ".8rem" : "" }}
+                  to={oth.path}
+                  onMouseEnter={(e) =>
+                    toggleOpen &&
+                    handleMouseover(e, oth.sidebarProps.displayText, [], 1)
+                  }
+                  onMouseLeave={() => {
+                    timeOut.current = setTimeout(() => {
+                      setCords((prev) => ({ ...prev, opacity: 0, id: -1 }));
+                    }, 500);
+                  }}
+                  className={`side-icon-container ${
+                    location.pathname === oth.path && !toggleOpen
+                      ? "active-link-bg"
+                      : ""
+                  }`}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                      width: 24,
+                      height: 24,
+                      borderRadius: 4,
+                      background:
+                        toggleOpen && location.pathname === oth.path
+                          ? "rgb(235 255 244)"
+                          : toggleOpen
+                          ? "#E9EEF2"
+                          : "transparent",
+                    }}
+                  >
+                    <GrDocumentPerformance
+                      size={20}
+                      style={{ marginLeft: !toggleOpen ? "5px" : "" }}
+                      className={
+                        location.pathname === oth.path
+                          ? "sidebaricon"
+                          : "sidebariconn"
+                      }
+                    />
+                  </div>
+
+                  {toggleOpen ? null : (
+                    <Link to={oth.path}>
+                      {" "}
+                      <p
+                        className={
+                          location.pathname === oth.path
+                            ? "tablink"
+                            : "tablinkk"
+                        }
+                      >
+                        {oth.sidebarProps.displayText}
+                      </p>
+                    </Link>
+                  )}
+
+                  <div
+                    className="tip"
+                    style={{
+                      backgroundColor: "#fff",
+                      position: "fixed",
+                      top: cords.top,
+                      left: cords.left,
+                      display:
+                        cords.opacity && cords.id === 1 ? "block" : "none",
+                      maxHeight: "300px",
+                      minWidth: "150px",
+                      overflowY: "scroll",
+                      borderTopLeftRadius: "4px",
+                      borderTopRightRadius: "4px",
+                      borderLeft: "1px solid #D9D9D9",
+                      color: "#092D04",
+                    }}
+                  >
+                    <Link
+                      to="#"
+                      className=""
+                      style={{
+                        display: "block",
+                        background: "#E1F5EA",
+                        padding: "11px 12px",
+                        color: "#23B364",
+                        width: "100%",
+                        fontWeight: "500",
+                        borderBottom: "1px solid #E8E8E8",
+                        fontSize: "13px",
+                        borderRight: "3px solid #23B364",
+                        cursor: "default",
+                      }}
+                    >
+                      {" "}
+                      {cords.text}
+                    </Link>
+                  </div>
+                </Link>
+              ))}
+            </div>
+
             <div className="" style={{ marginTop: toggleOpen ? 0 : ".4rem" }}>
               {el.commission?.map((oth: any, index: number) => (
                 <Link
@@ -632,7 +741,107 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
               </div>
             ))}
 
-            {el.project?.map((item: any, index: number) => (
+
+            <div className="" style={{ marginTop: toggleOpen ? 0 : ".2rem" }}>
+              {el.project?.map((oth: any, index: number) => (
+                <Link
+                  key={index}
+                  style={{ paddingLeft: toggleOpen ? ".8rem" : "" }}
+                  to={oth.path}
+                  onMouseEnter={(e) =>
+                    toggleOpen &&
+                    handleMouseover(e, oth.sidebarProps.displayText, [], 3)
+                  }
+                  onMouseLeave={() => {
+                    timeOut.current = setTimeout(() => {
+                      setCords((prev) => ({ ...prev, opacity: 0, id: -1 }));
+                    }, 500);
+                  }}
+                  className={`side-icon-container ${
+                    location.pathname === oth.path ? "active-link-bg" : ""
+                  }`}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                      width: 24,
+                      height: 24,
+                      borderRadius: 4,
+                      background:
+                        toggleOpen && location.pathname === oth.path
+                          ? "rgb(235 255 244)"
+                          : toggleOpen
+                          ? "#E9EEF2"
+                          : "transparent",
+                    }}
+                  >
+                    <AiOutlineProject
+                      size={20}
+                      style={{ marginLeft: !toggleOpen ? "5px" : "" }}
+                      className={
+                        location.pathname === oth.path
+                          ? "sidebaricon"
+                          : "sidebariconn"
+                      }
+                    />
+                  </div>
+                  {toggleOpen ? null : (
+                    <p
+                      className={
+                        location.pathname === oth.path ? "tablink" : "tablinkk"
+                      }
+                    >
+                      {oth.sidebarProps.displayText}
+                    </p>
+                  )}
+                  <div
+                    className="tip"
+                    style={{
+                      backgroundColor: "#fff",
+                      position: "fixed",
+                      top: cords.top,
+                      left: cords.left,
+                      display:
+                        cords.opacity && cords.id === 3 ? "block" : "none",
+
+                      maxHeight: "300px",
+                      minWidth: "150px",
+                      overflowY: "scroll",
+                      borderTopLeftRadius: "4px",
+                      borderTopRightRadius: "4px",
+                      borderLeft: "1px solid #D9D9D9",
+
+                      color: "black",
+                    }}
+                  >
+                    <Link
+                      to="#"
+                      className=""
+                      style={{
+                        display: "block",
+                        background: "#E1F5EA",
+                        padding: "11px 12px",
+                        color: "#23B364",
+                        width: "100%",
+                        fontWeight: "500",
+                        borderBottom: "1px solid #E8E8E8",
+                        fontSize: "13px",
+                        borderRight: "3px solid #23B364",
+                        cursor: "default",
+                      }}
+                    >
+                      {" "}
+                      {cords.text}
+                    </Link>
+                  </div>
+                </Link>
+              ))}
+            </div>
+
+            {/* {el.project?.map((item: any, index: number) => (
               <div key={index}>
                 {item.child ? (
                   <>
@@ -881,7 +1090,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                   </div>
                 )}
               </div>
-            ))}
+            ))} */}
 
             <div className="" style={{ marginTop: toggleOpen ? 0 : "-2px" }}>
               {el.other?.map((oth: any, index: number) => (

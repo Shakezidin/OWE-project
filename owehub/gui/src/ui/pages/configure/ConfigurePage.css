@@ -20,7 +20,7 @@
   margin-top: 10px;
   height: 100%;
   background: var(--white-color);
-  padding: 20px 30px;
+  padding: 20px;
   border-radius: 16px;
 }
 .payer-type {
@@ -32,23 +32,22 @@
   display: flex;
   gap: 14px;
   flex-wrap: wrap;
-  margin: 14px 0;
+  padding: 14px 7px;
   max-height: 0;
   overflow: hidden;
-  transition: max-height 1.5s ease-in-out; 
 }
 .configure-cards.open {
   max-height: 1000px; 
 }
 .configure-cards:not(.open) {
-  transition-duration: .3s;
+  visibility: hidden;
 }
 
 .card-heading {
   font-size: 14px;
   font-weight: 500;
   line-height: 16px;
-  width: 110px;
+  width: 100px;
   color: var(--coloumn-text-color);
 }
 .card-p {
@@ -74,7 +73,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 183px;
+  width: 170px;
   height: 83px;
   border: none;
   border-radius: 8px;
@@ -94,6 +93,7 @@
   border-bottom: 1px solid #f1f1f1;
   padding-bottom: 5px;
   cursor: pointer;
+  user-select: none;
 }
 .accordion-icon {
   color: var(--secondary-text-color);

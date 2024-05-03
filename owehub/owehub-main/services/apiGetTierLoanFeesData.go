@@ -1,6 +1,6 @@
 /**************************************************************************
- * File       	   : apiGetTimelineSlaData.go
- * DESCRIPTION     : This file contains functions for get v adder data handler
+ * File       	   : apiGetTierLoanFeeData.go
+ * DESCRIPTION     : This file contains functions for get tier loan fee data handler
  * DATE            : 22-Jan-2024
  **************************************************************************/
 
@@ -102,7 +102,7 @@ func HandleGetTierLoanFeesDataRequest(resp http.ResponseWriter, req *http.Reques
 		// PartnerName
 		PartnerName, partnerOk := item["installer"].(string)
 		if !partnerOk || PartnerName == "" {
-			log.FuncErrorTrace(0, "Failed to get partner name for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get installer for Record ID %v. Item: %+v\n", RecordId, item)
 			PartnerName = ""
 		}
 
@@ -155,13 +155,6 @@ func HandleGetTierLoanFeesDataRequest(resp http.ResponseWriter, req *http.Reques
 			EndDate = ""
 		}
 
-		// is_archived
-		IsArchived, ok := item["is_archived"].(bool)
-		if !ok || !IsArchived {
-			log.FuncErrorTrace(0, "Failed to get is_archived value for Record ID %v. Item: %+v\n", RecordId, item)
-			IsArchived = false
-		}
-
 		// Create a new GetTierLoanFeeData object
 		vaddersData := models.GetTierLoanFeeData{
 			RecordId:    RecordId,
@@ -195,7 +188,7 @@ func HandleGetTierLoanFeesDataRequest(resp http.ResponseWriter, req *http.Reques
 
 	// Send the response
 	log.FuncInfoTrace(0, "Number of tier loan fee List fetched : %v list %+v", len(tierLoanFeeList.TierLoanFeeList), tierLoanFeeList)
-	FormAndSendHttpResp(resp, "tier loan fee Data", http.StatusOK, tierLoanFeeList, RecordCount)
+	FormAndSendHttpResp(resp, "Tier Loan Fee Data", http.StatusOK, tierLoanFeeList, RecordCount)
 }
 
 /******************************************************************************

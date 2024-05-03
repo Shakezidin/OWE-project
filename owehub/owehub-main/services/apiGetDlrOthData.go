@@ -1,5 +1,5 @@
 /**************************************************************************
- * File       	   : apiGetDLROTHData.go
+ * File       	   : apiGetDlrOthData.go
  * DESCRIPTION     : This file contains functions for get dlr_oth data handler
  * DATE            : 22-Jan-2024
  **************************************************************************/
@@ -73,7 +73,7 @@ func HandleGetDLROTHDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get Dlr_oth data from DB err: %v", err)
+		log.FuncErrorTrace(0, "Failed to get dlr_oth data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get dlr_oth data from DB", http.StatusBadRequest, nil)
 		return
 	}
@@ -124,7 +124,7 @@ func HandleGetDLROTHDataRequest(resp http.ResponseWriter, req *http.Request) {
 		// paid_amount
 		Paid_amount, paid_amountOk := item["paid_amount"].(float64)
 		if !paid_amountOk {
-			log.FuncErrorTrace(0, "Failed to get paid_amount for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get paid amount for Record ID %v. Item: %+v\n", RecordId, item)
 			Paid_amount = 0.0
 		}
 
@@ -174,7 +174,7 @@ func HandleGetDLROTHDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	// Send the response
 	log.FuncInfoTrace(0, "Number of dlr_oth List fetched : %v list %+v", len(DLROTHList.DLR_OTHList), DLROTHList)
-	FormAndSendHttpResp(resp, "dlr oth Data", http.StatusOK, DLROTHList, RecordCount)
+	FormAndSendHttpResp(resp, "Dlr Oth Data", http.StatusOK, DLROTHList, RecordCount)
 }
 
 /******************************************************************************

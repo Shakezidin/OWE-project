@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { createRateAdjustments , fetchRateAdjustments, updateRateAdjustment} from "../../../apiActions/RateAdjustmentsAction";
+import { createReconcile, fetchReconcile, updateReconcile} from "../../../apiActions/reconcileAction";
 import { RateAdjustment } from "../../../../core/models/api_models/RateAdjustmentModel";
 import { toast } from "react-toastify";
 
@@ -20,43 +20,42 @@ const initialState: IState = {
     isSuccess:0,
 }
 
-const rateAdjustments = createSlice({
-    name: "RateAdjustments",
+const reconcile = createSlice({
+    name: "Reconcile",
     initialState,
     reducers: {},
     extraReducers: builder => {
-        builder.addCase(fetchRateAdjustments.pending, (state) => {
+        builder.addCase(fetchReconcile.pending, (state) => {
             state.isLoading = true
         })
-            .addCase(fetchRateAdjustments.fulfilled, (state, action: PayloadAction<any | null>) => {
+            .addCase(fetchReconcile.fulfilled, (state, action: PayloadAction<any | null>) => {
                 state.isLoading = false
-                state.data = action.payload ? action.payload.data.rate_adjustments_list
-                :[]
+                state.data = action.payload ? action.payload.data.reconcile_list :[]
             })
-            .addCase(fetchRateAdjustments.rejected, (state, action) => {
+            .addCase(fetchReconcile.rejected, (state, action) => {
                 state.isLoading = false
                 state.error = action.payload as string
             })
-            .addCase(createRateAdjustments.pending, (state, action) => {
+            .addCase(createReconcile.pending, (state, action) => {
                 state.isFormSubmitting = true
             })
-            .addCase(createRateAdjustments.fulfilled, (state) => {
+            .addCase(createReconcile.fulfilled, (state) => {
                 state.isFormSubmitting = false
                 state.isSuccess=1
             })
-            .addCase(createRateAdjustments.rejected, (state, action) => {
+            .addCase(createReconcile.rejected, (state, action) => {
                 state.isFormSubmitting = false
                 state.error = action.payload as string
             })
-            .addCase(updateRateAdjustment.pending,(state, action) => {
+            .addCase(updateReconcile.pending,(state, action) => {
                 state.isFormSubmitting = true;
               })
-              .addCase(updateRateAdjustment.fulfilled, (state, action) => {
+              .addCase(updateReconcile.fulfilled, (state, action) => {
                 state.isFormSubmitting = false;
                 state.isSuccess=1
-                toast.success("Details updated successfully")
+                
               })
-              .addCase(updateRateAdjustment.rejected, (state, action) => {
+              .addCase(updateReconcile.rejected, (state, action) => {
                 state.isFormSubmitting = false;
                 state.error = action.payload as string;
               })
@@ -65,4 +64,4 @@ const rateAdjustments = createSlice({
 })
 
 
-export default rateAdjustments.reducer
+export default reconcile.reducer

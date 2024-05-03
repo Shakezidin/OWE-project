@@ -1,7 +1,6 @@
 /**************************************************************************
-* File			: apiInstallCostCreateCommission.go
-* DESCRIPTION	: This file contains functions for create InstallCost
-						setter handler
+* File			: apiCreateInstallCost.go
+* DESCRIPTION	: This file contains functions for create install cost handler
 * DATE			: 23-Jan-2024
 **************************************************************************/
 
@@ -19,8 +18,8 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:		HandleCreateAptSetterRequest
- * DESCRIPTION:     handler for create InstallCosts request
+ * FUNCTION:		HandleCreateInstallCostRequest
+ * DESCRIPTION:     handler for create Install cost request
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
@@ -36,7 +35,7 @@ func HandleCreateInstallCostRequest(resp http.ResponseWriter, req *http.Request)
 	defer func() { log.ExitFn(0, "HandleCreateInstallCostRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in create InstallCosts request")
+		err = fmt.Errorf("HTTP Request body is null in create install cost request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -44,15 +43,15 @@ func HandleCreateInstallCostRequest(resp http.ResponseWriter, req *http.Request)
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create InstallCosts request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create install cost request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &createInstallCostReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal create InstallCosts request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal create InstallCosts request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal create install cost request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal create Install Cost request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -65,7 +64,7 @@ func HandleCreateInstallCostRequest(resp http.ResponseWriter, req *http.Request)
 	}
 
 	if createInstallCostReq.Cost <= float64(0) {
-		err = fmt.Errorf("Invalid Cost Not Allowed")
+		err = fmt.Errorf("Invalid cost Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Invalid Cost Not Allowed", http.StatusBadRequest, nil)
 		return
@@ -80,13 +79,13 @@ func HandleCreateInstallCostRequest(resp http.ResponseWriter, req *http.Request)
 	// Call the database function
 	result, err = db.CallDBFunction(db.CreateInstallCostFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Add InstallCosts in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Create InstallCosts", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to Add install cost in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to Create Install Cost", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "InstallCosts created with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "InstallCosts Created Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "New install cost created with Id: %+v", data["result"])
+	FormAndSendHttpResp(resp, "Install Cost Created Successfully", http.StatusOK, nil)
 }

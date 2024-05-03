@@ -41,7 +41,7 @@ func HandleGetRateAdjustmentsRequest(resp http.ResponseWriter, req *http.Request
 	defer func() { log.ExitFn(0, "HandleGetRateAdjustmentsRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in get RateAdjustments request")
+		err = fmt.Errorf("HTTP Request body is null in get rate adjustments request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -49,15 +49,15 @@ func HandleGetRateAdjustmentsRequest(resp http.ResponseWriter, req *http.Request
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get RateAdjustments request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get rate adjustments request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal get RateAdjustments request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get RateAdjustments Request body", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal get rate adjustments request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal get rate adjustments Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -73,8 +73,8 @@ func HandleGetRateAdjustmentsRequest(resp http.ResponseWriter, req *http.Request
 
 	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get RateAdjustments from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get RateAdjustments from DB", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get rate adjustments from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get rate adjustments from DB", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -113,13 +113,13 @@ func HandleGetRateAdjustmentsRequest(resp http.ResponseWriter, req *http.Request
 
 		MinRate, ok := item["min_rate"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get MinRate for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get min rate for Record ID %v. Item: %+v\n", RecordId, item)
 			MinRate = 0.0
 		}
 
 		MaxRate, ok := item["max_rate"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get MaxRate for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get max rate for Record ID %v. Item: %+v\n", RecordId, item)
 			MaxRate = 0.0
 		}
 
@@ -156,14 +156,14 @@ func HandleGetRateAdjustmentsRequest(resp http.ResponseWriter, req *http.Request
 
 	data, err = db.ReteriveFromDB(queryForAlldata, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get RateAdjustments from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get RateAdjustments from DB", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get rate adjustments from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get rate adjustments from DB", http.StatusBadRequest, nil)
 		return
 	}
 	RecordCount = int64(len(data))
 	// Send the response
-	log.FuncInfoTrace(0, "Number of rateAdjustments List fetched : %v list %+v", len(rateAdjustmentsList.RateAdjustmentsList), rateAdjustmentsList)
-	FormAndSendHttpResp(resp, "RateAdjustments", http.StatusOK, rateAdjustmentsList, RecordCount)
+	log.FuncInfoTrace(0, "Number of rate adjustments List fetched : %v list %+v", len(rateAdjustmentsList.RateAdjustmentsList), rateAdjustmentsList)
+	FormAndSendHttpResp(resp, "Rate Adjustments", http.StatusOK, rateAdjustmentsList, RecordCount)
 }
 
 /******************************************************************************

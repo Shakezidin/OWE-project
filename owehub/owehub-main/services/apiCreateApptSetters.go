@@ -1,7 +1,6 @@
 /**************************************************************************
 * File			: apiCreateApptSetters.go
-* DESCRIPTION	: This file contains functions for create appointment
-						setter handler
+* DESCRIPTION	: This file contains functions for create appt	 setters handler
 * DATE			: 01-May-2024
 **************************************************************************/
 
@@ -82,5 +81,5 @@ func HandleCreateApptSettersDataRequest(resp http.ResponseWriter, req *http.Requ
 	data := result[0].(map[string]interface{})
 
 	log.DBTransDebugTrace(0, "New appt setters created with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "appt setters Created Successfully", http.StatusOK, nil)
+	FormAndSendHttpResp(resp, "Appt setters Created Successfully", http.StatusOK, nil)
 }

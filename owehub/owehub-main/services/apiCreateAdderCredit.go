@@ -19,7 +19,7 @@ import (
 
 /******************************************************************************
  * FUNCTION:		HandleCreateAdderCreditRequest
- * DESCRIPTION:     handler for create AdderCredits request
+ * DESCRIPTION:     handler for create adder credit request
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
@@ -35,7 +35,7 @@ func HandleCreateAdderCreditDataRequest(resp http.ResponseWriter, req *http.Requ
 	defer func() { log.ExitFn(0, "HandleCreateAdderCreditRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in create AdderCredits request")
+		err = fmt.Errorf("HTTP Request body is null in create adder credit request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -43,15 +43,15 @@ func HandleCreateAdderCreditDataRequest(resp http.ResponseWriter, req *http.Requ
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create AdderCredits request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create adder credit request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &createAdderCreditReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal create AdderCredits request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal create AdderCredits request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal create adder credit request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal create adder credit request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -64,15 +64,15 @@ func HandleCreateAdderCreditDataRequest(resp http.ResponseWriter, req *http.Requ
 	}
 
 	if createAdderCreditReq.Min_Rate <= float64(0) {
-		err = fmt.Errorf("Invalid Min_Rate Not Allowed")
+		err = fmt.Errorf("Invalid min_rate Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Sale price Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid min_rate Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 	if createAdderCreditReq.Max_Rate <= float64(0) {
-		err = fmt.Errorf("Invalid Max_Rate Not Allowed")
+		err = fmt.Errorf("Invalid max_rate Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Rate list Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid max_rate Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -86,13 +86,13 @@ func HandleCreateAdderCreditDataRequest(resp http.ResponseWriter, req *http.Requ
 	// Call the database function
 	result, err = db.CallDBFunction(db.CreateAdderCreditFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Add AdderCredits in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Create AdderCredits", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to Add adder credit in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to Create adder credit", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "AdderCredits created with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "AdderCredits Created Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "adder credit created with Id: %+v", data["result"])
+	FormAndSendHttpResp(resp, "adder cedit created Successfully", http.StatusOK, nil)
 }

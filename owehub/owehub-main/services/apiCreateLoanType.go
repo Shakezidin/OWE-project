@@ -63,7 +63,7 @@ func HandleCreateLoanTypeRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 	if createLoanTypeReq.Active <= 0 {
-		err = fmt.Errorf("Invalid Chg Dlr Not Allowed")
+		err = fmt.Errorf("Invalid active Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Invalid Active Not Allowed", http.StatusBadRequest, nil)
 		return
@@ -84,12 +84,12 @@ func HandleCreateLoanTypeRequest(resp http.ResponseWriter, req *http.Request) {
 	result, err = db.CallDBFunction(db.CreateLoanTypeFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add loan type in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Create loan type", http.StatusInternalServerError, nil)
+		FormAndSendHttpResp(resp, "Failed to Create Loan Type", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "Loan type created with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "Loan type Created Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "New loan type created with Id: %+v", data["result"])
+	FormAndSendHttpResp(resp, "Loan Type Created Successfully", http.StatusOK, nil)
 }

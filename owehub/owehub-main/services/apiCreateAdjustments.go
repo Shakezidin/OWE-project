@@ -67,21 +67,21 @@ func HandleCreateAdjustmentsRequest(resp http.ResponseWriter, req *http.Request)
 	}
 
 	if createAdjustmentsReq.SysSize <= float64(0) {
-		err = fmt.Errorf("Invalid SysSize Not Allowed")
+		err = fmt.Errorf("Invalid sys_size Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid SysSize Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid sys_size Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 	if createAdjustmentsReq.Epc <= float64(0) {
 		err = fmt.Errorf("Invalid epc Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Epc Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid epc Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 	if createAdjustmentsReq.Amount <= float64(0) {
-		err = fmt.Errorf("Invalid epc Not Allowed")
+		err = fmt.Errorf("Invalid amount Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Epc Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid amount Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -104,13 +104,13 @@ func HandleCreateAdjustmentsRequest(resp http.ResponseWriter, req *http.Request)
 
 	result, err = db.CallDBFunction(db.CreateAdjustmentsFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Adjustments in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Create Adjustments data", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to add adjustments in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to Create adjustments", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "Adjustments created with Id: %+v", data["result"])
+	log.DBTransDebugTrace(0, "new adjustments created with Id: %+v", data["result"])
 	FormAndSendHttpResp(resp, "Adjustments Created Successfully", http.StatusOK, nil)
 }

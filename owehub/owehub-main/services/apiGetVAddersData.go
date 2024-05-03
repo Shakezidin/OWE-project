@@ -1,5 +1,5 @@
 /**************************************************************************
- * File       	   : apiGetSaleTypesData.go
+ * File       	   : apiGetVAddersData.go
  * DESCRIPTION     : This file contains functions for get v adder data handler
  * DATE            : 22-Jan-2024
  **************************************************************************/
@@ -63,7 +63,7 @@ func HandleGetVAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	tableName := db.TableName_v_adders
 	query = `
-	SELECT vadd.id as record_id, vadd.adder_name, vadd.adder_type, vadd.price_type, vadd.price_amount, vadd.active, vadd.description, vadd.is_archived
+	SELECT vadd.id as record_id, vadd.adder_name, vadd.adder_type, vadd.price_type, vadd.price_amount, vadd.active, vadd.description
 	FROM v_adders vadd`
 
 	filter, whereEleList = PrepareVAdderFilters(tableName, dataReq, false)
@@ -126,6 +126,7 @@ func HandleGetVAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 		// Description
 		Description, descOk := item["description"].(string)
 		if !descOk || Description == "" {
+			log.FuncErrorTrace(0, "Failed to get description for Record ID %v. Item: %+v\n", RecordId, item)
 			Description = ""
 		}
 
@@ -151,15 +152,15 @@ func HandleGetVAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	data, err = db.ReteriveFromDB(queryForAlldata, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get vadder data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get vadder data from DB", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get v adders data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get v adders data from DB", http.StatusBadRequest, nil)
 		return
 	}
 	RecordCount = int64(len(data))
 
 	// Send the response
 	log.FuncInfoTrace(0, "Number of v adders List fetched : %v list %+v", len(vaddersList.VAddersList), vaddersList)
-	FormAndSendHttpResp(resp, "v adders Data", http.StatusOK, vaddersList, RecordCount)
+	FormAndSendHttpResp(resp, "V Adders Data", http.StatusOK, vaddersList, RecordCount)
 }
 
 /******************************************************************************
