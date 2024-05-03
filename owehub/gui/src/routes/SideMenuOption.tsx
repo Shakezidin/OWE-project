@@ -9,6 +9,28 @@ import { FiServer } from "react-icons/fi";
 import { GrDocumentConfig } from "react-icons/gr";
 import { RiFileList3Line } from "react-icons/ri";
 import { TYPE_OF_USER } from "../resources/static_data/TypeOfUser";
+import { GrDocumentPerformance } from "react-icons/gr";
+import { AiOutlineProject } from "react-icons/ai";
+
+
+const performance = {
+  performance: [
+    {
+      path: ROUTES.PROJECT_PERFORMANCE,
+      sidebarProps: {
+        displayText: "Performance",
+        icon: (
+          <GrDocumentPerformance
+            size={20}
+            style={{ marginLeft: "5px" }}
+            className="hover-icon"
+          />
+        ),
+      },
+    },
+  ],
+};
+
 
 const commissionMenu = {
   commission: [
@@ -120,33 +142,18 @@ const DB = {
 const project = {
   project: [
     {
-      path: "##",
+      path:  ROUTES.PROJECT_STATUS,
       sidebarProps: {
-        displayText: "Project Tracking",
+        displayText: "Project Management",
         icon: (
-          <RiFileList3Line
+          <AiOutlineProject
             size={20}
             style={{ marginLeft: "3px" }}
             color="black"
           />
         ),
       },
-      child: [
-        {
-          path: ROUTES.PROJECT_PERFORMANCE,
-          sidebarProps: {
-            displayText: "Performance",
-            icon: <div></div>,
-          },
-        },
-        {
-          path: ROUTES.PROJECT_STATUS,
-          sidebarProps: {
-            displayText: "Project Detail",
-            icon: <div></div>,
-          },
-        },
-      ],
+      
     },
   ],
 };
@@ -188,6 +195,7 @@ export const createSideMenuList = (): any[] => {
   let role = localStorage.getItem("role");
 
   if (role === TYPE_OF_USER.ADMIN) {
+    sideMenu.push(performance)
     sideMenu.push(commissionMenu);
     sideMenu.push(repayMenu);
     sideMenu.push(arMenu);
@@ -195,22 +203,27 @@ export const createSideMenuList = (): any[] => {
     sideMenu.push(project);
     sideMenu.push(other);
     sideMenu.push(support);
+    
   } else {
     if (
       role === TYPE_OF_USER.DEALER_OWNER ||
       role === TYPE_OF_USER.FINANCE_ADMIN
     ) {
+      sideMenu.push(performance)
       sideMenu.push(commissionMenu);
       sideMenu.push(repayMenu);
       sideMenu.push(arMenu);
       sideMenu.push(DB);
       sideMenu.push(project);
       sideMenu.push(support);
+      
     }else if( role === TYPE_OF_USER.REGIONAL_MANGER || role === TYPE_OF_USER.SALES_REPRESENTATIVE || role === TYPE_OF_USER.SALE_MANAGER ){
+      sideMenu.push(performance)
       sideMenu.push(commissionMenu);
       sideMenu.push(arMenu);
       sideMenu.push(DB);
       sideMenu.push(support);
+   
     }
   }
 

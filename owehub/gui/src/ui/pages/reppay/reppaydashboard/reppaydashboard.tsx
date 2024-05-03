@@ -155,20 +155,23 @@ useEffect(() => {
 
 
               <div style={{ position: "relative", top: "-1px" }} ref={datePickerRef}>
-                <label className="rep-date-button" onClick={handleToggleDatePicker}>
+                <label className="date-button" onClick={handleToggleDatePicker}>
                   Select Dates
                 </label>
                 {showDatePicker && (
-                  <div className="rep-calender-container">
+                  <div className="calender-container">
                     <DateRangePicker
                       ranges={[selectionRange]}
                       onChange={handleSelect}
                     />
-                    <button className="rep-reset-calender" onClick={handleResetDates}>
+                    <button
+                      className="reset-calender"
+                      onClick={handleResetDates}
+                    >
                       Reset
                     </button>
                     <button
-                      className="rep-close-calender"
+                      className="close-calender"
                       onClick={handleToggleDatePicker}
                     >
                       Close

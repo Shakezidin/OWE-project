@@ -1,6 +1,6 @@
 /**************************************************************************
 * File			: apiUpdateAdderCreditArchive.go
-* DESCRIPTION	: This file contains functions for update AdderCredit archive
+* DESCRIPTION	: This file contains functions for update adder credit archive
 						setter handler
 * DATE			: 29-Apr-2024
 **************************************************************************/
@@ -39,7 +39,7 @@ func HandleUpdateAdderCreditArchiveRequest(resp http.ResponseWriter, req *http.R
 	defer func() { log.ExitFn(0, "HandleUpdateAdderCreditArchiveRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in update AdderCredit Archive request")
+		err = fmt.Errorf("HTTP Request body is null in update adder credit archive request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -47,15 +47,15 @@ func HandleUpdateAdderCreditArchiveRequest(resp http.ResponseWriter, req *http.R
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update AdderCredit Archive request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update adder credit archive request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &updateAdderCreditArcReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal update AdderCredit Archive request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal update AdderCredit Archive request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal update adder credit archive request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal update adder credit archive request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -79,12 +79,12 @@ func HandleUpdateAdderCreditArchiveRequest(resp http.ResponseWriter, req *http.R
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateAdderCreditArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Update AdderCredit Archive in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Update AdderCredit Archive", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to update adder credit archive in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to update adder credit archive", http.StatusInternalServerError, nil)
 		return
 	}
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "AdderCredit Archive updated with Id: %+v", data)
-	FormAndSendHttpResp(resp, "AdderCredit Archive Updated Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "Adder Credit Archive updated with Id: %+v", data)
+	FormAndSendHttpResp(resp, "Adder Credit Archive Updated Successfully", http.StatusOK, nil)
 }

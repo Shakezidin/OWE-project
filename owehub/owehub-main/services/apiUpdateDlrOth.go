@@ -1,7 +1,6 @@
 /**************************************************************************
 * File			: apiupdateDLR_OTH.go
-* DESCRIPTION	: This file contains functions for update dlr_oth
-						setter handler
+* DESCRIPTION	: This file contains functions for update dlr_oth handler
 * DATE			: 23-Jan-2024
 **************************************************************************/
 
@@ -61,35 +60,35 @@ func HandleUpdateDLROTHDataRequest(resp http.ResponseWriter, req *http.Request) 
 		(len(updateDLR_OTHReq.StartDate) <= 0) || (len(updateDLR_OTHReq.EndDate) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if updateDLR_OTHReq.Record_Id <= int64(0) {
 		err = fmt.Errorf("Invalid record_id Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Sale price Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid record id Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if updateDLR_OTHReq.Paid_Amount <= float64(0) {
 		err = fmt.Errorf("Invalid Paid_amount Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Sale price Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid paid amount Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if updateDLR_OTHReq.Balance <= float64(0) {
 		err = fmt.Errorf("Invalid balance Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Sale price Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Balance Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if updateDLR_OTHReq.Paid_Amount <= float64(0) {
 		err = fmt.Errorf("Invalid Paid_amount Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Sale price Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Paid Amount Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -114,6 +113,6 @@ func HandleUpdateDLROTHDataRequest(resp http.ResponseWriter, req *http.Request) 
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "dlr_oth update with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "dlr_oth updated Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "dlr_oth updated with Id: %+v", data["result"])
+	FormAndSendHttpResp(resp, "Dlr Oth Updated Successfully", http.StatusOK, nil)
 }

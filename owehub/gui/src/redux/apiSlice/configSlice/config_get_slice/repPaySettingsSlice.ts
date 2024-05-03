@@ -1,20 +1,24 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import {  RepPaySettingsModel} from "../../../../core/models/configuration/create/RepPaySettingsModel";
-import { fetchRepaySettings, createRepaySettings } from "../../../apiActions/repPayAction";
-
+import { fetchRepaySettings, createRepaySettings, updateRepaySettings } from "../../../apiActions/repPayAction";
+import { toast } from "react-toastify";
 
 interface repaySettings {
   repPaySettingsList: RepPaySettingsModel[];
   loading: boolean;
   error: string | null;
-  isFormSubmitting:boolean
+  isFormSubmitting:boolean,
+  isSuccess:number,
 }
 const initialState: repaySettings = {
   repPaySettingsList: [],
   loading: false,
   error: null,
   isFormSubmitting:false,
+  isSuccess:0,
+  
+  
 };
 
 
@@ -22,7 +26,12 @@ const initialState: repaySettings = {
 const repaySettingSlice = createSlice({
   name: "repaySettings",
   initialState,
-  reducers: {},
+  reducers: {
+    resetSuccess:(state)=>{
+      state.isSuccess = 0
+    
+  }
+},
   extraReducers: (builder) => {
     builder
       .addCase(fetchRepaySettings.pending, (state) => {
@@ -53,13 +62,28 @@ const repaySettingSlice = createSlice({
         state.isFormSubmitting = true
     })
     .addCase(createRepaySettings.fulfilled, (state) => {
-        state.isFormSubmitting = false
+      state.isFormSubmitting = false;
+      state.isSuccess=1
+      toast.success("Form submission completed")
     })
     .addCase(createRepaySettings.rejected, (state, action) => {
         state.isFormSubmitting = false
-        state.error = action.payload as string
+        state.error = action.payload as string;
     })
+    .addCase(updateRepaySettings.pending,(state, action) => {
+      state.isFormSubmitting = true;
+    })
+    .addCase(updateRepaySettings.fulfilled, (state, action) => {
+      state.isFormSubmitting = false;
+      state.isSuccess=1
+      toast.success("Details updated successfully")
+    })
+    .addCase(updateRepaySettings.rejected, (state, action) => {
+      state.isFormSubmitting = false;
+      state.error = action.payload as string;
+    })
+    
   },
 });
-
+export const {resetSuccess} =  repaySettingSlice.actions
 export default repaySettingSlice.reducer;

@@ -1,6 +1,6 @@
 /**************************************************************************
 * File			: apiUpdateArScheduleArchive.go
-* DESCRIPTION	: This file contains functions for update ArSchedule archive
+* DESCRIPTION	: This file contains functions for update ar schedule archive
 						setter handler
 * DATE			: 23-Jan-2024
 **************************************************************************/
@@ -39,7 +39,7 @@ func HandleUpdateArScheduleArchiveRequest(resp http.ResponseWriter, req *http.Re
 	defer func() { log.ExitFn(0, "HandleUpdateArScheduleArchiveRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in update ArSchedules Archive request")
+		err = fmt.Errorf("HTTP Request body is null in update ar schedule archive request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -47,15 +47,15 @@ func HandleUpdateArScheduleArchiveRequest(resp http.ResponseWriter, req *http.Re
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update ArSchedules Archive request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update ar schedule archive request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &updateArScheduleArcReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal update ArSchedules Archive request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal update ArSchedules Archive request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal update ar schedule archive request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal update ar schedule archive request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -79,12 +79,12 @@ func HandleUpdateArScheduleArchiveRequest(resp http.ResponseWriter, req *http.Re
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateArScheduleArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Update ArSchedule Archive in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Update ArSchedule Archive", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to update ar schedule archive in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to update ar schedule archive", http.StatusInternalServerError, nil)
 		return
 	}
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "ArSchedule Archive updated with Id: %+v", data)
-	FormAndSendHttpResp(resp, "ArScheule Archive Updated Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "ar schedule archive updated with Id: %+v", data)
+	FormAndSendHttpResp(resp, "Ar Schedule Archive Updated Successfully", http.StatusOK, nil)
 }

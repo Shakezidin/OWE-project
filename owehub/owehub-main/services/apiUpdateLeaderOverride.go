@@ -1,6 +1,6 @@
 /**************************************************************************
 * File			: apiUpdateLeaderOverride.go
-* DESCRIPTION	: This file contains functions for Update LeaderOverride handler
+* DESCRIPTION	: This file contains functions for Update leader override handler
 * DATE			: 24-Apr-2024
 **************************************************************************/
 
@@ -35,7 +35,7 @@ func HandleUpdateLeaderOverrideRequest(resp http.ResponseWriter, req *http.Reque
 	defer func() { log.ExitFn(0, "HandleUpdateLeaderOverrideRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in Update LeaderOverride request")
+		err = fmt.Errorf("HTTP Request body is null in Update leader override request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -43,15 +43,15 @@ func HandleUpdateLeaderOverrideRequest(resp http.ResponseWriter, req *http.Reque
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from Update LeaderOverride request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from Update leader override request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &UpdateLeaderOverrideReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal Update LeaderOverride request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal Update LeaderOverride request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal Update leader override request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal Update leader override request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -61,7 +61,7 @@ func HandleUpdateLeaderOverrideRequest(resp http.ResponseWriter, req *http.Reque
 		(len(UpdateLeaderOverrideReq.PayRate) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -75,13 +75,13 @@ func HandleUpdateLeaderOverrideRequest(resp http.ResponseWriter, req *http.Reque
 	if UpdateLeaderOverrideReq.SalesQ <= float64(0) {
 		err = fmt.Errorf("Invalid SalesQ Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid SalesQ Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Sales Q Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if UpdateLeaderOverrideReq.TeamKwQ <= float64(0) {
 		err = fmt.Errorf("Invalid TeamKwQ  Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid TeamKwQ Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid TeamKwQ Not Allowed. Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -102,13 +102,13 @@ func HandleUpdateLeaderOverrideRequest(resp http.ResponseWriter, req *http.Reque
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateLeaderOverrideFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Add LeaderOverride in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Update LeaderOverride", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to Update leader override in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to Update leader override", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "LeaderOverride Updated with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "LeaderOverride Updated Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "leader override updated with Id: %+v", data["result"])
+	FormAndSendHttpResp(resp, "Leader Override Updated Successfully", http.StatusOK, nil)
 }
