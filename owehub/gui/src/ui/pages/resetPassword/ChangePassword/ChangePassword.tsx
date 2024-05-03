@@ -6,6 +6,9 @@ import { useAppDispatch } from '../../../../redux/hooks';
 import { changePasswordAction } from '../../../../redux/apiActions/authActions';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
+import { ICONS } from '../../../icons/Icons';
+import { useNavigate } from 'react-router-dom';
+import { FaArrowLeft } from "react-icons/fa6";
 
 interface ChangePasswordProps {
     handleOpenNClose: ()=> void
@@ -19,44 +22,128 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({handleOpenNClose}) => {
     const [showNewPassword, setShowNewPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
     const dispatch = useAppDispatch();
-    
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const navigate = useNavigate();
 
-        if (currentPassword.length === 0){
-            toast.info('Please enter current password.')
-        }else if (newPassword.length === 0){
-            toast.info('Please enter new password.')
-        }
-        else if (confirmPassword.length === 0){
-            toast.info('Please enter confirm password.')
-        }else if (confirmPassword !== newPassword){
-            toast.info('Confirm password does not matched with New password.')
-        }else{
+    // const handleSubmit = async (e: React.FormEvent) => {
+    //     e.preventDefault();
 
-            const actionResult = await dispatch(changePasswordAction({ new_password: newPassword, current_password: currentPassword }));
-            const result = unwrapResult(actionResult);
-            if (result.status === HTTP_STATUS.OK) {
-               toast.success(result.message);
-               localStorage.setItem('is_password_change_required','false')
-               window.location.reload()
+    //     if (currentPassword.length === 0){
+    //         toast.info('Please enter current password.')
+    //     }else if (newPassword.length === 0){
+    //         toast.info('Please enter new password.')
+    //     }
+    //     else if (confirmPassword.length === 0){
+    //         toast.info('Please enter confirm password.')
+    //     }else if (confirmPassword !== newPassword){
+    //         toast.info('Confirm password does not matched with New password.')
+    //     }else{
+
+    //         const actionResult = await dispatch(changePasswordAction({ new_password: newPassword, current_password: currentPassword }));
+    //         const result = unwrapResult(actionResult);
+    //         if (result.status === HTTP_STATUS.OK) {
+    //            toast.success(result.message);
+    //            localStorage.setItem('is_password_change_required','false')
+    //            window.location.reload()
              
-            }else{
-              toast.error(result.message);
-            }
-        }
-    };
+    //         }else{
+    //           toast.error(result.message);
+    //         }
+    //     }
+    // };
+
+
+    const validatePassword = (password: string) => {
+      const minLength = 8;
+      const hasUppercase = /[A-Z]/.test(password);
+      const hasLowercase = /[a-z]/.test(password);
+      const hasNumber = /\d/.test(password);
+      const hasSpecialChar = /[!@#$%^&*]/.test(password);
+  
+      if (password.length < minLength) {
+          return 'Password must be at least 8 characters long.';
+      }
+      if (!hasUppercase) {
+          return 'Password must contain at least one uppercase letter.';
+      }
+      if (!hasLowercase) {
+          return 'Password must contain at least one lowercase letter.';
+      }
+      if (!hasNumber) {
+          return 'Password must contain at least one number.';
+      }
+      if (!hasSpecialChar) {
+          return 'Password must contain at least one special character (!@#$%^&*).';
+      }
+  
+      return '';
+  };
+  
+  let debounceTimer: NodeJS.Timeout | null = null;
+  
+  const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+  
+      const debounceDelay = 1000;
+  
+      const showToast = (message: string, type: 'info' | 'success' | 'error') => {
+          if (debounceTimer) {
+              clearTimeout(debounceTimer);
+          }
+          debounceTimer = setTimeout(() => {
+              toast[type](message, { autoClose: 2000 });
+          }, debounceDelay);
+      };
+  
+      if (currentPassword.length === 0) {
+          showToast('Please enter current password.', 'info');
+      } else if (newPassword.length === 0) {
+          showToast('Please enter new password.', 'info');
+      } else if (confirmPassword.length === 0) {
+          showToast('Please enter confirm password.', 'info');
+      } else if (confirmPassword !== newPassword) {
+          showToast('Confirm password does not match with New password.', 'info');
+      } else {
+          const newPasswordError = validatePassword(newPassword);
+          if (newPasswordError) {
+              showToast(newPasswordError, 'error');
+          } else if (newPassword === currentPassword) {
+              showToast('New password cannot be the same as the current password.', 'error');
+          } else {
+              const actionResult = await dispatch(
+                  changePasswordAction({
+                      new_password: newPassword,
+                      current_password: currentPassword,
+                  })
+              );
+              const result = unwrapResult(actionResult);
+              if (result.status === HTTP_STATUS.OK) {
+                  showToast(result.message, 'success');
+                  localStorage.setItem('is_password_change_required', 'false');
+                  window.location.reload();
+              } else {
+                  showToast(result.message, 'error');
+              }
+          }
+      }
+  };
+
+
+
+    const handleClose = () => {
+        handleOpenNClose();
+        navigate('/login');
+    }
    
 
     return (
-        <div className="transparent-model">
+        <div className="change-transparent-model">
             <div className="changepass-change-password">
-                {/* <div
+                <div
                     className="changepass-cross-btn"
-                    onClick={handleOpenNClose}
+                    onClick={handleClose}
                 >
-                    <img src={ICONS.cross} alt="" />
-                </div> */}
+                    <FaArrowLeft />
+                </div>
                 <h2>Change Password</h2>
                 <p>Enter the below detail to reset your default password</p>
                 <form style={{alignItems:'center', justifyContent:'center'}} onSubmit={handleSubmit}>
