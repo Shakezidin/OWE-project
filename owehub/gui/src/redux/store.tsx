@@ -31,7 +31,7 @@ import ArSchedule from "./apiSlice/configSlice/config_get_slice/ArSchedule";
 import installConstSlice from "./apiSlice/configSlice/config_get_slice/installConstSlice";
 import ChangePasswordSlice from "./apiSlice/authSlice/ChangePasswordSlice";
 import leaderOverride from "./apiSlice/configSlice/config_get_slice/leaderOverride";
-
+import adderDataSlice from "./apiSlice/configSlice/config_get_slice/adderDataSlice";
 export const store = configureStore({
   reducer: {
     appState: appStateSlice,
@@ -67,7 +67,8 @@ export const store = configureStore({
     arAdjusments,
     ArSchedule,
     installConstSlice,
-    leaderOverride
+    leaderOverride,
+    adderDataSlice
   },
 });
 
