@@ -37,10 +37,11 @@ const UserPieChart:React.FC<UserPieChartProps> = ({ onboardingList }) => {
         <div className="pieChart-section">
           <h2>Onboarding Detail</h2>
         </div>
-        <div style={{ width: "100%", height: "45vh" }}>
+        <div style={{ width: "100%", height: "45vh", outline: 'none' }}>
           <ResponsiveContainer>
-            <PieChart style={{ cursor: "pointer" }}>
+            <PieChart style={{ outline: 'none' }}>
               <Pie
+              style={{outline: 'none'}}
                 dataKey="value"
                 data={onboardingList}
                 label={renderLabel}
@@ -67,6 +68,7 @@ const UserPieChart:React.FC<UserPieChartProps> = ({ onboardingList }) => {
                     fontSize={12}
                     stroke="none" // Border of letters
                     className="label-percentage"
+                    style={{outline: 'none'}}
                     offset={-45}
                   />
               </Pie>
@@ -81,8 +83,9 @@ const UserPieChart:React.FC<UserPieChartProps> = ({ onboardingList }) => {
         </div>
         <div style={{ width: "100%", height: "45vh" }}>
           <ResponsiveContainer>
-            <PieChart style={{ cursor: "pointer" }}>
+            <PieChart  style={{outline: 'none'}}>
               <Pie
+               style={{outline: 'none'}}
                 dataKey="value"
                 data={data2}
                 label={renderLabel}
