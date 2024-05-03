@@ -124,7 +124,7 @@ export const LoginPage = () => {
             "is_password_change_required",
             is_password_change_required
           );
-          navigate(ROUTES.COMMISSION_DASHBOARD);
+          navigate(ROUTES.PROJECT_PERFORMANCE);
         } else {
           showToast(result.message, "error");
         }
