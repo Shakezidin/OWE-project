@@ -31,7 +31,7 @@ const InstallCost = () => {
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const timelinesla_list = useAppSelector(
-    (state) => state.timelineSla.timelinesla_list
+    (state) => state.installConstSlice.data
   );
   //   const loading = useAppSelector((state) => state.timelineSla.loading);
   const error = useAppSelector((state) => state.timelineSla.error);

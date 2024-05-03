@@ -30,7 +30,9 @@ import repPaySettingsSlice from "./apiSlice/configSlice/config_get_slice/repPayS
 import ArSchedule from "./apiSlice/configSlice/config_get_slice/ArSchedule";
 import installConstSlice from "./apiSlice/configSlice/config_get_slice/installConstSlice";
 import ChangePasswordSlice from "./apiSlice/authSlice/ChangePasswordSlice";
+import leaderOverride from "./apiSlice/configSlice/config_get_slice/leaderOverride";
 import rateAdjustmentsSlice from "./apiSlice/configSlice/config_get_slice/rateAdjustmentsSlice";
+import reconcileSlice from "./apiSlice/configSlice/config_get_slice/reconcileSlice";
 
 export const store = configureStore({
   reducer: {
@@ -67,7 +69,10 @@ export const store = configureStore({
     arAdjusments,
     ArSchedule,
     installConstSlice,
+    leaderOverride,
     rateAdjustment:rateAdjustmentsSlice,
+    reconcile:reconcileSlice,
+
   },
 });
 
