@@ -12,31 +12,35 @@ import {paySaleTypeData } from "../../../../resources/static_data/StaticData";
 import { repPaySettingModel } from "../../../../core/models/configuration/create/repPaySettingModel";
 import SelectOption from "../../../components/selectOption/SelectOption";
 import { format } from "date-fns";
-import { createRepaySettings } from "../../../../redux/apiActions/repPayAction";
-import { useAppDispatch } from "../../../../redux/hooks";
+import { createRepaySettings , RepayEditParams,updateRepaySettings} from "../../../../redux/apiActions/repPayAction";
+import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
+import { resetSuccess } from "../../../../redux/apiSlice/configSlice/config_get_slice/repPaySettingsSlice"
 
 interface createRepPayProps {
     handleClose: () => void,
     editMode:boolean,
+    editData:RepayEditParams | null
+
     
 }
 
 
-const CreateRepPaySettings:React.FC<createRepPayProps> = ({handleClose,editMode}) => {
+const CreateRepPaySettings:React.FC<createRepPayProps> = ({handleClose,editMode, editData}) => {
     const dispatch = useAppDispatch();
+    const { isSuccess } = useAppSelector(state => state.ArSchedule)
     const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
     const [newFormData,setNewFormData] = useState<any>([])
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
-    const [createRePayData, setCreatePayData] = useState<repPaySettingModel>(
+    const [createRePayData, setCreatePayData] = useState(
         {
-            unique_id:"1234567sfsfds89kjj",
-            name:"",
-            state:"",
-            pay_scale:"",
-            position:"",
-            b_e:"",
-            start_date:"",
-            end_date:"",
+            unique_id: editData?.unique_id || "1235",
+            name: editData?.name || "",
+            state: editData?.state || "",
+            pay_scale:editData?.pay_scale || "",
+            position:editData?.position || "",
+            b_e:editData?.b_e || "",
+            start_date:editData?.start_date || "",
+            end_date:editData?.end_date || "",
           }
     )
 
@@ -85,8 +89,8 @@ const CreateRepPaySettings:React.FC<createRepPayProps> = ({handleClose,editMode}
  
 const handleSubmit = (e: React.FormEvent) => {
   e.preventDefault()
-  dispatch(createRepaySettings({
-    
+ 
+     const data = {
       unique_id: "1234567skdrwfs89",
       name: createRePayData.name,
       state: createRePayData.state,
@@ -95,12 +99,28 @@ const handleSubmit = (e: React.FormEvent) => {
       b_e: createRePayData.b_e,
       start_date: createRePayData.start_date,
       end_date: createRePayData.end_date,
-    
-  }))
+     }
+ 
+  if(editMode){
+    dispatch(updateRepaySettings({...data,record_id:editData?.record_id!}))
+        }else{
+          dispatch(
+            createRepaySettings(data)
+          );
+        }
+
 }
 
  
- 
+useEffect(() => {
+  if (isSuccess) {
+    handleClose()
+  }
+
+  return (() => {
+    isSuccess && dispatch(resetSuccess())
+  })
+}, [isSuccess])
     return (
         <div className="transparent-model">
              <form  className="modal"  onSubmit={handleSubmit}>
