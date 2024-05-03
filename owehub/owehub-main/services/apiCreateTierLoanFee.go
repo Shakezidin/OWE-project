@@ -1,7 +1,6 @@
 /**************************************************************************
 * File			: apiCreateTierLoanFee.go
-* DESCRIPTION	: This file contains functions for create tier loan fee
-						setter handler
+* DESCRIPTION	: This file contains functions for create tier loan fee handler
 * DATE			: 23-Jan-2024
 **************************************************************************/
 
@@ -36,7 +35,7 @@ func HandleCreateTierLoanFeeRequest(resp http.ResponseWriter, req *http.Request)
 	defer func() { log.ExitFn(0, "HandleCreateTierLoanFeeRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in create Tier Loan Fee request")
+		err = fmt.Errorf("HTTP Request body is null in create tier loan fee request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -44,15 +43,15 @@ func HandleCreateTierLoanFeeRequest(resp http.ResponseWriter, req *http.Request)
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create Tier Loan Fee request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create tier loan fee request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &createTierLoanFee)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal create Tier Loan Fee request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal create Tier Loan Fee request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal create tier loan fee request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal create tier loan fee request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -80,13 +79,13 @@ func HandleCreateTierLoanFeeRequest(resp http.ResponseWriter, req *http.Request)
 	// Call the database function
 	result, err = db.CallDBFunction(db.CreateTierLoanFeeFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Add Tier Loan Fee in DB with err: %v", err)
+		log.FuncErrorTrace(0, "Failed to Add tier loan fee in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Create Tier Loan Fee", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "Tier Loan Fee created with Id: %+v", data["result"])
+	log.DBTransDebugTrace(0, "tier loan fee created with Id: %+v", data["result"])
 	FormAndSendHttpResp(resp, "Tier Loan Fee Created Successfully", http.StatusOK, nil)
 }

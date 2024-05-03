@@ -35,7 +35,7 @@ func HandleCreateArScheduleRequest(resp http.ResponseWriter, req *http.Request) 
 	defer func() { log.ExitFn(0, "HandleCreateArScheduleRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in create ArSchedule request")
+		err = fmt.Errorf("HTTP Request body is null in create ar schedule request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -43,15 +43,15 @@ func HandleCreateArScheduleRequest(resp http.ResponseWriter, req *http.Request) 
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create ArSchedule request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create ar schedule request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &createArScheduleReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal create ArSchedule request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal create ArSchedule request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal create ar schedule request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal create ar schedule request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -86,13 +86,13 @@ func HandleCreateArScheduleRequest(resp http.ResponseWriter, req *http.Request) 
 	// Call the database function
 	result, err = db.CallDBFunction(db.CreateArScheduleFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Add ArSchedule in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Create ArSchedule", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to Add Ar Schedule in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to Create Ar Schedule", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "ArSchedule created with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "ArSchedule Created Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "New ar schedule created with Id: %+v", data["result"])
+	FormAndSendHttpResp(resp, "Ar Schedule Created Successfully", http.StatusOK, nil)
 }

@@ -1,7 +1,6 @@
 /**************************************************************************
 * File			: apiCreateSaleType.go
-* DESCRIPTION	: This file contains functions for create sale type
-						setter handler
+* DESCRIPTION	: This file contains functions for create sale type handler
 * DATE			: 23-Jan-2024
 **************************************************************************/
 
@@ -70,12 +69,12 @@ func HandleCreateSaleTypeRequest(resp http.ResponseWriter, req *http.Request) {
 	result, err = db.CallDBFunction(db.CreateSaleTypeFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add sale type in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Create sale type", http.StatusInternalServerError, nil)
+		FormAndSendHttpResp(resp, "Failed to Create Sale Type", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "sale type created with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "sale type Created Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "Sale type created with Id: %+v", data["result"])
+	FormAndSendHttpResp(resp, "Sale Type Created Successfully", http.StatusOK, nil)
 }

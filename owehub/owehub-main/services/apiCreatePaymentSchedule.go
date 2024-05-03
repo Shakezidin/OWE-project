@@ -36,7 +36,7 @@ func HandleCreatePaymentScheduleRequest(resp http.ResponseWriter, req *http.Requ
 	defer func() { log.ExitFn(0, "HandleCreatePaymentScheduleRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in create Payment Schedule request")
+		err = fmt.Errorf("HTTP Request body is null in create payment schedule request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -44,14 +44,14 @@ func HandleCreatePaymentScheduleRequest(resp http.ResponseWriter, req *http.Requ
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create Payment Schedule request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create payment schedule request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &createPaymentSchedule)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal create Payment Schedule request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to unmarshal create payment schedule request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to unmarshal create Payment Schedule request", http.StatusBadRequest, nil)
 		return
 	}
@@ -87,13 +87,13 @@ func HandleCreatePaymentScheduleRequest(resp http.ResponseWriter, req *http.Requ
 	// Call the database function
 	result, err = db.CallDBFunction(db.CreatePaymentScheduleFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Add Payment Schedule in DB with err: %v", err)
+		log.FuncErrorTrace(0, "Failed to Add payment schedule in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Create Payment Schedule", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "Payment Schedule created with Id: %+v", data["result"])
+	log.DBTransDebugTrace(0, "New payment schedule created with Id: %+v", data["result"])
 	FormAndSendHttpResp(resp, "Payment Schedule Created Successfully", http.StatusOK, nil)
 }
