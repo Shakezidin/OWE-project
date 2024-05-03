@@ -64,9 +64,9 @@ func HandleCreateTimelineSlaRequest(resp http.ResponseWriter, req *http.Request)
 		return
 	}
 	if createTimelineSla.Days <= 0 {
-		err = fmt.Errorf("Invalid Sla days Not Allowed")
+		err = fmt.Errorf("Invalid days Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Sla days Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Days Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 	// Populate query parameters in the correct order
@@ -80,12 +80,12 @@ func HandleCreateTimelineSlaRequest(resp http.ResponseWriter, req *http.Request)
 	result, err = db.CallDBFunction(db.CreateTimelineSlaFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add timeline sla in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Create timeline sla", http.StatusInternalServerError, nil)
+		FormAndSendHttpResp(resp, "Failed to Create Timeline Sla", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "timeline sla created with Id: %+v", data["result"])
+	log.DBTransDebugTrace(0, "New timeline sla created with Id: %+v", data["result"])
 	FormAndSendHttpResp(resp, "timeline sla Created Successfully", http.StatusOK, nil)
 }

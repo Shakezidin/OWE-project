@@ -1,5 +1,5 @@
 /**************************************************************************
- * File       	   : apiGetARData.go
+ * File       	   : apiGetAR.go
  * DESCRIPTION     : This file contains functions for get AR data handler
  * DATE            : 01-May-2024
  **************************************************************************/
@@ -98,35 +98,35 @@ func HandleGetARDataRequest(resp http.ResponseWriter, req *http.Request) {
 		// PayScale
 		PayScale, ok := item["pay_scale"].(string)
 		if !ok || PayScale == "" {
-			log.FuncErrorTrace(0, "Failed to get PayScale for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get pay scale for Record ID %v. Item: %+v\n", RecordId, item)
 			PayScale = ""
 		}
 
 		// Position
 		Position, ok := item["position"].(string)
 		if !ok || Position == "" {
-			log.FuncErrorTrace(0, "Failed to get Position for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get position for Record ID %v. Item: %+v\n", RecordId, item)
 			Position = ""
 		}
 
 		// Adjustment
 		Adjustment, ok := item["adjustment"].(string)
 		if !ok || Adjustment == "" {
-			log.FuncErrorTrace(0, "Failed to get Adjustment for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get adjustment for Record ID %v. Item: %+v\n", RecordId, item)
 			Adjustment = ""
 		}
 
 		// MinRate
 		MinRate, ok := item["min_rate"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get MinRate for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get min rate for Record ID %v. Item: %+v\n", RecordId, item)
 			MinRate = 0.0
 		}
 
 		// MaxRate
 		MaxRate, ok := item["max_rate"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get MaxRate for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get max rate for Record ID %v. Item: %+v\n", RecordId, item)
 			MaxRate = 0.0
 		}
 
@@ -150,8 +150,8 @@ func HandleGetARDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	data, err = db.ReteriveFromDB(queryForAlldata, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get ar_import data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get ar_import data from DB", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get AR data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get AR data from DB", http.StatusBadRequest, nil)
 		return
 	}
 	RecordCount = int64(len(data))

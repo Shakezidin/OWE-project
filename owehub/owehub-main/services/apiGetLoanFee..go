@@ -41,7 +41,7 @@ func HandleGetLoanFeeDataRequest(resp http.ResponseWriter, req *http.Request) {
 	defer func() { log.ExitFn(0, "HandleGetLoanFeeDataRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in get LoanFee data request")
+		err = fmt.Errorf("HTTP Request body is null in get loan fee data request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -49,15 +49,15 @@ func HandleGetLoanFeeDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get LoanFee data request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get loan fee data request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal get LoanFee data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get LoanFee data Request body", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal get loan fee data request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal get loan fee data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -78,8 +78,8 @@ func HandleGetLoanFeeDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get LoanFee data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get LoanFee data from DB", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get loan fee data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get loan fee data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -95,63 +95,63 @@ func HandleGetLoanFeeDataRequest(resp http.ResponseWriter, req *http.Request) {
 		// Unique_id
 		Unique_id, ok := item["unique_id"].(string)
 		if !ok || Unique_id == "" {
-			log.FuncErrorTrace(0, "Failed to get Unique_id for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get unique_id for Record ID %v. Item: %+v\n", RecordId, item)
 			Unique_id = ""
 		}
 
 		// Dealer_name
 		Dealer_name, ok := item["dealer_name"].(string)
 		if !ok || Dealer_name == "" {
-			log.FuncErrorTrace(0, "Failed to get Dealer_name for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get dealer_name for Record ID %v. Item: %+v\n", RecordId, item)
 			Dealer_name = ""
 		}
 
 		// Installer
 		Installer, ok := item["installer"].(string)
 		if !ok || Installer == "" {
-			log.FuncErrorTrace(0, "Failed to get Installer for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get installer for Record ID %v. Item: %+v\n", RecordId, item)
 			Installer = ""
 		}
 
 		// state_name
 		State_name, ok := item["state_name"].(string)
 		if !ok || State_name == "" {
-			log.FuncErrorTrace(0, "Failed to get State_name for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get state_name for Record ID %v. Item: %+v\n", RecordId, item)
 			State_name = ""
 		}
 
 		// Loan_type
 		Loan_type, ok := item["loan_type"].(string)
 		if !ok || Loan_type == "" {
-			log.FuncErrorTrace(0, "Failed to get Loan_type for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get loan type for Record ID %v. Item: %+v\n", RecordId, item)
 			Loan_type = ""
 		}
 
 		// Owe_cost
 		Owe_cost, ok := item["owe_cost"].(float64)
 		if !ok || Owe_cost == 0.0 {
-			log.FuncErrorTrace(0, "Failed to get Owe_cost for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get owe cost for Record ID %v. Item: %+v\n", RecordId, item)
 			Owe_cost = 0.0
 		}
 
 		// Dlr_Mu
 		Dlr_Mu, ok := item["dlr_mu"].(string)
 		if !ok || Dlr_Mu == "" {
-			log.FuncErrorTrace(0, "Failed to get Dlr_Mu for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get dlr mu for Record ID %v. Item: %+v\n", RecordId, item)
 			Dlr_Mu = ""
 		}
 
 		// Dlr_Cost
 		Dlr_Cost, ok := item["dlr_cost"].(string)
 		if !ok || Dlr_Cost == "" {
-			log.FuncErrorTrace(0, "Failed to get Dlr_Cost for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get dlr cost for Record ID %v. Item: %+v\n", RecordId, item)
 			Dlr_Cost = ""
 		}
 
 		// start_date
 		Start_date, ok := item["start_date"].(string)
 		if !ok || Start_date == "" {
-			log.FuncErrorTrace(0, "Failed to get start_date for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
 			Start_date = ""
 		}
 
@@ -185,14 +185,14 @@ func HandleGetLoanFeeDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	data, err = db.ReteriveFromDB(queryForAlldata, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get LoanFee data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get LoanFee data from DB", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get loan fee data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get loan fee data from DB", http.StatusBadRequest, nil)
 		return
 	}
 	RecordCount = int64(len(data))
 	// Send the response
-	log.FuncInfoTrace(0, "Number of LoanFee List fetched : %v list %+v", len(LoanFeeList.LoanFeeList), LoanFeeList)
-	FormAndSendHttpResp(resp, "LoanFee Data", http.StatusOK, LoanFeeList, RecordCount)
+	log.FuncInfoTrace(0, "Number of loan fee List fetched : %v list %+v", len(LoanFeeList.LoanFeeList), LoanFeeList)
+	FormAndSendHttpResp(resp, "Loan Fee Data", http.StatusOK, LoanFeeList, RecordCount)
 }
 
 /******************************************************************************

@@ -36,7 +36,7 @@ func HandleCreateDealerTierRequest(resp http.ResponseWriter, req *http.Request) 
 	defer func() { log.ExitFn(0, "HandleCreateDealerTierRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in create Dealer Tier request")
+		err = fmt.Errorf("HTTP Request body is null in create dealer tier request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -44,14 +44,14 @@ func HandleCreateDealerTierRequest(resp http.ResponseWriter, req *http.Request) 
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create Dealer Tier request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create dealer tier request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &createDealertierReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal create Dealer Tier request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to unmarshal create dealer tier request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to unmarshal create Dealer Tier request", http.StatusBadRequest, nil)
 		return
 	}
@@ -73,13 +73,13 @@ func HandleCreateDealerTierRequest(resp http.ResponseWriter, req *http.Request) 
 	// Call the database function
 	result, err = db.CallDBFunction(db.CreateDealerTierFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Add Dealer Tier in DB with err: %v", err)
+		log.FuncErrorTrace(0, "Failed to Add dealer tier in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Create Dealer Tier", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "Dealer Tier created with Id: %+v", data["result"])
+	log.DBTransDebugTrace(0, "New dealer tier created with Id: %+v", data["result"])
 	FormAndSendHttpResp(resp, "Dealer Tier Created Successfully", http.StatusOK, nil)
 }

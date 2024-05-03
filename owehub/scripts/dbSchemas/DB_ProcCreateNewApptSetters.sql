@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION create_appt_setters(
+CREATE OR REPLACE FUNCTION create_new_appt_setters(
     p_unique_id character varying,
     p_name character varying,
     p_team_name character varying,

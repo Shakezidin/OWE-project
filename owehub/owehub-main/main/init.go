@@ -1315,6 +1315,24 @@ var apiRoutes = ApiRoutes{
 			types.RoleAdmin,
 		},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_adderdata_archive",
+		apiHandler.HandleUpdateAdderDataArchiveRequest,
+		false,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_adderdata",
+		apiHandler.HandleGetAdderDataRequest,
+		false,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
 }
 
 /******************************************************************************

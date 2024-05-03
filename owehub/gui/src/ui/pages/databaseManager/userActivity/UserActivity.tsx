@@ -29,6 +29,8 @@ const UserActivity: React.FC = () => {
   // const [columns, setColumns] = useState<string[]>([]);
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
   const itemsPerPage = 5;
+  const [isOpenChangePassword, setIsOpenChangePassword] = useState(localStorage.getItem('is_password_change_required') === 'true');
+
 
 
 
@@ -58,7 +60,7 @@ const UserActivity: React.FC = () => {
 
 
   const filter = () => {
-    setFilterOpen(true);
+    setIsOpenChangePassword(true);
   }
 
   if (loading) {
@@ -147,7 +149,7 @@ const UserActivity: React.FC = () => {
           onPressImport={() => { }}
           showImportIcon={false}
           showSelectIcon={true}
-          showFilterIcon={false}
+          showFilterIcon={true}
           selectMarginLeft="-37px"
         />
         <div
@@ -245,6 +247,10 @@ const UserActivity: React.FC = () => {
               currentPageData={currentPageData}
             /> : null
           }
+           {isOpenChangePassword &&  <ChangePassword handleOpenNClose={()=>{
+          setIsOpenChangePassword(!isOpenChangePassword)
+        }}/>}
+
         </div>
       </div>
 

@@ -35,7 +35,7 @@ func HandleCreateRateAdjustmentsRequest(resp http.ResponseWriter, req *http.Requ
 	defer func() { log.ExitFn(0, "HandleCreateRateAdjustmentsRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in create RateAdjustments request")
+		err = fmt.Errorf("HTTP Request body is null in create rate adjustments request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -43,15 +43,15 @@ func HandleCreateRateAdjustmentsRequest(resp http.ResponseWriter, req *http.Requ
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create RateAdjustments request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create rate adjustments request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &createRateAdjustmentsReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal create RateAdjustments request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal create RateAdjustments request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal create rate adjustments request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal create Rate Adjustments request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -65,16 +65,16 @@ func HandleCreateRateAdjustmentsRequest(resp http.ResponseWriter, req *http.Requ
 	}
 
 	if createRateAdjustmentsReq.MinRate <= float64(0) {
-		err = fmt.Errorf("Invalid MinRate Not Allowed")
+		err = fmt.Errorf("Invalid Min Rate Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid MinRate Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Min Rate Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if createRateAdjustmentsReq.MaxRate <= float64(0) {
-		err = fmt.Errorf("Invalid MaxRate Not Allowed")
+		err = fmt.Errorf("Invalid Max Rate Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid MaxRate Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Max Rate Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -91,13 +91,13 @@ func HandleCreateRateAdjustmentsRequest(resp http.ResponseWriter, req *http.Requ
 	// Call the database function
 	result, err = db.CallDBFunction(db.CreateRateAdjustmentsFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Add RateAdjustments in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Create RateAdjustments", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to Add rate adjustments in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to Create Rate Adjustments", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "RateAdjustments created with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "RateAdjustments Created Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "New rate adjustments created with Id: %+v", data["result"])
+	FormAndSendHttpResp(resp, "Rate Adjustments Created Successfully", http.StatusOK, nil)
 }

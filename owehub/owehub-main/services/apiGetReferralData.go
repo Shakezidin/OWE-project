@@ -41,7 +41,7 @@ func HandleGetReferralDataRequest(resp http.ResponseWriter, req *http.Request) {
 	defer func() { log.ExitFn(0, "HandleGetReferralDataRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in get Referral Data data request")
+		err = fmt.Errorf("HTTP Request body is null in get referral data request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -49,15 +49,15 @@ func HandleGetReferralDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get Referral data request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get referral data request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal get Referral data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get Referral data Request body", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal get referral data request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal get referral data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -80,8 +80,8 @@ func HandleGetReferralDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get Referral data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get Referral data from DB", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get referral data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get referral data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -103,21 +103,21 @@ func HandleGetReferralDataRequest(resp http.ResponseWriter, req *http.Request) {
 		// new_customer
 		NewCustomer, ok := item["new_customer"].(string)
 		if !ok || NewCustomer == "" {
-			log.FuncErrorTrace(0, "Failed to get new_customer for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get new customer for Record ID %v. Item: %+v\n", RecordId, item)
 			NewCustomer = ""
 		}
 
 		// referrer_serial
 		ReferrerSerial, ok := item["referrer_serial"].(string)
 		if !ok || ReferrerSerial == "" {
-			log.FuncErrorTrace(0, "Failed to get referrer_serial for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get referrer serial for Record ID %v. Item: %+v\n", RecordId, item)
 			ReferrerSerial = ""
 		}
 
 		// referrer_name
 		ReferrerName, ok := item["referrer_name"].(string)
 		if !ok || ReferrerName == "" {
-			log.FuncErrorTrace(0, "Failed to get referrer_name for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get referrer name for Record ID %v. Item: %+v\n", RecordId, item)
 			ReferrerName = ""
 		}
 
@@ -166,14 +166,14 @@ func HandleGetReferralDataRequest(resp http.ResponseWriter, req *http.Request) {
 		// sys_size
 		SysSize, ok := item["sys_size"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get sys_size for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get sys size for Record ID %v. Item: %+v\n", RecordId, item)
 			SysSize = 0.0
 		}
 
 		// rep_count
 		RepCount, ok := item["rep_count"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get rep_count for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get rep count for Record ID %v. Item: %+v\n", RecordId, item)
 			RepCount = 0.0
 		}
 
@@ -257,14 +257,14 @@ func HandleGetReferralDataRequest(resp http.ResponseWriter, req *http.Request) {
 		// start_date
 		StartDate, ok := item["start_date"].(string)
 		if !ok || StartDate == "" {
-			log.FuncErrorTrace(0, "Failed to get start_date for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
 			StartDate = ""
 		}
 
 		// end_date
 		EndDate, ok := item["end_date"].(*string)
 		if !ok || EndDate == nil {
-			log.FuncErrorTrace(0, "Failed to get end_date for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get end date for Record ID %v. Item: %+v\n", RecordId, item)
 			EndDate = nil
 		}
 
@@ -314,7 +314,7 @@ func HandleGetReferralDataRequest(resp http.ResponseWriter, req *http.Request) {
 	RecordCount = int64(len(data))
 
 	// Send the response
-	log.FuncInfoTrace(0, "Number of Referral Data List fetched : %v list %+v", len(ReferralDataList.ReferralDataList), ReferralDataList)
+	log.FuncInfoTrace(0, "Number of referral data list fetched : %v list %+v", len(ReferralDataList.ReferralDataList), ReferralDataList)
 	FormAndSendHttpResp(resp, "Referral Data", http.StatusOK, ReferralDataList, RecordCount)
 }
 

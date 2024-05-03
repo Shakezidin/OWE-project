@@ -1,5 +1,5 @@
 /**************************************************************************
- * File       	   : apiGetArImportData.go
+ * File       	   : apiGetArImport.go
  * DESCRIPTION     : This file contains functions for get ArImport data handler
  * DATE            : 22-Jan-2024
  **************************************************************************/
@@ -41,7 +41,7 @@ func HandleGetArImportDataRequest(resp http.ResponseWriter, req *http.Request) {
 	defer func() { log.ExitFn(0, "HandleGetArImportDataRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in get ArImport data request")
+		err = fmt.Errorf("HTTP Request body is null in get ar import data request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -49,15 +49,15 @@ func HandleGetArImportDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get ArImport data request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get ar import data request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal get ArImport data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get ArImport data Request body", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal get ar import data request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal get ar import data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -73,8 +73,8 @@ func HandleGetArImportDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get ArImport data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get ArImport data from DB", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get ar import data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get ar import data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -84,14 +84,14 @@ func HandleGetArImportDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 		RecordId, ok := item["record_id"].(int64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get record_id for Record ID %v. Item: %+v\n", RecordId, item)
 			continue
 		}
 
 		// Unique_id
 		Unique_id, ok := item["unique_id"].(string)
 		if !ok || Unique_id == "" {
-			log.FuncErrorTrace(0, "Failed to get Unique_id for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get unique_id for Record ID %v. Item: %+v\n", RecordId, item)
 			Unique_id = ""
 		}
 
@@ -142,14 +142,14 @@ func HandleGetArImportDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	data, err = db.ReteriveFromDB(queryForAlldata, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get ar_import data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get ar_import data from DB", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get ar import data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get ar import data from DB", http.StatusBadRequest, nil)
 		return
 	}
 	RecordCount = int64(len(data))
 	// Send the response
-	log.FuncInfoTrace(0, "Number of ArImport List fetched : %v list %+v", len(ArImportList.ArImportList), ArImportList)
-	FormAndSendHttpResp(resp, "ArImport Data", http.StatusOK, ArImportList, RecordCount)
+	log.FuncInfoTrace(0, "Number of ar import List fetched : %v list %+v", len(ArImportList.ArImportList), ArImportList)
+	FormAndSendHttpResp(resp, "Ar Import Data", http.StatusOK, ArImportList, RecordCount)
 }
 
 /******************************************************************************

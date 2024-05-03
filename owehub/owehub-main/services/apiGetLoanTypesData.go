@@ -41,7 +41,7 @@ func HandleGetLoanTypesDataRequest(resp http.ResponseWriter, req *http.Request) 
 	defer func() { log.ExitFn(0, "HandleGetLoanTypesDataRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in get loan data request")
+		err = fmt.Errorf("HTTP Request body is null in get loan type data request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -49,15 +49,15 @@ func HandleGetLoanTypesDataRequest(resp http.ResponseWriter, req *http.Request) 
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get loan data request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get loan type data request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal get loan data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get loan data Request body", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal get loan type data request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal get loan type data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -89,26 +89,27 @@ func HandleGetLoanTypesDataRequest(resp http.ResponseWriter, req *http.Request) 
 		// Convert fields from item
 		productCode, codeOk := item["product_code"].(string)
 		if !codeOk || productCode == "" {
-			log.FuncErrorTrace(0, "Failed to get loan type code Item: %+v\n", item)
+			log.FuncErrorTrace(0, "Failed to get product for Record ID %v. Item: %+v\n", RecordId, item)
 			productCode = ""
 		}
 
 		activeVal, ok := item["active"].(int64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get active Item: %+v\n", item)
+			log.FuncErrorTrace(0, "Failed to get active for Record ID %v. Item: %+v\n", RecordId, item)
 			activeVal = 0 // Assigning 0 as default for activeVal
 		}
 		active := int(activeVal)
 
 		adderVal, ok := item["adder"].(int64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get adder Item: %+v\n", item)
+			log.FuncErrorTrace(0, "Failed to get adder for Record ID %v. Item: %+v\n", RecordId, item)
 			adderVal = 0 // Assigning 0 as default for adderVal
 		}
 		adder := int(adderVal)
 
 		description, descOk := item["description"].(string)
 		if !descOk || description == "" {
+			log.FuncErrorTrace(0, "Failed to get description for Record ID %v. Item: %+v\n", RecordId, item)
 			description = ""
 		}
 
@@ -136,8 +137,8 @@ func HandleGetLoanTypesDataRequest(resp http.ResponseWriter, req *http.Request) 
 	}
 	RecordCount = int64(len(data))
 	// Send the response
-	log.FuncInfoTrace(0, "Number of loan List fetched : %v list %+v", len(loansList.LoanTypeList), loansList)
-	FormAndSendHttpResp(resp, "Loan Data", http.StatusOK, loansList, RecordCount)
+	log.FuncInfoTrace(0, "Number of loan type list fetched : %v list %+v", len(loansList.LoanTypeList), loansList)
+	FormAndSendHttpResp(resp, "Loan Type Data", http.StatusOK, loansList, RecordCount)
 }
 
 /******************************************************************************

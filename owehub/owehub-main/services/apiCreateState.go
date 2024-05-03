@@ -83,5 +83,5 @@ func HandleCreateStateRequest(resp http.ResponseWriter, req *http.Request) {
 	data := result[0].(map[string]interface{})
 
 	log.DBTransDebugTrace(0, "states created with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "states Created Successfully", http.StatusOK, nil)
+	FormAndSendHttpResp(resp, "States Created Successfully", http.StatusOK, nil)
 }

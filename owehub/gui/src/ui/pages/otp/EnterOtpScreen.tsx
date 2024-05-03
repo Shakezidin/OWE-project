@@ -14,6 +14,27 @@ import { HTTP_STATUS } from "../../../core/models/api_models/RequestModel";
 import { toast } from "react-toastify";
 import Loading from "../../components/loader/Loading";
 
+const PasswordInput = (props: {
+  placeholder: string;
+  name: string;
+  value: string;
+  onChange: Parameters<typeof Input>[0]["onChange"];
+}) => {
+  const [shouldShow, setShouldShow] = useState(false);
+
+  return (
+    <Input
+      type={shouldShow ? "text" : "password"}
+      value={props.value}
+      name={props.name}
+      placeholder={props.placeholder}
+      onChange={props.onChange}
+      isTypePassword={true}
+      onClickEyeIcon={() => setShouldShow((v) => !v)}
+    />
+  );
+};
+
 const EnterOtpScreen = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -102,16 +123,14 @@ const EnterOtpScreen = () => {
                 onChange={handleInputChange}
               />
               <br />
-              <Input
-                type={"password"}
+              <PasswordInput
                 value={otpCred.new_password}
                 name="new_password"
                 placeholder={"New Password"}
                 onChange={handleInputChange}
               />
               <br />
-              <Input
-                type={"password"}
+              <PasswordInput
                 value={otpCred.confirm_password}
                 name="confirm_password"
                 placeholder={"Confirm Password"}
