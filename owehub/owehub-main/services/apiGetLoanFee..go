@@ -64,7 +64,7 @@ func HandleGetLoanFeeDataRequest(resp http.ResponseWriter, req *http.Request) {
 	tableName := db.TableName_LoanFee
 	query = `
 	   SELECT lf.id as record_id, lf.unique_id, ud.name AS dealer_name, pt.partner_name AS installer, st.name AS state_name, lt.product_code AS loan_type,
-	   lf.owe_cost, lf.dlr_mu, lf.dlr_cost, lf.is_archived
+	   lf.owe_cost, lf.dlr_mu, lf.dlr_cost
 	   FROM loan_fee lf
 	   JOIN user_details ud ON ud.user_id = lf.dealer_id
 	   JOIN partners pt ON pt.partner_id = lf.installer
@@ -148,13 +148,6 @@ func HandleGetLoanFeeDataRequest(resp http.ResponseWriter, req *http.Request) {
 			Dlr_Cost = ""
 		}
 
-		// is_archived
-		IsArchived, ok := item["is_archived"].(bool)
-		if !ok || !IsArchived {
-			log.FuncErrorTrace(0, "Failed to get is_archived value for Record ID %v. Item: %+v\n", RecordId, item)
-			IsArchived = false
-		}
-
 		// start_date
 		Start_date, ok := item["start_date"].(string)
 		if !ok || Start_date == "" {
@@ -170,18 +163,17 @@ func HandleGetLoanFeeDataRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 
 		LoanFeeData := models.GetLoanFee{
-			RecordId:    RecordId,
-			UniqueID:    Unique_id,
-			Dealer:      Dealer_name,
-			Installer:   Installer,
-			State:       State_name,
-			LoanType:    Loan_type,
-			OweCost:     Owe_cost,
-			DlrMu:       Dlr_Mu,
-			DlrCost:     Dlr_Cost,
-			Is_Archived: IsArchived,
-			StartDate:   Start_date,
-			EndDate:     EndDate,
+			RecordId:  RecordId,
+			UniqueID:  Unique_id,
+			Dealer:    Dealer_name,
+			Installer: Installer,
+			State:     State_name,
+			LoanType:  Loan_type,
+			OweCost:   Owe_cost,
+			DlrMu:     Dlr_Mu,
+			DlrCost:   Dlr_Cost,
+			StartDate: Start_date,
+			EndDate:   EndDate,
 		}
 		LoanFeeList.LoanFeeList = append(LoanFeeList.LoanFeeList, LoanFeeData)
 	}
@@ -288,7 +280,7 @@ func PrepareLoanFeeFilters(tableName string, dataFilter models.DataRequestBody, 
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY lf.id, lf.unique_id, ud.name, pt.partner_name, st.name, lt.product_code,lf.owe_cost, lf.dlr_mu, lf.dlr_cost, lf.is_archived")
+		filtersBuilder.WriteString(" GROUP BY lf.id, lf.unique_id, ud.name, pt.partner_name, st.name, lt.product_code, lf.owe_cost, lf.dlr_mu, lf.dlr_cost")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {

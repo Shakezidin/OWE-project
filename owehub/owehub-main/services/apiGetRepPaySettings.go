@@ -26,12 +26,15 @@ import (
  ******************************************************************************/
 func HandleGetRepPaySettingsDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err          error
-		dataReq      models.DataRequestBody
-		data         []map[string]interface{}
-		whereEleList []interface{}
-		query        string
-		filter       string
+		err             error
+		dataReq         models.DataRequestBody
+		data            []map[string]interface{}
+		whereEleList    []interface{}
+		query           string
+		queryWithFiler  string
+		queryForAlldata string
+		filter          string
+		RecordCount     int64
 	)
 
 	log.EnterFn(0, "HandleGetRepPaySettingsDataRequest")
@@ -61,16 +64,16 @@ func HandleGetRepPaySettingsDataRequest(resp http.ResponseWriter, req *http.Requ
 	tableName := db.TableName_RepPaySettingss
 	query = `
 	 SELECT rs.id AS record_id, rs.unique_id, rs.name, st.name AS state_name, rs.pay_scale, rs.position,
-	 rs.b_e, rs.is_archived, rs.start_date, rs.end_date
+	 rs.b_e, rs.start_date, rs.end_date
 	 FROM rep_pay_settings rs
 	 JOIN states st ON st.state_id = rs.state_id`
 
-	filter, whereEleList = PrepareRepPaySettingsFilters(tableName, dataReq)
+	filter, whereEleList = PrepareRepPaySettingsFilters(tableName, dataReq, false)
 	if filter != "" {
-		query += filter
+		queryWithFiler = query + filter
 	}
 
-	data, err = db.ReteriveFromDB(query, whereEleList)
+	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get RepPaySettings data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get RepPaySettings data from DB", http.StatusBadRequest, nil)
@@ -115,11 +118,6 @@ func HandleGetRepPaySettingsDataRequest(resp http.ResponseWriter, req *http.Requ
 			B_e = ""
 		}
 
-		Is_archived, archivedOk := item["is_archived"].(bool)
-		if !archivedOk || !Is_archived {
-			Is_archived = false
-		}
-
 		Start_date, start_dateOk := item["start_date"].(string)
 		if !start_dateOk || Start_date == "" {
 			Start_date = ""
@@ -132,23 +130,35 @@ func HandleGetRepPaySettingsDataRequest(resp http.ResponseWriter, req *http.Requ
 
 		// Create a new GetSaleTypeData object
 		RepPaySettingsData := models.GetRepPaySettingsData{
-			RecordId:    RecordId,
-			UniqueID:    Unique_id,
-			Name:        Name,
-			State:       State_name,
-			PayScale:    Pay_scale,
-			Position:    Position,
-			B_E:         B_e,
-			Is_archived: Is_archived,
-			StartDate:   Start_date,
-			EndDate:     End_date,
+			RecordId:  RecordId,
+			UniqueID:  Unique_id,
+			Name:      Name,
+			State:     State_name,
+			PayScale:  Pay_scale,
+			Position:  Position,
+			B_E:       B_e,
+			StartDate: Start_date,
+			EndDate:   End_date,
 		}
 
 		RepPaySettingsList.RepPaySettingsList = append(RepPaySettingsList.RepPaySettingsList, RepPaySettingsData)
 	}
+
+	filter, whereEleList = PrepareRepPaySettingsFilters(tableName, dataReq, true)
+	if filter != "" {
+		queryForAlldata = query + filter
+	}
+
+	data, err = db.ReteriveFromDB(queryForAlldata, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get rep_pay settings data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get rep_pay settings data from DB", http.StatusBadRequest, nil)
+		return
+	}
+	RecordCount = int64(len(data))
 	// Send the response
 	log.FuncInfoTrace(0, "Number of RepPaySettings List fetched : %v list %+v", len(RepPaySettingsList.RepPaySettingsList), RepPaySettingsList)
-	FormAndSendHttpResp(resp, "RepPaySettings Data", http.StatusOK, RepPaySettingsList)
+	FormAndSendHttpResp(resp, "RepPaySettings Data", http.StatusOK, RepPaySettingsList, RecordCount)
 }
 
 /******************************************************************************
@@ -157,7 +167,7 @@ func HandleGetRepPaySettingsDataRequest(resp http.ResponseWriter, req *http.Requ
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
-func PrepareRepPaySettingsFilters(tableName string, dataFilter models.DataRequestBody) (filters string, whereEleList []interface{}) {
+func PrepareRepPaySettingsFilters(tableName string, dataFilter models.DataRequestBody, forDataCount bool) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PrepareMarketingFeesFilters")
 	defer func() { log.ExitFn(0, "PrepareMarketingFeesFilters", nil) }()
 
@@ -240,10 +250,14 @@ func PrepareRepPaySettingsFilters(tableName string, dataFilter models.DataReques
 		filtersBuilder.WriteString("rs.is_archived = FALSE")
 	}
 
-	// Add pagination logic
-	if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
-		offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
-		filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+	if forDataCount == true {
+		filtersBuilder.WriteString(" GROUP BY rs.id, rs.unique_id, rs.name, st.name, rs.pay_scale, rs.position, rs.b_e, rs.start_date, rs.end_date")
+	} else {
+		// Add pagination logic
+		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
+			filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+		}
 	}
 
 	filters = filtersBuilder.String()

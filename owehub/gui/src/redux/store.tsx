@@ -29,11 +29,14 @@ import arAdjusments from "./apiSlice/configSlice/config_get_slice/arAdjusments";
 import repPaySettingsSlice from "./apiSlice/configSlice/config_get_slice/repPaySettingsSlice";
 import ArSchedule from "./apiSlice/configSlice/config_get_slice/ArSchedule";
 import installConstSlice from "./apiSlice/configSlice/config_get_slice/installConstSlice";
+import ChangePasswordSlice from "./apiSlice/authSlice/ChangePasswordSlice";
+
 export const store = configureStore({
   reducer: {
     appState: appStateSlice,
     auth: authReducer,
     resetPassword: resetPasswordSlice,
+    changePassword:ChangePasswordSlice,
     comm: commissionReducer,
     dealer: dealerReducer,
     marketing: marketingReducer,

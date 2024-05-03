@@ -26,12 +26,15 @@ import (
  ******************************************************************************/
 func HandleGetTimelineSlasDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err          error
-		dataReq      models.DataRequestBody
-		data         []map[string]interface{}
-		whereEleList []interface{}
-		query        string
-		filter       string
+		err             error
+		dataReq         models.DataRequestBody
+		data            []map[string]interface{}
+		whereEleList    []interface{}
+		query           string
+		queryWithFiler  string
+		queryForAlldata string
+		filter          string
+		RecordCount     int64
 	)
 
 	log.EnterFn(0, "HandleGetTimelineSlasDataRequest")
@@ -62,15 +65,14 @@ func HandleGetTimelineSlasDataRequest(resp http.ResponseWriter, req *http.Reques
 	query = `
 	SELECT tlsa.id as record_id, tlsa.type_m2m, st.name as state, tlsa.days, tlsa.start_date, tlsa.end_date
 	FROM timeline_sla tlsa
-	JOIN states st ON tlsa.state_id = st.state_id
-	`
+	JOIN states st ON tlsa.state_id = st.state_id`
 
-	filter, whereEleList = PrepareTimelineSlaFilters(tableName, dataReq)
+	filter, whereEleList = PrepareTimelineSlaFilters(tableName, dataReq, false)
 	if filter != "" {
-		query += filter
+		queryWithFiler = query + filter
 	}
 
-	data, err = db.ReteriveFromDB(query, whereEleList)
+	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get timeline sla data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get timeline sla data from DB", http.StatusBadRequest, nil)
@@ -124,13 +126,6 @@ func HandleGetTimelineSlasDataRequest(resp http.ResponseWriter, req *http.Reques
 			EndDate = ""
 		}
 
-		// is_archived
-		IsArchived, ok := item["is_archived"].(bool)
-		if !ok || !IsArchived {
-			log.FuncErrorTrace(0, "Failed to get is_archived value for Record ID %v. Item: %+v\n", RecordId, item)
-			IsArchived = false
-		}
-
 		// Create a new GetTimelineSlaData object
 		tlsData := models.GetTimelineSlaData{
 			RecordId:  RecordId,
@@ -145,9 +140,22 @@ func HandleGetTimelineSlasDataRequest(resp http.ResponseWriter, req *http.Reques
 		timelineSlaList.TimelineSlaList = append(timelineSlaList.TimelineSlaList, tlsData)
 	}
 
+	filter, whereEleList = PrepareTimelineSlaFilters(tableName, dataReq, true)
+	if filter != "" {
+		queryForAlldata = query + filter
+	}
+
+	data, err = db.ReteriveFromDB(queryForAlldata, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get time_lin sla data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get time_lin sla data from DB", http.StatusBadRequest, nil)
+		return
+	}
+	RecordCount = int64(len(data))
+
 	// Send the response
 	log.FuncInfoTrace(0, "Number of timeline sla List fetched : %v list %+v", len(timelineSlaList.TimelineSlaList), timelineSlaList)
-	FormAndSendHttpResp(resp, "timeline sla Data", http.StatusOK, timelineSlaList)
+	FormAndSendHttpResp(resp, "timeline sla Data", http.StatusOK, timelineSlaList, RecordCount)
 }
 
 /******************************************************************************
@@ -156,7 +164,7 @@ func HandleGetTimelineSlasDataRequest(resp http.ResponseWriter, req *http.Reques
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
-func PrepareTimelineSlaFilters(tableName string, dataFilter models.DataRequestBody) (filters string, whereEleList []interface{}) {
+func PrepareTimelineSlaFilters(tableName string, dataFilter models.DataRequestBody, forDataCount bool) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PrepareTimelineSlaFilters")
 	defer func() { log.ExitFn(0, "PrepareTimelineSlaFilters", nil) }()
 
@@ -216,10 +224,14 @@ func PrepareTimelineSlaFilters(tableName string, dataFilter models.DataRequestBo
 		filtersBuilder.WriteString("tlsa.is_archived = FALSE")
 	}
 
-	// Add pagination logic
-	if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
-		offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
-		filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+	if forDataCount == true {
+		filtersBuilder.WriteString(" GROUP BY tlsa.id, tlsa.type_m2m, st.name, tlsa.days, tlsa.start_date, tlsa.end_date")
+	} else {
+		// Add pagination logic
+		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
+			filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+		}
 	}
 
 	filters = filtersBuilder.String()

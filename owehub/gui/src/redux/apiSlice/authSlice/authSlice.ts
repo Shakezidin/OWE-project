@@ -10,6 +10,7 @@ interface AuthState {
   role_name: string | null;
   access_token: string | null;
   isAuthenticated: boolean;
+  is_password_change_required: boolean;
   status: number | null;
 }
 
@@ -21,6 +22,7 @@ const initialState: AuthState = {
   access_token: localStorage.getItem("token"),
   isAuthenticated: localStorage.getItem("token") ? true : false,
   status: null,
+  is_password_change_required: localStorage.getItem('is_password_change_required') ? true: false
 };
 
 const authSlice = createSlice({
@@ -64,6 +66,7 @@ const authSlice = createSlice({
           state.role_name = data.role_name;
           state.access_token = data.access_token;
           state.isAuthenticated = true;
+          state.is_password_change_required = data.is_password_change_required      
         }
       })
       .addCase(loginAction.rejected, (state: AuthState, action) => {

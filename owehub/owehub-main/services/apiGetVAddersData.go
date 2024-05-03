@@ -26,12 +26,15 @@ import (
  ******************************************************************************/
 func HandleGetVAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err          error
-		dataReq      models.DataRequestBody
-		data         []map[string]interface{}
-		whereEleList []interface{}
-		query        string
-		filter       string
+		err             error
+		dataReq         models.DataRequestBody
+		data            []map[string]interface{}
+		whereEleList    []interface{}
+		query           string
+		queryWithFiler  string
+		queryForAlldata string
+		filter          string
+		RecordCount     int64
 	)
 
 	log.EnterFn(0, "HandleGetVAdderDataRequest")
@@ -60,15 +63,15 @@ func HandleGetVAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	tableName := db.TableName_v_adders
 	query = `
-	SELECT vadd.id as record_id, vadd.adder_name, vadd.adder_type, vadd.price_type, vadd.price_amount, vadd.active, vadd.description
+	SELECT vadd.id as record_id, vadd.adder_name, vadd.adder_type, vadd.price_type, vadd.price_amount, vadd.active, vadd.description, vadd.is_archived
 	FROM v_adders vadd`
 
-	filter, whereEleList = PrepareFilters(tableName, dataReq)
+	filter, whereEleList = PrepareVAdderFilters(tableName, dataReq, false)
 	if filter != "" {
-		query += filter
+		queryWithFiler = query + filter
 	}
 
-	data, err = db.ReteriveFromDB(query, whereEleList)
+	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get v adders data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get v adders data from DB", http.StatusBadRequest, nil)
@@ -126,13 +129,6 @@ func HandleGetVAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 			Description = ""
 		}
 
-		// is_archived
-		IsArchived, ok := item["is_archived"].(bool)
-		if !ok || !IsArchived {
-			log.FuncErrorTrace(0, "Failed to get is_archived value for Record ID %v. Item: %+v\n", RecordId, item)
-			IsArchived = false
-		}
-
 		// Create a new GetVAdderData object
 		vaddersData := models.GetVAdderData{
 			RecordId:    RecordId,
@@ -148,9 +144,22 @@ func HandleGetVAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 		vaddersList.VAddersList = append(vaddersList.VAddersList, vaddersData)
 	}
 
+	filter, whereEleList = PrepareVAdderFilters(tableName, dataReq, true)
+	if filter != "" {
+		queryForAlldata = query + filter
+	}
+
+	data, err = db.ReteriveFromDB(queryForAlldata, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get vadder data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get vadder data from DB", http.StatusBadRequest, nil)
+		return
+	}
+	RecordCount = int64(len(data))
+
 	// Send the response
 	log.FuncInfoTrace(0, "Number of v adders List fetched : %v list %+v", len(vaddersList.VAddersList), vaddersList)
-	FormAndSendHttpResp(resp, "v adders Data", http.StatusOK, vaddersList)
+	FormAndSendHttpResp(resp, "v adders Data", http.StatusOK, vaddersList, RecordCount)
 }
 
 /******************************************************************************
@@ -159,7 +168,7 @@ func HandleGetVAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
-func PrepareVAdderFilters(tableName string, dataFilter models.DataRequestBody) (filters string, whereEleList []interface{}) {
+func PrepareVAdderFilters(tableName string, dataFilter models.DataRequestBody, forDataCount bool) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PrepareVAdderFilters")
 	defer func() { log.ExitFn(0, "PrepareVAdderFilters", nil) }()
 
@@ -239,10 +248,14 @@ func PrepareVAdderFilters(tableName string, dataFilter models.DataRequestBody) (
 		filtersBuilder.WriteString("vadd.is_archived = FALSE")
 	}
 
-	// Add pagination logic
-	if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
-		offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
-		filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+	if forDataCount == true {
+		filtersBuilder.WriteString(" GROUP BY vadd.id, vadd.adder_name, vadd.adder_type, vadd.price_type, vadd.price_amount, vadd.active, vadd.description")
+	} else {
+		// Add pagination logic
+		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
+			filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+		}
 	}
 
 	filters = filtersBuilder.String()

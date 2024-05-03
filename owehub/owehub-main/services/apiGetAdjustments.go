@@ -11,7 +11,6 @@ import (
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	"strings"
-	"time"
 
 	"encoding/json"
 	"fmt"
@@ -147,10 +146,10 @@ func HandleGetAdjustmentsDataRequest(resp http.ResponseWriter, req *http.Request
 		}
 
 		// Date
-		DateStr, ok := item["date"].(time.Time)
-		if !ok || DateStr.IsZero() {
+		DateStr, ok := item["date"].(string)
+		if !ok || DateStr == "" {
 			log.FuncErrorTrace(0, "Failed to get date for Unique ID %v. Item: %+v\n", UniqueId, item)
-			DateStr = time.Time{}
+			DateStr = ""
 		}
 
 		// Notes
@@ -158,12 +157,6 @@ func HandleGetAdjustmentsDataRequest(resp http.ResponseWriter, req *http.Request
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get notes for Unique ID %v. Item: %+v\n", UniqueId, item)
 			Notes = "" // Default notes value of ""
-		}
-
-		IsArchived, ok := item["is_archived"].(bool)
-		if !ok || !IsArchived {
-			log.FuncErrorTrace(0, "Failed to get is_archived value for Record ID %v. Item: %+v\n", RecordId, item)
-			IsArchived = false
 		}
 
 		// Amount
@@ -188,6 +181,7 @@ func HandleGetAdjustmentsDataRequest(resp http.ResponseWriter, req *http.Request
 		}
 
 		adjustmentData := models.GetAdjustments{
+			RecordId:      RecordId,
 			UniqueId:      UniqueId,
 			Customer:      Customer,
 			PartnerName:   PartnerName,
@@ -199,7 +193,6 @@ func HandleGetAdjustmentsDataRequest(resp http.ResponseWriter, req *http.Request
 			Date:          DateStr,
 			Notes:         Notes,
 			Amount:        Amount,
-			IsArchived:    IsArchived,
 			StartDate:     StartDate,
 			EndDate:       EndDate,
 		}
@@ -281,7 +274,7 @@ func PrepareAdjustmentsFilters(tableName string, dataFilter models.DataRequestBo
 				filtersBuilder.WriteString(fmt.Sprintf("ad.epc %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "date":
-				filtersBuilder.WriteString(fmt.Sprintf("ad.date %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.date) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "notes":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.notes) %s LOWER($%d)", operator, len(whereEleList)+1))
@@ -315,7 +308,6 @@ func PrepareAdjustmentsFilters(tableName string, dataFilter models.DataRequestBo
 	}
 
 	if forDataCount == true {
-		// filtersBuilder.WriteString(" GROUP BY ad.id,  ad.unique_id, ad.customer, ad.sys_size, ad.bl, ad.epc, ad.date, ad.notes, ad.amount, pr_partner.partner_name, pr_installer.partner_name, st.name, ad.start_date, ad.end_date")
 		filtersBuilder.WriteString(" GROUP BY ad.id, ad.unique_id, ad.customer, ad.sys_size, ad.bl, ad.epc, ad.date, ad.notes, ad.amount, ad.start_date, ad.end_date, pr_partner.partner_name, pr_installer.partner_name, st.name")
 	} else {
 		// Add pagination logic

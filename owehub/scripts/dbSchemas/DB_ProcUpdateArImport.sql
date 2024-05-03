@@ -1,10 +1,10 @@
 CREATE OR REPLACE FUNCTION update_ar_import(
     p_id INT,
-    p_unique_id               VARCHAR,
-    p_customer                VARCHAR,
-    p_date                    VARCHAR,
-    p_amount                  VARCHAR,
-    p_notes                   VARCHAR,
+    p_unique_id VARCHAR,
+    p_customer VARCHAR,
+    p_date VARCHAR,
+    p_amount VARCHAR,
+    p_notes VARCHAR,
     OUT v_ar_import_id INT
 )
 RETURNS INT 
@@ -20,7 +20,8 @@ BEGIN
         updated_at = CURRENT_TIMESTAMP
     WHERE id = p_id
     RETURNING id INTO v_ar_import_id;
-IF NOT FOUND THEN
+    
+    IF NOT FOUND THEN
         RAISE EXCEPTION 'Record with ID % not found in ar_import table', p_id;
     END IF;
 

@@ -12,9 +12,8 @@
   text-align: left;
   color: var(--para-color);
 }
-.admin-user{
+.admin-user {
   margin-top: 1.2rem;
-
 }
 .user-new-button {
   display: flex;
@@ -39,9 +38,8 @@
   background-color: white;
   margin-top: 0.5rem;
   border-radius: 16px 16px 0px 0px;
-  padding:0rem 1rem 1rem 1rem;
+  padding: 0rem 1rem 1rem 1rem;
 }
-
 
 /* .rate-input-field select {
   width: Fixed (180px)px;
@@ -146,4 +144,10 @@ opacity: 0px;
   color: #344054 !important;
   font-weight: 500;
   border-radius: 0.25rem;
+}
+
+.user-table {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }

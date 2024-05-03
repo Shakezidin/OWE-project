@@ -1,6 +1,6 @@
 /**************************************************************************
  * File       	   : apiGetDealerCreditData.go
- * DESCRIPTION     : This file contains functions to get Referral data handler
+ * DESCRIPTION     : This file contains functions to get DealerCredit data handler
  * DATE            : 22-Jan-2024
  **************************************************************************/
 
@@ -20,25 +20,28 @@ import (
 
 /******************************************************************************
  * FUNCTION:		HandleGetDealerCreditDataRequest
- * DESCRIPTION:     handler for get Referral data request
+ * DESCRIPTION:     handler for get DealerCredit data request
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
 func HandleGetDealerCreditDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err          error
-		dataReq      models.DataRequestBody
-		data         []map[string]interface{}
-		whereEleList []interface{}
-		query        string
-		filter       string
+		err             error
+		dataReq         models.DataRequestBody
+		data            []map[string]interface{}
+		whereEleList    []interface{}
+		query           string
+		queryWithFiler  string
+		queryForAlldata string
+		filter          string
+		RecordCount     int64
 	)
 
 	log.EnterFn(0, "HandleGetDealerCreditDataRequest")
 	defer func() { log.ExitFn(0, "HandleGetDealerCreditDataRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in get Dealer Credit data request")
+		err = fmt.Errorf("HTTP Request body is null in get DealerCredit Credit data request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -63,17 +66,17 @@ func HandleGetDealerCreditDataRequest(resp http.ResponseWriter, req *http.Reques
     dc.end_date, ud.name AS dealer_name , dc.dealer_dba, dc.exact_amount, dc.per_kw_amount,
     dc.approved_by, dc.notes, dc.total_amount, dc.sys_size
 	FROM dealer_credit dc
-	JOIN user_details ud ON ud.user_id = dc.dealer_id;`
+	JOIN user_details ud ON ud.user_id = dc.dealer_id`
 
-	filter, whereEleList = PrepareDealerFilters(tableName, dataReq)
+	filter, whereEleList = PrepareDealerCreditFilters(tableName, dataReq, false)
 	if filter != "" {
-		query += filter
+		queryWithFiler = query + filter
 	}
 
-	data, err = db.ReteriveFromDB(query, whereEleList)
+	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get Dealer Credit data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get Dealer Credit data from DB", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get dealer credit data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get dealer credit data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -187,9 +190,22 @@ func HandleGetDealerCreditDataRequest(resp http.ResponseWriter, req *http.Reques
 		DealerCreditDataList.DealerCreditList = append(DealerCreditDataList.DealerCreditList, DealerCreditData)
 	}
 
+	filter, whereEleList = PrepareDealerCreditFilters(tableName, dataReq, true)
+	if filter != "" {
+		queryForAlldata = query + filter
+	}
+
+	data, err = db.ReteriveFromDB(queryForAlldata, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get dealer credit data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get dealer credit data from DB", http.StatusBadRequest, nil)
+		return
+	}
+	RecordCount = int64(len(data))
+
 	// Send the response
 	log.FuncInfoTrace(0, "Number of Dealer Credit List fetched : %v list %+v", len(DealerCreditDataList.DealerCreditList), DealerCreditDataList)
-	FormAndSendHttpResp(resp, "Dealer Credit Data", http.StatusOK, DealerCreditDataList)
+	FormAndSendHttpResp(resp, "Dealer Credit Data", http.StatusOK, DealerCreditDataList, RecordCount)
 }
 
 /******************************************************************************
@@ -198,15 +214,17 @@ func HandleGetDealerCreditDataRequest(resp http.ResponseWriter, req *http.Reques
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
-func PrepareDealerCreditFilters(tableName string, dataFilter models.DataRequestBody) (filters string, whereEleList []interface{}) {
+func PrepareDealerCreditFilters(tableName string, dataFilter models.DataRequestBody, forDataCount bool) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PrepareDealerCreditFilters")
 	defer func() { log.ExitFn(0, "PrepareDealerCreditFilters", nil) }()
 
 	var filtersBuilder strings.Builder
+	whereAdded := false // Flag to track if WHERE clause has been added
 
 	// Check if there are filters
 	if len(dataFilter.Filters) > 0 {
 		filtersBuilder.WriteString(" WHERE ")
+		whereAdded = true // Set flag to true as WHERE clause is added
 
 		for i, filter := range dataFilter.Filters {
 			// Check if the column is a foreign key
@@ -270,12 +288,32 @@ func PrepareDealerCreditFilters(tableName string, dataFilter models.DataRequestB
 		}
 	}
 
-	// Add pagination logic
-	if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
-		offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
-		filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+	// Handle the Archived field
+	if dataFilter.Archived {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+		}
+		filtersBuilder.WriteString("dc.is_archived = TRUE")
+	} else {
+		if whereAdded {
+			filtersBuilder.WriteString(" AND ")
+		} else {
+			filtersBuilder.WriteString(" WHERE ")
+		}
+		filtersBuilder.WriteString("dc.is_archived = FALSE")
 	}
 
+	if forDataCount == true {
+		filtersBuilder.WriteString(" GROUP BY dc.id, dc.unique_id, dc.customer, dc.start_date, dc.end_date, ud.name, dc.dealer_dba, dc.exact_amount, dc.per_kw_amount, dc.approved_by, dc.notes, dc.total_amount, dc.sys_size")
+	} else {
+		// Add pagination logic
+		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
+			filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+		}
+	}
 	filters = filtersBuilder.String()
 
 	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)

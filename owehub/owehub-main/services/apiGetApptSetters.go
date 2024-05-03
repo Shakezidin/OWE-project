@@ -116,13 +116,6 @@ func HandleGetApptSettersDataRequest(resp http.ResponseWriter, req *http.Request
 			PayRate = ""
 		}
 
-		// is_archived
-		IsArchived, ok := item["is_archived"].(bool)
-		if !ok || !IsArchived {
-			log.FuncErrorTrace(0, "Failed to get is_archived value for Record ID %v. Item: %+v\n", RecordId, item)
-			IsArchived = false
-		}
-
 		// StartDate
 		StartDate, ok := item["start_date"].(string)
 		if !ok || StartDate == "" {
@@ -138,14 +131,13 @@ func HandleGetApptSettersDataRequest(resp http.ResponseWriter, req *http.Request
 		}
 
 		ApptSettersData := models.GetApptSettersReq{
-			RecordId:   RecordId,
-			UniqueId:   UniqueId,
-			Name:       Name,
-			TeamName:   Team_name,
-			PayRate:    PayRate,
-			IsArchived: IsArchived,
-			StartDate:  StartDate,
-			EndDate:    EndDate,
+			RecordId:  RecordId,
+			UniqueId:  UniqueId,
+			Name:      Name,
+			TeamName:  Team_name,
+			PayRate:   PayRate,
+			StartDate: StartDate,
+			EndDate:   EndDate,
 		}
 		ApptSettersList.ApptSettersList = append(ApptSettersList.ApptSettersList, ApptSettersData)
 	}
@@ -240,7 +232,7 @@ func PrepareApptSettersFilters(tableName string, dataFilter models.DataRequestBo
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY ap.id, ap.unique_id, ap.name, tm.team_name, ap.pay_rate, ap.start_date, ap.end_date, ap.is_archived")
+		filtersBuilder.WriteString(" GROUP BY ap.id, ap.unique_id, ap.name, tm.team_name, ap.pay_rate, ap.start_date, ap.end_date")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {

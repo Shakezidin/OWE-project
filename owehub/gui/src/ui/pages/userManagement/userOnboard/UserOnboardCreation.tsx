@@ -15,6 +15,7 @@ import {
 import { useAppSelector } from "../../../../redux/hooks";
 import Loading from "../../../components/loader/Loading";
 import { ALL_USER_ROLE_LIST } from "../../../../resources/static_data/TypeOfUser";
+import './Userboard.css'
 
 interface createUserProps {
   editMode: boolean;
@@ -34,6 +35,8 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
   regionList,
 }) => {
   const dispatch = useDispatch();
+  const [firstNameError, setFirstNameError] = useState("");
+  const [lastNameError, setLastNameError] = useState("");
   const { loading, formData } = useAppSelector((state) => state.createOnboardUser);
   const [selectTable, setSelectTable] = useState<boolean>(false);
 
@@ -61,19 +64,47 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
     dispatch(updateUserForm({ field: fieldName, value }));
   };
 
+  // const handleInputChange = (
+  //   e:
+  //     | React.ChangeEvent<HTMLInputElement>
+  //     | React.ChangeEvent<HTMLTextAreaElement>
+  // ) => {
+  //   const { name, value } = e.target;
+  //   dispatch(updateUserForm({ field: name, value }));
+  // };
+
+
+
   const handleInputChange = (
     e:
       | React.ChangeEvent<HTMLInputElement>
       | React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    dispatch(updateUserForm({ field: name, value }));
+    if (name === "first_name") {
+      if (/\s/.test(value)) {
+        setFirstNameError("First Name should not contain spaces");
+      } else {
+        setFirstNameError("");
+        dispatch(updateUserForm({ field: name, value }));
+      }
+    } else if (name === "last_name") {
+      if (/\s/.test(value)) {
+        setLastNameError("Last Name should not contain spaces");
+      } else {
+        setLastNameError("");
+        dispatch(updateUserForm({ field: name, value }));
+      }
+    } else {
+      dispatch(updateUserForm({ field: name, value }));
+    }
   };
+
 
   /** render ui */
   return (
     <div className="transparent-model">
-      {loading && <div><Loading/> {loading}</div>}
+      {loading && <div><Loading /> {loading}</div>}
       <form onSubmit={(e) => onSubmitCreateUser(e)} className="modal">
         <div className="createUserCrossButton" onClick={handleClose}>
           <CROSS_BUTTON />
@@ -92,6 +123,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                     onChange={(e) => handleInputChange(e)}
                     name={"first_name"}
                   />
+                  {firstNameError && <p className="error-message">{firstNameError}</p>}
                 </div>
                 <div className="create-input-field">
                   <Input
@@ -102,6 +134,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                     onChange={(e) => handleInputChange(e)}
                     name={"last_name"}
                   />
+                  {lastNameError && <p className="error-message">{lastNameError}</p>}
                 </div>
                 <div className="create-input-field">
                   <label className="inputLabel-select">Role</label>
@@ -138,7 +171,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                 </div>
                 {formData.role_name === "Admin" ||
                 formData.role_name === "SubDealer Owner" ||
-                formData.role_name === "Dealer Owner" ? null : (
+                formData.role_name === "Dealer Owner" || formData.role_name === "Finance" ? null : (
                   <div className="create-input-field">
                     <label className="inputLabel-select">Dealer Owner</label>
                     <SelectOption
@@ -156,20 +189,20 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
               </div>
               <UserBasedInput
                 formData={formData}
-                onChange={(e: any) => handleInputChange(e)} 
-                regionList={regionList} 
-                handleChangeForRegion={(value: any, name: string)=>{
+                onChange={(e: any) => handleInputChange(e)}
+                regionList={regionList}
+                handleChangeForRegion={(value: any, name: string) => {
                   handleChangeForRegion(value, name)
                 }}
 
-                />
+              />
               <div className="">
                 <div className="" style={{ display: "flex", gap: "0.5rem" }}>
                   <CheckBox
                     checked={true}
-                    onChange={() => {}}
+                    onChange={() => { }}
 
-                    // indeterminate={isAnyRowSelected && !isAllRowsSelected}
+                  // indeterminate={isAnyRowSelected && !isAllRowsSelected}
                   />
                   <div className="access-data">
                     <p>Database Access</p>
@@ -251,7 +284,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
             onClick={handleClose}
             type={"button"}
           />
-          <ActionButton title={"Save"} onClick={() => {}} type={"submit"} />
+          <ActionButton title={"Save"} onClick={() => { }} type={"submit"} />
         </div>
       </form>
     </div>

@@ -10,8 +10,13 @@ import FilterModal from "../../components/FilterModal/FilterModal";
 import "react-date-range/dist/styles.css"; // main style file
 import "react-date-range/dist/theme/default.css"; // theme css file
 import { DateRangePicker } from "react-date-range";
+import ChangePassword from "../resetPassword/ChangePassword/ChangePassword";
 
 export const DashboardPage: React.FC = () => {
+
+  const [isOpenChangePassword, setIsOpenChangePassword] = useState(localStorage.getItem('is_password_change_required') === 'true');
+
+
   const [selectionRange, setSelectionRange] = useState({
     startDate: new Date(),
     endDate: new Date(),
@@ -221,6 +226,10 @@ export const DashboardPage: React.FC = () => {
             fetchFunction={() => {}}
           />
         )}
+        {isOpenChangePassword &&  <ChangePassword handleOpenNClose={()=>{
+          setIsOpenChangePassword(!isOpenChangePassword)
+        }}/>}
+       
 
         <div className="" style={{ marginTop: "20px" }}>
           {active === 0 && <DashBoardTable />}

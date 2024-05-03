@@ -11,6 +11,7 @@
 interface Endpoints {
   login: string;
   resetPassword: string;
+  changePassword: string;
   // get config
   commission: string;
   dealer: string;
@@ -22,8 +23,10 @@ interface Endpoints {
   paySchedule: string;
   timeLineSla: string;
   loanType: string;
-  autoAdder:string;
-  repPaySettings:string;
+  autoAdder: string;
+  repPaySettings: string;
+  rateAdjustments:string;
+
 
   // post config
   create_commission: string;
@@ -36,7 +39,10 @@ interface Endpoints {
   create_tierloanfee: string;
   create_timelinesla: string;
   create_loantype: string;
-  create_autoadder:string;
+  create_autoadder: string;
+  create_repaysettings:string;
+  create_rateadjustments:string;
+  
   get_newFormData: string;
   update_commission: string;
   update_autoadder: string;
@@ -71,6 +77,7 @@ interface Endpoints {
 export const EndPoints: Endpoints = {
   login: `login`,
   resetPassword: "forgot_password",
+  changePassword: "change_password",
   // get config endpoints
   commission: "get_commissions",
   dealer: "get_dealers",
@@ -82,13 +89,14 @@ export const EndPoints: Endpoints = {
   paySchedule: "get_paymentschedules",
   timeLineSla: "get_timelineslas",
   loanType: "get_loantypes",
-  autoAdder:"get_autoadder",
-  repPaySettings:"get_rep_pay_settings",
+  autoAdder: "get_autoadder",
+  repPaySettings: "get_rep_pay_settings",
+  rateAdjustments:"get_rateadjustments",
 
   // post config endpoint
   create_commission: "create_commission",
-  create_autoadder:"create_autoadder",
-  update_autoadder:"update_autoadder",
+  create_autoadder: "create_autoadder",
+  update_autoadder: "update_autoadder",
   create_dealer: "create_dealer",
   create_dealertier: "create_dealertier",
   create_loantype: "create_loantype",
@@ -98,7 +106,8 @@ export const EndPoints: Endpoints = {
   create_tierloanfee: "create_tierloanfee",
   create_vadder: "create_vadder",
   create_timelinesla: "create_timelinesla",
-
+  create_repaysettings:"create_rep_pay_settings",
+  create_rateadjustments:"create_rateadjustments",
   // update config point
   update_commission: "update_commission",
   update_dealer: "update_dealer",

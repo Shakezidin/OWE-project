@@ -64,16 +64,17 @@ import ApptSetters from "./ui/pages/configure/apptSetters/ApptSetters";
 import { ARDashboardPage } from "./ui/pages/ar/ardashboard/ardashboard";
 import { useAppDispatch, useAppSelector } from "./redux/hooks";
 import { TYPE_OF_USER } from "./resources/static_data/TypeOfUser";
+import AdderData from "./ui/pages/configure/adderData/AdderData";
+
 
 function App() {
   const dispatch = useAppDispatch();
-  const role = localStorage.getItem("role");
 
   useEffect(() => {
     dispatch(initializeAuth());
   }, [dispatch]);
-  const isAuthenticated = useAppSelector(
-    (state: RootState) => state.auth.isAuthenticated
+  const { isAuthenticated, role_name }= useAppSelector(
+    (state: RootState) => state.auth
   );
 
   /**config and user manangement routes*/
@@ -132,6 +133,7 @@ function App() {
         <Route path={ROUTES.CONFIG_ADJUSTMENTS} element={<Adjustments />} />
         <Route path={ROUTES.CONFIG_RECONCILE} element={<Reconcile />} />
         <Route path={ROUTES.CONFIG_APPSETTERS} element={<ApptSetters />} />
+        <Route path={ROUTES.CONFIG_ADDERDATA} element={<AdderData/>}/>
 
         <Route path={ROUTES.USER_MANAEMENT} element={<UserManagement />} />
       </Route>
@@ -187,18 +189,19 @@ function App() {
           />
           <Route path={ROUTES.AR_DASHBOARD} element={<ARDashboardPage />} />
 
-          {role === TYPE_OF_USER.ADMIN ? (
-            configAndUserManagementRoutes()
+      
+          {role_name === TYPE_OF_USER.ADMIN ? (
+             configAndUserManagementRoutes()
           ) : (
             <></>
           )}
-          {role === TYPE_OF_USER.DEALER_OWNER ||
-          role === TYPE_OF_USER.FINANCE_ADMIN ||
-          role === TYPE_OF_USER.ADMIN ? (
+          {role_name === TYPE_OF_USER.DEALER_OWNER ||
+          role_name === TYPE_OF_USER.FINANCE_ADMIN ||
+          role_name === TYPE_OF_USER.ADMIN ? (
             repayAndProjectManagement()
           ) : (
             <></>
-          )}
+          )} 
           <Route path={ROUTES.ACCOUNT_SETTING} element={<AccountSettings />} />
           <Route path={ROUTES.REPORT} element={<Report />} />
           <Route

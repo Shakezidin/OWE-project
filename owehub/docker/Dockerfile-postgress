@@ -9,122 +9,132 @@ FROM postgres:latest
 # Expose the PostgreSQL default port
 EXPOSE 5432
 
-COPY ./dbSchemas/DB_Create_Schema.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_Create_OWEDB_Schema.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_Create_Config_Schema.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_Create_DlrPay_Schema.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_Create_AR_Schema.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_Create_RepPay_Schema.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/*.sql /docker-entrypoint-initdb.d/
+COPY ./dbSchemas/rawData/*.csv /docker-entrypoint-initdb.d/
 
-COPY ./dbSchemas/rawData/rebate_items.csv /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/rawData/rebate_type.csv /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/rawData/timeline_sla.csv /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/rawData/source.csv /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/rawData/partners.csv /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/rawData/states.csv /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/rawData/rep_type.csv /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/rawData/sale_type.csv /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/rawData/v_user_details.csv /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/rawData/tier.csv /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/rawData/teams.csv /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/rawData/appointment_setters.csv /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/rawData/project_status.csv /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/rawData/adder_type.csv /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/rawData/commission_rates.csv /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_Create_Schema.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_Create_OWEDB_Schema.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_Create_Config_Schema.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_Create_DlrPay_Schema.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_Create_AR_Schema.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_Create_RepPay_Schema.sql /docker-entrypoint-initdb.d/
 
-COPY ./dbSchemas/DB_ProcCreateNewUser.sql /docker-entrypoint-initdb.d/ 
-COPY ./dbSchemas/DB_ProcCreateNewTeam.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcCreateAptSetter.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcSmallSysSizeCalc.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcCommisionTypeCalc.sql  /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcCreateDealerPayExport.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcCreateNewCommission.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcCreateNewDealer.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcCreateNewMarketingFees.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcCreateNewVAdders.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcCreateNewSaleType.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcCreateNewTierLoanFee.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcCreateNewDealerTier.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcCreateNewPaymentSchedule.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcCreateNewTimelineSla.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcCreateNewPartner.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcCreateNewState.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcCreateNewLoanType.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateCommission.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateDealer.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateMarketingFee.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateVAdders.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateSaleType.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateTierLoanFee.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateDealerTier.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdatePaymentSchedule.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateTimelineSla.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateLoanType.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateCommissionArchive.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateDealerArchive.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateMarketingFeesArchive.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateVAddersArchive.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateSaleTypeArchive.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateTierLoanFeeArchive.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateDealerTierArchive.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdatePaymentScheduleArchive.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateTimelineSlaArchive.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateLoanTypeArchive.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcCreateNewAutoAdder.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateAutoAdder.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateAutoAdderArchive.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateUser.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcCreateNewRebateData.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateRebateData.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateRebateDataArchive.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcCreateNewLoanFeeAdder.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateLoanFeeAdder.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateLoanFeeAdderArchive.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcCreateNewReferralData.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcCreateNewDealerCredit.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateDealerCredit.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateDealerCreditArchive.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcCreateNewNonCommDlrPay.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcCreateNewApptSetters.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateApptSetters.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateApptSettersArchive.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateReferralData.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateReferralDataArchive.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcCreateNewDlrOth.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateDlrOth.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateDlrOthArchive.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateNonCommDlrPay.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateNonCommDlrPayArchive.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcCreateNewRepPaySettings.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateRepPaySettings.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateRepPaySettingsArchive.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcCreateNewAdjustments.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateAdjustmentsArchive.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcCreateNewArSchedule.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateArScheduleArchive.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcCreateNewInstallCost.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateInstallCostArchive.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcCreateNewRateAdjustments.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateRateAdjustmentsArchive.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcCreateNewLeaderOverride.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateLeaderOverrideArchive.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcCreateNewAdderResponsibility.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateAdderResponsibility.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateAdderResponsibilityArchive.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcCreateNewAdderCredit.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateAdderCredit.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateAdderCreditArchive.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcCreateNewLoanFee.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateLoanFee.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateLoanFeeArchive.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcCreateNewArImport.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateArImport.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateArImportArchive.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcCreateNewAR.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateAR.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateARArchive.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcCreateNewReconcile.sql /docker-entrypoint-initdb.d/
-COPY ./dbSchemas/DB_ProcUpdateReconcileArchive.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/rawData/rebate_items.csv /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/rawData/rebate_type.csv /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/rawData/timeline_sla.csv /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/rawData/source.csv /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/rawData/partners.csv /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/rawData/states.csv /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/rawData/rep_type.csv /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/rawData/sale_type.csv /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/rawData/v_user_details.csv /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/rawData/tier.csv /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/rawData/teams.csv /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/rawData/appointment_setters.csv /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/rawData/project_status.csv /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/rawData/adder_type.csv /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/rawData/commission_rates.csv /docker-entrypoint-initdb.d/
+
+# COPY ./dbSchemas/DB_ProcCreateNewUser.sql /docker-entrypoint-initdb.d/ 
+# COPY ./dbSchemas/DB_ProcCreateNewTeam.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcCreateAptSetter.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcSmallSysSizeCalc.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcCommisionTypeCalc.sql  /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcCreateDealerPayExport.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcCreateNewCommission.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcCreateNewDealer.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcCreateNewMarketingFees.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcCreateNewVAdders.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcCreateNewSaleType.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcCreateNewTierLoanFee.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcCreateNewDealerTier.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcCreateNewPaymentSchedule.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcCreateNewTimelineSla.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcCreateNewPartner.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcCreateNewState.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcCreateNewLoanType.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateCommission.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateDealer.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateMarketingFee.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateVAdders.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateSaleType.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateTierLoanFee.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateDealerTier.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdatePaymentSchedule.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateTimelineSla.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateLoanType.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateCommissionArchive.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateDealerArchive.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateMarketingFeesArchive.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateVAddersArchive.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateSaleTypeArchive.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateTierLoanFeeArchive.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateDealerTierArchive.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdatePaymentScheduleArchive.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateTimelineSlaArchive.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateLoanTypeArchive.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcCreateNewAutoAdder.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateAutoAdder.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateAutoAdderArchive.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateUser.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcCreateNewRebateData.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateRebateData.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateRebateDataArchive.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcCreateNewLoanFeeAdder.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateLoanFeeAdder.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateLoanFeeAdderArchive.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcCreateNewReferralData.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcCreateNewDealerCredit.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateDealerCredit.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateDealerCreditArchive.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcCreateNewNonCommDlrPay.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcCreateNewApptSetters.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateApptSetters.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateApptSettersArchive.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateReferralData.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateReferralDataArchive.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcCreateNewDlrOth.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateDlrOth.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateDlrOthArchive.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateNonCommDlrPay.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateNonCommDlrPayArchive.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcCreateNewRepPaySettings.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateRepPaySettings.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateRepPaySettingsArchive.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcCreateNewAdjustments.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateAdjustmentsArchive.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcCreateNewArSchedule.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateArScheduleArchive.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcCreateNewInstallCost.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateInstallCostArchive.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcCreateNewRateAdjustments.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateRateAdjustmentsArchive.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcCreateNewLeaderOverride.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateLeaderOverrideArchive.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcCreateNewAdderResponsibility.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateAdderResponsibility.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateAdderResponsibilityArchive.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcCreateNewAdderCredit.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateAdderCredit.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateAdderCreditArchive.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcCreateNewLoanFee.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateLoanFee.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateLoanFeeArchive.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcCreateNewArImport.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateArImport.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateArImportArchive.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcCreateNewAR.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateAR.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateARArchive.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcCreateNewReconcile.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateReconcileArchive.sql /docker-entrypoint-initdb.d/
+
+# COPY ./dbSchemas/DB_ProcUpdateInstallCost.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateLeaderOverride.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateAdjustments.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateRateAdjustments.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateArSchedule.sql /docker-entrypoint-initdb.d/
+# COPY ./dbSchemas/DB_ProcUpdateReconcile.sql /docker-entrypoint-initdb.d/
 
 RUN chmod +x /docker-entrypoint-initdb.d/DB_Create_Schema.sql
 

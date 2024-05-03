@@ -455,6 +455,7 @@ CREATE TABLE auto_adder (
     total_comm float,
     start_date character varying NOT NULL,
     end_date character varying,
+    is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     FOREIGN KEY (state_id) REFERENCES states(state_id),
@@ -742,6 +743,25 @@ CREATE TABLE adder_credit (
     PRIMARY KEY (id)
 );
 
+CREATE TABLE adder_data (
+    id serial NOT NULL,
+    unique_id varchar NOT NULL UNIQUE,
+    date character varying,
+    type_ad_mktg text,
+    type text,
+    gc text,
+    exact_amount text,
+    per_kw_amt DOUBLE PRECISION,
+    rep_percent integer,
+    description character varying,
+    notes character varying,
+    sys_size DOUBLE PRECISION,
+    adder_cal DOUBLE PRECISION,
+    is_archived BOOLEAN DEFAULT FALSE,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone
+);
+
 CREATE TABLE loan_fee (
     id serial NOT NULL,
     unique_id varchar NOT NULL UNIQUE,
@@ -808,26 +828,27 @@ CREATE TABLE appt_setters (
 
 
 CREATE TABLE adjustments (
-     id serial NOT NULL,
-     unique_id varchar NOT NULL UNIQUE,
-     customer character varying,
-     partner INT,
-     installer INT,
-     state INT,
-     sys_size DOUBLE PRECISION,
-     bl character varying,
-     epc FLOAT,
-     date DATE,
-     amount FLOAT,
-     notes character varying,
-     is_archived BOOLEAN DEFAULT FALSE,
-     start_date character varying,
-     end_date character varying,
-     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
-     updated_at timestamp without time zone,
-     FOREIGN KEY (state) REFERENCES states(state_id),
-     FOREIGN KEY (installer) REFERENCES partners(partner_id),
-     FOREIGN KEY (partner) REFERENCES partners(partner_id)
+    id serial NOT NULL,
+    unique_id varchar NOT NULL UNIQUE,
+    customer character varying,
+    partner INT,
+    installer INT,
+    state INT,
+    sys_size DOUBLE PRECISION,
+    bl character varying,
+    epc FLOAT,
+    date DATE,
+    amount FLOAT,
+    notes character varying,
+    is_archived BOOLEAN DEFAULT FALSE,
+    start_date character varying,
+    end_date character varying,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
+    FOREIGN KEY (state) REFERENCES states(state_id),
+    FOREIGN KEY (installer) REFERENCES partners(partner_id),
+    FOREIGN KEY (partner) REFERENCES partners(partner_id),
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE reconcile (
@@ -838,10 +859,12 @@ CREATE TABLE reconcile (
     state_id INT,
     sys_size float,
     status character varying,
-    date date,
+    date character varying,
     amount float,
     notes text,
     is_archived BOOLEAN DEFAULT FALSE,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
     FOREIGN KEY (partner_id) REFERENCES partners(partner_id),
     FOREIGN KEY (state_id) REFERENCES states(state_id),
     PRIMARY KEY (id)

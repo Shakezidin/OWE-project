@@ -108,12 +108,6 @@ func HandleGetInstallCostDataRequest(resp http.ResponseWriter, req *http.Request
 			StartDate = ""
 		}
 
-		IsArchived, ok := item["is_archived"].(bool)
-		if !ok || !IsArchived {
-			log.FuncErrorTrace(0, "Failed to get is_archived value for Record ID %v. Item: %+v\n", RecordId, item)
-			IsArchived = false
-		}
-
 		// EndDate
 		EndDate, ok := item["end_date"].(string)
 		if !ok || EndDate == "" {
@@ -122,12 +116,11 @@ func HandleGetInstallCostDataRequest(resp http.ResponseWriter, req *http.Request
 		}
 
 		installCost := models.GetInstallCost{
-			UniqueId:   UniqueId,
-			RecordId:   RecordId,
-			Cost:       Cost,
-			IsArchived: IsArchived,
-			StartDate:  StartDate,
-			EndDate:    EndDate,
+			RecordId:  RecordId,
+			UniqueId:  UniqueId,
+			Cost:      Cost,
+			StartDate: StartDate,
+			EndDate:   EndDate,
 		}
 		installCostList.InstallCostList = append(installCostList.InstallCostList, installCost)
 	}
@@ -213,7 +206,7 @@ func PrepareInstallCostFilters(tableName string, dataFilter models.DataRequestBo
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY ic.id, ic.unique_id, ic.cost, ic.is_archived,ic.start_date, ic.end_date")
+		filtersBuilder.WriteString(" GROUP BY ic.id, ic.unique_id, ic.cost,ic.start_date, ic.end_date")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {

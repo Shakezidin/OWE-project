@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { generateOTP } from "../../apiActions/authActions";
-import { stat } from "fs";
 
 export interface ResetPasswordModel {
   email: string;

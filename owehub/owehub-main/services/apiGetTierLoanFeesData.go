@@ -26,12 +26,15 @@ import (
  ******************************************************************************/
 func HandleGetTierLoanFeesDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err          error
-		dataReq      models.DataRequestBody
-		data         []map[string]interface{}
-		whereEleList []interface{}
-		query        string
-		filter       string
+		err             error
+		dataReq         models.DataRequestBody
+		data            []map[string]interface{}
+		whereEleList    []interface{}
+		query           string
+		queryWithFiler  string
+		queryForAlldata string
+		filter          string
+		RecordCount     int64
 	)
 
 	log.EnterFn(0, "HandleGetTierLoanFeesDataRequest")
@@ -68,12 +71,12 @@ func HandleGetTierLoanFeesDataRequest(resp http.ResponseWriter, req *http.Reques
 	JOIN loan_type lnt ON tlf.finance_type = lnt.id
 	`
 
-	filter, whereEleList = PrepareTierLoanFeesFilters(tableName, dataReq)
+	filter, whereEleList = PrepareTierLoanFeesFilters(tableName, dataReq, false)
 	if filter != "" {
-		query += filter
+		queryWithFiler = query + filter
 	}
 
-	data, err = db.ReteriveFromDB(query, whereEleList)
+	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get tier loan fee data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get tier loan fee data from DB", http.StatusBadRequest, nil)
@@ -177,9 +180,22 @@ func HandleGetTierLoanFeesDataRequest(resp http.ResponseWriter, req *http.Reques
 		tierLoanFeeList.TierLoanFeeList = append(tierLoanFeeList.TierLoanFeeList, vaddersData)
 	}
 
+	filter, whereEleList = PrepareTierLoanFeesFilters(tableName, dataReq, true)
+	if filter != "" {
+		queryForAlldata = query + filter
+	}
+
+	data, err = db.ReteriveFromDB(queryForAlldata, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get tier loan fee data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get tier loan fee data from DB", http.StatusBadRequest, nil)
+		return
+	}
+	RecordCount = int64(len(data))
+
 	// Send the response
 	log.FuncInfoTrace(0, "Number of tier loan fee List fetched : %v list %+v", len(tierLoanFeeList.TierLoanFeeList), tierLoanFeeList)
-	FormAndSendHttpResp(resp, "tier loan fee Data", http.StatusOK, tierLoanFeeList)
+	FormAndSendHttpResp(resp, "tier loan fee Data", http.StatusOK, tierLoanFeeList, RecordCount)
 }
 
 /******************************************************************************
@@ -188,7 +204,7 @@ func HandleGetTierLoanFeesDataRequest(resp http.ResponseWriter, req *http.Reques
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
-func PrepareTierLoanFeesFilters(tableName string, dataFilter models.DataRequestBody) (filters string, whereEleList []interface{}) {
+func PrepareTierLoanFeesFilters(tableName string, dataFilter models.DataRequestBody, forDataCount bool) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PrepareTierLoanFeesFilters")
 	defer func() { log.ExitFn(0, "PrepareTierLoanFeesFilters", nil) }()
 
@@ -257,10 +273,14 @@ func PrepareTierLoanFeesFilters(tableName string, dataFilter models.DataRequestB
 		filtersBuilder.WriteString("tlf.is_archived = FALSE")
 	}
 
-	// Add pagination logic
-	if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
-		offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
-		filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+	if forDataCount == true {
+		filtersBuilder.WriteString(" GROUP BY tlf.id, tr.tier_name, ptr.partner_name, st.name, lnt.product_code, tlf.owe_cost, tlf.dlr_mu, tlf.dlr_cost, tlf.start_date, tlf.end_date")
+	} else {
+		// Add pagination logic
+		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
+			filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+		}
 	}
 
 	filters = filtersBuilder.String()

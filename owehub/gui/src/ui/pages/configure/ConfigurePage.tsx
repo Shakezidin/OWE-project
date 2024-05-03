@@ -44,7 +44,6 @@ const ConfigurePage: React.FC = () => {
       data: [
         { title: "AR", route: ROUTES.CONFIG_AR },
         { title: "AR Schedule", route: ROUTES.CONFIG_AR_SCHEDULE },
-        { title: "AR Import", route: ROUTES.CONFIG_AR_IMPORT },
         { title: "Adjustment", route: ROUTES.CONFIG_ADJUSTMENTS },
         { title: "Reconcile", route: ROUTES.CONFIG_RECONCILE},
         { title: "Install cost", route: ROUTES.CONFIG_INSTALL_COST },
@@ -63,7 +62,7 @@ const ConfigurePage: React.FC = () => {
         { title: "Loan Fee", route: ROUTES.CONFIG_LOAN_FEES },
         { title: "Tier Loan Fee", route: ROUTES.CONFIG_TIER_LOAN_FEE },
         { title: "Dealer Tier", route: ROUTES.CONFIG_DEALER_TIER },
-        { title: "Adder Data", route: "#" },
+        { title: "Adder Data", route: ROUTES.CONFIG_ADDERDATA },
         { title: "Auto Adder", route: ROUTES.CONFIG_AUTO_ADDER },
         { title: "Commision Rates", route: ROUTES.CONFIG_COMMISSION_RATE },
         { title: "Sales Types", route: ROUTES.CONFIG_SALE },
