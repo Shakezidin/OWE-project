@@ -35,7 +35,7 @@ func HandleCreateDealerCreditRequest(resp http.ResponseWriter, req *http.Request
 	defer func() { log.ExitFn(0, "HandleCreateDealerCreditRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in create Dealer Credit request")
+		err = fmt.Errorf("HTTP Request body is null in create dealer credit request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -43,15 +43,15 @@ func HandleCreateDealerCreditRequest(resp http.ResponseWriter, req *http.Request
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create Dealer Credit request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create dealer credit request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &createDealerCredit)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal create Dealer Credit request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal create Dealer Credit request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal create dealer credit request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal create dealer credit request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -67,9 +67,9 @@ func HandleCreateDealerCreditRequest(resp http.ResponseWriter, req *http.Request
 	}
 
 	if createDealerCredit.PerKWAmount <= float64(0) {
-		err = fmt.Errorf("Invalid PerKWAmount price Not Allowed")
+		err = fmt.Errorf("Invalid per kw amount Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid PerKWAmount price Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Per KW Amount Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -104,13 +104,13 @@ func HandleCreateDealerCreditRequest(resp http.ResponseWriter, req *http.Request
 	// Call the database function
 	result, err = db.CallDBFunction(db.CreateDealerCreditFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Add Referral Data in DB with err: %v", err)
+		log.FuncErrorTrace(0, "Failed to Add dealer credit in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Create Dealer Credit", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "Dealer Credit created with Id: %+v", data["result"])
+	log.DBTransDebugTrace(0, "New dealer credit created with Id: %+v", data["result"])
 	FormAndSendHttpResp(resp, "Dealer Credit Created Successfully", http.StatusOK, nil)
 }

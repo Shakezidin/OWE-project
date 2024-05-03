@@ -163,6 +163,7 @@ const (
 	ViewName_ConsolidatedDataView            string = "consolidated_data_view"
 	TableName_Dlr_Oth                        string = "dlr_oth"
 	TableName_rebate_data                    string = "rebate_data"
+	TableName_adder_data string = "adder_data"
 )
 
 /******************************************************************************

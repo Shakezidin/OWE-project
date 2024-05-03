@@ -41,7 +41,7 @@ func HandleGetDealerCreditDataRequest(resp http.ResponseWriter, req *http.Reques
 	defer func() { log.ExitFn(0, "HandleGetDealerCreditDataRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in get DealerCredit Credit data request")
+		err = fmt.Errorf("HTTP Request body is null in get dealer credit data request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -49,15 +49,15 @@ func HandleGetDealerCreditDataRequest(resp http.ResponseWriter, req *http.Reques
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get Dealer Credit data request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get dealer credit data request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal get Dealer Credit data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get Dealer Credit data Request body", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal get dealer credit data request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal get dealer credit data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -112,14 +112,14 @@ func HandleGetDealerCreditDataRequest(resp http.ResponseWriter, req *http.Reques
 		// dealer_dba
 		DealerDBA, ok := item["dealer_dba"].(string)
 		if !ok || DealerDBA == "" {
-			log.FuncErrorTrace(0, "Failed to get dealer_dba for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get dealer dba for Record ID %v. Item: %+v\n", RecordId, item)
 			DealerDBA = ""
 		}
 
 		// exact_amount
 		ExactAmount, ok := item["exact_amount"].(string)
 		if !ok || ExactAmount == "" {
-			log.FuncErrorTrace(0, "Failed to get exact_amount for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get exact amount for Record ID %v. Item: %+v\n", RecordId, item)
 			ExactAmount = ""
 		}
 
@@ -133,7 +133,7 @@ func HandleGetDealerCreditDataRequest(resp http.ResponseWriter, req *http.Reques
 		// approved_by
 		ApprovedBy, ok := item["approved_by"].(string)
 		if !ok || ApprovedBy == "" {
-			log.FuncErrorTrace(0, "Failed to get approved_by for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get approved by for Record ID %v. Item: %+v\n", RecordId, item)
 			ApprovedBy = ""
 		}
 
@@ -147,28 +147,28 @@ func HandleGetDealerCreditDataRequest(resp http.ResponseWriter, req *http.Reques
 		// total_amount
 		TotalAmount, ok := item["total_amount"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get total_amount for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get total amount for Record ID %v. Item: %+v\n", RecordId, item)
 			TotalAmount = 0.0
 		}
 
 		// sys_size
 		SysSize, ok := item["sys_size"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get sys_size for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get sys size for Record ID %v. Item: %+v\n", RecordId, item)
 			SysSize = 0.0
 		}
 
 		// start_date
 		StartDate, ok := item["start_date"].(string)
 		if !ok || StartDate == "" {
-			log.FuncErrorTrace(0, "Failed to get start_date for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
 			StartDate = ""
 		}
 
 		// end_date
 		EndDate, ok := item["end_date"].(*string)
 		if !ok || EndDate == nil {
-			log.FuncErrorTrace(0, "Failed to get end_date for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get end date for Record ID %v. Item: %+v\n", RecordId, item)
 			EndDate = nil
 		}
 
@@ -204,7 +204,7 @@ func HandleGetDealerCreditDataRequest(resp http.ResponseWriter, req *http.Reques
 	RecordCount = int64(len(data))
 
 	// Send the response
-	log.FuncInfoTrace(0, "Number of Dealer Credit List fetched : %v list %+v", len(DealerCreditDataList.DealerCreditList), DealerCreditDataList)
+	log.FuncInfoTrace(0, "Number of dealer credit List fetched : %v list %+v", len(DealerCreditDataList.DealerCreditList), DealerCreditDataList)
 	FormAndSendHttpResp(resp, "Dealer Credit Data", http.StatusOK, DealerCreditDataList, RecordCount)
 }
 

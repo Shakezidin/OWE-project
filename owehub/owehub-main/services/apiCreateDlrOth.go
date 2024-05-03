@@ -1,7 +1,6 @@
 /**************************************************************************
 * File			: apiCreateDLR_OTH.go
-* DESCRIPTION	: This file contains functions for create dlr_oth
-						setter handler
+* DESCRIPTION	: This file contains functions for create dlr_oth handler
 * DATE			: 23-Jan-2024
 **************************************************************************/
 
@@ -19,7 +18,7 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:		HandleCreateDLR_OTHRequest
+ * FUNCTION:		HandleCreateDlrOthRequest
  * DESCRIPTION:     handler for create dlr_oth request
  * INPUT:			resp, req
  * RETURNS:    		void
@@ -68,14 +67,14 @@ func HandleCreateDLROTHDataRequest(resp http.ResponseWriter, req *http.Request) 
 	if createDLR_OTHReq.Balance <= float64(0) {
 		err = fmt.Errorf("Invalid balance Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Sale price Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Balance Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if createDLR_OTHReq.Paid_Amount <= float64(0) {
-		err = fmt.Errorf("Invalid Paid_amount Not Allowed")
+		err = fmt.Errorf("Invalid paid amount Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Sale price Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Paid Amount Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -93,12 +92,12 @@ func HandleCreateDLROTHDataRequest(resp http.ResponseWriter, req *http.Request) 
 	result, err = db.CallDBFunction(db.CreateDLR_OTHFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add dlr_oth in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Create dlr_oth", http.StatusInternalServerError, nil)
+		FormAndSendHttpResp(resp, "Failed to Create dlr oth", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "dlr_oth created with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "dlr_oth Created Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "New dlr oth created with Id: %+v", data["result"])
+	FormAndSendHttpResp(resp, "Dlr_Oth Created Successfully", http.StatusOK, nil)
 }

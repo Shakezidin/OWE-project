@@ -41,7 +41,7 @@ func HandleGetNonCommDlrPayDataRequest(resp http.ResponseWriter, req *http.Reque
 	defer func() { log.ExitFn(0, "HandleGetNonCommDlrPayDataRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in get Non Comm Dealer Pay data request")
+		err = fmt.Errorf("HTTP Request body is null in get non comm dealer pay data request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -49,15 +49,15 @@ func HandleGetNonCommDlrPayDataRequest(resp http.ResponseWriter, req *http.Reque
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get Non Comm Dealer Pay data request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get non comm dealer pay data request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal get Non Comm Dealer Pay data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get Non Comm Dealer Pay data Request body", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal get non comm dealer pay data request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal get non comm dealer pay data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -76,8 +76,8 @@ func HandleGetNonCommDlrPayDataRequest(resp http.ResponseWriter, req *http.Reque
 
 	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get Non Comm Dealer Pay data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get Non Comm Dealer Pay data from DB", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get non comm dealer pay data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get non comm dealer pay data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -113,21 +113,21 @@ func HandleGetNonCommDlrPayDataRequest(resp http.ResponseWriter, req *http.Reque
 		// dealer_dba
 		DealerDBA, ok := item["dealer_dba"].(string)
 		if !ok || DealerDBA == "" {
-			log.FuncErrorTrace(0, "Failed to get dealer_dba for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get dealer dba for Record ID %v. Item: %+v\n", RecordId, item)
 			DealerDBA = ""
 		}
 
 		// exact_amount
 		ExactAmount, ok := item["exact_amount"].(string)
 		if !ok || ExactAmount == "" {
-			log.FuncErrorTrace(0, "Failed to get exact_amount for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get exact amount for Record ID %v. Item: %+v\n", RecordId, item)
 			ExactAmount = ""
 		}
 
 		// approved_by
 		ApprovedBy, ok := item["approved_by"].(string)
 		if !ok || ApprovedBy == "" {
-			log.FuncErrorTrace(0, "Failed to get approved_by for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get approved by for Record ID %v. Item: %+v\n", RecordId, item)
 			ApprovedBy = ""
 		}
 
@@ -148,7 +148,7 @@ func HandleGetNonCommDlrPayDataRequest(resp http.ResponseWriter, req *http.Reque
 		// paid_amount
 		PaidAmount, ok := item["paid_amount"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get paid_amount for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get paid amount for Record ID %v. Item: %+v\n", RecordId, item)
 			PaidAmount = 0.0
 		}
 
@@ -162,14 +162,14 @@ func HandleGetNonCommDlrPayDataRequest(resp http.ResponseWriter, req *http.Reque
 		// start_date
 		StartDate, ok := item["start_date"].(string)
 		if !ok || StartDate == "" {
-			log.FuncErrorTrace(0, "Failed to get start_date for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
 			StartDate = ""
 		}
 
 		// end_date
 		EndDate, ok := item["end_date"].(*string)
 		if !ok || EndDate == nil {
-			log.FuncErrorTrace(0, "Failed to get end_date for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get end date for Record ID %v. Item: %+v\n", RecordId, item)
 			EndDate = nil
 		}
 
@@ -205,7 +205,7 @@ func HandleGetNonCommDlrPayDataRequest(resp http.ResponseWriter, req *http.Reque
 	RecordCount = int64(len(data))
 
 	// Send the response
-	log.FuncInfoTrace(0, "Number of Non Comm Dealer Pay List fetched : %v list %+v", len(NonCommDlrPayDataList.NonCommDlrPayList), NonCommDlrPayDataList)
+	log.FuncInfoTrace(0, "Number of non comm dealer pay List fetched : %v list %+v", len(NonCommDlrPayDataList.NonCommDlrPayList), NonCommDlrPayDataList)
 	FormAndSendHttpResp(resp, "Non Comm Dealer Pay Data", http.StatusOK, NonCommDlrPayDataList, RecordCount)
 }
 

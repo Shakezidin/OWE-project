@@ -41,7 +41,7 @@ func HandleGetInstallCostDataRequest(resp http.ResponseWriter, req *http.Request
 	defer func() { log.ExitFn(0, "HandleGetInstallCostDataRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in get InstallCost data request")
+		err = fmt.Errorf("HTTP Request body is null in get install cost data request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -49,21 +49,21 @@ func HandleGetInstallCostDataRequest(resp http.ResponseWriter, req *http.Request
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get InstallCost data request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get install cost data request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal get InstallCost data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get InstallCost data Request body", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal get install cost data request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal get install cost data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	tableName := db.TableName_install_cost
 	query = `
-	SELECT ic.id as record_id, ic.unique_id, ic.cost, ic.is_archived, ic.start_date, ic.end_date
+	SELECT ic.id as record_id, ic.unique_id, ic.cost, ic.start_date, ic.end_date
 	FROM install_cost ic`
 
 	filter, whereEleList = PrepareInstallCostFilters(tableName, dataReq, false)
@@ -73,8 +73,8 @@ func HandleGetInstallCostDataRequest(resp http.ResponseWriter, req *http.Request
 
 	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get InstallCost data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get InstallCost data from DB", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get install cost data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get install cost data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -97,7 +97,7 @@ func HandleGetInstallCostDataRequest(resp http.ResponseWriter, req *http.Request
 		// Rate
 		Cost, ok := item["cost"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get Cost for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get cost for Record ID %v. Item: %+v\n", RecordId, item)
 			Cost = 0.0 // Default rate value of 0.0
 		}
 
@@ -132,14 +132,14 @@ func HandleGetInstallCostDataRequest(resp http.ResponseWriter, req *http.Request
 
 	data, err = db.ReteriveFromDB(queryForAlldata, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get InstallCost data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get InstallCost data from DB", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get install cost data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get install cost data from DB", http.StatusBadRequest, nil)
 		return
 	}
 	RecordCount = int64(len(data))
 	// Send the response
-	log.FuncInfoTrace(0, "Number of InstallCost List fetched : %v list %+v", len(installCostList.InstallCostList), installCostList)
-	FormAndSendHttpResp(resp, "InstallCost Data", http.StatusOK, installCostList, RecordCount)
+	log.FuncInfoTrace(0, "Number of Install Cost List fetched : %v list %+v", len(installCostList.InstallCostList), installCostList)
+	FormAndSendHttpResp(resp, "Install Cost Data", http.StatusOK, installCostList, RecordCount)
 }
 
 /******************************************************************************

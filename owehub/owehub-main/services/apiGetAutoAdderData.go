@@ -41,7 +41,7 @@ func HandleGetAutoAdderDataRequest(resp http.ResponseWriter, req *http.Request) 
 	defer func() { log.ExitFn(0, "HandleGetAutoAdderDataRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in get AutoAdder data request")
+		err = fmt.Errorf("HTTP Request body is null in get auto adder data request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -49,15 +49,15 @@ func HandleGetAutoAdderDataRequest(resp http.ResponseWriter, req *http.Request) 
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get AutoAdder data request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get auto adder data request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal get AutoAdder data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get AutoAdder data Request body", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal get auto adder data request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal get auto adder data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -79,8 +79,8 @@ func HandleGetAutoAdderDataRequest(resp http.ResponseWriter, req *http.Request) 
 
 	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get AutoAdder data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get AutoAdder data from DB", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get auto adder data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get auto adder data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -116,7 +116,7 @@ func HandleGetAutoAdderDataRequest(resp http.ResponseWriter, req *http.Request) 
 		// exact_amount
 		Exact_amount, ok := item["exact_amount"].(string)
 		if !ok || Exact_amount == "" {
-			log.FuncErrorTrace(0, "Failed to get exact_amount for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get exact amount for Record ID %v. Item: %+v\n", RecordId, item)
 			Exact_amount = ""
 		}
 
@@ -137,7 +137,7 @@ func HandleGetAutoAdderDataRequest(resp http.ResponseWriter, req *http.Request) 
 		// description_rep_visible
 		Description_rep_visible, ok := item["description_rep_visible"].(string)
 		if !ok || Description_rep_visible == "" {
-			log.FuncErrorTrace(0, "Failed to get description_rep_visible value for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get description rep visible value for Record ID %v. Item: %+v\n", RecordId, item)
 			Description_rep_visible = ""
 		}
 
@@ -172,7 +172,7 @@ func HandleGetAutoAdderDataRequest(resp http.ResponseWriter, req *http.Request) 
 		// sys_size
 		Sys_size, ok := item["sys_size"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get sys_size for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get sys size for Record ID %v. Item: %+v\n", RecordId, item)
 			Sys_size = 0.0
 		}
 
@@ -186,7 +186,7 @@ func HandleGetAutoAdderDataRequest(resp http.ResponseWriter, req *http.Request) 
 		// rep_count
 		Rep_count, ok := item["rep_count"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get rep_count for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get rep count for Record ID %v. Item: %+v\n", RecordId, item)
 			Rep_count = 0.0
 		}
 
@@ -249,42 +249,42 @@ func HandleGetAutoAdderDataRequest(resp http.ResponseWriter, req *http.Request) 
 		// contract_amount
 		Contract_amount, ok := item["contract_amount"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get contract_amount for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get contract amount for Record ID %v. Item: %+v\n", RecordId, item)
 			Contract_amount = 0.0
 		}
 
 		// project_base_cost
 		Project_base_cost, ok := item["project_base_cost"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get project_base_cost for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get project base cost for Record ID %v. Item: %+v\n", RecordId, item)
 			Project_base_cost = 0.0
 		}
 
 		// crt_addr
 		Crt_addr, ok := item["crt_addr"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get crt_addr for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get crt addr for Record ID %v. Item: %+v\n", RecordId, item)
 			Crt_addr = 0.0
 		}
 
 		// r1_loan_fee
 		R1_loan_fee, ok := item["r1_loan_fee"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get r1_loan_fee for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get r1 loan fee for Record ID %v. Item: %+v\n", RecordId, item)
 			R1_loan_fee = 0.0
 		}
 
 		// r1_rebate
 		R1_rebate, ok := item["r1_rebate"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get r1_rebate for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get r1 rebate for Record ID %v. Item: %+v\n", RecordId, item)
 			R1_rebate = 0.0
 		}
 
 		// r1_referral
 		R1_referral, ok := item["r1_referral"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get r1_referral for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get r1 referral for Record ID %v. Item: %+v\n", RecordId, item)
 			R1_referral = 0.0
 		}
 
@@ -298,14 +298,14 @@ func HandleGetAutoAdderDataRequest(resp http.ResponseWriter, req *http.Request) 
 		// total_comm
 		Total_comm, ok := item["total_comm"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get total_comm for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get total comm for Record ID %v. Item: %+v\n", RecordId, item)
 			Total_comm = 0.0
 		}
 
 		// start_date
 		Start_date, ok := item["start_date"].(string)
 		if !ok || Start_date == "" {
-			log.FuncErrorTrace(0, "Failed to get start_date for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
 			Start_date = ""
 		}
 
@@ -368,8 +368,8 @@ func HandleGetAutoAdderDataRequest(resp http.ResponseWriter, req *http.Request) 
 	}
 	RecordCount = int64(len(data))
 	// Send the response
-	log.FuncInfoTrace(0, "Number of AutoAdder List fetched : %v list %+v", len(AutoAdderList.AutoAdderList), AutoAdderList)
-	FormAndSendHttpResp(resp, "AutoAdder Data", http.StatusOK, AutoAdderList, RecordCount)
+	log.FuncInfoTrace(0, "Number of auto adder List fetched : %v list %+v", len(AutoAdderList.AutoAdderList), AutoAdderList)
+	FormAndSendHttpResp(resp, "Auto Adder Data", http.StatusOK, AutoAdderList, RecordCount)
 }
 
 /******************************************************************************

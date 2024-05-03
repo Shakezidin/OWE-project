@@ -39,7 +39,7 @@ func HandleUpdateLoanFeeArchiveRequest(resp http.ResponseWriter, req *http.Reque
 	defer func() { log.ExitFn(0, "HandleUpdateLoanFeeArchiveRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in update LoanFee Archive request")
+		err = fmt.Errorf("HTTP Request body is null in update loan fee archive request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -47,15 +47,15 @@ func HandleUpdateLoanFeeArchiveRequest(resp http.ResponseWriter, req *http.Reque
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update LoanFee Archive request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update loan fee archive request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &updateLoanFeeArcReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal update LoanFee Archive request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal update LoanFee Archive request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal update loan fee archive request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal update Loan Fee Archive request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -79,12 +79,12 @@ func HandleUpdateLoanFeeArchiveRequest(resp http.ResponseWriter, req *http.Reque
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateLoanFeeArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Update LoanFee Archive in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Update LoanFee Archive", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to Update loan fee archive in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to Update Loan Fee Archive", http.StatusInternalServerError, nil)
 		return
 	}
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "LoanFee Archive updated with Id: %+v", data)
-	FormAndSendHttpResp(resp, "LoanFee Archive Updated Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "loan fee Archive updated with Id: %+v", data)
+	FormAndSendHttpResp(resp, "Loan Fee Archive Updated Successfully", http.StatusOK, nil)
 }
