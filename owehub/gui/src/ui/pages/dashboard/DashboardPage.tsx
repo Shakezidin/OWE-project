@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./dasboard.css";
 import Select from "react-select";
 import DashboardTotal from "./DashboardTotal";
@@ -43,15 +43,14 @@ export const DashboardPage: React.FC = () => {
   const [active, setActive] = React.useState<number>(0);
   const [filterModal, setFilterModal] = React.useState<boolean>(false);
 
- /* const [selectedOption, setSelectedOption] = useState<string>(
+  /* const [selectedOption, setSelectedOption] = useState<string>(
     payRollData[0].label
   );*/
   const [selectedOption2, setSelectedOption2] = useState<string>(
     comissionValueData[0].label
   );
 
-  
- /* const handleSelectChange = (
+  /* const handleSelectChange = (
     selectedOption: { value: string; label: string } | null
   ) => {
     setSelectedOption(selectedOption ? selectedOption.value : "");
@@ -65,13 +64,32 @@ export const DashboardPage: React.FC = () => {
     setFilterModal(false);
   };
 
+  const datePickerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        datePickerRef.current &&
+        !datePickerRef.current.contains(event.target as Node)
+      ) {
+        setShowDatePicker(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <>
       <div className="Dashboard-section-container">
         <div className="DashboardPage-container">
-          {/* <div className="DashboardPage-wel">
+          <div className="DashboardPage-wel">
             <h3>Dashboard</h3>
-          </div> */}
+          </div>
           <div className="dashboard-payroll">
             <div className="dash-head-input">
               <label className="inputLabel" style={{ color: "#344054" }}>
@@ -104,6 +122,7 @@ export const DashboardPage: React.FC = () => {
                   option: (baseStyles) => ({
                     ...baseStyles,
                     fontSize: "13px",
+                    cursor: "pointer"
                   }),
                   menu: (baseStyles) => ({
                     ...baseStyles,
@@ -120,29 +139,7 @@ export const DashboardPage: React.FC = () => {
               <input type="date" className="payroll-date" />
               <label className="payroll-label">End:</label>
               <input type="date" className="payroll-date" /> */}
-              {/* <div className="date-picker">
-                <DateRangePicker
-                  startDate={startDate}
-                  startDateId="s_id"
-                  endDate={endDate}
-                  endDateId="e_id"
-                  onDatesChange={({ startDate, endDate }) => {
-                    setStartDate(startDate);
-                    setEndDate(endDate);
-                  }}
-                  focusedInput={focusedInput}
-                  onFocusChange={(focusedInput) => 
-                    setFocusedInput(focusedInput)
-                  }
-                  displayFormat="DD/MM/YYYY"
-                  block
-                  showClearDates
-                  transitionDuration={1000}  
-                  withPortal
-                  isOutsideRange={() => false}
-                />
-              </div> */}
-              <div style={{ position: "relative", top: "-1px" }}>
+              <div style={{ position: "relative", top: "-1px" }} ref={datePickerRef}>
                 <label className="date-button" onClick={handleToggleDatePicker}>
                   Select Dates
                 </label>
@@ -152,7 +149,10 @@ export const DashboardPage: React.FC = () => {
                       ranges={[selectionRange]}
                       onChange={handleSelect}
                     />
-                    <button className="reset-calender" onClick={handleResetDates}>
+                    <button
+                      className="reset-calender"
+                      onClick={handleResetDates}
+                    >
                       Reset
                     </button>
                     <button
