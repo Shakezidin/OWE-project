@@ -19,7 +19,7 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:		HandleGetAutoAdderDataRequest
+ * FUNCTION:		HandleGetLoanFeeAdderDataRequest
  * DESCRIPTION:     handler for get LoanFeeAdder request
  * INPUT:			resp, req
  * RETURNS:    		void
@@ -41,7 +41,7 @@ func HandleGetLoanFeeAdderDataRequest(resp http.ResponseWriter, req *http.Reques
 	defer func() { log.ExitFn(0, "HandleGetLoanFeeAdderDataRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in get LoanFeeAdder request")
+		err = fmt.Errorf("HTTP Request body is null in get loan fee adder request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -49,15 +49,15 @@ func HandleGetLoanFeeAdderDataRequest(resp http.ResponseWriter, req *http.Reques
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get LoanFeeAdder request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get loan fee adder request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal get LoanFeeAdder request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get LoanFeeAdder Request body", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal get loan fee adder request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal get loan fee adder Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -82,8 +82,8 @@ func HandleGetLoanFeeAdderDataRequest(resp http.ResponseWriter, req *http.Reques
 
 	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get LoanFeeAdder from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get LoanFeeAdder from DB", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get loan fee adder from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get loan fee adder from DB", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -112,21 +112,21 @@ func HandleGetLoanFeeAdderDataRequest(resp http.ResponseWriter, req *http.Reques
 		// dealer_name
 		Dealer_name, ok := item["dealer_name"].(string)
 		if !ok || Dealer_name == "" {
-			log.FuncErrorTrace(0, "Failed to get dealer_name for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get dealer name for Record ID %v. Item: %+v\n", RecordId, item)
 			Dealer_name = ""
 		}
 
 		// installer_name
 		Installer_name, ok := item["installer_name"].(string)
 		if !ok || Installer_name == "" {
-			log.FuncErrorTrace(0, "Failed to get installer_name for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get installer name for Record ID %v. Item: %+v\n", RecordId, item)
 			Installer_name = ""
 		}
 
 		// state_name
 		State_name, ok := item["state_name"].(string)
 		if !ok || State_name == "" {
-			log.FuncErrorTrace(0, "Failed to get state_name for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get state name for Record ID %v. Item: %+v\n", RecordId, item)
 			State_name = ""
 		}
 
@@ -140,28 +140,28 @@ func HandleGetLoanFeeAdderDataRequest(resp http.ResponseWriter, req *http.Reques
 		// dealer_tier_name
 		Dealer_tier_name, ok := item["dealer_tier_name"].(string)
 		if !ok || Dealer_tier_name == "" {
-			log.FuncErrorTrace(0, "Failed to get dealer_tier_name value for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get dealer tier name value for Record ID %v. Item: %+v\n", RecordId, item)
 			Dealer_tier_name = ""
 		}
 
 		// owe_cost
 		Owe_cost, ok := item["owe_cost"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get owe_cost for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get owe cost for Record ID %v. Item: %+v\n", RecordId, item)
 			Owe_cost = 0.0
 		}
 
 		// addr_amount
 		Addr_amount, ok := item["type"].(float64)
 		if ok {
-			log.FuncErrorTrace(0, "Failed to get addr_amount for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get addr amount for Record ID %v. Item: %+v\n", RecordId, item)
 			Addr_amount = 0.0
 		}
 
 		// per_kw_amount
 		Per_kw_amount, ok := item["per_kw_amount"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get Per_kw_amount for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get Per kw amount for Record ID %v. Item: %+v\n", RecordId, item)
 			Per_kw_amount = 0.0
 		}
 
@@ -175,7 +175,7 @@ func HandleGetLoanFeeAdderDataRequest(resp http.ResponseWriter, req *http.Reques
 		// description_rep_visible
 		Description_rep_visible, ok := item["description_rep_visible"].(string)
 		if !ok || Description_rep_visible == "" {
-			log.FuncErrorTrace(0, "Failed to get description_rep_visible for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get description rep visible for Record ID %v. Item: %+v\n", RecordId, item)
 			Description_rep_visible = ""
 		}
 
@@ -189,7 +189,7 @@ func HandleGetLoanFeeAdderDataRequest(resp http.ResponseWriter, req *http.Reques
 		// type
 		Type, ok := item["type"].(string)
 		if !ok || Type == "" {
-			log.FuncErrorTrace(0, "Failed to get Type for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get type for Record ID %v. Item: %+v\n", RecordId, item)
 			Type = ""
 		}
 
@@ -210,14 +210,14 @@ func HandleGetLoanFeeAdderDataRequest(resp http.ResponseWriter, req *http.Reques
 		// sys_size
 		Sys_size, ok := item["sys_size"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get sys_size for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get sys zize for Record ID %v. Item: %+v\n", RecordId, item)
 			Sys_size = 0.0
 		}
 
 		// rep_count
 		Rep_count, ok := item["rep_count"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get rep_count for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get rep count for Record ID %v. Item: %+v\n", RecordId, item)
 			Rep_count = 0.0
 		}
 
@@ -280,7 +280,7 @@ func HandleGetLoanFeeAdderDataRequest(resp http.ResponseWriter, req *http.Reques
 		// start_date
 		Start_date, ok := item["start_date"].(string)
 		if !ok || Start_date == "" {
-			log.FuncErrorTrace(0, "Failed to get start_date for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
 			Start_date = ""
 		}
 
@@ -340,7 +340,7 @@ func HandleGetLoanFeeAdderDataRequest(resp http.ResponseWriter, req *http.Reques
 	RecordCount = int64(len(data))
 	// Send the response
 	log.FuncInfoTrace(0, "Number of loan fee adder List fetched : %v list %+v", len(LoanFeeAdderList.LoanFeeAdderList), LoanFeeAdderList)
-	FormAndSendHttpResp(resp, "LoanFeeAdder", http.StatusOK, LoanFeeAdderList, RecordCount)
+	FormAndSendHttpResp(resp, "Loan Fee Adder", http.StatusOK, LoanFeeAdderList, RecordCount)
 }
 
 /******************************************************************************

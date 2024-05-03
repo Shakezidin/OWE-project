@@ -19,7 +19,7 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:		HandleGetMarketingFeeDataRequest
+ * FUNCTION:		HandleGetLeaderOverrideDataRequest
  * DESCRIPTION:     handler for get LeaderOverride data request
  * INPUT:			resp, req
  * RETURNS:    		void
@@ -41,7 +41,7 @@ func HandleGetLeaderOverrideDataRequest(resp http.ResponseWriter, req *http.Requ
 	defer func() { log.ExitFn(0, "HandleGetLeaderOverrideDataRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in get LeaderOverride data request")
+		err = fmt.Errorf("HTTP Request body is null in get leader override data request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -49,15 +49,15 @@ func HandleGetLeaderOverrideDataRequest(resp http.ResponseWriter, req *http.Requ
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get LeaderOverride data request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get leader override data request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal get LeaderOverride data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get LeaderOverride data Request body", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal get leader override data request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal get leader override data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -74,8 +74,8 @@ func HandleGetLeaderOverrideDataRequest(resp http.ResponseWriter, req *http.Requ
 
 	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get LeaderOverride data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get LeaderOverride data from DB", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get leader override data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get leader override data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -197,8 +197,8 @@ func HandleGetLeaderOverrideDataRequest(resp http.ResponseWriter, req *http.Requ
 	RecordCount = int64(len(data))
 
 	// Send the response
-	log.FuncInfoTrace(0, "Number of LeaderOverride List fetched : %v list %+v", len(LeaderOverrideList.LeaderOverrideList), LeaderOverrideList)
-	FormAndSendHttpResp(resp, "LeaderOverride Data", http.StatusOK, LeaderOverrideList, RecordCount)
+	log.FuncInfoTrace(0, "Number of leader override List fetched : %v list %+v", len(LeaderOverrideList.LeaderOverrideList), LeaderOverrideList)
+	FormAndSendHttpResp(resp, "Leader Override Data", http.StatusOK, LeaderOverrideList, RecordCount)
 }
 
 /******************************************************************************

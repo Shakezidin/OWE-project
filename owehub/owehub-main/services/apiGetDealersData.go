@@ -41,7 +41,7 @@ func HandleGetDealersDataRequest(resp http.ResponseWriter, req *http.Request) {
 	defer func() { log.ExitFn(0, "HandleGetDealersDataRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in get Dealers data request")
+		err = fmt.Errorf("HTTP Request body is null in get dealers data request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -151,7 +151,7 @@ func HandleGetDealersDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	// Send the response
 	log.FuncInfoTrace(0, "Number of dealers List fetched : %v list %+v", len(dealersList.DealersList), dealersList)
-	FormAndSendHttpResp(resp, "dealers Data", http.StatusOK, dealersList, RecordCount)
+	FormAndSendHttpResp(resp, "Dealers Data", http.StatusOK, dealersList, RecordCount)
 }
 
 /******************************************************************************

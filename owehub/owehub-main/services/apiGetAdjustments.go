@@ -19,7 +19,7 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:		HandleGetAdjustmentsRequest
+ * FUNCTION:		HandleGetAdjustmentsDataRequest
  * DESCRIPTION:     handler for get Adjustments data request
  * INPUT:			resp, req
  * RETURNS:    		void
@@ -37,11 +37,11 @@ func HandleGetAdjustmentsDataRequest(resp http.ResponseWriter, req *http.Request
 		RecordCount     int64
 	)
 
-	log.EnterFn(0, "HandleGetAdjustmentsRequest")
-	defer func() { log.ExitFn(0, "HandleGetAdjustmentsRequest", err) }()
+	log.EnterFn(0, "HandleGetAdjustmentsDataRequest")
+	defer func() { log.ExitFn(0, "HandleGetAdjustmentsDataRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in get Adjustments data request")
+		err = fmt.Errorf("HTTP Request body is null in get adjustments data request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -49,15 +49,15 @@ func HandleGetAdjustmentsDataRequest(resp http.ResponseWriter, req *http.Request
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get Adjustments data request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get adjustments data request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal get Adjustments data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get Adjustments data Request body", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal get adjustments data request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal get adjustments data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -76,8 +76,8 @@ func HandleGetAdjustmentsDataRequest(resp http.ResponseWriter, req *http.Request
 
 	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get Adjustments data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get Adjustments data from DB", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get adjustments data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get adjustments data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -86,97 +86,97 @@ func HandleGetAdjustmentsDataRequest(resp http.ResponseWriter, req *http.Request
 	for _, item := range data {
 		RecordId, ok := item["record_id"].(int64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get record_id for Record ID %v. Item: %+v\n", RecordId, item)
 			continue
 		}
 
 		UniqueId, ok := item["unique_id"].(string)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get unique id for Unique ID %v. Item: %+v\n", UniqueId, item)
+			log.FuncErrorTrace(0, "Failed to get unique_id for Record ID %v. Item: %+v\n", RecordId, item)
 			UniqueId = ""
 		}
 
 		// Customer
 		Customer, ok := item["customer"].(string)
 		if !ok || Customer == "" {
-			log.FuncErrorTrace(0, "Failed to get customer for Unique ID %v. Item: %+v\n", UniqueId, item)
+			log.FuncErrorTrace(0, "Failed to get customer for Record ID %v. Item: %+v\n", RecordId, item)
 			Customer = ""
 		}
 
 		// PartnerName
 		PartnerName, ok := item["partner_name"].(string)
 		if !ok || PartnerName == "" {
-			log.FuncErrorTrace(0, "Failed to get partner name for Unique ID %v. Item: %+v\n", UniqueId, item)
+			log.FuncErrorTrace(0, "Failed to get partner name for Record ID %v. Item: %+v\n", RecordId, item)
 			PartnerName = ""
 		}
 
 		// InstallerName
 		InstallerName, ok := item["installer_name"].(string)
 		if !ok || InstallerName == "" {
-			log.FuncErrorTrace(0, "Failed to get installer name for Unique ID %v. Item: %+v\n", UniqueId, item)
+			log.FuncErrorTrace(0, "Failed to get installer name for Record ID %v. Item: %+v\n", RecordId, item)
 			InstallerName = ""
 		}
 
 		// SaleTypeName
 		StateName, ok := item["state_name"].(string)
 		if !ok || StateName == "" {
-			log.FuncErrorTrace(0, "Failed to get sale type name for Unique ID %v. Item: %+v\n", UniqueId, item)
+			log.FuncErrorTrace(0, "Failed to get sale type for Record ID %v. Item: %+v\n", RecordId, item)
 			StateName = ""
 		}
 
 		// SysSize
 		SysSize, ok := item["sys_size"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get sys size for Unique ID %v. Item: %+v\n", UniqueId, item)
+			log.FuncErrorTrace(0, "Failed to get sys size for Record ID %v. Item: %+v\n", RecordId, item)
 			SysSize = 0.0 // Default sys size of 0.0
 		}
 
 		// BL
 		Bl, ok := item["bl"].(string)
 		if !ok || Bl == "" {
-			log.FuncErrorTrace(0, "Failed to get bl for Unique ID %v. Item: %+v\n", UniqueId, item)
+			log.FuncErrorTrace(0, "Failed to get bl for Record ID %v. Item: %+v\n", RecordId, item)
 			Bl = ""
 		}
 
 		// Epc
 		Epc, ok := item["epc"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get epc for Unique ID %v. Item: %+v\n", UniqueId, item)
+			log.FuncErrorTrace(0, "Failed to get epc for Record ID %v. Item: %+v\n", RecordId, item)
 			Epc = 0.0 // Default epc value of 0.0
 		}
 
 		// Date
 		DateStr, ok := item["date"].(string)
 		if !ok || DateStr == "" {
-			log.FuncErrorTrace(0, "Failed to get date for Unique ID %v. Item: %+v\n", UniqueId, item)
+			log.FuncErrorTrace(0, "Failed to get date for Record ID %v. Item: %+v\n", RecordId, item)
 			DateStr = ""
 		}
 
 		// Notes
 		Notes, ok := item["notes"].(string)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get notes for Unique ID %v. Item: %+v\n", UniqueId, item)
+			log.FuncErrorTrace(0, "Failed to get notes for Record ID %v. Item: %+v\n", RecordId, item)
 			Notes = "" // Default notes value of ""
 		}
 
 		// Amount
 		Amount, ok := item["amount"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get amount for Unique ID %v. Item: %+v\n", UniqueId, item)
+			log.FuncErrorTrace(0, "Failed to get amount for Record ID %v. Item: %+v\n", RecordId, item)
 			Amount = 0.0 // Default amount value of 0.0
 		}
 
 		// StartDate
 		StartDate, ok := item["start_date"].(string)
 		if !ok || StartDate == "" {
-			log.FuncErrorTrace(0, "Failed to get start date for Unique ID %v. Item: %+v\n", UniqueId, item)
+			log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
 			StartDate = ""
 		}
 
 		// EndDate
 		EndDate, ok := item["end_date"].(string)
 		if !ok || EndDate == "" {
-			log.FuncErrorTrace(0, "Failed to get end date for Unique ID %v. Item: %+v\n", UniqueId, item)
+			log.FuncErrorTrace(0, "Failed to get end date for Record ID %v. Item: %+v\n", RecordId, item)
 			EndDate = ""
 		}
 
@@ -206,13 +206,13 @@ func HandleGetAdjustmentsDataRequest(resp http.ResponseWriter, req *http.Request
 
 	data, err = db.ReteriveFromDB(queryForAlldata, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get Adjustments data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get Adjustments data from DB", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get adjustments data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get adjustments data from DB", http.StatusBadRequest, nil)
 		return
 	}
 	RecordCount = int64(len(data))
 	// Send the response
-	log.FuncInfoTrace(0, "Number of Adjustments List fetched : %v list %+v", len(adjustmentsList.AdjustmentsList), adjustmentsList)
+	log.FuncInfoTrace(0, "Number of adjustments List fetched : %v list %+v", len(adjustmentsList.AdjustmentsList), adjustmentsList)
 	FormAndSendHttpResp(resp, "Adjustments Data", http.StatusOK, adjustmentsList, RecordCount)
 }
 

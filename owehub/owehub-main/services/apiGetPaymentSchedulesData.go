@@ -49,15 +49,15 @@ func HandleGetPaymentSchedulesDataRequest(resp http.ResponseWriter, req *http.Re
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get payment schedules data request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get payment schedule data request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &dataReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal get payment schedules data request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get payment schedules data Request body", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal get payment schedule data request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal get payment schedule data Request body", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -78,8 +78,8 @@ func HandleGetPaymentSchedulesDataRequest(resp http.ResponseWriter, req *http.Re
 
 	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get payment schedules data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get payment schedules data from DB", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get payment schedule data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get payment schedule data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -94,35 +94,35 @@ func HandleGetPaymentSchedulesDataRequest(resp http.ResponseWriter, req *http.Re
 		// Partner
 		Partner, ok := item["partner"].(string)
 		if !ok || Partner == "" {
-			log.FuncErrorTrace(0, "Failed to get Partner for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get partner for Record ID %v. Item: %+v\n", RecordId, item)
 			Partner = ""
 		}
 
 		// PartnerName
 		PartnerName, ok := item["partner_name"].(string)
 		if !ok || PartnerName == "" {
-			log.FuncErrorTrace(0, "Failed to get Partner Name for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get partner name for Record ID %v. Item: %+v\n", RecordId, item)
 			PartnerName = ""
 		}
 
 		// Installer
 		Installer, ok := item["installer_name"].(string)
 		if !ok || Installer == "" {
-			log.FuncErrorTrace(0, "Failed to get Installer for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get installer for Record ID %v. Item: %+v\n", RecordId, item)
 			Installer = ""
 		}
 
 		// State
 		State, ok := item["state"].(string)
 		if !ok || State == "" {
-			log.FuncErrorTrace(0, "Failed to get State for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get state for Record ID %v. Item: %+v\n", RecordId, item)
 			State = ""
 		}
 
 		// Sale
 		Sale, ok := item["sale_type"].(string)
 		if !ok || Sale == "" {
-			log.FuncErrorTrace(0, "Failed to get Sale for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get sale for Record ID %v. Item: %+v\n", RecordId, item)
 			Sale = ""
 		}
 
@@ -136,57 +136,50 @@ func HandleGetPaymentSchedulesDataRequest(resp http.ResponseWriter, req *http.Re
 		// Draw
 		Draw, ok := item["draw"].(string)
 		if !ok || Draw == "" {
-			log.FuncErrorTrace(0, "Failed to get Draw for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get draw for Record ID %v. Item: %+v\n", RecordId, item)
 			Draw = ""
 		}
 
 		// DrawMax
 		DrawMax, ok := item["draw_max"].(string)
 		if !ok || DrawMax == "" {
-			log.FuncErrorTrace(0, "Failed to get DrawMax for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get draw max for Record ID %v. Item: %+v\n", RecordId, item)
 			DrawMax = ""
 		}
 
 		// RepDraw
 		RepDraw, ok := item["rep_draw"].(string)
 		if !ok || RepDraw == "" {
-			log.FuncErrorTrace(0, "Failed to get RepDraw for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get rep draw for Record ID %v. Item: %+v\n", RecordId, item)
 			RepDraw = ""
 		}
 
 		// RepDrawMax
 		RepDrawMax, ok := item["rep_draw_max"].(string)
 		if !ok || RepDrawMax == "" {
-			log.FuncErrorTrace(0, "Failed to get RepDrawMax for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get rep_draw_max for Record ID %v. Item: %+v\n", RecordId, item)
 			RepDrawMax = ""
 		}
 
 		// RepPay
 		RepPay, ok := item["rep_pay"].(string)
 		if !ok || RepPay == "" {
-			log.FuncErrorTrace(0, "Failed to get RepPay for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get rep pay for Record ID %v. Item: %+v\n", RecordId, item)
 			RepPay = ""
 		}
 
 		// StartDate
 		StartDate, ok := item["start_date"].(string)
 		if !ok || StartDate == "" {
-			log.FuncErrorTrace(0, "Failed to get StartDate for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
 			StartDate = ""
 		}
 
 		// EndDate
 		EndDate, ok := item["end_date"].(string)
 		if !ok || EndDate == "" {
-			log.FuncErrorTrace(0, "Failed to get EndDate for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get end date for Record ID %v. Item: %+v\n", RecordId, item)
 			EndDate = ""
-		}
-
-		// is_archived
-		IsArchived, ok := item["is_archived"].(bool)
-		if !ok || !IsArchived {
-			log.FuncErrorTrace(0, "Failed to get is_archived value for Record ID %v. Item: %+v\n", RecordId, item)
-			IsArchived = false
 		}
 
 		paySchData := models.GetPaymentScheduleData{
@@ -222,8 +215,8 @@ func HandleGetPaymentSchedulesDataRequest(resp http.ResponseWriter, req *http.Re
 	}
 	RecordCount = int64(len(data))
 	// Send the response
-	log.FuncInfoTrace(0, "Number of payment schedules List fetched : %v list %+v", len(paymentScheduleList.PaymentScheduleList), paymentScheduleList)
-	FormAndSendHttpResp(resp, "Payment Schedules Data", http.StatusOK, paymentScheduleList, RecordCount)
+	log.FuncInfoTrace(0, "Number of payment schedule List fetched : %v list %+v", len(paymentScheduleList.PaymentScheduleList), paymentScheduleList)
+	FormAndSendHttpResp(resp, "Payment Schedule Data", http.StatusOK, paymentScheduleList, RecordCount)
 }
 
 /******************************************************************************
