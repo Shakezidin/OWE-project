@@ -28,6 +28,7 @@ import userManagementSlice from "./apiSlice/userManagementSlice/userManagementSl
 import arAdjusments from "./apiSlice/configSlice/config_get_slice/arAdjusments";
 import repPaySettingsSlice from "./apiSlice/configSlice/config_get_slice/repPaySettingsSlice";
 import ArSchedule from "./apiSlice/configSlice/config_get_slice/ArSchedule";
+import installConstSlice from "./apiSlice/configSlice/config_get_slice/installConstSlice";
 export const store = configureStore({
   reducer: {
     appState: appStateSlice,
@@ -60,7 +61,8 @@ export const store = configureStore({
     userManagement:userManagementSlice,
     createOnboardUser: createUserReducer,
     arAdjusments,
-    ArSchedule
+    ArSchedule,
+    installConstSlice
   },
 });
 
