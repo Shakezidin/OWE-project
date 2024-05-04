@@ -21,6 +21,7 @@ import {
   ICost,
 } from "../../../../redux/apiActions/installCostAction";
 import CreateInstallCost from "./CreateInstallCost";
+import Loading from "../../../components/loader/Loading";
 const InstallCost = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -164,9 +165,7 @@ const InstallCost = () => {
   const fetchFunction = (req: any) => {
     dispatch(getInstallCost(req));
   };
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+ 
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -243,7 +242,9 @@ const InstallCost = () => {
               </tr>
             </thead>
             <tbody>
-              {currentPageData?.length > 0
+              { isLoading? <div className="loader-container">
+                <Loading/>
+              </div> :currentPageData?.length > 0
                 ? currentPageData?.map((el: ICost, i: number) => (
                     <tr
                       key={i}

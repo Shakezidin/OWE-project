@@ -12,3 +12,13 @@
     display: block;
     margin-bottom: -15px;
   }
+
+  .character-count {
+    margin-top: 1px;
+    font-size: 12px;
+    color: #888;
+  }
+  
+  .character-count.exceeded {
+    color: red;
+  }

@@ -66,14 +66,13 @@ import { useAppDispatch, useAppSelector } from "./redux/hooks";
 import { TYPE_OF_USER } from "./resources/static_data/TypeOfUser";
 import AdderData from "./ui/pages/configure/adderData/AdderData";
 
-
 function App() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(initializeAuth());
   }, [dispatch]);
-  const { isAuthenticated, role_name }= useAppSelector(
+  const { isAuthenticated, role_name } = useAppSelector(
     (state: RootState) => state.auth
   );
 
@@ -133,26 +132,31 @@ function App() {
         <Route path={ROUTES.CONFIG_ADJUSTMENTS} element={<Adjustments />} />
         <Route path={ROUTES.CONFIG_RECONCILE} element={<Reconcile />} />
         <Route path={ROUTES.CONFIG_APPSETTERS} element={<ApptSetters />} />
-        <Route path={ROUTES.CONFIG_ADDERDATA} element={<AdderData/>}/>
+        <Route path={ROUTES.CONFIG_ADDERDATA} element={<AdderData />} />
 
         <Route path={ROUTES.USER_MANAEMENT} element={<UserManagement />} />
       </Route>
     );
   };
 
-  /** rapu and project management routes */
-  const repayAndProjectManagement = () => {
+  /** other routes */
+  const otherRoutes = () => {
     return (
       <Route>
+        <Route path={ROUTES.COMMISSION_DASHBOARD} element={<DashboardPage />} />
+        <Route path={ROUTES.AR_DASHBOARD} element={<ARDashboardPage />} />
+        <Route path={ROUTES.ACCOUNT_SETTING} element={<AccountSettings />} />
+        <Route path={ROUTES.REPORT} element={<Report />} />
         <Route
-          path={ROUTES.REPPAY_DASHBOARD}
-          element={<RepPayDashboardPage />}
+          path={ROUTES.DB_MANAGER_DASHBOARD}
+          element={<DbManagerDashboard />}
         />
+        <Route path={ROUTES.DB_MANAGER_DATA_TABLE} element={<DataTablle />} />
         <Route
-          path={ROUTES.PROJECT_PERFORMANCE}
-          element={<ProjectPerformence />}
+          path={ROUTES.DB_MANAGER_USER_ACTIVITY}
+          element={<UserActivity />}
         />
-        <Route path={ROUTES.PROJECT_STATUS} element={<ProjectStatus />} />
+        <Route path={ROUTES.DB_MANAGER_WEB_HOOKS} element={<Webhook />} />
       </Route>
     );
   };
@@ -183,41 +187,24 @@ function App() {
         <Route path={ROUTES.RESETPASSWORD} element={<ResetPassword />} />
         <Route path={ROUTES.OTP} element={<EnterOtpScreen />} />
         <Route element={<MainLayout />}>
+          {role_name === TYPE_OF_USER.ADMIN && configAndUserManagementRoutes()}
           <Route
-            path={ROUTES.COMMISSION_DASHBOARD}
-            element={<DashboardPage />}
+            path={ROUTES.REPPAY_DASHBOARD}
+            element={<RepPayDashboardPage />}
           />
-          <Route path={ROUTES.AR_DASHBOARD} element={<ARDashboardPage />} />
+          <Route
+            path={ROUTES.PROJECT_PERFORMANCE}
+            element={<ProjectPerformence />}
+          />
+          <Route path={ROUTES.PROJECT_STATUS} element={<ProjectStatus />} />
 
-      
-          {role_name === TYPE_OF_USER.ADMIN ? (
-             configAndUserManagementRoutes()
-          ) : (
-            <></>
-          )}
-          {role_name === TYPE_OF_USER.DEALER_OWNER ||
-          role_name === TYPE_OF_USER.FINANCE_ADMIN ||
-          role_name === TYPE_OF_USER.ADMIN ? (
-            repayAndProjectManagement()
-          ) : (
-            <></>
-          )} 
-          <Route path={ROUTES.ACCOUNT_SETTING} element={<AccountSettings />} />
-          <Route path={ROUTES.REPORT} element={<Report />} />
-          <Route
-            path={ROUTES.DB_MANAGER_DASHBOARD}
-            element={<DbManagerDashboard />}
-          />
-          <Route path={ROUTES.DB_MANAGER_DATA_TABLE} element={<DataTablle />} />
-          <Route
-            path={ROUTES.DB_MANAGER_USER_ACTIVITY}
-            element={<UserActivity />}
-          />
+
+          {(role_name === TYPE_OF_USER.ADMIN || role_name === TYPE_OF_USER.DEALER_OWNER || role_name === TYPE_OF_USER.FINANCE_ADMIN ) && otherRoutes()}
+
           <Route
             path={ROUTES.TECHNICAL_SUPPORT}
             element={<TechnicalSupport />}
           />
-          <Route path={ROUTES.DB_MANAGER_WEB_HOOKS} element={<Webhook />} />
         </Route>
       </Routes>
     </BrowserRouter>
