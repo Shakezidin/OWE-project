@@ -178,7 +178,7 @@ table tbody tr td {
 }
 
 .selected {
-  background-color: red !important;
+  background-color: #F2F4F6 !important;
   transition: 0.4s all linear;
 }
 
