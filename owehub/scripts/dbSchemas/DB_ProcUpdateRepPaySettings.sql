@@ -1,6 +1,7 @@
 CREATE OR REPLACE FUNCTION update_rep_pay_settings(
     p_id                      INT,
     p_unique_id               character varying,
+    P_name                    character varying,
     p_state_name              character varying,
     p_pay_scale               character varying,
     p_position                character varying,
@@ -15,6 +16,7 @@ BEGIN
     UPDATE rep_pay_settings
     SET 
         unique_id = p_unique_id,
+        name = p_name,
         state_id = (SELECT state_id FROM states WHERE LOWER(name) = LOWER(p_state_name) LIMIT 1),
         pay_scale = p_pay_scale,
         position = p_position,
