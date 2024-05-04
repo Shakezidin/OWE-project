@@ -15,6 +15,7 @@ import { toast } from "react-toastify";
 import Loading from "../../components/loader/Loading";
 import { ROUTES } from "../../../routes/routes";
 import { FaArrowLeft } from "react-icons/fa";
+import ResendOtpButton from "./ResendOtpButton";
 
 const PasswordInput = (props: {
   placeholder: string;
@@ -56,6 +57,18 @@ const EnterOtpScreen = () => {
       [name]: value,
     }));
   };
+
+  const dispatchGenerateOTP = async (data: Parameters<typeof generateOTP>[0]) => {
+    const actionResult = await dispatch(generateOTP(data));
+    const result = unwrapResult(actionResult);
+    if (result.status === HTTP_STATUS.OK) {
+      toast.success(result.message);
+      navigate("/login");
+    } else {
+      toast.error(result.message);
+    }
+  };
+
   const handleOtpSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log(otpCred);
@@ -75,14 +88,7 @@ const EnterOtpScreen = () => {
         new_password: otpCred.new_password,
       };
 
-      const actionResult = await dispatch(generateOTP(data));
-      const result = unwrapResult(actionResult);
-      if (result.status === HTTP_STATUS.OK) {
-        toast.success(result.message)
-        navigate("/login");
-      }else{
-        toast.error(result.message)
-      }
+      dispatchGenerateOTP(data);
     }
   };
   return (
@@ -117,13 +123,23 @@ const EnterOtpScreen = () => {
               </div>
               <span className="loginLogText">Reset Password</span>
               <br />
-              <Input
-                type={"text"}
-                name="otp"
-                value={otpCred.otp}
-                placeholder={"Enter OTP"}
-                onChange={handleInputChange}
-              />
+              <div className="loginOtpField">
+                <Input
+                  type={"text"}
+                  name="otp"
+                  value={otpCred.otp}
+                  placeholder={"Enter OTP"}
+                  onChange={handleInputChange}
+                />
+
+                {/* if email not provided, dont show ResendOtpButton (incase of visit by url) */}
+                {email && (
+                  <ResendOtpButton
+                    isLoading={!!loading}
+                    onClick={() => dispatchGenerateOTP({ email_id: email })}
+                  />
+                )}
+              </div>
               <br />
               <PasswordInput
                 value={otpCred.new_password}
@@ -149,10 +165,10 @@ const EnterOtpScreen = () => {
           </form>
         </div>
         {loading && (
-        <div>
-          <Loading /> {loading}
-        </div>
-      )}
+          <div>
+            <Loading /> {loading}
+          </div>
+        )}
       </div>
     </div>
   );
