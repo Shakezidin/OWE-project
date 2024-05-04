@@ -71,10 +71,9 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
   useEffect(() => {
     if (isSuccess) {
       handleClose();
+      dispatch(resetSuccess());
     }
-    return () => {
-      isSuccess && dispatch(resetSuccess());
-    };
+
   }, [isSuccess]);
   return (
     <div className="transparent-model">
