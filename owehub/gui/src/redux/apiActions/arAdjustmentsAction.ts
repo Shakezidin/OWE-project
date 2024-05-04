@@ -23,7 +23,7 @@ interface IRateCreateParams {
     end_date: string;
 }
 
-export const getAdjustments = createAsyncThunk("fetch/rate-adjustments", async (params: Ipaginate, { rejectWithValue }) => {
+export const getAdjustments = createAsyncThunk("fetch/ar-adjustments", async (params: Ipaginate, { rejectWithValue }) => {
     try {
         const data = await postCaller("get_adjustments", params)
         return data.data.adjustments_list
@@ -33,7 +33,7 @@ export const getAdjustments = createAsyncThunk("fetch/rate-adjustments", async (
 
 })
 
-export const createAdjustments = createAsyncThunk("create/rate-adjustments", async (params: IRateCreateParams, { rejectWithValue, dispatch }) => {
+export const createAdjustments = createAsyncThunk("create/ar-adjustments", async (params: IRateCreateParams, { rejectWithValue, dispatch }) => {
     try {
         const data = await postCaller("create_adjustments", params)
         if(data.status>201 || data instanceof Error ){
