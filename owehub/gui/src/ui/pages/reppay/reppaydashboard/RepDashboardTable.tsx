@@ -18,7 +18,7 @@ import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
 import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
 import Swal from 'sweetalert2';
-import  "../../configure/configure.css";
+import "../../configure/configure.css";
 import HelpDashboard from "../../dashboard/HelpDashboard";
 import { BiSupport } from "react-icons/bi";
 import PaginationComponent from "../../../components/pagination/PaginationComponent";
@@ -36,7 +36,6 @@ const RepDashBoardTable = () => {
   const handleExportOpen = () => setExportOpen(!exportOPen)
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const commissionList = useAppSelector((state) => state.comm.commissionsList);
   // const loading = useAppSelector((state) => state.comm.loading);
   const error = useAppSelector((state) => state.comm.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
@@ -48,7 +47,7 @@ const RepDashBoardTable = () => {
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
   const [sortKey, setSortKey] = useState("");
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
-  const [currentPage1,setCurrentPage1] = useState(1)
+  const [currentPage1, setCurrentPage1] = useState(1)
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -62,11 +61,416 @@ const RepDashBoardTable = () => {
   const handleItemsPerPageChange = (e: any) => {
     const newItemsPerPage = parseInt(e.target.value, 10);
     setPageSize1(newItemsPerPage);
-  setCurrentPage1(1) // Reset to the first page when changing items per page
+    setCurrentPage1(1) // Reset to the first page when changing items per page
   };
   const handlePageChange = (page: number) => {
     setCurrentPage1(page)
   };
+
+
+
+  const commissionList = [
+    {
+      record_id: 1,
+      partner: 'FFS',
+      installer: 'John Doe',
+      state: 'California',
+      sale_type: 'LOAN',
+      sale_price: 25000,
+      rep_type: 'Sales Rep',
+      rl: "Percentage",
+      rate: "80/20",
+      start_date: '2023-01-01',
+      end_date: '2023-12-31',
+      curr_status: 'Approved',
+      status_date: '2023-02-15',
+      owe_contractor: 5000,
+      dba: 'Solar Solutions',
+      comm_model: 'Percentage',
+      percent: 0.1,
+      type: 'Residential',
+      today: '2023-05-04',
+      amount: 2500,
+      fin_type: 'Loan',
+      sys_size: '5 kW',
+      contract: 25000,
+      loan_fee: 1000,
+      epc: 20000,
+      address: '123 Main St',
+      rr: 500,
+      comm_rate: 0.05,
+      net_epc: 19500,
+      credit: 1000,
+      rep_2: 'Jane Smith',
+      net_comm: 975,
+      draw_amt: 2000,
+      amt_paid: 1500,
+      balance: 500,
+      dealer_code: 'ABC123',
+      contr_date: '2023-01-15',
+      sub_total: 24000
+    },
+    {
+      record_id: 2,
+      partner: 'OWE',
+      installer: 'Mike Johnson',
+      state: 'Arizona',
+      sale_type: 'CHECK',
+      sale_price: 30000,
+      rep_type: 'Sales Manager',
+      rl: "RL",
+      rate: "-",
+      start_date: '2023-02-01',
+      end_date: '2024-01-31',
+      curr_status: 'Pending',
+      status_date: '2023-03-10',
+      owe_contractor: 6000,
+      dba: 'Sunny Energy',
+      comm_model: 'RL',
+      percent: null,
+      type: 'Commercial',
+      today: '2023-05-04',
+      amount: 3000,
+      fin_type: 'Check',
+      sys_size: '8 kW',
+      contract: 30000,
+      loan_fee: null,
+      epc: 27000,
+      address: '456 Elm St',
+      rr: 800,
+      comm_rate: 0.06,
+      net_epc: 26200,
+      credit: 1500,
+      rep_2: 'David Brown',
+      net_comm: 1572,
+      draw_amt: 2500,
+      amt_paid: 2000,
+      balance: 500,
+      dealer_code: 'XYZ789',
+      contr_date: '2023-02-20',
+      sub_total: 28500
+    },
+    {
+      record_id: 3,
+      partner: 'PALM',
+      installer: 'Sarah Thompson',
+      state: 'Texas',
+      sale_type: 'LEASE',
+      sale_price: 40000,
+      rep_type: 'Sales Rep',
+      rl: "Percentage",
+      rate: "70/30",
+      start_date: '2023-03-15',
+      end_date: '2024-03-14',
+      curr_status: 'Approved',
+      status_date: '2023-04-05',
+      owe_contractor: 8000,
+      dba: 'Lone Star Solar',
+      comm_model: 'Percentage',
+      percent: 0.12,
+      type: 'Residential',
+      today: '2023-05-04',
+      amount: 4800,
+      fin_type: 'Lease',
+      sys_size: '10 kW',
+      contract: 40000,
+      loan_fee: null,
+      epc: 36000,
+      address: '789 Oak St',
+      rr: 1000,
+      comm_rate: 0.07,
+      net_epc: 35000,
+      credit: 2000,
+      rep_2: 'Emily Davis',
+      net_comm: 2450,
+      draw_amt: 3500,
+      amt_paid: 3000,
+      balance: 500,
+      dealer_code: 'DEF456',
+      contr_date: '2023-03-25',
+      sub_total: 38000
+    },
+    {
+      record_id: 4,
+      partner: 'SP',
+      installer: 'Robert Wilson',
+      state: 'Florida',
+      sale_type: 'PPA',
+      sale_price: 35000,
+      rep_type: 'Sales Manager',
+      rl: "RL",
+      rate: "-",
+      start_date: '2023-04-01',
+      end_date: '2024-03-31',
+      curr_status: 'Pending',
+      status_date: '2023-04-20',
+      owe_contractor: 7000,
+      dba: 'Sunshine Solar',
+      comm_model: 'RL',
+      percent: null,
+      type: 'Commercial',
+      today: '2023-05-04',
+      amount: 3500,
+      fin_type: 'PPA',
+      sys_size: '12 kW',
+      contract: 35000,
+      loan_fee: null,
+      epc: 31500,
+      address: '321 Pine St',
+      rr: 900,
+      comm_rate: 0.06,
+      net_epc: 30600,
+      credit: 1800,
+      rep_2: 'Daniel Taylor',
+      net_comm: 1836,
+      draw_amt: 3000,
+      amt_paid: 2500,
+      balance: 500,
+      dealer_code: 'GHI789',
+      contr_date: '2023-04-10',
+      sub_total: 33200
+    },
+    {
+      record_id: 5,
+      partner: 'TSP',
+      installer: 'Jessica Anderson',
+      state: 'New York',
+      sale_type: 'LOAN',
+      sale_price: 45000,
+      rep_type: 'Sales Rep',
+      rl: "Percentage",
+      rate: "80/30",
+      start_date: '2023-05-01',
+      end_date: '2024-04-30',
+      curr_status: 'Approved',
+      status_date: '2023-05-15',
+      owe_contractor: 9000,
+      dba: 'Empire Solar',
+      comm_model: 'Percentage',
+      percent: 0.15,
+      type: 'Residential',
+      today: '2023-05-04',
+      amount: 6750,
+      fin_type: 'Loan',
+      sys_size: '15 kW',
+      contract: 45000,
+      loan_fee: 1500,
+      epc: 40500,
+      address: '654 Maple Ave',
+      rr: 1200,
+      comm_rate: 0.08,
+      net_epc: 39300,
+      credit: 2500,
+      rep_2: 'Olivia Martinez',
+      net_comm: 3144,
+      draw_amt: 4000,
+      amt_paid: 3500,
+      balance: 500,
+      dealer_code: 'JKL012',
+      contr_date: '2023-05-05',
+      sub_total: 43500
+    },
+    {
+      record_id: 6,
+      partner: 'FFS',
+      installer: 'William Lee',
+      state: 'Colorado',
+      sale_type: 'CHECK',
+      sale_price: 28000,
+      rep_type: 'Sales Manager',
+      rl: "RL",
+      rate: "-",
+      start_date: '2023-06-01',
+      end_date: '2024-05-31',
+      curr_status: 'Pending',
+      status_date: '2023-06-10',
+      owe_contractor: 5600,
+      dba: 'Rocky Mountain Solar',
+      comm_model: 'RL',
+      percent: null,
+      type: 'Residential',
+      today: '2023-05-04',
+      amount: 2800,
+      fin_type: 'Check',
+      sys_size: '7 kW',
+      contract: 28000,
+      loan_fee: null,
+      epc: 25200,
+      address: '987 Cedar Rd',
+      rr: 700,
+      comm_rate: 0.055,
+      net_epc: 24500,
+      credit: 1400,
+      rep_2: 'Sophia Hernandez',
+      net_comm: 1347.5,
+      draw_amt: 2500,
+      amt_paid: 2000,
+      balance: 500,
+      dealer_code: 'MNO345',
+      contr_date: '2023-06-05',
+      sub_total: 26600
+    },
+    {
+      record_id: 7,
+      partner: 'OWE',
+      installer: 'Emma Gonzalez',
+      state: 'Washington',
+      sale_type: 'LEASE',
+      sale_price: 32000,
+      rep_type: 'Sales Rep',
+      rl: "Percentage",
+      rate: "50/20",
+      start_date: '2023-07-01',
+      end_date: '2024-06-30',
+      curr_status: 'Approved',
+      status_date: '2023-07-15',
+      owe_contractor: 6400,
+      dba: 'Evergreen Solar',
+      comm_model: 'Percentage',
+      percent: 0.11,
+      type: 'Commercial',
+      today: '2023-05-04',
+      amount: 3520,
+      fin_type: 'Lease',
+      sys_size: '9 kW',
+      contract: 32000,
+      loan_fee: null,
+      epc: 28800,
+      address: '246 Spruce St',
+      rr: 800,
+      comm_rate: 0.065,
+      net_epc: 28000,
+      credit: 1600,
+      rep_2: 'Liam Jackson',
+      net_comm: 1820,
+      draw_amt: 3000,
+      amt_paid: 2500,
+      balance: 500,
+      dealer_code: 'PQR678',
+      contr_date: '2023-07-10',
+      sub_total: 30400
+    },
+    {
+      record_id: 8,
+      partner: 'PALM',
+      installer: 'Ava White',
+      state: 'Oregon',
+      sale_type: 'PPA',
+      sale_price: 38000,
+      rep_type: 'Sales Manager',
+      rl: "RL",
+      rate: "-",
+      start_date: '2023-08-01',
+      end_date: '2024-07-31',
+      curr_status: 'Pending',
+      status_date: '2023-08-20',
+      owe_contractor: 7600,
+      dba: 'Pacific Solar',
+      comm_model: 'RL',
+      percent: null,
+      type: 'Residential',
+      today: '2023-05-04',
+      amount: 3800,
+      fin_type: 'PPA',
+      sys_size: '11 kW',
+      contract: 38000,
+      loan_fee: null,
+      epc: 34200,
+      address: '753 Birch Ln',
+      rr: 1100,
+      comm_rate: 0.075,
+      net_epc: 33100,
+      credit: 2200,
+      rep_2: 'Mia Perez',
+      net_comm: 2482.5,
+      draw_amt: 3500,
+      amt_paid: 3000,
+      balance: 500,
+      dealer_code: 'STU901',
+      contr_date: '2023-08-15',
+      sub_total: 36200
+    },
+    {
+      record_id: 9,
+      partner: 'SP',
+      installer: 'Noah Brooks',
+      state: 'Nevada',
+      sale_type: 'LOAN',
+      sale_price: 42000,
+      rep_type: 'Sales Rep',
+      rl: "Percentage",
+      rate: "60/20",
+      start_date: '2023-09-01',
+      end_date: '2024-08-31',
+      curr_status: 'Approved',
+      status_date: '2023-09-10',
+      owe_contractor: 8400,
+      dba: 'Desert Solar',
+      comm_model: 'Percentage',
+      percent: 0.14,
+      type: 'Commercial',
+      today: '2023-05-04',
+      amount: 5880,
+      fin_type: 'Loan',
+      sys_size: '14 kW',
+      contract: 42000,
+      loan_fee: 1200,
+      epc: 37800,
+      address: '159 Willow Rd',
+      rr: 1000,
+      comm_rate: 0.08,
+      net_epc: 36800,
+      credit: 2100,
+      rep_2: 'Isabella Rodriguez',
+      net_comm: 2944,
+      draw_amt: 4000,
+      amt_paid: 3500,
+      balance: 500,
+      dealer_code: 'VWX234',
+      contr_date: '2023-09-05',
+      sub_total: 40800
+    },
+    {
+      record_id: 10,
+      partner: 'TSP',
+      installer: 'Charlotte Green',
+      state: 'New Mexico',
+      sale_type: 'CHECK',
+      sale_price: 30000,
+      rep_type: 'Sales Manager',
+      rl: "RL",
+      rate: "-",
+      start_date: '2023-10-01',
+      end_date: '2024-09-30',
+      curr_status: 'Pending',
+      status_date: '2023-10-15',
+      owe_contractor: 6000,
+      dba: 'Southwest Solar',
+      comm_model: 'RL',
+      percent: null,
+      type: 'Residential',
+      today: '2023-05-04',
+      amount: 3000,
+      fin_type: 'Check',
+      sys_size: '8 kW',
+      contract: 30000,
+      loan_fee: null,
+      epc: 27000,
+      address: '753 Oak St',
+      rr: 800,
+      comm_rate: 0.06,
+      net_epc: 26200,
+      credit: 1500,
+      rep_2: 'Benjamin Torres',
+      net_comm: 1572,
+      draw_amt: 2500,
+      amt_paid: 2000,
+      balance: 500,
+      dealer_code: 'YZA567',
+      contr_date: '2023-10-10',
+      sub_total: 28500
+    }
+  ];
 
   const totalPages = Math.ceil(commissionList?.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -82,6 +486,7 @@ const RepDashBoardTable = () => {
     setEditedCommission(commission);
     handleOpen()
   };
+
   const currentPageData = commissionList?.slice(startIndex, endIndex);
   const isAnyRowSelected = selectedRows?.size > 0;
   const isAllRowsSelected = selectedRows?.size === commissionList?.length;
@@ -156,7 +561,7 @@ const RepDashBoardTable = () => {
 
   const handleIconOpen = () => setOpenIcon(true);
   const handleIconClose = () => setOpenIcon(false);
-  
+
 
 
   return (
@@ -189,13 +594,13 @@ const RepDashBoardTable = () => {
 
                   ))
                 }
-             {
-              viewArchived===true?null:   <th>
-              <div className="action-header">
-                <p>Help</p>
-              </div>
-            </th>
-             }
+                {
+                  viewArchived === true ? null : <th>
+                    <div className="action-header">
+                      <p>Help</p>
+                    </div>
+                  </th>
+                }
               </tr>
             </thead>
 
@@ -237,34 +642,31 @@ const RepDashBoardTable = () => {
                     <td>{el.rate}</td>
                     <td>{el.start_date}</td>
                     <td>{el.end_date}</td>
-                    
-                    <td style={{ color: '#0096D3' }}>${el.rl}</td>
+                    <td style={{ color: '#0096D3' }}>${el.amount}</td>
+                    <td>{el.fin_type}</td>
+                    <td>{el.sys_size}</td>
+                    <td>{el.contract}</td>
+                    <td>{el.loan_fee}</td>
+                    <td>{el.epc}</td>
+                    <td>{el.address}</td>
+                    <td>{el.rr}</td>
+                    <td>{el.comm_rate}</td>
+                    <td>{el.net_epc}</td>
+                    <td>{el.credit}</td>
+                    <td>{el.rep_2}</td>
+                    <td>{el.net_comm}</td>
+                    <td>{el.draw_amt}</td>
+                    <td>{el.amt_paid}</td>
+                    <td>{el.balance}</td>
+                    <td>{el.dealer_code}</td>
+                    <td>{el.contr_date}</td>
                     <td>{el.state}</td>
-                    <td>{el.sale_type}</td>
-                    <td>{el.sale_price}</td>
-                    <td>{el.rep_type}</td>
-                    <td>{el.rl}</td>
-                    <td>{el.rate}</td>
-                    <td>{el.start_date}</td>
-                    <td>{el.end_date}</td>
-
-                    <td>{el.installer}</td>
-                    <td>{el.state}</td>
-                    <td>{el.sale_type}</td>
-                    <td>{el.sale_price}</td>
-                    <td>{el.rep_type}</td>
-                    <td>{el.rl}</td>
-                    <td>{el.rate}</td>
-                    <td>{el.start_date}</td>
-                    <td>{el.end_date}</td>
-
-                    <td>{el.start_date}</td>
-                    <td>{el.end_date}</td>
-                    <td style={{height: "14px", width: "14px",stroke:"0.2",cursor:"pointer"}}>
-                        <BiSupport
-                              onClick={() => handleIconOpen()}
-                            />
-                      </td>
+                    <td>{el.sub_total}</td>
+                    <td style={{ height: "14px", width: "14px", stroke: "0.2", cursor: "pointer" }}>
+                      <BiSupport
+                        onClick={() => handleIconOpen()}
+                      />
+                    </td>
                   </tr>
                 ))
                 : null}
@@ -289,21 +691,21 @@ const RepDashBoardTable = () => {
             // /> : null
 
             <PaginationComponent
-            currentPage={currentPage}
-            itemsPerPage={pageSize1}
-            totalPages={totalPages1}
-            onPageChange={handlePageChange}
-            handleItemsPerPageChange={handleItemsPerPageChange}  
-          />
+              currentPage={currentPage}
+              itemsPerPage={pageSize1}
+              totalPages={totalPages1}
+              onPageChange={handlePageChange}
+              handleItemsPerPageChange={handleItemsPerPageChange}
+            />
 
           }
           {openIcon && (
-          <HelpDashboard
-            commission={editedCommission}
-            editMode={editMode}
-            handleClose={handleIconClose}
-          />
-        )}
+            <HelpDashboard
+              commission={editedCommission}
+              editMode={editMode}
+              handleClose={handleIconClose}
+            />
+          )}
         </div>
 
       </div>

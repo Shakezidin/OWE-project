@@ -32,7 +32,7 @@
   .dropdown-menu {
     position: absolute;
     top: 100%;
-    left: 0;
+    left: -58px;
     z-index: 1;
     background-color: white;
     border: 1px solid #D0D5DD;

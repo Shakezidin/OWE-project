@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { FiChevronDown } from 'react-icons/fi'; // Assuming you want to use the FiChevronDown icon
+import { FiChevronDown } from 'react-icons/fi';
 import './DropdownWithCheckboxes.css';
 
 interface Option {
@@ -32,9 +32,7 @@ const DropdownWithCheckboxes = () => {
         setIsOpen(false);
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
-
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
@@ -46,10 +44,18 @@ const DropdownWithCheckboxes = () => {
 
   const handleOptionChange = (option: string) => {
     setSelectedOptions((prevSelectedOptions) => {
-      if (prevSelectedOptions.includes(option)) {
-        return prevSelectedOptions.filter((o) => o !== option);
+      if (option === "All") {
+        return prevSelectedOptions.includes("All")
+          ? []
+          : options.map((o) => o.value);
       } else {
-        return [...prevSelectedOptions, option];
+        const newSelectedOptions = prevSelectedOptions.includes(option)
+          ? prevSelectedOptions.filter((o) => o !== option)
+          : [...prevSelectedOptions, option];
+
+        return newSelectedOptions.length === options.length - 1
+          ? ["All", ...newSelectedOptions]
+          : newSelectedOptions;
       }
     });
   };
@@ -57,10 +63,8 @@ const DropdownWithCheckboxes = () => {
   return (
     <div className="dropdown-container" ref={dropdownRef}>
       <div className="dropdown-toggle" onClick={toggleDropdown}>
-        {/* {selectedOptions.length > 0
-          ? `(${selectedOptions})`
-          : 'Select'} */}
-          Select
+        {/* {selectedOptions.length > 0 ? `(${selectedOptions})` : 'Select'} */}
+        Select
         <FiChevronDown className='drop-icon'/>
       </div>
       {isOpen && (
