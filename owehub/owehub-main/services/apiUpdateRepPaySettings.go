@@ -78,6 +78,7 @@ func HandleUpdateRepPaySettingsDataRequest(resp http.ResponseWriter, req *http.R
 	queryParameters = append(queryParameters, UpdateRepPaySettingsData.Name)
 	queryParameters = append(queryParameters, UpdateRepPaySettingsData.State)
 	queryParameters = append(queryParameters, UpdateRepPaySettingsData.PayScale)
+	queryParameters = append(queryParameters, UpdateRepPaySettingsData.Position)
 	queryParameters = append(queryParameters, UpdateRepPaySettingsData.B_E)
 	queryParameters = append(queryParameters, UpdateRepPaySettingsData.StartDate)
 	queryParameters = append(queryParameters, UpdateRepPaySettingsData.EndDate)
