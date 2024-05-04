@@ -51,7 +51,7 @@ func AuthorizeAPIAccess(groupsAccessAllowed []types.UserGroup, next http.Handler
 			return
 		}
 
-		if len(claims.RoleName) == 0 {
+		if len(claims.RoleName) < 0 {
 			FormAndSendHttpResp(w, "Unauthorized API Access", http.StatusUnauthorized, nil)
 			err = fmt.Errorf("Empty RoleName is not allowed")
 			return
@@ -73,7 +73,7 @@ func AuthorizeAPIAccess(groupsAccessAllowed []types.UserGroup, next http.Handler
 		}
 
 		FormAndSendHttpResp(w, "Unauthorized API Access", http.StatusUnauthorized, nil)
-		err = fmt.Errorf("User does not belong to any allowed group")
+		err = fmt.Errorf("User for %v Role does not belong to any allowed group", claims.RoleName)
 		return
 	})
 }
