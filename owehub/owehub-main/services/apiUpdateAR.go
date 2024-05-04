@@ -55,8 +55,9 @@ func HandleUpdateARDataRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if (len(UpdateArReq.UniqueId) <= 0) || (len(UpdateArReq.PayScale) <= 0) ||
-		(len(UpdateArReq.Position) <= 0) || (len(UpdateArReq.Adjustment) <= 0) {
+	if (len(UpdateArReq.UniqueId) <= 0) || (len(UpdateArReq.CustomerName) <= 0) ||
+		(len(UpdateArReq.Date) <= 0) || (len(UpdateArReq.Amount) <= 0) ||
+		(len(UpdateArReq.Notes) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API, Update failed", http.StatusBadRequest, nil)
@@ -70,28 +71,14 @@ func HandleUpdateARDataRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if UpdateArReq.MinRate <= float64(0) {
-		err = fmt.Errorf("Invalid min_rate Not Allowed")
-		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid min_rate Not Allowed, Update failed", http.StatusBadRequest, nil)
-		return
-	}
-	if UpdateArReq.MaxRate <= float64(0) {
-		err = fmt.Errorf("Invalid max_rate Not Allowed")
-		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Max Rate Not Allowed, Update failed", http.StatusBadRequest, nil)
-		return
-	}
-
 	// Populate query parameters in the correct order
 
 	queryParameters = append(queryParameters, UpdateArReq.RecordId)
 	queryParameters = append(queryParameters, UpdateArReq.UniqueId)
-	queryParameters = append(queryParameters, UpdateArReq.PayScale)
-	queryParameters = append(queryParameters, UpdateArReq.Position)
-	queryParameters = append(queryParameters, UpdateArReq.Adjustment)
-	queryParameters = append(queryParameters, UpdateArReq.MinRate)
-	queryParameters = append(queryParameters, UpdateArReq.MaxRate)
+	queryParameters = append(queryParameters, UpdateArReq.CustomerName)
+	queryParameters = append(queryParameters, UpdateArReq.Date)
+	queryParameters = append(queryParameters, UpdateArReq.Amount)
+	queryParameters = append(queryParameters, UpdateArReq.Notes)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateArFunction, queryParameters)

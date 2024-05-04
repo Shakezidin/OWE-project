@@ -63,7 +63,7 @@ func HandleGetARDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	tableName := db.TableName_Ar
 	query = `
-	  SELECT id as record_id, unique_id, pay_scale, position, adjustment, min_rate, max_rate, is_archived
+	  SELECT id as record_id, unique_id, customer, date, amount, notes
 	  FROM ar`
 
 	filter, whereEleList = PrepareARFilters(tableName, dataReq, false)
@@ -95,49 +95,41 @@ func HandleGetARDataRequest(resp http.ResponseWriter, req *http.Request) {
 			Unique_id = ""
 		}
 
-		// PayScale
-		PayScale, ok := item["pay_scale"].(string)
-		if !ok || PayScale == "" {
-			log.FuncErrorTrace(0, "Failed to get pay scale for Record ID %v. Item: %+v\n", RecordId, item)
-			PayScale = ""
+		// Customer
+		Customer, ok := item["customer"].(string)
+		if !ok || Customer == "" {
+			log.FuncErrorTrace(0, "Failed to get customer for Record ID %v. Item: %+v\n", RecordId, item)
+			Customer = ""
 		}
 
-		// Position
-		Position, ok := item["position"].(string)
-		if !ok || Position == "" {
-			log.FuncErrorTrace(0, "Failed to get position for Record ID %v. Item: %+v\n", RecordId, item)
-			Position = ""
+		// Date
+		Date, ok := item["date"].(string)
+		if !ok || Date == "" {
+			log.FuncErrorTrace(0, "Failed to get date for Record ID %v. Item: %+v\n", RecordId, item)
+			Date = ""
 		}
 
-		// Adjustment
-		Adjustment, ok := item["adjustment"].(string)
-		if !ok || Adjustment == "" {
-			log.FuncErrorTrace(0, "Failed to get adjustment for Record ID %v. Item: %+v\n", RecordId, item)
-			Adjustment = ""
+		// Amount
+		Amount, ok := item["amount"].(string)
+		if !ok || Amount == "" {
+			log.FuncErrorTrace(0, "Failed to get amount for Record ID %v. Item: %+v\n", RecordId, item)
+			Amount = ""
 		}
 
-		// MinRate
-		MinRate, ok := item["min_rate"].(float64)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get min rate for Record ID %v. Item: %+v\n", RecordId, item)
-			MinRate = 0.0
-		}
-
-		// MaxRate
-		MaxRate, ok := item["max_rate"].(float64)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get max rate for Record ID %v. Item: %+v\n", RecordId, item)
-			MaxRate = 0.0
+		// Notes
+		Notes, ok := item["notes"].(string)
+		if !ok || Notes == "" {
+			log.FuncErrorTrace(0, "Failed to get notes for Record ID %v. Item: %+v\n", RecordId, item)
+			Notes = ""
 		}
 
 		aRData := models.GetARReq{
-			RecordId:    RecordId,
-			UniqueId:    Unique_id,
-			PayScale:    PayScale,
-			Position:    Position,
-			Adjustment:  Adjustment,
-			MinRate:     MinRate,
-			MaxRate:     MaxRate,
+			RecordId:     RecordId,
+			UniqueId:     Unique_id,
+			CustomerName: Customer,
+			Date:         Date,
+			Amount:       Amount,
+			Notes:        Notes,
 		}
 
 		ARList.ARList = append(ARList.ARList, aRData)
