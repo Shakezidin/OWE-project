@@ -1,7 +1,6 @@
 /**************************************************************************
 * File			: apiUpdateLeaderOverrideArchive.go
-* DESCRIPTION	: This file contains functions for update leader override archive
-						setter handler
+* DESCRIPTION	: This file contains functions for update leader override archive handler
 * DATE			: 239-Apr-2024
 **************************************************************************/
 

@@ -39,7 +39,7 @@ func HandleUpdateMarketingFeesArchiveRequest(resp http.ResponseWriter, req *http
 	defer func() { log.ExitFn(0, "HandleUpdateMarketingFeesArchiveRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in update marketing fees Archive request")
+		err = fmt.Errorf("HTTP Request body is null in update marketing fees archive request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -47,22 +47,22 @@ func HandleUpdateMarketingFeesArchiveRequest(resp http.ResponseWriter, req *http
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update marketing fees Archive request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update marketing fees archive request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &updateMarketingFeesArcReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal update marketing fees Archive request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal update marketing fees Archive request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal update marketing fees archive request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal update marketing fees archive request", http.StatusBadRequest, nil)
 		return
 	}
 
 	if len(updateMarketingFeesArcReq.RecordId) <= 0 {
 		err = fmt.Errorf("Record Id is empty, unable to proceed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Record Id is empty, Update marketing fees Archive failed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Record Id is empty, Update marketing fees archive failed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -79,12 +79,12 @@ func HandleUpdateMarketingFeesArchiveRequest(resp http.ResponseWriter, req *http
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateMarketingFeesArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Update marketing fees Archive in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Update marketing fees Archive", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to Update marketing fees archive in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to Update marketing fees archive", http.StatusInternalServerError, nil)
 		return
 	}
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "marketing fees Archive updated with Id: %+v", data)
-	FormAndSendHttpResp(resp, "marketing fees Archive Updated Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "marketing fees archive updated with Id: %+v", data)
+	FormAndSendHttpResp(resp, "Marketing Fees Archive Updated Successfully", http.StatusOK, nil)
 }

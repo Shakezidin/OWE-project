@@ -25,6 +25,7 @@ BEGIN
         owe_cost = p_owe_cost,
         dlr_mu = p_dlr_mu,
         dlr_cost = p_dlr_cost,
+        start_date = p_start_date,
         end_date = p_end_date,
         updated_at = CURRENT_TIMESTAMP
     WHERE id = p_id
