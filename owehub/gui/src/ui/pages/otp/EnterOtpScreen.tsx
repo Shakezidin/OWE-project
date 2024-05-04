@@ -6,13 +6,15 @@ import { ReactComponent as UNDER_LINE } from "../../../resources/assets/BlueAndG
 import Input from "../../components/text_input/Input";
 import { ActionButton } from "../../components/button/ActionButton";
 import { otpModel } from "../../../core/models/api_models/AuthModel";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { generateOTP } from "../../../redux/apiActions/authActions";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { HTTP_STATUS } from "../../../core/models/api_models/RequestModel";
 import { toast } from "react-toastify";
 import Loading from "../../components/loader/Loading";
+import { ROUTES } from "../../../routes/routes";
+import { FaArrowLeft } from "react-icons/fa";
 
 const PasswordInput = (props: {
   placeholder: string;
@@ -139,6 +141,10 @@ const EnterOtpScreen = () => {
 
               <br />
               <ActionButton title="Submit" type="submit" onClick={() => {}} />
+              <Link to={ROUTES.LOGIN} className="loginGoBackLink">
+                <FaArrowLeft />
+                <span>Go back to login screen</span>
+              </Link>
             </div>
           </form>
         </div>
