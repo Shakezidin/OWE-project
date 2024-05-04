@@ -110,6 +110,9 @@ dispatch(updateArchSchedule({...data,record_id:editData?.record_id!}))
       dispatch(resetSuccess())
     }
 
+
+    
+
   }, [isSuccess])
 
   console.log(formData,"formDaaaa")
