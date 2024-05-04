@@ -14,22 +14,22 @@ const BreakdownAccordion = () => {
   return (
     <>
   
-      <tr style={{backgroundColor:"lightYellow"}}>
+      <tr style={{backgroundColor:"#F2F4F6"}}>
         <td colSpan={2}>Adder content goes here</td>
       </tr>
-      <tr style={{backgroundColor:"lightYellow"}}>
+      <tr style={{backgroundColor:"#F2F4F6"}}>
         <td>Small System Size</td>
         <td>21250</td>
       </tr>
-      <tr style={{backgroundColor:"lightYellow"}}>
+      <tr style={{backgroundColor:"#F2F4F6"}}>
         <td>Credit</td>
         <td>21250</td>
       </tr>
-      <tr style={{backgroundColor:"lightYellow"}}>
+      <tr style={{backgroundColor:"#F2F4F6"}}>
         <td>Referal</td>
         <td>21250</td>
       </tr>
-      <tr style={{backgroundColor:"lightYellow"}}>
+      <tr style={{backgroundColor:"#F2F4F6"}}>
         <td>Rebates</td>
         <td>21250</td>
       </tr>
