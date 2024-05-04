@@ -39,7 +39,7 @@ func HandleUpdateLoanTypeArchiveRequest(resp http.ResponseWriter, req *http.Requ
 	defer func() { log.ExitFn(0, "HandleUpdateLoanTypeArchiveRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in update LoanType Archive request")
+		err = fmt.Errorf("HTTP Request body is null in update loan type archive request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -47,15 +47,15 @@ func HandleUpdateLoanTypeArchiveRequest(resp http.ResponseWriter, req *http.Requ
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update LoanType Archive request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update loan type archive request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &updateLoanTypeArcReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal update LoanType Archive request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal update LoanType Archive request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal update loan type archive request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal update loan type archive request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -79,12 +79,12 @@ func HandleUpdateLoanTypeArchiveRequest(resp http.ResponseWriter, req *http.Requ
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateLoanTypeArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Update LoanType Archive in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Update LoanType Archive", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to update loan type archive in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to update loan type archive", http.StatusInternalServerError, nil)
 		return
 	}
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "LoanType Archive updated with Id: %+v", data)
-	FormAndSendHttpResp(resp, "LoanType Archive Updated Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "loan type archive updated with Id: %+v", data)
+	FormAndSendHttpResp(resp, "Loan Type Archive Updated Successfully", http.StatusOK, nil)
 }

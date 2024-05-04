@@ -59,19 +59,19 @@ func HandleUpdateLoanTypeRequest(resp http.ResponseWriter, req *http.Request) {
 	if (len(updateLoanTypeReq.ProductCode) <= 0) || (len(updateLoanTypeReq.Description) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if updateLoanTypeReq.Active <= 0 {
-		err = fmt.Errorf("Invalid Chg Dlr Not Allowed")
+		err = fmt.Errorf("Invalid active Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Active Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Active Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if updateLoanTypeReq.Adder <= 0 {
-		err = fmt.Errorf("Invalid Pay Source Not Allowed")
+		err = fmt.Errorf("Invalid adder Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Adder Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Adder Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if updateLoanTypeReq.RecordId <= int64(0) {
@@ -89,13 +89,13 @@ func HandleUpdateLoanTypeRequest(resp http.ResponseWriter, req *http.Request) {
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateLoanTypeFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Add loan type in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Update loan type", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to update loan type in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to update loan type", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "Loan type updated with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "Loan type Updated Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "loan type updated with Id: %+v", data["result"])
+	FormAndSendHttpResp(resp, "Loan Type Updated Successfully", http.StatusOK, nil)
 }

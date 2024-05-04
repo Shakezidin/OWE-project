@@ -73,15 +73,15 @@ func HandleUpdateMarketingFeeRequest(resp http.ResponseWriter, req *http.Request
 		return
 	}
 	if int64(updateMarketingFeeReq.ChgDlr) <= int64(0) {
-		err = fmt.Errorf("Invalid ChgDlr Not Allowed")
+		err = fmt.Errorf("Invalid ChgDlr Value Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid ChgDlr, Update failed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid ChgDlr Value, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if int64(updateMarketingFeeReq.PaySrc) <= int64(0) {
-		err = fmt.Errorf("Invalid PaySrc Not Allowed")
+		err = fmt.Errorf("Invalid PaySrc Value Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid PaySrc, Update failed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid PaySrc Value, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	// Populate query parameters in the correct order
@@ -107,5 +107,5 @@ func HandleUpdateMarketingFeeRequest(resp http.ResponseWriter, req *http.Request
 	data := result[0].(map[string]interface{})
 
 	log.DBTransDebugTrace(0, "marketing fee updated with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "Marketing fee Updated Successfully", http.StatusOK, nil)
+	FormAndSendHttpResp(resp, "Marketing Fee Updated Successfully", http.StatusOK, nil)
 }

@@ -55,7 +55,7 @@ func HandleUpdateLoanFeeArchiveRequest(resp http.ResponseWriter, req *http.Reque
 	err = json.Unmarshal(reqBody, &updateLoanFeeArcReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal update loan fee archive request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal update Loan Fee Archive request", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Failed to unmarshal update loan fee archive request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -85,6 +85,6 @@ func HandleUpdateLoanFeeArchiveRequest(resp http.ResponseWriter, req *http.Reque
 	}
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "loan fee Archive updated with Id: %+v", data)
+	log.DBTransDebugTrace(0, "loan fee archive updated with Id: %+v", data)
 	FormAndSendHttpResp(resp, "Loan Fee Archive Updated Successfully", http.StatusOK, nil)
 }

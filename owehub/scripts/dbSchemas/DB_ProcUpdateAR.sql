@@ -1,11 +1,10 @@
 CREATE OR REPLACE FUNCTION update_ar(
     p_id INT,
-    p_unique_id                VARCHAR,
-    p_pay_scale                VARCHAR,
-    p_position                 VARCHAR,
-    p_adjustment               VARCHAR,
-    p_min_rate                 DOUBLE PRECISION,
-    p_max_rate                 DOUBLE PRECISION,
+    p_unique_id               VARCHAR,
+    p_customer                VARCHAR,
+    p_date                    VARCHAR,
+    p_amount                  VARCHAR,
+    p_notes                   VARCHAR,
     OUT v_ar_id INT
 )
 RETURNS INT 
@@ -14,11 +13,10 @@ BEGIN
     UPDATE ar
     SET 
         unique_id = p_unique_id,
-        pay_scale  = p_pay_scale,
-        position = p_position,
-        adjustment = p_adjustment,
-        min_rate = p_min_rate,
-        max_rate = p_max_rate,
+        customer  = p_customer,
+        date = p_date,
+        amount = p_amount,
+        notes = p_notes,
         updated_at = CURRENT_TIMESTAMP
     WHERE id = p_id
     RETURNING id INTO v_ar_id;

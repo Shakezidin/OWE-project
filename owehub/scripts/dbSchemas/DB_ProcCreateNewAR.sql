@@ -1,10 +1,9 @@
 CREATE OR REPLACE FUNCTION create_new_ar(
     p_unique_id character varying,
-    p_pay_scale text,
-    p_position character varying,
-    p_adjustment character varying,
-    p_min_rate DOUBLE PRECISION,
-    p_max_rate DOUBLE PRECISION,
+    p_customer text,
+    p_date character varying,
+    p_amount text,
+    p_notes text,
     OUT v_ar_id INT
 )
 RETURNS INT
@@ -14,20 +13,18 @@ BEGIN
         -- Insert new entry in adder responsibility table --
         INSERT INTO ar (
             unique_id,
-            pay_scale,
-            position,
-            adjustment,
-            min_rate,
-            max_rate,
+            customer,
+            date,
+            amount,
+            notes,
             is_archived
         )
         VALUES (
             p_unique_id,
-            p_pay_scale,
-            p_position,
-            p_adjustment,
-            p_min_rate,
-            p_max_rate,
+            p_customer,
+            p_date,
+            p_amount,
+            p_notes,
             FALSE
         )
         RETURNING id INTO v_ar_id;
