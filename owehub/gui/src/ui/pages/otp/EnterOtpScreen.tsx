@@ -157,9 +157,9 @@ const EnterOtpScreen = () => {
 
               <br />
               <ActionButton title="Submit" type="submit" onClick={() => {}} />
-              <Link to={ROUTES.LOGIN} className="loginGoBackLink">
+              <Link to={ROUTES.RESETPASSWORD} className="loginGoBackLink">
                 <FaArrowLeft />
-                <span>Go back to login screen</span>
+                <span>Re-enter email</span>
               </Link>
             </div>
           </form>
