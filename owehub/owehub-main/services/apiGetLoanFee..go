@@ -64,7 +64,7 @@ func HandleGetLoanFeeDataRequest(resp http.ResponseWriter, req *http.Request) {
 	tableName := db.TableName_LoanFee
 	query = `
 	   SELECT lf.id as record_id, lf.unique_id, ud.name AS dealer_name, pt.partner_name AS installer, st.name AS state_name, lt.product_code AS loan_type,
-	   lf.owe_cost, lf.dlr_mu, lf.dlr_cost
+	   lf.owe_cost, lf.dlr_mu, lf.dlr_cost,lf.start_date, lf.end_date
 	   FROM loan_fee lf
 	   JOIN user_details ud ON ud.user_id = lf.dealer_id
 	   JOIN partners pt ON pt.partner_id = lf.installer

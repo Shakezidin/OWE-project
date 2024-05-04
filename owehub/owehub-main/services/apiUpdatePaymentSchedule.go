@@ -36,7 +36,7 @@ func HandleUpdatePaymentScheduleRequest(resp http.ResponseWriter, req *http.Requ
 	defer func() { log.ExitFn(0, "HandleUpdatePaymentScheduleRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in update Payment Schedule request")
+		err = fmt.Errorf("HTTP Request body is null in update payment schedule request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -44,15 +44,15 @@ func HandleUpdatePaymentScheduleRequest(resp http.ResponseWriter, req *http.Requ
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update Payment Schedule request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update payment schedule request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &updatePaymentSchedule)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal update Payment Schedule request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal update Payment Schedule request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal update update payment schedule err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal update update payment schedule", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -65,7 +65,7 @@ func HandleUpdatePaymentScheduleRequest(resp http.ResponseWriter, req *http.Requ
 		(len(updatePaymentSchedule.EndDate) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if updatePaymentSchedule.RecordId <= int64(0) {
@@ -93,13 +93,13 @@ func HandleUpdatePaymentScheduleRequest(resp http.ResponseWriter, req *http.Requ
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdatePaymentScheduleFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Add Payment Schedule in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Update Payment Schedule", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to update payment schedule in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to update payment schedule", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "Payment Schedule updated with Id: %+v", data["result"])
+	log.DBTransDebugTrace(0, "payment schedule updated with Id: %+v", data["result"])
 	FormAndSendHttpResp(resp, "Payment Schedule Updated Successfully", http.StatusOK, nil)
 }

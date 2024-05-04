@@ -126,7 +126,7 @@ const LeaderOverride = () => {
         page_number: currentPage,
         page_size: itemsPerPage,
       };
-      const res = await postCaller("update_leaderoveride_archive", newValue);
+      const res = await postCaller("update_leaderoverride_archive", newValue);
       if (res.status === HTTP_STATUS.OK) {
         dispatch(getleaderOverride(pageNumber));
         await successSwal(

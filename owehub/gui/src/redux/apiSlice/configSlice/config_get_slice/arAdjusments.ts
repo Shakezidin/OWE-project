@@ -41,11 +41,11 @@ const rateAdjustments = createSlice({
             })
             .addCase(createAdjustments.pending, (state, action) => {
                 state.isFormSubmitting = true
-                toast.success("form submitted")
             })
             .addCase(createAdjustments.fulfilled, (state) => {
                 state.isFormSubmitting = false
                 state.isSuccess = true
+                toast.success("form submitted")
             })
             .addCase(createAdjustments.rejected, (state, action) => {
                 state.isFormSubmitting = false
