@@ -23,7 +23,8 @@
   padding: 20px;
   border-radius: 16px;
   overflow-y: auto;
-  max-height: 100vh;
+  max-height: 84vh;
+  scroll-behavior: smooth;
 }
 .payer-type {
   font-size: 16px;
