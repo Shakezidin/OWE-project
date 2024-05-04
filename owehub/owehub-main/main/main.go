@@ -191,7 +191,7 @@ func createApiRouter() *mux.Router {
 
 		/* If API required authorization then add middleware in it */
 		if route.IsAuthReq {
-			handler = apiHandler.AuthorizeAPIAccess(route.RolesAllowedAccess, handler)
+			handler = apiHandler.AuthorizeAPIAccess(route.GroupAllowedAccess, handler)
 		}
 
 		if types.CommGlbCfg.SvcSrvCfg.ValidateOAuthReq == "YES" {
