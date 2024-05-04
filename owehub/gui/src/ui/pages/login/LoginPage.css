@@ -236,3 +236,69 @@ input:checked + .slider:before {
   font-weight: 400;
   line-height: 20px; /* 166.667% */
 }
+
+.loginGoBackLink {
+  font-size: 14px;
+  display: flex;
+  margin: auto;
+  margin-top: 20px;
+  margin-bottom: -12px;
+  align-items: center;
+  padding: 0 4px;
+  color: var(--secondary-text-color);
+  border-bottom: 1px dotted transparent;
+}
+.loginGoBackLink :first-child {
+  font-size: 10px;
+  margin-right: 8px;
+}
+
+.loginGoBackLink:hover {
+  border-color: var(--input-border-color);
+}
+
+.loginOtpField {
+  display: grid;
+}
+
+.loginOtpField>* {
+  grid-row-start: 1;
+  grid-column-start: 1;
+}
+
+.loginResendOtp {
+  justify-self: flex-end;
+  align-self: flex-start;
+  margin-top: 9px;
+  margin-right: 4px;
+  right: 4px;
+  top: 0;
+  width: 120px;
+  padding: 6px 0;
+  font-size: 12px;
+  border: 1px solid;
+}
+
+button.loginResendOtp {
+  border-radius: 0.3rem;
+  cursor: pointer;
+  background-color: transparent;
+  border-color: var(--active-text-color);
+  color: var(--active-text-color);
+}
+
+button.loginResendOtp:hover {
+  background-color: var(--active-text-color);
+  color: var(--white-color);
+}
+
+button.loginResendOtp:disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+p.loginResendOtp {
+  text-align: center;
+  border-color: transparent;
+  color: var(--secondary-text-color);
+}

@@ -6,7 +6,7 @@
  * Path: src/ui/pages
  */
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./LoginPage.css";
 import { ICONS } from "../../icons/Icons";
 import { Link, useNavigate } from "react-router-dom";
@@ -64,37 +64,21 @@ export const LoginPage = () => {
     return emailPattern.test(email);
   };
 
-  const debounceTimer = useRef<NodeJS.Timeout | null>();
-
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     try {
       e.preventDefault();
 
-      const debounceDelay = 800; // Adjust the delay as needed (in milliseconds)
-
-      const showToast = (
-        message: string,
-        type: "warn" | "warning" | "success" | "error"
-      ) => {
-        if (debounceTimer.current) {
-          clearTimeout(debounceTimer.current);
-        }
-        debounceTimer.current = setTimeout(() => {
-          toast[type](message);
-        }, debounceDelay);
-      };
-
       if (credentials.email_id.length === 0) {
-        showToast("Please enter email id", "warn");
+        toast.warn("Please enter email id");
       } else if (!isValidEmail(credentials.email_id)) {
-        showToast("Please enter a valid email id", "warning");
+        toast.warning("Please enter a valid email id");
       } else if (credentials.password.length === 0) {
-        showToast("Please enter the password", "warning");
+        toast.warning("Please enter the password");
       } else {
         const actionResult = await dispatch(loginAction(credentials));
         const result = unwrapResult(actionResult);
         if (result.status === HTTP_STATUS.OK) {
-          showToast(result.message, "success");
+          toast.success(result.message);
           const {
             email_id,
             user_name,
@@ -126,7 +110,7 @@ export const LoginPage = () => {
           );
           navigate(ROUTES.PROJECT_PERFORMANCE);
         } else {
-          showToast(result.message, "error");
+          toast.error(result.message);
         }
       }
     } catch (err) {
