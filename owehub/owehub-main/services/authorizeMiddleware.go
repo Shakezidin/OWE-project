@@ -8,7 +8,7 @@ package services
 
 import (
 	log "OWEApp/shared/logger"
-	"OWEApp/shared/types"
+	types "OWEApp/shared/types"
 	"context"
 	"fmt"
 	"net/http"
@@ -17,7 +17,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-func AuthorizeAPIAccess(rolesAccessAllowed []types.UserRoles, next http.Handler) http.Handler {
+func AuthorizeAPIAccess(groupsAccessAllowed []types.UserGroup, next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var (
 			err error
@@ -43,7 +43,7 @@ func AuthorizeAPIAccess(rolesAccessAllowed []types.UserRoles, next http.Handler)
 			return
 		}
 
-		/* Now Validate if user role has permission to access the respource */
+		/* Now Validate if user role has permission to access the resource */
 		claims, ok := token.Claims.(*Claims)
 		if !ok || time.Now().Unix() > claims.ExpiresAt {
 			FormAndSendHttpResp(w, "Unauthorized API Access", http.StatusUnauthorized, nil)
@@ -57,10 +57,13 @@ func AuthorizeAPIAccess(rolesAccessAllowed []types.UserRoles, next http.Handler)
 			return
 		}
 
-		for _, roleAllowed := range rolesAccessAllowed {
-			if roleAllowed == types.UserRoles(claims.RoleName) {
-				/* Resource Access is allowed for this Role */
-				log.FuncInfoTrace(0, "Access is allowed for role: %v", claims.RoleName)
+		// Check if user's role is included in any allowed group
+		userRole := types.UserRoles(claims.RoleName)
+
+		for _, groupAllowed := range groupsAccessAllowed {
+			if isUserInAllowedGroup(userRole, groupAllowed) {
+				/* Resource Access is allowed for this Group */
+				log.FuncInfoTrace(0, "Access is allowed for group: %v", groupAllowed)
 
 				ctx := context.WithValue(r.Context(), "emailid", claims.EmailId)
 				ctx = context.WithValue(ctx, "rolename", claims.RoleName)
@@ -70,7 +73,22 @@ func AuthorizeAPIAccess(rolesAccessAllowed []types.UserRoles, next http.Handler)
 		}
 
 		FormAndSendHttpResp(w, "Unauthorized API Access", http.StatusUnauthorized, nil)
-		err = fmt.Errorf("User for %v Role is not allowed to access resource", claims.RoleName)
+		err = fmt.Errorf("User for %v Role does not belong to any allowed group", claims.RoleName)
 		return
 	})
+}
+
+// Function to check if user's role is allowed for the given group
+func isUserInAllowedGroup(role types.UserRoles, group types.UserGroup) bool {
+	allowedRoles, ok := types.UserRoleGroupMap[group]
+	if !ok {
+		// Group not found in the mapping
+		return false
+	}
+	for _, allowedRole := range allowedRoles {
+		if role == allowedRole {
+			return true
+		}
+	}
+	return false
 }

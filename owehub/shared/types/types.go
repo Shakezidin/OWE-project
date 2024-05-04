@@ -11,14 +11,54 @@ import (
 	CfgModels "OWEApp/shared/models"
 )
 
+type UserGroup string
 type UserRoles string
 
 const (
+	GroupAdmin           UserGroup = "GroupAdmin"
+	GroupDealerFinance   UserGroup = "GroupDealerFinance"
+	GroupSalesManagement UserGroup = "GroupSalesManagement"
+	GroupEveryOne        UserGroup = "GroupEveryOne"
+)
+
+var (
+	// Map user role groups to user roles
+	UserRoleGroupMap = map[UserGroup][]UserRoles{
+		GroupAdmin: {
+			RoleAdmin,
+		},
+		GroupDealerFinance: {
+			RoleDealerOwner,
+			RoleFinAdmin,
+		},
+		GroupSalesManagement: {
+			RoleRegionalManager,
+			RoleSalesManager,
+			RoleSalesRep,
+		},GroupEveryOne: {
+			RoleAdmin,
+			RoleDealerOwner,
+			RoleSubDealerOwner,
+			RolePartner,
+			RoleRegionalManager,
+			RoleSalesManager,
+			RoleSalesRep,
+			RoleApptSetter,
+			RoleFinAdmin,
+		},
+	}
+)
+
+const (
 	RoleAdmin           UserRoles = "Admin"
-	RoleDealer          UserRoles = "Dealer"
-	RoleRegionalManager UserRoles = "RegionalManager"
-	RoleSalesManager    UserRoles = "SalesManager"
-	RoleSalesRep        UserRoles = "SalesRep"
+	RoleDealerOwner     UserRoles = "Dealer Owner"
+	RoleSubDealerOwner  UserRoles = "SubDealer Owner"
+	RolePartner         UserRoles = "Partner"
+	RoleRegionalManager UserRoles = "Regional Manager"
+	RoleSalesManager    UserRoles = "Sales Manager"
+	RoleSalesRep        UserRoles = "Sale Representative"
+	RoleApptSetter      UserRoles = "Appointment Setter"
+	RoleFinAdmin        UserRoles = "Finance Admin"
 )
 
 var (

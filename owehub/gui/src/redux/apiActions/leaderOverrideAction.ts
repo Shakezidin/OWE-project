@@ -58,7 +58,7 @@ export const updateleaderOverride = createAsyncThunk(
   "update/leaderOverride",
   async (params: ILeaderRow, { rejectWithValue, dispatch }) => {
     try {
-      const data = await postCaller("update_leaderoverridee", params);
+      const data = await postCaller("update_leaderoverride", params);
       console.log(data,"rejectttt");
       
       if (data.status === 500 || data instanceof Error) {
