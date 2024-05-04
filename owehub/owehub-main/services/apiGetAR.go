@@ -192,20 +192,17 @@ func PrepareARFilters(tableName string, dataFilter models.DataRequestBody, forDa
 			case "unique_id":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(unique_id) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-			case "pay_scale":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(pay_scale) %s LOWER($%d)", operator, len(whereEleList)+1))
+			case "customer":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(customer) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-			case "position":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(position) %s LOWER($%d)", operator, len(whereEleList)+1))
+			case "data":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(data) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-			case "adjustment":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(adjustment) %s LOWER($%d)", operator, len(whereEleList)+1))
+			case "amount":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(amount) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-			case "min_rate":
-				filtersBuilder.WriteString(fmt.Sprintf("min_rate %s $%d", operator, len(whereEleList)+1))
-				whereEleList = append(whereEleList, value)
-			case "max_rate":
-				filtersBuilder.WriteString(fmt.Sprintf("max_rate %s $%d", operator, len(whereEleList)+1))
+			case "notes":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(notes) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
 				// For other columns, handle them accordingly
@@ -239,7 +236,7 @@ func PrepareARFilters(tableName string, dataFilter models.DataRequestBody, forDa
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY id, unique_id, pay_scale, position, adjustment, min_rate, max_rate")
+		filtersBuilder.WriteString(" GROUP BY id, unique_id, customer, date, amount, notes")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
