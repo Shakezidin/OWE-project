@@ -1,6 +1,6 @@
 /**************************************************************************
 * File			: apiUpdateArImportArchive.go
-* DESCRIPTION	: This file contains functions for update ArImport archive
+* DESCRIPTION	: This file contains functions for update ar import archive
 						setter handler
 * DATE			: 30-Apr-2024
 **************************************************************************/
@@ -29,17 +29,17 @@ import (
 
 func HandleUpdateArImportArchiveRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err                   error
+		err                  error
 		updateArImportArcReq models.UpdateArImportArchive
-		queryParameters       []interface{}
-		result                []interface{}
+		queryParameters      []interface{}
+		result               []interface{}
 	)
 
 	log.EnterFn(0, "HandleUpdateArImportArchiveRequest")
 	defer func() { log.ExitFn(0, "HandleUpdateArImportArchiveRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in update ArImport Archive request")
+		err = fmt.Errorf("HTTP Request body is null in update ar import archive request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -47,15 +47,15 @@ func HandleUpdateArImportArchiveRequest(resp http.ResponseWriter, req *http.Requ
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update ArImport Archive request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update ar import archive request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &updateArImportArcReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal update ArImport Archive request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal update ArImport Archive request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal update ar import archive request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal update ar import archive request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -79,12 +79,12 @@ func HandleUpdateArImportArchiveRequest(resp http.ResponseWriter, req *http.Requ
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateArImportArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Update ArImport Archive in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Update ArImport Archive", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to update ar import archive in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to update ar import archive", http.StatusInternalServerError, nil)
 		return
 	}
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "ArImport Archive updated with Id: %+v", data)
-	FormAndSendHttpResp(resp, "ArImport Archive Updated Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "ar import archive updated with Id: %+v", data)
+	FormAndSendHttpResp(resp, "Ar Import Archive Updated Successfully", http.StatusOK, nil)
 }

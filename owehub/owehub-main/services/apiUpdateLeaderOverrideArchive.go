@@ -1,7 +1,6 @@
 /**************************************************************************
 * File			: apiUpdateLeaderOverrideArchive.go
-* DESCRIPTION	: This file contains functions for update LeaderOverride archive
-						setter handler
+* DESCRIPTION	: This file contains functions for update leader override archive handler
 * DATE			: 239-Apr-2024
 **************************************************************************/
 
@@ -39,7 +38,7 @@ func HandleUpdateLeaderOverrideArchiveRequest(resp http.ResponseWriter, req *htt
 	defer func() { log.ExitFn(0, "HandleUpdateLeaderOverrideArchiveRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in update LeaderOverrides Archive request")
+		err = fmt.Errorf("HTTP Request body is null in update leader override archive request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -47,15 +46,15 @@ func HandleUpdateLeaderOverrideArchiveRequest(resp http.ResponseWriter, req *htt
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update LeaderOverrides Archive request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update leader override archive request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &updateLeaderOverrideArcReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal update LeaderOverrides Archive request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal update LeaderOverrides Archive request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal update leader override archive request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal update leader override archive request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -79,12 +78,12 @@ func HandleUpdateLeaderOverrideArchiveRequest(resp http.ResponseWriter, req *htt
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateLeaderOverrideArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Update LeaderOverrides Archive in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Update LeaderOverrides Archive", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to update leader override archive in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to update leader override archive", http.StatusInternalServerError, nil)
 		return
 	}
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "LeaderOverrides Archive updated with Id: %+v", data)
-	FormAndSendHttpResp(resp, "LeaderOverrides Archive Updated Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "leader override archive updated with Id: %+v", data)
+	FormAndSendHttpResp(resp, "Leader Overrides Archive Updated Successfully", http.StatusOK, nil)
 }

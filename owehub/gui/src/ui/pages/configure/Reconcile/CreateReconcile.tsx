@@ -10,18 +10,42 @@ import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoin
 import { useDispatch } from "react-redux";
 import { installerOption, partnerOption, salesTypeOption, stateOption, } from "../../../../core/models/data_models/SelectDataModel";
 import Select from 'react-select';
-import {paySaleTypeData } from "../../../../resources/static_data/StaticData";
-import { PayScheduleModel } from "../../../../core/models/configuration/create/PayScheduleModel";
+import {partners, paySaleTypeData } from "../../../../resources/static_data/StaticData";
+import { ReconcileModel } from "../../../../core/models/configuration/create/ReconcileModel";
 import SelectOption from "../../../components/selectOption/SelectOption";
+import { createReconcile, updateReconcile } from "../../../../redux/apiActions/reconcileAction";
+import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
+import {
+  fetchRepaySettings,
+  RepayEditParams,
+} from "../../../../redux/apiActions/repPayAction";
+import { resetSuccess } from "../../../../redux/apiSlice/configSlice/config_get_slice/repPaySettingsSlice"
 interface payScheduleProps {
     handleClose: () => void,
     editMode:boolean,
+    editData:any,
     
 }
 
 
-const CreateReconcile:React.FC<payScheduleProps> = ({handleClose,editMode}) => {
-    const dispatch = useDispatch();
+const CreateReconcile:React.FC<payScheduleProps> = ({handleClose,editMode, editData}) => {
+    const dispatch = useAppDispatch();
+    const { isSuccess } = useAppSelector(state => state.reconcile)
+    
+    const [createReconcileData, setCreateReconcileData] = useState<ReconcileModel>(
+      {
+          unique_id:editData?.unique_id || "",
+          customer:editData?.customer || "",
+          partner_name:editData?.partner_name || "",
+          state:editData?.state_name || "",
+          sys_size:editData?.sys_size || "",
+          status:editData?.status || "",
+          date:editData?.date || "",
+          amount:editData?.amount || "",
+          notes:editData?.notes || ""
+           
+        }
+  )
 
   
     const [newFormData,setNewFormData] = useState<any>([])
@@ -38,19 +62,69 @@ const CreateReconcile:React.FC<payScheduleProps> = ({handleClose,editMode}) => {
   getNewFormData()
    },[])
 
+   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setCreateReconcileData((prevData) => ({
+        ...prevData,
+        [name]: value,
+    }));
+};
 
+const handleChange = (newValue: any, fieldName: string) => {
+  setCreateReconcileData((prevData) => ({
+      ...prevData,
+      [fieldName]: newValue ? newValue.value : '',
+  }));
+};
+
+const handleSubmit = (e: React.FormEvent) => {
+  e.preventDefault()
  
+     const data = {
+      unique_id: createReconcileData?.unique_id,
+      customer_name: createReconcileData?.customer,
+      partner:createReconcileData?.partner_name,
+      state_name: createReconcileData.state,
+      sys_size: createReconcileData.sys_size,
+      status: createReconcileData.status,
+      date: createReconcileData.date,
+      amount: createReconcileData.amount,
+      notes: createReconcileData.notes,
+     }
+
+    
+ 
+  if(editMode){
+    dispatch(updateReconcile({...data,record_id:editData?.record_id!}))
+        }else{
+          dispatch(
+            createReconcile(data)
+          );
+        }
+
+}
+
+useEffect(() => {
+  if (isSuccess) {
+    handleClose()
+  }
+
+  return (() => {
+    isSuccess && dispatch(resetSuccess())
+  })
+}, [isSuccess])
+
  
     return (
         <div className="transparent-model">
-             <form  className="modal">
+             <form  className="modal" onSubmit={handleSubmit}>
 
                 <div className="createUserCrossButton" onClick={handleClose}>
                     <CROSS_BUTTON />
 
                 </div>
              
-                    <h3 className="createProfileText">{editMode===false?"Rep Pay Settings":"Update RepPay Settings"}</h3>
+                    <h3 className="createProfileText">{editMode===false?"Create Reconcile":"Update Reconcile"}</h3>
                 
                   <div className="modal-body">
                   <div className="createProfileInputView">
@@ -60,57 +134,54 @@ const CreateReconcile:React.FC<payScheduleProps> = ({handleClose,editMode}) => {
                     <Input
                       type={"text"}
                       label="Unique ID"
-                      value={""}
-                      name="dealer_tier"
+                      value={createReconcileData.unique_id}
+                      name="unique_id"
                       placeholder={"Enter"}
-                      onChange={() => {}}
+                      onChange={(e) => handleInputChange(e)}
+                     
                     />
                   </div>
                   <div className="create-input-field">
                     <Input
                       type={"text"}
                       label="Customer Name"
-                      value={""}
-                      name="dealer_tier"
+                      value={createReconcileData.customer}
+                      name="customer"
                       placeholder={"Enter"}
-                      onChange={() => {}}
+                      onChange={(e) => handleInputChange(e)}
                     />
                   </div>
                   <div className="create-input-field">
-                    <Input
-                      type={"text"}
-                      label="Partner"
-                      value={""}
-                      name="dealer_tier"
-                      placeholder={"Enter"}
-                      onChange={() => {}}
-                    />
-                  </div>
+                                <label className="inputLabel-select">Parnter</label>
+                                    <SelectOption
+                                        options={partnerOption(newFormData)}
+                                        onChange={(newValue) => handleChange(newValue, 'partner_name')}
+                                        value={partnerOption(newFormData)?.find((option) => option.value === createReconcileData.partner_name)}
+                                    />
+                                </div>
                  
                 </div>
 
              
                          
                 <div className="create-input-container">
-                  <div className="create-input-field">
-                    <Input
-                      type={"text"}
-                      label="ST"
-                      value={""}
-                      name="dealer_tier"
-                      placeholder={"Enter"}
-                      onChange={() => {}}
-                    />
-                  </div>
-
+                   
+                <div className="create-input-field">
+                                <label className="inputLabel-select">ST</label>
+                                    <SelectOption
+                                        options={stateOption(newFormData)}
+                                        onChange={(newValue) => handleChange(newValue, 'state')}
+                                        value={stateOption(newFormData)?.find((option) => option.value === createReconcileData.state)}
+                                    />
+                                </div>
                   <div className="create-input-field">
                     <Input
                       type={"text"}
                       label="Sys. Size"
-                      value={""}
-                      name="dealer_tier"
+                      value={createReconcileData.sys_size}
+                      name="sys_size"
                       placeholder={"Enter"}
-                      onChange={() => {}}
+                      onChange={(e) => handleInputChange(e)}
                     />
                   </div>
 
@@ -118,10 +189,10 @@ const CreateReconcile:React.FC<payScheduleProps> = ({handleClose,editMode}) => {
                     <Input
                       type={"text"}
                       label="Status"
-                      value={""}
-                      name="dealer_tier"
+                      value={createReconcileData.status}
+                      name="status"
                       placeholder={"Enter"}
-                      onChange={() => {}}
+                      onChange={(e) => handleInputChange(e)}
                     />
                   </div>  
                 </div>
@@ -132,10 +203,10 @@ const CreateReconcile:React.FC<payScheduleProps> = ({handleClose,editMode}) => {
                     <Input
                       type={"date"}
                       label="Date"
-                      value={""}
-                      name="dealer_tier"
+                      value={createReconcileData.date}
+                      name="date"
                       placeholder={"Enter"}
-                      onChange={() => {}}
+                      onChange={(e) => handleInputChange(e)}
                     />
                   </div>
 
@@ -143,12 +214,24 @@ const CreateReconcile:React.FC<payScheduleProps> = ({handleClose,editMode}) => {
                     <Input
                       type={"text"}
                       label="Amount"
-                      value={""}
-                      name="dealer_tier"
+                      value={createReconcileData.amount}
+                      name="amount"
                       placeholder={"Enter"}
-                      onChange={() => {}}
+                      onChange={(e) => handleInputChange(e)}
                     />
                   </div>
+
+                  <div className="create-input-field">
+                    <Input
+                      type={"text"}
+                      label="Notes"
+                      value={createReconcileData.notes}
+                      name="notes"
+                      placeholder={"Enter"}
+                      onChange={(e) => handleInputChange(e)}
+                    />
+                  </div>
+
 
               
                 </div>

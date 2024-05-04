@@ -1,7 +1,6 @@
 /**************************************************************************
 * File			: apiUpdateDealer.go
-* DESCRIPTION	: This file contains functions for update dealer
-						setter handler
+* DESCRIPTION	: This file contains functions for update dealer handler
 * DATE			: 23-Jan-2024
 **************************************************************************/
 
@@ -83,8 +82,8 @@ func HandleUpdateDealerRequest(resp http.ResponseWriter, req *http.Request) {
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateDealerOverrideFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Update dealer in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Update dealer", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to update dealer in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to update dealer", http.StatusInternalServerError, nil)
 		return
 	}
 

@@ -1,7 +1,6 @@
 /**************************************************************************
 * File			: apiUpdateDealerTier.go
-* DESCRIPTION	: This file contains functions for update dealer tier
-						setter handler
+* DESCRIPTION	: This file contains functions for update dealer tier handler
 * DATE			: 23-Jan-2024
 **************************************************************************/
 
@@ -36,7 +35,7 @@ func HandleUpdateDealerTierRequest(resp http.ResponseWriter, req *http.Request) 
 	defer func() { log.ExitFn(0, "HandleUpdateDealerTierRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in update Dealer Tier request")
+		err = fmt.Errorf("HTTP Request body is null in update dealer tier request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -44,15 +43,15 @@ func HandleUpdateDealerTierRequest(resp http.ResponseWriter, req *http.Request) 
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update Dealer Tier request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update dealer tier request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &updateDealertierReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal update Dealer Tier request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal update Dealer Tier request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal update dealer tier request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal update dealer tier request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -60,7 +59,7 @@ func HandleUpdateDealerTierRequest(resp http.ResponseWriter, req *http.Request) 
 		(len(updateDealertierReq.StartDate) <= 0) || (len(updateDealertierReq.EndDate) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if updateDealertierReq.RecordId <= int64(0) {
@@ -80,13 +79,13 @@ func HandleUpdateDealerTierRequest(resp http.ResponseWriter, req *http.Request) 
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateDealerTierFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Add Dealer Tier in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Update Dealer Tier", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to update dealer tier in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to update dealer tier", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "Dealer Tier updated with Id: %+v", data["result"])
+	log.DBTransDebugTrace(0, "dealer tier updated with Id: %+v", data["result"])
 	FormAndSendHttpResp(resp, "Dealer Tier Updated Successfully", http.StatusOK, nil)
 }

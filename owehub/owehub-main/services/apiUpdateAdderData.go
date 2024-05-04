@@ -35,7 +35,7 @@ func HandleUpdateAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 	defer func() { log.ExitFn(0, "HandleUpdateAdderDataRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in create UpdateData request")
+		err = fmt.Errorf("HTTP Request body is null in update adder data request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -43,15 +43,15 @@ func HandleUpdateAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from create UpdateData request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update adder data request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &updateAdderDataReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal create UpdateData request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal create UpdateData request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal update adder data request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal update adder data request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -79,21 +79,21 @@ func HandleUpdateAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 	if updateAdderDataReq.SysSize <= float64(0) {
-		err = fmt.Errorf("Invalid SysSize Not Allowed")
+		err = fmt.Errorf("Invalid sys size Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid SysSize Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Sys Size Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 	if updateAdderDataReq.AdderCal <= float64(0) {
-		err = fmt.Errorf("Invalid AdderCal Not Allowed")
+		err = fmt.Errorf("Invalid Adder Cal Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid AdderCal Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Adder Cal Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 	if updateAdderDataReq.RepPercent <= float64(0) {
-		err = fmt.Errorf("Invalid RepPercent Not Allowed")
+		err = fmt.Errorf("Invalid rep percent Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid RepPercent Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Rep Percent Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -115,13 +115,13 @@ func HandleUpdateAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateAdderDataFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Add AdderData in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Update AdderData", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to update adder data in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to Update adder data", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "AdderData Update with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "AdderData Update Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "adder data Updated with Id: %+v", data["result"])
+	FormAndSendHttpResp(resp, "Adder Data Updated Successfully", http.StatusOK, nil)
 }

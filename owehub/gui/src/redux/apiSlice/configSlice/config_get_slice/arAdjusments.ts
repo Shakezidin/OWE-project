@@ -1,25 +1,32 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { createAdjustments, getAdjustments } from "../../../apiActions/arAdjustmentsAction";
 import { Adjustment } from "../../../../core/models/api_models/ArAdjustMentsModel";
+import { toast } from "react-toastify";
 
 interface IState {
     data: Adjustment[],
     error: string,
     isLoading: boolean,
-    isFormSubmitting:boolean
+    isFormSubmitting:boolean,
+    isSuccess: boolean
 }
 
 const initialState: IState = {
     data: [],
     error: "",
     isLoading: false,
-    isFormSubmitting:false
+    isFormSubmitting:false,
+    isSuccess:false
 }
 
 const rateAdjustments = createSlice({
     name: "arAdjustments",
     initialState,
-    reducers: {},
+    reducers: {
+        resetSuccess:(state)=>{
+            state.isSuccess = false
+        }
+    },
     extraReducers: builder => {
         builder.addCase(getAdjustments.pending, (state) => {
             state.isLoading = true
@@ -37,6 +44,8 @@ const rateAdjustments = createSlice({
             })
             .addCase(createAdjustments.fulfilled, (state) => {
                 state.isFormSubmitting = false
+                state.isSuccess = true
+                toast.success("form submitted")
             })
             .addCase(createAdjustments.rejected, (state, action) => {
                 state.isFormSubmitting = false
@@ -45,6 +54,6 @@ const rateAdjustments = createSlice({
 
     }
 })
-
+export const { resetSuccess } = rateAdjustments.actions
 
 export default rateAdjustments.reducer

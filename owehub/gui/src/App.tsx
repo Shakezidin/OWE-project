@@ -164,7 +164,7 @@ function App() {
           path="/"
           element={
             isAuthenticated ? (
-              <Navigate to={ROUTES.COMMISSION_DASHBOARD} />
+              <Navigate to={ROUTES.PROJECT_PERFORMANCE} />
             ) : (
               <WelcomePage />
             )
@@ -174,7 +174,7 @@ function App() {
           path="/login"
           element={
             isAuthenticated ? (
-              <Navigate to={ROUTES.COMMISSION_DASHBOARD} />
+              <Navigate to={ROUTES.PROJECT_PERFORMANCE} />
             ) : (
               <LoginPage />
             )

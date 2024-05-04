@@ -1,7 +1,6 @@
 /**************************************************************************
 * File			: apiUpdateDealerArchive.go
-* DESCRIPTION	: This file contains functions for update Dealer archive
-						setter handler
+* DESCRIPTION	: This file contains functions for update Dealer archive handler
 * DATE			: 23-Jan-2024
 **************************************************************************/
 
@@ -39,7 +38,7 @@ func HandleUpdateDealerArchiveRequest(resp http.ResponseWriter, req *http.Reques
 	defer func() { log.ExitFn(0, "HandleUpdateDealerArchiveRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in update dealer Archive request")
+		err = fmt.Errorf("HTTP Request body is null in update dealer archive request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -47,15 +46,15 @@ func HandleUpdateDealerArchiveRequest(resp http.ResponseWriter, req *http.Reques
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update dealer Archive request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update dealer archive request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &updateDealerArcReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal update dealer Archive request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal update dealer Archive request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal update dealer archive request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal update dealer archive request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -79,12 +78,12 @@ func HandleUpdateDealerArchiveRequest(resp http.ResponseWriter, req *http.Reques
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateDealerOverrideArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Update dealer Archive in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Update dealer Archive", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to update dealer archive in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to update dealer archive", http.StatusInternalServerError, nil)
 		return
 	}
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "dealer Archive updated with Id: %+v", data)
-	FormAndSendHttpResp(resp, "dealer Archive Updated Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "dealer archive updated with Id: %+v", data)
+	FormAndSendHttpResp(resp, "Dealer Archive Updated Successfully", http.StatusOK, nil)
 }

@@ -22,7 +22,7 @@ import (
 
 /******************************************************************************
  * FUNCTION:		HandleUpdatePaymentScheduleArchiveRequest
- * DESCRIPTION:     handler for update PaymentSchedules Archive request
+ * DESCRIPTION:     handler for update PaymentSchedule Archive request
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
@@ -39,7 +39,7 @@ func HandleUpdatePaymentScheduleArchiveRequest(resp http.ResponseWriter, req *ht
 	defer func() { log.ExitFn(0, "HandleUpdatePaymentScheduleArchiveRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in update PaymentSchedules Archive request")
+		err = fmt.Errorf("HTTP Request body is null in update payment schedule archive request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -47,22 +47,22 @@ func HandleUpdatePaymentScheduleArchiveRequest(resp http.ResponseWriter, req *ht
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update PaymentSchedules Archive request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update payment schedule archive request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &updatePaymentScheduleArcReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal update PaymentSchedules Archive request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal update PaymentSchedules Archive request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal update payment schedule archive request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal update payment schedule archive request", http.StatusBadRequest, nil)
 		return
 	}
 
 	if len(updatePaymentScheduleArcReq.RecordId) <= 0 {
 		err = fmt.Errorf("Record Id is empty, unable to proceed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Record Id is empty, Update Archive failed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Record Id is empty, Update Archive failed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -79,12 +79,12 @@ func HandleUpdatePaymentScheduleArchiveRequest(resp http.ResponseWriter, req *ht
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdatePaymentScheduleArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Update PaymentSchedules Archive in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Update PaymentSchedules Archive", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to update payment schedule archive in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to update payment schedule archive", http.StatusInternalServerError, nil)
 		return
 	}
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "PaymentSchedules Archive updated with Id: %+v", data)
-	FormAndSendHttpResp(resp, "PaymentSchedules Archive Updated Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "payment schedule archive updated with Id: %+v", data)
+	FormAndSendHttpResp(resp, "Payment Schedule Archive Updated Successfully", http.StatusOK, nil)
 }

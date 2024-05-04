@@ -39,7 +39,7 @@ func HandleUpdateNonCommDlrPayArchiveRequest(resp http.ResponseWriter, req *http
 	defer func() { log.ExitFn(0, "HandleUpdateNonCommDlrPayArchiveRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in update NonCommDlrPay Archive request")
+		err = fmt.Errorf("HTTP Request body is null in update non comm dlrpay archive request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -47,15 +47,15 @@ func HandleUpdateNonCommDlrPayArchiveRequest(resp http.ResponseWriter, req *http
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update NonCommDlrPay Archive request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update non comm dlrpay archive request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &updateNonCommDlrPayArcReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal update NonCommDlrPay Archive request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal update NonCommDlrPay Archive request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal update non comm dlrpay archive request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal update non comm dlrpay archive request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -79,12 +79,12 @@ func HandleUpdateNonCommDlrPayArchiveRequest(resp http.ResponseWriter, req *http
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateNonCommDlrPayArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Update NonCommDlrPay Archive in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Update NonCommDlrPay Archive", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to update non comm dlrpay archive in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to update non comm dlrpay archive", http.StatusInternalServerError, nil)
 		return
 	}
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "NonCommDlrPay Archive updated with Id: %+v", data)
-	FormAndSendHttpResp(resp, "NonCommDlrPay Archive Updated Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "non comm dlrpay archive updated with Id: %+v", data)
+	FormAndSendHttpResp(resp, "Non Comm DlrPay Archive Updated Successfully", http.StatusOK, nil)
 }

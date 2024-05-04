@@ -1,7 +1,6 @@
 /**************************************************************************
 * File			: apiUpdateAdjustmentsArchive.go
-* DESCRIPTION	: This file contains functions for update Adjustments archive
-						setter handler
+* DESCRIPTION	: This file contains functions for update adjustments archive handler
 * DATE			: 23-Jan-2024
 **************************************************************************/
 
@@ -39,7 +38,7 @@ func HandleUpdateAdjustmentsArchiveRequest(resp http.ResponseWriter, req *http.R
 	defer func() { log.ExitFn(0, "HandleUpdateAdjustmentsArchiveRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in update Adjustmentss Archive request")
+		err = fmt.Errorf("HTTP Request body is null in update adjustmentss archive request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -47,15 +46,15 @@ func HandleUpdateAdjustmentsArchiveRequest(resp http.ResponseWriter, req *http.R
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update Adjustmentss Archive request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update adjustmentss archive request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &updateAdjustmentsArcReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal update Adjustmentss Archive request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal update Adjustmentss Archive request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal update adjustmentss archive request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal update adjustmentss archive request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -79,12 +78,12 @@ func HandleUpdateAdjustmentsArchiveRequest(resp http.ResponseWriter, req *http.R
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateAdjustmentsArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Update Adjustmentss Archive in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Update Adjustmentss Archive", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to update adjustments archive in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to Update Adjustments Archive", http.StatusInternalServerError, nil)
 		return
 	}
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "Adjustments Archive updated with Id: %+v", data)
+	log.DBTransDebugTrace(0, "adjustments archive updated with Id: %+v", data)
 	FormAndSendHttpResp(resp, "Adjustments Archive Updated Successfully", http.StatusOK, nil)
 }

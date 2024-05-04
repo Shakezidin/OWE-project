@@ -723,7 +723,7 @@ CREATE TABLE adder_responsibility (
     id serial NOT NULL,
     unique_id varchar NOT NULL UNIQUE,
     pay_scale text,
-    percentage Float,
+    percentage float,
     is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
@@ -759,7 +759,8 @@ CREATE TABLE adder_data (
     adder_cal DOUBLE PRECISION,
     is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
-    updated_at timestamp without time zone
+    updated_at timestamp without time zone,
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE loan_fee (
@@ -800,11 +801,10 @@ CREATE TABLE ar_import(
 CREATE TABLE ar (
     id serial NOT NULL,
     unique_id varchar NOT NULL UNIQUE,
-    pay_scale text,
-    position text,
-    adjustment text,
-    min_rate float,
-    max_rate float,
+    customer text,
+    date character varying,
+    amount text,
+    notes text,
     is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,

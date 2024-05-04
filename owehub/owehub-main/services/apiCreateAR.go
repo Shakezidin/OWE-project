@@ -55,35 +55,22 @@ func HandleCreateARDataRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if (len(createArReq.UniqueId) <= 0) || (len(createArReq.PayScale) <= 0) ||
-		(len(createArReq.Position) <= 0) || (len(createArReq.Adjustment) <= 0) {
+	if (len(createArReq.UniqueId) <= 0) || (len(createArReq.CustomerName) <= 0) ||
+		(len(createArReq.Date) <= 0) || (len(createArReq.Amount) <= 0) ||
+		(len(createArReq.Notes) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
-	if createArReq.MinRate <= float64(0) {
-		err = fmt.Errorf("Invalid Min Rate Not Allowed")
-		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Min Rate Not Allowed", http.StatusBadRequest, nil)
-		return
-	}
-	if createArReq.MaxRate <= float64(0) {
-		err = fmt.Errorf("Invalid Max Rate Not Allowed")
-		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Max_Rate Not Allowed", http.StatusBadRequest, nil)
-		return
-	}
-
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, createArReq.UniqueId)
-	queryParameters = append(queryParameters, createArReq.PayScale)
-	queryParameters = append(queryParameters, createArReq.Position)
-	queryParameters = append(queryParameters, createArReq.Adjustment)
-	queryParameters = append(queryParameters, createArReq.MinRate)
-	queryParameters = append(queryParameters, createArReq.MaxRate)
-
+	queryParameters = append(queryParameters, createArReq.CustomerName)
+	queryParameters = append(queryParameters, createArReq.Date)
+	queryParameters = append(queryParameters, createArReq.Amount)
+	queryParameters = append(queryParameters, createArReq.Notes)
+	
 	// Call the database function
 	result, err = db.CallDBFunction(db.CreateArFunction, queryParameters)
 	if err != nil || len(result) <= 0 {

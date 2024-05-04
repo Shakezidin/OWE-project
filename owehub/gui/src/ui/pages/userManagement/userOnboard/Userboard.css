@@ -3,3 +3,12 @@
     font-size: 12px;
     margin-top: 5px;
   }
+  .db-access-disable{
+    opacity: .3;
+    cursor: not-allowed;
+  }
+  .selected-fields-onboard{
+    position: static !important;
+    display: block;
+    margin-bottom: -15px;
+  }

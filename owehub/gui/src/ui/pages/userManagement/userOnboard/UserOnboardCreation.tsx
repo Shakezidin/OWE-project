@@ -137,7 +137,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                   {lastNameError && <p className="error-message">{lastNameError}</p>}
                 </div>
                 <div className="create-input-field">
-                  <label className="inputLabel-select">Role</label>
+                  <label className="inputLabel-select selected-fields-onboard">Role</label>
                   <SelectOption
                     options={ALL_USER_ROLE_LIST}
                     onChange={(newValue) => handleChange(newValue, "role_name")}
@@ -173,7 +173,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                 formData.role_name === "SubDealer Owner" ||
                 formData.role_name === "Dealer Owner" || formData.role_name === "Finance" ? null : (
                   <div className="create-input-field">
-                    <label className="inputLabel-select">Dealer Owner</label>
+                    <label className="inputLabel-select selected-fields-onboard">Dealer Owner</label>
                     <SelectOption
                       options={dealerList}
                       onChange={(newValue) =>
@@ -196,10 +196,10 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                 }}
 
               />
-              <div className="">
+              <div className="db-access-disable">
                 <div className="" style={{ display: "flex", gap: "0.5rem" }}>
                   <CheckBox
-                    checked={true}
+                    checked={false}
                     onChange={() => { }}
 
                   // indeterminate={isAnyRowSelected && !isAllRowsSelected}
@@ -239,11 +239,11 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                     </div>
                     <div
                       className="Line-container"
-                      style={{ marginTop: "0.3rem", cursor: "pointer" }}
+                      style={{ marginTop: "0.3rem",}}
                     >
                       <div
                         className="line-graph"
-                        onClick={() => setSelectTable(true)}
+                        // onClick={() => setSelectTable(true)}
                       >
                         <div className="edit-line">
                           <img
