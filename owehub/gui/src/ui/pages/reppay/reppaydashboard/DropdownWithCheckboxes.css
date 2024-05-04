@@ -32,7 +32,7 @@
   .dropdown-menu {
     position: absolute;
     top: 100%;
-    left: -58px;
+    left: -78px;
     z-index: 1;
     background-color: white;
     border: 1px solid #D0D5DD;
@@ -40,7 +40,7 @@
     padding: 8px;
     margin-top: 4px;
     overflow-y: auto;
-    width: 163px;
+    width: 178px;
     height: 225px;
     box-sizing: border-box;
   }
