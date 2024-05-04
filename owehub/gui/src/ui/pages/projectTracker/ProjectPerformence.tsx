@@ -31,7 +31,7 @@ const ProjectPerformence = () => {
         <div className="project-heading">
           <h2>Performance</h2>
           <div className="iconsSection-filter">
-            <button type="button">
+            <button type="button" style={{cursor: "not-allowed", opacity: "0.5"}}>
               <img
                 src={ICONS.filtercomm}
                 alt=""
@@ -86,7 +86,7 @@ const ProjectPerformence = () => {
               </div>
               <div className="project-ruppes-body">
                 <div className="project-img-curve">
-                  <img src={item.curveImg} alt="" />
+                <img src={item.curveImg} alt="" />
                 </div>
                 <div
                   className="percent"
