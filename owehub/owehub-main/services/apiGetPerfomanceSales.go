@@ -109,6 +109,9 @@ func PreparePerfomanceFilters(tableName string, dataFilter models.GetPerfomanceR
 	endDate = dataFilter.EndDate
 
 	var filtersBuilder strings.Builder
+
+	// This will added if the default date is confirmed
+	
 	// if startDate.IsZero() || endDate.IsZero() {
 	// default start date
 	// default end date

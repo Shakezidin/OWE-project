@@ -837,7 +837,7 @@ CREATE TABLE adjustments (
     sys_size DOUBLE PRECISION,
     bl character varying,
     epc FLOAT,
-    date VARCHAR,
+    date character varying,
     amount FLOAT,
     notes character varying,
     is_archived BOOLEAN DEFAULT FALSE,
