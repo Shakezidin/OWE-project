@@ -1333,6 +1333,15 @@ var apiRoutes = ApiRoutes{
 			types.RoleAdmin,
 		},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_perfomancesales",
+		apiHandler.HandleGetPerfomanceSalesRequest,
+		false,
+		[]types.UserRoles{
+			types.RoleAdmin,
+		},
+	},
 }
 
 /******************************************************************************

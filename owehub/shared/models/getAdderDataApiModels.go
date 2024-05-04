@@ -15,7 +15,7 @@ type GetAdderData struct {
 	Gc          string  `json:"gc"`
 	ExactAmount string  `json:"exact_amount"`
 	PerKwAmt    float64 `json:"per_kw_amt"`
-	RepPercent  float64 `json:"rep_percent"`
+	RepPercent  int64 `json:"rep_percent"`
 	Description string  `json:"description"`
 	Notes       string  `json:"notes"`
 	SysSize     float64 `json:"sys_size"`
