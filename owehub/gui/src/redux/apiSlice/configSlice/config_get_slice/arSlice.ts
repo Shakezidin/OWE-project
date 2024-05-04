@@ -23,14 +23,16 @@ const initialState: IState = {
 const ar = createSlice({
     name: "AR",
     initialState,
-    reducers: {},
+    reducers: { resetSuccess:(state)=>{
+        state.isSuccess = 0
+      }},
     extraReducers: builder => {
         builder.addCase(fetchAr.pending, (state) => {
             state.isLoading = true
         })
             .addCase(fetchAr.fulfilled, (state, action: PayloadAction<any | null>) => {
                 state.isLoading = false
-                state.data = action.payload ? action.payload.data.reconcile_list :[]
+                state.data = action.payload ? action.payload :[]
             })
             .addCase(fetchAr.rejected, (state, action) => {
                 state.isLoading = false
@@ -63,5 +65,5 @@ const ar = createSlice({
     }
 })
 
-
+export const {resetSuccess} =  ar.actions
 export default ar.reducer

@@ -28,18 +28,21 @@ export const fetchAr = createAsyncThunk(
     async (data: any) => {
       const response = await postCaller("get_ar", data);
   
-      return response;
+      return response.data.ar__list;
     }
   );
 
 
   export const createAr = createAsyncThunk(
-    'create/ar',
-    async (params: any, { rejectWithValue }) => {
+    "create/ar",
+    async (params: any, { rejectWithValue,dispatch }) => {
       try {
-        const response = await postCaller("create_ar",params );
-        return response.data;  
-  
+        const data = await postCaller("create_ar", params);
+        if (data instanceof Error) {
+          return rejectWithValue((data as Error).message);
+        }
+        await dispatch(fetchAr({page_number:1,page_size:10}))
+        return data;
       } catch (error) {
         return rejectWithValue((error as Error).message);
       }

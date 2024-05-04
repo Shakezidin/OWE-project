@@ -15,24 +15,27 @@ import {
   stateOption,
 } from "../../../../core/models/data_models/SelectDataModel";
 import Select from "react-select";
-import { createAr } from "../../../../redux/apiActions/arAction";
+import { createAr, updateAr } from "../../../../redux/apiActions/arAction";
 import { paySaleTypeData } from "../../../../resources/static_data/StaticData";
 import { PayScheduleModel } from "../../../../core/models/configuration/create/PayScheduleModel";
 import SelectOption from "../../../components/selectOption/SelectOption";
+import { resetSuccess } from "../../../../redux/apiSlice/configSlice/config_get_slice/arSlice";
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
+  editData:any
 }
 
-const CreatedAr: React.FC<payScheduleProps> = ({ handleClose, editMode }) => {
+const CreatedAr: React.FC<payScheduleProps> = ({ handleClose, editMode, editData }) => {
   const dispatch = useAppDispatch();
+  const { isSuccess } = useAppSelector(state => state.ar)
 
   const [createArData, setCreateArData] = useState({
-    customer_name:"",
-    unique_id:"",
-    date:"",
-    amount:"",
-    notes:"",
+    customer_name:editData?.customer_name || "",
+    unique_id:editData?.unique_id || "",
+    date: editData?.date || "",
+    amount:editData?.amount || "",
+    notes:editData?.notes || "",
   });
 
   const [newFormData, setNewFormData] = useState<any>([]);
@@ -57,8 +60,22 @@ const CreatedAr: React.FC<payScheduleProps> = ({ handleClose, editMode }) => {
   };
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    dispatch(createAr(createArData));
+    if(editMode){
+      dispatch(updateAr({...createArData,record_id:editData?.record_id!}))
+    } else{
+      dispatch(createAr(createArData))
+    }
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      handleClose();
+       
+    }
+    return () => {
+      isSuccess && dispatch(resetSuccess());
+    };
+  }, [isSuccess]);
 
   return (
     <div className="transparent-model">
@@ -97,10 +114,10 @@ const CreatedAr: React.FC<payScheduleProps> = ({ handleClose, editMode }) => {
                 </div>
                 <div className="create-input-field">
                   <Input
-                    type={"text"}
+                    type={"date"}
                     label="Date"
                     value={createArData.date}
-                    name="dealer_tier"
+                    name="date"
                     placeholder={"Enter"}
                     onChange={(e) => handleInputChange(e)}
                   />
@@ -121,9 +138,9 @@ const CreatedAr: React.FC<payScheduleProps> = ({ handleClose, editMode }) => {
                 <div className="create-input-field">
                   <Input
                     type={"text"}
-                    label="Note"
+                    label="Notes"
                     value={createArData.notes}
-                    name="note"
+                    name="notes"
                     placeholder={"Enter"}
                     onChange={(e) => handleInputChange(e)}
                   />
