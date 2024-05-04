@@ -5,8 +5,6 @@ CREATE OR REPLACE FUNCTION create_new_rate_adjustments(
     p_adjustment        CHARACTER VARYING,
     p_min_rate          DOUBLE PRECISION,
     p_max_rate          DOUBLE PRECISION,
-    p_start_date        CHARACTER VARYING,
-    p_end_date          CHARACTER VARYING,
     OUT v_rate_adjustment_id INT
 )
 RETURNS INT
@@ -18,9 +16,7 @@ INSERT INTO rate_adjustments (
     position,
     adjustment,
     min_rate,
-    max_rate,
-    start_date,
-    end_date
+    max_rate
 )
 VALUES (
            p_unique_id,
@@ -28,9 +24,7 @@ VALUES (
            p_position,
            p_adjustment,
            p_min_rate,
-           p_max_rate,
-           p_start_date,
-           p_end_date
+           p_max_rate
        )
     RETURNING id INTO v_rate_adjustment_id;
 END;
