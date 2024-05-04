@@ -32,7 +32,7 @@ const CreateReconcile:React.FC<payScheduleProps> = ({handleClose,editMode, editD
     const dispatch = useAppDispatch();
     const { isSuccess } = useAppSelector(state => state.reconcile)
     
-    const [createReconcileData, setCreateReconcileData] = useState<ReconcileModel>(
+    const [createReconcileData, setCreateReconcileData] = useState(
       {
           unique_id:editData?.unique_id || "",
           customer:editData?.customer || "",
@@ -82,13 +82,13 @@ const handleSubmit = (e: React.FormEvent) => {
  
      const data = {
       unique_id: createReconcileData?.unique_id,
-      customer_name: createReconcileData?.customer,
-      partner:createReconcileData?.partner_name,
+      customer: createReconcileData?.customer,
+      partner_name:createReconcileData?.partner_name,
       state_name: createReconcileData.state,
-      sys_size: createReconcileData.sys_size,
+      sys_size: parseInt(createReconcileData.sys_size),
       status: createReconcileData.status,
       date: createReconcileData.date,
-      amount: createReconcileData.amount,
+      amount: parseInt(createReconcileData.amount),
       notes: createReconcileData.notes,
      }
 

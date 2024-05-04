@@ -32,9 +32,7 @@ const RepPaySettings = () => {
 
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const timelinesla_list = useAppSelector(
-    (state) => state.timelineSla.timelinesla_list
-  );
+ 
    
   const error = useAppSelector((state) => state.timelineSla.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
@@ -53,9 +51,10 @@ const RepPaySettings = () => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
+      archived: viewArchived ? true : undefined,
     };
     dispatch(fetchRepaySettings(pageNumber));
-  }, [dispatch, currentPage]);
+  }, [dispatch, currentPage, viewArchived]);
 
   const filter = () => {
     setFilterOpen(true);
@@ -73,7 +72,7 @@ const RepPaySettings = () => {
     dispatch(setCurrentPage(currentPage + 1));
   };
 
-  console.log(repPaySettingsList, "settings");
+ 
 
   const goToPrevPage = () => {
     dispatch(setCurrentPage(currentPage - 1));
@@ -85,7 +84,7 @@ const RepPaySettings = () => {
 
   const currentPageData = repPaySettingsList?.slice(startIndex, endIndex);
   const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === timelinesla_list?.length;
+  const isAllRowsSelected = selectedRows.size ===  repPaySettingsList?.length;
   const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === "desc" ? "asc" : "desc");
@@ -95,20 +94,7 @@ const RepPaySettings = () => {
     }
   };
 
-  // if (sortKey) {
-  //   currentPageData.sort((a: any, b: any) => {
-  //     const aValue = a[sortKey];
-  //     const bValue = b[sortKey];
-  //     if (typeof aValue === 'string' && typeof bValue === 'string') {
-  //       return sortDirection === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
-  //     } else {
-  //       // Ensure numeric values for arithmetic operations
-  //       const numericAValue = typeof aValue === 'number' ? aValue : parseFloat(aValue);
-  //       const numericBValue = typeof bValue === 'number' ? bValue : parseFloat(bValue);
-  //       return sortDirection === 'asc' ? numericAValue - numericBValue : numericBValue - numericAValue;
-  //     }
-  //   });
-  // }
+  
   const handleRepPaySettings = () => {
     setEditMode(false);
     setEditedRepaySettings(null);
@@ -131,7 +117,57 @@ const RepPaySettings = () => {
   const fetchFunction = (req: any) => {
     dispatch(fetchRepaySettings(req));
   };
+  const handleArchiveAllClick = async () => {
+    const confirmed = await showAlert(
+      "Are Your Sure",
+      "This action will archive all selected rows?",
+      "Yes",
+      "No"
+    );
+    if (confirmed) {
+      const archivedRows = Array.from(selectedRows).map(
+        (index) => repPaySettingsList[index].RecordId
+      );
+      if (archivedRows.length > 0) {
+        const newValue = {
+          record_id: archivedRows,
+          is_archived: true,
+        };
 
+        const pageNumber = {
+          page_number: currentPage,
+          page_size: itemsPerPage,
+        };
+
+        const res = await postCaller("update_rep_pay_settings_archive", newValue);
+        if (res.status === HTTP_STATUS.OK) {
+          // If API call is successful, refetch commissions
+          dispatch(fetchRepaySettings(pageNumber));
+          const remainingSelectedRows = Array.from(selectedRows).filter(
+            (index) => !archivedRows.includes(repPaySettingsList[index].RecordId)
+          );
+          const isAnyRowSelected = remainingSelectedRows.length > 0;
+          setSelectAllChecked(isAnyRowSelected);
+          setSelectedRows(new Set());
+          await successSwal(
+            "Archived",
+            "All Selected rows have been archived",
+            "success",
+            2000,
+            false
+          );
+        } else {
+          await successSwal(
+            "Archived",
+            "All Selected rows have been archived",
+            "error",
+            2000,
+            false
+          );
+        }
+      }
+    }
+  };
   const handleArchiveClick = async (record_id: any) => {
     const confirmed = await showAlert(
       "Are Your Sure",
@@ -149,7 +185,7 @@ const RepPaySettings = () => {
         page_number: currentPage,
         page_size: itemsPerPage,
       };
-      const res = await postCaller("ipdate_rep_pay_settings_archive", newValue);
+      const res = await postCaller("update_rep_pay_settings_archive", newValue);
       if (res.status === HTTP_STATUS.OK) {
         dispatch(fetchRepaySettings(pageNumber));
         await successSwal(
@@ -196,7 +232,7 @@ const RepPaySettings = () => {
         <TableHeader
           title="Rep Pay Settings"
           onPressViewArchive={() => handleViewArchiveToggle()}
-          onPressArchive={() => {}}
+          onPressArchive={() => handleArchiveAllClick()}
           onPressFilter={() => filter()}
           onPressImport={() => {}}
           checked={isAllRowsSelected}
@@ -229,7 +265,7 @@ const RepPaySettings = () => {
                     key={key}
                     isCheckbox={item.isCheckbox}
                     titleName={item.displayName}
-                    data={timelinesla_list}
+                    data={repPaySettingsList}
                     isAllRowsSelected={isAllRowsSelected}
                     isAnyRowSelected={isAnyRowSelected}
                     selectAllChecked={selectAllChecked}
@@ -243,11 +279,14 @@ const RepPaySettings = () => {
                     onClick={() => handleSort(item.name)}
                   />
                 ))}
-                <th>
-                  <div className="action-header">
-                    <p>Action</p>
-                  </div>
-                </th>
+                 {viewArchived === true ? null : (
+                  <th>
+                    <div className="action-header">
+                      <p>Action</p>
+                    </div>
+                  </th>
+                )}
+               
               </tr>
             </thead>
             <tbody>
@@ -277,24 +316,26 @@ const RepPaySettings = () => {
                     <td>{el?.b_e}</td>
                     <td>{el?.start_date}</td>
                     <td>{el?.end_date}</td>
-                    <td>
-                      <div className="action-icon">
-                        <div
-                          className=""
-                          style={{ cursor: "pointer" }}
-                          onClick={() => handleArchiveClick(el.RecordId)}
-                        >
-                          <img src={ICONS.ARCHIVE} alt="" />
-                        </div>
-                        <div
-                          className=""
-                          onClick={() => handleEdit(el)}
-                          style={{ cursor: "pointer" }}
-                        >
-                          <img src={ICONS.editIcon} alt="" />
-                        </div>
-                      </div>
-                    </td>
+                    {viewArchived === true ? null : (
+                        <td>
+                          <div className="action-icon">
+                            <div
+                              className=""
+                              style={{ cursor: "pointer" }}
+                              onClick={() => handleArchiveClick(el.RecordId)}
+                            >
+                              <img src={ICONS.ARCHIVE} alt="" />
+                            </div>
+                            <div
+                              className=""
+                              onClick={() => handleEdit(el)}
+                              style={{ cursor: "pointer" }}
+                            >
+                              <img src={ICONS.editIcon} alt="" />
+                            </div>
+                          </div>
+                        </td>
+                      )}
                   </tr>
                 ))
               ) : (

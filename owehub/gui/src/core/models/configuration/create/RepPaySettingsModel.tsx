@@ -8,4 +8,5 @@ export interface RepPaySettingsModel {
     end: string;
     start_date: string;
     end_date: string;
+    RecordId:number;
   }

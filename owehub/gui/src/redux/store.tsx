@@ -35,6 +35,13 @@ import adderDataSlice from "./apiSlice/configSlice/config_get_slice/adderDataSli
 import rateAdjustmentsSlice from "./apiSlice/configSlice/config_get_slice/rateAdjustmentsSlice";
 import reconcileSlice from "./apiSlice/configSlice/config_get_slice/reconcileSlice";
 import loanFeeSlice from "./apiSlice/configSlice/config_get_slice/loanFeeSlice";
+import arSlice from "./apiSlice/configSlice/config_get_slice/arSlice";
+import adderCreditSlice from "./apiSlice/configSlice/config_get_slice/adderCreditSlice";
+import adderResponsbilitySlice from "./apiSlice/configSlice/config_get_slice/adderResponsbilitySlice";
+import apptSetterSlice from "./apiSlice/configSlice/config_get_slice/apptSetterSlice";
+ 
+
+
 
 export const store = configureStore({
   reducer: {
@@ -75,7 +82,11 @@ export const store = configureStore({
     adderDataSlice,
     rateAdjustment:rateAdjustmentsSlice,
     reconcile:reconcileSlice,
-    loanFeeSlice
+    loanFeeSlice,
+    apptsetters:apptSetterSlice,
+    addercredit:adderCreditSlice,
+    adderresponsbility:adderResponsbilitySlice,
+    ar:arSlice
 
   },
 });

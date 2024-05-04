@@ -7,40 +7,51 @@ import { ActionButton } from "../../../components/button/ActionButton";
 import { updatePayForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createPayScheduleSlice";
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
-import { useDispatch } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import { installerOption, partnerOption, salesTypeOption, stateOption, } from "../../../../core/models/data_models/SelectDataModel";
 import Select from 'react-select';
 import {paySaleTypeData } from "../../../../resources/static_data/StaticData";
 import { PayScheduleModel } from "../../../../core/models/configuration/create/PayScheduleModel";
 import SelectOption from "../../../components/selectOption/SelectOption";
+import { createAdderResponsibility, updateAdderResponsibility } from "../../../../redux/apiActions/adderResponsbilityAction";
+import { resetSuccess } from "../../../../redux/apiSlice/configSlice/config_get_slice/adderResponsbilitySlice";
 
 interface payScheduleProps {
     handleClose: () => void,
     editMode:boolean,
+    editData:any,
 }
  
  
-const CreateAdderResponsibility:React.FC<payScheduleProps> = ({handleClose,editMode}) => {
-    const dispatch = useDispatch();
- 
-    // const [createPayData, setCreatePayData] = useState<PayScheduleModel>(
-    //     {
-    //         record_id: payEditedData? payEditedData?.record_id: 0,
-    //         partner: payEditedData? payEditedData?.partner: "Shushank Sharma",
-    //         partner_name:payEditedData? payEditedData?.partner_name: "FFS",
-    //         installer_name: payEditedData? payEditedData?.installer_name:"OWE",
-    //         sale_type: payEditedData? payEditedData?.sale_type:"BATTERY",
-    //         state: payEditedData? payEditedData?.state:"Alabama",
-    //         rl: payEditedData? payEditedData?.rl:"40",
-    //         draw:payEditedData? payEditedData?.draw: "50%",
-    //         draw_max: payEditedData? payEditedData?.draw_max:"50%",
-    //         rep_draw:payEditedData? payEditedData?.rep_draw: "2000.00",
-    //         rep_draw_max:payEditedData? payEditedData?.rep_draw_max: "2000.00",
-    //         rep_pay:payEditedData? payEditedData?.rep_pay: "Yes",
-    //         start_date: payEditedData? payEditedData?.start_date:"2024-04-01",
-    //         end_date: payEditedData? payEditedData?.end_date:"2024-04-30"
-    //       }
-    // )
+const CreateAdderResponsibility:React.FC<payScheduleProps> = ({handleClose,editMode, editData}) => {
+    const dispatch = useAppDispatch();
+    const { isSuccess } = useAppSelector(state => state.adderresponsbility)
+    function generateRandomId(length: number): string {
+      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      const charactersLength = characters.length;
+      let result = '';
+    
+      for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * charactersLength);
+        result += characters.charAt(randomIndex);
+      }
+    
+      return result;
+    }
+    const [createAdderResponsbilityData, setAdderResponsbilityData] = useState({
+      unique_id: editData?.unique_id || generateRandomId(6),
+      pay_scale: editData?.pay_scale || 0,
+      percentage: editData?.percentage || 0,
+      
+    });
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = e.target;
+      setAdderResponsbilityData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    };
+  
     const [newFormData,setNewFormData] = useState<any>([])
    
     const tableData = {
@@ -56,18 +67,51 @@ const CreateAdderResponsibility:React.FC<payScheduleProps> = ({handleClose,editM
    },[])
  
  
+   const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+  
  
+    if (editMode) {
+      
+      dispatch(updateAdderResponsibility({
+        unique_id:createAdderResponsbilityData.unique_id,
+        pay_scale: createAdderResponsbilityData.pay_scale,
+        percentage: parseInt(createAdderResponsbilityData.percentage, 10),
+        record_id: editData?.record_id!
+      }));
+    } else {
+       
+      dispatch(
+        createAdderResponsibility({
+    
+          unique_id:createAdderResponsbilityData.unique_id,
+          pay_scale: createAdderResponsbilityData.pay_scale,
+          percentage: parseInt(createAdderResponsbilityData.percentage, 10)
+        })
+      );
+    }
+  };
+
+  useEffect(() => {
+    if (isSuccess) {
+      handleClose();
+       
+    }
+    return () => {
+      isSuccess && dispatch(resetSuccess());
+    };
+  }, [isSuccess]);
  
     return (
         <div className="transparent-model">
-             <form  className="modal">
+             <form  className="modal" onSubmit={handleSubmit}>
  
                 <div className="createUserCrossButton" onClick={handleClose}>
                     <CROSS_BUTTON />
  
                 </div>
              
-                    <h3 className="createProfileText">{editMode===false?"Leader Override":"Update RepPay Settings"}</h3>
+                    <h3 className="createProfileText">{editMode===false?"Create Adder Responsibility":"Update Adder Responsibility"}</h3>
                
                   <div className="modal-body">
                   <div className="createProfileInputView">
@@ -77,20 +121,20 @@ const CreateAdderResponsibility:React.FC<payScheduleProps> = ({handleClose,editM
                     <Input
                       type={"text"}
                       label="Pay Scale"
-                      value={""}
-                      name="dealer_tier"
+                      value={createAdderResponsbilityData.pay_scale}
+                      name="pay_scale"
                       placeholder={"Enter"}
-                      onChange={() => {}}
+                      onChange={(e) => handleInputChange(e)}
                     />
                   </div>
                   <div className="create-input-field">
                     <Input
                       type={"number"}
                       label="Percentage"
-                      value={""}
-                      name="dealer_tier"
+                      value={createAdderResponsbilityData.percentage}
+                      name="percentage"
                       placeholder={"Enter"}
-                      onChange={() => {}}
+                      onChange={(e) => handleInputChange(e)}
                     />
                   </div>
                  
