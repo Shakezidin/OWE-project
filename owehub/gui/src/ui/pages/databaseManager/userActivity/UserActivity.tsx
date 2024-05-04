@@ -47,7 +47,7 @@ const UserActivity: React.FC = () => {
 
 
   const filter = () => {
-    setIsOpenChangePassword(true);
+    
   }
 
   if (loading) {
