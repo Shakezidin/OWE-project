@@ -22,6 +22,8 @@
   background: var(--white-color);
   padding: 20px;
   border-radius: 16px;
+  overflow-y: auto;
+  max-height: 100vh;
 }
 .payer-type {
   font-size: 16px;
@@ -101,3 +103,26 @@
 .payer-type {
   padding-bottom: 5px;
 } 
+
+.configure-main::-webkit-scrollbar {
+  width: auto; 
+  height: auto; 
+}
+.configure-main::-webkit-scrollbar {
+  display: initial
+}   
+
+.configure-main::-webkit-scrollbar-thumb {
+  background-color: rgb(173, 173, 173);
+  border-radius: 30px; 
+}
+.configure-main::-webkit-scrollbar-button {
+  display: block; 
+}
+.configure-main::-webkit-scrollbar {
+  -ms-overflow-style: initial; 
+  scrollbar-width: thin;
+}
+.configure-main::-webkit-scrollbar-corner {
+  background-color: transparent;
+}

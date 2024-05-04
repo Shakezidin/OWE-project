@@ -168,14 +168,14 @@ height: 16px !important;
   margin-top: 0.5rem;
 }
 ::-webkit-scrollbar {
-  /* display: none; */
+  display: none;
 }
 
 /* Hide scrollbar for IE, Edge and Firefox */
-/* ::-webkit-scrollbar {
+::-webkit-scrollbar {
   -ms-overflow-style: none; 
   scrollbar-width: none; 
-} */
+}
 
 /* modal style  */
 .transparent-model {
