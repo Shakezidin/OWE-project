@@ -170,8 +170,8 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                   />
                 </div>
                 {formData.role_name === "Admin" ||
-                formData.role_name === "SubDealer Owner" ||
-                formData.role_name === "Dealer Owner" || formData.role_name === "Finance" ? null : (
+                  formData.role_name === "SubDealer Owner" ||
+                  formData.role_name === "Dealer Owner" || formData.role_name === "Finance" ? null : (
                   <div className="create-input-field">
                     <label className="inputLabel-select selected-fields-onboard">Dealer Owner</label>
                     <SelectOption
@@ -239,11 +239,11 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                     </div>
                     <div
                       className="Line-container"
-                      style={{ marginTop: "0.3rem",}}
+                      style={{ marginTop: "0.3rem", }}
                     >
                       <div
                         className="line-graph"
-                        // onClick={() => setSelectTable(true)}
+                      // onClick={() => setSelectTable(true)}
                       >
                         <div className="edit-line">
                           <img
@@ -260,7 +260,8 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                   </div>
                 </div>
               </div>
-              <div className="create-input-field-note">
+
+              {/* <div className="create-input-field-note">
                 <label htmlFor="" className="inputLabel">
                   Description
                 </label>{" "}
@@ -274,7 +275,30 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                   onChange={(e) => handleInputChange(e)}
                   placeholder="Type"
                 ></textarea>
+              </div> */}
+
+              <div className="create-input-field-note">
+                <label htmlFor="" className="inputLabel">
+                  Description
+                </label>{" "}
+                <br />
+                <textarea
+                  name="description"
+                  id=""
+                  rows={3}
+                  maxLength={255}
+                  value={formData.description}
+                  onChange={(e) => handleInputChange(e)}
+                  placeholder="Type"
+                ></textarea>
+                <p
+                  className={`character-count ${formData.description.length >= 255 ? "exceeded" : ""
+                    }`}
+                >
+                  {formData.description.length}/255 characters
+                </p>
               </div>
+
             </div>
           </div>
         </div>

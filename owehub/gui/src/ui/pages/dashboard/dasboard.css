@@ -324,7 +324,7 @@ color: white;
  
 }
 .breakdown-table tbody {
-  font-weight: 700;
+  font-weight: 500;
 }
 .createUserCrossButtonBreak {
   display: flex;
@@ -441,5 +441,26 @@ color: white;
   }
   .createUserActionButtonDash :hover {
     background-color: #263747;
+  }
+
+
+
+
+  .create-input-field-help {
+    /* width: 290px; */
+    width: 50%;
+    display: flex;
+    display: block;
+    padding-top: 0.5rem;
+  }
+  
+  
+  .create-input-field-help label {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 18px;
+    text-align: left; 
+    margin-bottom: -5px;
+    /* background-color: #0493CE; */
   }
  

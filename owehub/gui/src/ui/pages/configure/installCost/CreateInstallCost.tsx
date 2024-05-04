@@ -16,6 +16,12 @@ interface payScheduleProps {
   editMode: boolean;
   editData: ICost | null;
 }
+interface IErrors {
+  uniqueId?: string;
+  cost?: string;
+  startDate?: string;
+  endDate?: string;
+}
 
 const CreateInstallCost: React.FC<payScheduleProps> = ({
   handleClose,
@@ -23,6 +29,7 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
   editData,
 }) => {
   const dispatch = useAppDispatch();
+  const [errors, setErrors] = useState<IErrors>({});
 
   const [newFormData, setNewFormData] = useState({
     uniqueId: editData?.unique_id || "",
@@ -31,6 +38,20 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
     endDate: editData?.end_date || "",
   });
   const { isSuccess } = useAppSelector((state) => state.installConstSlice);
+
+  const handleValidation = () => {
+    const error: IErrors = {};
+    for (const key in newFormData) {
+      if (!newFormData[key as keyof typeof newFormData]) {
+        
+        error[
+          key as keyof typeof newFormData
+        ] = `${key.toLocaleLowerCase()} is required`;
+      }
+    }
+    setErrors({ ...error });
+    return Object.keys(error).length ? false : true;
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.target;
@@ -44,28 +65,28 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
   };
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (editMode) {
-      dispatch(
-        updateInstallCost({
-          record_id:editData?.record_id!,
-          unique_id: newFormData.uniqueId,
-          cost: parseInt(newFormData.cost),
-          start_date: format(new Date(newFormData.startDate), "yyyy-MM-dd"),
-          end_date: format(new Date(newFormData.endDate), "yyyy-MM-dd"),
-        })
-      );
+    if (handleValidation()) {
+      if (editMode) {
+        dispatch(
+          updateInstallCost({
+            record_id: editData?.record_id!,
+            unique_id: newFormData.uniqueId,
+            cost: parseInt(newFormData.cost),
+            start_date: format(new Date(newFormData.startDate), "yyyy-MM-dd"),
+            end_date: format(new Date(newFormData.endDate), "yyyy-MM-dd"),
+          })
+        );
+      } else {
+        dispatch(
+          createInstallCost({
+            unique_id: newFormData.uniqueId,
+            cost: parseInt(newFormData.cost),
+            start_date: format(new Date(newFormData.startDate), "yyyy-MM-dd"),
+            end_date: format(new Date(newFormData.endDate), "yyyy-MM-dd"),
+          })
+        );
+      }
     }
-    else{
-      dispatch(
-        createInstallCost({
-          unique_id: newFormData.uniqueId,
-          cost: parseInt(newFormData.cost),
-          start_date: format(new Date(newFormData.startDate), "yyyy-MM-dd"),
-          end_date: format(new Date(newFormData.endDate), "yyyy-MM-dd"),
-        })
-      );
-    }
-    
   };
 
   useEffect(() => {
@@ -73,7 +94,6 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
       handleClose();
       dispatch(resetSuccess());
     }
-
   }, [isSuccess]);
   return (
     <div className="transparent-model">
@@ -101,6 +121,11 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
                     placeholder={"Enter"}
                     onChange={handleChange}
                   />
+                  {errors?.uniqueId && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.uniqueId}
+                    </span>
+                  )}
                 </div>
                 <div className="create-input-field">
                   <Input
@@ -111,6 +136,12 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
                     placeholder={"Enter"}
                     onChange={handleChange}
                   />
+
+                  {errors?.cost && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.cost}
+                    </span>
+                  )}
                 </div>
                 <div className="create-input-field">
                   <Input
@@ -121,6 +152,11 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
                     placeholder={"Enter"}
                     onChange={handleChange}
                   />
+                  {errors?.startDate && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.startDate}
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -133,6 +169,11 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
                   placeholder={"Enter"}
                   onChange={handleChange}
                 />
+                  {errors?.endDate && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.endDate}
+                    </span>
+                  )}
               </div>
             </div>
           </div>
