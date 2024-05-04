@@ -50,7 +50,7 @@ type ServiceApiRoute struct {
 	Pattern            string
 	Handler            http.HandlerFunc
 	IsAuthReq          bool
-	RolesAllowedAccess []types.UserRoles
+	GroupAllowedAccess []types.UserGroup
 }
 
 type ApiRoutes []ServiceApiRoute
@@ -61,28 +61,28 @@ var apiRoutes = ApiRoutes{
 		"/owe-commisions-service/v1/loggingconf",
 		handleDynamicLoggingConf,
 		false,
-		[]types.UserRoles{},
+		[]types.UserGroup{},
 	},
 	{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/httpconf",
 		handleDynamicHttpConf,
 		false,
-		[]types.UserRoles{},
+		[]types.UserGroup{},
 	},
 	{
 		strings.ToUpper("POST"),
 		"/owehub-calc-service/v1/config-update",
 		apiHandler.HandleConfigUpdateHandler,
 		false,
-		[]types.UserRoles{},
+		[]types.UserGroup{},
 	},
 	{
 		strings.ToUpper("POST"),
 		"/owehub-calc-service/v1/data-update",
 		apiHandler.HandleDataUpdateHandler,
 		false,
-		[]types.UserRoles{},
+		[]types.UserGroup{},
 	},
 }
 
