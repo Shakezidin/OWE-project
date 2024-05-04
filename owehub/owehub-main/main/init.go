@@ -1060,9 +1060,7 @@ var apiRoutes = ApiRoutes{
 		"/owe-commisions-service/v1/get_perfomancesales",
 		apiHandler.HandleGetPerfomanceSalesRequest,
 		false,
-		[]types.UserRoles{
-			types.GroupEveryOne,
-		},
+		[]types.UserGroup{types.GroupEveryOne},
 	},
 }
 
