@@ -1,7 +1,6 @@
 /**************************************************************************
 * File			: apiUpdateApptSettersArchive.go
-* DESCRIPTION	: This file contains functions for update ApptSetters archive
-						setter handler
+* DESCRIPTION	: This file contains functions for update appt setters archive handler
 * DATE			: 01-Apr-2024
 **************************************************************************/
 
@@ -39,7 +38,7 @@ func HandleUpdateApptSettersArchiveRequest(resp http.ResponseWriter, req *http.R
 	defer func() { log.ExitFn(0, "HandleUpdateApptSettersArchiveRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in update ApptSetters Archive request")
+		err = fmt.Errorf("HTTP Request body is null in update appt setters archive request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -47,22 +46,22 @@ func HandleUpdateApptSettersArchiveRequest(resp http.ResponseWriter, req *http.R
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update ApptSetters Archive request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update appt setters archive request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &updateApptSettersArcReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal update ApptSetters Archive request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal update ApptSetters Archive request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal update appt setters archive request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal update appt setters archive request", http.StatusBadRequest, nil)
 		return
 	}
 
 	if len(updateApptSettersArcReq.RecordId) <= 0 {
 		err = fmt.Errorf("Record Id is empty, unable to proceed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Record Id is empty, Update Archive failed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Record Id is empty, Update archive failed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -79,12 +78,12 @@ func HandleUpdateApptSettersArchiveRequest(resp http.ResponseWriter, req *http.R
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateApptSettersArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Update ApptSetters Archive in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Update ApptSetters Archive", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to Update appt setters archive in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to Update appt setters archive", http.StatusInternalServerError, nil)
 		return
 	}
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "ApptSetters Archive updated with Id: %+v", data)
-	FormAndSendHttpResp(resp, "ApptSetters Archive Updated Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "appt setters archive updated with Id: %+v", data)
+	FormAndSendHttpResp(resp, "Appt Setters Archive Updated Successfully", http.StatusOK, nil)
 }

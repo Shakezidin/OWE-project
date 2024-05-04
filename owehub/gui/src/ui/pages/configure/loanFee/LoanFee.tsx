@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { ICONS } from "../../../icons/Icons";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-import { fetchTimeLineSla } from "../../../../redux/apiSlice/configSlice/config_get_slice/timeLineSlice";
+import { getLoanFee, ILoanRow } from "../../../../redux/apiActions/loanFeeActions";
 // import CreateTimeLine from "./CreateTimeLine";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import {
@@ -17,6 +17,11 @@ import SortableHeader from "../../../components/tableHeader/SortableHeader";
 import { LoanFeesColumn} from "../../../../resources/static_data/configureHeaderData/LoanFeeColumn";
 import FilterModal from "../../../components/FilterModal/FilterModal";
 import { ROUTES } from "../../../../routes/routes";
+import CreatedLoanFee from "./CreateLoanFee";
+import { showAlert, successSwal } from "../../../components/alert/ShowAlert";
+import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
+import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
+import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 const LoanFee = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -28,14 +33,14 @@ const LoanFee = () => {
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const timelinesla_list = useAppSelector(
-    (state) => state.timelineSla.timelinesla_list
+    (state) => state.loanFeeSlice.data
   );
 //   const loading = useAppSelector((state) => state.timelineSla.loading);
   const error = useAppSelector((state) => state.timelineSla.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
-  const [editedTimeLineSla, setEditedTimeLineSla] = useState<TimeLineSlaModel | null>(null);
+  const [editedTimeLineSla, setEditedTimeLineSla] = useState<ILoanRow | null>(null);
   const itemsPerPage = 10;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
@@ -46,7 +51,7 @@ const LoanFee = () => {
       page_number: currentPage,
       page_size: itemsPerPage,
     };
-    dispatch(fetchTimeLineSla(pageNumber));
+    dispatch(getLoanFee(pageNumber));
   }, [dispatch, currentPage]);
 
   const filter = () => {
@@ -58,7 +63,7 @@ const LoanFee = () => {
     dispatch(setCurrentPage(pageNumber));
   };
 
-  const commissionList = useAppSelector((state) => state.comm.commissionsList);
+  const {data:commissionList,isLoading} = useAppSelector((state) => state.loanFeeSlice);
   const goToNextPage = () => {
     dispatch(setCurrentPage(currentPage + 1));
   };
@@ -103,17 +108,41 @@ const LoanFee = () => {
     handleOpen()
   };
 
-  const handleEditTimeLineSla = (timeLineSlaData: TimeLineSlaModel) => {
+  const handleArchiveClick = async (record_id: any) => {
+    const confirmed = await showAlert('Are Your Sure', 'This action will archive all selected rows?', 'Yes', 'No');
+    if (confirmed){
+      const archived: number[] = [record_id];
+      let newValue = {
+        record_id: archived,
+        is_archived: true
+      }
+      const pageNumber = {
+        page_number: currentPage,
+        page_size: itemsPerPage,
+  
+      };
+      const res = await postCaller("update_loan_fee_archive", newValue);
+      if (res.status === HTTP_STATUS.OK) {
+        dispatch(getLoanFee(pageNumber))
+        await successSwal("Archived", "All Selected rows have been archived", "success", 2000, false);
+      }else{
+        await successSwal("Archived", "All Selected rows have been archived", "error", 2000, false);
+      }
+    }
+  
+  };
+
+  const handleEditTimeLineSla = (timeLineSlaData: ILoanRow) => {
     setEditMode(true);
     setEditedTimeLineSla(timeLineSlaData);
     handleOpen()
   };
   const fetchFunction = (req: any) => {
-    dispatch(fetchTimeLineSla(req));
+    dispatch(getLoanFee(req));
    };
-//   if (loading) {
-//     return <div>Loading...</div>;
-//   }
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -140,10 +169,10 @@ const LoanFee = () => {
           page_number={currentPage}
           fetchFunction={fetchFunction}
           page_size={itemsPerPage} />}
-        {/* {open && <CreateTimeLine
-          timeLineSlaData={editedTimeLineSla}
+        {open && <CreatedLoanFee
           editMode={editMode}
-          handleClose={handleClose} />} */}
+          editData={editedTimeLineSla}
+          handleClose={handleClose} />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
@@ -179,11 +208,11 @@ const LoanFee = () => {
                 </th>
               </tr>
             </thead>
-            {/* <tbody >
+            <tbody >
               {currentPageData?.length > 0
-                ? currentPageData?.map((el: any, i: any) => (
+                ? currentPageData?.map((el: ILoanRow, i: number) => (
                   <tr
-                    key={i}
+                    key={el.record_id}
                     className={selectedRows.has(i) ? "selected" : ""}
                   >
 
@@ -200,18 +229,22 @@ const LoanFee = () => {
                             )
                           }
                         />
-                        {el.type_m2m}
+                        {el.dealer}
                       </div>
                     </td>
+                    <td>{el.installer}</td>
                     <td>{el.state}</td>
-                    <td>{el.days}</td>
+                    <td>{el.loan_type}</td>
+                    <td>{el.owe_cost}</td>
+                    <td>{el.dlr_mu}</td>
+                    <td>{el.dlr_cost}</td>
                     <td>{el.start_date}</td>
                     <td>{el.end_date}</td>
                     <td
 
                     >
                       <div className="action-icon">
-                        <div className="">
+                        <div className="" style={{cursor:"pointer"}} onClick={()=>handleArchiveClick(el.record_id)}>
                           <img src={ICONS.ARCHIVE} alt="" />
                         </div>
                         <div className="" onClick={() => handleEditTimeLineSla(el)} style={{ cursor: "pointer" }}>
@@ -222,7 +255,7 @@ const LoanFee = () => {
                   </tr>
                 ))
                 : null}
-            </tbody> */}
+            </tbody>
 
           </table>
         </div>

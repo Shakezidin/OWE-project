@@ -4,3 +4,7 @@
   text-align: left;
   color: var(--page-heading-color);
 }
+
+.recharts-layer {
+  outline: none !important;
+}

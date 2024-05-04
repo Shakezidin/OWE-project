@@ -18,7 +18,7 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:		HandleUpdateAdderCreditRequest
+ * FUNCTION:		HandleUpdateAdderCreditDataRequest
  * DESCRIPTION:     handler for Update AdderCredits request
  * INPUT:			resp, req
  * RETURNS:    		void
@@ -31,11 +31,11 @@ func HandleUpdateAdderCreditDataRequest(resp http.ResponseWriter, req *http.Requ
 		result               []interface{}
 	)
 
-	log.EnterFn(0, "HandleUpdateAdderCreditRequest")
-	defer func() { log.ExitFn(0, "HandleUpdateAdderCreditRequest", err) }()
+	log.EnterFn(0, "HandleUpdateAdderCreditDataRequest")
+	defer func() { log.ExitFn(0, "HandleUpdateAdderCreditDataRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in Update AdderCredits request")
+		err = fmt.Errorf("HTTP Request body is null in update adder credit request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -43,15 +43,15 @@ func HandleUpdateAdderCreditDataRequest(resp http.ResponseWriter, req *http.Requ
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from Update AdderCredits request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update adder credit request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &UpdateAdderCreditReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal Update AdderCredits request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal Update AdderCredits request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal update adder credit request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal update adder credit request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -66,20 +66,20 @@ func HandleUpdateAdderCreditDataRequest(resp http.ResponseWriter, req *http.Requ
 	if UpdateAdderCreditReq.RecordId <= int64(0) {
 		err = fmt.Errorf("Invalid record_id Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid record_id Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid record id Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if UpdateAdderCreditReq.Min_Rate <= float64(0) {
-		err = fmt.Errorf("Invalid Sale price Not Allowed")
+		err = fmt.Errorf("Invalid min rate Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Sale price Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Min Rate Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 	if UpdateAdderCreditReq.Max_Rate <= float64(0) {
-		err = fmt.Errorf("Invalid Rate list Not Allowed")
+		err = fmt.Errorf("Invalid max rate Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Rate list Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Max Rate Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -94,13 +94,13 @@ func HandleUpdateAdderCreditDataRequest(resp http.ResponseWriter, req *http.Requ
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateAdderCreditFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Add AdderCredits in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Update AdderCredits", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to update adder credit in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to update adder credit", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "AdderCredits Updated with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "AdderCredits Updated Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "adder credit updated with Id: %+v", data["result"])
+	FormAndSendHttpResp(resp, "Adder Credits Updated Successfully", http.StatusOK, nil)
 }

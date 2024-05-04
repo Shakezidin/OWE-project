@@ -1,7 +1,6 @@
 /**************************************************************************
 * File			: apiUpdateDealerCreditArchive.go
-* DESCRIPTION	: This file contains functions for update DealerCredit archive
-						setter handler
+* DESCRIPTION	: This file contains functions for update dealer credit archive handler
 * DATE			: 25-Apr-2024
 **************************************************************************/
 
@@ -21,7 +20,7 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:		HandleUpdateAutoAdderArchiveRequest
+ * FUNCTION:		HandleUpdateCreditDealerArchiveRequest
  * DESCRIPTION:     handler for update DealerCredit Archive request
  * INPUT:			resp, req
  * RETURNS:    		void
@@ -39,7 +38,7 @@ func HandleUpdateCreditDealerArchiveRequest(resp http.ResponseWriter, req *http.
 	defer func() { log.ExitFn(0, "HandleUpdateCreditDealerArchiveRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in update DealerCredit Archive request")
+		err = fmt.Errorf("HTTP Request body is null in update dealer credit archive request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -47,15 +46,15 @@ func HandleUpdateCreditDealerArchiveRequest(resp http.ResponseWriter, req *http.
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update DealerCredit Archive request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update dealer credit archive request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &updateDealerCreditArcReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal update DealerCredit Archive request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal update DealerCredit Archive request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal update dealer credit archive request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal update dealer credit archive request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -79,12 +78,12 @@ func HandleUpdateCreditDealerArchiveRequest(resp http.ResponseWriter, req *http.
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateDealerCreditArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Update DealerCredit Archive in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Update DealerCredit Archive", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to update dealer credit archive in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to update dealer credit archive", http.StatusInternalServerError, nil)
 		return
 	}
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "DealerCredit Archive updated with Id: %+v", data)
-	FormAndSendHttpResp(resp, "DealerCredit Archive Updated Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "dealer credit archive updated with Id: %+v", data)
+	FormAndSendHttpResp(resp, "Dealer Credit Archive Updated Successfully", http.StatusOK, nil)
 }

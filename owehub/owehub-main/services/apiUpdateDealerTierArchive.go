@@ -1,6 +1,6 @@
 /**************************************************************************
 * File			: apiUpdateDealerTierArchive.go
-* DESCRIPTION	: This file contains functions for update DealerTier archive
+* DESCRIPTION	: This file contains functions for update dealer tier archive
 						setter handler
 * DATE			: 23-Jan-2024
 **************************************************************************/
@@ -39,7 +39,7 @@ func HandleUpdateDealerTierArchiveRequest(resp http.ResponseWriter, req *http.Re
 	defer func() { log.ExitFn(0, "HandleUpdateDealerTierArchiveRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in update dealertier Archive request")
+		err = fmt.Errorf("HTTP Request body is null in update dealer tier archive request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -47,22 +47,22 @@ func HandleUpdateDealerTierArchiveRequest(resp http.ResponseWriter, req *http.Re
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update dealertier archive request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update dealer tier archive request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &updateDealerTierArcReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal update dealertier archive request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal update dealertier archive request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal update dealer tier archive request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal update dealer tier archive request", http.StatusBadRequest, nil)
 		return
 	}
 
 	if len(updateDealerTierArcReq.RecordId) <= 0 {
 		err = fmt.Errorf("Record Id is empty, unable to proceed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Record Id is empty, update dealertier archive failed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Record Id is empty, update archive failed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -79,12 +79,12 @@ func HandleUpdateDealerTierArchiveRequest(resp http.ResponseWriter, req *http.Re
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateDealerTierArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Update dealertier Archive in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Update dealertier Archive", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to update dealer tier archive in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to update dealer tier archive", http.StatusInternalServerError, nil)
 		return
 	}
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "dealertier Archive updated with Id: %+v", data)
-	FormAndSendHttpResp(resp, "dealertier Archive Updated Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "dealer tier archive updated with Id: %+v", data)
+	FormAndSendHttpResp(resp, "Dealer Tier Archive Updated Successfully", http.StatusOK, nil)
 }

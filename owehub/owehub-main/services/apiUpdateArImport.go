@@ -1,6 +1,6 @@
 /**************************************************************************
 * File			: apiUpdateArImport.go
-* DESCRIPTION	: This file contains functions for Update ArImport handler
+* DESCRIPTION	: This file contains functions for Update ar import handler
 * DATE			: 30-Apr-2024
 **************************************************************************/
 
@@ -18,8 +18,8 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:		HandleUpdateAptSetterRequest
- * DESCRIPTION:     handler for Update ArImport request
+ * FUNCTION:		HandleUpdateArImportDataRequest
+ * DESCRIPTION:     handler for Update Ar import request
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
@@ -35,7 +35,7 @@ func HandleUpdateArImportDataRequest(resp http.ResponseWriter, req *http.Request
 	defer func() { log.ExitFn(0, "HandleUpdateArImportDataRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in Update ArImport request")
+		err = fmt.Errorf("HTTP Request body is null in update ar import request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -43,15 +43,15 @@ func HandleUpdateArImportDataRequest(resp http.ResponseWriter, req *http.Request
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from Update ArImport request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update ar import request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &UpdateArImportReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal Update ArImport request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal Update ArImport request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal update ar import request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal update ar import request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -60,14 +60,14 @@ func HandleUpdateArImportDataRequest(resp http.ResponseWriter, req *http.Request
 		(len(UpdateArImportReq.Notes) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if UpdateArImportReq.RecordId <= int64(0) {
 		err = fmt.Errorf("Invalid record_id Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid record_id Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid record_id Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -81,13 +81,13 @@ func HandleUpdateArImportDataRequest(resp http.ResponseWriter, req *http.Request
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateArImportFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Add ArImport in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Update ArImport", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to update Ar import in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to update Ar import", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "ArImport Updated with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "ArImport Updated Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "Ar import Updated with Id: %+v", data["result"])
+	FormAndSendHttpResp(resp, "Ar Import Updated Successfully", http.StatusOK, nil)
 }

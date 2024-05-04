@@ -147,10 +147,10 @@ func HandleGetAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 			PerKwAmt = 0.0
 		}
 
-		RepPercent, ok := item["rep_percent"].(int)
+		RepPercent, ok := item["rep_percent"].(float64)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get RepPercent for Record ID %v. Item: %+v\n", RecordId, item)
-			RepPercent = 0
+			RepPercent = 0.0
 		}
 
 		SysSize, ok := item["sys_size"].(float64)

@@ -35,7 +35,7 @@ func HandleUpdateAdjustmentsRequest(resp http.ResponseWriter, req *http.Request)
 	defer func() { log.ExitFn(0, "HandleUpdateAdjustmentsRequest", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in Update adjustments request")
+		err = fmt.Errorf("HTTP Request body is null in update adjustments request")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -43,15 +43,15 @@ func HandleUpdateAdjustmentsRequest(resp http.ResponseWriter, req *http.Request)
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from Update adjustments request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from update adjustments request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
 
 	err = json.Unmarshal(reqBody, &UpdateAdjustmentsReq)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal Update adjustments request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal Update adjustments request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal update adjustments request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal update adjustments request", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -62,14 +62,14 @@ func HandleUpdateAdjustmentsRequest(resp http.ResponseWriter, req *http.Request)
 		(len(UpdateAdjustmentsReq.EndDate) <= 0) || (len(UpdateAdjustmentsReq.Date) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if UpdateAdjustmentsReq.SysSize <= float64(0) {
-		err = fmt.Errorf("Invalid SysSize Not Allowed")
+		err = fmt.Errorf("Invalid Sys Size Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid SysSize === Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Sys Size, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -83,13 +83,13 @@ func HandleUpdateAdjustmentsRequest(resp http.ResponseWriter, req *http.Request)
 	if UpdateAdjustmentsReq.Epc <= float64(0) {
 		err = fmt.Errorf("Invalid epc Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Epc Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Epc, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 	if UpdateAdjustmentsReq.Amount <= float64(0) {
-		err = fmt.Errorf("Invalid epc Not Allowed")
+		err = fmt.Errorf("Invalid amount Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Epc Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid amount Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -113,13 +113,13 @@ func HandleUpdateAdjustmentsRequest(resp http.ResponseWriter, req *http.Request)
 
 	result, err = db.CallDBFunction(db.UpdateAdjustmentsFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
-		log.FuncErrorTrace(0, "Failed to Adjustments in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Update Adjustments data", http.StatusInternalServerError, nil)
+		log.FuncErrorTrace(0, "Failed to update adjustments in DB with err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to update adjustments", http.StatusInternalServerError, nil)
 		return
 	}
 
 	data := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "adjustments Updated with Id: %+v", data["result"])
-	FormAndSendHttpResp(resp, "adjustments Updated Successfully", http.StatusOK, nil)
+	log.DBTransDebugTrace(0, "adjustments updated with Id: %+v", data["result"])
+	FormAndSendHttpResp(resp, "Adjustments Updated Successfully", http.StatusOK, nil)
 }

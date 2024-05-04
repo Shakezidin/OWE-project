@@ -88,7 +88,7 @@ const ProjectBreakdown: React.FC<ButtonProps> = ({
                   onClick={() => setToggleOpen(!toggleOpen)}
                   style={{ backgroundColor: "lightcyan" }}
                 >
-                  <td>
+                  <td style={{cursor: "pointer"}}>
                     Adder{" "}
                     {toggleOpen ? (
                       <span>&#x25B2;</span> // Up arrow
