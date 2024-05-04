@@ -83,7 +83,7 @@ func HandleCreateAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 		FormAndSendHttpResp(resp, "Invalid AdderCal Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
-	if createAdderDataReq.RepPercent <= 0 {
+	if createAdderDataReq.RepPercent <= float64(0) {
 		err = fmt.Errorf("Invalid RepPercent Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Invalid RepPercent Not Allowed", http.StatusBadRequest, nil)

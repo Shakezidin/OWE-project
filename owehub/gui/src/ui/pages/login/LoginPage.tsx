@@ -6,7 +6,7 @@
  * Path: src/ui/pages
  */
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./LoginPage.css";
 import { ICONS } from "../../icons/Icons";
 import { Link, useNavigate } from "react-router-dom";
@@ -64,45 +64,75 @@ export const LoginPage = () => {
     return emailPattern.test(email);
   };
 
-  /** handle login action */
-  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
-  try{
-    e.preventDefault();
+  const debounceTimer = useRef<NodeJS.Timeout | null>();
 
-    if (credentials.email_id.length === 0) {
-      toast.warn("Please enter email id");
-    } else if (!isValidEmail(credentials.email_id)) {
-      toast.warning("Please enter vaild email id");
-    } else if (credentials.password.length === 0) {
-      toast.warning("Please enter the password");
-    } else {
-      const actionResult = await dispatch(loginAction(credentials));
-      const result = unwrapResult(actionResult);
-      if (result.status === HTTP_STATUS.OK) {
-        toast.success(result.message);
-        const { email_id, user_name, role_name, access_token,time_to_expire_minutes,is_password_change_required
-        } = result.data;
-        localStorage.setItem("email", email_id);
-        localStorage.setItem("userName", user_name);
-        localStorage.setItem("role", role_name);
-        localStorage.setItem("token", access_token);
-        localStorage.setItem("password", credentials.password);
-        localStorage.setItem("expirationTimeInMin", time_to_expire_minutes);
-        localStorage.setItem('expirationTime', (Date.now() + parseInt(time_to_expire_minutes) * 60 * 1000).toString()); // Expiration time is 480 minutes from now
-        localStorage.setItem("isRememberMe", credentials.isRememberMe.toString());
-        localStorage.setItem('is_password_change_required',is_password_change_required)  
-        navigate(ROUTES.COMMISSION_DASHBOARD);
-       // window.location.reload()
-    
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    try {
+      e.preventDefault();
+
+      const debounceDelay = 800; // Adjust the delay as needed (in milliseconds)
+
+      const showToast = (
+        message: string,
+        type: "warn" | "warning" | "success" | "error"
+      ) => {
+        if (debounceTimer.current) {
+          clearTimeout(debounceTimer.current);
+        }
+        debounceTimer.current = setTimeout(() => {
+          toast[type](message);
+        }, debounceDelay);
+      };
+
+      if (credentials.email_id.length === 0) {
+        showToast("Please enter email id", "warn");
+      } else if (!isValidEmail(credentials.email_id)) {
+        showToast("Please enter a valid email id", "warning");
+      } else if (credentials.password.length === 0) {
+        showToast("Please enter the password", "warning");
       } else {
-        toast.error(result.message);
+        const actionResult = await dispatch(loginAction(credentials));
+        const result = unwrapResult(actionResult);
+        if (result.status === HTTP_STATUS.OK) {
+          showToast(result.message, "success");
+          const {
+            email_id,
+            user_name,
+            role_name,
+            access_token,
+            time_to_expire_minutes,
+            is_password_change_required,
+          } = result.data;
+          localStorage.setItem("email", email_id);
+          localStorage.setItem("userName", user_name);
+          localStorage.setItem("role", role_name);
+          localStorage.setItem("token", access_token);
+          localStorage.setItem("password", credentials.password);
+          localStorage.setItem("expirationTimeInMin", time_to_expire_minutes);
+          localStorage.setItem(
+            "expirationTime",
+            (
+              Date.now() +
+              parseInt(time_to_expire_minutes) * 60 * 1000
+            ).toString()
+          );
+          localStorage.setItem(
+            "isRememberMe",
+            credentials.isRememberMe.toString()
+          );
+          localStorage.setItem(
+            "is_password_change_required",
+            is_password_change_required
+          );
+          navigate(ROUTES.PROJECT_PERFORMANCE);
+        } else {
+          showToast(result.message, "error");
+        }
       }
+    } catch (err) {
+      console.log(err);
     }
-  }
-  catch(err){
-    console.log(err)
-  }
-  };
+  }; 
 
   /** UI render */
 

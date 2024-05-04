@@ -7,7 +7,7 @@
     opacity: .3;
     cursor: not-allowed;
   }
-  .xyz{
+  .selected-fields-onboard{
     position: static !important;
     display: block;
     margin-bottom: -15px;

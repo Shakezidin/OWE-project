@@ -137,7 +137,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                   {lastNameError && <p className="error-message">{lastNameError}</p>}
                 </div>
                 <div className="create-input-field">
-                  <label className="inputLabel-select xyz">Role</label>
+                  <label className="inputLabel-select selected-fields-onboard">Role</label>
                   <SelectOption
                     options={ALL_USER_ROLE_LIST}
                     onChange={(newValue) => handleChange(newValue, "role_name")}
@@ -173,7 +173,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                 formData.role_name === "SubDealer Owner" ||
                 formData.role_name === "Dealer Owner" || formData.role_name === "Finance" ? null : (
                   <div className="create-input-field">
-                    <label className="inputLabel-select xyz">Dealer Owner</label>
+                    <label className="inputLabel-select selected-fields-onboard">Dealer Owner</label>
                     <SelectOption
                       options={dealerList}
                       onChange={(newValue) =>
