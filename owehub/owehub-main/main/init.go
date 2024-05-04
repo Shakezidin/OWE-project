@@ -1339,7 +1339,7 @@ var apiRoutes = ApiRoutes{
 		apiHandler.HandleGetPerfomanceSalesRequest,
 		false,
 		[]types.UserRoles{
-			types.RoleAdmin,
+			types.GroupEveryOne,
 		},
 	},
 }
