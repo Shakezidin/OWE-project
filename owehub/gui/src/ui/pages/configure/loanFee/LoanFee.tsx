@@ -50,9 +50,10 @@ const LoanFee = () => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
+      archived:viewArchived
     };
     dispatch(getLoanFee(pageNumber));
-  }, [dispatch, currentPage]);
+  }, [dispatch, currentPage,viewArchived]);
 
   const filter = () => {
     setFilterOpen(true)
@@ -111,7 +112,7 @@ const LoanFee = () => {
   const handleArchiveClick = async (record_id: any) => {
     const confirmed = await showAlert('Are Your Sure', 'This action will archive all selected rows?', 'Yes', 'No');
     if (confirmed){
-      const archived: number[] = [record_id];
+      const archived: number[] = record_id;
       let newValue = {
         record_id: archived,
         is_archived: true
@@ -119,7 +120,7 @@ const LoanFee = () => {
       const pageNumber = {
         page_number: currentPage,
         page_size: itemsPerPage,
-  
+        archived:viewArchived
       };
       const res = await postCaller("update_loan_fee_archive", newValue);
       if (res.status === HTTP_STATUS.OK) {
@@ -154,8 +155,8 @@ const LoanFee = () => {
       <div className="commissionContainer">
         <TableHeader
           title="Loan Fee"
-          onPressViewArchive={() => { }}
-          onPressArchive={() => { }}
+          onPressViewArchive={() => setViewArchived(prev=>!prev)}
+          onPressArchive={() =>handleArchiveClick(Array.from(selectedRows).map((_,i:number)=>currentPageData[i].record_id))}
           onPressFilter={() => filter()}
           onPressImport={() => { }}
           checked={isAllRowsSelected}
@@ -243,14 +244,14 @@ const LoanFee = () => {
                     <td
 
                     >
-                      <div className="action-icon">
-                        <div className="" style={{cursor:"pointer"}} onClick={()=>handleArchiveClick(el.record_id)}>
+                     {!viewArchived && <div className="action-icon">
+                        <div className="" style={{cursor:"pointer"}} onClick={()=>handleArchiveClick([el.record_id])}>
                           <img src={ICONS.ARCHIVE} alt="" />
                         </div>
                         <div className="" onClick={() => handleEditTimeLineSla(el)} style={{ cursor: "pointer" }}>
                           <img src={ICONS.editIcon} alt="" />
                         </div>
-                      </div>
+                      </div>}
                     </td>
                   </tr>
                 ))

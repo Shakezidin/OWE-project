@@ -18,11 +18,11 @@ import { useAppDispatch } from "../../../../redux/hooks";
 interface payScheduleProps {
     handleClose: () => void,
     editMode:boolean,
-    
+    setViewArchived:React.Dispatch<React.SetStateAction<boolean>>
 }
 
 
-const CreateRateAdjustments:React.FC<payScheduleProps> = ({handleClose,editMode}) => {
+const CreateRateAdjustments:React.FC<payScheduleProps> = ({handleClose,editMode,setViewArchived}) => {
     const dispatch = useAppDispatch();
 
 
@@ -62,6 +62,7 @@ const CreateRateAdjustments:React.FC<payScheduleProps> = ({handleClose,editMode}
  
 const handleSubmit = (e: React.FormEvent) => {
   e.preventDefault()
+  setViewArchived(false)
   dispatch(createRateAdjustments({
     
     

@@ -4,9 +4,14 @@
  *	DATE        : 20-Jan-2024
  **************************************************************************/
 
- package models
+package models
 
- type GetPerfomanceSales struct {
-	 StartDate   string `json:"start_date"`
-	 EndDate     string `json:"end_date"`
- }
+type GetPerfomanceReq struct {
+	StartDate string `json:"start_date"`
+	EndDate   string `json:"end_date"`
+}
+
+type PerfomanceSales struct {
+	Sales   int64   `json:"sales"`
+	SalesKw float64 `json:"sales_kw"`
+}

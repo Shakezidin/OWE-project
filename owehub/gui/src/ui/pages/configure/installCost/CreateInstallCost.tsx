@@ -15,18 +15,21 @@ interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
   editData: ICost | null;
+  setViewArchived:React.Dispatch<React.SetStateAction<boolean>>
 }
 interface IErrors {
   uniqueId?: string;
   cost?: string;
   startDate?: string;
   endDate?: string;
+
 }
 
 const CreateInstallCost: React.FC<payScheduleProps> = ({
   handleClose,
   editMode,
   editData,
+  setViewArchived
 }) => {
   const dispatch = useAppDispatch();
   const [errors, setErrors] = useState<IErrors>({});
@@ -65,6 +68,7 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
   };
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setViewArchived(false)
     if (handleValidation()) {
       if (editMode) {
         dispatch(

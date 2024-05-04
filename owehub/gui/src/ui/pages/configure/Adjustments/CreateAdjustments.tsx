@@ -6,7 +6,7 @@ import { ActionButton } from "../../../components/button/ActionButton";
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-import { createAdjustments } from "../../../../redux/apiActions/arAdjustmentsAction";
+import { createAdjustments,updateAdjustments,IRateRow } from "../../../../redux/apiActions/arAdjustmentsAction";
 import {
   installerOption,
   partnerOption,
@@ -19,28 +19,29 @@ import { resetSuccess } from "../../../../redux/apiSlice/configSlice/config_get_
 interface payScheduleProps {
   handleClose: () => void,
   editMode: boolean,
-
+  setViewArchived:React.Dispatch<React.SetStateAction<boolean>>
+  editData:IRateRow|null
 }
 
 
-const CreatedAdjustments: React.FC<payScheduleProps> = ({ handleClose, editMode }) => {
+const CreatedAdjustments: React.FC<payScheduleProps> = ({ handleClose, editMode,setViewArchived,editData }) => {
   const dispatch = useAppDispatch();
 
 
   const [newFormData, setNewFormData] = useState({
-    uniqueId: "",
-    customer: "",
-    partnerName: "",
-    installerName: "",
-    sysSize: "",
-    bl: "",
-    epc: "",
-    date: "",
-    amount: "",
-    notes: "",
-    startDate: "",
-    endDate: "",
-    stateName: ""
+    uniqueId:editData?.unique_id|| "",
+    customer:editData?.customer|| "",
+    partnerName:editData?.partner_name|| "",
+    installerName: editData?.installer_name||"",
+    sysSize:editData?.sys_size?`${editData?.sys_size}`: "",
+    bl:editData?.bl|| "",
+    epc:editData?.epc?`${editData?.epc}`: "",
+    date:editData?.date|| "",
+    amount: editData?.amount?`${editData?.amount}`: "",
+    notes: editData?.notes||"",
+    startDate:editData?.start_date|| "",
+    endDate:editData?.end_date||  "",
+    stateName: editData?.state_name||""
   })
   const { isSuccess } = useAppSelector(state => state.arAdjusments)
 
@@ -69,21 +70,42 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({ handleClose, editMode 
   }
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    dispatch(createAdjustments({
-      unique_id: newFormData.uniqueId,
-      customer: newFormData.customer,
-      partner_name: newFormData.partnerName,
-      state_name: newFormData.stateName,
-      installer_name: newFormData.installerName,
-      sys_size: parseFloat(newFormData.sysSize),
-      bl: newFormData.bl,
-      epc: parseFloat(newFormData.epc),
-      date: format(new Date(newFormData.date), "yyyy-MM-dd"),
-      notes: newFormData.notes,
-      amount: parseFloat(newFormData.amount),
-      "start_date": format(new Date(newFormData.startDate), "yyyy-MM-dd"),
-      "end_date": format(new Date(newFormData.endDate), "yyyy-MM-dd")
-    }))
+    setViewArchived(false)
+    if(editMode){
+dispatch(updateAdjustments({
+  unique_id: newFormData.uniqueId,
+  customer: newFormData.customer,
+  partner_name: newFormData.partnerName,
+  state_name: newFormData.stateName,
+  installer_name: newFormData.installerName,
+  sys_size: parseFloat(newFormData.sysSize),
+  bl: newFormData.bl,
+  epc: parseFloat(newFormData.epc),
+  date: format(new Date(newFormData.date), "yyyy-MM-dd"),
+  notes: newFormData.notes,
+  amount: parseFloat(newFormData.amount),
+  "start_date": format(new Date(newFormData.startDate), "yyyy-MM-dd"),
+  "end_date": format(new Date(newFormData.endDate), "yyyy-MM-dd"),
+  record_id:editData?.record_id!
+}))
+    }else{
+
+      dispatch(createAdjustments({
+        unique_id: newFormData.uniqueId,
+        customer: newFormData.customer,
+        partner_name: newFormData.partnerName,
+        state_name: newFormData.stateName,
+        installer_name: newFormData.installerName,
+        sys_size: parseFloat(newFormData.sysSize),
+        bl: newFormData.bl,
+        epc: parseFloat(newFormData.epc),
+        date: format(new Date(newFormData.date), "yyyy-MM-dd"),
+        notes: newFormData.notes,
+        amount: parseFloat(newFormData.amount),
+        "start_date": format(new Date(newFormData.startDate), "yyyy-MM-dd"),
+        "end_date": format(new Date(newFormData.endDate), "yyyy-MM-dd")
+      }))
+    }
   }
 
 

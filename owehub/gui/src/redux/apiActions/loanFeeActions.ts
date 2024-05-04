@@ -11,6 +11,7 @@ interface ILoadFeeParams {
   page_number: number;
   page_size: number;
   filters?: IFilter[];
+  archived:boolean
 }
 
 export interface ILoan {
@@ -60,7 +61,7 @@ export const createLoanFee = createAsyncThunk(
       if (data.status === 500 || data instanceof Error) {
         return rejectWithValue((data as Error).message);
       }
-      await dispatch(getLoanFee({page_number:1,page_size:10}))
+      await dispatch(getLoanFee({page_number:1,page_size:10,archived:false}))
       return data.data;
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -77,7 +78,7 @@ export const updateLoanFee  = createAsyncThunk(
       if (data.status === 500 || data instanceof Error||data.status>201) {
         return rejectWithValue((data as Error).message);
       }
-      await dispatch(getLoanFee({page_number:1,page_size:10}))
+      await dispatch(getLoanFee({page_number:1,page_size:10,archived:false}))
       return data.data;
     } catch (error) {
       return rejectWithValue((error as Error).message);

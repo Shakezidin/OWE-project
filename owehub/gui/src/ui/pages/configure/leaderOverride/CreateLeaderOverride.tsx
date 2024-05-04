@@ -31,6 +31,7 @@ interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
   editData: ILeaderRow | null;
+  setViewArchived:React.Dispatch<React.SetStateAction<boolean>>
 }
 
 interface IErrors {
@@ -50,6 +51,7 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
   handleClose,
   editMode,
   editData,
+  setViewArchived
 }) => {
   const dispatch = useAppDispatch();
   const [errors, setErrors] = useState<IErrors>({});
@@ -104,6 +106,7 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setViewArchived(false)
     if (handleValidation()) {
       const data = {
         unique_id: formData.uniqueId,

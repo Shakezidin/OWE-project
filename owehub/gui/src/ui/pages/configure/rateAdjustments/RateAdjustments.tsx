@@ -5,9 +5,7 @@ import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import { fetchTimeLineSla } from "../../../../redux/apiSlice/configSlice/config_get_slice/timeLineSlice";
 import CreateRateAdjustments from "./createRateAdjustments";
 import CheckBox from "../../../components/chekbox/CheckBox";
-import {
-  toggleRowSelection,
-} from "../../../components/chekbox/checkHelper";
+import { toggleRowSelection } from "../../../components/chekbox/checkHelper";
 import Pagination from "../../../components/pagination/Pagination";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 import { TimeLineSlaModel } from "../../../../core/models/configuration/create/TimeLineSlaModel";
@@ -24,7 +22,6 @@ import Loading from "../../../components/loader/Loading";
 import { fetchRateAdjustments } from "../../../../redux/apiActions/RateAdjustmentsAction";
 import { da } from "date-fns/locale";
 
-
 const RateAdjustments = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -32,12 +29,9 @@ const RateAdjustments = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const {data} = useAppSelector(
-    (state) => state.rateAdjustment
-  );
+  const { data } = useAppSelector((state) => state.rateAdjustment);
   const loading = useAppSelector((state) => state.timelineSla.loading);
   const error = useAppSelector((state) => state.timelineSla.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
@@ -46,21 +40,23 @@ const RateAdjustments = () => {
   const [editedRateAdjustment, setEditedRateAdjustment] = useState(null);
   const itemsPerPage = 10;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
-  const currentPage = useAppSelector((state) => state.paginationType.currentPage);
+  const currentPage = useAppSelector(
+    (state) => state.paginationType.currentPage
+  );
   const [sortKey, setSortKey] = useState("");
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
+      archive:viewArchived
     };
     dispatch(fetchRateAdjustments(pageNumber));
   }, [dispatch, currentPage]);
 
   const filter = () => {
-    setFilterOpen(true)
-
-  }
+    setFilterOpen(true);
+  };
 
   const paginate = (pageNumber: number) => {
     dispatch(setCurrentPage(pageNumber));
@@ -83,10 +79,10 @@ const RateAdjustments = () => {
   const isAllRowsSelected = selectedRows.size === data?.length;
   const handleSort = (key: any) => {
     if (sortKey === key) {
-      setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
+      setSortDirection(sortDirection === "desc" ? "asc" : "desc");
     } else {
       setSortKey(key);
-      setSortDirection('asc');
+      setSortDirection("asc");
     }
   };
 
@@ -94,26 +90,31 @@ const RateAdjustments = () => {
     currentPageData.sort((a: any, b: any) => {
       const aValue = a[sortKey];
       const bValue = b[sortKey];
-      if (typeof aValue === 'string' && typeof bValue === 'string') {
-        return sortDirection === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+      if (typeof aValue === "string" && typeof bValue === "string") {
+        return sortDirection === "asc"
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
       } else {
         // Ensure numeric values for arithmetic operations
-        const numericAValue = typeof aValue === 'number' ? aValue : parseFloat(aValue);
-        const numericBValue = typeof bValue === 'number' ? bValue : parseFloat(bValue);
-        return sortDirection === 'asc' ? numericAValue - numericBValue : numericBValue - numericAValue;
+        const numericAValue =
+          typeof aValue === "number" ? aValue : parseFloat(aValue);
+        const numericBValue =
+          typeof bValue === "number" ? bValue : parseFloat(bValue);
+        return sortDirection === "asc"
+          ? numericAValue - numericBValue
+          : numericBValue - numericAValue;
       }
     });
   }
   const handleTimeLineSla = () => {
     setEditMode(false);
     setEditedRateAdjustment(null);
-    handleOpen()
+    handleOpen();
   };
 
-   
   const fetchFunction = (req: any) => {
     dispatch(fetchRateAdjustments(req));
-   };
+  };
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -136,7 +137,7 @@ const RateAdjustments = () => {
       "No"
     );
     if (confirmed) {
-      const archived: number[] = [record_id];
+      const archived: number[] = record_id;
       let newValue = {
         record_id: archived,
         is_archived: true,
@@ -144,6 +145,7 @@ const RateAdjustments = () => {
       const pageNumber = {
         page_number: currentPage,
         page_size: itemsPerPage,
+        archive:viewArchived
       };
       const res = await postCaller("ipdate_rep_pay_settings_archive", newValue);
       if (res.status === HTTP_STATUS.OK) {
@@ -166,61 +168,71 @@ const RateAdjustments = () => {
       }
     }
   };
-  console.log(data, "data")
+  console.log(data, "data");
 
   return (
     <div className="comm">
-      <Breadcrumb head="" linkPara="Configure" route={ROUTES.CONFIG_PAGE} linkparaSecond="Rate Adjustments" />
+      <Breadcrumb
+        head=""
+        linkPara="Configure"
+        route={ROUTES.CONFIG_PAGE}
+        linkparaSecond="Rate Adjustments"
+      />
       <div className="commissionContainer">
         <TableHeader
           title="Rate Adjustments"
-          onPressViewArchive={() => { }}
-          onPressArchive={() => { }}
+          onPressViewArchive={() => setViewArchived(prev=>!prev)}
+          onPressArchive={() => handleArchiveClick(Array.from(selectedRows).map((_,i:number)=>currentPageData[i].record_id))}
           onPressFilter={() => filter()}
-          onPressImport={() => { }}
+          onPressImport={() => {}}
           checked={isAllRowsSelected}
           viewArchive={viewArchived}
           isAnyRowSelected={isAnyRowSelected}
-          onpressExport={() => { }}
+          onpressExport={() => {}}
           onpressAddNew={() => handleTimeLineSla()}
         />
-        {filterOPen && <FilterModal handleClose={filterClose}
-          columns={RateAdjustmentsColumns}
-          page_number={currentPage}
-          fetchFunction={fetchFunction}
-          page_size={itemsPerPage} />}
-        {open && <CreateRateAdjustments
-         
-          editMode={editMode}
-          handleClose={handleClose} />}
+        {filterOPen && (
+          <FilterModal
+            handleClose={filterClose}
+            columns={RateAdjustmentsColumns}
+            page_number={currentPage}
+            fetchFunction={fetchFunction}
+            page_size={itemsPerPage}
+          />
+        )}
+        {open && (
+          <CreateRateAdjustments
+            editMode={editMode}
+            handleClose={handleClose}
+            setViewArchived={setViewArchived}
+          />
+        )}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
         >
           <table>
-
-            <thead >
+            <thead>
               <tr>
-
-                {
-                  RateAdjustmentsColumns?.map((item, key) => (
-                    <SortableHeader
-                      key={key}
-                      isCheckbox={item.isCheckbox}
-                      titleName={item.displayName}
-                      data={data}
-                      isAllRowsSelected={isAllRowsSelected}
-                      isAnyRowSelected={isAnyRowSelected}
-                      selectAllChecked={selectAllChecked}
-                      setSelectAllChecked={setSelectAllChecked}
-                      selectedRows={selectedRows}
-                      setSelectedRows={setSelectedRows}
-                      sortKey={item.name}
-                      sortDirection={sortKey === item.name ? sortDirection : undefined}
-                      onClick={() => handleSort(item.name)}
-                    />
-                  ))
-                }
+                {RateAdjustmentsColumns?.map((item, key) => (
+                  <SortableHeader
+                    key={key}
+                    isCheckbox={item.isCheckbox}
+                    titleName={item.displayName}
+                    data={data}
+                    isAllRowsSelected={isAllRowsSelected}
+                    isAnyRowSelected={isAnyRowSelected}
+                    selectAllChecked={selectAllChecked}
+                    setSelectAllChecked={setSelectAllChecked}
+                    selectedRows={selectedRows}
+                    setSelectedRows={setSelectedRows}
+                    sortKey={item.name}
+                    sortDirection={
+                      sortKey === item.name ? sortDirection : undefined
+                    }
+                    onClick={() => handleSort(item.name)}
+                  />
+                ))}
                 <th>
                   <div className="action-header">
                     <p>Action</p>
@@ -228,81 +240,77 @@ const RateAdjustments = () => {
                 </th>
               </tr>
             </thead>
-            <tbody >
+            <tbody>
               {currentPageData?.length > 0
                 ? currentPageData?.map((el: any, i: any) => (
-                  <tr
-                    key={i}
-                    className={selectedRows.has(i) ? "selected" : ""}
-                  >
-
-                    <td style={{ fontWeight: "500", color: "black" }}>
-                      <div className="flex-check">
-                        <CheckBox
-                          checked={selectedRows.has(i)}
-                          onChange={() =>
-                            toggleRowSelection(
-                              i,
-                              selectedRows,
-                              setSelectedRows,
-                              setSelectAllChecked
-                            )
-                          }
-                        />
-                        {el.pay_scale}
-                      </div>
-                    </td>
-                    <td>{el.position}</td>
-                    <td>{el.adjustment}</td>
-                    <td>{el.min_rate}</td>
-                    <td>{el.max_rate}</td>
-                    <td>
-                      <div className="action-icon">
-                        <div
-                          className=""
-                          style={{ cursor: "pointer" }}
-                          onClick={() => handleArchiveClick(el.RecordId)}
-                        >
-                          <img src={ICONS.ARCHIVE} alt="" />
+                    <tr
+                      key={i}
+                      className={selectedRows.has(i) ? "selected" : ""}
+                    >
+                      <td style={{ fontWeight: "500", color: "black" }}>
+                        <div className="flex-check">
+                          <CheckBox
+                            checked={selectedRows.has(i)}
+                            onChange={() =>
+                              toggleRowSelection(
+                                i,
+                                selectedRows,
+                                setSelectedRows,
+                                setSelectAllChecked
+                              )
+                            }
+                          />
+                          {el.pay_scale}
                         </div>
-                        <div
-                          className=""
-                          onClick={() => handleEdit(el)}
-                          style={{ cursor: "pointer" }}
-                        >
-                          <img src={ICONS.editIcon} alt="" />
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                ))
+                      </td>
+                      <td>{el.position}</td>
+                      <td>{el.adjustment}</td>
+                      <td>{el.min_rate}</td>
+                      <td>{el.max_rate}</td>
+                      <td>
+                        {!viewArchived && (
+                          <div className="action-icon">
+                            <div
+                              className=""
+                              style={{ cursor: "pointer" }}
+                              onClick={() => handleArchiveClick([el.RecordId])}
+                            >
+                              <img src={ICONS.ARCHIVE} alt="" />
+                            </div>
+                            <div
+                              className=""
+                              onClick={() => handleEdit(el)}
+                              style={{ cursor: "pointer" }}
+                            >
+                              <img src={ICONS.editIcon} alt="" />
+                            </div>
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  ))
                 : null}
             </tbody>
-
           </table>
         </div>
         <div className="page-heading-container">
-
           <p className="page-heading">
             {currentPage} - {totalPages} of {currentPageData?.length} item
           </p>
 
-          {
-            data?.length > 0 ? <Pagination
+          {data?.length > 0 ? (
+            <Pagination
               currentPage={currentPage}
               totalPages={totalPages} // You need to calculate total pages
               paginate={paginate}
               currentPageData={currentPageData}
               goToNextPage={goToNextPage}
               goToPrevPage={goToPrevPage}
-            /> : null
-          }
+            />
+          ) : null}
         </div>
-
       </div>
-
     </div>
-
   );
 };
 
