@@ -55,7 +55,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if (len(createUserReq.UserName) <= 0) || (len(createUserReq.EmailId) <= 0) ||
+	if (len(createUserReq.Name) <= 0) || (len(createUserReq.EmailId) <= 0) ||
 		(len(createUserReq.MobileNumber) <= 0) ||
 		//(len(createUserReq.Password) <= 0) ||
 		(len(createUserReq.Designation) <= 0) || (len(createUserReq.RoleName) <= 0) {
@@ -87,7 +87,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	queryParameters = append(queryParameters, createUserReq.UserName)
+	queryParameters = append(queryParameters, createUserReq.Name)
 	queryParameters = append(queryParameters, createUserReq.MobileNumber)
 	queryParameters = append(queryParameters, createUserReq.EmailId)
 	queryParameters = append(queryParameters, string(hashedPassBytes))
@@ -119,7 +119,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	err = SendMailToClient(createUserReq.EmailId, createUserReq.UserName)
+	err = SendMailToClient(createUserReq.EmailId, createUserReq.Name)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to sent email with err: %v", err)
 	}

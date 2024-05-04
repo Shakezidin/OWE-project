@@ -8,7 +8,7 @@ package models
 
 type CreateUserReq struct {
 	//UserCode          string `json:"user_code"`
-	UserName          string `json:"user_name"`
+	Name              string `json:"name"`
 	EmailId           string `json:"email_id"`
 	MobileNumber      string `json:"mobile_number"`
 	Password          string `json:"password"`
