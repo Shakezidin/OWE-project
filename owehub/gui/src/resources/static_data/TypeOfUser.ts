@@ -6,7 +6,7 @@ export const TYPE_OF_USER = {
   PARTNER: "Partner",
   REGIONAL_MANGER: "Regional Manager",
   DEALER_OWNER: "Dealer Owner",
-  SALES_REPRESENTATIVE: "Sales Representative",
+  SALES_REPRESENTATIVE: "Sale Representative",
   SALE_MANAGER: "Sales Manager",
 };
 
@@ -18,6 +18,6 @@ export const ALL_USER_ROLE_LIST = [
   { value: "Partner", label: "Partner" },
   { value: "Regional Manager", label: "Regional Manager" },
   { value: "Dealer Owner", label: "Dealer Owner" },
-  { value: "Sale Representative", label: "Sales Representative" },
+  { value: "Sale Representative", label: "Sale Representative" },
   { value: "Sales Manager", label: "Sales Manager" },
 ];
