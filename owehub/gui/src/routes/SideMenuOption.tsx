@@ -12,7 +12,6 @@ import { TYPE_OF_USER } from "../resources/static_data/TypeOfUser";
 import { GrDocumentPerformance } from "react-icons/gr";
 import { AiOutlineProject } from "react-icons/ai";
 
-
 const performance = {
   performance: [
     {
@@ -30,7 +29,6 @@ const performance = {
     },
   ],
 };
-
 
 const commissionMenu = {
   commission: [
@@ -142,7 +140,7 @@ const DB = {
 const project = {
   project: [
     {
-      path:  ROUTES.PROJECT_STATUS,
+      path: ROUTES.PROJECT_STATUS,
       sidebarProps: {
         displayText: "Project Management",
         icon: (
@@ -153,7 +151,6 @@ const project = {
           />
         ),
       },
-      
     },
   ],
 };
@@ -195,7 +192,7 @@ export const createSideMenuList = (): any[] => {
   let role = localStorage.getItem("role");
 
   if (role === TYPE_OF_USER.ADMIN) {
-    sideMenu.push(performance)
+    sideMenu.push(performance);
     sideMenu.push(commissionMenu);
     sideMenu.push(repayMenu);
     sideMenu.push(arMenu);
@@ -203,22 +200,28 @@ export const createSideMenuList = (): any[] => {
     sideMenu.push(project);
     sideMenu.push(other);
     sideMenu.push(support);
-    
   } else {
     if (
+      role === TYPE_OF_USER.ADMIN ||
       role === TYPE_OF_USER.DEALER_OWNER ||
-      role === TYPE_OF_USER.FINANCE_ADMIN
+      role === TYPE_OF_USER.FINANCE_ADMIN ||
+      role === TYPE_OF_USER.DB_USER ||
+      role === TYPE_OF_USER.APPOINTMENT_SETTER ||
+      role === TYPE_OF_USER.PARTNER
     ) {
-      sideMenu.push(performance)
+      sideMenu.push(performance);
       sideMenu.push(commissionMenu);
       sideMenu.push(repayMenu);
       sideMenu.push(arMenu);
       sideMenu.push(DB);
       sideMenu.push(project);
       sideMenu.push(support);
-      
-    }else if( role === TYPE_OF_USER.REGIONAL_MANGER || role === TYPE_OF_USER.SALES_REPRESENTATIVE || role === TYPE_OF_USER.SALE_MANAGER ){
-      sideMenu.push(performance)
+    } else if (
+      role === TYPE_OF_USER.REGIONAL_MANGER ||
+      role === TYPE_OF_USER.SALES_REPRESENTATIVE ||
+      role === TYPE_OF_USER.SALE_MANAGER
+    ) {
+      sideMenu.push(performance);
       sideMenu.push(repayMenu);
       sideMenu.push(project);
       sideMenu.push(support);

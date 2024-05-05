@@ -199,7 +199,9 @@ function App() {
           <Route path={ROUTES.PROJECT_STATUS} element={<ProjectStatus />} />
 
 
-          {(role_name === TYPE_OF_USER.ADMIN || role_name === TYPE_OF_USER.DEALER_OWNER || role_name === TYPE_OF_USER.FINANCE_ADMIN ) && otherRoutes()}
+          {(role_name === TYPE_OF_USER.ADMIN || role_name === TYPE_OF_USER.DEALER_OWNER || role_name === TYPE_OF_USER.FINANCE_ADMIN 
+           || role_name === TYPE_OF_USER.DB_USER  || role_name === TYPE_OF_USER.APPOINTMENT_SETTER  || role_name === TYPE_OF_USER.PARTNER
+          ) && otherRoutes()}
 
           <Route
             path={ROUTES.TECHNICAL_SUPPORT}

@@ -1,7 +1,7 @@
 export const TYPE_OF_USER = {
   ADMIN: "Admin",
   FINANCE_ADMIN: "Finance Admin",
-  DB_USER: "DB User",
+  DB_USER: "SubDealer Owner",
   APPOINTMENT_SETTER: "Appointment Setter",
   PARTNER: "Partner",
   REGIONAL_MANGER: "Regional Manager",
@@ -12,8 +12,8 @@ export const TYPE_OF_USER = {
 
 export const ALL_USER_ROLE_LIST = [
   { value: "Admin", label: "Admin" },
-  { value: "Finance", label: "Finance Admin" },
-  { value: "SubDealer Owner", label: "DB User" },
+  { value: "Finance Admin", label: "Finance Admin" },
+  { value: "SubDealer Owner", label: "SubDealer Owner" },
   { value: "Appointment Setter", label: "Appointment Setter" },
   { value: "Partner", label: "Partner" },
   { value: "Regional Manager", label: "Regional Manager" },
