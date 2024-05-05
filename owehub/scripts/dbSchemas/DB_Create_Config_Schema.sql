@@ -655,8 +655,6 @@ CREATE TABLE rate_adjustments(
     min_rate float,
     max_rate float,
     is_archived BOOLEAN DEFAULT FALSE,
-    start_date character varying NOT NULL,
-    end_date character varying,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     PRIMARY KEY (id)

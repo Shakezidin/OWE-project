@@ -6,8 +6,6 @@ CREATE OR REPLACE FUNCTION update_rate_adjustments(
     p_adjustment VARCHAR,
     p_min_rate DOUBLE PRECISION,
     p_max_rate DOUBLE PRECISION,
-    p_start_date VARCHAR,
-    p_end_date VARCHAR,
     OUT v_rate_adjustments_id INT
 )
 RETURNS INT 
@@ -20,9 +18,7 @@ BEGIN
         position = p_position,
         adjustment = p_adjustment,
         min_rate = p_min_rate,
-        max_rate = p_max_rate,
-        start_date = p_start_date,
-        end_date = p_end_date
+        max_rate = p_max_rate
     WHERE id = p_id
     RETURNING id INTO v_rate_adjustments_id;
     
