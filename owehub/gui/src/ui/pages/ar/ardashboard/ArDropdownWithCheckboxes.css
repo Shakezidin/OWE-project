@@ -32,7 +32,7 @@
 .ar-dropdown-menu {
   position: absolute;
   top: 100%;
-  left: 0;
+  left: -47px; /* Adjust this value to shift the menu to the left */
   z-index: 1;
   background-color: white;
   border: 1px solid #D0D5DD;
@@ -40,10 +40,11 @@
   padding: 8px;
   margin-top: 4px;
   overflow-y: auto;
-  width: 130px;
+  width: 146px;
   height: 196px;
   box-sizing: border-box;
 }
+
 
 .ar-dropdown-item {
   display: flex;

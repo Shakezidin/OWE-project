@@ -45,9 +45,11 @@ export const projectDashData = [
     para: "Total Cancellation for Periods",
     iconBgColor: "#FFE6E6",
     icon: ICONS.redDoller,
-    arrow: ICONS.arrowRed,
+    // arrow: ICONS.arrowRed,
     percentColor: "#E92727",
-    curveImg: ICONS.curveRed,
+    // curveImg: ICONS.curveRed,
+    curveImg: ICONS.curveGreen,
+    arrow: ICONS.arrowGreen,
   },
   {
     ruppes: "$620,450.05",

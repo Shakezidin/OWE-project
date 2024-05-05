@@ -219,11 +219,9 @@ export const createSideMenuList = (): any[] => {
       
     }else if( role === TYPE_OF_USER.REGIONAL_MANGER || role === TYPE_OF_USER.SALES_REPRESENTATIVE || role === TYPE_OF_USER.SALE_MANAGER ){
       sideMenu.push(performance)
-      sideMenu.push(commissionMenu);
-      sideMenu.push(arMenu);
-      sideMenu.push(DB);
+      sideMenu.push(repayMenu);
+      sideMenu.push(project);
       sideMenu.push(support);
-   
     }
   }
 
