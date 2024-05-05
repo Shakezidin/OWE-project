@@ -24,10 +24,15 @@ interface IRateCreateParams {
     end_date: string;
 }
 
+
+export interface IRateRow extends IRateCreateParams {
+    record_id:number
+} 
+
 export const getAdjustments = createAsyncThunk("fetch/ar-adjustments", async (params: Ipaginate, { rejectWithValue }) => {
     try {
         const data = await postCaller("get_adjustments", params)
-        return data.data.adjustments_list
+        return data.data.adjustments_list || [] as IRateRow[]
     } catch (error) {
         return rejectWithValue((error as Error).message)
     }
@@ -37,6 +42,23 @@ export const getAdjustments = createAsyncThunk("fetch/ar-adjustments", async (pa
 export const createAdjustments = createAsyncThunk("create/ar-adjustments", async (params: IRateCreateParams, { rejectWithValue, dispatch }) => {
     try {
         const data = await postCaller("create_adjustments", params)
+        if(data.status>201 || data instanceof Error ){
+            console.log("workinggg",data.status);
+            return rejectWithValue((data as Error).message)
+        }
+        await dispatch(getAdjustments({ page_number: 1, page_size: 10,archived:false }))
+        return data.data
+    } catch (error) {
+        return rejectWithValue((error as Error).message)
+    }
+
+})
+
+
+
+export const updateAdjustments = createAsyncThunk("update/ar-adjustments", async (params: IRateRow, { rejectWithValue, dispatch }) => {
+    try {
+        const data = await postCaller("update_adjustments", params)
         if(data.status>201 || data instanceof Error ){
             console.log("workinggg",data.status);
             return rejectWithValue((data as Error).message)

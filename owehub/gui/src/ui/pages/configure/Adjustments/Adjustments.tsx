@@ -3,7 +3,7 @@ import TableHeader from "../../../components/tableHeader/TableHeader";
 import { ICONS } from "../../../icons/Icons";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 
-import { getAdjustments } from "../../../../redux/apiActions/arAdjustmentsAction";
+import { IRateRow, getAdjustments } from "../../../../redux/apiActions/arAdjustmentsAction";
 
 import CheckBox from "../../../components/chekbox/CheckBox";
 import {
@@ -20,7 +20,10 @@ import FilterModal from "../../../components/FilterModal/FilterModal";
 import { ROUTES } from "../../../../routes/routes";
 import { Adjustment } from "../../../../core/models/api_models/ArAdjustMentsModel";
 import { format } from "date-fns";
-
+import { showAlert, successSwal } from "../../../components/alert/ShowAlert";
+import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
+import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
+import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import Loading from "../../../components/loader/Loading";
 const Adjustments  = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -40,7 +43,7 @@ const Adjustments  = () => {
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
-  const [editedTimeLineSla, setEditedTimeLineSla] = useState<TimeLineSlaModel | null>(null);
+  const [editedTimeLineSla, setEditedTimeLineSla] = useState<IRateRow | null>(null);
   const itemsPerPage = 10;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
@@ -53,7 +56,7 @@ const Adjustments  = () => {
       archived:viewArchived
     };
     dispatch(getAdjustments(pageNumber));
-  }, [dispatch, currentPage]);
+  }, [dispatch, currentPage,viewArchived]);
 
   const filter = () => {
     setFilterOpen(true)
@@ -64,7 +67,7 @@ const Adjustments  = () => {
     dispatch(setCurrentPage(pageNumber));
   };
 
-  const commissionList = useAppSelector((state) => state.comm.commissionsList);
+  const commissionList = useAppSelector((state) => state.arAdjusments.data);
   const goToNextPage = () => {
     dispatch(setCurrentPage(currentPage + 1));
   };
@@ -109,7 +112,47 @@ const Adjustments  = () => {
     handleOpen()
   };
 
-  const handleEditTimeLineSla = (timeLineSlaData: TimeLineSlaModel) => {
+  const handleArchiveClick = async (record_id: number[]) => {
+    const confirmed = await showAlert(
+      "Are Your Sure",
+      "This action will archive all selected rows?",
+      "Yes",
+      "No"
+    );
+    if (confirmed) {
+      const archived: number[] = record_id;
+      let newValue = {
+        record_id: archived,
+        is_archived: true,
+      };
+      const pageNumber = {
+        page_number: currentPage,
+        page_size: itemsPerPage,
+        archived: viewArchived,
+      };
+      const res = await postCaller("update_adjustments_archive", newValue);
+      if (res.status === HTTP_STATUS.OK) {
+        dispatch(getAdjustments(pageNumber));
+        await successSwal(
+          "Archived",
+          "All Selected rows have been archived",
+          "success",
+          2000,
+          false
+        );
+      } else {
+        await successSwal(
+          "Archived",
+          "All Selected rows have been archived",
+          "error",
+          2000,
+          false
+        );
+      }
+    }
+  };
+
+  const handleEditTimeLineSla = (timeLineSlaData: IRateRow) => {
     setEditMode(true);
     setEditedTimeLineSla(timeLineSlaData);
     handleOpen()
@@ -132,7 +175,7 @@ const Adjustments  = () => {
         <TableHeader
           title="Adjustments"
           onPressViewArchive={() => setViewArchived(prev=>!prev)}
-          onPressArchive={() => { }}
+          onPressArchive={() =>handleArchiveClick(Array.from(selectedRows).map((_,i:number)=>currentPageData[i].record_id))}
           onPressFilter={() => filter()}
           onPressImport={() => { }}
           checked={isAllRowsSelected}
@@ -148,6 +191,7 @@ const Adjustments  = () => {
           page_size={itemsPerPage} />}
         {open && <CreatedAdjustments
          setViewArchived={setViewArchived}
+         editData={editedTimeLineSla}
           editMode={editMode}
           handleClose={handleClose} />}
         <div
@@ -194,10 +238,10 @@ const Adjustments  = () => {
                     <div className="flex-check">
                     <td style={{paddingInline:0}}>
                       <CheckBox
-                         checked={selectedRows.has(item.record_id)}
+                         checked={selectedRows.has(ind)}
                          onChange={() =>
                            toggleRowSelection(
-                            item.record_id,
+                            ind,
                              selectedRows,
                              setSelectedRows,
                              setSelectAllChecked
@@ -222,14 +266,14 @@ const Adjustments  = () => {
                   <td
 
                   >
-                    <div className="action-icon">
-                      <div className="">
+                    {!viewArchived &&<div className="action-icon">
+                      <div className="" style={{cursor:"pointer"}} onClick={()=>handleArchiveClick([item.record_id])} >
                         <img src={ICONS.ARCHIVE} alt="" />
                       </div>
-                      <div className=""  style={{ cursor: "pointer" }}>
+                      <div className=""  style={{ cursor: "pointer" }} onClick={()=>handleEditTimeLineSla(item)}>
                         <img src={ICONS.editIcon} alt="" />
                       </div>
-                    </div>
+                    </div>}
                   </td>
                 </tr>
                 })

@@ -9,9 +9,9 @@ export interface Adjustment {
     is_archived:    boolean;
     bl:             string;
     epc:            number;
-    date:           Date;
+    date:           string;
     notes:          string;
     amount:         number;
-    start_date:     Date;
-    end_date:       Date;
+    start_date:     string;
+    end_date:       string;
 }
