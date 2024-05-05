@@ -1,7 +1,7 @@
 export const TYPE_OF_USER = {
   ADMIN: "Admin",
   FINANCE_ADMIN: "Finance Admin",
-  DB_USER: "SubDealer Owner",
+  SUB_DEALER_OWNER: "SubDealer Owner",
   APPOINTMENT_SETTER: "Appointment Setter",
   PARTNER: "Partner",
   REGIONAL_MANGER: "Regional Manager",

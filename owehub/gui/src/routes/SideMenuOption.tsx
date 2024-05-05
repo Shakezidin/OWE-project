@@ -205,7 +205,7 @@ export const createSideMenuList = (): any[] => {
       role === TYPE_OF_USER.ADMIN ||
       role === TYPE_OF_USER.DEALER_OWNER ||
       role === TYPE_OF_USER.FINANCE_ADMIN ||
-      role === TYPE_OF_USER.DB_USER ||
+      role === TYPE_OF_USER.SUB_DEALER_OWNER ||
       role === TYPE_OF_USER.APPOINTMENT_SETTER ||
       role === TYPE_OF_USER.PARTNER
     ) {

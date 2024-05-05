@@ -200,7 +200,7 @@ function App() {
 
 
           {(role_name === TYPE_OF_USER.ADMIN || role_name === TYPE_OF_USER.DEALER_OWNER || role_name === TYPE_OF_USER.FINANCE_ADMIN 
-           || role_name === TYPE_OF_USER.DB_USER  || role_name === TYPE_OF_USER.APPOINTMENT_SETTER  || role_name === TYPE_OF_USER.PARTNER
+           || role_name === TYPE_OF_USER.SUB_DEALER_OWNER  || role_name === TYPE_OF_USER.APPOINTMENT_SETTER  || role_name === TYPE_OF_USER.PARTNER
           ) && otherRoutes()}
 
           <Route
