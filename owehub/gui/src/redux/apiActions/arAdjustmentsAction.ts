@@ -4,7 +4,8 @@ import { postCaller } from "../../infrastructure/web_api/services/apiUrl";
 
 interface Ipaginate {
     page_number: number,
-    page_size: number
+    page_size: number,
+    archived:boolean
 }
 
 interface IRateCreateParams {
@@ -40,7 +41,7 @@ export const createAdjustments = createAsyncThunk("create/ar-adjustments", async
             console.log("workinggg",data.status);
             return rejectWithValue((data as Error).message)
         }
-        await dispatch(getAdjustments({ page_number: 1, page_size: 10 }))
+        await dispatch(getAdjustments({ page_number: 1, page_size: 10,archived:false }))
         return data.data
     } catch (error) {
         return rejectWithValue((error as Error).message)

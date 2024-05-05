@@ -50,6 +50,7 @@ const Adjustments  = () => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
+      archived:viewArchived
     };
     dispatch(getAdjustments(pageNumber));
   }, [dispatch, currentPage]);
@@ -130,7 +131,7 @@ const Adjustments  = () => {
       <div className="commissionContainer">
         <TableHeader
           title="Adjustments"
-          onPressViewArchive={() => { }}
+          onPressViewArchive={() => setViewArchived(prev=>!prev)}
           onPressArchive={() => { }}
           onPressFilter={() => filter()}
           onPressImport={() => { }}
@@ -146,7 +147,7 @@ const Adjustments  = () => {
           fetchFunction={fetchFunction}
           page_size={itemsPerPage} />}
         {open && <CreatedAdjustments
-         
+         setViewArchived={setViewArchived}
           editMode={editMode}
           handleClose={handleClose} />}
         <div
@@ -193,10 +194,10 @@ const Adjustments  = () => {
                     <div className="flex-check">
                     <td style={{paddingInline:0}}>
                       <CheckBox
-                         checked={selectedRows.has(ind)}
+                         checked={selectedRows.has(item.record_id)}
                          onChange={() =>
                            toggleRowSelection(
-                             ind,
+                            item.record_id,
                              selectedRows,
                              setSelectedRows,
                              setSelectAllChecked

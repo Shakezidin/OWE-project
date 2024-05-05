@@ -1,11 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {toast} from "react-toastify"
-import { createleaderOverride, getleaderOverride, updateleaderOverride } from "../../../apiActions/leaderOverrideAction";
+import { createleaderOverride, getleaderOverride, updateleaderOverride,ILeaderRow } from "../../../apiActions/leaderOverrideAction";
 interface IState {
   isLoading: boolean,
   isFormSubmitting: boolean,
   error:string,
-  data: [],
+  data: ILeaderRow[],
   isSuccess:boolean
 };
 

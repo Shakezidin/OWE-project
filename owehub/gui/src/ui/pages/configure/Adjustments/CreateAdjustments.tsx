@@ -19,11 +19,12 @@ import { resetSuccess } from "../../../../redux/apiSlice/configSlice/config_get_
 interface payScheduleProps {
   handleClose: () => void,
   editMode: boolean,
+  setViewArchived:React.Dispatch<React.SetStateAction<boolean>>
 
 }
 
 
-const CreatedAdjustments: React.FC<payScheduleProps> = ({ handleClose, editMode }) => {
+const CreatedAdjustments: React.FC<payScheduleProps> = ({ handleClose, editMode,setViewArchived }) => {
   const dispatch = useAppDispatch();
 
 
@@ -69,6 +70,7 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({ handleClose, editMode 
   }
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    setViewArchived(false)
     dispatch(createAdjustments({
       unique_id: newFormData.uniqueId,
       customer: newFormData.customer,
