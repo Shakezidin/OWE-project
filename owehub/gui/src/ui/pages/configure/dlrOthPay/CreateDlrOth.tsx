@@ -23,6 +23,10 @@ interface ButtonProps {
   commission: CommissionModel | null;
 }
 
+interface IError {
+  [key: string]: string;
+}
+
 const CreateDlrOth: React.FC<ButtonProps> = ({
   handleClose,
   commission,
@@ -30,7 +34,7 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
 }) => {
   const dispatch = useDispatch();
   
-  const [createCommission, setCreateCommission] = useState<CommissionModel>({
+  const [createCommission, setCreateCommission] = useState({
     record_id: commission ? commission?.record_id : 0,
     partner: commission ? commission?.partner : "OWE",
     installer: commission ? commission?.installer : "OWE",
@@ -43,6 +47,7 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
     start_date: commission ? commission?.start_date : "2024-04-01",
     end_date: commission ? commission?.end_date : "2024-06-30",
   });
+  const [errors, setErrors] = useState<IError>({} as IError);
   const [newFormData, setNewFormData] = useState<any>([]);
   const tableData = {
     tableNames: ["partners", "states", "installers", "rep_type"],
@@ -55,6 +60,19 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
     getNewFormData();
   }, []);
 
+  const handleValidation = () => {
+    const error: IError = {} as IError;
+    for (const key in createCommission) {
+      if (key === "record_id") {
+        continue;
+      }
+      if (!createCommission[key as keyof typeof createCommission]) {
+        error[key as keyof IError] = `${key.toLocaleLowerCase()} is required`;
+      }
+    }
+    setErrors({ ...error });
+    return Object.keys(error).length === 0;
+  };
   useEffect(() => {
     if (commission) {
       setCreateCommission(commission);
@@ -80,38 +98,41 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      dispatch(updateForm(createCommission));
-      if (createCommission.record_id) {
-        const res = await postCaller(
-          EndPoints.update_commission,
-          createCommission
-        );
-        if (res.status === 200) {
-       
-          handleClose();
-          window.location.reload();
+    if (handleValidation()) {
+      
+      try {
+        dispatch(updateForm(createCommission));
+        if (createCommission.record_id) {
+          const res = await postCaller(
+            EndPoints.update_commission,
+            createCommission
+          );
+          if (res.status === 200) {
+         
+            handleClose();
+            window.location.reload();
+          } else {
+            alert(res.message);
+          }
         } else {
-          alert(res.message);
+          const { record_id, ...cleanedFormData } = createCommission;
+          const res = await postCaller(
+            EndPoints.create_commission,
+            cleanedFormData
+          );
+          if (res.status === 200) {
+            
+            handleClose();
+            // window.location.reload()
+          } else {
+            alert(res.message);
+          }
         }
-      } else {
-        const { record_id, ...cleanedFormData } = createCommission;
-        const res = await postCaller(
-          EndPoints.create_commission,
-          cleanedFormData
-        );
-        if (res.status === 200) {
-          
-          handleClose();
-          // window.location.reload()
-        } else {
-          alert(res.message);
-        }
+  
+        // dispatch(resetForm());
+      } catch (error) {
+        console.error("Error submitting form:", error);
       }
-
-      // dispatch(resetForm());
-    } catch (error) {
-      console.error("Error submitting form:", error);
     }
   };
   return (
@@ -139,6 +160,11 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                       )}
                      
                     />
+                      {errors?.partner && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.partner}
+                    </span>
+                  )}
                   </div>
                   <div className="create-input-field">
                     <label className="inputLabel-select">Installer</label>
@@ -153,6 +179,11 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                             option.value === createCommission.installer
                         )}
                       />
+                      {errors?.installer && (
+                      <span style={{ display: "block", color: "#FF204E" }}>
+                        {errors.installer}
+                      </span>
+                    )}
                     </div>
                   </div>
                   <div className="create-input-field">
@@ -164,6 +195,11 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                         (option) => option.value === createCommission.state
                       )}
                     />
+                     {errors?.state && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.state}
+                    </span>
+                  )}
                   </div>
                 </div>
 
@@ -177,6 +213,11 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                       placeholder={"Sales Type"}
                       onChange={(e) => handleInputChange(e)}
                     />
+                     {errors?.sale_type && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.sale_type.replace("sale_type", "sale type")}
+                    </span>
+                  )}
                   </div>
                   <div className="create-input-field">
                     <Input
@@ -187,6 +228,11 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                       placeholder={"sale price"}
                       onChange={(e) => handleInputChange(e)}
                     />
+                     {errors?.sale_price && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.sale_price.replace("sale_price", "sale pricee")}
+                    </span>
+                  )}
                   </div>
                   <div className="create-input-field">
                     <label className="inputLabel-select">Representative Type</label>
@@ -201,6 +247,14 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                         )
                       }
                     />
+                     {errors?.rep_type && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.sale_price.replace(
+                        "rep_type",
+                        "representative type"
+                      )}
+                    </span>
+                  )}
                   </div>
                 </div>
                 <div className="create-input-container">
@@ -214,6 +268,11 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                         placeholder={"Rate"}
                         onChange={(e) => handleInputChange(e)}
                       />
+                       {errors?.rate && (
+                      <span style={{ display: "block", color: "#FF204E" }}>
+                        {errors.rate}
+                      </span>
+                    )}
                     </div>
                     <div className="rate-input-field">
                       <Input
@@ -224,6 +283,11 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                         placeholder={"Rate List"}
                         onChange={(e) => handleInputChange(e)}
                       />
+                        {errors?.rl && (
+                      <span style={{ display: "block", color: "#FF204E" }}>
+                        {errors.rl.replace("rl","rate list")}
+                      </span>
+                    )}
                     </div>
                   </div>
                   <div className="start-input-container">
@@ -236,6 +300,11 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                         placeholder={"1/04/2004"}
                         onChange={(e) => handleInputChange(e)}
                       />
+                      {errors?.start_date && (
+                      <span style={{ display: "block", color: "#FF204E" }}>
+                        {errors.start_date.replace("start_date","start date")}
+                      </span>
+                    )}
                     </div>
                     <div className="rate-input-field">
                       <Input
@@ -246,6 +315,11 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                         placeholder={"10/04/2004"}
                         onChange={(e) => handleInputChange(e)}
                       />
+                       {errors?.end_date && (
+                      <span style={{ display: "block", color: "#FF204E" }}>
+                        {errors.start_date.replace("end_date","end date")}
+                      </span>
+                    )}
                     </div>
                   </div>
                 </div>
