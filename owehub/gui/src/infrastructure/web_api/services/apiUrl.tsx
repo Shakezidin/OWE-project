@@ -54,7 +54,7 @@ export const postCaller = async ( endpoint: string, postData: any): Promise<any>
       if (error.response) return error.response.data;
 
       // handle network error
-      if (error.code === "ERR_NETWORK") return new Error("No internet connection");
+      if (error.message === "Network Error") return new Error("No internet connection");
     }
 
     throw new Error('Failed to fetch data');

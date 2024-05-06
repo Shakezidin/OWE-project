@@ -22,3 +22,10 @@
   .character-count.exceeded {
     color: red;
   }
+  .um-createUserActionButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px 0 24px 0;
+    gap: 1rem;
+  }

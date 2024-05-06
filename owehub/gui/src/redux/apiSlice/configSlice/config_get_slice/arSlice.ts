@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { createRateAdjustments , fetchRateAdjustments, updateRateAdjustment} from "../../../apiActions/RateAdjustmentsAction";
+import { createAr, fetchAr,updateAr} from "../../../apiActions/arAction";
 import { RateAdjustment } from "../../../../core/models/api_models/RateAdjustmentModel";
 import { toast } from "react-toastify";
 
@@ -20,48 +20,44 @@ const initialState: IState = {
     isSuccess:0,
 }
 
-const rateAdjustments = createSlice({
-    name: "RateAdjustments",
+const ar = createSlice({
+    name: "AR",
     initialState,
-    reducers: {
-        resetSuccess:(state)=>{
-            state.isSuccess = 0
-          
-        }
-    },
+    reducers: { resetSuccess:(state)=>{
+        state.isSuccess = 0
+      }},
     extraReducers: builder => {
-        builder.addCase(fetchRateAdjustments.pending, (state) => {
+        builder.addCase(fetchAr.pending, (state) => {
             state.isLoading = true
         })
-            .addCase(fetchRateAdjustments.fulfilled, (state, action: PayloadAction<any | null>) => {
+            .addCase(fetchAr.fulfilled, (state, action: PayloadAction<any | null>) => {
                 state.isLoading = false
-                state.data = action.payload ? action.payload
-                :[]
+                state.data = action.payload ? action.payload :[]
             })
-            .addCase(fetchRateAdjustments.rejected, (state, action) => {
+            .addCase(fetchAr.rejected, (state, action) => {
                 state.isLoading = false
                 state.error = action.payload as string
             })
-            .addCase(createRateAdjustments.pending, (state, action) => {
+            .addCase(createAr.pending, (state, action) => {
                 state.isFormSubmitting = true
             })
-            .addCase(createRateAdjustments.fulfilled, (state) => {
+            .addCase(createAr.fulfilled, (state) => {
                 state.isFormSubmitting = false
                 state.isSuccess=1
             })
-            .addCase(createRateAdjustments.rejected, (state, action) => {
+            .addCase(createAr.rejected, (state, action) => {
                 state.isFormSubmitting = false
                 state.error = action.payload as string
             })
-            .addCase(updateRateAdjustment.pending,(state, action) => {
+            .addCase(updateAr.pending,(state, action) => {
                 state.isFormSubmitting = true;
               })
-              .addCase(updateRateAdjustment.fulfilled, (state, action) => {
+              .addCase(updateAr.fulfilled, (state, action) => {
                 state.isFormSubmitting = false;
                 state.isSuccess=1
-                toast.success("Details updated successfully")
+                
               })
-              .addCase(updateRateAdjustment.rejected, (state, action) => {
+              .addCase(updateAr.rejected, (state, action) => {
                 state.isFormSubmitting = false;
                 state.error = action.payload as string;
               })
@@ -69,5 +65,5 @@ const rateAdjustments = createSlice({
     }
 })
 
-export const {resetSuccess} =  rateAdjustments.actions
-export default rateAdjustments.reducer
+export const {resetSuccess} =  ar.actions
+export default ar.reducer

@@ -123,23 +123,21 @@ const EnterOtpScreen = () => {
               </div>
               <span className="loginLogText">Reset Password</span>
               <br />
-              <div className="loginOtpField">
-                <Input
-                  type={"text"}
-                  name="otp"
-                  value={otpCred.otp}
-                  placeholder={"Enter OTP"}
-                  onChange={handleInputChange}
-                />
+              <Input
+                type={"text"}
+                name="otp"
+                value={otpCred.otp}
+                placeholder={"Enter OTP"}
+                onChange={handleInputChange}
+              />
 
-                {/* if email not provided, dont show ResendOtpButton (incase of visit by url) */}
-                {email && (
-                  <ResendOtpButton
-                    isLoading={!!loading}
-                    onClick={() => dispatchGenerateOTP({ email_id: email })}
-                  />
-                )}
-              </div>
+              {/* if email not provided, dont show ResendOtpButton (incase of visit by url) */}
+              {email && (
+                <ResendOtpButton
+                  isLoading={!!loading}
+                  onClick={() => dispatchGenerateOTP({ email_id: email })}
+                />
+              )}
               <br />
               <PasswordInput
                 value={otpCred.new_password}
