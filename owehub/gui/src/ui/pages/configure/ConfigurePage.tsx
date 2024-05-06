@@ -20,7 +20,7 @@ const ConfigurePage: React.FC = () => {
       title: "Dealer Pay",
       data: [
         { title: "Dealer OverRides", route: ROUTES.CONFIG_DEALER_OVER },
-        { title: "Adders", route: ROUTES.CONFIG_ADDER },
+        // { title: "Adders", route: ROUTES.CONFIG_ADDER },
         { title: "Time Line SLA", route: ROUTES.CONFIG_TIMELINE },
         // { title: "Loan Fee Addr", route: ROUTES.CONFIG_LOAN_FEE },
         { title: "Rebate Data", route: ROUTES.CONFIG_REBET_DATA },

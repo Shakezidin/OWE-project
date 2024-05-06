@@ -302,8 +302,7 @@ background-color: #0470a0;
 }
 
 .create-input-field-profile {
-  width: 40%;
-  /* padding: 1rem; */
+  width: 388px;
 }
 .create-input-field-profile input:hover {
   border: 1px solid #0493ce;
