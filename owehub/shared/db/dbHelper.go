@@ -237,6 +237,33 @@ func ReteriveFromDB(query string,
 }
 
 /******************************************************************************
+ * FUNCTION:        ExecQueryDB
+ * DESCRIPTION:     This function will exec data from DB
+ * INPUT:			query, whereEleList
+ * RETURNS:    		outData, err
+ ******************************************************************************/
+func ExecQueryDB(query string) (err error) {
+
+	log.EnterFn(0, "ReteriveFromDB")
+	defer func() { log.ExitFn(0, "ReteriveFromDB", err) }()
+
+	log.FuncDebugTrace(0, "ReteriveData Query %v whereParams", query)
+
+	con, err := getDBConnection(OWEDB)
+	if err != nil {
+		log.FuncErrorTrace(0, "ReteriveFromDB Failed to get %v Connection with err = %v", OWEDB, err)
+		return err
+	}
+
+	_, err = con.CtxH.Exec(query)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to ReteriveData from query %v error = %v", query, err)
+		return err
+	}
+	return err
+}
+
+/******************************************************************************
  * FUNCTION:        UpdateDataInDB
  * DESCRIPTION:     This function will update data in DB
  * INPUT:			query, whereEleList

@@ -100,6 +100,13 @@ var apiRoutes = ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/db_tables",
+		apiHandler.HandleGetTableRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_team",
 		apiHandler.HandleCreateTeamRequest,
 		true,

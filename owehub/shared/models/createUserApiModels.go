@@ -6,6 +6,11 @@
 
 package models
 
+type TablePermission struct {
+	TableName     string `json:"table_name"`
+	PrivilegeType string `json:"privilege_type"`
+}
+
 type CreateUserReq struct {
 	//UserCode          string `json:"user_code"`
 	Name              string `json:"name"`
@@ -24,4 +29,6 @@ type CreateUserReq struct {
 	City              string `json:"city"`
 	Zipcode           string `json:"zipcode"`
 	Country           string `json:"country"`
+
+	TablesPermissions []TablePermission `json:"tables_permissions"`
 }
