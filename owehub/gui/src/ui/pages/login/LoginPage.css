@@ -257,39 +257,24 @@ input:checked + .slider:before {
   border-color: var(--input-border-color);
 }
 
-.loginOtpField {
-  display: grid;
-}
-
-.loginOtpField>* {
-  grid-row-start: 1;
-  grid-column-start: 1;
-}
 
 .loginResendOtp {
-  justify-self: flex-end;
-  align-self: flex-start;
-  margin-top: 9px;
-  margin-right: 4px;
-  right: 4px;
-  top: 0;
-  width: 120px;
-  padding: 6px 0;
   font-size: 12px;
-  border: 1px solid;
+  margin-top: 4px;
+  margin-bottom: -8px;
+  text-align: right;
 }
 
 button.loginResendOtp {
-  border-radius: 0.3rem;
+  border: none;
   cursor: pointer;
   background-color: transparent;
-  border-color: var(--active-text-color);
   color: var(--active-text-color);
+  text-underline-offset: 2px;
 }
 
 button.loginResendOtp:hover {
-  background-color: var(--active-text-color);
-  color: var(--white-color);
+  text-decoration: underline;
 }
 
 button.loginResendOtp:disabled {
@@ -298,7 +283,5 @@ button.loginResendOtp:disabled {
 }
 
 p.loginResendOtp {
-  text-align: center;
-  border-color: transparent;
   color: var(--secondary-text-color);
 }

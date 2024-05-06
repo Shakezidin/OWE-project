@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 const LOCALSTORAGE_COUNTDOWN_KEY = "otp_sent_at";
 
-const COUNTDOWN_DURATION_SEC = 5;
+const COUNTDOWN_DURATION_SEC = 30;
 
 // TODO: Make resend button work even after refresh
 localStorage.removeItem(LOCALSTORAGE_COUNTDOWN_KEY);
