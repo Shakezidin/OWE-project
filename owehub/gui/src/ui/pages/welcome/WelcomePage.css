@@ -32,7 +32,7 @@
   justify-content: space-between;
   align-items: center;
 }
-.welcomeHeaderView img{
+.welcomeHeaderView object{
   height: 93px;
   width: 334px;
 }
