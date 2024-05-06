@@ -12,6 +12,7 @@ type GetPerfomanceReq struct {
 }
 
 type PerfomanceSales struct {
+	Type    string  `json:type`
 	Sales   int64   `json:"sales"`
 	SalesKw float64 `json:"sales_kw"`
 }
