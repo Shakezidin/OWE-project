@@ -432,6 +432,7 @@
   font-size: 9px;
   line-height: 12px;
   width: 45px;
+  font-weight: 400;
 }
 .notch-strip-des{
   display: flex;
@@ -443,6 +444,7 @@
   align-items: center;
   gap: 5px;
   font-size: 10px;
+  font-weight: 500;
 }
 .child-notch{
   position: absolute;
@@ -483,6 +485,7 @@
 .strip-title p {
   font-size: 9px;
   line-height: 12px;
+  font-weight: 400;
 }
 .strip-des p{
   display: flex;
@@ -491,6 +494,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  font-weight: 500;
 }
 .date-para {
   font-size: 12px !important;
