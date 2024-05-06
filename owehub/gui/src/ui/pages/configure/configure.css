@@ -90,7 +90,7 @@
 }
 .TableContainer::-webkit-scrollbar {
   width: 10px; 
-  height: auto; 
+  height: 10px; 
 }
 .TableContainer::-webkit-scrollbar {
   display: initial
