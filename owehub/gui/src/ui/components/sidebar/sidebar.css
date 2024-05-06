@@ -41,7 +41,7 @@
   scroll-behavior: smooth;
 }
 .children-container::-webkit-scrollbar {
-  width: auto; 
+  width: 10px; 
   height: auto; 
 }
 .children-container::-webkit-scrollbar {

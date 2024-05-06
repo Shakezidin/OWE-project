@@ -84,10 +84,31 @@
   position: relative;
   height: 60vh;
   background: var(--white-color);
-  /* border-radius: 16px; */
-  /* overflow-y: hidden; */
-  scrollbar-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+}
+.TableContainer::-webkit-scrollbar {
+  width: 10px; 
+  height: auto; 
+}
+.TableContainer::-webkit-scrollbar {
+  display: initial
+}   
+
+.TableContainer::-webkit-scrollbar-thumb {
+  background-color: rgb(173, 173, 173);
+  border-radius: 30px; 
+}
+.TableContainer::-webkit-scrollbar-button {
+  display: initial; 
+}
+.TableContainer::-webkit-scrollbar {
+  -ms-overflow-style: initial; 
   scrollbar-width: thin;
+}
+.TableContainer::-webkit-scrollbar-corner {
+  background-color: transparent;
 }
 
 .UserManageTable {
