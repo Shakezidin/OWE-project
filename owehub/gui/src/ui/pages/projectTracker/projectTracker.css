@@ -396,7 +396,7 @@
   margin: 0 5px;
 }
 .milestone-strips {
-  height: 46px;
+  height: 50px;
   width: 180px;
   border-top-left-radius: 2px;
   border-bottom-left-radius: 2px;
@@ -411,7 +411,7 @@
   align-items: center;
 }
 .notch-strip{
-  height: 46px;
+  height: 50px;
   width: 180px;
   border-top-left-radius: 2px;
   border-bottom-left-radius: 2px;
@@ -429,7 +429,7 @@
 }
 
 .notch-strip-title p{
-  font-size: 9px;
+  font-size: 10px;
   line-height: 12px;
   width: 45px;
   font-weight: 400;
@@ -445,16 +445,6 @@
   gap: 5px;
   font-size: 10px;
   font-weight: 500;
-}
-.child-notch{
-  position: absolute;
-  width: 50px;
-  height: 60px;
-  background-color: var(--white-color);
-  border-top-right-radius: 2rem;
-  border-bottom-right-radius: 2rem;
-  left: -40px;
-  z-index: 10;
 }
 .all-progress{
   background: #F2F4F6;
@@ -483,7 +473,7 @@
   height: 30px;
 }
 .strip-title p {
-  font-size: 9px;
+  font-size: 10px;
   line-height: 12px;
   font-weight: 400;
 }
@@ -496,6 +486,20 @@
   align-items: center;
   font-weight: 500;
 }
+
+
+
+.child-notch{
+  position: absolute;
+  width: 50px;
+  height: 60px;
+  background-color: var(--white-color);
+  border-top-right-radius: 2rem;
+  border-bottom-right-radius: 2rem;
+  left: -40px;
+  z-index: 10;
+}
+
 .date-para {
   font-size: 12px !important;
   color: white;
