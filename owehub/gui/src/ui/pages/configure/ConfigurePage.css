@@ -106,7 +106,7 @@
 } 
 
 .configure-main::-webkit-scrollbar {
-  width: auto; 
+  width: 10px;
   height: auto; 
 }
 .configure-main::-webkit-scrollbar {

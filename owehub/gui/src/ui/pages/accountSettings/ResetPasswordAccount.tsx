@@ -13,7 +13,7 @@ const ResetPasswordAccount = () => {
 
 
         <div className="Personal-container">
-          <div className="create-input-container" style={{gap: "24px"}}>
+          <div className="create-input-container" style={{gap: "1.8%"}}>
             <div className="create-input-field-profile-password">
               <Input
                 type={"text"}

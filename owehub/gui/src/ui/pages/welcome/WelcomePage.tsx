@@ -79,7 +79,7 @@ export const WelcomePage = () => {
           <div className="welcomeInnerBannerView">
             <div className="welcomeHeaderView">
               <div>
-                <img src={logo} alt={"Logo"} />
+                <object type="image/svg+xml" data={logo} aria-label="logo"></object>
               </div>
 
               <div className="welcome-phone-view">
@@ -104,11 +104,7 @@ export const WelcomePage = () => {
                 </h1>
               </div>
               <div className="welcome-right-view">
-                <img
-                  className="welcome-laptop-image"
-                  src={LaptopImage}
-                  alt="laptop"
-                />
+                <object className="welcome-right-view" type="image/svg+xml" data={LaptopImage} aria-label="laptop"></object>
               </div>
             </div>
           </div>
@@ -156,12 +152,8 @@ export const WelcomePage = () => {
         <section className="welcomeAboutUsContainer">
           <div className="welcomeAboutUsView">
             <div className="welcomeAboutUsLeftView">
-              <img className="welcomeAboutUsBig" src={AboutUsBig} alt="Icon" />
-              <img
-                className="welcomeAboutUsSmall"
-                src={AboutUsSmall}
-                alt="Icon"
-              />
+                <object className="welcomeAboutUsBig" type="image/svg+xml" data={AboutUsBig} aria-label="welcomeAboutUsBig"></object>
+                <object className="welcomeAboutUsSmall" type="image/svg+xml" data={AboutUsSmall} aria-label="welcomeAboutUsSmall"></object> 
             </div>
 
             <div className="welcomeAboutUsRightView">
@@ -264,7 +256,7 @@ export const WelcomePage = () => {
       <footer className="welcomeFooterView">
         <div className="welcomeInnerView">
           <div id="welcomeFooterUpperView">
-            <img id="welcomeWhiteLogo" src={WhiteLogo} alt="logo" />
+            <object id="welcomeWhiteLogo" type="image/svg+xml" data={WhiteLogo} aria-label="WhiteLogo"></object>
             <div id="welcomeSocialMedia">
               <a
                 href="https://www.facebook.com/ourworldenergy/"
@@ -313,7 +305,7 @@ export const WelcomePage = () => {
           <div id="welcomeUnderLine"></div>
           <div id="welcomeFooterLowerView">
             <div className="footer-logo">
-              <img src={BusinessLogo} alt="logo" />
+            <object type="image/svg+xml" data={BusinessLogo} aria-label="BusinessLogo"></object>
             </div>
             <div className="footer-text">
               © 2024 BY OUR WORLD ENERGY. ALL RIGHTS RESERVED.{" "}

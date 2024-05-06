@@ -333,7 +333,7 @@ color: white;
   scroll-behavior: smooth;
 }
 .breakdown-table::-webkit-scrollbar {
-  width: auto; 
+  width: 10px; 
   height: auto; 
 }
 .breakdown-table::-webkit-scrollbar {

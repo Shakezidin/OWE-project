@@ -32,6 +32,24 @@
 
 }
 
+
+.hover-childrenn:hover{
+  font-weight: 500;
+  color: #23B364;
+  transition: 0.5s all;
+
+
+}
+ 
+ 
+.hover-children{
+  color: #23B364;
+}
+
+.hover-childrenn {
+  color: black;
+}
+
 .children-container{
   background-color: var(--children-bg-color);
   padding: 0.5rem 2rem;
@@ -41,7 +59,7 @@
   scroll-behavior: smooth;
 }
 .children-container::-webkit-scrollbar {
-  width: auto; 
+  width: 10px; 
   height: auto; 
 }
 .children-container::-webkit-scrollbar {
