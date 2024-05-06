@@ -214,7 +214,7 @@ func PrepareDealerTierFilters(tableName string, dataFilter models.DataRequestBod
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY dt.id, dt.dealer_id, dt.tier_id, dt.start_date, dt.end_date")
+		filtersBuilder.WriteString(" GROUP BY dt.id, ud.name, tr.tier_name, dt.start_date, dt.end_date")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
