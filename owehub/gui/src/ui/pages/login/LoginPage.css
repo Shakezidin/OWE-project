@@ -271,6 +271,7 @@ button.loginResendOtp {
   background-color: transparent;
   color: var(--active-text-color);
   text-underline-offset: 2px;
+  position: relative;
 }
 
 button.loginResendOtp:hover {
