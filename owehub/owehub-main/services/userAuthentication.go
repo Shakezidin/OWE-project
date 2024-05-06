@@ -10,6 +10,7 @@ import (
 	db "OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"errors"
 
 	"fmt"
 
@@ -38,7 +39,7 @@ func ValidateUser(cread models.Credentials) (emailId string, userName string, ro
 	data, err := GetUserInfo(cread.EmailId)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to reterieve user login details err: %v", err)
-		return emailId, userName, roleName, passwordChangeRequired, err
+		return emailId, userName, roleName, passwordChangeRequired, errors.New("user not found")
 	}
 
 	if (data == nil) || (len(data) <= 0) {
