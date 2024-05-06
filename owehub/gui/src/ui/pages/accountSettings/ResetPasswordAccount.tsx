@@ -11,8 +11,9 @@ const ResetPasswordAccount = () => {
           <p>Settings</p>
         </div>
 
+
         <div className="Personal-container">
-          <div className="create-input-container">
+          <div className="create-input-container" style={{gap: "24px"}}>
             <div className="create-input-field-profile-password">
               <Input
                 type={"text"}
