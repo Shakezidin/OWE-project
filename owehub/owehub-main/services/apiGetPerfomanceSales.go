@@ -65,7 +65,7 @@ func HandleGetPerfomanceSalesRequest(resp http.ResponseWriter, req *http.Request
 	allDatas := make(map[string][]map[string]interface{}, 0)
 	dates = append(dates, "contract_date", "ntp_date", "cancelled_date", "pv_install_completed_date")
 	for _, date := range dates {
-		filter, whereEleList = PreparePerfomanceFilters(queryWithFiler, date, dataReq)
+		filter, whereEleList = PreparePerfomanceFilters(query, date, dataReq)
 		if filter != "" {
 			queryWithFiler = query + filter
 		}
