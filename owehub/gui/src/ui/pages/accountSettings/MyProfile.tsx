@@ -155,7 +155,7 @@ const MyProfile = () => {
             </div>
             <div
               className="create-input-container"
-              style={{ padding: "0.5rem", marginLeft: "1rem" }}
+              style={{ padding: "0.5rem", marginLeft: "1rem", gap: "24px" }}
             >
               <div className="create-input-field-address">
                 <Input
@@ -192,7 +192,7 @@ const MyProfile = () => {
             </div>
             <div
               className="create-input-container"
-              style={{ padding: "0.5rem", marginLeft: "1rem" }}
+              style={{ padding: "0.5rem", marginLeft: "1rem", gap: "24px"  }}
             >
               <div className="create-input-field-address">
                 <Input
