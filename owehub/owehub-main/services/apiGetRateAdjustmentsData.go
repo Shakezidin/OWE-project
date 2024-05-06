@@ -63,7 +63,7 @@ func HandleGetRateAdjustmentsRequest(resp http.ResponseWriter, req *http.Request
 
 	tableName := db.TableName_rate_adjustments
 	query = `
-	SELECT ra.id as record_id, ra.unique_id, ra.pay_scale, ra.position, ra.adjustment, ra.min_rate, ra.max_rate, ra.start_date, ra.end_date
+	SELECT ra.id as record_id, ra.unique_id, ra.pay_scale, ra.position, ra.adjustment, ra.min_rate, ra.max_rate
 	FROM rate_adjustments ra`
 
 	filter, whereEleList = PrepareRateAdjustmentsFilters(tableName, dataReq, false)
@@ -123,18 +123,6 @@ func HandleGetRateAdjustmentsRequest(resp http.ResponseWriter, req *http.Request
 			MaxRate = 0.0
 		}
 
-		StartDate, ok := item["start_date"].(string)
-		if !ok || StartDate == "" {
-			log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
-			StartDate = ""
-		}
-
-		EndDate, ok := item["end_date"].(string)
-		if !ok || EndDate == "" {
-			log.FuncErrorTrace(0, "Failed to get end date for Record ID %v. Item: %+v\n", RecordId, item)
-			EndDate = ""
-		}
-
 		rateAdjustmentData := models.GetRateAdjustments{
 			RecordId:   RecordId,
 			UniqueId:   UniqueId,
@@ -143,8 +131,6 @@ func HandleGetRateAdjustmentsRequest(resp http.ResponseWriter, req *http.Request
 			Adjustment: Adjustment,
 			MinRate:    MinRate,
 			MaxRate:    MaxRate,
-			StartDate:  StartDate,
-			EndDate:    EndDate,
 		}
 		rateAdjustmentsList.RateAdjustmentsList = append(rateAdjustmentsList.RateAdjustmentsList, rateAdjustmentData)
 	}
@@ -242,7 +228,7 @@ func PrepareRateAdjustmentsFilters(tableName string, dataFilter models.DataReque
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY ra.id, ra.unique_id, ra.pay_scale, ra.position, ra.adjustment, ra.min_rate, ra.max_rate, ra.start_date, ra.end_date")
+		filtersBuilder.WriteString(" GROUP BY ra.id, ra.unique_id, ra.pay_scale, ra.position, ra.adjustment, ra.min_rate, ra.max_rate")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {

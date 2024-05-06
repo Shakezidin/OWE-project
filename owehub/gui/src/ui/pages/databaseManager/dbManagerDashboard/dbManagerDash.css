@@ -3,17 +3,21 @@
   display: flex;
   align-items: center;
   gap: 15px;
+  width: 100%;
+
 }
 
 .runner-section {
   width: 233px;
-  height: 374px;
+  height: 381px;
   gap: 0px;
   border-radius: 16px;
   opacity: 0px;
   background-color: #008dda;
   text-align: center;
   padding-top: 5rem;
+
+  flex-shrink: 0; 
 }
 
 .runner-section h3 {
@@ -77,7 +81,7 @@
 
 .DashBarchart-section {
   background-color: white;
-  width: 80%;
+  flex-grow: 1;
   border-radius: 16px;
   border: 1px solid #ffffff;
 }

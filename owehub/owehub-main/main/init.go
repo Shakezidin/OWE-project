@@ -88,8 +88,8 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/change_password",
 		apiHandler.HandleChangePassRequest,
-		false,
-		[]types.UserGroup{types.GroupAdmin},
+		true,
+		[]types.UserGroup{types.GroupEveryOne},
 	},
 	{
 		strings.ToUpper("POST"),
@@ -1054,6 +1054,13 @@ var apiRoutes = ApiRoutes{
 		apiHandler.HandleGetAdderDataRequest,
 		true,
 		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_perfomancesales",
+		apiHandler.HandleGetPerfomanceSalesRequest,
+		false,
+		[]types.UserGroup{types.GroupEveryOne},
 	},
 }
 

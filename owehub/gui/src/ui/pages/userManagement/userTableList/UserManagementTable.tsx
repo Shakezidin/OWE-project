@@ -109,7 +109,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
         case TYPE_OF_USER.FINANCE_ADMIN:
           return (
             <UserTable
-              data={[]}
+              data={userRoleBasedList}
               onClickEdit={(item: UserRoleBasedListModel) => {
                 onClickEdit(item);
               }}
@@ -122,7 +122,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             setSelectAllChecked={setSelectAllChecked}
             />
           );
-      case TYPE_OF_USER.DB_USER:
+      case TYPE_OF_USER.SUB_DEALER_OWNER:
         return (
           <UserTable
             data={userRoleBasedList}

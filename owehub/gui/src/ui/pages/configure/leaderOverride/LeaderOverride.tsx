@@ -51,9 +51,10 @@ const LeaderOverride = () => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
+      archived:viewArchived
     };
     dispatch(getleaderOverride(pageNumber));
-  }, [dispatch, currentPage]);
+  }, [dispatch, currentPage,viewArchived]);
 
   const filter = () => {
     setFilterOpen(true)
@@ -117,7 +118,7 @@ const LeaderOverride = () => {
       "No"
     );
     if (confirmed) {
-      const archived: number[] = [record_id];
+      const archived: number[] = record_id;
       let newValue = {
         record_id: archived,
         is_archived: true,
@@ -125,6 +126,7 @@ const LeaderOverride = () => {
       const pageNumber = {
         page_number: currentPage,
         page_size: itemsPerPage,
+        archived:viewArchived
       };
       const res = await postCaller("update_leaderoverride_archive", newValue);
       if (res.status === HTTP_STATUS.OK) {
@@ -175,8 +177,8 @@ const LeaderOverride = () => {
       <div className="commissionContainer">
         <TableHeader
           title="Leader Override"
-          onPressViewArchive={() => { }}
-          onPressArchive={() => { }}
+          onPressViewArchive={() => setViewArchived(prev=>!prev)}
+          onPressArchive={() => handleArchiveClick(Array.from(selectedRows).map((_,i:number)=>currentPageData[i].record_id))}
           onPressFilter={() => filter()}
           onPressImport={() => { }}
           checked={isAllRowsSelected}
@@ -195,6 +197,7 @@ const LeaderOverride = () => {
             editMode={editMode}
             handleClose={handleClose}
             editData={editedTimeLineSla}
+            setViewArchived={setViewArchived}
           />
         )}
         <div
@@ -269,14 +272,14 @@ const LeaderOverride = () => {
                     <td
 
                     >
-                      <div className="action-icon">
-                        <div className="" style={{cursor:"pointer"}} onClick={()=>handleArchiveClick(el.record_id)}>
+                    {!viewArchived &&  <div className="action-icon">
+                        <div className="" style={{cursor:"pointer"}} onClick={()=>handleArchiveClick([el.record_id])}>
                           <img src={ICONS.ARCHIVE} alt="" />
                         </div>
                         <div className="" onClick={() => handleEditTimeLineSla(el)} style={{ cursor: "pointer" }}>
                           <img src={ICONS.editIcon} alt="" />
                         </div>
-                      </div>
+                      </div>}
                     </td>
                   </tr>
                 ))

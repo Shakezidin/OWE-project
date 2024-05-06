@@ -32,7 +32,7 @@ function PieChartWithPaddingAngle({ data }: PieChartProps) { // Destructure data
   return (
     <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
       <div style={{ position: "relative", width: "300px", height: "400px", marginTop: "-75px", marginLeft: "40px" }}>
-        <PieChart width={300} height={400}>
+        <PieChart width={300} height={400} style={{outline: 'none'}}>
           {/* <Tooltip formatter={(value: number, name: string, props: any) => [`${value} webhooks`, props]} /> */}
           <Tooltip
             content={({ payload }) => {

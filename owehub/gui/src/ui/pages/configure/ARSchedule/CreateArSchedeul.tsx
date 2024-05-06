@@ -25,13 +25,15 @@ import { format } from "date-fns";
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
-  editData:IARSchedule|null
+  editData:IARSchedule|null,
+  setViewArchived:React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const CreatedArSchedule: React.FC<payScheduleProps> = ({
   handleClose,
   editMode,
-  editData
+  editData,
+  setViewArchived
 }) => {
   const dispatch = useAppDispatch();
   const { isSuccess } = useAppSelector(state => state.ArSchedule)
@@ -78,6 +80,7 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setViewArchived(false)
     const data = {
       unique_id: formData.uniqueId,
       partner_name: formData.partner,
@@ -106,6 +109,9 @@ dispatch(updateArchSchedule({...data,record_id:editData?.record_id!}))
       handleClose()
       dispatch(resetSuccess())
     }
+
+
+    
 
   }, [isSuccess])
 

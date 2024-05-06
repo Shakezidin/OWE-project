@@ -3,7 +3,8 @@ import { postCaller } from "../../infrastructure/web_api/services/apiUrl";
 
 interface Ipaginate {
     page_number: number,
-    page_size: number
+    page_size: number,
+    archived:boolean
 }
 
 export interface IARSchedule {
@@ -58,10 +59,10 @@ export const getArscheduleList = createAsyncThunk("get/arschedule",async(param:I
 export const createArSchedule = createAsyncThunk("create/arschedule",async(param:SolarInstallation,{rejectWithValue,dispatch})=>{
     try {
         const data = await postCaller("create_arschedule",param)
-        if (data.status === 500 || data instanceof Error) {
+        if (data.status> 201 || data instanceof Error) {
             return rejectWithValue((data as Error).message);
           }
-        await dispatch(getArscheduleList({page_number:1,page_size:10}))
+        await dispatch(getArscheduleList({page_number:1,page_size:10,archived:false}))
         return data.data
     } catch (error) {
         return rejectWithValue((error as Error).message)
@@ -73,10 +74,10 @@ export const createArSchedule = createAsyncThunk("create/arschedule",async(param
 export const updateArchSchedule = createAsyncThunk("update/arschedule",async(param:IUpdateParams,{rejectWithValue,dispatch})=>{
     try {
         const data = await postCaller("update_arschedule",param)
-        if (data.status === 500 || data instanceof Error) {
+        if (data.status >201 || data instanceof Error) {
             return rejectWithValue((data as Error).message);
           }
-        await dispatch(getArscheduleList({page_number:1,page_size:10}))
+        await dispatch(getArscheduleList({page_number:1,page_size:10,archived:false}))
         return data.data
     } catch (error) {
         return rejectWithValue((error as Error).message)

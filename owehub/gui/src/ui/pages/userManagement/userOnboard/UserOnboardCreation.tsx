@@ -37,6 +37,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
   const dispatch = useDispatch();
   const [firstNameError, setFirstNameError] = useState("");
   const [lastNameError, setLastNameError] = useState("");
+  const [phoneNumberError, setPhoneNumberError] = useState("");
   const { loading, formData } = useAppSelector((state) => state.createOnboardUser);
   const [selectTable, setSelectTable] = useState<boolean>(false);
 
@@ -95,11 +96,18 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
         setLastNameError("");
         dispatch(updateUserForm({ field: name, value }));
       }
+    } else if (name === "mobile_number") {
+      const numericValue = value.replace(/[^0-9]/g, "").slice(0, 10);
+      if (numericValue.length < 10) {
+        setPhoneNumberError("Phone Number should be 10 digits");
+      } else {
+        setPhoneNumberError("");
+      }
+      dispatch(updateUserForm({ field: name, value: numericValue }));
     } else {
       dispatch(updateUserForm({ field: name, value }));
     }
   };
-
 
   /** render ui */
   return (
@@ -168,6 +176,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                     onChange={(e) => handleInputChange(e)}
                     name={"mobile_number"}
                   />
+                  {phoneNumberError && <p className="error-message">{phoneNumberError}</p>}
                 </div>
                 {formData.role_name === "Admin" ||
                   formData.role_name === "SubDealer Owner" ||
@@ -260,23 +269,6 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                   </div>
                 </div>
               </div>
-
-              {/* <div className="create-input-field-note">
-                <label htmlFor="" className="inputLabel">
-                  Description
-                </label>{" "}
-                <br />
-                <textarea
-                  name="description"
-                  id=""
-                  rows={3}
-                  // onChange={(e) => handlemarketingInputChange(e)}
-                  value={formData.description}
-                  onChange={(e) => handleInputChange(e)}
-                  placeholder="Type"
-                ></textarea>
-              </div> */}
-
               <div className="create-input-field-note">
                 <label htmlFor="" className="inputLabel">
                   Description
@@ -302,7 +294,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
             </div>
           </div>
         </div>
-        <div className="createUserActionButton">
+        <div className="um-createUserActionButton">
           <ActionButton
             title={"Cancel"}
             onClick={handleClose}

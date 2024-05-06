@@ -13,27 +13,43 @@ import Select from 'react-select';
 import {paySaleTypeData } from "../../../../resources/static_data/StaticData";
 import { rateAdjustmentModel } from "../../../../core/models/configuration/create/RateAdjustmentModel";
 import SelectOption from "../../../components/selectOption/SelectOption";
-import { createRateAdjustments } from "../../../../redux/apiActions/RateAdjustmentsAction";
-import { useAppDispatch } from "../../../../redux/hooks";
+import { createRateAdjustments, updateRateAdjustment } from "../../../../redux/apiActions/RateAdjustmentsAction";
+import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
+import { resetSuccess } from "../../../../redux/apiSlice/configSlice/config_get_slice/rateAdjustmentsSlice"
 interface payScheduleProps {
     handleClose: () => void,
     editMode:boolean,
-    
+    setViewArchived:React.Dispatch<React.SetStateAction<boolean>>
+    editData:any
 }
 
 
-const CreateRateAdjustments:React.FC<payScheduleProps> = ({handleClose,editMode}) => {
+const CreateRateAdjustments:React.FC<payScheduleProps> = ({handleClose,editMode,setViewArchived, editData}) => {
     const dispatch = useAppDispatch();
-
+    const { isSuccess } = useAppSelector(state => state.rateAdjustment)
+    function generateRandomId(length: number): string {
+      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      const charactersLength = characters.length;
+      let result = '';
+    
+      for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * charactersLength);
+        result += characters.charAt(randomIndex);
+      }
+    
+      return result;
+    }
 
     const [createRateAdjustmentData, setCreateRateAdjustmentPayData] = useState<rateAdjustmentModel>(
       {
-          unique_id:"1234567sfsfds89kjj",
-          pay_scale:"",
-          position:"",
-          adjustment:"",
-          min_rate:"",
-          max_rate:"",
+          unique_id:editData?.unique_id || generateRandomId(6),
+          pay_scale: editData?.pay_scale || "",
+          position: editData?.position ||"",
+          adjustment: editData?.adjustment ||"",
+          min_rate: editData?.min_rate || "",
+          max_rate: editData?.max_rate || "",
+          start_date:"04-05-2024",
+          end_date:"05-05-2024"
            
         }
   )
@@ -62,22 +78,47 @@ const CreateRateAdjustments:React.FC<payScheduleProps> = ({handleClose,editMode}
  
 const handleSubmit = (e: React.FormEvent) => {
   e.preventDefault()
+  setViewArchived(false)
+  if(editMode){
+    dispatch(updateRateAdjustment({
+    
+    
+      unique_id: createRateAdjustmentData.unique_id,
+      pay_scale: createRateAdjustmentData.pay_scale,
+      position: createRateAdjustmentData.position,
+      adjustment: createRateAdjustmentData.adjustment,
+      min_rate: parseInt(createRateAdjustmentData.min_rate),
+      max_rate: parseInt(createRateAdjustmentData.max_rate),
+      start_date: createRateAdjustmentData.start_date,
+      end_date: createRateAdjustmentData.end_date,
+      record_id:editData?.record_id!
+  }))
+  
+  }else {
   dispatch(createRateAdjustments({
     
     
-      unique_id: "123456789",
-      pay_scale: "Hourly",
-      position: "Software Engineer",
-      adjustment: "10%",
-      min_rate: 20.1,
-      max_rate: 20.2,
-      start_date: "2024-05-01",
-      end_date: "2024-06-01"
-    
-    
-    
+      unique_id: createRateAdjustmentData.unique_id,
+      pay_scale: createRateAdjustmentData.pay_scale,
+      position: createRateAdjustmentData.position,
+      adjustment: createRateAdjustmentData.adjustment,
+      min_rate: parseInt(createRateAdjustmentData.min_rate),
+      max_rate: parseInt(createRateAdjustmentData.max_rate),
+      start_date: createRateAdjustmentData.start_date,
+      end_date: createRateAdjustmentData.end_date   
   }))
 }
+}
+useEffect(() => {
+  if (isSuccess) {
+    handleClose()
+  }
+
+  return (() => {
+    isSuccess && dispatch(resetSuccess())
+  })
+}, [isSuccess])
+
  
     return (
         <div className="transparent-model">
@@ -108,7 +149,7 @@ const handleSubmit = (e: React.FormEvent) => {
                     <Input
                       type={"text"}
                       label="Position"
-                      value={""}
+                      value={createRateAdjustmentData.position}
                       name="position"
                       placeholder={"Enter"}
                       onChange={(e) => handleInputChange(e)}
@@ -119,7 +160,7 @@ const handleSubmit = (e: React.FormEvent) => {
                     <Input
                       type={"text"}
                       label="Adjustment"
-                      value={""}
+                      value={createRateAdjustmentData.adjustment}
                       name="adjustment"
                       placeholder={"Enter"}
                       onChange={(e) => handleInputChange(e)}
@@ -135,7 +176,7 @@ const handleSubmit = (e: React.FormEvent) => {
                     <Input
                       type={"text"}
                       label="MIN Rate"
-                      value={""}
+                      value={createRateAdjustmentData.min_rate}
                       name="min_rate"
                       placeholder={"Enter"}
                       onChange={(e) => handleInputChange(e)}
@@ -145,7 +186,7 @@ const handleSubmit = (e: React.FormEvent) => {
                     <Input
                       type={"text"}
                       label="Max Rate"
-                      value={""}
+                      value={createRateAdjustmentData.max_rate}
                       name="max_rate"
                       placeholder={"Enter"}
                       onChange={(e) => handleInputChange(e)}

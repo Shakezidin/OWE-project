@@ -142,12 +142,6 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({handleOpenNClose}) => {
     return (
         <div className="change-transparent-model">
             <div className="changepass-change-password">
-                <div
-                    className="changepass-cross-btn"
-                    onClick={handleClose}
-                >
-                    <FaArrowLeft />
-                </div>
                 <h2>Change Password</h2>
                 <p>Enter the below detail to reset your default password</p>
                 <form style={{alignItems:'center', justifyContent:'center'}} onSubmit={handleSubmit}>
@@ -193,6 +187,9 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({handleOpenNClose}) => {
                     </div>
                     <button className="changepass-button" style={{width:'100%'}} type="submit">
                         Submit
+                    </button>
+                    <button className="logpass-button" style={{width:'100%'}} onClick={handleClose}>
+                        LogOut
                     </button>
                    
                 </form>

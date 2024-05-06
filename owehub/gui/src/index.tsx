@@ -14,10 +14,9 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    
     <Provider store={store}>
       <App />
-      <ToastContainer autoClose={2000} />
+      <ToastContainer autoClose={2000} limit={2} pauseOnHover={false} />
     </Provider>
   </React.StrictMode>
 );

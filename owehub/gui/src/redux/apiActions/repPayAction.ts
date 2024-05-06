@@ -12,7 +12,7 @@ export interface RepayEditParams {
   b_e:string,
   start_date:string,
   end_date:string,
-  record_id:string
+  RecordId:string
 }
 
 
@@ -40,17 +40,22 @@ export const fetchRepaySettings = createAsyncThunk(
 
 
   export const createRepaySettings = createAsyncThunk(
-    'create/repay-settings',
-    async (params: RepayCreateParams, { rejectWithValue }) => {
+    "create/repay-settings",
+    async (params: RepayCreateParams, { rejectWithValue,dispatch }) => {
       try {
-        const response = await postCaller(EndPoints.create_repaysettings,params );
-        return response.data;  
-  
+        const data = await postCaller(EndPoints.create_repaysettings, params);
+        if (data instanceof Error) {
+          return rejectWithValue((data as Error).message);
+        }
+        await dispatch(fetchRepaySettings({page_number:1,page_size:10}))
+        return data;
       } catch (error) {
         return rejectWithValue((error as Error).message);
       }
     }
   );
+
+ 
 
   export const updateRepaySettings = createAsyncThunk("update/repaysetting",async(param:any,{rejectWithValue,dispatch})=>{
     try {

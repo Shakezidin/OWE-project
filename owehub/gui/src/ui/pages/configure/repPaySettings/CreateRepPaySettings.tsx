@@ -27,13 +27,25 @@ interface createRepPayProps {
 
 const CreateRepPaySettings:React.FC<createRepPayProps> = ({handleClose,editMode, editData}) => {
     const dispatch = useAppDispatch();
-    const { isSuccess } = useAppSelector(state => state.ArSchedule)
+    const { isSuccess } = useAppSelector(state => state.repaySettings)
     const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
     const [newFormData,setNewFormData] = useState<any>([])
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
+  function generateRandomId(length: number): string {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    let result = '';
+  
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * charactersLength);
+      result += characters.charAt(randomIndex);
+    }
+  
+    return result;
+  }
     const [createRePayData, setCreatePayData] = useState(
         {
-            unique_id: editData?.unique_id || "1235",
+            unique_id: editData?.unique_id || generateRandomId(6),
             name: editData?.name || "",
             state: editData?.state || "",
             pay_scale:editData?.pay_scale || "",
@@ -91,7 +103,7 @@ const handleSubmit = (e: React.FormEvent) => {
   e.preventDefault()
  
      const data = {
-      unique_id: "1234567skdrwfs89",
+      unique_id: createRePayData.unique_id,
       name: createRePayData.name,
       state: createRePayData.state,
       pay_scale: createRePayData.pay_scale,
@@ -102,7 +114,7 @@ const handleSubmit = (e: React.FormEvent) => {
      }
  
   if(editMode){
-    dispatch(updateRepaySettings({...data,record_id:editData?.record_id!}))
+    dispatch(updateRepaySettings({...data,record_id:editData?.RecordId!}))
         }else{
           dispatch(
             createRepaySettings(data)

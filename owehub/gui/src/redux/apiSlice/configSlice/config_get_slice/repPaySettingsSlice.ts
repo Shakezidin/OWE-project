@@ -10,6 +10,7 @@ interface repaySettings {
   error: string | null;
   isFormSubmitting:boolean,
   isSuccess:number,
+  record_id:number | null,
 }
 const initialState: repaySettings = {
   repPaySettingsList: [],
@@ -17,6 +18,7 @@ const initialState: repaySettings = {
   error: null,
   isFormSubmitting:false,
   isSuccess:0,
+  record_id: 0
   
   
 };
