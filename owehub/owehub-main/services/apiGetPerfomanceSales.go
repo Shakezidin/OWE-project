@@ -28,12 +28,12 @@ func HandleGetPerfomanceSalesRequest(resp http.ResponseWriter, req *http.Request
 	var (
 		err     error
 		dataReq models.GetPerfomanceReq
-		// dataReqTime    models.GetPerfomanceSales
 		data           []map[string]interface{}
 		whereEleList   []interface{}
 		query          string
 		queryWithFiler string
 		filter         string
+		dates          []string
 	)
 
 	log.EnterFn(0, "HandleGetRateAdjustmentsRequest")
@@ -62,36 +62,44 @@ func HandleGetPerfomanceSalesRequest(resp http.ResponseWriter, req *http.Request
 	query = `
 	SELECT SUM(system_size) AS sales_kw, COUNT(system_size) AS sales  FROM sales_metrics_schema`
 
-	filter, whereEleList = PreparePerfomanceFilters(queryWithFiler, dataReq)
-	if filter != "" {
-		queryWithFiler = query + filter
+	allDatas := make(map[string][]map[string]interface{}, 0)
+	dates = append(dates, "contract_date", "ntp_date", "cancelled_date", "pv_install_completed_date")
+	for _, date := range dates {
+		filter, whereEleList = PreparePerfomanceFilters(queryWithFiler, date, dataReq)
+		if filter != "" {
+			queryWithFiler = query + filter
+		}
+
+		data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get perfomance sales from DB for %v err: %v", date, err)
+			FormAndSendHttpResp(resp, "Failed to get perfomance sales from DB for %v", http.StatusBadRequest, date)
+			return
+		}
+		allDatas[date] = data
 	}
 
-	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get perfomance sales from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get perfomance sales from DB", http.StatusBadRequest, nil)
-		return
+	perfomanceData := []models.PerfomanceSales{}
+	for date, data := range allDatas {
+		Sales, ok := data[0]["sales"].(int64)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get total sales count data for %+v\n: %+v\n", date, data[0])
+			Sales = 0.0
+		}
+
+		SalesKw, ok := data[0]["sales_kw"].(float64)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get total sales kw count data for %+v\n: %+v\n", date, data[0])
+			SalesKw = 0.0
+		}
+		perfomanceData = append(perfomanceData, models.PerfomanceSales{
+			Type:    date,
+			Sales:   Sales,
+			SalesKw: SalesKw,
+		})
 	}
-
-	Sales, ok := data[0]["sales"].(int64)
-	if !ok {
-		log.FuncErrorTrace(0, "Failed to get total sales count data: %+v\n", data[0])
-		Sales = 0.0
-	}
-
-	SalesKw, ok := data[0]["sales_kw"].(float64)
-	if !ok {
-		log.FuncErrorTrace(0, "Failed to get total sales kw count data: %+v\n", data[0])
-		SalesKw = 0.0
-	}
-
-	perfomanceData := models.PerfomanceSales{}
-	perfomanceData.Sales = Sales
-	perfomanceData.SalesKw = SalesKw
-
-	log.FuncInfoTrace(0, "total perfomance sales list %+v", Sales)
-	FormAndSendHttpResp(resp, "perfomance sales", http.StatusOK, perfomanceData)
+	log.FuncInfoTrace(0, "total perfomance report list %+v", len(perfomanceData))
+	FormAndSendHttpResp(resp, "perfomance report", http.StatusOK, perfomanceData)
 }
 
 /******************************************************************************
@@ -101,24 +109,36 @@ func HandleGetPerfomanceSalesRequest(resp http.ResponseWriter, req *http.Request
 * RETURNS:    		void
 ******************************************************************************/
 
-func PreparePerfomanceFilters(tableName string, dataFilter models.GetPerfomanceReq) (filters string, whereEleList []interface{}) {
+func PreparePerfomanceFilters(tableName, columnName string, dataFilter models.GetPerfomanceReq) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PreparePerfomanceFilters")
 	defer func() { log.ExitFn(0, "PreparePerfomanceFilters", nil) }()
+
 	var startDate, endDate string
 	startDate = dataFilter.StartDate
 	endDate = dataFilter.EndDate
 
 	var filtersBuilder strings.Builder
+	filtersBuilder.WriteString(" WHERE ")
 
 	// This will added if the default date is confirmed
-	
 	// if startDate.IsZero() || endDate.IsZero() {
 	// default start date
 	// default end date
 	// }
-	filtersBuilder.WriteString(" WHERE ")
-	filtersBuilder.WriteString(fmt.Sprintf("contract_date BETWEEN $%d AND $%d", len(whereEleList)+1, len(whereEleList)+2))
-	whereEleList = append(whereEleList, startDate, endDate)
+	switch columnName {
+	case "contract_date":
+		filtersBuilder.WriteString(fmt.Sprintf(" contract_date >= $%d AND contract_date <= $%d", len(whereEleList)+1, len(whereEleList)+2))
+		whereEleList = append(whereEleList, startDate, endDate)
+	case "ntp_date":
+		filtersBuilder.WriteString(fmt.Sprintf(" ntp_date >= $%d AND ntp_date <= $%d", len(whereEleList)+1, len(whereEleList)+2))
+		whereEleList = append(whereEleList, startDate, endDate)
+	case "cancelled_date":
+		filtersBuilder.WriteString(fmt.Sprintf(" cancelled_date >= $%d AND cancelled_date <= $%d", len(whereEleList)+1, len(whereEleList)+2))
+		whereEleList = append(whereEleList, startDate, endDate)
+	case "pv_install_completed_date":
+		filtersBuilder.WriteString(fmt.Sprintf(" pv_install_completed_date >= $%d AND pv_install_completed_date <= $%d", len(whereEleList)+1, len(whereEleList)+2))
+		whereEleList = append(whereEleList, startDate, endDate)
+	}
 
 	filters = filtersBuilder.String()
 
