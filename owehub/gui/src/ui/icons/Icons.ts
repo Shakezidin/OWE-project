@@ -77,6 +77,7 @@ import closeIcon from "../../resources/assets/closeIcon.svg";
 import arrowDown from '../../resources/assets/arrow-down.svg'
 import linearGraph from '../../resources/assets/linear-graph.svg'
 import curveGraph from '../../resources/assets/curvegraph.svg'
+import redcurveGraph from '../../resources/assets/perf.png'
 // import browserIcon from '../../resources/assets/Cloud-upload.svg'
 // import whiteCross from '../../resources/assets/w'
 export const ICONS = {
@@ -104,6 +105,7 @@ export const ICONS = {
   filter2: require("../../resources/assets/filter2.png"),
   groupIcon: require("../../resources/assets/Group2.png"),
   arrowNext: require("../../resources/assets/Vector.svg"),
+
   groupActiveIcon: groupActive,
   viewChart: viewChart,
   viewActive: viewActive,
@@ -171,4 +173,5 @@ export const ICONS = {
   curveGraph:curveGraph,
   // browserIcon: browserIcon,
   // whiteCross: whiteCross
+  redcurveGraph:redcurveGraph,
 };
