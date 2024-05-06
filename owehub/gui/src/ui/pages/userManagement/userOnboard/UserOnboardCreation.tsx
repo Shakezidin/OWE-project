@@ -260,23 +260,6 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                   </div>
                 </div>
               </div>
-
-              {/* <div className="create-input-field-note">
-                <label htmlFor="" className="inputLabel">
-                  Description
-                </label>{" "}
-                <br />
-                <textarea
-                  name="description"
-                  id=""
-                  rows={3}
-                  // onChange={(e) => handlemarketingInputChange(e)}
-                  value={formData.description}
-                  onChange={(e) => handleInputChange(e)}
-                  placeholder="Type"
-                ></textarea>
-              </div> */}
-
               <div className="create-input-field-note">
                 <label htmlFor="" className="inputLabel">
                   Description
@@ -302,7 +285,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
             </div>
           </div>
         </div>
-        <div className="createUserActionButton">
+        <div className="um-createUserActionButton">
           <ActionButton
             title={"Cancel"}
             onClick={handleClose}

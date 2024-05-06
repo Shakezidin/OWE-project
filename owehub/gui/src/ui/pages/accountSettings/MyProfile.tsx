@@ -99,6 +99,7 @@ const MyProfile = () => {
                   name="fee_rate"
                   placeholder={"Enter"}
                   onChange={(e) => {}}
+                  disabled
                 />
               </div>
               <div className="create-input-field-profile">
@@ -109,6 +110,7 @@ const MyProfile = () => {
                   name="fee_rate"
                   placeholder={"Enter"}
                   onChange={(e) => {}}
+                  disabled
                 />
               </div>
             </div>
@@ -124,6 +126,7 @@ const MyProfile = () => {
                   name="fee_rate"
                   placeholder={"Enter"}
                   onChange={(e) => {}}
+                  disabled
                 />
               </div>
               <div className="create-input-field-profile">
@@ -134,6 +137,7 @@ const MyProfile = () => {
                   name="fee_rate"
                   placeholder={"Enter"}
                   onChange={(e) => {}}
+                  disabled
                 />
               </div>
             </div>
