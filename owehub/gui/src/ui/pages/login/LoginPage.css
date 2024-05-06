@@ -163,6 +163,7 @@ input:checked + .slider:before {
   flex-shrink: 0;
   padding: 2.5rem;
   width: 450px;
+  height: 500px;
 }
 
 .loginHeader {
