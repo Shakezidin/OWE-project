@@ -24,24 +24,23 @@ const renderCustomizedLabelPercentage = (data: any, total = 32000) => {
   let percentageCalculated = data.value
   return `${percentageCalculated}`;
 };
-const UserPieChart:React.FC<UserPieChartProps> = ({ onboardingList }) => {
 
+const UserPieChart:React.FC<UserPieChartProps> = ({ onboardingList }) => {
   const renderLabel = useCallback((piePiece: any) => {
     return piePiece.name;
   }, []);
 
   return (
- 
     <div className="PieChart-container" style={{display:"flex", width:'100%', gap:"1.2rem"}} >
-      <div className="pie-section" style={{width:"50%",height:"55vh", background:"white", borderRadius:"16px", padding:"1rem"}} >
+      <div className="pie-section" style={{width:"50%",height:"100%", background:"white", borderRadius:"16px", padding:"1rem"}} >
         <div className="pieChart-section">
           <h2>Onboarding Detail</h2>
         </div>
-        <div style={{ width: "100%", height: "45vh", outline: 'none' }}>
+        <div style={{ width: "100%", height: "76%", outline: 'none'}} className="pie-chart-container">
           <ResponsiveContainer>
             <PieChart style={{ outline: 'none' }}>
               <Pie
-              style={{outline: 'none'}}
+                style={{outline: 'none'}}
                 dataKey="value"
                 data={onboardingList}
                 label={renderLabel}
@@ -50,42 +49,38 @@ const UserPieChart:React.FC<UserPieChartProps> = ({ onboardingList }) => {
                 outerRadius={"85%"}
                 nameKey="name"
                 fontSize={12}
-                labelLine = {true}
+                labelLine={true}
                 textAnchor=''
-                dominantBaseline="central" 
-              // activeShape={(props) => renderActiveShape(props, showSubchart)}
-              // onMouseEnter={onMouseOver}
-              // onMouseLeave={onMouseLeave}
+                dominantBaseline="central"
               >
-                  <LabelList
-                    dy={0}
-                    dx={10}
-                    fill="white" // Percentage color
-                    // dataKey="percentage"
-                    dataKey={renderCustomizedLabelPercentage}
-                    position="outside"
-                    angle={0}
-                    fontSize={12}
-                    stroke="none" // Border of letters
-                    className="label-percentage"
-                    style={{outline: 'none'}}
-                    offset={-45}
-                  />
+                <LabelList
+                  dy={0}
+                  dx={10}
+                  fill="white"
+                  dataKey={renderCustomizedLabelPercentage}
+                  position="outside"
+                  angle={0}
+                  fontSize={12}
+                  stroke="none"
+                  className="label-percentage"
+                  style={{outline: 'none'}}
+                  offset={-45}
+                />
               </Pie>
             </PieChart>
           </ResponsiveContainer>
         </div>
       </div>
 
-      <div className='pie-section' style={{width:"50%",height:"55vh", background:"white", borderRadius:"16px", padding:"1rem"}}>
+      <div className='pie-section' style={{width:"50%",height:"100%", background:"white", borderRadius:"16px", padding:"1rem"}}>
         <div className="pieChart-section">
           <h2>Performance</h2>
         </div>
-        <div style={{ width: "100%", height: "45vh" }}>
+        <div style={{ width: "100%", height: "78%" }}>
           <ResponsiveContainer>
             <PieChart  style={{outline: 'none'}}>
               <Pie
-               style={{outline: 'none'}}
+                style={{outline: 'none'}}
                 dataKey="value"
                 data={data2}
                 label={renderLabel}
@@ -94,21 +89,16 @@ const UserPieChart:React.FC<UserPieChartProps> = ({ onboardingList }) => {
                 outerRadius={"85%"}
                 nameKey="name"
                 labelLine={true}
-              // activeShape={(props) => renderActiveShape(props, showSubchart)}
-              // onMouseEnter={onMouseOver}
-              // onMouseLeave={onMouseLeave}
               >
                 <LabelList
                   dy={0}
-                  fill="white" // Percentage color
-                  // dataKey="percentage"
+                  fill="white"
                   dataKey={renderCustomizedLabelPercentage}
                   position="inside"
                   fontSize={12}
                   angle={45}
-                  stroke="none" // Border of letters
+                  stroke="none"
                   className="label-percentage"
-
                 />
               </Pie>
             </PieChart>
@@ -116,7 +106,6 @@ const UserPieChart:React.FC<UserPieChartProps> = ({ onboardingList }) => {
         </div>
       </div>
     </div>
-
   )
 }
 

@@ -90,7 +90,7 @@ const MyProfile = () => {
 
             <div
               className="create-input-container"
-              style={{ padding: "0.5rem", marginLeft: "1rem", gap: "24px"}}
+              style={{ padding: "0.5rem", marginLeft: "1rem", gap: "2.8%"}}
             >
               <div className="create-input-field-profile">
                 <Input
@@ -117,7 +117,7 @@ const MyProfile = () => {
             </div>
             <div
               className="create-input-container"
-              style={{ padding: "0.5rem", marginLeft: "1rem", gap: "24px" }}
+              style={{ padding: "0.5rem", marginLeft: "1rem", gap: "2.8%" }}
             >
               <div className="create-input-field-profile">
                 <Input
@@ -155,7 +155,7 @@ const MyProfile = () => {
             </div>
             <div
               className="create-input-container"
-              style={{ padding: "0.5rem", marginLeft: "1rem", gap: "24px" }}
+              style={{ padding: "0.5rem", marginLeft: "1rem", gap: "2.8%" }}
             >
               <div className="create-input-field-address">
                 <Input
@@ -173,7 +173,7 @@ const MyProfile = () => {
                 )}
               </div>
               <div className="create-input-field-address">
-                <label className="inputLabel-select">State</label>
+                <label className="inputLabel-select prof-fields-onboard">State</label>
                 <SelectOption
                   onChange={handleStateChange}
                   options={stateOptions}
@@ -181,7 +181,7 @@ const MyProfile = () => {
                 />
               </div>
               <div className="create-input-field-address">
-                <label className="inputLabel-select">City</label>
+                <label className="inputLabel-select prof-fields-onboard">City</label>
                 <SelectOption
                   onChange={handleStateChange}
                   options={stateOptions}
