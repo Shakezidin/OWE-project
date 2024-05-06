@@ -43,10 +43,11 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
     startDate: "",
     endDate:"",
     stateName:  "",
+    oweCost: editData?.owe_cost ? `${editData?.owe_cost}` : ""
   });
-  const [oweCost, setOweCost] = useState(
-    editData?.owe_cost ? `${editData?.owe_cost}` : ""
-  );
+
+  const [errors, setErrors] = useState<typeof newFormData>({} as typeof newFormData);
+ 
   const { isSuccess } = useAppSelector((state) => state.loanFeeSlice);
   
 
@@ -64,6 +65,19 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
     const res = await postCaller(EndPoints.get_newFormData, tableData);
      setNewFormData((prev) => ({ ...prev, ...res.data }));
   };
+
+  const handleValidation = () => {
+    const error: typeof newFormData = {} as typeof newFormData;
+    for (const key in newFormData) {
+      if (!newFormData[key as keyof typeof newFormData]) {
+        error[
+          key as keyof typeof newFormData
+        ] = `${key.toLocaleLowerCase()} is required`;
+      }
+    }
+    setErrors({ ...error });
+    return Object.keys(error).length ? false : true;
+  };
   React.useEffect(() => {
     setNewFormData({
         uniqueId: editData?.unique_id || "",
@@ -75,6 +89,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
         startDate: editData?.start_date || "",
         endDate: editData?.end_date || "",
         stateName: editData?.state || "",
+        oweCost:editData?.owe_cost ? `${editData?.owe_cost}` : ""
       })
     getNewFormData();
   }, [editMode,editData]);
@@ -93,45 +108,47 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
   };
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (editMode) {
-      dispatch(
-        updateLoanFee({
-          record_id: editData?.record_id!,
-          unique_id: newFormData.uniqueId,
-          state: newFormData.stateName,
-          installer: newFormData.installerName,
-          start_date: newFormData.startDate
-            ? format(new Date(newFormData.startDate), "yyyy-MM-dd")
-            : "",
-          end_date: newFormData.endDate
-            ? format(new Date(newFormData.endDate), "yyyy-MM-dd")
-            : "",
-          dlr_cost: newFormData.dlrCost,
-          dlr_mu: newFormData.dlrMu,
-          owe_cost: parseFloat(oweCost),
-          dealer: newFormData.dealerName || "Shushank Sharma",
-          loan_type: newFormData.loanType || "P123",
-        })
-      );
-    } else {
-      dispatch(
-        createLoanFee({
-          unique_id: newFormData.uniqueId,
-          state: newFormData.stateName,
-          installer: newFormData.installerName,
-          start_date: newFormData.startDate
-            ? format(new Date(newFormData.startDate), "yyyy-MM-dd")
-            : "",
-          end_date: newFormData.endDate
-            ? format(new Date(newFormData.endDate), "yyyy-MM-dd")
-            : "",
-          dlr_cost: newFormData.dlrCost,
-          dlr_mu: newFormData.dlrMu,
-          owe_cost: parseFloat(oweCost),
-          dealer: newFormData.dealerName || "Shushank Sharma",
-          loan_type: newFormData.loanType || "P123",
-        })
-      );
+    if (handleValidation()) {
+      if (editMode) {
+        dispatch(
+          updateLoanFee({
+            record_id: editData?.record_id!,
+            unique_id: newFormData.uniqueId,
+            state: newFormData.stateName,
+            installer: newFormData.installerName,
+            start_date: newFormData.startDate
+              ? format(new Date(newFormData.startDate), "yyyy-MM-dd")
+              : "",
+            end_date: newFormData.endDate
+              ? format(new Date(newFormData.endDate), "yyyy-MM-dd")
+              : "",
+            dlr_cost: newFormData.dlrCost,
+            dlr_mu: newFormData.dlrMu,
+            owe_cost: parseFloat(newFormData.oweCost),
+            dealer: newFormData.dealerName || "Shushank Sharma",
+            loan_type: newFormData.loanType || "P123",
+          })
+        );
+      } else {
+        dispatch(
+          createLoanFee({
+            unique_id: newFormData.uniqueId,
+            state: newFormData.stateName,
+            installer: newFormData.installerName,
+            start_date: newFormData.startDate
+              ? format(new Date(newFormData.startDate), "yyyy-MM-dd")
+              : "",
+            end_date: newFormData.endDate
+              ? format(new Date(newFormData.endDate), "yyyy-MM-dd")
+              : "",
+            dlr_cost: newFormData.dlrCost,
+            dlr_mu: newFormData.dlrMu,
+            owe_cost: parseFloat(newFormData.oweCost),
+            dealer: newFormData.dealerName || "Shushank Sharma",
+            loan_type: newFormData.loanType || "P123",
+          })
+        );
+      }
     }
   };
 
@@ -166,6 +183,11 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     placeholder={"Enter"}
                     onChange={handleChange}
                   />
+                  {errors?.uniqueId && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.uniqueId}
+                    </span>
+                  )}
                 </div>
 
                 <div className="create-input-field">
@@ -182,6 +204,11 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                       (option) => option.value === newFormData.dealerName
                     )}
                   />
+                  {errors?.dealerName && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.dealerName}
+                    </span>
+                  )}
                 </div>
 
                 <div className="create-input-field">
@@ -198,6 +225,11 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                       (option) => option.value === newFormData.stateName
                     )}
                   />
+                  {errors?.stateName && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.stateName}
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -216,6 +248,11 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                       (option) => option.value === newFormData.loanType
                     )}
                   />
+                  {errors?.loanType && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.loanType}
+                    </span>
+                  )}
                 </div>
 
                 <div className="create-input-field">
@@ -232,6 +269,11 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                       (option) => option.value === newFormData.installerName
                     )}
                   />
+                   {errors?.installerName && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.installerName}
+                    </span>
+                  )}
                 </div>
 
                 <div className="create-input-field">
@@ -243,6 +285,11 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     placeholder={"Enter"}
                     onChange={handleChange}
                   />
+                  {errors?.dlrCost && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.dlrCost}
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -251,11 +298,16 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                   <Input
                     type={"text"}
                     label="Owe Cost"
-                    value={oweCost}
+                    value={newFormData.oweCost}
                     name="oweCost"
                     placeholder={"Enter"}
-                    onChange={(e) => setOweCost(e.target.value)}
+                    onChange={handleChange}
                   />
+                  {errors?.oweCost && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.oweCost}
+                    </span>
+                  )}
                 </div>
 
                 <div className="create-input-field">
@@ -267,6 +319,11 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     placeholder={"Enter"}
                     onChange={handleChange}
                   />
+                  {errors?.dlrMu && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.dlrMu}
+                    </span>
+                  )}
                 </div>
 
                 <div className="create-input-field">
@@ -278,6 +335,11 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     placeholder={"Enter"}
                     onChange={handleChange}
                   />
+                   {errors?.startDate && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.startDate}
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -291,6 +353,11 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     placeholder={"Enter"}
                     onChange={handleChange}
                   />
+                   {errors?.endDate && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.endDate}
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
