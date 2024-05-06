@@ -70,13 +70,8 @@ func HandleLoginRequest(resp http.ResponseWriter, req *http.Request) {
 
 	emailId, userName, roleName, passwordChangeRequired, err = ValidateUser(creds)
 	if (err != nil) || (len(emailId) <= 0) || (len(roleName) <= 0) {
-		if err.Error() == "user not found" {
-			log.FuncErrorTrace(0, "Failed to Validate User Unauthorize access err: %v", err)
-			FormAndSendHttpResp(resp, "User not found.", http.StatusUnauthorized, nil)
-			return
-		}
 		log.FuncErrorTrace(0, "Failed to Validate User Unauthorize access err: %v", err)
-		FormAndSendHttpResp(resp, "Incorrect email or password", http.StatusUnauthorized, nil)
+		FormAndSendHttpResp(resp, err.Error(), http.StatusUnauthorized, nil)
 		return
 	}
 

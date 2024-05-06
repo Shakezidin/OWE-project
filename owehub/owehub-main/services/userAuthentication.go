@@ -10,7 +10,6 @@ import (
 	db "OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
-	"errors"
 
 	"fmt"
 
@@ -39,20 +38,20 @@ func ValidateUser(cread models.Credentials) (emailId string, userName string, ro
 	data, err := GetUserInfo(cread.EmailId)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to reterieve user login details err: %v", err)
-		return emailId, userName, roleName, passwordChangeRequired, errors.New("user not found")
+		return emailId, userName, roleName, passwordChangeRequired, err
 	}
 
 	if (data == nil) || (len(data) <= 0) {
-		err = fmt.Errorf("Empty User Info Reterived")
-		log.FuncErrorTrace(0, "%v", err)
+		err = fmt.Errorf("Failed to reterieve user login details")
+		log.FuncErrorTrace(0, "Failed to reterieve user login details err %v", err)
 		return emailId, userName, roleName, passwordChangeRequired, err
 	}
 
 	reterivedPassword := data[0]["password"].(string)
 	err = CompareHashPassword(reterivedPassword, cread.Password)
 	if err != nil {
-		err = fmt.Errorf("Invalid password, did not matched with DB: ")
-		log.FuncErrorTrace(0, "%v", err)
+		err = fmt.Errorf("Incorrect emailId or password")
+		log.FuncErrorTrace(0, "provide user passowrd is not matching with DB password %v", err)
 		return emailId, userName, roleName, passwordChangeRequired, err
 	}
 
@@ -143,7 +142,7 @@ func GetUserInfo(emailId string) (data []map[string]interface{}, err error) {
 	}
 
 	if (data == nil) || (len(data) <= 0) {
-		err = fmt.Errorf("Empty User Info Reterived")
+		err = fmt.Errorf("User does not exist.")
 		log.FuncErrorTrace(0, "%v", err)
 		return nil, err
 	}
