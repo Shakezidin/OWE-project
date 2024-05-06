@@ -7,7 +7,7 @@ import { ActionButton } from "../../../components/button/ActionButton";
 import { updatePayForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createPayScheduleSlice";
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
-import { useDispatch } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import {
   installerOption,
   partnerOption,
@@ -18,36 +18,50 @@ import Select from "react-select";
 import { paySaleTypeData } from "../../../../resources/static_data/StaticData";
 import { PayScheduleModel } from "../../../../core/models/configuration/create/PayScheduleModel";
 import SelectOption from "../../../components/selectOption/SelectOption";
+import { createApttSetters, fetchApptSetters, updateApptSetters } from "../../../../redux/apiActions/apptSetterAction";
+import { resetSuccess } from "../../../../redux/apiSlice/configSlice/config_get_slice/apptSetterSlice";
 
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
+  editData:any
 }
 
 const CreateAppSetters: React.FC<payScheduleProps> = ({
   handleClose,
   editMode,
+  editData
 }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
+  const { isSuccess } = useAppSelector(state => state.apptsetters)
+  function generateRandomId(length: number): string {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    let result = '';
+  
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * charactersLength);
+      result += characters.charAt(randomIndex);
+    }
+  
+    return result;
+  }
+  const [createAppSettersData, setAppSettersData] = useState({
+    unique_id: editData?.unique_id || generateRandomId(6),
+    name:editData?.name || "",
+    team_name: editData?.team_name || "",
+    pay_rate: editData?.pay_rate || "",
+    start_date: editData?.start_date || "",
+    end_date:editData?.end_date ||  "",
+  });
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setAppSettersData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
 
-  // const [createPayData, setCreatePayData] = useState<PayScheduleModel>(
-  //     {
-  //         record_id: payEditedData? payEditedData?.record_id: 0,
-  //         partner: payEditedData? payEditedData?.partner: "Shushank Sharma",
-  //         partner_name:payEditedData? payEditedData?.partner_name: "FFS",
-  //         installer_name: payEditedData? payEditedData?.installer_name:"OWE",
-  //         sale_type: payEditedData? payEditedData?.sale_type:"BATTERY",
-  //         state: payEditedData? payEditedData?.state:"Alabama",
-  //         rl: payEditedData? payEditedData?.rl:"40",
-  //         draw:payEditedData? payEditedData?.draw: "50%",
-  //         draw_max: payEditedData? payEditedData?.draw_max:"50%",
-  //         rep_draw:payEditedData? payEditedData?.rep_draw: "2000.00",
-  //         rep_draw_max:payEditedData? payEditedData?.rep_draw_max: "2000.00",
-  //         rep_pay:payEditedData? payEditedData?.rep_pay: "Yes",
-  //         start_date: payEditedData? payEditedData?.start_date:"2024-04-01",
-  //         end_date: payEditedData? payEditedData?.end_date:"2024-04-30"
-  //       }
-  // )
   const [newFormData, setNewFormData] = useState<any>([]);
 
   const tableData = {
@@ -61,15 +75,37 @@ const CreateAppSetters: React.FC<payScheduleProps> = ({
     getNewFormData();
   }, []);
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+   if(editMode){
+  
+    dispatch(updateApptSetters({...createAppSettersData,record_id:editData?.record_id!}))
+  }else{
+    dispatch(
+      createApttSetters(createAppSettersData)
+    );
+  }
+  };
+  useEffect(() => {
+    if (isSuccess) {
+      handleClose();
+       
+    }
+    return () => {
+      isSuccess && dispatch(resetSuccess());
+    };
+  }, [isSuccess]);
+   
+   
   return (
     <div className="transparent-model">
-      <form className="modal">
+      <form className="modal" onSubmit={handleSubmit}>
         <div className="createUserCrossButton" onClick={handleClose}>
           <CROSS_BUTTON />
         </div>
 
         <h3 className="createProfileText">
-          {editMode === false ? "Leader Override" : "Update RepPay Settings"}
+          {editMode === false ? "Create Appt Setters" : "Update Appt Setters"}
         </h3>
 
         <div className="modal-body">
@@ -80,50 +116,50 @@ const CreateAppSetters: React.FC<payScheduleProps> = ({
                   <Input
                     type={"text"}
                     label="Name"
-                    value={""}
-                    name="dealer_tier"
+                    value={createAppSettersData.name}
+                    name="name"
                     placeholder={"Enter"}
-                    onChange={() => {}}
+                    onChange={(e) => handleInputChange(e)}
                   />
                 </div>
                 <div className="create-input-field">
                   <Input
                     type={"text"}
                     label="Team"
-                    value={""}
-                    name="dealer_tier"
+                    value={createAppSettersData.team_name}
+                    name="team_name"
                     placeholder={"Enter"}
-                    onChange={() => {}}
+                    onChange={(e) => handleInputChange(e)}
                   />
                 </div>
                 <div className="create-input-field">
                   <Input
                     type={"number"}
                     label="Pay Rate"
-                    value={""}
-                    name="dealer_tier"
+                    value={createAppSettersData.pay_rate}
+                    name="pay_rate"
                     placeholder={"Enter"}
-                    onChange={() => {}}
+                    onChange={(e) => handleInputChange(e)}
                   />
                 </div>
                 <div className="create-input-field">
                   <Input
                     type={"date"}
                     label="Start"
-                    value={""}
-                    name="dealer_tier"
+                    value={createAppSettersData.start_date}
+                    name="start_date"
                     placeholder={"Enter"}
-                    onChange={() => {}}
+                    onChange={(e) => handleInputChange(e)}
                   />
                 </div>
                 <div className="create-input-field">
                   <Input
                     type={"date"}
                     label="End"
-                    value={""}
-                    name="dealer_tier"
+                    value={createAppSettersData.end_date}
+                    name="end_date"
                     placeholder={"Enter"}
-                    onChange={() => {}}
+                    onChange={(e) => handleInputChange(e)}
                   />
                 </div>
               </div>

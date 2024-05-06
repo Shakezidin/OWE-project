@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { ICONS } from "../../../icons/Icons";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-import { fetchTimeLineSla } from "../../../../redux/apiSlice/configSlice/config_get_slice/timeLineSlice";
+import {fetchAr} from '../../../../redux/apiActions/arAction'
 // import CreateTimeLine from "./CreateTimeLine";
 import CreateAr from "./CreateAr"
 import CheckBox from "../../../components/chekbox/CheckBox";
@@ -18,6 +18,9 @@ import SortableHeader from "../../../components/tableHeader/SortableHeader";
 import { ARColumns} from "../../../../resources/static_data/configureHeaderData/ARColumn";
 import FilterModal from "../../../components/FilterModal/FilterModal";
 import { ROUTES } from "../../../../routes/routes";
+import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
+import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
+import { showAlert, successSwal } from "../../../components/alert/ShowAlert";
 const AR = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -36,20 +39,21 @@ const AR = () => {
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
-  const [editedTimeLineSla, setEditedTimeLineSla] = useState<TimeLineSlaModel | null>(null);
+  const [editedAr, setEditedAr] = useState(null);
   const itemsPerPage = 10;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
   const [sortKey, setSortKey] = useState("");
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
+      archived: viewArchived ? true : undefined,
     };
-    dispatch(fetchTimeLineSla(pageNumber));
-  }, [dispatch, currentPage]);
-
+    dispatch(fetchAr(pageNumber));
+  }, [dispatch, currentPage, viewArchived]);
   const filter = () => {
     setFilterOpen(true)
 
@@ -59,7 +63,7 @@ const AR = () => {
     dispatch(setCurrentPage(pageNumber));
   };
 
-  const commissionList = useAppSelector((state) => state.comm.commissionsList);
+  const {data} = useAppSelector((state) => state.ar);
   const goToNextPage = () => {
     dispatch(setCurrentPage(currentPage + 1));
   };
@@ -72,9 +76,9 @@ const AR = () => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   
-  const currentPageData = commissionList?.slice(startIndex, endIndex);
+  const currentPageData = data?.slice(startIndex, endIndex);
   const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === timelinesla_list?.length;
+  const isAllRowsSelected = selectedRows.size === data?.length;
   const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
@@ -100,18 +104,115 @@ const AR = () => {
   }
   const handleTimeLineSla = () => {
     setEditMode(false);
-    setEditedTimeLineSla(null);
+    setEditedAr(null);
     handleOpen()
+  };
+  const handleEdit = (data: any) => {
+    setEditMode(true);
+    setEditedAr(data);
+    handleOpen();
   };
 
-  const handleEditTimeLineSla = (timeLineSlaData: TimeLineSlaModel) => {
-    setEditMode(true);
-    setEditedTimeLineSla(timeLineSlaData);
-    handleOpen()
-  };
+ 
   const fetchFunction = (req: any) => {
-    dispatch(fetchTimeLineSla(req));
+    dispatch(fetchAr(req));
    };
+   const handleViewArchiveToggle = () => {
+    setViewArchived(!viewArchived);
+    // When toggling, reset the selected rows
+    setSelectedRows(new Set());
+    setSelectAllChecked(false);
+  };
+   const handleArchiveAllClick = async () => {
+    const confirmed = await showAlert(
+      "Are Your Sure",
+      "This action will archive all selected rows?",
+      "Yes",
+      "No"
+    );
+    if (confirmed) {
+      const archivedRows = Array.from(selectedRows).map(
+        (index) => data[index].record_id
+      );
+      if (archivedRows.length > 0) {
+        const newValue = {
+          record_id: archivedRows,
+          is_archived: true,
+        };
+
+        const pageNumber = {
+          page_number: currentPage,
+          page_size: itemsPerPage,
+        };
+
+        const res = await postCaller("update_ar_archive", newValue);
+        if (res.status === HTTP_STATUS.OK) {
+          // If API call is successful, refetch commissions
+          dispatch(fetchAr(pageNumber));
+          const remainingSelectedRows = Array.from(selectedRows).filter(
+            (index) => !archivedRows.includes(data[index].record_id)
+          );
+          const isAnyRowSelected = remainingSelectedRows.length > 0;
+          setSelectAllChecked(isAnyRowSelected);
+          setSelectedRows(new Set());
+          await successSwal(
+            "Archived",
+            "All Selected rows have been archived",
+            "success",
+            2000,
+            false
+          );
+        } else {
+          await successSwal(
+            "Archived",
+            "All Selected rows have been archived",
+            "error",
+            2000,
+            false
+          );
+        }
+      }
+    }
+  };
+   const handleArchiveClick = async (record_id: any) => {
+    const confirmed = await showAlert(
+      "Are Your Sure",
+      "This action will archive all selected rows?",
+      "Yes",
+      "No"
+    );
+    if (confirmed) {
+      const archived: number[] = [record_id];
+      let newValue = {
+        record_id: archived,
+        is_archived: true,
+      };
+      const pageNumber = {
+        page_number: currentPage,
+        page_size: itemsPerPage,
+      };
+      const res = await postCaller("update_ar_archive", newValue);
+      if (res.status === HTTP_STATUS.OK) {
+        dispatch(fetchAr(pageNumber));
+        await successSwal(
+          "Archived",
+          "All Selected rows have been archived",
+          "success",
+          2000,
+          false
+        );
+      } else {
+        await successSwal(
+          "Archived",
+          "All Selected rows have been archived",
+          "error",
+          2000,
+          false
+        );
+      }
+    }
+  };
+
 //   if (loading) {
 //     return <div>Loading...</div>;
 //   }
@@ -126,8 +227,8 @@ const AR = () => {
       <div className="commissionContainer">
         <TableHeader
           title="AR"
-          onPressViewArchive={() => { }}
-          onPressArchive={() => { }}
+          onPressViewArchive={() => handleViewArchiveToggle()}
+          onPressArchive={() => handleArchiveAllClick()}
           onPressFilter={() => filter()}
           onPressImport={() => { }}
           checked={isAllRowsSelected}
@@ -144,7 +245,8 @@ const AR = () => {
         {open && <CreateAr
    
           editMode={editMode}
-          handleClose={handleClose} />}
+          handleClose={handleClose} 
+          editData={editedAr}/>}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
@@ -160,7 +262,7 @@ const AR = () => {
                       key={key}
                       isCheckbox={item.isCheckbox}
                       titleName={item.displayName}
-                      data={timelinesla_list}
+                      data={data}
                       isAllRowsSelected={isAllRowsSelected}
                       isAnyRowSelected={isAnyRowSelected}
                       selectAllChecked={selectAllChecked}
@@ -173,14 +275,16 @@ const AR = () => {
                     />
                   ))
                 }
-                <th>
-                  <div className="action-header">
-                    <p>Action</p>
-                  </div>
-                </th>
+                     {viewArchived === true ? null : (
+                  <th>
+                    <div className="action-header">
+                      <p>Action</p>
+                    </div>
+                  </th>
+                )}
               </tr>
             </thead>
-            {/* <tbody >
+            <tbody >
               {currentPageData?.length > 0
                 ? currentPageData?.map((el: any, i: any) => (
                   <tr
@@ -201,29 +305,38 @@ const AR = () => {
                             )
                           }
                         />
-                        {el.type_m2m}
+                        {el.unique_id}
                       </div>
                     </td>
-                    <td>{el.state}</td>
-                    <td>{el.days}</td>
-                    <td>{el.start_date}</td>
-                    <td>{el.end_date}</td>
-                    <td
+                    <td>{el.customer_name}</td>
+                    <td>{el.date}</td>
+                    <td>{el.amount}</td>
+                    <td>{el.notes}</td>
+                    {viewArchived === true ? null : (
+                        <td>
+                          <div className="action-icon">
+                            <div
+                              className=""
+                              style={{ cursor: "pointer" }}
+                              onClick={() => handleArchiveClick(el.record_id)}
+                            >
+                              <img src={ICONS.ARCHIVE} alt="" />
+                            </div>
+                            <div
+                              className=""
+                              onClick={() => handleEdit(el)}
+                              style={{ cursor: "pointer" }}
+                            >
+                              <img src={ICONS.editIcon} alt="" />
+                            </div>
+                          </div>
+                        </td>
+                      )}
+                     </tr>
+                      ))
+                      : null}
 
-                    >
-                      <div className="action-icon">
-                        <div className="">
-                          <img src={ICONS.ARCHIVE} alt="" />
-                        </div>
-                        <div className="" onClick={() => handleEditTimeLineSla(el)} style={{ cursor: "pointer" }}>
-                          <img src={ICONS.editIcon} alt="" />
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-                : null}
-            </tbody> */}
+            </tbody>
 
           </table>
         </div>

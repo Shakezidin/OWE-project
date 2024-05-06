@@ -34,18 +34,23 @@ export const fetchReconcile = createAsyncThunk(
     async (data: any) => {
       const response = await postCaller("get_reconcile", data);
   
-      return response;
+      return response.data.reconcile_list ;
     }
   );
 
 
+   
+
   export const createReconcile = createAsyncThunk(
-    'create/reconcile',
-    async (params: any, { rejectWithValue }) => {
+    "create/reconcile",
+    async (params: any, { rejectWithValue,dispatch }) => {
       try {
-        const response = await postCaller("create_reconcile",params );
-        return response.data;  
-  
+        const data = await postCaller("create_reconcile", params);
+        if (data instanceof Error) {
+          return rejectWithValue((data as Error).message);
+        }
+        await dispatch(fetchReconcile({page_number:1,page_size:10}))
+        return data;
       } catch (error) {
         return rejectWithValue((error as Error).message);
       }
@@ -56,7 +61,7 @@ export const fetchReconcile = createAsyncThunk(
     try {
         const data = await postCaller("update_reconcile",params)
         await dispatch(fetchReconcile({page_number:1,page_size:10}))
-        return data.data
+        return data
     } catch (error) {
         return rejectWithValue((error as Error).message)
     }

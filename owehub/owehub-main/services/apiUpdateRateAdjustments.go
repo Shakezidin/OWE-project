@@ -56,8 +56,7 @@ func HandleUpdateRateAdjustmentsRequest(resp http.ResponseWriter, req *http.Requ
 	}
 
 	if (len(updateRateAdjustmentsReq.UniqueId) <= 0) || (len(updateRateAdjustmentsReq.PayScale) <= 0) ||
-		(len(updateRateAdjustmentsReq.Position) <= 0) || (len(updateRateAdjustmentsReq.Adjustment) <= 0) ||
-		(len(updateRateAdjustmentsReq.StartDate) <= 0) || (len(updateRateAdjustmentsReq.EndDate) <= 0) {
+		(len(updateRateAdjustmentsReq.Position) <= 0) || (len(updateRateAdjustmentsReq.Adjustment) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
@@ -93,8 +92,6 @@ func HandleUpdateRateAdjustmentsRequest(resp http.ResponseWriter, req *http.Requ
 	queryParameters = append(queryParameters, updateRateAdjustmentsReq.Adjustment)
 	queryParameters = append(queryParameters, updateRateAdjustmentsReq.MinRate)
 	queryParameters = append(queryParameters, updateRateAdjustmentsReq.MaxRate)
-	queryParameters = append(queryParameters, updateRateAdjustmentsReq.StartDate)
-	queryParameters = append(queryParameters, updateRateAdjustmentsReq.EndDate)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateRateAdjustmentsFunction, queryParameters)

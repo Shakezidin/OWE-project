@@ -20,7 +20,7 @@ import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import { showAlert, successSwal } from "../../../components/alert/ShowAlert";
 import Loading from "../../../components/loader/Loading";
 import { fetchRateAdjustments } from "../../../../redux/apiActions/RateAdjustmentsAction";
-import { da } from "date-fns/locale";
+import DataNotFound from "../../../components/loader/DataNotFound";
 
 const RateAdjustments = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -49,10 +49,10 @@ const RateAdjustments = () => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
-      archive:viewArchived
+      archived: viewArchived ? true : undefined,
     };
     dispatch(fetchRateAdjustments(pageNumber));
-  }, [dispatch, currentPage]);
+  }, [dispatch, currentPage, viewArchived]);
 
   const filter = () => {
     setFilterOpen(true);
@@ -111,6 +111,12 @@ const RateAdjustments = () => {
     setEditedRateAdjustment(null);
     handleOpen();
   };
+  const handleViewArchiveToggle = () => {
+    setViewArchived(!viewArchived);
+    // When toggling, reset the selected rows
+    setSelectedRows(new Set());
+    setSelectAllChecked(false);
+  };
 
   const fetchFunction = (req: any) => {
     dispatch(fetchRateAdjustments(req));
@@ -127,6 +133,58 @@ const RateAdjustments = () => {
     setEditMode(true);
     setEditedRateAdjustment(data);
     handleOpen();
+  };
+
+  const handleArchiveAllClick = async () => {
+    const confirmed = await showAlert(
+      "Are Your Sure",
+      "This action will archive all selected rows?",
+      "Yes",
+      "No"
+    );
+    if (confirmed) {
+      const archivedRows = Array.from(selectedRows).map(
+        (index) => data[index].record_id
+      );
+      if (archivedRows.length > 0) {
+        const newValue = {
+          record_id: archivedRows,
+          is_archived: true,
+        };
+
+        const pageNumber = {
+          page_number: currentPage,
+          page_size: itemsPerPage,
+        };
+
+        const res = await postCaller("update_rateadjustments_archive", newValue);
+        if (res.status === HTTP_STATUS.OK) {
+          // If API call is successful, refetch commissions
+          dispatch(fetchRateAdjustments(pageNumber));
+          const remainingSelectedRows = Array.from(selectedRows).filter(
+            (index) => !archivedRows.includes(data[index].record_id)
+          );
+          const isAnyRowSelected = remainingSelectedRows.length > 0;
+          setSelectAllChecked(isAnyRowSelected);
+          setSelectedRows(new Set());
+          await successSwal(
+            "Archived",
+            "All Selected rows have been archived",
+            "success",
+            2000,
+            false
+          );
+        } else {
+          await successSwal(
+            "Archived",
+            "All Selected rows have been archived",
+            "error",
+            2000,
+            false
+          );
+        }
+      }
+    }
   };
 
   const handleArchiveClick = async (record_id: any) => {
@@ -147,7 +205,7 @@ const RateAdjustments = () => {
         page_size: itemsPerPage,
         archive:viewArchived
       };
-      const res = await postCaller("ipdate_rep_pay_settings_archive", newValue);
+      const res = await postCaller("update_rateadjustments_archive", newValue);
       if (res.status === HTTP_STATUS.OK) {
         dispatch(fetchRateAdjustments(pageNumber));
         await successSwal(
@@ -181,8 +239,8 @@ const RateAdjustments = () => {
       <div className="commissionContainer">
         <TableHeader
           title="Rate Adjustments"
-          onPressViewArchive={() => setViewArchived(prev=>!prev)}
-          onPressArchive={() => handleArchiveClick(Array.from(selectedRows).map((_,i:number)=>currentPageData[i].record_id))}
+          onPressViewArchive={() => handleViewArchiveToggle()}
+          onPressArchive={() => handleArchiveAllClick()}
           onPressFilter={() => filter()}
           onPressImport={() => {}}
           checked={isAllRowsSelected}
@@ -204,6 +262,7 @@ const RateAdjustments = () => {
           <CreateRateAdjustments
             editMode={editMode}
             handleClose={handleClose}
+            editData={editedRateAdjustment}
             setViewArchived={setViewArchived}
           />
         )}
@@ -233,11 +292,13 @@ const RateAdjustments = () => {
                     onClick={() => handleSort(item.name)}
                   />
                 ))}
-                <th>
-                  <div className="action-header">
-                    <p>Action</p>
-                  </div>
-                </th>
+                 {viewArchived === true ? null : (
+                  <th>
+                    <div className="action-header">
+                      <p>Action</p>
+                    </div>
+                  </th>
+                )}
               </tr>
             </thead>
             <tbody>
@@ -267,13 +328,13 @@ const RateAdjustments = () => {
                       <td>{el.adjustment}</td>
                       <td>{el.min_rate}</td>
                       <td>{el.max_rate}</td>
-                      <td>
-                        {!viewArchived && (
+                      {viewArchived === true ? null : (
+                        <td>
                           <div className="action-icon">
                             <div
                               className=""
                               style={{ cursor: "pointer" }}
-                              onClick={() => handleArchiveClick([el.RecordId])}
+                              onClick={() => handleArchiveClick(el.RecordId)}
                             >
                               <img src={ICONS.ARCHIVE} alt="" />
                             </div>
@@ -285,11 +346,20 @@ const RateAdjustments = () => {
                               <img src={ICONS.editIcon} alt="" />
                             </div>
                           </div>
-                        )}
-                      </td>
+                        </td>
+                      )}
                     </tr>
                   ))
-                : null}
+                : (
+                  <tr style={{ border: 0 }}>
+                    <td colSpan={10}>
+                      <div className="data-not-found">
+                        <DataNotFound />
+                        <h3>Data Not Found</h3>
+                      </div>
+                    </td>
+                  </tr>
+                )}
             </tbody>
           </table>
         </div>

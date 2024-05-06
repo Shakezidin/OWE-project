@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { createReconcile, fetchReconcile, updateReconcile} from "../../../apiActions/reconcileAction";
+import { fetchApptSetters, updateApptSetters, createApttSetters} from "../../../apiActions/apptSetterAction"
 import { RateAdjustment } from "../../../../core/models/api_models/RateAdjustmentModel";
 import { toast } from "react-toastify";
 
@@ -7,9 +7,8 @@ interface IState {
     data: any,
     error: string,
     isLoading: boolean,
-    isFormSubmitting:boolean
-   
-    isSuccess:number,
+    isFormSubmitting:boolean 
+    isSuccess:boolean
 }
 
 const initialState: IState = {
@@ -17,45 +16,47 @@ const initialState: IState = {
     error: "",
     isLoading: false,
     isFormSubmitting:false,
-    isSuccess:0,
+    isSuccess:false,
 }
 
-const reconcile = createSlice({
-    name: "Reconcile",
+const apptSetters = createSlice({
+    name: "Appt Setters",
     initialState,
-    reducers: {},
+    reducers: {    resetSuccess:(state)=>{
+        state.isSuccess = false
+      }},
     extraReducers: builder => {
-        builder.addCase(fetchReconcile.pending, (state) => {
+        builder.addCase(fetchApptSetters.pending, (state) => {
             state.isLoading = true
         })
-            .addCase(fetchReconcile.fulfilled, (state, action: PayloadAction<any | null>) => {
+            .addCase(fetchApptSetters.fulfilled, (state, action: PayloadAction<any | null>) => {
                 state.isLoading = false
                 state.data = action.payload ? action.payload:[]
             })
-            .addCase(fetchReconcile.rejected, (state, action) => {
+            .addCase(fetchApptSetters.rejected, (state, action) => {
                 state.isLoading = false
                 state.error = action.payload as string
             })
-            .addCase(createReconcile.pending, (state, action) => {
+            .addCase(createApttSetters.pending, (state, action) => {
                 state.isFormSubmitting = true
             })
-            .addCase(createReconcile.fulfilled, (state) => {
+            .addCase(createApttSetters.fulfilled, (state) => {
                 state.isFormSubmitting = false
-                state.isSuccess=1
+                state.isSuccess=true
             })
-            .addCase(createReconcile.rejected, (state, action) => {
+            .addCase(createApttSetters.rejected, (state, action) => {
                 state.isFormSubmitting = false
                 state.error = action.payload as string
             })
-            .addCase(updateReconcile.pending,(state, action) => {
+            .addCase(updateApptSetters.pending,(state, action) => {
                 state.isFormSubmitting = true;
               })
-              .addCase(updateReconcile.fulfilled, (state, action) => {
+              .addCase(updateApptSetters.fulfilled, (state, action) => {
                 state.isFormSubmitting = false;
-                state.isSuccess=1
+                state.isSuccess=true
                 
               })
-              .addCase(updateReconcile.rejected, (state, action) => {
+              .addCase(updateApptSetters.rejected, (state, action) => {
                 state.isFormSubmitting = false;
                 state.error = action.payload as string;
               })
@@ -63,5 +64,5 @@ const reconcile = createSlice({
     }
 })
 
-
-export default reconcile.reducer
+export const {resetSuccess} =  apptSetters.actions
+export default apptSetters.reducer
