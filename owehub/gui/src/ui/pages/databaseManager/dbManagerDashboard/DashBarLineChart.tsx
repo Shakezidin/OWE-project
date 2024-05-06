@@ -58,7 +58,7 @@ const data = [
 export default class BarChartComponent extends PureComponent {
   render() {
     return (
-      <div className="" style={{ width: "100%",}}>
+      <div className="" style={{ width: "100%" }}>
         <div className="dash-section" style={{ padding: "1rem" }}>
           <p>Total Table Record</p>
         </div>
@@ -73,10 +73,9 @@ export default class BarChartComponent extends PureComponent {
                 left: 20,
                 bottom: 36,
               }}
-              
             >
-              <CartesianGrid vertical={false}/>
-              <Tooltip/>
+              <CartesianGrid vertical={false} />
+              <Tooltip />
               <XAxis
                 dataKey="name"
                 tickLine={false}
@@ -85,7 +84,12 @@ export default class BarChartComponent extends PureComponent {
               />
               <YAxis
                 axisLine={false}
-                tick={{ fontFamily: "Inter", fontWeight: 500, fontSize: 12, fill: "#101828" }}
+                tick={{
+                  fontFamily: "Inter",
+                  fontWeight: 500,
+                  fontSize: 12,
+                  fill: "#101828",
+                }}
                 tickLine={false}
               />
               {/* <Legend
@@ -94,13 +98,23 @@ export default class BarChartComponent extends PureComponent {
               <Bar
                 dataKey="Total_Records"
                 fill="#FB7955"
-                label={{ position: "top", fill: "#565656", fontSize: "10px", fontWeight: 500 }}
+                label={{
+                  position: "top",
+                  fill: "#565656",
+                  fontSize: "10px",
+                  fontWeight: 500,
+                }}
                 radius={[8, 8, 0, 0]}
               />
               <Bar
                 dataKey="Historical_Records"
                 fill="#007AF5"
-                label={{ position: "top", fill: "#565656", fontSize: "10px", fontWeight: 500 }}
+                label={{
+                  position: "top",
+                  fill: "#565656",
+                  fontSize: "10px",
+                  fontWeight: 500,
+                }}
                 radius={[8, 8, 0, 0]}
               />
             </BarChart>

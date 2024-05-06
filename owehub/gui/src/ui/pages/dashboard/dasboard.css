@@ -17,11 +17,11 @@
   text-align: left;
   color: #393851;
 }
-.date-button{
-  border-radius: 0.40rem;
+.date-button {
+  border-radius: 0.4rem;
   border: none;
   outline: none;
-  background: #ECECEC;
+  background: #ececec;
   padding: 6px;
   cursor: pointer;
   text-wrap: nowrap;
@@ -31,7 +31,7 @@
   line-height: 14.5px;
   user-select: none;
 }
-.calender-container{
+.calender-container {
   position: absolute;
   z-index: 999;
   right: -3%;
@@ -39,8 +39,8 @@
   background-color: #fff;
   box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.2);
 }
-.close-calender{
-  background: #3D91FF;
+.close-calender {
+  background: #3d91ff;
   color: white;
   font-size: 12px;
   padding: 4px 15px;
@@ -51,8 +51,8 @@
   bottom: 10px;
   border: none;
 }
-.reset-calender{
-  background: #3D91FF;
+.reset-calender {
+  background: #3d91ff;
   color: white;
   font-size: 12px;
   padding: 4px 15px;
@@ -111,16 +111,17 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  flex-wrap: wrap;
 }
-.payroll-date{
+.payroll-date {
   font-size: 13px;
-  border-radius: 0.40rem;
+  border-radius: 0.4rem;
   border: none;
   outline: none;
-  background: #ECECEC;
+  background: #ececec;
   padding: 4px 8px;
 }
-.Payroll-section{
+.Payroll-section {
   display: flex;
   height: 36px;
   background-color: white;
@@ -130,7 +131,7 @@
   border-radius: 8px;
   border: 1px solid #d0d5dd;
 }
-.dash-head-input{
+.dash-head-input {
   display: flex;
   height: 36px;
   background-color: white;
@@ -140,8 +141,8 @@
   border-radius: 8px;
   border: 1px solid #d0d5dd;
 }
-.dash-select{
-  background-color: #ECECEC;
+.dash-select {
+  background-color: #ececec;
   border: none;
   outline: none;
   padding: 0.3rem, 0.7rem;
@@ -152,12 +153,12 @@
   border-radius: 0.4rem;
   position: relative;
 }
-.dashboard-chart-view{
-  background: #ECECEC;
-  border-radius: 0.40rem;
+.dashboard-chart-view {
+  background: #ececec;
+  border-radius: 0.4rem;
   border: none;
   outline: none;
-  background: #ECECEC;
+  background: #ececec;
   padding: 8px;
   cursor: pointer;
   text-wrap: nowrap;
@@ -170,7 +171,7 @@
   /* align-content: center;
   justify-content: center; */
 }
-.payroll-label{
+.payroll-label {
   font-size: 13px;
   color: var(--btn-text-color);
   font-weight: 600;
@@ -185,7 +186,7 @@
   align-items: center;
   justify-content: center;
 }
-.filter-disable{
+.filter-disable {
   width: 36px !important;
   height: 36px !important;
   border-radius: 0.5rem;
@@ -197,7 +198,7 @@
   justify-content: center;
 }
 .active-filter-line {
-  background-color: #19B87E;
+  background-color: #19b87e;
 }
 .active-filter-line img {
   fill: white;
@@ -206,7 +207,7 @@
   width: 20px;
   height: 20px;
 }
-.dashboard-filter{
+.dashboard-filter {
   color: var(--white-color);
   height: 20px;
   width: 20px;
@@ -242,15 +243,13 @@
   /* padding: 1rem; */
   padding: 0 1rem 1rem 1rem;
   /* margin-left: 1rem; */
- 
 }
-.help-section h3{
-font-size: 28px;
-font-weight: 600;
-/* line-height: 44px; */
-text-align: left;
-color: white;
-
+.help-section h3 {
+  font-size: 28px;
+  font-weight: 600;
+  /* line-height: 44px; */
+  text-align: left;
+  color: white;
 }
 .create-input-container {
   /* text-align: left; */
@@ -261,34 +260,29 @@ color: white;
   cursor: pointer;
 }
 
-.help-input-container{
+.help-input-container {
   padding: 1rem 2rem 1rem 2rem;
   display: flex;
   gap: 1rem;
   flex-direction: column;
-  
 }
-
 .create-input-field-help {
   /* width: 280px; */
   /* margin-left: 2rem; */
   flex: 1;
   /* margin-top: 0.5rem; */
-
 }
-.bi-support-icon{
+.bi-support-icon {
   height: 14px;
   width: 14px;
   stroke-width: 0.2;
 }
-
 
 .breakdown-container {
   display: flex;
   justify-content: space-between;
   padding: 0.5rem 0.5rem 0 1rem;
   background: #0096d3;
-
 }
 
 .breakdown-img {
@@ -321,7 +315,6 @@ color: white;
   height: 100%;
   overflow: auto;
   white-space: nowrap;
- 
 }
 .breakdown-table tbody {
   font-weight: 500;
@@ -332,7 +325,6 @@ color: white;
   justify-content: flex-end;
   padding: 10px 10px 0 0px;
   cursor: pointer;
-
 }
 .createUserCrossButtonBreak img {
   color: white;
@@ -351,7 +343,6 @@ color: white;
   justify-content: center;
   align-items: center;
   z-index: 100;
-
 }
 .modal-down-break {
   background-color: #fefefe;
@@ -359,19 +350,17 @@ color: white;
   width: 40%;
   max-width: 900px;
   height: 600px;
-  overflow: hidden; 
-
+  overflow: hidden;
 }
 
 .modal-body-down {
-  height: calc(100% - 70px); 
+  height: calc(100% - 70px);
   overflow-y: auto;
 }
 
 .create-input-help {
   width: 100%;
   padding: 0.5rem 2rem 0.5rem 2rem;
-
 }
 .create-input-help textarea {
   border: 1px solid #d0d5dd;
@@ -382,85 +371,89 @@ color: white;
   /* background-color: #263747; */
   width: 100%;
   margin-top: 0.5rem;
-  background-color:white;
-  
+  background-color: white;
 }
-.inputLabeldash p{
+.inputLabeldash p {
   font-size: 13px;
   font-weight: 500;
   /* line-height: 18px; */
   text-align: left;
-  
-  }
+}
 
-  .inputLabel-help {
-    font-size: 12px;
-    font-weight: 500;
-    line-height: 18px;
-    text-align: left;
-    
-  }
-  .file-input-container-help {
-    position: relative;
-    border: 1px solid #ced4da; /* Show border */
-    border-radius: 8px;
-    padding: 4px;
-    /* width: 290px; */
-    margin-top: 0.1rem;
-    height: 38px;
-    border-style: dashed;
-    border-color: #0493ce;
-    background-color: #E8F8FF;
-  }
+.inputLabel-help {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+  text-align: left;
+}
+.file-input-container-help {
+  position: relative;
+  border: 1px solid #ced4da; /* Show border */
+  border-radius: 8px;
+  padding: 4px;
+  /* width: 290px; */
+  margin-top: 0.1rem;
+  height: 38px;
+  border-style: dashed;
+  border-color: #0493ce;
+  background-color: #e8f8ff;
+}
 
+.custom-button-dash {
+  /* Define your button styles */
+  background: linear-gradient(180deg, #f6f6f6 0%, #c1c1c1 100%);
+  color: #000000;
+  padding: 5px 5px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 18px;
+  margin-right: 10px;
+  /* text-align: left; */
+}
 
-  
+.custom-button-dash {
+  /* Define your button styles */
+  background: linear-gradient(180deg, #f6f6f6 0%, #c1c1c1 100%);
+  color: #000000;
+  padding: 5px 5px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 18px;
+  margin-right: 10px;
+  /* text-align: left; */
+}
 
-  .custom-button-dash {
-    /* Define your button styles */
-    background: linear-gradient(180deg, #f6f6f6 0%, #c1c1c1 100%);
-    color: #000000;
-    padding: 5px 5px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 10px;
-    font-weight: 500;
-    line-height: 18px;
-    margin-right: 10px;
-    /* text-align: left; */
-  }
+.createUserActionButtonDash {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top: 1px solid #d0d5dd;
+  padding: 24px 0 24px 0;
+  gap: 1rem;
+}
+.createUserActionButtonDash :hover {
+  background-color: #263747;
+}
 
-  .createUserActionButtonDash {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-top: 1px solid #d0d5dd;
-    padding: 24px 0 24px 0;
-    gap: 1rem;
-  }
-  .createUserActionButtonDash :hover {
-    background-color: #263747;
-  }
+.create-input-field-help {
+  /* width: 290px; */
+  width: 50%;
+  display: flex;
+  display: block;
+  padding-top: 0.5rem;
+}
 
-
-
-
-  .create-input-field-help {
-    /* width: 290px; */
-    width: 50%;
-    display: flex;
-    display: block;
-    padding-top: 0.5rem;
-  }
-  
-  
-  .create-input-field-help label {
-    font-size: 12px;
-    font-weight: 400;
-    line-height: 18px;
-    text-align: left; 
-    margin-bottom: -5px;
-    /* background-color: #0493CE; */
-  }
- 
+.create-input-field-help label {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+  text-align: left;
+  margin-bottom: -5px;
+  /* background-color: #0493CE; */
+}

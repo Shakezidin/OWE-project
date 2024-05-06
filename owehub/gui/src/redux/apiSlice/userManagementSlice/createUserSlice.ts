@@ -46,6 +46,7 @@ const createUserSlice = createSlice({
         },
       };
     },
+
     userResetForm() {
       console.log("inititaste reset");
       return initialState;

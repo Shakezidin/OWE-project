@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import {
   fetchUserListBasedOnRole,
   fetchUserOnboarding,
+  createTablePermission,
 } from "../../../redux/apiActions/userManagementActions";
 import {
   UserDropdownModel,
@@ -28,7 +29,10 @@ import { HTTP_STATUS } from "../../../core/models/api_models/RequestModel";
 import Loading from "../../components/loader/Loading";
 import { toast } from "react-toastify";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { TYPE_OF_USER, ALL_USER_ROLE_LIST } from "../../../resources/static_data/TypeOfUser";
+import {
+  TYPE_OF_USER,
+  ALL_USER_ROLE_LIST,
+} from "../../../resources/static_data/TypeOfUser";
 import { showAlert } from "../../components/alert/ShowAlert";
 
 const UserManagement: React.FC = () => {
@@ -39,9 +43,8 @@ const UserManagement: React.FC = () => {
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
 
   const dispatch = useAppDispatch();
-  const { loading, userOnboardingList, userRoleBasedList } = useAppSelector(
-    (state) => state.userManagement
-  );
+  const { loading, userOnboardingList, userRoleBasedList, dbTables } =
+    useAppSelector((state) => state.userManagement);
   const {
     formData,
     dealerOwenerList,
@@ -59,6 +62,7 @@ const UserManagement: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       await dispatch(fetchUserOnboarding()); // Using dispatch
+      // await dispatch(createTablePermission());
     };
 
     fetchData();
@@ -123,14 +127,18 @@ const UserManagement: React.FC = () => {
   };
 
   /** submit button */
-  const onSubmitCreateUser = (event: any) => {
-    event.preventDefault();
-    console.log(formData);
-
+  const onSubmitCreateUser = (tablePermissions: any) => {
+    console.log(formData, tablePermissions);
+    const arrayOfPermissions = Object.entries(tablePermissions).map(
+      ([tableName, permission]) => ({
+        table_name: tableName,
+        privilege_type: permission,
+      })
+    );
     const formErrors = validateForm(formData);
     console.log("formErrors", formErrors);
     if (Object.keys(formErrors).length === 0) {
-      createUserRequest();
+      createUserRequest(arrayOfPermissions);
     } else {
       //const firstKey = Object.keys(formErrors)[0]; //Todo: change in future
       toast.info(Object.keys(formErrors)[0] + " is required.");
@@ -138,9 +146,11 @@ const UserManagement: React.FC = () => {
   };
 
   /** API call to submit */
-  const createUserRequest = async () => {
+  const createUserRequest = async (tablePermissions: any) => {
     let data = createUserObject(formData);
-    const actionResult = await dispatch(createUserOnboarding(data));
+    const actionResult = await dispatch(
+      createUserOnboarding({ ...data, tables_permissions: tablePermissions })
+    );
     const result = unwrapResult(actionResult);
 
     if (result.status === HTTP_STATUS.OK) {
@@ -153,14 +163,18 @@ const UserManagement: React.FC = () => {
 
   /** API call to submit */
   const deleteUserRequest = async (deleteRows: string[]) => {
-
-    const confirmed = await showAlert('Delete User', 'Are you sure you want to delete user?', 'Yes', 'No');
+    const confirmed = await showAlert(
+      "Delete User",
+      "Are you sure you want to delete user?",
+      "Yes",
+      "No"
+    );
     if (confirmed) {
       const actionResult = await dispatch(
         deleteUserOnboarding({ user_codes: deleteRows })
       );
       const result = unwrapResult(actionResult);
-  
+
       if (result.status === HTTP_STATUS.OK) {
         handleClose();
         setSelectedRows(new Set());
@@ -169,8 +183,7 @@ const UserManagement: React.FC = () => {
       } else {
         toast.warning(result.message);
       }
-    } 
-   
+    }
   };
 
   /** render UI */
@@ -201,7 +214,7 @@ const UserManagement: React.FC = () => {
           regionList={regionList}
           editMode={false}
           userOnboard={null}
-          onSubmitCreateUser={(e) => onSubmitCreateUser(e)}
+          onSubmitCreateUser={onSubmitCreateUser}
           onChangeRole={(role, value) => {
             onChangeRole(role, value);
           }}
@@ -222,7 +235,7 @@ const UserManagement: React.FC = () => {
           selectedOption={selectedOption}
           handleSelectChange={handleSelectChange}
           onClickDelete={(item: UserRoleBasedListModel) => {
-            console.log(item.user_code); 
+            console.log(item.user_code);
             deleteUserRequest([item.user_code]);
           }}
           onClickMultiDelete={() => {

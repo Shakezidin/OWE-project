@@ -9,13 +9,11 @@ import { ICONS } from "../../../icons/Icons";
 import SelectTable from "../userTableList/SeletTable";
 import UserBasedInput from "./UserBasedInput";
 import SelectOption from "../../../components/selectOption/SelectOption";
-import {
-  CreateUserModel,
-} from "../../../../core/models/api_models/UserManagementModel";
+import { CreateUserModel } from "../../../../core/models/api_models/UserManagementModel";
 import { useAppSelector } from "../../../../redux/hooks";
 import Loading from "../../../components/loader/Loading";
 import { ALL_USER_ROLE_LIST } from "../../../../resources/static_data/TypeOfUser";
-import './Userboard.css'
+import "./Userboard.css";
 
 interface createUserProps {
   editMode: boolean;
@@ -37,8 +35,11 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
   const dispatch = useDispatch();
   const [firstNameError, setFirstNameError] = useState("");
   const [lastNameError, setLastNameError] = useState("");
-  const { loading, formData } = useAppSelector((state) => state.createOnboardUser);
+  const { loading, formData } = useAppSelector(
+    (state) => state.createOnboardUser
+  );
   const [selectTable, setSelectTable] = useState<boolean>(false);
+  const [tablePermissions, setTablePermissions] = useState({});
 
   /** handle change for role */
   const handleChange = (newValue: any, fieldName: string) => {
@@ -73,8 +74,6 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
   //   dispatch(updateUserForm({ field: name, value }));
   // };
 
-
-
   const handleInputChange = (
     e:
       | React.ChangeEvent<HTMLInputElement>
@@ -100,12 +99,21 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
     }
   };
 
-
   /** render ui */
   return (
     <div className="transparent-model">
-      {loading && <div><Loading /> {loading}</div>}
-      <form onSubmit={(e) => onSubmitCreateUser(e)} className="modal">
+      {loading && (
+        <div>
+          <Loading /> {loading}
+        </div>
+      )}
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          onSubmitCreateUser(tablePermissions);
+        }}
+        className="modal"
+      >
         <div className="createUserCrossButton" onClick={handleClose}>
           <CROSS_BUTTON />
         </div>
@@ -123,7 +131,9 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                     onChange={(e) => handleInputChange(e)}
                     name={"first_name"}
                   />
-                  {firstNameError && <p className="error-message">{firstNameError}</p>}
+                  {firstNameError && (
+                    <p className="error-message">{firstNameError}</p>
+                  )}
                 </div>
                 <div className="create-input-field">
                   <Input
@@ -134,10 +144,14 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                     onChange={(e) => handleInputChange(e)}
                     name={"last_name"}
                   />
-                  {lastNameError && <p className="error-message">{lastNameError}</p>}
+                  {lastNameError && (
+                    <p className="error-message">{lastNameError}</p>
+                  )}
                 </div>
                 <div className="create-input-field">
-                  <label className="inputLabel-select selected-fields-onboard">Role</label>
+                  <label className="inputLabel-select selected-fields-onboard">
+                    Role
+                  </label>
                   <SelectOption
                     options={ALL_USER_ROLE_LIST}
                     onChange={(newValue) => handleChange(newValue, "role_name")}
@@ -170,10 +184,13 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                   />
                 </div>
                 {formData.role_name === "Admin" ||
-                  formData.role_name === "SubDealer Owner" ||
-                  formData.role_name === "Dealer Owner" || formData.role_name === "Finance" ? null : (
+                formData.role_name === "SubDealer Owner" ||
+                formData.role_name === "Dealer Owner" ||
+                formData.role_name === "Finance" ? null : (
                   <div className="create-input-field">
-                    <label className="inputLabel-select selected-fields-onboard">Dealer Owner</label>
+                    <label className="inputLabel-select selected-fields-onboard">
+                      Dealer Owner
+                    </label>
                     <SelectOption
                       options={dealerList}
                       onChange={(newValue) =>
@@ -192,17 +209,16 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                 onChange={(e: any) => handleInputChange(e)}
                 regionList={regionList}
                 handleChangeForRegion={(value: any, name: string) => {
-                  handleChangeForRegion(value, name)
+                  handleChangeForRegion(value, name);
                 }}
-
               />
-              <div className="db-access-disable">
+              <div className="">
                 <div className="" style={{ display: "flex", gap: "0.5rem" }}>
                   <CheckBox
                     checked={false}
-                    onChange={() => { }}
+                    onChange={() => {}}
 
-                  // indeterminate={isAnyRowSelected && !isAllRowsSelected}
+                    // indeterminate={isAnyRowSelected && !isAllRowsSelected}
                   />
                   <div className="access-data">
                     <p>Database Access</p>
@@ -210,40 +226,25 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                 </div>
                 <div className="" style={{ marginTop: "0.2rem" }}>
                   <div className="dashboard-payroll">
-                    <div className="Payroll-section">
-                      <label
-                        className="inputLabel"
-                        style={{ color: "#344054" }}
-                      >
-                        Table 1
-                      </label>
-                      <div className="dash-select-user">Edit</div>
-                    </div>
-                    <div className="Payroll-section">
-                      <label
-                        className="inputLabel"
-                        style={{ color: "#344054" }}
-                      >
-                        Table 2
-                      </label>
-                      <div className="dash-select-user">Full</div>
-                    </div>
-                    <div className="Payroll-section">
-                      <label
-                        className="inputLabel"
-                        style={{ color: "#344054" }}
-                      >
-                        Table 3
-                      </label>
-                      <div className="dash-select-user">View</div>
-                    </div>
+                    {Object.keys(tablePermissions).map((key) => (
+                      <div className="Payroll-section" key={key}>
+                        <label
+                          className="inputLabel"
+                          style={{ color: "#344054" }}
+                        >
+                          {key}
+                        </label>
+                        <div className="dash-select-user">Edit</div>
+                      </div>
+                    ))}
+
                     <div
                       className="Line-container"
-                      style={{ marginTop: "0.3rem", }}
+                      style={{ marginTop: "0.3rem" }}
                     >
                       <div
                         className="line-graph"
-                      // onClick={() => setSelectTable(true)}
+                        // onClick={() => setSelectTable(true)}
                       >
                         <div className="edit-line">
                           <img
@@ -255,7 +256,11 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                       </div>
                     </div>
                     {selectTable && (
-                      <SelectTable setSelectTable={setSelectTable} />
+                      <SelectTable
+                        setSelectTable={setSelectTable}
+                        setTablePermissions={setTablePermissions}
+                        tablePermissions={tablePermissions}
+                      />
                     )}
                   </div>
                 </div>
@@ -292,13 +297,13 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                   placeholder="Type"
                 ></textarea>
                 <p
-                  className={`character-count ${formData.description.length >= 255 ? "exceeded" : ""
-                    }`}
+                  className={`character-count ${
+                    formData.description.length >= 255 ? "exceeded" : ""
+                  }`}
                 >
                   {formData.description.length}/255 characters
                 </p>
               </div>
-
             </div>
           </div>
         </div>
@@ -308,7 +313,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
             onClick={handleClose}
             type={"button"}
           />
-          <ActionButton title={"Save"} onClick={() => { }} type={"submit"} />
+          <ActionButton title={"Save"} onClick={() => {}} type={"submit"} />
         </div>
       </form>
     </div>
