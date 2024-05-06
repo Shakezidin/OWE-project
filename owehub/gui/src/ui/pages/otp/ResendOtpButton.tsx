@@ -14,7 +14,7 @@ const ResendOtpButton = (props: {
   const [remainingSec, setRemainingSec] = useState<number | null>(null);
 
   const setupCountdown = useCallback((otpSentAtTimestamp?: number) => {
-    let otpSentAt = otpSentAtTimestamp || Date.now();
+    const otpSentAt = otpSentAtTimestamp || Date.now();
 
     localStorage.setItem(LOCALSTORAGE_COUNTDOWN_KEY, otpSentAt.toString());
     const remainingSec =
@@ -44,9 +44,11 @@ const ResendOtpButton = (props: {
 
   const countdownIntervalId = useRef<NodeJS.Timer>();
   useEffect(() => {
-    setupCountdown(
-      parseInt(localStorage.getItem(LOCALSTORAGE_COUNTDOWN_KEY) ?? "")
-    );
+    // setupCountdown(
+    //   parseInt(localStorage.getItem(LOCALSTORAGE_COUNTDOWN_KEY) ?? "")
+    // );
+
+    setupCountdown();
 
     return () => clearInterval(countdownIntervalId.current);
   }, [setupCountdown]);
