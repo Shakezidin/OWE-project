@@ -4,10 +4,10 @@ import "../configure.css";
 import { RiDeleteBin5Line } from "react-icons/ri";
 // import CreateCommissionRate from "./CreateCommissionRate";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-import { CSVLink } from 'react-csv';
+import { CSVLink } from "react-csv";
 import { ICONS } from "../../../icons/Icons";
 import TableHeader from "../../../components/tableHeader/TableHeader";
-import { fetchCommissions } from "../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice";
+import { IRowDLR, getDlrOth } from "../../../../redux/apiActions/dlrAction";
 
 // import FilterCommission from "./FilterCommission";
 
@@ -27,6 +27,10 @@ import DataNotFound from "../../../components/loader/DataNotFound";
 import { ROUTES } from "../../../../routes/routes";
 import { DlrOthPayColumn } from "../../../../resources/static_data/configureHeaderData/DlrOthPayColumn";
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
+import { showAlert, successSwal } from "../../../components/alert/ShowAlert";
+import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
+import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
+import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 interface Column {
   name: string;
   displayName: string;
@@ -39,35 +43,37 @@ const DlrOthPay: React.FC = () => {
   const [exportOPen, setExportOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const handleExportOpen = () => setExportOpen(!exportOPen)
+  const handleExportOpen = () => setExportOpen(!exportOPen);
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const commissionList = useAppSelector((state) => state.comm.commissionsList);
-  const loading = useAppSelector((state) => state.comm.loading);
-  const error = useAppSelector((state) => state.comm.error);
+  const { data: commissionList } = useAppSelector((state) => state.dlrOth);
+  const loading = useAppSelector((state) => state.dlrOth.isLoading);
+  const error = useAppSelector((state) => state.dlrOth.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
-  const [editedCommission, setEditedCommission] = useState<CommissionModel | null>(null);
+  const [editedCommission, setEditedCommission] = useState<IRowDLR | null>(
+    null
+  );
   const itemsPerPage = 5;
-  const currentPage = useAppSelector((state) => state.paginationType.currentPage);
+  const currentPage = useAppSelector(
+    (state) => state.paginationType.currentPage
+  );
   const [viewArchived, setViewArchived] = useState<boolean>(false);
   const [sortKey, setSortKey] = useState("");
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
+  
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
-
     };
-    dispatch(fetchCommissions(pageNumber));
-
-  }, [dispatch, currentPage]);
+    dispatch(getDlrOth({ ...pageNumber, archived: viewArchived }));
+  }, [dispatch, currentPage,viewArchived]);
 
   const paginate = (pageNumber: number) => {
     dispatch(setCurrentPage(pageNumber));
   };
-
 
   const goToNextPage = () => {
     dispatch(setCurrentPage(currentPage + 1));
@@ -87,12 +93,12 @@ const DlrOthPay: React.FC = () => {
     { name: "rl", displayName: "RL", type: "number" },
     { name: "rate", displayName: "Rate", type: "number" },
     { name: "start_date", displayName: "Start Date", type: "date" },
-    { name: "end_date", displayName: "End Date", type: "date" }
+    { name: "end_date", displayName: "End Date", type: "date" },
   ];
-  const filter = ()=>{
-    setFilterOpen(true)
-  }
- 
+  const filter = () => {
+    setFilterOpen(true);
+  };
+
   const totalPages = Math.ceil(commissionList?.length / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -100,26 +106,64 @@ const DlrOthPay: React.FC = () => {
   const handleAddCommission = () => {
     setEditMode(false);
     setEditedCommission(null);
-    handleOpen()
+    handleOpen();
   };
 
-  const handleEditCommission = (commission: CommissionModel) => {
+  const handleEditCommission = (commission: IRowDLR) => {
     setEditMode(true);
     setEditedCommission(commission);
-    handleOpen()
+    handleOpen();
   };
 
-
+  const handleArchiveClick = async (record_id: number[]) => {
+    const confirmed = await showAlert(
+      "Are Your Sure",
+      "This action will archive all selected rows?",
+      "Yes",
+      "No"
+    );
+    if (confirmed) {
+      const archived= record_id;
+      let newValue = {
+        record_id: archived,
+        is_archived: true,
+      };
+      const pageNumber = {
+        page_number: currentPage,
+        page_size: itemsPerPage,
+        archived: viewArchived,
+      };
+      const res = await postCaller("update_dlr_oth_archive", newValue);
+      if (res.status === HTTP_STATUS.OK) {
+        dispatch(getDlrOth(pageNumber));
+        await successSwal(
+          "Archived",
+          "All Selected rows have been archived",
+          "success",
+          2000,
+          false
+        );
+      } else {
+        await successSwal(
+          "Archived",
+          "All Selected rows have been archived",
+          "error",
+          2000,
+          false
+        );
+      }
+    }
+  };
 
   const currentPageData = commissionList?.slice(startIndex, endIndex);
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === commissionList.length;
   const handleSort = (key: any) => {
     if (sortKey === key) {
-      setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
+      setSortDirection(sortDirection === "desc" ? "asc" : "desc");
     } else {
       setSortKey(key);
-      setSortDirection('asc');
+      setSortDirection("asc");
     }
   };
 
@@ -127,51 +171,80 @@ const DlrOthPay: React.FC = () => {
     currentPageData.sort((a: any, b: any) => {
       const aValue = a[sortKey];
       const bValue = b[sortKey];
-      if (typeof aValue === 'string' && typeof bValue === 'string') {
-        return sortDirection === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+      if (typeof aValue === "string" && typeof bValue === "string") {
+        return sortDirection === "asc"
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
       } else {
         // Ensure numeric values for arithmetic operations
-        const numericAValue = typeof aValue === 'number' ? aValue : parseFloat(aValue);
-        const numericBValue = typeof bValue === 'number' ? bValue : parseFloat(bValue);
-        return sortDirection === 'asc' ? numericAValue - numericBValue : numericBValue - numericAValue;
+        const numericAValue =
+          typeof aValue === "number" ? aValue : parseFloat(aValue);
+        const numericBValue =
+          typeof bValue === "number" ? bValue : parseFloat(bValue);
+        return sortDirection === "asc"
+          ? numericAValue - numericBValue
+          : numericBValue - numericAValue;
       }
     });
   }
   if (error) {
-    return <div className="loader-container"><Loading/></div>;
+    return (
+      <div className="loader-container">
+        <Loading />
+      </div>
+    );
   }
   if (loading) {
-    return <div className="loader-container"><Loading/> {loading}</div>;
+    return (
+      <div className="loader-container">
+        <Loading /> {loading}
+      </div>
+    );
   }
   return (
     <div className="comm">
-      <Breadcrumb head="Commission" linkPara="Configure" route={ROUTES.CONFIG_PAGE} linkparaSecond="DLR-OTH"/>
+      <Breadcrumb
+        head="Commission"
+        linkPara="Configure"
+        route={ROUTES.CONFIG_PAGE}
+        linkparaSecond="DLR-OTH"
+      />
       <div className="commissionContainer">
         <TableHeader
           title="DLR-OTH"
-          onPressViewArchive={() => { }}
-          onPressArchive={() => { }}
+          onPressViewArchive={() => setViewArchived((prev) => !prev)}
+          onPressArchive={() => handleArchiveClick(Array.from(selectedRows).map((_,i:number)=>currentPageData[i].record_id))}
           onPressFilter={() => filter()}
           checked={isAllRowsSelected}
           isAnyRowSelected={isAnyRowSelected}
-          onPressImport={() => { }}
+          onPressImport={() => {}}
           onpressExport={() => handleExportOpen()}
           viewArchive={viewArchived}
           onpressAddNew={() => handleAddCommission()}
         />
-        {exportOPen && (<div className="export-modal">
-          <CSVLink style={{ color: "#04a5e8" }} data={currentPageData} filename={"table.csv"}>Export CSV</CSVLink>
-        </div>)}
-             {/* {filterOPen && <FilterCommission handleClose={filterClose}  
+        {exportOPen && (
+          <div className="export-modal">
+            <CSVLink
+              style={{ color: "#04a5e8" }}
+              data={currentPageData}
+              filename={"table.csv"}
+            >
+              Export CSV
+            </CSVLink>
+          </div>
+        )}
+        {/* {filterOPen && <FilterCommission handleClose={filterClose}  
             columns={columns} 
              page_number = {currentPage}
              page_size = {itemsPerPage}
              />} */}
-             {open && <CreateDlrOth
-                         commission={editedCommission}
-                         editMode={editMode}
-                         handleClose={handleClose}
-                          />}
+        {open && (
+          <CreateDlrOth
+            commission={editedCommission}
+            editMode={editMode}
+            handleClose={handleClose}
+          />
+        )}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
@@ -179,108 +252,107 @@ const DlrOthPay: React.FC = () => {
           <table>
             <thead>
               <tr>
-               {
-                DlrOthPayColumn.map((item,key)=>(
+                {DlrOthPayColumn.map((item, key) => (
                   <SortableHeader
-                  key={key}
-                  isCheckbox={item.isCheckbox}
-                  titleName={item.displayName}
-                  data={commissionList}
-                  isAllRowsSelected={isAllRowsSelected}
-                  isAnyRowSelected={isAnyRowSelected}
-                  selectAllChecked={selectAllChecked}
-                  setSelectAllChecked={setSelectAllChecked}
-                  selectedRows={selectedRows}
-                  setSelectedRows={setSelectedRows}
-                  sortKey={item.name}
-                  sortDirection={sortKey === item.name ? sortDirection : undefined}
-                  onClick={() => handleSort(item.name)}
-                />
-                ))
-               }
+                    key={key}
+                    isCheckbox={item.isCheckbox}
+                    titleName={item.displayName}
+                    data={commissionList}
+                    isAllRowsSelected={isAllRowsSelected}
+                    isAnyRowSelected={isAnyRowSelected}
+                    selectAllChecked={selectAllChecked}
+                    setSelectAllChecked={setSelectAllChecked}
+                    selectedRows={selectedRows}
+                    setSelectedRows={setSelectedRows}
+                    sortKey={item.name}
+                    sortDirection={
+                      sortKey === item.name ? sortDirection : undefined
+                    }
+                    onClick={() => handleSort(item.name)}
+                  />
+                ))}
                 <th>
                   <div className="action-header">
-                    <p>Action</p> 
+                    <p>Action</p>
                   </div>
                 </th>
               </tr>
             </thead>
             <tbody>
-              {currentPageData?.length > 0
-                ? currentPageData?.map((el: any, i: any) => (
-                  <tr
-                    key={i}
-                    className={selectedRows.has(i) ? "selected" : ""}
-                  >
-                    <td style={{fontWeight: "500", color: "black"}}>
-                    <div className="flex-check">
-                    <CheckBox
-                        checked={selectedRows.has(i)}
-                        onChange={() =>
-                          toggleRowSelection(
-                            i,
-                            selectedRows,
-                            setSelectedRows,
-                            setSelectAllChecked
-                          )
-                        }
-                      />
-                       {el.partner}
-                    </div>
+              {currentPageData?.length > 0 ? (
+                currentPageData?.map((el: IRowDLR, i: number) => (
+                  <tr key={i} className={selectedRows.has(i) ? "selected" : ""}>
+                    <td style={{ fontWeight: "500", color: "black" }}>
+                      <div className="flex-check">
+                        <CheckBox
+                          checked={selectedRows.has(i)}
+                          onChange={() =>
+                            toggleRowSelection(
+                              i,
+                              selectedRows,
+                              setSelectedRows,
+                              setSelectAllChecked
+                            )
+                          }
+                        />
+                        {el.payee}
+                      </div>
                     </td>
-                 
-                    <td>{el.installer}</td>
-                    <td>{el.state}</td>
-                    <td>{el.sale_type}</td>
-                    <td>{el.sale_price}</td>
+
+                    <td>{el.amount}</td>
+                    <td>{el.description}</td>
+                    <td>{el.balance}</td>
+                    <td>{el.paid_amount}</td>
                     <td>{el.start_date}</td>
                     <td>{el.end_date}</td>
                     <td>
-                      <div className="action-icon">
-                        <div className="" style={{ cursor: "pointer" }}>
-                          <img src={ICONS.ARCHIVE} alt="" />
+                      {!viewArchived && (
+                        <div className="action-icon">
+                          <div className="" onClick={()=>handleArchiveClick([el.record_id])} style={{ cursor: "pointer" }}>
+                            <img src={ICONS.ARCHIVE} alt="" />
+                          </div>
+                          <div
+                            className=""
+                            style={{ cursor: "pointer" }}
+                            onClick={() => handleEditCommission(el)}
+                          >
+                            <img src={ICONS.editIcon} alt="" />
+                          </div>
                         </div>
-                        <div className="" style={{ cursor: "pointer" }} onClick={() => handleEditCommission(el)}>
-                        <img src={ICONS.editIcon} alt="" />
-                        </div>
-                      </div>
-
+                      )}
                     </td>
                   </tr>
                 ))
-                :  <tr style={{border:0}}>
-                <td colSpan={10}>
-                <div className="data-not-found">
-                <DataNotFound/>
-                <h3>Data Not Found</h3>
-                </div>
-                </td>
-              </tr>
-                }
+              ) : (
+                <tr style={{ border: 0 }}>
+                  <td colSpan={10}>
+                    <div className="data-not-found">
+                      <DataNotFound />
+                      <h3>Data Not Found</h3>
+                    </div>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
-        {
-        commissionList?.length > 0 ?
-        <div className="page-heading-container">
-      
-          <p className="page-heading">
-           {currentPage} - {totalPages} of {currentPageData?.length} item
-          </p>
-     
-       <Pagination
-          currentPage={currentPage}
-          currentPageData={currentPageData}
-          totalPages={totalPages} // You need to calculate total pages
-          paginate={paginate}
-          goToNextPage={goToNextPage}
-          goToPrevPage={goToPrevPage}
-        />
-       </div>
-        : null
-      }
+        {commissionList?.length > 0 ? (
+          <div className="page-heading-container">
+            <p className="page-heading">
+              {currentPage} - {totalPages} of {currentPageData?.length} item
+            </p>
+
+            <Pagination
+              currentPage={currentPage}
+              currentPageData={currentPageData}
+              totalPages={totalPages} // You need to calculate total pages
+              paginate={paginate}
+              goToNextPage={goToNextPage}
+              goToPrevPage={goToPrevPage}
+            />
+          </div>
+        ) : null}
       </div>
-     
     </div>
   );
 };

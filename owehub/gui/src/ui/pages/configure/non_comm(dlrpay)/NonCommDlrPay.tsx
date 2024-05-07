@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import { CSVLink } from 'react-csv';
 import { ICONS } from "../../../icons/Icons";
 import TableHeader from "../../../components/tableHeader/TableHeader";
-import { fetchCommissions } from "../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice";
+import { getNonComm,INonCommRowDLR } from "../../../../redux/apiActions/nocCommAction";
 
 import CheckBox from "../../../components/chekbox/CheckBox";
 import {
@@ -21,8 +21,11 @@ import DataNotFound from "../../../components/loader/DataNotFound";
 import { ROUTES } from "../../../../routes/routes";
 import { NonCommDlrColumn } from "../../../../resources/static_data/configureHeaderData/NonCommDlrColumn";
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
-
-
+import CreateNonComm from "./CreateNonComm";
+import { showAlert, successSwal } from "../../../components/alert/ShowAlert";
+import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
+import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
+import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 interface Column {
   name: string;
   displayName: string;
@@ -38,13 +41,13 @@ const NonCommDlrPay: React.FC = () => {
   const handleExportOpen = () => setExportOpen(!exportOPen)
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const commissionList = useAppSelector((state) => state.comm.commissionsList);
-  const loading = useAppSelector((state) => state.comm.loading);
-  const error = useAppSelector((state) => state.comm.error);
+  const commissionList = useAppSelector((state) => state.nonComm.data);
+  const loading = useAppSelector((state) => state.nonComm.isLoading);
+  const error = useAppSelector((state) => state.nonComm.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
-  const [editedCommission, setEditedCommission] = useState<CommissionModel | null>(null);
+  const [editedCommission, setEditedCommission] = useState<INonCommRowDLR | null>(null);
   const itemsPerPage = 5;
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
   const [viewArchived, setViewArchived] = useState<boolean>(false);
@@ -54,11 +57,11 @@ const NonCommDlrPay: React.FC = () => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
-
+      archived:viewArchived
     };
-    dispatch(fetchCommissions(pageNumber));
+    dispatch(getNonComm(pageNumber));
 
-  }, [dispatch, currentPage]);
+  }, [dispatch, currentPage,viewArchived]);
 
   const paginate = (pageNumber: number) => {
     dispatch(setCurrentPage(pageNumber));
@@ -87,7 +90,7 @@ const NonCommDlrPay: React.FC = () => {
     handleOpen()
   };
 
-  const handleEditCommission = (commission: CommissionModel) => {
+  const handleEditCommission = (commission: INonCommRowDLR) => {
     setEditMode(true);
     setEditedCommission(commission);
     handleOpen()
@@ -121,9 +124,31 @@ const NonCommDlrPay: React.FC = () => {
       }
     });
   }
-  if (error) {
-    return <div className="loader-container"><Loading/></div>;
+// 
+
+const handleArchiveClick = async (record_id: any) => {
+  const confirmed = await showAlert('Are Your Sure', 'This action will archive all selected rows?', 'Yes', 'No');
+  if (confirmed){
+    const archived: number[] = record_id;
+    let newValue = {
+      record_id: archived,
+      is_archived: true
+    }
+    const pageNumber = {
+      page_number: currentPage,
+      page_size: itemsPerPage,
+      archived:viewArchived
+    };
+    const res = await postCaller("update_noncommdlrpay_archive", newValue);
+    if (res.status === HTTP_STATUS.OK) {
+      dispatch(getNonComm(pageNumber))
+      await successSwal("Archived", "All Selected rows have been archived", "success", 2000, false);
+    }else{
+      await successSwal("Archived", "All Selected rows have been archived", "error", 2000, false);
+    }
   }
+
+};
   if (loading) {
     return <div className="loader-container"><Loading/> {loading}</div>;
   }
@@ -133,8 +158,8 @@ const NonCommDlrPay: React.FC = () => {
       <div className="commissionContainer">
         <TableHeader
           title="NON-Comm"
-          onPressViewArchive={() => { }}
-          onPressArchive={() => { }}
+          onPressViewArchive={() => setViewArchived(prev=>!prev)}
+          onPressArchive={() =>handleArchiveClick(Array.from(selectedRows).map((_,i:number)=>currentPageData[i].record_id))}
           viewArchive={viewArchived}
           onPressFilter={() => filter()}
           onPressImport={() => { }}
@@ -151,11 +176,11 @@ const NonCommDlrPay: React.FC = () => {
              page_number = {currentPage}
              page_size = {itemsPerPage}
              />} */}
-        {/* {open && <CreateNonComm
+        {open && <CreateNonComm
           commission={editedCommission}
           editMode={editMode}
           handleClose={handleClose}
-        />} */}
+        />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
@@ -191,7 +216,7 @@ const NonCommDlrPay: React.FC = () => {
             </thead>
             <tbody>
               {currentPageData?.length > 0
-                ? currentPageData?.map((el: any, i: any) => (
+                ? currentPageData?.map((el: INonCommRowDLR, i: number) => (
                   <tr
                     key={i}
                     className={selectedRows.has(i) ? "selected" : ""}
@@ -209,29 +234,28 @@ const NonCommDlrPay: React.FC = () => {
                           )
                         }
                       />
-                       {el.partner}
+                       {el.customer}
                     </div>
                     </td>
                    
-                    <td>{el.installer}</td>
-                    <td>{el.state}</td>
-                    <td>{el.sale_type}</td>
-                    <td>{el.sale_price}</td>
-                    <td>{el.rep_type}</td>
-                    <td>{el.rep_type}</td>
-                    <td>{el.rl}</td>
-                    <td>{el.rate}</td>
+                    <td>{el.dealer_name}</td>
+                    <td>{el.dealer_dba}</td>
+                    <td>{el.exact_amount}</td>
+                    <td>{el.balance}</td>
+                    <td>{el.approved_by}</td>
+                    <td>{el.notes}</td>
+                  <td>{el.paid_amount}</td>
                     <td>{el.start_date}</td>
                     <td>{el.end_date}</td>
                     <td>
-                      <div className="action-icon">
-                        <div className="" style={{ cursor: "pointer" }}>
+                    {!viewArchived &&  <div className="action-icon">
+                        <div className="" style={{ cursor: "pointer" }} onClick={()=>handleArchiveClick([el.record_id])}>
                           <img src={ICONS.ARCHIVE} alt="" />
                         </div>
                         <div className="" style={{ cursor: "pointer" }} onClick={() => handleEditCommission(el)}>
                           <img src={ICONS.editIcon} alt="" />
                         </div>
-                      </div>
+                      </div>}
 
                     </td>
                   </tr>
