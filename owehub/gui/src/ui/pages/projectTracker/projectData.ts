@@ -47,8 +47,8 @@ export const projectDashData = [
     icon: ICONS.redDoller,
     arrow: ICONS.arrowRed,
     percentColor: "#E92727",
-    // curveImg: ICONS.curveRed,
-    curveImg: ICONS.curveGreen,
+    curveImg: ICONS.redcurveGraph,
+    // curveImg: ICONS.curveGreen,
     // arrow: ICONS.arrowGreen,
   },
   {

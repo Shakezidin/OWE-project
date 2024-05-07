@@ -31,7 +31,10 @@ const ProjectPerformence = () => {
         <div className="project-heading">
           <h2>Performance</h2>
           <div className="iconsSection-filter">
-            <button type="button" style={{cursor: "not-allowed", opacity: "0.5"}}>
+            <button
+              type="button"
+              style={{ cursor: "not-allowed", opacity: "0.5" }}
+            >
               <img
                 src={ICONS.filtercomm}
                 alt=""
@@ -86,7 +89,7 @@ const ProjectPerformence = () => {
               </div>
               <div className="project-ruppes-body">
                 <div className="project-img-curve">
-                <img src={item.curveImg} alt="" />
+                  <img src={item.curveImg} alt="" />
                 </div>
                 <div
                   className="percent"
@@ -139,15 +142,19 @@ const ProjectPerformence = () => {
                           style={getColorStyle(project.salesDate)}
                         >
                           <div className="strip-title">
+                            <p>{project.salesDate}</p>
+                          </div>
+                          <div
+                            className="strip-line"
+                            style={{ color: "" }}
+                          ></div>
+                          <div className="strip-des">
                             <p>
                               Sales{" "}
                               <IoMdInformationCircleOutline
                                 style={{ cursor: "pointer" }}
                               />
                             </p>
-                          </div>
-                          <div className="strip-des">
-                            <p>{project.salesDate}</p>
                           </div>
                         </div>
                         {project.notchStrips.map((notch, notchIndex) => (
@@ -156,16 +163,20 @@ const ProjectPerformence = () => {
                             className="notch-strip"
                             style={getColorStyle(notch.date)}
                           >
-                            <div className="strip-title">
-                              <p>
+                            <div className="notch-strip-title">
+                              <p>{notch.date || "Data not available"}</p>
+                            </div>
+                            <div
+                              className="strip-line"
+                              style={{ color: "" }}
+                            ></div>
+                            <div className="notch-strip-des">
+                              <p >
                                 {notch.name}{" "}
-                                <IoMdInformationCircleOutline
+                              </p>
+                              <IoMdInformationCircleOutline
                                   style={{ cursor: "pointer" }}
                                 />
-                              </p>
-                            </div>
-                            <div className="strip-des">
-                              <p>{notch.date || "Data not available"}</p>
                             </div>
                             <div className="child-notch"></div>
                           </div>

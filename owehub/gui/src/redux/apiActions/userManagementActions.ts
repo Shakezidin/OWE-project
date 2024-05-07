@@ -16,6 +16,7 @@ const COLORS = [
   "#52cafe",
   "#0181ff",
   "#58E9F0",
+  "#9e84a0",
 ];
 /** get user onboadring users */
 export const fetchUserOnboarding = createAsyncThunk(

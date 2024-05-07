@@ -35,6 +35,7 @@
 }
 .performance-milestone-table{
   overflow-x: auto;
+  scroll-behavior: smooth;
 }
 .performance-search{
   padding: 8px 10px;
@@ -389,10 +390,14 @@
   left: -40px;
   z-index: 3;
 }
-
+.strip-line{
+  border: 0.5px solid #D6D6D6; 
+  height: 20px;
+  margin: 0 5px;
+}
 .milestone-strips {
-  height: 46px;
-  width: 136px;
+  height: 50px;
+  width: 180px;
   border-top-left-radius: 2px;
   border-bottom-left-radius: 2px;
   border-top-right-radius: 2rem;
@@ -401,13 +406,13 @@
   align-items: center;
   z-index: 20;
   display: flex;
-  flex-direction: column;
+  /* flex-direction: column; */
   justify-content: center;
   align-items: center;
 }
 .notch-strip{
-  height: 46px;
-  width: 142px;
+  height: 50px;
+  width: 180px;
   border-top-left-radius: 2px;
   border-bottom-left-radius: 2px;
   border-top-right-radius: 2rem;
@@ -416,21 +421,30 @@
   align-items: center;
   z-index: 12;
   display: flex;
-  flex-direction: column;
+  /* flex-direction: column; */
   justify-content: center;
   align-items: center;
   position: relative;
   overflow: hidden;
 }
-.child-notch{
-  position: absolute;
-  width: 50px;
-  height: 60px;
-  background-color: var(--white-color);
-  border-top-right-radius: 2rem;
-  border-bottom-right-radius: 2rem;
-  left: -40px;
-  z-index: 10;
+
+.notch-strip-title p{
+  font-size: 10px;
+  line-height: 12px;
+  width: 45px;
+  font-weight: 400;
+}
+.notch-strip-des{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.notch-strip-des p{
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  font-weight: 500;
 }
 .all-progress{
   background: #F2F4F6;
@@ -459,18 +473,33 @@
   height: 30px;
 }
 .strip-title p {
+  font-size: 10px;
+  line-height: 12px;
+  font-weight: 400;
+}
+.strip-des p{
   display: flex;
   align-items: center;
-  gap: 5px;
+  font-size: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   font-weight: 500;
 }
-.strip-title {
-  font-size: 11px;
+
+
+
+.child-notch{
+  position: absolute;
+  width: 50px;
+  height: 60px;
+  background-color: var(--white-color);
+  border-top-right-radius: 2rem;
+  border-bottom-right-radius: 2rem;
+  left: -40px;
+  z-index: 10;
 }
-.strip-des {
-  font-size: 9px;
-  line-height: 12px;
-}
+
 .date-para {
   font-size: 12px !important;
   color: white;
@@ -532,4 +561,29 @@
   .project-status-graph {
     width: 100%;
   }
+}
+
+
+
+.performance-milestone-table::-webkit-scrollbar {
+  width: auto; 
+  height: auto; 
+}
+.performance-milestone-table::-webkit-scrollbar {
+  display: initial
+}   
+
+.performance-milestone-table::-webkit-scrollbar-thumb {
+  background-color: rgb(173, 173, 173);
+  border-radius: 30px; 
+}
+.performance-milestone-table::-webkit-scrollbar-button {
+  display: block; 
+}
+.performance-milestone-table::-webkit-scrollbar {
+  -ms-overflow-style: initial; 
+  scrollbar-width: thin;
+}
+.performance-milestone-table::-webkit-scrollbar-corner {
+  background-color: transparent;
 }

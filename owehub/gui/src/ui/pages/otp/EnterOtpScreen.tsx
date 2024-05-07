@@ -58,12 +58,12 @@ const EnterOtpScreen = () => {
     }));
   };
 
-  const dispatchGenerateOTP = async (data: Parameters<typeof generateOTP>[0]) => {
-    const actionResult = await dispatch(generateOTP(data));
+
+  const resendOTP = async () => {
+    const actionResult = await dispatch(generateOTP({ email_id: email }));
     const result = unwrapResult(actionResult);
     if (result.status === HTTP_STATUS.OK) {
       toast.success(result.message);
-      navigate("/login");
     } else {
       toast.error(result.message);
     }
@@ -88,7 +88,14 @@ const EnterOtpScreen = () => {
         new_password: otpCred.new_password,
       };
 
-      dispatchGenerateOTP(data);
+      const actionResult = await dispatch(generateOTP(data));
+      const result = unwrapResult(actionResult);
+      if (result.status === HTTP_STATUS.OK) {
+        toast.success(result.message);
+        navigate("/login");
+      } else {
+        toast.error(result.message);
+      }
     }
   };
   return (
@@ -135,7 +142,7 @@ const EnterOtpScreen = () => {
               {email && (
                 <ResendOtpButton
                   isLoading={!!loading}
-                  onClick={() => dispatchGenerateOTP({ email_id: email })}
+                  onClick={resendOTP}
                 />
               )}
               <br />
