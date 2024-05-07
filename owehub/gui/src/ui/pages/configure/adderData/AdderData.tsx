@@ -314,14 +314,15 @@ const AdderData = () => {
           </p>
 
           {timelinesla_list?.length > 0 ? (
-            <Pagination
+           <Pagination
               currentPage={currentPage}
               totalPages={totalPages} // You need to calculate total pages
               paginate={paginate}
               currentPageData={currentPageData}
               goToNextPage={goToNextPage}
               goToPrevPage={goToPrevPage}
-            />
+perPage={itemsPerPage}
+            /> 
           ) : null}
         </div>
       </div>

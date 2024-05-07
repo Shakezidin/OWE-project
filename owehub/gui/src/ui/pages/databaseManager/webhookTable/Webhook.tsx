@@ -236,6 +236,7 @@ const Webhook: React.FC = () => {
       paginate={paginate}
       goToNextPage={goToNextPage}
       goToPrevPage={goToPrevPage}
+      perPage={itemsPerPage}
       currentPageData={currentPageData}
     /> : null
   }

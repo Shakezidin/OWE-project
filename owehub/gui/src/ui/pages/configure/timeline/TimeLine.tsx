@@ -335,6 +335,7 @@ const TimeLine = () => {
               currentPageData={currentPageData}
               goToNextPage={goToNextPage}
               goToPrevPage={goToPrevPage}
+perPage={itemsPerPage}
             /> 
         </div>
 : null

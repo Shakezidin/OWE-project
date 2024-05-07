@@ -326,12 +326,12 @@ const MarketingFees: React.FC = () => {
 
           <Pagination
               currentPage={currentPage}
-              totalPages={totalPages}
-              currentPageData={currentPageData}
-               // You need to calculate total pages
+              totalPages={totalPages} // You need to calculate total pages
               paginate={paginate}
+              currentPageData={currentPageData}
               goToNextPage={goToNextPage}
               goToPrevPage={goToPrevPage}
+perPage={itemsPerPage}
             /> 
         </div>
         : null

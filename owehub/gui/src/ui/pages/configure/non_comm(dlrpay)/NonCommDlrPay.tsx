@@ -279,13 +279,14 @@ const handleArchiveClick = async (record_id: any) => {
             {currentPage} - {totalPages} of {currentPageData?.length} item
           </p>
 
-          <Pagination
+        <Pagination
               currentPage={currentPage}
               totalPages={totalPages} // You need to calculate total pages
               paginate={paginate}
-              goToNextPage={goToNextPage}
               currentPageData={currentPageData}
+              goToNextPage={goToNextPage}
               goToPrevPage={goToPrevPage}
+perPage={itemsPerPage}
             /> 
         </div>
         : null
