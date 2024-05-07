@@ -52,7 +52,6 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   const dispatch = useAppDispatch();
   const [pageSize1, setPageSize1] = useState(10); // Set your desired page size here
   const [currentPage1, setCurrentPage1] = useState(1)
-  console.log("jghjds",userRoleBasedList)
   const totalPages = Math.ceil(userRoleBasedList?.length / pageSize1);
   
   useEffect(() => {

@@ -192,7 +192,7 @@
 .project-status-body-card {
   border-radius: 6px;
   height: 70px;
-  width: 23%;
+  width: 22.3%;
   /* flex: 1; */
   display: flex;
   align-items: center;
@@ -288,7 +288,8 @@
   padding: 1rem;
   position: relative;
   /* flex: 1; */
-  width: 379px;
+  /* width: 379px; */
+  width: 34%;
   border-radius: 8px;
 }
 
@@ -536,11 +537,15 @@
   font-size: 11px;
 }
 
+
+
+
 @media (max-width: 1400px) {
   .date-para {
     font-size: 11px;
   }
 }
+
 
 @media (max-width: 1200px) {
   .project-status-head-card {
@@ -562,7 +567,6 @@
     width: 100%;
   }
 }
-
 
 
 .performance-milestone-table::-webkit-scrollbar {
