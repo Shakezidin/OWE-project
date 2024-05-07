@@ -10,6 +10,7 @@ export interface UserOnboardingStateModel {
   loading: boolean;
   userOnboardingList: OnboardingChartModel[];
   userRoleBasedList: UserRoleBasedListModel[];
+  totalCount?:number
 }
 
 export interface CreateOnboardUserStateModel {

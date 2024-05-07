@@ -342,14 +342,15 @@ const DlrOthPay: React.FC = () => {
               {currentPage} - {totalPages} of {currentPageData?.length} item
             </p>
 
-            <Pagination
+           <Pagination
               currentPage={currentPage}
-              currentPageData={currentPageData}
               totalPages={totalPages} // You need to calculate total pages
               paginate={paginate}
+              currentPageData={currentPageData}
               goToNextPage={goToNextPage}
               goToPrevPage={goToPrevPage}
-            />
+perPage={itemsPerPage}
+            /> 
           </div>
         ) : null}
       </div>

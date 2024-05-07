@@ -42,7 +42,7 @@ const LeaderOverride = () => {
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState<boolean>(false);
   const [editedTimeLineSla, setEditedTimeLineSla] = useState<ILeaderRow | null>(null);
-  const itemsPerPage = 10;
+  const itemsPerPage = 5;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
   const [sortKey, setSortKey] = useState("");
@@ -296,6 +296,7 @@ const LeaderOverride = () => {
 
           {
             timelinesla_list?.length > 0 ? <Pagination
+            perPage={itemsPerPage}
               currentPage={currentPage}
               totalPages={totalPages} // You need to calculate total pages
               paginate={paginate}

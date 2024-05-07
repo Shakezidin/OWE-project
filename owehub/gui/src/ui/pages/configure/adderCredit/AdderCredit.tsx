@@ -296,6 +296,7 @@ const handleArchiveClick = async (record_id: any) => {
               currentPageData={currentPageData}
               goToNextPage={goToNextPage}
               goToPrevPage={goToPrevPage}
+perPage={itemsPerPage}
             /> : null
           }
         </div>
