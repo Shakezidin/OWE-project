@@ -92,7 +92,7 @@ const ProjectStatus = () => {
         </div>
 
         <div className="project-status-head-card">
-          <div className="project-status-body">
+        <div className="project-status-body">
             {
               projectStatusHeadData.map((el, i) => (
                 <div className="project-status-body-card" key={i} style={{ background: el.bgColor }}>
