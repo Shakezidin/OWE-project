@@ -22,6 +22,7 @@ import { TYPE_OF_USER } from "../../../../resources/static_data/TypeOfUser";
 import PaginationComponent from "../../../components/pagination/PaginationComponent";
 import { fetchUserListBasedOnRole } from "../../../../redux/apiActions/userManagementActions";
 
+
 interface UserTableProos {
   userDropdownData: UserDropdownModel[];
   userRoleBasedList: UserRoleBasedListModel[];
@@ -51,7 +52,9 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   const dispatch = useAppDispatch();
   const [pageSize1, setPageSize1] = useState(10); // Set your desired page size here
   const [currentPage1, setCurrentPage1] = useState(1)
-
+  console.log("jghjds",userRoleBasedList)
+  const totalPages = Math.ceil(userRoleBasedList?.length / pageSize1);
+  
   useEffect(() => {
     const data = {
       page_number: currentPage1,
@@ -81,11 +84,10 @@ const UserManagementTable: React.FC<UserTableProos> = ({
     (state) => state.paginationType.currentPage
   );
 
-  const totalPages = Math.ceil(userRoleBasedList?.length / pageSize1);
-
   const startIndex = (currentPage - 1) * pageSize1;
   const endIndex = startIndex + pageSize1;
 
+  const currentPageData = userRoleBasedList?.slice(startIndex, endIndex);
 
   /** render table based on dropdown */
   const renderComponent = () => {
@@ -274,7 +276,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
         {userRoleBasedList?.length > 0 ? (
           <>
             <p className="page-heading">
-              {currentPage} - {totalPages} of {userRoleBasedList?.length} item
+              {currentPage} - {totalPages} of {currentPageData?.length} item
             </p>
             <PaginationComponent
                 currentPage={currentPage1}
