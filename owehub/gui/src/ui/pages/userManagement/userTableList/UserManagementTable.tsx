@@ -51,7 +51,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   const dispatch = useAppDispatch();
   const [pageSize1, setPageSize1] = useState(10); // Set your desired page size here
   const [currentPage1, setCurrentPage1] = useState(1)
-
+const count = useAppSelector(state=>state.userManagement.totalCount)
   useEffect(() => {
     const data = {
       page_number: currentPage1,
@@ -81,7 +81,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
     (state) => state.paginationType.currentPage
   );
 
-  const totalPages = Math.ceil(userRoleBasedList?.length / pageSize1);
+  const totalPages = Math.ceil(count! / pageSize1);
 
   const startIndex = (currentPage - 1) * pageSize1;
   const endIndex = startIndex + pageSize1;
