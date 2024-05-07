@@ -651,13 +651,18 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                               style={{
                                 display: "block",
                                 marginBlock: "6px",
-                                color: "black",
+                                
                                 padding: "6px 12px",
                                 width: "100%",
                                 fontSize: "12px",
                                 marginLeft: "10px",
                               }}
-                              className="hover-children"
+                               
+                              className={
+                                location.pathname === ch.path
+                                  ? "hover-children"
+                                  : "hover-childrenn"
+                              }
                             >
                               {" "}
                               {ch.sidebarProps.displayText}{" "}
