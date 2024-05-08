@@ -21,7 +21,7 @@ import {
 import { TYPE_OF_USER } from "../../../../resources/static_data/TypeOfUser";
 import PaginationComponent from "../../../components/pagination/PaginationComponent";
 import { fetchUserListBasedOnRole } from "../../../../redux/apiActions/userManagementActions";
- 
+
 interface UserTableProos {
   userDropdownData: UserDropdownModel[];
   userRoleBasedList: UserRoleBasedListModel[];
@@ -29,11 +29,11 @@ interface UserTableProos {
   handleSelectChange: (data: UserDropdownModel) => void;
   onClickEdit: (item: UserRoleBasedListModel) => void;
   onClickDelete: (item: UserRoleBasedListModel) => void;
-  selectAllChecked: boolean,
-  selectedRows: Set<number>,
-  setSelectedRows: React.Dispatch<React.SetStateAction<Set<number>>>,
-  setSelectAllChecked: React.Dispatch<React.SetStateAction<boolean>>,
-  onClickMultiDelete: ()=> void;
+  selectAllChecked: boolean;
+  selectedRows: Set<number>;
+  setSelectedRows: React.Dispatch<React.SetStateAction<Set<number>>>;
+  setSelectAllChecked: React.Dispatch<React.SetStateAction<boolean>>;
+  onClickMultiDelete: () => void;
 }
 const UserManagementTable: React.FC<UserTableProos> = ({
   userDropdownData,
@@ -46,12 +46,12 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   selectedRows,
   setSelectedRows,
   setSelectAllChecked,
-  onClickMultiDelete
+  onClickMultiDelete,
 }) => {
   const dispatch = useAppDispatch();
-  const [pageSize1, setPageSize1] = useState(5); // Set your desired page size here
-  const [currentPage1, setCurrentPage1] = useState(1)
-const count = useAppSelector(state=>state.userManagement.totalCount)
+  const [pageSize1, setPageSize1] = useState(10); // Set your desired page size here
+  const [currentPage1, setCurrentPage1] = useState(1);
+  const count = useAppSelector((state) => state.userManagement.totalCount);
   useEffect(() => {
     const data = {
       page_number: currentPage1,
@@ -65,28 +65,26 @@ const count = useAppSelector(state=>state.userManagement.totalCount)
       ],
     };
     dispatch(fetchUserListBasedOnRole(data));
- 
   }, [dispatch, currentPage1, pageSize1]);
- 
+
   const handlePageChange = (page: number) => {
-    setCurrentPage1(page)
+    setCurrentPage1(page);
   };
   const handleItemsPerPageChange = (e: any) => {
     const newItemsPerPage = parseInt(e.target.value, 10);
     setPageSize1(newItemsPerPage);
-    setCurrentPage1(1) // Reset to the first page when changing items per page
+    setCurrentPage1(1); // Reset to the first page when changing items per page
   };
- 
+
   const currentPage = useAppSelector(
     (state) => state.paginationType.currentPage
   );
- 
+
   const totalPages = Math.ceil(count! / pageSize1);
- 
+
   const startIndex = (currentPage - 1) * pageSize1;
   const endIndex = startIndex + pageSize1;
- 
- 
+
   /** render table based on dropdown */
   const renderComponent = () => {
     switch (selectedOption.label) {
@@ -98,30 +96,30 @@ const count = useAppSelector(state=>state.userManagement.totalCount)
               onClickEdit(item);
             }}
             onClickDelete={(item: UserRoleBasedListModel) => {
-              onClickDelete(item)
+              onClickDelete(item);
             }}
             selectedRows={selectedRows}
-          selectAllChecked={selectAllChecked}
-          setSelectedRows={setSelectedRows}
-          setSelectAllChecked={setSelectAllChecked}
-          />
-        );
-        case TYPE_OF_USER.FINANCE_ADMIN:
-          return (
-            <UserTable
-              data={userRoleBasedList}
-              onClickEdit={(item: UserRoleBasedListModel) => {
-                onClickEdit(item);
-              }}
-              onClickDelete={(item: UserRoleBasedListModel) => {
-                onClickDelete(item)
-              }}
-              selectedRows={selectedRows}
             selectAllChecked={selectAllChecked}
             setSelectedRows={setSelectedRows}
             setSelectAllChecked={setSelectAllChecked}
-            />
-          );
+          />
+        );
+      case TYPE_OF_USER.FINANCE_ADMIN:
+        return (
+          <UserTable
+            data={userRoleBasedList}
+            onClickEdit={(item: UserRoleBasedListModel) => {
+              onClickEdit(item);
+            }}
+            onClickDelete={(item: UserRoleBasedListModel) => {
+              onClickDelete(item);
+            }}
+            selectedRows={selectedRows}
+            selectAllChecked={selectAllChecked}
+            setSelectedRows={setSelectedRows}
+            setSelectAllChecked={setSelectAllChecked}
+          />
+        );
       case TYPE_OF_USER.SUB_DEALER_OWNER:
         return (
           <UserTable
@@ -130,7 +128,7 @@ const count = useAppSelector(state=>state.userManagement.totalCount)
               onClickEdit(item);
             }}
             onClickDelete={(item: UserRoleBasedListModel) => {
-              onClickDelete(item)
+              onClickDelete(item);
             }}
             selectedRows={selectedRows}
             selectAllChecked={selectAllChecked}
@@ -146,7 +144,7 @@ const count = useAppSelector(state=>state.userManagement.totalCount)
               onClickEdit(item);
             }}
             onClickDelete={(item: UserRoleBasedListModel) => {
-              onClickDelete(item)
+              onClickDelete(item);
             }}
             selectedRows={selectedRows}
             selectAllChecked={selectAllChecked}
@@ -162,7 +160,7 @@ const count = useAppSelector(state=>state.userManagement.totalCount)
               onClickEdit(item);
             }}
             onClickDelete={(item: UserRoleBasedListModel) => {
-              onClickDelete(item)
+              onClickDelete(item);
             }}
             selectedRows={selectedRows}
             selectAllChecked={selectAllChecked}
@@ -178,7 +176,7 @@ const count = useAppSelector(state=>state.userManagement.totalCount)
               onClickEdit(item);
             }}
             onClickDelete={(item: UserRoleBasedListModel) => {
-              onClickDelete(item)
+              onClickDelete(item);
             }}
             selectedRows={selectedRows}
             selectAllChecked={selectAllChecked}
@@ -194,7 +192,7 @@ const count = useAppSelector(state=>state.userManagement.totalCount)
               onClickEdit(item);
             }}
             onClickDelete={(item: UserRoleBasedListModel) => {
-              onClickDelete(item)
+              onClickDelete(item);
             }}
             selectedRows={selectedRows}
             selectAllChecked={selectAllChecked}
@@ -210,13 +208,12 @@ const count = useAppSelector(state=>state.userManagement.totalCount)
               onClickEdit(item);
             }}
             onClickDelete={(item: UserRoleBasedListModel) => {
-              onClickDelete(item)
+              onClickDelete(item);
             }}
             selectedRows={selectedRows}
             selectAllChecked={selectAllChecked}
             setSelectedRows={setSelectedRows}
             setSelectAllChecked={setSelectAllChecked}
-           
           />
         );
       case TYPE_OF_USER.SALE_MANAGER:
@@ -227,7 +224,7 @@ const count = useAppSelector(state=>state.userManagement.totalCount)
               onClickEdit(item);
             }}
             onClickDelete={(item: UserRoleBasedListModel) => {
-              onClickDelete(item)
+              onClickDelete(item);
             }}
             selectedRows={selectedRows}
             selectAllChecked={selectAllChecked}
@@ -239,7 +236,7 @@ const count = useAppSelector(state=>state.userManagement.totalCount)
         return null;
     }
   };
- 
+
   /** render UI */
   return (
     <>
@@ -257,11 +254,14 @@ const count = useAppSelector(state=>state.userManagement.totalCount)
               }}
             />
           </div>
- 
-          <div className="iconsSection-delete" style={{ marginTop: "1.2rem" }} onClick={()=>{
-            onClickMultiDelete()
-          }}>
-           
+
+          <div
+            className="iconsSection-delete"
+            style={{ marginTop: "1.2rem" }}
+            onClick={() => {
+              onClickMultiDelete();
+            }}
+          >
             <button type="button">
               <img src={ICONS.deleteIcon} alt="" />
             </button>
@@ -269,25 +269,26 @@ const count = useAppSelector(state=>state.userManagement.totalCount)
         </div>
       </div>
       {selectedOption && renderComponent()}
- 
+
       <div className="user-page-heading-container">
         {userRoleBasedList?.length > 0 ? (
           <>
             <p className="page-heading">
-              {currentPage} - {count} of {userRoleBasedList?.length} item
+              {currentPage} - {count} of{" "}
+              {userRoleBasedList?.length} item
             </p>
             <PaginationComponent
-                currentPage={currentPage1}
-                itemsPerPage={pageSize1}
-                totalPages={totalPages}
-                onPageChange={handlePageChange}
-                handleItemsPerPageChange={handleItemsPerPageChange}
-              />
+              currentPage={currentPage1}
+              itemsPerPage={pageSize1}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+              handleItemsPerPageChange={handleItemsPerPageChange}
+            />
           </>
         ) : null}
       </div>
     </>
   );
 };
- 
+
 export default UserManagementTable;
