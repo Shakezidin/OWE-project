@@ -137,7 +137,7 @@ export const DashboardPage: React.FC = () => {
               <input type="date" className="payroll-date" /> */}
               <div style={{ position: "relative", top: "-1px" }} ref={datePickerRef}>
                 <label className="date-button" onClick={handleToggleDatePicker}>
-                  Select Dates
+                  Select Date
                 </label>
                 {showDatePicker && (
                   <div className="calender-container">

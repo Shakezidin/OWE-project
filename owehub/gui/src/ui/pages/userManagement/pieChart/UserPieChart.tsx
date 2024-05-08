@@ -9,12 +9,12 @@ interface UserPieChartProps{
 
 const data2 = [
   {
-    name: "Inactive",
+    name: "Inactive Sales Reps",
     value: 300,
     fill: "#fb7955",
   },
   {
-    name: "Active",
+    name: "Active Sales Reps",
     value: 700,
     fill: "#0181ff",
   }
@@ -55,7 +55,7 @@ const UserPieChart:React.FC<UserPieChartProps> = ({ onboardingList }) => {
               >
                 <LabelList
                   dy={-4}
-                  dx={6}
+                  dx={4}
                   fill="white"
                   dataKey={renderCustomizedLabelPercentage}
                   position="outside"
