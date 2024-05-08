@@ -70,12 +70,12 @@ const UserTable: React.FC<UserTableProps> = ({
   return (
     <div
       className="UserManageTable"
-      style={{overflowX: "auto", whiteSpace: "nowrap" }}
+      style={{ overflowX: "auto", whiteSpace: "nowrap" }}
     >
       <table>
         <thead>
           <tr style={{ backgroundColor: "#F5F5F5" }}>
-            {UserManagementTableColumn.map((item, key) => (
+            {UserManagementTableColumn.filter(item => item.displayName !== "Reporting To").map((item, key) => (
               <SortableHeader
                 key={key}
                 isCheckbox={item.isCheckbox}
@@ -128,7 +128,7 @@ const UserTable: React.FC<UserTableProps> = ({
                 </td>
                 <td>{el.name}</td>
                 <td>{el.role_name}</td>
-                <td>{el.reporting_manager}</td>
+                {/* <td>{el.reporting_manager}</td> */}
                 <td>{el.email_id}</td>
                 <td>{el.mobile_number}</td>
                 <td style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
