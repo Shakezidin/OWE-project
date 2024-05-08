@@ -35,12 +35,13 @@ const DealerOverRides: React.FC = () => {
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const dealerList = useAppSelector((state) => state.dealer.Dealers_list);
-  const loading = useAppSelector((state) => state.dealer.loading);
+  const {loading,totalCount} = useAppSelector((state) => state.dealer);
   const error = useAppSelector((state) => state.dealer.error);
+  
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
-  const itemsPerPage = 10;
+  const itemsPerPage = 5;
   const [sortKey, setSortKey] =  useState("");
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
@@ -70,7 +71,7 @@ const DealerOverRides: React.FC = () => {
     setEditDealer(null);
     handleOpen()
   };
-  const totalPages = Math.ceil(dealerList?.length / itemsPerPage);
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -181,6 +182,7 @@ const DealerOverRides: React.FC = () => {
   if (loading) {
     return <div className="loader-container"><Loading/> {loading}</div>;
   }
+console.log(currentPageData,"daaaaaaa");
 
   return (
     <div className="comm">
@@ -246,8 +248,8 @@ const DealerOverRides: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {currentPageData?.length > 0
-                ? currentPageData?.map((el: any, i: any) => (
+              {dealerList?.length > 0
+                ? dealerList?.map((el: any, i: any) => (
                     <tr key={i}>
                     
                       <td style={{ fontWeight: "500", color: "black" }}>
@@ -304,7 +306,7 @@ const DealerOverRides: React.FC = () => {
         <div className="page-heading-container">
       
           <p className="page-heading">
-           {currentPage} - {totalPages} of {currentPageData?.length} item
+           {currentPage} - {totalCount} of {dealerList?.length} item
           </p>
       <Pagination
               currentPage={currentPage}
