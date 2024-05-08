@@ -153,7 +153,6 @@ table {
   width: 100%;
   background-color: var(--white-color);
   border-collapse: collapse;
-  overflow: hidden;
   position: relative;
   /* border-top-left-radius: 1rem;
   border-top-right-radius: 1rem; */
@@ -166,6 +165,9 @@ table tbody {
 table thead tr {
   border-bottom: 1px solid var(--border-color);
   background-color: var(--row-bg-color);
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
 table thead tr th {
