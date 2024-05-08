@@ -45,7 +45,7 @@ const UserPieChart:React.FC<UserPieChartProps> = ({ onboardingList }) => {
                 data={onboardingList}
                 label={renderLabel}
                 cx="50%"
-                cy="50%"
+                cy="49%"
                 outerRadius={"85%"}
                 nameKey="name"
                 fontSize={12}

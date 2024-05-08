@@ -79,6 +79,46 @@
   cursor: pointer;
 }
 
+/* .UserManageTable {
+  overflow-x: auto;
+  position: relative;
+  background: var(--white-color);
+} */
+
+.UserManageTable {
+  position: relative;
+  max-height: 60vh;
+  background: var(--white-color);
+  overflow-y: auto;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+}
+.UserManageTable::-webkit-scrollbar {
+  width: 10px; 
+  height: 10px; 
+}
+.UserManageTable::-webkit-scrollbar {
+  display: initial
+}   
+
+.UserManageTable::-webkit-scrollbar-thumb {
+  background-color: rgb(173, 173, 173);
+  border-radius: 30px; 
+}
+.UserManageTable::-webkit-scrollbar-button {
+  display: initial; 
+}
+.UserManageTable::-webkit-scrollbar {
+  -ms-overflow-style: initial; 
+  scrollbar-width: thin;
+}
+.UserManageTable::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
+
+
+
+
 /* table style  */
 .TableContainer {
   position: relative;
@@ -111,11 +151,7 @@
   background-color: transparent;
 }
 
-.UserManageTable {
-  overflow-x: auto;
-  position: relative;
-  background: var(--white-color);
-}
+
 
 .adder-input {
   border: 1px solid var(--button-border-color);
