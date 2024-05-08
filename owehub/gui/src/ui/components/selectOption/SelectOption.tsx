@@ -1,5 +1,5 @@
 // SelectComponent.tsx
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import Select from 'react-select';
 import "./drop.css"
 interface Option {
@@ -14,8 +14,13 @@ interface Props {
 }
 
 const SelectOption: React.FC<Props> = ({ options, value, onChange }) => {
+  const scrollRef = useRef(null)
+  useEffect(()=>{
+console.log(scrollRef.current,"select");
+
+  },[scrollRef])
   return (
-   <div className="">
+   <div className="select-container">
          {/* {label && <label className="inputLabel">{label}</label>} */}
      <Select
       options={options}
@@ -23,6 +28,7 @@ const SelectOption: React.FC<Props> = ({ options, value, onChange }) => {
       className='dropdown'
       onChange={onChange}
       placeholder="Select"
+      ref={scrollRef}
       value={value ? value: {label:'Select',value:'Select'} }
       styles={{
         control: (baseStyles:any, state:any) => ({
