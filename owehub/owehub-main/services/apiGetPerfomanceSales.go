@@ -26,8 +26,8 @@ import (
 ******************************************************************************/
 func HandleGetPerfomanceSalesRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err     error
-		dataReq models.GetPerfomanceReq
+		err            error
+		dataReq        models.GetPerfomanceReq
 		data           []map[string]interface{}
 		whereEleList   []interface{}
 		query          string
@@ -79,7 +79,7 @@ func HandleGetPerfomanceSalesRequest(resp http.ResponseWriter, req *http.Request
 		allDatas[date] = data
 	}
 
-	perfomanceData := []models.PerfomanceSales{}
+	perfomanceData := models.PerfomanceMetricsResp{}
 	for date, data := range allDatas {
 		Sales, ok := data[0]["sales"].(int64)
 		if !ok {
@@ -92,13 +92,19 @@ func HandleGetPerfomanceSalesRequest(resp http.ResponseWriter, req *http.Request
 			log.FuncErrorTrace(0, "Failed to get total sales kw count data for %+v\n: %+v\n", date, data[0])
 			SalesKw = 0.0
 		}
-		perfomanceData = append(perfomanceData, models.PerfomanceSales{
+		perfomanceData.PerfomanceSalesMetrics = append(perfomanceData.PerfomanceSalesMetrics, models.PerfomanceSales{
 			Type:    date,
 			Sales:   Sales,
 			SalesKw: SalesKw,
 		})
 	}
-	log.FuncInfoTrace(0, "total perfomance report list %+v", len(perfomanceData))
+
+	// this will give zero value and will be modified once the rep pay calculations are done
+	perfomanceData.PerfomanceCommissionMetrics.CancellationPeriod = 0
+	perfomanceData.PerfomanceCommissionMetrics.InstallationPeriod = 0
+	perfomanceData.PerfomanceCommissionMetrics.SalesPeriod = 0
+
+	log.FuncInfoTrace(0, "total perfomance report list %+v", len(perfomanceData.PerfomanceSalesMetrics))
 	FormAndSendHttpResp(resp, "perfomance report", http.StatusOK, perfomanceData)
 }
 

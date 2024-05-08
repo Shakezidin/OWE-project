@@ -42,7 +42,7 @@ const NonCommDlrPay: React.FC = () => {
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const commissionList = useAppSelector((state) => state.nonComm.data);
-  const loading = useAppSelector((state) => state.nonComm.isLoading);
+  const {isLoading:loading,dbCount} = useAppSelector((state) => state.nonComm);
   const error = useAppSelector((state) => state.nonComm.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
@@ -80,7 +80,7 @@ const NonCommDlrPay: React.FC = () => {
     setFilterOpen(true)
   }
 
-  const totalPages = Math.ceil(commissionList?.length / itemsPerPage);
+  const totalPages = Math.ceil(dbCount / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -215,8 +215,8 @@ const handleArchiveClick = async (record_id: any) => {
               </tr>
             </thead>
             <tbody>
-              {currentPageData?.length > 0
-                ? currentPageData?.map((el: INonCommRowDLR, i: number) => (
+              {commissionList?.length > 0
+                ? commissionList?.map((el: INonCommRowDLR, i: number) => (
                   <tr
                     key={i}
                     className={selectedRows.has(i) ? "selected" : ""}
@@ -276,7 +276,7 @@ const handleArchiveClick = async (record_id: any) => {
             commissionList?.length > 0 ?
         <div className="page-heading-container">
           <p className="page-heading">
-            {currentPage} - {totalPages} of {currentPageData?.length} item
+            {currentPage} - {totalPages} of {commissionList?.length} item
           </p>
 
         <Pagination

@@ -32,7 +32,8 @@ export const getNonComm = createAsyncThunk(
     async (param:Ipaginate, { rejectWithValue }) => {
       try {
         const data = await postCaller("get_noncommdlrpay", param);
-        return data.data.noncomm_dlr_pay_data_list || [] as INonCommRowDLR[] 
+        const list = data.data.noncomm_dlr_pay_data_list || [] as INonCommRowDLR[] 
+        return {list,count:data.dbRecCount}
       } catch (error) {
         return rejectWithValue((error as Error).message);
       }

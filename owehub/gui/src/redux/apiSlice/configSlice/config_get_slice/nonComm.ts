@@ -13,14 +13,16 @@ interface IState {
   error: string;
   isLoading: boolean;
   isFormSubmitting: boolean;
-  isSuccess:boolean
+  isSuccess:boolean,
+  dbCount:number
 }
 const initialState: IState = {
   isLoading: false,
   isFormSubmitting: false,
   error: "",
   data: [],
-  isSuccess:false
+  isSuccess:false,
+  dbCount:0
 };
 
 const nonComm = createSlice({
@@ -38,7 +40,8 @@ const nonComm = createSlice({
       })
       .addCase(getNonComm.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.data = action.payload;  
+        state.data = action.payload.list;  
+        state.dbCount = action.payload.count
         console.log(action.payload);
               
       })
