@@ -230,13 +230,14 @@ const AdderValidation = () => {
                 {currentPage} - {totalPages} of {currentPageData?.length} item
               </p>
               <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages} // You need to calculate total pages
-                paginate={paginate}
-                currentPageData={currentPageData}
-                goToNextPage={goToNextPage}
-                goToPrevPage={goToPrevPage}
-              />
+              currentPage={currentPage}
+              totalPages={totalPages} // You need to calculate total pages
+              paginate={paginate}
+              currentPageData={currentPageData}
+              goToNextPage={goToNextPage}
+              goToPrevPage={goToPrevPage}
+perPage={itemsPerPage}
+            /> 
             </div>
             : null
         }

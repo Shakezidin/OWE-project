@@ -8,7 +8,8 @@ interface IState {
     error: string,
     isLoading: boolean,
     isFormSubmitting:boolean,
-    isSuccess: boolean
+    isSuccess: boolean,
+    count:number
 }
 
 const initialState: IState = {
@@ -16,7 +17,8 @@ const initialState: IState = {
     error: "",
     isLoading: false,
     isFormSubmitting:false,
-    isSuccess:false
+    isSuccess:false,
+    count:0
 }
 
 const rateAdjustments = createSlice({
@@ -31,9 +33,10 @@ const rateAdjustments = createSlice({
         builder.addCase(getAdjustments.pending, (state) => {
             state.isLoading = true
         })
-            .addCase(getAdjustments.fulfilled, (state, action: PayloadAction<Adjustment[] | null>) => {
+            .addCase(getAdjustments.fulfilled, (state, action: PayloadAction<{list:Adjustment[],count:number} | null>) => {
                 state.isLoading = false
-                state.data = action.payload ? action.payload:[]
+                state.data = action.payload?.list ? action.payload?.list:[]
+                state.count = action.payload?.count || 0
             })
             .addCase(getAdjustments.rejected, (state, action) => {
                 state.isLoading = false

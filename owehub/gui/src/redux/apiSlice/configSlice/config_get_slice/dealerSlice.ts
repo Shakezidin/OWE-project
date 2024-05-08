@@ -9,11 +9,13 @@ interface DealerState {
   Dealers_list: DealerModel[];
   loading: boolean;
   error: string | null;
+  totalCount:number
 }
 const initialState: DealerState = {
   Dealers_list: [],
   loading: false,
   error: null,
+  totalCount:0
 };
 
 export const fetchDealer = createAsyncThunk(
@@ -53,6 +55,7 @@ const dealerSlice = createSlice({
       .addCase(fetchDealer.fulfilled, (state, action) => {
         state.loading = false;
         state.error = null;
+        state.totalCount = action.payload.dbRecCount
         if (
           action.payload &&
           action.payload.data &&

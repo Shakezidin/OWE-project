@@ -35,7 +35,7 @@ const Adjustments  = () => {
 
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const {data:arAdjustmentsList,isLoading,error} = useAppSelector(
+  const {data:arAdjustmentsList,isLoading,error,count} = useAppSelector(
     (state) => state.arAdjusments
   );
 //   const loading = useAppSelector((state) => state.timelineSla.loading);
@@ -75,7 +75,7 @@ const Adjustments  = () => {
   const goToPrevPage = () => {
     dispatch(setCurrentPage(currentPage - 1));
   };
-  const totalPages = Math.ceil(arAdjustmentsList?.length / itemsPerPage);
+  const totalPages = Math.ceil(count / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -289,7 +289,7 @@ const Adjustments  = () => {
         <div className="page-heading-container">
 
           <p className="page-heading">
-            {currentPage} - {totalPages} of {currentPageData?.length} item
+            {currentPage} - {totalPages} of {arAdjustmentsList?.length} item
           </p>
 
           {
@@ -300,6 +300,7 @@ const Adjustments  = () => {
               currentPageData={currentPageData}
               goToNextPage={goToNextPage}
               goToPrevPage={goToPrevPage}
+perPage={itemsPerPage}
             /> : null
           }
         </div>

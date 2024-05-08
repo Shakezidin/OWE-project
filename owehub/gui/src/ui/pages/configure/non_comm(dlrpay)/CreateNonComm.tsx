@@ -6,27 +6,34 @@ import { useDispatch } from "react-redux";
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import Select from "react-select";
 import {
-  installerOption,
-  partnerOption,
-  repTypeOption,
-  stateOption,
+  dealerOption,
+  dbaOption,
 } from "../../../../core/models/data_models/SelectDataModel";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
-import { resetSuccess } from "../../../../redux/apiSlice/configSlice/config_get_slice/dlrOth";
-import { IRowDLR, createDlrOth, updateDlrOth } from "../../../../redux/apiActions/dlrAction";
+import { resetSuccess } from "../../../../redux/apiSlice/configSlice/config_get_slice/nonComm";
+import {
+  IRowDLR,
+  createDlrOth,
+  updateDlrOth,
+} from "../../../../redux/apiActions/dlrAction";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-
+import {
+  INonCommRowDLR,
+  createNonComm,
+  updateNoncom,
+} from "../../../../redux/apiActions/nocCommAction";
+import SelectOption from "../../../components/selectOption/SelectOption";
 interface ButtonProps {
   editMode: boolean;
   handleClose: () => void;
-  commission: IRowDLR | null;
+  commission: INonCommRowDLR | null;
 }
 
 interface IError {
   [key: string]: string;
 }
 
-const CreateDlrOth: React.FC<ButtonProps> = ({
+const CreateNonComm: React.FC<ButtonProps> = ({
   handleClose,
   commission,
   editMode,
@@ -34,19 +41,23 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
   const dispatch = useAppDispatch();
   const { isSuccess } = useAppSelector((state) => state.dlrOth);
   const [createCommission, setCreateCommission] = useState({
-    unique_id: commission?.unique_id || "",
-    payee: commission?.payee || "",
-    amount: commission?.amount || "",
-    description: commission?.description || "",
-    balance: commission?.balance ? `${commission?.balance}` : "",
-    paid_amount: commission?.paid_amount ? `${commission?.balance}` : "",
-    start_date: commission?.start_date || "",
-    end_date: commission?.end_date || "",
+    unique_id:commission?.unique_id|| "",
+    customer:commission?.customer||  "",
+    dealer_name:commission?.dealer_name||  "",
+    dealer_dba:commission?.dealer_dba||  "",
+    exact_amount:commission?.exact_amount||  "",
+    approved_by:commission?.approved_by||  "",
+    notes:commission?.notes||  "",
+    balance:commission?.balance? `${commission?.balance}`:"",
+    paid_amount:commission?.paid_amount? `${commission?.paid_amount}`: "",
+    dba:commission?.dba|| "",
+    start_date:commission?.start_date|| "",
+    end_date:commission?.end_date|| "",
   });
   const [errors, setErrors] = useState<IError>({} as IError);
   const [newFormData, setNewFormData] = useState<any>([]);
   const tableData = {
-    tableNames: ["partners", "states", "installers", "rep_type"],
+    tableNames: ["dbas", "dealers"],
   };
   const getNewFormData = async () => {
     const res = await postCaller(EndPoints.get_newFormData, tableData);
@@ -90,24 +101,32 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (handleValidation()) {
-      if (editMode) {
-        dispatch(updateDlrOth({
+    if (editMode) {
+      dispatch(
+        updateNoncom({
           ...createCommission,
-          balance: parseFloat(createCommission.balance),
           paid_amount: parseFloat(createCommission.paid_amount),
-         record_id:commission?.record_id!
-        }))
-      } else {
-        dispatch(
-          createDlrOth({
-            ...createCommission,
-            balance: parseFloat(createCommission.balance),
-            paid_amount: parseFloat(createCommission.paid_amount),
-          })
-        );
-      }
+          balance: parseFloat(createCommission.balance),
+          record_id: commission?.record_id!,
+          dba: createCommission.dba || "XYZ Motors",
+          dealer_dba: createCommission.dealer_dba || "XYZ Motors",
+          dealer_name: createCommission.dealer_name || "M Asif",
+        })
+      );
+    } else {
+      dispatch(
+        createNonComm({
+          ...createCommission,
+          paid_amount: parseFloat(createCommission.paid_amount),
+          balance: parseFloat(createCommission.balance),
+          dba: createCommission.dba || "XYZ Motors",
+          dealer_dba: createCommission.dealer_dba || "XYZ Motors",
+          dealer_name: createCommission.dealer_name || "M Asif",
+        })
+      );
     }
+    // if (handleValidation()) {
+    //   }
   };
 
   useEffect(() => {
@@ -124,7 +143,7 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
         </div>
 
         <h3 className="createProfileText">
-          {editMode === false ? "Dealer Credit" : "Update Dealer Credit"}
+          {editMode === false ? "NON-Comm create" : "Update NON-Comm"}
         </h3>
 
         <div className="modal-body">
@@ -147,32 +166,42 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                   )}
                 </div>
                 <div className="create-input-field">
-                  <Input
-                    type={"text"}
-                    label="Payee"
-                    value={createCommission.payee}
-                    name="payee"
-                    placeholder={"Enter"}
-                    onChange={(e) => handleInputChange(e)}
+                  <label className="inputLabel-select">Dealer</label>
+                  <SelectOption
+                    options={dealerOption(newFormData)}
+                    onChange={(newValue) => {
+                      setCreateCommission((prev) => ({
+                        ...prev,
+                        dealer_name: newValue?.value!,
+                      }));
+                    }}
+                    value={dealerOption(newFormData)?.find(
+                      (option) => option.value === createCommission.dealer_name
+                    )}
                   />
-                  {errors?.payee && (
+                  {errors?.dealer_name && (
                     <span style={{ display: "block", color: "#FF204E" }}>
-                      {errors.payee}
+                      {errors.dealer_name}
                     </span>
                   )}
                 </div>
                 <div className="create-input-field">
-                  <Input
-                    type={"number"}
-                    label="Amount"
-                    value={createCommission.amount}
-                    name="amount"
-                    placeholder={"Enter"}
-                    onChange={(e) => handleInputChange(e)}
+                  <label className="inputLabel-select">DBA</label>
+                  <SelectOption
+                    options={dbaOption(newFormData)}
+                    onChange={(newValue) => {
+                      setCreateCommission((prev) => ({
+                        ...prev,
+                        dba: newValue?.value!,
+                      }));
+                    }}
+                    value={dealerOption(newFormData)?.find(
+                      (option) => option.value === createCommission.dba
+                    )}
                   />
-                  {errors?.amount && (
+                  {errors?.dba && (
                     <span style={{ display: "block", color: "#FF204E" }}>
-                      {errors.amount}
+                      {errors.dba}
                     </span>
                   )}
                 </div>
@@ -197,15 +226,15 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={"text"}
-                    label="Description"
-                    value={createCommission.description}
-                    name="description"
+                    label="Amount"
+                    value={createCommission.exact_amount}
+                    name="exact_amount"
                     placeholder={"Enter"}
                     onChange={(e) => handleInputChange(e)}
                   />
-                  {errors?.description && (
+                  {errors?.exact_amount && (
                     <span style={{ display: "block", color: "#FF204E" }}>
-                      {errors.description}
+                      {errors.exact_amount.replace("exact amount", "amount")}
                     </span>
                   )}
                 </div>
@@ -244,6 +273,22 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
 
                 <div className="create-input-field">
                   <Input
+                    type={"text"}
+                    label="Dealer DBA"
+                    value={createCommission.dealer_dba}
+                    name="dealer_dba"
+                    placeholder={"Enter"}
+                    onChange={(e) => handleInputChange(e)}
+                  />
+                  {errors?.dealer_dba && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.dealer_dba}
+                    </span>
+                  )}
+                </div>
+
+                <div className="create-input-field">
+                  <Input
                     type={"number"}
                     label="Paid Amount"
                     value={createCommission.paid_amount}
@@ -251,9 +296,59 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                     placeholder={"Enter"}
                     onChange={(e) => handleInputChange(e)}
                   />
-                  {errors?.amount && (
+                  {errors?.balance && (
                     <span style={{ display: "block", color: "#FF204E" }}>
-                      {errors.amount}
+                      {errors.balance}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              <div className="create-input-container">
+                <div className="create-input-field">
+                  <Input
+                    type={"text"}
+                    label="Notes"
+                    value={createCommission.notes}
+                    name="notes"
+                    placeholder={"Enter"}
+                    onChange={(e) => handleInputChange(e)}
+                  />
+                  {errors?.end_date && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.start_date.replace("end_date", "end date")}
+                    </span>
+                  )}
+                </div>
+
+                <div className="create-input-field">
+                  <Input
+                    type={"text"}
+                    label="Approved by"
+                    value={createCommission.approved_by}
+                    name="approved_by"
+                    placeholder={"Enter"}
+                    onChange={(e) => handleInputChange(e)}
+                  />
+                  {errors?.dealer_dba && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.dealer_dba}
+                    </span>
+                  )}
+                </div>
+
+                <div className="create-input-field">
+                  <Input
+                    type={"text"}
+                    label="Customer"
+                    value={createCommission.customer}
+                    name="customer"
+                    placeholder={"Enter"}
+                    onChange={(e) => handleInputChange(e)}
+                  />
+                  {errors?.customer && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.customer}
                     </span>
                   )}
                 </div>
@@ -274,4 +369,4 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
   );
 };
 
-export default CreateDlrOth;
+export default CreateNonComm;

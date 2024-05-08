@@ -242,6 +242,7 @@ const [pageSize1, setPageSize1] = useState(10);
               currentPageData={currentPageData}
               goToNextPage={goToNextPage}
               goToPrevPage={goToPrevPage}
+perPage={itemsPerPage}
             /> : null
           } */}
            <PaginationComponent

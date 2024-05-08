@@ -21,7 +21,7 @@ import {
 import { TYPE_OF_USER } from "../../../../resources/static_data/TypeOfUser";
 import PaginationComponent from "../../../components/pagination/PaginationComponent";
 import { fetchUserListBasedOnRole } from "../../../../redux/apiActions/userManagementActions";
-
+ 
 interface UserTableProos {
   userDropdownData: UserDropdownModel[];
   userRoleBasedList: UserRoleBasedListModel[];
@@ -49,9 +49,9 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   onClickMultiDelete
 }) => {
   const dispatch = useAppDispatch();
-  const [pageSize1, setPageSize1] = useState(10); // Set your desired page size here
+  const [pageSize1, setPageSize1] = useState(5); // Set your desired page size here
   const [currentPage1, setCurrentPage1] = useState(1)
-
+const count = useAppSelector(state=>state.userManagement.totalCount)
   useEffect(() => {
     const data = {
       page_number: currentPage1,
@@ -65,9 +65,9 @@ const UserManagementTable: React.FC<UserTableProos> = ({
       ],
     };
     dispatch(fetchUserListBasedOnRole(data));
-
+ 
   }, [dispatch, currentPage1, pageSize1]);
-
+ 
   const handlePageChange = (page: number) => {
     setCurrentPage1(page)
   };
@@ -76,17 +76,17 @@ const UserManagementTable: React.FC<UserTableProos> = ({
     setPageSize1(newItemsPerPage);
     setCurrentPage1(1) // Reset to the first page when changing items per page
   };
-
+ 
   const currentPage = useAppSelector(
     (state) => state.paginationType.currentPage
   );
-
-  const totalPages = Math.ceil(userRoleBasedList?.length / pageSize1);
-
+ 
+  const totalPages = Math.ceil(count! / pageSize1);
+ 
   const startIndex = (currentPage - 1) * pageSize1;
   const endIndex = startIndex + pageSize1;
-
-
+ 
+ 
   /** render table based on dropdown */
   const renderComponent = () => {
     switch (selectedOption.label) {
@@ -216,7 +216,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             selectAllChecked={selectAllChecked}
             setSelectedRows={setSelectedRows}
             setSelectAllChecked={setSelectAllChecked}
-            
+           
           />
         );
       case TYPE_OF_USER.SALE_MANAGER:
@@ -239,7 +239,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
         return null;
     }
   };
-
+ 
   /** render UI */
   return (
     <>
@@ -257,11 +257,11 @@ const UserManagementTable: React.FC<UserTableProos> = ({
               }}
             />
           </div>
-
+ 
           <div className="iconsSection-delete" style={{ marginTop: "1.2rem" }} onClick={()=>{
             onClickMultiDelete()
           }}>
-            
+           
             <button type="button">
               <img src={ICONS.deleteIcon} alt="" />
             </button>
@@ -269,12 +269,12 @@ const UserManagementTable: React.FC<UserTableProos> = ({
         </div>
       </div>
       {selectedOption && renderComponent()}
-
+ 
       <div className="user-page-heading-container">
         {userRoleBasedList?.length > 0 ? (
           <>
             <p className="page-heading">
-              {currentPage} - {totalPages} of {userRoleBasedList?.length} item
+              {currentPage} - {count} of {userRoleBasedList?.length} item
             </p>
             <PaginationComponent
                 currentPage={currentPage1}
@@ -289,5 +289,5 @@ const UserManagementTable: React.FC<UserTableProos> = ({
     </>
   );
 };
-
+ 
 export default UserManagementTable;

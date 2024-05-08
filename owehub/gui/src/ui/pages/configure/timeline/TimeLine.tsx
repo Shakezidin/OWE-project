@@ -36,7 +36,7 @@ const TimeLine = () => {
   const timelinesla_list = useAppSelector(
     (state) => state.timelineSla.timelinesla_list
   );
-  const loading = useAppSelector((state) => state.timelineSla.loading);
+  const {loading,totalCount} = useAppSelector((state) => state.timelineSla);
   const error = useAppSelector((state) => state.timelineSla.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
@@ -72,7 +72,7 @@ const TimeLine = () => {
   const goToPrevPage = () => {
     dispatch(setCurrentPage(currentPage - 1));
   };
-  const totalPages = Math.ceil(timelinesla_list?.length / itemsPerPage);
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -263,8 +263,8 @@ const TimeLine = () => {
               </tr>
             </thead>
             <tbody >
-              {currentPageData?.length > 0
-                ? currentPageData?.map((el: any, i: any) => (
+              {timelinesla_list?.length > 0
+                ? timelinesla_list?.map((el: any, i: any) => (
                   <tr
                     key={i}
                     className={selectedRows.has(i) ? "selected" : ""}
@@ -325,7 +325,7 @@ const TimeLine = () => {
         <div className="page-heading-container">
 
           <p className="page-heading">
-            {currentPage} - {totalPages} of {currentPageData?.length} item
+            {currentPage} - {totalCount} of {timelinesla_list?.length} item
           </p>
 
           <Pagination
@@ -335,6 +335,7 @@ const TimeLine = () => {
               currentPageData={currentPageData}
               goToNextPage={goToNextPage}
               goToPrevPage={goToPrevPage}
+perPage={itemsPerPage}
             /> 
         </div>
 : null

@@ -342,13 +342,14 @@ const PaymentSchedule = () => {
       </p>
  
    <Pagination
-      currentPage={currentPage}
-      totalPages={totalPages} // You need to calculate total pages
-      paginate={paginate}
-      goToNextPage={goToNextPage}
-      goToPrevPage={goToPrevPage}
-      currentPageData={currentPageData}
-    /> 
+              currentPage={currentPage}
+              totalPages={totalPages} // You need to calculate total pages
+              paginate={paginate}
+              currentPageData={currentPageData}
+              goToNextPage={goToNextPage}
+              goToPrevPage={goToPrevPage}
+perPage={itemsPerPage}
+            />  
    </div>
    : null
   }

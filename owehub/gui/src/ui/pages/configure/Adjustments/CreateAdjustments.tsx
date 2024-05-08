@@ -6,7 +6,11 @@ import { ActionButton } from "../../../components/button/ActionButton";
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-import { createAdjustments,updateAdjustments,IRateRow } from "../../../../redux/apiActions/arAdjustmentsAction";
+import {
+  createAdjustments,
+  updateAdjustments,
+  IRateRow,
+} from "../../../../redux/apiActions/arAdjustmentsAction";
 import {
   installerOption,
   partnerOption,
@@ -17,115 +21,136 @@ import { format } from "date-fns";
 import SelectOption from "../../../components/selectOption/SelectOption";
 import { resetSuccess } from "../../../../redux/apiSlice/configSlice/config_get_slice/arAdjusments";
 interface payScheduleProps {
-  handleClose: () => void,
-  editMode: boolean,
-  setViewArchived:React.Dispatch<React.SetStateAction<boolean>>
-  editData:IRateRow|null
+  handleClose: () => void;
+  editMode: boolean;
+  setViewArchived: React.Dispatch<React.SetStateAction<boolean>>;
+  editData: IRateRow | null;
 }
 
-
-const CreatedAdjustments: React.FC<payScheduleProps> = ({ handleClose, editMode,setViewArchived,editData }) => {
+const CreatedAdjustments: React.FC<payScheduleProps> = ({
+  handleClose,
+  editMode,
+  setViewArchived,
+  editData,
+}) => {
   const dispatch = useAppDispatch();
 
-
   const [newFormData, setNewFormData] = useState({
-    uniqueId:editData?.unique_id|| "",
-    customer:editData?.customer|| "",
-    partnerName:editData?.partner_name|| "",
-    installerName: editData?.installer_name||"",
-    sysSize:editData?.sys_size?`${editData?.sys_size}`: "",
-    bl:editData?.bl|| "",
-    epc:editData?.epc?`${editData?.epc}`: "",
-    date:editData?.date|| "",
-    amount: editData?.amount?`${editData?.amount}`: "",
-    notes: editData?.notes||"",
-    startDate:editData?.start_date|| "",
-    endDate:editData?.end_date||  "",
-    stateName: editData?.state_name||""
-  })
-  const { isSuccess } = useAppSelector(state => state.arAdjusments)
+    uniqueId: editData?.unique_id || "",
+    customer: editData?.customer || "",
+    partnerName: editData?.partner_name || "",
+    installerName: editData?.installer_name || "",
+    sysSize: editData?.sys_size ? `${editData?.sys_size}` : "",
+    bl: editData?.bl || "",
+    epc: editData?.epc ? `${editData?.epc}` : "",
+    date: editData?.date || "",
+    amount: editData?.amount ? `${editData?.amount}` : "",
+    notes: editData?.notes || "",
+    startDate: editData?.start_date || "",
+    endDate: editData?.end_date || "",
+    stateName: editData?.state_name || "",
+  });
 
-  const tableData = {
-    tableNames: ["partners", "states", "installers", "sale_type"]
-  }
-  const getNewFormData = async () => {
-    const res = await postCaller(EndPoints.get_newFormData, tableData)
-    setNewFormData(prev => ({ ...prev, ...res.data }))
-  }
-  React.useEffect(() => {
-    getNewFormData()
-  }, [])
+  const [errors, setErrors] = useState<typeof newFormData>(
+    {} as typeof newFormData
+  );
+  const { isSuccess } = useAppSelector((state) => state.arAdjusments);
 
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value, name } = e.target
-    if (name === "amount" || name === "epc" || name === "sysSize") {
-      if (value === "" || value === "0" || Number(value)) {
-        setNewFormData(prev => ({ ...prev, [name]: value }))
+  const handleValidation = () => {
+    const error: typeof newFormData = {} as typeof newFormData;
+    for (const key in newFormData) {
+      if (!newFormData[key as keyof typeof newFormData]) {
+        error[
+          key as keyof typeof newFormData
+        ] = `${key.toLocaleLowerCase()} is required`;
       }
     }
-    else {
-      setNewFormData(prev => ({ ...prev, [name]: value }))
+    setErrors({ ...error });
+    return Object.keys(error).length ? false : true;
+  };
+
+  const tableData = {
+    tableNames: ["partners", "states", "installers", "sale_type"],
+  };
+  const getNewFormData = async () => {
+    const res = await postCaller(EndPoints.get_newFormData, tableData);
+    setNewFormData((prev) => ({ ...prev, ...res.data }));
+  };
+  React.useEffect(() => {
+    getNewFormData();
+  }, []);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value, name } = e.target;
+    if (name === "amount" || name === "epc" || name === "sysSize") {
+      if (value === "" || value === "0" || Number(value)) {
+        setNewFormData((prev) => ({ ...prev, [name]: value }));
+      }
+    } else {
+      setNewFormData((prev) => ({ ...prev, [name]: value }));
     }
-  }
+  };
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    setViewArchived(false)
-    if(editMode){
-dispatch(updateAdjustments({
-  unique_id: newFormData.uniqueId,
-  customer: newFormData.customer,
-  partner_name: newFormData.partnerName,
-  state_name: newFormData.stateName,
-  installer_name: newFormData.installerName,
-  sys_size: parseFloat(newFormData.sysSize),
-  bl: newFormData.bl,
-  epc: parseFloat(newFormData.epc),
-  date: format(new Date(newFormData.date), "yyyy-MM-dd"),
-  notes: newFormData.notes,
-  amount: parseFloat(newFormData.amount),
-  "start_date": format(new Date(newFormData.startDate), "yyyy-MM-dd"),
-  "end_date": format(new Date(newFormData.endDate), "yyyy-MM-dd"),
-  record_id:editData?.record_id!
-}))
-    }else{
-
-      dispatch(createAdjustments({
-        unique_id: newFormData.uniqueId,
-        customer: newFormData.customer,
-        partner_name: newFormData.partnerName,
-        state_name: newFormData.stateName,
-        installer_name: newFormData.installerName,
-        sys_size: parseFloat(newFormData.sysSize),
-        bl: newFormData.bl,
-        epc: parseFloat(newFormData.epc),
-        date: format(new Date(newFormData.date), "yyyy-MM-dd"),
-        notes: newFormData.notes,
-        amount: parseFloat(newFormData.amount),
-        "start_date": format(new Date(newFormData.startDate), "yyyy-MM-dd"),
-        "end_date": format(new Date(newFormData.endDate), "yyyy-MM-dd")
-      }))
+    e.preventDefault();
+    if (handleValidation()) {
+      setViewArchived(false);
+      if (editMode) {
+        dispatch(
+          updateAdjustments({
+            unique_id: newFormData.uniqueId,
+            customer: newFormData.customer,
+            partner_name: newFormData.partnerName,
+            state_name: newFormData.stateName,
+            installer_name: newFormData.installerName,
+            sys_size: parseFloat(newFormData.sysSize),
+            bl: newFormData.bl,
+            epc: parseFloat(newFormData.epc),
+            date: format(new Date(newFormData.date), "yyyy-MM-dd"),
+            notes: newFormData.notes,
+            amount: parseFloat(newFormData.amount),
+            start_date: format(new Date(newFormData.startDate), "yyyy-MM-dd"),
+            end_date: format(new Date(newFormData.endDate), "yyyy-MM-dd"),
+            record_id: editData?.record_id!,
+          })
+        );
+      } else {
+        dispatch(
+          createAdjustments({
+            unique_id: newFormData.uniqueId,
+            customer: newFormData.customer,
+            partner_name: newFormData.partnerName,
+            state_name: newFormData.stateName,
+            installer_name: newFormData.installerName,
+            sys_size: parseFloat(newFormData.sysSize),
+            bl: newFormData.bl,
+            epc: parseFloat(newFormData.epc),
+            date: format(new Date(newFormData.date), "yyyy-MM-dd"),
+            notes: newFormData.notes,
+            amount: parseFloat(newFormData.amount),
+            start_date: format(new Date(newFormData.startDate), "yyyy-MM-dd"),
+            end_date: format(new Date(newFormData.endDate), "yyyy-MM-dd"),
+          })
+        );
+      }
     }
-  }
-
-
+  };
 
   useEffect(() => {
     if (isSuccess) {
-      handleClose()
-      isSuccess && dispatch(resetSuccess()) 
+      handleClose();
+      isSuccess && dispatch(resetSuccess());
     }
-  }, [isSuccess])
+  }, [isSuccess]);
   return (
     <div className="transparent-model">
-      <form className="modal" onSubmit={handleSubmit} >
-
+      <form className="modal" onSubmit={handleSubmit}>
         <div className="createUserCrossButton" onClick={handleClose}>
           <CROSS_BUTTON />
-
         </div>
 
-        <h3 className="createProfileText">{editMode === false ? "Rep Pay Settings" : "Update RepPay Settings"}</h3>
+        <h3 className="createProfileText">
+          {editMode === false ? "Rep Pay Settings" : "Update RepPay Settings"}
+        </h3>
 
         <div className="modal-body">
           <div className="createProfileInputView">
@@ -140,6 +165,11 @@ dispatch(updateAdjustments({
                     placeholder={"Enter"}
                     onChange={handleChange}
                   />
+                  {errors?.uniqueId && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.uniqueId}
+                    </span>
+                  )}
                 </div>
                 <div className="create-input-field">
                   <Input
@@ -150,35 +180,54 @@ dispatch(updateAdjustments({
                     placeholder={"Enter"}
                     onChange={handleChange}
                   />
+                  {errors?.customer && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.customer}
+                    </span>
+                  )}
                 </div>
                 <div className="create-input-field">
-
-
                   <label className="inputLabel-select">Partners</label>
                   <SelectOption
                     options={partnerOption(newFormData)}
                     onChange={(newValue) => {
-                      setNewFormData(prev => ({ ...prev, partnerName: newValue?.value! }))
+                      setNewFormData((prev) => ({
+                        ...prev,
+                        partnerName: newValue?.value!,
+                      }));
                     }}
-                    value={partnerOption(newFormData)?.find((option) => option.value === newFormData.partnerName)}
+                    value={partnerOption(newFormData)?.find(
+                      (option) => option.value === newFormData.partnerName
+                    )}
                   />
+                  {errors?.partnerName && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.partnerName}
+                    </span>
+                  )}
                 </div>
-
               </div>
 
-
-
               <div className="create-input-container">
-
                 <div className="create-input-field">
                   <label className="inputLabel-select">State</label>
                   <SelectOption
                     options={stateOption(newFormData)}
                     onChange={(newValue) => {
-                      setNewFormData(prev => ({ ...prev, stateName: newValue?.value! }))
+                      setNewFormData((prev) => ({
+                        ...prev,
+                        stateName: newValue?.value!,
+                      }));
                     }}
-                    value={stateOption(newFormData)?.find((option) => option.value === newFormData.stateName)}
+                    value={stateOption(newFormData)?.find(
+                      (option) => option.value === newFormData.stateName
+                    )}
                   />
+                  {errors?.stateName && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.stateName}
+                    </span>
+                  )}
                 </div>
                 <div className="create-input-field">
                   <Input
@@ -189,21 +238,34 @@ dispatch(updateAdjustments({
                     placeholder={"Enter"}
                     onChange={handleChange}
                   />
+
+                  {errors?.sysSize && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.sysSize}
+                    </span>
+                  )}
                 </div>
 
                 <div className="create-input-field">
-
                   <label className="inputLabel-select">Installer</label>
                   <SelectOption
                     options={installerOption(newFormData)}
                     onChange={(newValue) => {
-                      setNewFormData(prev => ({ ...prev, installerName: newValue?.value! }))
+                      setNewFormData((prev) => ({
+                        ...prev,
+                        installerName: newValue?.value!,
+                      }));
                     }}
-                    value={installerOption(newFormData)?.find((option) => option.value === newFormData.installerName)}
+                    value={installerOption(newFormData)?.find(
+                      (option) => option.value === newFormData.installerName
+                    )}
                   />
+                  {errors?.installerName && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.sysSize}
+                    </span>
+                  )}
                 </div>
-
-
               </div>
 
               <div className="create-input-container">
@@ -216,6 +278,11 @@ dispatch(updateAdjustments({
                     placeholder={"Enter"}
                     onChange={handleChange}
                   />
+                  {errors?.bl && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.bl}
+                    </span>
+                  )}
                 </div>
 
                 <div className="create-input-field">
@@ -227,6 +294,11 @@ dispatch(updateAdjustments({
                     placeholder={"Enter"}
                     onChange={handleChange}
                   />
+                  {errors?.epc && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.epc}
+                    </span>
+                  )}
                 </div>
                 <div className="create-input-field">
                   <Input
@@ -237,6 +309,11 @@ dispatch(updateAdjustments({
                     placeholder={"Enter"}
                     onChange={handleChange}
                   />
+                  {errors?.date && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.date}
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -250,6 +327,11 @@ dispatch(updateAdjustments({
                     placeholder={"Enter"}
                     onChange={handleChange}
                   />
+                  {errors?.amount && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.amount}
+                    </span>
+                  )}
                 </div>
                 <div className="create-input-field">
                   <Input
@@ -260,6 +342,11 @@ dispatch(updateAdjustments({
                     placeholder={"Enter"}
                     onChange={handleChange}
                   />
+                  {errors?.notes && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.notes}
+                    </span>
+                  )}
                 </div>
 
                 <div className="create-input-field">
@@ -271,6 +358,11 @@ dispatch(updateAdjustments({
                     placeholder={"Enter"}
                     onChange={handleChange}
                   />
+                  {errors?.startDate && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.startDate}
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -283,20 +375,27 @@ dispatch(updateAdjustments({
                   placeholder={"Enter"}
                   onChange={handleChange}
                 />
+                {errors?.endDate && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.endDate}
+                    </span>
+                  )}
               </div>
             </div>
           </div>
         </div>
         <div className="createUserActionButton">
-          <ActionButton title={"Cancel"} type="reset"
-            onClick={() => handleClose()} />
-          <ActionButton title={editMode === false ? "Save" : "Update"} type="submit"
-            onClick={() => { }} />
+          <ActionButton
+            title={"Cancel"}
+            type="reset"
+            onClick={() => handleClose()}
+          />
+          <ActionButton
+            title={editMode === false ? "Save" : "Update"}
+            type="submit"
+            onClick={() => {}}
+          />
         </div>
-
-
-
-
       </form>
     </div>
   );

@@ -65,6 +65,7 @@ const createUserSlice = createSlice({
         (state: CreateOnboardUserStateModel, action) => {
           state.loading = false;
           state.error = null;
+          state.regionList = [];
           state.dealerOwenerList = action.payload;
         }
       )

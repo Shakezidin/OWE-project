@@ -32,7 +32,8 @@ export interface IRateRow extends IRateCreateParams {
 export const getAdjustments = createAsyncThunk("fetch/ar-adjustments", async (params: Ipaginate, { rejectWithValue }) => {
     try {
         const data = await postCaller("get_adjustments", params)
-        return data.data.adjustments_list || [] as IRateRow[]
+        const list = data.data.adjustments_list || [] as IRateRow[]
+        return{list,count:data.dbRecCount}
     } catch (error) {
         return rejectWithValue((error as Error).message)
     }

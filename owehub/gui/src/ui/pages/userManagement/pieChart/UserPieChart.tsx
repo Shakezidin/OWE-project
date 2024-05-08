@@ -54,17 +54,14 @@ const UserPieChart:React.FC<UserPieChartProps> = ({ onboardingList }) => {
                 dominantBaseline="central"
               >
                 <LabelList
-                  dy={0}
-                  dx={10}
                   fill="white"
                   dataKey={renderCustomizedLabelPercentage}
                   position="outside"
-                  angle={0}
                   fontSize={12}
                   stroke="none"
                   className="label-percentage"
                   style={{outline: 'none'}}
-                  offset={-45}
+                  offset={-30}
                 />
               </Pie>
             </PieChart>

@@ -22,6 +22,7 @@ import { showAlert, successSwal } from "../../../components/alert/ShowAlert";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
 import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
+import Loading from "../../../components/loader/Loading";
 const LoanFee = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -142,7 +143,7 @@ const LoanFee = () => {
     dispatch(getLoanFee(req));
    };
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className="loader-container"> <Loading/> </div>;
   }
 
   if (error) {
@@ -274,6 +275,7 @@ const LoanFee = () => {
               currentPageData={currentPageData}
               goToNextPage={goToNextPage}
               goToPrevPage={goToPrevPage}
+perPage={itemsPerPage}
             /> : null
           }
         </div>
