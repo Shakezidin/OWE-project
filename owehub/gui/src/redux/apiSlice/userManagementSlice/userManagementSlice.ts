@@ -10,6 +10,7 @@ const initialState: UserOnboardingStateModel = {
   userRoleBasedList: [],
   loading: false,
   error: null,
+  totalCount:0
 };
 
 const userManagementSlice = createSlice({
@@ -54,7 +55,8 @@ const userManagementSlice = createSlice({
         (state: UserOnboardingStateModel, action) => {
           state.loading = false;
           state.error = null;
-          state.userRoleBasedList = action.payload;
+          state.userRoleBasedList = action.payload.users_data_list;
+          state.totalCount = action.payload.count
         }
       )
       .addCase(

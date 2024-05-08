@@ -23,14 +23,19 @@ const initialState: IState = {
 const rateAdjustments = createSlice({
     name: "RateAdjustments",
     initialState,
-    reducers: {},
+    reducers: {
+        resetSuccess:(state)=>{
+            state.isSuccess = 0
+          
+        }
+    },
     extraReducers: builder => {
         builder.addCase(fetchRateAdjustments.pending, (state) => {
             state.isLoading = true
         })
             .addCase(fetchRateAdjustments.fulfilled, (state, action: PayloadAction<any | null>) => {
                 state.isLoading = false
-                state.data = action.payload ? action.payload.data.rate_adjustments_list
+                state.data = action.payload ? action.payload
                 :[]
             })
             .addCase(fetchRateAdjustments.rejected, (state, action) => {
@@ -64,5 +69,5 @@ const rateAdjustments = createSlice({
     }
 })
 
-
+export const {resetSuccess} =  rateAdjustments.actions
 export default rateAdjustments.reducer

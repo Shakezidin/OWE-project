@@ -6,13 +6,16 @@ import { ReactComponent as UNDER_LINE } from "../../../resources/assets/BlueAndG
 import Input from "../../components/text_input/Input";
 import { ActionButton } from "../../components/button/ActionButton";
 import { otpModel } from "../../../core/models/api_models/AuthModel";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { generateOTP } from "../../../redux/apiActions/authActions";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { HTTP_STATUS } from "../../../core/models/api_models/RequestModel";
 import { toast } from "react-toastify";
 import Loading from "../../components/loader/Loading";
+import { ROUTES } from "../../../routes/routes";
+import { FaArrowLeft } from "react-icons/fa";
+import ResendOtpButton from "./ResendOtpButton";
 
 const PasswordInput = (props: {
   placeholder: string;
@@ -54,6 +57,18 @@ const EnterOtpScreen = () => {
       [name]: value,
     }));
   };
+
+
+  const resendOTP = async () => {
+    const actionResult = await dispatch(generateOTP({ email_id: email }));
+    const result = unwrapResult(actionResult);
+    if (result.status === HTTP_STATUS.OK) {
+      toast.success(result.message);
+    } else {
+      toast.error(result.message);
+    }
+  };
+
   const handleOtpSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log(otpCred);
@@ -76,10 +91,10 @@ const EnterOtpScreen = () => {
       const actionResult = await dispatch(generateOTP(data));
       const result = unwrapResult(actionResult);
       if (result.status === HTTP_STATUS.OK) {
-        toast.success(result.message)
+        toast.success(result.message);
         navigate("/login");
-      }else{
-        toast.error(result.message)
+      } else {
+        toast.error(result.message);
       }
     }
   };
@@ -122,6 +137,14 @@ const EnterOtpScreen = () => {
                 placeholder={"Enter OTP"}
                 onChange={handleInputChange}
               />
+
+              {/* if email not provided, dont show ResendOtpButton (incase of visit by url) */}
+              {email && (
+                <ResendOtpButton
+                  isLoading={!!loading}
+                  onClick={resendOTP}
+                />
+              )}
               <br />
               <PasswordInput
                 value={otpCred.new_password}
@@ -139,14 +162,18 @@ const EnterOtpScreen = () => {
 
               <br />
               <ActionButton title="Submit" type="submit" onClick={() => {}} />
+              <Link to={ROUTES.RESETPASSWORD} className="loginGoBackLink">
+                <FaArrowLeft />
+                <span>Re-enter email</span>
+              </Link>
             </div>
           </form>
         </div>
         {loading && (
-        <div>
-          <Loading /> {loading}
-        </div>
-      )}
+          <div>
+            <Loading /> {loading}
+          </div>
+        )}
       </div>
     </div>
   );

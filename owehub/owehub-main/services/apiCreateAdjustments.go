@@ -85,7 +85,6 @@ func HandleCreateAdjustmentsRequest(resp http.ResponseWriter, req *http.Request)
 		return
 	}
 
-	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, createAdjustmentsReq.UniqueId)
 	queryParameters = append(queryParameters, createAdjustmentsReq.Customer)
 	queryParameters = append(queryParameters, createAdjustmentsReq.PartnerName)

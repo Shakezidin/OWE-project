@@ -12,18 +12,18 @@ import payScheduleReducer from "./apiSlice/configSlice/config_get_slice/paySched
 import timeLineSlaReducer from "./apiSlice/configSlice/config_get_slice/timeLineSlice";
 import loanTypeReducer from "./apiSlice/configSlice/config_get_slice/loanTypeSlice";
 import resetPasswordSlice from "./apiSlice/authSlice/resetPasswordSlice";
-import createCommissionReducer from './apiSlice/configSlice/config_post_slice/createCommissionSlice'
-import createMarketingReduce from './apiSlice/configSlice/config_post_slice/createMarketingSlice'
-import createAdderV from './apiSlice/configSlice/config_post_slice/createAdderVSlice'
-import createdealerReducer from './apiSlice/configSlice/config_post_slice/createDealerSlice'
-import createsalesReducer from './apiSlice/configSlice/config_post_slice/createSalesTypeSlice'
-import createtierLoanReducer from './apiSlice/configSlice/config_post_slice/createLoanTypeSlice'
-import createdealerTierReducer from './apiSlice/configSlice/config_post_slice/createDealerTierSlice'
-import createpayScheduleReducer from './apiSlice/configSlice/config_post_slice/createPayScheduleSlice'
-import createtimeLineSlaReducer from './apiSlice/configSlice/config_post_slice/createTimeLineSlaSlice'
-import createloanTypeReducer from './apiSlice/configSlice/config_post_slice/createLoanTypeSlice'
-import paginationReducer from './apiSlice/paginationslice/paginationSlice'
-import createUserReducer from './apiSlice/userManagementSlice/createUserSlice'
+import createCommissionReducer from "./apiSlice/configSlice/config_post_slice/createCommissionSlice";
+import createMarketingReduce from "./apiSlice/configSlice/config_post_slice/createMarketingSlice";
+import createAdderV from "./apiSlice/configSlice/config_post_slice/createAdderVSlice";
+import createdealerReducer from "./apiSlice/configSlice/config_post_slice/createDealerSlice";
+import createsalesReducer from "./apiSlice/configSlice/config_post_slice/createSalesTypeSlice";
+import createtierLoanReducer from "./apiSlice/configSlice/config_post_slice/createLoanTypeSlice";
+import createdealerTierReducer from "./apiSlice/configSlice/config_post_slice/createDealerTierSlice";
+import createpayScheduleReducer from "./apiSlice/configSlice/config_post_slice/createPayScheduleSlice";
+import createtimeLineSlaReducer from "./apiSlice/configSlice/config_post_slice/createTimeLineSlaSlice";
+import createloanTypeReducer from "./apiSlice/configSlice/config_post_slice/createLoanTypeSlice";
+import paginationReducer from "./apiSlice/paginationslice/paginationSlice";
+import createUserReducer from "./apiSlice/userManagementSlice/createUserSlice";
 import userManagementSlice from "./apiSlice/userManagementSlice/userManagementSlice";
 import arAdjusments from "./apiSlice/configSlice/config_get_slice/arAdjusments";
 import repPaySettingsSlice from "./apiSlice/configSlice/config_get_slice/repPaySettingsSlice";
@@ -35,13 +35,19 @@ import adderDataSlice from "./apiSlice/configSlice/config_get_slice/adderDataSli
 import rateAdjustmentsSlice from "./apiSlice/configSlice/config_get_slice/rateAdjustmentsSlice";
 import reconcileSlice from "./apiSlice/configSlice/config_get_slice/reconcileSlice";
 import loanFeeSlice from "./apiSlice/configSlice/config_get_slice/loanFeeSlice";
+import arSlice from "./apiSlice/configSlice/config_get_slice/arSlice";
+import adderCreditSlice from "./apiSlice/configSlice/config_get_slice/adderCreditSlice";
+import adderResponsbilitySlice from "./apiSlice/configSlice/config_get_slice/adderResponsbilitySlice";
+import apptSetterSlice from "./apiSlice/configSlice/config_get_slice/apptSetterSlice";
+import dlrOth from "./apiSlice/configSlice/config_get_slice/dlrOth";
+import nonComm from "./apiSlice/configSlice/config_get_slice/nonComm";
 
 export const store = configureStore({
   reducer: {
     appState: appStateSlice,
     auth: authReducer,
     resetPassword: resetPasswordSlice,
-    changePassword:ChangePasswordSlice,
+    changePassword: ChangePasswordSlice,
     comm: commissionReducer,
     dealer: dealerReducer,
     marketing: marketingReducer,
@@ -52,8 +58,8 @@ export const store = configureStore({
     paySchedule: payScheduleReducer,
     timelineSla: timeLineSlaReducer,
     loanType: loanTypeReducer,
-    repaySettings:repPaySettingsSlice,
-    // post slice define 
+    repaySettings: repPaySettingsSlice,
+    // post slice define
     createCommission: createCommissionReducer,
     createMarketing: createMarketingReduce,
     createAdderV: createAdderV,
@@ -64,19 +70,24 @@ export const store = configureStore({
     createpaySchedule: createpayScheduleReducer,
     createtimelineSla: createtimeLineSlaReducer,
     createloanType: createloanTypeReducer,
-    paginationType:paginationReducer,
+    paginationType: paginationReducer,
     //user management
-    userManagement:userManagementSlice,
+    userManagement: userManagementSlice,
     createOnboardUser: createUserReducer,
     arAdjusments,
     ArSchedule,
     installConstSlice,
     leaderOverride,
     adderDataSlice,
-    rateAdjustment:rateAdjustmentsSlice,
-    reconcile:reconcileSlice,
-    loanFeeSlice
-
+    rateAdjustment: rateAdjustmentsSlice,
+    reconcile: reconcileSlice,
+    loanFeeSlice,
+    apptsetters: apptSetterSlice,
+    addercredit: adderCreditSlice,
+    adderresponsbility: adderResponsbilitySlice,
+    ar: arSlice,
+    dlrOth,
+    nonComm
   },
 });
 
@@ -87,5 +98,4 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   RootState,
   unknown,
   Action<string>
->
-
+>;

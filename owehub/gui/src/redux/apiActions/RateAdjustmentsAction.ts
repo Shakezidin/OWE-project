@@ -21,7 +21,7 @@ export const fetchRateAdjustments = createAsyncThunk(
     async (data: any) => {
       const response = await postCaller(EndPoints.rateAdjustments, data);
   
-      return response;
+      return response.data.rate_adjustments_list
     }
   );
 

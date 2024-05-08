@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { createAdjustments, getAdjustments } from "../../../apiActions/arAdjustmentsAction";
+import { createAdjustments, getAdjustments,updateAdjustments } from "../../../apiActions/arAdjustmentsAction";
 import { Adjustment } from "../../../../core/models/api_models/ArAdjustMentsModel";
 import { toast } from "react-toastify";
 
@@ -8,7 +8,8 @@ interface IState {
     error: string,
     isLoading: boolean,
     isFormSubmitting:boolean,
-    isSuccess: boolean
+    isSuccess: boolean,
+    count:number
 }
 
 const initialState: IState = {
@@ -16,7 +17,8 @@ const initialState: IState = {
     error: "",
     isLoading: false,
     isFormSubmitting:false,
-    isSuccess:false
+    isSuccess:false,
+    count:0
 }
 
 const rateAdjustments = createSlice({
@@ -31,9 +33,10 @@ const rateAdjustments = createSlice({
         builder.addCase(getAdjustments.pending, (state) => {
             state.isLoading = true
         })
-            .addCase(getAdjustments.fulfilled, (state, action: PayloadAction<Adjustment[] | null>) => {
+            .addCase(getAdjustments.fulfilled, (state, action: PayloadAction<{list:Adjustment[],count:number} | null>) => {
                 state.isLoading = false
-                state.data = action.payload ? action.payload:[]
+                state.data = action.payload?.list ? action.payload?.list:[]
+                state.count = action.payload?.count || 0
             })
             .addCase(getAdjustments.rejected, (state, action) => {
                 state.isLoading = false
@@ -48,6 +51,20 @@ const rateAdjustments = createSlice({
                 toast.success("form submitted")
             })
             .addCase(createAdjustments.rejected, (state, action) => {
+                state.isFormSubmitting = false
+                state.error = action.payload as string
+            })
+
+
+            .addCase(updateAdjustments.pending, (state, action) => {
+                state.isFormSubmitting = true
+            })
+            .addCase(updateAdjustments.fulfilled, (state) => {
+                state.isFormSubmitting = false
+                state.isSuccess = true
+                toast.success("form submitted")
+            })
+            .addCase(updateAdjustments.rejected, (state, action) => {
                 state.isFormSubmitting = false
                 state.error = action.payload as string
             })

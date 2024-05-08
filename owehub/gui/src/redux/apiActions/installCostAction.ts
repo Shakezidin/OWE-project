@@ -3,6 +3,7 @@ import { postCaller } from "../../infrastructure/web_api/services/apiUrl";
 interface Ipaginate {
   page_number: number;
   page_size: number;
+  archived:boolean
 }
 
 export interface ICostCreateparam {
@@ -13,7 +14,7 @@ export interface ICostCreateparam {
 }
 
 export interface ICost extends ICostCreateparam {
-  record_id: string;
+  record_id: number;
 }
 
 export const getInstallCost = createAsyncThunk(
@@ -36,7 +37,7 @@ export const createInstallCost = createAsyncThunk(
       if (data instanceof Error) {
         return rejectWithValue((data as Error).message);
       }
-      await dispatch(getInstallCost({page_number:1,page_size:10}))
+      await dispatch(getInstallCost({page_number:1,page_size:10,archived:false}))
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -54,7 +55,7 @@ export const updateInstallCost = createAsyncThunk(
       if (data instanceof Error) {
         return rejectWithValue((data as Error).message);
       }
-      await dispatch(getInstallCost({page_number:1,page_size:10}))
+      await dispatch(getInstallCost({page_number:1,page_size:10,archived:false}))
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);

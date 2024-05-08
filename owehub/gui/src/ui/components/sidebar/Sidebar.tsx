@@ -125,8 +125,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
         </div>
         {createSideMenuList().map((el, i) => (
           <div className="" key={i}>
-
-              <div className="" style={{ marginTop: toggleOpen ? 0 : ".4rem" }}>
+            <div className="" style={{ marginTop: toggleOpen ? 0 : ".4rem" }}>
               {el.performance?.map((oth: any, index: number) => (
                 <Link
                   key={index}
@@ -651,13 +650,17 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                               style={{
                                 display: "block",
                                 marginBlock: "6px",
-                                color: "black",
+
                                 padding: "6px 12px",
                                 width: "100%",
                                 fontSize: "12px",
                                 marginLeft: "10px",
                               }}
-                              className="hover-children"
+                              className={
+                                location.pathname === ch.path
+                                  ? "hover-children"
+                                  : "hover-childrenn"
+                              }
                             >
                               {" "}
                               {ch.sidebarProps.displayText}{" "}
@@ -740,7 +743,6 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                 )}
               </div>
             ))}
-
 
             <div className="" style={{ marginTop: toggleOpen ? 0 : ".2rem" }}>
               {el.project?.map((oth: any, index: number) => (

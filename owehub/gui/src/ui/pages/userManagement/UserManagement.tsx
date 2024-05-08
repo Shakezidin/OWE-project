@@ -77,8 +77,11 @@ const UserManagement: React.FC = () => {
         },
       ],
     };
+    const fetchList = async ()=>{
+      await dispatch(fetchUserListBasedOnRole(data));
+    }
+    fetchList();
 
-    dispatch(fetchUserListBasedOnRole(data));
   }, [selectedOption, createUserResult, deleteUserResult]);
 
   /** handle dropdown value */

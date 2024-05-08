@@ -10,6 +10,8 @@ interface repaySettings {
   error: string | null;
   isFormSubmitting:boolean,
   isSuccess:number,
+  dbCount:number;
+  record_id:number | null,
 }
 const initialState: repaySettings = {
   repPaySettingsList: [],
@@ -17,6 +19,8 @@ const initialState: repaySettings = {
   error: null,
   isFormSubmitting:false,
   isSuccess:0,
+  record_id: 0,
+  dbCount:0
   
   
 };
@@ -49,6 +53,8 @@ const repaySettingSlice = createSlice({
         ) {
           state.repPaySettingsList =
             action.payload.data.rep_pay_settings_list;
+            state.dbCount = action.payload.dbRecCount
+
         } else {
           state.repPaySettingsList = [];
         }

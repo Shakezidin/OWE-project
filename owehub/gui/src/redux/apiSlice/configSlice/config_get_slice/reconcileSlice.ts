@@ -30,7 +30,7 @@ const reconcile = createSlice({
         })
             .addCase(fetchReconcile.fulfilled, (state, action: PayloadAction<any | null>) => {
                 state.isLoading = false
-                state.data = action.payload ? action.payload.data.reconcile_list :[]
+                state.data = action.payload ? action.payload:[]
             })
             .addCase(fetchReconcile.rejected, (state, action) => {
                 state.isLoading = false

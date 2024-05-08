@@ -168,14 +168,14 @@ height: 16px !important;
   margin-top: 0.5rem;
 }
 ::-webkit-scrollbar {
-  /* display: none; */
+  display: none;
 }
 
 /* Hide scrollbar for IE, Edge and Firefox */
-/* ::-webkit-scrollbar {
+::-webkit-scrollbar {
   -ms-overflow-style: none; 
   scrollbar-width: none; 
-} */
+}
 
 /* modal style  */
 .transparent-model {
@@ -337,6 +337,10 @@ height: 16px !important;
 .cross-btn img {
   width: 24px;
   height: 24px;
+}
+
+br {
+  margin: 0.5rem 0;
 }
 /* FileInputComponent.css */
 /* FileInputComponent.css */

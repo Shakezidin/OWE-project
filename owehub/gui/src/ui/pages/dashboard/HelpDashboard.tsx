@@ -145,11 +145,13 @@ const HelpDashboard: React.FC<ButtonProps> = ({
                   onChange={(e) => {}}
                 />
               </div>
+              
+
               <div className="create-input-field-help">
-                <label className="inputLabel-help">
+                <label className="inputLabel">
                   <p>Attach File</p>
                 </label>
-                <div className="file-input-container-help">
+                <div className="file-input-container">
                   <input
                     type="file"
                     ref={fileInputRef}
@@ -160,16 +162,16 @@ const HelpDashboard: React.FC<ButtonProps> = ({
                     <span className="file-input-placeholder">Select File</span>
                     <button
                       className="custom-button"
-                      
                       onClick={handleButtonClick}
                     >
-                      {/* <img src={ICONS.browserIcon} alt=""/> */}
+                      {/* <img src={ICONS.browserIcon} alt="" /> */}
                       Browse
                     </button>
                   </div>
                 </div>
               </div>
             </div>
+
 
             <div
               className="create-input-field-note"

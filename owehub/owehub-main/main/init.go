@@ -88,8 +88,8 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/change_password",
 		apiHandler.HandleChangePassRequest,
-		false,
-		[]types.UserGroup{types.GroupAdmin},
+		true,
+		[]types.UserGroup{types.GroupEveryOne},
 	},
 	{
 		strings.ToUpper("POST"),

@@ -16,6 +16,7 @@ const COLORS = [
   "#52cafe",
   "#0181ff",
   "#58E9F0",
+  "#9e84a0",
 ];
 /** get user onboadring users */
 export const fetchUserOnboarding = createAsyncThunk(
@@ -53,8 +54,8 @@ export const fetchUserListBasedOnRole = createAsyncThunk(
     }
     const { users_data_list } = response.data;
     if (!users_data_list || users_data_list.length === 0) {
-      return [];
+      return {users_data_list:[],count:0};
     }
-    return users_data_list;
+    return {users_data_list,count:response.dbRecCount};
   }
 );

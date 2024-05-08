@@ -3,6 +3,7 @@ import { postCaller } from "../../infrastructure/web_api/services/apiUrl";
 interface Ipaginate {
   page_number: number;
   page_size: number;
+  archived:boolean
 }
 
 export interface ILeader {
@@ -20,7 +21,7 @@ export interface ILeader {
 }
 
 export interface ILeaderRow extends ILeader {
-  record_id: string;
+  record_id: number;
 }
 
 export const getleaderOverride = createAsyncThunk(
@@ -43,7 +44,7 @@ export const createleaderOverride = createAsyncThunk(
       if (data.status === 500) {
         return rejectWithValue((data as Error).message);
       }
-      await dispatch(getleaderOverride({ page_number: 1, page_size: 10 }));
+      await dispatch(getleaderOverride({ page_number: 1, page_size: 10,archived:false }));
       return data;
     } catch (error) {
       console.error(error, "error blocking create_leaderoverride");
@@ -64,7 +65,7 @@ export const updateleaderOverride = createAsyncThunk(
       if (data.status === 500 || data instanceof Error) {
         return rejectWithValue((data as Error).message);
       }
-      await dispatch(getleaderOverride({ page_number: 1, page_size: 10 }));
+      await dispatch(getleaderOverride({ page_number: 1, page_size: 10,archived:false }));
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);

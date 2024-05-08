@@ -105,6 +105,12 @@ const DbManagerDashboard = () => {
               indicatorSeparator: () => ({
                 display: 'none' // Hide the indicator separator
               }),
+              option: (baseStyles) => ({
+                ...baseStyles,
+                fontSize: "13px",
+                cursor: "pointer"
+              }),
+             
             }}
           />
 
@@ -134,6 +140,11 @@ const DbManagerDashboard = () => {
                   }),
                   indicatorSeparator: () => ({
                     display: 'none' // Hide the indicator separator
+                  }),
+                  option: (baseStyles) => ({
+                    ...baseStyles,
+                    fontSize: "13px",
+                    cursor: "pointer"
                   }),
                 }}
               />
@@ -175,6 +186,11 @@ const DbManagerDashboard = () => {
                   indicatorSeparator: () => ({
                     display: 'none' // Hide the indicator separator
                   }),
+                  option: (baseStyles) => ({
+                    ...baseStyles,
+                    fontSize: "13px",
+                    cursor: "pointer"
+                  }),
                 }}
               />
 
@@ -213,6 +229,11 @@ const DbManagerDashboard = () => {
                   }),
                   indicatorSeparator: () => ({
                     display: 'none' // Hide the indicator separator
+                  }),
+                  option: (baseStyles) => ({
+                    ...baseStyles,
+                    fontSize: "13px",
+                    cursor: "pointer"
                   }),
                 }}
               />

@@ -23,14 +23,18 @@ interface ButtonProps {
   commission: CommissionModel | null;
 }
 
+interface IError {
+  [key: string]: string;
+}
+
 const CreateDealerCredit: React.FC<ButtonProps> = ({
   handleClose,
   commission,
   editMode,
 }) => {
   const dispatch = useDispatch();
-  
-  const [createCommission, setCreateCommission] = useState<CommissionModel>({
+
+  const [createCommission, setCreateCommission] = useState({
     record_id: commission ? commission?.record_id : 0,
     partner: commission ? commission?.partner : "OWE",
     installer: commission ? commission?.installer : "OWE",
@@ -43,6 +47,7 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
     start_date: commission ? commission?.start_date : "2024-04-01",
     end_date: commission ? commission?.end_date : "2024-06-30",
   });
+  const [errors, setErrors] = useState<IError>({} as IError);
   const [newFormData, setNewFormData] = useState<any>([]);
   const tableData = {
     tableNames: ["partners", "states", "installers", "rep_type"],
@@ -60,6 +65,20 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
       setCreateCommission(commission);
     }
   }, [commission]);
+
+  const handleValidation = () => {
+    const error: IError = {} as IError;
+    for (const key in createCommission) {
+      if (key === "record_id") {
+        continue;
+      }
+      if (!createCommission[key as keyof typeof createCommission]) {
+        error[key as keyof IError] = `${key.toLocaleLowerCase()} is required`;
+      }
+    }
+    setErrors({ ...error });
+    return Object.keys(error).length === 0;
+  };
 
   const handleChange = (newValue: any, fieldName: string) => {
     setCreateCommission((prevData) => ({
@@ -80,38 +99,38 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      dispatch(updateForm(createCommission));
-      if (createCommission.record_id) {
-        const res = await postCaller(
-          EndPoints.update_commission,
-          createCommission
-        );
-        if (res.status === 200) {
-       
-          handleClose();
-          window.location.reload();
+    if (handleValidation()) {
+      try {
+        dispatch(updateForm(createCommission));
+        if (createCommission.record_id) {
+          const res = await postCaller(
+            EndPoints.update_commission,
+            createCommission
+          );
+          if (res.status === 200) {
+            handleClose();
+            window.location.reload();
+          } else {
+            alert(res.message);
+          }
         } else {
-          alert(res.message);
+          const { record_id, ...cleanedFormData } = createCommission;
+          const res = await postCaller(
+            EndPoints.create_commission,
+            cleanedFormData
+          );
+          if (res.status === 200) {
+            handleClose();
+            // window.location.reload()
+          } else {
+            alert(res.message);
+          }
         }
-      } else {
-        const { record_id, ...cleanedFormData } = createCommission;
-        const res = await postCaller(
-          EndPoints.create_commission,
-          cleanedFormData
-        );
-        if (res.status === 200) {
-          
-          handleClose();
-          // window.location.reload()
-        } else {
-          alert(res.message);
-        }
-      }
 
-      // dispatch(resetForm());
-    } catch (error) {
-      console.error("Error submitting form:", error);
+        // dispatch(resetForm());
+      } catch (error) {
+        console.error("Error submitting form:", error);
+      }
     }
   };
   return (
@@ -120,153 +139,196 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
         <div className="createUserCrossButton" onClick={handleClose}>
           <CROSS_BUTTON />
         </div>
-    
-          <h3 className="createProfileText">
-            {editMode === false ? "Dealer Credit" : "Update Dealer Credit"}
-          </h3>
-        
-          <div className="modal-body">
+
+        <h3 className="createProfileText">
+          {editMode === false ? "Dealer Credit" : "Update Dealer Credit"}
+        </h3>
+
+        <div className="modal-body">
           <div className="createProfileInputView">
-              <div className="createProfileTextView">
-                <div className="create-input-container">
-                  <div className="create-input-field">
-                    <label className="inputLabel-select">Partner</label>
+            <div className="createProfileTextView">
+              <div className="create-input-container">
+                <div className="create-input-field">
+                  <label className="inputLabel-select">Partner</label>
+                  <SelectOption
+                    options={partnerOption(newFormData)}
+                    onChange={(newValue) => handleChange(newValue, "partner")}
+                    value={partnerOption(newFormData)?.find(
+                      (option) => option?.value === createCommission.partner
+                    )}
+                  />
+                  {errors?.partner && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.partner}
+                    </span>
+                  )}
+                </div>
+                <div className="create-input-field">
+                  <label className="inputLabel-select">Installer</label>
+                  <div className="">
                     <SelectOption
-                      options={partnerOption(newFormData)}
-                      onChange={(newValue) => handleChange(newValue, "partner")}
-                      value={partnerOption(newFormData)?.find(
-                        (option) => option?.value === createCommission.partner
-                      )}
-                     
-                    />
-                  </div>
-                  <div className="create-input-field">
-                    <label className="inputLabel-select">Installer</label>
-                    <div className="">
-                      <SelectOption
-                        options={installerOption(newFormData)}
-                        onChange={(newValue) =>
-                          handleChange(newValue, "installer")
-                        }
-                        value={installerOption(newFormData)?.find(
-                          (option) =>
-                            option.value === createCommission.installer
-                        )}
-                      />
-                    </div>
-                  </div>
-                  <div className="create-input-field">
-                    <label className="inputLabel-select">State</label>
-                    <SelectOption
-                      options={stateOption(newFormData)}
-                      onChange={(newValue) => handleChange(newValue, "state")}
-                      value={stateOption(newFormData)?.find(
-                        (option) => option.value === createCommission.state
+                      options={installerOption(newFormData)}
+                      onChange={(newValue) =>
+                        handleChange(newValue, "installer")
+                      }
+                      value={installerOption(newFormData)?.find(
+                        (option) => option.value === createCommission.installer
                       )}
                     />
+                    {errors?.installer && (
+                      <span style={{ display: "block", color: "#FF204E" }}>
+                        {errors.installer}
+                      </span>
+                    )}
                   </div>
                 </div>
+                <div className="create-input-field">
+                  <label className="inputLabel-select">State</label>
+                  <SelectOption
+                    options={stateOption(newFormData)}
+                    onChange={(newValue) => handleChange(newValue, "state")}
+                    value={stateOption(newFormData)?.find(
+                      (option) => option.value === createCommission.state
+                    )}
+                  />
+                  {errors?.state && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.state}
+                    </span>
+                  )}
+                </div>
+              </div>
 
-                <div className="create-input-container">
-                  <div className="create-input-field">
-                    <Input
-                      type={"text"}
-                      label="Sales Type"
-                      value={createCommission.sale_type}
-                      name="sale_type"
-                      placeholder={"Sales Type"}
-                      onChange={(e) => handleInputChange(e)}
-                    />
-                  </div>
-                  <div className="create-input-field">
+              <div className="create-input-container">
+                <div className="create-input-field">
+                  <Input
+                    type={"text"}
+                    label="Sales Type"
+                    value={createCommission.sale_type}
+                    name="sale_type"
+                    placeholder={"Sales Type"}
+                    onChange={(e) => handleInputChange(e)}
+                  />
+                  {errors?.sale_type && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.sale_type.replace("sale_type", "sale type")}
+                    </span>
+                  )}
+                </div>
+                <div className="create-input-field">
+                  <Input
+                    type={"number"}
+                    label="Sales Price"
+                    value={createCommission.sale_price}
+                    name="sale_price"
+                    placeholder={"sale price"}
+                    onChange={(e) => handleInputChange(e)}
+                  />
+                  {errors?.sale_price && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.sale_price.replace("sale_price", "sale pricee")}
+                    </span>
+                  )}
+                </div>
+                <div className="create-input-field">
+                  <label className="inputLabel-select">
+                    Representative Type
+                  </label>
+                  <SelectOption
+                    options={repTypeOption(newFormData)}
+                    onChange={(newValue) => handleChange(newValue, "rep_type")}
+                    value={repTypeOption(newFormData)?.find(
+                      (option) => option.value === createCommission.rep_type
+                    )}
+                  />
+                  {errors?.rep_type && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.sale_price.replace(
+                        "rep_type",
+                        "representative type"
+                      )}
+                    </span>
+                  )}
+                </div>
+              </div>
+              <div className="create-input-container">
+                <div className="rate-input-container">
+                  <div className="rate-input-field">
                     <Input
                       type={"number"}
-                      label="Sales Price"
-                      value={createCommission.sale_price}
-                      name="sale_price"
-                      placeholder={"sale price"}
+                      label="Rate"
+                      value={createCommission.rate}
+                      name="rate"
+                      placeholder={"Rate"}
                       onChange={(e) => handleInputChange(e)}
                     />
+                    {errors?.rate && (
+                      <span style={{ display: "block", color: "#FF204E" }}>
+                        {errors.rate}
+                      </span>
+                    )}
                   </div>
-                  <div className="create-input-field">
-                    <label className="inputLabel-select">Representative Type</label>
-                    <SelectOption
-                      options={repTypeOption(newFormData)}
-                      onChange={(newValue) =>
-                        handleChange(newValue, "rep_type")
-                      }
-                      value={
-                        repTypeOption(newFormData)?.find(
-                          (option) => option.value === createCommission.rep_type
-                        )
-                      }
+                  <div className="rate-input-field">
+                    <Input
+                      type={"number"}
+                      label="Rate List"
+                      value={createCommission.rl}
+                      name="rl"
+                      placeholder={"Rate List"}
+                      onChange={(e) => handleInputChange(e)}
                     />
+                    {errors?.rl && (
+                      <span style={{ display: "block", color: "#FF204E" }}>
+                        {errors.rl.replace("rl","rate list")}
+                      </span>
+                    )}
                   </div>
                 </div>
-                <div className="create-input-container">
-                  <div className="rate-input-container">
-                    <div className="rate-input-field">
-                      <Input
-                        type={"number"}
-                        label="Rate"
-                        value={createCommission.rate}
-                        name="rate"
-                        placeholder={"Rate"}
-                        onChange={(e) => handleInputChange(e)}
-                      />
-                    </div>
-                    <div className="rate-input-field">
-                      <Input
-                        type={"number"}
-                        label="Rate List"
-                        value={createCommission.rl}
-                        name="rl"
-                        placeholder={"Rate List"}
-                        onChange={(e) => handleInputChange(e)}
-                      />
-                    </div>
+                <div className="start-input-container">
+                  <div className="rate-input-field">
+                    <Input
+                      type={"date"}
+                      label="Start Date"
+                      value={createCommission.start_date}
+                      name="start_date"
+                      placeholder={"1/04/2004"}
+                      onChange={(e) => handleInputChange(e)}
+                    />
+                    {errors?.start_date && (
+                      <span style={{ display: "block", color: "#FF204E" }}>
+                        {errors.start_date.replace("start_date","start date")}
+                      </span>
+                    )}
                   </div>
-                  <div className="start-input-container">
-                    <div className="rate-input-field">
-                      <Input
-                        type={"date"}
-                        label="Start Date"
-                        value={createCommission.start_date}
-                        name="start_date"
-                        placeholder={"1/04/2004"}
-                        onChange={(e) => handleInputChange(e)}
-                      />
-                    </div>
-                    <div className="rate-input-field">
-                      <Input
-                        type={"date"}
-                        label="End Date"
-                        value={createCommission.end_date}
-                        name="end_date"
-                        placeholder={"10/04/2004"}
-                        onChange={(e) => handleInputChange(e)}
-                      />
-                    </div>
+                  <div className="rate-input-field">
+                    <Input
+                      type={"date"}
+                      label="End Date"
+                      value={createCommission.end_date}
+                      name="end_date"
+                      placeholder={"10/04/2004"}
+                      onChange={(e) => handleInputChange(e)}
+                    />
+                    {errors?.end_date && (
+                      <span style={{ display: "block", color: "#FF204E" }}>
+                        {errors.start_date.replace("end_date","end date")}
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
-              </div>
+            </div>
           </div>
-              <div className="createUserActionButton">
-                <ActionButton
-                  title={"Cancel"}
-                  type="button"
-                  onClick={handleClose}
-                />
-                <ActionButton
-                  title={editMode === false ? "Save" : "Update"}
-                  type="submit"
-                  onClick={() => {}}
-                />
-              </div>
-         
-          </form>
-     
+        </div>
+        <div className="createUserActionButton">
+          <ActionButton title={"Cancel"} type="button" onClick={handleClose} />
+          <ActionButton
+            title={editMode === false ? "Save" : "Update"}
+            type="submit"
+            onClick={() => {}}
+          />
+        </div>
+      </form>
     </div>
   );
 };

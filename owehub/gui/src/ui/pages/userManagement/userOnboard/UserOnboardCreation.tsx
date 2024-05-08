@@ -37,6 +37,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
   const dispatch = useDispatch();
   const [firstNameError, setFirstNameError] = useState("");
   const [lastNameError, setLastNameError] = useState("");
+  const [phoneNumberError, setPhoneNumberError] = useState("");
   const { loading, formData } = useAppSelector((state) => state.createOnboardUser);
   const [selectTable, setSelectTable] = useState<boolean>(false);
 
@@ -56,6 +57,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
     const { value } = newValue;
     onChangeRole("Dealer", value);
     dispatch(updateUserForm({ field: fieldName, value }));
+    dispatch(updateUserForm({ field: "report_to", value: "" }));
   };
 
   /**handle change for dealer */
@@ -63,17 +65,6 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
     const { value } = newValue;
     dispatch(updateUserForm({ field: fieldName, value }));
   };
-
-  // const handleInputChange = (
-  //   e:
-  //     | React.ChangeEvent<HTMLInputElement>
-  //     | React.ChangeEvent<HTMLTextAreaElement>
-  // ) => {
-  //   const { name, value } = e.target;
-  //   dispatch(updateUserForm({ field: name, value }));
-  // };
-
-
 
   const handleInputChange = (
     e:
@@ -95,11 +86,18 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
         setLastNameError("");
         dispatch(updateUserForm({ field: name, value }));
       }
+    } else if (name === "mobile_number") {
+      const numericValue = value.replace(/[^0-9]/g, "").slice(0, 10);
+      if (numericValue.length < 10) {
+        setPhoneNumberError("Phone Number should be 10 digits");
+      } else {
+        setPhoneNumberError("");
+      }
+      dispatch(updateUserForm({ field: name, value: numericValue }));
     } else {
       dispatch(updateUserForm({ field: name, value }));
     }
   };
-
 
   /** render ui */
   return (
@@ -168,10 +166,11 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                     onChange={(e) => handleInputChange(e)}
                     name={"mobile_number"}
                   />
+                  {phoneNumberError && <p className="error-message">{phoneNumberError}</p>}
                 </div>
                 {formData.role_name === "Admin" ||
-                formData.role_name === "SubDealer Owner" ||
-                formData.role_name === "Dealer Owner" || formData.role_name === "Finance" ? null : (
+                  formData.role_name === "SubDealer Owner" ||
+                  formData.role_name === "Dealer Owner" || formData.role_name === "Finance Admin" ? null : (
                   <div className="create-input-field">
                     <label className="inputLabel-select selected-fields-onboard">Dealer Owner</label>
                     <SelectOption
@@ -239,11 +238,11 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                     </div>
                     <div
                       className="Line-container"
-                      style={{ marginTop: "0.3rem",}}
+                      style={{ marginTop: "0.3rem", }}
                     >
                       <div
                         className="line-graph"
-                        // onClick={() => setSelectTable(true)}
+                      // onClick={() => setSelectTable(true)}
                       >
                         <div className="edit-line">
                           <img
@@ -269,16 +268,23 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                   name="description"
                   id=""
                   rows={3}
-                  // onChange={(e) => handlemarketingInputChange(e)}
+                  maxLength={255}
                   value={formData.description}
                   onChange={(e) => handleInputChange(e)}
                   placeholder="Type"
                 ></textarea>
+                <p
+                  className={`character-count ${formData.description.length >= 255 ? "exceeded" : ""
+                    }`}
+                >
+                  {formData.description.length}/255 characters
+                </p>
               </div>
+
             </div>
           </div>
         </div>
-        <div className="createUserActionButton">
+        <div className="um-createUserActionButton">
           <ActionButton
             title={"Cancel"}
             onClick={handleClose}

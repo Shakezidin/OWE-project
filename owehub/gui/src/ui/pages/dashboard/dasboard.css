@@ -319,12 +319,44 @@ color: white;
 .breakdown-table {
   display: block;
   height: 100%;
-  overflow: auto;
+  overflow-y: auto;
+  scroll-behavior: smooth;
   white-space: nowrap;
  
 }
+.children-container{
+  background-color: var(--children-bg-color);
+  padding: 0.5rem 2rem;
+  flex: 1;
+  overflow-y: auto;
+  max-height: calc(100vh - 64px);
+  scroll-behavior: smooth;
+}
+.breakdown-table::-webkit-scrollbar {
+  width: 10px; 
+  height: auto; 
+}
+.breakdown-table::-webkit-scrollbar {
+  display: initial
+}   
+
+.breakdown-table::-webkit-scrollbar-thumb {
+  background-color: rgb(173, 173, 173);
+  border-radius: 30px; 
+}
+.breakdown-table::-webkit-scrollbar-button {
+  display: initial; 
+}
+.breakdown-table::-webkit-scrollbar {
+  -ms-overflow-style: initial; 
+  scrollbar-width: thin;
+}
+.breakdown-table::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
+
 .breakdown-table tbody {
-  font-weight: 700;
+  font-weight: 500;
 }
 .createUserCrossButtonBreak {
   display: flex;
@@ -441,5 +473,26 @@ color: white;
   }
   .createUserActionButtonDash :hover {
     background-color: #263747;
+  }
+
+
+
+
+  .create-input-field-help {
+    /* width: 290px; */
+    width: 50%;
+    display: flex;
+    display: block;
+    padding-top: 0.5rem;
+  }
+  
+  
+  .create-input-field-help label {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 18px;
+    text-align: left; 
+    margin-bottom: -5px;
+    /* background-color: #0493CE; */
   }
  

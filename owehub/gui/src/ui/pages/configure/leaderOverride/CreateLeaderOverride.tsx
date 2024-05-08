@@ -31,14 +31,30 @@ interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
   editData: ILeaderRow | null;
+  setViewArchived:React.Dispatch<React.SetStateAction<boolean>>
 }
 
+interface IErrors {
+  teamName?: string;
+  leaderName?: string;
+  type?: string;
+  term?: string;
+  qual?: string;
+  salesQ?: string;
+  teamKwQ?: string;
+  payRate?: string;
+  start?: string;
+  end?: string;
+  uniqueId?: string;
+}
 const CreateLeaderOverride: React.FC<payScheduleProps> = ({
   handleClose,
   editMode,
   editData,
+  setViewArchived
 }) => {
   const dispatch = useAppDispatch();
+  const [errors, setErrors] = useState<IErrors>({});
 
   const [formData, setFormData] = useState({
     teamName: editData?.team_name || "",
@@ -64,6 +80,19 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
     setNewFormData(res.data);
   };
 
+  const handleValidation = () => {
+    const error: IErrors = {};
+    for (const key in formData) {
+      if (!formData[key as keyof typeof formData]) {
+        error[
+          key as keyof typeof formData
+        ] = `${key.toLocaleLowerCase()} is required`;
+      }
+    }
+    setErrors({ ...error });
+    return Object.keys(error).length ? false : true;
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.target;
     if (name === "salesQ" || name === "teamKwQ") {
@@ -77,26 +106,29 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const data = {
-      unique_id: formData.uniqueId,
-      team_name: formData.teamName,
-      leader_name: formData.leaderName,
-      type: formData.type,
-      term: formData.term,
-      qual: formData.qual,
-      sales_q: parseFloat(formData.salesQ),
-      team_kw_q: parseFloat(formData.teamKwQ),
-      pay_rate: formData.payRate,
-      start_date: format(new Date(formData.start), "yyyy-MM-dd"),
-      end_date: format(new Date(formData.end), "yyyy-MM-dd"),
-    };
+    setViewArchived(false)
+    if (handleValidation()) {
+      const data = {
+        unique_id: formData.uniqueId,
+        team_name: formData.teamName,
+        leader_name: formData.leaderName,
+        type: formData.type,
+        term: formData.term,
+        qual: formData.qual,
+        sales_q: parseFloat(formData.salesQ),
+        team_kw_q: parseFloat(formData.teamKwQ),
+        pay_rate: formData.payRate,
+        start_date: format(new Date(formData.start), "yyyy-MM-dd"),
+        end_date: format(new Date(formData.end), "yyyy-MM-dd"),
+      };
 
-    if (editMode) {
-      dispatch(
-        updateleaderOverride({ ...data, record_id: editData?.record_id! })
-      );
-    } else {
-      dispatch(createleaderOverride(data));
+      if (editMode) {
+        dispatch(
+          updateleaderOverride({ ...data, record_id: editData?.record_id! })
+        );
+      } else {
+        dispatch(createleaderOverride(data));
+      }
     }
   };
   useEffect(() => {
@@ -128,8 +160,6 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
             <div className="createProfileTextView">
               <div className="create-input-container">
                 <div className="create-input-field">
-                 
-
                   <label className="inputLabel-select">Team Name</label>
                   <SelectOption
                     options={teamsOption(newFormData)}
@@ -143,6 +173,11 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                       (option) => option.value === formData.teamName
                     )}
                   />
+                  {errors?.teamName && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.teamName}
+                    </span>
+                  )}
                 </div>
                 <div className="create-input-field">
                   <Input
@@ -153,6 +188,11 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     placeholder={"Enter"}
                     onChange={handleChange}
                   />
+                  {errors?.leaderName && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.leaderName}
+                    </span>
+                  )}
                 </div>
                 <div className="create-input-field">
                   <Input
@@ -163,6 +203,11 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     placeholder={"Enter"}
                     onChange={handleChange}
                   />
+                  {errors?.type && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.type}
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -176,6 +221,11 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     placeholder={"Enter"}
                     onChange={handleChange}
                   />
+                  {errors?.term && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.type}
+                    </span>
+                  )}
                 </div>
                 <div className="create-input-field">
                   <Input
@@ -186,6 +236,11 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     placeholder={"Enter"}
                     onChange={handleChange}
                   />
+                  {errors?.qual && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.qual}
+                    </span>
+                  )}
                 </div>
                 <div className="create-input-field">
                   <Input
@@ -196,6 +251,11 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     placeholder={"Enter"}
                     onChange={handleChange}
                   />
+                  {errors?.salesQ && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.salesQ}
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -209,6 +269,11 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     placeholder={"Enter"}
                     onChange={handleChange}
                   />
+                  {errors?.teamKwQ && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.teamKwQ}
+                    </span>
+                  )}
                 </div>
                 <div className="create-input-field">
                   <Input
@@ -219,6 +284,12 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     placeholder={"Enter"}
                     onChange={handleChange}
                   />
+
+                  {errors?.payRate && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.payRate}
+                    </span>
+                  )}
                 </div>
                 <div className="create-input-field">
                   <Input
@@ -229,6 +300,11 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     placeholder={"Enter"}
                     onChange={handleChange}
                   />
+                   {errors?.start && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.start.replace("start","start date")}
+                    </span>
+                  )}
                 </div>
                 <div className="create-input-field">
                   <Input
@@ -239,6 +315,11 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     placeholder={"Enter"}
                     onChange={handleChange}
                   />
+                   {errors?.end && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.end.replace("end","end date")}
+                    </span>
+                  )}
                 </div>
 
                 <div className="create-input-field">
@@ -250,6 +331,11 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     placeholder={"Enter"}
                     onChange={handleChange}
                   />
+                   {errors?.uniqueId && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.uniqueId}
+                    </span>
+                  )}
                 </div>
               </div>
             </div>

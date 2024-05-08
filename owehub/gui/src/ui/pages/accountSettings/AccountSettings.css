@@ -162,8 +162,7 @@
   color: white;
   padding: 15px 32px;
   text-decoration: none;
-  /* margin: 4px px; */
-  margin-right: 0.5rem;
+  margin-right: 0.4rem;
   cursor: pointer;
   background-color: #0493ce;
   border-radius: 8px;
@@ -303,15 +302,14 @@ background-color: #0470a0;
 }
 
 .create-input-field-profile {
-  width: 40%;
-  /* padding: 1rem; */
+  width: 47%;
 }
 .create-input-field-profile input:hover {
   border: 1px solid #0493ce;
   border-radius: 8px;
 }
 .create-input-field-address {
-  width: 30%;
+  width: 30.5%;
 }
 .create-input-field-address input:hover {
   border: 1px solid #0493ce;
@@ -330,4 +328,11 @@ background-color: #0470a0;
 .create-input-field-profile-password {
   width: 31.5%;
   padding: 1rem;
+}
+
+
+.prof-fields-onboard{
+  position: static !important;
+  display: block;
+  margin-bottom: -15px;
 }

@@ -47,15 +47,19 @@ export const fetchRegionList = createAsyncThunk(
     }
 
     const { users_name_list } = response.data;
-    const mapList: UserDropdownModel[] = users_name_list.map(
-      (el: { name: string }) => {
-        return {
-          label: el.name,
-          value: el.name,
-        };
-      }
-    );
-    return mapList;
+    
+    if (users_name_list) {
+      const mapList: UserDropdownModel[] = users_name_list.map(
+        (el: { name: string }) => {
+          return {
+            label: el.name,
+            value: el.name,
+          };
+        }
+      );
+      return mapList;
+    }
+    return [];
   }
 );
 /**cretae user */

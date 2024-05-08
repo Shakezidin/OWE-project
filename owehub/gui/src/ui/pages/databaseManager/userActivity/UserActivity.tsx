@@ -6,33 +6,20 @@ import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import { toggleAllRows, toggleRowSelection } from "../../../components/chekbox/checkHelper";
 import { FaArrowDown } from "react-icons/fa6";
-import { DealerModel } from "../../../../core/models/configuration/create/DealerModel";
 import { fetchCommissions } from "../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice";
 import Pagination from "../../../components/pagination/Pagination";
-import UserActivityFilter from "./UserActivityFilter";
-import { UserActivityColumn } from "../../../../resources/static_data/UserActivityColumn";
 import DataTableHeader from "../../../components/tableHeader/DataTableHeader";
-import FilterModal from "../../../components/FilterModal/FilterModal";
-import ChangePassword from "../../resetPassword/ChangePassword/ChangePassword";
 
 
 const UserActivity: React.FC = () => {
-  const [open, setOpen] = React.useState<boolean>(false);
-  const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
-  const filterClose = () => setFilterOpen(false);
+
   const dispatch = useAppDispatch();
   const loading = useAppSelector((state) => state.dealer.loading);
   const error = useAppSelector((state) => state.dealer.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
-  const [editMode, setEditMode] = useState(false);
-  // const [columns, setColumns] = useState<string[]>([]);
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
   const itemsPerPage = 5;
-  const [isOpenChangePassword, setIsOpenChangePassword] = useState(localStorage.getItem('is_password_change_required') === 'true');
-
-
-
 
   useEffect(() => {
     const pageNumber = {
@@ -60,7 +47,7 @@ const UserActivity: React.FC = () => {
 
 
   const filter = () => {
-    setIsOpenChangePassword(true);
+    
   }
 
   if (loading) {
@@ -128,15 +115,10 @@ const UserActivity: React.FC = () => {
     },
   ]
 
-
   const totalPages = Math.ceil(dataDb.length / itemsPerPage);
-
   const currentPageData = dataDb.slice(startIndex, endIndex);
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === dataDb.length;
-  const fetchFunction = (req: any) => {
-    // dispatch(fetchPaySchedule(req));
-  };
 
 
   return (
@@ -242,15 +224,12 @@ const UserActivity: React.FC = () => {
               currentPage={currentPage}
               totalPages={totalPages} // You need to calculate total pages
               paginate={paginate}
+              currentPageData={currentPageData}
               goToNextPage={goToNextPage}
               goToPrevPage={goToPrevPage}
-              currentPageData={currentPageData}
+perPage={itemsPerPage}
             /> : null
           }
-           {isOpenChangePassword &&  <ChangePassword handleOpenNClose={()=>{
-          setIsOpenChangePassword(!isOpenChangePassword)
-        }}/>}
-
         </div>
       </div>
 
