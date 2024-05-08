@@ -689,7 +689,6 @@ CREATE TABLE ar_schedule (
 
 CREATE TABLE install_cost (
     id serial NOT NULL,
-    unique_id varchar NOT NULL UNIQUE,
     cost float,
     is_archived BOOLEAN DEFAULT FALSE,
     start_date character varying NOT NULL,

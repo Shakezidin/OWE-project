@@ -55,7 +55,7 @@ func HandleCreateInstallCostRequest(resp http.ResponseWriter, req *http.Request)
 		return
 	}
 
-	if (len(createInstallCostReq.UniqueId) <= 0) || (len(createInstallCostReq.StartDate) <= 0) ||
+	if (len(createInstallCostReq.StartDate) <= 0) ||
 		(len(createInstallCostReq.EndDate) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
@@ -71,7 +71,6 @@ func HandleCreateInstallCostRequest(resp http.ResponseWriter, req *http.Request)
 	}
 
 	// Populate query parameters in the correct order
-	queryParameters = append(queryParameters, createInstallCostReq.UniqueId)
 	queryParameters = append(queryParameters, createInstallCostReq.Cost)
 	queryParameters = append(queryParameters, createInstallCostReq.StartDate)
 	queryParameters = append(queryParameters, createInstallCostReq.EndDate)
