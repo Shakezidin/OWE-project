@@ -75,7 +75,7 @@ const ResetPassword = () => {
         <div className={"loginBox2"}>
           <form onSubmit={(e) => handleEmailSubmit(e)}>
             <div className="loginTextView">
-              <img className="loginImageLogo" src={ICONS.LOGO} alt="" />
+            <object type="image/svg+xml" className="loginImageLogo"  data={ICONS.LOGO} aria-label="login-icon"></object>
               <br />
               <div className="loginLogowithText">
                 <LOGO_SMALL />
