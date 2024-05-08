@@ -156,7 +156,7 @@ useEffect(() => {
 
               <div style={{ position: "relative", top: "-1px" }} ref={datePickerRef}>
                 <label className="date-button" onClick={handleToggleDatePicker}>
-                  Select Dates
+                  Select Date
                 </label>
                 {showDatePicker && (
                   <div className="calender-container">

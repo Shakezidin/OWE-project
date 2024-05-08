@@ -53,7 +53,7 @@ export const projectDashData = [
   },
   {
     ruppes: "$620,450.05",
-    para: "Toatal Installation Periods",
+    para: "Total Installation Periods",
     iconBgColor: "#E8F8EE",
     icon: ICONS.greenDoller,
     percentColor: "#14AD8A",

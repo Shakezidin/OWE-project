@@ -70,7 +70,7 @@ const UserTable: React.FC<UserTableProps> = ({
   return (
     <div
       className="UserManageTable"
-      style={{ overflowX: "auto", whiteSpace: "nowrap" }}
+      style={{overflowX: "auto", whiteSpace: "nowrap" }}
     >
       <table>
         <thead>
