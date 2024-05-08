@@ -1,7 +1,7 @@
 // SelectComponent.tsx
 import React from 'react';
 import Select from 'react-select';
-
+import "./drop.css"
 interface Option {
   value: string;
   label: string;
@@ -20,6 +20,7 @@ const SelectOption: React.FC<Props> = ({ options, value, onChange }) => {
      <Select
       options={options}
       isSearchable
+      className='dropdown'
       onChange={onChange}
       placeholder="Select"
       value={value ? value: {label:'Select',value:'Select'} }
