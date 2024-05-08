@@ -138,7 +138,7 @@ export const ARDashboardPage: React.FC = () => {
                   }),
                   option: (baseStyles) => ({
                     ...baseStyles,
-                    fontSize: "13px",
+                    fontSize: "11.9px",
                   }),
                   menu: (baseStyles) => ({
                     ...baseStyles,
