@@ -11,6 +11,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -57,10 +58,8 @@ func HandleUpdateTierLoanFeeRequest(resp http.ResponseWriter, req *http.Request)
 	}
 
 	if (len(updateTierLoanFee.DealerTier) <= 0) || (len(updateTierLoanFee.Installer) <= 0) ||
-		(len(updateTierLoanFee.State) <= 0) || (len(updateTierLoanFee.FinanceType) <= 0) ||
-		(len(updateTierLoanFee.OweCost) <= 0) || (len(updateTierLoanFee.DlrMu) <= 0) ||
-		(len(updateTierLoanFee.DlrCost) <= 0) || (len(updateTierLoanFee.StartDate) <= 0) ||
-		(len(updateTierLoanFee.EndDate) <= 0) {
+		(len(updateTierLoanFee.State) <= 0) || (len(updateTierLoanFee.LoanType) <= 0) ||
+		(len(updateTierLoanFee.StartDate) <= 0) || (len(updateTierLoanFee.EndDate) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
@@ -72,17 +71,54 @@ func HandleUpdateTierLoanFeeRequest(resp http.ResponseWriter, req *http.Request)
 		FormAndSendHttpResp(resp, "Invalid Record Id, Update failed", http.StatusBadRequest, nil)
 		return
 	}
+
+	if updateTierLoanFee.OweCost <= float64(0) {
+		err = fmt.Errorf("Invalid owe cost Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid owe cost Not Allowed, Update failed", http.StatusBadRequest, nil)
+		return
+	}
+
+	if updateTierLoanFee.DlrMu <= float64(0) {
+		err = fmt.Errorf("Invalid dlr mu Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid dlr_mu Not Allowed, Update failed", http.StatusBadRequest, nil)
+		return
+	}
+
+	if updateTierLoanFee.DlrCost <= float64(0) {
+		err = fmt.Errorf("Invalid dlr cost Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid dlr cost Not Allowed, Update failed", http.StatusBadRequest, nil)
+		return
+	}
+
+	startDate, err := time.Parse("2006-01-02", updateTierLoanFee.StartDate)
+	if err != nil {
+		err = fmt.Errorf("Error parsing start date:", err)
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid start date, Update failed", http.StatusBadRequest, nil)
+		return
+	}
+
+	endDate, err := time.Parse("2006-01-02", updateTierLoanFee.EndDate)
+	if err != nil {
+		err = fmt.Errorf("Error parsing start date:", err)
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid end date, Update failed", http.StatusBadRequest, nil)
+		return
+	}
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, updateTierLoanFee.RecordId)
 	queryParameters = append(queryParameters, updateTierLoanFee.DealerTier)
 	queryParameters = append(queryParameters, updateTierLoanFee.Installer)
 	queryParameters = append(queryParameters, updateTierLoanFee.State)
-	queryParameters = append(queryParameters, updateTierLoanFee.FinanceType)
+	queryParameters = append(queryParameters, updateTierLoanFee.LoanType)
 	queryParameters = append(queryParameters, updateTierLoanFee.OweCost)
 	queryParameters = append(queryParameters, updateTierLoanFee.DlrMu)
 	queryParameters = append(queryParameters, updateTierLoanFee.DlrCost)
-	queryParameters = append(queryParameters, updateTierLoanFee.StartDate)
-	queryParameters = append(queryParameters, updateTierLoanFee.EndDate)
+	queryParameters = append(queryParameters, startDate)
+	queryParameters = append(queryParameters, endDate)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateTierLoanFeeFunction, queryParameters)

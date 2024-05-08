@@ -11,6 +11,7 @@ import (
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	"strings"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -63,12 +64,12 @@ func HandleGetTierLoanFeesDataRequest(resp http.ResponseWriter, req *http.Reques
 
 	tableName := db.TableName_tier_loan_fee
 	query = `
-	SELECT tlf.id as record_id, tr.tier_name as dealer_tier, ptr.partner_name as installer, st.name as state, lnt.product_code as finance_type, tlf.owe_cost, tlf.dlr_mu, tlf.dlr_cost, tlf.start_date, tlf.end_date
+	SELECT tlf.id as record_id, tr.tier_name as dealer_tier, ptr.partner_name as installer, st.name as state, lnt.product_code as loan_type, tlf.owe_cost, tlf.dlr_mu, tlf.dlr_cost, tlf.start_date, tlf.end_date
 	FROM tier_loan_fee tlf
 	JOIN tier tr ON tlf.dealer_tier = tr.id
 	JOIN partners ptr ON tlf.installer_id = ptr.partner_id
 	JOIN states st ON tlf.state_id = st.state_id
-	JOIN loan_type lnt ON tlf.finance_type = lnt.id
+	JOIN loan_type lnt ON tlf.loan_type = lnt.id
 	`
 
 	filter, whereEleList = PrepareTierLoanFeesFilters(tableName, dataReq, false)
@@ -113,60 +114,63 @@ func HandleGetTierLoanFeesDataRequest(resp http.ResponseWriter, req *http.Reques
 			State = ""
 		}
 
-		// FinanceType
-		FinanceType, financeOk := item["finance_type"].(string)
-		if !financeOk || FinanceType == "" {
-			log.FuncErrorTrace(0, "Failed to get finance type for Record ID %v. Item: %+v\n", RecordId, item)
-			FinanceType = ""
+		// LoanType
+		LoanType, financeOk := item["loan_type"].(string)
+		if !financeOk || LoanType == "" {
+			log.FuncErrorTrace(0, "Failed to get loan type for Record ID %v. Item: %+v\n", RecordId, item)
+			LoanType = ""
 		}
 
 		// OweCost
-		OweCost, oweOk := item["owe_cost"].(string)
-		if !oweOk || OweCost == "" {
+		OweCost, oweOk := item["owe_cost"].(float64)
+		if !oweOk || OweCost == 0.0 {
 			log.FuncErrorTrace(0, "Failed to get owe cost for Record ID %v. Item: %+v\n", RecordId, item)
-			OweCost = ""
+			OweCost = 0.0
 		}
 
 		// DlrMu
-		DlrMu, muOk := item["dlr_mu"].(string)
-		if !muOk || DlrMu == "" {
+		DlrMu, muOk := item["dlr_mu"].(float64)
+		if !muOk || DlrMu == 0.0 {
 			log.FuncErrorTrace(0, "Failed to get dlr_mu for Record ID %v. Item: %+v\n", RecordId, item)
-			DlrMu = ""
+			DlrMu = 0.0
 		}
 
 		// DlrCost
-		DlrCost, costOk := item["dlr_cost"].(string)
-		if !costOk || DlrCost == "" {
+		DlrCost, costOk := item["dlr_cost"].(float64)
+		if !costOk || DlrCost == 0.0 {
 			log.FuncErrorTrace(0, "Failed to get dlr cost for Record ID %v. Item: %+v\n", RecordId, item)
-			DlrCost = ""
+			DlrCost = 0.0
 		}
 
-		// StartDate
-		StartDate, startOk := item["start_date"].(string)
-		if !startOk || StartDate == "" {
+		// start_date
+		Start_date, ok := item["start_date"].(time.Time)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
-			StartDate = ""
+			Start_date = time.Time{}
 		}
 
 		// EndDate
-		EndDate, endOk := item["end_date"].(string)
-		if !endOk || EndDate == "" {
+		EndDate, ok := item["end_date"].(time.Time)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get end date for Record ID %v. Item: %+v\n", RecordId, item)
-			EndDate = ""
+			EndDate = time.Time{}
 		}
+
+		StartDateStr := Start_date.Format("2006-01-02")
+		EndDateStr := EndDate.Format("2006-01-02")
 
 		// Create a new GetTierLoanFeeData object
 		vaddersData := models.GetTierLoanFeeData{
-			RecordId:    RecordId,
-			DealerTier:  DealerTierName,
-			Installer:   PartnerName,
-			State:       State,
-			FinanceType: FinanceType,
-			OweCost:     OweCost,
-			DlrMu:       DlrMu,
-			DlrCost:     DlrCost,
-			StartDate:   StartDate,
-			EndDate:     EndDate,
+			RecordId:   RecordId,
+			DealerTier: DealerTierName,
+			Installer:  PartnerName,
+			State:      State,
+			LoanType:   LoanType,
+			OweCost:    OweCost,
+			DlrMu:      DlrMu,
+			DlrCost:    DlrCost,
+			StartDate:  StartDateStr,
+			EndDate:    EndDateStr,
 		}
 
 		// Append the new vaddersData to the TierLoanFeeList
@@ -241,6 +245,12 @@ func PrepareTierLoanFeesFilters(tableName string, dataFilter models.DataRequestB
 				whereEleList = append(whereEleList, value)
 			case "owe_cost", "dlr_mu", "dlr_cost":
 				filtersBuilder.WriteString(fmt.Sprintf("%s %s $%d", filter.Column, operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "start_date":
+				filtersBuilder.WriteString(fmt.Sprintf("tlf.start_date %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "end_date":
+				filtersBuilder.WriteString(fmt.Sprintf("tlf.end_date %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
