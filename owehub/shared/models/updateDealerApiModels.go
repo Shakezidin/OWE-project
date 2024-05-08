@@ -10,6 +10,7 @@ type UpdateDealer struct {
 	RecordId  int64  `json:"record_id"`
 	SubDealer string `json:"sub_dealer"`
 	Dealer    string `json:"dealer"`
+	State     string `json:"state"`
 	PayRate   string `json:"pay_rate"`
 	StartDate string `json:"start_date"`
 	EndDate   string `json:"end_date"`

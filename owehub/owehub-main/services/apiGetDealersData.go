@@ -63,9 +63,10 @@ func HandleGetDealersDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	tableName := db.TableName_dealer_override
 	query = `
-	SELECT dor.id as record_id, dor.sub_dealer, ud.name, dor.pay_rate, dor.start_date, dor.end_date
+	SELECT dor.id as record_id, dor.sub_dealer, ud.name, dor.pay_rate, dor.start_date, dor.end_date, st.name AS state_name  
 	FROM dealer_override dor
-	JOIN user_details ud ON ud.user_id = dor.dealer_id`
+	JOIN user_details ud ON ud.user_id = dor.dealer_id
+	JOIN states st ON st.state_id = dor.state`
 
 	filter, whereEleList = PrepareDealerFilters(tableName, dataReq, false)
 	if filter != "" {
@@ -94,6 +95,12 @@ func HandleGetDealersDataRequest(resp http.ResponseWriter, req *http.Request) {
 		if !ok || SubDealer == "" {
 			log.FuncErrorTrace(0, "Failed to get sub dealer for Record ID %v. Item: %+v\n", RecordId, item)
 			SubDealer = ""
+		}
+
+		StateName, ok := item["state_name"].(string)
+		if !ok || StateName == "" {
+			log.FuncErrorTrace(0, "Failed to get sale type for Record ID %v. Item: %+v\n", RecordId, item)
+			StateName = ""
 		}
 
 		// Dealer
@@ -128,6 +135,7 @@ func HandleGetDealersDataRequest(resp http.ResponseWriter, req *http.Request) {
 			RecordId:  RecordId,
 			SubDealer: SubDealer,
 			Dealer:    Dealer,
+			State:     StateName,
 			PayRate:   PayRate,
 			StartDate: StartDate,
 			EndDate:   EndDate,
@@ -226,7 +234,7 @@ func PrepareDealerFilters(tableName string, dataFilter models.DataRequestBody, f
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY dor.id, dor.sub_dealer, ud.name, dor.pay_rate, dor.start_date, dor.end_date")
+		filtersBuilder.WriteString(" GROUP BY dor.id, dor.sub_dealer, ud.name, dor.pay_rate, dor.start_date, dor.end_date, st.name")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {

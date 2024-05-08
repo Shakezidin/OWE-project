@@ -57,7 +57,7 @@ func HandleUpdateDealerRequest(resp http.ResponseWriter, req *http.Request) {
 
 	if (len(updateDealerReq.SubDealer) <= 0) || (len(updateDealerReq.Dealer) <= 0) ||
 		(len(updateDealerReq.PayRate) <= 0) || (len(updateDealerReq.StartDate) <= 0) ||
-		(len(updateDealerReq.EndDate) <= 0) {
+		(len(updateDealerReq.EndDate) <= 0) || (len(updateDealerReq.State) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed, Update failed", http.StatusBadRequest, nil)
@@ -75,6 +75,7 @@ func HandleUpdateDealerRequest(resp http.ResponseWriter, req *http.Request) {
 	queryParameters = append(queryParameters, updateDealerReq.RecordId)
 	queryParameters = append(queryParameters, updateDealerReq.SubDealer)
 	queryParameters = append(queryParameters, updateDealerReq.Dealer)
+	queryParameters = append(queryParameters, updateDealerReq.State)
 	queryParameters = append(queryParameters, updateDealerReq.PayRate)
 	queryParameters = append(queryParameters, updateDealerReq.StartDate)
 	queryParameters = append(queryParameters, updateDealerReq.EndDate)

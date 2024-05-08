@@ -149,7 +149,11 @@ var apiRoutes = ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/get_dealers",
+		"/owe-commisions-service/v1/
+		
+		
+		
+		",
 		apiHandler.HandleGetDealersDataRequest,
 		true,
 		[]types.UserGroup{types.GroupAdmin},

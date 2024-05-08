@@ -142,13 +142,15 @@ CREATE TABLE dealer_override (
     id serial NOT NULL,
     sub_dealer character varying,
     dealer_id INT,
+    state INT,
     pay_rate character varying,
     start_date character varying NOT NULL,
     end_date character varying,
-    is_archived BOOLEAN DEFAULT FALSE,
+    is_archived BOOLEAN DEFAULT FALSE, 
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     FOREIGN KEY (dealer_id) REFERENCES user_details(user_id),
+    FOREIGN KEY (state) REFERENCES states(state_id),
     PRIMARY KEY (id)
 );
 
