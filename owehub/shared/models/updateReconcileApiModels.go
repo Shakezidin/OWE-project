@@ -14,7 +14,8 @@ type UpdateReconcile struct {
 	StateName   string  `json:"state_name"`
 	SysSize     float64 `json:"sys_size"`
 	Status      string  `json:"status"`
-	Date        string  `json:"date"`
+	StartDate   string  `json:"start_date"`
+	EndDate     string  `json:"end_date"`
 	Amount      float64 `json:"amount"`
 	Notes       string  `json:"notes"`
 }

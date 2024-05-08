@@ -58,7 +58,7 @@ func HandleCreateReconcileRequest(resp http.ResponseWriter, req *http.Request) {
 	if (len(createReconcileReq.UniqueId) <= 0) || (len(createReconcileReq.Customer) <= 0) ||
 		(len(createReconcileReq.PartnerName) <= 0) || (len(createReconcileReq.StateName) <= 0) ||
 		(len(createReconcileReq.Status) <= 0) || (len(createReconcileReq.Notes) <= 0) ||
-		(len(createReconcileReq.Date) <= 0){
+		(len(createReconcileReq.StartDate) <= 0) || (len(createReconcileReq.EndDate) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
@@ -85,7 +85,8 @@ func HandleCreateReconcileRequest(resp http.ResponseWriter, req *http.Request) {
 	queryParameters = append(queryParameters, createReconcileReq.StateName)
 	queryParameters = append(queryParameters, createReconcileReq.SysSize)
 	queryParameters = append(queryParameters, createReconcileReq.Status)
-	queryParameters = append(queryParameters, createReconcileReq.Date)
+	queryParameters = append(queryParameters, createReconcileReq.StartDate)
+	queryParameters = append(queryParameters, createReconcileReq.EndDate)
 	queryParameters = append(queryParameters, createReconcileReq.Amount)
 	queryParameters = append(queryParameters, createReconcileReq.Notes)
 
