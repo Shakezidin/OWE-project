@@ -6,7 +6,6 @@ import { IoMdInformationCircleOutline } from "react-icons/io";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { projects } from "./projectData";
-
 import Breadcrumb from "../../components/breadcrumb/Breadcrumb";
 const ProjectPerformence = () => {
   const getColorStyle = (date: string | null) => {
@@ -143,6 +142,7 @@ const ProjectPerformence = () => {
                         >
                           <div className="strip-title">
                             <p>{project.salesDate}</p>
+                            <p>{project.salesYear}</p>
                           </div>
                           <div
                             className="strip-line"
@@ -164,7 +164,7 @@ const ProjectPerformence = () => {
                             style={getColorStyle(notch.date)}
                           >
                             <div className="notch-strip-title">
-                              <p>{notch.date || "Data not available"}</p>
+                              <p>{notch.date || "No Data"}</p>
                             </div>
                             <div
                               className="strip-line"
