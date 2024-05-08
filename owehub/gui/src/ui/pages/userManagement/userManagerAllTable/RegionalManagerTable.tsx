@@ -128,9 +128,9 @@ const RegionalManagerTable: React.FC<RegionalManagerProps> = ({ data, onClickDel
                   <td >
                     {el.dealer_owner}
                   </td>
-                  <td>
+                  {/* <td>
                     {el.region}
-                  </td>
+                  </td> */}
                   <td>
                     {el.email_id}
                   </td>
