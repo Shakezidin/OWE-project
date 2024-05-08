@@ -17,6 +17,7 @@ type UpdateUserReq struct {
 	DealerOwner       string `json:"dealer_owner"`
 	UserStatus        string `json:"user_status"`
 	Description       string `json:"description"`
+	Region            string `json:"region"`
 	StreetAddress     string `json:"street_address"`
 	State             string `json:"state"`
 	City              string `json:"city"`

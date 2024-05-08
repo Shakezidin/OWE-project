@@ -65,6 +65,7 @@ CREATE TABLE IF NOT EXISTS user_details(
     user_status VARCHAR(255) NOT NULL,
     user_designation VARCHAR(255),
     description VARCHAR(255),
+    region VARCHAR(255),
     street_address VARCHAR(255),
     state INT,
     city VARCHAR(50),
