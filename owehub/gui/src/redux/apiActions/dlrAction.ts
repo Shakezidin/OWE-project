@@ -28,7 +28,8 @@ export const getDlrOth = createAsyncThunk(
     async (param:Ipaginate, { rejectWithValue }) => {
       try {
         const data = await postCaller("get_dlr_oth_data", param);
-        return data.data.dlr_othlist || [] as IRowDLR[] 
+        const list = data.data.dlr_othlist || [] as IRowDLR[] 
+        return {list,count:data.dbRecCount}
       } catch (error) {
         return rejectWithValue((error as Error).message);
       }

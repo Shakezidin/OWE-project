@@ -13,14 +13,16 @@ interface IState {
   error: string;
   isLoading: boolean;
   isFormSubmitting: boolean;
-  isSuccess:boolean
+  isSuccess:boolean;
+  dbCount:0
 }
 const initialState: IState = {
   isLoading: false,
   isFormSubmitting: false,
   error: "",
   data: [],
-  isSuccess:false
+  isSuccess:false,
+  dbCount:0
 };
 
 const dlrOth = createSlice({
@@ -38,7 +40,7 @@ const dlrOth = createSlice({
       })
       .addCase(getDlrOth.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.data = action.payload;  
+        state.data = action.payload.list;  
         console.log(action.payload);
               
       })

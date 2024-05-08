@@ -11,7 +11,7 @@ interface PaginationProps {
   paginate: (pageNumber: number) => void;
   goToNextPage: () => void;
   goToPrevPage: () => void;
-  perPage:number,
+  perPage: number;
 }
 
 const Pagination: React.FC<PaginationProps> = ({
@@ -21,7 +21,7 @@ const Pagination: React.FC<PaginationProps> = ({
   goToNextPage,
   currentPageData,
   goToPrevPage,
-  perPage
+  perPage,
 }) => {
   return (
     <div className="pagination-container">
@@ -40,21 +40,41 @@ const Pagination: React.FC<PaginationProps> = ({
           />
         </button>
 
-        {Array.from({ length: totalPages }, (_, i) => (
-          <button
-            key={i}
-            className={currentPage === i + 1 ? "active-page" : "current-page"}
-            onClick={() => paginate(i + 1)}
-          >
-            {i + 1}
-          </button>
-        ))}
+        {Array.from({ length: totalPages }, (_, i) => {
+          if (i > 4 && i < totalPages - 1) {
+            return null;
+          }
+          if (i === 4) {
+            return (
+              <button
+                disabled={currentPage === currentPageData?.length}
+                className={"current-btn"}
+                onClick={() =>
+                  currentPage < totalPages / perPage &&
+                  goToNextPage()
+                }
+              >
+                ...
+              </button>
+            );
+          }
+
+          return (
+            <button
+              key={i}
+              className={currentPage === i + 1 ? "active-page" : "current-page"}
+              onClick={() => paginate(i + 1)}
+            >
+              {i + 1}
+            </button>
+          );
+        })}
 
         <button
           disabled={currentPage === currentPageData?.length}
           className={"current-btn"}
           onClick={() =>
-            currentPage < currentPageData?.length / perPage && goToNextPage()
+            currentPage < totalPages / perPage && goToNextPage()
           }
         >
           <MdArrowForwardIos style={{ color: "#667085", fontSize: ".9rem" }} />

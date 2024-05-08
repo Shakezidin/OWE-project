@@ -46,7 +46,7 @@ const DlrOthPay: React.FC = () => {
   const handleExportOpen = () => setExportOpen(!exportOPen);
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const { data: commissionList } = useAppSelector((state) => state.dlrOth);
+  const { data: commissionList,dbCount } = useAppSelector((state) => state.dlrOth);
   const loading = useAppSelector((state) => state.dlrOth.isLoading);
   const error = useAppSelector((state) => state.dlrOth.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
@@ -99,7 +99,7 @@ const DlrOthPay: React.FC = () => {
     setFilterOpen(true);
   };
 
-  const totalPages = Math.ceil(commissionList?.length / itemsPerPage);
+  const totalPages = Math.ceil(dbCount / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -279,8 +279,8 @@ const DlrOthPay: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {currentPageData?.length > 0 ? (
-                currentPageData?.map((el: IRowDLR, i: number) => (
+              {commissionList?.length > 0 ? (
+                commissionList?.map((el: IRowDLR, i: number) => (
                   <tr key={i} className={selectedRows.has(i) ? "selected" : ""}>
                     <td style={{ fontWeight: "500", color: "black" }}>
                       <div className="flex-check">
@@ -339,7 +339,7 @@ const DlrOthPay: React.FC = () => {
         {commissionList?.length > 0 ? (
           <div className="page-heading-container">
             <p className="page-heading">
-              {currentPage} - {totalPages} of {currentPageData?.length} item
+              {currentPage} - {totalPages} of {commissionList?.length} item
             </p>
 
            <Pagination

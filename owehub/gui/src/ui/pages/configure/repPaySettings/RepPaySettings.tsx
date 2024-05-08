@@ -64,7 +64,7 @@ const RepPaySettings = () => {
     dispatch(setCurrentPage(pageNumber));
   };
 
-  const { repPaySettingsList, loading } = useAppSelector(
+  const { repPaySettingsList, loading,dbCount } = useAppSelector(
     (state) => state.repaySettings
   );
 
@@ -77,7 +77,7 @@ const RepPaySettings = () => {
   const goToPrevPage = () => {
     dispatch(setCurrentPage(currentPage - 1));
   };
-  const totalPages = Math.ceil(repPaySettingsList?.length / itemsPerPage);
+  const totalPages = Math.ceil(dbCount / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -290,8 +290,8 @@ const RepPaySettings = () => {
               </tr>
             </thead>
             <tbody>
-              {currentPageData?.length > 0 ? (
-                currentPageData?.map((el: any, i: any) => (
+              {repPaySettingsList?.length > 0 ? (
+                repPaySettingsList?.map((el: any, i: any) => (
                   <tr key={i}>
                     <td style={{ fontWeight: "500", color: "black" }}>
                       <div className="flex-check">
@@ -353,7 +353,7 @@ const RepPaySettings = () => {
         </div>
         <div className="page-heading-container">
           <p className="page-heading">
-            {currentPage} - {totalPages} of {currentPageData?.length} item
+            {currentPage} - {totalPages} of {repPaySettingsList?.length} item
           </p>
 
           {repPaySettingsList?.length > 0 ? (

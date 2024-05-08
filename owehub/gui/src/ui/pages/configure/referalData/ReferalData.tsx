@@ -43,7 +43,7 @@ const ReferalData: React.FC = () => {
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const commissionList = useAppSelector((state) => state.comm.commissionsList);
-  const loading = useAppSelector((state) => state.comm.loading);
+  const {loading,dbCount} = useAppSelector((state) => state.comm);
   const error = useAppSelector((state) => state.comm.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
@@ -58,11 +58,11 @@ const ReferalData: React.FC = () => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
-
+      archived:viewArchived
     };
     dispatch(fetchCommissions(pageNumber));
 
-  }, [dispatch, currentPage]);
+  }, [dispatch, currentPage,viewArchived]);
 
   const paginate = (pageNumber: number) => {
     dispatch(setCurrentPage(pageNumber));
@@ -81,7 +81,7 @@ const ReferalData: React.FC = () => {
     setFilterOpen(true)
   }
  
-  const totalPages = Math.ceil(commissionList?.length / itemsPerPage);
+  const totalPages = Math.ceil(dbCount / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;

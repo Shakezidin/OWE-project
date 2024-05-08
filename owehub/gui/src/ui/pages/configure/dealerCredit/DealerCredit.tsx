@@ -43,7 +43,7 @@ const DealerCredit: React.FC = () => {
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const commissionList = useAppSelector((state) => state.comm.commissionsList);
-  const loading = useAppSelector((state) => state.comm.loading);
+  const {loading,dbCount} = useAppSelector((state) => state.comm);
   const error = useAppSelector((state) => state.comm.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
@@ -58,11 +58,11 @@ const DealerCredit: React.FC = () => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
-
+      archived:viewArchived
     };
     dispatch(fetchCommissions(pageNumber));
 
-  }, [dispatch, currentPage]);
+  }, [dispatch, currentPage,viewArchived]);
 
   const paginate = (pageNumber: number) => {
     dispatch(setCurrentPage(pageNumber));
@@ -81,7 +81,7 @@ const DealerCredit: React.FC = () => {
     setFilterOpen(true)
   }
  
-  const totalPages = Math.ceil(commissionList?.length / itemsPerPage);
+  const totalPages = Math.ceil(dbCount/ itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -194,8 +194,8 @@ const DealerCredit: React.FC = () => {
         
             </thead>
             <tbody>
-              {currentPageData?.length > 0
-                ? currentPageData?.map((el: any, i: any) => (
+              {commissionList?.length > 0
+                ? commissionList?.map((el: any, i: any) => (
                   <tr
                     key={i}
                     className={selectedRows.has(i) ? "selected" : ""}
@@ -257,7 +257,7 @@ const DealerCredit: React.FC = () => {
         <div className="page-heading-container">
       
       <p className="page-heading">
-       {currentPage} - {totalPages} of {currentPageData?.length} item
+       {currentPage} - {totalPages} of {commissionList?.length} item
       </p>
  
   <Pagination
