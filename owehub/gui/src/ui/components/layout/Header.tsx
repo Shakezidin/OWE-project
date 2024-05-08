@@ -90,7 +90,7 @@ const dropdownRef = useRef<HTMLDivElement>(null);
           className="header-logo"
           style={{ marginLeft: toggleOpen ? "17px" : "" }}
         >
-          <img src={ICONS.LOGO} alt="" />
+          <object type="image/svg+xml" data={ICONS.LOGO} aria-label="login-icon"></object>
         </div>
         {toggleOpen && (
           <div
@@ -176,9 +176,9 @@ const dropdownRef = useRef<HTMLDivElement>(null);
                   onClick={() => setOPenIcon(!openIcon)}
                 >
                   {openIcon ? (
-                    <img src={ICONS.upperIcon} alt="" />
+                    <img src={ICONS.upperIcon} style={{width: "12px"}} alt="" />
                   ) : (
-                    <MdKeyboardArrowDown style={{ fontSize: "1.5rem" }} />
+                    <MdKeyboardArrowDown style={{ fontSize: "1.5rem"}} />
                   )}
                   {openIcon && (
                     <div className="header-modal-1">

@@ -237,7 +237,7 @@ table tbody tr td {
 
 .page-heading {
   color: var(--heading-color);
-  font-size: 12px;
+  font-size: 14px;
 }
 .flex-check {
   display: flex;

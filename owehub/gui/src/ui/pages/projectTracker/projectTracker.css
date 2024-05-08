@@ -242,15 +242,16 @@
 }
 
 .popup {
-  position: absolute;
+  position: relative;
   background-color: white;
   width: 180px;
   /* height: 40px; */
   box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.1);
   transform: translate(-50, -50%);
-  left: 43%;
+  left: 47%;
   border-radius: 8px;
-  top: 35%;
+  /* top: 35%; */
+  margin-top: -132px;
   z-index: 10;
   padding: 1rem;
   /* height: 133px; */

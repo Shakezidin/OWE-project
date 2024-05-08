@@ -9,12 +9,12 @@ interface UserPieChartProps{
 
 const data2 = [
   {
-    name: "Inactive",
+    name: "Inactive Sales Reps",
     value: 300,
     fill: "#fb7955",
   },
   {
-    name: "Active",
+    name: "Active Sales Reps",
     value: 700,
     fill: "#0181ff",
   }

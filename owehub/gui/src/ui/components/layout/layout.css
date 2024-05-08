@@ -30,7 +30,7 @@
   display: flex;
   align-items: center;
 }
-.header-logo img {
+.header-logo object {
   width: 162px;
   height: 44px;
 }
