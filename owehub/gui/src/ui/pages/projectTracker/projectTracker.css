@@ -19,7 +19,7 @@
 .install-update {
   font-size: 12px;
   font-weight: 500;
-  width: 115px;
+  width: 110px;
   margin-right: 10px;
 }
 .performance-project-name {
@@ -304,14 +304,15 @@
   display: flex;
   flex-direction: column;
   padding: 0 22px;
+
 }
 
 .project-status-card {
   background-color: #0493ce;
-  padding: 1rem;
-  height: 55px;
+  padding: 10px;
+  height: 50px;
   /* width:214px; */
-  width: 18%;
+  width: 180px;
   /* flex:1; */
   border-top-left-radius: 2px;
   border-bottom-left-radius: 2px;
@@ -320,14 +321,14 @@
   display: flex;
   /* margin-top: .5rem; */
   align-items: center;
-  gap: 1rem;
+  gap: 10px;
   z-index: 12;
   /* justify-content: center; */
 }
 .milestone-header {
   background-color: var(--row-bg-color);
   display: flex;
-  gap: 30px;
+  gap: 25px;
   padding: 15px 20px;
   max-width: 100%;
   height: 100%;
@@ -339,22 +340,22 @@
   color: #222222;
 }
 .stage-1-para {
-  font-size: 14px;
+  font-size: 12px;
   color: white;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .status-number {
-  width: 28px;
-  height: 28px;
+  width: 25px;
+  height: 25px;
   background-color: white;
   display: flex;
   align-items: center;
   color: var(--project-icon-color);
-  border-radius: 2px;
+  border-radius: 4px;
   justify-content: center;
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .dotted-border {
@@ -362,17 +363,17 @@
   height: 18px;
   position: relative;
   bottom: 0rem;
-  margin-left: 1.8rem;
+  margin-left: 21px;
 }
 
 .notch-corner {
   background-color: #57b93a;
   display: flex;
-  height: 55px;
+  height: 50px;
   /* flex: .5; */
   align-items: center;
-  gap: 1rem;
-  width: 22%;
+  /* gap: 1rem; */
+  width: 220px;
   justify-content: center;
   /* width: 229px; */
   border-top-right-radius: 2rem;
@@ -389,17 +390,17 @@
   background-color: white;
   border-top-right-radius: 2rem;
   border-bottom-right-radius: 2rem;
-  left: -40px;
+  left: -42px;
   z-index: 3;
 }
 .strip-line{
   border: 0.5px solid #D6D6D6; 
-  height: 20px;
-  margin: 0 5px;
+  height: 35px;
+  margin: 0 10px;
 }
 .milestone-strips {
   height: 50px;
-  width: 180px;
+  width: 140px;
   border-top-left-radius: 2px;
   border-bottom-left-radius: 2px;
   border-top-right-radius: 2rem;
@@ -408,13 +409,12 @@
   align-items: center;
   z-index: 20;
   display: flex;
-  /* flex-direction: column; */
   justify-content: center;
   align-items: center;
 }
 .notch-strip{
   height: 50px;
-  width: 180px;
+  width: 150px;
   border-top-left-radius: 2px;
   border-bottom-left-radius: 2px;
   border-top-right-radius: 2rem;
@@ -429,23 +429,29 @@
   position: relative;
   overflow: hidden;
 }
-
+.notch-strip-title{
+  margin-left: 15px;
+}
 .notch-strip-title p{
   font-size: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 20px;
   line-height: 12px;
-  width: 45px;
   font-weight: 400;
 }
 .notch-strip-des{
   display: flex;
-  flex-direction: column;
   align-items: center;
+  flex-wrap: wrap;
+  width: 70px;
 }
 .notch-strip-des p{
   display: flex;
   align-items: center;
-  gap: 5px;
-  font-size: 10px;
+  width: 75px;
+  font-size: 11px;
   font-weight: 500;
 }
 .all-progress{
@@ -478,11 +484,13 @@
   font-size: 10px;
   line-height: 12px;
   font-weight: 400;
+  /* width: 35px; */
+  /* word-wrap: break-word; */
 }
 .strip-des p{
   display: flex;
   align-items: center;
-  font-size: 10px;
+  font-size: 11px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -503,14 +511,15 @@
 }
 
 .date-para {
-  font-size: 12px !important;
+  font-size: 9px !important;
   color: white;
   font-weight: normal;
 }
 
 .border-notch {
-  height: 40px;
-  border: 1px solid white;
+  height: 35px;
+  border: 0.5px solid white;
+  margin: 0 10px;
 }
 
 .progress-box-container {
