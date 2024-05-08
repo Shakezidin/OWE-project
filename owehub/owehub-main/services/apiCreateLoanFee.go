@@ -11,6 +11,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -56,10 +57,9 @@ func HandleCreateLoanFeeDataRequest(resp http.ResponseWriter, req *http.Request)
 		return
 	}
 
-	if (len(createLoanFeeReq.UniqueID) <= 0) || (len(createLoanFeeReq.Dealer) <= 0) ||
+	if (len(createLoanFeeReq.Dealer) <= 0) ||
 		(len(createLoanFeeReq.Installer) <= 0) || (len(createLoanFeeReq.State) <= 0) ||
-		(len(createLoanFeeReq.LoanType) <= 0) || (len(createLoanFeeReq.DlrMu) <= 0) ||
-		(len(createLoanFeeReq.DlrCost) <= 0) || (len(createLoanFeeReq.StartDate) <= 0) ||
+		(len(createLoanFeeReq.LoanType) <= 0) || (len(createLoanFeeReq.StartDate) <= 0) ||
 		(len(createLoanFeeReq.EndDate) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
@@ -74,8 +74,37 @@ func HandleCreateLoanFeeDataRequest(resp http.ResponseWriter, req *http.Request)
 		return
 	}
 
+	if createLoanFeeReq.DlrMu <= float64(0) {
+		err = fmt.Errorf("Invalid dlr_mu Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid dlr)mu Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+
+	if createLoanFeeReq.DlrCost <= float64(0) {
+		err = fmt.Errorf("Invalid dlr cost Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid dlr cost Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+
+	startDate, err := time.Parse("2006-01-02", createLoanFeeReq.StartDate)
+	if err != nil {
+		err = fmt.Errorf("Error parsing start date:", err)
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid start date not allowed", http.StatusBadRequest, nil)
+		return
+	}
+
+	endDate, err := time.Parse("2006-01-02", createLoanFeeReq.EndDate)
+	if err != nil {
+		err = fmt.Errorf("Error parsing start date:", err)
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid end date not allowed", http.StatusBadRequest, nil)
+		return
+	}
+
 	// Populate query parameters in the correct order
-	queryParameters = append(queryParameters, createLoanFeeReq.UniqueID)
 	queryParameters = append(queryParameters, createLoanFeeReq.Dealer)
 	queryParameters = append(queryParameters, createLoanFeeReq.Installer)
 	queryParameters = append(queryParameters, createLoanFeeReq.State)
@@ -83,8 +112,8 @@ func HandleCreateLoanFeeDataRequest(resp http.ResponseWriter, req *http.Request)
 	queryParameters = append(queryParameters, createLoanFeeReq.OweCost)
 	queryParameters = append(queryParameters, createLoanFeeReq.DlrMu)
 	queryParameters = append(queryParameters, createLoanFeeReq.DlrCost)
-	queryParameters = append(queryParameters, createLoanFeeReq.StartDate)
-	queryParameters = append(queryParameters, createLoanFeeReq.EndDate)
+	queryParameters = append(queryParameters, startDate)
+	queryParameters = append(queryParameters, endDate)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.CreateLoanFeeFunction, queryParameters)

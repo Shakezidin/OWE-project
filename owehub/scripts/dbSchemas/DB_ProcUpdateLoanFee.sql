@@ -1,15 +1,14 @@
 CREATE OR REPLACE FUNCTION update_loan_fee(
     p_id INT,
-    p_unique_id               VARCHAR,
     p_dealer                  VARCHAR,
     p_installer               VARCHAR,
     p_state_name              VARCHAR,
     p_loan_type               VARCHAR,
     p_owe_cost                DOUBLE PRECISION,
-    p_dlr_mu                  VARCHAR,
-    p_dlr_cost                VARCHAR,
-    p_start_date              VARCHAR,
-    p_end_date                VARCHAR,
+    p_dlr_mu                  DOUBLE PRECISION,
+    p_dlr_cost                DOUBLE PRECISION,
+    p_start_date              Date,
+    p_end_date                Date,
     OUT v_loan_fee_id INT
 )
 RETURNS INT 
@@ -17,7 +16,6 @@ AS $$
 BEGIN
     UPDATE loan_fee
     SET 
-        unique_id = p_unique_id,
         dealer_id = (SELECT user_id FROM user_details WHERE LOWER(name) = LOWER(p_dealer) LIMIT 1),
         installer = (SELECT partner_id FROM partners WHERE LOWER(partner_name) = LOWER(p_installer) LIMIT 1),
         state_id = (SELECT state_id FROM states WHERE LOWER(name) = LOWER(p_state_name) LIMIT 1),

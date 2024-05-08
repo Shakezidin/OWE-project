@@ -1,14 +1,13 @@
 CREATE OR REPLACE FUNCTION create_new_loan_fee(
-    p_unique_id               character varying,
     p_dealer                  character varying,
     p_installer               character varying,
     p_state_name              character varying,
     p_loan_type               character varying,
     p_owe_cost                double precision,
-    p_dlr_mu                  character varying,
-    p_dlr_cost                character varying,
-    p_start_date              character varying,
-    p_end_date                character varying,
+    p_dlr_mu                  double precision,
+    p_dlr_cost                double precision,
+    p_start_date              date,
+    p_end_date                date,
     OUT v_loan_fee_id         INT
 )
 RETURNS INT
@@ -58,7 +57,6 @@ BEGIN
     END IF;
 
     INSERT INTO loan_fee(
-        unique_id,
         dealer_id,
         installer,
         state_id,
@@ -71,7 +69,6 @@ BEGIN
         end_date
     )
     VALUES (
-        p_unique_id,
         v_dealer_id,
         v_installer_id,
         v_state_id,
