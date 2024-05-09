@@ -59,20 +59,21 @@ func HandleCreateAutoAdderRequest(resp http.ResponseWriter, req *http.Request) {
 
 	if (len(createAutoAdderReq.UniqueID) <= 0) || (len(createAutoAdderReq.Date) <= 0) ||
 		(len(createAutoAdderReq.Type) <= 0) || (len(createAutoAdderReq.GC) <= 0) ||
-		(len(createAutoAdderReq.DescriptionRepVisible) <= 0) || (len(createAutoAdderReq.NotesNoRepVisible) <= 0) ||
-		(len(createAutoAdderReq.AdderType) <= 0) {
+		// (len(createAutoAdderReq.DescriptionRepVisible) <= 0) || 
+		// (len(createAutoAdderReq.AdderType) <= 0) ||
+		(len(createAutoAdderReq.NotesNoRepVisible) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
-	if createAutoAdderReq.ExactAmount <= float64(0) {
-		err = fmt.Errorf("Invalid exact amount Not Allowed")
-		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid exact amount Not Allowed", http.StatusBadRequest, nil)
-		return
-	}
+	// if createAutoAdderReq.ExactAmount <= float64(0) {
+	// 	err = fmt.Errorf("Invalid exact amount Not Allowed")
+	// 	log.FuncErrorTrace(0, "%v", err)
+	// 	FormAndSendHttpResp(resp, "Invalid exact amount Not Allowed", http.StatusBadRequest, nil)
+	// 	return
+	// }
 	if createAutoAdderReq.PerKWAmount <= float64(0) {
 		err = fmt.Errorf("Invalid per_kw_amount price Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
@@ -93,6 +94,10 @@ func HandleCreateAutoAdderRequest(resp http.ResponseWriter, req *http.Request) {
 		FormAndSendHttpResp(resp, "Invalid date not allowed", http.StatusBadRequest, nil)
 		return
 	}
+
+	createAutoAdderReq.PerKWAmount= 99.99
+	createAutoAdderReq.DescriptionRepVisible = "description"
+	createAutoAdderReq.AdderType = "adder type"
 
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, createAutoAdderReq.UniqueID)

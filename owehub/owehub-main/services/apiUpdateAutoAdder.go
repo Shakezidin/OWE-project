@@ -58,20 +58,21 @@ func HandleUpdateAutoAdderRequest(resp http.ResponseWriter, req *http.Request) {
 
 	if (len(updateAutoAdderReq.UniqueID) <= 0) || (len(updateAutoAdderReq.Date) <= 0) ||
 		(len(updateAutoAdderReq.Type) <= 0) || (len(updateAutoAdderReq.GC) <= 0) ||
-		(len(updateAutoAdderReq.DescriptionRepVisible) <= 0) || (len(updateAutoAdderReq.NotesNoRepVisible) <= 0) ||
-		(len(updateAutoAdderReq.AdderType) <= 0) {
+		// (len(updateAutoAdderReq.DescriptionRepVisible) <= 0) || 
+		// (len(updateAutoAdderReq.AdderType) <= 0)|| 
+		(len(updateAutoAdderReq.NotesNoRepVisible) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
-	if updateAutoAdderReq.ExactAmount <= float64(0) {
-		err = fmt.Errorf("Invalid exacy amount list Not Allowed")
-		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid exact amount Not Allowed, Update failed", http.StatusBadRequest, nil)
-		return
-	}
+	// if updateAutoAdderReq.ExactAmount <= float64(0) {
+	// 	err = fmt.Errorf("Invalid exacy amount list Not Allowed")
+	// 	log.FuncErrorTrace(0, "%v", err)
+	// 	FormAndSendHttpResp(resp, "Invalid exact amount Not Allowed, Update failed", http.StatusBadRequest, nil)
+	// 	return
+	// }
 	if updateAutoAdderReq.PerKWAmount <= float64(0) {
 		err = fmt.Errorf("Invalid perkwamount price Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
@@ -92,6 +93,11 @@ func HandleUpdateAutoAdderRequest(resp http.ResponseWriter, req *http.Request) {
 		FormAndSendHttpResp(resp, "Invalid date, Update failed", http.StatusBadRequest, nil)
 		return
 	}
+
+	updateAutoAdderReq.PerKWAmount= 99.99
+	updateAutoAdderReq.DescriptionRepVisible = "description"
+	updateAutoAdderReq.AdderType = "adder type"
+	
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, updateAutoAdderReq.RecordId)
 	queryParameters = append(queryParameters, updateAutoAdderReq.UniqueID)
