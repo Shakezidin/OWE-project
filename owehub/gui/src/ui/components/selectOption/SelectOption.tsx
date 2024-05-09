@@ -40,7 +40,7 @@ console.log(scrollRef.current,"select");
           fontSize: "13px",
           height: "2.25rem",
           border: "1px solid #d0d5dd",
-          
+          cursor: "pointer"
         }),
         indicatorSeparator: () => ({
           display: "none",
@@ -58,6 +58,7 @@ console.log(scrollRef.current,"select");
         ...base,
         "&::-webkit-scrollbar":{
           "scrollbarWidth":"thin",
+          "scrollBehavior": "smooth",
           "display":"block",
           "scrollbarColor":  "rgb(173, 173, 173) #fff",
           width:8
@@ -67,7 +68,6 @@ console.log(scrollRef.current,"select");
           borderRadius:"30px"
         }
        })
-      
       }}
     />
    </div>
