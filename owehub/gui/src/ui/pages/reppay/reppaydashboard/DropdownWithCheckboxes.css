@@ -33,7 +33,7 @@
     position: absolute;
     top: 100%;
     left: -78px;
-    z-index: 1;
+    z-index: 5;
     background-color: white;
     border: 1px solid #D0D5DD;
     border-radius: 8px;
