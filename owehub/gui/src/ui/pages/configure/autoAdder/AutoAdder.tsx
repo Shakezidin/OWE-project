@@ -25,6 +25,7 @@ import { ROUTES } from "../../../../routes/routes";
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
 import { AutoAdderColumn } from "../../../../resources/static_data/configureHeaderData/AutoAdderColumn";
+import { fetchAutoAdder } from "../../../../redux/apiActions/AutoAdderAction";
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
 import PaginationComponent from "../../../components/pagination/PaginationComponent";
 interface Column {
@@ -42,7 +43,7 @@ const AutoAdder: React.FC = () => {
   const handleExportOpen = () => setExportOpen(!exportOPen)
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const commissionList = useAppSelector((state:any) => state.comm.commissionsList);
+  const commissionList = useAppSelector((state) => state.autoadder.data);
   const loading = useAppSelector((state:any) => state.comm.loading);
   const error = useAppSelector((state:any) => state.comm.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
@@ -64,7 +65,7 @@ const AutoAdder: React.FC = () => {
       archived: viewArchived ? true : undefined,
 
     };
-    dispatch(fetchCommissions(pageNumber));
+    dispatch(fetchAutoAdder(pageNumber));
 
   }, [dispatch, currentPage1,viewArchived,pageSize1]);
 
@@ -109,7 +110,7 @@ const AutoAdder: React.FC = () => {
   
   const currentPageData = commissionList?.slice(startIndex, endIndex);
   const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === commissionList.length;
+  const isAllRowsSelected = selectedRows.size === commissionList?.length;
   const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
@@ -166,11 +167,11 @@ const AutoAdder: React.FC = () => {
              page_number = {currentPage}
              page_size = {itemsPerPage}
              />} */}
-             {open && <CreateAutoAdder
+             {/* {open && <CreateAutoAdder
                          commission={editedCommission}
                          editMode={editMode}
                          handleClose={handleClose}
-                          />}
+                          />} */}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
@@ -265,9 +266,9 @@ const AutoAdder: React.FC = () => {
                         <div className="" style={{ cursor: "pointer" }}>
                           <img src={ICONS.ARCHIVE} alt="" />
                         </div>
-                        <div className="" style={{ cursor: "pointer" }} onClick={() => handleEditCommission(el)}>
+                        {/* <div className="" style={{ cursor: "pointer" }} onClick={() => handleEditCommission(el)}>
                         <img src={ICONS.editIcon} alt="" />
-                        </div>
+                        </div> */}
                       </div>
 
                     </td>

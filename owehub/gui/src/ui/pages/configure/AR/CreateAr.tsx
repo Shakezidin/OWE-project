@@ -31,11 +31,15 @@ const CreatedAr: React.FC<payScheduleProps> = ({ handleClose, editMode, editData
   const { isSuccess } = useAppSelector(state => state.ar)
 
   const [createArData, setCreateArData] = useState({
-    customer_name:editData?.customer_name || "",
+    // customer_name:editData?.customer_name || "",
     unique_id:editData?.unique_id || "",
     date: editData?.date || "",
     amount:editData?.amount || "",
-    notes:editData?.notes || "",
+    payment_type:editData?.payment_type || "",
+    bank: editData?.bank || "",
+    ced:editData?.ced || "",
+
+
   });
 
   const [newFormData, setNewFormData] = useState<any>([]);
@@ -63,7 +67,15 @@ const CreatedAr: React.FC<payScheduleProps> = ({ handleClose, editMode, editData
     if(editMode){
       dispatch(updateAr({...createArData,record_id:editData?.record_id!}))
     } else{
-      dispatch(createAr(createArData))
+      dispatch(createAr({
+        unique_id:createArData.unique_id,
+        amount: parseFloat(createArData.amount),
+        date:createArData.date,
+        payment_type:createArData.payment_type,
+        bank:createArData.bank,
+        ced:createArData.ced
+
+      }))
     }
   };
 
@@ -92,16 +104,7 @@ const CreatedAr: React.FC<payScheduleProps> = ({ handleClose, editMode, editData
           <div className="createProfileInputView">
             <div className="createProfileTextView">
               <div className="create-input-container">
-                <div className="create-input-field">
-                  <Input
-                    type={"text"}
-                    label="Customer Name"
-                    value={createArData.customer_name}
-                    name="customer_name"
-                    placeholder={"Enter"}
-                    onChange={(e) => handleInputChange(e)}
-                  />
-                </div>
+ 
                 <div className="create-input-field">
                   <Input
                     type={"text"}
@@ -122,9 +125,6 @@ const CreatedAr: React.FC<payScheduleProps> = ({ handleClose, editMode, editData
                     onChange={(e) => handleInputChange(e)}
                   />
                 </div>
-              </div>
-
-              <div className="create-input-container">
                 <div className="create-input-field">
                   <Input
                     type={"text"}
@@ -135,12 +135,35 @@ const CreatedAr: React.FC<payScheduleProps> = ({ handleClose, editMode, editData
                     onChange={(e) => handleInputChange(e)}
                   />
                 </div>
+              </div>
+
+              <div className="create-input-container">
                 <div className="create-input-field">
                   <Input
                     type={"text"}
-                    label="Notes"
-                    value={createArData.notes}
-                    name="notes"
+                    label="Payment Type"
+                    value={createArData.payment_type}
+                    name="payment_type"
+                    placeholder={"Enter"}
+                    onChange={(e) => handleInputChange(e)}
+                  />
+                </div>
+                <div className="create-input-field">
+                  <Input
+                    type={"text"}
+                    label="Bank"
+                    value={createArData.bank}
+                    name="bank"
+                    placeholder={"Enter"}
+                    onChange={(e) => handleInputChange(e)}
+                  />
+                </div>
+                <div className="create-input-field">
+                  <Input
+                    type={"date"}
+                    label="Ced"
+                    value={createArData.ced}
+                    name="ced"
                     placeholder={"Enter"}
                     onChange={(e) => handleInputChange(e)}
                   />

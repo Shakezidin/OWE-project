@@ -9,19 +9,19 @@ interface Ipaginate {
 }
 
 interface IRateCreateParams {
-    unique_id: string;
-    customer: string;
-    partner_name: string;
-    state_name: string;
-    installer_name: string;
-    sys_size: number;
-    bl: string;
-    epc: number;
-    date: string;
-    notes: string;
-    amount: number;
-    start_date: string;
-    end_date: string;
+    unique_id?: string;
+    customer?: string;
+    partner_name?: string;
+    state_name?: string;
+    installer_name?: string;
+    sys_size?: number;
+    bl?: string;
+    epc?: number;
+    date?: string;
+    notes?: string;
+    amount?: number;
+    start_date?: string;
+    end_date?: string;
 }
 
 

@@ -34,10 +34,9 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
 }) => {
   const dispatch = useAppDispatch();
   const [newFormData, setNewFormData] = useState({
-    uniqueId: "",
-    dealerName:  "",
+    dealerName:"Shushank Sharma",
     installerName: "",
-    loanType:  "",
+    loanType:   "P123",
     dlrMu: "",
     dlrCost:  "",
     startDate: "",
@@ -69,6 +68,9 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
   const handleValidation = () => {
     const error: typeof newFormData = {} as typeof newFormData;
     for (const key in newFormData) {
+      if (key==="loan_type" || key==="dealers") {
+        continue
+      }
       if (!newFormData[key as keyof typeof newFormData]) {
         error[
           key as keyof typeof newFormData
@@ -80,12 +82,11 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
   };
   React.useEffect(() => {
     setNewFormData({
-        uniqueId: editData?.unique_id || "",
-        dealerName: editData?.dealer || "",
+        dealerName: editData?.dealer || "Shushank Sharma",
         installerName: editData?.installer || "",
-        loanType: editData?.loan_type || "",
-        dlrMu: editData?.dlr_mu || "",
-        dlrCost: editData?.dlr_cost || "",
+        loanType: editData?.loan_type || "P123",
+        dlrMu: editData?.dlr_mu?`${editData?.dlr_mu}` : "",
+        dlrCost: editData?.dlr_cost?`${editData?.dlr_cost}` : "",
         startDate: editData?.start_date || "",
         endDate: editData?.end_date || "",
         stateName: editData?.state || "",
@@ -93,6 +94,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
       })
     getNewFormData();
   }, [editMode,editData]);
+console.log(newFormData,"formdddd");
 
   //   const loanTypes = (newFormData["loan_types"]   ).map()
 
@@ -113,7 +115,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
         dispatch(
           updateLoanFee({
             record_id: editData?.record_id!,
-            unique_id: newFormData.uniqueId,
+       
             state: newFormData.stateName,
             installer: newFormData.installerName,
             start_date: newFormData.startDate
@@ -122,8 +124,8 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
             end_date: newFormData.endDate
               ? format(new Date(newFormData.endDate), "yyyy-MM-dd")
               : "",
-            dlr_cost: newFormData.dlrCost,
-            dlr_mu: newFormData.dlrMu,
+            dlr_cost:parseFloat( newFormData.dlrCost),
+            dlr_mu:parseFloat( newFormData.dlrMu) ,
             owe_cost: parseFloat(newFormData.oweCost),
             dealer: newFormData.dealerName || "Shushank Sharma",
             loan_type: newFormData.loanType || "P123",
@@ -132,7 +134,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
       } else {
         dispatch(
           createLoanFee({
-            unique_id: newFormData.uniqueId,
+       
             state: newFormData.stateName,
             installer: newFormData.installerName,
             start_date: newFormData.startDate
@@ -141,8 +143,8 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
             end_date: newFormData.endDate
               ? format(new Date(newFormData.endDate), "yyyy-MM-dd")
               : "",
-            dlr_cost: newFormData.dlrCost,
-            dlr_mu: newFormData.dlrMu,
+              dlr_cost:parseFloat( newFormData.dlrCost),
+              dlr_mu:parseFloat( newFormData.dlrMu) ,
             owe_cost: parseFloat(newFormData.oweCost),
             dealer: newFormData.dealerName || "Shushank Sharma",
             loan_type: newFormData.loanType || "P123",
@@ -167,25 +169,25 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
         </div>
 
         <h3 className="createProfileText">
-          {editMode === false ? "Rep Pay Settings" : "Update RepPay Settings"}
+          {editMode === false ? "Create Loan Fee" : "Update Loan Fee"}
         </h3>
 
         <div className="modal-body">
           <div className="createProfileInputView">
             <div className="createProfileTextView">
               <div className="create-input-container">
-                <div className="create-input-field">
+              <div className="create-input-field">
                   <Input
                     type={"text"}
-                    label="Unique ID"
-                    value={newFormData.uniqueId}
-                    name="uniqueId"
+                    label="DLR MU"
+                    value={newFormData.dlrMu}
+                    name="dlrMu"
                     placeholder={"Enter"}
                     onChange={handleChange}
                   />
-                  {errors?.uniqueId && (
+                  {errors?.dlrMu && (
                     <span style={{ display: "block", color: "#FF204E" }}>
-                      {errors.uniqueId}
+                      {errors.dlrMu}
                     </span>
                   )}
                 </div>
@@ -310,21 +312,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                   )}
                 </div>
 
-                <div className="create-input-field">
-                  <Input
-                    type={"text"}
-                    label="DLR MU"
-                    value={newFormData.dlrMu}
-                    name="dlrMu"
-                    placeholder={"Enter"}
-                    onChange={handleChange}
-                  />
-                  {errors?.dlrMu && (
-                    <span style={{ display: "block", color: "#FF204E" }}>
-                      {errors.dlrMu}
-                    </span>
-                  )}
-                </div>
+              
 
                 <div className="create-input-field">
                   <Input
@@ -341,9 +329,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     </span>
                   )}
                 </div>
-              </div>
 
-              <div className="create-input-container">
                 <div className="create-input-field">
                   <Input
                     type={"date"}
@@ -360,6 +346,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                   )}
                 </div>
               </div>
+
             </div>
           </div>
         </div>

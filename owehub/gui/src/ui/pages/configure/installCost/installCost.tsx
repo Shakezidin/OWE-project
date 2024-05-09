@@ -270,10 +270,9 @@ console.log(timelinesla_list,"arrr");
                             )
                           }
                         />
-                        {el.unique_id}
+                       {el.cost}
                       </div>
                     </td>
-                    <td>{el.cost}</td>
                     <td>{el.start_date}</td>
                     <td>{el.end_date}</td>
                     <td>

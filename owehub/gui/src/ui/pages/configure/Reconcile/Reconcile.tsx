@@ -333,7 +333,8 @@ const Reconcile = () => {
                       <td>{el.state_name}</td>
                       <td>{el.sys_size}</td>
                       <td>{el.status}</td>
-                      <td>{el.date}</td>
+                      <td>{el.start_date}</td>
+                      <td>{el.end_date}</td>
                       <td>{el.amount}</td>
                       <td>{el.notes}</td>
                       {viewArchived === true ? null : (

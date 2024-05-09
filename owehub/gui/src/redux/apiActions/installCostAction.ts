@@ -7,7 +7,7 @@ interface Ipaginate {
 }
 
 export interface ICostCreateparam {
-  unique_id: string;
+  unique_id?: string;
   cost: number;
   start_date: string;
   end_date: string;

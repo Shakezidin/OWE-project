@@ -11,6 +11,7 @@ const initialState: DealerModel = {
     sub_dealer: "",
     dealer: "",
     pay_rate:"",
+    state:"",
     start_date:"",
     end_date: ""
 };

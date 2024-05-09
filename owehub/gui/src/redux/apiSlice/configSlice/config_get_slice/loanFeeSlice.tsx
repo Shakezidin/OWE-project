@@ -59,6 +59,7 @@ const loadFeeSlice = createSlice({
       .addCase(createLoanFee.rejected, (state, action) => {
         state.isFormSubmitting = false;
         state.error = action.payload as string;
+        toast.error(action.payload as string)
       })
       .addCase(updateLoanFee.pending,(state, action) => {
         state.isFormSubmitting = true;
@@ -71,6 +72,7 @@ const loadFeeSlice = createSlice({
       .addCase(updateLoanFee.rejected, (state, action) => {
         state.isFormSubmitting = false;
         state.error = action.payload as string;
+        toast.error(action.payload as string)
       })
 
   },

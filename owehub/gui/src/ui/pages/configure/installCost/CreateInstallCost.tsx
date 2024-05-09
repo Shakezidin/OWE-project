@@ -35,7 +35,6 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
   const [errors, setErrors] = useState<IErrors>({});
 
   const [newFormData, setNewFormData] = useState({
-    uniqueId: editData?.unique_id || "",
     cost: editData?.cost ? `${editData?.cost}` : "",
     startDate: editData?.start_date || "",
     endDate: editData?.end_date || "",
@@ -74,8 +73,7 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
         dispatch(
           updateInstallCost({
             record_id: editData?.record_id!,
-            unique_id: newFormData.uniqueId,
-            cost: parseInt(newFormData.cost),
+            cost: parseFloat(newFormData.cost),
             start_date: format(new Date(newFormData.startDate), "yyyy-MM-dd"),
             end_date: format(new Date(newFormData.endDate), "yyyy-MM-dd"),
           })
@@ -83,8 +81,7 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
       } else {
         dispatch(
           createInstallCost({
-            unique_id: newFormData.uniqueId,
-            cost: parseInt(newFormData.cost),
+            cost: parseFloat(newFormData.cost),
             start_date: format(new Date(newFormData.startDate), "yyyy-MM-dd"),
             end_date: format(new Date(newFormData.endDate), "yyyy-MM-dd"),
           })
@@ -116,21 +113,7 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
           <div className="createProfileInputView">
             <div className="createProfileTextView">
               <div className="create-input-container">
-                <div className="create-input-field">
-                  <Input
-                    type={"text"}
-                    label="Unique ID"
-                    value={newFormData.uniqueId}
-                    name="uniqueId"
-                    placeholder={"Enter"}
-                    onChange={handleChange}
-                  />
-                  {errors?.uniqueId && (
-                    <span style={{ display: "block", color: "#FF204E" }}>
-                      {errors.uniqueId}
-                    </span>
-                  )}
-                </div>
+                
                 <div className="create-input-field">
                   <Input
                     type={"text"}
@@ -162,9 +145,8 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
                     </span>
                   )}
                 </div>
-              </div>
 
-              <div className="create-input-field">
+                <div className="create-input-field">
                 <Input
                   type={"date"}
                   label="End Date"
@@ -179,6 +161,9 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
                     </span>
                   )}
               </div>
+              </div>
+
+             
             </div>
           </div>
         </div>

@@ -62,11 +62,9 @@
   
   .dropdown-item {
     display: flex;
-    align-items: center;
     padding: 4px 8px;
     cursor: pointer;
     color: rgb(0, 0, 0);
-    line-height: 20px;
     font-weight: 500;
     font-size: 12px;
     margin-bottom: 1px;
@@ -75,8 +73,8 @@
   .dropdown-item input[type="checkbox"] {
     margin-right: 8px;
     cursor: pointer;
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     border-radius: 6px;
     border: 1px solid #0493CE;
     margin-bottom: 7px;

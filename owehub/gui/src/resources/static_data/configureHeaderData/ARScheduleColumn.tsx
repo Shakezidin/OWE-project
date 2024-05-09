@@ -12,7 +12,7 @@ export   const ARScheduleColumns: Column[] = [
     { name: "permit_max", displayName: "Permit Max", type: "string",isCheckbox:false },
     { name: "install_pay", displayName: "Install Pay", type: "string",isCheckbox:false },
     { name: "pto_pay", displayName: "PTO Pay", type: "string",isCheckbox:false },
-    { name: "start", displayName: "Start", type: "string",isCheckbox:false },
-    { name: "end", displayName: "End", type: "string",isCheckbox:false },
+    { name: "start", displayName: "Start Date", type: "string",isCheckbox:false },
+    { name: "end", displayName: "End Date", type: "string",isCheckbox:false },
     
   ];
