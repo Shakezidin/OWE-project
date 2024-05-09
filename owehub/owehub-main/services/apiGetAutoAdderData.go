@@ -283,7 +283,7 @@ func PrepareAutoAdderFilters(tableName string, dataFilter models.DataRequestBody
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY d.id, ad.unique_id, ad.date, ad.type, ad.gc, ad.exact_amount, ad.per_kw_amount, ad.rep_percentage, ad.description_repvisible, ad.notes_no_repvisible, ad.adder_type")
+		filtersBuilder.WriteString(" GROUP BY ad.id, ad.unique_id, ad.date, ad.type, ad.gc, ad.exact_amount, ad.per_kw_amount, ad.rep_percentage, ad.description_repvisible, ad.notes_no_repvisible, ad.adder_type")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
