@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "../projectTracker/projectTracker.css";
 import Input from "../../components/text_input/Input";
 import { stateData } from "../../../resources/static_data/StaticData";
-import {projectStatusHeadData } from "./projectData";
+import { projectStatusHeadData } from "./projectData";
 import Breadcrumb from "../../components/breadcrumb/Breadcrumb";
 import SelectOption from "../../components/selectOption/SelectOption";
 import { ICONS } from "../../icons/Icons";
@@ -67,341 +67,324 @@ const ProjectStatus = () => {
     {
       name: "Sales",
       number: <FaCheck />,
-      color:"white",
-      numColor:"#0493CE",
-      bgColor:"#0493CE",
+      color: "white",
+      numColor: "#0493CE",
+      bgColor: "#0493CE",
       childStatusData: [
-          {
-              name: "10 Apr",
-              process:"Completed",
-              bgColor:"#57B93A",
-              color:"white",
-              borderColor:"white"
-          },
-        
+        {
+          name: "10 Apr",
+          process: "Completed",
+          bgColor: "#57B93A",
+          color: "white",
+          borderColor: "white",
+        },
       ],
     },
     {
       name: "NTP",
-      number:"2",
-      color:"white",
-      numColor:"#0493CE",
-      bgColor:"#0493CE",
+      number: "2",
+      color: "white",
+      numColor: "#0493CE",
+      bgColor: "#0493CE",
       childStatusData: [
-          {
-              name: "10 Apr",
-              process:"Pending",
-              bgColor:"#F2F4F6",
-              data:"data is not available",
-              color:"#101828",
-              borderColor:"#A5AAB2"
-            
-          },
-          {
-              name: "10 Apr",
-              process:"Completed",
-              bgColor:"#F2F4F6",
-              data:"data is not available",
-              color:"#101828",
-              borderColor:"#A5AAB2"
-            
-          },
+        {
+          name: "10 Apr",
+          process: "Pending",
+          bgColor: "#F2F4F6",
+          data: "data is not available",
+          color: "#101828",
+          borderColor: "#A5AAB2",
+        },
+        {
+          name: "10 Apr",
+          process: "Completed",
+          bgColor: "#F2F4F6",
+          data: "data is not available",
+          color: "#101828",
+          borderColor: "#A5AAB2",
+        },
       ],
     },
     {
       name: "Site Survey",
-      number:"3",
-      bgColor:"#0493CE",
-      color:"white",
-      numColor:"#0493CE",
+      number: "3",
+      bgColor: "#0493CE",
+      color: "white",
+      numColor: "#0493CE",
       childStatusData: [
-          {
-            bgColor:"#F2F4F6",
-              name: "ETA 20",
-              process:"Scheduled",
-              color:"#101828",
-              data:"data is not available",
-              borderColor:"#A5AAB2"
-          },
-          {
-            bgColor:"#F2F4F6",
-              name: "ETA 20",
-              process:"Re-Scheduled",
-              color:"#101828",
-              data:"data is not available",
-              borderColor:"#A5AAB2"
-          },
-          {
-            bgColor:"#F2F4F6",
-              name: "ETA 22",
-              process:"Completed",
-              color:"#101828",
-              data:"data is not available",
-              borderColor:"#A5AAB2"
-          },
+        {
+          bgColor: "#F2F4F6",
+          name: "ETA 20",
+          process: "Scheduled",
+          color: "#101828",
+          data: "data is not available",
+          borderColor: "#A5AAB2",
+        },
+        {
+          bgColor: "#F2F4F6",
+          name: "ETA 20",
+          process: "Re-Scheduled",
+          color: "#101828",
+          data: "data is not available",
+          borderColor: "#A5AAB2",
+        },
+        {
+          bgColor: "#F2F4F6",
+          name: "ETA 22",
+          process: "Completed",
+          color: "#101828",
+          data: "data is not available",
+          borderColor: "#A5AAB2",
+        },
       ],
     },
     {
       name: "Roofing",
-      number:"4",
-      color:"white",
-      numColor:"#0493CE",
-      bgColor:"#0493CE",
+      number: "4",
+      color: "white",
+      numColor: "#0493CE",
+      bgColor: "#0493CE",
       childStatusData: [
         {
-          bgColor:"#F2F4F6",
-            name: "ETA 20",
-            process:"Pending",
-            color:"#101828",
-            data:"data is not available",
-            borderColor:"#A5AAB2"
+          bgColor: "#F2F4F6",
+          name: "ETA 20",
+          process: "Pending",
+          color: "#101828",
+          data: "data is not available",
+          borderColor: "#A5AAB2",
         },
         {
-          bgColor:"#F2F4F6",
-            name: "ETA 20",
-            process:"Scheduled",
-            color:"#101828",
-            data:"data is not available",
-            borderColor:"#A5AAB2"
+          bgColor: "#F2F4F6",
+          name: "ETA 20",
+          process: "Scheduled",
+          color: "#101828",
+          data: "data is not available",
+          borderColor: "#A5AAB2",
         },
         {
-          bgColor:"#F2F4F6",
-            name: "ETA 22",
-            process:"Completed",
-            color:"#101828",
-            data:"data is not available",
-            borderColor:"#A5AAB2"
+          bgColor: "#F2F4F6",
+          name: "ETA 22",
+          process: "Completed",
+          color: "#101828",
+          data: "data is not available",
+          borderColor: "#A5AAB2",
         },
       ],
     },
     {
       name: "Electrical",
-      number:"5",
-      color:"white",
-     
-      numColor:"#0493CE",
-      bgColor:"#0493CE",
+      number: "5",
+      color: "white",
+
+      numColor: "#0493CE",
+      bgColor: "#0493CE",
       childStatusData: [
         {
-          bgColor:"#F2F4F6",
-            name: "ETA 20",
-            process:"Pending",
-            color:"#101828",
-            data:"data is not available",
-            borderColor:"#A5AAB2"
+          bgColor: "#F2F4F6",
+          name: "ETA 20",
+          process: "Pending",
+          color: "#101828",
+          data: "data is not available",
+          borderColor: "#A5AAB2",
         },
         {
-          bgColor:"#F2F4F6",
-            name: "ETA 20",
-            process:"Scheduled",
-            color:"#101828",
-            data:"data is not available",
-            borderColor:"#A5AAB2"
+          bgColor: "#F2F4F6",
+          name: "ETA 20",
+          process: "Scheduled",
+          color: "#101828",
+          data: "data is not available",
+          borderColor: "#A5AAB2",
         },
         {
-          bgColor:"#F2F4F6",
-            name: "ETA 22",
-            process:"Completed",
-            color:"#101828",
-            data:"data is not available",
-            borderColor:"#A5AAB2"
+          bgColor: "#F2F4F6",
+          name: "ETA 22",
+          process: "Completed",
+          color: "#101828",
+          data: "data is not available",
+          borderColor: "#A5AAB2",
         },
       ],
     },
     {
       name: "PV Permit Submitted",
-      number:"6",
-      bgColor:"#0493CE",
-      color:"white",
-     
-      numColor:"#0493CE",
+      number: "6",
+      bgColor: "#0493CE",
+      color: "white",
+
+      numColor: "#0493CE",
       childStatusData: [
-          {
-            bgColor:"#F2F4F6",
-              name: "ETA 20",
-              color:"#101828",
-              process:"Pending",
-              borderColor:"#A5AAB2",
-              data:"data is not available",
-            
-          },
-          {
-            bgColor:"#F2F4F6",
-              name: "ETA 22",
-              color:"#101828",
-              process:"Submitted",
-              borderColor:"#A5AAB2",
-              data:"data is not available",
-            
-          },
-          {
-            bgColor:"#F2F4F6",
-              name: "ETA 25",
-              color:"#101828",
-              data:"data is not available",
-              process:"Approved",
-              borderColor:"#A5AAB2"
-            
-          },
-         
-  ],
+        {
+          bgColor: "#F2F4F6",
+          name: "ETA 20",
+          color: "#101828",
+          process: "Pending",
+          borderColor: "#A5AAB2",
+          data: "data is not available",
+        },
+        {
+          bgColor: "#F2F4F6",
+          name: "ETA 22",
+          color: "#101828",
+          process: "Submitted",
+          borderColor: "#A5AAB2",
+          data: "data is not available",
+        },
+        {
+          bgColor: "#F2F4F6",
+          name: "ETA 25",
+          color: "#101828",
+          data: "data is not available",
+          process: "Approved",
+          borderColor: "#A5AAB2",
+        },
+      ],
     },
     {
       name: "IC Permit Submitted",
-      number:"7",
-      color:"white",
-     
-      numColor:"#0493CE",
-      bgColor:"#0493CE",
+      number: "7",
+      color: "white",
+
+      numColor: "#0493CE",
+      bgColor: "#0493CE",
       childStatusData: [
-  
-          {
-            bgColor:"#F2F4F6",
-              name: "ETA 20",
-              color:"#101828",
-              process:"Pending",
-              borderColor:"#A5AAB2",
-              data:"data is not available",
-            
-          },
-          {
-            bgColor:"#F2F4F6",
-              name: "ETA 22",
-              color:"#101828",
-              process:"Submitted",
-              data:"data is not available",
-              borderColor:"#A5AAB2"
-            
-          },
-          {
-            bgColor:"#F2F4F6",
-            color:"#101828",
-              name: "ETA 25",
-              data:"data is not available",
-              process:"Approved",
-              borderColor:"#A5AAB2"
-            
-          },
-         
-  ],
+        {
+          bgColor: "#F2F4F6",
+          name: "ETA 20",
+          color: "#101828",
+          process: "Pending",
+          borderColor: "#A5AAB2",
+          data: "data is not available",
+        },
+        {
+          bgColor: "#F2F4F6",
+          name: "ETA 22",
+          color: "#101828",
+          process: "Submitted",
+          data: "data is not available",
+          borderColor: "#A5AAB2",
+        },
+        {
+          bgColor: "#F2F4F6",
+          color: "#101828",
+          name: "ETA 25",
+          data: "data is not available",
+          process: "Approved",
+          borderColor: "#A5AAB2",
+        },
+      ],
     },
     {
       name: "Install",
-      bgColor:"#0493CE",
-      number:"8",
-      color:"white",
-     
-      numColor:"#0493CE",
+      bgColor: "#0493CE",
+      number: "8",
+      color: "white",
+
+      numColor: "#0493CE",
       childStatusData: [
         {
-          bgColor:"#F2F4F6",
-            name: "ETA 20",
-            process:"Pending",
-            color:"#101828",
-            data:"data is not available",
-            borderColor:"#A5AAB2"
+          bgColor: "#F2F4F6",
+          name: "ETA 20",
+          process: "Pending",
+          color: "#101828",
+          data: "data is not available",
+          borderColor: "#A5AAB2",
         },
         {
-          bgColor:"#F2F4F6",
-            name: "ETA 20",
-            process:"Ready",
-            color:"#101828",
-            data:"data is not available",
-            borderColor:"#A5AAB2"
+          bgColor: "#F2F4F6",
+          name: "ETA 20",
+          process: "Ready",
+          color: "#101828",
+          data: "data is not available",
+          borderColor: "#A5AAB2",
         },
         {
-          bgColor:"#F2F4F6",
-            name: "ETA 20",
-            process:"Scheduled",
-            color:"#101828",
-            data:"data is not available",
-            borderColor:"#A5AAB2"
+          bgColor: "#F2F4F6",
+          name: "ETA 20",
+          process: "Scheduled",
+          color: "#101828",
+          data: "data is not available",
+          borderColor: "#A5AAB2",
         },
         {
-          bgColor:"#F2F4F6",
-            name: "ETA 22",
-            process:"Completed",
-            color:"#101828",
-            data:"data is not available",
-            borderColor:"#A5AAB2"
+          bgColor: "#F2F4F6",
+          name: "ETA 22",
+          process: "Completed",
+          color: "#101828",
+          data: "data is not available",
+          borderColor: "#A5AAB2",
         },
       ],
     },
     {
       name: "Final Inspection",
-      number:"9",
-      color:"white",
-     
-      numColor:"#0493CE",
-      bgColor:"#0493CE",
+      number: "9",
+      color: "white",
+
+      numColor: "#0493CE",
+      bgColor: "#0493CE",
       childStatusData: [
-          
-          {
-            bgColor:"#F2F4F6",
-              name: "ETA 20",
-              color:"#101828",
-              process:"Submitted",
-              borderColor:"#A5AAB2",
-              data:"data is not available",
-            
-          },
-          {
-            bgColor:"#F2F4F6",
-              name: "ETA 22",
-              color:"#101828",
-              process:"Approved",
-              data:"data is not available",
-              borderColor:"#A5AAB2"
-            
-          },
-      
-  
-  ],
+        {
+          bgColor: "#F2F4F6",
+          name: "ETA 20",
+          color: "#101828",
+          process: "Submitted",
+          borderColor: "#A5AAB2",
+          data: "data is not available",
+        },
+        {
+          bgColor: "#F2F4F6",
+          name: "ETA 22",
+          color: "#101828",
+          process: "Approved",
+          data: "data is not available",
+          borderColor: "#A5AAB2",
+        },
+      ],
     },
     {
       name: "PTO",
-      number:"10",
-      color:"white",
-     
-      numColor:"#0493CE",
-      bgColor:"#0493CE",
+      number: "10",
+      color: "white",
+
+      numColor: "#0493CE",
+      bgColor: "#0493CE",
       childStatusData: [
         {
-          bgColor:"#F2F4F6",
-            name: "ETA 20",
-            process:"In Process",
-            color:"#101828",
-            data:"data is not available",
-            borderColor:"#A5AAB2"
+          bgColor: "#F2F4F6",
+          name: "ETA 20",
+          process: "In Process",
+          color: "#101828",
+          data: "data is not available",
+          borderColor: "#A5AAB2",
         },
-          {
-            bgColor:"#F2F4F6",
-              name: "ETA 20",
-              process:"Submitted",
-              borderColor:"#A5AAB2",
-              data:"data is not available",
-              color:"#101828",
-            
-          },
-         
-          {
-            bgColor:"#F2F4F6",
-              name: "ETA 22",
-              process:"Completed",
-              color:"#101828",
-              borderColor:"#A5AAB2",
-              data:"data is not available",
-            
-          }
-  
-  ],
+        {
+          bgColor: "#F2F4F6",
+          name: "ETA 20",
+          process: "Submitted",
+          borderColor: "#A5AAB2",
+          data: "data is not available",
+          color: "#101828",
+        },
+
+        {
+          bgColor: "#F2F4F6",
+          name: "ETA 22",
+          process: "Completed",
+          color: "#101828",
+          borderColor: "#A5AAB2",
+          data: "data is not available",
+        },
+      ],
     },
   ];
   const [activePopups, setActivePopups] = useState<boolean>(false);
   const menuRef = useRef();
   // State to store active popups for each row
-  const handleClickOutside = () => {
-    setActivePopups(false);
+  const handleClickOutside = (e:MouseEvent) => {
+    const elm = e.target as HTMLElement;
+    if (!elm.closest(".popup") && !elm.classList.contains("view-flex")) {
+      setActivePopups(false)
+    }
   };
   useEffect(() => {
     if (activePopups) {
@@ -455,29 +438,30 @@ const ProjectStatus = () => {
                   <p className="para-head">{el.name}</p>
                   <span className="span-para">{el.para}</span>
                 </div>
-                {el.viewButton === true ? (
+                {el.viewButton? (
                   <div
                     className="view-flex"
-                    onClick={() => setActivePopups(true)}
+                    onClick={() => setActivePopups(prev=>!prev)}
                   >
                     <p>View</p>
 
                     <img src={ICONS.arrowDown} alt="" />
                   </div>
                 ) : null}
+
+                {activePopups && i === 1 && (
+                  <div className="popup">
+                    <p className="pop-head">Adder Details</p>
+                    <ol className="order-list">
+                      <li className="order-list-name">Adders</li>
+                      <li className="order-list-name">Sub Adder</li>
+                      <li className="order-list-name">$20 Adder</li>
+                      <li className="order-list-name">$20 Sub Adder</li>
+                    </ol>
+                  </div>
+                )}
               </div>
             ))}
-            {activePopups && (
-              <div className="popup">
-                <p className="pop-head">Adder Details</p>
-                <ol className="order-list">
-                  <li className="order-list-name">Adders</li>
-                  <li className="order-list-name">Sub Adder</li>
-                  <li className="order-list-name">$20 Adder</li>
-                  <li className="order-list-name">$20 Sub Adder</li>
-                </ol>
-              </div>
-            )}
           </div>
           <div className="project-status-graph">
             <div className="status-graph-heading">
@@ -550,7 +534,7 @@ const ProjectStatus = () => {
                         display: "flex",
                         flexDirection: "column",
                         alignItems: "center",
-                        width: "35px"
+                        width: "35px",
                       }}
                     >
                       <span
@@ -559,9 +543,7 @@ const ProjectStatus = () => {
                       >
                         ETA
                       </span>
-                      <p style={{ color: el.color, fontSize: "9px" }}>
-                        20 Apr
-                      </p>
+                      <p style={{ color: el.color, fontSize: "9px" }}>20 Apr</p>
                       <p
                         className="stage-1-para"
                         style={{ color: el.color, fontSize: "10px" }}
@@ -577,7 +559,7 @@ const ProjectStatus = () => {
                         borderColor: el.borderColor,
                       }}
                     ></div>
-                    <div className="" style={{width: "115px"}}>
+                    <div className="" style={{ width: "115px" }}>
                       <p
                         className="stage-1-para"
                         style={{ color: el.color, fontSize: "12px" }}
