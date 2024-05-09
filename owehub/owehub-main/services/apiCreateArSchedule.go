@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -55,21 +56,59 @@ func HandleCreateArScheduleRequest(resp http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	if (len(createArScheduleReq.UniqueId) <= 0) || (len(createArScheduleReq.PermitPay) <= 0) ||
-		(len(createArScheduleReq.PartnerName) <= 0) || (len(createArScheduleReq.InstallerName) <= 0) ||
+	if (len(createArScheduleReq.PartnerName) <= 0) || (len(createArScheduleReq.InstallerName) <= 0) ||
 		(len(createArScheduleReq.StateName) <= 0) || (len(createArScheduleReq.SaleTypeName) <= 0) ||
-		(len(createArScheduleReq.RedLine) <= 0) || (len(createArScheduleReq.CalcDate) <= 0) ||
-		(len(createArScheduleReq.InstallPay) <= 0) || (len(createArScheduleReq.PtoPay) <= 0) ||
-		(len(createArScheduleReq.StartDate) <= 0) || (len(createArScheduleReq.PermitMax) <= 0) ||
-		(len(createArScheduleReq.EndDate) <= 0) {
+		(len(createArScheduleReq.CalcDate) <= 0) || (len(createArScheduleReq.EndDate) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
+	if createArScheduleReq.RedLine <= float64(0) {
+		err = fmt.Errorf("Invalid RedLine price Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Per RedLine Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if createArScheduleReq.PermitPay <= float64(0) {
+		err = fmt.Errorf("Invalid PermitPay price Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Per PermitPay Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if createArScheduleReq.PermitMax <= float64(0) {
+		err = fmt.Errorf("Invalid PermitMax price Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Per PermitMax Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if createArScheduleReq.InstallPay <= float64(0) {
+		err = fmt.Errorf("Invalid InstallPay price Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Per RedInstallPayLine Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if createArScheduleReq.PtoPay <= float64(0) {
+		err = fmt.Errorf("Invalid PtoPay price Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Per PtoPay Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+
+	Startdate, err := time.Parse("2006-01-02", createArScheduleReq.StartDate)
+	if err != nil {
+		fmt.Println("Error parsing date:", err)
+		return
+	}
+
+	Enddate, err := time.Parse("2006-01-02", createArScheduleReq.EndDate)
+	if err != nil {
+		fmt.Println("Error parsing date:", err)
+		return
+	}
+
 	// Populate query parameters in the correct order
-	queryParameters = append(queryParameters, createArScheduleReq.UniqueId)
 	queryParameters = append(queryParameters, createArScheduleReq.PartnerName)
 	queryParameters = append(queryParameters, createArScheduleReq.InstallerName)
 	queryParameters = append(queryParameters, createArScheduleReq.SaleTypeName)
@@ -80,8 +119,8 @@ func HandleCreateArScheduleRequest(resp http.ResponseWriter, req *http.Request) 
 	queryParameters = append(queryParameters, createArScheduleReq.PermitMax)
 	queryParameters = append(queryParameters, createArScheduleReq.InstallPay)
 	queryParameters = append(queryParameters, createArScheduleReq.PtoPay)
-	queryParameters = append(queryParameters, createArScheduleReq.StartDate)
-	queryParameters = append(queryParameters, createArScheduleReq.EndDate)
+	queryParameters = append(queryParameters, Startdate)
+	queryParameters = append(queryParameters, Enddate)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.CreateArScheduleFunction, queryParameters)

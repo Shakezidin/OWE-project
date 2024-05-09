@@ -1,9 +1,8 @@
 CREATE OR REPLACE FUNCTION update_install_cost (
     p_id INT,
-    p_unique_id           VARCHAR,
     p_cost DOUBLE PRECISION,
-    p_start_date              VARCHAR,
-	  p_end_date                VARCHAR,
+    p_start_date date,
+	p_end_date date,
     OUT v_install_cost_id INT
 )
 RETURNS INT 
@@ -11,7 +10,6 @@ AS $$
 BEGIN
   UPDATE install_cost
     SET 
-        unique_id = p_unique_id,
         cost = p_cost,
         start_date = p_start_date,
         end_date = p_end_date  

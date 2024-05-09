@@ -11,6 +11,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -58,19 +59,32 @@ func HandleCreateDealerRequest(resp http.ResponseWriter, req *http.Request) {
 
 	if (len(createDealerReq.SubDealer) <= 0) || (len(createDealerReq.Dealer) <= 0) ||
 		(len(createDealerReq.PayRate) <= 0) || (len(createDealerReq.StartDate) <= 0) ||
-		(len(createDealerReq.EndDate) <= 0) {
+		(len(createDealerReq.EndDate) <= 0) || (len(createDealerReq.State) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
+	Startdate, err := time.Parse("2006-01-02", createDealerReq.StartDate)
+	if err != nil {
+		fmt.Println("Error parsing date:", err)
+		return
+	}
+
+	Enddate, err := time.Parse("2006-01-02", createDealerReq.EndDate)
+	if err != nil {
+		fmt.Println("Error parsing date:", err)
+		return
+	}
+
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, createDealerReq.SubDealer)
 	queryParameters = append(queryParameters, createDealerReq.Dealer)
+	queryParameters = append(queryParameters, createDealerReq.State)
 	queryParameters = append(queryParameters, createDealerReq.PayRate)
-	queryParameters = append(queryParameters, createDealerReq.StartDate)
-	queryParameters = append(queryParameters, createDealerReq.EndDate)
+	queryParameters = append(queryParameters, Startdate)
+	queryParameters = append(queryParameters, Enddate)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.CreateDealerFunction, queryParameters)

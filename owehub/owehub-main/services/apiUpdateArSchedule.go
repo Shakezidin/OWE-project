@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -55,29 +56,60 @@ func HandleUpdateArScheduleRequest(resp http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	if (len(updateArScheduleReq.UniqueId) <= 0) || (len(updateArScheduleReq.PermitPay) <= 0) ||
-		(len(updateArScheduleReq.PartnerName) <= 0) || (len(updateArScheduleReq.InstallerName) <= 0) ||
+	if (len(updateArScheduleReq.PartnerName) <= 0) || (len(updateArScheduleReq.InstallerName) <= 0) ||
 		(len(updateArScheduleReq.StateName) <= 0) || (len(updateArScheduleReq.SaleTypeName) <= 0) ||
-		(len(updateArScheduleReq.RedLine) <= 0) || (len(updateArScheduleReq.CalcDate) <= 0) ||
-		(len(updateArScheduleReq.InstallPay) <= 0) || (len(updateArScheduleReq.PtoPay) <= 0) ||
-		(len(updateArScheduleReq.StartDate) <= 0) || (len(updateArScheduleReq.PermitMax) <= 0) ||
-		(len(updateArScheduleReq.EndDate) <= 0) {
+		(len(updateArScheduleReq.CalcDate) <= 0) || (len(updateArScheduleReq.EndDate) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed, Update failed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
-	if updateArScheduleReq.RecordId <= int64(0) {
-		err = fmt.Errorf("Invalid Record Id, unable to proceed")
+	if updateArScheduleReq.RedLine <= float64(0) {
+		err = fmt.Errorf("Invalid RedLine price Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Record Id, Update failed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Per RedLine Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if updateArScheduleReq.PermitPay <= float64(0) {
+		err = fmt.Errorf("Invalid PermitPay price Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Per PermitPay Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if updateArScheduleReq.PermitMax <= float64(0) {
+		err = fmt.Errorf("Invalid PermitMax price Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Per PermitMax Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if updateArScheduleReq.InstallPay <= float64(0) {
+		err = fmt.Errorf("Invalid InstallPay price Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Per RedInstallPayLine Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if updateArScheduleReq.PtoPay <= float64(0) {
+		err = fmt.Errorf("Invalid PtoPay price Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Per PtoPay Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+
+	Startdate, err := time.Parse("2006-01-02", updateArScheduleReq.StartDate)
+	if err != nil {
+		fmt.Println("Error parsing date:", err)
+		return
+	}
+
+	Enddate, err := time.Parse("2006-01-02", updateArScheduleReq.EndDate)
+	if err != nil {
+		fmt.Println("Error parsing date:", err)
 		return
 	}
 
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, updateArScheduleReq.RecordId)
-	queryParameters = append(queryParameters, updateArScheduleReq.UniqueId)
 	queryParameters = append(queryParameters, updateArScheduleReq.PartnerName)
 	queryParameters = append(queryParameters, updateArScheduleReq.InstallerName)
 	queryParameters = append(queryParameters, updateArScheduleReq.SaleTypeName)
@@ -88,8 +120,8 @@ func HandleUpdateArScheduleRequest(resp http.ResponseWriter, req *http.Request) 
 	queryParameters = append(queryParameters, updateArScheduleReq.PermitMax)
 	queryParameters = append(queryParameters, updateArScheduleReq.InstallPay)
 	queryParameters = append(queryParameters, updateArScheduleReq.PtoPay)
-	queryParameters = append(queryParameters, updateArScheduleReq.StartDate)
-	queryParameters = append(queryParameters, updateArScheduleReq.EndDate)
+	queryParameters = append(queryParameters, Startdate)
+	queryParameters = append(queryParameters, Enddate)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateArScheduleFunction, queryParameters)

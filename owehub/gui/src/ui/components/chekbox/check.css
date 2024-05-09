@@ -54,3 +54,7 @@
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
 }
+.checkbox.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }

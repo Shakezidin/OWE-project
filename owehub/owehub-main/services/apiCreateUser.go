@@ -63,6 +63,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		//(len(createUserReq.ReportingManager) <= 0) ||
 		//(len(createUserReq.UserStatus) <= 0) ||
 		//(len(createUserReq.Description) <= 0) ||
+		//(len(createUserReq.Region) <= 0) ||
 		//(len(createUserReq.DealerOwner) <= 0) {
 		//(len(createUserReq.StreetAddress) <= 0) ||
 		//(len(createUserReq.State) <= 0) || (len(createUserReq.City) <= 0) ||
@@ -98,6 +99,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	queryParameters = append(queryParameters, createUserReq.UserStatus)
 	queryParameters = append(queryParameters, createUserReq.Designation)
 	queryParameters = append(queryParameters, createUserReq.Description)
+	queryParameters = append(queryParameters, createUserReq.Region)
 	queryParameters = append(queryParameters, createUserReq.StreetAddress)
 	queryParameters = append(queryParameters, createUserReq.State)
 	queryParameters = append(queryParameters, createUserReq.City)

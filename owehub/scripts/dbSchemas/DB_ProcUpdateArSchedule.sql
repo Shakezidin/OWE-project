@@ -1,18 +1,17 @@
 CREATE OR REPLACE FUNCTION update_ar_schedule(
     p_id INT,
-    p_unique_id VARCHAR,
     p_partner_name VARCHAR,
     p_installer_name VARCHAR,
     p_sale_type_name VARCHAR,
     p_state_name VARCHAR,
-    p_red_line VARCHAR,
+    p_red_line DOUBLE PRECISION,
     p_calc_date VARCHAR,
-    p_permit_pay VARCHAR,
-    p_permit_max VARCHAR,
-    p_install_pay VARCHAR,
-    p_pto_pay VARCHAR,
-    p_start_date VARCHAR,
-    p_end_date VARCHAR,
+    p_permit_pay DOUBLE PRECISION,
+    p_permit_max DOUBLE PRECISION,
+    p_install_pay DOUBLE PRECISION,
+    p_pto_pay DOUBLE PRECISION,
+    p_start_date date,
+    p_end_date date,
     OUT v_ar_schedule_id INT
 )
 RETURNS INT 
@@ -20,7 +19,6 @@ AS $$
 BEGIN
     UPDATE ar_schedule
     SET 
-        unique_id = p_unique_id,
         partner = (SELECT partner_id FROM partners WHERE LOWER(partner_name) = LOWER(p_partner_name) LIMIT 1),
         installer = (SELECT partner_id FROM partners WHERE LOWER(partner_name) = LOWER(p_installer_name) LIMIT 1),
         sale_type_id = (SELECT id FROM sale_type WHERE LOWER(type_name) = LOWER(p_sale_type_name) LIMIT 1),

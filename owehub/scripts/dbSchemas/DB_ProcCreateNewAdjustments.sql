@@ -7,11 +7,9 @@ CREATE OR REPLACE FUNCTION create_new_adjustments(
     p_sys_size           DOUBLE PRECISION,
     p_bl                 character varying,
     p_epc                DOUBLE PRECISION,
-    p_date               character varying,
+    p_date               date,
     p_notes              character varying,
     p_amount             DOUBLE PRECISION,
-    p_start_date         character varying,
-    p_end_date           character varying,
     OUT v_adjustments_id INT
 )
 RETURNS INT
@@ -62,9 +60,7 @@ INSERT INTO adjustments (
     epc,
     date,
     amount,
-    notes,
-    start_date,
-    end_date
+    notes
 ) VALUES (
              p_unique_id,
              p_customer,
@@ -76,9 +72,7 @@ INSERT INTO adjustments (
              p_epc,
              p_date,
              p_amount,
-             p_notes,
-             p_start_date,
-             p_end_date
+             p_notes
          ) RETURNING id INTO v_adjustments_id;
 END;
 $$ LANGUAGE plpgsql;

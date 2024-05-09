@@ -197,6 +197,7 @@
   display: flex;
   align-items: center;
   padding: 0.5rem;
+  position: relative;
   justify-content: space-between;
 }
 
@@ -242,13 +243,14 @@
 }
 
 .popup {
-  position: relative;
+  position: absolute;
   background-color: white;
   width: 180px;
   /* height: 40px; */
   box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.1);
   transform: translate(-50, -50%);
-  left: 47%;
+  right:-150px;
+  bottom: -120px;
   border-radius: 8px;
   /* top: 35%; */
   margin-top: -132px;

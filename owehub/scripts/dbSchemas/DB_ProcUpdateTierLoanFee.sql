@@ -3,7 +3,7 @@ CREATE OR REPLACE FUNCTION update_tier_loan_fee(
     p_dealer_tier_name VARCHAR,
     p_installer_name VARCHAR,
     p_state_name VARCHAR,
-    p_finance_type_name VARCHAR,
+    p_loan_type VARCHAR,
     p_owe_cost VARCHAR,
     p_dlr_mu VARCHAR,
     p_dlr_cost VARCHAR,
@@ -18,13 +18,13 @@ BEGIN
         v_dealer_tier_id INT;
         v_installer_id INT;
         v_state_id INT;
-        v_finance_type_id INT;
+        v_loan_type_id INT;
     BEGIN
        -- Get IDs for foreign keys from their respective tables
         SELECT id INTO v_dealer_tier_id FROM tier WHERE LOWER(tier_name) = LOWER(p_dealer_tier_name);
         SELECT partner_id INTO v_installer_id FROM partners WHERE LOWER(partner_name) = LOWER(p_installer_name);
         SELECT state_id INTO v_state_id FROM states WHERE LOWER(name) = LOWER(p_state_name);
-        SELECT id INTO v_finance_type_id FROM loan_type WHERE LOWER(product_code) = LOWER(p_finance_type_name);
+        SELECT id INTO v_loan_type_id FROM loan_type WHERE LOWER(product_code) = LOWER(p_loan_type);
         
         -- Update the tier_loan_fee table
         UPDATE tier_loan_fee
@@ -32,7 +32,7 @@ BEGIN
             dealer_tier = v_dealer_tier_id,
             installer_id = v_installer_id,
             state_id = v_state_id,
-            finance_type = v_finance_type_id,
+            loan_type = v_loan_type_id,
             owe_cost = p_owe_cost,
             dlr_mu = p_dlr_mu,
             dlr_cost = p_dlr_cost,

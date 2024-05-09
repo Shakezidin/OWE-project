@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -56,9 +57,9 @@ func HandleUpdateAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	if (len(updateAdderDataReq.UniqueId) <= 0) || (len(updateAdderDataReq.Date) <= 0) ||
-		(len(updateAdderDataReq.TypeAdMktg) <= 0) || (len(updateAdderDataReq.ExactAmount) <= 0) ||
+		(len(updateAdderDataReq.TypeAdMktg) <= 0)||
 		(len(updateAdderDataReq.Gc) <= 0) || (len(updateAdderDataReq.Notes) <= 0) ||
-		(len(updateAdderDataReq.Type) <= 0) || (len(updateAdderDataReq.Description) <= 0) {
+		(len(updateAdderDataReq.Description) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
@@ -72,24 +73,20 @@ func HandleUpdateAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	if updateAdderDataReq.ExactAmount <= float64(0) {
+		err = fmt.Errorf("Invalid ExactAmount Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid ExactAmount Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+
 	if updateAdderDataReq.PerKwAmt <= float64(0) {
 		err = fmt.Errorf("Invalid PerKwAmt Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Invalid PerKwAmt Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
-	if updateAdderDataReq.SysSize <= float64(0) {
-		err = fmt.Errorf("Invalid sys size Not Allowed")
-		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Sys Size Not Allowed", http.StatusBadRequest, nil)
-		return
-	}
-	if updateAdderDataReq.AdderCal <= float64(0) {
-		err = fmt.Errorf("Invalid Adder Cal Not Allowed")
-		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Adder Cal Not Allowed", http.StatusBadRequest, nil)
-		return
-	}
+
 	if updateAdderDataReq.RepPercent <= float64(0) {
 		err = fmt.Errorf("Invalid rep percent Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
@@ -97,20 +94,31 @@ func HandleUpdateAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	date, err := time.Parse("2006-01-02", updateAdderDataReq.Date)
+	if err != nil {
+		fmt.Println("Error parsing date:", err)
+		return
+	}
+
+	// ======== setting default value here delete after calculation done =======
+	typeDefault := "default"
+	SysSize := 99.99
+	AdderCal := 99.99
+
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, updateAdderDataReq.RecordId)
 	queryParameters = append(queryParameters, updateAdderDataReq.UniqueId)
-	queryParameters = append(queryParameters, updateAdderDataReq.Date)
+	queryParameters = append(queryParameters, date)
 	queryParameters = append(queryParameters, updateAdderDataReq.TypeAdMktg)
-	queryParameters = append(queryParameters, updateAdderDataReq.Type)
+	queryParameters = append(queryParameters, typeDefault)
 	queryParameters = append(queryParameters, updateAdderDataReq.Gc)
 	queryParameters = append(queryParameters, updateAdderDataReq.ExactAmount)
 	queryParameters = append(queryParameters, updateAdderDataReq.PerKwAmt)
 	queryParameters = append(queryParameters, updateAdderDataReq.RepPercent)
 	queryParameters = append(queryParameters, updateAdderDataReq.Description)
 	queryParameters = append(queryParameters, updateAdderDataReq.Notes)
-	queryParameters = append(queryParameters, updateAdderDataReq.SysSize)
-	queryParameters = append(queryParameters, updateAdderDataReq.AdderCal)
+	queryParameters = append(queryParameters, SysSize)
+	queryParameters = append(queryParameters, AdderCal)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateAdderDataFunction, queryParameters)
