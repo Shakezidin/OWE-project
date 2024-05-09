@@ -132,6 +132,7 @@ export const ARDashboardPage: React.FC = () => {
                     height: "30px",
                     alignContent: "center",
                     backgroundColor: "#ECECEC",
+                    cursor: "pointer"
                   }),
                   indicatorSeparator: () => ({
                     display: "none",
@@ -185,6 +186,7 @@ export const ARDashboardPage: React.FC = () => {
                     height: "30px",
                     alignContent: "center",
                     backgroundColor: "#ECECEC",
+                    cursor: "pointer"
                   }),
                   indicatorSeparator: () => ({
                     display: "none",
@@ -270,6 +272,7 @@ export const ARDashboardPage: React.FC = () => {
                     height: "30px",
                     alignContent: "center",
                     backgroundColor: "#ECECEC",
+                    cursor: "pointer"
                   }),
                   indicatorSeparator: () => ({
                     display: "none",
@@ -304,7 +307,7 @@ export const ARDashboardPage: React.FC = () => {
 
 
             <div className="rep-dash-head-input">
-              <label className="inputLabel" style={{ fontWeight: "400", color: "#344054" }}>
+              <label className="inputLabel" style={{color: "#344054" }}>
                 Includes
               </label>
               <ArDropdownWithCheckboxes options={options} />
