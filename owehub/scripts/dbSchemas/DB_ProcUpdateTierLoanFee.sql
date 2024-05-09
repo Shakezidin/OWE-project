@@ -4,11 +4,11 @@ CREATE OR REPLACE FUNCTION update_tier_loan_fee(
     p_installer_name VARCHAR,
     p_state_name VARCHAR,
     p_loan_type VARCHAR,
-    p_owe_cost VARCHAR,
-    p_dlr_mu VARCHAR,
-    p_dlr_cost VARCHAR,
-    p_start_date VARCHAR,
-    p_end_date VARCHAR,
+    p_owe_cost DOUBLE PRECISION,
+    p_dlr_mu DOUBLE PRECISION,
+    p_dlr_cost DOUBLE PRECISION,
+    p_start_date Date,
+    p_end_date Date,
     OUT v_type_id INT
 )
 RETURNS INT 

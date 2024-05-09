@@ -143,7 +143,12 @@ export const ARDashboardPage: React.FC = () => {
                   menu: (baseStyles) => ({
                     ...baseStyles,
                     width: "6rem",
-                  })
+                    zIndex:999
+                  }),
+                  menuList:(base)=>({
+                    ...base,
+                    zIndex:999
+                   })
                 }}
               />
             </div>
@@ -181,8 +186,10 @@ export const ARDashboardPage: React.FC = () => {
                   }),
                   menu: (baseStyles) => ({
                     ...baseStyles,
-                    width: "6rem",
-                  })
+                    width: "6rem",         
+                    zIndex:999
+                  }),
+                  
                 }}
               />
             </div>
@@ -221,6 +228,7 @@ export const ARDashboardPage: React.FC = () => {
                   menu: (baseStyles) => ({
                     ...baseStyles,
                     width: "6rem",
+                    zIndex:999
                   })
                 }}
               /> */}
@@ -241,6 +249,7 @@ export const ARDashboardPage: React.FC = () => {
                     height: "30px",
                     alignContent: "center",
                     backgroundColor: "#ECECEC",
+                    
                   }),
                   indicatorSeparator: () => ({
                     display: "none",
@@ -267,7 +276,9 @@ export const ARDashboardPage: React.FC = () => {
                     "::-webkit-scrollbar-thumb:hover": {
                       background: "#555",
                     },
+                    zIndex:999
                   }),
+                
                 }}
               />
             </div>

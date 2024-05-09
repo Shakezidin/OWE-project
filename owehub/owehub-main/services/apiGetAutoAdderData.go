@@ -103,7 +103,7 @@ func HandleGetAutoAdderDataRequest(resp http.ResponseWriter, req *http.Request) 
 
 		// type
 		Type, ok := item["type"].(string)
-		if ok || Type == "" {
+		if !ok || Type == "" {
 			log.FuncErrorTrace(0, "Failed to get type for Record ID %v. Item: %+v\n", RecordId, item)
 			Type = ""
 		}
