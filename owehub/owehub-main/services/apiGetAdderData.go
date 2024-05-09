@@ -244,7 +244,7 @@ func PrepareAdderDataFilters(tableName string, dataFilter models.DataRequestBody
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.unique_id) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "date":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.date) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("ad.date %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "type_ad_mktg":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.type_ad_mktg) %s LOWER($%d)", operator, len(whereEleList)+1))
