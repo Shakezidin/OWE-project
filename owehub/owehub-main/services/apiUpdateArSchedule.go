@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -75,6 +76,18 @@ func HandleUpdateArScheduleRequest(resp http.ResponseWriter, req *http.Request) 
 		return
 	}
 
+	Startdate, err := time.Parse("2006-01-02", updateArScheduleReq.StartDate)
+	if err != nil {
+		fmt.Println("Error parsing date:", err)
+		return
+	}
+
+	Enddate, err := time.Parse("2006-01-02", updateArScheduleReq.EndDate)
+	if err != nil {
+		fmt.Println("Error parsing date:", err)
+		return
+	}
+
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, updateArScheduleReq.RecordId)
 	queryParameters = append(queryParameters, updateArScheduleReq.UniqueId)
@@ -88,8 +101,8 @@ func HandleUpdateArScheduleRequest(resp http.ResponseWriter, req *http.Request) 
 	queryParameters = append(queryParameters, updateArScheduleReq.PermitMax)
 	queryParameters = append(queryParameters, updateArScheduleReq.InstallPay)
 	queryParameters = append(queryParameters, updateArScheduleReq.PtoPay)
-	queryParameters = append(queryParameters, updateArScheduleReq.StartDate)
-	queryParameters = append(queryParameters, updateArScheduleReq.EndDate)
+	queryParameters = append(queryParameters, Startdate)
+	queryParameters = append(queryParameters, Enddate)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateArScheduleFunction, queryParameters)

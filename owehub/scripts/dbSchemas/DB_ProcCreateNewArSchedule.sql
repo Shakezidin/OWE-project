@@ -10,8 +10,8 @@ CREATE OR REPLACE FUNCTION create_new_ar_schedule(
     p_permit_max        CHARACTER VARYING,
     p_install_pay       CHARACTER VARYING,
     p_pto_pay           CHARACTER VARYING,
-    p_start_date        CHARACTER VARYING,
-    p_end_date          CHARACTER VARYING,
+    p_start_date        date,
+    p_end_date          date,
     OUT v_ar_schedule_id INT
 )
 RETURNS INT

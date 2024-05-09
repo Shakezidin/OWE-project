@@ -11,8 +11,8 @@ CREATE OR REPLACE FUNCTION update_ar_schedule(
     p_permit_max VARCHAR,
     p_install_pay VARCHAR,
     p_pto_pay VARCHAR,
-    p_start_date VARCHAR,
-    p_end_date VARCHAR,
+    p_start_date date,
+    p_end_date date,
     OUT v_ar_schedule_id INT
 )
 RETURNS INT 
