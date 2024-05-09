@@ -45,6 +45,16 @@
   box-sizing: border-box;
 }
 
+.ar-dropdown-menu::-webkit-scrollbar{
+  scrollbar-width:thin;
+  display:block;
+  scrollbar-color:  rgb(173, 173, 173) #fff;
+  width:8px
+}
+.ar-dropdown-menu::-webkit-scrollbar-thumb{
+  background:rgb(173, 173, 173);
+  border-radius:30px
+}
 
 .ar-dropdown-item {
   display: flex;

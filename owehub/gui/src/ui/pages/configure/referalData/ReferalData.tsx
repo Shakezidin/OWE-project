@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import { CSVLink } from 'react-csv';
 import { ICONS } from "../../../icons/Icons";
 import TableHeader from "../../../components/tableHeader/TableHeader";
-import { fetchCommissions } from "../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice";
+import { getrefralData } from "../../../../redux/apiActions/refralDataAction";
 
 // import FilterCommission from "./FilterCommission";
 
@@ -49,7 +49,7 @@ const ReferalData: React.FC = () => {
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
   const [editedCommission, setEditedCommission] = useState<CommissionModel | null>(null);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
   const [viewArchived, setViewArchived] = useState<boolean>(false);
   const [sortKey, setSortKey] = useState("");
@@ -60,7 +60,7 @@ const ReferalData: React.FC = () => {
       page_size: itemsPerPage,
       archived:viewArchived
     };
-    dispatch(fetchCommissions(pageNumber));
+    dispatch(getrefralData(pageNumber));
 
   }, [dispatch, currentPage,viewArchived]);
 

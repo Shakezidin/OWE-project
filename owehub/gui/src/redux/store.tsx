@@ -41,6 +41,7 @@ import adderResponsbilitySlice from "./apiSlice/configSlice/config_get_slice/add
 import apptSetterSlice from "./apiSlice/configSlice/config_get_slice/apptSetterSlice";
 import dlrOth from "./apiSlice/configSlice/config_get_slice/dlrOth";
 import nonComm from "./apiSlice/configSlice/config_get_slice/nonComm";
+import refralDataSlice from "./apiSlice/configSlice/config_get_slice/refralDataSlice";
 
 export const store = configureStore({
   reducer: {
@@ -87,7 +88,8 @@ export const store = configureStore({
     adderresponsbility: adderResponsbilitySlice,
     ar: arSlice,
     dlrOth,
-    nonComm
+    nonComm,
+    refralDataSlice
   },
 });
 
