@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -56,9 +57,9 @@ func HandleCreateAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	if (len(createAdderDataReq.UniqueId) <= 0) || (len(createAdderDataReq.Date) <= 0) ||
-		(len(createAdderDataReq.TypeAdMktg) <= 0) || (len(createAdderDataReq.ExactAmount) <= 0) ||
+		(len(createAdderDataReq.TypeAdMktg) <= 0) ||
 		(len(createAdderDataReq.Gc) <= 0) || (len(createAdderDataReq.Notes) <= 0) ||
-		(len(createAdderDataReq.Type) <= 0) || (len(createAdderDataReq.Description) <= 0) {
+		(len(createAdderDataReq.Description) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
@@ -71,18 +72,14 @@ func HandleCreateAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 		FormAndSendHttpResp(resp, "Invalid PerKwAmt Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
-	if createAdderDataReq.SysSize <= float64(0) {
-		err = fmt.Errorf("Invalid SysSize Not Allowed")
+
+	if createAdderDataReq.ExactAmount <= float64(0) {
+		err = fmt.Errorf("Invalid ExactAmount Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid SysSize Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid ExactAmount Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
-	if createAdderDataReq.AdderCal <= float64(0) {
-		err = fmt.Errorf("Invalid AdderCal Not Allowed")
-		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid AdderCal Not Allowed", http.StatusBadRequest, nil)
-		return
-	}
+
 	if createAdderDataReq.RepPercent <= float64(0) {
 		err = fmt.Errorf("Invalid RepPercent Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
@@ -90,19 +87,30 @@ func HandleCreateAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	date, err := time.Parse("2006-01-02", createAdderDataReq.Date)
+	if err != nil {
+		fmt.Println("Error parsing date:", err)
+		return
+	}
+
+	// ======== setting default value here delete after calculation done =======
+	typeDefault := "default"
+	SysSize := 99.99
+	AdderCalc := 99.99
+
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, createAdderDataReq.UniqueId)
-	queryParameters = append(queryParameters, createAdderDataReq.Date)
+	queryParameters = append(queryParameters, date)
 	queryParameters = append(queryParameters, createAdderDataReq.TypeAdMktg)
-	queryParameters = append(queryParameters, createAdderDataReq.Type)
+	queryParameters = append(queryParameters, typeDefault)
 	queryParameters = append(queryParameters, createAdderDataReq.Gc)
 	queryParameters = append(queryParameters, createAdderDataReq.ExactAmount)
 	queryParameters = append(queryParameters, createAdderDataReq.PerKwAmt)
 	queryParameters = append(queryParameters, createAdderDataReq.RepPercent)
 	queryParameters = append(queryParameters, createAdderDataReq.Description)
 	queryParameters = append(queryParameters, createAdderDataReq.Notes)
-	queryParameters = append(queryParameters, createAdderDataReq.SysSize)
-	queryParameters = append(queryParameters, createAdderDataReq.AdderCal)
+	queryParameters = append(queryParameters, SysSize)
+	queryParameters = append(queryParameters, AdderCalc)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.CreateAdderDataFunction, queryParameters)
