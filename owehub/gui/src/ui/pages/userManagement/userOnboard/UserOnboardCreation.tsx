@@ -108,6 +108,8 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
           <CROSS_BUTTON />
         </div>
         <h3 className="createProfileText">Onboarding</h3>
+        <div className="usercreate-scollbar">
+
         <div className="modal-body">
           <div className="createProfileInputView">
             <div className="createProfileTextView">
@@ -284,6 +286,8 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
             </div>
           </div>
         </div>
+        
+        </div>
         <div className="um-createUserActionButton">
           <ActionButton
             title={"Cancel"}
@@ -293,6 +297,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
           <ActionButton title={"Save"} onClick={() => { }} type={"submit"} />
         </div>
       </form>
+      
     </div>
   );
 };
