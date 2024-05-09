@@ -22,9 +22,9 @@ const ProjectPerformence = () => {
     <div className="">
       <Breadcrumb
         head=""
-        linkPara="Project Tracking"
+        linkPara="Performance"
         route={""}
-        linkparaSecond="Performance"
+        linkparaSecond="Dashboard"
       />
       <div className="project-container">
         <div className="project-heading">
