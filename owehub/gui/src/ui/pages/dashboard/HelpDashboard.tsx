@@ -29,7 +29,7 @@ const HelpDashboard: React.FC<ButtonProps> = ({
     <>
       <div className="transparent-model-down">
       
-          <div className="modal">
+          <div className="help-modal">
             <div className="help-section-container">
               <div className="help-section">
                 <h3>Help</h3>
