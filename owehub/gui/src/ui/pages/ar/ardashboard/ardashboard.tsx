@@ -147,7 +147,16 @@ export const ARDashboardPage: React.FC = () => {
                   }),
                   menuList:(base)=>({
                     ...base,
-                    zIndex:999
+                    "&::-webkit-scrollbar":{
+                      "scrollbarWidth":"thin",
+                      "display":"block",
+                      "scrollbarColor":  "rgb(173, 173, 173) #fff",
+                      width:8
+                    },
+                    "&::-webkit-scrollbar-thumb":{
+                      background:"rgb(173, 173, 173)",
+                      borderRadius:"30px"
+                    }
                    })
                 }}
               />
@@ -189,7 +198,19 @@ export const ARDashboardPage: React.FC = () => {
                     width: "6rem",         
                     zIndex:999
                   }),
-                  
+                  menuList:(base)=>({
+                    ...base,
+                    "&::-webkit-scrollbar":{
+                      "scrollbarWidth":"thin",
+                      "display":"block",
+                      "scrollbarColor":  "rgb(173, 173, 173) #fff",
+                      width:8
+                    },
+                    "&::-webkit-scrollbar-thumb":{
+                      background:"rgb(173, 173, 173)",
+                      borderRadius:"30px"
+                    }
+                   })
                 }}
               />
             </div>
@@ -263,21 +284,23 @@ export const ARDashboardPage: React.FC = () => {
                     width: "6rem",
                     maxHeight: "200px",
                     overflowY: "auto",
-                    "::-webkit-scrollbar": {
-                      width: "8px",
-                    },
-                    "::-webkit-scrollbar-track": {
-                      background: "#f1f1f1",
-                    },
-                    "::-webkit-scrollbar-thumb": {
-                      background: "#888",
-                      borderRadius: "4px",
-                    },
-                    "::-webkit-scrollbar-thumb:hover": {
-                      background: "#555",
-                    },
+                 
                     zIndex:999
                   }),
+
+                  menuList:(base)=>({
+                    ...base,
+                    "&::-webkit-scrollbar":{
+                      "scrollbarWidth":"thin",
+                      "display":"block",
+                      "scrollbarColor":  "rgb(173, 173, 173) #fff",
+                      width:8
+                    },
+                    "&::-webkit-scrollbar-thumb":{
+                      background:"rgb(173, 173, 173)",
+                      borderRadius:"30px"
+                    }
+                   })
                 
                 }}
               />
@@ -292,42 +315,7 @@ export const ARDashboardPage: React.FC = () => {
 
             </div>
 
-            <div className="rep-dash-head-input">
-              <label className="inputLabel" style={{ color: "#344054", fontWeight: "400", fontSize: "12px" }}>
-                Date Override
-              </label>
-              <label className="inputLabel" style={{ color: "#344054", fontWeight: "600", fontSize: "12px" }}>
-                Today
-              </label>
-              <div className="sm-box" style={{}}></div>
-
-              {/* <div style={{ position: "relative", top: "-1px" }} ref={datePickerRef}>
-                <label className="date-button" onClick={handleToggleDatePicker}>
-                  Select Dates
-                </label>
-                {showDatePicker && (
-                  <div className="calender-container">
-                    <DateRangePicker
-                      ranges={[selectionRange]}
-                      onChange={handleSelect}
-                    />
-                    <button
-                      className="reset-calender"
-                      onClick={handleResetDates}
-                    >
-                      Reset
-                    </button>
-                    <button
-                      className="close-calender"
-                      onClick={handleToggleDatePicker}
-                    >
-                      Close
-                    </button>
-                  </div>
-                )}
-              </div> */}
-
-            </div>
+            
 
             <div className="Line-container">
               <div className="ar-line-graph">

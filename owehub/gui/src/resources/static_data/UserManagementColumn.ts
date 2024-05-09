@@ -104,12 +104,12 @@ export const UserRegionalTableColumn: Column[] = [
     type: "string",
     isCheckbox: false,
   },
-  // {
-  //   name: "Region",
-  //   displayName: "Region",
-  //   type: "string",
-  //   isCheckbox: false,
-  // },
+  {
+    name: "Region",
+    displayName: "Region",
+    type: "string",
+    isCheckbox: false,
+  },
   {
     name: "email_id",
     displayName: "Email ID",

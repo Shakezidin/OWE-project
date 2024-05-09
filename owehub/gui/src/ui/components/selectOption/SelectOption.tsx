@@ -25,9 +25,10 @@ console.log(scrollRef.current,"select");
      <Select
       options={options}
       isSearchable
-      className='dropdown'
+      // className='dropdown'
       onChange={onChange}
       placeholder="Select"
+      
       ref={scrollRef}
       value={value ? value: {label:'Select',value:'Select'} }
       styles={{
@@ -39,6 +40,7 @@ console.log(scrollRef.current,"select");
           fontSize: "13px",
           height: "2.25rem",
           border: "1px solid #d0d5dd",
+          cursor: "pointer"
         }),
         indicatorSeparator: () => ({
           display: "none",
@@ -52,7 +54,20 @@ console.log(scrollRef.current,"select");
         zIndex:999,
         
        }),
-      
+       menuList:(base)=>({
+        ...base,
+        "&::-webkit-scrollbar":{
+          "scrollbarWidth":"thin",
+          "scrollBehavior": "smooth",
+          "display":"block",
+          "scrollbarColor":  "rgb(173, 173, 173) #fff",
+          width:8
+        },
+        "&::-webkit-scrollbar-thumb":{
+          background:"rgb(173, 173, 173)",
+          borderRadius:"30px"
+        }
+       })
       }}
     />
    </div>

@@ -236,7 +236,7 @@ func PrepareARFilters(tableName string, dataFilter models.DataRequestBody, forDa
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ar.customer) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "date":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ar.date) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("ar.date %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "amount":
 				filtersBuilder.WriteString(fmt.Sprintf("ar.amount %s $%d", operator, len(whereEleList)+1))
