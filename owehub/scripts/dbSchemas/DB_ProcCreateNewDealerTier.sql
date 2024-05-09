@@ -1,8 +1,8 @@
 CREATE OR REPLACE FUNCTION create_new_dealer_tier(
     p_dealer_name character varying,
     p_tier_name character varying,
-    p_start_date character varying,
-    p_end_date character varying,
+    p_start_date date,
+    p_end_date date,
     OUT v_dealer_override_id INT
 )
 RETURNS INT

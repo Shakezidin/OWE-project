@@ -34,18 +34,18 @@ export const UserManagementTableColumn: Column[] = [
 export const UserAppointmentTableColumn: Column[] = [
   { name: "user_code", displayName: "Code", type: "string", isCheckbox: true },
   { name: "name", displayName: "Name", type: "string", isCheckbox: false },
-  {
-    name: "start_date",
-    displayName: "Start Date",
-    type: "string",
-    isCheckbox: false,
-  },
-  {
-    name: "end_date",
-    displayName: "End Date",
-    type: "string",
-    isCheckbox: false,
-  },
+  // {
+  //   name: "start_date",
+  //   displayName: "Start Date",
+  //   type: "string",
+  //   isCheckbox: false,
+  // },
+  // {
+  //   name: "end_date",
+  //   displayName: "End Date",
+  //   type: "string",
+  //   isCheckbox: false,
+  // },
   {
     name: "pay_rate",
     displayName: "Pay Rate",
@@ -104,12 +104,12 @@ export const UserRegionalTableColumn: Column[] = [
     type: "string",
     isCheckbox: false,
   },
-  {
-    name: "Region",
-    displayName: "Region",
-    type: "string",
-    isCheckbox: false,
-  },
+  // {
+  //   name: "Region",
+  //   displayName: "Region",
+  //   type: "string",
+  //   isCheckbox: false,
+  // },
   {
     name: "email_id",
     displayName: "Email ID",
@@ -184,7 +184,7 @@ export const UserSaleRepresentTableColumn: Column[] = [
   },
   {
     name: "reporting_manager",
-    displayName: "Repoting To",
+    displayName: "Reporting To",
     type: "string",
     isCheckbox: false,
   },

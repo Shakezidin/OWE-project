@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -56,25 +57,60 @@ func HandleCreateTierLoanFeeRequest(resp http.ResponseWriter, req *http.Request)
 	}
 
 	if (len(createTierLoanFee.DealerTier) <= 0) || (len(createTierLoanFee.Installer) <= 0) ||
-		(len(createTierLoanFee.State) <= 0) || (len(createTierLoanFee.FinanceType) <= 0) ||
-		(len(createTierLoanFee.OweCost) <= 0) || (len(createTierLoanFee.DlrMu) <= 0) ||
-		(len(createTierLoanFee.DlrCost) <= 0) || (len(createTierLoanFee.StartDate) <= 0) ||
-		(len(createTierLoanFee.EndDate) <= 0) {
+		(len(createTierLoanFee.State) <= 0) || (len(createTierLoanFee.LoanType) <= 0) ||
+		(len(createTierLoanFee.StartDate) <= 0) || (len(createTierLoanFee.EndDate) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+
+	if createTierLoanFee.OweCost <= float64(0) {
+		err = fmt.Errorf("Invalid owe cost Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid owe cost Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+
+	if createTierLoanFee.DlrMu <= float64(0) {
+		err = fmt.Errorf("Invalid dlr_mu Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid dlr)mu Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+
+	if createTierLoanFee.DlrCost <= float64(0) {
+		err = fmt.Errorf("Invalid dlr cost Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid dlr cost Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+
+	startDate, err := time.Parse("2006-01-02", createTierLoanFee.StartDate)
+	if err != nil {
+		err = fmt.Errorf("Error parsing start date:", err)
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid start date not allowed", http.StatusBadRequest, nil)
+		return
+	}
+
+	endDate, err := time.Parse("2006-01-02", createTierLoanFee.EndDate)
+	if err != nil {
+		err = fmt.Errorf("Error parsing start date:", err)
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid end date not allowed", http.StatusBadRequest, nil)
 		return
 	}
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, createTierLoanFee.DealerTier)
 	queryParameters = append(queryParameters, createTierLoanFee.Installer)
 	queryParameters = append(queryParameters, createTierLoanFee.State)
-	queryParameters = append(queryParameters, createTierLoanFee.FinanceType)
+	queryParameters = append(queryParameters, createTierLoanFee.LoanType)
 	queryParameters = append(queryParameters, createTierLoanFee.OweCost)
 	queryParameters = append(queryParameters, createTierLoanFee.DlrMu)
 	queryParameters = append(queryParameters, createTierLoanFee.DlrCost)
-	queryParameters = append(queryParameters, createTierLoanFee.StartDate)
-	queryParameters = append(queryParameters, createTierLoanFee.EndDate)
+	queryParameters = append(queryParameters, startDate)
+	queryParameters = append(queryParameters, endDate)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.CreateTierLoanFeeFunction, queryParameters)

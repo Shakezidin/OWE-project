@@ -75,6 +75,7 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 			ud.user_status, 
 			ud.user_designation, 
 			ud.description, 
+			ud.region,
 			ud.street_address, 
 			ud.city, 
 			ud.country,
@@ -185,6 +186,12 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 			Description = ""
 		}
 
+		// Region
+		Region, regionOk := item["region"].(string)
+		if !regionOk || Region == "" {
+			Region = ""
+		}
+
 		// StreetAddress
 		StreetAddress, strtaddrsOk := item["street_address"].(string)
 		if !strtaddrsOk || StreetAddress == "" {
@@ -228,6 +235,7 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 			DealerOwner:       DealerOwner,
 			UserStatus:        UserStatus,
 			Description:       Description,
+			Region:            Region,
 			StreetAddress:     StreetAddress,
 			State:             StateName,
 			City:              City,

@@ -11,6 +11,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -56,10 +57,9 @@ func HandleUpdateLoanFeeDataRequest(resp http.ResponseWriter, req *http.Request)
 		return
 	}
 
-	if (len(UpdateLoanFeeReq.UniqueID) <= 0) || (len(UpdateLoanFeeReq.Dealer) <= 0) ||
+	if  (len(UpdateLoanFeeReq.Dealer) <= 0) ||
 		(len(UpdateLoanFeeReq.Installer) <= 0) || (len(UpdateLoanFeeReq.State) <= 0) ||
-		(len(UpdateLoanFeeReq.LoanType) <= 0) || (len(UpdateLoanFeeReq.DlrMu) <= 0) ||
-		(len(UpdateLoanFeeReq.DlrCost) <= 0) || (len(UpdateLoanFeeReq.StartDate) <= 0) ||
+		(len(UpdateLoanFeeReq.LoanType) <= 0) || (len(UpdateLoanFeeReq.StartDate) <= 0) ||
 		(len(UpdateLoanFeeReq.EndDate) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
@@ -81,9 +81,38 @@ func HandleUpdateLoanFeeDataRequest(resp http.ResponseWriter, req *http.Request)
 		return
 	}
 
+	if UpdateLoanFeeReq.DlrMu <= float64(0) {
+		err = fmt.Errorf("Invalid dlr mu Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid dlr_mu Not Allowed, Update failed", http.StatusBadRequest, nil)
+		return
+	}
+
+	if UpdateLoanFeeReq.DlrCost <= float64(0) {
+		err = fmt.Errorf("Invalid dlr cost Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid dlr cost Not Allowed, Update failed", http.StatusBadRequest, nil)
+		return
+	}
+
+	startDate, err := time.Parse("2006-01-02", UpdateLoanFeeReq.StartDate)
+	if err != nil {
+		err = fmt.Errorf("Error parsing start date:", err)
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid start date, Update failed", http.StatusBadRequest, nil)
+		return
+	}
+
+	endDate, err := time.Parse("2006-01-02", UpdateLoanFeeReq.EndDate)
+	if err != nil {
+		err = fmt.Errorf("Error parsing start date:", err)
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid end date, Update failed", http.StatusBadRequest, nil)
+		return
+	}
+
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, UpdateLoanFeeReq.RecordId)
-	queryParameters = append(queryParameters, UpdateLoanFeeReq.UniqueID)
 	queryParameters = append(queryParameters, UpdateLoanFeeReq.Dealer)
 	queryParameters = append(queryParameters, UpdateLoanFeeReq.Installer)
 	queryParameters = append(queryParameters, UpdateLoanFeeReq.State)
@@ -91,8 +120,8 @@ func HandleUpdateLoanFeeDataRequest(resp http.ResponseWriter, req *http.Request)
 	queryParameters = append(queryParameters, UpdateLoanFeeReq.OweCost)
 	queryParameters = append(queryParameters, UpdateLoanFeeReq.DlrMu)
 	queryParameters = append(queryParameters, UpdateLoanFeeReq.DlrCost)
-	queryParameters = append(queryParameters, UpdateLoanFeeReq.StartDate)
-	queryParameters = append(queryParameters, UpdateLoanFeeReq.EndDate)
+	queryParameters = append(queryParameters, startDate)
+	queryParameters = append(queryParameters, endDate)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateLoanFeeFunction, queryParameters)

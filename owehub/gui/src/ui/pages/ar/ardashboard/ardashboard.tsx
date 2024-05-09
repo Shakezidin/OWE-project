@@ -138,7 +138,7 @@ export const ARDashboardPage: React.FC = () => {
                   }),
                   option: (baseStyles) => ({
                     ...baseStyles,
-                    fontSize: "13px",
+                    fontSize: "11.9px",
                   }),
                   menu: (baseStyles) => ({
                     ...baseStyles,
@@ -288,7 +288,7 @@ export const ARDashboardPage: React.FC = () => {
               <label className="inputLabel" style={{ color: "#344054", fontWeight: "600", fontSize: "12px" }}>
                 Today
               </label>
-              <div className="" style={{}}></div>
+              <div className="sm-box" style={{}}></div>
 
               {/* <div style={{ position: "relative", top: "-1px" }} ref={datePickerRef}>
                 <label className="date-button" onClick={handleToggleDatePicker}>

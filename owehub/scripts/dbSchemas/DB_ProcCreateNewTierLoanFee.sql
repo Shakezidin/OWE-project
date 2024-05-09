@@ -2,12 +2,12 @@ CREATE OR REPLACE FUNCTION create_tier_loan_fee_type(
     p_dealer_tier VARCHAR,
     p_installer_name VARCHAR,
     p_state_name VARCHAR,
-    p_finance_type INT,
-    p_owe_cost VARCHAR,
-    p_dlr_mu VARCHAR,
-    p_dlr_cost VARCHAR,
-    p_start_date VARCHAR,
-    p_end_date VARCHAR,
+    p_loan_type VARCHAR,
+    p_owe_cost DOUBLE PRECISION,
+    p_dlr_mu DOUBLE PRECISION,
+    p_dlr_cost DOUBLE PRECISION,
+    p_start_date date,
+    p_end_date date,
     OUT v_tier_loan_fee_id INT
 )
 RETURNS INT
@@ -16,6 +16,7 @@ DECLARE
     v_installer_id INT;
     v_state_id INT;
     v_dealer_tier_id INT;
+    v_loan_type_id INT;
 BEGIN
     -- Get the dealer_tier_id based on the provided dealer_tier name
     SELECT id INTO v_dealer_tier_id
@@ -47,12 +48,22 @@ BEGIN
         RAISE EXCEPTION 'State % not found', p_state_name;
     END IF;
 
+     -- Get the dealer_tier_id based on the provided dealer_tier name
+    SELECT id INTO v_loan_type_id
+    FROM loan_type
+    WHERE product_code = p_loan_type;
+
+    -- Check if the loan_type exists
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Loan type % not found', p_loan_type;
+    END IF;
+
     -- Insert a new tier_loan_fee record
     INSERT INTO tier_loan_fee (
         dealer_tier,
         installer_id,
         state_id,
-        finance_type,
+        loan_type,
         owe_cost,
         dlr_mu,
         dlr_cost,
@@ -64,7 +75,7 @@ BEGIN
         v_dealer_tier_id,
         v_installer_id,
         v_state_id,
-        p_finance_type,
+        v_loan_type_id,
         p_owe_cost,
         p_dlr_mu,
         p_dlr_cost,

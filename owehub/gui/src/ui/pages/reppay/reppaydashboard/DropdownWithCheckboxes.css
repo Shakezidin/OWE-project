@@ -33,7 +33,7 @@
     position: absolute;
     top: 100%;
     left: -78px;
-    z-index: 1;
+    z-index: 5;
     background-color: white;
     border: 1px solid #D0D5DD;
     border-radius: 8px;
@@ -43,7 +43,17 @@
     width: 178px;
     height: 225px;
     box-sizing: border-box;
+    scrollbar-color: rgb(173, 173, 173) #fff;
+    scrollbar-width: thin;
   }
+
+  .dropdown-menu::-webkit-scrollbar {
+  width: 8px;
+  border-radius: 30px;
+}
+
+
+  
   
   .dropdown-item {
     display: flex;

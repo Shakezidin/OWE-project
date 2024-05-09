@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import { ICONS } from "../../../icons/Icons";
 import { UserRoleBasedListModel } from "../../../../core/models/api_models/UserManagementModel";
@@ -63,19 +63,26 @@ const UserTable: React.FC<UserTableProps> = ({
     });
   }
 
-  console.log("sortedData", sortedData)
 
-  // Now sortedData contains the modified and sorted array based on sortKey and sortDirection
+  const [email, setEmail] = useState('');
+
+  useEffect(() => {
+    const storedEmail = localStorage.getItem('email');
+    if (storedEmail) {
+      setEmail(storedEmail);
+    }
+  }, []);
+
 
   return (
     <div
       className="UserManageTable"
-      style={{overflowX: "auto", whiteSpace: "nowrap" }}
+      style={{ overflowX: "auto", whiteSpace: "nowrap" }}
     >
       <table>
         <thead>
           <tr style={{ backgroundColor: "#F5F5F5" }}>
-            {UserManagementTableColumn.map((item, key) => (
+            {UserManagementTableColumn.filter(item => item.displayName !== "Reporting To").map((item, key) => (
               <SortableHeader
                 key={key}
                 isCheckbox={item.isCheckbox}
@@ -108,6 +115,7 @@ const UserTable: React.FC<UserTableProps> = ({
                   <div className="flex-check">
                     <CheckBox
                       checked={selectedRows.has(i)}
+                      disabled={el.email_id === email}
                       onChange={() => {
                         // If there's only one row of data and the user clicks its checkbox, select all rows
                         if (data?.length === 1) {
@@ -128,7 +136,7 @@ const UserTable: React.FC<UserTableProps> = ({
                 </td>
                 <td>{el.name}</td>
                 <td>{el.role_name}</td>
-                <td>{el.reporting_manager}</td>
+                {/* <td>{el.reporting_manager}</td> */}
                 <td>{el.email_id}</td>
                 <td>{el.mobile_number}</td>
                 <td style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
@@ -138,22 +146,15 @@ const UserTable: React.FC<UserTableProps> = ({
                   <div className="action-icon">
                     <div
                       className=""
-                      style={{ cursor: "pointer" }}
+                      style={{ cursor: el.email_id === email ? 'not-allowed' : 'pointer' }}
                       onClick={() => {
-                        onClickDelete(el);
+                        if (el.email_id !== email) {
+                          onClickDelete(el);
+                        }
                       }}
                     >
                       <img src={ICONS.deleteIcon} alt="" />
                     </div>
-                    {/* <div
-                        className=""
-                        style={{ cursor: "pointer" }}
-                        onClick={() => {
-                          onClickEdit(el);
-                        }}
-                      >
-                        <img src={ICONS.editIcon} alt="" />
-                      </div> */}
                   </div>
                 </td>
               </tr>

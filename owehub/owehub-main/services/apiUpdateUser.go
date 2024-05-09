@@ -93,6 +93,7 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	//queryParameters = append(queryParameters, updateUserReq.UserStatus)
 	//queryParameters = append(queryParameters, updateUserReq.Designation)
 	//queryParameters = append(queryParameters, updateUserReq.Description)
+	//queryParameters = append(queryParameters, updateUserReq.Region)
 	//queryParameters = append(queryParameters, updateUserReq.StreetAddress)
 	//queryParameters = append(queryParameters, updateUserReq.State)
 	//queryParameters = append(queryParameters, updateUserReq.City)
