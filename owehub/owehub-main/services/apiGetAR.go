@@ -137,10 +137,10 @@ func HandleGetARDataRequest(resp http.ResponseWriter, req *http.Request) {
 			Bank = ""
 		}
 
-		Ced, ok := item["ced"].(string)
-		if !ok || Ced == "" {
+		Ced, ok := item["ced"].(time.Time)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get Ced for Record ID %v. Item: %+v\n", RecordId, item)
-			Ced = ""
+			Ced = time.Time{}
 		}
 
 		PartnerName, ok := item["partner_name"].(string)
@@ -157,6 +157,7 @@ func HandleGetARDataRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 
 		dateString := Date.Format("2006-01-02")
+		cedDateString := Ced.Format("2006-01-02")
 		aRData := models.GetARReq{
 			RecordId:     RecordId,
 			UniqueId:     Unique_id,
@@ -165,7 +166,7 @@ func HandleGetARDataRequest(resp http.ResponseWriter, req *http.Request) {
 			Amount:       Amount,
 			PaymentType:  PaymentType,
 			Bank:         Bank,
-			Ced:          Ced,
+			Ced:          cedDateString,
 			TotalPaid:    TotalPaid,
 			StateName:    StateName,
 			PartnerName:  PartnerName,

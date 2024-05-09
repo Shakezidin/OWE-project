@@ -80,7 +80,15 @@ func HandleCreateARDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	date, err := time.Parse("2006-01-02", createArReq.Date)
 	if err != nil {
-		fmt.Println("Error parsing date:", err)
+		log.FuncErrorTrace(0, "Failed to parse time date: %v", err)
+		FormAndSendHttpResp(resp, "Failed to parse time date", http.StatusInternalServerError, nil)
+		return
+	}
+
+	cedDate, err := time.Parse("2006-01-02", createArReq.Ced)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to parse time cedDate: %v", err)
+		FormAndSendHttpResp(resp, "Failed to parse time cedDate", http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -91,7 +99,7 @@ func HandleCreateARDataRequest(resp http.ResponseWriter, req *http.Request) {
 	queryParameters = append(queryParameters, createArReq.Amount)
 	queryParameters = append(queryParameters, createArReq.PaymentType)
 	queryParameters = append(queryParameters, createArReq.Bank)
-	queryParameters = append(queryParameters, createArReq.Ced)
+	queryParameters = append(queryParameters, cedDate)
 	queryParameters = append(queryParameters, totalPaid)
 	queryParameters = append(queryParameters, stateid)
 	queryParameters = append(queryParameters, partnerid)
