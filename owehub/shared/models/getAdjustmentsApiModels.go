@@ -19,8 +19,6 @@ type GetAdjustments struct {
 	Date          string `json:"date"`
 	Notes         string    `json:"notes"`
 	Amount        float64   `json:"amount"`
-	StartDate     string    `json:"start_date"`
-	EndDate       string    `json:"end_date"`
 }
 
 type GetAdjustmentsList struct {

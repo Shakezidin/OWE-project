@@ -4,8 +4,8 @@ CREATE OR REPLACE FUNCTION update_dealer_override(
     p_dealer VARCHAR,
     p_state_name VARCHAR,
     p_pay_rate VARCHAR,
-    p_start_date VARCHAR,
-    p_end_date VARCHAR,
+    p_start_date date,
+    p_end_date date,
     OUT v_dealer_override_id INT
 )
 RETURNS INT  -- Return type matches the OUT parameter type

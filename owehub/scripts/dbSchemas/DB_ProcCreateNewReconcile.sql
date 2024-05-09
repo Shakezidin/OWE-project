@@ -5,8 +5,8 @@ CREATE OR REPLACE FUNCTION create_new_reconcile(
     p_state_name character varying,
     p_sys_size double precision,
     p_status character varying,
-    p_start_date VARCHAR,
-    p_end_date VARCHAR,
+    p_start_date date,
+    p_end_date date,
     p_amount double precision,
     p_notes character varying,
     OUT v_reconcile_data_id INT

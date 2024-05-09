@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -71,14 +72,26 @@ func HandleUpdateDealerRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	Startdate, err := time.Parse("2006-01-02", updateDealerReq.StartDate)
+	if err != nil {
+		fmt.Println("Error parsing date:", err)
+		return
+	}
+
+	Enddate, err := time.Parse("2006-01-02", updateDealerReq.EndDate)
+	if err != nil {
+		fmt.Println("Error parsing date:", err)
+		return
+	}
+
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, updateDealerReq.RecordId)
 	queryParameters = append(queryParameters, updateDealerReq.SubDealer)
 	queryParameters = append(queryParameters, updateDealerReq.Dealer)
 	queryParameters = append(queryParameters, updateDealerReq.State)
 	queryParameters = append(queryParameters, updateDealerReq.PayRate)
-	queryParameters = append(queryParameters, updateDealerReq.StartDate)
-	queryParameters = append(queryParameters, updateDealerReq.EndDate)
+	queryParameters = append(queryParameters, Startdate)
+	queryParameters = append(queryParameters, Enddate)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateDealerOverrideFunction, queryParameters)

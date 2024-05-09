@@ -11,6 +11,7 @@ import (
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	"strings"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -132,18 +133,6 @@ func HandleGetReconcileRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 
 		// Date
-		StartDate, ok := item["start_date"].(string)
-		if !ok || StartDate == "" {
-			log.FuncErrorTrace(0, "Failed to get StartDate for Unique ID %v. Item: %+v\n", UniqueId, item)
-			StartDate = ""
-		}
-
-		EndDate, ok := item["end_date"].(string)
-		if !ok || EndDate == "" {
-			log.FuncErrorTrace(0, "Failed to get EndDate for Unique ID %v. Item: %+v\n", UniqueId, item)
-			EndDate = ""
-		}
-
 		// Amount
 		Amount, ok := item["amount"].(float64)
 		if !ok {
@@ -158,6 +147,22 @@ func HandleGetReconcileRequest(resp http.ResponseWriter, req *http.Request) {
 			Notes = ""
 		}
 
+		StartDate, ok := item["start_date"].(time.Time)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
+			StartDate = time.Time{}
+		}
+
+		// EndDate
+		EndDate, ok := item["end_date"].(time.Time)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get end date for Record ID %v. Item: %+v\n", RecordId, item)
+			EndDate = time.Time{}
+		}
+
+		start := StartDate.Format("2006-01-02")
+		end := EndDate.Format("2006-01-02")
+
 		reconcileData := models.GetReconcile{
 			RecordId:    RecordId,
 			UniqueId:    UniqueId,
@@ -166,8 +171,8 @@ func HandleGetReconcileRequest(resp http.ResponseWriter, req *http.Request) {
 			StateName:   StateName,
 			SysSize:     SysSize,
 			Status:      Status,
-			StartDate:   StartDate,
-			EndDate:     EndDate,
+			StartDate:   start,
+			EndDate:     end,
 			Amount:      Amount,
 			Notes:       Notes,
 		}

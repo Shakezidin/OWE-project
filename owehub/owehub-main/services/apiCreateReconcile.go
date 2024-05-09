@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -78,6 +79,18 @@ func HandleCreateReconcileRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	Startdate, err := time.Parse("2006-01-02", createReconcileReq.StartDate)
+	if err != nil {
+		fmt.Println("Error parsing date:", err)
+		return
+	}
+
+	Enddate, err := time.Parse("2006-01-02", createReconcileReq.EndDate)
+	if err != nil {
+		fmt.Println("Error parsing date:", err)
+		return
+	}
+
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, createReconcileReq.UniqueId)
 	queryParameters = append(queryParameters, createReconcileReq.Customer)
@@ -85,8 +98,8 @@ func HandleCreateReconcileRequest(resp http.ResponseWriter, req *http.Request) {
 	queryParameters = append(queryParameters, createReconcileReq.StateName)
 	queryParameters = append(queryParameters, createReconcileReq.SysSize)
 	queryParameters = append(queryParameters, createReconcileReq.Status)
-	queryParameters = append(queryParameters, createReconcileReq.StartDate)
-	queryParameters = append(queryParameters, createReconcileReq.EndDate)
+	queryParameters = append(queryParameters, Startdate)
+	queryParameters = append(queryParameters, Enddate)
 	queryParameters = append(queryParameters, createReconcileReq.Amount)
 	queryParameters = append(queryParameters, createReconcileReq.Notes)
 

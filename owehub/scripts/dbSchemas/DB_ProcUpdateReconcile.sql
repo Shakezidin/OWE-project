@@ -6,8 +6,8 @@ CREATE OR REPLACE FUNCTION update_reconcile(
     p_state_name VARCHAR,
     p_sys_size DOUBLE PRECISION,
     p_status VARCHAR,
-    p_start_date VARCHAR,
-    p_end_date VARCHAR,
+    p_start_date date,
+    p_end_date date,
     p_amount DOUBLE PRECISION,
     p_notes VARCHAR,
     OUT v_reconcile_id INT

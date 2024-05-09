@@ -11,6 +11,7 @@ import (
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	"strings"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -63,7 +64,7 @@ func HandleGetAdjustmentsDataRequest(resp http.ResponseWriter, req *http.Request
 
 	tableName := db.TableName_adjustments
 	query = `
-		SELECT ad.id as record_id, ad.unique_id, ad.customer, ad.sys_size, ad.bl, ad.epc, ad.date, ad.notes, ad.amount, ad.start_date, ad.end_date, pr_partner.partner_name AS partner_name, pr_installer.partner_name AS installer_name, st.name AS state_name  
+		SELECT ad.id as record_id, ad.unique_id, ad.customer, ad.sys_size, ad.bl, ad.epc, ad.date, ad.notes, ad.amount, pr_partner.partner_name AS partner_name, pr_installer.partner_name AS installer_name, st.name AS state_name  
 		FROM adjustments ad
 		JOIN partners pr_partner ON pr_partner.partner_id = ad.partner
 		JOIN partners pr_installer ON pr_installer.partner_id = ad.installer
@@ -146,12 +147,11 @@ func HandleGetAdjustmentsDataRequest(resp http.ResponseWriter, req *http.Request
 		}
 
 		// Date
-		DateStr, ok := item["date"].(string)
-		if !ok || DateStr == "" {
-			log.FuncErrorTrace(0, "Failed to get date for Record ID %v. Item: %+v\n", RecordId, item)
-			DateStr = ""
+		Date, ok := item["date"].(time.Time)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get Date for Record ID %v. Item: %+v\n", RecordId, item)
+			Date = time.Time{}
 		}
-
 		// Notes
 		Notes, ok := item["notes"].(string)
 		if !ok {
@@ -165,21 +165,7 @@ func HandleGetAdjustmentsDataRequest(resp http.ResponseWriter, req *http.Request
 			log.FuncErrorTrace(0, "Failed to get amount for Record ID %v. Item: %+v\n", RecordId, item)
 			Amount = 0.0 // Default amount value of 0.0
 		}
-
-		// StartDate
-		StartDate, ok := item["start_date"].(string)
-		if !ok || StartDate == "" {
-			log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
-			StartDate = ""
-		}
-
-		// EndDate
-		EndDate, ok := item["end_date"].(string)
-		if !ok || EndDate == "" {
-			log.FuncErrorTrace(0, "Failed to get end date for Record ID %v. Item: %+v\n", RecordId, item)
-			EndDate = ""
-		}
-
+		dateString := Date.Format("2006-01-02")
 		adjustmentData := models.GetAdjustments{
 			RecordId:      RecordId,
 			UniqueId:      UniqueId,
@@ -190,11 +176,9 @@ func HandleGetAdjustmentsDataRequest(resp http.ResponseWriter, req *http.Request
 			SysSize:       SysSize,
 			Bl:            Bl,
 			Epc:           Epc,
-			Date:          DateStr,
+			Date:          dateString,
 			Notes:         Notes,
 			Amount:        Amount,
-			StartDate:     StartDate,
-			EndDate:       EndDate,
 		}
 		adjustmentsList.AdjustmentsList = append(adjustmentsList.AdjustmentsList, adjustmentData)
 	}
@@ -308,7 +292,7 @@ func PrepareAdjustmentsFilters(tableName string, dataFilter models.DataRequestBo
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY ad.id, ad.unique_id, ad.customer, ad.sys_size, ad.bl, ad.epc, ad.date, ad.notes, ad.amount, ad.start_date, ad.end_date, pr_partner.partner_name, pr_installer.partner_name, st.name")
+		filtersBuilder.WriteString(" GROUP BY ad.id, ad.unique_id, ad.customer, ad.sys_size, ad.bl, ad.epc, ad.date, ad.notes, ad.amount, pr_partner.partner_name, pr_installer.partner_name, st.name")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
