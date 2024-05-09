@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -55,29 +56,14 @@ func HandleCreateAdjustmentsRequest(resp http.ResponseWriter, req *http.Request)
 		return
 	}
 
-	if (len(createAdjustmentsReq.UniqueId) <= 0) || (len(createAdjustmentsReq.Customer) <= 0) ||
-		(len(createAdjustmentsReq.PartnerName) <= 0) || (len(createAdjustmentsReq.InstallerName) <= 0) ||
-		(len(createAdjustmentsReq.StateName) <= 0) || (len(createAdjustmentsReq.Bl) <= 0) ||
-		(len(createAdjustmentsReq.Notes) <= 0) || (len(createAdjustmentsReq.StartDate) <= 0) ||
-		(len(createAdjustmentsReq.EndDate) <= 0) || (len(createAdjustmentsReq.Date) <= 0) {
+	if (len(createAdjustmentsReq.UniqueId) <= 0) || (len(createAdjustmentsReq.Date) <= 0) ||
+		(len(createAdjustmentsReq.Notes) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
-	if createAdjustmentsReq.SysSize <= float64(0) {
-		err = fmt.Errorf("Invalid sys_size Not Allowed")
-		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid sys_size Not Allowed", http.StatusBadRequest, nil)
-		return
-	}
-	if createAdjustmentsReq.Epc <= float64(0) {
-		err = fmt.Errorf("Invalid epc Not Allowed")
-		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid epc Not Allowed", http.StatusBadRequest, nil)
-		return
-	}
 	if createAdjustmentsReq.Amount <= float64(0) {
 		err = fmt.Errorf("Invalid amount Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
@@ -85,19 +71,32 @@ func HandleCreateAdjustmentsRequest(resp http.ResponseWriter, req *http.Request)
 		return
 	}
 
+	date, err := time.Parse("2006-01-02", createAdjustmentsReq.Date)
+	if err != nil {
+		fmt.Println("Error parsing date:", err)
+		return
+	}
+
+	// =========== default value delete after calculation ========= //
+	Customer := "default"
+	InstallerName := "FFS"
+	PartnerName := "FFS"
+	StateName := "Alaska"
+	Bl := "default"
+	SysSize := 99.99
+	Epc := 99.99
+
 	queryParameters = append(queryParameters, createAdjustmentsReq.UniqueId)
-	queryParameters = append(queryParameters, createAdjustmentsReq.Customer)
-	queryParameters = append(queryParameters, createAdjustmentsReq.PartnerName)
-	queryParameters = append(queryParameters, createAdjustmentsReq.InstallerName)
-	queryParameters = append(queryParameters, createAdjustmentsReq.StateName)
-	queryParameters = append(queryParameters, createAdjustmentsReq.SysSize)
-	queryParameters = append(queryParameters, createAdjustmentsReq.Bl)
-	queryParameters = append(queryParameters, createAdjustmentsReq.Epc)
-	queryParameters = append(queryParameters, createAdjustmentsReq.Date)
+	queryParameters = append(queryParameters, Customer)
+	queryParameters = append(queryParameters, PartnerName)
+	queryParameters = append(queryParameters, InstallerName)
+	queryParameters = append(queryParameters, StateName)
+	queryParameters = append(queryParameters, SysSize)
+	queryParameters = append(queryParameters, Bl)
+	queryParameters = append(queryParameters, Epc)
+	queryParameters = append(queryParameters, date)
 	queryParameters = append(queryParameters, createAdjustmentsReq.Notes)
 	queryParameters = append(queryParameters, createAdjustmentsReq.Amount)
-	queryParameters = append(queryParameters, createAdjustmentsReq.StartDate)
-	queryParameters = append(queryParameters, createAdjustmentsReq.EndDate)
 
 	// Call the database function
 

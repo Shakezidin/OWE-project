@@ -143,13 +143,15 @@ CREATE TABLE dealer_override (
     id serial NOT NULL,
     sub_dealer character varying,
     dealer_id INT,
+    state INT,
     pay_rate character varying,
-    start_date character varying NOT NULL,
-    end_date character varying,
-    is_archived BOOLEAN DEFAULT FALSE,
+    start_date date,
+    end_date date,
+    is_archived BOOLEAN DEFAULT FALSE, 
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     FOREIGN KEY (dealer_id) REFERENCES user_details(user_id),
+    FOREIGN KEY (state) REFERENCES states(state_id),
     PRIMARY KEY (id)
 );
 
@@ -681,7 +683,6 @@ CREATE TABLE rate_adjustments(
 
 CREATE TABLE ar_schedule (
     id serial NOT NULL,
-    unique_id varchar NOT NULL UNIQUE,
     partner INT,
     installer INT,
     sale_type_id INT,
@@ -693,8 +694,8 @@ CREATE TABLE ar_schedule (
     install_pay text,
     pto_pay text,
     is_archived BOOLEAN DEFAULT FALSE,
-    start_date character varying NOT NULL,
-    end_date character varying,
+    start_date date NOT NULL,
+    end_date date,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     FOREIGN KEY (partner) REFERENCES partners(partner_id),
@@ -762,15 +763,15 @@ CREATE TABLE adder_credit (
 CREATE TABLE adder_data (
     id serial NOT NULL,
     unique_id varchar NOT NULL UNIQUE,
-    date character varying,
+    date date,
     type_ad_mktg text,
-    type text,
     gc text,
-    exact_amount text,
+    exact_amount DOUBLE PRECISION,
+    type1 text,
     per_kw_amt DOUBLE PRECISION,
     rep_percent DOUBLE PRECISION,
-    description character varying,
-    notes character varying,
+    description text,
+    notes text,
     sys_size DOUBLE PRECISION,
     adder_cal DOUBLE PRECISION,
     is_archived BOOLEAN DEFAULT FALSE,
@@ -817,14 +818,22 @@ CREATE TABLE ar (
     id serial NOT NULL,
     unique_id varchar NOT NULL UNIQUE,
     customer text,
-    date character varying,
-    amount text,
-    notes text,
+    partner INT,
+    date date,
+    amount float,
+    payment_type text,
+    bank text,
+    ced text,
+    total_paid float,
+    state INT,
     is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
+    FOREIGN KEY (partner) REFERENCES partners(partner_id),
+    FOREIGN KEY (state) REFERENCES states(state_id),
     PRIMARY KEY (id)
 );
+
 
 CREATE TABLE appt_setters (
     id serial NOT NULL,
@@ -852,12 +861,10 @@ CREATE TABLE adjustments (
     sys_size DOUBLE PRECISION,
     bl character varying,
     epc FLOAT,
-    date character varying,
+    date date,
     amount FLOAT,
     notes character varying,
     is_archived BOOLEAN DEFAULT FALSE,
-    start_date character varying,
-    end_date character varying,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     FOREIGN KEY (state) REFERENCES states(state_id),
@@ -874,9 +881,10 @@ CREATE TABLE reconcile (
     state_id INT,
     sys_size float,
     status character varying,
-    date character varying,
     amount float,
     notes text,
+    start_date date,
+    end_date date,
     is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
@@ -1049,5 +1057,4 @@ CREATE TABLE Rate_Adjustments(
     Max_Rate Float
 );
 */
-
 

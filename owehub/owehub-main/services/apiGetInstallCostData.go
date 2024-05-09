@@ -88,13 +88,6 @@ func HandleGetInstallCostDataRequest(resp http.ResponseWriter, req *http.Request
 			continue
 		}
 
-		// Partner
-		UniqueId, ok := item["unique_id"].(string)
-		if !ok || UniqueId == "" {
-			log.FuncErrorTrace(0, "Failed to get UniqueId for Record ID %v. Item: %+v\n", RecordId, item)
-			UniqueId = ""
-		}
-
 		// Rate
 		Cost, ok := item["cost"].(float64)
 		if !ok {

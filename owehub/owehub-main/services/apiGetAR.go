@@ -11,6 +11,7 @@ import (
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	"strings"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -63,8 +64,10 @@ func HandleGetARDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	tableName := db.TableName_Ar
 	query = `
-	  SELECT id as record_id, unique_id, customer, date, amount, notes
-	  FROM ar`
+	  SELECT ar.id as record_id, ar.unique_id, ar.customer, ar.date, ar.amount, ar.payment_type, ar.bank, ar.ced, ar.total_paid, pr.partner_name AS partner_name, st.name AS state_name
+	  FROM ar
+		JOIN partners pr ON pr.partner_id = ar.partner
+		JOIN states st ON st.state_id = ar.state`
 
 	filter, whereEleList = PrepareARFilters(tableName, dataReq, false)
 	if filter != "" {
@@ -103,33 +106,69 @@ func HandleGetARDataRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 
 		// Date
-		Date, ok := item["date"].(string)
-		if !ok || Date == "" {
-			log.FuncErrorTrace(0, "Failed to get date for Record ID %v. Item: %+v\n", RecordId, item)
-			Date = ""
+		Date, ok := item["date"].(time.Time)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get Date for Record ID %v. Item: %+v\n", RecordId, item)
+			Date = time.Time{}
 		}
 
 		// Amount
-		Amount, ok := item["amount"].(string)
-		if !ok || Amount == "" {
+		Amount, ok := item["amount"].(float64)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get amount for Record ID %v. Item: %+v\n", RecordId, item)
-			Amount = ""
+			Amount = 0.0
 		}
 
-		// Notes
-		Notes, ok := item["notes"].(string)
-		if !ok || Notes == "" {
-			log.FuncErrorTrace(0, "Failed to get notes for Record ID %v. Item: %+v\n", RecordId, item)
-			Notes = ""
+		TotalPaid, ok := item["total_paid"].(float64)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get TotalPaid for Record ID %v. Item: %+v\n", RecordId, item)
+			TotalPaid = 0.0
 		}
 
+		PaymentType, ok := item["payment_type"].(string)
+		if !ok || PaymentType == "" {
+			log.FuncErrorTrace(0, "Failed to get PaymentType for Record ID %v. Item: %+v\n", RecordId, item)
+			PaymentType = ""
+		}
+
+		Bank, ok := item["bank"].(string)
+		if !ok || Bank == "" {
+			log.FuncErrorTrace(0, "Failed to get Bank for Record ID %v. Item: %+v\n", RecordId, item)
+			Bank = ""
+		}
+
+		Ced, ok := item["ced"].(string)
+		if !ok || Ced == "" {
+			log.FuncErrorTrace(0, "Failed to get Ced for Record ID %v. Item: %+v\n", RecordId, item)
+			Ced = ""
+		}
+
+		PartnerName, ok := item["partner_name"].(string)
+		if !ok || PartnerName == "" {
+			log.FuncErrorTrace(0, "Failed to get partner name for Record ID %v. Item: %+v\n", RecordId, item)
+			PartnerName = ""
+		}
+
+		// SaleTypeName
+		StateName, ok := item["state_name"].(string)
+		if !ok || StateName == "" {
+			log.FuncErrorTrace(0, "Failed to get sale type for Record ID %v. Item: %+v\n", RecordId, item)
+			StateName = ""
+		}
+
+		dateString := Date.Format("2006-01-02")
 		aRData := models.GetARReq{
 			RecordId:     RecordId,
 			UniqueId:     Unique_id,
 			CustomerName: Customer,
-			Date:         Date,
+			Date:         dateString,
 			Amount:       Amount,
-			Notes:        Notes,
+			PaymentType:  PaymentType,
+			Bank:         Bank,
+			Ced:          Ced,
+			TotalPaid:    TotalPaid,
+			StateName:    StateName,
+			PartnerName:  PartnerName,
 		}
 
 		ARList.ARList = append(ARList.ARList, aRData)
@@ -190,19 +229,34 @@ func PrepareARFilters(tableName string, dataFilter models.DataRequestBody, forDa
 			// Build the filter condition using correct db column name
 			switch column {
 			case "unique_id":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(unique_id) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ar.unique_id) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "customer":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(customer) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ar.customer) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-			case "data":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(data) %s LOWER($%d)", operator, len(whereEleList)+1))
+			case "date":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ar.date) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "amount":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(amount) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("ar.amount %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-			case "notes":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(notes) %s LOWER($%d)", operator, len(whereEleList)+1))
+			case "total_paid":
+				filtersBuilder.WriteString(fmt.Sprintf("ar.total_paid %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "payment_type":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ar.payment_type) %s LOWER($%d)", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "bank":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ar.bank) %s LOWER($%d)", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "ced":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ar.ced) %s LOWER($%d)", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "partner_name":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(pr.partner_name) %s LOWER($%d)", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "state_name":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(st.name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
 				// For other columns, handle them accordingly
@@ -225,18 +279,18 @@ func PrepareARFilters(tableName string, dataFilter models.DataRequestBody, forDa
 		} else {
 			filtersBuilder.WriteString(" WHERE ")
 		}
-		filtersBuilder.WriteString("is_archived = TRUE")
+		filtersBuilder.WriteString("ar.is_archived = TRUE")
 	} else {
 		if whereAdded {
 			filtersBuilder.WriteString(" AND ")
 		} else {
 			filtersBuilder.WriteString(" WHERE ")
 		}
-		filtersBuilder.WriteString("is_archived = FALSE")
+		filtersBuilder.WriteString("ar.is_archived = FALSE")
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY id, unique_id, customer, date, amount, notes")
+		filtersBuilder.WriteString(" GROUP BY ar.id, ar.unique_id, ar.customer, ar.date, ar.amount, ar.payment_type, ar.bank, ar.ced, ar.total_paid, pr.partner_name, st.name")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {

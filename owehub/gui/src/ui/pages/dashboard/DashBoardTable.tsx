@@ -249,7 +249,7 @@ const DashBoardTable: React.FC = () => {
         >
           <table>
             <thead>
-              <tr style={{ background: "#fcfcfc" }}>
+              <tr  >
                 <th>
                   <div>
                     <CheckBox

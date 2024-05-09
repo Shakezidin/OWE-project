@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -55,7 +56,7 @@ func HandleCreateArScheduleRequest(resp http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	if (len(createArScheduleReq.UniqueId) <= 0) || (len(createArScheduleReq.PermitPay) <= 0) ||
+	if (len(createArScheduleReq.PermitPay) <= 0) ||
 		(len(createArScheduleReq.PartnerName) <= 0) || (len(createArScheduleReq.InstallerName) <= 0) ||
 		(len(createArScheduleReq.StateName) <= 0) || (len(createArScheduleReq.SaleTypeName) <= 0) ||
 		(len(createArScheduleReq.RedLine) <= 0) || (len(createArScheduleReq.CalcDate) <= 0) ||
@@ -68,8 +69,19 @@ func HandleCreateArScheduleRequest(resp http.ResponseWriter, req *http.Request) 
 		return
 	}
 
+	Startdate, err := time.Parse("2006-01-02", createArScheduleReq.StartDate)
+	if err != nil {
+		fmt.Println("Error parsing date:", err)
+		return
+	}
+
+	Enddate, err := time.Parse("2006-01-02", createArScheduleReq.EndDate)
+	if err != nil {
+		fmt.Println("Error parsing date:", err)
+		return
+	}
+
 	// Populate query parameters in the correct order
-	queryParameters = append(queryParameters, createArScheduleReq.UniqueId)
 	queryParameters = append(queryParameters, createArScheduleReq.PartnerName)
 	queryParameters = append(queryParameters, createArScheduleReq.InstallerName)
 	queryParameters = append(queryParameters, createArScheduleReq.SaleTypeName)
@@ -80,8 +92,8 @@ func HandleCreateArScheduleRequest(resp http.ResponseWriter, req *http.Request) 
 	queryParameters = append(queryParameters, createArScheduleReq.PermitMax)
 	queryParameters = append(queryParameters, createArScheduleReq.InstallPay)
 	queryParameters = append(queryParameters, createArScheduleReq.PtoPay)
-	queryParameters = append(queryParameters, createArScheduleReq.StartDate)
-	queryParameters = append(queryParameters, createArScheduleReq.EndDate)
+	queryParameters = append(queryParameters, Startdate)
+	queryParameters = append(queryParameters, Enddate)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.CreateArScheduleFunction, queryParameters)

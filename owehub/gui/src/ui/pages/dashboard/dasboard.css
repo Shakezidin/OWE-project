@@ -234,6 +234,7 @@
   padding: 1rem 1rem 0 1rem;
   border-bottom: 1px solid var(--border-color);
   background-color: #0493ce;
+  overflow-x: hidden;
 }
 
 .help-section {
@@ -266,7 +267,7 @@ color: white;
   display: flex;
   gap: 1rem;
   flex-direction: column;
-  
+  overflow-x: hidden;
 }
 
 .create-input-field-help {
@@ -495,4 +496,13 @@ color: white;
     margin-bottom: -5px;
     /* background-color: #0493CE; */
   }
- 
+
+
+  .help-modal {
+    position: fixed;
+    background-color: #fefefe;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 900px;
+    height: 612px; 
+  }
