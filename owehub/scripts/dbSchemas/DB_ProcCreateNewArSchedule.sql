@@ -1,5 +1,4 @@
 CREATE OR REPLACE FUNCTION create_new_ar_schedule(
-    p_unique_id         CHARACTER VARYING,
     p_partner_name      CHARACTER VARYING,
     p_installer_name    CHARACTER VARYING,
     p_sale_type_name    CHARACTER VARYING,
@@ -61,7 +60,6 @@ END IF;
 
     -- Insert a new row into the rebate_data table
 INSERT INTO ar_schedule (
-    unique_id,
     partner,
     installer,
     sale_type_id,
@@ -76,7 +74,6 @@ INSERT INTO ar_schedule (
     end_date
 )
 VALUES (
-           p_unique_id,
            v_partner_id,
            v_installer_id,
            v_sale_type_id,

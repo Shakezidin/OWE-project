@@ -56,7 +56,7 @@ func HandleUpdateArScheduleRequest(resp http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	if (len(updateArScheduleReq.UniqueId) <= 0) || (len(updateArScheduleReq.PermitPay) <= 0) ||
+	if(len(updateArScheduleReq.PermitPay) <= 0) ||
 		(len(updateArScheduleReq.PartnerName) <= 0) || (len(updateArScheduleReq.InstallerName) <= 0) ||
 		(len(updateArScheduleReq.StateName) <= 0) || (len(updateArScheduleReq.SaleTypeName) <= 0) ||
 		(len(updateArScheduleReq.RedLine) <= 0) || (len(updateArScheduleReq.CalcDate) <= 0) ||
@@ -90,7 +90,6 @@ func HandleUpdateArScheduleRequest(resp http.ResponseWriter, req *http.Request) 
 
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, updateArScheduleReq.RecordId)
-	queryParameters = append(queryParameters, updateArScheduleReq.UniqueId)
 	queryParameters = append(queryParameters, updateArScheduleReq.PartnerName)
 	queryParameters = append(queryParameters, updateArScheduleReq.InstallerName)
 	queryParameters = append(queryParameters, updateArScheduleReq.SaleTypeName)

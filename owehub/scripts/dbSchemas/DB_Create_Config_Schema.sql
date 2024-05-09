@@ -664,7 +664,6 @@ CREATE TABLE rate_adjustments(
 
 CREATE TABLE ar_schedule (
     id serial NOT NULL,
-    unique_id varchar NOT NULL UNIQUE,
     partner INT,
     installer INT,
     sale_type_id INT,

@@ -7,7 +7,6 @@
 package models
 
 type CreateArSchedule struct {
-	UniqueId      string `json:"unique_id"`
 	PartnerName   string `json:"partner_name"`
 	InstallerName string `json:"installer_name"`
 	SaleTypeName  string `json:"sale_type_name"`

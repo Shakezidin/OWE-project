@@ -56,7 +56,7 @@ func HandleCreateArScheduleRequest(resp http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	if (len(createArScheduleReq.UniqueId) <= 0) || (len(createArScheduleReq.PermitPay) <= 0) ||
+	if (len(createArScheduleReq.PermitPay) <= 0) ||
 		(len(createArScheduleReq.PartnerName) <= 0) || (len(createArScheduleReq.InstallerName) <= 0) ||
 		(len(createArScheduleReq.StateName) <= 0) || (len(createArScheduleReq.SaleTypeName) <= 0) ||
 		(len(createArScheduleReq.RedLine) <= 0) || (len(createArScheduleReq.CalcDate) <= 0) ||
@@ -82,7 +82,6 @@ func HandleCreateArScheduleRequest(resp http.ResponseWriter, req *http.Request) 
 	}
 
 	// Populate query parameters in the correct order
-	queryParameters = append(queryParameters, createArScheduleReq.UniqueId)
 	queryParameters = append(queryParameters, createArScheduleReq.PartnerName)
 	queryParameters = append(queryParameters, createArScheduleReq.InstallerName)
 	queryParameters = append(queryParameters, createArScheduleReq.SaleTypeName)

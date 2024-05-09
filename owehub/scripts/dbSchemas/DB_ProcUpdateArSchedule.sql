@@ -1,6 +1,5 @@
 CREATE OR REPLACE FUNCTION update_ar_schedule(
     p_id INT,
-    p_unique_id VARCHAR,
     p_partner_name VARCHAR,
     p_installer_name VARCHAR,
     p_sale_type_name VARCHAR,
@@ -20,7 +19,6 @@ AS $$
 BEGIN
     UPDATE ar_schedule
     SET 
-        unique_id = p_unique_id,
         partner = (SELECT partner_id FROM partners WHERE LOWER(partner_name) = LOWER(p_partner_name) LIMIT 1),
         installer = (SELECT partner_id FROM partners WHERE LOWER(partner_name) = LOWER(p_installer_name) LIMIT 1),
         sale_type_id = (SELECT id FROM sale_type WHERE LOWER(type_name) = LOWER(p_sale_type_name) LIMIT 1),
