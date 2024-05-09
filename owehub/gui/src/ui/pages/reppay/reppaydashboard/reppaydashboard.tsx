@@ -132,6 +132,7 @@ useEffect(() => {
                     height: "30px",
                     alignContent: "center",
                     backgroundColor: "#ECECEC",
+                    cursor: "pointer"
                   }),
                   indicatorSeparator: () => ({
                     display: "none",
