@@ -86,6 +86,7 @@ func HandleUpdateAdjustmentsRequest(resp http.ResponseWriter, req *http.Request)
 	SysSize := 99.99
 	Epc := 99.99
 
+	queryParameters = append(queryParameters, UpdateAdjustmentsReq.RecordId)
 	queryParameters = append(queryParameters, UpdateAdjustmentsReq.UniqueId)
 	queryParameters = append(queryParameters, Customer)
 	queryParameters = append(queryParameters, PartnerName)

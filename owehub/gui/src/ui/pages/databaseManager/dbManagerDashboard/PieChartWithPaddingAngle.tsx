@@ -29,10 +29,11 @@ function PieChartWithPaddingAngle({ data }: PieChartProps) { // Destructure data
 
   const totalValue = data.reduce((acc, cur) => acc + cur.value, 0);
 
+
   return (
-    <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-      <div style={{ position: "relative", width: "300px", height: "400px", marginTop: "-75px", marginLeft: "40px" }}>
-        <PieChart width={300} height={400} style={{outline: 'none'}}>
+    <div style={{ width: "100%", display: "flex", justifyContent: "center", outline: 'none' }}>
+      <div style={{ position: "relative", width: "300px", height: "400px", marginTop: "-75px", marginLeft: "40px", outline: 'none' }}>
+        <PieChart width={300} height={400} style={{outline: 'none', cursor: "pointer"}}>
           {/* <Tooltip formatter={(value: number, name: string, props: any) => [`${value} webhooks`, props]} /> */}
           <Tooltip
             content={({ payload }) => {
@@ -48,6 +49,7 @@ function PieChartWithPaddingAngle({ data }: PieChartProps) { // Destructure data
             }}
           />
           <Pie
+            style={{outline: 'none', cursor: "pointer"}}
             data={data}
             cx={120}
             cy={200}
