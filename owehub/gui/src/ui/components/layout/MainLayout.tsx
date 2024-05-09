@@ -42,7 +42,7 @@ const MainLayout = () => {
         toast.error("Session time expired. Please login again..");
       }
     }
-  }, [dispatch]);
+  }, [dispatch, isAuthenticated]);
 
   return isAuthenticated ? (
     <div className="main-container">
