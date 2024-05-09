@@ -47,6 +47,12 @@ console.log(scrollRef.current,"select");
           ...baseStyles,
           fontSize: "13px",
         }),
+       menu:(base)=>({
+        ...base,
+        zIndex:999,
+        
+       }),
+      
       }}
     />
    </div>
