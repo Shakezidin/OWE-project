@@ -1,8 +1,8 @@
 CREATE OR REPLACE FUNCTION update_install_cost (
     p_id INT,
     p_cost DOUBLE PRECISION,
-    p_start_date              VARCHAR,
-	  p_end_date                VARCHAR,
+    p_start_date date,
+	p_end_date date,
     OUT v_install_cost_id INT
 )
 RETURNS INT 

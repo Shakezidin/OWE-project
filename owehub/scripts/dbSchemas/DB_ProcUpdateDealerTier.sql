@@ -2,8 +2,8 @@ CREATE OR REPLACE FUNCTION update_dealer_tier(
     p_record_id INT,
     p_dealer_name VARCHAR,
     p_tier_name VARCHAR,
-    p_start_date VARCHAR,
-    p_end_date VARCHAR,
+    p_start_date date,
+    p_end_date date,
     OUT v_type_id INT
 )
 RETURNS INT 

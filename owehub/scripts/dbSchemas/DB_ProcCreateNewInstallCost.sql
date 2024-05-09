@@ -1,7 +1,7 @@
 CREATE OR REPLACE FUNCTION create_new_install_cost(
     p_cost                    DOUBLE PRECISION,
-    p_start_date              CHARACTER VARYING,
-    p_end_date                CHARACTER VARYING,
+    p_start_date              date,
+    p_end_date                date,
     OUT v_install_cost_id     INT
 )
 RETURNS INT
