@@ -801,14 +801,22 @@ CREATE TABLE ar (
     id serial NOT NULL,
     unique_id varchar NOT NULL UNIQUE,
     customer text,
-    date character varying,
-    amount text,
-    notes text,
+    partner INT,
+    date date,
+    amount float,
+    payment_type text,
+    bank text,
+    ced text,
+    total_paid float,
+    state INT,
     is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
+    FOREIGN KEY (partner) REFERENCES partners(partner_id),
+    FOREIGN KEY (state) REFERENCES states(state_id),
     PRIMARY KEY (id)
 );
+
 
 CREATE TABLE appt_setters (
     id serial NOT NULL,

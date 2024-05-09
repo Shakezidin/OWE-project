@@ -7,12 +7,13 @@
 package models
 
 type UpdateAR struct {
-	RecordId     int64  `json:"record_id"`
-	UniqueId     string `json:"unique_id"`
-	CustomerName string `json:"customer_name"`
-	Date         string `json:"date"`
-	Amount       string `json:"amount"`
-	Notes        string `json:"notes"`
+	RecordId    int64   `json:"record_id"`
+	UniqueId    string  `json:"unique_id"`
+	Date        string  `json:"date"`
+	Amount      float64 `json:"amount"`
+	PaymentType string  `json:"payment_type"`
+	Bank        string  `json:"bank"`
+	Ced         string  `json:"ced"`
 }
 
 type UpdateARArchive struct {

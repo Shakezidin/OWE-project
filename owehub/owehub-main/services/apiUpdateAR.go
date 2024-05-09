@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -55,9 +56,9 @@ func HandleUpdateARDataRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if (len(UpdateArReq.UniqueId) <= 0) || (len(UpdateArReq.CustomerName) <= 0) ||
-		(len(UpdateArReq.Date) <= 0) || (len(UpdateArReq.Amount) <= 0) ||
-		(len(UpdateArReq.Notes) <= 0) {
+	if (len(UpdateArReq.UniqueId) <= 0) || (len(UpdateArReq.PaymentType) <= 0) ||
+		(len(UpdateArReq.Date) <= 0) || (len(UpdateArReq.Bank) <= 0) ||
+		(len(UpdateArReq.Ced) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API, Update failed", http.StatusBadRequest, nil)
@@ -71,14 +72,35 @@ func HandleUpdateARDataRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// Populate query parameters in the correct order
+	if UpdateArReq.Amount <= float64(0) {
+		err = fmt.Errorf("Invalid Amount Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Amount Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
 
-	queryParameters = append(queryParameters, UpdateArReq.RecordId)
+	// ======= default value delete after calculations ======== //
+	customer := "default"
+	totalPaid := 99.99
+	stateid := "Alabama"
+	partnerid := "PartnerABC"
+
+	date, err := time.Parse("2006-01-02", UpdateArReq.Date)
+	if err != nil {
+		fmt.Println("Error parsing date:", err)
+		return
+	}
+
 	queryParameters = append(queryParameters, UpdateArReq.UniqueId)
-	queryParameters = append(queryParameters, UpdateArReq.CustomerName)
-	queryParameters = append(queryParameters, UpdateArReq.Date)
+	queryParameters = append(queryParameters, customer)
+	queryParameters = append(queryParameters, date)
 	queryParameters = append(queryParameters, UpdateArReq.Amount)
-	queryParameters = append(queryParameters, UpdateArReq.Notes)
+	queryParameters = append(queryParameters, UpdateArReq.PaymentType)
+	queryParameters = append(queryParameters, UpdateArReq.Bank)
+	queryParameters = append(queryParameters, UpdateArReq.Ced)
+	queryParameters = append(queryParameters, totalPaid)
+	queryParameters = append(queryParameters, stateid)
+	queryParameters = append(queryParameters, partnerid)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateArFunction, queryParameters)
