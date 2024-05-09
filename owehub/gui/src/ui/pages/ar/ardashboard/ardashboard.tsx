@@ -8,8 +8,6 @@ import ArDropdownWithCheckboxes from "./Dropdown";
 import "react-date-range/dist/styles.css"; // main style file
 import "react-date-range/dist/theme/default.css"; // theme css file
 import Select from "react-select";
-import SelectOption from "../../../components/selectOption/SelectOption";
-import Drop from "../../../components/dashdrop/drop";
 
 
 
@@ -62,7 +60,6 @@ export const ARDashboardPage: React.FC = () => {
     { value: "Current Due", label: "Current Due" },
     { value: "Est Pipeline", label: "Est Pipeline" },
     { value: "Subtotal", label: "Subtotal" },
-
   ];
 
   // used for close date click outside anywhere
@@ -201,12 +198,89 @@ export const ARDashboardPage: React.FC = () => {
               <label className="inputLabel" style={{ color: "#344054" }}>
                 Elements
               </label>
-               <Drop
-                    options={options3}
-                    onChange={handleSelectChange4}
-                    value={options3.find((option) => option.value === selectedOption4)}
+              {/* <Select
+                options={options3}
+                value={options3.find(
+                  (option) => option.value === selectedOption4
+                )}
+                onChange={handleSelectChange4}
+                styles={{
+                  control: (baseStyles, state) => ({
+                    ...baseStyles,
+                    fontSize: "13px",
+                    fontWeight: "500",
+                    borderRadius: ".40rem",
+                    border: "none",
+                    outline: "none",
+                    width: "6rem",
+                    minHeight: "unset",
+                    height: "30px",
+                    alignContent: "center",
+                    backgroundColor: "#ECECEC",
+                  }),
+                  indicatorSeparator: () => ({
+                    display: "none",
+                  }),
+                  option: (baseStyles) => ({
+                    ...baseStyles,
+                    fontSize: "13px",
+                  }),
+                  menu: (baseStyles) => ({
+                    ...baseStyles,
+                    width: "6rem",
+                    zIndex:999
+                  })
+                }}
+              /> */}
+              <Select
+                options={options3}
+                value={options3.find((option) => option.value === selectedOption4)}
+                onChange={handleSelectChange4}
+                styles={{
+                  control: (baseStyles, state) => ({
+                    ...baseStyles,
+                    fontSize: "13px",
+                    fontWeight: "500",
+                    borderRadius: ".40rem",
+                    border: "none",
+                    outline: "none",
+                    width: "6rem",
+                    minHeight: "unset",
+                    height: "30px",
+                    alignContent: "center",
+                    backgroundColor: "#ECECEC",
                     
-                  />
+                  }),
+                  indicatorSeparator: () => ({
+                    display: "none",
+                  }),
+                  option: (baseStyles) => ({
+                    ...baseStyles,
+                    fontSize: "13px",
+                  }),
+                  menu: (baseStyles) => ({
+                    ...baseStyles,
+                    width: "6rem",
+                    maxHeight: "200px",
+                    overflowY: "auto",
+                    "::-webkit-scrollbar": {
+                      width: "8px",
+                    },
+                    "::-webkit-scrollbar-track": {
+                      background: "#f1f1f1",
+                    },
+                    "::-webkit-scrollbar-thumb": {
+                      background: "#888",
+                      borderRadius: "4px",
+                    },
+                    "::-webkit-scrollbar-thumb:hover": {
+                      background: "#555",
+                    },
+                    zIndex:999
+                  }),
+                
+                }}
+              />
             </div>
 
 

@@ -151,36 +151,3 @@ opacity: 0px;
   align-items: center;
   gap: 0.5rem;
 }
-
-
-
-.usercreate-scollbar {
-  position: relative;
-  max-height: 60vh;
-  background: var(--white-color);
-  overflow-y: auto;
-  overflow-x: auto;
-  scroll-behavior: smooth;
-}
-.usercreate-scollbar::-webkit-scrollbar {
-  width: 10px; 
-  height: 10px; 
-}
-.usercreate-scollbar::-webkit-scrollbar {
-  display: initial
-}   
-
-.usercreate-scollbar::-webkit-scrollbar-thumb {
-  background-color: rgb(173, 173, 173);
-  border-radius: 30px; 
-}
-.usercreate-scollbar::-webkit-scrollbar-button {
-  display: initial; 
-}
-.usercreate-scollbar::-webkit-scrollbar {
-  -ms-overflow-style: initial; 
-  scrollbar-width: thin;
-}
-.usercreate-scollbar::-webkit-scrollbar-corner {
-  background-color: transparent;
-}
