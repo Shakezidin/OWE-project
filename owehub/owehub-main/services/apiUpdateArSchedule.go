@@ -56,23 +56,43 @@ func HandleUpdateArScheduleRequest(resp http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	if(len(updateArScheduleReq.PermitPay) <= 0) ||
-		(len(updateArScheduleReq.PartnerName) <= 0) || (len(updateArScheduleReq.InstallerName) <= 0) ||
+	if (len(updateArScheduleReq.PartnerName) <= 0) || (len(updateArScheduleReq.InstallerName) <= 0) ||
 		(len(updateArScheduleReq.StateName) <= 0) || (len(updateArScheduleReq.SaleTypeName) <= 0) ||
-		(len(updateArScheduleReq.RedLine) <= 0) || (len(updateArScheduleReq.CalcDate) <= 0) ||
-		(len(updateArScheduleReq.InstallPay) <= 0) || (len(updateArScheduleReq.PtoPay) <= 0) ||
-		(len(updateArScheduleReq.StartDate) <= 0) || (len(updateArScheduleReq.PermitMax) <= 0) ||
-		(len(updateArScheduleReq.EndDate) <= 0) {
+		(len(updateArScheduleReq.CalcDate) <= 0) || (len(updateArScheduleReq.EndDate) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed, Update failed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
-	if updateArScheduleReq.RecordId <= int64(0) {
-		err = fmt.Errorf("Invalid Record Id, unable to proceed")
+	if updateArScheduleReq.RedLine <= float64(0) {
+		err = fmt.Errorf("Invalid RedLine price Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Record Id, Update failed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid Per RedLine Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if updateArScheduleReq.PermitPay <= float64(0) {
+		err = fmt.Errorf("Invalid PermitPay price Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Per PermitPay Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if updateArScheduleReq.PermitMax <= float64(0) {
+		err = fmt.Errorf("Invalid PermitMax price Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Per PermitMax Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if updateArScheduleReq.InstallPay <= float64(0) {
+		err = fmt.Errorf("Invalid InstallPay price Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Per RedInstallPayLine Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+	if updateArScheduleReq.PtoPay <= float64(0) {
+		err = fmt.Errorf("Invalid PtoPay price Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Per PtoPay Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 

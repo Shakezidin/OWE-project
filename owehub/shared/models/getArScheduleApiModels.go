@@ -12,12 +12,12 @@ type GetArSchedule struct {
 	InstallerName string `json:"installer_name"`
 	SaleTypeName  string `json:"sale_type_name"`
 	StateName     string `json:"state_name"`
-	RedLine       string `json:"red_line"`
+	RedLine       float64 `json:"red_line"`
 	CalcDate      string `json:"calc_date"`
-	PermitPay     string `json:"permit_pay"`
-	PermitMax     string `json:"permit_max"`
-	InstallPay    string `json:"install_pay"`
-	PtoPay        string `json:"pto_pay"`
+	PermitPay     float64 `json:"permit_pay"`
+	PermitMax     float64 `json:"permit_max"`
+	InstallPay    float64 `json:"install_pay"`
+	PtoPay        float64 `json:"pto_pay"`
 	StartDate     string `json:"start_date"`
 	EndDate       string `json:"end_date"`
 }

@@ -121,10 +121,10 @@ func HandleGetArScheduleDataRequest(resp http.ResponseWriter, req *http.Request)
 		}
 
 		// RedLine
-		RedLine, ok := item["red_line"].(string)
-		if !ok || RedLine == "" {
+		RedLine, ok := item["red_line"].(float64)
+		if !ok  {
 			log.FuncErrorTrace(0, "Failed to get red line for Record ID %v. Item: %+v\n", RecordId, item)
-			RedLine = ""
+			RedLine = 0
 		}
 
 		// CalcDate
@@ -135,31 +135,31 @@ func HandleGetArScheduleDataRequest(resp http.ResponseWriter, req *http.Request)
 		}
 
 		// PermitPay
-		PermitPay, ok := item["permit_pay"].(string)
-		if !ok || PermitPay == "" {
+		PermitPay, ok := item["permit_pay"].(float64)
+		if !ok  {
 			log.FuncErrorTrace(0, "Failed to get permit pay for Record ID %v. Item: %+v\n", RecordId, item)
-			PermitPay = ""
+			PermitPay = 0
 		}
 
 		// PermitMax
-		PermitMax, ok := item["permit_max"].(string)
-		if !ok || PermitMax == "" {
+		PermitMax, ok := item["permit_max"].(float64)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get permit max for Record ID %v. Item: %+v\n", RecordId, item)
-			PermitMax = ""
+			PermitMax = 0
 		}
 
 		// InstallPay
-		InstallPay, ok := item["install_pay"].(string)
-		if !ok || InstallPay == "" {
+		InstallPay, ok := item["install_pay"].(float64)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get install pay for Record ID %v. Item: %+v\n", RecordId, item)
-			InstallPay = ""
+			InstallPay = 0
 		}
 
 		// PtoPay
-		PtoPay, ok := item["pto_pay"].(string)
-		if !ok || PtoPay == "" {
+		PtoPay, ok := item["pto_pay"].(float64)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get PTO pay for Record ID %v. Item: %+v\n", RecordId, item)
-			PtoPay = ""
+			PtoPay = 0
 		}
 
 		// StartDate

@@ -5,7 +5,7 @@ CREATE OR REPLACE FUNCTION update_ar(
     p_amount DOUBLE PRECISION,
     p_payment_type text,
     p_bank text,
-    p_ced text,
+    p_ced date,
     p_total_paid DOUBLE PRECISION,
     p_state character varying,
     p_partner character varying,
