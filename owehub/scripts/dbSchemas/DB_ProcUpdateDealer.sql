@@ -2,9 +2,10 @@ CREATE OR REPLACE FUNCTION update_dealer_override(
     p_record_id INT,
     p_sub_dealer VARCHAR,
     p_dealer VARCHAR,
+    p_state_name VARCHAR,
     p_pay_rate VARCHAR,
-    p_start_date VARCHAR,
-    p_end_date VARCHAR,
+    p_start_date date,
+    p_end_date date,
     OUT v_dealer_override_id INT
 )
 RETURNS INT  -- Return type matches the OUT parameter type
@@ -14,6 +15,7 @@ BEGIN
     SET 
         sub_dealer = p_sub_dealer,
         dealer_id = (SELECT user_id FROM user_details WHERE LOWER(name) = LOWER(p_dealer) LIMIT 1),
+        state = (SELECT state_id FROM states WHERE LOWER(name) = LOWER(p_state_name) LIMIT 1),
         pay_rate = p_pay_rate,
         start_date = p_start_date,
         end_date = p_end_date,

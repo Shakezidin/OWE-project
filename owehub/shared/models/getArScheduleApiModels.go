@@ -8,7 +8,6 @@ package models
 
 type GetArSchedule struct {
 	RecordId      int64  `json:"record_id"`
-	UniqueId      string `json:"unique_id"`
 	PartnerName   string `json:"partner_name"`
 	InstallerName string `json:"installer_name"`
 	SaleTypeName  string `json:"sale_type_name"`

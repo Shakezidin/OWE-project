@@ -11,6 +11,7 @@ import (
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	"strings"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -63,7 +64,7 @@ func HandleGetReconcileRequest(resp http.ResponseWriter, req *http.Request) {
 
 	tableName := db.TableName_commission_rates
 	query = `
-	 SELECT re.id as record_id, re.unique_id, re.customer, pt.partner_name AS partner_name, st.name as state_name, re.sys_size, re.status, re.date, re.amount, re.notes
+	 SELECT re.id as record_id, re.unique_id, re.customer, pt.partner_name AS partner_name, st.name as state_name, re.sys_size, re.status, re.start_date, re.end_date, re.amount, re.notes
 	 FROM reconcile re
 	 JOIN states st ON st.state_id = re.state_id
 	 JOIN partners pt ON pt.partner_id = re.partner_id`
@@ -132,12 +133,6 @@ func HandleGetReconcileRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 
 		// Date
-		DateStr, ok := item["date"].(string)
-		if !ok || DateStr == "" {
-			log.FuncErrorTrace(0, "Failed to get date for Unique ID %v. Item: %+v\n", UniqueId, item)
-			DateStr = ""
-		}
-
 		// Amount
 		Amount, ok := item["amount"].(float64)
 		if !ok {
@@ -152,6 +147,22 @@ func HandleGetReconcileRequest(resp http.ResponseWriter, req *http.Request) {
 			Notes = ""
 		}
 
+		StartDate, ok := item["start_date"].(time.Time)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
+			StartDate = time.Time{}
+		}
+
+		// EndDate
+		EndDate, ok := item["end_date"].(time.Time)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get end date for Record ID %v. Item: %+v\n", RecordId, item)
+			EndDate = time.Time{}
+		}
+
+		start := StartDate.Format("2006-01-02")
+		end := EndDate.Format("2006-01-02")
+
 		reconcileData := models.GetReconcile{
 			RecordId:    RecordId,
 			UniqueId:    UniqueId,
@@ -160,7 +171,8 @@ func HandleGetReconcileRequest(resp http.ResponseWriter, req *http.Request) {
 			StateName:   StateName,
 			SysSize:     SysSize,
 			Status:      Status,
-			Date:        DateStr,
+			StartDate:   start,
+			EndDate:     end,
 			Amount:      Amount,
 			Notes:       Notes,
 		}
@@ -235,14 +247,17 @@ func PrepareReconcileFilters(tableName string, dataFilter models.DataRequestBody
 			case "status":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(re.status) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-			case "date":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(re.date) %s LOWER($%d)", operator, len(whereEleList)+1))
-				whereEleList = append(whereEleList, value)
 			case "amount":
 				filtersBuilder.WriteString(fmt.Sprintf("re.amount %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "notes":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(re.notes) %s LOWER($%d)", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "start_date":
+				filtersBuilder.WriteString(fmt.Sprintf("re.start_date %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "end_date":
+				filtersBuilder.WriteString(fmt.Sprintf("re.end_date %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
@@ -269,7 +284,7 @@ func PrepareReconcileFilters(tableName string, dataFilter models.DataRequestBody
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY re.id, re.unique_id, re.customer, pt.partner_name, st.name, re.sys_size, re.status, re.date, re.amount, re.notes")
+		filtersBuilder.WriteString(" GROUP BY re.id, re.unique_id, re.customer, pt.partner_name, st.name, re.sys_size, re.status, re.amount, re.notes, re.start_date, re.end_date")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {

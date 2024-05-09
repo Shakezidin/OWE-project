@@ -63,7 +63,7 @@ func HandleGetInstallCostDataRequest(resp http.ResponseWriter, req *http.Request
 
 	tableName := db.TableName_install_cost
 	query = `
-	SELECT ic.id as record_id, ic.unique_id, ic.cost, ic.start_date, ic.end_date
+	SELECT ic.id as record_id, ic.cost, ic.start_date, ic.end_date
 	FROM install_cost ic`
 
 	filter, whereEleList = PrepareInstallCostFilters(tableName, dataReq, false)
@@ -85,13 +85,6 @@ func HandleGetInstallCostDataRequest(resp http.ResponseWriter, req *http.Request
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
 			continue
-		}
-
-		// Partner
-		UniqueId, ok := item["unique_id"].(string)
-		if !ok || UniqueId == "" {
-			log.FuncErrorTrace(0, "Failed to get UniqueId for Record ID %v. Item: %+v\n", RecordId, item)
-			UniqueId = ""
 		}
 
 		// Rate
@@ -117,7 +110,6 @@ func HandleGetInstallCostDataRequest(resp http.ResponseWriter, req *http.Request
 
 		installCost := models.GetInstallCost{
 			RecordId:  RecordId,
-			UniqueId:  UniqueId,
 			Cost:      Cost,
 			StartDate: StartDate,
 			EndDate:   EndDate,
@@ -206,7 +198,7 @@ func PrepareInstallCostFilters(tableName string, dataFilter models.DataRequestBo
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY ic.id, ic.unique_id, ic.cost,ic.start_date, ic.end_date")
+		filtersBuilder.WriteString(" GROUP BY ic.id, ic.cost,ic.start_date, ic.end_date")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {

@@ -8,11 +8,9 @@ CREATE OR REPLACE FUNCTION update_adjustments (
     p_sys_size DOUBLE PRECISION,
     p_bl VARCHAR,
     p_epc DOUBLE PRECISION,
-    p_date VARCHAR,
+    p_date date,
     p_notes VARCHAR,
     p_amount DOUBLE PRECISION,
-    p_start_date              VARCHAR,
-	  p_end_date                VARCHAR,
     OUT v_adjustments_data_id INT
 )
 RETURNS INT 
@@ -31,8 +29,7 @@ BEGIN
       date = p_date,
       notes = p_notes,
       amount = p_amount,
-      start_date = p_start_date,
-      end_date = p_end_date  
+      updated_at = CURRENT_TIMESTAMP 
   WHERE id = p_id
   RETURNING id INTO v_adjustments_data_id;
 IF NOT FOUND THEN

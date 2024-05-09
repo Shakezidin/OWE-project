@@ -11,6 +11,7 @@ import (
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	"strings"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -63,7 +64,7 @@ func HandleGetAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	tableName := db.TableName_adder_data
 	query = `
-		SELECT ad.id AS record_id, ad.unique_id, ad.date, ad.type_ad_mktg, ad.type, ad.gc, ad.exact_amount, ad.per_kw_amt, ad.rep_percent, ad.description, ad.notes, ad.sys_size, ad.adder_cal
+		SELECT ad.id AS record_id, ad.unique_id, ad.date, ad.type_ad_mktg, ad.type1, ad.gc, ad.exact_amount, ad.per_kw_amt, ad.rep_percent, ad.description, ad.notes, ad.sys_size, ad.adder_cal
 		FROM adder_data ad`
 
 	filter, whereEleList = PrepareAdderDataFilters(tableName, dataReq, false)
@@ -96,10 +97,10 @@ func HandleGetAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 
 		// Customer
-		Date, ok := item["date"].(string)
-		if !ok || Date == "" {
+		Date, ok := item["date"].(time.Time)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get Date for Record ID %v. Item: %+v\n", RecordId, item)
-			Date = ""
+			Date = time.Time{}
 		}
 
 		// Date
@@ -110,7 +111,7 @@ func HandleGetAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 
 		// Amount
-		Type, ok := item["type"].(string)
+		Type, ok := item["type1"].(string)
 		if !ok || Type == "" {
 			log.FuncErrorTrace(0, "Failed to get Type for Record ID %v. Item: %+v\n", RecordId, item)
 			Type = ""
@@ -123,10 +124,10 @@ func HandleGetAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 			Gc = ""
 		}
 
-		ExactAmount, ok := item["exact_amount"].(string)
-		if !ok || ExactAmount == "" {
+		ExactAmount, ok := item["exact_amount"].(float64)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get ExactAmount for Record ID %v. Item: %+v\n", RecordId, item)
-			ExactAmount = ""
+			ExactAmount = 0.0
 		}
 
 		Description, ok := item["description"].(string)
@@ -165,10 +166,11 @@ func HandleGetAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 			AdderCal = 0.0
 		}
 
+		dateString := Date.Format("2006-01-02")
 		AdderData := models.GetAdderData{
 			RecordId:    RecordId,
 			UniqueId:    UniqueId,
-			Date:        Date,
+			Date:        dateString,
 			TypeAdMktg:  TypeAdMktg,
 			Type:        Type,
 			Gc:          Gc,
@@ -247,14 +249,14 @@ func PrepareAdderDataFilters(tableName string, dataFilter models.DataRequestBody
 			case "type_ad_mktg":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.type_ad_mktg) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-			case "type":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.type) %s LOWER($%d)", operator, len(whereEleList)+1))
+			case "type1":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.type1) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "gc":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.gc) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "exact_amount":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.exact_amount) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("ad.exact_amount %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "per_kw_amt":
 				filtersBuilder.WriteString(fmt.Sprintf("ad.per_kw_amt %s $%d", operator, len(whereEleList)+1))
@@ -299,7 +301,7 @@ func PrepareAdderDataFilters(tableName string, dataFilter models.DataRequestBody
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY ad.id, ad.unique_id, ad.date, ad.type_ad_mktg, ad.type, ad.gc, ad.exact_amount, ad.per_kw_amt, ad.rep_percent, ad.description, ad.notes, ad.sys_size, ad.adder_cal")
+		filtersBuilder.WriteString(" GROUP BY ad.id, ad.unique_id, ad.date, ad.type_ad_mktg, ad.type1, ad.gc, ad.exact_amount, ad.per_kw_amt, ad.rep_percent, ad.description, ad.notes, ad.sys_size, ad.adder_cal")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {

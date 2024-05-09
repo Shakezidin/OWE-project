@@ -11,6 +11,7 @@ import (
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	"strings"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -63,7 +64,7 @@ func HandleGetArScheduleDataRequest(resp http.ResponseWriter, req *http.Request)
 
 	tableName := db.TableName_ar_schedule
 	query = `
-		SELECT ar.id AS record_id, ar.unique_id, ar.red_line, ar.calc_date, ar.permit_pay, ar.permit_max, ar.install_pay, ar.pto_pay, ar.start_date, ar.end_date, st.name AS state_name, pr_partner.partner_name AS partner_name, pr_installer.partner_name AS installer_name, sy.type_name AS sale_type_name   
+		SELECT ar.id AS record_id, ar.red_line, ar.calc_date, ar.permit_pay, ar.permit_max, ar.install_pay, ar.pto_pay, ar.start_date, ar.end_date, st.name AS state_name, pr_partner.partner_name AS partner_name, pr_installer.partner_name AS installer_name, sy.type_name AS sale_type_name   
 		FROM ar_schedule ar
 		JOIN states st ON st.state_id = ar.state_id
 		JOIN partners pr_partner ON pr_partner.partner_id = ar.partner
@@ -89,13 +90,6 @@ func HandleGetArScheduleDataRequest(resp http.ResponseWriter, req *http.Request)
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
 			continue
-		}
-
-		// UniqueId
-		UniqueId, ok := item["unique_id"].(string)
-		if !ok || UniqueId == "" {
-			log.FuncErrorTrace(0, "Failed to get unique id for Record ID %v. Item: %+v\n", RecordId, item)
-			UniqueId = ""
 		}
 
 		// PartnerName
@@ -169,22 +163,24 @@ func HandleGetArScheduleDataRequest(resp http.ResponseWriter, req *http.Request)
 		}
 
 		// StartDate
-		StartDate, ok := item["start_date"].(string)
-		if !ok || StartDate == "" {
+		StartDate, ok := item["start_date"].(time.Time)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
-			StartDate = ""
+			StartDate = time.Time{}
 		}
 
 		// EndDate
-		EndDate, ok := item["end_date"].(string)
-		if !ok || EndDate == "" {
+		EndDate, ok := item["end_date"].(time.Time)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get end date for Record ID %v. Item: %+v\n", RecordId, item)
-			EndDate = ""
+			EndDate = time.Time{}
 		}
+
+		start := StartDate.Format("2006-01-02")
+		end := EndDate.Format("2006-01-02")
 
 		arSchedule := models.GetArSchedule{
 			RecordId:      RecordId,
-			UniqueId:      UniqueId,
 			PartnerName:   PartnerName,
 			InstallerName: InstallerName,
 			SaleTypeName:  SaleTypeName,
@@ -195,8 +191,8 @@ func HandleGetArScheduleDataRequest(resp http.ResponseWriter, req *http.Request)
 			PermitMax:     PermitMax,
 			InstallPay:    InstallPay,
 			PtoPay:        PtoPay,
-			StartDate:     StartDate,
-			EndDate:       EndDate,
+			StartDate:     start,
+			EndDate:       end,
 		}
 		arScheduleList.ArScheduleList = append(arScheduleList.ArScheduleList, arSchedule)
 	}
@@ -309,7 +305,7 @@ func PrepareArScheduleFilters(tableName string, dataFilter models.DataRequestBod
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY ar.id, ar.unique_id, ar.red_line, ar.calc_date, ar.permit_pay, ar.permit_max, ar.install_pay, ar.pto_pay, ar.start_date, ar.end_date, st.name, pr_partner.partner_name, pr_installer.partner_name, sy.type_name")
+		filtersBuilder.WriteString(" GROUP BY ar.id, ar.red_line, ar.calc_date, ar.permit_pay, ar.permit_max, ar.install_pay, ar.pto_pay, ar.start_date, ar.end_date, st.name, pr_partner.partner_name, pr_installer.partner_name, sy.type_name")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
