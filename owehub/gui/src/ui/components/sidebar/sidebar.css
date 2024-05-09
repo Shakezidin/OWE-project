@@ -92,7 +92,7 @@
 }
 .side-bar-logo-active {
   transition: 0.4s all linear;
-  padding: 1.3rem 1rem 1.2rem 0.5rem;
+  padding: 20px 4px;
   /* padding: .7rem 1rem .8rem 0.8rem; */
 }
 .side-bar-logo img {
