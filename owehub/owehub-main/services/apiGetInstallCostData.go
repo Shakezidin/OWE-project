@@ -11,6 +11,7 @@ import (
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	"strings"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -63,7 +64,7 @@ func HandleGetInstallCostDataRequest(resp http.ResponseWriter, req *http.Request
 
 	tableName := db.TableName_install_cost
 	query = `
-	SELECT ic.id as record_id, ic.unique_id, ic.cost, ic.start_date, ic.end_date
+	SELECT ic.id as record_id, ic.cost, ic.start_date, ic.end_date
 	FROM install_cost ic`
 
 	filter, whereEleList = PrepareInstallCostFilters(tableName, dataReq, false)
@@ -101,26 +102,28 @@ func HandleGetInstallCostDataRequest(resp http.ResponseWriter, req *http.Request
 			Cost = 0.0 // Default rate value of 0.0
 		}
 
-		// StartDate
-		StartDate, ok := item["start_date"].(string)
-		if !ok || StartDate == "" {
+		// start_date
+		Start_date, ok := item["start_date"].(time.Time)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
-			StartDate = ""
+			Start_date = time.Time{}
 		}
 
 		// EndDate
-		EndDate, ok := item["end_date"].(string)
-		if !ok || EndDate == "" {
+		EndDate, ok := item["end_date"].(time.Time)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get end date for Record ID %v. Item: %+v\n", RecordId, item)
-			EndDate = ""
+			EndDate = time.Time{}
 		}
+
+		StartDateStr := Start_date.Format("2006-01-02")
+		EndDateStr := EndDate.Format("2006-01-02")
 
 		installCost := models.GetInstallCost{
 			RecordId:  RecordId,
-			UniqueId:  UniqueId,
 			Cost:      Cost,
-			StartDate: StartDate,
-			EndDate:   EndDate,
+			StartDate: StartDateStr,
+			EndDate:   EndDateStr,
 		}
 		installCostList.InstallCostList = append(installCostList.InstallCostList, installCost)
 	}
@@ -181,6 +184,12 @@ func PrepareInstallCostFilters(tableName string, dataFilter models.DataRequestBo
 			case "cost":
 				filtersBuilder.WriteString(fmt.Sprintf("ic.cost %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
+			case "start_date":
+				filtersBuilder.WriteString(fmt.Sprintf("lf.start_date %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "end_date":
+				filtersBuilder.WriteString(fmt.Sprintf("lf.end_date %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
 			default:
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
@@ -206,7 +215,7 @@ func PrepareInstallCostFilters(tableName string, dataFilter models.DataRequestBo
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY ic.id, ic.unique_id, ic.cost,ic.start_date, ic.end_date")
+		filtersBuilder.WriteString(" GROUP BY ic.id, ic.cost,ic.start_date, ic.end_date")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {

@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -69,12 +70,28 @@ func HandleUpdateDealerTierRequest(resp http.ResponseWriter, req *http.Request) 
 		return
 	}
 
+	startDate, err := time.Parse("2006-01-02", updateDealertierReq.StartDate)
+	if err != nil {
+		err = fmt.Errorf("Error parsing start date:", err)
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid start date, Update failed", http.StatusBadRequest, nil)
+		return
+	}
+
+	endDate, err := time.Parse("2006-01-02", updateDealertierReq.EndDate)
+	if err != nil {
+		err = fmt.Errorf("Error parsing start date:", err)
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid end date, Update failed", http.StatusBadRequest, nil)
+		return
+	}
+
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, updateDealertierReq.RecordId)
 	queryParameters = append(queryParameters, updateDealertierReq.DealerName)
 	queryParameters = append(queryParameters, updateDealertierReq.Tier)
-	queryParameters = append(queryParameters, updateDealertierReq.StartDate)
-	queryParameters = append(queryParameters, updateDealertierReq.EndDate)
+	queryParameters = append(queryParameters, startDate)
+	queryParameters = append(queryParameters, endDate)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateDealerTierFunction, queryParameters)

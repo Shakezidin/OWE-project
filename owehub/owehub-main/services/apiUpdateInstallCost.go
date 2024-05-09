@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -55,8 +56,7 @@ func HandleUpdateInstallCostDataRequest(resp http.ResponseWriter, req *http.Requ
 		return
 	}
 
-	if (len(UpdateInstallCostReq.UniqueId) <= 0) || (len(UpdateInstallCostReq.StartDate) <= 0) ||
-		(len(UpdateInstallCostReq.EndDate) <= 0) {
+	if (len(UpdateInstallCostReq.StartDate) <= 0) || (len(UpdateInstallCostReq.EndDate) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed, Update failed", http.StatusBadRequest, nil)
@@ -77,12 +77,27 @@ func HandleUpdateInstallCostDataRequest(resp http.ResponseWriter, req *http.Requ
 		return
 	}
 
+	startDate, err := time.Parse("2006-01-02", UpdateInstallCostReq.StartDate)
+	if err != nil {
+		err = fmt.Errorf("Error parsing start date:", err)
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid start date, Update failed", http.StatusBadRequest, nil)
+		return
+	}
+
+	endDate, err := time.Parse("2006-01-02", UpdateInstallCostReq.EndDate)
+	if err != nil {
+		err = fmt.Errorf("Error parsing start date:", err)
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid end date, Update failed", http.StatusBadRequest, nil)
+		return
+	}
+
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, UpdateInstallCostReq.RecordId)
-	queryParameters = append(queryParameters, UpdateInstallCostReq.UniqueId)
 	queryParameters = append(queryParameters, UpdateInstallCostReq.Cost)
-	queryParameters = append(queryParameters, UpdateInstallCostReq.StartDate)
-	queryParameters = append(queryParameters, UpdateInstallCostReq.EndDate)
+	queryParameters = append(queryParameters, startDate)
+	queryParameters = append(queryParameters, endDate)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.UpdateInstallCostFunction, queryParameters)
