@@ -270,7 +270,6 @@ export const ARDashboardPage: React.FC = () => {
                     height: "30px",
                     alignContent: "center",
                     backgroundColor: "#ECECEC",
-                    
                   }),
                   indicatorSeparator: () => ({
                     display: "none",
@@ -282,12 +281,10 @@ export const ARDashboardPage: React.FC = () => {
                   menu: (baseStyles) => ({
                     ...baseStyles,
                     width: "6rem",
-                    maxHeight: "200px",
+                    height: "auto",
                     overflowY: "auto",
-                 
                     zIndex:999
                   }),
-
                   menuList:(base)=>({
                     ...base,
                     "&::-webkit-scrollbar":{
@@ -301,7 +298,6 @@ export const ARDashboardPage: React.FC = () => {
                       borderRadius:"30px"
                     }
                    })
-                
                 }}
               />
             </div>
