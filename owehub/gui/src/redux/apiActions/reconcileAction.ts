@@ -10,10 +10,11 @@ export interface ReconcileEditParams {
     state_name:string,
     sys_size:number,
     status:string,
-    date:string,
+    start_date:string,
+    end_date:string,
     amount:number,
     notes:string
-   record_id:string
+    record_id:string
 }
 
 
@@ -24,7 +25,8 @@ interface ReconcileCreateParams {
      state_name:string,
      sys_size:number,
      status:string,
-     date:string,
+     start_date:string,
+     end_date:string,
      amount:number,
      notes:string
 }

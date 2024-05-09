@@ -270,6 +270,7 @@ console.log(currentPageData,"daaaaaaa");
                       </td>
                       <td>{el.dealer}</td>
                       <td>{el.pay_rate}</td>
+                      <td>{el.state}</td>
                       <td>{el.start_date}</td>
                       <td>{el.end_date}</td>
                    {

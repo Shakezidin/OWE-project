@@ -3,6 +3,7 @@ export interface DealerModel {
     sub_dealer: string;
     dealer: string;
     pay_rate: string;
+    state:string;
     start_date: string;
     end_date: string;
   }

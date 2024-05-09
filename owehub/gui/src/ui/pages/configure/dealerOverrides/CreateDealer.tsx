@@ -22,7 +22,12 @@ import { errorSwal, successSwal } from "../../../components/alert/ShowAlert";
 import { useAppDispatch } from "../../../../redux/hooks";
 import { fetchDealer } from "../../../../redux/apiSlice/configSlice/config_get_slice/dealerSlice";
 import { validateConfigForm } from "../../../../utiles/configFormValidation";
-
+import {
+  installerOption,
+  partnerOption,
+  salesTypeOption,
+  stateOption,
+} from "../../../../core/models/data_models/SelectDataModel";
 interface dealerProps {
   handleClose: () => void;
   editMode: boolean;
@@ -47,11 +52,12 @@ const CreateDealer: React.FC<dealerProps> = ({
     pay_rate: dealerData ? dealerData?.pay_rate : "",
     start_date: dealerData ? dealerData?.start_date : "",
     end_date: dealerData ? dealerData?.end_date : "",
+    state:dealerData ? dealerData?.state : "",
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [newFormData, setNewFormData] = useState<any>([]);
   const tableData = {
-    tableNames: ["sub_dealer", "dealer"],
+    tableNames: ["sub_dealer", "dealer", "states"],
   };
   const userType={
     role:"sub_dealer"
@@ -79,6 +85,15 @@ const CreateDealer: React.FC<dealerProps> = ({
       [fieldName]: ''
     }));
   };
+ 
+  const getnewformData = async () => {
+    const res = await postCaller(EndPoints.get_newFormData, tableData);
+    setCreateDealer((prev) => ({ ...prev, ...res.data }));
+  };
+  useEffect(() => {
+    getnewformData();
+  }, []);
+
   const handleDealerInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setCreateDealer((prevData) => ({
@@ -101,6 +116,7 @@ const CreateDealer: React.FC<dealerProps> = ({
       sub_dealer: [{ condition: (value: any) => !!value, message: "Sub Dealer is required" }],
       dealer: [{ condition: (value: any) => !!value, message: "Dealer is required" }],
       pay_rate: [{ condition: (value: any) => !!value, message: "Pay rate is required" }],
+      state: [{ condition: (value: any) => !!value, message: "State is required" }],
       start_date: [{ condition: (value: any) => !!value, message: "Start Date is required" }],
       end_date: [{ condition: (value: any) => !!value, message: "End Date is required" }],
   
@@ -192,7 +208,32 @@ const CreateDealer: React.FC<dealerProps> = ({
               
               </div>
 
+              
+
               <div className="create-input-container">
+              <div className="create-input-field">
+                  <label className="inputLabel-select">ST</label>
+                  <SelectOption
+                    options={stateOption(createDealer)}
+                    onChange={(newValue) => {
+                      setCreateDealer((prev) => ({
+                        ...prev,
+                        state: newValue?.value!,
+                      }));
+                    }}
+                    value={stateOption(createDealer)?.find(
+                      (option) => option.value === createDealer.state
+                    )}
+                  />
+
+                  {errors?.state && (
+                    <span style={{ display: "block", color: "#FF204E" }}>
+                      {errors.state}
+                    </span>
+                  )}
+                </div>
+              
+      
                 <div className="create-input-field">
                   <Input
                     type={"date"}

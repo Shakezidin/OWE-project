@@ -42,6 +42,7 @@ import apptSetterSlice from "./apiSlice/configSlice/config_get_slice/apptSetterS
 import dlrOth from "./apiSlice/configSlice/config_get_slice/dlrOth";
 import nonComm from "./apiSlice/configSlice/config_get_slice/nonComm";
 import refralDataSlice from "./apiSlice/configSlice/config_get_slice/refralDataSlice";
+import autoAdderSlice from "./apiSlice/configSlice/config_get_slice/autoAdderSlice";
 
 export const store = configureStore({
   reducer: {
@@ -89,7 +90,8 @@ export const store = configureStore({
     ar: arSlice,
     dlrOth,
     nonComm,
-    refralDataSlice
+    refralDataSlice,
+    autoadder:autoAdderSlice,
   },
 });
 
