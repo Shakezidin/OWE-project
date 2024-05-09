@@ -400,9 +400,9 @@ const ProjectStatus = () => {
     <div className="">
       <Breadcrumb
         head="Project Tracking"
-        linkPara="Project Tracking"
+        linkPara="Project Management"
         route={""}
-        linkparaSecond="Details"
+        linkparaSecond="Dashboard"
       />
       <div className="project-container" style={{ padding: "0rem 0 1rem 0" }}>
         <div
@@ -487,6 +487,13 @@ const ProjectStatus = () => {
           <div className="">
             <h3>Project Stages</h3>
             <div className="progress-box-container">
+            <div className="progress-box-body">
+                <div
+                  className="progress-box"
+                  style={{ background: "#0493CE" }}
+                ></div>
+                <p>Stages</p>
+              </div>
               <div className="progress-box-body">
                 <div
                   className="progress-box"
