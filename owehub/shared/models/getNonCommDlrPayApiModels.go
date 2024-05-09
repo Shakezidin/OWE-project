@@ -19,7 +19,7 @@ type GetNonCommDlrPay struct {
 	PaidAmount  float64 `json:"paid_amount"`
 	DBA         string  `json:"dba"`
 	StartDate   string  `json:"start_date"`
-	EndDate     *string `json:"end_date,omitempty"`
+	EndDate     string  `json:"end_date,omitempty"`
 }
 
 type GetNonCommDlrPayList struct {

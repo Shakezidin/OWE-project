@@ -167,10 +167,10 @@ func HandleGetNonCommDlrPayDataRequest(resp http.ResponseWriter, req *http.Reque
 		}
 
 		// end_date
-		EndDate, ok := item["end_date"].(*string)
-		if !ok || EndDate == nil {
+		EndDate, ok := item["end_date"].(string)
+		if !ok || EndDate == "" {
 			log.FuncErrorTrace(0, "Failed to get end date for Record ID %v. Item: %+v\n", RecordId, item)
-			EndDate = nil
+			EndDate = ""
 		}
 
 		NonCommDlrPayData := models.GetNonCommDlrPay{

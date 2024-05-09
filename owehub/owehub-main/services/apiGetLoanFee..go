@@ -11,6 +11,7 @@ import (
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	"strings"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -63,7 +64,7 @@ func HandleGetLoanFeeDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	tableName := db.TableName_LoanFee
 	query = `
-	   SELECT lf.id as record_id, lf.unique_id, ud.name AS dealer_name, pt.partner_name AS installer, st.name AS state_name, lt.product_code AS loan_type,
+	   SELECT lf.id as record_id, ud.name AS dealer_name, pt.partner_name AS installer, st.name AS state_name, lt.product_code AS loan_type,
 	   lf.owe_cost, lf.dlr_mu, lf.dlr_cost,lf.start_date, lf.end_date
 	   FROM loan_fee lf
 	   JOIN user_details ud ON ud.user_id = lf.dealer_id
@@ -90,13 +91,6 @@ func HandleGetLoanFeeDataRequest(resp http.ResponseWriter, req *http.Request) {
 		if !ok {
 			log.FuncErrorTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
 			continue
-		}
-
-		// Unique_id
-		Unique_id, ok := item["unique_id"].(string)
-		if !ok || Unique_id == "" {
-			log.FuncErrorTrace(0, "Failed to get unique_id for Record ID %v. Item: %+v\n", RecordId, item)
-			Unique_id = ""
 		}
 
 		// Dealer_name
@@ -135,36 +129,38 @@ func HandleGetLoanFeeDataRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 
 		// Dlr_Mu
-		Dlr_Mu, ok := item["dlr_mu"].(string)
-		if !ok || Dlr_Mu == "" {
+		Dlr_Mu, ok := item["dlr_mu"].(float64)
+		if !ok || Dlr_Mu == 0.0 {
 			log.FuncErrorTrace(0, "Failed to get dlr mu for Record ID %v. Item: %+v\n", RecordId, item)
-			Dlr_Mu = ""
+			Dlr_Mu = 0.0
 		}
 
 		// Dlr_Cost
-		Dlr_Cost, ok := item["dlr_cost"].(string)
-		if !ok || Dlr_Cost == "" {
+		Dlr_Cost, ok := item["dlr_cost"].(float64)
+		if !ok || Dlr_Cost == 0.0 {
 			log.FuncErrorTrace(0, "Failed to get dlr cost for Record ID %v. Item: %+v\n", RecordId, item)
-			Dlr_Cost = ""
+			Dlr_Cost = 0.0
 		}
 
 		// start_date
-		Start_date, ok := item["start_date"].(string)
-		if !ok || Start_date == "" {
+		Start_date, ok := item["start_date"].(time.Time)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
-			Start_date = ""
+			Start_date = time.Time{}
 		}
 
 		// EndDate
-		EndDate, ok := item["end_date"].(string)
-		if !ok || EndDate == "" {
+		EndDate, ok := item["end_date"].(time.Time)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get end date for Record ID %v. Item: %+v\n", RecordId, item)
-			EndDate = ""
+			EndDate = time.Time{}
 		}
+
+		StartDateStr := Start_date.Format("2006-01-02")
+		EndDateStr := EndDate.Format("2006-01-02")
 
 		LoanFeeData := models.GetLoanFee{
 			RecordId:  RecordId,
-			UniqueID:  Unique_id,
 			Dealer:    Dealer_name,
 			Installer: Installer,
 			State:     State_name,
@@ -172,8 +168,8 @@ func HandleGetLoanFeeDataRequest(resp http.ResponseWriter, req *http.Request) {
 			OweCost:   Owe_cost,
 			DlrMu:     Dlr_Mu,
 			DlrCost:   Dlr_Cost,
-			StartDate: Start_date,
-			EndDate:   EndDate,
+			StartDate: StartDateStr,
+			EndDate:   EndDateStr,
 		}
 		LoanFeeList.LoanFeeList = append(LoanFeeList.LoanFeeList, LoanFeeData)
 	}
@@ -255,6 +251,12 @@ func PrepareLoanFeeFilters(tableName string, dataFilter models.DataRequestBody, 
 			case "dlr_cost":
 				filtersBuilder.WriteString(fmt.Sprintf("lf.dlr_cost %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
+			case "start_date":
+				filtersBuilder.WriteString(fmt.Sprintf("lf.start_date %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "end_date":
+				filtersBuilder.WriteString(fmt.Sprintf("lf.end_date %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
 			default:
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
@@ -280,7 +282,7 @@ func PrepareLoanFeeFilters(tableName string, dataFilter models.DataRequestBody, 
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY lf.id, lf.unique_id, ud.name, pt.partner_name, st.name, lt.product_code, lf.owe_cost, lf.dlr_mu, lf.dlr_cost")
+		filtersBuilder.WriteString(" GROUP BY lf.id, ud.name, pt.partner_name, st.name, lt.product_code, lf.owe_cost, lf.dlr_mu, lf.dlr_cost")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
