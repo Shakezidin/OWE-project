@@ -487,6 +487,13 @@ const ProjectStatus = () => {
           <div className="">
             <h3>Project Stages</h3>
             <div className="progress-box-container">
+            <div className="progress-box-body">
+                <div
+                  className="progress-box"
+                  style={{ background: "#0493CE" }}
+                ></div>
+                <p>Stages</p>
+              </div>
               <div className="progress-box-body">
                 <div
                   className="progress-box"
