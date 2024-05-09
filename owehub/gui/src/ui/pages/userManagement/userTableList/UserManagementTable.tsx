@@ -79,7 +79,6 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   const currentPage = useAppSelector(
     (state) => state.paginationType.currentPage
   );
-console.log(currentPage,"jfngkjn");
 
   const totalPages = Math.ceil(count! / pageSize1);
 
@@ -275,8 +274,8 @@ console.log(currentPage,"jfngkjn");
         {userRoleBasedList?.length > 0 ? (
           <>
             <p className="page-heading">
-              {currentPage1 > 1 ? ((currentPage1 - 1) * pageSize1 ): currentPage1} -{" "}
-              {currentPage1 * pageSize1} of {count} item
+              {currentPage} - {count} of{" "}
+              {userRoleBasedList?.length} item
             </p>
             <PaginationComponent
               currentPage={currentPage1}

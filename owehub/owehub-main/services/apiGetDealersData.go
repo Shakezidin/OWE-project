@@ -134,7 +134,7 @@ func HandleGetDealersDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 		start := StartDate.Format("2006-01-02")
 		end := EndDate.Format("2006-01-02")
-		
+
 		dealerData := models.GetDealerData{
 			RecordId:  RecordId,
 			SubDealer: SubDealer,
@@ -205,6 +205,12 @@ func PrepareDealerFilters(tableName string, dataFilter models.DataRequestBody, f
 			switch column {
 			case "dealer":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud.name) %s LOWER($%d)", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "start_date":
+				filtersBuilder.WriteString(fmt.Sprintf("ud.start_date %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "end_date":
+				filtersBuilder.WriteString(fmt.Sprintf("ud.end_date %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
 				// For other columns, handle them accordingly
