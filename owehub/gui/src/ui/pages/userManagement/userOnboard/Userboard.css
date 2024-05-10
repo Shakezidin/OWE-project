@@ -35,7 +35,7 @@
 
   .scroll-user {
     position: relative;
-    max-height: 56vh;
+    max-height: 55.9vh;
     background: var(--white-color);
     overflow-y: auto;
     overflow-x: auto;
