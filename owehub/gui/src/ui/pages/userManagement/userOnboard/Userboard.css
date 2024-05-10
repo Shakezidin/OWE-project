@@ -28,13 +28,12 @@
     align-items: center;
     padding: 24px 0 24px 0;
     gap: 1rem;
+    border-top: 1px solid #d0d5dd;
   }
-
-
 
   .scroll-user {
     position: relative;
-    max-height: 60vh;
+    height: 100%;
     background: var(--white-color);
     overflow-y: auto;
     overflow-x: auto;
