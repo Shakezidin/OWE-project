@@ -314,42 +314,7 @@ export const ARDashboardPage: React.FC = () => {
 
             </div>
 
-            <div className="rep-dash-head-input">
-              <label className="inputLabel" style={{ color: "#344054", fontWeight: "400", fontSize: "12px" }}>
-                Date Override
-              </label>
-              <label className="inputLabel" style={{ color: "#344054", fontWeight: "600", fontSize: "12px" }}>
-                Today
-              </label>
-              <div className="sm-box" style={{}}></div>
-
-              {/* <div style={{ position: "relative", top: "-1px" }} ref={datePickerRef}>
-                <label className="date-button" onClick={handleToggleDatePicker}>
-                  Select Dates
-                </label>
-                {showDatePicker && (
-                  <div className="calender-container">
-                    <DateRangePicker
-                      ranges={[selectionRange]}
-                      onChange={handleSelect}
-                    />
-                    <button
-                      className="reset-calender"
-                      onClick={handleResetDates}
-                    >
-                      Reset
-                    </button>
-                    <button
-                      className="close-calender"
-                      onClick={handleToggleDatePicker}
-                    >
-                      Close
-                    </button>
-                  </div>
-                )}
-              </div> */}
-
-            </div>
+            
 
             <div className="Line-container">
               <div className="ar-line-graph">
