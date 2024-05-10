@@ -7,8 +7,8 @@ import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { projects } from "./projectData";
 import Breadcrumb from "../../components/breadcrumb/Breadcrumb";
-import { useAppDispatch } from "../../../redux/hooks";
-import { getPerfomance, getPerfomanceStatus } from "../../../redux/apiSlice/perfomanceSlice";
+ 
+ 
 const ProjectPerformence = () => {
   const getColorStyle = (date: string | null) => {
     if (!date) {
@@ -19,12 +19,9 @@ const ProjectPerformence = () => {
       return { backgroundColor: "#008DDA", color: "white" };
     }
   };
-  const dispatch = useAppDispatch()
+ 
 
-  useEffect(()=>{
-    dispatch(getPerfomance({filters:[]}))
-    dispatch(getPerfomanceStatus({filters:[]}))
-  },[])
+ 
 
   return (
     <div className="">
