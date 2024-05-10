@@ -117,7 +117,7 @@ const LoanType = () => {
     });
   }
   const handleArchiveAllClick = async () => {
-    const confirmed = await showAlert('Are Your Sure', 'This action will archive all selected rows?', 'Yes', 'No');
+    const confirmed = await showAlert('Are Your Sure', 'This Action will archive your data', 'Yes', 'No');
     if (confirmed) {
       const archivedRows = Array.from(selectedRows).map(index => loanTypeList[index].record_id);
       if (archivedRows.length > 0) {
@@ -149,7 +149,7 @@ const LoanType = () => {
     }
   };
   const handleArchiveClick = async (record_id: any) => {
-    const confirmed = await showAlert('Are Your Sure', 'This action will archive all selected rows?', 'Yes', 'No');
+    const confirmed = await showAlert('Are Your Sure', 'This Action will archive your data', 'Yes', 'No');
     if (confirmed){
       const archived: number[] = [record_id];
       let newValue = {

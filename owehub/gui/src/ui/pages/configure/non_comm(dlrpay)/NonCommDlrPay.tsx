@@ -127,7 +127,7 @@ const NonCommDlrPay: React.FC = () => {
 // 
 
 const handleArchiveClick = async (record_id: any) => {
-  const confirmed = await showAlert('Are Your Sure', 'This action will archive all selected rows?', 'Yes', 'No');
+  const confirmed = await showAlert('Are Your Sure', 'This Action will archive your data', 'Yes', 'No');
   if (confirmed){
     const archived: number[] = record_id;
     let newValue = {
