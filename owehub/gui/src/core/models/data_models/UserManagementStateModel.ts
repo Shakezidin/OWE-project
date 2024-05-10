@@ -1,5 +1,6 @@
 import {
   CreateUserModel,
+  DBTable,
   OnboardingChartModel,
   UserDropdownModel,
   UserRoleBasedListModel,
@@ -10,7 +11,8 @@ export interface UserOnboardingStateModel {
   loading: boolean;
   userOnboardingList: OnboardingChartModel[];
   userRoleBasedList: UserRoleBasedListModel[];
-  totalCount?:number
+  totalCount?: number;
+  dbTables: DBTable[];
 }
 
 export interface CreateOnboardUserStateModel {

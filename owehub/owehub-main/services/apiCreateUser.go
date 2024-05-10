@@ -88,6 +88,43 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	if createUserReq.RoleName == "DB User" {
+		// Join selected parts with underscores
+		username := strings.Join(strings.Fields(createUserReq.Name)[0:2], "_")
+
+		sqlStatement := fmt.Sprintf("CREATE USER %s WITH LOGIN PASSWORD '%s';", username, createUserReq.Password)
+		err = db.ExecQueryDB(sqlStatement)
+		log.FuncErrorTrace(0, " sqlStatement err %+v", err)
+		log.FuncErrorTrace(0, "sqlStatement %v", sqlStatement)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to create user already exists: %v", err)
+			FormAndSendHttpResp(resp, "Failed to process the password", http.StatusInternalServerError, nil)
+			return
+		}
+
+		log.FuncErrorTrace(0, "createUserReq.TablesPermissions %+v", createUserReq.TablesPermissions)
+		for _, item := range createUserReq.TablesPermissions {
+			switch item.PrivilegeType {
+			case "View":
+				sqlStatement = fmt.Sprintf("GRANT SELECT ON %s TO %s;", item.TableName, username)
+			case "Edit":
+				sqlStatement = fmt.Sprintf("GRANT SELECT, UPDATE ON %s TO %s;", item.TableName, username)
+			case "Full":
+				sqlStatement = fmt.Sprintf("GRANT ALL PRIVILEGES ON %s TO %s;", item.TableName, username)
+			}
+
+			log.FuncErrorTrace(0, "sqlStatement %v", sqlStatement)
+
+			err = db.ExecQueryDB(sqlStatement)
+			log.FuncErrorTrace(0, " sqlStatement err %+v", err)
+			if err != nil {
+				log.FuncErrorTrace(0, "Failed to create user already exists: %v", err)
+				FormAndSendHttpResp(resp, "Failed to process the password", http.StatusInternalServerError, nil)
+				return
+			}
+		}
+	}
+
 	queryParameters = append(queryParameters, createUserReq.Name)
 	queryParameters = append(queryParameters, createUserReq.MobileNumber)
 	queryParameters = append(queryParameters, createUserReq.EmailId)

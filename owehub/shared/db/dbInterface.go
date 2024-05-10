@@ -24,6 +24,7 @@ const (
 	OWEDB                                    string = "owe_db"
 	dbDriverName                             string = "postgres"
 	CreateUserFunction                       string = "create_new_user"
+	GetDbTables                              string = "get_db_tables"
 	CreateTeamFunction                       string = "create_new_team"
 	CreateApiSetterFunction                  string = "create_appointment_setter"
 	CreateCommissionFunction                 string = "create_new_commission"

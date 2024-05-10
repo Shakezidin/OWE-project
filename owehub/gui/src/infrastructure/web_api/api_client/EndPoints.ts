@@ -25,8 +25,7 @@ interface Endpoints {
   loanType: string;
   autoAdder: string;
   repPaySettings: string;
-  rateAdjustments:string;
-
+  rateAdjustments: string;
 
   // post config
   create_commission: string;
@@ -40,9 +39,9 @@ interface Endpoints {
   create_timelinesla: string;
   create_loantype: string;
   create_autoadder: string;
-  create_repaysettings:string;
-  create_rateadjustments:string;
-  
+  create_repaysettings: string;
+  create_rateadjustments: string;
+
   get_newFormData: string;
   update_commission: string;
   update_autoadder: string;
@@ -72,6 +71,7 @@ interface Endpoints {
   get_user_by_role: string;
   create_user: string;
   delete_users: string;
+  table_permission: string;
 }
 
 export const EndPoints: Endpoints = {
@@ -91,7 +91,7 @@ export const EndPoints: Endpoints = {
   loanType: "get_loantypes",
   autoAdder: "get_autoadder",
   repPaySettings: "get_rep_pay_settings",
-  rateAdjustments:"get_rateadjustments",
+  rateAdjustments: "get_rateadjustments",
 
   // post config endpoint
   create_commission: "create_commission",
@@ -106,8 +106,8 @@ export const EndPoints: Endpoints = {
   create_tierloanfee: "create_tierloanfee",
   create_vadder: "create_vadder",
   create_timelinesla: "create_timelinesla",
-  create_repaysettings:"create_rep_pay_settings",
-  create_rateadjustments:"create_rateadjustments",
+  create_repaysettings: "create_rep_pay_settings",
+  create_rateadjustments: "create_rateadjustments",
   // update config point
   update_commission: "update_commission",
   update_dealer: "update_dealer",
@@ -141,4 +141,5 @@ export const EndPoints: Endpoints = {
   get_user_by_role: "get_users_by_role",
   create_user: "create_user",
   delete_users: "delete_users",
+  table_permission: "table_permission",
 };
