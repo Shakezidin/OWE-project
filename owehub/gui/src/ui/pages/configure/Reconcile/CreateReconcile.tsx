@@ -40,7 +40,8 @@ const CreateReconcile:React.FC<payScheduleProps> = ({handleClose,editMode, editD
           state:editData?.state_name || "",
           sys_size:editData?.sys_size || "",
           status:editData?.status || "",
-          date:editData?.date || "",
+          start_date:editData?.start_date || "",
+          end_date:editData?.end_date || "",
           amount:editData?.amount || "",
           notes:editData?.notes || ""
            
@@ -87,7 +88,8 @@ const handleSubmit = (e: React.FormEvent) => {
       state_name: createReconcileData.state,
       sys_size: parseInt(createReconcileData.sys_size),
       status: createReconcileData.status,
-      date: createReconcileData.date,
+      start_date: createReconcileData.start_date,
+      end_date:createReconcileData.end_date,
       amount: parseInt(createReconcileData.amount),
       notes: createReconcileData.notes,
      }
@@ -152,7 +154,7 @@ useEffect(() => {
                     />
                   </div>
                   <div className="create-input-field">
-                                <label className="inputLabel-select">Parnter</label>
+                                <label className="inputLabel-select">Partner</label>
                                     <SelectOption
                                         options={partnerOption(newFormData)}
                                         onChange={(newValue) => handleChange(newValue, 'partner_name')}
@@ -202,9 +204,19 @@ useEffect(() => {
                 <div className="create-input-field">
                     <Input
                       type={"date"}
-                      label="Date"
-                      value={createReconcileData.date}
-                      name="date"
+                      label="Start Date"
+                      value={createReconcileData.start_date}
+                      name="start_date"
+                      placeholder={"Enter"}
+                      onChange={(e) => handleInputChange(e)}
+                    />
+                  </div>
+                <div className="create-input-field">
+                    <Input
+                      type={"date"}
+                      label="End Date"
+                      value={createReconcileData.end_date}
+                      name="end_date"
                       placeholder={"Enter"}
                       onChange={(e) => handleInputChange(e)}
                     />

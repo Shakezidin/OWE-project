@@ -37,18 +37,9 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({
 
   const [newFormData, setNewFormData] = useState({
     uniqueId: editData?.unique_id || "",
-    customer: editData?.customer || "",
-    partnerName: editData?.partner_name || "",
-    installerName: editData?.installer_name || "",
-    sysSize: editData?.sys_size ? `${editData?.sys_size}` : "",
-    bl: editData?.bl || "",
-    epc: editData?.epc ? `${editData?.epc}` : "",
     date: editData?.date || "",
     amount: editData?.amount ? `${editData?.amount}` : "",
     notes: editData?.notes || "",
-    startDate: editData?.start_date || "",
-    endDate: editData?.end_date || "",
-    stateName: editData?.state_name || "",
   });
 
   const [errors, setErrors] = useState<typeof newFormData>(
@@ -98,18 +89,11 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({
         dispatch(
           updateAdjustments({
             unique_id: newFormData.uniqueId,
-            customer: newFormData.customer,
-            partner_name: newFormData.partnerName,
-            state_name: newFormData.stateName,
-            installer_name: newFormData.installerName,
-            sys_size: parseFloat(newFormData.sysSize),
-            bl: newFormData.bl,
-            epc: parseFloat(newFormData.epc),
+         
             date: format(new Date(newFormData.date), "yyyy-MM-dd"),
             notes: newFormData.notes,
             amount: parseFloat(newFormData.amount),
-            start_date: format(new Date(newFormData.startDate), "yyyy-MM-dd"),
-            end_date: format(new Date(newFormData.endDate), "yyyy-MM-dd"),
+           
             record_id: editData?.record_id!,
           })
         );
@@ -117,18 +101,10 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({
         dispatch(
           createAdjustments({
             unique_id: newFormData.uniqueId,
-            customer: newFormData.customer,
-            partner_name: newFormData.partnerName,
-            state_name: newFormData.stateName,
-            installer_name: newFormData.installerName,
-            sys_size: parseFloat(newFormData.sysSize),
-            bl: newFormData.bl,
-            epc: parseFloat(newFormData.epc),
+
             date: format(new Date(newFormData.date), "yyyy-MM-dd"),
             notes: newFormData.notes,
             amount: parseFloat(newFormData.amount),
-            start_date: format(new Date(newFormData.startDate), "yyyy-MM-dd"),
-            end_date: format(new Date(newFormData.endDate), "yyyy-MM-dd"),
           })
         );
       }
@@ -173,135 +149,6 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({
                 </div>
                 <div className="create-input-field">
                   <Input
-                    type={"text"}
-                    label="Customer"
-                    value={newFormData.customer}
-                    name="customer"
-                    placeholder={"Enter"}
-                    onChange={handleChange}
-                  />
-                  {errors?.customer && (
-                    <span style={{ display: "block", color: "#FF204E" }}>
-                      {errors.customer}
-                    </span>
-                  )}
-                </div>
-                <div className="create-input-field">
-                  <label className="inputLabel-select">Partners</label>
-                  <SelectOption
-                    options={partnerOption(newFormData)}
-                    onChange={(newValue) => {
-                      setNewFormData((prev) => ({
-                        ...prev,
-                        partnerName: newValue?.value!,
-                      }));
-                    }}
-                    value={partnerOption(newFormData)?.find(
-                      (option) => option.value === newFormData.partnerName
-                    )}
-                  />
-                  {errors?.partnerName && (
-                    <span style={{ display: "block", color: "#FF204E" }}>
-                      {errors.partnerName}
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              <div className="create-input-container">
-                <div className="create-input-field">
-                  <label className="inputLabel-select">State</label>
-                  <SelectOption
-                    options={stateOption(newFormData)}
-                    onChange={(newValue) => {
-                      setNewFormData((prev) => ({
-                        ...prev,
-                        stateName: newValue?.value!,
-                      }));
-                    }}
-                    value={stateOption(newFormData)?.find(
-                      (option) => option.value === newFormData.stateName
-                    )}
-                  />
-                  {errors?.stateName && (
-                    <span style={{ display: "block", color: "#FF204E" }}>
-                      {errors.stateName}
-                    </span>
-                  )}
-                </div>
-                <div className="create-input-field">
-                  <Input
-                    type={"text"}
-                    label="Sys. Size"
-                    value={newFormData.sysSize}
-                    name="sysSize"
-                    placeholder={"Enter"}
-                    onChange={handleChange}
-                  />
-
-                  {errors?.sysSize && (
-                    <span style={{ display: "block", color: "#FF204E" }}>
-                      {errors.sysSize}
-                    </span>
-                  )}
-                </div>
-
-                <div className="create-input-field">
-                  <label className="inputLabel-select">Installer</label>
-                  <SelectOption
-                    options={installerOption(newFormData)}
-                    onChange={(newValue) => {
-                      setNewFormData((prev) => ({
-                        ...prev,
-                        installerName: newValue?.value!,
-                      }));
-                    }}
-                    value={installerOption(newFormData)?.find(
-                      (option) => option.value === newFormData.installerName
-                    )}
-                  />
-                  {errors?.installerName && (
-                    <span style={{ display: "block", color: "#FF204E" }}>
-                      {errors.sysSize}
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              <div className="create-input-container">
-                <div className="create-input-field">
-                  <Input
-                    type={"text"}
-                    label="BL"
-                    value={newFormData.bl}
-                    name="bl"
-                    placeholder={"Enter"}
-                    onChange={handleChange}
-                  />
-                  {errors?.bl && (
-                    <span style={{ display: "block", color: "#FF204E" }}>
-                      {errors.bl}
-                    </span>
-                  )}
-                </div>
-
-                <div className="create-input-field">
-                  <Input
-                    type={"text"}
-                    label="Epc"
-                    value={newFormData.epc}
-                    name="epc"
-                    placeholder={"Enter"}
-                    onChange={handleChange}
-                  />
-                  {errors?.epc && (
-                    <span style={{ display: "block", color: "#FF204E" }}>
-                      {errors.epc}
-                    </span>
-                  )}
-                </div>
-                <div className="create-input-field">
-                  <Input
                     type={"date"}
                     label="Date"
                     value={newFormData.date}
@@ -315,9 +162,6 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({
                     </span>
                   )}
                 </div>
-              </div>
-
-              <div className="create-input-container">
                 <div className="create-input-field">
                   <Input
                     type={"text"}
@@ -333,6 +177,12 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({
                     </span>
                   )}
                 </div>
+              </div>
+
+
+
+              <div className="create-input-container">
+               
                 <div className="create-input-field">
                   <Input
                     type={"text"}
@@ -349,38 +199,9 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({
                   )}
                 </div>
 
-                <div className="create-input-field">
-                  <Input
-                    type={"date"}
-                    label="startDate"
-                    value={newFormData.startDate}
-                    name="startDate"
-                    placeholder={"Enter"}
-                    onChange={handleChange}
-                  />
-                  {errors?.startDate && (
-                    <span style={{ display: "block", color: "#FF204E" }}>
-                      {errors.startDate}
-                    </span>
-                  )}
-                </div>
               </div>
 
-              <div className="create-input-field">
-                <Input
-                  type={"date"}
-                  label="End Date"
-                  value={newFormData.endDate}
-                  name="endDate"
-                  placeholder={"Enter"}
-                  onChange={handleChange}
-                />
-                {errors?.endDate && (
-                    <span style={{ display: "block", color: "#FF204E" }}>
-                      {errors.endDate}
-                    </span>
-                  )}
-              </div>
+             
             </div>
           </div>
         </div>

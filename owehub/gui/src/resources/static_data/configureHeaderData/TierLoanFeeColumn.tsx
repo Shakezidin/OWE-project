@@ -6,7 +6,7 @@ export   const TierLoanColumn: Column[] = [
     { name: "dealer_tier", displayName: "Dealer Tier", type: "string",isCheckbox:true },
     { name: "installer", displayName: "Installer", type: "string",isCheckbox:false },
     { name: "state", displayName: "State", type: "string",isCheckbox:false },
-    { name: "finance_type", displayName: "Finance Type", type: "string",isCheckbox:false },
+    { name: "loan_type", displayName: "Loan Type", type: "string",isCheckbox:false },
     { name: "owe_cost", displayName: "OWE Cost", type: "string" ,isCheckbox:false},
     { name: "dlr_mu", displayName: "DLR MU", type: "string",isCheckbox:false },
     { name: "dlr_cost", displayName: "DLR Cost", type: "string",isCheckbox:false },

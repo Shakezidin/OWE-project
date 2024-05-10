@@ -5,6 +5,7 @@ export   const DealerTableData: Column[] = [
     { name: "sub_dealer", displayName: "Sub Dealer", type: "string",isCheckbox:true },
     { name: "dealer", displayName: "Dealer", type: "string",isCheckbox:false },
     { name: "pay_rate", displayName: "Pay Rate", type: "string",isCheckbox:false },
+    { name: "state", displayName: "State", type: "string",isCheckbox:false },
     { name: "start_date", displayName: "Start Date", type: "date",isCheckbox:false },
     { name: "end_date", displayName: "End Date", type: "date",isCheckbox:false }
   ];

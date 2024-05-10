@@ -309,9 +309,15 @@ const AR = () => {
                       </div>
                     </td>
                     <td>{el.customer_name}</td>
+                    <td>{el.state_name}</td>
+
                     <td>{el.date}</td>
                     <td>{el.amount}</td>
-                    <td>{el.notes}</td>
+                    <td>{el.payment_type}</td>
+                    <td>{el.bank}</td>
+                    <td>{el.ced}</td>
+                    <td>{el.partner_name}</td>
+                    <td>{el.total_paid}</td>
                     {viewArchived === true ? null : (
                         <td>
                           <div className="action-icon">
