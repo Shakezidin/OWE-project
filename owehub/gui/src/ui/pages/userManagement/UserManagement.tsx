@@ -165,7 +165,10 @@ const UserManagement: React.FC = () => {
   };
 
   /** API call to submit */
-  const deleteUserRequest = async (deleteRows: string[]) => {
+  const deleteUserRequest = async (
+    deleteRows: string[],
+    usernames: string[]
+  ) => {
     const confirmed = await showAlert(
       "Delete User",
       "Are you sure you want to delete user?",
@@ -174,7 +177,7 @@ const UserManagement: React.FC = () => {
     );
     if (confirmed) {
       const actionResult = await dispatch(
-        deleteUserOnboarding({ user_codes: deleteRows })
+        deleteUserOnboarding({ user_codes: deleteRows, usernames })
       );
       const result = unwrapResult(actionResult);
 
@@ -238,15 +241,20 @@ const UserManagement: React.FC = () => {
           selectedOption={selectedOption}
           handleSelectChange={handleSelectChange}
           onClickDelete={(item: UserRoleBasedListModel) => {
-            console.log(item.user_code);
-            deleteUserRequest([item.user_code]);
+            deleteUserRequest(
+              [item.user_code],
+              [item.name.split(" ").join("_")]
+            );
           }}
           onClickMultiDelete={() => {
             const deleteRows = Array.from(selectedRows).map(
               (index) => userRoleBasedList[index].user_code
             );
+            const usernames = Array.from(selectedRows).map((index) =>
+              userRoleBasedList[index].name.split(" ").join("_")
+            );
             if (deleteRows.length > 0) {
-              deleteUserRequest(deleteRows);
+              deleteUserRequest(deleteRows, usernames);
             } else {
               toast.info("Please select user");
             }

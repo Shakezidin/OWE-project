@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -192,17 +193,17 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 		}
 
 		// Wc
-		Wc, ok := item["wc"].(string)
-		if !ok || Wc == "" {
+		Wc, ok := item["wc"].(time.Time)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get wc for Record ID %v. Item: %+v\n", UniqueId, item)
-			Wc = ""
+			Wc = time.Time{}
 		}
 
 		// InstSys
-		InstSys, ok := item["inst_sys"].(string)
-		if !ok || InstSys == "" {
+		InstSys, ok := item["inst_sys"].(time.Time)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get inst_sys for Record ID %v. Item: %+v\n", UniqueId, item)
-			InstSys = ""
+			InstSys = time.Time{}
 		}
 
 		// Status
@@ -213,10 +214,10 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 		}
 
 		// Status
-		StatusDate, ok := item["status_date"].(string)
-		if !ok || StatusDate == "" {
+		StatusDate, ok := item["status_date"].(time.Time)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get status date for Record ID %v. Item: %+v\n", UniqueId, item)
-			StatusDate = ""
+			StatusDate = time.Time{}
 		}
 
 		// ContractCalc
@@ -254,6 +255,10 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 			Balance = 0.0
 		}
 
+		WcStr := Wc.Format("2006-01-02")
+		InstSysStr := InstSys.Format("2006-01-02")
+		StatusDateStr := StatusDate.Format("2006-01-02")
+
 		arData := models.GetArdata{
 			UniqueId:      UniqueId,
 			Partner:       Partner,
@@ -265,10 +270,10 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 			ST:            St,
 			Zip:           float64(Zip),
 			SysSize:       Sys_size,
-			WC:            Wc,
-			InstSys:       InstSys,
+			WC:            WcStr,
+			InstSys:       InstSysStr,
 			Status:        Status,
-			StatusDate:    StatusDate,
+			StatusDate:    StatusDateStr,
 			ContractCalc:  ContractCalc,
 			OweAr:         OweAr,
 			TotalPaid:     TotalPaid,
