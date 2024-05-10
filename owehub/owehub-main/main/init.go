@@ -1078,10 +1078,10 @@ var apiRoutes = ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
-		"/owe-commissions-service/v1/user-exists",
+		"/owe-commissions-service/v1/user_exists",
 		apiHandler.HandleCheckUserExists,
 		false,
-		[]types.UserGroup{types.GroupAdmin},
+		[]types.UserGroup{types.GroupEveryOne},
 	},
 }
 
