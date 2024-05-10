@@ -18,14 +18,15 @@ export const getPerfomance = createAsyncThunk("get/perfomance",async(params:{fil
 
 })
 
-export const getPerfomanceStatus = createAsyncThunk("get/perfomancestatus",async(params,{rejectWithValue})=>{
+export const getPerfomanceStatus = createAsyncThunk("get/perfomancestatus",async(params:{filters:[]},{rejectWithValue})=>{
     try {
         // get_perfomanceprojectstatus
         const data = await postCaller("get_perfomanceprojectstatus",params)
         if (data.status>201) {
             return rejectWithValue((data as Error).message)
         }
-        return data
+        const list = data.data.perfomance_response_list || []
+        return {list ,count:data.dbRecCount}
     } catch (error) {
         return rejectWithValue((error as Error).message)
     }
@@ -37,6 +38,7 @@ interface IState {
     error: string,
     isLoading: boolean,
     isSuccess:number,
+    perfomanceListCount:number
 }
 
 const initialState: IState = {
@@ -44,6 +46,7 @@ const initialState: IState = {
     error: "",
     isLoading: false,
     isSuccess:0,
+    perfomanceListCount:0
 }
 
 const perfomanceSlice = createSlice({
@@ -58,7 +61,6 @@ const perfomanceSlice = createSlice({
         })
         .addCase(getPerfomance.fulfilled,(state,action)=>{
             state.isLoading = false
-            console.log(action.payload,"perrrrrr");
         })
         .addCase(getPerfomance.rejected,(state,action)=>{
             state.isLoading  = false
@@ -71,7 +73,9 @@ const perfomanceSlice = createSlice({
         })
         .addCase(getPerfomanceStatus.fulfilled,(state,action)=>{
             state.isLoading = false
-            console.log(action.payload,"perrrrrr");
+           state.data = action.payload.list
+           state.perfomanceListCount = action.payload.count
+        //    state.
         })
         .addCase(getPerfomanceStatus.rejected,(state,action)=>{
             state.isLoading  = false

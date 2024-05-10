@@ -23,7 +23,7 @@ const ProjectPerformence = () => {
 
   useEffect(()=>{
     dispatch(getPerfomance({filters:[]}))
-    dispatch(getPerfomanceStatus())
+    dispatch(getPerfomanceStatus({filters:[]}))
   },[])
 
   return (
