@@ -110,16 +110,16 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
         unique_id: formData.uniqueId,
         partner_name: formData.partner,
         sale_type_name: formData.saleType || "BATTERY",
-        install_pay: formData.installPay,
+        install_pay: parseInt(formData.installPay),
         installer_name: formData.installer,
         start_date: format(new Date(formData.start), "yyyy-MM-dd"),
         end_date: format(new Date(formData.end), "yyyy-MM-dd"),
         state_name: formData.state,
-        permit_max: formData.permitMax,
-        permit_pay: formData.permitPay,
+        permit_max: parseInt(formData.permitMax),
+        permit_pay: parseInt(formData.permitPay),
         calc_date: format(new Date(formData.calcDate), "yyyy-MM-dd"),
-        red_line: formData.redline,
-        pto_pay: formData.ptoPay,
+        red_line: parseInt(formData.redline),
+        pto_pay: parseInt(formData.ptoPay),
       };
       if (editMode) {
         dispatch(

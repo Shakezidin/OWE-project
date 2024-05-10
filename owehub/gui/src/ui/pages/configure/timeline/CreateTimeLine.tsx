@@ -10,6 +10,7 @@ import Select from "react-select";
 import { stateOption } from "../../../../core/models/data_models/SelectDataModel";
 import { TimeLineSlaModel } from "../../../../core/models/configuration/create/TimeLineSlaModel";
 import SelectOption from "../../../components/selectOption/SelectOption";
+import { toast } from "react-toastify";
 interface timeLineProps {
   handleClose: () => void;
   editMode: boolean;
@@ -88,27 +89,27 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
         if (createTimeLine.record_id) {
           const res = await postCaller(
             EndPoints.update_timelinesla,
-            createTimeLine
+            {...createTimeLine,days:parseInt(createTimeLine.days)}
           );
           if (res?.status === 200) {
-            alert(res.message);
+            toast.success(res.message);
             handleClose();
             window.location.reload();
           } else {
-            alert(res.message);
+            toast.error(res.message);
           }
         } else {
           const { record_id, ...cleanedFormData } = createTimeLine;
           const res = await postCaller(
             EndPoints.create_timelinesla,
-            cleanedFormData
+            {...cleanedFormData,days:parseInt(cleanedFormData.days)}
           );
           if (res?.status === 200) {
-            alert(res.message);
+            toast.success(res.message);
             handleClose();
             window.location.reload();
           } else {
-            alert(res.message);
+            toast.error(res.message);
           }
         }
       } catch (error) {

@@ -209,7 +209,7 @@ console.log(currentPageData,"daaaaaaa");
          dealerData={editedDealer}
          editMode={editMode}
          page_number={currentPage}
-         page_size={totalPages}
+         page_size={itemsPerPage}
         />}
         <div
           className="TableContainer"
@@ -278,11 +278,11 @@ console.log(currentPageData,"daaaaaaa");
                     <div className="action-icon">
                       <div className="action-archive" style={{ cursor: "pointer" }} onClick={()=>handleArchiveClick(el.record_id)}>
                         <img src={ICONS.ARCHIVE} alt="" />
-                        <span className="tooltiptext">Archive</span>
+                        {/* <span className="tooltiptext">Archive</span> */}
                       </div>
                       <div className="action-archive" style={{ cursor: "pointer" }} onClick={()=>handleEditDealer(el)}>
                       <img src={ICONS.editIcon} alt="" />
-                      <span className="tooltiptext">Edit</span>
+                      {/* <span className="tooltiptext">Edit</span> */}
                       </div>
                     </div>
                   </td>

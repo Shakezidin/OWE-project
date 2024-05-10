@@ -1076,6 +1076,13 @@ var apiRoutes = ApiRoutes{
 		false,
 		[]types.UserGroup{types.GroupEveryOne},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commissions-service/v1/user_exists",
+		apiHandler.HandleCheckUserExists,
+		false,
+		[]types.UserGroup{types.GroupEveryOne},
+	},
 }
 
 /******************************************************************************
