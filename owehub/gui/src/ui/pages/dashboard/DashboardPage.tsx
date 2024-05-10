@@ -12,7 +12,6 @@ import "react-date-range/dist/theme/default.css"; // theme css file
 import { DateRangePicker } from "react-date-range";
 
 export const DashboardPage: React.FC = () => {
-
   const [selectionRange, setSelectionRange] = useState({
     startDate: new Date(),
     endDate: new Date(),
@@ -49,7 +48,7 @@ export const DashboardPage: React.FC = () => {
   /* const handleSelectChange = (
     selectedOption: { value: string; label: string } | null
   ) => {
-    setSelectedOption(selectedOption ? selectedOption.value : "");
+  setSelectedOption(selectedOption ? selectedOption.value : "");
   };*/
   const handleSelectChange2 = (
     selectedOption2: { value: string; label: string } | null
@@ -118,7 +117,7 @@ export const DashboardPage: React.FC = () => {
                   option: (baseStyles) => ({
                     ...baseStyles,
                     fontSize: "13px",
-                    cursor: "pointer"
+                    cursor: "pointer",
                   }),
                   menu: (baseStyles) => ({
                     ...baseStyles,
@@ -135,7 +134,10 @@ export const DashboardPage: React.FC = () => {
               <input type="date" className="payroll-date" />
               <label className="payroll-label">End:</label>
               <input type="date" className="payroll-date" /> */}
-              <div style={{ position: "relative", top: "-1px" }} ref={datePickerRef}>
+              <div
+                style={{ position: "relative", top: "-1px" }}
+                ref={datePickerRef}
+              >
                 <label className="date-button" onClick={handleToggleDatePicker}>
                   Select Date
                 </label>
@@ -222,8 +224,6 @@ export const DashboardPage: React.FC = () => {
             fetchFunction={() => {}}
           />
         )}
-       
-       
 
         <div className="" style={{ marginTop: "20px" }}>
           {active === 0 && <DashBoardTable />}

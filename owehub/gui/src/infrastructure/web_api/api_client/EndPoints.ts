@@ -71,6 +71,7 @@ interface Endpoints {
   get_user_by_role: string;
   create_user: string;
   delete_users: string;
+  active: string;
   table_permission: string;
 }
 
@@ -80,6 +81,7 @@ export const EndPoints: Endpoints = {
   changePassword: "change_password",
   // get config endpoints
   commission: "get_commissions",
+  active: "active",
   dealer: "get_dealers",
   marketing: "get_marketingfee",
   adderV: "get_vadders",

@@ -3,8 +3,6 @@ import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
 import { DealerModel } from "../../../../core/models/configuration/create/DealerModel";
 
-
-
 interface DealerState {
   Dealers_list: DealerModel[];
   loading: boolean;
@@ -51,7 +49,7 @@ const dealerSlice = createSlice({
       //     state.Dealers_list = [];
       //   }
       //   state.Dealers_list = action.payload.data.Dealers_list;
-      // }) 
+      // })
       .addCase(fetchDealer.fulfilled, (state, action) => {
         state.loading = false;
         state.error = null;
@@ -65,7 +63,7 @@ const dealerSlice = createSlice({
         } else {
           state.Dealers_list = [];
         }
-      })     
+      })
       .addCase(fetchDealer.rejected, (state, action) => {
         state.loading = false;
         state.error = action?.error?.message ?? "Failed to fetch dealer data";

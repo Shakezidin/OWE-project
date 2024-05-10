@@ -81,4 +81,5 @@ export interface CreateUserParamModel {
 
 export interface DeleteUserModel {
   user_codes: string[];
+  usernames: string[];
 }
