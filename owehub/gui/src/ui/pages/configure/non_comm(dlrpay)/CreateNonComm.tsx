@@ -39,7 +39,7 @@ const CreateNonComm: React.FC<ButtonProps> = ({
   editMode,
 }) => {
   const dispatch = useAppDispatch();
-  const { isSuccess } = useAppSelector((state) => state.dlrOth);
+  const { isSuccess } = useAppSelector((state) => state.nonComm);
   const [createCommission, setCreateCommission] = useState({
     unique_id:commission?.unique_id|| "",
     customer:commission?.customer||  "",
