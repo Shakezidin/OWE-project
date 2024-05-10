@@ -251,11 +251,17 @@ const FilterModal: React.FC<TableProps> = ({
                                         )}
                                     </div>
                                     {index !== 0 && (
+                                        // <div
+                                        //     className="cross-btn"
+                                        //     onClick={() => handleRemoveRow(index)}
+                                        // >
+                                        //     <img src={ICONS.cross} alt="" />
+                                        // </div>
                                         <div
-                                            className="cross-btn"
+                                            className="fildelb-btn"
                                             onClick={() => handleRemoveRow(index)}
                                         >
-                                            <img src={ICONS.cross} alt="" />
+                                            <img src={ICONS.deleteIcon} alt="" />
                                         </div>
                                     )}
                                 </div>
