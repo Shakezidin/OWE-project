@@ -27,8 +27,8 @@ func HandleCheckUserExists(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err                  error
 		createAdderCreditReq models.CheckUserExists
-		whereEleList []interface{}
-		query        string
+		whereEleList         []interface{}
+		query                string
 	)
 
 	log.EnterFn(0, "HandleCheckUserExists")
@@ -63,8 +63,8 @@ func HandleCheckUserExists(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	query = `
-	  SELECT email_id FROM user_details WHERE email_id = $1 AND user_status = $2`
-	whereEleList = append(whereEleList, createAdderCreditReq.Email, "Active")
+	  SELECT email_id FROM user_details WHERE email_id = $1`
+	whereEleList = append(whereEleList, createAdderCreditReq.Email)
 
 	response := models.CheckUserExistsResp{}
 	response.Email = createAdderCreditReq.Email
@@ -78,10 +78,10 @@ func HandleCheckUserExists(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	if len(data) == 0 {
-		FormAndSendHttpResp(resp, "email id does not exists", http.StatusOK, response)
+		FormAndSendHttpResp(resp, "user does not exist in the system", http.StatusOK, response)
 		return
 	}
 	response.Exists = true
 	log.DBTransDebugTrace(0, "email id: %+v", data[0]["email_id"])
-	FormAndSendHttpResp(resp, "email id exists", http.StatusOK, response)
+	FormAndSendHttpResp(resp, "user exists", http.StatusOK, response)
 }
