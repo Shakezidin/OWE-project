@@ -212,7 +212,7 @@ const CreateDealer: React.FC<dealerProps> = ({
 
               <div className="create-input-container">
               <div className="create-input-field">
-                  <label className="inputLabel-select">ST</label>
+                  <label className="inputLabel-select">State</label>
                   <SelectOption
                     options={stateOption(createDealer)}
                     onChange={(newValue) => {
