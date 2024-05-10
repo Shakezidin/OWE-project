@@ -209,7 +209,7 @@ console.log(currentPageData,"daaaaaaa");
          dealerData={editedDealer}
          editMode={editMode}
          page_number={currentPage}
-         page_size={totalPages}
+         page_size={itemsPerPage}
         />}
         <div
           className="TableContainer"
