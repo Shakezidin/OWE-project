@@ -524,18 +524,18 @@ const RepDashBoardTable = () => {
   // }
 
   const Commissioncolumns = [
-    { name: 'partner', displayName: 'Unique ID', type: 'string', isCheckbox: true },
+    { name: 'partner', displayName: 'UID', type: 'string', isCheckbox: true },
     { name: 'installer', displayName: 'Home Owner', type: 'string', isCheckbox: false },
-    { name: 'state', displayName: 'Curr Status', type: 'string', isCheckbox: false },
-    { name: 'sale_type', displayName: 'Status Date', type: 'string', isCheckbox: false },
-    { name: 'sale_price', displayName: 'Owe Contractor', type: 'number', isCheckbox: false },
+    { name: 'state', displayName: 'Curr Stat', type: 'string', isCheckbox: false },
+    { name: 'sale_type', displayName: 'Stat Date', type: 'string', isCheckbox: false },
+    { name: 'sale_price', displayName: 'Owe Contr', type: 'number', isCheckbox: false },
     { name: 'rep_type', displayName: 'DBA', type: 'string', isCheckbox: false },
     { name: 'rl', displayName: 'Comm Model', type: 'number', isCheckbox: false },
     { name: 'rate', displayName: 'Percent', type: 'number', isCheckbox: false },
     { name: 'start_date', displayName: 'Type', type: 'date', isCheckbox: false },
     { name: 'end_date', displayName: 'Today', type: 'date', isCheckbox: false },
 
-    { name: 'installer', displayName: 'Amount', type: 'string', isCheckbox: false },
+    { name: 'installer', displayName: 'Amt', type: 'string', isCheckbox: false },
     { name: 'state', displayName: 'Fin Type', type: 'string', isCheckbox: false },
     { name: 'sale_type', displayName: 'Sys Size', type: 'string', isCheckbox: false },
     { name: 'sale_price', displayName: 'Contract', type: 'number', isCheckbox: false },
@@ -551,8 +551,8 @@ const RepDashBoardTable = () => {
     { name: 'sale_price', displayName: 'Net Comm', type: 'number', isCheckbox: false },
     { name: 'rep_type', displayName: 'Draw AMT', type: 'string', isCheckbox: false },
     { name: 'rl', displayName: 'Amt Paid', type: 'number', isCheckbox: false },
-    { name: 'rate', displayName: 'Balance', type: 'number', isCheckbox: false },
-    { name: 'start_date', displayName: 'Dealer Code', type: 'date', isCheckbox: false },
+    { name: 'rate', displayName: 'Bal', type: 'number', isCheckbox: false },
+    { name: 'start_date', displayName: 'DLR Code', type: 'date', isCheckbox: false },
     { name: 'end_date', displayName: 'Contr date', type: 'date', isCheckbox: false },
 
     { name: 'start_date', displayName: 'State', type: 'date', isCheckbox: false },

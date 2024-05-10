@@ -168,8 +168,6 @@ const DataTablle: React.FC = () => {
           selectMarginLeft="-10px"
           selectMarginLeft1="-20px"
         />
-
-
              {filterOPen && <FilterModal handleClose={filterClose}  
                columns={DataTableColumn} 
                fetchFunction={fetchFunction}
