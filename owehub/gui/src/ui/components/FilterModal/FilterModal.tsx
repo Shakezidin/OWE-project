@@ -167,7 +167,7 @@ const FilterModal: React.FC<TableProps> = ({
         <div className="transparent-model">
             <div className="modal">
                 <div className="filter-section">
-                    <h3 className="createProfileText" style={{margin:0}}>Filter</h3>
+                    <h3 className="createProfileText" style={{ margin: 0 }}>Filter</h3>
                     <div className="iconsSection2">
                         <button
                             type="button"
@@ -250,13 +250,14 @@ const FilterModal: React.FC<TableProps> = ({
                                             </span>
                                         )}
                                     </div>
-                                    <div
-                                        className="cross-btn"
-                                        onClick={() => handleRemoveRow(index)}
-                                       
-                                    >
-                                        <img src={ICONS.cross} alt="" />
-                                    </div>
+                                    {index !== 0 && (
+                                        <div
+                                            className="cross-btn"
+                                            onClick={() => handleRemoveRow(index)}
+                                        >
+                                            <img src={ICONS.cross} alt="" />
+                                        </div>
+                                    )}
                                 </div>
                             ))}
                         </div>
