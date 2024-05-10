@@ -94,7 +94,7 @@ func HandleUpdateDealerRequest(resp http.ResponseWriter, req *http.Request) {
 	queryParameters = append(queryParameters, Enddate)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.UpdateDealerOverrideFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateDealerOverrideFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to update dealer in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to update dealer", http.StatusInternalServerError, nil)

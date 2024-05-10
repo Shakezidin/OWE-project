@@ -72,6 +72,13 @@ var apiRoutes = ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/active",
+		apiHandler.HandleGetActiveAndStartTime,
+		false,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/login",
 		apiHandler.HandleLoginRequest,
 		false,
@@ -95,6 +102,20 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/create_user",
 		apiHandler.HandleCreateUserRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	// {
+	// 	strings.ToUpper("POST"),
+	// 	"/owe-commisions-service/v1/db_tables",
+	// 	apiHandler.HandleGetTableRequest,
+	// 	true,
+	// 	[]types.UserGroup{types.GroupAdmin},
+	// },
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/db_tables",
+		apiHandler.HandleGetTableRequest,
 		true,
 		[]types.UserGroup{types.GroupAdmin},
 	},
@@ -1364,7 +1385,7 @@ func FetchDbCfg() (err error) {
 	log.EnterFn(0, "FetchDbCfg")
 	defer func() { log.ExitFn(0, "FetchDbCfg", err) }()
 
-	var dbCfg models.DbConfInfo
+	var dbCfgList models.DBConfigList
 	log.ConfDebugTrace(0, "Reading DB Config for from: %+v", gCfgFilePaths.DbConfJsonPath)
 	file, err := os.Open(gCfgFilePaths.DbConfJsonPath)
 	if err != nil {
@@ -1372,9 +1393,9 @@ func FetchDbCfg() (err error) {
 		panic(err)
 	}
 	bVal, _ := ioutil.ReadAll(file)
-	err = json.Unmarshal(bVal, &dbCfg)
-	types.CommGlbCfg.DbConfInfo = dbCfg
-	log.ConfDebugTrace(0, "Database Configurations: %+v", types.CommGlbCfg.DbConfInfo)
+	err = json.Unmarshal(bVal, &dbCfgList)
+	types.CommGlbCfg.DbConfList = dbCfgList
+	log.ConfDebugTrace(0, "Database Configurations: %+v", types.CommGlbCfg.DbConfList)
 	return err
 }
 
@@ -1402,7 +1423,7 @@ func InitHttpCallbackPath() {
  ******************************************************************************/
 func PrintSvcGlbConfig(cfg models.SvcConfig) {
 	log.EnterFn(0, "PrintSvcGlbConfig")
-	log.SysConfTrace(0, "Commissions Service Configuration: %+v", cfg)
+	log.SysConfTrace(0, "owehub-main Service Configuration: %+v", cfg)
 	log.ExitFn(0, "PrintSvcGlbConfig", nil)
 }
 

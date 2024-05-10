@@ -77,7 +77,7 @@ func HandleUpdatePaymentScheduleArchiveRequest(resp http.ResponseWriter, req *ht
 	queryParameters = append(queryParameters, updatePaymentScheduleArcReq.IsArchived)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.UpdatePaymentScheduleArchiveFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdatePaymentScheduleArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to update payment schedule archive in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to update payment schedule archive", http.StatusInternalServerError, nil)

@@ -150,7 +150,7 @@ func HandleUpdateReferralDataRequest(resp http.ResponseWriter, req *http.Request
 	queryParameters = append(queryParameters, updateReferralDataReq.EndDate)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.UpdateReferralDataFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateReferralDataFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to update Referral data in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to update Referral data", http.StatusInternalServerError, nil)

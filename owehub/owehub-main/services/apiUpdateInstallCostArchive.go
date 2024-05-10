@@ -76,7 +76,7 @@ func HandleUpdateInstallCostArchiveRequest(resp http.ResponseWriter, req *http.R
 	queryParameters = append(queryParameters, updateInstallCostArcReq.IsArchived)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.UpdateInstallCostArchiveFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateInstallCostArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to update install cost archive in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to update install cost archive", http.StatusInternalServerError, nil)

@@ -97,7 +97,7 @@ func UpdatePassword(newPassword string, userEmailId string) (err error) {
 	whereEleList = append(whereEleList, isPasswordChnageReq)
 	whereEleList = append(whereEleList, userEmailId)
 
-	err, _ = db.UpdateDataInDB(query, whereEleList)
+	err, _ = db.UpdateDataInDB(db.RowDataDBIndex, query, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to update the new password err: %v", err)
 		return err
@@ -135,7 +135,7 @@ func GetUserInfo(emailId string) (data []map[string]interface{}, err error) {
 		return nil, err
 	}
 
-	data, err = db.ReteriveFromDB(query, whereEleList)
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to reterieve user login details from DB err: %v", err)
 		return nil, err

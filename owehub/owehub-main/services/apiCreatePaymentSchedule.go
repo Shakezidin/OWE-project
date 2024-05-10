@@ -85,7 +85,7 @@ func HandleCreatePaymentScheduleRequest(resp http.ResponseWriter, req *http.Requ
 	queryParameters = append(queryParameters, createPaymentSchedule.EndDate)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.CreatePaymentScheduleFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreatePaymentScheduleFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add payment schedule in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Create Payment Schedule", http.StatusInternalServerError, nil)

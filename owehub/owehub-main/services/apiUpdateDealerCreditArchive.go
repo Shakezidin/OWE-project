@@ -76,7 +76,7 @@ func HandleUpdateCreditDealerArchiveRequest(resp http.ResponseWriter, req *http.
 	queryParameters = append(queryParameters, updateDealerCreditArcReq.IsArchived)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.UpdateDealerCreditArchiveFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateDealerCreditArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to update dealer credit archive in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to update dealer credit archive", http.StatusInternalServerError, nil)

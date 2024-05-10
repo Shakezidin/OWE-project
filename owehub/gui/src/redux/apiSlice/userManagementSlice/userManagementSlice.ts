@@ -3,11 +3,13 @@ import { UserOnboardingStateModel } from "../../../core/models/data_models/UserM
 import {
   fetchUserListBasedOnRole,
   fetchUserOnboarding,
+  createTablePermission,
 } from "../../apiActions/userManagementActions";
 
 const initialState: UserOnboardingStateModel = {
   userOnboardingList: [],
   userRoleBasedList: [],
+  dbTables: [],
   loading: false,
   error: null,
   totalCount:0
@@ -61,6 +63,30 @@ const userManagementSlice = createSlice({
       )
       .addCase(
         fetchUserListBasedOnRole.rejected,
+        (state: UserOnboardingStateModel, action) => {
+          state.loading = false;
+          state.error = action.error.message ?? "Unable to fetch User list";
+        }
+      )
+
+      //  get db tables
+      .addCase(
+        createTablePermission.pending,
+        (state: UserOnboardingStateModel) => {
+          state.loading = true;
+          state.error = null;
+        }
+      )
+      .addCase(
+        createTablePermission.fulfilled,
+        (state: UserOnboardingStateModel, action) => {
+          state.loading = false;
+          state.error = null;
+          state.dbTables = action.payload;
+        }
+      )
+      .addCase(
+        createTablePermission.rejected,
         (state: UserOnboardingStateModel, action) => {
           state.loading = false;
           state.error = action.error.message ?? "Unable to fetch User list";

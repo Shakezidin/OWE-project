@@ -77,7 +77,7 @@ func HandleUpdateTimelineSlaArchiveRequest(resp http.ResponseWriter, req *http.R
 	queryParameters = append(queryParameters, updateTimelineSlaArcReq.IsArchived)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.UpdateTimelineSlaArchiveFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateTimelineSlaArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Update TimelineSla Archive in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Update TimelineSla Archive", http.StatusInternalServerError, nil)

@@ -15,7 +15,7 @@ import {
   stateOption,
 } from "../../../../core/models/data_models/SelectDataModel";
 import Select from "react-select";
-import { createAr, updateAr } from "../../../../redux/apiActions/arAction";
+import { createAr, updateAr } from "../../../../redux/apiActions/arConfigAction";
 import { paySaleTypeData } from "../../../../resources/static_data/StaticData";
 import { PayScheduleModel } from "../../../../core/models/configuration/create/PayScheduleModel";
 import SelectOption from "../../../components/selectOption/SelectOption";

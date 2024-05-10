@@ -112,7 +112,7 @@ func HandleUpdateAutoAdderRequest(resp http.ResponseWriter, req *http.Request) {
 	queryParameters = append(queryParameters, updateAutoAdderReq.AdderType)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.UpdateAutoAdderFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateAutoAdderFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to update auto adder in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to apdate auto adder", http.StatusInternalServerError, nil)

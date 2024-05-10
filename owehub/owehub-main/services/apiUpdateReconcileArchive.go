@@ -29,10 +29,10 @@ import (
 
 func HandleUpdateReconcileDataArchiveRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err                    error
+		err                       error
 		updateReconcileDataArcReq models.UpdateReconcileArchive
-		queryParameters        []interface{}
-		result                 []interface{}
+		queryParameters           []interface{}
+		result                    []interface{}
 	)
 
 	log.EnterFn(0, "HandleUpdateReconcileDataArchiveRequest")
@@ -77,7 +77,7 @@ func HandleUpdateReconcileDataArchiveRequest(resp http.ResponseWriter, req *http
 	queryParameters = append(queryParameters, updateReconcileDataArcReq.IsArchived)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.UpdateReconcileArchiveFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateReconcileArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Update Reconcile Archive in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Update Reconcile Archive", http.StatusInternalServerError, nil)

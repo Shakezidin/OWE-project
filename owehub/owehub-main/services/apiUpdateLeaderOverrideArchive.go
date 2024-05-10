@@ -76,7 +76,7 @@ func HandleUpdateLeaderOverrideArchiveRequest(resp http.ResponseWriter, req *htt
 	queryParameters = append(queryParameters, updateLeaderOverrideArcReq.IsArchived)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.UpdateLeaderOverrideArchiveFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateLeaderOverrideArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to update leader override archive in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to update leader override archive", http.StatusInternalServerError, nil)

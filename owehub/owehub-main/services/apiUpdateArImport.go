@@ -79,7 +79,7 @@ func HandleUpdateArImportDataRequest(resp http.ResponseWriter, req *http.Request
 	queryParameters = append(queryParameters, UpdateArImportReq.Notes)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.UpdateArImportFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateArImportFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to update Ar import in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to update Ar import", http.StatusInternalServerError, nil)

@@ -1,6 +1,6 @@
 
 CREATE TABLE sales_ar_calc (
-    serial_num Int,
+    serial_num serial NOT NULL,
     dealer text,
     partner text,
     instl text,

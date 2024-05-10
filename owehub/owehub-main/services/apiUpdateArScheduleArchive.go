@@ -77,7 +77,7 @@ func HandleUpdateArScheduleArchiveRequest(resp http.ResponseWriter, req *http.Re
 	queryParameters = append(queryParameters, updateArScheduleArcReq.IsArchived)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.UpdateArScheduleArchiveFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateArScheduleArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to update ar schedule archive in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to update ar schedule archive", http.StatusInternalServerError, nil)

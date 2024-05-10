@@ -84,7 +84,7 @@ func HandleUpdateRepPaySettingsDataRequest(resp http.ResponseWriter, req *http.R
 	queryParameters = append(queryParameters, UpdateRepPaySettingsData.EndDate)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.UpdateRepPaySettingsDataFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateRepPaySettingsDataFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add RepPaySettings Data in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Update RepPaySettings Data", http.StatusInternalServerError, nil)

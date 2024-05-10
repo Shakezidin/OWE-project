@@ -66,7 +66,7 @@ func HandleCreateSaleTypeRequest(resp http.ResponseWriter, req *http.Request) {
 	queryParameters = append(queryParameters, createSaleTypeReq.Description)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.CreateSaleTypeFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateSaleTypeFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add sale type in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Create Sale Type", http.StatusInternalServerError, nil)

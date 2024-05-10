@@ -121,7 +121,7 @@ func HandleUpdateTierLoanFeeRequest(resp http.ResponseWriter, req *http.Request)
 	queryParameters = append(queryParameters, endDate)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.UpdateTierLoanFeeFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateTierLoanFeeFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add Tier Loan Fee in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Update Tier Loan Fee", http.StatusInternalServerError, nil)

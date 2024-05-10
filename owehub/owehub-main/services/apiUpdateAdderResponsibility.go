@@ -81,7 +81,7 @@ func HandleUpdateAdderResponsibilityDataRequest(resp http.ResponseWriter, req *h
 	queryParameters = append(queryParameters, UpdateAdderResponsibilityReq.Pay_Scale)
 	queryParameters = append(queryParameters, UpdateAdderResponsibilityReq.Percentage)
 
-	result, err = db.CallDBFunction(db.UpdateAdderResponsibilityFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateAdderResponsibilityFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to update adder responsibility in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to update adder responsibility", http.StatusInternalServerError, nil)

@@ -84,7 +84,7 @@ func HandleCreateAdderCreditDataRequest(resp http.ResponseWriter, req *http.Requ
 	queryParameters = append(queryParameters, createAdderCreditReq.Max_Rate)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.CreateAdderCreditFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateAdderCreditFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add adder credit in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Create adder credit", http.StatusInternalServerError, nil)
