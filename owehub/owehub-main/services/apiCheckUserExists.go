@@ -70,7 +70,7 @@ func HandleCheckUserExists(resp http.ResponseWriter, req *http.Request) {
 	response.Email = createAdderCreditReq.Email
 	response.Exists = false
 
-	data, err := db.ReteriveFromDB(query, whereEleList)
+	data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Failed to get data from DB", http.StatusNotFound, nil)

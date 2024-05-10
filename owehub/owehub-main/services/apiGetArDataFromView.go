@@ -112,7 +112,7 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 	whereEleList = append(whereEleList, dataReq.ReportType)
 	whereEleList = append(whereEleList, dataReq.SalePartner)
 
-	data, err = db.ReteriveFromDB(query, whereEleList)
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get ar data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get ar data from DB", http.StatusBadRequest, nil)
