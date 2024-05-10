@@ -76,7 +76,7 @@ func HandleGetPaymentSchedulesDataRequest(resp http.ResponseWriter, req *http.Re
 		queryWithFiler = query + filter
 	}
 
-	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get payment schedule data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get payment schedule data from DB", http.StatusBadRequest, nil)
@@ -207,7 +207,7 @@ func HandleGetPaymentSchedulesDataRequest(resp http.ResponseWriter, req *http.Re
 		queryForAlldata = query + filter
 	}
 
-	data, err = db.ReteriveFromDB(queryForAlldata, whereEleList)
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryForAlldata, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get payment shedule data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get payment shedule data from DB", http.StatusBadRequest, nil)

@@ -77,7 +77,7 @@ func HandleUpdateNonCommDlrPayArchiveRequest(resp http.ResponseWriter, req *http
 	queryParameters = append(queryParameters, updateNonCommDlrPayArcReq.IsArchived)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.UpdateNonCommDlrPayArchiveFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateNonCommDlrPayArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to update non comm dlrpay archive in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to update non comm dlrpay archive", http.StatusInternalServerError, nil)

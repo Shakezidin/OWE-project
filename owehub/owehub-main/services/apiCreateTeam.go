@@ -62,7 +62,7 @@ func HandleCreateTeamRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	queryParameters = append(queryParameters, TeamData.TeamName)
-	_, err = db.CallDBFunction(db.CreateTeamFunction, queryParameters)
+	_, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateTeamFunction, queryParameters)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to Add Team in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Create Team", http.StatusInternalServerError, nil)

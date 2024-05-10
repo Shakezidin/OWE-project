@@ -76,7 +76,7 @@ func HandleGetCommissionsDataRequest(resp http.ResponseWriter, req *http.Request
 		queryWithFiler = query + filter
 	}
 
-	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get commissions data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get commissions data from DB", http.StatusBadRequest, nil)
@@ -163,17 +163,17 @@ func HandleGetCommissionsDataRequest(resp http.ResponseWriter, req *http.Request
 		}
 
 		commissionData := models.GetCommissionData{
-			RecordId:   RecordId,
-			Partner:    Partner,
-			Installer:  Installer,
-			State:      State,
-			SaleType:   SaleType,
-			SalePrice:  SalePrice,
-			RepType:    RepType,
-			RL:         RL,
-			Rate:       Rate,
-			StartDate:  StartDate,
-			EndDate:    EndDate,
+			RecordId:  RecordId,
+			Partner:   Partner,
+			Installer: Installer,
+			State:     State,
+			SaleType:  SaleType,
+			SalePrice: SalePrice,
+			RepType:   RepType,
+			RL:        RL,
+			Rate:      Rate,
+			StartDate: StartDate,
+			EndDate:   EndDate,
 		}
 		commissionsList.CommissionsList = append(commissionsList.CommissionsList, commissionData)
 	}
@@ -183,7 +183,7 @@ func HandleGetCommissionsDataRequest(resp http.ResponseWriter, req *http.Request
 		queryForAlldata = query + filter
 	}
 
-	data, err = db.ReteriveFromDB(queryForAlldata, whereEleList)
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryForAlldata, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get commissions data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get commissions data from DB", http.StatusBadRequest, nil)

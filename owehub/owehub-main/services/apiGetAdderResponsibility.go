@@ -71,7 +71,7 @@ func HandleGetAdderResponsibilityDataRequest(resp http.ResponseWriter, req *http
 		queryWithFiler = query + filter
 	}
 
-	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get adder responsibility data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get adder responsibility data from DB", http.StatusBadRequest, nil)
@@ -122,7 +122,7 @@ func HandleGetAdderResponsibilityDataRequest(resp http.ResponseWriter, req *http
 		queryForAlldata = query + filter
 	}
 
-	data, err = db.ReteriveFromDB(queryForAlldata, whereEleList)
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryForAlldata, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get adder responsibility data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get adder responsibility data from DB", http.StatusBadRequest, nil)

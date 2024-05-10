@@ -76,7 +76,7 @@ func HandleUpdateAdderResponsibilityArchiveRequest(resp http.ResponseWriter, req
 	queryParameters = append(queryParameters, updateAdderResponsibilityArcReq.IsArchived)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.UpdateAdderResponsibilityArchiveFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateAdderResponsibilityArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to update adder responsibility archive in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to update adder responsibility archive", http.StatusInternalServerError, nil)

@@ -28,4 +28,5 @@ type UpdateUserReq struct {
 
 type DeleteUsers struct {
 	UserCodes []string `json:"user_codes"`
+	Usernames []string `json:"usernames"`
 }

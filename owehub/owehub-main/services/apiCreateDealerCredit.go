@@ -102,7 +102,7 @@ func HandleCreateDealerCreditRequest(resp http.ResponseWriter, req *http.Request
 	queryParameters = append(queryParameters, createDealerCredit.EndDate)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.CreateDealerCreditFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateDealerCreditFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add dealer credit in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Create Dealer Credit", http.StatusInternalServerError, nil)

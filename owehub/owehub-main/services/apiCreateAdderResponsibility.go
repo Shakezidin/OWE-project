@@ -55,7 +55,7 @@ func HandleCreateAdderResponsibilityDataRequest(resp http.ResponseWriter, req *h
 		return
 	}
 
-	if (len(createAdderResponsibilityReq.Unique_Id) <= 0) || (len(createAdderResponsibilityReq.Pay_Scale) <= 0){
+	if (len(createAdderResponsibilityReq.Unique_Id) <= 0) || (len(createAdderResponsibilityReq.Pay_Scale) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
@@ -73,7 +73,7 @@ func HandleCreateAdderResponsibilityDataRequest(resp http.ResponseWriter, req *h
 	queryParameters = append(queryParameters, createAdderResponsibilityReq.Pay_Scale)
 	queryParameters = append(queryParameters, createAdderResponsibilityReq.Percentage)
 
-	result, err = db.CallDBFunction(db.CreateAdderResponsibilityFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateAdderResponsibilityFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add adder responsibility in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Create adder responsibility", http.StatusInternalServerError, nil)

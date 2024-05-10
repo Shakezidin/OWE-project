@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { ICONS } from "../../../icons/Icons";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-import {fetchAr} from '../../../../redux/apiActions/arAction'
+import {fetchAr} from '../../../../redux/apiActions/arConfigAction'
 // import CreateTimeLine from "./CreateTimeLine";
 import CreateAr from "./CreateAr"
 import CheckBox from "../../../components/chekbox/CheckBox";

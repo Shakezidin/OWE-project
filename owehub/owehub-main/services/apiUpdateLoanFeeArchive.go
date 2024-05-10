@@ -77,7 +77,7 @@ func HandleUpdateLoanFeeArchiveRequest(resp http.ResponseWriter, req *http.Reque
 	queryParameters = append(queryParameters, updateLoanFeeArcReq.IsArchived)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.UpdateLoanFeeArchiveFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateLoanFeeArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Update loan fee archive in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Update Loan Fee Archive", http.StatusInternalServerError, nil)
