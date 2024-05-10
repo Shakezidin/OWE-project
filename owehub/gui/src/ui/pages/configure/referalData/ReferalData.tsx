@@ -61,7 +61,6 @@ const ReferalData: React.FC = () => {
       archived:viewArchived
     };
     dispatch(getrefralData(pageNumber));
-
   }, [dispatch, currentPage,viewArchived]);
 
   const paginate = (pageNumber: number) => {

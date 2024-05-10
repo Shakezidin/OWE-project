@@ -15,14 +15,14 @@ interface ILoadFeeParams {
 }
 
 export interface ILoan {
-  unique_id: string;
+  unique_id?: string;
   dealer: string;
   installer: string;
   state: string;
   loan_type: string;
   owe_cost: number;
-  dlr_mu: string;
-  dlr_cost: string;
+  dlr_mu: number;
+  dlr_cost: number;
   start_date: string;
   end_date: string;
 }
@@ -55,12 +55,10 @@ export const createLoanFee = createAsyncThunk(
   async (param:ILoan, { rejectWithValue, dispatch }) => {
     try {
       const data = await postCaller("create_loan_fee", param);
-      if (data.status === 500 || data instanceof Error) {
+      if (data.status> 201 || data instanceof Error) {
         return rejectWithValue((data as Error).message);
       }
-      if (data.status === 500 || data instanceof Error) {
-        return rejectWithValue((data as Error).message);
-      }
+     
       await dispatch(getLoanFee({page_number:1,page_size:10,archived:false}))
       return data.data;
     } catch (error) {
@@ -75,7 +73,7 @@ export const updateLoanFee  = createAsyncThunk(
   async (param:ILoanRow, { rejectWithValue, dispatch }) => {
     try {
       const data = await postCaller("update_loan_fee", param);
-      if (data.status === 500 || data instanceof Error||data.status>201) {
+      if (data.status> 201 || data instanceof Error) {
         return rejectWithValue((data as Error).message);
       }
       await dispatch(getLoanFee({page_number:1,page_size:10,archived:false}))
