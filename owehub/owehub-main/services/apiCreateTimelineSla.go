@@ -77,7 +77,7 @@ func HandleCreateTimelineSlaRequest(resp http.ResponseWriter, req *http.Request)
 	queryParameters = append(queryParameters, createTimelineSla.EndDate)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.CreateTimelineSlaFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateTimelineSlaFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add timeline sla in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Create Timeline Sla", http.StatusInternalServerError, nil)

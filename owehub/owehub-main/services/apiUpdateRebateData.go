@@ -152,7 +152,7 @@ func HandleUpdateRebateDataRequest(resp http.ResponseWriter, req *http.Request) 
 	queryParameters = append(queryParameters, updateRebateDataReq.EndDate)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.UpdateRebateDataFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateRebateDataFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to update rebate data in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to update rebate data", http.StatusInternalServerError, nil)

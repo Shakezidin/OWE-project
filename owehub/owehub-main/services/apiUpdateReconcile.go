@@ -112,7 +112,7 @@ func HandleUpdateReconcileRequest(resp http.ResponseWriter, req *http.Request) {
 	queryParameters = append(queryParameters, updateReconcileReq.Notes)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.UpdateReconcileFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateReconcileFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add Reconcile data in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to update Reconcile data", http.StatusInternalServerError, nil)

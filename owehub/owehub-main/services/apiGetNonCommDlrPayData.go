@@ -74,7 +74,7 @@ func HandleGetNonCommDlrPayDataRequest(resp http.ResponseWriter, req *http.Reque
 		queryWithFiler = query + filter
 	}
 
-	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get non comm dealer pay data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get non comm dealer pay data from DB", http.StatusBadRequest, nil)
@@ -196,7 +196,7 @@ func HandleGetNonCommDlrPayDataRequest(resp http.ResponseWriter, req *http.Reque
 		queryForAlldata = query + filter
 	}
 
-	data, err = db.ReteriveFromDB(queryForAlldata, whereEleList)
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryForAlldata, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get non comm dealer pay data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get non comm dealer pay data from DB", http.StatusBadRequest, nil)

@@ -9,13 +9,11 @@ import { ICONS } from "../../../icons/Icons";
 import SelectTable from "../userTableList/SeletTable";
 import UserBasedInput from "./UserBasedInput";
 import SelectOption from "../../../components/selectOption/SelectOption";
-import {
-  CreateUserModel,
-} from "../../../../core/models/api_models/UserManagementModel";
+import { CreateUserModel } from "../../../../core/models/api_models/UserManagementModel";
 import { useAppSelector } from "../../../../redux/hooks";
 import Loading from "../../../components/loader/Loading";
 import { ALL_USER_ROLE_LIST } from "../../../../resources/static_data/TypeOfUser";
-import './Userboard.css'
+import "./Userboard.css";
 
 interface createUserProps {
   editMode: boolean;
@@ -38,8 +36,11 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
   const [firstNameError, setFirstNameError] = useState("");
   const [lastNameError, setLastNameError] = useState("");
   const [phoneNumberError, setPhoneNumberError] = useState("");
-  const { loading, formData } = useAppSelector((state) => state.createOnboardUser);
+  const { loading, formData } = useAppSelector(
+    (state) => state.createOnboardUser
+  );
   const [selectTable, setSelectTable] = useState<boolean>(false);
+  const [tablePermissions, setTablePermissions] = useState({});
 
   /** handle change for role */
   const handleChange = (newValue: any, fieldName: string) => {
@@ -102,188 +103,203 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
   /** render ui */
   return (
     <div className="transparent-model">
-      {loading && <div><Loading /> {loading}</div>}
-      <form onSubmit={(e) => onSubmitCreateUser(e)} className="modal">
+      {loading && (
+        <div>
+          <Loading /> {loading}
+        </div>
+      )}
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          onSubmitCreateUser(tablePermissions);
+        }}
+        className="modal"
+      >
         <div className="createUserCrossButton" onClick={handleClose}>
           <CROSS_BUTTON />
         </div>
         <h3 className="createProfileText">Onboarding</h3>
         <div className="modal-body">
-        <div className="scroll-user">
-          <div className="createProfileInputView">
-            <div className="createProfileTextView">
-              <div className="create-input-container">
-                <div className="create-input-field">
-                  <Input
-                    type={"text"}
-                    label="First Name"
-                    value={formData.first_name}
-                    placeholder={"Enter First Name"}
-                    onChange={(e) => handleInputChange(e)}
-                    name={"first_name"}
-                  />
-                  {firstNameError && <p className="error-message">{firstNameError}</p>}
-                </div>
-                <div className="create-input-field">
-                  <Input
-                    type={"text"}
-                    label="Last Name"
-                    value={formData.last_name}
-                    placeholder={"Enter Last Name"}
-                    onChange={(e) => handleInputChange(e)}
-                    name={"last_name"}
-                  />
-                  {lastNameError && <p className="error-message">{lastNameError}</p>}
-                </div>
-                <div className="create-input-field">
-                  <label className="inputLabel-select selected-fields-onboard">Role</label>
-                  <SelectOption
-                    options={ALL_USER_ROLE_LIST}
-                    onChange={(newValue) => handleChange(newValue, "role_name")}
-                    value={ALL_USER_ROLE_LIST?.find(
-                      (option) => option?.value === formData.role_name
-                    )}
-                  />
-                </div>
-              </div>
-              <div className="create-input-container">
-                <div className="create-input-field">
-                  <Input
-                    type={"text"}
-                    label="Email ID"
-                    value={formData.email_id}
-                    placeholder={"email@mymail.com"}
-                    onChange={(e) => handleInputChange(e)}
-                    name={"email_id"}
-                    disabled={formData.isEdit}
-                  />
-                </div>
-                <div className="create-input-field">
-                  <Input
-                    type={"text"}
-                    label="Phone Number"
-                    value={formData.mobile_number}
-                    placeholder={"Phone Number"}
-                    onChange={(e) => handleInputChange(e)}
-                    name={"mobile_number"}
-                  />
-                  {phoneNumberError && <p className="error-message">{phoneNumberError}</p>}
-                </div>
-                {formData.role_name === "Admin" ||
-                  formData.role_name === "SubDealer Owner" ||
-                  formData.role_name === "Dealer Owner" || formData.role_name === "Finance Admin" ? null : (
+          <div className="scroll-user">
+            <div className="createProfileInputView">
+              <div className="createProfileTextView">
+                <div className="create-input-container">
                   <div className="create-input-field">
-                    <label className="inputLabel-select selected-fields-onboard">Dealer Owner</label>
+                    <Input
+                      type={"text"}
+                      label="First Name"
+                      value={formData.first_name}
+                      placeholder={"Enter First Name"}
+                      onChange={(e) => handleInputChange(e)}
+                      name={"first_name"}
+                    />
+                    {firstNameError && (
+                      <p className="error-message">{firstNameError}</p>
+                    )}
+                  </div>
+                  <div className="create-input-field">
+                    <Input
+                      type={"text"}
+                      label="Last Name"
+                      value={formData.last_name}
+                      placeholder={"Enter Last Name"}
+                      onChange={(e) => handleInputChange(e)}
+                      name={"last_name"}
+                    />
+                    {lastNameError && (
+                      <p className="error-message">{lastNameError}</p>
+                    )}
+                  </div>
+                  <div className="create-input-field">
+                    <label className="inputLabel-select selected-fields-onboard">
+                      Role
+                    </label>
                     <SelectOption
-                      options={dealerList}
+                      options={ALL_USER_ROLE_LIST}
                       onChange={(newValue) =>
-                        handleChangeForDealer(newValue, "assigned_dealer_name")
+                        handleChange(newValue, "role_name")
                       }
-                      value={dealerList?.find(
-                        (option) =>
-                          option?.value === formData.assigned_dealer_name
+                      value={ALL_USER_ROLE_LIST?.find(
+                        (option) => option?.value === formData.role_name
                       )}
                     />
                   </div>
-                )}
-              </div>
-              <UserBasedInput
-                formData={formData}
-                onChange={(e: any) => handleInputChange(e)}
-                regionList={regionList}
-                handleChangeForRegion={(value: any, name: string) => {
-                  handleChangeForRegion(value, name)
-                }}
-
-              />
-              <div className="db-access-disable">
-                <div className="" style={{ display: "flex", gap: "0.5rem" }}>
-                  <CheckBox
-                    checked={false}
-                    onChange={() => { }}
-
-                  // indeterminate={isAnyRowSelected && !isAllRowsSelected}
-                  />
-                  <div className="access-data">
-                    <p>Database Access</p>
-                  </div>
                 </div>
-                <div className="" style={{ marginTop: "0.2rem" }}>
-                  <div className="dashboard-payroll">
-                    <div className="Payroll-section">
-                      <label
-                        className="inputLabel"
-                        style={{ color: "#344054" }}
-                      >
-                        Table 1
-                      </label>
-                      <div className="dash-select-user">Edit</div>
-                    </div>
-                    <div className="Payroll-section">
-                      <label
-                        className="inputLabel"
-                        style={{ color: "#344054" }}
-                      >
-                        Table 2
-                      </label>
-                      <div className="dash-select-user">Full</div>
-                    </div>
-                    <div className="Payroll-section">
-                      <label
-                        className="inputLabel"
-                        style={{ color: "#344054" }}
-                      >
-                        Table 3
-                      </label>
-                      <div className="dash-select-user">View</div>
-                    </div>
-                    <div
-                      className="Line-container"
-                      style={{ marginTop: "0.3rem", }}
-                    >
-                      <div
-                        className="line-graph"
-                      // onClick={() => setSelectTable(true)}
-                      >
-                        <div className="edit-line">
-                          <img
-                            src={ICONS.editIconUser}
-                            style={{ background: "white" }}
-                            alt=""
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    {selectTable && (
-                      <SelectTable setSelectTable={setSelectTable} />
+                <div className="create-input-container">
+                  <div className="create-input-field">
+                    <Input
+                      type={"text"}
+                      label="Email ID"
+                      value={formData.email_id}
+                      placeholder={"email@mymail.com"}
+                      onChange={(e) => handleInputChange(e)}
+                      name={"email_id"}
+                      disabled={formData.isEdit}
+                    />
+                  </div>
+                  <div className="create-input-field">
+                    <Input
+                      type={"text"}
+                      label="Phone Number"
+                      value={formData.mobile_number}
+                      placeholder={"Phone Number"}
+                      onChange={(e) => handleInputChange(e)}
+                      name={"mobile_number"}
+                    />
+                    {phoneNumberError && (
+                      <p className="error-message">{phoneNumberError}</p>
                     )}
                   </div>
+                  {formData.role_name === "Admin" ||
+                  formData.role_name === "SubDealer Owner" ||
+                  formData.role_name === "DB User" ||
+                  formData.role_name === "Dealer Owner" ||
+                  formData.role_name === "Finance Admin" ? null : (
+                    <div className="create-input-field">
+                      <label className="inputLabel-select selected-fields-onboard">
+                        Dealer Owner
+                      </label>
+                      <SelectOption
+                        options={dealerList}
+                        onChange={(newValue) =>
+                          handleChangeForDealer(
+                            newValue,
+                            "assigned_dealer_name"
+                          )
+                        }
+                        value={dealerList?.find(
+                          (option) =>
+                            option?.value === formData.assigned_dealer_name
+                        )}
+                      />
+                    </div>
+                  )}
+                </div>
+                <UserBasedInput
+                  formData={formData}
+                  onChange={(e: any) => handleInputChange(e)}
+                  regionList={regionList}
+                  handleChangeForRegion={(value: any, name: string) => {
+                    handleChangeForRegion(value, name);
+                  }}
+                />
+                <div className="">
+                  <div className="" style={{ display: "flex", gap: "0.5rem" }}>
+                    <CheckBox
+                      checked={false}
+                      onChange={() => {}}
+
+                      // indeterminate={isAnyRowSelected && !isAllRowsSelected}
+                    />
+                    <div className="access-data">
+                      <p>Database Access</p>
+                    </div>
+                  </div>
+                  <div className="" style={{ marginTop: "0.2rem" }}>
+                    <div className="dashboard-payroll">
+                      {Object.keys(tablePermissions).map((key) => (
+                        <div className="Payroll-section" key={key}>
+                          <label
+                            className="inputLabel"
+                            style={{ color: "#344054" }}
+                          >
+                            {key}
+                          </label>
+                          <div className="dash-select-user">Edit</div>
+                        </div>
+                      ))}
+
+                      <div
+                        className="Line-container"
+                        style={{ marginTop: "0.3rem" }}
+                      >
+                        <div
+                          className="line-graph"
+                          onClick={() => setSelectTable(true)}
+                        >
+                          <div className="edit-line">
+                            <img
+                              src={ICONS.editIconUser}
+                              style={{ background: "white" }}
+                              alt=""
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      {selectTable && (
+                        <SelectTable
+                          setSelectTable={setSelectTable}
+                          setTablePermissions={setTablePermissions}
+                          tablePermissions={tablePermissions}
+                        />
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className="create-input-field-note">
+                  <label htmlFor="" className="inputLabel">
+                    Description
+                  </label>{" "}
+                  <br />
+                  <textarea
+                    name="description"
+                    id=""
+                    rows={3}
+                    maxLength={255}
+                    value={formData.description}
+                    onChange={(e) => handleInputChange(e)}
+                    placeholder="Type"
+                  ></textarea>
+                  <p
+                    className={`character-count ${
+                      formData.description.length >= 255 ? "exceeded" : ""
+                    }`}
+                  >
+                    {formData.description.length}/255 characters
+                  </p>
                 </div>
               </div>
-              <div className="create-input-field-note">
-                <label htmlFor="" className="inputLabel">
-                  Description
-                </label>{" "}
-                <br />
-                <textarea
-                  name="description"
-                  id=""
-                  rows={3}
-                  maxLength={255}
-                  value={formData.description}
-                  onChange={(e) => handleInputChange(e)}
-                  placeholder="Type"
-                ></textarea>
-                <p
-                  className={`character-count ${formData.description.length >= 255 ? "exceeded" : ""
-                    }`}
-                >
-                  {formData.description.length}/255 characters
-                </p>
-              </div>
-
             </div>
-          </div>
           </div>
         </div>
         <div className="um-createUserActionButton">
@@ -292,7 +308,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
             onClick={handleClose}
             type={"button"}
           />
-          <ActionButton title={"Save"} onClick={() => { }} type={"submit"} />
+          <ActionButton title={"Save"} onClick={() => {}} type={"submit"} />
         </div>
       </form>
     </div>

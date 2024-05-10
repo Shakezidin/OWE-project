@@ -67,7 +67,7 @@ func HandleCreatePartnerRequest(resp http.ResponseWriter, req *http.Request) {
 	queryParameters = append(queryParameters, createPartnerReq.Description)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.CreatePartnerFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreatePartnerFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add partner in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Create partner", http.StatusInternalServerError, nil)

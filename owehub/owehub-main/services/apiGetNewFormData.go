@@ -103,7 +103,7 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 			continue
 		}
 
-		data, err = db.ReteriveFromDB(query, whereEleList)
+		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get new form data for table name %v from DB err: %v", tableName, err)
 			FormAndSendHttpResp(resp, "Failed to get Data from DB", http.StatusBadRequest, nil)

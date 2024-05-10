@@ -59,7 +59,7 @@ func HandleGetUsersByRoleDataRequest(resp http.ResponseWriter, req *http.Request
 					FROM user_roles
 					WHERE LOWER(role_name) = LOWER($1)
 				)`
-		data, err = db.ReteriveFromDB(query, []interface{}{strings.ToLower(dataReq.Role)})
+		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{strings.ToLower(dataReq.Role)})
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get Users data from DB err: %v", err)
 			FormAndSendHttpResp(resp, "Failed to get users Data from DB", http.StatusBadRequest, nil)
@@ -83,7 +83,7 @@ func HandleGetUsersByRoleDataRequest(resp http.ResponseWriter, req *http.Request
 		FROM user_details ud
 		WHERE ud.role_id IN (SELECT role_id FROM subrole_data)
 		AND ud.dealer_owner IN (SELECT user_id FROM dealer_owner_data)`
-		data, err = db.ReteriveFromDB(query, []interface{}{"%" + strings.ToLower(dataReq.SubRole) + "%", "%" + strings.ToLower(dataReq.Name) + "%"})
+		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, []interface{}{"%" + strings.ToLower(dataReq.SubRole) + "%", "%" + strings.ToLower(dataReq.Name) + "%"})
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get Users data from DB err: %v", err)
 			FormAndSendHttpResp(resp, "Failed to get users Data from DB", http.StatusBadRequest, nil)

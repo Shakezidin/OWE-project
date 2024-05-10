@@ -801,7 +801,7 @@ CREATE TABLE loan_fee (
     PRIMARY KEY (id)
 );
 
-CREATE TABLE ar_import(
+CREATE TABLE sales_ar_cfg (
     id serial NOT NULL,
     unique_id varchar NOT NULL UNIQUE,
     customer text,
@@ -895,18 +895,6 @@ CREATE TABLE reconcile (
  
 
 /*
-CREATE TABLE AR_payment_tracking (
-    Unique_ID Text PRIMARY KEY,
-    Customer_Name text,
-    Partner text,
-    Date date,
-    Amount float,
-    Payment_Type_Stage Text,
-    Bank_CED Text,
-    Total_Paid float,
-    state text
-);
-
 CREATE TABLE AR_Schedule (
     Partner text,
     Installer text,
@@ -1005,13 +993,15 @@ CREATE CREATE TABLE ADDERS_Data (
 CREATE TABLE Auto_Adder (
     Unique_ID Text primary Key,
     Date Date,
-    Adder_Type Text,
+    type text,
     GC Text,
-    Eaxct_Amt Float,
+    Exact_amt Float,
     Per_KW_Amt Float,
+    rep_percentage Float,
     Description_Repvisibale Text,
-    Notes_No_Repvisibale Text
-);
+    Notes_No_Repvisibale Text,
+    Adder_Type Text
+    );
 
 CREATE TABLE Loan_Fee_Adder(
     Unique_ID Text primary Key,

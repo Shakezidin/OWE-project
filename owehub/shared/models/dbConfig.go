@@ -16,6 +16,10 @@ type DbConfInfo struct {
 	Username string `json:"username"`
 }
 
+type DBConfigList struct {
+	DBConfigs []DbConfInfo `json:"dbConfigs"`
+}
+
 type DBHandleCxt struct {
 	CtxH *sql.DB
 }

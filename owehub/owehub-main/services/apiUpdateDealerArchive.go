@@ -76,7 +76,7 @@ func HandleUpdateDealerArchiveRequest(resp http.ResponseWriter, req *http.Reques
 	queryParameters = append(queryParameters, updateDealerArcReq.IsArchived)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.UpdateDealerOverrideArchiveFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateDealerOverrideArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to update dealer archive in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to update dealer archive", http.StatusInternalServerError, nil)

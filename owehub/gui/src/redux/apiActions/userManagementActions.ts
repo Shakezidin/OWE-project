@@ -2,6 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { postCaller } from "../../infrastructure/web_api/services/apiUrl";
 import { HTTP_STATUS } from "../../core/models/api_models/RequestModel";
 import {
+  DBTable,
   OnboardingChartModel,
   UserOnboardingModel,
 } from "../../core/models/api_models/UserManagementModel";
@@ -37,6 +38,25 @@ export const fetchUserOnboarding = createAsyncThunk(
         };
       }
     );
+    return mapList;
+  }
+);
+
+/** get user onboadring users */
+export const createTablePermission = createAsyncThunk(
+  "user/table_permission",
+  async () => {
+    const response = await postCaller(EndPoints.table_permission, {});
+    if (response.status !== HTTP_STATUS.OK) {
+      throw new Error("Failed to fetch onboarding data");
+    }
+
+    const { table_permission } = response.data;
+    const mapList: DBTable[] = table_permission.map((el: DBTable) => {
+      return {
+        table_name: el.table_name,
+      };
+    });
     return mapList;
   }
 );

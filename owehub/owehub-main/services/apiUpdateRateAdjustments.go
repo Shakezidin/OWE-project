@@ -94,7 +94,7 @@ func HandleUpdateRateAdjustmentsRequest(resp http.ResponseWriter, req *http.Requ
 	queryParameters = append(queryParameters, updateRateAdjustmentsReq.MaxRate)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.UpdateRateAdjustmentsFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateRateAdjustmentsFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add RateAdjustments in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to update RateAdjustments", http.StatusInternalServerError, nil)

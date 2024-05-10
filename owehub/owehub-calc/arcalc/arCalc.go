@@ -9,8 +9,10 @@ package arcalc
 
 import (
 	common "OWEApp/owehub-calc/common"
+	dataMgmt "OWEApp/owehub-calc/dataMgmt"
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
+	"time"
 )
 
 /******************************************************************************
@@ -22,41 +24,49 @@ import (
 func ExecArInitialCalculation(resultChan chan string) {
 	var (
 		err        error
-		query      string
-		dataList   []map[string]interface{}
-		configList map[string][]map[string]interface{}
 		arDataList []map[string]interface{}
 	)
 	log.EnterFn(0, "ExecArInitialCalculation")
 	defer func() { log.ExitFn(0, "ExecArInitialCalculation", err) }()
 
 	/* Feth Config from DB */
-	configList = make(map[string][]map[string]interface{})
-
-	query = "SELECT * from " + db.TableName_loan_fee_adder
-	configList[db.TableName_loan_fee_adder], err = db.ReteriveFromDB(query, nil)
+	err = dataMgmt.ArCfgData.LoadARCfg()
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get Loan Fee Addr data from DB err: %v", err)
+		log.FuncErrorTrace(0, "Failed to get AR Config from DB err: %+v", err)
 		resultChan <- "FAILURE"
 		return
 	}
-
-	/* Fetch Data for Calculation From DB */
-	query = "SELECT * from " + db.ViewName_ConsolidatedDataView
-	dataList, err = db.ReteriveFromDB(query, nil)
+	err = dataMgmt.ArSkdConfig.LoadArSkdCfg()
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get commissions data from DB err: %v", err)
+		log.FuncErrorTrace(0, "Failed to get AR Skd Config from DB err: %+v", err)
 		resultChan <- "FAILURE"
 		return
 	}
-
-	for _, data := range dataList {
+	err = dataMgmt.AdderDataCfg.LoadAdderDataCfg()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get Adder Data Config from DB err: %+v", err)
+		resultChan <- "FAILURE"
+		return
+	}
+	err = dataMgmt.AdjustmentsConfig.LoadAdjustmentsCfg()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get Adjustments Config from DB err: %+v", err)
+		resultChan <- "FAILURE"
+		return
+	}
+	/* Fetch Sale Data for Calculation From DB */
+	err = dataMgmt.SaleData.LoadSaleData()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get sale data from DB err: %+v", err)
+		resultChan <- "FAILURE"
+		return
+	}
+	for _, saleData := range dataMgmt.SaleData.SaleDataList {
 		var arData map[string]interface{}
-		arData, err = CalculateARProject(data)
+		arData, err = CalculateARProject(saleData)
 		if err != nil || arData == nil {
-			uniqueID, ok := data["unique_id"]
-			if !ok {
-				log.FuncErrorTrace(0, "Failed to calculate AR Data for unique id : %+v err: %+v", uniqueID, err)
+			if len(saleData.UniqueId) <= 0 {
+				log.FuncErrorTrace(0, "Failed to calculate AR Data for unique id : %+v err: %+v", saleData.UniqueId, err)
 			} else {
 				log.FuncErrorTrace(0, "Failed to calculate AR Data err : %+v", err)
 			}
@@ -64,9 +74,8 @@ func ExecArInitialCalculation(resultChan chan string) {
 			arDataList = append(arDataList, arData)
 		}
 	}
-
 	/* Update Calculated and Fetched data AR.Data Table */
-	err = db.AddMultipleRecordInDB(db.TableName_SalesArCalc, arDataList)
+	err = db.AddMultipleRecordInDB(db.RowDataDBIndex, db.TableName_SalesArCalc, arDataList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to insert initial AR Data in DB err: %v", err)
 	}
@@ -79,62 +88,94 @@ func ExecArInitialCalculation(resultChan chan string) {
  * DESCRIPTION:     calculate the calculated data for ARCalc
  * RETURNS:        	outData
  *****************************************************************************/
-func CalculateARProject(data map[string]interface{}) (outData map[string]interface{}, err error) {
+func CalculateARProject(saleData dataMgmt.SaleDataStruct) (outData map[string]interface{}, err error) {
+	var (
+		contractCalc float64
+		epcCalc      float64
+		grossRev     float64
+		redLine      string
+		permitPayM1  string
+		installPayM2 string
+		permitMax    string
+		addrPtr      float64
+		addrAuto     float64
+		loanFee      float64
+		adjust       float64
+		netRev       float64
+		status       string
+		permitPay    float64
+		installPay   float64
+		reconcile    float64
+		totalPaid    float64
+		currentDue   float64
+		balance      float64
+	)
+	log.EnterFn(0, "CalculateARProject")
+	defer func() { log.ExitFn(0, "CalculateARProject", err) }()
 
 	outData = make(map[string]interface{})
-
-	outData["serial_num"] = data["unique_id"]
-	outData["dealer"] = data["dealer"]
-	outData["partner"] = data["partner"]
-	outData["instl"] = data["installer"]
-	outData["source"] = data["source"]
-	//outData["type"] = data[""]
-	outData["loan_type"] = data["loan_type"]
-	outData["unique_id"] = data["unique_id"]
-	outData["home_owner"] = data["home_owner"]
-	outData["street_address"] = data["address"]
-	outData["st"] = data["state"]
-	//outData["email"] = data[""]
-	outData["rep_1"] = data["primary_sales_rep"]
-	outData["rep_2"] = data["secondary_sales_rep"]
-	//outData["appt_setter"] = data[""]
-	outData["sys_size"] = data["system_size"]
-	//outData["kwh"] = data[""]
-	outData["contract"] = data["contract_total"]
-	outData["epc"] = data["net_epc"]
-	outData["wc"] = data["wc_1"]
-	//outData["pp"] = data[""]
-	outData["ntp"] = data["ntp_date"]
-	outData["perm_sub"] = data["permit_submitted_date"]
-	outData["perm_app"] = data["permit_approved_date"]
-	outData["ic_sub"] = data["ic_submitted_date"]
-	outData["ic_app"] = data["ic_approved_date"]
-	outData["cancel"] = data["cancelled_date"]
-	outData["inst_sys"] = data["pv_install_completed_date"]
-	//outData["inst_elec"] = data[""]
-	//outData["fca"] = data[""]
-	outData["pto"] = data["pto_date"]
-
+	outData["serial_num"] = saleData.UniqueId
+	outData["dealer"] = saleData.Dealer
+	outData["partner"] = saleData.Partner
+	outData["instl"] = saleData.Installer
+	outData["source"] = saleData.Source
+	outData["loan_type"] = saleData.LoanType
+	outData["unique_id"] = saleData.UniqueId
+	outData["home_owner"] = saleData.HomeOwner
+	outData["street_address"] = saleData.Address
+	outData["st"] = saleData.State
+	outData["rep_1"] = saleData.PrimarySalesRep
+	outData["rep_2"] = saleData.SecondarySalesRep
+	outData["sys_size"] = saleData.SystemSize
+	outData["contract"] = saleData.ContractTotal
+	outData["epc"] = saleData.NetEpc
+	outData["wc"] = saleData.WC1
+	outData["ntp"] = saleData.NtpDate
+	outData["perm_sub"] = saleData.PermitSubmittedDate
+	outData["perm_app"] = saleData.PermitApprovedDate
+	outData["ic_sub"] = saleData.IcSubmittedDate
+	outData["ic_app"] = saleData.IcApprovedDate
+	outData["cancel"] = saleData.CancelledDate
+	outData["inst_sys"] = saleData.PvInstallCompletedDate
+	outData["pto"] = saleData.PtoDate
 	/* Calculated Fields */
-	outData["status"] = common.CalculateProjectStatus(outData["unique_id"].(string), outData["pto"].(string), outData["inst_sys"].(string),
-		outData["cancel"].(string), outData["perm_sub"].(string), outData["ntp"].(string), outData["wc"].(string))
-	outData["status_date"] = common.CalculateProjectStatusDate(outData["unique_id"].(string), outData["pto"].(string), outData["inst_sys"].(string),
-		outData["cancel"].(string), outData["perm_sub"].(string), outData["ntp"].(string), outData["wc"].(string))
-	outData["contract_calc"] = common.CalculateContractAmount(outData["epc"].(string), outData["contract"].(string), outData["sys_size"].(float64))
-	//outData["loan_fee"] = CalculateLoanFee()
-	outData["owe_ar"] = CalculateOweAR(outData["contract_calc"].(string), outData["loan_fee"].(string))
-	//outData["total_paid"] =
+	status = saleData.ProjectStatus
+	redLine, permitPayM1, permitMax, installPayM2 = dataMgmt.ArSkdConfig.GetArSkdForSaleData(&saleData)
+	contractCalc = common.CalculateContractAmount(saleData.NetEpc, outData["contract"].(float64), outData["sys_size"].(float64))
+	epcCalc = common.CalculateEPCCalc(contractCalc, saleData.WC1, saleData.NetEpc, saleData.SystemSize)
+	grossRev = CalculateGrossRev(epcCalc, redLine, saleData.SystemSize)
+	addrPtr = dataMgmt.AdderDataCfg.CalculateAddrPtr(saleData.Dealer, saleData.UniqueId)
+	addrAuto = dataMgmt.AutoAdderCfg.CalculateAddrAuto(saleData.Dealer, saleData.UniqueId)
+	loanFee = dataMgmt.LoanFeeAdderCfg.CalculateLoanFee(saleData.Dealer, saleData.UniqueId)
+	adjust = dataMgmt.AdjustmentsConfig.CalculateAdjust(saleData.Dealer, saleData.UniqueId)
+	netRev = CalculateNetRev(grossRev, addrPtr, addrAuto, loanFee, adjust)
+	permitPay = CalculatePermitPay(status, grossRev, netRev, permitPayM1, permitMax)
+	installPay = common.CalculateInstallPay(status, grossRev, netRev, installPayM2, permitPay)
+	reconcile = dataMgmt.ReconcileCfgData.CalculateReconcile(saleData.Dealer, saleData.UniqueId)
+	totalPaid = dataMgmt.ArCfgData.GetTotalPaidForUniqueId(saleData.UniqueId)
+	currentDue = CalculateCurrentDue(&saleData, netRev, totalPaid, permitPay, installPay, reconcile)
+	balance = CalculateBalance(saleData.UniqueId, status, saleData.Dealer, totalPaid, netRev, reconcile)
+
+	outData["status"] = status
+	/*outData["status_date"] = common.CalculateProjectStatusDate(saleData.UniqueId, saleData.PtoDate, saleData.PvInstallCompletedDate,
+	saleData.CancelledDate, saleData.PermitSubmittedDate, saleData.NtpDate, saleData.WC1)*/
+	outData["contract_calc"] = contractCalc
+	outData["loan_fee"] = loanFee
+	outData["owe_ar"] = CalculateOweAR(outData["contract_calc"].(float64), outData["loan_fee"].(float64))
+	outData["total_paid"] = totalPaid
+	outData["epc_calc"] = epcCalc
+	outData["gross_rev"] = grossRev
+	outData["addr_ptr"] = addrPtr
+	outData["addr_auto"] = addrAuto
+	outData["adjustment"] = adjust
+	outData["net_rev"] = netRev
+	outData["permit_pay"] = permitPay
+	outData["install_pay"] = installPay
+	outData["reconcile"] = reconcile
+	outData["current_due"] = currentDue
+	outData["balance"] = balance
 
 	return outData, err
-}
-
-/******************************************************************************
- * FUNCTION:        CalculateLoanFee
- * DESCRIPTION:     calculates the "loan_fee" value based on the provided data
- * RETURNS:        	loan fee
- *****************************************************************************/
-func CalculateLoanFee(dealer, loanFee string) float64 {
-	return 0.0
 }
 
 /******************************************************************************
@@ -142,19 +183,15 @@ func CalculateLoanFee(dealer, loanFee string) float64 {
  * DESCRIPTION:     calculates the "owe_ar" value based on the provided data
  * RETURNS:        owe ar
  *****************************************************************************/
-func CalculateOweAR(contractCalc, loanFee string) float64 {
+func CalculateOweAR(contractCalc float64, loanFee float64) float64 {
 
 	log.EnterFn(0, "CalculateOweAR")
-	defer func() { log.ExitFn(0, "CalculateOweAR", "") }()
+	defer func() { log.ExitFn(0, "CalculateOweAR", nil) }()
 
-	if len(contractCalc) > 0 {
-		contractCalcAmount := common.StrToFloat(contractCalc)
-		if contractCalcAmount != nil {
-			loanFeeAmount := common.StrToFloat(loanFee)
-			if loanFeeAmount != nil {
-				/* Subtract loanFee from contractCalc */
-				return *contractCalcAmount - *loanFeeAmount
-			}
+	if contractCalc > 0.0 {
+		if loanFee != 0.0 {
+			/* Subtract loanFee from contractCalc */
+			return contractCalc - loanFee
 		}
 	}
 	/* Return 0 if Contract $$ Calc is empty or cannot be parsed */
@@ -164,21 +201,18 @@ func CalculateOweAR(contractCalc, loanFee string) float64 {
 /******************************************************************************
  * FUNCTION:        CalculateOweAR
  * DESCRIPTION:     calculates the "gross_rev" value based on the provided data
- * RETURNS:        gross revenue
+ * RETURNS:        	gross revenue
  *****************************************************************************/
-func CalculateGrossRev(epcCalc, redLine string, systemSize float64) float64 {
+func CalculateGrossRev(epcCalc float64, redLine string, systemSize float64) float64 {
 
 	log.EnterFn(0, "CalculateGrossRev")
-	defer func() { log.ExitFn(0, "CalculateGrossRev", "") }()
+	defer func() { log.ExitFn(0, "CalculateGrossRev", nil) }()
 
-	if len(epcCalc) > 0 {
-		epcCalcAmount := common.StrToFloat(epcCalc)
-		if epcCalcAmount != nil {
-			redLineAmount := common.StrToFloat(redLine)
-			if redLineAmount != nil {
-				/* Calculate gross_rev */
-				return (*epcCalcAmount - *redLineAmount) * 1000 * systemSize
-			}
+	if epcCalc > 0.0 {
+		redLineAmount := common.StrToFloat(redLine)
+		if redLineAmount != nil {
+			/* Calculate gross_rev */
+			return (epcCalc - *redLineAmount) * 1000 * systemSize
 		}
 	}
 	/* Return 0 if EPC Calc is empty or cannot be parsed */
@@ -190,12 +224,12 @@ func CalculateGrossRev(epcCalc, redLine string, systemSize float64) float64 {
  * DESCRIPTION:     calculates the "net_rev" value based on the provided data
  * RETURNS:        Net revenue
  *****************************************************************************/
-func CalculateNetRev(grossRev, addrPtr, autoAddr, loanFee float64) float64 {
+func CalculateNetRev(grossRev, addrPtr, autoAddr, loanFee, adjust float64) float64 {
 	log.EnterFn(0, "CalculateNetRev")
-	defer func() { log.ExitFn(0, "CalculateNetRev", "") }()
+	defer func() { log.ExitFn(0, "CalculateNetRev", nil) }()
 
 	if grossRev > 0 {
-		return common.Round(grossRev-addrPtr-autoAddr-loanFee+loanFee, 2)
+		return common.Round(grossRev-addrPtr-autoAddr-loanFee+adjust, 2)
 	}
 	return 0
 }
@@ -205,20 +239,26 @@ func CalculateNetRev(grossRev, addrPtr, autoAddr, loanFee float64) float64 {
  * DESCRIPTION:     calculates the "permit_pay" value based on the provided data
  * RETURNS:        permit pay
  *****************************************************************************/
-func CalculatePermitPay(status string, grossRev, netRev, permitPayM1, permitMax float64) float64 {
+func CalculatePermitPay(status string, grossRev, netRev float64, permitPayM1, permitMax string) (permitPay float64) {
 	log.EnterFn(0, "CalculatePermitPay")
-	defer func() { log.ExitFn(0, "CalculatePermitPay", "") }()
+	defer func() { log.ExitFn(0, "CalculatePermitPay", nil) }()
 
+	permitPay = 0
 	if status == string(common.Cancel) || status == string(common.Shaky) {
-		return 0
+		return permitPay
 	}
-	if grossRev > 0 {
-		if netRev*permitPayM1 > permitMax {
-			return common.Round(permitMax, 2)
+	if grossRev > 0.0 {
+		permitPayM1Amt := common.StrToFloat(permitPayM1)
+		permitMaxAmt := common.StrToFloat(permitMax)
+		if (permitPayM1Amt != nil) && (permitMaxAmt != nil) {
+			if netRev*(*permitPayM1Amt) > *permitMaxAmt {
+				permitPay = common.Round(*permitMaxAmt, 2)
+			} else {
+				permitPay = common.Round(netRev*(*permitPayM1Amt), 2)
+			}
 		}
-		return common.Round(netRev*permitPayM1, 2)
 	}
-	return 0
+	return permitPay
 }
 
 /******************************************************************************
@@ -228,7 +268,7 @@ func CalculatePermitPay(status string, grossRev, netRev, permitPayM1, permitMax 
  *****************************************************************************/
 func CalculatePTOPay(status string, grossRev, netRev, ptoPayM3, permitPay, installPay float64) float64 {
 	log.EnterFn(0, "CalculatePTOPay")
-	defer func() { log.ExitFn(0, "CalculatePTOPay", "") }()
+	defer func() { log.ExitFn(0, "CalculatePTOPay", nil) }()
 
 	if status == string(common.Cancel) || status == string(common.Shaky) {
 		return 0
@@ -244,80 +284,57 @@ func CalculatePTOPay(status string, grossRev, netRev, ptoPayM3, permitPay, insta
  * DESCRIPTION:     calculates the balance based on given parameters.
  * RETURNS:       balance
  *****************************************************************************/
-func CalculateBalance(uniqueID string, status string, dealer string, totalPaid float64, netRev float64, reconcile float64) float64 {
+func CalculateBalance(uniqueID string, status string, dealer string, totalPaid float64, netRev float64, reconcile float64) (balance float64) {
 
 	log.EnterFn(0, "CalculateBalance")
-	defer func() { log.ExitFn(0, "CalculateBalance", "") }()
+	defer func() { log.ExitFn(0, "CalculateBalance", nil) }()
 
+	balance = 0
 	if len(uniqueID) > 0 {
 		if status == string(common.Cancel) || status == string(common.Shaky) {
-			return 0 - totalPaid
+			balance = (0 - totalPaid) + reconcile
 		} else if len(dealer) > 0 {
-			return netRev - totalPaid + reconcile
+			balance = common.Round(netRev-totalPaid, 2) + reconcile
 		}
 	}
-	return 0
+	return balance
 }
 
 /******************************************************************************
- * FUNCTION:        CalculateTotalPaid
- * DESCRIPTION:     calculates the "total_paid" value based on the provided data
- * RETURNS:       Adjust
+ * FUNCTION:		CalculateCurrentDue
+ * DESCRIPTION:		calculates the currentDue based on given parameters
+ * RETURNS:			currentDue
  *****************************************************************************/
-/*ASIF TODO: Commented becasue it needs configuration */
-/*func CalculateTotalPaid(dealer string, arData []AR) float64 {
-	log.EnterFn(0, "CalculateTotalPaid")
-	defer func() { log.ExitFn(0, "CalculateTotalPaid", "") }()
-	if len(dealer) > 0 {
-		var totalPaidSum float64
-		for _, data := range arData {
-			if data.UniqueID == data.UniqueID {
-				totalPaidSum += data.Amount
-			}
-		}
-		return totalPaidSum
-	}
-	return 0
-}*/
+func CalculateCurrentDue(saleData *dataMgmt.SaleDataStruct, netRev, totalPaid, permitPay, installPay, reconcile float64) (currentDue float64) {
+	var (
+		today = time.Now().Truncate(24 * time.Hour)
+	)
 
-/******************************************************************************
- * FUNCTION:        CalculateAdjust
- * DESCRIPTION:     calculates the "adjust" value based on the provided data
- * RETURNS:       Adjust
- *****************************************************************************/
-/*ASIF TODO: Commented becasue it needs configuration */
-/* func CalculateAdjust(dealer string, adjustData []Adjust) float64 {
-	log.EnterFn(0, "CalculateAdjust")
-	defer func() { log.ExitFn(0, "CalculateAdjust", "") }()
-	if len(dealer) > 0 {
-		var adjustSum float64
-		for _, data := range adjustData {
-			if data.Dealer == dealer && data.UniqueID == data.UniqueID {
-				adjustSum += data.Amount
-			}
-		}
-		return adjustSum
-	}
-	return 0
-} */
+	log.EnterFn(0, "CalculateCurrentDue")
+	defer func() { log.ExitFn(0, "CalculateCurrentDue", nil) }()
 
-/******************************************************************************
- * FUNCTION:        CalculateReconcile
- * DESCRIPTION:      calculates the "reconcile" value based on the provided data
- * RETURNS:       Reconsile
- *****************************************************************************/
-/*ASIF TODO: Commented becasue it needs  configuration */
-/* func CalculateReconcile(dealer string, reconcileData []Reconcile) float64 {
-	log.EnterFn(0, "CalculateReconcile")
-	defer func() { log.ExitFn(0, "CalculateReconcile", "") }()
-	if len(dealer) > 0 {
-		var reconcileSum float64
-		for _, data := range reconcileData {
-			if data.Dealer == dealer && data.UniqueID == data.UniqueID {
-				reconcileSum += data.Amount
+	currentDue = 0.0
+	if saleData.CancelledDate.IsZero() || saleData.ProjectStatus == "Hold" || saleData.ProjectStatus == "Jeopardy" {
+		currentDue = (0 - totalPaid)
+	} else {
+		if !saleData.PermitSubmittedDate.IsZero() &&
+			(saleData.PermitSubmittedDate.Before(today) || saleData.PermitSubmittedDate.Equal(today)) {
+
+			if !saleData.PtoDate.IsZero() &&
+				(saleData.PtoDate.Before(today) || saleData.PtoDate.Equal(today)) {
+
+				currentDue = common.Round(netRev-totalPaid, 2) + reconcile
+			} else if !saleData.PvInstallCompletedDate.IsZero() &&
+				(saleData.PvInstallCompletedDate.Before(today) || saleData.PvInstallCompletedDate.Equal(today)) {
+
+				currentDue = common.Round(permitPay+installPay-totalPaid, 2) + reconcile
+			} else if !saleData.PermitSubmittedDate.IsZero() &&
+				(saleData.PermitSubmittedDate.Before(today) || saleData.PermitSubmittedDate.Equal(today)) {
+
+				currentDue = common.Round(permitPay-totalPaid, 2) + reconcile
 			}
 		}
-		return reconcileSum
 	}
-	return 0
-}*/
+
+	return currentDue
+}

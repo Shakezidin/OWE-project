@@ -101,7 +101,7 @@ func HandleCreateNonCommDlrPayRequest(resp http.ResponseWriter, req *http.Reques
 	queryParameters = append(queryParameters, createNonCommDlrPay.EndDate)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.CreateNonCommDlrPayFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateNonCommDlrPayFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add non comm dealer pay in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Create Non Comm Dealer Pay", http.StatusInternalServerError, nil)

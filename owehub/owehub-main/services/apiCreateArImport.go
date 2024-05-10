@@ -72,7 +72,7 @@ func HandleCreateArImportDataRequest(resp http.ResponseWriter, req *http.Request
 	queryParameters = append(queryParameters, createArImportReq.Notes)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.CreateArImportFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateArImportFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add ar import in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Create Ar import", http.StatusInternalServerError, nil)

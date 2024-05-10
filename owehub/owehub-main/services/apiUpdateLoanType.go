@@ -87,7 +87,7 @@ func HandleUpdateLoanTypeRequest(resp http.ResponseWriter, req *http.Request) {
 	queryParameters = append(queryParameters, updateLoanTypeReq.Description)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.UpdateLoanTypeFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateLoanTypeFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to update loan type in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to update loan type", http.StatusInternalServerError, nil)

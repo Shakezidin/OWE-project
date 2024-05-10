@@ -6,23 +6,29 @@
 
 package models
 
+type TablePermission struct {
+	TableName     string `json:"table_name"`
+	PrivilegeType string `json:"privilege_type"`
+}
+
 type CreateUserReq struct {
 	//UserCode          string `json:"user_code"`
-	Name              string `json:"name"`
-	EmailId           string `json:"email_id"`
-	MobileNumber      string `json:"mobile_number"`
-	Password          string `json:"password"`
-	Designation       string `json:"designation"`
-	RoleName          string `json:"role_name"`
-	PasswordChangeReq bool   `json:"password_change_required"`
-	ReportingManager  string `json:"reporting_manager"`
-	DealerOwner       string `json:"dealer_owner"`
-	UserStatus        string `json:"user_status"`
-	Description       string `json:"description"`
-	Region            string `json:"region"`
-	StreetAddress     string `json:"street_address"`
-	State             string `json:"state"`
-	City              string `json:"city"`
-	Zipcode           string `json:"zipcode"`
-	Country           string `json:"country"`
+	Name              string            `json:"name"`
+	EmailId           string            `json:"email_id"`
+	MobileNumber      string            `json:"mobile_number"`
+	Password          string            `json:"password"`
+	Designation       string            `json:"designation"`
+	RoleName          string            `json:"role_name"`
+	PasswordChangeReq bool              `json:"password_change_required"`
+	ReportingManager  string            `json:"reporting_manager"`
+	DealerOwner       string            `json:"dealer_owner"`
+	UserStatus        string            `json:"user_status"`
+	Description       string            `json:"description"`
+	Region            string            `json:"region"`
+	StreetAddress     string            `json:"street_address"`
+	State             string            `json:"state"`
+	City              string            `json:"city"`
+	Zipcode           string            `json:"zipcode"`
+	Country           string            `json:"country"`
+	TablesPermissions []TablePermission `json:"tables_permissions"`
 }

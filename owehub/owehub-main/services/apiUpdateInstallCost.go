@@ -100,7 +100,7 @@ func HandleUpdateInstallCostDataRequest(resp http.ResponseWriter, req *http.Requ
 	queryParameters = append(queryParameters, endDate)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.UpdateInstallCostFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateInstallCostFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to update install cost in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to update install cost", http.StatusInternalServerError, nil)

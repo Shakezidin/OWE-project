@@ -44,6 +44,10 @@ export interface UserRoleBasedListModel {
   team_name: string;
 }
 
+export interface DBTable {
+  table_name: string;
+}
+
 export interface CreateUserModel {
   isEdit: boolean;
   first_name: string;
@@ -57,6 +61,7 @@ export interface CreateUserModel {
   description: string;
   report_to: string;
   user_status?: string;
+  tablePermission?: any;
 }
 
 export interface CreateUserParamModel {
@@ -71,8 +76,10 @@ export interface CreateUserParamModel {
   team_name?: string;
   region?: string;
   user_status?: string;
+  tables_permissions?: any;
 }
 
 export interface DeleteUserModel {
   user_codes: string[];
+  usernames: string[];
 }

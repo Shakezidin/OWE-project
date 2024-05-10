@@ -73,7 +73,7 @@ func HandleCreateStateRequest(resp http.ResponseWriter, req *http.Request) {
 	queryParameters = append(queryParameters, createStatesReq.Name)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.CreateStateFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateStateFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add states in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Create states", http.StatusInternalServerError, nil)

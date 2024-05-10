@@ -72,7 +72,7 @@ func HandleGetLeaderOverrideDataRequest(resp http.ResponseWriter, req *http.Requ
 		queryWithFiler = query + filter
 	}
 
-	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get leader override data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get leader override data from DB", http.StatusBadRequest, nil)
@@ -188,7 +188,7 @@ func HandleGetLeaderOverrideDataRequest(resp http.ResponseWriter, req *http.Requ
 		queryForAlldata = query + filter
 	}
 
-	data, err = db.ReteriveFromDB(queryForAlldata, whereEleList)
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryForAlldata, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get leader override data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get leader override data from DB", http.StatusBadRequest, nil)

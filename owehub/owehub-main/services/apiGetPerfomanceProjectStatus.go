@@ -11,6 +11,7 @@ import (
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	"strings"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -73,7 +74,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		queryWithFiler = query
 	}
 
-	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get PerfomanceProjectStatus data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get PerfomanceProjectStatus data from DB", http.StatusBadRequest, nil)
@@ -96,51 +97,58 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			continue
 		}
 
-		ContractDate, ok := item["contract_date"].(string)
-		if !ok || ContractDate == "" {
+		ContractDate, ok := item["contract_date"].(time.Time)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get ContractDate for Unique ID %v. Item: %+v\n", UniqueId, item)
-			ContractDate = ""
+			ContractDate = time.Time{}
 		}
 
-		PermitApprovedDate, ok := item["permit_approved_date"].(string)
-		if !ok || PermitApprovedDate == "" {
+		PermitApprovedDate, ok := item["permit_approved_date"].(time.Time)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get PermitApprovedDate for Unique ID %v. Item: %+v\n", UniqueId, item)
-			PermitApprovedDate = ""
+			PermitApprovedDate = time.Time{}
 		}
 
-		PvInstallCompletedDate, ok := item["pv_install_completed_date"].(string)
-		if !ok || PvInstallCompletedDate == "" {
+		PvInstallCompletedDate, ok := item["pv_install_completed_date"].(time.Time)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get PvInstallCompletedDate for Unique ID %v. Item: %+v\n", UniqueId, item)
-			PvInstallCompletedDate = ""
+			PvInstallCompletedDate = time.Time{}
 		}
 
-		PtoDate, ok := item["pto_date"].(string)
-		if !ok || PtoDate == "" {
+		PtoDate, ok := item["pto_date"].(time.Time)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get PtoDate for Unique ID %v. Item: %+v\n", UniqueId, item)
-			PtoDate = ""
+			PtoDate = time.Time{}
 		}
 
-		SiteSurveyCompleteDate, ok := item["site_survey_completed_date"].(string)
-		if !ok || SiteSurveyCompleteDate == "" {
+		SiteSurveyCompleteDate, ok := item["site_survey_completed_date"].(time.Time)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get SiteSurverCompleteDate for Unique ID %v. Item: %+v\n", UniqueId, item)
-			SiteSurveyCompleteDate = ""
+			SiteSurveyCompleteDate = time.Time{}
 		}
 
-		InstallReadyDate, ok := item["install_ready_date"].(string)
-		if !ok || InstallReadyDate == "" {
+		InstallReadyDate, ok := item["install_ready_date"].(time.Time)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get InstallReadyDate for Unique ID %v. Item: %+v\n", UniqueId, item)
-			InstallReadyDate = ""
+			InstallReadyDate = time.Time{}
 		}
 
+
+		ContractD := ContractDate.Format("2006-01-02")
+		PermitD := PermitApprovedDate.Format("2006-01-02")
+		PvInstallCompleteD := PvInstallCompletedDate.Format("2006-01-02")
+		PtoD := PtoDate.Format("2006-01-02")
+		SiteD := SiteSurveyCompleteDate.Format("2006-01-02")
+		InstallD := InstallReadyDate.Format("2006-01-02")
 		perfomanceResponse := models.PerfomanceResponse{
 			RecordId:               RecordId,
 			UniqueId:               UniqueId,
-			ContractDate:           ContractDate,
-			PermitApprovedDate:     PermitApprovedDate,
-			PvInstallCompletedDate: PvInstallCompletedDate,
-			PtoDate:                PtoDate,
-			SiteSurveyCompleteDate: SiteSurveyCompleteDate,
-			InstallReadyDate:       InstallReadyDate,
+			ContractDate:           ContractD,
+			PermitApprovedDate:     PermitD,
+			PvInstallCompletedDate: PvInstallCompleteD,
+			PtoDate:                PtoD,
+			SiteSurveyCompleteDate: SiteD,
+			InstallReadyDate:       InstallD,
 		}
 		perfomanceList.PerfomanceList = append(perfomanceList.PerfomanceList, perfomanceResponse)
 	}

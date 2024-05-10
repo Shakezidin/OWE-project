@@ -25,13 +25,13 @@ import (
  * INPUT:			dbName, tableName, parameters map
  * RETURNS:    		err
  ******************************************************************************/
-func AddSingleRecordInDB(tableName string, data map[string]interface{}) (err error) {
+func AddSingleRecordInDB(dbIdx uint8, tableName string, data map[string]interface{}) (err error) {
 	defer func() { log.ExitFn(0, "AddSingleRecordInDB", err) }()
 	log.EnterFn(0, "AddSingleRecordInDB")
 
 	log.FuncDebugTrace(0, "Inserting in DB table: %v", tableName)
 
-	con, err := getDBConnection(OWEDB)
+	con, err := getDBConnection(dbIdx, OWEDB)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get %v Connection with err = %v", OWEDB, err)
 		return err
@@ -98,18 +98,19 @@ func AddSingleRecordInDB(tableName string, data map[string]interface{}) (err err
  * INPUT:			tableName, data
  * RETURNS:    		err
  ******************************************************************************/
-func AddMultipleRecordInDB(tableName string, data []map[string]interface{}) (err error) {
+func AddMultipleRecordInDB(dbIdx uint8, tableName string, data []map[string]interface{}) (err error) {
 	defer func() { log.ExitFn(0, "AddMultipleRecordInDB", err) }()
 	log.EnterFn(0, "AddMultipleRecordInDB")
 
 	if len(data) <= 0 {
-		log.FuncErrorTrace(0, "Empty data received")
-		return nil
+		err = fmt.Errorf("Empty data received")
+		log.FuncErrorTrace(0, "%+v", err)
+		return err
 	}
 
 	log.FuncDebugTrace(0, "Inserting in DB table: %v", tableName)
 
-	con, err := getDBConnection(OWEDB)
+	con, err := getDBConnection(dbIdx, OWEDB)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get %v Connection with err = %v", OWEDB, err)
 		return err
@@ -186,7 +187,7 @@ func AddMultipleRecordInDB(tableName string, data []map[string]interface{}) (err
  * INPUT:			query, whereEleList
  * RETURNS:    		outData, err
  ******************************************************************************/
-func ReteriveFromDB(query string,
+func ReteriveFromDB(dbIdx uint8, query string,
 	whereEleList []interface{}) (outData []map[string]interface{}, err error) {
 
 	log.EnterFn(0, "ReteriveFromDB")
@@ -194,7 +195,7 @@ func ReteriveFromDB(query string,
 
 	log.FuncDebugTrace(0, "ReteriveData Query %v whereParams %+v", query, whereEleList)
 
-	con, err := getDBConnection(OWEDB)
+	con, err := getDBConnection(dbIdx, OWEDB)
 	if err != nil {
 		log.FuncErrorTrace(0, "ReteriveFromDB Failed to get %v Connection with err = %v", OWEDB, err)
 		return nil, err
@@ -237,19 +238,46 @@ func ReteriveFromDB(query string,
 }
 
 /******************************************************************************
+ * FUNCTION:        ExecQueryDB
+ * DESCRIPTION:     This function will exec data from DB
+ * INPUT:			query, whereEleList
+ * RETURNS:    		outData, err
+ ******************************************************************************/
+func ExecQueryDB(dbIdx uint8, query string) (err error) {
+
+	log.EnterFn(0, "ReteriveFromDB")
+	defer func() { log.ExitFn(0, "ReteriveFromDB", err) }()
+
+	log.FuncDebugTrace(0, "ReteriveData Query %v whereParams", query)
+
+	con, err := getDBConnection(dbIdx, OWEDB)
+	if err != nil {
+		log.FuncErrorTrace(0, "ReteriveFromDB Failed to get %v Connection with err = %v", OWEDB, err)
+		return err
+	}
+
+	_, err = con.CtxH.Exec(query)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to ReteriveData from query %v error = %v", query, err)
+		return err
+	}
+	return err
+}
+
+/******************************************************************************
  * FUNCTION:        UpdateDataInDB
  * DESCRIPTION:     This function will update data in DB
  * INPUT:			query, whereEleList
  * RETURNS:    		err
  ******************************************************************************/
-func UpdateDataInDB(query string, whereEleList []interface{}) (err error, rows int64) {
+func UpdateDataInDB(dbIdx uint8, query string, whereEleList []interface{}) (err error, rows int64) {
 
 	log.EnterFn(0, "UpdateDataInDB")
 	defer func() { log.ExitFn(0, "UpdateDataInDB", err) }()
 
 	log.FuncDebugTrace(0, "UpdateDataInDB Query %v whereParams %+v", query, whereEleList)
 	rows = 0
-	con, err := getDBConnection(OWEDB)
+	con, err := getDBConnection(dbIdx, OWEDB)
 	if err != nil {
 		log.FuncErrorTrace(0, "UpdateDataInDB Failed to get %v Connection with err = %v", OWEDB, err)
 		return err, rows
@@ -287,14 +315,14 @@ func UpdateDataInDB(query string, whereEleList []interface{}) (err error, rows i
  * INPUT:			query, parameters
  * RETURNS:    		err
  ******************************************************************************/
-func CallDBFunction(functionName string, parameters []interface{}) (outData []interface{}, err error) {
+func CallDBFunction(dbIdx uint8, functionName string, parameters []interface{}) (outData []interface{}, err error) {
 
 	log.EnterFn(0, "CallDBFunction")
 	defer func() { log.ExitFn(0, "CallDBFunction", err) }()
 
 	log.FuncDebugTrace(0, "CallDBFunction functionName: %v parameters: %+v", functionName, parameters)
 
-	con, err := getDBConnection(OWEDB)
+	con, err := getDBConnection(dbIdx, OWEDB)
 	if err != nil {
 		log.FuncErrorTrace(0, "CallDBFunction Failed to get %v Connection with err = %v", OWEDB, err)
 		return nil, err

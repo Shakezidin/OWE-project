@@ -77,7 +77,7 @@ func HandleUpdateSaleTypeArchiveRequest(resp http.ResponseWriter, req *http.Requ
 	queryParameters = append(queryParameters, updateSaleTypeArcReq.IsArchived)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.UpdateSaleTypeArchiveFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateSaleTypeArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Update sale type Archive in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Update sale type Archive", http.StatusInternalServerError, nil)

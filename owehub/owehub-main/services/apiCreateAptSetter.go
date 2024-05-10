@@ -80,7 +80,7 @@ func HandleCreateAptSetterRequest(resp http.ResponseWriter, req *http.Request) {
 	queryParameters = append(queryParameters, createAptSetterReq.EndDate)
 	queryParameters = append(queryParameters, createAptSetterReq.Description)
 
-	result, err = db.CallDBFunction(db.CreateApiSetterFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateApiSetterFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add appointment setter in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Create appointment setter", http.StatusInternalServerError, nil)
