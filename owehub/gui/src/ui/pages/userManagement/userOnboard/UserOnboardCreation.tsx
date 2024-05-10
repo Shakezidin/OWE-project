@@ -165,47 +165,34 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                     />
                   </div>
                 </div>
-                <div className="" style={{ marginTop: "0.2rem" }}>
-                  <div className="dashboard-payroll">
-                    {Object.keys(tablePermissions).map((key) => (
-                      <div className="Payroll-section" key={key}>
-                        <label
-                          className="inputLabel"
-                          style={{ color: "#344054" }}
-                        >
-                          {key}
-                        </label>
-                        <div className="dash-select-user">Edit</div>
-                      </div>
-                    ))}
-
-                    <div
-                      className="Line-container"
-                      style={{ marginTop: "0.3rem" }}
-                    >
-                      <div
-                        className="line-graph"
-                        onClick={() => setSelectTable(true)}
-                      >
-                        <div className="edit-line">
-                          <img
-                            src={ICONS.editIconUser}
-                            style={{ background: "white" }}
-                            alt=""
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    {selectTable && (
-                      <SelectTable
-                        setSelectTable={setSelectTable}
-                        setTablePermissions={setTablePermissions}
-                        tablePermissions={tablePermissions}
-                      />
+                <div className="create-input-container">
+                  <div className="create-input-field">
+                    <Input
+                      type={"text"}
+                      label="Email ID"
+                      value={formData.email_id}
+                      placeholder={"email@mymail.com"}
+                      onChange={(e) => handleInputChange(e)}
+                      name={"email_id"}
+                      disabled={formData.isEdit}
+                    />
+                  </div>
+                  <div className="create-input-field">
+                    <Input
+                      type={"text"}
+                      label="Phone Number"
+                      value={formData.mobile_number}
+                      placeholder={"Phone Number"}
+                      onChange={(e) => handleInputChange(e)}
+                      name={"mobile_number"}
+                    />
+                    {phoneNumberError && (
+                      <p className="error-message">{phoneNumberError}</p>
                     )}
                   </div>
                   {formData.role_name === "Admin" ||
                   formData.role_name === "SubDealer Owner" ||
+                  formData.role_name === "DB User" ||
                   formData.role_name === "Dealer Owner" ||
                   formData.role_name === "Finance Admin" ? null : (
                     <div className="create-input-field">
@@ -268,7 +255,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                       >
                         <div
                           className="line-graph"
-                          // onClick={() => setSelectTable(true)}
+                          onClick={() => setSelectTable(true)}
                         >
                           <div className="edit-line">
                             <img

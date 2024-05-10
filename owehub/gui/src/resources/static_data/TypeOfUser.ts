@@ -20,4 +20,5 @@ export const ALL_USER_ROLE_LIST = [
   { value: "Dealer Owner", label: "Dealer Owner" },
   { value: "Sale Representative", label: "Sale Representative" },
   { value: "Sales Manager", label: "Sales Manager" },
+  { value: "DB User", label: "DB User" },
 ];
