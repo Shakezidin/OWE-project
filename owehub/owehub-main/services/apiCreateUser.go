@@ -87,15 +87,14 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// TODO RoleName JAY
 	if createUserReq.RoleName == "SubDealer Owner" {
 		// Join selected parts with underscores
-		// TODO
 		username := strings.Join(strings.Fields(createUserReq.Name)[0:2], "_")
 
-		// query
 		sqlStatement := fmt.Sprintf("CREATE USER %s WITH LOGIN PASSWORD '%s';", username, createUserReq.Password)
 		err = db.ExecQueryDB(sqlStatement)
+		log.FuncErrorTrace(0, " sqlStatement err %+v", err)
+		log.FuncErrorTrace(0, "sqlStatement %v", sqlStatement)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to create user already exists: %v", err)
 			FormAndSendHttpResp(resp, "Failed to process the password", http.StatusInternalServerError, nil)

@@ -105,6 +105,13 @@ var apiRoutes = ApiRoutes{
 		true,
 		[]types.UserGroup{types.GroupAdmin},
 	},
+	// {
+	// 	strings.ToUpper("POST"),
+	// 	"/owe-commisions-service/v1/db_tables",
+	// 	apiHandler.HandleGetTableRequest,
+	// 	true,
+	// 	[]types.UserGroup{types.GroupAdmin},
+	// },
 	{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/db_tables",
