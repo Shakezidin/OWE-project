@@ -112,7 +112,7 @@ func HandleCreateAutoAdderRequest(resp http.ResponseWriter, req *http.Request) {
 	queryParameters = append(queryParameters, createAutoAdderReq.AdderType)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.CreateAutoAdderFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateAutoAdderFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add auto adder in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Create Auto Adder", http.StatusInternalServerError, nil)

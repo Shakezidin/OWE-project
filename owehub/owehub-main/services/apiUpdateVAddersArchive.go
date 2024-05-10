@@ -77,7 +77,7 @@ func HandleUpdateVAddersArchiveRequest(resp http.ResponseWriter, req *http.Reque
 	queryParameters = append(queryParameters, updateVAdderArcReq.IsArchived)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.UpdateVAddersArchiveFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateVAddersArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Update vadder Archive in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Update vadder Archive", http.StatusInternalServerError, nil)

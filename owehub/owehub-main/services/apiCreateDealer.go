@@ -87,7 +87,7 @@ func HandleCreateDealerRequest(resp http.ResponseWriter, req *http.Request) {
 	queryParameters = append(queryParameters, Enddate)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.CreateDealerFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateDealerFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add dealer in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Create dealer", http.StatusInternalServerError, nil)

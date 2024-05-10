@@ -30,12 +30,12 @@ interface SolarInstallation {
     installer_name: string;
     sale_type_name: string;
     state_name: string;
-    red_line: string;
+    red_line: number;
     calc_date: string;
-    permit_pay: string;
-    permit_max: string;
-    install_pay: string;
-    pto_pay: string;
+    permit_pay: number;
+    permit_max: number;
+    install_pay: number;
+    pto_pay: number;
     start_date: string;
     end_date: string;
 }

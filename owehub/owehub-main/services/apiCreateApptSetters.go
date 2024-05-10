@@ -71,7 +71,7 @@ func HandleCreateApptSettersDataRequest(resp http.ResponseWriter, req *http.Requ
 	queryParameters = append(queryParameters, createApptSettersReq.StartDate)
 	queryParameters = append(queryParameters, createApptSettersReq.EndDate)
 
-	result, err = db.CallDBFunction(db.CreateApptSettersFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateApptSettersFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add appt setters in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Create appt setters", http.StatusInternalServerError, nil)

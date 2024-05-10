@@ -77,7 +77,7 @@ func HandleUpdateAdderCreditArchiveRequest(resp http.ResponseWriter, req *http.R
 	queryParameters = append(queryParameters, updateAdderCreditArcReq.IsArchived)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.UpdateAdderCreditArchiveFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateAdderCreditArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to update adder credit archive in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to update adder credit archive", http.StatusInternalServerError, nil)

@@ -143,7 +143,7 @@ func HandleCreateRebateDataRequest(resp http.ResponseWriter, req *http.Request) 
 	queryParameters = append(queryParameters, createRebateDataReq.EndDate)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.CreateRebateDataFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateRebateDataFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add rebate data in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Create Rebate Data", http.StatusInternalServerError, nil)

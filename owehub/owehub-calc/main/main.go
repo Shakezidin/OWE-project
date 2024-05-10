@@ -83,14 +83,14 @@ func main() {
 		log.FuncErrorTrace(0, "Failed to perform initial calculations for DealerPay")
 		panic("Failed to perform initial calculations for DealerPay")
 	} else {
-		log.FuncDebugTrace(0, "AR Initial calculation completed sucessfully.")
+		log.FuncDebugTrace(0, "DLR Pay Initial calculation completed sucessfully.")
 	}
 
 	if repPayRs != "SUCCESS" {
 		log.FuncErrorTrace(0, "Failed to perform initial calculations for RepPay")
 		panic("Failed to perform initial calculations for RepPay")
 	} else {
-		log.FuncDebugTrace(0, "AR Initial calculation completed sucessfully.")
+		log.FuncDebugTrace(0, "Rep Pay Initial calculation completed sucessfully.")
 	}
 
 	/*Closing channels*/

@@ -77,7 +77,7 @@ func HandleUpdateCommissionArchiveRequest(resp http.ResponseWriter, req *http.Re
 	queryParameters = append(queryParameters, updateCommissionArcReq.IsArchived)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.UpdateCommissionArchiveFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateCommissionArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Update commissions Archive in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Update commissions Archive", http.StatusInternalServerError, nil)

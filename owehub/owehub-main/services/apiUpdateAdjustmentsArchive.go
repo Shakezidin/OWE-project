@@ -76,7 +76,7 @@ func HandleUpdateAdjustmentsArchiveRequest(resp http.ResponseWriter, req *http.R
 	queryParameters = append(queryParameters, updateAdjustmentsArcReq.IsArchived)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.UpdateAdjustmentsArchiveFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateAdjustmentsArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to update adjustments archive in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Update Adjustments Archive", http.StatusInternalServerError, nil)

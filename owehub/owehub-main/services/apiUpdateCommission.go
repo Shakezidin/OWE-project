@@ -105,7 +105,7 @@ func HandleUpdateCommissionRequest(resp http.ResponseWriter, req *http.Request) 
 	queryParameters = append(queryParameters, updateCommissionReq.EndDate)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.UpdateCommissionFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateCommissionFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Update commissions in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Update commissions", http.StatusInternalServerError, nil)

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { ICONS } from "../../../icons/Icons";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-import {fetchAr} from '../../../../redux/apiActions/arAction'
+import {fetchAr} from '../../../../redux/apiActions/arConfigAction'
 // import CreateTimeLine from "./CreateTimeLine";
 import CreateAr from "./CreateAr"
 import CheckBox from "../../../components/chekbox/CheckBox";
@@ -126,7 +126,7 @@ const AR = () => {
    const handleArchiveAllClick = async () => {
     const confirmed = await showAlert(
       "Are Your Sure",
-      "This action will archive all selected rows?",
+      "This Action will archive your data",
       "Yes",
       "No"
     );
@@ -177,7 +177,7 @@ const AR = () => {
    const handleArchiveClick = async (record_id: any) => {
     const confirmed = await showAlert(
       "Are Your Sure",
-      "This action will archive all selected rows?",
+      "This Action will archive your data",
       "Yes",
       "No"
     );

@@ -77,7 +77,7 @@ func HandleUpdateRateAdjustmentsArchiveRequest(resp http.ResponseWriter, req *ht
 	queryParameters = append(queryParameters, updateRateAdjustmentsArcReq.IsArchived)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.UpdateRateAdjustmentsArchiveFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateRateAdjustmentsArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Update RateAdjustments Archive in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Update RateAdjustments Archive", http.StatusInternalServerError, nil)

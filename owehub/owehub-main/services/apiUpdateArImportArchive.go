@@ -77,7 +77,7 @@ func HandleUpdateArImportArchiveRequest(resp http.ResponseWriter, req *http.Requ
 	queryParameters = append(queryParameters, updateArImportArcReq.IsArchived)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.UpdateArImportArchiveFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateArImportArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to update ar import archive in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to update ar import archive", http.StatusInternalServerError, nil)
