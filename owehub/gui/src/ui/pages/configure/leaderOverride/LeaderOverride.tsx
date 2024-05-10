@@ -113,7 +113,7 @@ const LeaderOverride = () => {
   const handleArchiveClick = async (record_id: any) => {
     const confirmed = await showAlert(
       "Are Your Sure",
-      "This action will archive all selected rows?",
+      "This Action will archive your data",
       "Yes",
       "No"
     );

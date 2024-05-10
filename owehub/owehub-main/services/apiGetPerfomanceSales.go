@@ -70,7 +70,7 @@ func HandleGetPerfomanceSalesRequest(resp http.ResponseWriter, req *http.Request
 			queryWithFiler = query + filter
 		}
 
-		data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
+		data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryWithFiler, whereEleList)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get perfomance sales from DB for %v err: %v", date, err)
 			FormAndSendHttpResp(resp, "Failed to get perfomance sales from DB for %v", http.StatusBadRequest, date)
@@ -122,6 +122,17 @@ func PreparePerfomanceFilters(tableName, columnName string, dataFilter models.Ge
 	var startDate, endDate string
 	startDate = dataFilter.StartDate
 	endDate = dataFilter.EndDate
+
+	// sDate, err := time.Parse("2006-01-02", startDate)
+	// if err != nil {
+	// 	fmt.Println("Error parsing start date:", err)
+	// 	return
+	// }
+	// eDate, err := time.Parse("2006-01-02", endDate)
+	// if err != nil {
+	// 	fmt.Println("Error parsing end date:", err)
+	// 	return
+	// }
 
 	var filtersBuilder strings.Builder
 	filtersBuilder.WriteString(" WHERE ")

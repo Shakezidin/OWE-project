@@ -18,7 +18,7 @@ const useArchiveManagement = (
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
 
   const handleArchiveAllClick = async () => {
-    const confirmed = await showAlert('Are You Sure', 'This action will archive all selected rows?', 'Yes', 'No');
+    const confirmed = await showAlert('Are You Sure', 'This Action will archive your data', 'Yes', 'No');
     if (confirmed) {
       const archivedRows = Array.from(selectedRows).map(index => dataList[index].record_id);
       if (archivedRows.length > 0) {

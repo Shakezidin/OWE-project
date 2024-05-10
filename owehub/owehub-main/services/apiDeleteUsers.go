@@ -72,7 +72,7 @@ func HandleDeleteUsersRequest(resp http.ResponseWriter, req *http.Request) {
 		sqlStatement := fmt.Sprintf("REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM %s; DROP ROLE %s;", username, username)
 
 		// Execute the SQL statement
-		err := db.ExecQueryDB(sqlStatement)
+		err := db.ExecQueryDB(db.OweHubDbIndex, sqlStatement)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to revoke privileges and drop user %s: %v", username, err)
 			// Handle the error as needed, such as logging or returning an HTTP response

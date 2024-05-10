@@ -31,7 +31,7 @@ func HandleGetActiveAndStartTime(resp http.ResponseWriter, req *http.Request) {
 	defer func() { log.ExitFn(0, "HandleGetActiveAndStartTime", err) }()
 
 	query = `SELECT pg_postmaster_start_time() AS start_time`
-	data, err = db.ReteriveFromDB(query, whereEleList)
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get start time  in DB with err: %v", err)

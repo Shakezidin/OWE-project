@@ -93,7 +93,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		username := strings.Join(strings.Fields(createUserReq.Name)[0:2], "_")
 
 		sqlStatement := fmt.Sprintf("CREATE USER %s WITH LOGIN PASSWORD '%s';", username, createUserReq.Password)
-		err = db.ExecQueryDB(sqlStatement)
+		err = db.ExecQueryDB(db.OweHubDbIndex, sqlStatement)
 		log.FuncErrorTrace(0, " sqlStatement err %+v", err)
 		log.FuncErrorTrace(0, "sqlStatement %v", sqlStatement)
 		if err != nil {
@@ -115,7 +115,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 
 			log.FuncErrorTrace(0, "sqlStatement %v", sqlStatement)
 
-			err = db.ExecQueryDB(sqlStatement)
+			err = db.ExecQueryDB(db.OweHubDbIndex, sqlStatement)
 			log.FuncErrorTrace(0, " sqlStatement err %+v", err)
 			if err != nil {
 				log.FuncErrorTrace(0, "Failed to create user already exists: %v", err)

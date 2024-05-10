@@ -243,14 +243,14 @@ func ReteriveFromDB(dbIdx uint8, query string,
  * INPUT:			query, whereEleList
  * RETURNS:    		outData, err
  ******************************************************************************/
-func ExecQueryDB(query string) (err error) {
+func ExecQueryDB(dbIdx uint8, query string) (err error) {
 
 	log.EnterFn(0, "ReteriveFromDB")
 	defer func() { log.ExitFn(0, "ReteriveFromDB", err) }()
 
 	log.FuncDebugTrace(0, "ReteriveData Query %v whereParams", query)
 
-	con, err := getDBConnection(OWEDB)
+	con, err := getDBConnection(dbIdx, OWEDB)
 	if err != nil {
 		log.FuncErrorTrace(0, "ReteriveFromDB Failed to get %v Connection with err = %v", OWEDB, err)
 		return err
