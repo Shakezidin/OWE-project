@@ -109,6 +109,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
         </div>
         <h3 className="createProfileText">Onboarding</h3>
         <div className="modal-body">
+        <div className="scroll-user">
           <div className="createProfileInputView">
             <div className="createProfileTextView">
               <div className="create-input-container">
@@ -282,6 +283,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
               </div>
 
             </div>
+          </div>
           </div>
         </div>
         <div className="um-createUserActionButton">

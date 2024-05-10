@@ -29,3 +29,37 @@
     padding: 24px 0 24px 0;
     gap: 1rem;
   }
+
+
+
+  .scroll-user {
+    position: relative;
+    max-height: 60vh;
+    background: var(--white-color);
+    overflow-y: auto;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+  }
+  .scroll-user::-webkit-scrollbar {
+    width: 10px; 
+    height: 10px; 
+  }
+  .scroll-user::-webkit-scrollbar {
+    display: initial
+  }   
+  
+  .scroll-user::-webkit-scrollbar-thumb {
+    background-color: rgb(173, 173, 173);
+    border-radius: 30px; 
+  }
+  .scroll-user::-webkit-scrollbar-button {
+    display: initial; 
+  }
+  .scroll-user::-webkit-scrollbar {
+    -ms-overflow-style: initial; 
+    scrollbar-width: thin;
+  }
+  .scroll-user::-webkit-scrollbar-corner {
+    background-color: transparent;
+  }
+  
