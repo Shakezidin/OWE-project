@@ -76,7 +76,7 @@ func HandleUpdateAdderDataArchiveRequest(resp http.ResponseWriter, req *http.Req
 	queryParameters = append(queryParameters, updateAdderDataArcReq.IsArchived)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.UpdateAdderDataArchiveFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateAdderDataArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to update adder data archive in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to update adder data archive", http.StatusInternalServerError, nil)

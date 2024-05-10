@@ -29,10 +29,10 @@ import (
 
 func HandleUpdateRebateArchiveRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err                   error
+		err                error
 		updateRebateArcReq models.UpdateRebateDataArchive
-		queryParameters       []interface{}
-		result                []interface{}
+		queryParameters    []interface{}
+		result             []interface{}
 	)
 
 	log.EnterFn(0, "HandleUpdateRebateArchiveRequest")
@@ -77,7 +77,7 @@ func HandleUpdateRebateArchiveRequest(resp http.ResponseWriter, req *http.Reques
 	queryParameters = append(queryParameters, updateRebateArcReq.IsArchived)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.UpdateRebateDataArchiveFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateRebateDataArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Update Rebates Archive in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Update Rebates Archive", http.StatusInternalServerError, nil)

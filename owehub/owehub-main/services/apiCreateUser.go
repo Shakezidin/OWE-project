@@ -143,7 +143,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	queryParameters = append(queryParameters, createUserReq.Zipcode)
 	queryParameters = append(queryParameters, createUserReq.Country)
 
-	_, err = db.CallDBFunction(db.CreateUserFunction, queryParameters)
+	_, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateUserFunction, queryParameters)
 	if err != nil {
 		// Check if the error message contains "User with email"
 		if strings.Contains(err.Error(), "User with email") {

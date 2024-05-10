@@ -79,7 +79,7 @@ func HandleCreateVAddersRequest(resp http.ResponseWriter, req *http.Request) {
 	queryParameters = append(queryParameters, createVAddersReq.Description)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.CreateVAddersFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateVAddersFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add v adders in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Create V adders", http.StatusInternalServerError, nil)

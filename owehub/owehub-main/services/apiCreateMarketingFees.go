@@ -89,7 +89,7 @@ func HandleCreateMarketingFeesRequest(resp http.ResponseWriter, req *http.Reques
 	queryParameters = append(queryParameters, createMarketingFees.Description)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.CreateMarketingFeesFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateMarketingFeesFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add Marketing Fees in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Create Marketing Fees", http.StatusInternalServerError, nil)

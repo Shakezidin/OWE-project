@@ -76,7 +76,7 @@ func HandleUpdateApptSettersArchiveRequest(resp http.ResponseWriter, req *http.R
 	queryParameters = append(queryParameters, updateApptSettersArcReq.IsArchived)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.UpdateApptSettersArchiveFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateApptSettersArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Update appt setters archive in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Update appt setters archive", http.StatusInternalServerError, nil)

@@ -73,7 +73,7 @@ func HandleGetMarketingFeesDataRequest(resp http.ResponseWriter, req *http.Reque
 		queryWithFiler = query + filter
 	}
 
-	data, err = db.ReteriveFromDB(queryWithFiler, whereEleList)
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get marketing fee data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get marketing fee data from DB", http.StatusBadRequest, nil)
@@ -181,7 +181,7 @@ func HandleGetMarketingFeesDataRequest(resp http.ResponseWriter, req *http.Reque
 		queryForAlldata = query + filter
 	}
 
-	data, err = db.ReteriveFromDB(queryForAlldata, whereEleList)
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryForAlldata, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get marketing fee data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get marketing fee data from DB", http.StatusBadRequest, nil)

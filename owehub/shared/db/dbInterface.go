@@ -17,10 +17,13 @@ import (
 )
 
 var (
-	dbHandleCxt CfgModels.DBHandleCxt
+	dbHandleCxt = make([]CfgModels.DBHandleCxt, 0)
 )
 
 const (
+	OweHubDbIndex  uint8 = 0
+	RowDataDBIndex uint8 = 1
+
 	OWEDB                                    string = "owe_db"
 	dbDriverName                             string = "postgres"
 	CreateUserFunction                       string = "create_new_user"
@@ -156,9 +159,9 @@ const (
 	TableName_AdderResponsibility            string = "adder_responsibility"
 	TableName_AdderCredit                    string = "adder_credit"
 	TableName_LoanFee                        string = "loan_fee"
-	TableName_SalesArCalc                    string = "sales_arc_calc"
+	TableName_SalesArCalc                    string = "sales_ar_calc"
 	TableName_ArImport                       string = "ar_import"
-	TableName_Ar                             string = "ar"
+	TableName_Ar                             string = "sales_ar_cfg"
 	TableName_Appt_Setters                   string = "appt_setters"
 	TableName_Reconcile                      string = "reconcile"
 	ViewName_ConsolidatedDataView            string = "consolidated_data_view"
@@ -178,31 +181,21 @@ func InitDBConnection() (err error) {
 	log.EnterFn(0, "InitDBConnection")
 	defer func() { log.ExitFn(0, "InitDBConnection", err) }()
 
-	dbConfig := types.CommGlbCfg.DbConfInfo
+	for _, dbConfig := range types.CommGlbCfg.DbConfList.DBConfigs {
 
-	openConnValue, _ := types.UtilsGetInt("DB_MAX_OPEN_CONN", 2000)
-	idleConnValue, _ := types.UtilsGetInt("DB_MAX_IDLE_CONN", 100)
+		connStr := fmt.Sprintf("postgres://%v:%v@%v/%v?sslmode=disable",
+			dbConfig.Username, dbConfig.Password, dbConfig.HostName, OWEDB)
 
-	connStr := fmt.Sprintf("postgres://%v:%v@%v/%v?sslmode=disable",
-		dbConfig.Username, dbConfig.Password, dbConfig.HostName, OWEDB)
-
-	log.FuncInfoTrace(0, "Connection String is %s", connStr)
-	var retry int = 1
-	for {
-		err = InitializeDB(connStr)
-		if (retry >= 3) || (err == nil) {
-			break
+		log.FuncInfoTrace(0, "Connection String is %s", connStr)
+		var retry int = 1
+		for {
+			err = InitializeDB(connStr)
+			if (retry >= 3) || (err == nil) {
+				break
+			}
+			retry++
+			time.Sleep(2 * time.Second)
 		}
-		retry++
-		time.Sleep(2 * time.Second)
-	}
-
-	dbHandleCxt.CtxH.SetMaxOpenConns(openConnValue)
-	dbHandleCxt.CtxH.SetMaxIdleConns(idleConnValue)
-	err = dbHandleCxt.CtxH.Ping()
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to Ping the Database error = %v\n", err.Error())
-		return err
 	}
 
 	log.FuncInfoTrace(0, "Database Initialized Successfully")
@@ -216,10 +209,17 @@ func InitDBConnection() (err error) {
  * RETURNS:    		err
  ******************************************************************************/
 func InitializeDB(dbConnString string) (err error) {
+	var (
+		DbCtx CfgModels.DBHandleCxt
+	)
+
 	defer func() {
 		log.ExitFn(0, "InitializeDB", nil)
 	}()
 	log.EnterFn(0, "InitializeDB")
+
+	openConnValue, _ := types.UtilsGetInt("DB_MAX_OPEN_CONN", 2000)
+	idleConnValue, _ := types.UtilsGetInt("DB_MAX_IDLE_CONN", 100)
 
 	ctxH, err := sql.Open(dbDriverName, dbConnString)
 	if err != nil {
@@ -227,7 +227,17 @@ func InitializeDB(dbConnString string) (err error) {
 		return err
 	}
 
-	dbHandleCxt.CtxH = ctxH
+	ctxH.SetMaxOpenConns(openConnValue)
+	ctxH.SetMaxIdleConns(idleConnValue)
+	err = ctxH.Ping()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to Ping the Database error = %v\n", err.Error())
+		return err
+	}
+
+	DbCtx.CtxH = ctxH
+	dbHandleCxt = append(dbHandleCxt, DbCtx)
+
 	return err
 }
 
@@ -237,11 +247,11 @@ func InitializeDB(dbConnString string) (err error) {
  * INPUT:			dbName
  * RETURNS:    		err
  ******************************************************************************/
-func getDBConnection(dbName string) (con *CfgModels.DBHandleCxt, err error) {
+func getDBConnection(dbIdx uint8, dbName string) (con *CfgModels.DBHandleCxt, err error) {
 	defer func() {
 		log.ExitFn(0, "getDBConnection", nil)
 	}()
 	log.EnterFn(0, "getDBConnection")
 
-	return &dbHandleCxt, nil
+	return &dbHandleCxt[dbIdx], nil
 }

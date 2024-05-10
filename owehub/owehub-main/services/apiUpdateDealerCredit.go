@@ -109,7 +109,7 @@ func HandleUpdateDealerCreditRequest(resp http.ResponseWriter, req *http.Request
 	queryParameters = append(queryParameters, updateDealerCredit.EndDate)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.UpdateDealerCreditFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateDealerCreditFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to update dealer credit in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to update dealer credit", http.StatusInternalServerError, nil)

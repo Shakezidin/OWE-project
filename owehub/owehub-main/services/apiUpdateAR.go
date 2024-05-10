@@ -109,7 +109,7 @@ func HandleUpdateARDataRequest(resp http.ResponseWriter, req *http.Request) {
 	queryParameters = append(queryParameters, partnerid)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.UpdateArFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateArFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to update Ar in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to update Ar", http.StatusInternalServerError, nil)

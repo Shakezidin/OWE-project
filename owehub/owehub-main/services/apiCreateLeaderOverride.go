@@ -92,7 +92,7 @@ func HandleCreateLeaderOverrideRequest(resp http.ResponseWriter, req *http.Reque
 	queryParameters = append(queryParameters, createLeaderOverrideReq.EndDate)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.CreateLeaderOverrideFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateLeaderOverrideFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add leader override in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Create Leader Override", http.StatusInternalServerError, nil)

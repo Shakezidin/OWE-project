@@ -92,7 +92,7 @@ func HandleUpdateAdderCreditDataRequest(resp http.ResponseWriter, req *http.Requ
 	queryParameters = append(queryParameters, UpdateAdderCreditReq.Max_Rate)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.UpdateAdderCreditFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateAdderCreditFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to update adder credit in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to update adder credit", http.StatusInternalServerError, nil)

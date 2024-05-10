@@ -76,7 +76,7 @@ func HandleUpdateDLROTHArchiveRequest(resp http.ResponseWriter, req *http.Reques
 	queryParameters = append(queryParameters, updateDLROTHArcReq.IsArchived)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.UpdateDLR_OTHArchiveFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateDLR_OTHArchiveFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to update DLROTH archive in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to update DLROTH archive", http.StatusInternalServerError, nil)

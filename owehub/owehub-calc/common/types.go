@@ -6,6 +6,8 @@
 
 package Common
 
+import "time"
+
 type Project_Status string
 
 /*Common Project Status*/
@@ -18,4 +20,8 @@ const (
 	NTP     Project_Status = "NTP"
 	Sold    Project_Status = "Sold"
 	Null    Project_Status = "Null"
+)
+
+var (
+	Wc1FilterDate time.Time = time.Date(2021, time.April, 1, 0, 0, 0, 0, time.UTC)
 )

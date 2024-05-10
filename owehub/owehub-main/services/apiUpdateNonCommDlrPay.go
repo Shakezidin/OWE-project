@@ -106,7 +106,7 @@ func HandleUpdateNonCommDlrPayRequest(resp http.ResponseWriter, req *http.Reques
 	queryParameters = append(queryParameters, UpdateNonCommDlrPay.EndDate)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.UpdateNonCommDlrPayFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateNonCommDlrPayFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to update non comm dealer pay in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to update non comm dealer pay", http.StatusInternalServerError, nil)

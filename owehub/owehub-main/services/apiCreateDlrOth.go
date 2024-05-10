@@ -89,7 +89,7 @@ func HandleCreateDLROTHDataRequest(resp http.ResponseWriter, req *http.Request) 
 	queryParameters = append(queryParameters, createDLR_OTHReq.EndDate)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.CreateDLR_OTHFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateDLR_OTHFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add dlr_oth in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Create dlr oth", http.StatusInternalServerError, nil)

@@ -169,7 +169,7 @@ func HandleCreateLoanFeeAdderDataRequest(resp http.ResponseWriter, req *http.Req
 	queryParameters = append(queryParameters, createLoanFeeAdderReq.EndDate)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.CreateLoanFeeAdderFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateLoanFeeAdderFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to Add loan fee adder in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Create loan fee adder", http.StatusInternalServerError, nil)

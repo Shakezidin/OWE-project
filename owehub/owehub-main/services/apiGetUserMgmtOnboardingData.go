@@ -62,8 +62,7 @@ func HandleGetUserMgmtOnboardingDataRequest(resp http.ResponseWriter, req *http.
 	INNER JOIN user_roles ur ON u.role_id = ur.role_id
 	GROUP BY ur.role_name;`
 
-	data, err = db.ReteriveFromDB(query, whereEleList)
-
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get UserMgmt Onboarding data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get UserMgmt Onboarding data from DB", http.StatusBadRequest, nil)
