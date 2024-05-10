@@ -8,3 +8,4 @@
 # Ignore Go module files
 go.mod
 go.sum
+.DS_Store
