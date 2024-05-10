@@ -48,11 +48,11 @@ console.log(scrollRef.current,"select");
         option: (baseStyles) => ({
           ...baseStyles,
           fontSize: "13px",
+        cursor: "pointer"
         }),
        menu:(base)=>({
         ...base,
         zIndex:999,
-        
        }),
        menuList:(base)=>({
         ...base,
