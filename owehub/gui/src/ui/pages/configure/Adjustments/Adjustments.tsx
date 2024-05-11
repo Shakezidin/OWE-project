@@ -114,8 +114,8 @@ const Adjustments  = () => {
 
   const handleArchiveClick = async (record_id: number[]) => {
     const confirmed = await showAlert(
-      "Are Your Sure",
-      "This Action will archive your data",
+      "Archive",
+      "Are you sure do you want to archive",
       "Yes",
       "No"
     );
