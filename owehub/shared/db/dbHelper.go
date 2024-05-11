@@ -406,3 +406,5 @@ func convertToType(value interface{}, columnType *sql.ColumnType) (interface{}, 
 		return nil, fmt.Errorf("unsupported column type: %v", columnType.ScanType().Kind())
 	}
 }
+
+
