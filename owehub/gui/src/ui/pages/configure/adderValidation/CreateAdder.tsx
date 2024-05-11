@@ -105,21 +105,21 @@ const CreateAdder: React.FC<vadderProps> = ({
       if (createAdderV.record_id) {
         const res = await postCaller(EndPoints.update_vadders, createAdderV);
         if (res.status === 200) {
-          await successSwal("", res.message, "success", 2000, false);
+          await successSwal("", res.message);
           handleClose();
           dispatch(fetchAdderV(page))
         } else {
-          await errorSwal("", res.message, "error", 2000, false);
+          await errorSwal("", res.message);
         }
       } else {
         const { record_id, ...cleanedFormData } = createAdderV;
         const res = await postCaller(EndPoints.create_vadder, cleanedFormData);
         if (res.status === 200) {
-          await successSwal("", res.message, "success", 2000, false);
+          await successSwal("", res.message);
           handleClose();
          
         } else {
-          await errorSwal("", res.message, "error", 2000, false);
+          await errorSwal("", res.message);
         }
       }
     } catch (error) {

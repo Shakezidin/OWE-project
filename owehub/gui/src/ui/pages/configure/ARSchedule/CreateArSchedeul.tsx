@@ -146,8 +146,8 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
 
         <h3 className="createProfileText">
           {editMode === false
-            ? "Ar Schedule Setting"
-            : "Update Ar Schedule Settings"}
+            ? "AR Schedule Setting"
+            : "Update AR Schedule Settings"}
         </h3>
 
         <div className="modal-body">
@@ -264,7 +264,7 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
 
               <div className="create-input-container">
                 <div className="create-input-field">
-                  <label className="inputLabel-select">ST</label>
+                  <label className="inputLabel-select">State</label>
                   <SelectOption
                     options={stateOption(formData)}
                     onChange={(newValue) => {
@@ -379,7 +379,7 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={"date"}
-                    label="End"
+                    label="End Date"
                     value={formData.end}
                     name="end"
                     placeholder={"Enter"}

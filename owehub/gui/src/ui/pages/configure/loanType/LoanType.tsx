@@ -139,10 +139,10 @@ const LoanType = () => {
           const isAnyRowSelected = remainingSelectedRows.length > 0;
           setSelectAllChecked(isAnyRowSelected);
           setSelectedRows(new Set());
-          await successSwal("Archived", "All Selected rows have been archived", "success", 2000, false);
+          await successSwal("Archived", "All Selected rows have been archived");
         }
         else {
-          await successSwal("Archived", "All Selected rows have been archived", "error", 2000, false);
+          await successSwal("Archived", "All Selected rows have been archived");
         }
       }
 
@@ -164,9 +164,9 @@ const LoanType = () => {
       const res = await postCaller(EndPoints.update_dealer_archive, newValue);
       if (res.status === HTTP_STATUS.OK) {
         dispatch(fetchLoanType(pageNumber))
-        await successSwal("Archived", "All Selected rows have been archived", "success", 2000, false);
+        await successSwal("Archived", "All Selected rows have been archived");
       }else{
-        await successSwal("Archived", "All Selected rows have been archived", "error", 2000, false);
+        await successSwal("Archived", "All Selected rows have been archived");
       }
     }
   

@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { createAr, fetchAr,updateAr} from "../../../apiActions/arAction";
+import { createAr, fetchAr,updateAr} from "../../../apiActions/arConfigAction";
 import { RateAdjustment } from "../../../../core/models/api_models/RateAdjustmentModel";
 import { toast } from "react-toastify";
 

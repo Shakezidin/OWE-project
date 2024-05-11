@@ -36,7 +36,7 @@ export const fetchReconcile = createAsyncThunk(
     async (data: any) => {
       const response = await postCaller("get_reconcile", data);
   
-      return response.data.reconcile_list ;
+      return {list:response.data.reconcile_list,count:response.dbRecCount} ;
     }
   );
 
@@ -48,7 +48,7 @@ export const fetchReconcile = createAsyncThunk(
     async (params: any, { rejectWithValue,dispatch }) => {
       try {
         const data = await postCaller("create_reconcile", params);
-        if (data instanceof Error) {
+        if (data.status >201) {
           return rejectWithValue((data as Error).message);
         }
         await dispatch(fetchReconcile({page_number:1,page_size:10}))

@@ -149,17 +149,11 @@ const AdderData = () => {
         await successSwal(
           "Archived",
           "All Selected rows have been archived",
-          "success",
-          2000,
-          false
         );
       } else {
         await successSwal(
           "Archived",
           "All Selected rows have been archived",
-          "error",
-          2000,
-          false
         );
       }
     }

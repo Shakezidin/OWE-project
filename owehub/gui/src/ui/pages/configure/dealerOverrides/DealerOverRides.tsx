@@ -41,7 +41,7 @@ const DealerOverRides: React.FC = () => {
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
   const [sortKey, setSortKey] =  useState("");
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
@@ -134,10 +134,10 @@ const DealerOverRides: React.FC = () => {
           const isAnyRowSelected = remainingSelectedRows.length > 0;
           setSelectAllChecked(isAnyRowSelected);
           setSelectedRows(new Set());
-          await successSwal("Archived", "All Selected rows have been archived", "success", 2000, false);
+          await successSwal("Archived", "All Selected rows have been archived");
         }
         else {
-          await successSwal("Archived", "All Selected rows have been archived", "error", 2000, false);
+          await successSwal("Archived", "All Selected rows have been archived");
         }
       }
 
@@ -159,9 +159,9 @@ const DealerOverRides: React.FC = () => {
       const res = await postCaller(EndPoints.update_dealer_archive, newValue);
       if (res.status === HTTP_STATUS.OK) {
         dispatch(fetchDealer(pageNumber))
-        await successSwal("Archived", "All Selected rows have been archived", "success", 2000, false);
+        await successSwal("Archived", "All Selected rows have been archived");
       }else{
-        await successSwal("Archived", "All Selected rows have been archived", "error", 2000, false);
+        await successSwal("Archived", "All Selected rows have been archived");
       }
     }
   
@@ -182,7 +182,7 @@ const DealerOverRides: React.FC = () => {
   if (loading) {
     return <div className="loader-container"><Loading/> {loading}</div>;
   }
-console.log(currentPageData,"daaaaaaa");
+console.log(totalPages,"daaaaaaa");
 
   return (
     <div className="comm">
