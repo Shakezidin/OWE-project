@@ -73,20 +73,8 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
       | React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    if (name === "first_name") {
-      if (/\s/.test(value)) {
-        setFirstNameError("First Name should not contain spaces");
-      } else {
-        setFirstNameError("");
-        dispatch(updateUserForm({ field: name, value }));
-      }
-    } else if (name === "last_name") {
-      if (/\s/.test(value)) {
-        setLastNameError("Last Name should not contain spaces");
-      } else {
-        setLastNameError("");
-        dispatch(updateUserForm({ field: name, value }));
-      }
+    if (name === "first_name" || name === "last_name") {
+      dispatch(updateUserForm({ field: name, value }));
     } else if (name === "mobile_number") {
       const numericValue = value.replace(/[^0-9]/g, "").slice(0, 10);
       if (numericValue.length < 10) {
@@ -133,9 +121,6 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                       onChange={(e) => handleInputChange(e)}
                       name={"first_name"}
                     />
-                    {firstNameError && (
-                      <p className="error-message">{firstNameError}</p>
-                    )}
                   </div>
                   <div className="create-input-field">
                     <Input
@@ -146,9 +131,6 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                       onChange={(e) => handleInputChange(e)}
                       name={"last_name"}
                     />
-                    {lastNameError && (
-                      <p className="error-message">{lastNameError}</p>
-                    )}
                   </div>
                   <div className="create-input-field">
                     <label className="inputLabel-select selected-fields-onboard">
