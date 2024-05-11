@@ -207,13 +207,11 @@ const CreateDealer: React.FC<dealerProps> = ({
                 </div>
               
               </div>
-
-              
-
               <div className="create-input-container">
               <div className="create-input-field">
                   <label className="inputLabel-select select-type-label">State</label>
                   <SelectOption
+                  menuListStyles={{height: "230px"}}
                     options={stateOption(createDealer)}
                     onChange={(newValue) => {
                       setCreateDealer((prev) => ({
@@ -232,8 +230,6 @@ const CreateDealer: React.FC<dealerProps> = ({
                     </span>
                   )}
                 </div>
-              
-      
                 <div className="create-input-field">
                   <Input
                     type={"date"}
