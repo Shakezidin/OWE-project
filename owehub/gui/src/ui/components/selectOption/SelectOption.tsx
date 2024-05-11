@@ -6,18 +6,19 @@ interface Option {
   value: string;
   label: string;
 }
-
+ 
 interface Props {
   options: Option[];
   value: Option | undefined;
   onChange: (newValue: Option | null) => void;
+  menuListStyles?:{[key: string]: string}
 }
-
-const SelectOption: React.FC<Props> = ({ options, value, onChange }) => {
+ 
+const SelectOption: React.FC<Props> = ({ options, value, onChange,menuListStyles={} }) => {
   const scrollRef = useRef(null)
   useEffect(()=>{
 console.log(scrollRef.current,"select");
-
+ 
   },[scrollRef])
   return (
    <div className="select-container">
@@ -28,7 +29,7 @@ console.log(scrollRef.current,"select");
       // className='dropdown'
       onChange={onChange}
       placeholder="Select"
-      
+     
       ref={scrollRef}
       value={value ? value: {label:'Select',value:'Select'} }
       styles={{
@@ -66,12 +67,14 @@ console.log(scrollRef.current,"select");
         "&::-webkit-scrollbar-thumb":{
           background:"rgb(173, 173, 173)",
           borderRadius:"30px"
-        }
+        },
+        ...menuListStyles
        })
       }}
     />
    </div>
   );
 };
-
+ 
 export default SelectOption;
+ 

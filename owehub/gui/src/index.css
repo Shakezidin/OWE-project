@@ -350,10 +350,10 @@ br {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 1.3rem;
+  margin-top: 15px;
   cursor: pointer;
 }
 .fildelb-btn img {
   width: 19px;
-  height: 19px;
+  height: 20px;
 }
