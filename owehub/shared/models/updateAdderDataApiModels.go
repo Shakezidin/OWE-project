@@ -17,6 +17,7 @@ type UpdateAdderDataReq struct {
 	RepPercent  float64 `json:"rep_percent"`
 	Description string  `json:"description"`
 	Notes       string  `json:"notes"`
+	AdderCalc   float64
 }
 
 type UpdateAdderDataArchive struct {

@@ -72,12 +72,6 @@ func HandleCreateARDataRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// ======= default value delete after calculations ======== //
-	customer := "default"
-	totalPaid := 99.99
-	stateid := "Alabama"
-	partnerid := "PartnerABC"
-
 	date, err := time.Parse("2006-01-02", createArReq.Date)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to parse time date: %v", err)
@@ -94,15 +88,11 @@ func HandleCreateARDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, createArReq.UniqueId)
-	queryParameters = append(queryParameters, customer)
 	queryParameters = append(queryParameters, date)
 	queryParameters = append(queryParameters, createArReq.Amount)
 	queryParameters = append(queryParameters, createArReq.PaymentType)
 	queryParameters = append(queryParameters, createArReq.Bank)
 	queryParameters = append(queryParameters, cedDate)
-	queryParameters = append(queryParameters, totalPaid)
-	queryParameters = append(queryParameters, stateid)
-	queryParameters = append(queryParameters, partnerid)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateArFunction, queryParameters)
