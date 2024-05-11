@@ -14,8 +14,8 @@ type GetAdjustments struct {
 	InstallerName string  `json:"installer_name"`
 	StateName     string  `json:"state_name"`
 	SysSize       float64 `json:"sys_size"`
-	Bl            string  `json:"bl"`
-	Epc           float64 `json:"epc"`
+	Bl            float64 `json:"bl"`
+	Epc           string  `json:"epc"`
 	Date          string  `json:"date"`
 	Notes         string  `json:"notes"`
 	Amount        float64 `json:"amount"`

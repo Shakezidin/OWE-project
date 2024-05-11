@@ -100,17 +100,39 @@ func HandleUpdateAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	query := `SELECT system_size FROM consolidated_data_view WHERE consolidated_data_view.unique_id = $1`
+	queryParameters = append(queryParameters, updateAdderDataReq.UniqueId)
+	dataOne, err := db.ReteriveFromDB(db.RowDataDBIndex, query, queryParameters)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get Add adder data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get Add adder data from DB", http.StatusBadRequest, nil)
+		return
+	}
+
+	system_size, _ := dataOne[0]["system_size"].(float64)
+
+	if updateAdderDataReq.ExactAmount != 0 {
+		updateAdderDataReq.AdderCalc = updateAdderDataReq.ExactAmount
+	} else {
+		if updateAdderDataReq.PerKwAmt != 0 {
+			updateAdderDataReq.AdderCalc = updateAdderDataReq.PerKwAmt * system_size
+		}
+	}
+	type1 := "Adder"
+
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, updateAdderDataReq.RecordId)
-	queryParameters = append(queryParameters, updateAdderDataReq.UniqueId)
 	queryParameters = append(queryParameters, date)
 	queryParameters = append(queryParameters, updateAdderDataReq.TypeAdMktg)
 	queryParameters = append(queryParameters, updateAdderDataReq.Gc)
 	queryParameters = append(queryParameters, updateAdderDataReq.ExactAmount)
+	queryParameters = append(queryParameters, type1)
 	queryParameters = append(queryParameters, updateAdderDataReq.PerKwAmt)
 	queryParameters = append(queryParameters, updateAdderDataReq.RepPercent)
 	queryParameters = append(queryParameters, updateAdderDataReq.Description)
 	queryParameters = append(queryParameters, updateAdderDataReq.Notes)
+	queryParameters = append(queryParameters, system_size)
+	queryParameters = append(queryParameters, updateAdderDataReq.AdderCalc)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateAdderDataFunction, queryParameters)

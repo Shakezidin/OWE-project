@@ -1,40 +1,52 @@
 CREATE OR REPLACE FUNCTION update_ar(
     p_id INT,
-    p_unique_id CHARACTER VARYING,
-    p_date DATE,
+    p_unique_id character varying,
+    -- p_customer text,
+    p_date date,
     p_amount DOUBLE PRECISION,
-    p_payment_type TEXT,
-    p_bank TEXT,
-    p_ced DATE,
+    p_payment_type text,
+    p_bank text,
+    p_ced date,
+    -- p_total_paid DOUBLE PRECISION,
+    -- p_state character varying,
+    -- p_partner character varying,
     OUT v_ar_id INT
 )
 RETURNS INT 
 AS $$
 DECLARE
-    v_partner_id INT;
+   v_partner_id INT;
     v_state_id INT;
-    v_state_name TEXT;
-    v_customer_name TEXT;
-    v_partner_name TEXT;
+    v_state_name text;
+    v_customer_name text;
+    v_partner_name text;
     v_total_paid DOUBLE PRECISION;
 BEGIN
     SELECT home_owner, partner INTO v_customer_name, v_partner_name
     FROM sales_ar_calc
     WHERE sales_ar_calc.unique_id = p_unique_id;
-
+ 
     IF p_date >= CURRENT_DATE - INTERVAL '30 days' THEN
         SELECT total_paid, st INTO v_total_paid, v_state_name
         FROM sales_ar_calc
         WHERE sales_ar_calc.unique_id = p_unique_id;
-
+ 
+       
         SELECT partner_id INTO v_partner_id
         FROM partners
         WHERE partner_name = v_partner_name;
-
+ 
+        -- IF v_partner_id IS NULL THEN
+        --     RAISE EXCEPTION 'Partner % not found', v_partner_name;
+        -- END IF;
+ 
         SELECT state_id INTO v_state_id
         FROM states
         WHERE name = v_state_name;
-    END IF;
+ 
+        -- IF v_state_id IS NULL THEN
+        --     RAISE EXCEPTION 'State % not found', v_state_name;
+        -- END IF;
 
     UPDATE ar
     SET 
@@ -46,8 +58,8 @@ BEGIN
         bank = p_bank,
         ced = p_ced,
         total_paid = v_total_paid,
-        partner = v_partner_id,
         state = v_state_id,
+        partner = v_partner_id,
         updated_at = CURRENT_TIMESTAMP
     WHERE id = p_id
     RETURNING id INTO v_ar_id;
