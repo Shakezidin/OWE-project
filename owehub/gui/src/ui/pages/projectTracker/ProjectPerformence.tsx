@@ -26,7 +26,7 @@ const ProjectPerformence = () => {
     }
   };
 
-  const { perfomaceSale,commisionMetrics } = useAppSelector((state) => state.perfomanceSlice);
+  const { perfomaceSale,commisionMetrics,projectStatus } = useAppSelector((state) => state.perfomanceSlice);
 
   useEffect(() => {
     const current = format(new Date(),"yyyy-MM-dd")
