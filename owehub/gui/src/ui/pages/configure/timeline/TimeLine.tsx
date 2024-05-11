@@ -167,8 +167,17 @@ const TimeLine = () => {
 
     };
     const res = await postCaller(EndPoints.update_timelinesla_archive, newValue);
-    if (res.status === HTTP_STATUS.OK) {
-      dispatch(fetchTimeLineSla(pageNumber))
+    if (res.status === HTTP_STATUS.OK) {  
+     await dispatch(fetchTimeLineSla(pageNumber))
+     console.log("working as hgelll");
+     
+     Swal.fire({
+      title: 'Archived!',
+      text: 'Selected row have been archived.',
+      icon: 'success',
+      timer: 2000,
+      showConfirmButton: false
+    });
     }
   };
 
