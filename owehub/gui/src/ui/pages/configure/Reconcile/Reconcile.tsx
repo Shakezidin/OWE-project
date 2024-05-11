@@ -30,7 +30,9 @@ const Reconcile = () => {
 
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const { data, isLoading } = useAppSelector((state) => state.reconcile);
+  const { data, isLoading, dbCount } = useAppSelector(
+    (state) => state.reconcile
+  );
 
   const error = useAppSelector((state) => state.timelineSla.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
@@ -69,12 +71,12 @@ const Reconcile = () => {
   const goToPrevPage = () => {
     dispatch(setCurrentPage(currentPage - 1));
   };
-  const totalPages = Math.ceil(data?.length / itemsPerPage);
+  const totalPages = Math.ceil(dbCount / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
 
-  const currentPageData = data?.slice(startIndex, endIndex);
+  const currentPageData = data.slice();
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === data?.length;
   const handleSort = (key: any) => {
@@ -87,9 +89,13 @@ const Reconcile = () => {
   };
 
   if (sortKey) {
+    console.log(sortKey, "testtt");
+
     currentPageData.sort((a: any, b: any) => {
       const aValue = a[sortKey];
       const bValue = b[sortKey];
+      console.log(aValue, bValue);
+
       if (typeof aValue === "string" && typeof bValue === "string") {
         return sortDirection === "asc"
           ? aValue.localeCompare(bValue)
@@ -121,7 +127,7 @@ const Reconcile = () => {
     setEditedReconcile(data);
     handleOpen();
   };
- 
+
   const handleRepPaySettings = () => {
     setEditMode(false);
     setEditedReconcile(null);
@@ -130,13 +136,13 @@ const Reconcile = () => {
   const handleArchiveAllClick = async () => {
     const confirmed = await showAlert(
       "Are Your Sure",
-      "This Action will archive your data",
+      "This Action will archive all selected rows",
       "Yes",
       "No"
     );
     if (confirmed) {
       const archivedRows = Array.from(selectedRows).map(
-        (index) => data[index].RecordId
+        (index) => data[index].record_id
       );
       if (archivedRows.length > 0) {
         const newValue = {
@@ -230,7 +236,7 @@ const Reconcile = () => {
     return <div>Error: {error}</div>;
   }
 
-  console.log(data, "data")
+  console.log(selectedRows.size > 1, "data");
 
   return (
     <div className="comm">
@@ -241,7 +247,7 @@ const Reconcile = () => {
         linkparaSecond="Reconcile"
       />
       <div className="commissionContainer">
-      <TableHeader
+        <TableHeader
           title="Reconcile"
           onPressViewArchive={() => handleViewArchiveToggle()}
           onPressArchive={() => handleArchiveAllClick()}
@@ -296,7 +302,7 @@ const Reconcile = () => {
                     onClick={() => handleSort(item.name)}
                   />
                 ))}
-                 {viewArchived === true ? null : (
+                {viewArchived === true ? null : (
                   <th>
                     <div className="action-header">
                       <p>Action</p>
@@ -336,14 +342,18 @@ const Reconcile = () => {
                       <td>{el.start_date}</td>
                       <td>{el.end_date}</td>
                       <td>{el.amount}</td>
-                      <td>{el.notes}</td>
-                      {viewArchived === true ? null : (
+                      <td>
+                        {el.notes.length > 40
+                          ? el.notes.slice(0, 40) + "..."
+                          : el.notes}
+                      </td>
+                      {!viewArchived && selectedRows.size < 2 && (
                         <td>
                           <div className="action-icon">
                             <div
                               className=""
                               style={{ cursor: "pointer" }}
-                              onClick={() => handleArchiveClick(el.RecordId)}
+                              onClick={() => handleArchiveClick(el.record_id)}
                             >
                               <img src={ICONS.ARCHIVE} alt="" />
                             </div>
@@ -365,19 +375,19 @@ const Reconcile = () => {
         </div>
         <div className="page-heading-container">
           <p className="page-heading">
-            {currentPage} - {totalPages} of {currentPageData?.length} item
+            {currentPage} - {dbCount} of {currentPageData?.length} item
           </p>
 
-          {data?.length > 0 ? (
-           <Pagination
+          {currentPageData?.length > 0 ? (
+            <Pagination
               currentPage={currentPage}
               totalPages={totalPages} // You need to calculate total pages
               paginate={paginate}
               currentPageData={currentPageData}
               goToNextPage={goToNextPage}
               goToPrevPage={goToPrevPage}
-perPage={itemsPerPage}
-            /> 
+              perPage={itemsPerPage}
+            />
           ) : null}
         </div>
       </div>

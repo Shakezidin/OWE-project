@@ -48,7 +48,7 @@ const Pagination: React.FC<PaginationProps> = ({
             return (
               <button
                 disabled={
-                  currentPage === currentPageData?.length ||
+                  
                   totalPages <= currentPage
                 }
                 className={"current-btn"}
@@ -72,7 +72,7 @@ const Pagination: React.FC<PaginationProps> = ({
 
         <button
           disabled={
-            currentPage === currentPageData?.length || totalPages <= currentPage
+             totalPages <= currentPage
           }
           className={"current-btn"}
           onClick={() => goToNextPage()}

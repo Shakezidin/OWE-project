@@ -8,7 +8,7 @@ interface IState {
     error: string,
     isLoading: boolean,
     isFormSubmitting:boolean
-   
+    dbCount:number,
     isSuccess:number,
 }
 
@@ -18,19 +18,25 @@ const initialState: IState = {
     isLoading: false,
     isFormSubmitting:false,
     isSuccess:0,
+    dbCount:0
 }
 
 const reconcile = createSlice({
     name: "Reconcile",
     initialState,
-    reducers: {},
+    reducers: {
+        resetSuccess:(state)=>{
+            state.isSuccess = 0
+        }
+    },
     extraReducers: builder => {
         builder.addCase(fetchReconcile.pending, (state) => {
             state.isLoading = true
         })
             .addCase(fetchReconcile.fulfilled, (state, action: PayloadAction<any | null>) => {
                 state.isLoading = false
-                state.data = action.payload ? action.payload:[]
+                state.data = action.payload.list ? action.payload.list:[]
+                state.dbCount = action.payload.count
             })
             .addCase(fetchReconcile.rejected, (state, action) => {
                 state.isLoading = false
@@ -42,6 +48,7 @@ const reconcile = createSlice({
             .addCase(createReconcile.fulfilled, (state) => {
                 state.isFormSubmitting = false
                 state.isSuccess=1
+                toast.success("Form submitted successfully")
             })
             .addCase(createReconcile.rejected, (state, action) => {
                 state.isFormSubmitting = false
@@ -62,6 +69,6 @@ const reconcile = createSlice({
 
     }
 })
-
+export const {resetSuccess}  = reconcile.actions
 
 export default reconcile.reducer
