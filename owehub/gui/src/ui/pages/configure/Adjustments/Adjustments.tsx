@@ -255,7 +255,7 @@ const Adjustments  = () => {
                   <td> {item.epc} </td>
                   <td> {item.date && format(new Date(item.date),"yyyy-MM-dd")} </td>
                   <td>{item.amount }</td>
-                  <td>{item.notes }</td>
+                  <td>{item.notes.length>40?item.notes.slice(0,40)+"...":item.notes }</td>
                   
                   <td
 
