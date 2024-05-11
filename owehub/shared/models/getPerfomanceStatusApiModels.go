@@ -7,11 +7,11 @@
 package models
 
 type PerfomanceStatusReq struct {
-	Filters []string `json:"filters"`
+	UniqueIds    []string `json:"unique_ids"`
+	ProjectLimit int      `json:"project_limit"`
 }
 
 type PerfomanceResponse struct {
-	RecordId               int64  `json:"record_id"`
 	UniqueId               string `json:"unqiue_id"`
 	ContractDate           string `json:"contract_date"`
 	PermitApprovedDate     string `json:"permit_approved_date"`

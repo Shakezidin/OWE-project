@@ -62,9 +62,9 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 
 	tableName := db.TableName_sales_metrics_schema
 	query = `
-	 SELECT sms.item_id AS record_id, sms.unique_id AS unique_id, sms.contract_date, sms.permit_approved_date, sms.pv_install_completed_date, sms.pto_date, fom.site_survey_completed_date, fom.install_ready_date
-	 FROM sales_metrics_schema sms
-	 JOIN field_ops_metrics_schema fom ON fom.unique_id = sms.unique_id
+	select unique_id, contract_date, permit_approved_date, 
+	pv_install_completed_date, pto_date, site_survey_completed_date, 
+	install_ready_date from consolidated_data_view
 	 `
 
 	filter, whereEleList = PrepareStatusFilters(tableName, dataReq, false)
@@ -74,7 +74,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		queryWithFiler = query
 	}
 
-	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryWithFiler, whereEleList)
+	data, err = db.ReteriveFromDB(db.RowDataDBIndex, queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get PerfomanceProjectStatus data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get PerfomanceProjectStatus data from DB", http.StatusBadRequest, nil)
@@ -84,16 +84,10 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 	perfomanceList := models.PerfomanceListResponse{}
 
 	for _, item := range data {
-		RecordId, ok := item["record_id"].(int64)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
-			continue
-		}
-
 		// if no unique id is present we skip that project
 		UniqueId, ok := item["unique_id"].(string)
 		if !ok || UniqueId == "" {
-			log.FuncErrorTrace(0, "Failed to get UniqueId for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get UniqueId. Item: %+v\n", item)
 			continue
 		}
 
@@ -133,7 +127,6 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 			InstallReadyDate = time.Time{}
 		}
 
-
 		ContractD := ContractDate.Format("2006-01-02")
 		PermitD := PermitApprovedDate.Format("2006-01-02")
 		PvInstallCompleteD := PvInstallCompletedDate.Format("2006-01-02")
@@ -141,7 +134,6 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		SiteD := SiteSurveyCompleteDate.Format("2006-01-02")
 		InstallD := InstallReadyDate.Format("2006-01-02")
 		perfomanceResponse := models.PerfomanceResponse{
-			RecordId:               RecordId,
 			UniqueId:               UniqueId,
 			ContractDate:           ContractD,
 			PermitApprovedDate:     PermitD,
@@ -153,8 +145,9 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		perfomanceList.PerfomanceList = append(perfomanceList.PerfomanceList, perfomanceResponse)
 	}
 	// Send the response
+	recordLen := len(data)
 	log.FuncInfoTrace(0, "Number of PerfomanceProjectStatus List fetched : %v list %+v", len(perfomanceList.PerfomanceList), perfomanceList)
-	FormAndSendHttpResp(resp, "PerfomanceProjectStatus Data", http.StatusOK, perfomanceList)
+	FormAndSendHttpResp(resp, "PerfomanceProjectStatus Data", http.StatusOK, perfomanceList, int64(recordLen))
 }
 
 /******************************************************************************
@@ -171,23 +164,26 @@ func PrepareStatusFilters(tableName string, dataFilter models.PerfomanceStatusRe
 	whereAdded := false
 
 	// Check if there are filters
-	if len(dataFilter.Filters) > 0 {
+	if len(dataFilter.UniqueIds) > 0 {
 		filtersBuilder.WriteString(" WHERE sms.unique_id IN (")
 		whereAdded = true
 
-		for i, filter := range dataFilter.Filters {
+		for i, filter := range dataFilter.UniqueIds {
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
 			whereEleList = append(whereEleList, filter)
 
-			if i < len(dataFilter.Filters)-1 {
+			if i < len(dataFilter.UniqueIds)-1 {
 				filtersBuilder.WriteString(", ")
 			}
 		}
 	}
 
 	if whereAdded {
-		filtersBuilder.WriteString(")")
+		filtersBuilder.WriteString(") ")
 	}
+
+	filtersBuilder.WriteString(fmt.Sprintf("LIMIT $%d", len(whereEleList)+1))
+	whereEleList = append(whereEleList, dataFilter.ProjectLimit)
 	filters = filtersBuilder.String()
 
 	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
