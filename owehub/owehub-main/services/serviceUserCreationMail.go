@@ -18,7 +18,7 @@ func SendMailToClient(email string, username string) error {
 
 	to := email
 	subject := "Welcome to Our World Energy!"
-	body := fmt.Sprintf("Dear %s,\n\nWe're thrilled to welcome you to Our World Energy!\n\nYour account has been successfully created.\n\nHere are your account details:\nEmail: %s\nPassword: %s\n\nThank you for choosing us!\nLogin Url: http://144.202.31.130:3000/login \n\nBest regards,\nThe Team", username, email, createUserReqPassword)
+	body := fmt.Sprintf("Dear %s,\n\nWe're thrilled to welcome you to Our World Energy!\n\nYour account has been successfully created.\n\nHere are your account details:\nEmail: %s\nPassword: %s\n\nThank you for choosing us!\nLogin Url: http://155.138.239.170:3000/login \n\nBest regards,\nThe Team", username, email, createUserReqPassword)
 	// Set up the authentication
 	auth := smtp.PlainAuth("", FromEmailId, FromPassword, "smtp.gmail.com")
 

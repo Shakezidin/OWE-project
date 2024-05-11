@@ -49,7 +49,7 @@ var (
 	SaleData SaleDataList
 )
 
-func (saleDataList *SaleDataList) LoadSaleData() (err error) {
+func (saleDataList *SaleDataList) LoadSaleData(uniqueIDs []string) (err error) {
 	var (
 		query    string
 		dataList []map[string]interface{}
@@ -58,6 +58,17 @@ func (saleDataList *SaleDataList) LoadSaleData() (err error) {
 	log.EnterFn(0, "LoadSaleData")
 	defer func() { log.ExitFn(0, "LoadSaleData", err) }()
 	query = "SELECT * from " + db.ViewName_ConsolidatedDataView
+	if (uniqueIDs != nil) && (len(uniqueIDs) > 0) {
+		query += "WHERE unique_id IN ("
+		for i, id := range uniqueIDs {
+			if i != 0 {
+				query += ","
+			}
+			query += "'" + id + "'"
+		}
+		query += ")"
+	}
+
 	dataList, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
 	if err != nil || len(dataList) == 0 {
 		log.FuncErrorTrace(0, "Failed to Sale Data from DB err: %+v", err)
@@ -66,6 +77,8 @@ func (saleDataList *SaleDataList) LoadSaleData() (err error) {
 	}
 	log.FuncInfoTrace(0, "Reterived raw data frm DB Count: %+v", len(dataList))
 
+	/* Clean the sale Data List before updating new data */
+	saleDataList.SaleDataList = saleDataList.SaleDataList[:0]
 	for _, data := range dataList {
 		var saleData SaleDataStruct
 

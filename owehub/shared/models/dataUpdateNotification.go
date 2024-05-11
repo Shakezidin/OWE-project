@@ -7,5 +7,5 @@
 package models
 
 type DataUpdateNotification struct {
-	Unique_id string `json:"unique_id"`
+	UniqueIDs []string `json:"unique_ids"`
 }

@@ -79,10 +79,10 @@ func (AdderDataCfg *AdderDataCfgStruct) LoadAdderDataCfg() (err error) {
 			Gc = ""
 		}
 
-		ExactAmount, ok := item["exact_amount"].(string)
-		if !ok || ExactAmount == "" {
+		ExactAmount, ok := item["exact_amount"].(float64)
+		if !ok || ExactAmount <= 0.0 {
 			log.ConfWarnTrace(0, "Failed to get ExactAmount for Record ID %v. Item: %+v\n", RecordId, item)
-			ExactAmount = ""
+			ExactAmount = 0.0
 		}
 
 		Description, ok := item["description"].(string)
@@ -103,10 +103,10 @@ func (AdderDataCfg *AdderDataCfgStruct) LoadAdderDataCfg() (err error) {
 			PerKwAmt = 0.0
 		}
 
-		RepPercent, ok := item["rep_percent"].(int)
+		RepPercent, ok := item["rep_percent"].(float64)
 		if !ok {
 			log.ConfWarnTrace(0, "Failed to get RepPercent for Record ID %v. Item: %+v\n", RecordId, item)
-			RepPercent = 0
+			RepPercent = 0.0
 		}
 
 		SysSize, ok := item["sys_size"].(float64)

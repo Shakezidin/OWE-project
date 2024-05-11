@@ -87,16 +87,16 @@ func (AdjustmentsConfig *AdjustmentsCfgStruct) LoadAdjustmentsCfg() (err error) 
 			SysSize = 0.0 // Default sys size of 0.0
 		}
 
-		Bl, ok := item["bl"].(string)
-		if !ok || Bl == "" {
+		Bl, ok := item["bl"].(float64)
+		if !ok || Bl <= 0.0 {
 			log.ConfWarnTrace(0, "Failed to get bl for Record ID %v. Item: %+v\n", RecordId, item)
-			Bl = ""
+			Bl = 0.0
 		}
 
-		Epc, ok := item["epc"].(float64)
+		Epc, ok := item["epc"].(string)
 		if !ok {
 			log.ConfWarnTrace(0, "Failed to get epc for Record ID %v. Item: %+v\n", RecordId, item)
-			Epc = 0.0 // Default epc value of 0.0
+			Epc = "" // Default epc value of ""
 		}
 
 		DateStr, ok := item["date"].(string)
