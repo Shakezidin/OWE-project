@@ -13,8 +13,9 @@
   cursor: pointer;
   height: 40px;
   text-transform: capitalize;
+}
+.login-cancel-width{
   width: 150px;
-
 }
 .loginButton:hover {
   background-color: #0493ce;
