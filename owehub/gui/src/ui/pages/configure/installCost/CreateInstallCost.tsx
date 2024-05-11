@@ -40,7 +40,11 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
     endDate: editData?.end_date || "",
   });
   const { isSuccess } = useAppSelector((state) => state.installConstSlice);
-
+  function capitalizeWords(str:string) {
+    return str.replace(/\b\w/g, function(char) {
+        return char.toUpperCase();
+    });
+}
   const handleValidation = () => {
     const error: IErrors = {};
     for (const key in newFormData) {
@@ -48,7 +52,7 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
         
         error[
           key as keyof typeof newFormData
-        ] = `${key.toLocaleLowerCase()} is required`;
+        ] = capitalizeWords(`${key} is required`);
       }
     }
     setErrors({ ...error });
@@ -133,7 +137,7 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={"date"}
-                    label="start date"
+                    label="Start date"
                     value={newFormData.startDate}
                     name="startDate"
                     placeholder={"Enter"}
