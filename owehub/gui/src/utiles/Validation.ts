@@ -5,7 +5,7 @@ import {
 
 // validationUtils.ts
 export const validateName = (name: string): boolean => {
-  return /^[A-Za-z\s]+$/.test(name.trim());
+  return /^[A-Za-z\s\-_.,!@#$%^&*()+=?<>{}[\]:;"'|\\]+$/.test(name.trim());
 };
 
 export const validateEmail = (email: string): boolean => {
