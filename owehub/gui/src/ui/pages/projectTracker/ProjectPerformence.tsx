@@ -7,8 +7,15 @@ import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { projects } from "./projectData";
 import Breadcrumb from "../../components/breadcrumb/Breadcrumb";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
+import {
+  getPerfomance,
+  getPerfomanceStatus,
+} from "../../../redux/apiSlice/perfomanceSlice";
+import { format } from "date-fns";
 
 const ProjectPerformence = () => {
+  const dispatch = useAppDispatch();
   const getColorStyle = (date: string | null) => {
     if (!date) {
       return { backgroundColor: "#F2F4F6", color: "#7D7D7D" };
@@ -18,6 +25,19 @@ const ProjectPerformence = () => {
       return { backgroundColor: "#008DDA", color: "white" };
     }
   };
+
+  const { perfomaceSale,commisionMetrics } = useAppSelector((state) => state.perfomanceSlice);
+
+  useEffect(() => {
+    const current = format(new Date(),"yyyy-MM-dd")
+    dispatch(
+      getPerfomance({
+        start_date: current,
+        end_date: current,
+      })
+    );
+    dispatch(getPerfomanceStatus({ filters: [] }));
+  }, []);
 
   return (
     <div className="">
@@ -44,37 +64,42 @@ const ProjectPerformence = () => {
           </div>
         </div>
         <div className="project-card-container">
-          {cardData.map((el, i) => (
-            <div
-              className="project-card"
-              key={i}
-              style={{ backgroundColor: el.bgColor }}
-            >
-              <div className="project-card-head">
-                <div
-                  className="project-icon-img"
-                  style={{ backgroundColor: el.iconBgColor }}
-                >
-                  <object
-                    type="image/svg+xml"
-                    data={el.icon}
-                    aria-label="performance-icons"
-                  ></object>
+          {cardData.map((el, i) => {
+            const findSale = perfomaceSale.find(
+              (s: (typeof perfomaceSale)[0]) => s.Type === el.type
+            );
+            return (
+              <div
+                className="project-card"
+                key={i}
+                style={{ backgroundColor: el.bgColor }}
+              >
+                <div className="project-card-head">
+                  <div
+                    className="project-icon-img"
+                    style={{ backgroundColor: el.iconBgColor }}
+                  >
+                    <object
+                      type="image/svg+xml"
+                      data={el.icon}
+                      aria-label="performance-icons"
+                    ></object>
+                  </div>
+                  <h2 style={{ color: el.color }}>{el.name}</h2>
                 </div>
-                <h2 style={{ color: el.color }}>{el.name}</h2>
+                <div className="project-card-body">
+                  <div className="project-body-details">
+                    <h2 style={{ fontSize: "14px" }}> {findSale?.sales} </h2>
+                    <p style={{ fontSize: "14px" }}>Sales</p>
+                  </div>
+                  <div className="project-body-details">
+                    <h2 style={{ fontSize: "14px" }}> {findSale?.sales_kw} </h2>
+                    <p style={{ fontSize: "14px" }}>Sales KW</p>
+                  </div>
+                </div>
               </div>
-              <div className="project-card-body">
-                <div className="project-body-details">
-                  <h2 style={{ fontSize: "14px" }}>60</h2>
-                  <p style={{ fontSize: "14px" }}>Sales</p>
-                </div>
-                <div className="project-body-details">
-                  <h2 style={{ fontSize: "14px" }}>120</h2>
-                  <p style={{ fontSize: "14px" }}>Sales KW</p>
-                </div>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
         <div className="project-card-container">
           {projectDashData.map((item, i) => (
@@ -87,7 +112,7 @@ const ProjectPerformence = () => {
                   <img src={item.icon} alt="" />
                 </div>
                 <div className="doller-head">
-                  <h2>{item.ruppes}</h2>
+                  <h2>{commisionMetrics[item.key as keyof typeof commisionMetrics] }</h2>
                   <p>{item.para}</p>
                 </div>
               </div>
