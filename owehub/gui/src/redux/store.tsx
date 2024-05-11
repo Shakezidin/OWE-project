@@ -44,13 +44,13 @@ import nonComm from "./apiSlice/configSlice/config_get_slice/nonComm";
 import refralDataSlice from "./apiSlice/configSlice/config_get_slice/refralDataSlice";
 import autoAdderSlice from "./apiSlice/configSlice/config_get_slice/autoAdderSlice";
 import perfomanceSlice from "./apiSlice/perfomanceSlice";
-import activeSlice from "./apiSlice/configSlice/config_get_slice/activeSlice";
-
+ 
+import ArDataSlice from "./apiSlice/AR/ArDataSlice";
 export const store = configureStore({
   reducer: {
     appState: appStateSlice,
     auth: authReducer,
-    active: activeSlice,
+   
     resetPassword: resetPasswordSlice,
     changePassword: ChangePasswordSlice,
     comm: commissionReducer,
@@ -96,6 +96,7 @@ export const store = configureStore({
     refralDataSlice,
     autoadder: autoAdderSlice,
     perfomanceSlice,
+    ardata:ArDataSlice
   },
 });
 
