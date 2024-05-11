@@ -47,12 +47,12 @@ const Pagination: React.FC<PaginationProps> = ({
           if (i === 4) {
             return (
               <button
-                disabled={currentPage === currentPageData?.length}
-                className={"current-btn"}
-                onClick={() =>
-                  currentPage < totalPages / perPage &&
-                  goToNextPage()
+                disabled={
+                  currentPage === currentPageData?.length ||
+                  totalPages <= currentPage
                 }
+                className={"current-btn"}
+                onClick={() => goToNextPage()}
               >
                 ...
               </button>
@@ -71,11 +71,11 @@ const Pagination: React.FC<PaginationProps> = ({
         })}
 
         <button
-          disabled={currentPage === currentPageData?.length}
-          className={"current-btn"}
-          onClick={() =>
-            currentPage < totalPages / perPage && goToNextPage()
+          disabled={
+            currentPage === currentPageData?.length || totalPages <= currentPage
           }
+          className={"current-btn"}
+          onClick={() => goToNextPage()}
         >
           <MdArrowForwardIos style={{ color: "#667085", fontSize: ".9rem" }} />
         </button>
