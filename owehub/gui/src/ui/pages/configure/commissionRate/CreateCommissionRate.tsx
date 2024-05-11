@@ -125,11 +125,11 @@ const CreateCommissionRate: React.FC<ButtonProps> = ({
           createCommission
         );
         if (res.status === HTTP_STATUS.OK) {
-          await successSwal("", res.message, "success", 2000, false);
+          await successSwal("", res.message);
           handleClose();
         dispatch(fetchCommissions(page))
         } else {
-          await errorSwal("", res.message, "error", 2000, false);
+          await errorSwal("", res.message);
         }
       } else {
         const { record_id, ...cleanedFormData } = createCommission;
@@ -138,11 +138,11 @@ const CreateCommissionRate: React.FC<ButtonProps> = ({
           cleanedFormData
         );
         if (res.status === HTTP_STATUS.OK) {
-          await successSwal("", res.message, "success", 2000, false);
+          await successSwal("", res.message);
           handleClose();
           dispatch(fetchCommissions(page))
         } else {
-          await errorSwal("", res.message, "error", 2000, false);
+          await errorSwal("", res.message);
         }
       }
       // dispatch(resetForm());

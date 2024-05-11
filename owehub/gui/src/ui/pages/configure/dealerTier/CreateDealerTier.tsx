@@ -97,25 +97,25 @@ const CreateDealerTier: React.FC<dealerProps> = ({ handleClose, editMode, editDe
             if (createDealerTierData.record_id) {
                 const res = await postCaller(EndPoints.update_dealertier, createDealerTierData);
                 if (res?.status === 200) {
-                    await successSwal("", res.message, "success", 2000, false);
+                    await successSwal("", res.message);
                     handleClose()
                     dispatch(fetchDealerTier(page))
 
                 }
                 else {
-                    await errorSwal("", res.message, "error", 2000, false);
+                    await errorSwal("", res.message);
                 }
             }
             else {
                 const { record_id, ...cleanedFormData } = createDealerTierData;
                 const res = await postCaller(EndPoints.create_dealertier, cleanedFormData);
                 if (res?.status === 200) {
-                    await successSwal("", res.message, "success", 2000, false);
+                    await successSwal("", res.message);
                     handleClose()
                     dispatch(fetchDealerTier(page))
                 }
                 else {
-                    await errorSwal("", res.message, "error", 2000, false);
+                    await errorSwal("", res.message);
                 }
             }
         } catch (error) {

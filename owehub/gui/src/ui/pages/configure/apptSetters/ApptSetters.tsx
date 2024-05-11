@@ -158,17 +158,11 @@ const ApptSetters = () => {
           await successSwal(
             "Archived",
             "All Selected rows have been archived",
-            "success",
-            2000,
-            false
           );
         } else {
           await successSwal(
             "Archived",
             "All Selected rows have been archived",
-            "error",
-            2000,
-            false
           );
         }
       }
@@ -196,18 +190,12 @@ const ApptSetters = () => {
         dispatch(fetchApptSetters(pageNumber));
         await successSwal(
           "Archived",
-          "All Selected rows have been archived",
-          "success",
-          2000,
-          false
+          "All Selected rows have been archived"
         );
       } else {
         await successSwal(
           "Archived",
-          "All Selected rows have been archived",
-          "error",
-          2000,
-          false
+          "All Selected rows have been archived"
         );
       }
     }
