@@ -7,8 +7,7 @@ import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { projects } from "./projectData";
 import Breadcrumb from "../../components/breadcrumb/Breadcrumb";
- 
- 
+
 const ProjectPerformence = () => {
   const getColorStyle = (date: string | null) => {
     if (!date) {
@@ -19,9 +18,6 @@ const ProjectPerformence = () => {
       return { backgroundColor: "#008DDA", color: "white" };
     }
   };
- 
-
- 
 
   return (
     <div className="">
@@ -59,7 +55,11 @@ const ProjectPerformence = () => {
                   className="project-icon-img"
                   style={{ backgroundColor: el.iconBgColor }}
                 >
-                  <img src={el.icon} alt="" className="icon-image" />
+                  <object
+                    type="image/svg+xml"
+                    data={el.icon}
+                    aria-label="performance-icons"
+                  ></object>
                 </div>
                 <h2 style={{ color: el.color }}>{el.name}</h2>
               </div>
@@ -176,12 +176,10 @@ const ProjectPerformence = () => {
                               style={{ color: "" }}
                             ></div>
                             <div className="notch-strip-des">
-                              <p >
-                                {notch.name}{" "}
-                              </p>
+                              <p>{notch.name} </p>
                               <IoMdInformationCircleOutline
-                                  style={{ cursor: "pointer" }}
-                                />
+                                style={{ cursor: "pointer" }}
+                              />
                             </div>
                             <div className="child-notch"></div>
                           </div>

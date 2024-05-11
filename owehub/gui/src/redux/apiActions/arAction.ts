@@ -1,60 +1,31 @@
+// get_dlr_oth_data
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
 import { postCaller } from "../../infrastructure/web_api/services/apiUrl";
-import { EndPoints } from "../../infrastructure/web_api/api_client/EndPoints";
 
-export interface ReconcileEditParams {
-    unique_id:string; 
-    name:string,
-    team_name:string,
-    pay_rate:number,
-    start_date:string,
-    end_date:string,
-    record_id:string
-}
-
-
-interface ReconcileCreateParams {
-    unique_id:string; 
-    name:string,
-    team_name:string,
-    pay_rate:number,
-    start_date:string,
-    end_date:string,
-}
- 
-export const fetchAr = createAsyncThunk(
-    "ar/fetchar",
-    async (data: any) => {
-      const response = await postCaller("get_ar", data);
+interface Ipaginate {
+    page_number: number;
+    page_size: number;
+    archived?:boolean;
+    report_type:string;
+    sale_partner:string; 
+  }
   
-      return response.data.ar__list;
-    }
-  );
+ 
 
-
-  export const createAr = createAsyncThunk(
-    "create/ar",
-    async (params: any, { rejectWithValue,dispatch }) => {
+export const getAR = createAsyncThunk(
+    "fetch/get-ar",
+    async (param:Ipaginate, { rejectWithValue }) => {
       try {
-        const data = await postCaller("create_ar", params);
-        if (data instanceof Error) {
-          return rejectWithValue((data as Error).message);
-        }
-        await dispatch(fetchAr({page_number:1,page_size:10}))
-        return data;
+        const data = await postCaller("get_ar_data", param);
+        const list = data.data
+        return {list,count:data.dbRecCount}
       } catch (error) {
         return rejectWithValue((error as Error).message);
       }
     }
   );
 
-  export const updateAr = createAsyncThunk("update/ar",async(params:any,{rejectWithValue,dispatch})=>{
-    try {
-        const data = await postCaller("update_ar",params)
-        await dispatch(fetchAr({page_number:1,page_size:10}))
-        return data.data
-    } catch (error) {
-        return rejectWithValue((error as Error).message)
-    }
-})
+
+ 
+ 
+

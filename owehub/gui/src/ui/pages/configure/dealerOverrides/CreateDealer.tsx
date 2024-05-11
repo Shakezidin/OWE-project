@@ -131,21 +131,21 @@ const CreateDealer: React.FC<dealerProps> = ({
       if (createDealer.record_id) {
         const res = await postCaller(EndPoints.update_dealer, createDealer);
         if (res.status === 200) {
-          await successSwal("", res.message, "success", 2000, false);
+          await successSwal("", res.message);
           handleClose();
           dispatch(fetchDealer(page))
         } else {
-          await errorSwal("", res.message, "error", 2000, false);
+          await errorSwal("", res.message);
         }
       } else {
         const { record_id, ...cleanedFormData } = createDealer;
         const res = await postCaller(EndPoints.create_dealer, cleanedFormData);
         if (res.status === 200) {
-          await successSwal("", res.message, "success", 2000, false);
+          await successSwal("", res.message);
           handleClose();
           dispatch(fetchDealer(page))
         } else {
-          await errorSwal("", res.message, "error", 2000, false);
+          await errorSwal("", res.message);
         }
       }
     } catch (error) {
@@ -169,7 +169,7 @@ const CreateDealer: React.FC<dealerProps> = ({
             <div className="createProfileTextView">
               <div className="create-input-container">
                 <div className="create-input-field">
-                  <label className="inputLabel-select">Sub Dealer</label>
+                  <label className="inputLabel-select select-type-label">Sub Dealer</label>
                   <SelectOption
                     options={subDealer}
                     onChange={(newValue) =>
@@ -184,7 +184,7 @@ const CreateDealer: React.FC<dealerProps> = ({
                    {errors.sub_dealer && <span className="error">{errors.sub_dealer}</span>}
                 </div>
                 <div className="create-input-field">
-                  <label className="inputLabel-select">Dealer</label>
+                  <label className="inputLabel-select select-type-label">Dealer</label>
                   <SelectOption
                     options={dealer}
                     onChange={(newValue) => handleChange(newValue, "dealer")}
@@ -212,7 +212,7 @@ const CreateDealer: React.FC<dealerProps> = ({
 
               <div className="create-input-container">
               <div className="create-input-field">
-                  <label className="inputLabel-select">State</label>
+                  <label className="inputLabel-select select-type-label">State</label>
                   <SelectOption
                     options={stateOption(createDealer)}
                     onChange={(newValue) => {

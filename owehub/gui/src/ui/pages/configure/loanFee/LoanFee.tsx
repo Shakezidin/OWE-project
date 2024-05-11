@@ -126,9 +126,9 @@ const LoanFee = () => {
       const res = await postCaller("update_loan_fee_archive", newValue);
       if (res.status === HTTP_STATUS.OK) {
         dispatch(getLoanFee(pageNumber))
-        await successSwal("Archived", "All Selected rows have been archived", "success", 2000, false);
+        await successSwal("Archived", "All Selected rows have been archived");
       }else{
-        await successSwal("Archived", "All Selected rows have been archived", "error", 2000, false);
+        await successSwal("Archived", "All Selected rows have been archived");
       }
     }
   

@@ -116,10 +116,10 @@ const handleArchiveAllClick = async () => {
         const isAnyRowSelected = remainingSelectedRows.length > 0;
         setSelectAllChecked(isAnyRowSelected);
         setSelectedRows(new Set());
-        await successSwal("Archived", "All Selected rows have been archived", "success", 2000, false);
+        await successSwal("Archived", "All Selected rows have been archived");
       }
       else {
-        await successSwal("Error", "Failed to archive selected rows. Please try again later.", "error", 2000, false);
+        await successSwal("Error", "Failed to archive selected rows. Please try again later.");
       }
     }
   }
@@ -135,10 +135,10 @@ const handleArchiveClick = async (record_id: any) => {
     const res = await postCaller(EndPoints.update_commission_archive, newValue);
     if (res.status === HTTP_STATUS.OK) {
       dispatch(fetchCommissions(pageNumber))
-      await successSwal("Archived", "Selected rows have been archived", "success", 2000, false);
+      await successSwal("Archived", "Selected rows have been archived");
     }
     else {
-      await successSwal("Error", "Failed to archive selected rows. Please try again later.", "error", 2000, false);
+      await successSwal("Error", "Failed to archive selected rows. Please try again later.");
     }
   }
 };

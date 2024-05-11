@@ -88,11 +88,11 @@ const CreateLoanType: React.FC<loanProps> = ({
           createLoanTypeData
         );
         if (res.status === 200) {
-          await successSwal("", res.message, "success", 2000, false);
+          await successSwal("", res.message);
           handleClose()
           dispatch(fetchLoanType(page))
         } else {
-          await errorSwal("", res.message, "success", 2000, false);
+          await errorSwal("", res.message);
         }
       } else {
         const { record_id, ...cleanedFormData } = createLoanTypeData;
@@ -101,11 +101,11 @@ const CreateLoanType: React.FC<loanProps> = ({
           cleanedFormData
         );
         if (res.status === 200) {
-          await successSwal("", res.message, "success", 2000, false);
+          await successSwal("", res.message);
                     handleClose()
                     dispatch(fetchLoanType(page))
         } else {
-          await errorSwal("", res.message, "success", 2000, false);
+          await errorSwal("", res.message);
         }
       }
     } catch (error) {

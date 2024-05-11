@@ -120,11 +120,11 @@ const CreateMarketingFees: React.FC<marketingProps> = ({
           createMarketing
         );
         if (res.status === 200) {
-          await successSwal("", res.message, "success", 2000, false);
+          await successSwal("", res.message);
           handleClose()
           dispatch(fetchmarketingFees(page))
         } else {
-          await errorSwal("", res.message, "error", 2000, false);
+          await errorSwal("", res.message);
         }
       } else {
         const { record_id, ...cleanedFormData } = createMarketing;
@@ -133,11 +133,11 @@ const CreateMarketingFees: React.FC<marketingProps> = ({
           cleanedFormData
         );
         if (res.status === 200) {
-          await successSwal("", res.message, "success", 2000, false);
+          await successSwal("", res.message);
           handleClose()
           dispatch(fetchmarketingFees(page))
         } else {
-          await errorSwal("", res.message, "error", 2000, false);
+          await errorSwal("", res.message);
         }
       }
     } catch (error) {

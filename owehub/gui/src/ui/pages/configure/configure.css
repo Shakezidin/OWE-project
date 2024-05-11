@@ -84,6 +84,11 @@
   position: relative;
   background: var(--white-color);
 } */
+.select-type-label{
+  position: static !important;
+  display: block;
+  margin-bottom: -15px;
+}
 
 .UserManageTable {
   position: relative;

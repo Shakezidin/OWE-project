@@ -33,9 +33,9 @@ const useArchiveManagement = (
           const isAnyRowSelected = remainingSelectedRows.length > 0;
           setSelectAllChecked(isAnyRowSelected);
           setSelectedRows(new Set<number>());
-          await successSwal("Archived", "All Selected rows have been archived", "success", 2000, false);
+          await successSwal("Archived", "All Selected rows have been archived");
         } else {
-          await successSwal("Error", "Failed to archive selected rows. Please try again later.", "error", 2000, false);
+          await successSwal("Error", "Failed to archive selected rows. Please try again later.");
         }
       }
     }
@@ -52,9 +52,9 @@ const useArchiveManagement = (
       const res = await postCallerFunction(endpoints, newValue);
       if (res.status === HTTP_STATUS.OK) {
         fetchFunction();
-        await successSwal("Archived", "Selected rows have been archived", "success", 2000, false);
+        await successSwal("Archived", "Selected rows have been archived");
       } else {
-        await successSwal("Error", "Failed to archive selected rows. Please try again later.", "error", 2000, false);
+        await successSwal("Error", "Failed to archive selected rows. Please try again later.");
       }
     }
   };

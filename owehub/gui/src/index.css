@@ -344,3 +344,16 @@ br {
 }
 /* FileInputComponent.css */
 /* FileInputComponent.css */
+
+
+.fildelb-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1.3rem;
+  cursor: pointer;
+}
+.fildelb-btn img {
+  width: 19px;
+  height: 19px;
+}
