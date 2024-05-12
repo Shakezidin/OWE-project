@@ -20,7 +20,7 @@ DECLARE
     v_state_name TEXT;
     v_customer_name TEXT;
     v_partner_name TEXT;
-    v_total_paid DOUBLE PRECISION := 0.0; -
+    v_total_paid DOUBLE PRECISION := 0.0; 
 BEGIN
     SELECT home_owner, partner INTO v_customer_name, v_partner_name
     FROM sales_ar_calc
