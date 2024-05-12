@@ -139,7 +139,7 @@ INSERT INTO loan_type (product_code,active,adder,description) VALUES ('P123',1,1
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateArImport.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateArImportArchive.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewAR.sql';
---\i '/docker-entrypoint-initdb.d/DB_ProcUpdateAR.sql';
+\i '/docker-entrypoint-initdb.d/DB_ProcUpdateAR.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateARArchive.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcCreateNewReconcile.sql';
 \i '/docker-entrypoint-initdb.d/DB_ProcUpdateReconcileArchive.sql';
