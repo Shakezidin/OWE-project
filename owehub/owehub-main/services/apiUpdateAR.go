@@ -81,13 +81,15 @@ func HandleUpdateARDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	date, err := time.Parse("2006-01-02", UpdateArReq.Date)
 	if err != nil {
-		fmt.Println("Error parsing date:", err)
+		log.FuncErrorTrace(0, "Failed to parse time date: %v", err)
+		FormAndSendHttpResp(resp, "Failed to parse time date", http.StatusInternalServerError, nil)
 		return
 	}
 
 	cedDate, err := time.Parse("2006-01-02", UpdateArReq.Ced)
 	if err != nil {
-		fmt.Println("Error parsing date:", err)
+		log.FuncErrorTrace(0, "Failed to parse time cedDate: %v", err)
+		FormAndSendHttpResp(resp, "Failed to parse time cedDate", http.StatusInternalServerError, nil)
 		return
 	}
 
