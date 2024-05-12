@@ -31,13 +31,13 @@ func (AdderDataCfg *AdderDataCfgStruct) LoadAdderDataCfg() (err error) {
 	defer func() { log.ExitFn(0, "LoadAdderDataCfg", err) }()
 
 	query = `
-		SELECT ad.id AS record_id, ad.unique_id, ad.date, ad.type_ad_mktg, ad.type, ad.gc, ad.exact_amount, ad.per_kw_amt, ad.rep_percent, ad.description, ad.notes, ad.sys_size, ad.adder_cal
+		SELECT ad.id AS record_id, ad.unique_id, ad.date, ad.type_ad_mktg, ad.type1, ad.gc, ad.exact_amount, ad.per_kw_amt, ad.rep_percent, ad.description, ad.notes, ad.sys_size, ad.adder_cal
 		FROM ` + db.TableName_adder_data + ` ad`
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get Adder data Condif from DB err: %v", err)
-		err = fmt.Errorf("Failed to get Adder data Condif from DB")
+		log.FuncErrorTrace(0, "Failed to get Adder data Config from DB err: %v", err)
+		err = fmt.Errorf("failed to get adder data config from db")
 		return err
 	}
 
@@ -67,7 +67,7 @@ func (AdderDataCfg *AdderDataCfgStruct) LoadAdderDataCfg() (err error) {
 			TypeAdMktg = ""
 		}
 
-		Type, ok := item["type"].(string)
+		Type, ok := item["type1"].(string)
 		if !ok || Type == "" {
 			log.ConfWarnTrace(0, "Failed to get Type for Record ID %v. Item: %+v\n", RecordId, item)
 			Type = ""

@@ -43,7 +43,7 @@ func ExecArInitialCalculation(resultChan chan string) {
 		}
 	}
 	/* Update Calculated and Fetched data AR.Data Table */
-	err = db.AddMultipleRecordInDB(db.RowDataDBIndex, db.TableName_SalesArCalc, arDataList)
+	err = db.AddMultipleRecordInDB(db.OweHubDbIndex, db.TableName_SalesArCalc, arDataList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to insert initial AR Data in DB err: %v", err)
 	}
@@ -113,7 +113,7 @@ func CalculateARProject(saleData dataMgmt.SaleDataStruct) (outData map[string]in
 	epcCalc = common.CalculateEPCCalc(contractCalc, saleData.WC1, saleData.NetEpc, saleData.SystemSize)
 	grossRev = CalculateGrossRev(epcCalc, redLine, saleData.SystemSize)
 	addrPtr = dataMgmt.AdderDataCfg.CalculateAddrPtr(saleData.Dealer, saleData.UniqueId)
-	addrAuto = dataMgmt.AutoAdderCfg.CalculateAddrAuto(saleData.Dealer, saleData.UniqueId)
+	addrAuto = dataMgmt.AutoAdderCfg.CalculateAddrAuto(saleData.Dealer, saleData.UniqueId, saleData.SystemType)
 	loanFee = dataMgmt.LoanFeeAdderCfg.CalculateLoanFee(saleData.Dealer, saleData.UniqueId)
 	adjust = dataMgmt.AdjustmentsConfig.CalculateAdjust(saleData.Dealer, saleData.UniqueId)
 	netRev = CalculateNetRev(grossRev, addrPtr, addrAuto, loanFee, adjust)
