@@ -380,10 +380,10 @@ const ProjectStatus = () => {
   const [activePopups, setActivePopups] = useState<boolean>(false);
   const menuRef = useRef();
   // State to store active popups for each row
-  const handleClickOutside = (e:MouseEvent) => {
+  const handleClickOutside = (e: MouseEvent) => {
     const elm = e.target as HTMLElement;
     if (!elm.closest(".popup") && !elm.classList.contains("view-flex")) {
-      setActivePopups(false)
+      setActivePopups(false);
     }
   };
   useEffect(() => {
@@ -404,7 +404,7 @@ const ProjectStatus = () => {
         route={""}
         linkparaSecond="Dashboard"
       />
-      <div className="project-container" style={{ padding: "0rem 0 1rem 0" }}>
+      <div className="project-container" style={{padding: "0px"}}>
         <div
           className="project-heading"
           style={{
@@ -438,10 +438,10 @@ const ProjectStatus = () => {
                   <p className="para-head">{el.name}</p>
                   <span className="span-para">{el.para}</span>
                 </div>
-                {el.viewButton? (
+                {el.viewButton ? (
                   <div
                     className="view-flex"
-                    onClick={() => setActivePopups(prev=>!prev)}
+                    onClick={() => setActivePopups((prev) => !prev)}
                   >
                     <p>View</p>
 
@@ -478,7 +478,7 @@ const ProjectStatus = () => {
                 {/* time */}
               </div>
               <div className="graph-pos"></div>
-              <img src={ICONS.linearGraph} alt="" />
+              <img className="fade-graph" src={ICONS.linearGraph} alt="" />
             </div>
           </div>
         </div>
@@ -487,7 +487,7 @@ const ProjectStatus = () => {
           <div className="">
             <h3>Project Stages</h3>
             <div className="progress-box-container">
-            <div className="progress-box-body">
+              <div className="progress-box-body">
                 <div
                   className="progress-box"
                   style={{ background: "#0493CE" }}
@@ -511,81 +511,102 @@ const ProjectStatus = () => {
             </div>
           </div>
         </div>
-        <div className="project-staus-progress-container">
-          {newStatusData.map((item: any, i: any) => (
-            <>
-              <div className="project-status-table">
-                <div
-                  className="project-status-card"
-                  style={{ marginTop: "0", background: item.bgColor }}
-                >
-                  <div
-                    className="status-number"
-                    style={{ background: "#FFFFF", color: item.numColor }}
-                  >
-                    {item.number}
+        <div className="project-management-table">
+          <table>
+            <tbody>
+              <tr style={{borderBottom: "none"}}>
+                <td style={{padding: "0px"}}>
+                  <div className="project-staus-progress-container">
+                    {newStatusData.map((item: any, i: any) => (
+                      <>
+                        <div className="project-status-table">
+                          <div
+                            className="project-status-card"
+                            style={{ marginTop: "0", background: item.bgColor }}
+                          >
+                            <div
+                              className="status-number"
+                              style={{
+                                background: "#FFFFF",
+                                color: item.numColor,
+                              }}
+                            >
+                              {item.number}
+                            </div>
+                            <p
+                              className="stage-1-para"
+                              style={{ color: item.color }}
+                            >
+                              {item.name}
+                            </p>
+                          </div>
+                          {item.childStatusData.map((el: any, index: any) => (
+                            <div
+                              className="notch-corner"
+                              style={{
+                                background: el.bgColor,
+                                color: "#101828",
+                              }}
+                            >
+                              <div className="child-corner"></div>
+                              <div
+                                className=""
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  alignItems: "center",
+                                  width: "35px",
+                                }}
+                              >
+                                <span
+                                  className="date-para"
+                                  style={{ color: el.color, fontSize: "9px" }}
+                                >
+                                  ETA
+                                </span>
+                                <p style={{ color: el.color, fontSize: "9px" }}>
+                                  20 Apr
+                                </p>
+                                <p
+                                  className="stage-1-para"
+                                  style={{ color: el.color, fontSize: "10px" }}
+                                >
+                                  {" "}
+                                  2024
+                                </p>
+                              </div>
+                              <div
+                                className="border-notch"
+                                style={{
+                                  border: "0.5px solid ",
+                                  borderColor: el.borderColor,
+                                }}
+                              ></div>
+                              <div className="" style={{ width: "115px" }}>
+                                <p
+                                  className="stage-1-para"
+                                  style={{ color: el.color, fontSize: "12px" }}
+                                >
+                                  {el.process}
+                                </p>
+                                <p
+                                  className=""
+                                  style={{ color: el.color, fontSize: "11px" }}
+                                >
+                                  {el.data}
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                        {i === 9 ? null : <div className="dotted-border"></div>}
+                      </>
+                    ))}
                   </div>
-                  <p className="stage-1-para" style={{ color: item.color }}>
-                    {item.name}
-                  </p>
-                </div>
-                {item.childStatusData.map((el: any, index: any) => (
-                  <div
-                    className="notch-corner"
-                    style={{ background: el.bgColor, color: "#101828" }}
-                  >
-                    <div className="child-corner"></div>
-                    <div
-                      className=""
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        width: "35px",
-                      }}
-                    >
-                      <span
-                        className="date-para"
-                        style={{ color: el.color, fontSize: "9px" }}
-                      >
-                        ETA
-                      </span>
-                      <p style={{ color: el.color, fontSize: "9px" }}>20 Apr</p>
-                      <p
-                        className="stage-1-para"
-                        style={{ color: el.color, fontSize: "10px" }}
-                      >
-                        {" "}
-                        2024
-                      </p>
-                    </div>
-                    <div
-                      className="border-notch"
-                      style={{
-                        border: "0.5px solid ",
-                        borderColor: el.borderColor,
-                      }}
-                    ></div>
-                    <div className="" style={{ width: "115px" }}>
-                      <p
-                        className="stage-1-para"
-                        style={{ color: el.color, fontSize: "12px" }}
-                      >
-                        {el.process}
-                      </p>
-                      <p
-                        className=""
-                        style={{ color: el.color, fontSize: "11px" }}
-                      >
-                        {el.data}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              {i === 9 ? null : <div className="dotted-border"></div>}
-            </>
-          ))}
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

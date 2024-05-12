@@ -36,8 +36,8 @@ func HandleGetPerfomanceSalesRequest(resp http.ResponseWriter, req *http.Request
 		dates          []string
 	)
 
-	log.EnterFn(0, "HandleGetRateAdjustmentsRequest")
-	defer func() { log.ExitFn(0, "HandleGetRateAdjustmentsRequest", err) }()
+	log.EnterFn(0, "HandleGetPerfomanceSalesRequest")
+	defer func() { log.ExitFn(0, "HandleGetPerfomanceSalesRequest", err) }()
 
 	if req.Body == nil {
 		err = fmt.Errorf("HTTP Request body is null in get perfomance sales request")
@@ -70,7 +70,7 @@ func HandleGetPerfomanceSalesRequest(resp http.ResponseWriter, req *http.Request
 			queryWithFiler = query + filter
 		}
 
-		data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryWithFiler, whereEleList)
+		data, err = db.ReteriveFromDB(db.RowDataDBIndex, queryWithFiler, whereEleList)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get perfomance sales from DB for %v err: %v", date, err)
 			FormAndSendHttpResp(resp, "Failed to get perfomance sales from DB for %v", http.StatusBadRequest, date)

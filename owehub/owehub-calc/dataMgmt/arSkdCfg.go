@@ -79,10 +79,10 @@ func (ArSkdConfig *ArSkdCfgStruct) LoadArSkdCfg() (err error) {
 			StateName = ""
 		}
 
-		RedLine, ok := item["red_line"].(string)
-		if !ok || RedLine == "" {
+		RedLine, ok := item["red_line"].(float64)
+		if !ok || RedLine <= 0.0 {
 			log.FuncErrorTrace(0, "Failed to get red line for Record ID %v. Item: %+v\n", RecordId, item)
-			RedLine = ""
+			RedLine = 0.0
 		}
 
 		CalcDate, ok := item["calc_date"].(string)
@@ -91,28 +91,28 @@ func (ArSkdConfig *ArSkdCfgStruct) LoadArSkdCfg() (err error) {
 			CalcDate = ""
 		}
 
-		PermitPay, ok := item["permit_pay"].(string)
-		if !ok || PermitPay == "" {
+		PermitPay, ok := item["permit_pay"].(float64)
+		if !ok || PermitPay <= 0.0 {
 			log.FuncErrorTrace(0, "Failed to get permit pay for Record ID %v. Item: %+v\n", RecordId, item)
-			PermitPay = ""
+			PermitPay = 0.0
 		}
 
-		PermitMax, ok := item["permit_max"].(string)
-		if !ok || PermitMax == "" {
+		PermitMax, ok := item["permit_max"].(float64)
+		if !ok || PermitMax <= 0.0 {
 			log.FuncErrorTrace(0, "Failed to get permit max for Record ID %v. Item: %+v\n", RecordId, item)
-			PermitMax = ""
+			PermitMax = 0.0
 		}
 
-		InstallPay, ok := item["install_pay"].(string)
-		if !ok || InstallPay == "" {
+		InstallPay, ok := item["install_pay"].(float64)
+		if !ok || InstallPay <= 0.0 {
 			log.FuncErrorTrace(0, "Failed to get install pay for Record ID %v. Item: %+v\n", RecordId, item)
-			InstallPay = ""
+			InstallPay = 0.0
 		}
 
-		PtoPay, ok := item["pto_pay"].(string)
-		if !ok || PtoPay == "" {
+		PtoPay, ok := item["pto_pay"].(float64)
+		if !ok || PtoPay == 0.0 {
 			log.FuncErrorTrace(0, "Failed to get PTO pay for Record ID %v. Item: %+v\n", RecordId, item)
-			PtoPay = ""
+			PtoPay = 0.0
 		}
 
 		StartDate, ok := item["start_date"].(string)
@@ -149,7 +149,7 @@ func (ArSkdConfig *ArSkdCfgStruct) LoadArSkdCfg() (err error) {
 	return err
 }
 
-func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct) (redLine string, permitPayM1 string, permitMax string, installPayM2 string) {
+func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct) (redLine float64, permitPayM1 float64, permitMax float64, installPayM2 float64) {
 	var (
 		err   error
 		today = time.Now().Truncate(24 * time.Hour)
@@ -157,10 +157,10 @@ func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct)
 	log.EnterFn(0, "GetRedLineForSaleData")
 	defer func() { log.ExitFn(0, "GetRedLineForSaleData", err) }()
 
-	redLine = ""
-	permitPayM1 = ""
-	permitMax = ""
-	installPayM2 = ""
+	redLine = 0
+	permitPayM1 = 0
+	permitMax = 0
+	installPayM2 = 0
 	for _, arSkd := range ArSkdConfig.ArSkdConfigList.ArScheduleList {
 		var startDate time.Time
 		var endDate time.Time
@@ -204,7 +204,7 @@ func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct)
 		}
 	}
 
-	if len(redLine) <= 0 {
+	if redLine <= 0 {
 		for _, arSkd := range ArSkdConfig.ArSkdConfigList.ArScheduleList {
 			/*var startDate time.Time
 			var endDate time.Time
@@ -249,7 +249,7 @@ func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct)
 		}
 	}
 
-	if len(redLine) <= 0 {
+	if redLine <= 0 {
 		for _, arSkd := range ArSkdConfig.ArSkdConfigList.ArScheduleList {
 			var startDate time.Time
 			var endDate time.Time

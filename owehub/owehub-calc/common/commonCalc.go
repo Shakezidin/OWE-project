@@ -202,7 +202,7 @@ func CalculateEPCCalc(contractCalc float64, wc1 time.Time, netEPC float64, syste
  * DESCRIPTION:     calculates the "installPay" value based on the provided data
  * RETURNS:         installPay
  *****************************************************************************/
-func CalculateInstallPay(status string, grossRev, netRev float64, installPayM2 string, permitPay float64) (installPay float64) {
+func CalculateInstallPay(status string, grossRev, netRev float64, installPayM2 float64, permitPay float64) (installPay float64) {
 
 	log.EnterFn(0, "CalculateInstallPay")
 	defer func() { log.ExitFn(0, "CalculateInstallPay", nil) }()
@@ -212,9 +212,8 @@ func CalculateInstallPay(status string, grossRev, netRev float64, installPayM2 s
 		return installPay
 	}
 	if grossRev > 0 {
-		installPayM2Amt := StrToFloat(installPayM2)
-		if installPayM2Amt != nil {
-			installPay = Round(netRev*(*installPayM2Amt)-permitPay, 2)
+		if installPayM2 > 0 {
+			installPay = Round(netRev*(installPayM2)-permitPay, 2)
 		}
 	}
 	return installPay

@@ -11,6 +11,7 @@ import (
 	log "OWEApp/shared/logger"
 	"OWEApp/shared/models"
 	"fmt"
+	"time"
 )
 
 type ReconcileCfgStruct struct {
@@ -86,10 +87,17 @@ func (ReconcileCfgData *ReconcileCfgStruct) LoadReconcileCfg() (err error) {
 			Status = ""
 		}
 
-		DateStr, ok := item["date"].(string)
-		if !ok || DateStr == "" {
-			log.ConfWarnTrace(0, "Failed to get date for Unique ID %v. Item: %+v\n", UniqueId, item)
-			DateStr = ""
+		StartDate, ok := item["start_date"].(time.Time)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
+			StartDate = time.Time{}
+		}
+
+		// EndDate
+		EndDate, ok := item["end_date"].(time.Time)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get end date for Record ID %v. Item: %+v\n", RecordId, item)
+			EndDate = time.Time{}
 		}
 
 		Amount, ok := item["amount"].(float64)
@@ -104,6 +112,9 @@ func (ReconcileCfgData *ReconcileCfgStruct) LoadReconcileCfg() (err error) {
 			Notes = ""
 		}
 
+		start := StartDate.Format("2006-01-02")
+		end := EndDate.Format("2006-01-02")
+
 		reconcileData := models.GetReconcile{
 			RecordId:    RecordId,
 			UniqueId:    UniqueId,
@@ -112,7 +123,8 @@ func (ReconcileCfgData *ReconcileCfgStruct) LoadReconcileCfg() (err error) {
 			StateName:   StateName,
 			SysSize:     SysSize,
 			Status:      Status,
-			Date:        DateStr,
+			StartDate:   start,
+			EndDate:     end,
 			Amount:      Amount,
 			Notes:       Notes,
 		}

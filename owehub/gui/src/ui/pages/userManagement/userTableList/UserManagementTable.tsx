@@ -49,7 +49,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   onClickMultiDelete,
 }) => {
   const dispatch = useAppDispatch();
-  const [pageSize1, setPageSize1] = useState(3); // Set your desired page size here
+  const [pageSize1, setPageSize1] = useState(10); // Set your desired page size here
   const [currentPage1, setCurrentPage1] = useState(1);
   const count = useAppSelector((state) => state.userManagement.totalCount);
   useEffect(() => {
@@ -82,8 +82,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
 
   const totalPages = Math.ceil(count! / pageSize1);
 
-  const startIndex = (currentPage - 1) * pageSize1;
-  const endIndex = startIndex + pageSize1;
+  const startIndex = (currentPage1 - 1) * pageSize1 + 1;
 
   /** render table based on dropdown */
   const renderComponent = () => {
@@ -274,7 +273,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
         {userRoleBasedList?.length > 0 ? (
           <>
             <p className="page-heading">
-              {currentPage1+startIndex} - {count} of {userRoleBasedList?.length} item
+              {startIndex} - {count} of {userRoleBasedList?.length} item
             </p>
             <PaginationComponent
               currentPage={currentPage1}
