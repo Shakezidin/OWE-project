@@ -21,7 +21,7 @@ import (
 
 /******************************************************************************
  * FUNCTION:		HandleGetAutoAdderDataRequest
- * DESCRIPTION:     handler for get AutoAdder data request
+ * DESCRIPTION:     handler for get AutoAdder data redatequest
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
@@ -67,15 +67,18 @@ func HandleGetAutoAdderDataRequest(resp http.ResponseWriter, req *http.Request) 
 
 	tableName := db.TableName_auto_adder
 	query = `
-		 SELECT ad.unique_id, ad.date, ad.type, ad.gc, ad.per_kw_amount, ad.rep_percentage,
-		 ad.notes_no_repvisible FROM consolidated_data_view ad`
+		SELECT ad.unique_id, ad.wc AS date, ad.small_system AS type, ad.instl AS gc, ad.primary_sales_rep as rep_percentage,
+		ad.secondary_sales_rep as notes_no_repvisible
+		FROM consolidated_data_view ad
+		WHERE type != 'N//A' AND LOWER(gc) != LOWER('owe') AND 
+		(type NOT ILIKE 'MK%' OR EXISTS (SELECT fee_rate FROM s WHERE state ILIKE 'MK%'))`
 
 	filter, whereEleList = PrepareAutoAdderFilters(tableName, dataReq, false)
 	if filter != "" {
 		queryWithFiler = query + filter
 	}
 
-	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryWithFiler, whereEleList)
+	data, err = db.ReteriveFromDB(db.RowDataDBIndex, queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get auto adder data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get auto adder data from DB", http.StatusBadRequest, nil)
