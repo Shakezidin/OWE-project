@@ -32,7 +32,7 @@ func (ArSkdConfig *ArSkdCfgStruct) LoadArSkdCfg() (err error) {
 	defer func() { log.ExitFn(0, "LoadArSkdCfg", err) }()
 
 	query = `
-	SELECT ar.id AS record_id, ar.unique_id, ar.red_line, ar.calc_date, ar.permit_pay, ar.permit_max, ar.install_pay, ar.pto_pay, ar.start_date, ar.end_date, st.name AS state_name, pr_partner.partner_name AS partner_name, pr_installer.partner_name AS installer_name, sy.type_name AS sale_type_name   
+	SELECT ar.id AS record_id, ar.red_line, ar.calc_date, ar.permit_pay, ar.permit_max, ar.install_pay, ar.pto_pay, ar.start_date, ar.end_date, st.name AS state_name, pr_partner.partner_name AS partner_name, pr_installer.partner_name AS installer_name, sy.type_name AS sale_type_name   
 	FROM ar_schedule ar
 	JOIN states st ON st.state_id = ar.state_id
 	JOIN partners pr_partner ON pr_partner.partner_id = ar.partner
@@ -42,7 +42,7 @@ func (ArSkdConfig *ArSkdCfgStruct) LoadArSkdCfg() (err error) {
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil || len(data) == 0 {
 		log.FuncErrorTrace(0, "Failed to get AR Skd import config from DB err: %v", err)
-		err = fmt.Errorf("Failed to get AR Skd import config err")
+		err = fmt.Errorf("failed to get ar skd import config err")
 		return err
 	}
 
@@ -128,8 +128,7 @@ func (ArSkdConfig *ArSkdCfgStruct) LoadArSkdCfg() (err error) {
 		}
 
 		arSchedule := models.GetArSchedule{
-			RecordId: RecordId,
-			//UniqueId:      UniqueId,
+			RecordId:      RecordId,
 			PartnerName:   PartnerName,
 			InstallerName: InstallerName,
 			SaleTypeName:  SaleTypeName,

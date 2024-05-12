@@ -31,7 +31,7 @@ func (AdjustmentsConfig *AdjustmentsCfgStruct) LoadAdjustmentsCfg() (err error) 
 	defer func() { log.ExitFn(0, "LoadAdjustmentsCfg", err) }()
 
 	query = `
-		SELECT ad.id as record_id, ad.unique_id, ad.customer, ad.sys_size, ad.bl, ad.epc, ad.date, ad.notes, ad.amount, ad.start_date, ad.end_date, pr_partner.partner_name AS partner_name, pr_installer.partner_name AS installer_name, st.name AS state_name  
+		SELECT ad.id as record_id, ad.unique_id, ad.customer, ad.sys_size, ad.bl, ad.epc, ad.date, ad.notes, ad.amount, pr_partner.partner_name AS partner_name, pr_installer.partner_name AS installer_name, st.name AS state_name  
 		FROM ` + db.TableName_adjustments + ` ad
 		JOIN partners pr_partner ON pr_partner.partner_id = ad.partner
 		JOIN partners pr_installer ON pr_installer.partner_id = ad.installer
