@@ -8,6 +8,7 @@ export const TYPE_OF_USER = {
   DEALER_OWNER: "Dealer Owner",
   SALES_REPRESENTATIVE: "Sale Representative",
   SALE_MANAGER: "Sales Manager",
+  DB_USER:"DB User"
 };
 
 export const ALL_USER_ROLE_LIST = [

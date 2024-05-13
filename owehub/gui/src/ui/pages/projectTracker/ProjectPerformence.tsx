@@ -31,12 +31,9 @@ const ProjectPerformence = () => {
   useEffect(() => {
     const current = format(new Date(),"yyyy-MM-dd")
     dispatch(
-      getPerfomance({
-        start_date: current,
-        end_date: current,
-      })
+      getPerfomance()
     );
-    dispatch(getPerfomanceStatus({ filters: [] }));
+    dispatch(getPerfomanceStatus());
   }, []);
 
   return (

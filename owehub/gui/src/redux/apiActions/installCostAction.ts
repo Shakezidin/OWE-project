@@ -22,7 +22,9 @@ export const getInstallCost = createAsyncThunk(
   async (param: Ipaginate, { rejectWithValue }) => {
     try {
       const data = await postCaller("get_installcost", param);
-      return data.data.install_cost_list || ([] as ICost[]);
+      const count = data.dbRecCount
+      const list = data.data.install_cost_list || ([] as ICost[]);
+      return {count,list}
     } catch (error) {
       return rejectWithValue((error as Error).message);
     }
