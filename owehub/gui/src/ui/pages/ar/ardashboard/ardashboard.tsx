@@ -49,7 +49,7 @@ export const ARDashboardPage: React.FC = () => {
     { value: "Home Owner", label: "Home Owner" },
     { value: "Street Address", label: "Street Address" },
     { value: "City", label: "City" },
-    { value: "ST", label: "ST" },
+    { value: "ST", label: "State" },
     { value: "Zip", label: "Zip" },
     { value: "KW", label: "KW" },
     { value: "Contract Date", label: "Contract Date" },
