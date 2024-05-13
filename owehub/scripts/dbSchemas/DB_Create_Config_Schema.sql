@@ -140,6 +140,16 @@ CREATE TABLE commission_rates (
     PRIMARY KEY (id)
 );
 
+CREATE TABLE v_dealer (
+    id serial NOT NULL,
+    dealer_code character varying,
+    dealer_name character varying,
+    description character varying,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
+    PRIMARY KEY (id)
+);
+
 CREATE TABLE dealer_override (
     id serial NOT NULL,
     sub_dealer character varying,
@@ -151,7 +161,7 @@ CREATE TABLE dealer_override (
     is_archived BOOLEAN DEFAULT FALSE, 
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
-    FOREIGN KEY (dealer_id) REFERENCES user_details(user_id),
+    FOREIGN KEY (dealer_id) REFERENCES v_dealer(id),
     FOREIGN KEY (state) REFERENCES states(state_id),
     PRIMARY KEY (id)
 );
@@ -228,7 +238,7 @@ CREATE TABLE dealer_tier (
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     FOREIGN KEY (tier_id) REFERENCES tier(id),
-    FOREIGN KEY (dealer_id) REFERENCES user_details(user_id),
+    FOREIGN KEY (dealer_id) REFERENCES v_dealer(id),
     PRIMARY KEY (id)
 );
 
@@ -520,7 +530,7 @@ CREATE TABLE loan_fee_adder (
     FOREIGN KEY (state_id) REFERENCES states(state_id),
     FOREIGN KEY (rep_1) REFERENCES user_details(user_id),
     FOREIGN KEY (rep_2) REFERENCES user_details(user_id),
-    FOREIGN KEY (dealer_id) REFERENCES user_details(user_id),
+    FOREIGN KEY (dealer_id) REFERENCES v_dealer(id),
     FOREIGN KEY (installer_id) REFERENCES partners(partner_id),
     FOREIGN KEY (dealer_tier) REFERENCES tier(id)
 );
@@ -796,7 +806,7 @@ CREATE TABLE loan_fee (
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     FOREIGN KEY (state_id) REFERENCES states(state_id),
-    FOREIGN KEY (dealer_id) REFERENCES user_details(user_id),
+    FOREIGN KEY (dealer_id) REFERENCES v_dealer(id),
     FOREIGN KEY (installer) REFERENCES partners(partner_id),
     FOREIGN KEY (loan_type) REFERENCES loan_type(id),
     PRIMARY KEY (id)
@@ -817,7 +827,7 @@ CREATE TABLE sales_ar_cfg (
 
 CREATE TABLE ar (
     id serial NOT NULL,
-    unique_id varchar NOT NULL UNIQUE,
+    unique_id varchar NOT NULL,
     customer text,
     partner INT,
     date date,
@@ -863,7 +873,7 @@ CREATE TABLE adjustments (
     bl DOUBLE PRECISION,
     epc date,
     date date,
-    amount FLOAT,
+    amount character varying,
     notes character varying,
     is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
@@ -876,7 +886,7 @@ CREATE TABLE adjustments (
 
 CREATE TABLE reconcile (
     id serial NOT NULL,
-    unique_id varchar NOT NULL UNIQUE,
+    unique_id varchar NOT NULL,
     customer character varying,
     partner_id INT,
     state_id INT,

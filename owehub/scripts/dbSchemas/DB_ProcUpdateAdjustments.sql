@@ -10,7 +10,7 @@ CREATE OR REPLACE FUNCTION update_adjustments (
     -- p_epc DOUBLE PRECISION,
     p_date date,
     p_notes character varying,
-    p_amount DOUBLE PRECISION,
+    p_amount character varying,
     OUT v_adjustments_data_id INT
 )
 RETURNS INT 
