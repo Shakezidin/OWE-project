@@ -11,7 +11,7 @@ type UpdateAdjustments struct {
 	UniqueId      string  `json:"unique_id"`
 	Date          string  `json:"date"`
 	Notes         string  `json:"notes"`
-	Amount        float64 `json:"amount"`
+	Amount        string `json:"amount"`
 }
 
 type UpdateAdjustmentsArchive struct {

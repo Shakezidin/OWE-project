@@ -8,6 +8,7 @@ package services
 
 import (
 	//common "OWEApp/owehub-calc/common"
+	datamgmt "OWEApp/owehub-calc/dataMgmt"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 
@@ -51,9 +52,23 @@ func HandleDataUpdateHandler(resp http.ResponseWriter, req *http.Request) {
 		FormAndSendHttpResp(resp, "Failed to unmarshal Login request", http.StatusBadRequest, nil)
 		return
 	} else {
-		log.FuncDebugTrace(0, "Data udpate notification recieved for unique_id: %v", data.Unique_id)
+		log.FuncDebugTrace(0, "Data udpate notification recieved for unique_id: %+v", data.UniqueIDs)
 	}
 
-	/*Identify the entities to be recalculated */
+	/* Load Sale Data for which event received */
+	err = datamgmt.SaleData.LoadSaleData(data.UniqueIDs)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get sale data from DB err: %+v", err)
+		panic("Failed to load sale data from DB")
+	}
+
+	/* Load configurations for calculation */
+	err = datamgmt.LoadConfigurations()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get config from DB err: %+v", err)
+		panic("Failed to load config from DB")
+	}
+
 	/*Trigger recalculations*/
+
 }

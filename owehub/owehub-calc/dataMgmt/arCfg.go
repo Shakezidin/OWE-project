@@ -39,7 +39,7 @@ func (arCfgData *ARCfgList) LoadARCfg() (err error) {
 	defer func() { log.ExitFn(0, "LoadARCfg", err) }()
 
 	query = `
-	 SELECT ai.id as record_id, ai.unique_id, ai.Customer_Name, ai.date, ai.amount, ai.is_archived
+	 SELECT ai.id as record_id, ai.unique_id, ai.customer, ai.date, ai.amount, ai.is_archived
 	 FROM ` + db.TableName_Ar + ` as ai WHERE ai.is_archived = FALSE`
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
@@ -64,7 +64,7 @@ func (arCfgData *ARCfgList) LoadARCfg() (err error) {
 			Unique_id = ""
 		}
 
-		Customer, ok := item["Customer_Name"].(string)
+		Customer, ok := item["customer"].(string)
 		if !ok || Customer == "" {
 			log.ConfWarnTrace(0, "Failed to get customer name for Record ID %v. Item: %+v\n", RecordId, item)
 			Customer = ""

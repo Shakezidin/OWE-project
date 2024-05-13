@@ -404,7 +404,7 @@ const ProjectStatus = () => {
         route={""}
         linkparaSecond="Dashboard"
       />
-      <div className="project-container">
+      <div className="project-container" style={{padding: "0px"}}>
         <div
           className="project-heading"
           style={{

@@ -63,6 +63,7 @@ const (
 	CreateArFunction                         string = "create_new_ar"
 	CreateApptSettersFunction                string = "create_new_appt_setters"
 	CreateReconcileFunction                  string = "create_new_reconcile"
+	CreateAdderDataConfigFunction            string = "create_new_adder_data_config"
 	UpdateCommissionFunction                 string = "update_commission"
 	UpdateCommissionArchiveFunction          string = "update_commission_archive"
 	UpdateDealerOverrideFunction             string = "update_dealer_override"
@@ -127,6 +128,7 @@ const (
 	UpdateApptSettersArchiveFunction         string = "update_appt_setters_archive"
 	UpdateReconcileFunction                  string = "update_reconcile"
 	UpdateReconcileArchiveFunction           string = "update_reconcile_archive"
+	UpdateAdderDataConfigFunction            string = "update_adder_data_config"
 	TableName_teams                          string = "teams"
 	TableName_commission_rates               string = "commission_rates"
 	TableName_users_details                  string = "user_details"
@@ -169,6 +171,8 @@ const (
 	TableName_rebate_data                    string = "rebate_data"
 	TableName_adder_data                     string = "adder_data"
 	TableName_sales_metrics_schema           string = "sales_metrics_schema"
+	TableName_Adder_data_config              string = "adder_data_cfg_shema"
+	TableName_finance_metrics_schema         string = "finance_metrics_schema"
 )
 
 /******************************************************************************

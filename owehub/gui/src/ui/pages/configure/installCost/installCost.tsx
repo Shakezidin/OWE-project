@@ -7,7 +7,7 @@ import { TimeLineSlaModel } from "../../../../core/models/configuration/create/T
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import { ICONS } from "../../../icons/Icons";
 import CheckBox from "../../../components/chekbox/CheckBox";
-import { toggleRowSelection } from "../../../components/chekbox/checkHelper";
+import { toggleAllRows, toggleRowSelection } from "../../../components/chekbox/checkHelper";
 import { showAlert, successSwal } from "../../../components/alert/ShowAlert";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
 import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
@@ -22,6 +22,7 @@ import {
 } from "../../../../redux/apiActions/installCostAction";
 import CreateInstallCost from "./CreateInstallCost";
 import Loading from "../../../components/loader/Loading";
+import DataNotFound from "../../../components/loader/DataNotFound";
 const InstallCost = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -81,7 +82,7 @@ const InstallCost = () => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
 
-  const currentPageData = commissionList?.slice(startIndex, endIndex);
+  const currentPageData = timelinesla_list?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === timelinesla_list?.length;
   const handleSort = (key: any) => {
@@ -97,6 +98,8 @@ const InstallCost = () => {
     currentPageData.sort((a: any, b: any) => {
       const aValue = a[sortKey];
       const bValue = b[sortKey];
+      console.log(aValue,bValue,"efjkngbjkgfn");
+      
       if (typeof aValue === "string" && typeof bValue === "string") {
         return sortDirection === "asc"
           ? aValue.localeCompare(bValue)
@@ -178,8 +181,12 @@ console.log(timelinesla_list,"arrr");
       <div className="commissionContainer">
         <TableHeader
           title="Install Cost"
-          onPressViewArchive={() => setViewArchived((prev) => !prev)}
-          onPressArchive={() =>handleArchiveClick(Array.from(selectedRows).map((_,i:number)=>currentPageData[i].record_id))}
+          onPressViewArchive={() =>{ 
+            setViewArchived((prev) => !prev)
+            
+
+          }}
+          onPressArchive={() =>selectedRows.size && handleArchiveClick(Array.from(selectedRows).map((_,i:number)=>currentPageData[i].record_id))}
           onPressFilter={() => filter()}
           onPressImport={() => {}}
           checked={isAllRowsSelected}
@@ -289,7 +296,14 @@ console.log(timelinesla_list,"arrr");
                     </td>
                   </tr>
                 ))
-              ) : null}
+              ) :  <tr style={{ border: 0 }}>
+              <td colSpan={10}>
+                <div className="data-not-found">
+                  <DataNotFound />
+                  <h3>Data Not Found</h3>
+                </div>
+              </td>
+            </tr>}
             </tbody>
           </table>
         </div>

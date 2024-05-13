@@ -26,6 +26,7 @@ import { showAlert, successSwal } from "../../../components/alert/ShowAlert";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
 import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
+import FilterModal from "../../../components/FilterModal/FilterModal";
 interface Column {
   name: string;
   displayName: string;
@@ -82,8 +83,8 @@ const NonCommDlrPay: React.FC = () => {
 
   const totalPages = Math.ceil(dbCount / itemsPerPage);
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
+  const startIndex = (currentPage - 1) * itemsPerPage+1;
+
   const handleAddCommission = () => {
     setEditMode(false);
     setEditedCommission(null);
@@ -98,7 +99,7 @@ const NonCommDlrPay: React.FC = () => {
 
  
 
-  const currentPageData = commissionList?.slice(startIndex, endIndex);
+  const currentPageData = commissionList?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === commissionList.length;
   const handleSort = (key: any) => {
@@ -125,6 +126,10 @@ const NonCommDlrPay: React.FC = () => {
     });
   }
 // 
+
+const fetchFunction = (req: any) => {
+  dispatch(getNonComm(req));
+ };
 
 const handleArchiveClick = async (record_id: any) => {
   const confirmed = await showAlert('Are Your Sure', 'This Action will archive your data', 'Yes', 'No');
@@ -181,6 +186,11 @@ const handleArchiveClick = async (record_id: any) => {
           editMode={editMode}
           handleClose={handleClose}
         />}
+        {filterOPen && <FilterModal handleClose={filterClose}
+        columns={NonCommDlrColumn} 
+        fetchFunction={fetchFunction}
+        page_number = {currentPage}
+        page_size = {itemsPerPage} />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
@@ -215,8 +225,8 @@ const handleArchiveClick = async (record_id: any) => {
               </tr>
             </thead>
             <tbody>
-              {commissionList?.length > 0
-                ? commissionList?.map((el: INonCommRowDLR, i: number) => (
+              {currentPageData?.length > 0
+                ? currentPageData?.map((el: INonCommRowDLR, i: number) => (
                   <tr
                     key={i}
                     className={selectedRows.has(i) ? "selected" : ""}
@@ -276,7 +286,7 @@ const handleArchiveClick = async (record_id: any) => {
             commissionList?.length > 0 ?
         <div className="page-heading-container">
           <p className="page-heading">
-            {currentPage} - {totalPages} of {commissionList?.length} item
+            {startIndex} - {totalPages} of {commissionList?.length} item
           </p>
 
         <Pagination

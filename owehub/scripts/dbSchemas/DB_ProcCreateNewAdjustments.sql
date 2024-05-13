@@ -8,7 +8,7 @@ CREATE OR REPLACE FUNCTION create_new_adjustments(
     -- p_bl character varying,  
     -- p_epc DOUBLE PRECISION,
     p_date date,
-    p_amount DOUBLE PRECISION,
+    p_amount character varying,
     p_notes character varying,
     OUT v_adjustments_id INT
 )

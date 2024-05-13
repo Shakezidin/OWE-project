@@ -44,7 +44,7 @@ const TableHeader = (props: TableProps) => {
           </button>
         </div>
         {
-         isAnyRowSelected === true ?<>
+         isAnyRowSelected === true && !viewArchive ?<>
         <div className="iconsSection2">
         <button type="button" onClick={onPressArchive} style={{cursor:isAnyRowSelected?"pointer":"not-allowed"}}>
           <img src={ICONS.ARCHIVE} alt="" />

@@ -5,7 +5,7 @@ export   const AdjustmentsColumns: Column[] = [
     { name: "customer_name", displayName: "Customer", type: "string",isCheckbox:false },
     { name: "partner", displayName: "Partner", type: "string",isCheckbox:false },
     { name: "Installer", displayName: "Installer", type: "string",isCheckbox:false },
-    { name: "st", displayName: "ST", type: "string",isCheckbox:false },
+    { name: "st", displayName: "State", type: "string",isCheckbox:false },
     { name: "sys.size", displayName: "Sys. Size", type: "string",isCheckbox:false },
     { name: "bl", displayName: "BL", type: "string",isCheckbox:false },
     { name: "epc", displayName: "Epc", type: "string",isCheckbox:false },
