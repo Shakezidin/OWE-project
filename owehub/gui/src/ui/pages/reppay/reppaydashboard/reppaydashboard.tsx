@@ -113,40 +113,6 @@ export const RepPayDashboardPage: React.FC = () => {
               <label className="inputLabel" style={{ color: "#344054" }}>
                 Commission Model
               </label>
-              {/* <Select
-                options={comissionValueData}
-                value={comissionValueData.find(
-                  (option) => option.value === selectedOption2
-                )}
-                onChange={handleSelectChange2}
-                styles={{
-                  control: (baseStyles, state) => ({
-                    ...baseStyles,
-                    fontSize: "13px",
-                    fontWeight: "500",
-                    borderRadius: ".40rem",
-                    border: "none",
-                    outline: "none",
-                    width: "6rem",
-                    minHeight: "unset",
-                    height: "30px",
-                    alignContent: "center",
-                    backgroundColor: "#ffffff",
-                    cursor: "pointer"
-                  }),
-                  indicatorSeparator: () => ({
-                    display: "none",
-                  }),
-                  option: (baseStyles) => ({
-                    ...baseStyles,
-                    fontSize: "13px",
-                  }),
-                  menu: (baseStyles) => ({
-                    ...baseStyles,
-                    width: "6rem",
-                  })
-                }}
-              /> */}
               <Select
                 options={comissionValueData}
                 value={comissionValueData.find(
@@ -171,10 +137,18 @@ export const RepPayDashboardPage: React.FC = () => {
                   indicatorSeparator: () => ({
                     display: "none",
                   }),
+                  dropdownIndicator: (baseStyles, state) => ({
+                    ...baseStyles,
+                    color: "#0493CE",
+                    "&:hover": {
+                      color: "#0493CE",
+                    },
+                  }),
                   option: (baseStyles, state) => ({
                     ...baseStyles,
                     fontSize: "13px",
-                    color: state.isSelected ? "#0493CE" : "inherit",
+                    color: state.isSelected ? "#ffffff" : "#0493CE",
+                    backgroundColor: state.isSelected ? "#0493CE" : "#ffffff",
                   }),
                   singleValue: (baseStyles, state) => ({
                     ...baseStyles,

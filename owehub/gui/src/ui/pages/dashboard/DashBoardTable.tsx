@@ -23,7 +23,7 @@ const DashBoardTable: React.FC = () => {
 
   const handleIconOpen = () => setOpenIcon(true);
   const handleIconClose = () => setOpenIcon(false);
- // const handleClose = () => setOpen(false);
+  // const handleClose = () => setOpen(false);
   const [editMode, setEditMode] = useState(false);
 
   const dataUser = [
@@ -113,7 +113,7 @@ const DashBoardTable: React.FC = () => {
       amt: "$123,456",
       pipeline: "$100,362",
       cd: "$300,652",
-      ps: "Active",
+      ps: "Inactive",
       state: "Texas",
       sysSize: "10.5",
       type: "loan",
@@ -254,8 +254,8 @@ const DashBoardTable: React.FC = () => {
                   <div>
                     <CheckBox
                       checked={false}
-                      onChange={() => {}}
-                      // indeterminate={isAnyRowSelected && !isAllRowsSelected}
+                      onChange={() => { }}
+                    // indeterminate={isAnyRowSelected && !isAllRowsSelected}
                     />
                   </div>
                 </th>
@@ -362,50 +362,71 @@ const DashBoardTable: React.FC = () => {
             <tbody>
               {dataUser.length > 0
                 ? dataUser.map((el, i) => (
-                    <tr key={i}>
-                      <td>
-                        <CheckBox
-                          checked={false}
-                          onChange={() => {}}
-                          // indeterminate={isAnyRowSelected && !isAllRowsSelected}
-                        />
-                      </td>
-                      <td
-                        onClick={() => {
-                          handleOpen();
-                        }}
-                        style={{
-                          color: "101828",
-                          paddingLeft: "0",
-                          cursor: "pointer",
-                        }}
-                      >
-                        {el.pi}
-                      </td>
-                      <td style={{ color: "#101828" }}>{el.dn}</td>
-                      <td style={{ color: "#101828" }}>{el.sr}</td>
-                      <td style={{ color: "#101828" }}>{el.cn}</td>
-                      <td style={{ color: "#101828" }}>{el.cm}</td>
-                      <td style={{ color: "#101828" }}>{el.pg}</td>
-                      <td style={{ color: "#0493CE" }}>{el.amt}</td>
-                      <td style={{ color: "#0493CE" }}>{el.pipeline}</td>
-                      <td style={{ color: "#0493CE" }}>{el.cd}</td>
-                      <td style={{ color: "green" }}>{el.ps}</td>
-                      <td>{el.state}</td>
-                      <td>{el.sysSize}</td>
-                      <td>{el.type}</td>
-                      <td>{el.adder}</td>
-                      <td>{el.ajh}</td>
-                      <td>{el.rl}</td>
-                      <td>{el.epc}</td>
-                      <td
+                  <tr key={i}>
+                    <td>
+                      <CheckBox
+                        checked={false}
+                        onChange={() => { }}
+                      // indeterminate={isAnyRowSelected && !isAllRowsSelected}
+                      />
+                    </td>
+                    <td
+                      onClick={() => {
+                        handleOpen();
+                      }}
+                      style={{
+                        color: "101828",
+                        paddingLeft: "0",
+                        cursor: "pointer",
+                        fontWeight: "500"
+                      }}
+                      className="zoom-out-td"
+                    >
+                      {el.pi}
+                    </td>
+                    <td style={{ color: "#101828" }}>{el.dn}</td>
+                    <td style={{ color: "#101828" }}>{el.sr}</td>
+                    <td style={{ color: "#101828" }}>{el.cn}</td>
+                    <td style={{ color: "#101828" }}>{el.cm}</td>
+                    <td style={{ color: "#101828" }}>{el.pg}</td>
+                    <td style={{ color: "#2E8B57", fontWeight: "500" }}>{el.amt}</td>
+                    <td style={{ color: "#8B0000", fontWeight: "500" }}>{el.pipeline}</td>
+                    <td style={{ color: "#00008B", fontWeight: "500" }}>{el.cd}</td>
+                    <td>
+                      {el.ps === 'Active' ? (
+                        <span style={{ color: 'green' }}>
+                          <span style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'green', marginRight: '5px' }}></span>
+                          Active
+                        </span>
+                      ) : (
+                        <span style={{ color: 'red' }}>
+                          <span style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'red', marginRight: '5px' }}></span>
+                          Inactive
+                        </span>
+                      )}
+                    </td>
+                    <td>{el.state}</td>
+                    <td>{el.sysSize}</td>
+                    <td>{el.type}</td>
+                    <td>{el.adder}</td>
+                    <td>{el.ajh}</td>
+                    <td>{el.rl}</td>
+                    <td>{el.epc}</td>
+                    {/* <td
                         style={{ cursor: "pointer", color: "#101828" }}
                         onClick={() => handleIconOpen()}
+                        className="zoom-out-help"
                       >
                         <BiSupport className="bi-support-icon" />
-                      </td>
-                    </tr>
-                  ))
+                      </td> */}
+                    <td className="zoom-out-help" >
+                      <BiSupport
+                        onClick={() => handleIconOpen()}
+                        style={{ height: "16px", width: "16px", stroke: "0.2" }}
+                      />
+                    </td>
+                  </tr>
+                ))
                 : null}
             </tbody>
           </table>
@@ -422,8 +443,8 @@ const DashBoardTable: React.FC = () => {
               currentPageData={currentPageData}
               goToNextPage={goToNextPage}
               goToPrevPage={goToPrevPage}
-perPage={itemsPerPage}
-            /> 
+              perPage={itemsPerPage}
+            />
           ) : null}
         </div>
       </div>

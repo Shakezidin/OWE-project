@@ -14,10 +14,11 @@
   min-height: unset;
   height: 30px;
   align-content: center;
-  background-color: #ececec;
+  background-color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  color: #0493CE;
 }
 
 .ar-dropdown-toggle::after {
@@ -27,12 +28,13 @@
   background-size: contain;
   background-repeat: no-repeat;
   vertical-align: middle;
+  color: #0493CE; /* Change this to the desired color */
 }
 
 .ar-dropdown-menu {
   position: absolute;
   top: 100%;
-  left: -77px;
+  left: -78px;
   z-index: 5;
   background-color: white;
   border: 1px solid #D0D5DD;
@@ -40,9 +42,10 @@
   padding: 8px;
   margin-top: 4px;
   overflow-y: auto;
-  width: 176px;
-  height: 192px;
+  width: 178px;
+  height: 180px;
   box-sizing: border-box;
+  color: #0493CE;
 }
 
 .ar-dropdown-menu::-webkit-scrollbar{
@@ -62,8 +65,9 @@
   cursor: pointer;
   color: rgb(0, 0, 0);
   font-weight: 500;
-  font-size: 12px;
-  margin-bottom: 3.3px;
+  font-size: 13px;
+  margin-bottom: 1px;
+  color: #0493CE;
 }
 
 .ar-dropdown-item input[type="checkbox"] {
@@ -76,7 +80,7 @@
 }
 
 .ar-drop-icon {
-  color: rgba(102, 100, 100, 0.4);
+  color: #0493CE;
   height: 120px;
   width: 20px;
   font-weight: 900;
