@@ -115,7 +115,7 @@ export const ARDashboardPage: React.FC = () => {
         <div className="ar-Dashboard-container">
           <div className=""></div>
           <div className="dashboard-payroll">
-            <div className="rep-dash-head-input">
+            <div className="ar-dash-head-input">
               <label className="inputLabel" style={{ color: "#344054" }}>
                 Report Types
               </label>
@@ -169,7 +169,7 @@ export const ARDashboardPage: React.FC = () => {
               />
             </div>
 
-            <div className="rep-dash-head-input">
+            <div className="ar-dash-head-input">
               <label className="inputLabel" style={{ color: "#344054" }}>
                 Sales Partner
               </label>
@@ -225,7 +225,7 @@ export const ARDashboardPage: React.FC = () => {
               />
             </div>
 
-            <div className="rep-dash-head-input">
+            <div className="ar-dash-head-input">
               <label className="inputLabel" style={{ color: "#344054" }}>
                 Elements
               </label>
@@ -315,7 +315,7 @@ export const ARDashboardPage: React.FC = () => {
               />
             </div>
 
-            <div className="rep-dash-head-input">
+            <div className="ar-dash-head-input">
               <label className="inputLabel" style={{ color: "#344054" }}>
                 Includes
               </label>

@@ -78,6 +78,9 @@ import arrowDown from '../../resources/assets/arrow-down.svg'
 import linearGraph from '../../resources/assets/linear-graph.svg'
 import curveGraph from '../../resources/assets/curvegraph.svg'
 import redcurveGraph from '../../resources/assets/perf.png'
+import rep1 from '../../resources/assets/rep1.svg'
+import rep2 from '../../resources/assets/rep2.png'
+import rep3 from '../../resources/assets/rep3.png'
 // import browserIcon from '../../resources/assets/Cloud-upload.svg'
 // import whiteCross from '../../resources/assets/w'
 export const ICONS = {
@@ -174,4 +177,7 @@ export const ICONS = {
   // browserIcon: browserIcon,
   // whiteCross: whiteCross
   redcurveGraph:redcurveGraph,
+  rep1:rep1,
+  rep2:rep2,
+  rep3:rep3,
 };
