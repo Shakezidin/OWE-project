@@ -8,7 +8,7 @@ import { CSVLink } from "react-csv";
 import { ICONS } from "../../../icons/Icons";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { IRowDLR, getDlrOth } from "../../../../redux/apiActions/dlrAction";
-
+import FilterModal from "../../../components/FilterModal/FilterModal";
 // import FilterCommission from "./FilterCommission";
 
 import CheckBox from "../../../components/chekbox/CheckBox";
@@ -70,6 +70,10 @@ const DlrOthPay: React.FC = () => {
     };
     dispatch(getDlrOth({ ...pageNumber, archived: viewArchived }));
   }, [dispatch, currentPage,viewArchived]);
+
+  const fetchFunction = (req: any) => {
+    dispatch(getDlrOth(req));
+   };
 
   const paginate = (pageNumber: number) => {
     dispatch(setCurrentPage(pageNumber));
@@ -239,6 +243,11 @@ const DlrOthPay: React.FC = () => {
             handleClose={handleClose}
           />
         )}
+        {filterOPen && <FilterModal handleClose={filterClose}
+        columns={DlrOthPayColumn} 
+        fetchFunction={fetchFunction}
+        page_number = {currentPage}
+        page_size = {itemsPerPage} />}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
