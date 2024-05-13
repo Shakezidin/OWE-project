@@ -25,9 +25,7 @@ const ArDashBoardTable = () => {
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const commissionList = useAppSelector((state) => state.comm.commissionsList);
-  const data = useAppSelector((state) => state.ardata.data)
-
-  console.log(data, "data")
+  const {data,count,filters} = useAppSelector((state) => state.ardata)
   // const loading = useAppSelector((state) => state.comm.loading);
   const error = useAppSelector((state) => state.comm.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
@@ -48,19 +46,19 @@ const ArDashBoardTable = () => {
       page_number: currentPage1,
       page_size: pageSize1,
       archived: viewArchived ? true : undefined,
-      report_type: "ALL",
-      sale_partner: "ALL",
-      sort_by: "partner",
-      shaky: true,
-      cancel: true,
-      sold: true,
-      permits: false,
-      ntp: false,
-      install: false,
-      pto: false,
+      report_type:filters.report_type,
+      sale_partner:filters.sale_partner,
+      sort_by:filters.sort_by,
+      shaky: filters.shaky,
+      cancel: filters.cancel,
+      sold: filters.sold,
+      permits: filters.permits,
+      ntp: filters.ntp,
+      install: filters.install,
+      pto: filters.pto,
     };
     dispatch(getAR(pageNumber));
-  }, [dispatch, currentPage1, pageSize1, viewArchived]);
+  }, [dispatch, currentPage1, pageSize1, viewArchived,filters]);
   const handleItemsPerPageChange = (e: any) => {
     const newItemsPerPage = parseInt(e.target.value, 10);
     setPageSize1(newItemsPerPage);
@@ -70,13 +68,13 @@ const ArDashBoardTable = () => {
     setCurrentPage1(page);
   };
 
-  const totalPages1 = Math.ceil(commissionList?.length / pageSize1);
+  const totalPages1 = Math.ceil(count / pageSize1);
   const startIndex = (currentPage - 1) * pageSize1;
   const endIndex = startIndex + pageSize1;
 
-  const currentPageData = commissionList?.slice(startIndex, endIndex);
+  const currentPageData = data?.slice(startIndex, endIndex);
   const isAnyRowSelected = selectedRows?.size > 0;
-  const isAllRowsSelected = selectedRows?.size === commissionList?.length;
+  const isAllRowsSelected = selectedRows?.size === data?.length;
 
   const handleSort = (key: any) => {
     if (sortKey === key) {
@@ -152,7 +150,7 @@ const ArDashBoardTable = () => {
       isCheckbox: false,
     },
     { name: "rl", displayName: "City", type: "number", isCheckbox: false },
-    { name: "rate", displayName: "ST", type: "number", isCheckbox: false },
+    { name: "rate", displayName: "State", type: "number", isCheckbox: false },
     { name: "start_date", displayName: "ZIP", type: "date", isCheckbox: false },
     { name: "end_date", displayName: "KW", type: "date", isCheckbox: false },
 
@@ -225,7 +223,7 @@ const ArDashBoardTable = () => {
                     key={key}
                     isCheckbox={item.isCheckbox}
                     titleName={item.displayName}
-                    data={commissionList}
+                    data={data}
                     isAllRowsSelected={isAllRowsSelected}
                     isAnyRowSelected={isAnyRowSelected}
                     selectAllChecked={selectAllChecked}
@@ -251,7 +249,7 @@ const ArDashBoardTable = () => {
 
             <tbody>
               {currentPageData?.length > 0
-                ? currentPageData?.map((el: any, i: any) => (
+                ? currentPageData?.map((el: typeof currentPageData[0], i: any) => (
                     <tr
                       key={i}
                       className={selectedRows.has(i) ? "selected" : ""}
@@ -279,16 +277,16 @@ const ArDashBoardTable = () => {
                         </div>
                       </td>
                       <td>{el.installer}</td>
-                      <td>{el.state}</td>
-                      <td>{el.sale_type}</td>
-                      <td>{el.sale_price}</td>
-                      <td>{el.rep_type}</td>
-                      <td>{el.rl}</td>
-                      <td>{el.rate}</td>
-                      <td>{el.start_date}</td>
-                      <td>{el.end_date}</td>
+                      <td>{el.type}</td>
+                      <td> ""</td>
+                      <td>{el.home_owner}</td>
+                      <td>{el.street_address}</td>
+                      <td>{el.city}</td>
+                      <td>{el.st}</td>
+                      <td>{el.zip}</td>
+                      {/* <td>{el.}</td> */}
 
-                      <td>${el.rl}</td>
+                      {/* <td>${el.rl}</td>
                       <td>{el.state}</td>
                       <td>{el.sale_type}</td>
                       <td>{el.sale_price}</td>
@@ -296,7 +294,7 @@ const ArDashBoardTable = () => {
                       <td>{el.rl}</td>
                       <td>{el.rate}</td>
                       <td>{el.start_date}</td>
-                      <td>{el.end_date}</td>
+                      <td>{el.end_date}</td> */}
                       <td
                         style={{
                           height: "14px",

@@ -47,7 +47,17 @@ INSERT INTO loan_type (product_code,active,adder,description) VALUES ('P123',1,1
 \copy tier(tier_name) FROM '/docker-entrypoint-initdb.d/tier.csv' DELIMITER ',' CSV;
 \copy commission_rates(partner_id, installer_id, state_id, sale_type_id, sale_price, rep_type, is_archived, rl, rate, start_date, end_date) FROM '/docker-entrypoint-initdb.d/commission_rates.csv' DELIMITER ',' CSV;
 \copy appointment_setters(team_id, first_name, last_name, pay_rate, start_date, end_date) FROM '/docker-entrypoint-initdb.d/appointment_setters.csv' DELIMITER ',' CSV;
-
+\copy loan_type (product_code,description,active,adder) FROM '/docker-entrypoint-initdb.d/loan_type.csv' DELIMITER ',' CSV;
+\copy v_dealer (dealer_code,dealer_name,description) FROM '/docker-entrypoint-initdb.d/vdealer.csv' DELIMITER ',' CSV;
+\copy dealer_override(sub_dealer,dealer_id,pay_rate,start_date,end_date,state) FROM '/docker-entrypoint-initdb.d/dealer_override.csv' DELIMITER ',' CSV;
+\copy dealer_tier(dealer_id,tier_id,start_date,end_date) FROM '/docker-entrypoint-initdb.d/dealer_tier.csv' DELIMITER ',' CSV;
+\copy loan_fee(dealer_id,installer,state_id,loan_type,owe_cost,dlr_mu,dlr_cost,start_date,end_date) FROM '/docker-entrypoint-initdb.d/loan_fee.csv' DELIMITER ',' CSV;
+\copy tier_loan_fee(dealer_tier,installer_id,state_id,loan_type,owe_cost,dlr_mu,dlr_cost,start_date,end_date) FROM '/docker-entrypoint-initdb.d/tier_loan_fee.csv' DELIMITER ',' CSV;
+\copy adjustments(unique_id,date,amount,notes) FROM '/docker-entrypoint-initdb.d/adjustments.csv' DELIMITER ',' CSV;
+\copy ar(unique_id,date,amount) FROM '/docker-entrypoint-initdb.d/ar.csv' DELIMITER ',' CSV;
+\copy ar_schedule(partner,installer,sale_type_id,state_id,red_line,calc_date,permit_pay,permit_max,install_pay,pto_pay,start_date,end_date) FROM '/docker-entrypoint-initdb.d/ar_schedule.csv' DELIMITER ',' CSV;
+\copy install_cost(cost,start_date,end_date) FROM '/docker-entrypoint-initdb.d/install_cost.csv' DELIMITER ',' CSV;
+\copy reconcile(unique_id,start_date,amount,notes) FROM '/docker-entrypoint-initdb.d/reconcile.csv' DELIMITER ',' CSV;
 /******************************SETTINGS DB TABLE END  ***********************************************/
 
 

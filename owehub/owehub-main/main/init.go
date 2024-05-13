@@ -1081,14 +1081,14 @@ var apiRoutes = ApiRoutes{
 		"/owe-commisions-service/v1/get_perfomancemetrics",
 		apiHandler.HandleGetPerfomanceSalesRequest,
 		false,
-		[]types.UserGroup{types.GroupAdmin},
+		[]types.UserGroup{types.GroupEveryOne},
 	},
 	{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_perfomanceprojectstatus",
 		apiHandler.HandleGetPerfomanceProjectStatusRequest,
 		false,
-		[]types.UserGroup{types.GroupAdmin},
+		[]types.UserGroup{types.GroupEveryOne},
 	},
 	{
 		strings.ToUpper("POST"),
@@ -1111,6 +1111,20 @@ var apiRoutes = ApiRoutes{
 		false,
 		[]types.UserGroup{types.GroupEveryOne},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_adder_data_cfg_schema",
+		apiHandler.HandleGetAdderDataConfigRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	// {
+	// 	strings.ToUpper("POST"),
+	// 	"/owe-commisions-service/v1/get_finance_metrics_schema",
+	// 	apiHandler.HandleGetFinanceMetricsShemaDataRequest,
+	// 	true,
+	// 	[]types.UserGroup{types.GroupAdmin},
+	// },
 }
 
 /******************************************************************************

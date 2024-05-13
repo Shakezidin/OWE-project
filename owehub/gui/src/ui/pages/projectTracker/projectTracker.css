@@ -6,8 +6,8 @@
 
 .project-container {
   background-color: var(--white-color);
-  padding: 20px;
   border-radius: 16px;
+  padding: 20px;
 }
 .milestone-data {
   display: flex;
@@ -182,11 +182,11 @@
 
 .project-status-body {
   display: flex;
-  /* flex: 2; */
-  flex: 1.8;
+  flex: 1;
+  /* flex: 1.8; */
   flex-wrap: wrap;
   gap: 1rem;
-  justify-content: space-between;
+  /* justify-content: space-between; */
 }
 
 .project-status-body-card {
@@ -285,6 +285,11 @@
   transform: translate(-50%, -50%);
   left: 70%;
 }
+.fade-graph{
+  position: absolute;
+  right: 0;
+  width: 250px;
+}
 
 .project-status-graph {
   border: 1px solid var(--border-color);
@@ -302,14 +307,43 @@
   /* gap: 1rem; */
   align-items: center;
 }
+.project-management-table{
+  overflow-x: auto;
+  scroll-behavior: smooth;
+}
+.project-management-table::-webkit-scrollbar {
+  width: 10px; 
+  height: 10px; 
+}
+.project-management-table::-webkit-scrollbar {
+  display: initial
+}   
+
+.project-management-table::-webkit-scrollbar-thumb {
+  background-color: rgb(173, 173, 173);
+  border-radius: 30px; 
+}
+.project-management-table::-webkit-scrollbar-button {
+  display: initial; 
+}
+.project-management-table::-webkit-scrollbar {
+  -ms-overflow-style: initial; 
+  scrollbar-width: thin;
+}
+.project-management-table::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
 
 .project-staus-progress-container {
+  background-color: var(--white-color);
   display: flex;
   flex-direction: column;
   padding: 0 22px;
-
+  padding-bottom: 30px;
+  width: 100%;
+  overflow-x: auto;
+  scroll-behavior: smooth;
 }
-
 .project-status-card {
   background-color: #0493ce;
   padding: 10px;

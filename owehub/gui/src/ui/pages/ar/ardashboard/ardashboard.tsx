@@ -1,32 +1,34 @@
 import React, { useEffect, useState, useRef } from "react";
 import "./ardashboard.css";
 import { ICONS } from "../../../icons/Icons";
-import { comissionValueData, payRollData } from "../../../../resources/static_data/StaticData";
+import {
+  comissionValueData,
+  payRollData,
+} from "../../../../resources/static_data/StaticData";
 import FilterModal from "../../../components/FilterModal/FilterModal";
 import ArDashBoardTable from "./artable";
 import ArDropdownWithCheckboxes from "./Dropdown";
 import "react-date-range/dist/styles.css"; // main style file
 import "react-date-range/dist/theme/default.css"; // theme css file
 import Select from "react-select";
-
-
+import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
+import { handleChange as filterChange } from "../../../../redux/apiSlice/AR/ArDataSlice";
 
 export const ARDashboardPage: React.FC = () => {
-
   const [active, setActive] = React.useState<number>(0);
   const [filterModal, setFilterModal] = React.useState<boolean>(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const dispatch = useAppDispatch();
   const filterClose = () => {
     setFilterModal(false);
   };
-
   const options = [
-    { value: "All", label: "All" },
-    { value: "Shaky", label: "Shaky" },
-    { value: "Cancel", label: "Cancel" },
-    { value: "QC/Permit/NTP", label: "QC/Permit/NTP" },
-    { value: "Install", label: "Install" },
-    { value: "PTO", label: "PTO" },
+    { value: "All", label: "All",key: "all" },
+    { value: "Shaky", label: "Shaky", key: "shaky" },
+    { value: "Cancel", label: "Cancel", key: "cancel" },
+    { value: "QC/Permit/NTP", label: "QC/Permit/NTP", key: "permits" },
+    { value: "Install", label: "Install", key: "install" },
+    { value: "PTO", label: "PTO", key: "pto" },
   ];
 
   const options1 = [
@@ -47,7 +49,7 @@ export const ARDashboardPage: React.FC = () => {
     { value: "Home Owner", label: "Home Owner" },
     { value: "Street Address", label: "Street Address" },
     { value: "City", label: "City" },
-    { value: "ST", label: "ST" },
+    { value: "ST", label: "State" },
     { value: "Zip", label: "Zip" },
     { value: "KW", label: "KW" },
     { value: "Contract Date", label: "Contract Date" },
@@ -64,6 +66,7 @@ export const ARDashboardPage: React.FC = () => {
 
   // used for close date click outside anywhere
   const datePickerRef = useRef<HTMLDivElement>(null);
+  const { filters } = useAppSelector((state) => state.ardata);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -82,9 +85,8 @@ export const ARDashboardPage: React.FC = () => {
     };
   }, []);
 
-
   const [selectedOption3, setSelectedOption3] = useState<string>(
-    options[0].label,
+    options[0].label
   );
   const handleSelectChange3 = (
     selectedOption3: { value: string; label: string } | null
@@ -92,7 +94,7 @@ export const ARDashboardPage: React.FC = () => {
     setSelectedOption3(selectedOption3 ? selectedOption3.value : "");
   };
   const [selectedOption4, setSelectedOption4] = useState<string>(
-    options3[0].label,
+    options3[0].label
   );
   const handleSelectChange4 = (
     selectedOption4: { value: string; label: string } | null
@@ -102,13 +104,17 @@ export const ARDashboardPage: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
   const handleOpen = () => setOpen(true);
 
+  const handleChange = (name: string, value: string) => {
+    dispatch(filterChange({ name, value }));
+  };
+  console.log(filters, "guhvjhg");
+
   return (
     <>
       <div className="ar-Dashboard-section-container">
         <div className="ar-Dashboard-container">
           <div className=""></div>
           <div className="dashboard-payroll">
-
             <div className="rep-dash-head-input">
               <label className="inputLabel" style={{ color: "#344054" }}>
                 Report Types
@@ -116,9 +122,9 @@ export const ARDashboardPage: React.FC = () => {
               <Select
                 options={options1}
                 value={options1.find(
-                  (option) => option.value === selectedOption3
+                  (option) => option.value === filters.report_type
                 )}
-                onChange={handleSelectChange3}
+                onChange={(value) => handleChange("report_type", value?.value!)}
                 styles={{
                   control: (baseStyles, state) => ({
                     ...baseStyles,
@@ -132,7 +138,7 @@ export const ARDashboardPage: React.FC = () => {
                     height: "30px",
                     alignContent: "center",
                     backgroundColor: "#ECECEC",
-                    cursor: "pointer"
+                    cursor: "pointer",
                   }),
                   indicatorSeparator: () => ({
                     display: "none",
@@ -144,21 +150,21 @@ export const ARDashboardPage: React.FC = () => {
                   menu: (baseStyles) => ({
                     ...baseStyles,
                     width: "6rem",
-                    zIndex:999
+                    zIndex: 999,
                   }),
-                  menuList:(base)=>({
+                  menuList: (base) => ({
                     ...base,
-                    "&::-webkit-scrollbar":{
-                      "scrollbarWidth":"thin",
-                      "display":"block",
-                      "scrollbarColor":  "rgb(173, 173, 173) #fff",
-                      width:8
+                    "&::-webkit-scrollbar": {
+                      scrollbarWidth: "thin",
+                      display: "block",
+                      scrollbarColor: "rgb(173, 173, 173) #fff",
+                      width: 8,
                     },
-                    "&::-webkit-scrollbar-thumb":{
-                      background:"rgb(173, 173, 173)",
-                      borderRadius:"30px"
-                    }
-                   })
+                    "&::-webkit-scrollbar-thumb": {
+                      background: "rgb(173, 173, 173)",
+                      borderRadius: "30px",
+                    },
+                  }),
                 }}
               />
             </div>
@@ -169,10 +175,12 @@ export const ARDashboardPage: React.FC = () => {
               </label>
               <Select
                 options={options2}
-                value={comissionValueData.find(
-                  (option) => option.value === selectedOption3
+                value={options2.find(
+                  (option) => option.value === filters.report_type
                 )}
-                onChange={handleSelectChange3}
+                onChange={(value) =>
+                  handleChange("sale_partner", value?.value!)
+                }
                 styles={{
                   control: (baseStyles, state) => ({
                     ...baseStyles,
@@ -186,7 +194,7 @@ export const ARDashboardPage: React.FC = () => {
                     height: "30px",
                     alignContent: "center",
                     backgroundColor: "#ECECEC",
-                    cursor: "pointer"
+                    cursor: "pointer",
                   }),
                   indicatorSeparator: () => ({
                     display: "none",
@@ -197,22 +205,22 @@ export const ARDashboardPage: React.FC = () => {
                   }),
                   menu: (baseStyles) => ({
                     ...baseStyles,
-                    width: "6rem",         
-                    zIndex:999
+                    width: "6rem",
+                    zIndex: 999,
                   }),
-                  menuList:(base)=>({
+                  menuList: (base) => ({
                     ...base,
-                    "&::-webkit-scrollbar":{
-                      "scrollbarWidth":"thin",
-                      "display":"block",
-                      "scrollbarColor":  "rgb(173, 173, 173) #fff",
-                      width:8
+                    "&::-webkit-scrollbar": {
+                      scrollbarWidth: "thin",
+                      display: "block",
+                      scrollbarColor: "rgb(173, 173, 173) #fff",
+                      width: 8,
                     },
-                    "&::-webkit-scrollbar-thumb":{
-                      background:"rgb(173, 173, 173)",
-                      borderRadius:"30px"
-                    }
-                   })
+                    "&::-webkit-scrollbar-thumb": {
+                      background: "rgb(173, 173, 173)",
+                      borderRadius: "30px",
+                    },
+                  }),
                 }}
               />
             </div>
@@ -257,8 +265,10 @@ export const ARDashboardPage: React.FC = () => {
               /> */}
               <Select
                 options={options3}
-                value={options3.find((option) => option.value === selectedOption4)}
-                onChange={handleSelectChange4}
+                value={options3.find(
+                  (option) => option.value === filters.sort_by
+                )}
+                onChange={(value) => handleChange("sort_by", value?.value!)}
                 styles={{
                   control: (baseStyles, state) => ({
                     ...baseStyles,
@@ -272,7 +282,7 @@ export const ARDashboardPage: React.FC = () => {
                     height: "30px",
                     alignContent: "center",
                     backgroundColor: "#ECECEC",
-                    cursor: "pointer"
+                    cursor: "pointer",
                   }),
                   indicatorSeparator: () => ({
                     display: "none",
@@ -286,41 +296,38 @@ export const ARDashboardPage: React.FC = () => {
                     width: "6rem",
                     height: "auto",
                     overflowY: "auto",
-                    zIndex:999
+                    zIndex: 999,
                   }),
-                  menuList:(base)=>({
+                  menuList: (base) => ({
                     ...base,
-                    "&::-webkit-scrollbar":{
-                      "scrollbarWidth":"thin",
-                      "display":"block",
-                      "scrollbarColor":  "rgb(173, 173, 173) #fff",
-                      width:8
+                    "&::-webkit-scrollbar": {
+                      scrollbarWidth: "thin",
+                      display: "block",
+                      scrollbarColor: "rgb(173, 173, 173) #fff",
+                      width: 8,
                     },
-                    "&::-webkit-scrollbar-thumb":{
-                      background:"rgb(173, 173, 173)",
-                      borderRadius:"30px"
-                    }
-                   })
+                    "&::-webkit-scrollbar-thumb": {
+                      background: "rgb(173, 173, 173)",
+                      borderRadius: "30px",
+                    },
+                  }),
                 }}
               />
             </div>
 
-
             <div className="rep-dash-head-input">
-              <label className="inputLabel" style={{color: "#344054" }}>
+              <label className="inputLabel" style={{ color: "#344054" }}>
                 Includes
               </label>
               <ArDropdownWithCheckboxes options={options} />
-
             </div>
-
-            
 
             <div className="Line-container">
               <div className="ar-line-graph">
                 <div
-                  className={`rep-filter-line ${active === 0 ? "rep-active-filter-line" : ""
-                    }`}
+                  className={`rep-filter-line ${
+                    active === 0 ? "rep-active-filter-line" : ""
+                  }`}
                   onClick={() => setActive(0)}
                 >
                   {active === 0 ? (
@@ -330,9 +337,10 @@ export const ARDashboardPage: React.FC = () => {
                   )}
                 </div>
                 <div
-                  className={`filter-disable ${active === 1 ? "rep-active-filter-line" : ""
-                    }`}
-                // onClick={() => setActive(1)}
+                  className={`filter-disable ${
+                    active === 1 ? "rep-active-filter-line" : ""
+                  }`}
+                  // onClick={() => setActive(1)}
                 >
                   {active === 1 ? (
                     <img src={ICONS.viewActive} alt="" />
@@ -356,7 +364,7 @@ export const ARDashboardPage: React.FC = () => {
             columns={[]}
             page_number={1}
             page_size={10}
-            fetchFunction={() => { }}
+            fetchFunction={() => {}}
           />
         )}
         <div className="" style={{ marginTop: "20px" }}>

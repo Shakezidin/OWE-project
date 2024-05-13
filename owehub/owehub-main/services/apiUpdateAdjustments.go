@@ -64,7 +64,7 @@ func HandleUpdateAdjustmentsRequest(resp http.ResponseWriter, req *http.Request)
 		return
 	}
 
-	if UpdateAdjustmentsReq.Amount <= float64(0) {
+	if (len(UpdateAdjustmentsReq.Amount) <= 0) {
 		err = fmt.Errorf("Invalid amount Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Invalid amount Not Allowed", http.StatusBadRequest, nil)
@@ -77,24 +77,8 @@ func HandleUpdateAdjustmentsRequest(resp http.ResponseWriter, req *http.Request)
 		return
 	}
 
-	// =========== default value delete after calculation ========= //
-	Customer := "default"
-	InstallerName := "FFS"
-	PartnerName := "FFS"
-	StateName := "Alaska"
-	Bl := "default"
-	SysSize := 99.99
-	Epc := 99.99
-
 	queryParameters = append(queryParameters, UpdateAdjustmentsReq.RecordId)
 	queryParameters = append(queryParameters, UpdateAdjustmentsReq.UniqueId)
-	queryParameters = append(queryParameters, Customer)
-	queryParameters = append(queryParameters, PartnerName)
-	queryParameters = append(queryParameters, InstallerName)
-	queryParameters = append(queryParameters, StateName)
-	queryParameters = append(queryParameters, SysSize)
-	queryParameters = append(queryParameters, Bl)
-	queryParameters = append(queryParameters, Epc)
 	queryParameters = append(queryParameters, date)
 	queryParameters = append(queryParameters, UpdateAdjustmentsReq.Notes)
 	queryParameters = append(queryParameters, UpdateAdjustmentsReq.Amount)

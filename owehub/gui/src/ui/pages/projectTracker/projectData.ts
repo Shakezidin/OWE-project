@@ -7,6 +7,7 @@ export const cardData = [
     iconBgColor: `#800080`,
     color: "#800080",
     icon: ICONS.salesIcon,
+    type:"contract_date"
   },
   {
     name: "NTP",
@@ -14,6 +15,7 @@ export const cardData = [
     iconBgColor: `var(--project-icon-color)`,
     icon: ICONS.ntpIcon,
     color: `var(--project-icon-color)`,
+    type:"ntp_date"
   },
   {
     name: "Installed",
@@ -21,6 +23,7 @@ export const cardData = [
     iconBgColor: `var(--project-icon-color-3)`,
     icon: ICONS.installIcon,
     color: `var(--project-icon-color-3)`,
+    type:"pv_install_completed_date"
   },
   {
     name: "Cancelled",
@@ -28,6 +31,7 @@ export const cardData = [
     iconBgColor: `var(--project-icon-color-4)`,
     icon: ICONS.cancelIcon,
     color: `var(--project-icon-color-4)`,
+    type:"cancelled_date"
   },
 ];
 export const projectDashData = [
@@ -39,6 +43,7 @@ export const projectDashData = [
     percentColor: "#14AD8A",
     curveImg: ICONS.curveGreen,
     arrow: ICONS.arrowGreen,
+    key:"SalesPeriod"
   },
   {
     ruppes: "$620,450.05",
@@ -48,6 +53,7 @@ export const projectDashData = [
     arrow: ICONS.arrowRed,
     percentColor: "#E92727",
     curveImg: ICONS.redcurveGraph,
+    key:"cancellation_period"
     // curveImg: ICONS.curveGreen,
     // arrow: ICONS.arrowGreen,
   },
@@ -59,6 +65,7 @@ export const projectDashData = [
     percentColor: "#14AD8A",
     curveImg: ICONS.curveGreen,
     arrow: ICONS.arrowGreen,
+    key:"installation_period"
   },
 ];
 export const projectStatusHeadData = [

@@ -1,22 +1,23 @@
 CREATE OR REPLACE FUNCTION update_adder_data(
+    p_unique_id CHARACTER VARYING,
     p_id INT,
-    p_unique_id               VARCHAR,
     p_date date,
     p_type_ad_mktg CHARACTER VARYING,
-    p_type1 CHARACTER VARYING,
     p_gc CHARACTER VARYING,
     p_exact_amount DOUBLE PRECISION,
+    p_type1 CHARACTER VARYING,
     p_per_kw_amt  DOUBLE PRECISION,
     p_rep_percent DOUBLE PRECISION,
     p_description text,
     p_notes text,
     p_sys_size DOUBLE PRECISION,
-    p_adder_cal DOUBLE PRECISION,
+    p_adder_calc DOUBLE PRECISION,
     OUT v_adder_data_id INT
 )
 RETURNS INT 
 AS $$
 BEGIN
+
     UPDATE adder_data
     SET 
         unique_id = p_unique_id,
@@ -30,7 +31,7 @@ BEGIN
         description = p_description,
         notes = p_notes,
         sys_size = p_sys_size,
-        adder_cal = p_adder_cal,
+        adder_cal = p_adder_calc,
         updated_at = CURRENT_TIMESTAMP
     WHERE id = p_id
     RETURNING id INTO v_adder_data_id;

@@ -73,8 +73,9 @@ const DealerOverRides: React.FC = () => {
   };
   const totalPages = Math.ceil(totalCount / itemsPerPage);
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
+ 
+
+
 
   const filter = ()=>{
     setFilterOpen(true)
@@ -85,9 +86,10 @@ const DealerOverRides: React.FC = () => {
     setEditDealer(dealerData);
     handleOpen()
   };
-  const currentPageData = dealerList?.slice(startIndex, endIndex);
+  const currentPageData = dealerList?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === dealerList?.length;
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
   const handleSort = (key:any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
@@ -97,7 +99,7 @@ const DealerOverRides: React.FC = () => {
     }
   };
 
-  if (sortKey) {
+  if (sortKey) {    
     currentPageData.sort((a:any, b:any) => {
       const aValue = a[sortKey];
       const bValue = b[sortKey];
@@ -248,8 +250,8 @@ console.log(totalPages,"daaaaaaa");
               </tr>
             </thead>
             <tbody>
-              {dealerList?.length > 0
-                ? dealerList?.map((el: any, i: any) => (
+              {currentPageData?.length > 0
+                ? currentPageData?.map((el: any, i: any) => (
                     <tr key={i}>
                     
                       <td style={{ fontWeight: "500", color: "black" }}>
@@ -307,7 +309,7 @@ console.log(totalPages,"daaaaaaa");
         <div className="page-heading-container">
       
           <p className="page-heading">
-           {currentPage} - {totalCount} of {dealerList?.length} item
+           {startIndex} - {totalCount} of {dealerList?.length} item
           </p>
       <Pagination
               currentPage={currentPage}

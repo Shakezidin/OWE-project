@@ -19,6 +19,7 @@ import (
 	"time"
 
 	arCalc "OWEApp/owehub-calc/arcalc"
+	datamgmt "OWEApp/owehub-calc/dataMgmt"
 	dlrPayCalc "OWEApp/owehub-calc/dlrpaycalc"
 	repPayCalc "OWEApp/owehub-calc/reppaycalc"
 	log "OWEApp/shared/logger"
@@ -57,6 +58,19 @@ func main() {
 		} else {
 			startServiceServer("HTTPS", false, router)
 		}
+	}
+
+	/* Load Raw data and Configurations */
+	err = datamgmt.LoadConfigurations()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get config from DB err: %+v", err)
+		panic("Failed to load config from DB")
+	}
+
+	err = datamgmt.SaleData.LoadSaleData(nil)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get sale data from DB err: %+v", err)
+		panic("Failed to load sale data from DB")
 	}
 
 	/* Perform Initial AR Calcualtion*/

@@ -39,6 +39,7 @@ type SaleDataStruct struct {
 	PvInstallCompletedDate time.Time
 	PtoDate                time.Time
 	ProjectStatus          string
+	SystemType             string
 }
 
 type SaleDataList struct {
@@ -49,7 +50,7 @@ var (
 	SaleData SaleDataList
 )
 
-func (saleDataList *SaleDataList) LoadSaleData() (err error) {
+func (saleDataList *SaleDataList) LoadSaleData(uniqueIDs []string) (err error) {
 	var (
 		query    string
 		dataList []map[string]interface{}
@@ -58,6 +59,17 @@ func (saleDataList *SaleDataList) LoadSaleData() (err error) {
 	log.EnterFn(0, "LoadSaleData")
 	defer func() { log.ExitFn(0, "LoadSaleData", err) }()
 	query = "SELECT * from " + db.ViewName_ConsolidatedDataView
+	if (uniqueIDs != nil) && (len(uniqueIDs) > 0) {
+		query += "WHERE unique_id IN ("
+		for i, id := range uniqueIDs {
+			if i != 0 {
+				query += ","
+			}
+			query += "'" + id + "'"
+		}
+		query += ")"
+	}
+
 	dataList, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
 	if err != nil || len(dataList) == 0 {
 		log.FuncErrorTrace(0, "Failed to Sale Data from DB err: %+v", err)
@@ -66,79 +78,92 @@ func (saleDataList *SaleDataList) LoadSaleData() (err error) {
 	}
 	log.FuncInfoTrace(0, "Reterived raw data frm DB Count: %+v", len(dataList))
 
+	/* Clean the sale Data List before updating new data */
+	saleDataList.SaleDataList = saleDataList.SaleDataList[:0]
 	for _, data := range dataList {
 		var saleData SaleDataStruct
 
-		if _, ok := data["unique_id"]; ok {
-			saleData.UniqueId = data["unique_id"].(string)
+		if uniqueId, ok := data["unique_id"]; (ok) && (uniqueId != nil) {
+			saleData.UniqueId = uniqueId.(string)
 		} else {
 			log.ConfWarnTrace(0, "No UniqueId for found in Sale Data")
 			continue
 		}
 
-		if _, ok := data["dealer"]; ok {
-			saleData.Dealer = data["dealer"].(string)
+		if dealer, ok := data["dealer"]; (ok) && (dealer != nil) {
+			saleData.Dealer = dealer.(string)
 		} else {
 			saleData.Dealer = ""
 		}
-		if _, ok := data["partner"]; ok {
-			saleData.Partner = data["partner"].(string)
+
+		if partner, ok := data["partner"]; (ok) && (partner != nil) {
+			saleData.Partner = partner.(string)
 		} else {
 			saleData.Partner = ""
 		}
-		if _, ok := data["installer"]; ok {
-			saleData.Installer = data["installer"].(string)
+
+		if installer, ok := data["installer"]; (ok) && (installer != nil) {
+			saleData.Installer = installer.(string)
 		} else {
 			saleData.Installer = ""
 		}
-		if _, ok := data["source"]; ok {
-			saleData.Source = data["source"].(string)
+
+		if source, ok := data["source"]; (ok) && (source != nil) {
+			saleData.Source = source.(string)
 		} else {
 			saleData.Source = ""
 		}
-		if _, ok := data["loan_type"]; ok {
-			saleData.LoanType = data["loan_type"].(string)
+
+		if loanType, ok := data["loan_type"]; (ok) && (loanType != nil) {
+			saleData.LoanType = loanType.(string)
 		} else {
 			saleData.LoanType = ""
 		}
-		if _, ok := data["home_owner"]; ok {
-			saleData.HomeOwner = data["home_owner"].(string)
+
+		if homeOwner, ok := data["home_owner"]; (ok) && (homeOwner != nil) {
+			saleData.HomeOwner = homeOwner.(string)
 		} else {
 			saleData.HomeOwner = ""
 		}
-		if _, ok := data["address"]; ok {
-			saleData.Address = data["address"].(string)
+
+		if address, ok := data["address"]; (ok) && (address != nil) {
+			saleData.Address = address.(string)
 		} else {
 			saleData.Address = ""
 		}
-		if _, ok := data["state"]; ok {
-			saleData.State = data["state"].(string)
+
+		if state, ok := data["state"]; (ok) && (state != nil) {
+			saleData.State = state.(string)
 		} else {
 			saleData.State = ""
 		}
-		if _, ok := data["primary_sales_rep"]; ok {
-			saleData.PrimarySalesRep = data["primary_sales_rep"].(string)
+
+		if primarySalerRep, ok := data["primary_sales_rep"]; (ok) && (primarySalerRep != nil) {
+			saleData.PrimarySalesRep = primarySalerRep.(string)
 		} else {
 			saleData.PrimarySalesRep = ""
 		}
-		if _, ok := data["secondary_sales_rep"]; ok {
-			saleData.SecondarySalesRep = data["secondary_sales_rep"].(string)
+
+		if secondarySalesRep, ok := data["secondary_sales_rep"]; (ok) && (secondarySalesRep != nil) {
+			saleData.SecondarySalesRep = secondarySalesRep.(string)
 		} else {
 			saleData.SecondarySalesRep = ""
 		}
-		if _, ok := data["system_size"]; ok {
-			saleData.SystemSize = data["system_size"].(float64)
+
+		if systemSize, ok := data["system_size"]; (ok) && (systemSize != nil) {
+			saleData.SystemSize = systemSize.(float64)
 		} else {
 			saleData.SystemSize = 0.0
 		}
-		if _, ok := data["contract_total"]; ok {
-			saleData.ContractTotal = data["contract_total"].(float64)
+
+		if contractTotal, ok := data["contract_total"]; (ok) && (contractTotal != nil) {
+			saleData.ContractTotal = contractTotal.(float64)
 		} else {
 			saleData.ContractTotal = 0.0
 		}
 
-		if _, ok := data["net_epc"]; ok {
-			saleData.NetEpc = data["net_epc"].(float64)
+		if netEpc, ok := data["net_epc"]; (ok) && (netEpc != nil) {
+			saleData.NetEpc = netEpc.(float64)
 		} else {
 			saleData.NetEpc = 0.0
 		}
@@ -159,14 +184,14 @@ func (saleDataList *SaleDataList) LoadSaleData() (err error) {
 			saleData.IcApprovedDate = icApprovedDate.(time.Time)
 		}
 
-		if _, ok := data["project_status"]; ok {
-			saleData.ProjectStatus = data["project_status"].(string)
+		if projectStatus, ok := data["project_status"]; (ok) && (projectStatus != nil) {
+			saleData.ProjectStatus = projectStatus.(string)
 		} else {
 			saleData.ProjectStatus = ""
 		}
 
 		if WC1, ok := data["wc_1"]; ok && WC1 != nil {
-			WC1 = WC1.(time.Duration)
+			saleData.WC1 = WC1.(time.Time)
 		} else {
 			log.FuncWarnTrace(0, "Empty value received in WC1 for Unique Id: %v", saleData.UniqueId)
 		}
@@ -195,8 +220,29 @@ func (saleDataList *SaleDataList) LoadSaleData() (err error) {
 			log.FuncWarnTrace(0, "Empty value received in ptoDate for Unique Id: %v", saleData.UniqueId)
 		}
 
+		saleData.SystemType = determineSystemType(saleData.SystemSize, saleData.State)
 		saleDataList.SaleDataList = append(saleDataList.SaleDataList, saleData)
 	}
-
 	return err
+}
+
+func determineSystemType(sysSize float64, state string) string {
+	var (
+		err error
+	)
+
+	log.EnterFn(0, "determineSystemType")
+	defer func() { log.ExitFn(0, "determineSystemType", err) }()
+
+	if sysSize < 3 {
+		if state == "CA" {
+			return "SM-CA2"
+		}
+		return "SM-UNI2"
+	} else if sysSize < 4 {
+		if state != "CA" {
+			return "SM-UNI3"
+		}
+	}
+	return "N//A"
 }
