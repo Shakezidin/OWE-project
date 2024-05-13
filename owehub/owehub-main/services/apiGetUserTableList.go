@@ -1,7 +1,7 @@
 /**************************************************************************
-* File			: apiGetDbTables.go
-* DESCRIPTION	: This file contains functions to get db tables
-* DATE			: 5-May-2024
+* File			: apiGetUserTableList.go
+* DESCRIPTION	: This file contains functions to get user table list
+* DATE			: 13-May-2024
 **************************************************************************/
 
 package services
@@ -15,8 +15,8 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:		HandleGetTableRequest
- * DESCRIPTION:     handler to get db tables
+ * FUNCTION:		HandleGetUserTableListRequest
+ * DESCRIPTION:     handler to get user table list
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
@@ -30,8 +30,8 @@ func HandleGetUserTableListRequest(resp http.ResponseWriter, req *http.Request) 
 		query        string
 	)
 
-	log.EnterFn(0, "HandleGetUserMgmtOnboardingDataRequest")
-	defer func() { log.ExitFn(0, "HandleGetUserMgmtOnboardingDataRequest", err) }()
+	log.EnterFn(0, "HandleGetUserTableListRequest")
+	defer func() { log.ExitFn(0, "HandleGetUserTableListRequest", err) }()
 
 	emailId := req.Context().Value("emailid").(string)
 
@@ -40,8 +40,8 @@ func HandleGetUserTableListRequest(resp http.ResponseWriter, req *http.Request) 
 	whereEleList = append(whereEleList, emailId)
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get UserMgmt Onboarding data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get UserMgmt Onboarding data from DB", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get User table list data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get User table list data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -61,6 +61,6 @@ func HandleGetUserTableListRequest(resp http.ResponseWriter, req *http.Request) 
 		tableList.DbTables = append(tableList.DbTables, table)
 	}
 	// Send the response
-	log.FuncInfoTrace(0, "Number of UserMgmt Onboarding List fetched : %v list %+v", len(tableList.DbTables), tableList)
-	FormAndSendHttpResp(resp, "Data base tables", http.StatusOK, tableList)
+	log.FuncInfoTrace(0, "Number of User table List fetched : %v list %+v", len(tableList.DbTables), tableList)
+	FormAndSendHttpResp(resp, "User table list", http.StatusOK, tableList)
 }
