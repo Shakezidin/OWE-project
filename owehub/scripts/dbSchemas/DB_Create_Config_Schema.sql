@@ -893,6 +893,20 @@ CREATE TABLE reconcile (
     PRIMARY KEY (id)
 );
  
+CREATE TABLE adder_data_cfg_schema (
+    id serial NOT NULL,
+    adder_name character varying,
+    status character varying,
+    adder_type text,
+    price_type character varying,
+    price float,
+    rep_commission character varying,
+    rep_commission_type character varying,
+    details text,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
+    PRIMARY KEY (id)
+);
 
 /*
 CREATE TABLE AR_Schedule (

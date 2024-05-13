@@ -1104,6 +1104,20 @@ var apiRoutes = ApiRoutes{
 		false,
 		[]types.UserGroup{types.GroupEveryOne},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_adder_data_cfg_schema",
+		apiHandler.HandleGetAdderDataConfigRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	// {
+	// 	strings.ToUpper("POST"),
+	// 	"/owe-commisions-service/v1/get_finance_metrics_schema",
+	// 	apiHandler.HandleGetFinanceMetricsShemaDataRequest,
+	// 	true,
+	// 	[]types.UserGroup{types.GroupAdmin},
+	// },
 }
 
 /******************************************************************************
