@@ -10,6 +10,7 @@ import (
 	db "OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	"fmt"
+	"strings"
 )
 
 type AutoAdder struct {
@@ -39,18 +40,54 @@ var (
  * DESCRIPTION:     calculates the addrAuto value based on the provided data
  * RETURNS:         addrAuto
  *****************************************************************************/
-func (AutoAdderCfg *AutoAdderCfgStruct) CalculateAddrAuto(dealer string, uniqueId string) (addrAuto float64) {
+func (AutoAdderCfg *AutoAdderCfgStruct) CalculateAddrAuto(dealer string, uniqueId string, systemType string) (addrAuto float64) {
 	log.EnterFn(0, "CalculateAddrAuto")
 	defer func() { log.ExitFn(0, "CalculateAddrAuto", nil) }()
 
-	if len(dealer) > 0 {
-		for _, data := range AutoAdderCfg.AutoAdderList {
-			if data.UniqueId == uniqueId {
-				addrAuto += data.ExactAmt
+	/* 	Autoadder is reterived from sale data,
+	So there is no chance that unique_id repeat in autoadder */
+	excatAmt := calculateExactAmount(uniqueId, systemType)
+	addrAuto = excatAmt
+
+	/*
+		if len(dealer) > 0 {
+			for _, data := range AutoAdderCfg.AutoAdderList {
+				if data.UniqueId == uniqueId {
+					excatAmt := calculateExactAmount(uniqueId, systemType)
+					addrAuto += excatAmt
+				}
 			}
 		}
-	}
+	*/
 	return addrAuto
+}
+
+/******************************************************************************
+ * FUNCTION:        calculateExactAmount
+ * DESCRIPTION:     calculates the Excat Amount value based on the provided data
+ * RETURNS:         excatAmount
+ *****************************************************************************/
+func calculateExactAmount(uniqueId string, systemType string) (excatAmt float64) {
+
+	log.EnterFn(0, "calculateExactAmount")
+	defer func() { log.ExitFn(0, "calculateExactAmount", nil) }()
+
+	if len(uniqueId) <= 0 {
+		return 0.0
+	}
+
+	if len(systemType) >= 2 && strings.ToUpper(systemType[:2]) == "MK" {
+		return 0.0
+	}
+
+	switch systemType {
+	case "SM-UNI2":
+		return 1200
+	case "SM-UNI3", "SM-CA2":
+		return 600
+	default:
+		return 0.0
+	}
 }
 
 func (AutoAdderCfg *AutoAdderCfgStruct) LoadAutoAdderCfg() (err error) {

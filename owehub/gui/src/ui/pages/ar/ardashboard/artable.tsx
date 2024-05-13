@@ -150,7 +150,7 @@ const ArDashBoardTable = () => {
       isCheckbox: false,
     },
     { name: "rl", displayName: "City", type: "number", isCheckbox: false },
-    { name: "rate", displayName: "ST", type: "number", isCheckbox: false },
+    { name: "rate", displayName: "State", type: "number", isCheckbox: false },
     { name: "start_date", displayName: "ZIP", type: "date", isCheckbox: false },
     { name: "end_date", displayName: "KW", type: "date", isCheckbox: false },
 

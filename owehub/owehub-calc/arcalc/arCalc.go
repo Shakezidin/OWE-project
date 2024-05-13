@@ -29,38 +29,6 @@ func ExecArInitialCalculation(resultChan chan string) {
 	log.EnterFn(0, "ExecArInitialCalculation")
 	defer func() { log.ExitFn(0, "ExecArInitialCalculation", err) }()
 
-	/* Feth Config from DB */
-	err = dataMgmt.ArCfgData.LoadARCfg()
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get AR Config from DB err: %+v", err)
-		resultChan <- "FAILURE"
-		return
-	}
-	err = dataMgmt.ArSkdConfig.LoadArSkdCfg()
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get AR Skd Config from DB err: %+v", err)
-		resultChan <- "FAILURE"
-		return
-	}
-	err = dataMgmt.AdderDataCfg.LoadAdderDataCfg()
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get Adder Data Config from DB err: %+v", err)
-		resultChan <- "FAILURE"
-		return
-	}
-	err = dataMgmt.AdjustmentsConfig.LoadAdjustmentsCfg()
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get Adjustments Config from DB err: %+v", err)
-		resultChan <- "FAILURE"
-		return
-	}
-	/* Fetch Sale Data for Calculation From DB */
-	err = dataMgmt.SaleData.LoadSaleData()
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get sale data from DB err: %+v", err)
-		resultChan <- "FAILURE"
-		return
-	}
 	for _, saleData := range dataMgmt.SaleData.SaleDataList {
 		var arData map[string]interface{}
 		arData, err = CalculateARProject(saleData)
@@ -75,7 +43,7 @@ func ExecArInitialCalculation(resultChan chan string) {
 		}
 	}
 	/* Update Calculated and Fetched data AR.Data Table */
-	err = db.AddMultipleRecordInDB(db.RowDataDBIndex, db.TableName_SalesArCalc, arDataList)
+	err = db.AddMultipleRecordInDB(db.OweHubDbIndex, db.TableName_SalesArCalc, arDataList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to insert initial AR Data in DB err: %v", err)
 	}
@@ -93,10 +61,10 @@ func CalculateARProject(saleData dataMgmt.SaleDataStruct) (outData map[string]in
 		contractCalc float64
 		epcCalc      float64
 		grossRev     float64
-		redLine      string
-		permitPayM1  string
-		installPayM2 string
-		permitMax    string
+		redLine      float64
+		permitPayM1  float64
+		installPayM2 float64
+		permitMax    float64
 		addrPtr      float64
 		addrAuto     float64
 		loanFee      float64
@@ -145,7 +113,7 @@ func CalculateARProject(saleData dataMgmt.SaleDataStruct) (outData map[string]in
 	epcCalc = common.CalculateEPCCalc(contractCalc, saleData.WC1, saleData.NetEpc, saleData.SystemSize)
 	grossRev = CalculateGrossRev(epcCalc, redLine, saleData.SystemSize)
 	addrPtr = dataMgmt.AdderDataCfg.CalculateAddrPtr(saleData.Dealer, saleData.UniqueId)
-	addrAuto = dataMgmt.AutoAdderCfg.CalculateAddrAuto(saleData.Dealer, saleData.UniqueId)
+	addrAuto = dataMgmt.AutoAdderCfg.CalculateAddrAuto(saleData.Dealer, saleData.UniqueId, saleData.SystemType)
 	loanFee = dataMgmt.LoanFeeAdderCfg.CalculateLoanFee(saleData.Dealer, saleData.UniqueId)
 	adjust = dataMgmt.AdjustmentsConfig.CalculateAdjust(saleData.Dealer, saleData.UniqueId)
 	netRev = CalculateNetRev(grossRev, addrPtr, addrAuto, loanFee, adjust)
@@ -203,16 +171,15 @@ func CalculateOweAR(contractCalc float64, loanFee float64) float64 {
  * DESCRIPTION:     calculates the "gross_rev" value based on the provided data
  * RETURNS:        	gross revenue
  *****************************************************************************/
-func CalculateGrossRev(epcCalc float64, redLine string, systemSize float64) float64 {
+func CalculateGrossRev(epcCalc float64, redLine float64, systemSize float64) float64 {
 
 	log.EnterFn(0, "CalculateGrossRev")
 	defer func() { log.ExitFn(0, "CalculateGrossRev", nil) }()
 
 	if epcCalc > 0.0 {
-		redLineAmount := common.StrToFloat(redLine)
-		if redLineAmount != nil {
+		if redLine > 0.0 {
 			/* Calculate gross_rev */
-			return (epcCalc - *redLineAmount) * 1000 * systemSize
+			return (epcCalc - redLine) * 1000 * systemSize
 		}
 	}
 	/* Return 0 if EPC Calc is empty or cannot be parsed */
@@ -239,7 +206,7 @@ func CalculateNetRev(grossRev, addrPtr, autoAddr, loanFee, adjust float64) float
  * DESCRIPTION:     calculates the "permit_pay" value based on the provided data
  * RETURNS:        permit pay
  *****************************************************************************/
-func CalculatePermitPay(status string, grossRev, netRev float64, permitPayM1, permitMax string) (permitPay float64) {
+func CalculatePermitPay(status string, grossRev, netRev float64, permitPayM1 float64, permitMax float64) (permitPay float64) {
 	log.EnterFn(0, "CalculatePermitPay")
 	defer func() { log.ExitFn(0, "CalculatePermitPay", nil) }()
 
@@ -248,13 +215,11 @@ func CalculatePermitPay(status string, grossRev, netRev float64, permitPayM1, pe
 		return permitPay
 	}
 	if grossRev > 0.0 {
-		permitPayM1Amt := common.StrToFloat(permitPayM1)
-		permitMaxAmt := common.StrToFloat(permitMax)
-		if (permitPayM1Amt != nil) && (permitMaxAmt != nil) {
-			if netRev*(*permitPayM1Amt) > *permitMaxAmt {
-				permitPay = common.Round(*permitMaxAmt, 2)
+		if (permitPayM1 > 0.0) && (permitMax > 0.0) {
+			if netRev*(permitPayM1) > permitMax {
+				permitPay = common.Round(permitMax, 2)
 			} else {
-				permitPay = common.Round(netRev*(*permitPayM1Amt), 2)
+				permitPay = common.Round(netRev*(permitPayM1), 2)
 			}
 		}
 	}

@@ -114,8 +114,8 @@ const Adjustments  = () => {
 
   const handleArchiveClick = async (record_id: number[]) => {
     const confirmed = await showAlert(
-      "Are Your Sure",
-      "This Action will archive your data",
+      "Archive",
+      "Are you sure do you want to archive",
       "Yes",
       "No"
     );
@@ -255,7 +255,7 @@ const Adjustments  = () => {
                   <td> {item.epc} </td>
                   <td> {item.date && format(new Date(item.date),"yyyy-MM-dd")} </td>
                   <td>{item.amount }</td>
-                  <td>{item.notes }</td>
+                  <td>{item.notes.length>40?item.notes.slice(0,40)+"...":item.notes }</td>
                   
                   <td
 
