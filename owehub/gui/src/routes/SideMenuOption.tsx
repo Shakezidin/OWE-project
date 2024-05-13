@@ -11,6 +11,10 @@ import { RiFileList3Line } from "react-icons/ri";
 import { TYPE_OF_USER } from "../resources/static_data/TypeOfUser";
 import { GrDocumentPerformance } from "react-icons/gr";
 import { AiOutlineProject } from "react-icons/ai";
+import { MdOutlineSpaceDashboard } from "react-icons/md";
+import { AiOutlineDatabase } from "react-icons/ai";
+import { AiOutlineUserSwitch } from "react-icons/ai";
+
 
 const performance = {
   performance: [
@@ -103,33 +107,24 @@ const DB = {
           path: ROUTES.DB_MANAGER_DASHBOARD,
           sidebarProps: {
             displayText: "Dashboard",
-            icon: <></>,
+            icon: <MdOutlineSpaceDashboard  size={16}
+            style={{ marginLeft: "20px" }} color="#7D7D7D" className="side-icon-db" />,
           },
         },
         {
           path: ROUTES.DB_MANAGER_DATA_TABLE,
           sidebarProps: {
             displayText: "Data",
-            icon: (
-              <div
-                style={{
-                  backgroundColor: colorConfig.childrenicon,
-                }}
-              ></div>
-            ),
+            icon: <AiOutlineDatabase  size={16}
+            style={{ marginLeft: "20px" }} color="#7D7D7D" className="side-icon-db" /> 
           },
         },
         {
           path: ROUTES.DB_MANAGER_USER_ACTIVITY,
           sidebarProps: {
             displayText: "User Activity",
-            icon: (
-              <div
-                style={{
-                  backgroundColor: colorConfig.childrenicon,
-                }}
-              ></div>
-            ),
+            icon: <AiOutlineUserSwitch  size={16}
+            style={{ marginLeft: "20px" }} color="#7D7D7D" className="side-icon-db" />,
           },
         },
       ],

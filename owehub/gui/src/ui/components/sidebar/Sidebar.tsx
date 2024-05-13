@@ -15,6 +15,7 @@ import { createSideMenuList } from "../../../routes/SideMenuOption";
 import { GrDocumentPerformance } from "react-icons/gr";
 import { AiOutlineProject } from "react-icons/ai";
 
+
 interface Child {
   path: string;
   sidebarProps: {
@@ -157,9 +158,9 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                       borderRadius: 4,
                       background:
                         toggleOpen && location.pathname === oth.path
-                          ? "rgb(235 255 244)"
+                          ? ""
                           : toggleOpen
-                          ? "#E9EEF2"
+                          ? "transparent"
                           : "transparent",
                     }}
                   >
@@ -263,9 +264,9 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                       borderRadius: 4,
                       background:
                         toggleOpen && location.pathname === oth.path
-                          ? "rgb(235 255 244)"
+                          ? ""
                           : toggleOpen
-                          ? "#E9EEF2"
+                          ? "transparent"
                           : "transparent",
                     }}
                   >
@@ -310,7 +311,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                       borderTopLeftRadius: "4px",
                       borderTopRightRadius: "4px",
                       borderLeft: "1px solid #D9D9D9",
-                      color: "#092D04",
+                      // color: "#092D04",
                     }}
                   >
                     <Link
@@ -318,14 +319,14 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                       className=""
                       style={{
                         display: "block",
-                        background: "#E1F5EA",
+                        background: "#3083E5",
                         padding: "11px 12px",
-                        color: "#23B364",
+                        color: "white",
                         width: "100%",
                         fontWeight: "500",
                         borderBottom: "1px solid #E8E8E8",
                         fontSize: "13px",
-                        borderRight: "3px solid #23B364",
+                        borderRight: "3px solid #3083E5",
                         cursor: "default",
                       }}
                     >
@@ -367,9 +368,9 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                       borderRadius: 4,
                       background:
                         toggleOpen && location.pathname === oth.path
-                          ? "rgb(235 255 244)"
+                          ? ""
                           : toggleOpen
-                          ? "#E9EEF2"
+                          ? "transparent"
                           : "transparent",
                     }}
                   >
@@ -420,14 +421,14 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                       className=""
                       style={{
                         display: "block",
-                        background: "#E1F5EA",
+                        background: "#3083E5",
                         padding: "11px 12px",
-                        color: "#23B364",
+                        color: "white",
                         width: "100%",
                         fontWeight: "500",
                         borderBottom: "1px solid #E8E8E8",
                         fontSize: "13px",
-                        borderRight: "3px solid #23B364",
+                        borderRight: "3px solid #3083E5",
                         cursor: "default",
                       }}
                     >
@@ -469,9 +470,9 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                       borderRadius: 4,
                       background:
                         toggleOpen && location.pathname === oth.path
-                          ? "rgb(235 255 244)"
+                          ? ""
                           : toggleOpen
-                          ? "#E9EEF2"
+                          ? "transparent"
                           : "transparent",
                     }}
                   >
@@ -519,14 +520,14 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                       className=""
                       style={{
                         display: "block",
-                        background: "#E1F5EA",
+                        background: "#3083E5",
                         padding: "11px 12px",
-                        color: "#23B364",
+                        color: "white",
                         width: "100%",
                         fontWeight: "500",
                         borderBottom: "1px solid #E8E8E8",
                         fontSize: "13px",
-                        borderRight: "3px solid #23B364",
+                        borderRight: "3px solid #3083E5",
                         cursor: "default",
                       }}
                     >
@@ -583,9 +584,9 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                             marginLeft: !toggleOpen ? "" : "-1px",
                             background:
                               toggleOpen && location.pathname === item.path
-                                ? "rgb(235 255 244)"
+                                ? ""
                                 : toggleOpen
-                                ? "#E9EEF2"
+                                ? "transparent"
                                 : "transparent",
                             // marginLeft: "3px",
                           }}
@@ -618,7 +619,6 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                           borderTopLeftRadius: "4px",
                           borderTopRightRadius: "4px",
                           borderLeft: "1px solid #D9D9D9",
-
                           color: "black",
                         }}
                       >
@@ -627,14 +627,14 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                           className=""
                           style={{
                             display: "block",
-                            background: "#E1F5EA",
+                            background: "#3083E5",
                             padding: "13.5px 12px",
-                            color: "#23B364",
+                            color: "white",
                             width: "100%",
                             fontWeight: "500",
                             borderBottom: "1px solid #E8E8E8",
                             fontSize: "13px",
-                            borderRight: "3px solid #23B364",
+                            borderRight: "3px solid #3083E5",
                             cursor: "default",
                           }}
                         >
@@ -695,11 +695,6 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                             }`}
                           >
                             <div
-                              className={
-                                location.pathname === accr.path
-                                  ? "ellipseee"
-                                  : "ellipsee"
-                              }
                             >
                               {accr.sidebarProps.icon}
                             </div>
@@ -774,9 +769,9 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                       borderRadius: 4,
                       background:
                         toggleOpen && location.pathname === oth.path
-                          ? "rgb(235 255 244)"
+                          ? ""
                           : toggleOpen
-                          ? "#E9EEF2"
+                          ? "transparent"
                           : "transparent",
                     }}
                   >
@@ -815,7 +810,6 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                       borderTopLeftRadius: "4px",
                       borderTopRightRadius: "4px",
                       borderLeft: "1px solid #D9D9D9",
-
                       color: "black",
                     }}
                   >
@@ -824,14 +818,14 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                       className=""
                       style={{
                         display: "block",
-                        background: "#E1F5EA",
+                        background: "#3083E5",
                         padding: "11px 12px",
-                        color: "#23B364",
+                        color: "white",
                         width: "100%",
                         fontWeight: "500",
                         borderBottom: "1px solid #E8E8E8",
                         fontSize: "13px",
-                        borderRight: "3px solid #23B364",
+                        borderRight: "3px solid #3083E5",
                         cursor: "default",
                       }}
                     >
@@ -1135,9 +1129,9 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                       marginLeft: !toggleOpen ? "" : "-1px",
                       background:
                         toggleOpen && location.pathname === oth.path
-                          ? "rgb(235 255 244)"
+                          ? ""
                           : toggleOpen
-                          ? "#E9EEF2"
+                          ? "transparent"
                           : "transparent",
                     }}
                   >
@@ -1180,14 +1174,14 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                       className=""
                       style={{
                         display: "block",
-                        background: "#E1F5EA",
+                        background: "#3083E5",
                         padding: "11px 12px",
-                        color: "#23B364",
+                        color: "white",
                         width: "100%",
                         fontWeight: "500",
                         borderBottom: "1px solid #E8E8E8",
                         fontSize: "13px",
-                        borderRight: "3px solid #23B364",
+                        borderRight: "3px solid #3083E5",
                         cursor: "default",
                       }}
                     >
@@ -1239,9 +1233,9 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                       marginLeft: !toggleOpen ? "" : "-1px",
                       background:
                         toggleOpen && location.pathname === oth.path
-                          ? "rgb(235 255 244)"
+                          ? ""
                           : toggleOpen
-                          ? "#E9EEF2"
+                          ? "transparent"
                           : "transparent",
                     }}
                   >
@@ -1284,14 +1278,14 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                       className=""
                       style={{
                         display: "block",
-                        background: "#E1F5EA",
+                        background: "#3083E5",
                         padding: "11px 12px",
-                        color: "#23B364",
+                        color: "white",
                         width: "100%",
                         fontWeight: "500",
                         borderBottom: "1px solid #E8E8E8",
                         fontSize: "13px",
-                        borderRight: "3px solid #23B364",
+                        borderRight: "3px solid #3083E5",
                         cursor: "default",
                       }}
                     >
