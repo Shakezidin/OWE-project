@@ -1106,18 +1106,18 @@ var apiRoutes = ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/get_adder_data_cfg_schema",
-		apiHandler.HandleGetAdderDataConfigRequest,
+		"/owe-commisions-service/v1/db_user_table_list",
+		apiHandler.HandleGetUserTableListRequest,
 		true,
 		[]types.UserGroup{types.GroupAdmin},
 	},
-	// {
-	// 	strings.ToUpper("POST"),
-	// 	"/owe-commisions-service/v1/get_finance_metrics_schema",
-	// 	apiHandler.HandleGetFinanceMetricsShemaDataRequest,
-	// 	true,
-	// 	[]types.UserGroup{types.GroupAdmin},
-	// },
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_any_table_data",
+		apiHandler.HandleGetAnyTableDataRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
 }
 
 /******************************************************************************

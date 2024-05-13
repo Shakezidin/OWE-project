@@ -71,6 +71,7 @@ CREATE TABLE IF NOT EXISTS user_details(
     city VARCHAR(50),
     zipcode INT,
     country VARCHAR(50),
+    tables_permissions jsonb,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     FOREIGN KEY (reporting_manager) REFERENCES user_details(user_id) ON DELETE SET NULL,

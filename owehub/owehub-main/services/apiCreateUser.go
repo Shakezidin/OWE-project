@@ -81,10 +81,17 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	//createUserReq.Zipcode = ""
 	//createUserReq.Country = ""
 
+	tablesPermissionsJSON, err := json.Marshal(createUserReq.TablesPermissions)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to create user, marshall error: %v", err)
+		FormAndSendHttpResp(resp, "Failed to create user", http.StatusInternalServerError, nil)
+		return
+	}
+
 	hashedPassBytes, err := GenerateHashPassword(createUserReq.Password)
 	if err != nil || hashedPassBytes == nil {
 		log.FuncErrorTrace(0, "Failed to hash the password err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to process the password", http.StatusInternalServerError, nil)
+		FormAndSendHttpResp(resp, "Failed to process the password", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -142,6 +149,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	queryParameters = append(queryParameters, createUserReq.City)
 	queryParameters = append(queryParameters, createUserReq.Zipcode)
 	queryParameters = append(queryParameters, createUserReq.Country)
+	queryParameters = append(queryParameters, tablesPermissionsJSON)
 
 	_, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateUserFunction, queryParameters)
 	if err != nil {

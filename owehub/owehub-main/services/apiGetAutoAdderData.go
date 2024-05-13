@@ -21,7 +21,7 @@ import (
 
 /******************************************************************************
  * FUNCTION:		HandleGetAutoAdderDataRequest
- * DESCRIPTION:     handler for get AutoAdder data redatequest
+ * DESCRIPTION:     handler for get AutoAdder data request
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/

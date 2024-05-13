@@ -82,6 +82,13 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	tablesPermissionsJSON, err := json.Marshal(updateUserReq.TablesPermissions)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to create user, marshall error: %v", err)
+		FormAndSendHttpResp(resp, "Failed to create user", http.StatusInternalServerError, nil)
+		return
+	}
+
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, updateUserReq.Name)
 	//queryParameters = append(queryParameters, updateUserReq.MobileNumber)
@@ -99,6 +106,7 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	//queryParameters = append(queryParameters, updateUserReq.City)
 	//queryParameters = append(queryParameters, updateUserReq.Zipcode)
 	//queryParameters = append(queryParameters, updateUserReq.Country)
+	queryParameters = append(queryParameters, tablesPermissionsJSON)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateUserFunction, queryParameters)
