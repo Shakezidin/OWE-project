@@ -26,7 +26,7 @@ import (
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
-func HandleGetProjectManagementRequest(resp http.ResponseWriter, req *http.Request) {
+func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err              error
 		dataReq          models.ProjectStatusReq
@@ -36,6 +36,7 @@ func HandleGetProjectManagementRequest(resp http.ResponseWriter, req *http.Reque
 		filter           string
 		rgnSalesMgrCheck bool
 		SaleRepList      []interface{}
+		role             string
 	)
 
 	log.EnterFn(0, "HandleGetProjectManagementRequest")
@@ -66,11 +67,11 @@ func HandleGetProjectManagementRequest(resp http.ResponseWriter, req *http.Reque
 	saleMetricsQuery := models.SalesMetricsRetrieveQueryFunc()
 	otherRoleQuery := models.AdminDlrSaleRepRetrieveQueryFunc()
 
-	// change table name here
-	tableName := db.TableName_sales_metrics_schema
+	tableName := db.ViewName_ConsolidatedDataView
 	dataReq.Email = req.Context().Value("emailid").(string)
+	// this error throws only if no email if received from context
 	if dataReq.Email == "" {
-		FormAndSendHttpResp(resp, "No user exist in DB", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
 		return
 	}
 	dataReq.ProjectLimit = 100
@@ -81,7 +82,7 @@ func HandleGetProjectManagementRequest(resp http.ResponseWriter, req *http.Reque
 
 	// This checks if the user is admin, sale rep or dealer
 	if len(data) > 0 {
-		role := data[0]["role_name"]
+		role = data[0]["role_name"].(string)
 		name := data[0]["name"]
 		dealerName := data[0]["dealer_name"]
 		rgnSalesMgrCheck = false
@@ -96,6 +97,7 @@ func HandleGetProjectManagementRequest(resp http.ResponseWriter, req *http.Reque
 			SaleRepList = append(SaleRepList, name)
 			dataReq.DealerName = dealerName
 			filter, whereEleList = PrepareProjectSaleRepFilters(tableName, dataReq, SaleRepList)
+		// default handles Regional Manager & Sales Manager and is entryway to below if
 		default:
 			rgnSalesMgrCheck = true
 		}
@@ -104,10 +106,10 @@ func HandleGetProjectManagementRequest(resp http.ResponseWriter, req *http.Reque
 	if rgnSalesMgrCheck {
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, allSaleRepQuery, whereEleList)
 
-		// This is thrown is there are no sale rep are available under this particular user
+		// This is thrown if no sale rep are available and also for remaining roles
 		if len(data) == 0 {
-			log.FuncErrorTrace(0, "No sale representative available under user: %v", err)
-			FormAndSendHttpResp(resp, "No sale representative available under user", http.StatusBadRequest, nil)
+			log.FuncErrorTrace(0, "No sale representative available")
+			FormAndSendHttpResp(resp, "", http.StatusBadRequest, nil)
 			return
 		}
 
@@ -126,18 +128,18 @@ func HandleGetProjectManagementRequest(resp http.ResponseWriter, req *http.Reque
 		filter, whereEleList = PrepareProjectSaleRepFilters(tableName, dataReq, SaleRepList)
 	}
 
-	if filter != "" {
+	if filter != "" || role == "Admin" {
 		queryWithFiler = saleMetricsQuery + filter
 	} else {
 		log.FuncErrorTrace(0, "No user exist with mail: %v", dataReq.Email)
-		FormAndSendHttpResp(resp, "No user exist in DB", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
 		return
 	}
 
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, queryWithFiler, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get PerfomanceProjectStatus data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get PerfomanceProjectStatus data from DB", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get ProjectManagaement data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get ProjectManagaement data from DB", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -196,18 +198,14 @@ func PrepareProjectAdminDlrFilters(tableName string, dataFilter models.ProjectSt
 
 	filtersBuilder.WriteString(" WHERE")
 
-	filtersBuilder.WriteString(" contract_date BETWEEN current_date - interval '90 days' AND current_date")
-	filtersBuilder.WriteString(" OR permit_approved_date BETWEEN current_date - interval '90 days' AND current_date")
-	filtersBuilder.WriteString(" OR pv_install_completed_date BETWEEN current_date - interval '90 days' AND current_date")
-	filtersBuilder.WriteString(" OR pto_date BETWEEN current_date - interval '90 days' AND current_date")
-	filtersBuilder.WriteString(" OR site_survey_completed_date BETWEEN current_date - interval '90 days' AND current_date")
-	filtersBuilder.WriteString(" OR install_ready_date BETWEEN current_date - interval '90 days' AND current_date")
+	filtersBuilder.WriteString(fmt.Sprintf(" unique_id = $%d", len(whereEleList)+1))
+	whereEleList = append(whereEleList, dataFilter.UniqueId)
 
 	// Check if there are filters
 	if len(dataFilter.UniqueIds) > 0 {
 
 		filtersBuilder.WriteString(" AND ")
-		filtersBuilder.WriteString(" sms.unique_id IN (")
+		filtersBuilder.WriteString(" unique_id IN (")
 
 		for i, filter := range dataFilter.UniqueIds {
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
@@ -250,25 +248,16 @@ func PrepareProjectSaleRepFilters(tableName string, dataFilter models.ProjectSta
 
 	var filtersBuilder strings.Builder
 	whereAdded := true
-
-	// today := time.Now()
-	// formattedToday := today.Format("2006-01-02")
-	// date90DaysAgo := today.AddDate(0, 0, -90)
-	// formattedDate90DaysAgo := date90DaysAgo.Format("2006-01-02")
 	filtersBuilder.WriteString(" WHERE")
 
-	filtersBuilder.WriteString(" contract_date BETWEEN current_date - interval '90 days' AND current_date")
-	filtersBuilder.WriteString(" OR permit_approved_date BETWEEN current_date - interval '90 days' AND current_date")
-	filtersBuilder.WriteString(" OR pv_install_completed_date BETWEEN current_date - interval '90 days' AND current_date")
-	filtersBuilder.WriteString(" OR pto_date BETWEEN current_date - interval '90 days' AND current_date")
-	filtersBuilder.WriteString(" OR site_survey_completed_date BETWEEN current_date - interval '90 days' AND current_date")
-	filtersBuilder.WriteString(" OR install_ready_date BETWEEN current_date - interval '90 days' AND current_date")
+	filtersBuilder.WriteString(fmt.Sprintf(" unique_id = $%d", len(whereEleList)+1))
+	whereEleList = append(whereEleList, dataFilter.UniqueId)
 
 	// Check if there are filters
 	if len(dataFilter.UniqueIds) > 0 {
 		// whereAdded = true
 		filtersBuilder.WriteString(" AND ")
-		filtersBuilder.WriteString(" sms.unique_id IN (")
+		filtersBuilder.WriteString(" unique_id IN (")
 
 		for i, filter := range dataFilter.UniqueIds {
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))

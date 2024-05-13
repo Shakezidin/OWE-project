@@ -1080,14 +1080,14 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_perfomancemetrics",
 		apiHandler.HandleGetPerfomanceSalesRequest,
-		false,
+		true,
 		[]types.UserGroup{types.GroupEveryOne},
 	},
 	{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_perfomanceprojectstatus",
 		apiHandler.HandleGetPerfomanceProjectStatusRequest,
-		false,
+		true,
 		[]types.UserGroup{types.GroupEveryOne},
 	},
 	{
@@ -1106,9 +1106,9 @@ var apiRoutes = ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
-		"/owe-commissions-service/v1/get_projectmanagement",
-		apiHandler.HandleGetProjectManagementRequest,
-		false,
+		"/owe-commissions-service/v1/get_projectmngmnt",
+		apiHandler.HandleGetProjectMngmntRequest,
+		true,
 		[]types.UserGroup{types.GroupEveryOne},
 	},
 	{
@@ -1117,6 +1117,13 @@ var apiRoutes = ApiRoutes{
 		apiHandler.HandleGetAdderDataConfigRequest,
 		true,
 		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_projectmanagementlist",
+		apiHandler.HandleGetPrjctMngmntListRequest,
+		true,
+		[]types.UserGroup{types.GroupEveryOne},
 	},
 	// {
 	// 	strings.ToUpper("POST"),

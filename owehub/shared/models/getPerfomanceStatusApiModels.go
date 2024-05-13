@@ -6,13 +6,14 @@
 
 package models
 
-type EmptyReq struct {}
+type EmptyReq struct{}
 
 type PerfomanceStatusReq struct {
-	Email        string 
+	Email        string
 	UniqueIds    []string
-	ProjectLimit int     
+	ProjectLimit int
 	DealerName   interface{}
+	IntervalDays string
 }
 
 type PerfomanceResponse struct {
@@ -32,10 +33,12 @@ type PerfomanceListResponse struct {
 // shift the below struct to project
 
 type ProjectStatusReq struct {
-	Email        string  
-	UniqueIds    []string 
+	Email        string
+	UniqueId     string `json:"unique_id"`
+	UniqueIds    []string
 	ProjectLimit int
 	DealerName   interface{}
+	IntervalDays string
 }
 
 var ColumnToField = map[string]string{
@@ -60,4 +63,16 @@ type ProjectResponse struct {
 
 type ProjectListResponse struct {
 	ProjectList []ProjectResponse `json:"project_response_list"`
+}
+
+type ProjectLstResponse struct {
+	UniqueId string `json:"unqiue_id"`
+}
+
+type ProjectLstsResponse struct {
+	ProjectList []ProjectLstResponse `json:"project_response_list"`
+}
+
+var ColumnToFields = map[string]string{
+	"unique_id": "UniqueId",
 }

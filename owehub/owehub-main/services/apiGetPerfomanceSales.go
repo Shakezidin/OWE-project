@@ -24,8 +24,7 @@ import (
 ******************************************************************************/
 func HandleGetPerfomanceSalesRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err error
-		// emptyReq         models.EmptyReq
+		err              error
 		dataReq          models.GetPerfomanceReq
 		data             []map[string]interface{}
 		whereEleList     []interface{}
@@ -35,37 +34,17 @@ func HandleGetPerfomanceSalesRequest(resp http.ResponseWriter, req *http.Request
 		firstFilter      string
 		dates            []string
 		rgnSalesMgrCheck bool
+		intervalCount    string
 		SaleRepList      []interface{}
 	)
 
 	log.EnterFn(0, "HandleGetPerfomanceSalesRequest")
 	defer func() { log.ExitFn(0, "HandleGetPerfomanceSalesRequest", err) }()
 
-	// if req.Body == nil {
-	// 	err = fmt.Errorf("HTTP Request body is null in get perfomance sales request")
-	// 	log.FuncErrorTrace(0, "%v", err)
-	// 	FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
-	// 	return
-	// }
-
-	// reqBody, err := ioutil.ReadAll(req.Body)
-	// if err != nil {
-	// 	log.FuncErrorTrace(0, "Failed to read HTTP Request body from get perfomance sales request err: %v", err)
-	// 	FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
-	// 	return
-	// }
-
-	// err = json.Unmarshal(reqBody, &emptyReq)
-	// if err != nil {
-	// 	log.FuncErrorTrace(0, "Failed to unmarshal get perfomance sales request err: %v", err)
-	// 	FormAndSendHttpResp(resp, "Failed to unmarshal get perfomance sales Request body", http.StatusBadRequest, nil)
-	// 	return
-	// }
 	query = `
 	SELECT SUM(system_size) AS sales_kw, COUNT(system_size) AS sales  FROM sales_metrics_schema`
 
-	// change table name here
-	tableName := db.TableName_sales_metrics_schema
+	tableName := db.ViewName_ConsolidatedDataView
 	dataReq.Email = req.Context().Value("emailid").(string)
 	if dataReq.Email == "" {
 		FormAndSendHttpResp(resp, "No user exist in DB 1", http.StatusBadRequest, nil)
@@ -74,6 +53,7 @@ func HandleGetPerfomanceSalesRequest(resp http.ResponseWriter, req *http.Request
 
 	allSaleRepQuery := models.SalesRepRetrieveQueryFunc()
 	otherRoleQuery := models.AdminDlrSaleRepRetrieveQueryFunc()
+	intervalCount = "90" // this sets the date interval bracket to query data
 
 	whereEleList = append(whereEleList, dataReq.Email)
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, otherRoleQuery, whereEleList)
@@ -95,6 +75,7 @@ func HandleGetPerfomanceSalesRequest(resp http.ResponseWriter, req *http.Request
 			SaleRepList = append(SaleRepList, name)
 			dataReq.DealerName = dealerName
 			filter, whereEleList = PrepareSaleRepPerfFilters(tableName, dataReq, SaleRepList)
+		// this is for regional manager and sales manager
 		default:
 			rgnSalesMgrCheck = true
 		}
@@ -103,10 +84,10 @@ func HandleGetPerfomanceSalesRequest(resp http.ResponseWriter, req *http.Request
 	if rgnSalesMgrCheck {
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, allSaleRepQuery, whereEleList)
 
-		// This is thrown is there are no sale rep are available under this particular user
+		// This is thrown if no sale rep are available and for other user roles
 		if len(data) == 0 {
-			log.FuncErrorTrace(0, "No sale representative available under user: %v", err)
-			FormAndSendHttpResp(resp, "No sale representative available under user", http.StatusBadRequest, nil)
+			log.FuncErrorTrace(0, "No sale representative available %v", err)
+			FormAndSendHttpResp(resp, "No sale representative", http.StatusBadRequest, nil)
 			return
 		}
 
@@ -126,9 +107,10 @@ func HandleGetPerfomanceSalesRequest(resp http.ResponseWriter, req *http.Request
 	}
 
 	allDatas := make(map[string][]map[string]interface{}, 0)
+	whereEleList = append(whereEleList, intervalCount)
 	dates = append(dates, "contract_date", "ntp_date", "cancelled_date", "pv_install_completed_date")
 	for _, date := range dates {
-		firstFilter = PrepareDateFilters(date)
+		firstFilter = PrepareDateFilters(date, intervalCount, len(whereEleList))
 		queryWithFiler = query + firstFilter + filter
 
 		data, err = db.ReteriveFromDB(db.RowDataDBIndex, queryWithFiler, whereEleList)
@@ -170,7 +152,7 @@ func HandleGetPerfomanceSalesRequest(resp http.ResponseWriter, req *http.Request
 }
 
 /******************************************************************************
-* FUNCTION:		PreparePerfomanceFilters
+* FUNCTION:		PreparePerfomanceAdminDlrFilters
 * DESCRIPTION:     handler for secondary filter for admin and dealer
 * INPUT:			resp, req
 * RETURNS:    		void
@@ -245,7 +227,7 @@ func PrepareSaleRepPerfFilters(tableName string, dataFilter models.GetPerfomance
 * RETURNS:    		void
 ******************************************************************************/
 
-func PrepareDateFilters(columnName string) (filters string) {
+func PrepareDateFilters(columnName string, intervalCount string, whereListLength int) (filters string) {
 	log.EnterFn(0, "PrepareDateFilters")
 	defer func() { log.ExitFn(0, "PrepareDateFilters", nil) }()
 
@@ -254,13 +236,13 @@ func PrepareDateFilters(columnName string) (filters string) {
 
 	switch columnName {
 	case "contract_date":
-		filtersBuilder.WriteString(" contract_date BETWEEN current_date - interval '90 days' AND current_date")
+		filtersBuilder.WriteString(fmt.Sprintf(" contract_date BETWEEN current_date - interval '1 day' * $%d AND current_date", whereListLength))
 	case "ntp_date":
-		filtersBuilder.WriteString(" ntp_date BETWEEN current_date - interval '90 days' AND current_date")
+		filtersBuilder.WriteString(fmt.Sprintf(" ntp_date BETWEEN current_date - interval '1 day' * $%d AND current_date", whereListLength))
 	case "cancelled_date":
-		filtersBuilder.WriteString(" cancelled_date BETWEEN current_date - interval '90 days' AND current_date")
+		filtersBuilder.WriteString(fmt.Sprintf(" cancelled_date BETWEEN current_date - interval '1 day' * $%d AND current_date", whereListLength))
 	case "pv_install_completed_date":
-		filtersBuilder.WriteString(" pv_install_completed_date BETWEEN current_date - interval '90 days' AND current_date")
+		filtersBuilder.WriteString(fmt.Sprintf(" pv_install_completed_date BETWEEN current_date - interval '1 day' * $%d AND current_date", whereListLength))
 	}
 	filters = filtersBuilder.String()
 	return filters
