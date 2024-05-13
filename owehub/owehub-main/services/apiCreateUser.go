@@ -84,14 +84,14 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	tablesPermissionsJSON, err := json.Marshal(createUserReq.TablesPermissions)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to create user, marshall error: %v", err)
-		FormAndSendHttpResp(resp, "Failed to create user", http.StatusInternalServerError, nil)
+		FormAndSendHttpResp(resp, "Failed to create user", http.StatusBadRequest, nil)
 		return
 	}
 
 	hashedPassBytes, err := GenerateHashPassword(createUserReq.Password)
 	if err != nil || hashedPassBytes == nil {
 		log.FuncErrorTrace(0, "Failed to hash the password err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to process the password", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Failed to process the password", http.StatusInternalServerError, nil)
 		return
 	}
 
