@@ -8,7 +8,7 @@ import { CSVLink } from 'react-csv';
 import { ICONS } from "../../../icons/Icons";
 import TableHeader from "../../../components/tableHeader/TableHeader";
 import { fetchCommissions } from "../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice";
-
+import FilterModal from "../../../components/FilterModal/FilterModal";
 // import FilterCommission from "./FilterCommission";
 
 import CheckBox from "../../../components/chekbox/CheckBox";
@@ -67,6 +67,17 @@ const DealerCredit: React.FC = () => {
   const paginate = (pageNumber: number) => {
     dispatch(setCurrentPage(pageNumber));
   };
+
+
+  const fetchFunction = (req: any) => {
+    const pageNumber = {
+      page_number: currentPage,
+      page_size: itemsPerPage,
+      archived:viewArchived
+    };
+    dispatch(fetchCommissions({pageNumber,...req}));
+  };
+
 
 
   const goToNextPage = () => {
@@ -159,6 +170,16 @@ const DealerCredit: React.FC = () => {
                          editMode={editMode}
                          handleClose={handleClose}
                           />}
+
+{filterOPen && (
+          <FilterModal
+            handleClose={filterClose}
+            columns={DealerCreditColumn}
+            page_number={currentPage}
+            fetchFunction={fetchFunction}
+            page_size={itemsPerPage}
+          />
+        )}
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}

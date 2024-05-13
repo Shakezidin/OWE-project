@@ -74,9 +74,9 @@ const TimeLine = () => {
   };
   const totalPages = Math.ceil(totalCount / itemsPerPage);
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentPageData = timelinesla_list?.slice(startIndex, endIndex);
+  const startIndex = (currentPage - 1) * itemsPerPage+1;
+ 
+  const currentPageData = timelinesla_list?.slice();
 
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === timelinesla_list?.length;
@@ -272,8 +272,8 @@ const TimeLine = () => {
               </tr>
             </thead>
             <tbody >
-              {timelinesla_list?.length > 0
-                ? timelinesla_list?.map((el: any, i: any) => (
+              {currentPageData?.length > 0
+                ? currentPageData?.map((el: any, i: any) => (
                   <tr
                     key={i}
                     className={selectedRows.has(i) ? "selected" : ""}
@@ -334,7 +334,7 @@ const TimeLine = () => {
         <div className="page-heading-container">
 
           <p className="page-heading">
-            {currentPage} - {totalCount} of {timelinesla_list?.length} item
+            {startIndex} - {totalCount} of {timelinesla_list?.length} item
           </p>
 
           <Pagination
