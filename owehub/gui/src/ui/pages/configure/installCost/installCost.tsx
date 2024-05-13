@@ -67,7 +67,7 @@ const InstallCost = () => {
     dispatch(setCurrentPage(pageNumber));
   };
 
-  const { data: commissionList, isLoading } = useAppSelector(
+  const { data: commissionList, isLoading,dbCount } = useAppSelector(
     (state) => state.installConstSlice
   );
   const goToNextPage = () => {
@@ -77,10 +77,9 @@ const InstallCost = () => {
   const goToPrevPage = () => {
     dispatch(setCurrentPage(currentPage - 1));
   };
-  const totalPages = Math.ceil(timelinesla_list?.length / itemsPerPage);
+  const totalPages = Math.ceil(dbCount / itemsPerPage);
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
+  const startIndex = (currentPage - 1) * itemsPerPage+1;
 
   const currentPageData = timelinesla_list?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
@@ -309,7 +308,7 @@ console.log(timelinesla_list,"arrr");
         </div>
         <div className="page-heading-container">
           <p className="page-heading">
-            {currentPage} - {totalPages} of {currentPageData?.length} item
+            {startIndex} - {dbCount} of {currentPageData?.length} item
           </p>
 
           {timelinesla_list?.length > 0 ? (

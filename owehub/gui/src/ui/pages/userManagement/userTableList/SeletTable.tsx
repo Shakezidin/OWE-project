@@ -15,6 +15,7 @@ const SelectTable: React.FC<ButtonProps> = ({
   tablePermissions,
 }) => {
   // const [circleStates, setCircleStates] = useState(Array(1).fill(Array(1).fill(false)));
+  
 
   // const toggleCircle = (rowIndex, colIndex) => {
   //     const newCircleStates = [...circleStates];
@@ -60,15 +61,7 @@ const SelectTable: React.FC<ButtonProps> = ({
             <table>
               <thead>
                 <tr>
-                  <th>
-                    <div>
-                      <CheckBox
-                        checked={true}
-                        onChange={() => {}}
-                        // indeterminate={isAnyRowSelected && !isAllRowsSelected}
-                      />
-                    </div>
-                  </th>
+                 
                   <th>
                     <div className="table-header">
                       <p>Table Name</p>
@@ -93,17 +86,9 @@ const SelectTable: React.FC<ButtonProps> = ({
                 </tr>
               </thead>
               <tbody>
-                {tables.map((table) => (
+                {tables.map((table, ind) => (
                   <tr>
-                    <td>
-                      <div>
-                        <CheckBox
-                          checked={true}
-                          onChange={() => {}}
-                          // indeterminate={isAnyRowSelected && !isAllRowsSelected}
-                        />
-                      </div>
-                    </td>
+                   
                     <td style={{ fontWeight: "500", color: "black" }}>
                       {table}
                     </td>
