@@ -27,15 +27,18 @@ import (
  ******************************************************************************/
 func HandleGetAutoAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err             error
-		dataReq         models.DataRequestBody
-		data            []map[string]interface{}
-		whereEleList    []interface{}
-		query           string
-		queryWithFiler  string
-		queryForAlldata string
-		filter          string
-		RecordCount     int64
+		err                   error
+		dataReq               models.DataRequestBody
+		data                  []map[string]interface{}
+		whereEleList          []interface{}
+		query                 string
+		queryWithFiler        string
+		queryForAlldata       string
+		filter                string
+		RecordCount           int64
+		DescriptionRepVisible string
+		ExactAmount           float64
+		AdderType             string
 	)
 
 	log.EnterFn(0, "HandleGetAutoAdderDataRequest")
@@ -64,8 +67,8 @@ func HandleGetAutoAdderDataRequest(resp http.ResponseWriter, req *http.Request) 
 
 	tableName := db.TableName_auto_adder
 	query = `
-		 SELECT ad.id as record_id, ad.unique_id, ad.date, ad.type, ad.gc, ad.exact_amount, ad.per_kw_amount, ad.rep_percentage, ad.description_repvisible,
-		 ad.notes_no_repvisible, ad.adder_type FROM auto_adder ad`
+		 SELECT ad.unique_id, ad.date, ad.type, ad.gc, ad.per_kw_amount, ad.rep_percentage,
+		 ad.notes_no_repvisible FROM consolidated_data_view ad`
 
 	filter, whereEleList = PrepareAutoAdderFilters(tableName, dataReq, false)
 	if filter != "" {
@@ -82,92 +85,83 @@ func HandleGetAutoAdderDataRequest(resp http.ResponseWriter, req *http.Request) 
 	AutoAdderList := models.GetAutoAdderList{}
 
 	for _, item := range data {
-		RecordId, ok := item["record_id"].(int64)
-		if !ok {
-			log.FuncErrorTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
-			continue
-		}
 		// unique_id
 		Unique_id, ok := item["unique_id"].(string)
 		if !ok || Unique_id == "" {
-			log.FuncErrorTrace(0, "Failed to get unique_id for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get unique_id for Record ID %v. Item: %+v\n", Unique_id, item)
 			Unique_id = ""
 		}
 
 		// Date
 		Date, ok := item["date"].(time.Time)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get date for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get date for Record ID %v. Item: %+v\n", Unique_id, item)
 			Date = time.Time{}
 		}
 
 		// type
 		Type, ok := item["type"].(string)
 		if !ok || Type == "" {
-			log.FuncErrorTrace(0, "Failed to get type for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get type for Record ID %v. Item: %+v\n", Unique_id, item)
 			Type = ""
 		}
 
 		Gc, ok := item["gc"].(string)
 		if !ok || Gc == "" {
-			log.FuncErrorTrace(0, "Failed to get gc for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get gc for Record ID %v. Item: %+v\n", Unique_id, item)
 			Gc = ""
-		}
-
-		// exact_amount
-		Exact_amount, ok := item["exact_amount"].(float64)
-		if !ok || Exact_amount == 0.0 {
-			log.FuncErrorTrace(0, "Failed to get exact amount for Record ID %v. Item: %+v\n", RecordId, item)
-			Exact_amount = 0.0
 		}
 
 		// per_kw_amount
 		Per_kw_amount, ok := item["per_kw_amount"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get per_kw_amount for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get per_kw_amount for Record ID %v. Item: %+v\n", Unique_id, item)
 			Per_kw_amount = 0.0
 		}
 
 		// rep_doll_divby_per
 		RepPercentage, ok := item["rep_percentage"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get rep_doll_divby_per for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get rep_doll_divby_per for Record ID %v. Item: %+v\n", Unique_id, item)
 			RepPercentage = 0.0
-		}
-
-		// description_rep_visible
-		Description_rep_visible, ok := item["description_repvisible"].(string)
-		if !ok || Description_rep_visible == "" {
-			log.FuncErrorTrace(0, "Failed to get description rep visible value for Record ID %v. Item: %+v\n", RecordId, item)
-			Description_rep_visible = ""
 		}
 
 		// notes_not_rep_visible
 		NotesNoRepVisible, ok := item["notes_no_repvisible"].(string)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get notes_no_repvisible for Record ID %v. Item: %+v\n", RecordId, item)
+			log.FuncErrorTrace(0, "Failed to get notes_no_repvisible for Record ID %v. Item: %+v\n", Unique_id, item)
 			NotesNoRepVisible = ""
 		}
 
-		// AdderType
-		AdderType, ok := item["adder_type"].(string)
-		if !ok || AdderType == "" {
-			log.FuncErrorTrace(0, "Failed to get adder type for Record ID %v. Item: %+v\n", RecordId, item)
-			AdderType = ""
+		if !strings.HasPrefix(Type, "MK") {
+			switch Type {
+			case "SM-UNI2":
+				ExactAmount = 1200
+				DescriptionRepVisible = "Small System Size"
+			case "SM-UNI3":
+				ExactAmount = 600
+				DescriptionRepVisible = "Small System Size"
+			case "SM-CA2":
+				ExactAmount = 600
+				DescriptionRepVisible = "Small System Size"
+			}
+		} else {
+			DescriptionRepVisible = fmt.Sprintf("Marketing Fee - %s", Type[10:17])
 		}
+
+		AdderType = "Adder"
 
 		DateStr := Date.Format("2006-01-02")
 
 		AutoAdderData := models.GetAutoAdderData{
-			RecordId:              RecordId,
 			UniqueID:              Unique_id,
 			Date:                  DateStr,
 			Type:                  Type,
 			GC:                    Gc,
-			ExactAmount:           Exact_amount,
+			ExactAmount:           ExactAmount,
 			PerKWAmount:           Per_kw_amount,
 			RepPercentage:         RepPercentage,
-			DescriptionRepVisible: Description_rep_visible,
+			DescriptionRepVisible: DescriptionRepVisible,
 			NotesNoRepVisible:     NotesNoRepVisible,
 			AdderType:             AdderType,
 		}
@@ -240,23 +234,14 @@ func PrepareAutoAdderFilters(tableName string, dataFilter models.DataRequestBody
 			case "gc":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.gc) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-			case "exact_amount":
-				filtersBuilder.WriteString(fmt.Sprintf("ad.exact_amount %s $%d", operator, len(whereEleList)+1))
-				whereEleList = append(whereEleList, value)
 			case "per_kw_amount":
 				filtersBuilder.WriteString(fmt.Sprintf("ad.per_kw_amount %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "rep_percentage":
 				filtersBuilder.WriteString(fmt.Sprintf("ad.rep_percentage %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-			case "description_repvisible":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.description_repvisible) %s LOWER($%d)", operator, len(whereEleList)+1))
-				whereEleList = append(whereEleList, value)
 			case "notes_no_repvisible":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.notes_no_repvisible) %s LOWER($%d)", operator, len(whereEleList)+1))
-				whereEleList = append(whereEleList, value)
-			case "adder_type":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.adder_type) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
@@ -283,7 +268,7 @@ func PrepareAutoAdderFilters(tableName string, dataFilter models.DataRequestBody
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY ad.id, ad.unique_id, ad.date, ad.type, ad.gc, ad.exact_amount, ad.per_kw_amount, ad.rep_percentage, ad.description_repvisible, ad.notes_no_repvisible, ad.adder_type")
+		filtersBuilder.WriteString(" GROUP BY ad.unique_id, ad.date, ad.type, ad.gc, ad.per_kw_amount, ad.rep_percentage,ad.notes_no_repvisible")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {

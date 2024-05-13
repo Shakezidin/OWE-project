@@ -1,32 +1,45 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { FiChevronDown } from 'react-icons/fi';
-import './ArDropdownWithCheckboxes.css';
+import React, { useState, useEffect, useRef } from "react";
+import { FiChevronDown } from "react-icons/fi";
+import "./ArDropdownWithCheckboxes.css";
+import { useAppDispatch } from "../../../../redux/hooks";
+import {
+  handleChange as filterChange,
+  toggleAllDropdown,
+  toggleOffDropdowns
+} from "../../../../redux/apiSlice/AR/ArDataSlice";
 
 interface Option {
   label: string;
   value: string;
+  key: string;
 }
 
 interface ArDropdownWithCheckboxesProps {
   options: Option[];
 }
 
-const ArDropdownWithCheckboxes: React.FC<ArDropdownWithCheckboxesProps> = ({ options }) => {
+const ArDropdownWithCheckboxes: React.FC<ArDropdownWithCheckboxesProps> = ({
+  options,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -34,9 +47,20 @@ const ArDropdownWithCheckboxes: React.FC<ArDropdownWithCheckboxesProps> = ({ opt
     setIsOpen(!isOpen);
   };
 
-  const handleOptionChange = (option: string) => {
+  const handleOptionChange = (option: string, key: string) => {
+    console.log(key==="all");
+    
+    if (key !== "all") {
+      dispatch(
+        filterChange({ name: key, value: !selectedOptions.includes(option) })
+      );
+    } else if (key === "all" && !selectedOptions.includes("All")) {
+      dispatch(toggleAllDropdown());
+    }else{
+      dispatch(toggleOffDropdowns())
+    }
     setSelectedOptions((prevSelectedOptions) => {
-      if (option === 'All') {
+      if (option === "All") {
         if (prevSelectedOptions.length === options.length) {
           // If all options are already selected, uncheck them all
           return [];
@@ -53,7 +77,7 @@ const ArDropdownWithCheckboxes: React.FC<ArDropdownWithCheckboxesProps> = ({ opt
       }
     });
   };
-
+  console.log(selectedOptions);
   return (
     <div className="ar-dropdown-container" ref={dropdownRef}>
       <div className="ar-dropdown-toggle" onClick={toggleDropdown}>
@@ -68,7 +92,7 @@ const ArDropdownWithCheckboxes: React.FC<ArDropdownWithCheckboxesProps> = ({ opt
               <input
                 type="checkbox"
                 checked={selectedOptions.includes(option.value)}
-                onChange={() => handleOptionChange(option.value)}
+                onChange={() => handleOptionChange(option.value, option.key)}
               />
               {option.label}
             </div>

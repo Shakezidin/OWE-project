@@ -79,12 +79,6 @@ func HandleUpdateARDataRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// ======= default value delete after calculations ======== //
-	customer := "default"
-	totalPaid := 99.99
-	stateid := "Alabama"
-	partnerid := "PartnerABC"
-
 	date, err := time.Parse("2006-01-02", UpdateArReq.Date)
 	if err != nil {
 		fmt.Println("Error parsing date:", err)
@@ -97,16 +91,13 @@ func HandleUpdateARDataRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	queryParameters = append(queryParameters, UpdateArReq.RecordId)
 	queryParameters = append(queryParameters, UpdateArReq.UniqueId)
-	queryParameters = append(queryParameters, customer)
 	queryParameters = append(queryParameters, date)
 	queryParameters = append(queryParameters, UpdateArReq.Amount)
 	queryParameters = append(queryParameters, UpdateArReq.PaymentType)
 	queryParameters = append(queryParameters, UpdateArReq.Bank)
 	queryParameters = append(queryParameters, cedDate)
-	queryParameters = append(queryParameters, totalPaid)
-	queryParameters = append(queryParameters, stateid)
-	queryParameters = append(queryParameters, partnerid)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateArFunction, queryParameters)

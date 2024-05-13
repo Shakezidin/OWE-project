@@ -14,10 +14,11 @@
     min-height: unset;
     height: 30px;
     align-content: center;
-    background-color: #ececec;
+    background-color: #ffffff;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    color: #0493CE;
   }
   
   .dropdown-toggle::after {
@@ -43,7 +44,8 @@
     width: 178px;
     height: 225px;
     box-sizing: border-box;
-
+    color: #0493CE;
+    
   }
 
 
@@ -68,6 +70,8 @@
     font-weight: 500;
     font-size: 12px;
     margin-bottom: 1px;
+    color: #0493CE;
+
   }
   
   .dropdown-item input[type="checkbox"] {

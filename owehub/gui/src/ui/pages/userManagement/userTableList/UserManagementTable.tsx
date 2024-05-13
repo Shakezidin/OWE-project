@@ -49,7 +49,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   onClickMultiDelete,
 }) => {
   const dispatch = useAppDispatch();
-  const [pageSize1, setPageSize1] = useState(3); // Set your desired page size here
+  const [pageSize1, setPageSize1] = useState(10); // Set your desired page size here
   const [currentPage1, setCurrentPage1] = useState(1);
   const count = useAppSelector((state) => state.userManagement.totalCount);
   useEffect(() => {

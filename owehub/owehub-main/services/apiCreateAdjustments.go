@@ -77,26 +77,10 @@ func HandleCreateAdjustmentsRequest(resp http.ResponseWriter, req *http.Request)
 		return
 	}
 
-	// =========== default value delete after calculation ========= //
-	Customer := "default"
-	InstallerName := "FFS"
-	PartnerName := "FFS"
-	StateName := "Alaska"
-	Bl := "default"
-	SysSize := 99.99
-	Epc := 99.99
-
 	queryParameters = append(queryParameters, createAdjustmentsReq.UniqueId)
-	queryParameters = append(queryParameters, Customer)
-	queryParameters = append(queryParameters, PartnerName)
-	queryParameters = append(queryParameters, InstallerName)
-	queryParameters = append(queryParameters, StateName)
-	queryParameters = append(queryParameters, SysSize)
-	queryParameters = append(queryParameters, Bl)
-	queryParameters = append(queryParameters, Epc)
 	queryParameters = append(queryParameters, date)
-	queryParameters = append(queryParameters, createAdjustmentsReq.Notes)
 	queryParameters = append(queryParameters, createAdjustmentsReq.Amount)
+	queryParameters = append(queryParameters, createAdjustmentsReq.Notes)
 
 	// Call the database function
 

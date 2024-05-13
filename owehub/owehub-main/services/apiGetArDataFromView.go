@@ -72,46 +72,83 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 	FROM ar_data
 	WHERE 
 		CASE 
-			WHEN $1 = '-ALL-' AND $2 = '-ALL-' THEN 
+			WHEN $1 = 'ALL' AND $2 = 'ALL' THEN 
+			(SELECT 1 FROM ar_data AS ad
+				WHERE ad.balance != 0 AND
+				(ad.status IN (
+					CASE WHEN $3 THEN 'Shaky' ELSE '' END,
+					CASE WHEN $4 THEN 'Cancel' ELSE '' END,
+					CASE WHEN $5 THEN 'Sold' ELSE '' END,
+					CASE WHEN $6 THEN 'Permits' ELSE '' END,
+					CASE WHEN $7 THEN 'NTP' ELSE '' END,
+					CASE WHEN $8 THEN 'Install' ELSE '' END,
+					CASE WHEN $9 THEN 'PTO' ELSE '' END
+				))
+				LIMIT 1)
+		
+			WHEN $1 = 'ALL' AND $2 != 'ALL' THEN 
 				(SELECT 1 FROM ar_data AS ad 
 				WHERE ad.balance != 0 AND 
-				ad.status IN ('Shaky', 'Cancel', 'Sold', 'Permits', 'NTP', 'Install', 'PTO')
+				(ad.status IN (
+					CASE WHEN $3 THEN 'Shaky' ELSE '' END,
+					CASE WHEN $4 THEN 'Cancel' ELSE '' END,
+					CASE WHEN $6 THEN 'Permits' ELSE '' END,
+					CASE WHEN $7 THEN 'NTP' ELSE '' END,
+					CASE WHEN $8 THEN 'Install' ELSE '' END,
+					CASE WHEN $9 THEN 'PTO' ELSE '' END
+				)) AND ad.partner = '-ALL-'
 				LIMIT 1)
 		
-			WHEN $1 = '-ALL-' AND $2 != '-ALL-' THEN 
-				(SELECT 1 FROM ar_data AS ad 
-				WHERE ad.balance != 0 AND 
-				ad.status IN ('Shaky', 'Cancel', 'Permits', 'NTP', 'Install', 'PTO') AND ad.partner = '-ALL-'
-				LIMIT 1)
-		
-			WHEN $1 = 'current due' AND $2 = '-ALL-' THEN 
-				(SELECT 1 FROM ar_data AS ad 
-				WHERE ad.current_due > 0 AND ad.balance < 0 AND 
-				ad.status IN ('Shaky', 'Cancel', 'Permits', 'NTP', 'Install', 'PTO') 
-				LIMIT 1)
-		
-			WHEN $1 = 'current due' AND $2 != '-ALL-' THEN 
+			WHEN $1 = 'current due' AND $2 = 'ALL' THEN 
 				(SELECT 1 FROM ar_data AS ad 
 				WHERE ad.current_due > 0 AND ad.balance < 0 AND 
-				ad.status IN ('Shaky', 'Cancel', 'Permits', 'NTP', 'Install', 'PTO') AND ad.partner = '-ALL-'
+				(ad.status IN (
+					CASE WHEN $3 THEN 'Shaky' ELSE '' END,
+					CASE WHEN $4 THEN 'Cancel' ELSE '' END,
+					CASE WHEN $6 THEN 'Permits' ELSE '' END,
+					CASE WHEN $7 THEN 'NTP' ELSE '' END,
+					CASE WHEN $8 THEN 'Install' ELSE '' END,
+					CASE WHEN $9 THEN 'PTO' ELSE '' END
+				))
 				LIMIT 1)
 		
-			WHEN $1 = 'overpaid' AND $2 = '-ALL-' THEN 
+			WHEN $1 = 'current due' AND $2 != 'ALL' THEN 
+				(SELECT 1 FROM ar_data AS ad 
+				WHERE ad.current_due > 0 AND ad.balance < 0 AND 
+				(ad.status IN (
+					CASE WHEN $3 THEN 'Shaky' ELSE '' END,
+					CASE WHEN $4 THEN 'Cancel' ELSE '' END,
+					CASE WHEN $6 THEN 'Permits' ELSE '' END,
+					CASE WHEN $7 THEN 'NTP' ELSE '' END,
+					CASE WHEN $8 THEN 'Install' ELSE '' END,
+					CASE WHEN $9 THEN 'PTO' ELSE '' END
+				)) AND ad.partner = '-ALL-'
+				LIMIT 1)
+		
+			WHEN $1 = 'overpaid' AND $2 = 'ALL' THEN 
 				(SELECT 1 FROM ar_data AS ad 
 				WHERE ad.current_due < 0 AND ad.balance >= 0
 				LIMIT 1)
 		
-			WHEN $1 = 'overpaid' AND $2 != '-ALL-' THEN
+			WHEN $1 = 'overpaid' AND $2 != 'ALL' THEN
 				(SELECT 1
 				FROM ar_data AS ad
 				WHERE ad.current_due < 0 AND ad.balance >= 0 AND ad.partner = '-ALL-' 
 				LIMIT 1)
 		END IS NOT NULL
 	ORDER BY 
-		partner ASC`
+		$10 ASC`
 
 	whereEleList = append(whereEleList, dataReq.ReportType)
 	whereEleList = append(whereEleList, dataReq.SalePartner)
+	whereEleList = append(whereEleList, dataReq.Shaky)
+	whereEleList = append(whereEleList, dataReq.Cancel)
+	whereEleList = append(whereEleList, dataReq.Sold)
+	whereEleList = append(whereEleList, dataReq.Permits)
+	whereEleList = append(whereEleList, dataReq.NTP)
+	whereEleList = append(whereEleList, dataReq.Install)
+	whereEleList = append(whereEleList, dataReq.PTO)
+	whereEleList = append(whereEleList, dataReq.SortBy)
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {
