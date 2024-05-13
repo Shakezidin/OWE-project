@@ -7,8 +7,8 @@
 package models
 
 type GetPerfomanceReq struct {
-	StartDate string `json:"start_date"`
-	EndDate   string `json:"end_date"`
+	Email        string   `json:"email"`
+	DealerName   interface{}
 }
 
 type PerfomanceSales struct {

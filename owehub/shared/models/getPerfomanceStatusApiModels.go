@@ -7,8 +7,10 @@
 package models
 
 type PerfomanceStatusReq struct {
+	Email        string   `json:"email"`
 	UniqueIds    []string `json:"unique_ids"`
 	ProjectLimit int      `json:"project_limit"`
+	DealerName   interface{}
 }
 
 type PerfomanceResponse struct {
