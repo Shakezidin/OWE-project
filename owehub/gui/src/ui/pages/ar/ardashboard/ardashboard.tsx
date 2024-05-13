@@ -137,15 +137,29 @@ export const ARDashboardPage: React.FC = () => {
                     minHeight: "unset",
                     height: "30px",
                     alignContent: "center",
-                    backgroundColor: "#ECECEC",
+                    backgroundColor: "#ffffff",
                     cursor: "pointer",
                   }),
+   
                   indicatorSeparator: () => ({
                     display: "none",
                   }),
-                  option: (baseStyles) => ({
+                  dropdownIndicator: (baseStyles, state) => ({
                     ...baseStyles,
-                    fontSize: "11.9px",
+                    color: "#0493CE",
+                    "&:hover": {
+                      color: "#0493CE",
+                    },
+                  }),
+                  option: (baseStyles, state) => ({
+                    ...baseStyles,
+                    fontSize: "13px",
+                    color: state.isSelected ? "#ffffff" : "#0493CE",
+                    backgroundColor: state.isSelected ? "#0493CE" : "#ffffff",
+                  }),
+                  singleValue: (baseStyles, state) => ({
+                    ...baseStyles,
+                    color: "#0493CE",
                   }),
                   menu: (baseStyles) => ({
                     ...baseStyles,
@@ -193,15 +207,29 @@ export const ARDashboardPage: React.FC = () => {
                     minHeight: "unset",
                     height: "30px",
                     alignContent: "center",
-                    backgroundColor: "#ECECEC",
+                    backgroundColor: "#ffffff",
                     cursor: "pointer",
                   }),
+   
                   indicatorSeparator: () => ({
                     display: "none",
                   }),
-                  option: (baseStyles) => ({
+                  dropdownIndicator: (baseStyles, state) => ({
+                    ...baseStyles,
+                    color: "#0493CE",
+                    "&:hover": {
+                      color: "#0493CE",
+                    },
+                  }),
+                  option: (baseStyles, state) => ({
                     ...baseStyles,
                     fontSize: "13px",
+                    color: state.isSelected ? "#ffffff" : "#0493CE",
+                    backgroundColor: state.isSelected ? "#0493CE" : "#ffffff",
+                  }),
+                  singleValue: (baseStyles, state) => ({
+                    ...baseStyles,
+                    color: "#0493CE",
                   }),
                   menu: (baseStyles) => ({
                     ...baseStyles,
@@ -229,40 +257,6 @@ export const ARDashboardPage: React.FC = () => {
               <label className="inputLabel" style={{ color: "#344054" }}>
                 Elements
               </label>
-              {/* <Select
-                options={options3}
-                value={options3.find(
-                  (option) => option.value === selectedOption4
-                )}
-                onChange={handleSelectChange4}
-                styles={{
-                  control: (baseStyles, state) => ({
-                    ...baseStyles,
-                    fontSize: "13px",
-                    fontWeight: "500",
-                    borderRadius: ".40rem",
-                    border: "none",
-                    outline: "none",
-                    width: "6rem",
-                    minHeight: "unset",
-                    height: "30px",
-                    alignContent: "center",
-                    backgroundColor: "#ECECEC",
-                  }),
-                  indicatorSeparator: () => ({
-                    display: "none",
-                  }),
-                  option: (baseStyles) => ({
-                    ...baseStyles,
-                    fontSize: "13px",
-                  }),
-                  menu: (baseStyles) => ({
-                    ...baseStyles,
-                    width: "6rem",
-                    zIndex:999
-                  })
-                }}
-              /> */}
               <Select
                 options={options3}
                 value={options3.find(
@@ -281,15 +275,29 @@ export const ARDashboardPage: React.FC = () => {
                     minHeight: "unset",
                     height: "30px",
                     alignContent: "center",
-                    backgroundColor: "#ECECEC",
+                    backgroundColor: "#ffffff",
                     cursor: "pointer",
                   }),
+   
                   indicatorSeparator: () => ({
                     display: "none",
                   }),
-                  option: (baseStyles) => ({
+                  dropdownIndicator: (baseStyles, state) => ({
+                    ...baseStyles,
+                    color: "#0493CE",
+                    "&:hover": {
+                      color: "#0493CE",
+                    },
+                  }),
+                  option: (baseStyles, state) => ({
                     ...baseStyles,
                     fontSize: "13px",
+                    color: state.isSelected ? "#ffffff" : "#0493CE",
+                    backgroundColor: state.isSelected ? "#0493CE" : "#ffffff",
+                  }),
+                  singleValue: (baseStyles, state) => ({
+                    ...baseStyles,
+                    color: "#0493CE",
                   }),
                   menu: (baseStyles) => ({
                     ...baseStyles,
@@ -341,6 +349,7 @@ export const ARDashboardPage: React.FC = () => {
                     active === 1 ? "rep-active-filter-line" : ""
                   }`}
                   // onClick={() => setActive(1)}
+                  style={{ border: "1px solid #0493CE" }}
                 >
                   {active === 1 ? (
                     <img src={ICONS.viewActive} alt="" />
@@ -351,6 +360,7 @@ export const ARDashboardPage: React.FC = () => {
                 <div
                   className="rep-filter-line"
                   onClick={() => setFilterModal(true)}
+                  style={{ border: "1px solid #0493CE" }}
                 >
                   <img src={ICONS.FILTER} alt="" />
                 </div>
