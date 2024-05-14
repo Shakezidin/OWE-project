@@ -10,5 +10,5 @@ type CreateAdjustments struct {
 	UniqueId      string  `json:"unique_id"`
 	Date          string  `json:"date"`
 	Notes         string  `json:"notes"`
-	Amount        string `json:"amount"`
+	Amount        float64 `json:"amount"`
 }
