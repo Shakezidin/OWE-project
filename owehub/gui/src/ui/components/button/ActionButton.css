@@ -1,6 +1,5 @@
 .loginButton,
 .cancel {
-  /* height: 3rem; */
   flex-shrink: 0;
   background-color: #0493ce;
   border: none;
@@ -13,8 +12,6 @@
   cursor: pointer;
   height: 40px;
   text-transform: capitalize;
-}
-.login-cancel-width{
   width: 150px;
 }
 .loginButton:hover {

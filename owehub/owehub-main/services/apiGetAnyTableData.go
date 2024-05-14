@@ -90,7 +90,7 @@ func HandleGetAnyTableDataRequest(resp http.ResponseWriter, req *http.Request) {
 		queryWithFiler = query + filter
 	}
 
-	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryWithFiler, whereEleList)
+	data, err = db.ReteriveFromDB(db.RowDataDBIndex, queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get any table data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get any table data from DB", http.StatusBadRequest, nil)
@@ -98,7 +98,7 @@ func HandleGetAnyTableDataRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	countquery := fmt.Sprintf("SELECT COUNT(*) AS record_count FROM %s", SelectedTableName)
-	countData, err := db.ReteriveFromDB(db.OweHubDbIndex, countquery, whereEleList)
+	countData, err := db.ReteriveFromDB(db.RowDataDBIndex, countquery, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get count of table data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get count of table data from DB", http.StatusBadRequest, nil)
