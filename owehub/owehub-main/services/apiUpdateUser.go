@@ -105,7 +105,7 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		// Join selected parts with underscores
 
 		query := fmt.Sprintf("SELECT name, tables_permissions FROM user_details WHERE email_id = '%s';", updateUserReq.EmailId)
-		data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
+		data, err := db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get old username from db with err %s", err)
 			FormAndSendHttpResp(resp, "Failed to get old username from db", http.StatusInternalServerError, nil)
@@ -137,7 +137,7 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		sqlStatement := fmt.Sprintf("REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM %s; ALTER ROLE %s RENAME TO %s;", oldusername, oldusername, newusername)
 
 		// Execute the SQL statement
-		err = db.ExecQueryDB(db.OweHubDbIndex, sqlStatement)
+		err = db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to revoke privileges and drop user %s: %v", oldusername, err)
 			FormAndSendHttpResp(resp, "Failed to revoke user privilages", http.StatusInternalServerError, nil)
@@ -161,12 +161,12 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 
 			log.FuncErrorTrace(0, "sqlStatement %v", sqlStatement)
 
-			err = db.ExecQueryDB(db.OweHubDbIndex, sqlStatement)
+			err = db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
 			log.FuncErrorTrace(0, " sqlStatement err %+v", err)
 			if err != nil {
 				sqlStatement := fmt.Sprintf("ALTER ROLE %s RENAME TO %s;", newusername, oldusername)
 				// Execute the SQL statement
-				err = db.ExecQueryDB(db.OweHubDbIndex, sqlStatement)
+				err = db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
 				if err != nil {
 					log.FuncErrorTrace(0, "Failed to update new user to old user %s: %v", oldusername, err)
 					// Handle the error as needed, such as logging or returning an HTTP response
@@ -183,7 +183,7 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 
 					log.FuncErrorTrace(0, "sqlStatement %v", sqlStatement)
 
-					err = db.ExecQueryDB(db.OweHubDbIndex, sqlStatement)
+					err = db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
 					if err != nil {
 						log.FuncErrorTrace(0, "Failed to revoke privileges and drop user %s: %v", oldusername, err)
 						// Handle the error as needed, such as logging or returning an HTTP response
@@ -216,13 +216,13 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	queryParameters = append(queryParameters, tablesPermissionsJSON)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateUserFunction, queryParameters)
+	result, err = db.CallDBFunction(db.RowDataDBIndex, db.UpdateUserFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		newusername := strings.Join(strings.Fields(updateUserReq.Name)[0:2], "_")
 		oldusername := strings.Join(strings.Fields(userName)[0:2], "_")
 		sqlStatement := fmt.Sprintf("ALTER ROLE %s RENAME TO %s;", newusername, oldusername)
 		// Execute the SQL statement
-		err = db.ExecQueryDB(db.OweHubDbIndex, sqlStatement)
+		err = db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to update new user to old user %s: %v", oldusername, err)
 			// Handle the error as needed, such as logging or returning an HTTP response
@@ -239,7 +239,7 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 
 			log.FuncErrorTrace(0, "sqlStatement %v", sqlStatement)
 
-			err = db.ExecQueryDB(db.OweHubDbIndex, sqlStatement)
+			err = db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
 			if err != nil {
 				log.FuncErrorTrace(0, "Failed to revoke privileges and drop user %s: %v", oldusername, err)
 				// Handle the error as needed, such as logging or returning an HTTP response

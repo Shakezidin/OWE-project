@@ -104,7 +104,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		username := strings.Join(strings.Fields(createUserReq.Name)[0:2], "_")
 
 		sqlStatement := fmt.Sprintf("CREATE USER %s WITH LOGIN PASSWORD '%s';", username, createUserReq.Password)
-		err = db.ExecQueryDB(db.OweHubDbIndex, sqlStatement)
+		err = db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
 		log.FuncErrorTrace(0, " sqlStatement err %+v", err)
 		log.FuncErrorTrace(0, "sqlStatement %v", sqlStatement)
 		if err != nil {
@@ -126,10 +126,10 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 
 			log.FuncErrorTrace(0, "sqlStatement %v", sqlStatement)
 
-			err = db.ExecQueryDB(db.OweHubDbIndex, sqlStatement)
+			err = db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
 			log.FuncErrorTrace(0, " sqlStatement err %+v", err)
 			if err != nil {
-				dropErr := db.ExecQueryDB(db.OweHubDbIndex, fmt.Sprintf("DROP USER %s;", username))
+				dropErr := db.ExecQueryDB(db.RowDataDBIndex, fmt.Sprintf("DROP USER %s;", username))
 				if dropErr != nil {
 					log.FuncErrorTrace(0, "Failed to drop user after failed privilege grant: %v", dropErr)
 					FormAndSendHttpResp(resp, "Failed to drop user after failed privilege", http.StatusInternalServerError, nil)
@@ -162,12 +162,12 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	queryParameters = append(queryParameters, tablesPermissionsJSON)
 
 	// Call the stored procedure or function to create the user
-	_, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateUserFunction, queryParameters)
+	_, err = db.CallDBFunction(db.RowDataDBIndex, db.CreateUserFunction, queryParameters)
 	if err != nil {
 		// Join selected parts with underscores
 		username := strings.Join(strings.Fields(createUserReq.Name)[0:2], "_")
-		dropErr := db.ExecQueryDB(db.OweHubDbIndex, fmt.Sprintf("REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM %s;", username))
-		dropErr = db.ExecQueryDB(db.OweHubDbIndex, fmt.Sprintf("DROP USER %s;", username))
+		dropErr := db.ExecQueryDB(db.RowDataDBIndex, fmt.Sprintf("REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM %s;", username))
+		dropErr = db.ExecQueryDB(db.RowDataDBIndex, fmt.Sprintf("DROP USER %s;", username))
 		if dropErr != nil {
 			log.FuncErrorTrace(0, "Failed to revoke privileges and drop user %s: %v", username, dropErr)
 			// Handle the error as needed, such as logging or returning an HTTP response
