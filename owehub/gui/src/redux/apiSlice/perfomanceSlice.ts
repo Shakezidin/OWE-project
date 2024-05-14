@@ -10,16 +10,14 @@ export interface IPerfomanceSale {
 }
 
 export interface IProjectStatus {
-  record_id:                 number;
-  unqiue_id:                 string;
-  contract_date:             Date;
-  permit_approved_date:      Date;
-  insatll_completed_date:    Date;
-  pro_date:                  Date;
-  site_survey_complete_date: Date;
-  install_ready_date:        Date;
+  unqiue_id: string;
+  contract_date: string;
+  permit_approved_date: string;
+  install_completed_date: string;
+  pto_date: string;
+  site_survey_complete_date: string;
+  install_ready_date: string;
 }
-
 
 export interface ICommision {
   SalesPeriod: number;
@@ -28,12 +26,9 @@ export interface ICommision {
 }
 export const getPerfomance = createAsyncThunk(
   "get/perfomance",
-  async (
-    _,
-    { rejectWithValue }
-  ) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const data = await postCaller("get_perfomancemetrics",{});
+      const data = await postCaller("get_perfomancemetrics", {});
       if (data.status > 201) {
         return rejectWithValue((data as Error).message);
       }
@@ -57,7 +52,8 @@ export const getPerfomanceStatus = createAsyncThunk(
       if (data.status > 201) {
         return rejectWithValue((data as Error).message);
       }
-      const list = (data.data.perfomance_response_list || []) as IProjectStatus[];
+      const list = (data.data.perfomance_response_list ||
+        []) as IProjectStatus[];
       return { list, count: data.dbRecCount };
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -70,8 +66,8 @@ interface IState {
   error: string;
   isLoading: boolean;
   isSuccess: number;
-  commisionMetrics:ICommision ;
-  projectStatus:IProjectStatus[]
+  commisionMetrics: ICommision;
+  projectStatus: IProjectStatus[];
 }
 
 const initialState: IState = {
@@ -79,8 +75,8 @@ const initialState: IState = {
   error: "",
   isLoading: false,
   isSuccess: 0,
-  commisionMetrics:{} as ICommision,
-  projectStatus:[]
+  commisionMetrics: {} as ICommision,
+  projectStatus: [],
 };
 
 const perfomanceSlice = createSlice({
@@ -99,7 +95,7 @@ const perfomanceSlice = createSlice({
       .addCase(getPerfomance.fulfilled, (state, action) => {
         state.isLoading = false;
         state.perfomaceSale = action.payload.perfomaceSaleMetrics;
-        state.commisionMetrics = action.payload.perfomaceCommisionMetrics
+        state.commisionMetrics = action.payload.perfomaceCommisionMetrics;
       })
       .addCase(getPerfomance.rejected, (state, action) => {
         state.isLoading = false;
@@ -113,7 +109,6 @@ const perfomanceSlice = createSlice({
       .addCase(getPerfomanceStatus.fulfilled, (state, action) => {
         state.isLoading = false;
         state.projectStatus = action.payload.list;
-        
       })
       .addCase(getPerfomanceStatus.rejected, (state, action) => {
         state.isLoading = false;
