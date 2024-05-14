@@ -20,7 +20,7 @@ export const ActionButton = (props: ActionButtonProps) => {
   return (
     <button
     style={{color:props?.title?.toLowerCase()==="reset"?"#0493ce":""}}
-     className={props?.title?.toLowerCase()==="cancel"||props?.title?.toLowerCase()==="reset"?"cancel login-cancel-width":"loginButton login-cancel-width"}   onClick={props.onClick} type={props.type}>
+     className={props?.title?.toLowerCase()==="cancel"||props?.title?.toLowerCase()==="reset"?"cancel":"loginButton"}   onClick={props.onClick} type={props.type}>
       {props.title}
     </button>
   );
