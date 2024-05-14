@@ -1,23 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-import { ICONS } from "../../../icons/Icons";
-import TableHeader from "../../../components/tableHeader/TableHeader";
 import { fetchCommissions } from "../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import {
   toggleRowSelection,
 } from "../../../components/chekbox/checkHelper";
-import { CSVLink } from 'react-csv';
-import Pagination from "../../../components/pagination/Pagination";
-import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 import { CommissionModel } from "../../../../core/models/configuration/create/CommissionModel";
-import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
-import FilterModal from "../../../components/FilterModal/FilterModal";
-import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
-import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
-import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
-import Swal from 'sweetalert2';
 import "../../configure/configure.css";
 import HelpDashboard from "../../dashboard/HelpDashboard";
 import { BiSupport } from "react-icons/bi";
@@ -29,12 +18,7 @@ const RepDashBoardTable = () => {
   const [pageSize1, setPageSize1] = useState(10);
   const [openIcon, setOpenIcon] = useState<boolean>(false);
   const [open, setOpen] = React.useState<boolean>(false);
-  const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
-  const [exportOPen, setExportOpen] = React.useState<boolean>(false);
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-  const handleExportOpen = () => setExportOpen(!exportOPen)
-  const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   // const loading = useAppSelector((state) => state.comm.loading);
   const error = useAppSelector((state) => state.comm.error);
@@ -74,7 +58,7 @@ const RepDashBoardTable = () => {
       record_id: 1,
       partner: 'FFS',
       installer: 'John Doe',
-      state: 'California',
+      state: 'NTP',
       sale_type: 'LOAN',
       sale_price: 25000,
       rep_type: 'Sales Rep',
@@ -114,7 +98,7 @@ const RepDashBoardTable = () => {
       record_id: 2,
       partner: 'OWE',
       installer: 'Mike Johnson',
-      state: 'Arizona',
+      state: 'PTO',
       sale_type: 'CHECK',
       sale_price: 30000,
       rep_type: 'Sales Manager',
@@ -154,7 +138,7 @@ const RepDashBoardTable = () => {
       record_id: 3,
       partner: 'PALM',
       installer: 'Sarah Thompson',
-      state: 'Texas',
+      state: 'NTP',
       sale_type: 'LEASE',
       sale_price: 40000,
       rep_type: 'Sales Rep',
@@ -194,7 +178,7 @@ const RepDashBoardTable = () => {
       record_id: 4,
       partner: 'SP',
       installer: 'Robert Wilson',
-      state: 'Florida',
+      state: 'Install',
       sale_type: 'PPA',
       sale_price: 35000,
       rep_type: 'Sales Manager',
@@ -234,7 +218,7 @@ const RepDashBoardTable = () => {
       record_id: 5,
       partner: 'TSP',
       installer: 'Jessica Anderson',
-      state: 'New York',
+      state: 'PTO',
       sale_type: 'LOAN',
       sale_price: 45000,
       rep_type: 'Sales Rep',
@@ -274,7 +258,7 @@ const RepDashBoardTable = () => {
       record_id: 6,
       partner: 'FFS',
       installer: 'William Lee',
-      state: 'Colorado',
+      state: 'PTO',
       sale_type: 'CHECK',
       sale_price: 28000,
       rep_type: 'Sales Manager',
@@ -314,7 +298,7 @@ const RepDashBoardTable = () => {
       record_id: 7,
       partner: 'OWE',
       installer: 'Emma Gonzalez',
-      state: 'Washington',
+      state: 'PTO',
       sale_type: 'LEASE',
       sale_price: 32000,
       rep_type: 'Sales Rep',
@@ -354,7 +338,7 @@ const RepDashBoardTable = () => {
       record_id: 8,
       partner: 'PALM',
       installer: 'Ava White',
-      state: 'Oregon',
+      state: 'Install',
       sale_type: 'PPA',
       sale_price: 38000,
       rep_type: 'Sales Manager',
@@ -394,7 +378,7 @@ const RepDashBoardTable = () => {
       record_id: 9,
       partner: 'SP',
       installer: 'Noah Brooks',
-      state: 'Nevada',
+      state: 'PTO',
       sale_type: 'LOAN',
       sale_price: 42000,
       rep_type: 'Sales Rep',
@@ -434,7 +418,7 @@ const RepDashBoardTable = () => {
       record_id: 10,
       partner: 'TSP',
       installer: 'Charlotte Green',
-      state: 'New Mexico',
+      state: 'NTP',
       sale_type: 'CHECK',
       sale_price: 30000,
       rep_type: 'Sales Manager',
@@ -611,7 +595,7 @@ const RepDashBoardTable = () => {
                     key={i}
                     className={selectedRows.has(i) ? "selected" : ""}
                   >
-                    <td style={{ fontWeight: "500", color: "black" }}>
+                    <td style={{ fontWeight: "500" }}>
                       <div className="flex-check">
                         <CheckBox
                           checked={selectedRows.has(i)}
@@ -630,11 +614,17 @@ const RepDashBoardTable = () => {
                             }
                           }}
                         />
-                        {el.partner}
+                        <span className="zoom-out-td" >{el.partner}</span>
                       </div>
                     </td>
                     <td>{el.installer}</td>
-                    <td>{el.state}</td>
+
+                    <div className={`state-container ${el.state === 'NTP' ? 'ntp-bg ntp-width' : el.state === 'PTO' ? 'pto-bg pto-width' : 'install-bg install-width'}`}>
+                      <td className={`state-text ${el.state === 'NTP' ? 'ntp-color' : el.state === 'PTO' ? 'pto-color' : 'install-color'}`}>
+                        {el.state}
+                      </td>
+                    </div>
+
                     <td>{el.sale_type}</td>
                     <td>{el.sale_price}</td>
                     <td>{el.rep_type}</td>
@@ -662,9 +652,10 @@ const RepDashBoardTable = () => {
                     <td>{el.contr_date}</td>
                     <td>{el.state}</td>
                     <td>{el.sub_total}</td>
-                    <td style={{ height: "14px", width: "14px", stroke: "0.2", cursor: "pointer" }}>
+                    <td className="zoom-out-help" >
                       <BiSupport
                         onClick={() => handleIconOpen()}
+                        style={{height: "16px", width: "16px", stroke: "0.2"}}
                       />
                     </td>
                   </tr>

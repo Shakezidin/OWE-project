@@ -33,12 +33,11 @@
 .ar-dash-head-input{
   display: flex;
   height: 36px;
-  background-color: white;
+  background-color: #EAF2FE;
   padding: 0 3px 0 12px;
   gap: 0.5rem;
   align-items: center;
   border-radius: 8px;
-  border: 1px solid #d0d5dd;
 }
 .ar-chart-view{
   background: #ECECEC;
@@ -58,7 +57,7 @@
   display: flex;
   align-items: center;
   /* margin-top: 0.4rem; */
-  gap: 0.1rem;
+  gap: 0.5rem;
   /* align-content: center;
   justify-content: center; */
 }

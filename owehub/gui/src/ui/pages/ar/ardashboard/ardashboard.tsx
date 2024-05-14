@@ -23,7 +23,7 @@ export const ARDashboardPage: React.FC = () => {
     setFilterModal(false);
   };
   const options = [
-    { value: "All", label: "All",key: "all" },
+    { value: "All", label: "All", key: "all" },
     { value: "Shaky", label: "Shaky", key: "shaky" },
     { value: "Cancel", label: "Cancel", key: "cancel" },
     { value: "QC/Permit/NTP", label: "QC/Permit/NTP", key: "permits" },
@@ -115,15 +115,13 @@ export const ARDashboardPage: React.FC = () => {
         <div className="ar-Dashboard-container">
           <div className=""></div>
           <div className="dashboard-payroll">
-            <div className="rep-dash-head-input">
+            <div className="ar-dash-head-input">
               <label className="inputLabel" style={{ color: "#344054" }}>
                 Report Types
               </label>
               <Select
                 options={options1}
-                value={options1.find(
-                  (option) => option.value === filters.report_type
-                )}
+                value={options1.find((option) => option.value === filters.report_type)}
                 onChange={(value) => handleChange("report_type", value?.value!)}
                 styles={{
                   control: (baseStyles, state) => ({
@@ -137,15 +135,32 @@ export const ARDashboardPage: React.FC = () => {
                     minHeight: "unset",
                     height: "30px",
                     alignContent: "center",
-                    backgroundColor: "#ECECEC",
+                    backgroundColor: "#ffffff",
                     cursor: "pointer",
+                  }),
+                  placeholder: (baseStyles) => ({
+                    ...baseStyles,
+                    color: "#0493CE", // Change the placeholder color here
                   }),
                   indicatorSeparator: () => ({
                     display: "none",
                   }),
-                  option: (baseStyles) => ({
+                  dropdownIndicator: (baseStyles, state) => ({
                     ...baseStyles,
-                    fontSize: "11.9px",
+                    color: "#0493CE",
+                    "&:hover": {
+                      color: "#0493CE",
+                    },
+                  }),
+                  option: (baseStyles, state) => ({
+                    ...baseStyles,
+                    fontSize: "13px",
+                    color: state.isSelected ? "#ffffff" : "#0493CE",
+                    backgroundColor: state.isSelected ? "#0493CE" : "#ffffff",
+                  }),
+                  singleValue: (baseStyles, state) => ({
+                    ...baseStyles,
+                    color: "#0493CE",
                   }),
                   menu: (baseStyles) => ({
                     ...baseStyles,
@@ -169,7 +184,7 @@ export const ARDashboardPage: React.FC = () => {
               />
             </div>
 
-            <div className="rep-dash-head-input">
+            <div className="ar-dash-head-input">
               <label className="inputLabel" style={{ color: "#344054" }}>
                 Sales Partner
               </label>
@@ -193,15 +208,32 @@ export const ARDashboardPage: React.FC = () => {
                     minHeight: "unset",
                     height: "30px",
                     alignContent: "center",
-                    backgroundColor: "#ECECEC",
+                    backgroundColor: "#ffffff",
                     cursor: "pointer",
+                  }),
+                  placeholder: (baseStyles) => ({
+                    ...baseStyles,
+                    color: "#0493CE", // Change the placeholder color here
                   }),
                   indicatorSeparator: () => ({
                     display: "none",
                   }),
-                  option: (baseStyles) => ({
+                  dropdownIndicator: (baseStyles, state) => ({
+                    ...baseStyles,
+                    color: "#0493CE",
+                    "&:hover": {
+                      color: "#0493CE",
+                    },
+                  }),
+                  option: (baseStyles, state) => ({
                     ...baseStyles,
                     fontSize: "13px",
+                    color: state.isSelected ? "#ffffff" : "#0493CE",
+                    backgroundColor: state.isSelected ? "#0493CE" : "#ffffff",
+                  }),
+                  singleValue: (baseStyles, state) => ({
+                    ...baseStyles,
+                    color: "#0493CE",
                   }),
                   menu: (baseStyles) => ({
                     ...baseStyles,
@@ -225,44 +257,10 @@ export const ARDashboardPage: React.FC = () => {
               />
             </div>
 
-            <div className="rep-dash-head-input">
+            <div className="ar-dash-head-input">
               <label className="inputLabel" style={{ color: "#344054" }}>
                 Elements
               </label>
-              {/* <Select
-                options={options3}
-                value={options3.find(
-                  (option) => option.value === selectedOption4
-                )}
-                onChange={handleSelectChange4}
-                styles={{
-                  control: (baseStyles, state) => ({
-                    ...baseStyles,
-                    fontSize: "13px",
-                    fontWeight: "500",
-                    borderRadius: ".40rem",
-                    border: "none",
-                    outline: "none",
-                    width: "6rem",
-                    minHeight: "unset",
-                    height: "30px",
-                    alignContent: "center",
-                    backgroundColor: "#ECECEC",
-                  }),
-                  indicatorSeparator: () => ({
-                    display: "none",
-                  }),
-                  option: (baseStyles) => ({
-                    ...baseStyles,
-                    fontSize: "13px",
-                  }),
-                  menu: (baseStyles) => ({
-                    ...baseStyles,
-                    width: "6rem",
-                    zIndex:999
-                  })
-                }}
-              /> */}
               <Select
                 options={options3}
                 value={options3.find(
@@ -281,15 +279,33 @@ export const ARDashboardPage: React.FC = () => {
                     minHeight: "unset",
                     height: "30px",
                     alignContent: "center",
-                    backgroundColor: "#ECECEC",
+                    backgroundColor: "#ffffff",
                     cursor: "pointer",
                   }),
+                  placeholder: (baseStyles) => ({
+                    ...baseStyles,
+                    color: "#0493CE", // Change the placeholder color here
+                  }),
+
                   indicatorSeparator: () => ({
                     display: "none",
                   }),
-                  option: (baseStyles) => ({
+                  dropdownIndicator: (baseStyles, state) => ({
+                    ...baseStyles,
+                    color: "#0493CE",
+                    "&:hover": {
+                      color: "#0493CE",
+                    },
+                  }),
+                  option: (baseStyles, state) => ({
                     ...baseStyles,
                     fontSize: "13px",
+                    color: state.isSelected ? "#ffffff" : "#0493CE",
+                    backgroundColor: state.isSelected ? "#0493CE" : "#ffffff",
+                  }),
+                  singleValue: (baseStyles, state) => ({
+                    ...baseStyles,
+                    color: "#0493CE",
                   }),
                   menu: (baseStyles) => ({
                     ...baseStyles,
@@ -315,7 +331,7 @@ export const ARDashboardPage: React.FC = () => {
               />
             </div>
 
-            <div className="rep-dash-head-input">
+            <div className="ar-dash-head-input">
               <label className="inputLabel" style={{ color: "#344054" }}>
                 Includes
               </label>
@@ -325,9 +341,8 @@ export const ARDashboardPage: React.FC = () => {
             <div className="Line-container">
               <div className="ar-line-graph">
                 <div
-                  className={`rep-filter-line ${
-                    active === 0 ? "rep-active-filter-line" : ""
-                  }`}
+                  className={`rep-filter-line ${active === 0 ? "rep-active-filter-line" : ""
+                    }`}
                   onClick={() => setActive(0)}
                 >
                   {active === 0 ? (
@@ -337,10 +352,10 @@ export const ARDashboardPage: React.FC = () => {
                   )}
                 </div>
                 <div
-                  className={`filter-disable ${
-                    active === 1 ? "rep-active-filter-line" : ""
-                  }`}
+                  className={`filter-disable ${active === 1 ? "rep-active-filter-line" : ""
+                    }`}
                   // onClick={() => setActive(1)}
+                  style={{ border: "1px solid #0493CE" }}
                 >
                   {active === 1 ? (
                     <img src={ICONS.viewActive} alt="" />
@@ -351,6 +366,7 @@ export const ARDashboardPage: React.FC = () => {
                 <div
                   className="rep-filter-line"
                   onClick={() => setFilterModal(true)}
+                  style={{ border: "1px solid #0493CE" }}
                 >
                   <img src={ICONS.FILTER} alt="" />
                 </div>
@@ -364,7 +380,7 @@ export const ARDashboardPage: React.FC = () => {
             columns={[]}
             page_number={1}
             page_size={10}
-            fetchFunction={() => {}}
+            fetchFunction={() => { }}
           />
         )}
         <div className="" style={{ marginTop: "20px" }}>
