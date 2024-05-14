@@ -9,13 +9,16 @@ import { FaArrowDown } from "react-icons/fa6";
 import { fetchCommissions } from "../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice";
 import Pagination from "../../../components/pagination/Pagination";
 import DataTableHeader from "../../../components/tableHeader/DataTableHeader";
+import { fetchDBManagerUserActivity } from "../../../../redux/apiActions/DBManagerAction/DBManagerAction";
+import { getCurrentDateFormatted } from "../../../../utiles/formatDate";
+import { DBManagerUserActivityModel } from "../../../../core/models/api_models/DBManagerModel";
 
 
 const UserActivity: React.FC = () => {
 
   const dispatch = useAppDispatch();
-  const loading = useAppSelector((state) => state.dealer.loading);
-  const error = useAppSelector((state) => state.dealer.error);
+  const {loading, error, userActivityList } = useAppSelector((state) => state.dbManager);
+  
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
@@ -25,8 +28,10 @@ const UserActivity: React.FC = () => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
+      start_date: "2024-05-01",
+      end_date: getCurrentDateFormatted()// current date 
     };
-    dispatch(fetchCommissions(pageNumber));
+    dispatch(fetchDBManagerUserActivity(pageNumber));
 
   }, [dispatch, currentPage]);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -58,65 +63,15 @@ const UserActivity: React.FC = () => {
     return <div>Error: {error}</div>;
   }
 
-  const dataDb = [
-    {
-      uname: "Roi William",
-      dbname: "DB_Name",
-      date: "10/04/2024  3:00AM",
-      query: "Data not found in server",
-    },
-    {
-      uname: "Roi William",
-      dbname: "DB_Name",
-      date: "10/04/2024  3:00AM",
-      query: "Data not found in server",
-    },
-    {
-      uname: "Roi William",
-      dbname: "DB_Name",
-      date: "10/04/2024  3:00AM",
-      query: "Data not found in server",
-    },
-    {
-      uname: "Roi William",
-      dbname: "DB_Name",
-      date: "10/04/2024  3:00AM",
-      query: "Data not found in server",
-    },
-    {
-      uname: "Roi William",
-      dbname: "DB_Name",
-      date: "10/04/2024  3:00AM",
-      query: "Data not found in server",
-    },
-    {
-      uname: "Roi William",
-      dbname: "DB_Name",
-      date: "10/04/2024  3:00AM",
-      query: "Data not found in server",
-    },
-    {
-      uname: "Roi William",
-      dbname: "DB_Name",
-      date: "10/04/2024  3:00AM",
-      query: "Data not found in server",
-    },
-    {
-      uname: "Roi William",
-      dbname: "DB_Name",
-      date: "10/04/2024  3:00AM",
-      query: "Data not found in server",
-    },
-    {
-      uname: "Roi William",
-      dbname: "DB_Name",
-      date: "10/04/2024  3:00AM",
-      query: "Data not found in server",
-    },
-  ]
+  let dataDb: DBManagerUserActivityModel[];
+  if (userActivityList && userActivityList.length > 0){
+    dataDb = userActivityList
+  }else{
+    dataDb = []
+  }
 
   const totalPages = Math.ceil(dataDb.length / itemsPerPage);
-  const currentPageData = dataDb.slice(startIndex, endIndex);
+  //const currentPageData = dataDb.slice(startIndex, endIndex);
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === dataDb.length;
 
@@ -180,8 +135,8 @@ const UserActivity: React.FC = () => {
             </thead>
 
             <tbody>
-              {currentPageData?.length > 0
-                ? currentPageData?.map((el, i) => (
+              {dataDb?.length > 0
+                ? dataDb?.map((el, i) => (
                   <tr key={i}>
                     <td style={{ paddingRight: 0 }}>
                       <CheckBox
@@ -197,11 +152,11 @@ const UserActivity: React.FC = () => {
                       />
                     </td>
                     <td style={{ fontWeight: "500", color: "black", paddingLeft: "0px", textAlign: "left" }}>
-                      {el.uname}
+                      {el.username}
                     </td>
-                    <td style={{ textAlign: "left" }}>{el.dbname}</td>
-                    <td style={{ textAlign: "left" }} >{el.date}</td>
-                    <td style={{ textAlign: "left" }}>{el.query}</td>
+                    <td style={{ textAlign: "left" }}>{el.db_name}</td>
+                    <td style={{ textAlign: "left" }} >{el.time_date}</td>
+                    <td style={{ textAlign: "left" }}>{el.query_details}</td>
 
                   </tr>
                 ))
@@ -216,7 +171,7 @@ const UserActivity: React.FC = () => {
         <div className="page-heading-container">
 
           <p className="page-heading">
-            {currentPage} - {totalPages} of {currentPageData?.length} item
+            {currentPage} - {totalPages} of {dataDb?.length} item
           </p>
 
           {
@@ -224,10 +179,10 @@ const UserActivity: React.FC = () => {
               currentPage={currentPage}
               totalPages={totalPages} // You need to calculate total pages
               paginate={paginate}
-              currentPageData={currentPageData}
+              currentPageData={dataDb}
               goToNextPage={goToNextPage}
               goToPrevPage={goToPrevPage}
-perPage={itemsPerPage}
+              perPage={itemsPerPage}
             /> : null
           }
         </div>

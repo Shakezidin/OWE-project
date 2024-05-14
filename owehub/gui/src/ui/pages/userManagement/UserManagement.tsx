@@ -8,7 +8,7 @@ import {
   fetchUserListBasedOnRole,
   fetchUserOnboarding,
   createTablePermission,
-} from "../../../redux/apiActions/userManagementActions";
+} from "../../../redux/apiActions/userManagement/userManagementActions";
 import {
   UserDropdownModel,
   UserRoleBasedListModel,

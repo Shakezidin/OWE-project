@@ -73,6 +73,9 @@ interface Endpoints {
   delete_users: string;
   active: string;
   table_permission: string;
+
+  //DB manager
+  Get_DBManager_User_Activity: string;
 }
 
 export const EndPoints: Endpoints = {
@@ -144,4 +147,7 @@ export const EndPoints: Endpoints = {
   create_user: "create_user",
   delete_users: "delete_users",
   table_permission: "table_permission",
+
+  //DB Manager
+  Get_DBManager_User_Activity: "useractivity",
 };
