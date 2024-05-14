@@ -1125,6 +1125,13 @@ var apiRoutes = ApiRoutes{
 		true,
 		[]types.UserGroup{types.GroupEveryOne},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/db_logs",
+		apiHandler.HandleGetDbLogsRequest,
+		true,
+		[]types.UserGroup{types.GroupEveryOne},
+	},
 	// {
 	// 	strings.ToUpper("POST"),
 	// 	"/owe-commisions-service/v1/get_finance_metrics_schema",

@@ -41,16 +41,6 @@ type ProjectStatusReq struct {
 	IntervalDays string
 }
 
-// type ProjectResponse struct {
-// 	UniqueId               string `json:"unqiue_id"`
-// 	ContractDate           string `json:"contract_date"`
-// 	PermitApprovedDate     string `json:"permit_approved_date"`
-// 	PvInstallCompletedDate string `json:"install_completed_date"`
-// 	PtoDate                string `json:"pto_date"`
-// 	SiteSurveyCompleteDate string `json:"site_survey_complete_date"`
-// 	InstallReadyDate       string `json:"install_ready_date"`
-// }
-
 // project management list
 type ProjectLstResponse struct {
 	UniqueId string `json:"unqiue_id"`
