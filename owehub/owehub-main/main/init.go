@@ -1106,7 +1106,7 @@ var apiRoutes = ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/db_user_table_list",
+		"/owe-commisions-service/v1/get_app_table_list",
 		apiHandler.HandleGetUserTableListRequest,
 		true,
 		[]types.UserGroup{types.GroupAdmin},
