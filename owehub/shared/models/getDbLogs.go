@@ -3,6 +3,7 @@ package models
 type DbLogReq struct {
 	StartDate string `json:"start_date"`
 	EndDate   string `json:"end_date"`
+	Username string
 }
 
 type DbLogResp struct {
