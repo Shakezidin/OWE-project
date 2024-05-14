@@ -105,7 +105,7 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		// Join selected parts with underscores
 
 		query := fmt.Sprintf("SELECT name, tables_permissions FROM user_details WHERE email_id = '%s';", updateUserReq.EmailId)
-		data, err := db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
+		data, err := db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get old username from db with err %s", err)
 			FormAndSendHttpResp(resp, "Failed to get old username from db", http.StatusInternalServerError, nil)
@@ -216,7 +216,7 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	queryParameters = append(queryParameters, tablesPermissionsJSON)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.RowDataDBIndex, db.UpdateUserFunction, queryParameters)
+	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateUserFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		newusername := strings.Join(strings.Fields(updateUserReq.Name)[0:2], "_")
 		oldusername := strings.Join(strings.Fields(userName)[0:2], "_")

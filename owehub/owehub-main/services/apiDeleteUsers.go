@@ -90,7 +90,7 @@ func HandleDeleteUsersRequest(resp http.ResponseWriter, req *http.Request) {
 	query = `DELETE FROM user_details WHERE user_code = ANY($1)`
 
 	// Execute the delete query
-	err, rowsAffected = db.UpdateDataInDB(db.RowDataDBIndex, query, whereEleList)
+	err, rowsAffected = db.UpdateDataInDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to delete Users data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to delete users Data from DB", http.StatusBadRequest, nil)

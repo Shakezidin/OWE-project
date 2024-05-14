@@ -38,7 +38,7 @@ func HandleGetUserTableListRequest(resp http.ResponseWriter, req *http.Request) 
 	query = `SELECT jsonb_array_elements(tables_permissions)->>'table_name' AS table_name FROM user_details WHERE email_id = $1`
 
 	whereEleList = append(whereEleList, emailId)
-	data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get User table list data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get User table list data from DB", http.StatusBadRequest, nil)
