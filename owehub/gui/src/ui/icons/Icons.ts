@@ -83,6 +83,9 @@ import rep2 from '../../resources/assets/rep2.png'
 import rep3 from '../../resources/assets/rep3.png'
 // import browserIcon from '../../resources/assets/Cloud-upload.svg'
 // import whiteCross from '../../resources/assets/w'
+import dashboardSidebar from "../../resources/assets/dashboard-sidebar.svg"
+import dataSidebar from "../../resources/assets/data-sidebar.png"
+import activitySidebar from "../../resources/assets/activity-sidebar.svg"
 export const ICONS = {
   BACKGROUND: require("../../resources/assets/background.png"),
   LOGO: logo,
@@ -180,4 +183,7 @@ export const ICONS = {
   rep1:rep1,
   rep2:rep2,
   rep3:rep3,
+  dashboardSidebar: dashboardSidebar,
+  dataSidebar: dataSidebar,
+  activitySidebar: activitySidebar
 };
