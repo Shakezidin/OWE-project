@@ -29,11 +29,11 @@ export interface ICommision {
 export const getPerfomance = createAsyncThunk(
   "get/perfomance",
   async (
-    params: { start_date: string; end_date: string },
+    _,
     { rejectWithValue }
   ) => {
     try {
-      const data = await postCaller("get_perfomancemetrics", params);
+      const data = await postCaller("get_perfomancemetrics",{});
       if (data.status > 201) {
         return rejectWithValue((data as Error).message);
       }
@@ -50,10 +50,10 @@ export const getPerfomance = createAsyncThunk(
 
 export const getPerfomanceStatus = createAsyncThunk(
   "get/perfomancestatus",
-  async (params: { filters: [] }, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
       // get_perfomanceprojectstatus
-      const data = await postCaller("get_perfomanceprojectstatus", params);
+      const data = await postCaller("get_perfomanceprojectstatus", {});
       if (data.status > 201) {
         return rejectWithValue((data as Error).message);
       }
