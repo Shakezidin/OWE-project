@@ -1099,7 +1099,7 @@ var apiRoutes = ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
-		"/owe-commissions-service/v1/user_exists",
+		"/owe-commisions-service/v1/user_exists",
 		apiHandler.HandleCheckUserExists,
 		false,
 		[]types.UserGroup{types.GroupEveryOne},
@@ -1120,7 +1120,7 @@ var apiRoutes = ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
-		"/owe-commissions-service/v1/get_projectmgmnt",
+		"/owe-commisions-service/v1/get_projectmgmnt",
 		apiHandler.HandleGetProjectMngmntRequest,
 		true,
 		[]types.UserGroup{types.GroupEveryOne},
