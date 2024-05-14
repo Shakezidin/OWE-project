@@ -74,7 +74,7 @@
   justify-content: space-between;
   align-items: center;
   background-color: white;
-  border-radius: 16px;
+  border-radius: 8px;
   padding: 1.2rem;
   width: 32.3%;
   height: 110px;
@@ -105,15 +105,11 @@
 .teamImg {
   width: 80.43px;
   height: 80px;
-  text-align: center;
-  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
   border-radius: 12px;
-}
-.teamImg img {
-  margin-top: 5px;
-  width: 52.28px;
-  height: 52px;
-  /* padding: 1px 2.83px 0.67px 2.83px;  */
 }
 .dashboard-payroll {
   display: flex;
