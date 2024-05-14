@@ -23,7 +23,7 @@ export const ARDashboardPage: React.FC = () => {
     setFilterModal(false);
   };
   const options = [
-    { value: "All", label: "All",key: "all" },
+    { value: "All", label: "All", key: "all" },
     { value: "Shaky", label: "Shaky", key: "shaky" },
     { value: "Cancel", label: "Cancel", key: "cancel" },
     { value: "QC/Permit/NTP", label: "QC/Permit/NTP", key: "permits" },
@@ -121,9 +121,7 @@ export const ARDashboardPage: React.FC = () => {
               </label>
               <Select
                 options={options1}
-                value={options1.find(
-                  (option) => option.value === filters.report_type
-                )}
+                value={options1.find((option) => option.value === filters.report_type)}
                 onChange={(value) => handleChange("report_type", value?.value!)}
                 styles={{
                   control: (baseStyles, state) => ({
@@ -140,7 +138,10 @@ export const ARDashboardPage: React.FC = () => {
                     backgroundColor: "#ffffff",
                     cursor: "pointer",
                   }),
-   
+                  placeholder: (baseStyles) => ({
+                    ...baseStyles,
+                    color: "#0493CE", // Change the placeholder color here
+                  }),
                   indicatorSeparator: () => ({
                     display: "none",
                   }),
@@ -210,7 +211,10 @@ export const ARDashboardPage: React.FC = () => {
                     backgroundColor: "#ffffff",
                     cursor: "pointer",
                   }),
-   
+                  placeholder: (baseStyles) => ({
+                    ...baseStyles,
+                    color: "#0493CE", // Change the placeholder color here
+                  }),
                   indicatorSeparator: () => ({
                     display: "none",
                   }),
@@ -278,7 +282,11 @@ export const ARDashboardPage: React.FC = () => {
                     backgroundColor: "#ffffff",
                     cursor: "pointer",
                   }),
-   
+                  placeholder: (baseStyles) => ({
+                    ...baseStyles,
+                    color: "#0493CE", // Change the placeholder color here
+                  }),
+
                   indicatorSeparator: () => ({
                     display: "none",
                   }),
@@ -333,9 +341,8 @@ export const ARDashboardPage: React.FC = () => {
             <div className="Line-container">
               <div className="ar-line-graph">
                 <div
-                  className={`rep-filter-line ${
-                    active === 0 ? "rep-active-filter-line" : ""
-                  }`}
+                  className={`rep-filter-line ${active === 0 ? "rep-active-filter-line" : ""
+                    }`}
                   onClick={() => setActive(0)}
                 >
                   {active === 0 ? (
@@ -345,9 +352,8 @@ export const ARDashboardPage: React.FC = () => {
                   )}
                 </div>
                 <div
-                  className={`filter-disable ${
-                    active === 1 ? "rep-active-filter-line" : ""
-                  }`}
+                  className={`filter-disable ${active === 1 ? "rep-active-filter-line" : ""
+                    }`}
                   // onClick={() => setActive(1)}
                   style={{ border: "1px solid #0493CE" }}
                 >
@@ -374,7 +380,7 @@ export const ARDashboardPage: React.FC = () => {
             columns={[]}
             page_number={1}
             page_size={10}
-            fetchFunction={() => {}}
+            fetchFunction={() => { }}
           />
         )}
         <div className="" style={{ marginTop: "20px" }}>

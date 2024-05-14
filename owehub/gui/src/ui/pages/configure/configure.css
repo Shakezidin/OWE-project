@@ -299,7 +299,7 @@ table tbody tr td {
 }
 
 .zoom-out-td:hover {
-  transform: scale(1.2);
+  transform: scale(1.0999);
   color: #0493CE;
   cursor: pointer;
   text-decoration: underline;
@@ -314,7 +314,7 @@ table tbody tr td {
 }
 
 .zoom-out-help:hover {
-  transform: scale(1.3);
+  transform: scale(1.0999);
   color: #0493CE;
   cursor: pointer;
 }
