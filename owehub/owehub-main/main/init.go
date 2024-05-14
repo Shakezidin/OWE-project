@@ -1141,7 +1141,7 @@ var apiRoutes = ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/db_logs",
+		"/owe-commisions-service/v1/useractivity",
 		apiHandler.HandleGetDbLogsRequest,
 		true,
 		[]types.UserGroup{types.GroupDb},
