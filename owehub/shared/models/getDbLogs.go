@@ -16,10 +16,9 @@ type DbLogListResp struct {
 	DbLogList []DbLogResp `json:"dblog_list_response"`
 }
 
-
 var DbColumnToFields = map[string]string{
-	"usename": "Username",
-	"datname": "DbName",
+	"usename":     "Username",
+	"datname":     "DbName",
 	"query_start": "TimeDate",
-	"query": "QueryDetails",
+	"query":       "QueryDetails",
 }

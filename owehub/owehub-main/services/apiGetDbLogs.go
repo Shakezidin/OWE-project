@@ -15,8 +15,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"reflect"
 	"net/http"
+	"reflect"
 )
 
 /******************************************************************************
@@ -80,7 +80,9 @@ func HandleGetDbLogsRequest(resp http.ResponseWriter, req *http.Request) {
 		FormAndSendHttpResp(resp, "Failed to get PerfomanceDbLogs data from DB", http.StatusBadRequest, nil)
 		return
 	}
+	
 	loglist := models.DbLogListResp{}
+	log.FuncErrorTrace(0, "Failed to get PerfomanceDbLogs data from DB err: %v", data)
 	for _, item := range data {
 		var dbLog models.DbLogResp
 		dbRowToStruct(item, &dbLog)
@@ -110,7 +112,10 @@ func HandleGetDbLogsRequest(resp http.ResponseWriter, req *http.Request) {
 				if dbValueTime, ok := dbValue.(time.Time); ok {
 					dbValueTimeString := dbValueTime.Format("2006-01-02 15:04:05")
 					field.SetString(dbValueTimeString)
-				} else if dbValueStr, ok := dbValue.(string); ok {
+				} else if dbValueStr, ok := dbValue.([]byte); ok {
+					dbValueStr := string(dbValueStr)
+					field.SetString(dbValueStr)
+			}else if dbValueStr, ok := dbValue.(string); ok {
 					field.SetString(dbValueStr)
 				}
 			}
