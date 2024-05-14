@@ -13,5 +13,7 @@ type GetUsMgmtOnbData struct {
 }
 
 type GetUsMgmtOnbList struct {
-	UsrMgmtOnbList []GetUsMgmtOnbData `json:"usermgmt_onboarding_list"`
+	UsrMgmtOnbList  []GetUsMgmtOnbData `json:"usermgmt_onboarding_list"`
+	ActiveSaleRep   int64              `json:"active_sale_rep"`
+	InactiveSaleRep int64            `json:"inactive_sale_rep"`
 }
