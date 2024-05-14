@@ -47,6 +47,7 @@ import perfomanceSlice from "./apiSlice/perfomanceSlice";
  
 import ArDataSlice from "./apiSlice/AR/ArDataSlice";
 import activeSlice from "./apiSlice/configSlice/config_get_slice/activeSlice";
+import projectManagement from "./apiSlice/projectManagement";
 export const store = configureStore({
   reducer: {
     appState: appStateSlice,
@@ -98,7 +99,8 @@ export const store = configureStore({
     autoadder: autoAdderSlice,
     perfomanceSlice,
     ardata:ArDataSlice,
-    active:activeSlice
+    active:activeSlice,
+    projectManagement
   },
 });
 
