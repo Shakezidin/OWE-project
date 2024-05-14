@@ -26,7 +26,19 @@
   flex-direction: column;
   gap: 1rem;
 }
-
+.login-button{
+  background-color: #0493ce;
+  border: none;
+  border-radius: 0.5rem;
+  color: #fff;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 11.962px; 
+  cursor: pointer;
+  height: 40px;
+  text-transform: capitalize;
+}
 .loginBox {
   background-color: transparent;
   display: flex;
