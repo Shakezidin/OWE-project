@@ -21,7 +21,7 @@ import (
 
 /******************************************************************************
  * FUNCTION:		HandleGetAutoAdderDataRequest
- * DESCRIPTION:     handler for get AutoAdder data redatequest
+ * DESCRIPTION:     handler for get AutoAdder data request
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
@@ -72,8 +72,8 @@ func HandleGetAutoAdderDataRequest(resp http.ResponseWriter, req *http.Request) 
 			ad.unique_id, 
 			ad.wc_1 AS date, 
 			ad.installer AS gc, 
-			ad.primary_sales_rep as rep_percentage,
-			ad.secondary_sales_rep as notes_no_repvisible,
+			ad.net_epc as rep_percentage,
+			ad.primary_sales_rep as notes_no_repvisible,
 			(SELECT 
 				CASE 
 					WHEN system_size <= 3 THEN 
@@ -232,8 +232,8 @@ func HandleGetAutoAdderDataRequest(resp http.ResponseWriter, req *http.Request) 
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryForAlldata, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get commissions data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get commissions data from DB", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get auto adder data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get auto adder data from DB", http.StatusBadRequest, nil)
 		return
 	}
 	RecordCount = int64(len(data))
@@ -308,7 +308,7 @@ func PrepareAutoAdderFilters(tableName string, dataFilter models.DataRequestBody
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY ad.unique_id, ad.wc_1, ad.installer, ad.primary_sales_rep, ad.secondary_sales_rep")
+		filtersBuilder.WriteString(" GROUP BY ad.unique_id, ad.wc_1, ad.installer, ad.net_epc, ad.primary_sales_rep")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {

@@ -1106,6 +1106,20 @@ var apiRoutes = ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_app_table_list",
+		apiHandler.HandleGetUserTableListRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_app_data",
+		apiHandler.HandleGetAnyTableDataRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
 		"/owe-commissions-service/v1/get_projectmngmnt",
 		apiHandler.HandleGetProjectMngmntRequest,
 		true,

@@ -26,9 +26,10 @@ import (
  ******************************************************************************/
 func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err             error
-		createUserReq   models.CreateUserReq
-		queryParameters []interface{}
+		err                   error
+		createUserReq         models.CreateUserReq
+		queryParameters       []interface{}
+		tablesPermissionsJSON []byte
 	)
 
 	log.EnterFn(0, "HandleCreateUserRequest")
@@ -81,6 +82,15 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	//createUserReq.Zipcode = ""
 	//createUserReq.Country = ""
 
+	if createUserReq.TablesPermissions != nil {
+		tablesPermissionsJSON, err = json.Marshal(createUserReq.TablesPermissions)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to marshall table permission while create user,  err: %v", err)
+			FormAndSendHttpResp(resp, "Failed to marshall table permissions", http.StatusBadRequest, nil)
+			return
+		}
+	}
+
 	hashedPassBytes, err := GenerateHashPassword(createUserReq.Password)
 	if err != nil || hashedPassBytes == nil {
 		log.FuncErrorTrace(0, "Failed to hash the password err: %v", err)
@@ -88,17 +98,18 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	// If the user role is "DB User", create the database user and grant privileges
 	if createUserReq.RoleName == "DB User" {
 		// Join selected parts with underscores
 		username := strings.Join(strings.Fields(createUserReq.Name)[0:2], "_")
 
 		sqlStatement := fmt.Sprintf("CREATE USER %s WITH LOGIN PASSWORD '%s';", username, createUserReq.Password)
-		err = db.ExecQueryDB(db.OweHubDbIndex, sqlStatement)
+		err = db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
 		log.FuncErrorTrace(0, " sqlStatement err %+v", err)
 		log.FuncErrorTrace(0, "sqlStatement %v", sqlStatement)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to create user already exists: %v", err)
-			FormAndSendHttpResp(resp, "Failed to process the password", http.StatusInternalServerError, nil)
+			FormAndSendHttpResp(resp, "Failed, User already exist in db user", http.StatusInternalServerError, nil)
 			return
 		}
 
@@ -115,11 +126,17 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 
 			log.FuncErrorTrace(0, "sqlStatement %v", sqlStatement)
 
-			err = db.ExecQueryDB(db.OweHubDbIndex, sqlStatement)
+			err = db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
 			log.FuncErrorTrace(0, " sqlStatement err %+v", err)
 			if err != nil {
-				log.FuncErrorTrace(0, "Failed to create user already exists: %v", err)
-				FormAndSendHttpResp(resp, "Failed to process the password", http.StatusInternalServerError, nil)
+				dropErr := db.ExecQueryDB(db.RowDataDBIndex, fmt.Sprintf("DROP USER %s;", username))
+				if dropErr != nil {
+					log.FuncErrorTrace(0, "Failed to drop user after failed privilege grant: %v", dropErr)
+					FormAndSendHttpResp(resp, "Failed to drop user after failed privilege", http.StatusInternalServerError, nil)
+					return
+				}
+				log.FuncErrorTrace(0, "Failed to create user while adding privilges err: %v", err)
+				FormAndSendHttpResp(resp, "Failed to create privilages for user", http.StatusInternalServerError, nil)
 				return
 			}
 		}
@@ -142,10 +159,23 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	queryParameters = append(queryParameters, createUserReq.City)
 	queryParameters = append(queryParameters, createUserReq.Zipcode)
 	queryParameters = append(queryParameters, createUserReq.Country)
+	queryParameters = append(queryParameters, tablesPermissionsJSON)
 
-	_, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateUserFunction, queryParameters)
+	// Call the stored procedure or function to create the user
+	_, err = db.CallDBFunction(db.RowDataDBIndex, db.CreateUserFunction, queryParameters)
 	if err != nil {
-		// Check if the error message contains "User with email"
+		// Join selected parts with underscores
+		username := strings.Join(strings.Fields(createUserReq.Name)[0:2], "_")
+		dropErr := db.ExecQueryDB(db.RowDataDBIndex, fmt.Sprintf("REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM %s;", username))
+		dropErr = db.ExecQueryDB(db.RowDataDBIndex, fmt.Sprintf("DROP USER %s;", username))
+		if dropErr != nil {
+			log.FuncErrorTrace(0, "Failed to revoke privileges and drop user %s: %v", username, dropErr)
+			// Handle the error as needed, such as logging or returning an HTTP response
+		} else {
+			log.FuncErrorTrace(0, "Successfully revoked privileges and dropped user %s", username)
+			// Optionally, you can log a success message or perform additional actions
+		}
+		// Handle the error
 		if strings.Contains(err.Error(), "User with email") {
 			// Handle the case where provided user data violates unique constraint
 			log.FuncErrorTrace(0, "Failed to Add User in DB with err: %v", err)
@@ -157,11 +187,13 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		FormAndSendHttpResp(resp, "Failed to Create User", http.StatusInternalServerError, nil)
 		return
 	}
-
+	// Send email to client
 	err = SendMailToClient(createUserReq.EmailId, createUserReq.Name)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to sent email with err: %v", err)
+		// Log the error, but continue processing
+		log.FuncErrorTrace(0, "Failed to send email with err: %v", err)
 	}
 
+	// Send HTTP response
 	FormAndSendHttpResp(resp, "User Created Successfully", http.StatusOK, nil)
 }
