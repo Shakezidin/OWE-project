@@ -278,8 +278,10 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 		whereEleList = append(whereEleList, dataFilter.DealerName)
 	}
 
-	filtersBuilder.WriteString(fmt.Sprintf(" LIMIT $%d", len(whereEleList)+1))
-	whereEleList = append(whereEleList, dataFilter.ProjectLimit)
+	if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+		offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
+		filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+	}
 	filters = filtersBuilder.String()
 
 	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
@@ -343,8 +345,12 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 		}
 	}
 
-	filtersBuilder.WriteString(fmt.Sprintf(") AND dealer = $%d LIMIT $%d", len(whereEleList)+1, len(whereEleList)+2))
-	whereEleList = append(whereEleList, dataFilter.DealerName, dataFilter.ProjectLimit)
+	filtersBuilder.WriteString(fmt.Sprintf(") AND dealer = $%d", len(whereEleList)+1))
+	whereEleList = append(whereEleList, dataFilter.DealerName)
+	if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+		offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
+		filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+	}
 	filters = filtersBuilder.String()
 
 	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)

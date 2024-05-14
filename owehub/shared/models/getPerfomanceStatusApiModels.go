@@ -9,6 +9,8 @@ package models
 type EmptyReq struct{}
 
 type PerfomanceStatusReq struct {
+	PageNumber   int `json:"page_number"`
+	PageSize     int `json:"page_size"`
 	Email        string
 	UniqueIds    []string
 	ProjectLimit int
@@ -54,89 +56,87 @@ var ColumnToFields = map[string]string{
 	"unique_id": "UniqueId",
 }
 
-
 // project management
 
 type ProjectListResponse struct {
 	ProjectList []ProjectResponse `json:"project_response_list"`
 }
 
-
 type ProjectResponse struct {
-	UniqueId               string `json:"unqiue_id"`
-	SalesCompleted string `json:"sales_completed"`
-	NtpPending string `json:"ntp_pending"`
-	NtpCompleted string `json:"ntp_completed"`
-	SiteSurveyScheduled string `json:"site_survey_scheduled"`
-	SiteSurevyRescheduled string `json:"site_survey_rescheduled"`
-	SiteSurveyCompleted string `json:"site_survey_completed"`
-	RoofingPending string `json:"roofing_pending"`
-	RoofingScheduled string `json:"roofing_scheduled"`
-	RoofingCompleted string `json:"roofing_completed"`
-	ElectricalPending string `json:"electrical_pending"`
-	ElectricalScheduled string `json:"electrical_scheduled"`
-	ElectricalCompleted string `json:"electrical_completed"`
-	PvPermitPending string `json:"pv_permit_pending"`
-	PvPermitScheduled string `json:"pv_permit_scehduled"`
-	PvPermitCompleted string `json:"pv_permit_completed"`
-	IcPermitPending string `json:"ic_permit_pending"`
-	IcPermitScheduled string `json:"ic_permit_scheduled"`
-	IcPermitCompleted string `json:"ic_permit_completed"`
-	InstallPending string `json:"install_pending"`
-	InstallReady string `json:"install_ready"`
-	InstallScheduled string `json:"install_scheduled"`
-	InstallCompleted string `json:"install_completed"`
-	FinalInspectionSubmitted string `json:"final_inspection_submitted"`
-	FinalInspectionApproved string `json:"final_inspection_approved"`
-	PtoInProcess string `json:"pto_in_process"`
-	PtoSubmitted string `json:"pto_submitted"`
-	PtoCompleted string `json:"pto_completed"`
-	SystemSize float64 `system_size`
-	Adder string `json:"adder"`
-	AJH string `json:"ajh"`
-	Epc string `json:"epc"`
-	State string `json:"state"`
-	ContractAmount float64 `json:"contract_amount"`
-	FinancePartner string `json:"finance_partner"`
-	NetEPC float64 `json:"net_epc"`
+	UniqueId                 string  `json:"unqiue_id"`
+	SalesCompleted           string  `json:"sales_completed"`
+	NtpPending               string  `json:"ntp_pending"`
+	NtpCompleted             string  `json:"ntp_completed"`
+	SiteSurveyScheduled      string  `json:"site_survey_scheduled"`
+	SiteSurevyRescheduled    string  `json:"site_survey_rescheduled"`
+	SiteSurveyCompleted      string  `json:"site_survey_completed"`
+	RoofingPending           string  `json:"roofing_pending"`
+	RoofingScheduled         string  `json:"roofing_scheduled"`
+	RoofingCompleted         string  `json:"roofing_completed"`
+	ElectricalPending        string  `json:"electrical_pending"`
+	ElectricalScheduled      string  `json:"electrical_scheduled"`
+	ElectricalCompleted      string  `json:"electrical_completed"`
+	PvPermitPending          string  `json:"pv_permit_pending"`
+	PvPermitScheduled        string  `json:"pv_permit_scehduled"`
+	PvPermitCompleted        string  `json:"pv_permit_completed"`
+	IcPermitPending          string  `json:"ic_permit_pending"`
+	IcPermitScheduled        string  `json:"ic_permit_scheduled"`
+	IcPermitCompleted        string  `json:"ic_permit_completed"`
+	InstallPending           string  `json:"install_pending"`
+	InstallReady             string  `json:"install_ready"`
+	InstallScheduled         string  `json:"install_scheduled"`
+	InstallCompleted         string  `json:"install_completed"`
+	FinalInspectionSubmitted string  `json:"final_inspection_submitted"`
+	FinalInspectionApproved  string  `json:"final_inspection_approved"`
+	PtoInProcess             string  `json:"pto_in_process"`
+	PtoSubmitted             string  `json:"pto_submitted"`
+	PtoCompleted             string  `json:"pto_completed"`
+	SystemSize               float64 `system_size`
+	Adder                    string  `json:"adder"`
+	AJH                      string  `json:"ajh"`
+	Epc                      string  `json:"epc"`
+	State                    string  `json:"state"`
+	ContractAmount           float64 `json:"contract_amount"`
+	FinancePartner           string  `json:"finance_partner"`
+	NetEPC                   float64 `json:"net_epc"`
 }
 
 // first is db column name  // second is struct name
 var ColumnToField = map[string]string{
-	"unique_id":                  "UniqueId",
-	"contract_date":              "SalesCompleted",
-	"ntp_working_date": "NtpPending",
-	"ntp_date": "NtpCompleted",
-	"site_survey_scheduled_date":              "SiteSurveyScheduled",
-	"site_survey_rescheduled_date": "SiteSurevyRescheduled",
-	"site_survey_completed_date": "SiteSurveyCompleted",
-	"roofing_scheduled_date":              "RoofingPending",
-	"roofing_created_date": "RoofingScheduled",
-	"roofing_completed_date": "RoofingCompleted",
-	"electrical_permit_created_date":              "ElectricalPending",
-	"electrical_submitted_date": "ElectricalScheduled",
-	"electrical_approved_date": "ElectricalCompleted",
-	"pv_install_created_date":              "PvPermitPending",
-	"pv_install_scheduled_date": "PvPermitScheduled",
-	"pv_install_completed_date": "PvPermitCompleted",
-	"ic_created_date":              "IcPermitPending",
-	"ic_submitted_date": "IcPermitScheduled",
-	"ic_approved_date": "IcPermitCompleted",
-	"credit_expiration_date": "InstallPending",
-	"install_ready_date":              "InstallReady",
-	"install_rescheduled_date": "InstallScheduled",
-	"install_eta": "InstallCompleted",
-	"pto_fail_date": "FinalInspectionSubmitted",
-	"canceled_date": "FinalInspectionApproved",
-	"pto_created_date": "PtoInProcess",
-	"pto_submitted_date": "PtoSubmitted",
-	"pto_date": "PtoCompleted",
-	"system_size": "SystemSize", // float
-	"prospect": "Adder",
-	"installer": "AJH",
-	"project_status": "Epc",
-	"state": "State",
-	"contract_total": "ContractAmount", // float
-	"finance_company": "FinancePartner", //string
-	"net_epc": "NetEPC", // float
+	"unique_id":                      "UniqueId",
+	"contract_date":                  "SalesCompleted",
+	"ntp_working_date":               "NtpPending",
+	"ntp_date":                       "NtpCompleted",
+	"site_survey_scheduled_date":     "SiteSurveyScheduled",
+	"site_survey_rescheduled_date":   "SiteSurevyRescheduled",
+	"site_survey_completed_date":     "SiteSurveyCompleted",
+	"roofing_scheduled_date":         "RoofingPending",
+	"roofing_created_date":           "RoofingScheduled",
+	"roofing_completed_date":         "RoofingCompleted",
+	"electrical_permit_created_date": "ElectricalPending",
+	"electrical_submitted_date":      "ElectricalScheduled",
+	"electrical_approved_date":       "ElectricalCompleted",
+	"pv_install_created_date":        "PvPermitPending",
+	"pv_install_scheduled_date":      "PvPermitScheduled",
+	"pv_install_completed_date":      "PvPermitCompleted",
+	"ic_created_date":                "IcPermitPending",
+	"ic_submitted_date":              "IcPermitScheduled",
+	"ic_approved_date":               "IcPermitCompleted",
+	"credit_expiration_date":         "InstallPending",
+	"install_ready_date":             "InstallReady",
+	"install_rescheduled_date":       "InstallScheduled",
+	"install_eta":                    "InstallCompleted",
+	"pto_fail_date":                  "FinalInspectionSubmitted",
+	"canceled_date":                  "FinalInspectionApproved",
+	"pto_created_date":               "PtoInProcess",
+	"pto_submitted_date":             "PtoSubmitted",
+	"pto_date":                       "PtoCompleted",
+	"system_size":                    "SystemSize", // float
+	"prospect":                       "Adder",
+	"installer":                      "AJH",
+	"project_status":                 "Epc",
+	"state":                          "State",
+	"contract_total":                 "ContractAmount", // float
+	"finance_company":                "FinancePartner", //string
+	"net_epc":                        "NetEPC",         // float
 }
