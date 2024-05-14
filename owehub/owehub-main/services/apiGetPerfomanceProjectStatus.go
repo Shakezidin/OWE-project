@@ -243,12 +243,12 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 
 	cnt := dataFilter.IntervalDays
 
-	filtersBuilder.WriteString(fmt.Sprintf(" contract_date BETWEEN current_date - interval '1 day' * $%d AND current_date", len(whereEleList)+1))
+	filtersBuilder.WriteString(fmt.Sprintf(" (contract_date BETWEEN current_date - interval '1 day' * $%d AND current_date", len(whereEleList)+1))
 	filtersBuilder.WriteString(fmt.Sprintf(" OR permit_approved_date BETWEEN current_date - interval '1 day' * $%d AND current_date", len(whereEleList)+2))
 	filtersBuilder.WriteString(fmt.Sprintf(" OR pv_install_completed_date BETWEEN current_date - interval '1 day' * $%d AND current_date", len(whereEleList)+3))
 	filtersBuilder.WriteString(fmt.Sprintf(" OR pto_date BETWEEN current_date - interval '1 day' * $%d AND current_date", len(whereEleList)+4))
 	filtersBuilder.WriteString(fmt.Sprintf(" OR site_survey_completed_date BETWEEN current_date - interval '1 day' * $%d AND current_date", len(whereEleList)+5))
-	filtersBuilder.WriteString(fmt.Sprintf(" OR install_ready_date BETWEEN current_date - interval '1 day' * $%d AND current_date", len(whereEleList)+6))
+	filtersBuilder.WriteString(fmt.Sprintf(" OR install_ready_date BETWEEN current_date - interval '1 day' * $%d AND current_date)", len(whereEleList)+6))
 	whereEleList = append(whereEleList, cnt, cnt, cnt, cnt, cnt, cnt)
 
 	// Check if there are filters
@@ -278,8 +278,10 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 		whereEleList = append(whereEleList, dataFilter.DealerName)
 	}
 
-	filtersBuilder.WriteString(fmt.Sprintf(" LIMIT $%d", len(whereEleList)+1))
-	whereEleList = append(whereEleList, dataFilter.ProjectLimit)
+	if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+		offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
+		filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+	}
 	filters = filtersBuilder.String()
 
 	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
@@ -302,19 +304,19 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 
 	cnt := dataFilter.IntervalDays
 
-	filtersBuilder.WriteString(fmt.Sprintf(" contract_date BETWEEN current_date - interval '1 day' * $%d AND current_date", len(whereEleList)+1))
+	filtersBuilder.WriteString(fmt.Sprintf(" (contract_date BETWEEN current_date - interval '1 day' * $%d AND current_date", len(whereEleList)+1))
 	filtersBuilder.WriteString(fmt.Sprintf(" OR permit_approved_date BETWEEN current_date - interval '1 day' * $%d AND current_date", len(whereEleList)+2))
 	filtersBuilder.WriteString(fmt.Sprintf(" OR pv_install_completed_date BETWEEN current_date - interval '1 day' * $%d AND current_date", len(whereEleList)+3))
 	filtersBuilder.WriteString(fmt.Sprintf(" OR pto_date BETWEEN current_date - interval '1 day' * $%d AND current_date", len(whereEleList)+4))
 	filtersBuilder.WriteString(fmt.Sprintf(" OR site_survey_completed_date BETWEEN current_date - interval '1 day' * $%d AND current_date", len(whereEleList)+5))
-	filtersBuilder.WriteString(fmt.Sprintf(" OR install_ready_date BETWEEN current_date - interval '1 day' * $%d AND current_date", len(whereEleList)+6))
+	filtersBuilder.WriteString(fmt.Sprintf(" OR install_ready_date BETWEEN current_date - interval '1 day' * $%d AND current_date)", len(whereEleList)+6))
 	whereEleList = append(whereEleList, cnt, cnt, cnt, cnt, cnt, cnt)
 
 	// Check if there are filters
 	if len(dataFilter.UniqueIds) > 0 {
 		// whereAdded = true
 		filtersBuilder.WriteString(" AND ")
-		filtersBuilder.WriteString(" sms.unique_id IN (")
+		filtersBuilder.WriteString(" unique_id IN (")
 
 		for i, filter := range dataFilter.UniqueIds {
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
@@ -343,8 +345,12 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 		}
 	}
 
-	filtersBuilder.WriteString(fmt.Sprintf(") AND dealer = $%d LIMIT $%d", len(whereEleList)+1, len(whereEleList)+2))
-	whereEleList = append(whereEleList, dataFilter.DealerName, dataFilter.ProjectLimit)
+	filtersBuilder.WriteString(fmt.Sprintf(") AND dealer = $%d", len(whereEleList)+1))
+	whereEleList = append(whereEleList, dataFilter.DealerName)
+	if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+		offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
+		filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+	}
 	filters = filtersBuilder.String()
 
 	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)

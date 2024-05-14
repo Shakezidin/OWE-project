@@ -88,7 +88,7 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 		case "adder_type":
 			query = "SELECT adder_type as data FROM " + db.TableName_adder_type
 		case "owe_cost":
-			query = "SELECT owe_cost as data FROM " + db.TableName_tier_loan_fee
+			query = "SELECT CAST(owe_cost AS VARCHAR) AS data FROM " + db.TableName_tier_loan_fee
 		case "tier":
 			query = "SELECT tier_name as data FROM " + db.TableName_tier
 		case "roles":
