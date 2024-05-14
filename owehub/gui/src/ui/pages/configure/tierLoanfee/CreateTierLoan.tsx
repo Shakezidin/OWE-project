@@ -21,15 +21,15 @@ const CreateTierLoan:React.FC<tierLoanProps> = ({handleClose,tierEditedData,edit
   const [createTier, setCreateTier] = useState<TierLoanFeeModel>(
     {
       record_id: tierEditedData? tierEditedData?.record_id:0,
-      dealer_tier: tierEditedData? tierEditedData?.dealer_tier:"TierName123",
-      installer: tierEditedData? tierEditedData?.installer:"PartnerABC",
-      state:tierEditedData? tierEditedData?.state: "Alabama",
-      finance_type:tierEditedData? tierEditedData?.finance_type: "1",
-      owe_cost:tierEditedData? tierEditedData?.owe_cost: "1000",
-      dlr_mu: tierEditedData? tierEditedData?.dlr_mu:"0.5",
-      dlr_cost: tierEditedData? tierEditedData?.dlr_cost:"500",
-      start_date:tierEditedData? tierEditedData?.start_date: "2024-04-01",
-      end_date:tierEditedData? tierEditedData?.end_date: "2024-12-31"
+      dealer_tier: tierEditedData? tierEditedData?.dealer_tier:"",
+      installer: tierEditedData? tierEditedData?.installer:"",
+      state:tierEditedData? tierEditedData?.state: "",
+      finance_type:tierEditedData? tierEditedData?.finance_type: "",
+      owe_cost:tierEditedData? tierEditedData?.owe_cost: "",
+      dlr_mu: tierEditedData? tierEditedData?.dlr_mu:"",
+      dlr_cost: tierEditedData? tierEditedData?.dlr_cost:"",
+      start_date:tierEditedData? tierEditedData?.start_date: "",
+      end_date:tierEditedData? tierEditedData?.end_date: ""
     }
   )
   const [newFormData, setNewFormData] = useState<any>([])
@@ -69,24 +69,24 @@ const CreateTierLoan:React.FC<tierLoanProps> = ({handleClose,tierEditedData,edit
      
       const res = await postCaller(EndPoints.update_tierloanfee, createTier);
       if (res?.status === 200) {
-        alert(res?.message)
+        console.log(res?.message)
         handleClose()
         window.location.reload()
       }
       else {
-        alert(res.message)
+        console.log(res.message)
       }
     }
     else{
       const { record_id, ...cleanedFormData } = createTier;
       const res = await postCaller(EndPoints.create_tierloanfee, cleanedFormData);
       if (res?.status === 200) {
-        alert(res?.message)
+        console.log(res?.message)
         handleClose()
         window.location.reload()
       }
       else {
-        alert(res.message)
+        console.log(res.message) 
       }
     }
     } catch (error) {
@@ -192,8 +192,8 @@ const CreateTierLoan:React.FC<tierLoanProps> = ({handleClose,tierEditedData,edit
                     <Input
                       type={"date"}
                       label="End Date"
-                      value={createTier.start_date}
-                      name="start_date"
+                      value={createTier.end_date}
+                      name="end_date"
                       placeholder={"10/04/2004"}
                       onChange={(e) => handleTierChange(e)}
                     />

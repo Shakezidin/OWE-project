@@ -290,3 +290,83 @@ table tbody tr td {
 
 /* checkbox design  */
 
+
+
+.zoom-out-td {
+  transition: transform 0.4s ease, color 0.4s ease;
+  text-decoration: underline;
+  color: "black",
+}
+
+.zoom-out-td:hover {
+  transform: scale(1.0999);
+  color: #0493CE;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.zoom-out-help {
+  transition: transform 0.4s ease, color 0.4s ease;
+  height: 14px;
+  width: 14px;
+  stroke: 0.2;
+  cursor: pointer;
+}
+
+.zoom-out-help:hover {
+  transform: scale(1.0999);
+  color: #0493CE;
+  cursor: pointer;
+}
+
+.state-container {
+  margin-top: 9px;
+  margin-left: 10px;
+  height: 28px;
+  border-radius: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.state-text {
+  text-align: center;
+  font-weight: 500;
+  font-size: 12px;
+}
+
+.ntp-color {
+  color: #FFA600;
+}
+
+.install-color {
+  color: #117746;
+}
+
+.pto-color {
+  color: #0493CE;
+}
+
+.ntp-bg {
+  background-color: #FDF6E8;
+}
+
+.install-bg {
+  background-color: #E1F3E4;
+}
+
+.pto-bg {
+  background-color: #E4F6FF;
+}
+
+.ntp-width {
+  width: 47px;
+}
+
+.install-width {
+  width: 61px;
+}
+
+.pto-width {
+  width: 48px;
+}

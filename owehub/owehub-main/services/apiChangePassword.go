@@ -7,8 +7,10 @@
 package services
 
 import (
+	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"strings"
 
 	"encoding/json"
 	"fmt"
@@ -67,11 +69,25 @@ func HandleChangePassRequest(resp http.ResponseWriter, req *http.Request) {
 		EmailId:  userEmailId,
 		Password: changePasswordReq.CurrentPassword,
 	}
-	_, _, _, _, err = ValidateUser(creds)
+	_, userName, roleName, _, err := ValidateUser(creds)
 	if err != nil {
 		log.FuncErrorTrace(0, "Invalid Current Password err: %v", err)
 		FormAndSendHttpResp(resp, "Invalid Current Password", http.StatusUnauthorized, nil)
 		return
+	}
+
+	if roleName == "DB User" {
+		username := strings.Join(strings.Fields(userName)[0:2], "_")
+
+		sqlStatement := fmt.Sprintf("ALTER ROLE %s WITH PASSWORD '%s';", username, changePasswordReq.NewPassword)
+		err = db.ExecQueryDB(db.OweHubDbIndex, sqlStatement)
+		log.FuncErrorTrace(0, " sqlStatement err %+v", err)
+		log.FuncErrorTrace(0, "sqlStatement %v", sqlStatement)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to create user already exists: %v", err)
+			FormAndSendHttpResp(resp, "Failed to process the password", http.StatusInternalServerError, nil)
+			return
+		}
 	}
 
 	/* Now Update the new password in DB */

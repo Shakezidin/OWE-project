@@ -14,6 +14,7 @@ CREATE OR REPLACE FUNCTION update_user(
     p_zipcode VARCHAR(255),
     p_country VARCHAR(255),
     p_user_code VARCHAR(255),
+    p_tables_permissions jsonb,
     OUT v_user_id INT
 )
 RETURNS INT 
@@ -35,6 +36,7 @@ BEGIN
         city = COALESCE(NULLIF(p_city, ''), NULL),
         zipcode = CASE WHEN p_zipcode IS NOT NULL AND p_zipcode != '' THEN (SELECT id FROM zipcodes WHERE LOWER(zipcode) = LOWER(p_zipcode) LIMIT 1) ELSE NULL END,
         country = COALESCE(NULLIF(p_country, ''), NULL),
+        tables_permissions = p_tables_permissions,
         updated_at = CURRENT_TIMESTAMP
     WHERE user_code = p_user_code
     RETURNING user_id INTO v_user_id;

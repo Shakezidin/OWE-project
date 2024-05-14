@@ -25,19 +25,17 @@
 .rep-dash-head-input{
   display: flex;
   height: 36px;
-  background-color: white;
+  background-color: #EAF2FE;
   padding: 0 3px 0 12px;
   gap: 0.5rem;
   align-items: center;
   border-radius: 8px;
-  border: 1px solid #d0d5dd;
 }
 .rep-chart-view{
-  background: #ECECEC;
+  background: #ffffff;
   border-radius: 0.40rem;
   border: none;
   outline: none;
-  background: #ECECEC;
   padding: 8px;
   cursor: pointer;
   text-wrap: nowrap;
@@ -65,7 +63,7 @@
   justify-content: center;
 }
 .rep-active-filter-line {
-  background-color: #19B87E;
+  background-color: #0493CE;
 }
 .rep-active-filter-line img {
   fill: white;
@@ -141,7 +139,7 @@
   border-radius: 0.40rem;
   border: none;
   outline: none;
-  background: #ECECEC;
+  background-color: #ffffff;
   padding: 6px;
   cursor: pointer;
   text-wrap: nowrap;
@@ -182,5 +180,56 @@
   left: 400px;
   bottom: 10px;
   border: none;
+}
+
+.rep-inputLabel {
+  color: #000000;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 14.5px;
+  /* text-align: left; */
+}
+
+.rep-teamImg {
+  width: 80.43px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  border-radius: 12px;
+}
+
+.total-rep {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  border-radius: 8px;
+  padding: 1.2rem;
+  width: 32.3%;
+  height: 110px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  transition: box-shadow 0.3s ease;
+}
+.total-rep:hover {
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+
+.rep-total-section h4 {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 28px;
+  text-align: left;
+  color: #231F20;
+}
+.rep-total-section p {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 28px;
+  text-align: left;
+  color: #747782;
 }
 

@@ -16,6 +16,7 @@ CREATE OR REPLACE FUNCTION create_new_user(
     p_city VARCHAR(255),
     p_zipcode VARCHAR(255),
     p_country VARCHAR(255),
+    p_tables_permissions jsonb,
     OUT v_user_id INT
 )
 RETURNS INT
@@ -107,6 +108,7 @@ BEGIN
         v_zipcode_id := NULL;
     END IF;
 
+
     -- Fetch the maximum user code and increment it
     SELECT MAX(CAST(SUBSTRING(user_code FROM 4) AS INT)) INTO v_max_user_code FROM user_details;
     v_new_user_code := 'OWE' || LPAD(COALESCE(v_max_user_code + 1, 1)::TEXT, 5, '0');
@@ -132,7 +134,8 @@ BEGIN
             state,
             city,
             zipcode,
-            country
+            country,
+            tables_permissions
         )
         VALUES (
             p_name,
@@ -152,7 +155,8 @@ BEGIN
             v_state_id,
             p_city,
             v_zipcode_id,
-            p_country
+            p_country,
+            p_tables_permissions
         )
         RETURNING user_id INTO v_user_id;
 
