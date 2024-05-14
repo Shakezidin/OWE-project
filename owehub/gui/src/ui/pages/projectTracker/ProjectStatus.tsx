@@ -19,7 +19,11 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import { getProjectDetail, getProjects } from "../../../redux/apiSlice/projectManagement";
+import {
+  getProjectDetail,
+  getProjects,
+} from "../../../redux/apiSlice/projectManagement";
+import { format } from "date-fns";
 interface ActivePopups {
   [key: number]: number | null;
 }
@@ -55,6 +59,9 @@ const data = [
 ];
 
 const ProjectStatus = () => {
+  const { projects, projectDetail } = useAppSelector(
+    (state) => state.projectManagement
+  );
   const newStatusData = [
     {
       name: "Sales",
@@ -66,9 +73,10 @@ const ProjectStatus = () => {
         {
           name: "10 Apr",
           process: "Completed",
-          bgColor: "#57B93A",
-          color: "white",
+          bgColor: projectDetail.sales_completed ? "#57B93A" : "#F2F4F6",
+          color: projectDetail.sales_completed ? "white" : "#101828",
           borderColor: "white",
+          key: "sales_completed",
         },
       ],
     },
@@ -81,19 +89,21 @@ const ProjectStatus = () => {
       childStatusData: [
         {
           name: "10 Apr",
-          process: "Pending",
-          bgColor: "#F2F4F6",
-          data: "data is not available",
-          color: "#101828",
+          process: projectDetail.ntp_pending ? "Completed" : "Pending",
+          data: projectDetail.ntp_pending ? "" : "data is not available",
           borderColor: "#A5AAB2",
+          key: "ntp_pending",
+          bgColor: projectDetail.ntp_pending ? "#57B93A" : "#F2F4F6",
+          color: projectDetail.ntp_pending ? "white" : "#101828",
         },
         {
           name: "10 Apr",
           process: "Completed",
-          bgColor: "#F2F4F6",
-          data: "data is not available",
-          color: "#101828",
+          data: projectDetail.ntp_completed ? "" : "data is not available",
           borderColor: "#A5AAB2",
+          key: "ntp_completed",
+          bgColor: projectDetail.ntp_completed ? "#57B93A" : "#F2F4F6",
+          color: projectDetail.ntp_completed ? "white" : "#101828",
         },
       ],
     },
@@ -105,28 +115,43 @@ const ProjectStatus = () => {
       numColor: "#0493CE",
       childStatusData: [
         {
-          bgColor: "#F2F4F6",
-          name: "ETA 20",
-          process: "Scheduled",
-          color: "#101828",
-          data: "data is not available",
+          name: "10 Apr",
+          process: projectDetail.site_survey_scheduled
+            ? "Scheduled"
+            : "Completed",
+          data: projectDetail.site_survey_scheduled
+            ? ""
+            : "data is not available",
           borderColor: "#A5AAB2",
+          key: "site_survey_scheduled",
+          bgColor: projectDetail.site_survey_scheduled ? "#57B93A" : "#F2F4F6",
+          color: projectDetail.site_survey_scheduled ? "white" : "#101828",
         },
         {
-          bgColor: "#F2F4F6",
-          name: "ETA 20",
-          process: "Re-Scheduled",
-          color: "#101828",
-          data: "data is not available",
+          name: "10 Apr",
+          process: projectDetail.site_survey_rescheduled
+            ? "Re-Scheduled"
+            : "Completed",
+          data: projectDetail.site_survey_rescheduled
+            ? ""
+            : "data is not available",
           borderColor: "#A5AAB2",
+          key: "site_survey_rescheduled",
+          bgColor: projectDetail.site_survey_rescheduled
+            ? "#57B93A"
+            : "#F2F4F6",
+          color: projectDetail.site_survey_rescheduled ? "white" : "#101828",
         },
         {
-          bgColor: "#F2F4F6",
-          name: "ETA 22",
+          name: "10 Apr",
           process: "Completed",
-          color: "#101828",
-          data: "data is not available",
+          data: projectDetail.site_survey_completed
+            ? ""
+            : "data is not available",
           borderColor: "#A5AAB2",
+          key: "site_survey_completed",
+          bgColor: projectDetail.site_survey_completed ? "#57B93A" : "#F2F4F6",
+          color: projectDetail.site_survey_completed ? "white" : "#101828",
         },
       ],
     },
@@ -138,28 +163,31 @@ const ProjectStatus = () => {
       bgColor: "#0493CE",
       childStatusData: [
         {
-          bgColor: "#F2F4F6",
-          name: "ETA 20",
-          process: "Pending",
-          color: "#101828",
-          data: "data is not available",
+          name: "10 Apr",
+          process: projectDetail.roofing_pending ? "Completed" : "Pending",
+          data: projectDetail.roofing_pending ? "" : "data is not available",
           borderColor: "#A5AAB2",
+          key: "roofing_pending",
+          bgColor: projectDetail.roofing_pending ? "#57B93A" : "#F2F4F6",
+          color: projectDetail.roofing_pending ? "white" : "#101828",
         },
         {
-          bgColor: "#F2F4F6",
-          name: "ETA 20",
-          process: "Scheduled",
-          color: "#101828",
-          data: "data is not available",
+          name: "10 Apr",
+          process: projectDetail.roofing_scheduled ? "Completed" : "Scheduled",
+          data: projectDetail.roofing_scheduled ? "" : "data is not available",
           borderColor: "#A5AAB2",
+          key: "roofing_scheduled",
+          bgColor: projectDetail.roofing_scheduled ? "#57B93A" : "#F2F4F6",
+          color: projectDetail.roofing_scheduled ? "white" : "#101828",
         },
         {
-          bgColor: "#F2F4F6",
-          name: "ETA 22",
+          name: "10 Apr",
           process: "Completed",
-          color: "#101828",
-          data: "data is not available",
+          data: projectDetail.roofing_scheduled ? "" : "data is not available",
           borderColor: "#A5AAB2",
+          key: "roofing_scheduled",
+          bgColor: projectDetail.roofing_scheduled ? "#57B93A" : "#F2F4F6",
+          color: projectDetail.roofing_scheduled ? "white" : "#101828",
         },
       ],
     },
@@ -172,33 +200,42 @@ const ProjectStatus = () => {
       bgColor: "#0493CE",
       childStatusData: [
         {
-          bgColor: "#F2F4F6",
-          name: "ETA 20",
-          process: "Pending",
-          color: "#101828",
-          data: "data is not available",
+          name: "10 Apr",
+          process: projectDetail.electrical_pending ? "Completed" : "Pending",
+          data: projectDetail.electrical_pending ? "" : "data is not available",
           borderColor: "#A5AAB2",
+          key: "electrical_pending",
+          bgColor: projectDetail.electrical_pending ? "#57B93A" : "#F2F4F6",
+          color: projectDetail.electrical_pending ? "white" : "#101828",
         },
         {
-          bgColor: "#F2F4F6",
-          name: "ETA 20",
-          process: "Scheduled",
-          color: "#101828",
-          data: "data is not available",
+          name: "10 Apr",
+          process: projectDetail.electrical_scheduled
+            ? "Completed"
+            : "Scheduled",
+          data: projectDetail.electrical_scheduled
+            ? ""
+            : "data is not available",
           borderColor: "#A5AAB2",
+          key: "electrical_scheduled",
+          bgColor: projectDetail.electrical_scheduled ? "#57B93A" : "#F2F4F6",
+          color: projectDetail.electrical_scheduled ? "white" : "#101828",
         },
         {
-          bgColor: "#F2F4F6",
-          name: "ETA 22",
+          name: "10 Apr",
           process: "Completed",
-          color: "#101828",
-          data: "data is not available",
+          data: projectDetail.electrical_completed
+            ? ""
+            : "data is not available",
           borderColor: "#A5AAB2",
+          key: "electrical_completed",
+          bgColor: projectDetail.electrical_completed ? "#57B93A" : "#F2F4F6",
+          color: projectDetail.electrical_completed ? "white" : "#101828",
         },
       ],
     },
     {
-      name: "PV Permit Submitted",
+      name: "PV Permit ",
       number: "6",
       bgColor: "#0493CE",
       color: "white",
@@ -206,28 +243,37 @@ const ProjectStatus = () => {
       numColor: "#0493CE",
       childStatusData: [
         {
-          bgColor: "#F2F4F6",
-          name: "ETA 20",
-          color: "#101828",
-          process: "Pending",
+          name: "10 Apr",
+          process: projectDetail.pv_permit_pending ? "Completed" : "Pending",
+          data: projectDetail.pv_permit_pending ? "" : "data is not available",
           borderColor: "#A5AAB2",
-          data: "data is not available",
+          key: "pv_permit_pending",
+          bgColor: projectDetail.pv_permit_pending ? "#57B93A" : "#F2F4F6",
+          color: projectDetail.pv_permit_pending ? "white" : "#101828",
         },
         {
-          bgColor: "#F2F4F6",
-          name: "ETA 22",
-          color: "#101828",
-          process: "Submitted",
+          name: "10 Apr",
+          process: projectDetail.pv_permit_scehduled
+            ? "Completed"
+            : "Submitted",
+          data: projectDetail.pv_permit_scehduled
+            ? ""
+            : "data is not available",
           borderColor: "#A5AAB2",
-          data: "data is not available",
+          key: "pv_permit_scehduled",
+          bgColor: projectDetail.pv_permit_scehduled ? "#57B93A" : "#F2F4F6",
+          color: projectDetail.pv_permit_scehduled ? "white" : "#101828",
         },
         {
-          bgColor: "#F2F4F6",
-          name: "ETA 25",
-          color: "#101828",
-          data: "data is not available",
+          name: "10 Apr",
           process: "Approved",
+          data: projectDetail.pv_permit_completed
+            ? ""
+            : "data is not available",
           borderColor: "#A5AAB2",
+          key: "pv_permit_completed",
+          bgColor: projectDetail.pv_permit_completed ? "#57B93A" : "#F2F4F6",
+          color: projectDetail.pv_permit_completed ? "white" : "#101828",
         },
       ],
     },
@@ -240,28 +286,37 @@ const ProjectStatus = () => {
       bgColor: "#0493CE",
       childStatusData: [
         {
-          bgColor: "#F2F4F6",
-          name: "ETA 20",
-          color: "#101828",
-          process: "Pending",
+          name: "10 Apr",
+          process: projectDetail.ic_permit_pending ? "Completed" : "Pending",
+          data: projectDetail.ic_permit_pending ? "" : "data is not available",
           borderColor: "#A5AAB2",
-          data: "data is not available",
+          key: "ic_permit_pending",
+          bgColor: projectDetail.ic_permit_pending ? "#57B93A" : "#F2F4F6",
+          color: projectDetail.ic_permit_pending ? "white" : "#101828",
         },
         {
-          bgColor: "#F2F4F6",
-          name: "ETA 22",
-          color: "#101828",
-          process: "Submitted",
-          data: "data is not available",
+          name: "10 Apr",
+          process: projectDetail.ic_permit_scheduled
+            ? "Completed"
+            : "Submitted",
+          data: projectDetail.ic_permit_scheduled
+            ? ""
+            : "data is not available",
           borderColor: "#A5AAB2",
+          key: "ic_permit_scheduled",
+          bgColor: projectDetail.ic_permit_scheduled ? "#57B93A" : "#F2F4F6",
+          color: projectDetail.ic_permit_scheduled ? "white" : "#101828",
         },
         {
-          bgColor: "#F2F4F6",
-          color: "#101828",
-          name: "ETA 25",
-          data: "data is not available",
+          name: "10 Apr",
           process: "Approved",
+          data: projectDetail.ic_permit_completed
+            ? ""
+            : "data is not available",
           borderColor: "#A5AAB2",
+          key: "ic_permit_completed",
+          bgColor: projectDetail.ic_permit_completed ? "#57B93A" : "#F2F4F6",
+          color: projectDetail.ic_permit_completed ? "white" : "#101828",
         },
       ],
     },
@@ -274,36 +329,42 @@ const ProjectStatus = () => {
       numColor: "#0493CE",
       childStatusData: [
         {
-          bgColor: "#F2F4F6",
-          name: "ETA 20",
-          process: "Pending",
-          color: "#101828",
-          data: "data is not available",
+          name: "10 Apr",
+          process: projectDetail.install_pending ? "Completed" : "Pending",
+          data: projectDetail.install_pending ? "" : "data is not available",
           borderColor: "#A5AAB2",
+          key: "install_pending",
+          bgColor: projectDetail.install_pending ? "#57B93A" : "#F2F4F6",
+          color: projectDetail.install_pending ? "white" : "#101828",
+        },
+
+        {
+          name: "10 Apr",
+          process: projectDetail.install_ready ? "Completed" : "Ready",
+          data: projectDetail.install_ready ? "" : "data is not available",
+          borderColor: "#A5AAB2",
+          key: "install_ready",
+          bgColor: projectDetail.install_ready ? "#57B93A" : "#F2F4F6",
+          color: projectDetail.install_ready ? "white" : "#101828",
         },
         {
-          bgColor: "#F2F4F6",
-          name: "ETA 20",
-          process: "Ready",
-          color: "#101828",
-          data: "data is not available",
+          name: "10 Apr",
+          process: projectDetail.install_scheduled ? "Completed" : "Scheduled",
+          data: projectDetail.install_scheduled ? "" : "data is not available",
           borderColor: "#A5AAB2",
+          key: "install_scheduled",
+          bgColor: projectDetail.install_scheduled ? "#57B93A" : "#F2F4F6",
+          color: projectDetail.install_scheduled ? "white" : "#101828",
         },
+
         {
-          bgColor: "#F2F4F6",
-          name: "ETA 20",
-          process: "Scheduled",
-          color: "#101828",
-          data: "data is not available",
-          borderColor: "#A5AAB2",
-        },
-        {
-          bgColor: "#F2F4F6",
-          name: "ETA 22",
+          name: "10 Apr",
           process: "Completed",
-          color: "#101828",
-          data: "data is not available",
+          data: projectDetail.install_completed ? "" : "data is not available",
           borderColor: "#A5AAB2",
+          key: "install_completed",
+          bgColor: projectDetail.install_completed ? "#57B93A" : "#F2F4F6",
+          color: projectDetail.install_completed ? "white" : "#101828",
         },
       ],
     },
@@ -316,20 +377,34 @@ const ProjectStatus = () => {
       bgColor: "#0493CE",
       childStatusData: [
         {
-          bgColor: "#F2F4F6",
-          name: "ETA 20",
-          color: "#101828",
-          process: "Submitted",
+          name: "10 Apr",
+          process: projectDetail.final_inspection_submitted
+            ? "Completed"
+            : "Scheduled",
+          data: projectDetail.final_inspection_submitted
+            ? ""
+            : "data is not available",
           borderColor: "#A5AAB2",
-          data: "data is not available",
+          key: "final_inspection_submitted",
+          bgColor: projectDetail.final_inspection_submitted
+            ? "#57B93A"
+            : "#F2F4F6",
+          color: projectDetail.final_inspection_submitted ? "white" : "#101828",
         },
         {
-          bgColor: "#F2F4F6",
-          name: "ETA 22",
-          color: "#101828",
-          process: "Approved",
-          data: "data is not available",
+          name: "10 Apr",
+          process: projectDetail.final_inspection_approved
+            ? "Completed"
+            : "Approved",
+          data: projectDetail.final_inspection_approved
+            ? ""
+            : "data is not available",
           borderColor: "#A5AAB2",
+          key: "final_inspection_approved",
+          bgColor: projectDetail.final_inspection_approved
+            ? "#57B93A"
+            : "#F2F4F6",
+          color: projectDetail.final_inspection_approved ? "white" : "#101828",
         },
       ],
     },
@@ -342,40 +417,43 @@ const ProjectStatus = () => {
       bgColor: "#0493CE",
       childStatusData: [
         {
-          bgColor: "#F2F4F6",
-          name: "ETA 20",
-          process: "In Process",
-          color: "#101828",
-          data: "data is not available",
+          name: "10 Apr",
+          process: projectDetail.pto_in_process ? "Completed" : "In Process",
+          data: projectDetail.pto_in_process ? "" : "data is not available",
           borderColor: "#A5AAB2",
+          key: "pto_in_process",
+          bgColor: projectDetail.pto_in_process ? "#57B93A" : "#F2F4F6",
+          color: projectDetail.pto_in_process ? "white" : "#101828",
         },
         {
-          bgColor: "#F2F4F6",
-          name: "ETA 20",
-          process: "Submitted",
+          name: "10 Apr",
+          process: projectDetail.pto_submitted ? "Completed" : "Submitted",
+          data: projectDetail.pto_submitted ? "" : "data is not available",
           borderColor: "#A5AAB2",
-          data: "data is not available",
-          color: "#101828",
+          key: "pto_submitted",
+          bgColor: projectDetail.pto_submitted ? "#57B93A" : "#F2F4F6",
+          color: projectDetail.pto_submitted ? "white" : "#101828",
         },
 
         {
-          bgColor: "#F2F4F6",
-          name: "ETA 22",
-          process: "Completed",
-          color: "#101828",
+          name: "10 Apr",
+          process: "Approved",
+          data: projectDetail.pto_completed ? "" : "data is not available",
           borderColor: "#A5AAB2",
-          data: "data is not available",
+          key: "pto_completed",
+          bgColor: projectDetail.pto_completed ? "#57B93A" : "#F2F4F6",
+          color: projectDetail.pto_completed ? "white" : "#101828",
         },
       ],
     },
   ];
   const [activePopups, setActivePopups] = useState<boolean>(false);
-  const { projects } = useAppSelector((state) => state.projectManagement);
+
   const [selectedProject, setSelectedProject] = useState<{
     label: string;
     value: string;
   }>({} as Option);
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
 
   const handleClickOutside = (e: MouseEvent) => {
     const elm = e.target as HTMLElement;
@@ -384,9 +462,9 @@ const ProjectStatus = () => {
     }
   };
 
-  useEffect(()=>{
-    dispatch(getProjects())
-  },[])
+  useEffect(() => {
+    dispatch(getProjects());
+  }, []);
   const projectOption: Option[] = projects.map(
     (item: (typeof projects)[0]) => ({
       label: item.unqiue_id,
@@ -406,11 +484,10 @@ const ProjectStatus = () => {
   useEffect(() => {
     if (projectOption.length) {
       setSelectedProject(projectOption[0]);
-      dispatch(getProjectDetail(projectOption[0]?.value))
+      dispatch(getProjectDetail(projectOption[0]?.value));
     }
   }, [projectOption.length]);
 
-  
   return (
     <div className="">
       <Breadcrumb
@@ -449,7 +526,10 @@ const ProjectStatus = () => {
               >
                 <div className="">
                   <p className="para-head">{el.name}</p>
-                  <span className="span-para">{el.para}</span>
+                  <span className="span-para">
+                    {projectDetail[el.key as keyof typeof projectDetail] ||
+                      "N/A"}
+                  </span>
                 </div>
                 {el.viewButton ? (
                   <div
@@ -578,15 +658,42 @@ const ProjectStatus = () => {
                                   ETA
                                 </span>
                                 <p style={{ color: el.color, fontSize: "9px" }}>
-                                  20 Apr
+                                  {el.key &&
+                                  projectDetail[
+                                    el.key as keyof typeof projectDetail
+                                  ]
+                                    ? format(
+                                        new Date(
+                                          projectDetail[
+                                            el.key as keyof typeof projectDetail
+                                          ]
+                                        ),
+                                        "dd MMMM"
+                                      ).slice(0, 6)
+                                    : "N/A"}
                                 </p>
-                                <p
-                                  className="stage-1-para"
-                                  style={{ color: el.color, fontSize: "10px" }}
-                                >
-                                  {" "}
-                                  2024
-                                </p>
+                                {el.key &&
+                                  projectDetail[
+                                    el.key as keyof typeof projectDetail
+                                  ] && (
+                                    <p
+                                      className="stage-1-para"
+                                      style={{
+                                        color: el.color,
+                                        fontSize: "10px",
+                                      }}
+                                    >
+                                      {" "}
+                                      {format(
+                                        new Date(
+                                          projectDetail[
+                                            el.key as keyof typeof projectDetail
+                                          ]
+                                        ),
+                                        "yyyy"
+                                      )}
+                                    </p>
+                                  )}
                               </div>
                               <div
                                 className="border-notch"
