@@ -18,6 +18,8 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
+import { getProjectDetail, getProjects } from "../../../redux/apiSlice/projectManagement";
 interface ActivePopups {
   [key: number]: number | null;
 }
@@ -52,16 +54,6 @@ const data = [
   },
 ];
 
-const projectOption: Option[] = [
-  {
-    value: "project_one",
-    label: "Project 1",
-  },
-  {
-    value: "project_two",
-    label: "Project Two",
-  },
-];
 const ProjectStatus = () => {
   const newStatusData = [
     {
@@ -378,14 +370,29 @@ const ProjectStatus = () => {
     },
   ];
   const [activePopups, setActivePopups] = useState<boolean>(false);
-  const menuRef = useRef();
-  // State to store active popups for each row
+  const { projects } = useAppSelector((state) => state.projectManagement);
+  const [selectedProject, setSelectedProject] = useState<{
+    label: string;
+    value: string;
+  }>({} as Option);
+  const dispatch = useAppDispatch()
+
   const handleClickOutside = (e: MouseEvent) => {
     const elm = e.target as HTMLElement;
     if (!elm.closest(".popup") && !elm.classList.contains("view-flex")) {
       setActivePopups(false);
     }
   };
+
+  useEffect(()=>{
+    dispatch(getProjects())
+  },[])
+  const projectOption: Option[] = projects.map(
+    (item: (typeof projects)[0]) => ({
+      label: item.unqiue_id,
+      value: item.unqiue_id,
+    })
+  );
   useEffect(() => {
     if (activePopups) {
       document.addEventListener("mousedown", handleClickOutside);
@@ -396,6 +403,14 @@ const ProjectStatus = () => {
     };
   }, [activePopups]);
 
+  useEffect(() => {
+    if (projectOption.length) {
+      setSelectedProject(projectOption[0]);
+      dispatch(getProjectDetail(projectOption[0]?.value))
+    }
+  }, [projectOption.length]);
+
+  
   return (
     <div className="">
       <Breadcrumb
@@ -404,7 +419,7 @@ const ProjectStatus = () => {
         route={""}
         linkparaSecond="Dashboard"
       />
-      <div className="project-container" style={{padding: "0px"}}>
+      <div className="project-container" style={{ padding: "0px" }}>
         <div
           className="project-heading"
           style={{
@@ -417,10 +432,8 @@ const ProjectStatus = () => {
             <div className="">
               <SelectOption
                 options={projectOption}
-                value={projectOption?.find(
-                  (option) => option.value === "project_one"
-                )}
-                onChange={() => {}}
+                value={selectedProject}
+                onChange={(val) => val && setSelectedProject(val)}
               />
             </div>
           </div>
@@ -514,8 +527,8 @@ const ProjectStatus = () => {
         <div className="project-management-table">
           <table>
             <tbody>
-              <tr style={{borderBottom: "none"}}>
-                <td style={{padding: "0px"}}>
+              <tr style={{ borderBottom: "none" }}>
+                <td style={{ padding: "0px" }}>
                   <div className="project-staus-progress-container">
                     {newStatusData.map((item: any, i: any) => (
                       <>
