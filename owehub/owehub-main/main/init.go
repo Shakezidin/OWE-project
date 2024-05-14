@@ -1120,7 +1120,7 @@ var apiRoutes = ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
-		"/owe-commissions-service/v1/get_projectmngmnt",
+		"/owe-commissions-service/v1/get_projectmgmnt",
 		apiHandler.HandleGetProjectMngmntRequest,
 		true,
 		[]types.UserGroup{types.GroupEveryOne},
