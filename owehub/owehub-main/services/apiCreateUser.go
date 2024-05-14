@@ -162,7 +162,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	queryParameters = append(queryParameters, tablesPermissionsJSON)
 
 	// Call the stored procedure or function to create the user
-	_, err = db.CallDBFunction(db.RowDataDBIndex, db.CreateUserFunction, queryParameters)
+	_, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateUserFunction, queryParameters)
 	if err != nil {
 		// Join selected parts with underscores
 		username := strings.Join(strings.Fields(createUserReq.Name)[0:2], "_")
