@@ -72,38 +72,28 @@ func HandleGetDbLogsRequest(resp http.ResponseWriter, req *http.Request) {
 		SELECT usename, datname, query_start, query
 		FROM pg_stat_activity
 	`
-
 	roleQuery = `
-		SELECT ur.role_name AS role_name, ud.name as name
-		FROM user_details ud
-		JOIN user_roles ur ON ud.role_id = ur.role_id
-		WHERE ur.role_name IN ('Admin', 'DB User') AND ud.email_id = $1;
+		SELECT ud.name as name
+		FROM user_details WHERE email_id = $1;
 	`
 
 	userEmailId = req.Context().Value("emailid").(string)
+	role = req.Context().Value("rolename").(string)
 	whereEleList = append(whereEleList, userEmailId)
-	data, err = db.ReteriveFromDB(db.OweHubDbIndex, roleQuery, whereEleList)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get user from DB err: %v", err)
-		FormAndSendHttpResp(resp, "No user exists", http.StatusBadRequest, nil)
-		return
-	}
 
-	if len(data) > 0 {
-		name = data[0]["name"].(string)
-		role = data[0]["role_name"].(string)
-
-		// this creates username for the db users
-		username = strings.Join(strings.Fields(name)[0:2], "_")
-		dataReq.Username = username
-	} else {
-		log.FuncErrorTrace(0, "Failed to get user from DB err: %v", err)
-		FormAndSendHttpResp(resp, "No user exists", http.StatusBadRequest, nil)
-		return
-	}
-
+	// this control flow checks if admin or db user.
 	if role == "Admin" {
 		adminCheck = true
+	} else {
+		data, err = db.ReteriveFromDB(db.OweHubDbIndex, roleQuery, whereEleList)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get user from DB err: %v", err)
+			FormAndSendHttpResp(resp, "No user exists", http.StatusBadRequest, nil)
+			return
+		}
+		name = data[0]["name"].(string)
+		username = strings.Join(strings.Fields(name)[0:2], "_")
+		dataReq.Username = username
 	}
 
 	start, end, err := ConvertDate(dataReq)
@@ -154,7 +144,7 @@ func HandleGetDbLogsRequest(resp http.ResponseWriter, req *http.Request) {
 
 	recordLen := len(data)
 	log.FuncInfoTrace(0, "Number of DbLogs List fetched : %v list %+v", len(loglist.DbLogList), recordLen)
-	FormAndSendHttpResp(resp, "PerfomanceDbLogs result", http.StatusOK, loglist, int64(recordLen))
+	FormAndSendHttpResp(resp, "DbLogs result", http.StatusOK, loglist, int64(recordLen))
 }
 
 /******************************************************************************

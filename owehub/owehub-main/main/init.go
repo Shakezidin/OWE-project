@@ -1130,7 +1130,7 @@ var apiRoutes = ApiRoutes{
 		"/owe-commisions-service/v1/db_logs",
 		apiHandler.HandleGetDbLogsRequest,
 		true,
-		[]types.UserGroup{types.GroupEveryOne},
+		[]types.UserGroup{types.GroupDb},
 	},
 	// {
 	// 	strings.ToUpper("POST"),
