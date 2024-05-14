@@ -1,8 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-
 import { toast } from "react-toastify";
 import { postCaller } from "../../infrastructure/web_api/services/apiUrl";
-import { stat } from "fs";
 export interface IPerfomanceSale {
   Type: string;
   sales: number;
@@ -68,6 +66,7 @@ interface IState {
   isSuccess: number;
   commisionMetrics: ICommision;
   projectStatus: IProjectStatus[];
+  projectsCount:number
 }
 
 const initialState: IState = {
@@ -77,6 +76,7 @@ const initialState: IState = {
   isSuccess: 0,
   commisionMetrics: {} as ICommision,
   projectStatus: [],
+  projectsCount:0
 };
 
 const perfomanceSlice = createSlice({
@@ -109,6 +109,7 @@ const perfomanceSlice = createSlice({
       .addCase(getPerfomanceStatus.fulfilled, (state, action) => {
         state.isLoading = false;
         state.projectStatus = action.payload.list;
+        state.projectsCount = action.payload.count
       })
       .addCase(getPerfomanceStatus.rejected, (state, action) => {
         state.isLoading = false;
