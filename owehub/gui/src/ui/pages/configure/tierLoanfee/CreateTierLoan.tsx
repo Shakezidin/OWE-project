@@ -192,8 +192,8 @@ const CreateTierLoan:React.FC<tierLoanProps> = ({handleClose,tierEditedData,edit
                     <Input
                       type={"date"}
                       label="End Date"
-                      value={createTier.start_date}
-                      name="start_date"
+                      value={createTier.end_date}
+                      name="end_date"
                       placeholder={"10/04/2004"}
                       onChange={(e) => handleTierChange(e)}
                     />

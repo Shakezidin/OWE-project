@@ -127,6 +127,9 @@ export const DashboardPage: React.FC = () => {
                     fontSize: "13px",
                     color: state.isSelected ? "#ffffff" : "#0493CE",
                     backgroundColor: state.isSelected ? "#0493CE" : "#ffffff",
+                    "&:hover": {
+                      backgroundColor: state.isSelected ? "#0493CE" : "#f2f2f2",
+                    },
                   }),
                   singleValue: (baseStyles, state) => ({
                     ...baseStyles,
