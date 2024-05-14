@@ -110,7 +110,7 @@ const UserActivity: React.FC = () => {
                     indeterminate={isAnyRowSelected && !isAllRowsSelected}
                   />
                 </th>
-                <th style={{ paddingLeft: "0px" }}>
+                <th style={{ paddingLeft: "10px" }}>
                   <div className="table-header">
                     <p>User Name</p> <FaArrowDown style={{ color: "#667085" }} />
                   </div>
@@ -151,7 +151,7 @@ const UserActivity: React.FC = () => {
                         }
                       />
                     </td>
-                    <td style={{ fontWeight: "500", color: "black", paddingLeft: "0px", textAlign: "left" }}>
+                    <td style={{ fontWeight: "500", color: "black", paddingLeft: "10px", textAlign: "left" }}>
                       {el.username}
                     </td>
                     <td style={{ textAlign: "left" }}>{el.db_name}</td>
