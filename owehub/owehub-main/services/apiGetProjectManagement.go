@@ -64,7 +64,7 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 	}
 
 	allSaleRepQuery := models.SalesRepRetrieveQueryFunc()
-	saleMetricsQuery := models.SalesMetricsRetrieveQueryFunc()
+	saleMetricsQuery := models.ProjectMngmntRetrieveQueryFunc()
 	otherRoleQuery := models.AdminDlrSaleRepRetrieveQueryFunc()
 
 	tableName := db.ViewName_ConsolidatedDataView
@@ -177,6 +177,10 @@ func mapRowToStruct(item map[string]interface{}, v interface{}) {
 					field.SetString(dbValueTimeString)
 				} else if dbValueStr, ok := dbValue.(string); ok {
 					field.SetString(dbValueStr)
+				}
+			case float64:
+				if dbValueFloat, ok := dbValue.(float64); ok {
+					field.SetFloat(dbValueFloat)
 				}
 			}
 		}
