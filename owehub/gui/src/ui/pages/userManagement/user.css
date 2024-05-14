@@ -123,12 +123,16 @@ opacity: 0px;
   line-height: 14.5px;
   text-align: left;
 }
+.access-data {
+  align-items: center;
+  justify-content: center;
+  margin-top: 5px;
+}
 .access-data p {
   font-size: 14px;
   font-weight: 500;
   line-height: 14.5px;
   text-align: left;
-  margin-top: 0.4rem;
 }
 .dash-select-user {
   background-color: #ececec;

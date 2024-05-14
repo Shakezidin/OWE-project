@@ -210,8 +210,8 @@ setTablePermissions({})
                     handleChangeForRegion(value, name);
                   }}
                 />
-                <div className="">
-                  <div className="" style={{ display: "flex", gap: "0.5rem" }}>
+                <div style={{alignItems:'center', justifyContent:'center'}}>
+                  <div style={{ display: "flex",alignItems:'center', gap:'0.5rem' }}>
                     <CheckBox
                       checked={dbAccess}
                       disabled={
@@ -221,7 +221,7 @@ setTablePermissions({})
                       onChange={() => setDbAcess((prev) => !prev)}
                     />
                     <div className="access-data">
-                      <p>Database Access</p>
+                    <p>Database Access</p>
                     </div>
                   </div>
                   <div className="" style={{ marginTop: "0.2rem" }}>
@@ -238,8 +238,8 @@ setTablePermissions({})
                         </div>
                       ))}
 
-                      {(TYPE_OF_USER.DB_USER === selectedOption.value ||
-                        TYPE_OF_USER.ADMIN === selectedOption.value) && (
+                      {((TYPE_OF_USER.DB_USER === selectedOption.value ||
+                        TYPE_OF_USER.ADMIN === selectedOption.value)&& dbAccess) && (
                         <div
                           className="Line-container"
                           style={{ marginTop: "0.3rem" }}
