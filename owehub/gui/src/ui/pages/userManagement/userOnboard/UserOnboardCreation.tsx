@@ -14,7 +14,7 @@ import { useAppSelector } from "../../../../redux/hooks";
 import Loading from "../../../components/loader/Loading";
 import { ALL_USER_ROLE_LIST } from "../../../../resources/static_data/TypeOfUser";
 import "./Userboard.css";
-
+import { TYPE_OF_USER } from "../../../../resources/static_data/TypeOfUser";
 interface createUserProps {
   editMode: boolean;
   handleClose: () => void;
@@ -23,6 +23,7 @@ interface createUserProps {
   onChangeRole: (role: string, value: string) => void;
   dealerList: any[];
   regionList: any[];
+  selectedOption: { label?: string; value?: string };
 }
 
 const UserOnboardingCreation: React.FC<createUserProps> = ({
@@ -31,11 +32,13 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
   onChangeRole,
   dealerList,
   regionList,
+  selectedOption,
 }) => {
   const dispatch = useDispatch();
   const [firstNameError, setFirstNameError] = useState("");
   const [lastNameError, setLastNameError] = useState("");
   const [phoneNumberError, setPhoneNumberError] = useState("");
+  const [dbAccess, setDbAcess] = useState(false);
   const { loading, formData } = useAppSelector(
     (state) => state.createOnboardUser
   );
@@ -50,6 +53,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
     dispatch(updateUserForm({ field: "report_to", value: "" }));
     const { value } = newValue;
     onChangeRole("Role", value);
+setTablePermissions({})
     dispatch(updateUserForm({ field: fieldName, value }));
   };
 
@@ -87,7 +91,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
       dispatch(updateUserForm({ field: name, value }));
     }
   };
-
+  console.log(TYPE_OF_USER.ADMIN === selectedOption.value, "slectedd   ");
   /** render ui */
   return (
     <div className="transparent-model">
@@ -99,7 +103,8 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          onSubmitCreateUser(tablePermissions);
+          Promise.resolve(onSubmitCreateUser(tablePermissions))
+          .then(()=>setTablePermissions({}))
         }}
         className="modal"
       >
@@ -208,10 +213,12 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                 <div className="">
                   <div className="" style={{ display: "flex", gap: "0.5rem" }}>
                     <CheckBox
-                      checked={false}
-                      onChange={() => {}}
-
-                      // indeterminate={isAnyRowSelected && !isAllRowsSelected}
+                      checked={dbAccess}
+                      disabled={
+                        selectedOption.value !== TYPE_OF_USER.ADMIN &&
+                        selectedOption.value !== TYPE_OF_USER.DB_USER
+                      }
+                      onChange={() => setDbAcess((prev) => !prev)}
                     />
                     <div className="access-data">
                       <p>Database Access</p>
@@ -231,23 +238,26 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                         </div>
                       ))}
 
-                      <div
-                        className="Line-container"
-                        style={{ marginTop: "0.3rem" }}
-                      >
+                      {(TYPE_OF_USER.DB_USER === selectedOption.value ||
+                        TYPE_OF_USER.ADMIN === selectedOption.value) && (
                         <div
-                          className="line-graph"
-                          onClick={() => setSelectTable(true)}
+                          className="Line-container"
+                          style={{ marginTop: "0.3rem" }}
                         >
-                          <div className="edit-line">
-                            <img
-                              src={ICONS.editIconUser}
-                              style={{ background: "white" }}
-                              alt=""
-                            />
+                          <div
+                            className="line-graph"
+                            onClick={() => setSelectTable(true)}
+                          >
+                            <div className="edit-line">
+                              <img
+                                src={ICONS.editIconUser}
+                                style={{ background: "white" }}
+                                alt=""
+                              />
+                            </div>
                           </div>
                         </div>
-                      </div>
+                      )}
                       {selectTable && (
                         <SelectTable
                           setSelectTable={setSelectTable}
@@ -290,7 +300,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
             onClick={handleClose}
             type={"button"}
           />
-          <ActionButton title={"Save"} onClick={() => {}} type={"submit"} />
+          <ActionButton title={"Create"} onClick={() => {}} type={"submit"} />
         </div>
       </form>
     </div>

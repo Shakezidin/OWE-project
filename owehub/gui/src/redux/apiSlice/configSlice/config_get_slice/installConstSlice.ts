@@ -7,7 +7,8 @@ interface IState {
   isFormSubmitting: boolean,
   error:string,
   data: ICost[],
-  isSuccess:boolean
+  isSuccess:boolean,
+  dbCount:number
 };
 
   const initialState:IState = {
@@ -15,7 +16,8 @@ interface IState {
     isFormSubmitting: false,
     error: "",
     data: [],
-    isSuccess:false
+    isSuccess:false,
+    dbCount:0
   };
   
 
@@ -34,7 +36,8 @@ const installCost = createSlice({
           })
           .addCase(getInstallCost.fulfilled, (state, action) => {
             state.isLoading = false;
-            state.data = action.payload;            
+            state.data = action.payload.list;
+            state.dbCount = action.payload.count;            
           })
           .addCase(getInstallCost.rejected, (state, action) => {
             state.isLoading = false;

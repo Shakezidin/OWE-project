@@ -109,6 +109,7 @@ const UserManagement: React.FC = () => {
   /** check role  */
   const onChangeRole = async (role: string, value: string) => {
     if (role === "Role") {
+      setSelectedOption(ALL_USER_ROLE_LIST?.find((role)=>role.value === value)!)
       await dispatch(
         fetchDealerOwner({
           role: TYPE_OF_USER.DEALER_OWNER,
@@ -141,7 +142,7 @@ const UserManagement: React.FC = () => {
     const formErrors = validateForm(formData);
     console.log("formErrors", formErrors);
     if (Object.keys(formErrors).length === 0) {
-      createUserRequest(arrayOfPermissions);
+      createUserRequest(arrayOfPermissions)
     } else {
       //const firstKey = Object.keys(formErrors)[0]; //Todo: change in future
       toast.info(Object.keys(formErrors)[0] + " is required.");
@@ -191,6 +192,7 @@ const UserManagement: React.FC = () => {
       }
     }
   };
+console.log(selectedOption,"slected Role");
 
   /** render UI */
   return (
@@ -219,6 +221,7 @@ const UserManagement: React.FC = () => {
           dealerList={dealerOwenerList}
           regionList={regionList}
           editMode={false}
+          selectedOption={selectedOption}
           userOnboard={null}
           onSubmitCreateUser={onSubmitCreateUser}
           onChangeRole={(role, value) => {
