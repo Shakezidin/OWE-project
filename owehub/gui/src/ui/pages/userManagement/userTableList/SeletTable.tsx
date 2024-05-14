@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React, { } from "react";
 import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cross_button.svg";
 import { ICONS } from "../../../icons/Icons";
-import CheckBox from "../../../components/chekbox/CheckBox";
 import { FaArrowDown } from "react-icons/fa6";
 
 interface ButtonProps {
@@ -14,14 +13,7 @@ const SelectTable: React.FC<ButtonProps> = ({
   setTablePermissions,
   tablePermissions,
 }) => {
-  // const [circleStates, setCircleStates] = useState(Array(1).fill(Array(1).fill(false)));
-  
 
-  // const toggleCircle = (rowIndex, colIndex) => {
-  //     const newCircleStates = [...circleStates];
-  //     newCircleStates[rowIndex][colIndex] = !circleStates[rowIndex][colIndex];
-  //     setCircleStates(newCircleStates);
-  //   };
 
   function handleOptionChange(type: string, table: string) {
     setTablePermissions((permissions: any) => {
