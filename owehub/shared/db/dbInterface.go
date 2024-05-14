@@ -173,6 +173,7 @@ const (
 	TableName_sales_metrics_schema           string = "sales_metrics_schema"
 	TableName_Adder_data_config              string = "adder_data_cfg_shema"
 	TableName_finance_metrics_schema         string = "finance_metrics_schema"
+	TableName_Pg_Stat_Activity               string = "pg_stat_activity"
 )
 
 /******************************************************************************

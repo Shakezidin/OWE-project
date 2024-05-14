@@ -19,6 +19,7 @@ const (
 	GroupDealerFinance   UserGroup = "GroupDealerFinance"
 	GroupSalesManagement UserGroup = "GroupSalesManagement"
 	GroupEveryOne        UserGroup = "GroupEveryOne"
+	GroupDb              UserGroup = "GroupDb"
 )
 
 var (
@@ -26,6 +27,10 @@ var (
 	UserRoleGroupMap = map[UserGroup][]UserRoles{
 		GroupAdmin: {
 			RoleAdmin,
+		},
+		GroupDb: {
+			RoleAdmin,
+			RoleDbUser,
 		},
 		GroupDealerFinance: {
 			RoleDealerOwner,
@@ -35,7 +40,7 @@ var (
 			RoleRegionalManager,
 			RoleSalesManager,
 			RoleSalesRep,
-		},GroupEveryOne: {
+		}, GroupEveryOne: {
 			RoleAdmin,
 			RoleDealerOwner,
 			RoleSubDealerOwner,
@@ -45,6 +50,7 @@ var (
 			RoleSalesRep,
 			RoleApptSetter,
 			RoleFinAdmin,
+			RoleDbUser,
 		},
 	}
 )
@@ -59,6 +65,7 @@ const (
 	RoleSalesRep        UserRoles = "Sale Representative"
 	RoleApptSetter      UserRoles = "Appointment Setter"
 	RoleFinAdmin        UserRoles = "Finance Admin"
+	RoleDbUser          UserRoles = "DB User"
 )
 
 var (
