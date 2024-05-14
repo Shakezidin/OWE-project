@@ -114,10 +114,16 @@ const ArDashBoardTable = () => {
 
   const Commissioncolumns = [
     {
+      name: "unique_id",
+      displayName: "uniqueId",
+      type: "string",
+      isCheckbox: true,
+    },
+    {
       name: "partner",
       displayName: "Partner",
       type: "string",
-      isCheckbox: true,
+      isCheckbox: false,
     },
     {
       name: "installer",
@@ -126,83 +132,37 @@ const ArDashBoardTable = () => {
       isCheckbox: false,
     },
     {
-      name: "installer",
+      name: "type",
       displayName: "Type",
       type: "string",
       isCheckbox: false,
     },
+   
     {
-      name: "sale_type",
-      displayName: "Service",
-      type: "string",
-      isCheckbox: false,
-    },
-    {
-      name: "sale_price",
-      displayName: "Home Own",
+      name: "home_owner",
+      displayName: "Home Owner",
       type: "number",
       isCheckbox: false,
     },
     {
-      name: "rep_type",
+      name: "street_Address",
       displayName: "Strt Add",
       type: "string",
       isCheckbox: false,
     },
-    { name: "rl", displayName: "City", type: "number", isCheckbox: false },
-    { name: "rate", displayName: "State", type: "number", isCheckbox: false },
-    { name: "start_date", displayName: "ZIP", type: "date", isCheckbox: false },
-    { name: "end_date", displayName: "KW", type: "date", isCheckbox: false },
-
-    {
-      name: "installer",
-      displayName: "Contr Date",
-      type: "string",
-      isCheckbox: false,
-    },
-    {
-      name: "state",
-      displayName: "Inst Date",
-      type: "string",
-      isCheckbox: false,
-    },
-    {
-      name: "sale_type",
-      displayName: "Curr Stat",
-      type: "string",
-      isCheckbox: false,
-    },
-    {
-      name: "sale_price",
-      displayName: "Stat Date",
-      type: "number",
-      isCheckbox: false,
-    },
-    {
-      name: "rep_type",
-      displayName: "Contract",
-      type: "string",
-      isCheckbox: false,
-    },
-    { name: "rl", displayName: "AR Total", type: "number", isCheckbox: false },
-    {
-      name: "rate",
-      displayName: "Amt Paid",
-      type: "number",
-      isCheckbox: false,
-    },
-    {
-      name: "start_date",
-      displayName: "Curr Due",
-      type: "date",
-      isCheckbox: false,
-    },
-    {
-      name: "end_date",
-      displayName: "Est. Pipeline",
-      type: "date",
-      isCheckbox: false,
-    },
+    { name: "city", displayName: "City", type: "string", isCheckbox: false },
+    { name: "st", displayName: "State", type: "string", isCheckbox: false },
+    { name: "zip", displayName: "Zip", type: "string", isCheckbox: false },
+    { name: "sys-size", displayName: "SysSize", type: "string", isCheckbox: false },
+    { name: "wc", displayName: "WC", type: "string", isCheckbox: false },
+    { name: "inst_sys", displayName: "InstSys", type: "string", isCheckbox: false },
+    { name: "status", displayName: "Status", type: "string", isCheckbox: false },
+    { name: "status_date", displayName: "Status Date", type: "string", isCheckbox: false },
+    { name: "contract_calc", displayName: "ContractCalc", type: "string", isCheckbox: false },
+    { name: "owe_ar", displayName: "OweAr", type: "string", isCheckbox: false },
+    { name: "total_paid", displayName: "Total Paid", type: "string", isCheckbox: false },
+    { name: "current_due", displayName: "Current Due", type: "string", isCheckbox: false },
+    { name: "balance", displayName: "Balance", type: "string", isCheckbox: false },
   ];
 
   const handleIconOpen = () => setOpenIcon(true);
@@ -273,28 +233,26 @@ const ArDashBoardTable = () => {
                               }
                             }}
                           />
-                          {el.partner}
+                          {el.unique_id}
                         </div>
                       </td>
+                      <td>{el.partner}</td>
                       <td>{el.installer}</td>
                       <td>{el.type}</td>
-                      <td> ""</td>
                       <td>{el.home_owner}</td>
                       <td>{el.street_address}</td>
                       <td>{el.city}</td>
                       <td>{el.st}</td>
                       <td>{el.zip}</td>
-                      {/* <td>{el.}</td> */}
-
-                      {/* <td>${el.rl}</td>
-                      <td>{el.state}</td>
-                      <td>{el.sale_type}</td>
-                      <td>{el.sale_price}</td>
-                      <td>{el.rep_type}</td>
-                      <td>{el.rl}</td>
-                      <td>{el.rate}</td>
-                      <td>{el.start_date}</td>
-                      <td>{el.end_date}</td> */}
+                      <td>{el.sys_size}</td>
+                      <td>{el.status}</td>
+                      <td>{el.status_date}</td>
+                      <td>{el.contract_calc}</td>
+                      <td>{el.owe_ar}</td>
+                      <td>{el.total_paid}</td>
+                      <td>{el.current_due}</td>
+                      <td>{el.balance}</td>
+               
                       <td
                         style={{
                           height: "14px",

@@ -83,9 +83,9 @@ import rep2 from '../../resources/assets/rep2.png'
 import rep3 from '../../resources/assets/rep3.png'
 // import browserIcon from '../../resources/assets/Cloud-upload.svg'
 // import whiteCross from '../../resources/assets/w'
-import dashboardSidebar from "../../resources/assets/dashboard-sidebar.svg"
-import dataSidebar from "../../resources/assets/data-sidebar.png"
-import activitySidebar from "../../resources/assets/activity-sidebar.svg"
+import dashboardSidebar from "../../resources/assets/sidebar-dashboard.png"
+import dataSidebar from "../../resources/assets/sidebar-data.png"
+import activitySidebar from "../../resources/assets/sidebar-activity.png"
 export const ICONS = {
   BACKGROUND: require("../../resources/assets/background.png"),
   LOGO: logo,

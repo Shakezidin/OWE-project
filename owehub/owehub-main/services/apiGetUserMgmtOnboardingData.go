@@ -25,11 +25,16 @@ import (
  ******************************************************************************/
 func HandleGetUserMgmtOnboardingDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err          error
-		dataReq      models.DataRequestBody
-		data         []map[string]interface{}
-		whereEleList []interface{}
-		query        string
+		err             error
+		dataReq         models.DataRequestBody
+		data            []map[string]interface{}
+		whereEleList    []interface{}
+		query           string
+		queryInactive   string
+		dayCount        string
+		activeSaleRep   int64
+		inactiveSaleRep int64
+		totalSaleRep    int64
 	)
 
 	log.EnterFn(0, "HandleGetUserMgmtOnboardingDataRequest")
@@ -56,11 +61,18 @@ func HandleGetUserMgmtOnboardingDataRequest(resp http.ResponseWriter, req *http.
 		return
 	}
 
+	dayCount = "90"
+	queryInactive = `
+		SELECT COUNT(DISTINCT primary_sales_rep) AS unique_sales_reps
+		FROM consolidated_data_view
+		WHERE contract_date BETWEEN current_date - interval '1 day' * $1 AND current_date;	
+	`
+
 	query = ` 
-	SELECT ur.role_name, COUNT(u.user_id) AS user_count
-	FROM user_details u
-	INNER JOIN user_roles ur ON u.role_id = ur.role_id
-	GROUP BY ur.role_name;`
+		SELECT ur.role_name, COUNT(u.user_id) AS user_count
+		FROM user_details u
+		INNER JOIN user_roles ur ON u.role_id = ur.role_id
+		GROUP BY ur.role_name;`
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {
@@ -70,8 +82,8 @@ func HandleGetUserMgmtOnboardingDataRequest(resp http.ResponseWriter, req *http.
 	}
 
 	log.FuncErrorTrace(0, "Data Tables %+v", data)
-
 	usrMgOnbList := models.GetUsMgmtOnbList{}
+	totalSaleRep = 0
 
 	for _, item := range data {
 		// RoleName
@@ -79,6 +91,8 @@ func HandleGetUserMgmtOnboardingDataRequest(resp http.ResponseWriter, req *http.
 		if !nameOk || RoleName == "" {
 			log.FuncErrorTrace(0, "Failed to get UserMgmt Onboarding role name for Item: %+v\n", item)
 			RoleName = ""
+		} else {
+			totalSaleRep += 1
 		}
 
 		UserCount, ok := item["user_count"].(int64)
@@ -96,6 +110,24 @@ func HandleGetUserMgmtOnboardingDataRequest(resp http.ResponseWriter, req *http.
 		// Append the new dealerTierData to the usrMgOnbList
 		usrMgOnbList.UsrMgmtOnbList = append(usrMgOnbList.UsrMgmtOnbList, usrOnboardingData)
 	}
+
+	// dayCount is the date bracket from current date to how many day behind
+	whereEleList = make([]interface{}, 0)
+	whereEleList = append(whereEleList, dayCount)
+	data, err = db.ReteriveFromDB(db.RowDataDBIndex, queryInactive, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get UserMgmt Onboarding data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get UserMgmt Onboarding data from DB", http.StatusBadRequest, nil)
+		return
+	}
+
+	if len(data) > 0 {
+		activeSaleRep = data[0]["unique_sales_reps"].(int64)
+		inactiveSaleRep = totalSaleRep - activeSaleRep
+		usrMgOnbList.InactiveSaleRep = inactiveSaleRep
+	}
+
+	usrMgOnbList.ActiveSaleRep = activeSaleRep
 
 	// Send the response
 	log.FuncInfoTrace(0, "Number of UserMgmt Onboarding List fetched : %v list %+v", len(usrMgOnbList.UsrMgmtOnbList), usrMgOnbList)

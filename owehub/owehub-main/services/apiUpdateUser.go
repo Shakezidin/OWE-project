@@ -11,6 +11,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"strings"
 
 	"encoding/json"
 	"fmt"
@@ -24,12 +25,21 @@ import (
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
+
+type TablePermission struct {
+	TableName     string `json:"table_name"`
+	PrivilegeType string `json:"privilege_type"`
+}
+
 func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err             error
-		updateUserReq   models.UpdateUserReq
-		queryParameters []interface{}
-		result          []interface{}
+		err                   error
+		updateUserReq         models.UpdateUserReq
+		queryParameters       []interface{}
+		result                []interface{}
+		tablepermissionsModel []TablePermission
+		tablesPermissionsJSON []byte
+		userName              string
 	)
 
 	log.EnterFn(0, "HandleupdateUserRequest")
@@ -82,6 +92,110 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	if updateUserReq.TablesPermissions != nil {
+		tablesPermissionsJSON, err = json.Marshal(updateUserReq.TablesPermissions)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to create user, marshall error: %v", err)
+			FormAndSendHttpResp(resp, "Failed to create user", http.StatusInternalServerError, nil)
+			return
+		}
+	}
+
+	if updateUserReq.RoleName == "DB User" {
+		// Join selected parts with underscores
+
+		query := fmt.Sprintf("SELECT name, tables_permissions FROM user_details WHERE email_id = '%s';", updateUserReq.EmailId)
+		data, err := db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get old username from db with err %s", err)
+			FormAndSendHttpResp(resp, "Failed to get old username from db", http.StatusInternalServerError, nil)
+			return
+		}
+
+		tablepermissions, ok := data[0]["tables_permissions"].([]byte)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get tables_permissions for email ID %v. Item: %+v\n", updateUserReq.EmailId, data)
+			return
+		}
+
+		userName, ok = data[0]["name"].(string)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get username for email ID %v. Item: %+v\n", updateUserReq.EmailId, data)
+			return
+		}
+
+		err = json.Unmarshal(tablepermissions, &tablepermissionsModel)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to unmarshal tables_permissions JSON data: %s\n", err)
+			return
+		}
+
+		newusername := strings.Join(strings.Fields(updateUserReq.Name)[0:2], "_")
+		oldusername := strings.Join(strings.Fields(userName)[0:2], "_")
+
+		// Construct SQL statements to revoke privileges and drop the role (user)
+		sqlStatement := fmt.Sprintf("REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM %s; ALTER ROLE %s RENAME TO %s;", oldusername, oldusername, newusername)
+
+		// Execute the SQL statement
+		err = db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to revoke privileges and drop user %s: %v", oldusername, err)
+			FormAndSendHttpResp(resp, "Failed to revoke user privilages", http.StatusInternalServerError, nil)
+			return
+			// Handle the error as needed, such as logging or returning an HTTP response
+		} else {
+			log.FuncErrorTrace(0, "Successfully revoked privileges and dropped user %s", oldusername)
+			// Optionally, you can log a success message or perform additional actions
+		}
+
+		log.FuncErrorTrace(0, "updateUserReq.TablesPermissions %+v", updateUserReq.TablesPermissions)
+		for _, item := range updateUserReq.TablesPermissions {
+			switch item.PrivilegeType {
+			case "View":
+				sqlStatement = fmt.Sprintf("GRANT SELECT ON %s TO %s;", item.TableName, newusername)
+			case "Edit":
+				sqlStatement = fmt.Sprintf("GRANT SELECT, UPDATE ON %s TO %s;", item.TableName, newusername)
+			case "Full":
+				sqlStatement = fmt.Sprintf("GRANT ALL PRIVILEGES ON %s TO %s;", item.TableName, newusername)
+			}
+
+			log.FuncErrorTrace(0, "sqlStatement %v", sqlStatement)
+
+			err = db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
+			log.FuncErrorTrace(0, " sqlStatement err %+v", err)
+			if err != nil {
+				sqlStatement := fmt.Sprintf("ALTER ROLE %s RENAME TO %s;", newusername, oldusername)
+				// Execute the SQL statement
+				err = db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
+				if err != nil {
+					log.FuncErrorTrace(0, "Failed to update new user to old user %s: %v", oldusername, err)
+					// Handle the error as needed, such as logging or returning an HTTP response
+				}
+				for _, item := range tablepermissionsModel {
+					switch item.PrivilegeType {
+					case "View":
+						sqlStatement = fmt.Sprintf("GRANT SELECT ON %s TO %s;", item.TableName, oldusername)
+					case "Edit":
+						sqlStatement = fmt.Sprintf("GRANT SELECT, UPDATE ON %s TO %s;", item.TableName, oldusername)
+					case "Full":
+						sqlStatement = fmt.Sprintf("GRANT ALL PRIVILEGES ON %s TO %s;", item.TableName, oldusername)
+					}
+
+					log.FuncErrorTrace(0, "sqlStatement %v", sqlStatement)
+
+					err = db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
+					if err != nil {
+						log.FuncErrorTrace(0, "Failed to revoke privileges and drop user %s: %v", oldusername, err)
+						// Handle the error as needed, such as logging or returning an HTTP response
+					}
+				}
+				log.FuncErrorTrace(0, "Failed to update user with err: %v", err)
+				FormAndSendHttpResp(resp, "Failed to update the user db privilages", http.StatusInternalServerError, nil)
+				return
+			}
+		}
+	}
+
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, updateUserReq.Name)
 	//queryParameters = append(queryParameters, updateUserReq.MobileNumber)
@@ -99,10 +213,38 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	//queryParameters = append(queryParameters, updateUserReq.City)
 	//queryParameters = append(queryParameters, updateUserReq.Zipcode)
 	//queryParameters = append(queryParameters, updateUserReq.Country)
+	queryParameters = append(queryParameters, tablesPermissionsJSON)
 
 	// Call the database function
-	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateUserFunction, queryParameters)
+	result, err = db.CallDBFunction(db.RowDataDBIndex, db.UpdateUserFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
+		newusername := strings.Join(strings.Fields(updateUserReq.Name)[0:2], "_")
+		oldusername := strings.Join(strings.Fields(userName)[0:2], "_")
+		sqlStatement := fmt.Sprintf("ALTER ROLE %s RENAME TO %s;", newusername, oldusername)
+		// Execute the SQL statement
+		err = db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to update new user to old user %s: %v", oldusername, err)
+			// Handle the error as needed, such as logging or returning an HTTP response
+		}
+		for _, item := range tablepermissionsModel {
+			switch item.PrivilegeType {
+			case "View":
+				sqlStatement = fmt.Sprintf("GRANT SELECT ON %s TO %s;", item.TableName, oldusername)
+			case "Edit":
+				sqlStatement = fmt.Sprintf("GRANT SELECT, UPDATE ON %s TO %s;", item.TableName, oldusername)
+			case "Full":
+				sqlStatement = fmt.Sprintf("GRANT ALL PRIVILEGES ON %s TO %s;", item.TableName, oldusername)
+			}
+
+			log.FuncErrorTrace(0, "sqlStatement %v", sqlStatement)
+
+			err = db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
+			if err != nil {
+				log.FuncErrorTrace(0, "Failed to revoke privileges and drop user %s: %v", oldusername, err)
+				// Handle the error as needed, such as logging or returning an HTTP response
+			}
+		}
 		log.FuncErrorTrace(0, "Failed to Update User in DB with err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to Update User", http.StatusInternalServerError, nil)
 		return
