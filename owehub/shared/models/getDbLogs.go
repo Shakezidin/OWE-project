@@ -1,9 +1,11 @@
 package models
 
 type DbLogReq struct {
-	StartDate string `json:"start_date"`
-	EndDate   string `json:"end_date"`
-	Username string
+	PageNumber int    `json:"page_number"`
+	PageSize   int    `json:"page_size"`
+	StartDate  string `json:"start_date"`
+	EndDate    string `json:"end_date"`
+	Username   string
 }
 
 type DbLogResp struct {
