@@ -206,7 +206,7 @@ export const LoginPage = () => {
                 </Link>
               </div>
               <br />
-              <ActionButton title="Log In" type="submit" onClick={() => {}} />
+              <button className="login-button" title="Log In" type="submit" onClick={() => {}}>Log In</button>
             </div>
           </form>
         </div>

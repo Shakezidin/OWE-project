@@ -36,6 +36,8 @@ const ProjectPerformence = () => {
     dispatch(getPerfomanceStatus());
   }, []);
 
+
+
   const calculateCompletionPercentage = (
     project: (typeof projectStatus)[0]
   ) => {
@@ -46,6 +48,14 @@ const ProjectPerformence = () => {
     const completionPercentage = (completedSteps / totalSteps) * 100;
     return completionPercentage.toFixed(2);
   };
+
+  const formatFloat = (number:number|undefined)=> {
+    if (typeof number === 'number' && !isNaN(number) && Number.isFinite(number) && Number.isInteger(number) === false) {
+        return number.toFixed(2);
+    } else {
+        return number;
+    }
+}
 
   return (
     <div className="">
@@ -99,14 +109,14 @@ const ProjectPerformence = () => {
                   <div className="project-body-details">
                     <h2 style={{ fontSize: "14px" }}>
                       {" "}
-                      {findSale?.sales?.toFixed(2)}{" "}
+                      { formatFloat(findSale?.sales)}{" "}
                     </h2>
                     <p style={{ fontSize: "14px" }}>Sales</p>
                   </div>
                   <div className="project-body-details">
                     <h2 style={{ fontSize: "14px" }}>
                       {" "}
-                      {findSale?.sales_kw?.toFixed(2)}{" "}
+                      {formatFloat(findSale?.sales_kw)}{" "}
                     </h2>
                     <p style={{ fontSize: "14px" }}>Sales KW</p>
                   </div>
@@ -227,14 +237,14 @@ const ProjectPerformence = () => {
                         <div
                           className="notch-strip"
                           style={getColorStyle(
-                            project.install_completed_date
+                            project.site_survey_complete_date
                           )}
                         >
                           <div className="notch-strip-title">
                             <p>
-                              {project.install_completed_date
+                              {project.site_survey_complete_date
                                 ? format(
-                                    new Date(project.install_completed_date),
+                                    new Date(project.site_survey_complete_date),
                                     "dd MMMM"
                                   ).slice(0, 6)
                                 : "No Data"}
@@ -245,7 +255,7 @@ const ProjectPerformence = () => {
                             style={{ color: "" }}
                           ></div>
                           <div className="notch-strip-des">
-                            <p>Install Cost </p>
+                            <p>Site Survey</p>
                             <IoMdInformationCircleOutline
                               style={{ cursor: "pointer" }}
                             />

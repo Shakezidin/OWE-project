@@ -78,6 +78,7 @@ export const DashboardPage: React.FC = () => {
     };
   }, []);
 
+
   return (
     <>
       <div className="Dashboard-section-container">
@@ -108,21 +109,36 @@ export const DashboardPage: React.FC = () => {
                     minHeight: "unset",
                     height: "30px",
                     alignContent: "center",
-                    backgroundColor: "#ECECEC",
-                    cursor: "pointer",
+                    backgroundColor: "#ffffff",
+                    cursor: "pointer"
+                  }),
+                  dropdownIndicator: (baseStyles, state) => ({
+                    ...baseStyles,
+                    color: "#0493CE",
+                    "&:hover": {
+                      color: "#0493CE",
+                    },
                   }),
                   indicatorSeparator: () => ({
                     display: "none",
                   }),
-                  option: (baseStyles) => ({
+                  option: (baseStyles, state) => ({
                     ...baseStyles,
                     fontSize: "13px",
-                    cursor: "pointer",
+                    color: state.isSelected ? "#ffffff" : "#0493CE",
+                    backgroundColor: state.isSelected ? "#0493CE" : "#ffffff",
+                    "&:hover": {
+                      backgroundColor: state.isSelected ? "#0493CE" : "#f2f2f2",
+                    },
+                  }),
+                  singleValue: (baseStyles, state) => ({
+                    ...baseStyles,
+                    color: "#0493CE",
                   }),
                   menu: (baseStyles) => ({
                     ...baseStyles,
                     width: "6rem",
-                  }),
+                  })
                 }}
               />
             </div>
@@ -135,10 +151,10 @@ export const DashboardPage: React.FC = () => {
               <label className="payroll-label">End:</label>
               <input type="date" className="payroll-date" /> */}
               <div
-                style={{ position: "relative", top: "-1px" }}
+                style={{ position: "relative", top: "-1px", backgroundColor: "white" }}
                 ref={datePickerRef}
               >
-                <label className="date-button" onClick={handleToggleDatePicker}>
+                <label className="date-button" onClick={handleToggleDatePicker} style={{ color: "#0493CE" }}>
                   Select Date
                 </label>
                 {showDatePicker && (
@@ -170,7 +186,7 @@ export const DashboardPage: React.FC = () => {
               </label>
               <label
                 className="inputLabel dashboard-chart-view"
-                style={{ color: "#344054" }}
+                style={{ color: "#0493CE" }}
               >
                 Chart View
               </label>
@@ -194,6 +210,7 @@ export const DashboardPage: React.FC = () => {
                     active === 1 ? "active-filter-line" : ""
                   }`}
                   // onClick={() => setActive(1)}
+                  style={{ border: "1px solid #0493CE" }}
                 >
                   {active === 1 ? (
                     <img src={ICONS.viewActive} alt="" />
@@ -204,6 +221,7 @@ export const DashboardPage: React.FC = () => {
                 <div
                   className="filter-line"
                   onClick={() => setFilterModal(true)}
+                  style={{ border: "1px solid #0493CE" }}
                 >
                   <img src={ICONS.FILTER} alt="" />
                 </div>
