@@ -12,9 +12,7 @@ import (
 	models "OWEApp/shared/models"
 	"strings"
 
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 )
 
@@ -26,49 +24,94 @@ import (
 ******************************************************************************/
 func HandleGetPerfomanceSalesRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err            error
-		dataReq        models.GetPerfomanceReq
-		data           []map[string]interface{}
-		whereEleList   []interface{}
-		query          string
-		queryWithFiler string
-		filter         string
-		dates          []string
+		err              error
+		dataReq          models.GetPerfomanceReq
+		data             []map[string]interface{}
+		whereEleList     []interface{}
+		query            string
+		queryWithFiler   string
+		filter           string
+		firstFilter      string
+		dates            []string
+		rgnSalesMgrCheck bool
+		intervalCount    string
+		SaleRepList      []interface{}
 	)
 
 	log.EnterFn(0, "HandleGetPerfomanceSalesRequest")
 	defer func() { log.ExitFn(0, "HandleGetPerfomanceSalesRequest", err) }()
 
-	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in get perfomance sales request")
-		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
-		return
-	}
-
-	reqBody, err := ioutil.ReadAll(req.Body)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get perfomance sales request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
-		return
-	}
-
-	err = json.Unmarshal(reqBody, &dataReq)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal get perfomance sales request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal get perfomance sales Request body", http.StatusBadRequest, nil)
-		return
-	}
 	query = `
 	SELECT SUM(system_size) AS sales_kw, COUNT(system_size) AS sales  FROM sales_metrics_schema`
 
+	tableName := db.ViewName_ConsolidatedDataView
+	dataReq.Email = req.Context().Value("emailid").(string)
+	if dataReq.Email == "" {
+		FormAndSendHttpResp(resp, "No user exist in DB 1", http.StatusBadRequest, nil)
+		return
+	}
+
+	allSaleRepQuery := models.SalesRepRetrieveQueryFunc()
+	otherRoleQuery := models.AdminDlrSaleRepRetrieveQueryFunc()
+	intervalCount = "90" // this sets the date interval bracket to query data
+
+	whereEleList = append(whereEleList, dataReq.Email)
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, otherRoleQuery, whereEleList)
+
+	// This checks if the user is admin, sale rep or dealer
+	if len(data) > 0 {
+		role := data[0]["role_name"]
+		name := data[0]["name"]
+		dealerName := data[0]["dealer_name"]
+		rgnSalesMgrCheck = false
+
+		switch role {
+		case "Admin":
+			filter, whereEleList = PreparePerfomanceAdminDlrFilters(tableName, dataReq, true)
+		case "Dealer Owner":
+			dataReq.DealerName = name
+			filter, whereEleList = PreparePerfomanceAdminDlrFilters(tableName, dataReq, false)
+		case "Sale Representative":
+			SaleRepList = append(SaleRepList, name)
+			dataReq.DealerName = dealerName
+			filter, whereEleList = PrepareSaleRepPerfFilters(tableName, dataReq, SaleRepList)
+		// this is for regional manager and sales manager
+		default:
+			rgnSalesMgrCheck = true
+		}
+	}
+
+	if rgnSalesMgrCheck {
+		data, err = db.ReteriveFromDB(db.OweHubDbIndex, allSaleRepQuery, whereEleList)
+
+		// This is thrown if no sale rep are available and for other user roles
+		if len(data) == 0 {
+			log.FuncErrorTrace(0, "No sale representative available %v", err)
+			FormAndSendHttpResp(resp, "No sale representative", http.StatusBadRequest, nil)
+			return
+		}
+
+		// this loops through sales rep under regional or sales manager
+		for _, item := range data {
+			SaleRepName, Ok := item["name"]
+			if !Ok || SaleRepName == "" {
+				log.FuncErrorTrace(0, "Failed to get name. Item: %+v\n", item)
+				continue
+			}
+			SaleRepList = append(SaleRepList, SaleRepName)
+		}
+
+		dealerName := data[0]["dealer_name"]
+		dataReq.DealerName = dealerName
+		filter, whereEleList = PrepareSaleRepPerfFilters(tableName, dataReq, SaleRepList)
+	}
+
 	allDatas := make(map[string][]map[string]interface{}, 0)
+	whereEleList = append(whereEleList, intervalCount)
 	dates = append(dates, "contract_date", "ntp_date", "cancelled_date", "pv_install_completed_date")
 	for _, date := range dates {
-		filter, whereEleList = PreparePerfomanceFilters(query, date, dataReq)
-		if filter != "" {
-			queryWithFiler = query + filter
-		}
+		firstFilter = PrepareDateFilters(date, intervalCount, len(whereEleList))
+		queryWithFiler = query + firstFilter + filter
 
 		data, err = db.ReteriveFromDB(db.RowDataDBIndex, queryWithFiler, whereEleList)
 		if err != nil {
@@ -109,56 +152,98 @@ func HandleGetPerfomanceSalesRequest(resp http.ResponseWriter, req *http.Request
 }
 
 /******************************************************************************
-* FUNCTION:		PreparePerfomanceFilters
-* DESCRIPTION:     handler for prepare filter
+* FUNCTION:		PreparePerfomanceAdminDlrFilters
+* DESCRIPTION:     handler for secondary filter for admin and dealer
 * INPUT:			resp, req
 * RETURNS:    		void
 ******************************************************************************/
 
-func PreparePerfomanceFilters(tableName, columnName string, dataFilter models.GetPerfomanceReq) (filters string, whereEleList []interface{}) {
-	log.EnterFn(0, "PreparePerfomanceFilters")
-	defer func() { log.ExitFn(0, "PreparePerfomanceFilters", nil) }()
+func PreparePerfomanceAdminDlrFilters(columnName string, dataFilter models.GetPerfomanceReq, adminCheck bool) (filters string, whereEleList []interface{}) {
+	log.EnterFn(0, "PreparePerfomanceAdminDlrFilters")
+	defer func() { log.ExitFn(0, "PreparePerfomanceAdminDlrFilters", nil) }()
 
-	var startDate, endDate string
-	startDate = dataFilter.StartDate
-	endDate = dataFilter.EndDate
+	var filtersBuilder strings.Builder
+	whereAdded := true
 
-	// sDate, err := time.Parse("2006-01-02", startDate)
-	// if err != nil {
-	// 	fmt.Println("Error parsing start date:", err)
-	// 	return
-	// }
-	// eDate, err := time.Parse("2006-01-02", endDate)
-	// if err != nil {
-	// 	fmt.Println("Error parsing end date:", err)
-	// 	return
-	// }
+	if !adminCheck {
+		if !whereAdded {
+			filtersBuilder.WriteString(" WHERE ")
+		} else {
+			filtersBuilder.WriteString(" AND ")
+		}
+		filtersBuilder.WriteString(fmt.Sprintf("dealer = $%d", len(whereEleList)+1))
+		whereEleList = append(whereEleList, dataFilter.DealerName)
+	}
+
+	filters = filtersBuilder.String()
+	return filters, whereEleList
+}
+
+/*
+*****************************************************************************
+  - FUNCTION:		PrepareSaleRepPerfFilters
+  - DESCRIPTION:    handler for secondary filter for regional, sales manager and
+    sale rep
+  - INPUT:			resp, req
+  - RETURNS:    		void
+
+*****************************************************************************
+*/
+func PrepareSaleRepPerfFilters(tableName string, dataFilter models.GetPerfomanceReq, saleRepList []interface{}) (filters string, whereEleList []interface{}) {
+	log.EnterFn(0, "PrepareStatusFilters")
+	defer func() { log.ExitFn(0, "PrepareStatusFilters", nil) }()
+
+	var filtersBuilder strings.Builder
+	whereAdded := true
+
+	if whereAdded {
+		filtersBuilder.WriteString(" AND ")
+	} else {
+		filtersBuilder.WriteString(" WHERE ")
+	}
+
+	filtersBuilder.WriteString(" primary_sales_rep IN (")
+	for i, sale := range saleRepList {
+		filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
+		whereEleList = append(whereEleList, sale)
+
+		if i < len(saleRepList)-1 {
+			filtersBuilder.WriteString(", ")
+		}
+	}
+
+	filtersBuilder.WriteString(fmt.Sprintf(") AND dealer = $%d", len(whereEleList)+1))
+	whereEleList = append(whereEleList, dataFilter.DealerName)
+	filters = filtersBuilder.String()
+
+	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
+	return filters, whereEleList
+}
+
+/******************************************************************************
+* FUNCTION:		PrepareDateFilters
+* DESCRIPTION:     handler for prepare primary filter
+* INPUT:			resp, req
+* RETURNS:    		void
+******************************************************************************/
+
+func PrepareDateFilters(columnName string, intervalCount string, whereListLength int) (filters string) {
+	log.EnterFn(0, "PrepareDateFilters")
+	defer func() { log.ExitFn(0, "PrepareDateFilters", nil) }()
 
 	var filtersBuilder strings.Builder
 	filtersBuilder.WriteString(" WHERE ")
 
-	// This will added if the default date is confirmed
-	// if startDate.IsZero() || endDate.IsZero() {
-	// default start date
-	// default end date
-	// }
 	switch columnName {
 	case "contract_date":
-		filtersBuilder.WriteString(fmt.Sprintf(" contract_date >= $%d AND contract_date <= $%d", len(whereEleList)+1, len(whereEleList)+2))
-		whereEleList = append(whereEleList, startDate, endDate)
+		filtersBuilder.WriteString(fmt.Sprintf(" contract_date BETWEEN current_date - interval '1 day' * $%d AND current_date", whereListLength))
 	case "ntp_date":
-		filtersBuilder.WriteString(fmt.Sprintf(" ntp_date >= $%d AND ntp_date <= $%d", len(whereEleList)+1, len(whereEleList)+2))
-		whereEleList = append(whereEleList, startDate, endDate)
+		filtersBuilder.WriteString(fmt.Sprintf(" ntp_date BETWEEN current_date - interval '1 day' * $%d AND current_date", whereListLength))
 	case "cancelled_date":
-		filtersBuilder.WriteString(fmt.Sprintf(" cancelled_date >= $%d AND cancelled_date <= $%d", len(whereEleList)+1, len(whereEleList)+2))
-		whereEleList = append(whereEleList, startDate, endDate)
+		filtersBuilder.WriteString(fmt.Sprintf(" cancelled_date BETWEEN current_date - interval '1 day' * $%d AND current_date", whereListLength))
 	case "pv_install_completed_date":
-		filtersBuilder.WriteString(fmt.Sprintf(" pv_install_completed_date >= $%d AND pv_install_completed_date <= $%d", len(whereEleList)+1, len(whereEleList)+2))
-		whereEleList = append(whereEleList, startDate, endDate)
+		filtersBuilder.WriteString(fmt.Sprintf(" pv_install_completed_date BETWEEN current_date - interval '1 day' * $%d AND current_date", whereListLength))
 	}
-
 	filters = filtersBuilder.String()
-
-	log.FuncDebugTrace(0, "filters for table name : %s", tableName)
-	return filters, whereEleList
+	return filters
 }

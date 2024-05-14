@@ -64,7 +64,7 @@ func HandleCreateAdjustmentsRequest(resp http.ResponseWriter, req *http.Request)
 		return
 	}
 
-	if (len(createAdjustmentsReq.Amount) <= 0)  {
+	if createAdjustmentsReq.Amount <= float64(0) {
 		err = fmt.Errorf("Invalid amount Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Invalid amount Not Allowed", http.StatusBadRequest, nil)
