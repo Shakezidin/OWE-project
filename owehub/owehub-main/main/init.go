@@ -1113,7 +1113,7 @@ var apiRoutes = ApiRoutes{
 	},
 	{
 		strings.ToUpper("POST"),
-		"/owe-commisions-service/v1/get_any_table_data",
+		"/owe-commisions-service/v1/get_app_data",
 		apiHandler.HandleGetAnyTableDataRequest,
 		true,
 		[]types.UserGroup{types.GroupAdmin},
