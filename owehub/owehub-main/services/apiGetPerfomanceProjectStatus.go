@@ -314,7 +314,7 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 	if len(dataFilter.UniqueIds) > 0 {
 		// whereAdded = true
 		filtersBuilder.WriteString(" AND ")
-		filtersBuilder.WriteString(" sms.unique_id IN (")
+		filtersBuilder.WriteString(" unique_id IN (")
 
 		for i, filter := range dataFilter.UniqueIds {
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
