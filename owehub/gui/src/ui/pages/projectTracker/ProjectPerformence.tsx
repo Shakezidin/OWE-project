@@ -191,15 +191,16 @@ const ProjectPerformence = () => {
               onChange={() => {}}
             />
           </div>
+          <div className="milestone-header">
+                      <p>Project Name</p>
+                      <p>Milestone</p>
+                    </div>
           <div className="performance-milestone-table">
+            
             <table>
               <thead>
                 <tr>
                   <th style={{ padding: "0px" }}>
-                    <div className="milestone-header">
-                      <p>Project Name</p>
-                      <p>Milestone</p>
-                    </div>
                   </th>
                 </tr>
               </thead>
@@ -451,7 +452,9 @@ const ProjectPerformence = () => {
               </tbody>
             </table>
 
-            <div className="page-heading-container">
+            
+          </div>
+          <div className="page-heading-container">
               <p className="page-heading">
                 {startIndex} - {projectsCount} of {projectStatus?.length} item
               </p>
@@ -470,7 +473,6 @@ const ProjectPerformence = () => {
                 />
               ) : null}
             </div>
-          </div>
         </div>
       </div>
     </div>
