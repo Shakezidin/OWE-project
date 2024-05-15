@@ -70,7 +70,7 @@ const ProjectPerformence = () => {
     }
   };
   const startIndex = (page - 1) * perPage + 1;
-  const endIndex = page * perPage 
+  const endIndex = page * perPage;
   return (
     <div className="">
       <Breadcrumb
@@ -147,7 +147,11 @@ const ProjectPerformence = () => {
                   className="project-icon-img"
                   style={{ background: item.iconBgColor }}
                 >
-                  <img src={item.icon} alt="" style={{height: "24px", width: "24px"}}/>
+                  <img
+                    src={item.icon}
+                    alt=""
+                    style={{ height: "24px", width: "24px" }}
+                  />
                 </div>
                 <div className="doller-head">
                   <h2>
@@ -207,9 +211,15 @@ const ProjectPerformence = () => {
               <tbody>
                 {isLoading ? (
                   <tr>
-                    <td style={{display:"flex",alignItems:"center",justifyContent:"center"}} colSpan={6}>
-
-                    <MicroLoader />
+                    <td
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                      colSpan={6}
+                    >
+                      <MicroLoader />
                     </td>
                   </tr>
                 ) : (
@@ -248,7 +258,11 @@ const ProjectPerformence = () => {
                                 </div>
                                 <div
                                   className="strip-line"
-                                  style={{ color: "" }}
+                                  style={{
+                                    borderColor: project.contract_date
+                                      ? "#fff"
+                                      : "#d6d6d6",
+                                  }}
                                 ></div>
                                 <div className="strip-des">
                                   <p>
@@ -279,7 +293,9 @@ const ProjectPerformence = () => {
                                 </div>
                                 <div
                                   className="strip-line"
-                                  style={{ color: "" }}
+                                  style={{ borderColor: project.site_survey_complete_date
+                                    ? "#fff"
+                                    : "#d6d6d6",}}
                                 ></div>
                                 <div className="notch-strip-des">
                                   <p>Site Survey</p>
@@ -289,7 +305,6 @@ const ProjectPerformence = () => {
                                 </div>
                                 <div className="child-notch"></div>
                               </div>
-                              
 
                               <div
                                 className="notch-strip"
@@ -311,7 +326,9 @@ const ProjectPerformence = () => {
                                 </div>
                                 <div
                                   className="strip-line"
-                                  style={{ color: "" }}
+                                  style={{ borderColor: project.permit_approved_date
+                                    ? "#fff"
+                                    : "#d6d6d6", }}
                                 ></div>
                                 <div className="notch-strip-des">
                                   <p>Permit Submitted </p>
@@ -321,7 +338,6 @@ const ProjectPerformence = () => {
                                 </div>
                                 <div className="child-notch"></div>
                               </div>
-                            
 
                               <div
                                 className="notch-strip"
@@ -341,7 +357,9 @@ const ProjectPerformence = () => {
                                 </div>
                                 <div
                                   className="strip-line"
-                                  style={{ color: "" }}
+                                  style={{ borderColor: project.install_ready_date
+                                    ? "#fff"
+                                    : "#d6d6d6",  }}
                                 ></div>
                                 <div className="notch-strip-des">
                                   <p>Install Ready</p>
@@ -351,7 +369,6 @@ const ProjectPerformence = () => {
                                 </div>
                                 <div className="child-notch"></div>
                               </div>
-                             
 
                               <div
                                 className="notch-strip"
@@ -373,7 +390,9 @@ const ProjectPerformence = () => {
                                 </div>
                                 <div
                                   className="strip-line"
-                                  style={{ color: "" }}
+                                  style={{borderColor: project.install_completed_date
+                                    ? "#fff"
+                                    : "#d6d6d6", }}
                                 ></div>
                                 <div className="notch-strip-des">
                                   <p>Install Completed</p>
@@ -383,7 +402,6 @@ const ProjectPerformence = () => {
                                 </div>
                                 <div className="child-notch"></div>
                               </div>
-                             
 
                               <div
                                 className="notch-strip"
@@ -401,7 +419,9 @@ const ProjectPerformence = () => {
                                 </div>
                                 <div
                                   className="strip-line"
-                                  style={{ color: "" }}
+                                  style={{ borderColor: project.pto_date
+                                    ? "#fff"
+                                    : "#d6d6d6",  }}
                                 ></div>
                                 <div className="notch-strip-des">
                                   <p>PTO</p>
@@ -443,29 +463,27 @@ const ProjectPerformence = () => {
                 )}
               </tbody>
             </table>
-
-          
           </div>
 
           <div className="page-heading-container">
-              <p className="page-heading">
+            <p className="page-heading">
               {startIndex} - {endIndex} of {projectsCount} item
-              </p>
+            </p>
 
-              {projectStatus?.length > 0 ? (
-                <Pagination
-                  currentPage={page}
-                  totalPages={Math.ceil(projectsCount / perPage)}
-                  paginate={(num) => setPage(num)}
-                  currentPageData={projectStatus}
-                  goToNextPage={() => setPage((prev) => prev + 1)}
-                  goToPrevPage={() =>
-                    setPage((prev) => (prev < 1 ? prev - 1 : prev))
-                  }
-                  perPage={perPage}
-                />
-              ) : null}
-            </div>
+            {projectStatus?.length > 0 ? (
+              <Pagination
+                currentPage={page}
+                totalPages={Math.ceil(projectsCount / perPage)}
+                paginate={(num) => setPage(num)}
+                currentPageData={projectStatus}
+                goToNextPage={() => setPage((prev) => prev + 1)}
+                goToPrevPage={() =>
+                  setPage((prev) => (prev < 1 ? prev - 1 : prev))
+                }
+                perPage={perPage}
+              />
+            ) : null}
+          </div>
         </div>
       </div>
     </div>
@@ -473,4 +491,3 @@ const ProjectPerformence = () => {
 };
 
 export default ProjectPerformence;
-
