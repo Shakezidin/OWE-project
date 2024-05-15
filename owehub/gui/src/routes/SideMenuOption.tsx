@@ -195,7 +195,6 @@ export const createSideMenuList = (): any[] => {
     sideMenu.push(support);
   } else {
     if (
-      role === TYPE_OF_USER.DB_USER ||
       role === TYPE_OF_USER.DEALER_OWNER ||
       role === TYPE_OF_USER.FINANCE_ADMIN ||
       role === TYPE_OF_USER.SUB_DEALER_OWNER ||
@@ -217,6 +216,9 @@ export const createSideMenuList = (): any[] => {
       sideMenu.push(performance);
       sideMenu.push(repayMenu);
       sideMenu.push(project);
+      sideMenu.push(support);
+    }else if( role === TYPE_OF_USER.DB_USER){
+      sideMenu.push(DB);
       sideMenu.push(support);
     }
   }
