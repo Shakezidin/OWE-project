@@ -15,7 +15,7 @@ type GetAdjustments struct {
 	StateName     string  `json:"state_name"`
 	SysSize       float64 `json:"sys_size"`
 	Bl            float64 `json:"bl"`
-	Epc           string  `json:"epc"`
+	Epc           float64 `json:"epc"`
 	Date          string  `json:"date"`
 	Notes         string  `json:"notes"`
 	Amount        float64 `json:"amount"`

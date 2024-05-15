@@ -50,7 +50,7 @@ func ValidateUser(cread models.Credentials) (emailId string, userName string, ro
 	reterivedPassword := data[0]["password"].(string)
 	err = CompareHashPassword(reterivedPassword, cread.Password)
 	if err != nil {
-		err = fmt.Errorf("Incorrect emailId or password")
+		err = fmt.Errorf("Incorrect Email Id or Password")
 		log.FuncErrorTrace(0, "provide user passowrd is not matching with DB password %v", err)
 		return emailId, userName, roleName, passwordChangeRequired, err
 	}
@@ -97,7 +97,7 @@ func UpdatePassword(newPassword string, userEmailId string) (err error) {
 	whereEleList = append(whereEleList, isPasswordChnageReq)
 	whereEleList = append(whereEleList, userEmailId)
 
-	err, _ = db.UpdateDataInDB(db.RowDataDBIndex, query, whereEleList)
+	err, _ = db.UpdateDataInDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to update the new password err: %v", err)
 		return err
