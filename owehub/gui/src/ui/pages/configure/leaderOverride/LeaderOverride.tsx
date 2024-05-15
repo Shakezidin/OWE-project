@@ -133,12 +133,12 @@ const LeaderOverride = () => {
         dispatch(getleaderOverride(pageNumber));
         await successSwal(
           "Archived",
-          "All Selected rows have been archived"
+          "The data has been archived "
         );
       } else {
         await successSwal(
           "Archived",
-          "All Selected rows have been archived"
+          "The data has been archived "
         );
       }
     }

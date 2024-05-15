@@ -141,10 +141,10 @@ const DealerTier = () => {
           const isAnyRowSelected = remainingSelectedRows.length > 0;
           setSelectAllChecked(isAnyRowSelected);
           setSelectedRows(new Set());
-          await successSwal("Archived", "All Selected rows have been archived");
+          await successSwal("Archived", "The data has been archived ");
         }
         else {
-          await successSwal("Archived", "All Selected rows have been archived");
+          await successSwal("Archived", "The data has been archived ");
         }
       }
 
@@ -166,9 +166,9 @@ const DealerTier = () => {
       const res = await postCaller(EndPoints.update_dealer_archive, newValue);
       if (res.status === HTTP_STATUS.OK) {
         dispatch(fetchDealerTier(pageNumber))
-        await successSwal("Archived", "All Selected rows have been archived");
+        await successSwal("Archived", "The data has been archived ");
       }else{
-        await successSwal("Archived", "All Selected rows have been archived");
+        await successSwal("Archived", "The data has been archived ");
       }
     }
   
