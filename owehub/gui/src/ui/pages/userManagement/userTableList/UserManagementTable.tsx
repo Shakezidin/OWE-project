@@ -21,6 +21,7 @@ import {
 import { TYPE_OF_USER } from "../../../../resources/static_data/TypeOfUser";
 import PaginationComponent from "../../../components/pagination/PaginationComponent";
 import { fetchUserListBasedOnRole } from "../../../../redux/apiActions/userManagement/userManagementActions";
+import DBUserTable from "../userManagerAllTable/DBUserTable";
 
 interface UserTableProos {
   userDropdownData: UserDropdownModel[];
@@ -106,6 +107,22 @@ const UserManagementTable: React.FC<UserTableProos> = ({
       case TYPE_OF_USER.FINANCE_ADMIN:
         return (
           <UserTable
+            data={userRoleBasedList}
+            onClickEdit={(item: UserRoleBasedListModel) => {
+              onClickEdit(item);
+            }}
+            onClickDelete={(item: UserRoleBasedListModel) => {
+              onClickDelete(item);
+            }}
+            selectedRows={selectedRows}
+            selectAllChecked={selectAllChecked}
+            setSelectedRows={setSelectedRows}
+            setSelectAllChecked={setSelectAllChecked}
+          />
+        );
+        case TYPE_OF_USER.DB_USER:
+        return (
+          <DBUserTable
             data={userRoleBasedList}
             onClickEdit={(item: UserRoleBasedListModel) => {
               onClickEdit(item);

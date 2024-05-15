@@ -52,17 +52,14 @@ const UserActivity: React.FC = () => {
     return <div>Error: {error}</div>;
   }
 
-  // let dataDb: DBManagerUserActivityModel[];
-  // if (userActivityList && userActivityList.length > 0){
-  //   dataDb = userActivityList
-  // }else{
-  //   dataDb = []
-  // }
+  console.log("totalCount....", totalCount)
 
-  // const totalPages = Math.ceil(dataDb.length / itemsPerPage);
-  //const currentPageData = dataDb.slice(startIndex, endIndex);
-  // const isAnyRowSelected = selectedRows.size > 0;
-  //const isAllRowsSelected = selectedRows.size === dataDb.length;
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+
+
+  //const currentPageData = userActivityList?.slice();
 
   return (
     <div className="comm">
@@ -73,15 +70,6 @@ const UserActivity: React.FC = () => {
         linkparaSecond="User Activity"
       />
       <div className="commissionContainer">
-        {/* <DataTableHeader
-          title="Activity List"
-          onPressFilter={() => filter()}
-          onPressImport={() => {}}
-          showImportIcon={false}
-          showSelectIcon={true}
-          showFilterIcon={false}
-          selectMarginLeft="-37px"
-        /> */}
         <div className="commissionSection">
      
          <h3>Activity List</h3>
@@ -93,20 +81,6 @@ const UserActivity: React.FC = () => {
           <table>
             <thead>
               <tr>
-                {/* <th style={{ paddingRight: 0 }}>
-                  <CheckBox
-                    checked={selectAllChecked}
-                    onChange={() =>
-                      toggleAllRows(
-                        selectedRows,
-                        dataDb,
-                        setSelectedRows,
-                        setSelectAllChecked
-                      )
-                    }
-                    indeterminate={isAnyRowSelected && !isAllRowsSelected}
-                  />
-                </th> */}
                 <th style={{ paddingLeft: "10px" }}>
                   <div className="table-header">
                     <p>User Name</p>{" "}
@@ -136,21 +110,8 @@ const UserActivity: React.FC = () => {
             <tbody>
               {userActivityList && userActivityList?.length > 0
                 ? userActivityList?.map(
-                    (el: DBManagerUserActivityModel, i: number) => (
-                      <tr key={i}>
-                        {/* <td style={{ paddingRight: 0 }}>
-                      <CheckBox
-                        checked={selectedRows.has(i)}
-                        onChange={() =>
-                          toggleRowSelection(
-                            i,
-                            selectedRows,
-                            setSelectedRows,
-                            setSelectAllChecked
-                          )
-                        }
-                      />
-                    </td> */}
+                    (el: DBManagerUserActivityModel) => (
+                      <tr key={el.time_date}>
                         <td
                           style={{
                             fontWeight: "500",
@@ -175,20 +136,20 @@ const UserActivity: React.FC = () => {
         </div>
 
         <div className="page-heading-container">
-          <p className="page-heading">
-            {currentPage} - {totalCount} of {userActivityList?.length} item
+        <p className="page-heading">
+            {startIndex} - {userActivityList?.length} of {totalCount} item
           </p>
 
           {userActivityList && userActivityList?.length > 0 ? (
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalCount} // You need to calculate total pages
-              paginate={paginate}
-              currentPageData={userActivityList}
-              goToNextPage={goToNextPage}
-              goToPrevPage={goToPrevPage}
-              perPage={itemsPerPage}
-            />
+                <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages} // You need to calculate total pages
+                paginate={paginate}
+                currentPageData={userActivityList.slice(startIndex, endIndex)}
+                goToNextPage={goToNextPage}
+                goToPrevPage={goToPrevPage}
+                perPage={itemsPerPage}
+              /> 
           ) : null}
         </div>
       </div>
