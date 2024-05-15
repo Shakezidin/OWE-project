@@ -103,6 +103,12 @@ func HandleCreateAdderDataRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	if len(dataOne) <= 0 {
+		log.FuncErrorTrace(0, "Failed to get Add adder data from DB : %v", dataOne)
+		FormAndSendHttpResp(resp, "Invalid Unique Id is not allowed", http.StatusBadRequest, nil)
+		return
+	}
+
 	system_size, _ := dataOne[0]["system_size"].(float64)
 
 	if createAdderDataReq.ExactAmount != 0 {
