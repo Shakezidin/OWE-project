@@ -24,7 +24,7 @@ const UserActivity: React.FC = () => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
-      start_date: "2024-05-01",
+      start_date: "2024-05-01",//TODO: Need to change in future
       end_date: getCurrentDateFormatted(), // current date
     };
     dispatch(fetchDBManagerUserActivity(pageNumber));
@@ -73,7 +73,7 @@ const UserActivity: React.FC = () => {
         linkparaSecond="User Activity"
       />
       <div className="commissionContainer">
-        <DataTableHeader
+        {/* <DataTableHeader
           title="Activity List"
           onPressFilter={() => filter()}
           onPressImport={() => {}}
@@ -81,7 +81,11 @@ const UserActivity: React.FC = () => {
           showSelectIcon={true}
           showFilterIcon={false}
           selectMarginLeft="-37px"
-        />
+        /> */}
+        <div className="commissionSection">
+     
+         <h3>Activity List</h3>
+         </div>
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
