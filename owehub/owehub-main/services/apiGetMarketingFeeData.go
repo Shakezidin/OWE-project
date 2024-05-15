@@ -251,7 +251,7 @@ func PrepareMarketingFeesFilters(tableName string, dataFilter models.DataRequest
 				whereEleList = append(whereEleList, value)
 			default:
 				// For other columns, handle them accordingly
-				filtersBuilder.WriteString("LOWER(")
+				filtersBuilder.WriteString("LOWER(mf.")
 				filtersBuilder.WriteString(column)
 				filtersBuilder.WriteString(") ")
 				filtersBuilder.WriteString(operator)

@@ -70,17 +70,17 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
   };
 
   const handleInputChange = (
-    e:
-      | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     if (name === "first_name" || name === "last_name") {
       dispatch(updateUserForm({ field: name, value }));
     } else if (name === "mobile_number") {
-      const numericValue = value.replace(/[^0-9]/g, "").slice(0, 10);
-      if (numericValue.length < 10) {
-        setPhoneNumberError("Phone Number should be 10 digits");
+      const numericValue = value.replace(/[^0-9]/g, "").slice(0, 16);
+      if (numericValue.length < 7) {
+        setPhoneNumberError("Phone Number should be at least 7 digits");
+      } else if (numericValue.length > 16) {
+        setPhoneNumberError("Phone Number should not exceed 16 digits");
       } else {
         setPhoneNumberError("");
       }

@@ -24,10 +24,12 @@ DECLARE
     v_customer_name character varying;
     v_sys_size DOUBLE PRECISION;
     v_bl DOUBLE PRECISION;
-    v_epc date;
+    v_epc DOUBLE PRECISION;
+    v_rep_1 character varying;
+    v_rep_2 character varying;
 BEGIN
-    SELECT home_owner, partner, instl, st, sys_size, per_rep_sales, epc
-    INTO v_customer_name, v_partner_name, v_installer_name, v_state_name, v_sys_size, v_bl, v_epc
+    SELECT home_owner, partner, instl, st, sys_size, epc, rep_1, rep_2
+    INTO v_customer_name, v_partner_name, v_installer_name, v_state_name, v_sys_size, v_epc, v_rep_1, v_rep_2
     FROM sales_ar_calc
     WHERE sales_ar_calc.unique_id = p_unique_id;
  
@@ -59,6 +61,14 @@ BEGIN
     -- IF v_state_id IS NULL THEN
     --     RAISE EXCEPTION 'State % not found', v_state_name;
     -- END IF;
+
+   SELECT
+    CASE
+        WHEN LENGTH(v_rep_1) > 0 AND LENGTH(v_rep_2) > 0 THEN 2
+        WHEN LENGTH(v_rep_1) > 0 THEN 1
+        ELSE 0
+    END INTO v_bl;
+
  
     -- Insert a new record into adjustments table
     INSERT INTO adjustments (

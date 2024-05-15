@@ -207,14 +207,17 @@ func PrepareDealerFilters(tableName string, dataFilter models.DataRequestBody, f
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud.name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "start_date":
-				filtersBuilder.WriteString(fmt.Sprintf("ud.start_date %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("dor.start_date %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "end_date":
-				filtersBuilder.WriteString(fmt.Sprintf("ud.end_date %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("dor.end_date %s $%d", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
+			case "state":
+				filtersBuilder.WriteString(fmt.Sprintf("st.name %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
 				// For other columns, handle them accordingly
-				filtersBuilder.WriteString("LOWER(")
+				filtersBuilder.WriteString("LOWER(dor.")
 				filtersBuilder.WriteString(column)
 				filtersBuilder.WriteString(") ")
 				filtersBuilder.WriteString(operator)

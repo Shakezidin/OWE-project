@@ -140,10 +140,10 @@ func HandleGetAdjustmentsDataRequest(resp http.ResponseWriter, req *http.Request
 		}
 
 		// Epc
-		Epc, ok := item["epc"].(time.Time)
-		if !ok {
+		Epc, ok := item["epc"].(float64)
+		if !ok || Epc == 0.0 {
 			log.FuncErrorTrace(0, "Failed to get epc for Record ID %v. Item: %+v\n", RecordId, item)
-			Epc = time.Time{} // Default epc value of 0.0
+			Epc = 0.0 // Default epc value of 0.0
 		}
 
 		// Date
@@ -166,7 +166,6 @@ func HandleGetAdjustmentsDataRequest(resp http.ResponseWriter, req *http.Request
 			Amount = 0.0 // Default amount value of 0.0
 		}
 		dateString := Date.Format("2006-01-02")
-		epcString := Epc.Format("2006-01-02")
 		adjustmentData := models.GetAdjustments{
 			RecordId:      RecordId,
 			UniqueId:      UniqueId,
@@ -176,7 +175,7 @@ func HandleGetAdjustmentsDataRequest(resp http.ResponseWriter, req *http.Request
 			StateName:     StateName,
 			SysSize:       SysSize,
 			Bl:            Bl,
-			Epc:           epcString,
+			Epc:           Epc,
 			Date:          dateString,
 			Notes:         Notes,
 			Amount:        Amount,

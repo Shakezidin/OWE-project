@@ -42,6 +42,8 @@ func HandleGetDbLogsRequest(resp http.ResponseWriter, req *http.Request) {
 		filter         string
 		username       string
 		tableName      string
+		countQuery     string
+		totalDatas     int64
 	)
 
 	log.EnterFn(0, "HandleGetProjectManagementRequest")
@@ -72,6 +74,12 @@ func HandleGetDbLogsRequest(resp http.ResponseWriter, req *http.Request) {
 		SELECT usename, datname, query_start, query
 		FROM pg_stat_activity
 	`
+
+	countQuery = `
+		SELECT count(datname)
+		FROM pg_stat_activity
+	`
+
 	roleQuery = `
 		SELECT ud.name as name
 		FROM user_details WHERE email_id = $1;
@@ -129,22 +137,19 @@ func HandleGetDbLogsRequest(resp http.ResponseWriter, req *http.Request) {
 		loglist.DbLogList = append(loglist.DbLogList, dbLog)
 	}
 
-	// this bring in log for OweDB
-	data, err = db.ReteriveFromDB(db.RowDataDBIndex, queryWithFiler, whereEleList)
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, countQuery, nil)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get OweDb data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get OweDb data from DB", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to get DbLogs count from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get DbLogs count from DB", http.StatusBadRequest, nil)
 		return
 	}
-	for _, item := range data {
-		var dbLog models.DbLogResp
-		dbRowToStruct(item, &dbLog)
-		loglist.DbLogList = append(loglist.DbLogList, dbLog)
+
+	if len(data) > 0 {
+		totalDatas = int64(data[0]["count"].(int64))
 	}
 
-	recordLen := len(data)
-	log.FuncInfoTrace(0, "Number of DbLogs List fetched : %v list %+v", len(loglist.DbLogList), recordLen)
-	FormAndSendHttpResp(resp, "DbLogs result", http.StatusOK, loglist, int64(recordLen))
+	log.FuncInfoTrace(0, "Number of DbLogs List fetched : %v list %+v", len(loglist.DbLogList), totalDatas)
+	FormAndSendHttpResp(resp, "DbLogs result", http.StatusOK, loglist, totalDatas)
 }
 
 /******************************************************************************

@@ -16,13 +16,13 @@ interface TableProps {
   showFilterIcon: boolean;
   selectMarginLeft?: string;
   selectMarginLeft1?: string;
+  selectedTable:any;
+  setSelectedTable:any;
 }
-interface OptionType {
-  value: string;
-  label: string;
-}
+ 
 
-const DataTableHeader = (props: TableProps) => {
+const DataTableHeaderr = (props: TableProps) => {
+    const  {option} = useAppSelector((state) => state.dataTableSlice);
   const dispatch = useAppDispatch();
 
   const {
@@ -31,11 +31,23 @@ const DataTableHeader = (props: TableProps) => {
     onPressImport,
     selectMarginLeft,
     selectMarginLeft1,
+    selectedTable,
+    setSelectedTable
   } = props;
 
   useEffect(() =>{
     dispatch(getDataTableName())
      },[])
+ 
+    
+    const tableOption = option?.map((opt:any) => ({
+        value: opt.table_name,
+        label: opt.table_name,
+      }));
+
+      const handleTableChange = (selectedOption: any| null) => {
+        setSelectedTable(selectedOption);
+      };
 
   return (
     <div className="commissionSection">
@@ -45,8 +57,11 @@ const DataTableHeader = (props: TableProps) => {
         <div className="search-container-data">
           {props.showSelectIcon && (
             <Select
-              isSearchable
-              value={""}
+           
+              options={tableOption}
+              value={selectedTable}
+              onChange={handleTableChange}
+          
               styles={{
                 control: (baseStyles, state) => ({
                   ...baseStyles,
@@ -103,4 +118,4 @@ const DataTableHeader = (props: TableProps) => {
   );
 };
 
-export default DataTableHeader;
+export default DataTableHeaderr;

@@ -40,6 +40,8 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		SiteD              string
 		InstallD           string
 		rgnSalesMgrCheck   bool
+		queryForAlldata    string
+		RecordCount        int64
 		SaleRepList        []interface{}
 	)
 
@@ -66,6 +68,11 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		FormAndSendHttpResp(resp, "Failed to unmarshal get PerfomanceProjectStatus data Request body", http.StatusBadRequest, nil)
 		return
 	}
+
+	queryForAlldata = `
+		SELECT count(unique_id)
+		FROM consolidated_data_view 
+	`
 
 	allSaleRepQuery := models.SalesRepRetrieveQueryFunc()
 	saleMetricsQuery := models.SalesMetricsRetrieveQueryFunc()
@@ -97,10 +104,10 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 
 		switch role {
 		case "Admin":
-			filter, whereEleList = PrepareAdminDlrFilters(tableName, dataReq, true)
+			filter, whereEleList = PrepareAdminDlrFilters(tableName, dataReq, true, false)
 		case "Dealer Owner":
 			dataReq.DealerName = name
-			filter, whereEleList = PrepareAdminDlrFilters(tableName, dataReq, false)
+			filter, whereEleList = PrepareAdminDlrFilters(tableName, dataReq, false, false)
 		case "Sale Representative":
 			SaleRepList = append(SaleRepList, name)
 			dataReq.DealerName = dealerName
@@ -220,10 +227,22 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		}
 		perfomanceList.PerfomanceList = append(perfomanceList.PerfomanceList, perfomanceResponse)
 	}
-	// Send the response
-	recordLen := len(data)
+	
+	// querying the total db records
+	filter, whereEleList = PrepareAdminDlrFilters(tableName, dataReq, true, true)
+	queryAll := queryForAlldata + filter
+	data, err = db.ReteriveFromDB(db.RowDataDBIndex, queryAll, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get PerfomanceProjectStatus from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get PerfomanceProjectStatus from DB", http.StatusBadRequest, nil)
+		return
+	}
+
+	if len(data) > 0 {
+		RecordCount = int64(data[0]["count"].(int64))
+	}
 	log.FuncInfoTrace(0, "Number of PerfomanceProjectStatus List fetched : %v list %+v", len(perfomanceList.PerfomanceList), perfomanceList)
-	FormAndSendHttpResp(resp, "PerfomanceProjectStatus Data", http.StatusOK, perfomanceList, int64(recordLen))
+	FormAndSendHttpResp(resp, "PerfomanceProjectStatus Data", http.StatusOK, perfomanceList, RecordCount)
 }
 
 /******************************************************************************
@@ -232,7 +251,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 * INPUT:			resp, req
 * RETURNS:    		void
 ******************************************************************************/
-func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatusReq, adminCheck bool) (filters string, whereEleList []interface{}) {
+func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatusReq, adminCheck, fitlterCheck bool) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PrepareStatusFilters")
 	defer func() { log.ExitFn(0, "PrepareStatusFilters", nil) }()
 
@@ -252,7 +271,7 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 	whereEleList = append(whereEleList, cnt, cnt, cnt, cnt, cnt, cnt)
 
 	// Check if there are filters
-	if len(dataFilter.UniqueIds) > 0 {
+	if len(dataFilter.UniqueIds) > 0 && !fitlterCheck {
 
 		filtersBuilder.WriteString(" AND ")
 		filtersBuilder.WriteString(" sms.unique_id IN (")
@@ -268,7 +287,7 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 		filtersBuilder.WriteString(") ")
 	}
 
-	if !adminCheck {
+	if !adminCheck && !fitlterCheck {
 		if !whereAdded {
 			filtersBuilder.WriteString(" WHERE ")
 		} else {
@@ -278,7 +297,7 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 		whereEleList = append(whereEleList, dataFilter.DealerName)
 	}
 
-	if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+	if !fitlterCheck && (dataFilter.PageNumber > 0 && dataFilter.PageSize > 0) {
 		offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
 		filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
 	}

@@ -93,10 +93,10 @@ func (AdjustmentsConfig *AdjustmentsCfgStruct) LoadAdjustmentsCfg() (err error) 
 			Bl = 0.0
 		}
 
-		Epc, ok := item["epc"].(string)
+		Epc, ok := item["epc"].(float64)
 		if !ok {
 			log.ConfWarnTrace(0, "Failed to get epc for Record ID %v. Item: %+v\n", RecordId, item)
-			Epc = "" // Default epc value of ""
+			Epc = 0.0 // Default epc value of ""
 		}
 
 		DateStr, ok := item["date"].(string)

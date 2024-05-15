@@ -178,13 +178,13 @@ func PrepareInstallCostFilters(tableName string, dataFilter models.DataRequestBo
 				filtersBuilder.WriteString(fmt.Sprintf("ic.cost %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "start_date":
-				filtersBuilder.WriteString(fmt.Sprintf("lf.start_date %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("ic.start_date %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "end_date":
-				filtersBuilder.WriteString(fmt.Sprintf("lf.end_date %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("ic.end_date %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ic.%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			}
 		}
@@ -207,7 +207,7 @@ func PrepareInstallCostFilters(tableName string, dataFilter models.DataRequestBo
 		filtersBuilder.WriteString("ic.is_archived = FALSE")
 	}
 
-	if forDataCount == true {
+	if forDataCount {
 		filtersBuilder.WriteString(" GROUP BY ic.id, ic.cost,ic.start_date, ic.end_date")
 	} else {
 		// Add pagination logic

@@ -14,6 +14,7 @@ import {
 } from "../../../redux/apiSlice/perfomanceSlice";
 import { format } from "date-fns";
 import Pagination from "../../components/pagination/Pagination";
+import MicroLoader from "../../components/loader/MicroLoader";
 const ProjectPerformence = () => {
   const dispatch = useAppDispatch();
   const [page, setPage] = useState(1);
@@ -28,8 +29,13 @@ const ProjectPerformence = () => {
     }
   };
 
-  const { perfomaceSale, commisionMetrics, projectStatus, projectsCount } =
-    useAppSelector((state) => state.perfomanceSlice);
+  const {
+    perfomaceSale,
+    commisionMetrics,
+    projectStatus,
+    projectsCount,
+    isLoading,
+  } = useAppSelector((state) => state.perfomanceSlice);
 
   useEffect(() => {
     const current = format(new Date(), "yyyy-MM-dd");
@@ -140,7 +146,7 @@ const ProjectPerformence = () => {
                   className="project-icon-img"
                   style={{ background: item.iconBgColor }}
                 >
-                  <img src={item.icon} alt="" />
+                  <img src={item.icon} alt="" style={{height: "24px", width: "24px"}}/>
                 </div>
                 <div className="doller-head">
                   <h2>
@@ -185,252 +191,270 @@ const ProjectPerformence = () => {
               onChange={() => {}}
             />
           </div>
+          <div className="milestone-header">
+                      <p>Project Name</p>
+                      <p>Milestone</p>
+                    </div>
           <div className="performance-milestone-table">
+            
             <table>
               <thead>
                 <tr>
                   <th style={{ padding: "0px" }}>
-                    <div className="milestone-header">
-                      <p>Project Name</p>
-                      <p>Milestone</p>
-                    </div>
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {projectStatus.map(
-                  (project: (typeof projectStatus)[0], index: number) => {
-                    const newObj: any = { ...project };
-                    delete newObj?.["unqiue_id"];
-                    return (
-                      <tr key={index}>
-                        <td style={{ padding: "0px" }}>
-                          <div className="milestone-data">
-                            <p className="install-update">
-                              {project.unqiue_id}
-                            </p>
-                            <div
-                              className="milestone-strips"
-                              style={getColorStyle(project.contract_date)}
-                            >
-                              <div className="strip-title">
-                                <p>
-                                  {project.contract_date
-                                    ? format(
-                                        new Date(project.contract_date),
-                                        "dd MMMM"
-                                      ).slice(0, 6)
-                                    : "No Data"}
-                                </p>
-                                <p>
-                                  {project.contract_date
-                                    ? format(
-                                        new Date(project.contract_date),
-                                        "yyyy"
-                                      )
-                                    : "No Data"}
-                                </p>
+                {isLoading ? (
+                  <tr>
+                    <td style={{display:"flex",alignItems:"center",justifyContent:"center"}} colSpan={6}>
+
+                    <MicroLoader />
+                    </td>
+                  </tr>
+                ) : (
+                  projectStatus.map(
+                    (project: (typeof projectStatus)[0], index: number) => {
+                      const newObj: any = { ...project };
+                      delete newObj?.["unqiue_id"];
+                      return (
+                        <tr key={index}>
+                          <td style={{ padding: "0px" }}>
+                            <div className="milestone-data">
+                              <p className="install-update">
+                                {project.unqiue_id}
+                              </p>
+                              <div
+                                className="milestone-strips"
+                                style={getColorStyle(project.contract_date)}
+                              >
+                                <div className="strip-title">
+                                  <p>
+                                    {project.contract_date
+                                      ? format(
+                                          new Date(project.contract_date),
+                                          "dd MMMM"
+                                        ).slice(0, 6)
+                                      : "No Data"}
+                                  </p>
+                                  <p>
+                                    {project.contract_date
+                                      ? format(
+                                          new Date(project.contract_date),
+                                          "yyyy"
+                                        )
+                                      : "No Data"}
+                                  </p>
+                                </div>
+                                <div
+                                  className="strip-line"
+                                  style={{ color: "" }}
+                                ></div>
+                                <div className="strip-des">
+                                  <p>
+                                    Sales{" "}
+                                    <IoMdInformationCircleOutline
+                                      style={{ cursor: "pointer" }}
+                                    />
+                                  </p>
+                                </div>
                               </div>
                               <div
-                                className="strip-line"
-                                style={{ color: "" }}
-                              ></div>
-                              <div className="strip-des">
-                                <p>
-                                  Sales{" "}
+                                className="notch-strip"
+                                style={getColorStyle(
+                                  project.site_survey_complete_date
+                                )}
+                              >
+                                <div className="notch-strip-title">
+                                  <p>
+                                    {project.site_survey_complete_date
+                                      ? format(
+                                          new Date(
+                                            project.site_survey_complete_date
+                                          ),
+                                          "dd MMMM"
+                                        ).slice(0, 6)
+                                      : "No Data"}
+                                  </p>
+                                </div>
+                                <div
+                                  className="strip-line"
+                                  style={{ color: "" }}
+                                ></div>
+                                <div className="notch-strip-des">
+                                  <p>Site Survey</p>
                                   <IoMdInformationCircleOutline
                                     style={{ cursor: "pointer" }}
                                   />
-                                </p>
+                                </div>
+                                <div className="child-notch"></div>
                               </div>
-                            </div>
-                            <div
-                              className="notch-strip"
-                              style={getColorStyle(
-                                project.site_survey_complete_date
-                              )}
-                            >
-                              <div className="notch-strip-title">
-                                <p>
-                                  {project.site_survey_complete_date
-                                    ? format(
-                                        new Date(
-                                          project.site_survey_complete_date
-                                        ),
-                                        "dd MMMM"
-                                      ).slice(0, 6)
-                                    : "No Data"}
-                                </p>
+                              <div className="vertical-wrap">
+                                <div className="vertical-line"></div>
                               </div>
-                              <div
-                                className="strip-line"
-                                style={{ color: "" }}
-                              ></div>
-                              <div className="notch-strip-des">
-                                <p>Site Survey</p>
-                                <IoMdInformationCircleOutline
-                                  style={{ cursor: "pointer" }}
-                                />
-                              </div>
-                              <div className="child-notch"></div>
-                            </div>
-                            <div className="vertical-wrap">
-                              <div className="vertical-line"></div>
-                            </div>
 
-                            <div
-                              className="notch-strip"
-                              style={getColorStyle(
-                                project.permit_approved_date
-                              )}
-                            >
-                              <div className="notch-strip-title">
-                                <p>
-                                  {project.permit_approved_date
-                                    ? format(
-                                        new Date(project.permit_approved_date),
-                                        "dd MMMM"
-                                      ).slice(0, 6)
-                                    : "No Data"}
-                                </p>
-                              </div>
                               <div
-                                className="strip-line"
-                                style={{ color: "" }}
-                              ></div>
-                              <div className="notch-strip-des">
-                                <p>Permit Submitted </p>
-                                <IoMdInformationCircleOutline
-                                  style={{ cursor: "pointer" }}
-                                />
+                                className="notch-strip"
+                                style={getColorStyle(
+                                  project.permit_approved_date
+                                )}
+                              >
+                                <div className="notch-strip-title">
+                                  <p>
+                                    {project.permit_approved_date
+                                      ? format(
+                                          new Date(
+                                            project.permit_approved_date
+                                          ),
+                                          "dd MMMM"
+                                        ).slice(0, 6)
+                                      : "No Data"}
+                                  </p>
+                                </div>
+                                <div
+                                  className="strip-line"
+                                  style={{ color: "" }}
+                                ></div>
+                                <div className="notch-strip-des">
+                                  <p>Permit Submitted </p>
+                                  <IoMdInformationCircleOutline
+                                    style={{ cursor: "pointer" }}
+                                  />
+                                </div>
+                                <div className="child-notch"></div>
                               </div>
-                              <div className="child-notch"></div>
-                            </div>
-                            <div className="vertical-wrap">
-                              <div className="vertical-line"></div>
-                            </div>
+                              <div className="vertical-wrap">
+                                <div className="vertical-line"></div>
+                              </div>
 
-                            <div
-                              className="notch-strip"
-                              style={getColorStyle(project.install_ready_date)}
-                            >
-                              <div className="notch-strip-title">
-                                <p>
-                                  {project.install_ready_date
-                                    ? format(
-                                        new Date(project.install_ready_date),
-                                        "dd MMMM"
-                                      ).slice(0, 6)
-                                    : "No Data"}
-                                </p>
-                              </div>
                               <div
-                                className="strip-line"
-                                style={{ color: "" }}
-                              ></div>
-                              <div className="notch-strip-des">
-                                <p>Install Ready</p>
-                                <IoMdInformationCircleOutline
-                                  style={{ cursor: "pointer" }}
-                                />
+                                className="notch-strip"
+                                style={getColorStyle(
+                                  project.install_ready_date
+                                )}
+                              >
+                                <div className="notch-strip-title">
+                                  <p>
+                                    {project.install_ready_date
+                                      ? format(
+                                          new Date(project.install_ready_date),
+                                          "dd MMMM"
+                                        ).slice(0, 6)
+                                      : "No Data"}
+                                  </p>
+                                </div>
+                                <div
+                                  className="strip-line"
+                                  style={{ color: "" }}
+                                ></div>
+                                <div className="notch-strip-des">
+                                  <p>Install Ready</p>
+                                  <IoMdInformationCircleOutline
+                                    style={{ cursor: "pointer" }}
+                                  />
+                                </div>
+                                <div className="child-notch"></div>
                               </div>
-                              <div className="child-notch"></div>
-                            </div>
-                            <div className="vertical-wrap">
-                              <div className="vertical-line"></div>
-                            </div>
+                              <div className="vertical-wrap">
+                                <div className="vertical-line"></div>
+                              </div>
 
-                            <div
-                              className="notch-strip"
-                              style={getColorStyle(
-                                project.install_completed_date
-                              )}
-                            >
-                              <div className="notch-strip-title">
-                                <p>
-                                  {project.install_completed_date
-                                    ? format(
-                                        new Date(
-                                          project.install_completed_date
-                                        ),
-                                        "dd MMMM"
-                                      ).slice(0, 6)
-                                    : "No Data"}
-                                </p>
-                              </div>
                               <div
-                                className="strip-line"
-                                style={{ color: "" }}
-                              ></div>
-                              <div className="notch-strip-des">
-                                <p>Install Completed</p>
-                                <IoMdInformationCircleOutline
-                                  style={{ cursor: "pointer" }}
-                                />
+                                className="notch-strip"
+                                style={getColorStyle(
+                                  project.install_completed_date
+                                )}
+                              >
+                                <div className="notch-strip-title">
+                                  <p>
+                                    {project.install_completed_date
+                                      ? format(
+                                          new Date(
+                                            project.install_completed_date
+                                          ),
+                                          "dd MMMM"
+                                        ).slice(0, 6)
+                                      : "No Data"}
+                                  </p>
+                                </div>
+                                <div
+                                  className="strip-line"
+                                  style={{ color: "" }}
+                                ></div>
+                                <div className="notch-strip-des">
+                                  <p>Install Completed</p>
+                                  <IoMdInformationCircleOutline
+                                    style={{ cursor: "pointer" }}
+                                  />
+                                </div>
+                                <div className="child-notch"></div>
                               </div>
-                              <div className="child-notch"></div>
-                            </div>
-                            <div className="vertical-wrap">
-                              <div className="vertical-line"></div>
-                            </div>
+                              <div className="vertical-wrap">
+                                <div className="vertical-line"></div>
+                              </div>
 
-                            <div
-                              className="notch-strip"
-                              style={getColorStyle(project.pto_date)}
-                            >
-                              <div className="notch-strip-title">
-                                <p>
-                                  {project.pto_date
-                                    ? format(
-                                        new Date(project.pto_date),
-                                        "dd MMMM"
-                                      ).slice(0, 6)
-                                    : "No Data"}
-                                </p>
-                              </div>
                               <div
-                                className="strip-line"
-                                style={{ color: "" }}
-                              ></div>
-                              <div className="notch-strip-des">
-                                <p>PTO</p>
-                                <IoMdInformationCircleOutline
-                                  style={{ cursor: "pointer" }}
-                                />
+                                className="notch-strip"
+                                style={getColorStyle(project.pto_date)}
+                              >
+                                <div className="notch-strip-title">
+                                  <p>
+                                    {project.pto_date
+                                      ? format(
+                                          new Date(project.pto_date),
+                                          "dd MMMM"
+                                        ).slice(0, 6)
+                                      : "No Data"}
+                                  </p>
+                                </div>
+                                <div
+                                  className="strip-line"
+                                  style={{ color: "" }}
+                                ></div>
+                                <div className="notch-strip-des">
+                                  <p>PTO</p>
+                                  <IoMdInformationCircleOutline
+                                    style={{ cursor: "pointer" }}
+                                  />
+                                </div>
+                                <div className="child-notch"></div>
                               </div>
-                              <div className="child-notch"></div>
-                            </div>
-                            <div className="vertical-wrap">
-                              <div className="vertical-line"></div>
-                            </div>
+                              <div className="vertical-wrap">
+                                <div className="vertical-line"></div>
+                              </div>
 
-                            <div className="all-progress">
-                              <div style={{ width: "25px" }}>
-                                <CircularProgressbar
-                                  styles={buildStyles({ pathColor: "#57B93A" })}
-                                  strokeWidth={10}
-                                  value={parseInt(
-                                    calculateCompletionPercentage(newObj)
-                                  )}
-                                />
-                              </div>
-                              <div>
-                                <p className="progress">
-                                  {calculateCompletionPercentage(newObj)}%
-                                </p>
-                                <p>Overall Progress</p>
+                              <div className="all-progress">
+                                <div style={{ width: "25px" }}>
+                                  <CircularProgressbar
+                                    styles={buildStyles({
+                                      pathColor: "#57B93A",
+                                    })}
+                                    strokeWidth={10}
+                                    value={parseInt(
+                                      calculateCompletionPercentage(newObj)
+                                    )}
+                                  />
+                                </div>
+                                <div>
+                                  <p className="progress">
+                                    {calculateCompletionPercentage(newObj)}%
+                                  </p>
+                                  <p>Overall Progress</p>
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  }
+                          </td>
+                        </tr>
+                      );
+                    }
+                  )
                 )}
               </tbody>
             </table>
 
-            <div className="page-heading-container">
+            
+          </div>
+          <div className="page-heading-container">
               <p className="page-heading">
                 {startIndex} - {projectsCount} of {projectStatus?.length} item
               </p>
@@ -449,7 +473,6 @@ const ProjectPerformence = () => {
                 />
               ) : null}
             </div>
-          </div>
         </div>
       </div>
     </div>

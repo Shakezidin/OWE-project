@@ -6,7 +6,7 @@ import { fetchCommissions } from "../../../../redux/apiSlice/configSlice/config_
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 import { DealerModel } from "../../../../core/models/configuration/create/DealerModel";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
-import DataTableHeader from "../../../components/tableHeader/DataTableHeader";
+import DataTableHeaderr from "../../../components/tableHeader/DataTableHeaderr";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import { toggleAllRows, toggleRowSelection } from "../../../components/chekbox/checkHelper";
 import FilterData from "./FilterData";
@@ -14,34 +14,48 @@ import { Column } from "../../../../core/models/data_models/FilterSelectModel";
 import Pagination from "../../../components/pagination/Pagination";
 import { DataTableColumn } from "../../../../resources/static_data/DataTableColumn";
 import FilterModal from "../../../components/FilterModal/FilterModal";
+import {getAnyTableData} from '../../../../redux/apiActions/dataTableAction'
 
-
+interface RowData {
+  [key: string]: string | number | null; // Define possible data types for table cells
+}
 
 
 const DataTablle: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
+  const [selectedTable, setSelectedTable] = useState<any>("");
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const dealerList = useAppSelector((state) => state.dealer.Dealers_list);
+  const  data: RowData[] = useAppSelector((state) => state.dataTableSlice.tableData);
   const loading = useAppSelector((state) => state.dealer.loading);
   const error = useAppSelector((state) => state.dealer.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
+
+
+ 
 
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
+      filters: [
+        {
+            Column: "table_name",
+            Operation: "=",
+            Data: selectedTable.value || "finance_metrics_schema"
+        }   
+    ]
     };
-    dispatch(fetchCommissions(pageNumber));
+    dispatch(getAnyTableData(pageNumber));
 
-  }, [dispatch, currentPage]);
+  }, [dispatch, currentPage, selectedTable]);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
 
@@ -71,94 +85,102 @@ const DataTablle: React.FC = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
+  
+  const propertyNames: string[] = data.length > 0 ? Object.keys(data[0]) : [];
+  const orderedColumns: string[] = propertyNames.reverse();
 
-  const dataDb = [
-    {
-      col1: "1234567890",
-      col2: "Josh Morton",
-      col3: "Josh Morton",
-      col4: "Josh Morton",
-      col5: "$120,450",
-      col6: "$100,320",
-      col7: "$100,320"
-    },
-    {
-      col1: "1234567890",
-      col2: "Josh Morton",
-      col3: "Josh Morton",
-      col4: "Josh Morton",
-      col5: "$120,450",
-      col6: "$100,320",
-      col7: "$100,320"
-    },
-    {
-      col1: "1234567890",
-      col2: "Josh Morton",
-      col3: "Josh Morton",
-      col4: "Josh Morton",
-      col5: "$120,450",
-      col6: "$100,320",
-      col7: "$100,320"
-    },
-    {
-      col1: "1234567890",
-      col2: "Josh Morton",
-      col3: "Josh Morton",
-      col4: "Josh Morton",
-      col5: "$120,450",
-      col6: "$100,320",
-      col7: "$100,320"
-    },
-    {
-      col1: "1234567890",
-      col2: "Josh Morton",
-      col3: "Josh Morton",
-      col4: "Josh Morton",
-      col5: "$120,450",
-      col6: "$100,320",
-      col7: "$100,320"
-    },
-    {
-      col1: "1234567890",
-      col2: "Josh Morton",
-      col3: "Josh Morton",
-      col4: "Josh Morton",
-      col5: "$120,450",
-      col6: "$100,320",
-      col7: "$100,320"
-    },
-    {
-      col1: "1234567890",
-      col2: "Josh Morton",
-      col3: "Josh Morton",
-      col4: "Josh Morton",
-      col5: "$120,450",
-      col6: "$100,320",
-      col7: "$100,320"
-    },
-    {
-      col1: "1234567890",
-      col2: "Josh Morton",
-      col3: "Josh Morton",
-      col4: "Josh Morton",
-      col5: "$120,450",
-      col6: "$100,320",
-      col7: "$100,320"
-    },
-  ]
-  const totalPages = Math.ceil(dataDb.length / itemsPerPage );
+  const replaceEmptyOrNull = (value: string | number | null) => {
+    return value === null || value === "" ? "N/A" : value;
+  };
+  // const dataDb = [
+  //   {
+  //     col1: "1234567890",
+  //     col2: "Josh Morton",
+  //     col3: "Josh Morton",
+  //     col4: "Josh Morton",
+  //     col5: "$120,450",
+  //     col6: "$100,320",
+  //     col7: "$100,320"
+  //   },
+  //   {
+  //     col1: "1234567890",
+  //     col2: "Josh Morton",
+  //     col3: "Josh Morton",
+  //     col4: "Josh Morton",
+  //     col5: "$120,450",
+  //     col6: "$100,320",
+  //     col7: "$100,320"
+  //   },
+  //   {
+  //     col1: "1234567890",
+  //     col2: "Josh Morton",
+  //     col3: "Josh Morton",
+  //     col4: "Josh Morton",
+  //     col5: "$120,450",
+  //     col6: "$100,320",
+  //     col7: "$100,320"
+  //   },
+  //   {
+  //     col1: "1234567890",
+  //     col2: "Josh Morton",
+  //     col3: "Josh Morton",
+  //     col4: "Josh Morton",
+  //     col5: "$120,450",
+  //     col6: "$100,320",
+  //     col7: "$100,320"
+  //   },
+  //   {
+  //     col1: "1234567890",
+  //     col2: "Josh Morton",
+  //     col3: "Josh Morton",
+  //     col4: "Josh Morton",
+  //     col5: "$120,450",
+  //     col6: "$100,320",
+  //     col7: "$100,320"
+  //   },
+  //   {
+  //     col1: "1234567890",
+  //     col2: "Josh Morton",
+  //     col3: "Josh Morton",
+  //     col4: "Josh Morton",
+  //     col5: "$120,450",
+  //     col6: "$100,320",
+  //     col7: "$100,320"
+  //   },
+  //   {
+  //     col1: "1234567890",
+  //     col2: "Josh Morton",
+  //     col3: "Josh Morton",
+  //     col4: "Josh Morton",
+  //     col5: "$120,450",
+  //     col6: "$100,320",
+  //     col7: "$100,320"
+  //   },
+  //   {
+  //     col1: "1234567890",
+  //     col2: "Josh Morton",
+  //     col3: "Josh Morton",
+  //     col4: "Josh Morton",
+  //     col5: "$120,450",
+  //     col6: "$100,320",
+  //     col7: "$100,320"
+  //   },
+  // ]
+  const totalPages = Math.ceil(data.length / itemsPerPage );
 
-  const currentPageData = dataDb.slice(startIndex, endIndex);
+  const currentPageData = data.slice(startIndex, endIndex);
   const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === dataDb.length;
+  const isAllRowsSelected = selectedRows.size === data.length;
   const fetchFunction = (req: any) => {
     // dispatch(fetchPaySchedule(req));
    };
+
+   console.log(selectedTable, "test")
   return (
     <div className="comm">
       <Breadcrumb head="" linkPara="Database Manager" route={""} linkparaSecond="Data" />
       <div className="commissionContainer">
-        <DataTableHeader
+        <DataTableHeaderr
           title="Table Name"
           onPressFilter={() => filter()}
           onPressImport={() => { }}
@@ -167,6 +189,8 @@ const DataTablle: React.FC = () => {
           showFilterIcon={true}
           selectMarginLeft="-10px"
           selectMarginLeft1="-20px"
+          selectedTable={selectedTable}
+          setSelectedTable={setSelectedTable}
         />
              {filterOPen && <FilterModal handleClose={filterClose}  
                columns={DataTableColumn} 
@@ -174,99 +198,28 @@ const DataTablle: React.FC = () => {
                page_number = {currentPage}
                page_size = {itemsPerPage}
              />}
-        <div
-          className="TableContainer"
-          style={{ overflowX: "auto", whiteSpace: "nowrap" }}
-        >
+             <div className="TableContainer" style={{ overflowX: "auto", whiteSpace: "nowrap" }}>
           <table>
             <thead>
               <tr>
-                <th style={{paddingRight:0}}>
-                  <div>
-                    <CheckBox
-                      checked={selectAllChecked}
-                      onChange={() =>
-                        toggleAllRows(
-                          selectedRows,
-                          dealerList,
-                          setSelectedRows,
-                          setSelectAllChecked
-                        )
-                      }
-                    indeterminate={isAnyRowSelected && !isAllRowsSelected}
-                    />
-                  </div>
-                </th>
-                <th style={{paddingLeft:"10px"}}>
-                  <div className="table-header">
-                    <p>Column 1</p> <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
-                
-                <th>
-                  <div className="table-header">
-                    <p>Column 2</p> <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Column 3</p> <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Column 4</p> <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Column 5</p> <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Column 6</p> <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
-                <th>
-                  <div className="table-header">
-                    <p>Column 7</p> <FaArrowDown style={{ color: "#667085" }} />
-                  </div>
-                </th>
+                <th>S.No</th>
+                 
+                {orderedColumns.map((columnName, index) => (
+                  <th key={index}>{columnName}</th>
+                ))}
               </tr>
             </thead>
-
-            <tbody >
-              {currentPageData?.length > 0
-                ? currentPageData?.map((el, i) => (
-                  <tr key={i} className={selectedRows.has(i) ? "selected" : ""} >
-                    <td style={{textAlign: "left",paddingRight:0 }}>
-                      <CheckBox
-                        checked={selectedRows.has(i)}
-                        onChange={() =>
-                          toggleRowSelection(
-                            i,
-                            selectedRows,
-                            setSelectedRows,
-                            setSelectAllChecked
-                          )
-                        }
-                      />
-                    </td>
-                    <td style={{ fontWeight: "500", color: "black", textAlign: "left",paddingLeft:"10px"}}>
-                      {el.col1}
-                    </td>
-                    <td style={{ textAlign: "left" }}>{el.col2}</td>
-                    <td style={{ textAlign: "left" }}>{el.col3}</td>
-                    <td style={{ textAlign: "left" }}>{el.col4}</td>
-                    <td style={{ textAlign: "left"}}>{el.col5}</td>
-                    <td style={{ textAlign: "left"}}>{el.col6}</td>
-                   <td style={{ textAlign: "left"}}>{el.col7}</td>
+            <tbody>
+              {data.map((item, rowIndex) => (
+                    <tr key={rowIndex}>
+                    <td>{startIndex + rowIndex + 1}</td>
+                  
+                    {orderedColumns.map((columnName, colIndex) => (
+                      <td key={colIndex}>{replaceEmptyOrNull(item[columnName])}</td>
+                    ))}
                   </tr>
-                ))
-                : null}
+              ))}
             </tbody>
-            
           </table>
         </div>
         <div className="page-heading-container">
@@ -276,7 +229,7 @@ const DataTablle: React.FC = () => {
       </p>
  
    {
-    dataDb?.length > 0 ? <Pagination
+    data?.length > 0 ? <Pagination
               currentPage={currentPage}
               totalPages={totalPages} // You need to calculate total pages
               paginate={paginate}
