@@ -1,9 +1,11 @@
-import React from "react";
 import { ICONS } from "../../icons/Icons";
 import { IoAddSharp } from "react-icons/io5";
 import "../../pages/configure/configure.css";
+import React, { useEffect } from "react";
 import { BiSearch, BiChevronDown } from "react-icons/bi";
 import "../tableHeader/dataTableHeader.css";
+import {getDataTableName} from '../../../redux/apiActions/dataTableAction'
+import { useAppSelector, useAppDispatch } from "../../../redux/hooks";
 import Select from "react-select";
 interface TableProps {
   title: string;
@@ -21,6 +23,8 @@ interface OptionType {
 }
 
 const DataTableHeader = (props: TableProps) => {
+  const dispatch = useAppDispatch();
+
   const {
     title,
     onPressFilter,
@@ -28,6 +32,10 @@ const DataTableHeader = (props: TableProps) => {
     selectMarginLeft,
     selectMarginLeft1,
   } = props;
+
+  useEffect(() =>{
+    dispatch(getDataTableName())
+     },[])
 
   return (
     <div className="commissionSection">
