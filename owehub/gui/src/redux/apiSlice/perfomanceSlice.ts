@@ -104,7 +104,7 @@ const perfomanceSlice = createSlice({
       })
 
       .addCase(getPerfomanceStatus.pending, (state, action) => {
-        state.isLoading = false;
+        state.isLoading = true;
       })
       .addCase(getPerfomanceStatus.fulfilled, (state, action) => {
         state.isLoading = false;
