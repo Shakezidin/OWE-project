@@ -510,7 +510,15 @@ const ProjectStatus = () => {
               <SelectOption
                 options={projectOption}
                 value={selectedProject}
-                onChange={(val) => val && setSelectedProject(val)}
+                onChange={(val) =>{  
+                  if (val) {
+                    
+                    setSelectedProject(val)
+                    dispatch(getProjectDetail(val.value))
+                  }
+
+
+                }}
               />
             </div>
           </div>
