@@ -289,7 +289,7 @@ func PreparePaymentScheduleFilters(tableName string, dataFilter models.DataReque
 				filtersBuilder.WriteString(fmt.Sprintf("ps.rep_pay %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ps.%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			}
 		}

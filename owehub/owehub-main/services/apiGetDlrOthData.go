@@ -232,7 +232,7 @@ func PrepareDLROTHFilters(tableName string, dataFilter models.DataRequestBody, f
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(dh.paid_amount) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(dh.%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			}
 		}

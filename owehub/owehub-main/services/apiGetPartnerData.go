@@ -162,7 +162,7 @@ func PreparePartnerFilters(tableName string, dataFilter models.DataRequestBody, 
 				value = GetFilterModifiedValue(filter.Operation, filter.Data.(string))
 			}
 			// Build the filter condition using correct db column name
-			filtersBuilder.WriteString("LOWER(")
+			filtersBuilder.WriteString("LOWER(ptr.")
 			filtersBuilder.WriteString(column)
 			filtersBuilder.WriteString(") ")
 			filtersBuilder.WriteString(operator)
