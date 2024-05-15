@@ -58,9 +58,6 @@ const UserActivity: React.FC = () => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
 
-
-  //const currentPageData = userActivityList?.slice();
-
   return (
     <div className="comm">
       <Breadcrumb
