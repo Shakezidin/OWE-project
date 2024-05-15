@@ -70,6 +70,7 @@ const ProjectPerformence = () => {
     }
   };
   const startIndex = (page - 1) * perPage + 1;
+  const endIndex = page * perPage 
   return (
     <div className="">
       <Breadcrumb
@@ -288,9 +289,7 @@ const ProjectPerformence = () => {
                                 </div>
                                 <div className="child-notch"></div>
                               </div>
-                              <div className="vertical-wrap">
-                                <div className="vertical-line"></div>
-                              </div>
+                              
 
                               <div
                                 className="notch-strip"
@@ -322,9 +321,7 @@ const ProjectPerformence = () => {
                                 </div>
                                 <div className="child-notch"></div>
                               </div>
-                              <div className="vertical-wrap">
-                                <div className="vertical-line"></div>
-                              </div>
+                            
 
                               <div
                                 className="notch-strip"
@@ -354,9 +351,7 @@ const ProjectPerformence = () => {
                                 </div>
                                 <div className="child-notch"></div>
                               </div>
-                              <div className="vertical-wrap">
-                                <div className="vertical-line"></div>
-                              </div>
+                             
 
                               <div
                                 className="notch-strip"
@@ -388,9 +383,7 @@ const ProjectPerformence = () => {
                                 </div>
                                 <div className="child-notch"></div>
                               </div>
-                              <div className="vertical-wrap">
-                                <div className="vertical-line"></div>
-                              </div>
+                             
 
                               <div
                                 className="notch-strip"
@@ -453,7 +446,7 @@ const ProjectPerformence = () => {
 
             <div className="page-heading-container">
               <p className="page-heading">
-                {startIndex} - {projectsCount} of {projectStatus?.length} item
+              {startIndex} - {endIndex} of {projectsCount} item
               </p>
 
               {projectStatus?.length > 0 ? (
@@ -478,3 +471,4 @@ const ProjectPerformence = () => {
 };
 
 export default ProjectPerformence;
+

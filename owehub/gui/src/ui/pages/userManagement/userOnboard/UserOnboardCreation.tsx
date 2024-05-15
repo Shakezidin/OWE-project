@@ -35,8 +35,6 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
   selectedOption,
 }) => {
   const dispatch = useDispatch();
-  const [firstNameError, setFirstNameError] = useState("");
-  const [lastNameError, setLastNameError] = useState("");
   const [phoneNumberError, setPhoneNumberError] = useState("");
   const [dbAccess, setDbAcess] = useState(false);
   const { loading, formData } = useAppSelector(
@@ -53,7 +51,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
     dispatch(updateUserForm({ field: "report_to", value: "" }));
     const { value } = newValue;
     onChangeRole("Role", value);
-setTablePermissions({})
+    setTablePermissions({})
     dispatch(updateUserForm({ field: fieldName, value }));
   };
 
@@ -103,8 +101,7 @@ setTablePermissions({})
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          Promise.resolve(onSubmitCreateUser(tablePermissions))
-          .then(()=>setTablePermissions({}))
+        onSubmitCreateUser(tablePermissions)
         }}
         className="modal"
       >
@@ -234,7 +231,9 @@ setTablePermissions({})
                           >
                             {key}
                           </label>
-                          <div className="dash-select-user">Edit</div>
+                          <div className="dash-select-user"  onClick={() => setSelectTable(true)}>
+                            Edit
+                          </div>
                         </div>
                       ))}
 

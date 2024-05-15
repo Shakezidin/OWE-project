@@ -6,7 +6,7 @@ import { fetchCommissions } from "../../../../redux/apiSlice/configSlice/config_
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 import { DealerModel } from "../../../../core/models/configuration/create/DealerModel";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
-import DataTableHeader from "../../../components/tableHeader/DataTableHeader";
+import DataTableHeaderr from "../../../components/tableHeader/DataTableHeaderr";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import { toggleAllRows, toggleRowSelection } from "../../../components/chekbox/checkHelper";
 import FilterData from "./FilterData";
@@ -24,11 +24,13 @@ interface RowData {
 const DataTablle: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
+  const [selectedTable, setSelectedTable] = useState<any>("");
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const  data: RowData[] = useAppSelector((state) => state.dataTableSlice.tableData);
+  const {dbCount } = useAppSelector((state) => state.dataTableSlice)
   const loading = useAppSelector((state) => state.dealer.loading);
   const error = useAppSelector((state) => state.dealer.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
@@ -36,8 +38,8 @@ const DataTablle: React.FC = () => {
   const [editMode, setEditMode] = useState(false);
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
   const itemsPerPage = 10;
-
-
+const start = (currentPage-1)* itemsPerPage+1
+const end = currentPage* itemsPerPage
  
 
   useEffect(() => {
@@ -48,13 +50,13 @@ const DataTablle: React.FC = () => {
         {
             Column: "table_name",
             Operation: "=",
-            Data: "finance_metrics_schema"
+            Data: selectedTable.value || "finance_metrics_schema"
         }   
     ]
     };
     dispatch(getAnyTableData(pageNumber));
 
-  }, [dispatch, currentPage]);
+  }, [dispatch, currentPage, selectedTable]);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
 
@@ -86,86 +88,13 @@ const DataTablle: React.FC = () => {
   }
   
   const propertyNames: string[] = data.length > 0 ? Object.keys(data[0]) : [];
-  const orderedColumns: string[] = propertyNames.filter((name) => name !== "unique_id").reverse();
+  const orderedColumns: string[] = propertyNames.reverse();
 
   const replaceEmptyOrNull = (value: string | number | null) => {
     return value === null || value === "" ? "N/A" : value;
   };
-  // const dataDb = [
-  //   {
-  //     col1: "1234567890",
-  //     col2: "Josh Morton",
-  //     col3: "Josh Morton",
-  //     col4: "Josh Morton",
-  //     col5: "$120,450",
-  //     col6: "$100,320",
-  //     col7: "$100,320"
-  //   },
-  //   {
-  //     col1: "1234567890",
-  //     col2: "Josh Morton",
-  //     col3: "Josh Morton",
-  //     col4: "Josh Morton",
-  //     col5: "$120,450",
-  //     col6: "$100,320",
-  //     col7: "$100,320"
-  //   },
-  //   {
-  //     col1: "1234567890",
-  //     col2: "Josh Morton",
-  //     col3: "Josh Morton",
-  //     col4: "Josh Morton",
-  //     col5: "$120,450",
-  //     col6: "$100,320",
-  //     col7: "$100,320"
-  //   },
-  //   {
-  //     col1: "1234567890",
-  //     col2: "Josh Morton",
-  //     col3: "Josh Morton",
-  //     col4: "Josh Morton",
-  //     col5: "$120,450",
-  //     col6: "$100,320",
-  //     col7: "$100,320"
-  //   },
-  //   {
-  //     col1: "1234567890",
-  //     col2: "Josh Morton",
-  //     col3: "Josh Morton",
-  //     col4: "Josh Morton",
-  //     col5: "$120,450",
-  //     col6: "$100,320",
-  //     col7: "$100,320"
-  //   },
-  //   {
-  //     col1: "1234567890",
-  //     col2: "Josh Morton",
-  //     col3: "Josh Morton",
-  //     col4: "Josh Morton",
-  //     col5: "$120,450",
-  //     col6: "$100,320",
-  //     col7: "$100,320"
-  //   },
-  //   {
-  //     col1: "1234567890",
-  //     col2: "Josh Morton",
-  //     col3: "Josh Morton",
-  //     col4: "Josh Morton",
-  //     col5: "$120,450",
-  //     col6: "$100,320",
-  //     col7: "$100,320"
-  //   },
-  //   {
-  //     col1: "1234567890",
-  //     col2: "Josh Morton",
-  //     col3: "Josh Morton",
-  //     col4: "Josh Morton",
-  //     col5: "$120,450",
-  //     col6: "$100,320",
-  //     col7: "$100,320"
-  //   },
-  // ]
-  const totalPages = Math.ceil(data.length / itemsPerPage );
+  
+  const totalPages = Math.ceil(dbCount / itemsPerPage );
 
   const currentPageData = data.slice(startIndex, endIndex);
   const isAnyRowSelected = selectedRows.size > 0;
@@ -173,11 +102,13 @@ const DataTablle: React.FC = () => {
   const fetchFunction = (req: any) => {
     // dispatch(fetchPaySchedule(req));
    };
+console.log(dbCount, "db")
+ 
   return (
     <div className="comm">
       <Breadcrumb head="" linkPara="Database Manager" route={""} linkparaSecond="Data" />
       <div className="commissionContainer">
-        <DataTableHeader
+        <DataTableHeaderr
           title="Table Name"
           onPressFilter={() => filter()}
           onPressImport={() => { }}
@@ -186,6 +117,8 @@ const DataTablle: React.FC = () => {
           showFilterIcon={true}
           selectMarginLeft="-10px"
           selectMarginLeft1="-20px"
+          selectedTable={selectedTable}
+          setSelectedTable={setSelectedTable}
         />
              {filterOPen && <FilterModal handleClose={filterClose}  
                columns={DataTableColumn} 
@@ -198,7 +131,7 @@ const DataTablle: React.FC = () => {
             <thead>
               <tr>
                 <th>S.No</th>
-                <th>unique_id</th>
+                 
                 {orderedColumns.map((columnName, index) => (
                   <th key={index}>{columnName}</th>
                 ))}
@@ -208,7 +141,7 @@ const DataTablle: React.FC = () => {
               {data.map((item, rowIndex) => (
                     <tr key={rowIndex}>
                     <td>{startIndex + rowIndex + 1}</td>
-                    <td>{replaceEmptyOrNull(item["unique_id"])}</td>
+                  
                     {orderedColumns.map((columnName, colIndex) => (
                       <td key={colIndex}>{replaceEmptyOrNull(item[columnName])}</td>
                     ))}
@@ -220,7 +153,7 @@ const DataTablle: React.FC = () => {
         <div className="page-heading-container">
       
       <p className="page-heading">
-       {currentPage} - {totalPages} of {currentPageData?.length} item
+       {start} - {end} of {dbCount} item
       </p>
  
    {

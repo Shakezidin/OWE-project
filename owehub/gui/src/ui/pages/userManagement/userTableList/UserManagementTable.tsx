@@ -21,6 +21,7 @@ import {
 import { TYPE_OF_USER } from "../../../../resources/static_data/TypeOfUser";
 import PaginationComponent from "../../../components/pagination/PaginationComponent";
 import { fetchUserListBasedOnRole } from "../../../../redux/apiActions/userManagement/userManagementActions";
+import DBUserTable from "../userManagerAllTable/DBUserTable";
 
 interface UserTableProos {
   userDropdownData: UserDropdownModel[];
@@ -83,7 +84,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   const totalPages = Math.ceil(count! / pageSize1);
 
   const startIndex = (currentPage1 - 1) * pageSize1 + 1;
-
+  const endIndex = currentPage1 * pageSize1 
   /** render table based on dropdown */
   const renderComponent = () => {
     switch (selectedOption.label) {
@@ -106,6 +107,22 @@ const UserManagementTable: React.FC<UserTableProos> = ({
       case TYPE_OF_USER.FINANCE_ADMIN:
         return (
           <UserTable
+            data={userRoleBasedList}
+            onClickEdit={(item: UserRoleBasedListModel) => {
+              onClickEdit(item);
+            }}
+            onClickDelete={(item: UserRoleBasedListModel) => {
+              onClickDelete(item);
+            }}
+            selectedRows={selectedRows}
+            selectAllChecked={selectAllChecked}
+            setSelectedRows={setSelectedRows}
+            setSelectAllChecked={setSelectAllChecked}
+          />
+        );
+        case TYPE_OF_USER.DB_USER:
+        return (
+          <DBUserTable
             data={userRoleBasedList}
             onClickEdit={(item: UserRoleBasedListModel) => {
               onClickEdit(item);
@@ -273,7 +290,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
         {userRoleBasedList?.length > 0 ? (
           <>
             <p className="page-heading">
-              {startIndex} - {count} of {userRoleBasedList?.length} item
+              {startIndex} - {endIndex} of {count} item
             </p>
             <PaginationComponent
               currentPage={currentPage1}

@@ -192,7 +192,6 @@ const UserManagement: React.FC = () => {
       }
     }
   };
-console.log(selectedOption,"slected Role");
 
   /** render UI */
   return (
