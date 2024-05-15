@@ -282,7 +282,7 @@ func PrepareNonCommDlrPayFilters(tableName string, dataFilter models.DataRequest
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ndp.end_date) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ndp.%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			}
 

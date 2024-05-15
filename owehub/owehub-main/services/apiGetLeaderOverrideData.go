@@ -241,7 +241,7 @@ func PrepareLeaderOverrideFilters(tableName string, dataFilter models.DataReques
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(lo.unique_id) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "team_name":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(lo.team_name) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ts.team_name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "leader_name":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(lo.leader_name) %s LOWER($%d)", operator, len(whereEleList)+1))
