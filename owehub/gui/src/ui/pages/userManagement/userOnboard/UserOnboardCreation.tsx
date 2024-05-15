@@ -231,7 +231,9 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                           >
                             {key}
                           </label>
-                          <div className="dash-select-user">Edit</div>
+                          <div className="dash-select-user"  onClick={() => setSelectTable(true)}>
+                            Edit
+                          </div>
                         </div>
                       ))}
 
