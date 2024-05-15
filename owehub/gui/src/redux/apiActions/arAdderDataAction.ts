@@ -19,7 +19,7 @@ interface IAdderCreateParams {
   type_ad_mktg: string;
   type: string;
   gc: string;
-  exact_amount: string;
+  exact_amount: any;
   per_kw_amt: number;
   rep_percent: number;
   description: string;

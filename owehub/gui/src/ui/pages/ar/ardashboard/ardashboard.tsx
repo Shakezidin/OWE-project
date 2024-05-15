@@ -33,12 +33,12 @@ export const ARDashboardPage: React.FC = () => {
 
   const options1 = [
     { value: "All", label: "All" },
-    { value: "Shaky", label: "Current Due" },
-    { value: "Cancel", label: "Overpaid" },
+    { value: "Current Due", label: "Current Due" },
+    { value: "Overpaid", label: "Overpaid" },
   ];
   const options2 = [
     { value: "All", label: "All" },
-    { value: "Shaky", label: "N/A" },
+    { value: "N/A", label: "N/A" },
   ];
   const options3 = [
     { value: "Select", label: "Select" },
@@ -194,7 +194,7 @@ export const ARDashboardPage: React.FC = () => {
               <Select
                 options={options2}
                 value={options2.find(
-                  (option) => option.value === filters.report_type
+                  (option) => option.value === filters.sale_partner
                 )}
                 onChange={(value) =>
                   handleChange("sale_partner", value?.value!)

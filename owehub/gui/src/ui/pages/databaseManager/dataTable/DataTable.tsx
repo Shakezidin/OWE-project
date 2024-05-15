@@ -37,7 +37,7 @@ const DataTablle: React.FC = () => {
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
-  const itemsPerPage = 10;
+  const itemsPerPage = 30;
 const start = (currentPage-1)* itemsPerPage+1
 const end = currentPage* itemsPerPage
  
@@ -109,23 +109,23 @@ console.log(dbCount, "db")
       <Breadcrumb head="" linkPara="Database Manager" route={""} linkparaSecond="Data" />
       <div className="commissionContainer">
         <DataTableHeaderr
-          title="Table Name"
+          title={selectedTable.value}
           onPressFilter={() => filter()}
           onPressImport={() => { }}
           showImportIcon={false}
           showSelectIcon={true}
-          showFilterIcon={true}
+          showFilterIcon={false}
           selectMarginLeft="-10px"
           selectMarginLeft1="-20px"
           selectedTable={selectedTable}
           setSelectedTable={setSelectedTable}
         />
-             {filterOPen && <FilterModal handleClose={filterClose}  
+             {/* {filterOPen && <FilterModal handleClose={filterClose}  
                columns={DataTableColumn} 
                fetchFunction={fetchFunction}
                page_number = {currentPage}
                page_size = {itemsPerPage}
-             />}
+             />} */}
              <div className="TableContainer" style={{ overflowX: "auto", whiteSpace: "nowrap" }}>
           <table>
             <thead>
