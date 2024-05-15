@@ -125,7 +125,8 @@ const AR = () => {
 
  
   const fetchFunction = (req: any) => {
-    dispatch(fetchAr(req));
+    dispatch(fetchAr({...req, page_number: currentPage,
+      page_size: itemsPerPage,}));
    };
    const handleViewArchiveToggle = () => {
     setViewArchived(!viewArchived);

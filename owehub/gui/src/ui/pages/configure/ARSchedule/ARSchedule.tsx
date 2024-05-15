@@ -134,7 +134,8 @@ const ARSchedule = () => {
     handleOpen();
   };
   const fetchFunction = (req: any) => {
-    dispatch(getArscheduleList(req));
+    dispatch(getArscheduleList({...req,page_number: currentPage,
+      page_size: itemsPerPage}));
   };
 
   const handleArchiveClick = async (record_id: number[]) => {

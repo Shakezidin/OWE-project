@@ -162,7 +162,8 @@ const Adjustments  = () => {
     handleOpen()
   };
   const fetchFunction = (req: any) => {
-    dispatch(getAdjustments(req));
+    dispatch(getAdjustments({...req,page_number: currentPage,
+      page_size: itemsPerPage}));
    };
   if (isLoading) {
     return <div className="loader-container"> <Loading/> </div>;

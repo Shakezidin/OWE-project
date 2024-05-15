@@ -120,7 +120,8 @@ const Reconcile = () => {
     setSelectAllChecked(false);
   };
   const fetchFunction = (req: any) => {
-    dispatch(fetchReconcile(req));
+    dispatch(fetchReconcile({...req,page_number: currentPage,
+      page_size: itemsPerPage}));
   };
   const handleEdit = (data: any) => {
     setEditMode(true);
