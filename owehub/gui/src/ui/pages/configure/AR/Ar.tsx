@@ -21,6 +21,7 @@ import { ROUTES } from "../../../../routes/routes";
 import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import { showAlert, successSwal } from "../../../components/alert/ShowAlert";
+import DataNotFound from "../../../components/loader/DataNotFound";
 const AR = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -337,7 +338,14 @@ const AR = () => {
                       )}
                      </tr>
                       ))
-                      : null}
+                      :  <tr style={{border:0}}>
+                      <td colSpan={10}>
+                      <div className="data-not-found">
+                      <DataNotFound/>
+                      <h3>Data Not Found</h3>
+                      </div>
+                      </td>
+                    </tr>}
 
             </tbody>
 
@@ -345,9 +353,9 @@ const AR = () => {
         </div>
         <div className="page-heading-container">
 
-          <p className="page-heading">
-            {startIndex} - {endIndex} of {count} item
-          </p>
+         {count && <p className="page-heading">
+            {startIndex} - {endIndex} of {count } item
+          </p>}
 
           {
             data?.length > 0 ? <Pagination
