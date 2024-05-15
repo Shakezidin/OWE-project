@@ -49,6 +49,7 @@ import ArDataSlice from "./apiSlice/AR/ArDataSlice";
 import activeSlice from "./apiSlice/configSlice/config_get_slice/activeSlice";
 import DBManagerSlice from "./apiSlice/dbManagerSlice/DBManagerSlice";
 import projectManagement from "./apiSlice/projectManagement";
+import dataTableSlice from "./apiSlice/DbManager/dataTableSlice";
 export const store = configureStore({
   reducer: {
     appState: appStateSlice,
@@ -103,7 +104,8 @@ export const store = configureStore({
     active:activeSlice,
     //DB manager
     dbManager: DBManagerSlice,
-    projectManagement
+    projectManagement,
+    dataTableSlice
   },
 });
 

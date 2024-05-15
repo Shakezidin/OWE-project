@@ -871,7 +871,7 @@ CREATE TABLE adjustments (
     state INT,
     sys_size DOUBLE PRECISION,
     bl DOUBLE PRECISION,
-    epc date,
+    epc float,
     date date,
     amount character varying,
     notes character varying,

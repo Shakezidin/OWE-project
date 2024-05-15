@@ -20,7 +20,7 @@ CREATE TABLE sales_ar_calc (
     sys_size float,
     kwh float,
     contract float,
-    epc date,
+    epc float,
     created date,
     wc date,
     pp date,
