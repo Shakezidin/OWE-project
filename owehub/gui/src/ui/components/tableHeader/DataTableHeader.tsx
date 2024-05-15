@@ -29,11 +29,6 @@ const DataTableHeader = (props: TableProps) => {
     selectMarginLeft1,
   } = props;
 
-  const options: OptionType[] = [
-    { value: "apple", label: "Apple" },
-    { value: "banana", label: "Banana" },
-    { value: "orange", label: "Orange" },
-  ];
   return (
     <div className="commissionSection">
       <h3>{title}</h3>

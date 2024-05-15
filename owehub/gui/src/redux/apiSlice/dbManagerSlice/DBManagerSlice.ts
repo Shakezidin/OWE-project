@@ -6,6 +6,7 @@ const initialState: DBManagerStateModel = {
   loading: false,
   error: null,
   userActivityList: [],
+  totalCount: 0,
 };
 
 const DBManagerSlice = createSlice({
@@ -24,11 +25,10 @@ const DBManagerSlice = createSlice({
       .addCase(
         fetchDBManagerUserActivity.fulfilled,
         (state: DBManagerStateModel, action) => {
+          const { list, dbRecCount } = action.payload;
           state.loading = false;
-          if (action.payload.length > 0) {
-            state.userActivityList = action.payload;
-          }
-
+          state.userActivityList = list;
+          state.totalCount = dbRecCount;
           state.error = null;
         }
       )

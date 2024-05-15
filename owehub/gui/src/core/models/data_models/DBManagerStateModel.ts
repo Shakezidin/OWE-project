@@ -4,4 +4,5 @@ export interface DBManagerStateModel {
   error: string | null | any;
   loading: boolean;
   userActivityList?: DBManagerUserActivityModel[];
+  totalCount: number
 }

@@ -13,11 +13,14 @@ export const fetchDBManagerUserActivity = createAsyncThunk(
       JSON.stringify(data)
     );
     if (response.status !== HTTP_STATUS.OK) {
-      throw new Error("Failed to fetch onboarding data");
+      throw new Error("Failed to fetch data");
     }
 
-    const { dblog_list_response } = response.data;
-    const mapList: DBManagerUserActivityModel[] = dblog_list_response.map(
+    const { dblog_list_response, dbRecCount } = response.data;
+    if (!dblog_list_response || dblog_list_response.length === 0) {
+      return { list: [], dbRecCount: 0 };
+    }
+    const list: DBManagerUserActivityModel[] = dblog_list_response.map(
       (el: DBManagerUserActivityModel, index: number) => {
         return {
           username: el.username,
@@ -27,6 +30,6 @@ export const fetchDBManagerUserActivity = createAsyncThunk(
         };
       }
     );
-    return mapList;
+    return { list, dbRecCount };
   }
 );
