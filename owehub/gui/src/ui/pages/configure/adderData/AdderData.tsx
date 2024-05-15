@@ -76,6 +76,7 @@ const AdderData = () => {
   };
   const totalPages = Math.ceil(timelinesla_list?.length / itemsPerPage);
 
+ 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
 
@@ -304,7 +305,7 @@ const AdderData = () => {
         </div>
         <div className="page-heading-container">
           <p className="page-heading">
-            {currentPage} - {totalPages} of {currentPageData?.length} item
+            Showing {currentPage} - {endIndex} of {totalPages} item
           </p>
 
           {timelinesla_list?.length > 0 ? (
@@ -315,7 +316,7 @@ const AdderData = () => {
               currentPageData={currentPageData}
               goToNextPage={goToNextPage}
               goToPrevPage={goToPrevPage}
-perPage={itemsPerPage}
+              perPage={itemsPerPage}
             /> 
           ) : null}
         </div>

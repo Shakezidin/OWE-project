@@ -75,6 +75,7 @@ const TimeLine = () => {
   const totalPages = Math.ceil(totalCount / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage+1;
+  const endIndex = currentPage * itemsPerPage 
  
   const currentPageData = timelinesla_list?.slice();
 
@@ -209,6 +210,8 @@ const TimeLine = () => {
     return <div className="loader-container"><Loading/> {loading}</div>;
   }
 
+
+
   return (
     <div className="comm">
       <Breadcrumb head="Commission" linkPara="Configure" route={ROUTES.CONFIG_PAGE} linkparaSecond="Timeline SLA" />
@@ -334,8 +337,8 @@ const TimeLine = () => {
         <div className="page-heading-container">
 
           <p className="page-heading">
-            {startIndex} - {totalCount} of {timelinesla_list?.length} item
-          </p>
+           Showing {startIndex} - {endIndex} of {totalCount} item
+          </p> 
 
           <Pagination
               currentPage={currentPage}
@@ -344,7 +347,7 @@ const TimeLine = () => {
               currentPageData={currentPageData}
               goToNextPage={goToNextPage}
               goToPrevPage={goToPrevPage}
-perPage={itemsPerPage}
+              perPage={itemsPerPage}
             /> 
         </div>
 : null

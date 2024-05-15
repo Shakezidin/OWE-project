@@ -94,7 +94,7 @@ const ProjectStatus = () => {
       childStatusData: [
         {
           name: "10 Apr",
-          process: projectDetail.ntp_pending ? "Completed" : "Pending",
+          process:  "Pending",
           data: projectDetail.ntp_pending ? "" : "data is not available",
           borderColor:  projectDetail.ntp_pending ?"white":"#A5AAB2",
           key: "ntp_pending",
@@ -121,9 +121,8 @@ const ProjectStatus = () => {
       childStatusData: [
         {
           name: "10 Apr",
-          process: projectDetail.site_survey_scheduled
-            ? "Scheduled"
-            : "Completed",
+          process: "Scheduled",
+            
           data: projectDetail.site_survey_scheduled
             ? ""
             : "data is not available",
@@ -134,9 +133,8 @@ const ProjectStatus = () => {
         },
         {
           name: "10 Apr",
-          process: projectDetail.site_survey_rescheduled
-            ? "Re-Scheduled"
-            : "Completed",
+          process:  "Re-Scheduled"
+           ,
           data: projectDetail.site_survey_rescheduled
             ? ""
             : "data is not available",
@@ -169,7 +167,7 @@ const ProjectStatus = () => {
       childStatusData: [
         {
           name: "10 Apr",
-          process: projectDetail.roofing_pending ? "Completed" : "Pending",
+          process: "Pending",
           data: projectDetail.roofing_pending ? "" : "data is not available",
           borderColor:  projectDetail.roofing_pending ?"white":"#A5AAB2",
           key: "roofing_pending",
@@ -178,7 +176,7 @@ const ProjectStatus = () => {
         },
         {
           name: "10 Apr",
-          process: projectDetail.roofing_scheduled ? "Completed" : "Scheduled",
+          process:  "Scheduled",
           data: projectDetail.roofing_scheduled ? "" : "data is not available",
           borderColor: projectDetail.roofing_scheduled ?"white":"#A5AAB2",
           key: "roofing_scheduled",
@@ -206,7 +204,7 @@ const ProjectStatus = () => {
       childStatusData: [
         {
           name: "10 Apr",
-          process: projectDetail.electrical_pending ? "Completed" : "Pending",
+          process:  "Pending",
           data: projectDetail.electrical_pending ? "" : "data is not available",
           borderColor: projectDetail.electrical_pending ?"white":"#A5AAB2",
           key: "electrical_pending",
@@ -215,9 +213,7 @@ const ProjectStatus = () => {
         },
         {
           name: "10 Apr",
-          process: projectDetail.electrical_scheduled
-            ? "Completed"
-            : "Scheduled",
+          process: "Scheduled",
           data: projectDetail.electrical_scheduled
             ? ""
             : "data is not available",
@@ -249,7 +245,7 @@ const ProjectStatus = () => {
       childStatusData: [
         {
           name: "10 Apr",
-          process: projectDetail.pv_permit_pending ? "Completed" : "Pending",
+          process:"Pending",
           data: projectDetail.pv_permit_pending ? "" : "data is not available",
           borderColor: projectDetail.pv_permit_pending ?"white":"#A5AAB2",
           key: "pv_permit_pending",
@@ -258,9 +254,7 @@ const ProjectStatus = () => {
         },
         {
           name: "10 Apr",
-          process: projectDetail.pv_permit_scehduled
-            ? "Completed"
-            : "Submitted",
+          process:  "Submitted",
           data: projectDetail.pv_permit_scehduled
             ? ""
             : "data is not available",
@@ -292,7 +286,7 @@ const ProjectStatus = () => {
       childStatusData: [
         {
           name: "10 Apr",
-          process: projectDetail.ic_permit_pending ? "Completed" : "Pending",
+          process: "Pending",
           data: projectDetail.ic_permit_pending ? "" : "data is not available",
           borderColor:projectDetail.ic_permit_pending ?"white":"#A5AAB2",
           key: "ic_permit_pending",
@@ -301,9 +295,7 @@ const ProjectStatus = () => {
         },
         {
           name: "10 Apr",
-          process: projectDetail.ic_permit_scheduled
-            ? "Completed"
-            : "Submitted",
+          process: "Submitted",
           data: projectDetail.ic_permit_scheduled
             ? ""
             : "data is not available",
@@ -335,7 +327,7 @@ const ProjectStatus = () => {
       childStatusData: [
         {
           name: "10 Apr",
-          process: projectDetail.install_pending ? "Completed" : "Pending",
+          process:  "Pending",
           data: projectDetail.install_pending ? "" : "data is not available",
           borderColor: projectDetail.install_pending ?"white":"#A5AAB2",
           key: "install_pending",
@@ -345,7 +337,7 @@ const ProjectStatus = () => {
 
         {
           name: "10 Apr",
-          process: projectDetail.install_ready ? "Completed" : "Ready",
+          process: "Ready",
           data: projectDetail.install_ready ? "" : "data is not available",
           borderColor: projectDetail.install_ready ?"white":"#A5AAB2",
           key: "install_ready",
@@ -354,7 +346,7 @@ const ProjectStatus = () => {
         },
         {
           name: "10 Apr",
-          process: projectDetail.install_scheduled ? "Completed" : "Scheduled",
+          process:"Scheduled",
           data: projectDetail.install_scheduled ? "" : "data is not available",
           borderColor: projectDetail.install_scheduled ?"white":"#A5AAB2",
           key: "install_scheduled",
@@ -383,9 +375,7 @@ const ProjectStatus = () => {
       childStatusData: [
         {
           name: "10 Apr",
-          process: projectDetail.final_inspection_submitted
-            ? "Completed"
-            : "Scheduled",
+          process: "Scheduled",
           data: projectDetail.final_inspection_submitted
             ? ""
             : "data is not available",
@@ -398,9 +388,7 @@ const ProjectStatus = () => {
         },
         {
           name: "10 Apr",
-          process: projectDetail.final_inspection_approved
-            ? "Completed"
-            : "Approved",
+          process:  "Approved",
           data: projectDetail.final_inspection_approved
             ? ""
             : "data is not available",
@@ -423,7 +411,7 @@ const ProjectStatus = () => {
       childStatusData: [
         {
           name: "10 Apr",
-          process: projectDetail.pto_in_process ? "Completed" : "In Process",
+          process:  "In Process",
           data: projectDetail.pto_in_process ? "" : "data is not available",
           borderColor: projectDetail.pto_in_process ?"white":"#A5AAB2",
           key: "pto_in_process",
@@ -432,7 +420,7 @@ const ProjectStatus = () => {
         },
         {
           name: "10 Apr",
-          process: projectDetail.pto_submitted ? "Completed" : "Submitted",
+          process:  "Submitted",
           data: projectDetail.pto_submitted ? "" : "data is not available",
           borderColor: projectDetail.pto_submitted ?"white":"#A5AAB2",
           key: "pto_submitted",

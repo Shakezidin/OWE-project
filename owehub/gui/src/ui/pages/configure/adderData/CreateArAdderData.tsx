@@ -64,6 +64,7 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
           ...newFormData,
           record_id: editData?.record_id!,
           per_kw_amt: parseFloat(newFormData.per_kw_amt),
+          exact_amount:parseInt(newFormData.exact_amount),
           rep_percent: parseFloat(newFormData.rep_percent),
           sys_size: parseFloat(newFormData.sys_size),
           adder_cal: parseFloat(newFormData.adder_cal),
@@ -74,6 +75,7 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
         createarAdderData({
           ...newFormData,
           per_kw_amt: parseFloat(newFormData.per_kw_amt),
+          exact_amount:parseInt(newFormData.exact_amount),
           rep_percent: parseFloat(newFormData.rep_percent),
           sys_size: parseFloat(newFormData.sys_size),
           adder_cal: parseFloat(newFormData.adder_cal),
@@ -138,16 +140,7 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
               </div>
 
               <div className="create-input-container">
-                <div className="create-input-field">
-                  <Input
-                    type={"text"}
-                    label="Type Ad Mktg"
-                    value={newFormData.type_ad_mktg}
-                    name="type_ad_mktg"
-                    placeholder={"Enter"}
-                    onChange={handleChange}
-                  />
-                </div>
+              
                 <div className="create-input-field">
                   <Input
                     type={"text"}
@@ -161,16 +154,13 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={"text"}
-                    label="Amount"
+                    label="Exct Amount"
                     value={newFormData.exact_amount}
                     name="exact_amount"
                     placeholder={"Enter"}
                     onChange={handleChange}
                   />
                 </div>
-              </div>
-
-              <div className="create-input-container">
                 <div className="create-input-field">
                   <Input
                     type={"text"}
@@ -181,35 +171,16 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
                     onChange={handleChange}
                   />
                 </div>
+              </div>
+
+              <div className="create-input-container">
+              
                 <div className="create-input-field">
                   <Input
                     type={"text"}
                     label="Rep Percent"
                     value={newFormData.rep_percent}
                     name="rep_percent"
-                    placeholder={"Enter"}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="create-input-field">
-                  <Input
-                    type={"text"}
-                    label="Sys. size"
-                    value={newFormData.sys_size}
-                    name="sys_size"
-                    placeholder={"Enter"}
-                    onChange={handleChange}
-                  />
-                </div>
-              </div>
-
-              <div className="create-input-container">
-                <div className="create-input-field">
-                  <Input
-                    type={"text"}
-                    label="Adder Cal"
-                    value={newFormData.adder_cal}
-                    name="adder_cal"
                     placeholder={"Enter"}
                     onChange={handleChange}
                   />
@@ -234,7 +205,10 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
                     onChange={handleChange}
                   />
                 </div>
+               
               </div>
+
+           
             </div>
           </div>
         </div>
