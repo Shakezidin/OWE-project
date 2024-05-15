@@ -80,7 +80,7 @@ func HandleChangePassRequest(resp http.ResponseWriter, req *http.Request) {
 		username := strings.Join(strings.Fields(userName)[0:2], "_")
 
 		sqlStatement := fmt.Sprintf("ALTER ROLE %s WITH PASSWORD '%s';", username, changePasswordReq.NewPassword)
-		err = db.ExecQueryDB(db.OweHubDbIndex, sqlStatement)
+		err = db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
 		log.FuncErrorTrace(0, " sqlStatement err %+v", err)
 		log.FuncErrorTrace(0, "sqlStatement %v", sqlStatement)
 		if err != nil {
