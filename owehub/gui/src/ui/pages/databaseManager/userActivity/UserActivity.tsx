@@ -1,12 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import "../../configure/configure.css";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
-import CheckBox from "../../../components/chekbox/CheckBox";
-import { toggleAllRows, toggleRowSelection } from "../../../components/chekbox/checkHelper";
 import { FaArrowDown } from "react-icons/fa6";
-import { fetchCommissions } from "../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice";
 import Pagination from "../../../components/pagination/Pagination";
 import DataTableHeader from "../../../components/tableHeader/DataTableHeader";
 import { fetchDBManagerUserActivity } from "../../../../redux/apiActions/DBManagerAction/DBManagerAction";
@@ -17,12 +14,9 @@ import { DBManagerUserActivityModel } from "../../../../core/models/api_models/D
 const UserActivity: React.FC = () => {
 
   const dispatch = useAppDispatch();
-  const {loading, error, userActivityList } = useAppSelector((state) => state.dbManager);
-  
-  const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
-  const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
+  const {loading, error, userActivityList, totalCount } = useAppSelector((state) => state.dbManager);
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
 
   useEffect(() => {
     const pageNumber = {
@@ -34,8 +28,6 @@ const UserActivity: React.FC = () => {
     dispatch(fetchDBManagerUserActivity(pageNumber));
 
   }, [dispatch, currentPage]);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
 
   const paginate = (pageNumber: number) => {
     dispatch(setCurrentPage(pageNumber));
@@ -63,17 +55,17 @@ const UserActivity: React.FC = () => {
     return <div>Error: {error}</div>;
   }
 
-  let dataDb: DBManagerUserActivityModel[];
-  if (userActivityList && userActivityList.length > 0){
-    dataDb = userActivityList
-  }else{
-    dataDb = []
-  }
+  // let dataDb: DBManagerUserActivityModel[];
+  // if (userActivityList && userActivityList.length > 0){
+  //   dataDb = userActivityList
+  // }else{
+  //   dataDb = []
+  // }
 
-  const totalPages = Math.ceil(dataDb.length / itemsPerPage);
+ // const totalPages = Math.ceil(dataDb.length / itemsPerPage);
   //const currentPageData = dataDb.slice(startIndex, endIndex);
-  const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === dataDb.length;
+ // const isAnyRowSelected = selectedRows.size > 0;
+  //const isAllRowsSelected = selectedRows.size === dataDb.length;
 
 
   return (
@@ -96,7 +88,7 @@ const UserActivity: React.FC = () => {
           <table>
             <thead>
               <tr>
-                <th style={{ paddingRight: 0 }}>
+                {/* <th style={{ paddingRight: 0 }}>
                   <CheckBox
                     checked={selectAllChecked}
                     onChange={() =>
@@ -109,7 +101,7 @@ const UserActivity: React.FC = () => {
                     }
                     indeterminate={isAnyRowSelected && !isAllRowsSelected}
                   />
-                </th>
+                </th> */}
                 <th style={{ paddingLeft: "10px" }}>
                   <div className="table-header">
                     <p>User Name</p> <FaArrowDown style={{ color: "#667085" }} />
@@ -135,10 +127,10 @@ const UserActivity: React.FC = () => {
             </thead>
 
             <tbody>
-              {dataDb?.length > 0
-                ? dataDb?.map((el, i) => (
+              {userActivityList && userActivityList?.length > 0
+                ? userActivityList?.map((el: DBManagerUserActivityModel, i: number) => (
                   <tr key={i}>
-                    <td style={{ paddingRight: 0 }}>
+                    {/* <td style={{ paddingRight: 0 }}>
                       <CheckBox
                         checked={selectedRows.has(i)}
                         onChange={() =>
@@ -150,7 +142,7 @@ const UserActivity: React.FC = () => {
                           )
                         }
                       />
-                    </td>
+                    </td> */}
                     <td style={{ fontWeight: "500", color: "black", paddingLeft: "10px", textAlign: "left" }}>
                       {el.username}
                     </td>
@@ -171,15 +163,16 @@ const UserActivity: React.FC = () => {
         <div className="page-heading-container">
 
           <p className="page-heading">
-            {currentPage} - {totalPages} of {dataDb?.length} item
+            {currentPage} - {totalCount} of {userActivityList?.length} item
           </p>
 
           {
-            dataDb?.length > 0 ? <Pagination
+            userActivityList && userActivityList?.length > 0 ? 
+            <Pagination
               currentPage={currentPage}
-              totalPages={totalPages} // You need to calculate total pages
+              totalPages={totalCount} // You need to calculate total pages
               paginate={paginate}
-              currentPageData={dataDb}
+              currentPageData={userActivityList}
               goToNextPage={goToNextPage}
               goToPrevPage={goToPrevPage}
               perPage={itemsPerPage}
