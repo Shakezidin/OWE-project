@@ -43,10 +43,10 @@ export const getPerfomance = createAsyncThunk(
 
 export const getPerfomanceStatus = createAsyncThunk(
   "get/perfomancestatus",
-  async (_, { rejectWithValue }) => {
+  async ({page,perPage}:{page:number,perPage:number}, { rejectWithValue }) => {
     try {
       // get_perfomanceprojectstatus
-      const data = await postCaller("get_perfomanceprojectstatus", {});
+      const data = await postCaller("get_perfomanceprojectstatus", {page_size:perPage,page_number:page});
       if (data.status > 201) {
         return rejectWithValue((data as Error).message);
       }

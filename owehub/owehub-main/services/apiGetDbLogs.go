@@ -230,6 +230,11 @@ func PrepareDbLogFilters(tableName string, dataFilter models.DbLogReq, adminChec
 		filtersBuilder.WriteString(fmt.Sprintf("usename = $%d", len(whereEleList)+1))
 		whereEleList = append(whereEleList, dataFilter.Username)
 	}
+
+	if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+		offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
+		filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+	}
 	filters = filtersBuilder.String()
 
 	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)

@@ -1,12 +1,12 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { postCaller } from "../../infrastructure/web_api/services/apiUrl";
-import { HTTP_STATUS } from "../../core/models/api_models/RequestModel";
+import { postCaller } from "../../../infrastructure/web_api/services/apiUrl";
+import { HTTP_STATUS } from "../../../core/models/api_models/RequestModel";
 import {
   DBTable,
   OnboardingChartModel,
   UserOnboardingModel,
-} from "../../core/models/api_models/UserManagementModel";
-import { EndPoints } from "../../infrastructure/web_api/api_client/EndPoints";
+} from "../../../core/models/api_models/UserManagementModel";
+import { EndPoints } from "../../../infrastructure/web_api/api_client/EndPoints";
 
 const COLORS = [
   "#5e5ef0",
@@ -74,8 +74,8 @@ export const fetchUserListBasedOnRole = createAsyncThunk(
     }
     const { users_data_list } = response.data;
     if (!users_data_list || users_data_list.length === 0) {
-      return {users_data_list:[],count:0};
+      return { users_data_list: [], count: 0 };
     }
-    return {users_data_list,count:response.dbRecCount};
+    return { users_data_list, count: response.dbRecCount };
   }
 );
