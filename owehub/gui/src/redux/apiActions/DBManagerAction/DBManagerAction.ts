@@ -13,7 +13,7 @@ export const fetchDBManagerUserActivity = createAsyncThunk(
       JSON.stringify(param)
     );
     if (response.status !== HTTP_STATUS.OK) {
-      throw new Error("Failed to fetch data");
+      throw new Error(response.message);
     }
 
     const { data, dbRecCount } = response;

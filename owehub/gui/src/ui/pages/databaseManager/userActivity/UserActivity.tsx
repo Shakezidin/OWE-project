@@ -5,10 +5,10 @@ import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import { FaArrowDown } from "react-icons/fa6";
 import Pagination from "../../../components/pagination/Pagination";
-import DataTableHeader from "../../../components/tableHeader/DataTableHeader";
 import { fetchDBManagerUserActivity } from "../../../../redux/apiActions/DBManagerAction/DBManagerAction";
 import { getCurrentDateFormatted } from "../../../../utiles/formatDate";
 import { DBManagerUserActivityModel } from "../../../../core/models/api_models/DBManagerModel";
+import DataNotFound from "../../../components/loader/DataNotFound";
 
 const UserActivity: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -24,7 +24,7 @@ const UserActivity: React.FC = () => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
-      start_date: "2024-05-01",//TODO: Need to change in future
+      start_date: "2024-05-01", //TODO: Need to change in future
       end_date: getCurrentDateFormatted(), // current date
     };
     dispatch(fetchDBManagerUserActivity(pageNumber));
@@ -48,11 +48,9 @@ const UserActivity: React.FC = () => {
     return <div>Loading...</div>;
   }
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
-  console.log("totalCount....", totalCount)
+  // if (error) {
+  //   return <div>Error: {error}</div>;
+  // }
 
   const totalPages = Math.ceil(totalCount / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -68,9 +66,8 @@ const UserActivity: React.FC = () => {
       />
       <div className="commissionContainer">
         <div className="commissionSection">
-     
-         <h3>Activity List</h3>
-         </div>
+          <h3>Activity List</h3>
+        </div>
         <div
           className="TableContainer"
           style={{ overflowX: "auto", whiteSpace: "nowrap" }}
@@ -105,40 +102,45 @@ const UserActivity: React.FC = () => {
             </thead>
 
             <tbody>
-              {userActivityList && userActivityList?.length > 0
-                ? userActivityList?.map(
-                    (el: DBManagerUserActivityModel) => (
-                      <tr key={el.time_date}>
-                        <td
-                          style={{
-                            fontWeight: "500",
-                            color: "black",
-                            paddingLeft: "10px",
-                            textAlign: "left",
-                          }}
-                        >
-                          {el.username}
-                        </td>
-                        <td style={{ textAlign: "left" }}>{el.db_name}</td>
-                        <td style={{ textAlign: "left" }}>{el.time_date}</td>
-                        <td style={{ textAlign: "left" }}>
-                          {el.query_details}
-                        </td>
-                      </tr>
-                    )
-                  )
-                : null}
+              {userActivityList && userActivityList?.length > 0 ? (
+                userActivityList?.map((el: DBManagerUserActivityModel) => (
+                  <tr key={el.time_date}>
+                    <td
+                      style={{
+                        fontWeight: "500",
+                        color: "black",
+                        paddingLeft: "10px",
+                        textAlign: "left",
+                      }}
+                    >
+                      {el.username}
+                    </td>
+                    <td style={{ textAlign: "left" }}>{el.db_name}</td>
+                    <td style={{ textAlign: "left" }}>{el.time_date}</td>
+                    <td style={{ textAlign: "left" }}>{el.query_details}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr style={{ border: 0 }}>
+                  <td colSpan={10}>
+                    <div className="data-not-found">
+                      <DataNotFound />
+                      <h3>Data Not Found</h3>
+                    </div>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
 
-        <div className="page-heading-container">
-        <p className="page-heading">
-            {startIndex} - {userActivityList?.length} of {totalCount} item
-          </p>
-
+        <div >
           {userActivityList && userActivityList?.length > 0 ? (
-                <Pagination
+            <div className="page-heading-container">
+              <p className="page-heading">
+                {startIndex} - {userActivityList?.length} of {totalCount} item
+              </p>
+              <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages} // You need to calculate total pages
                 paginate={paginate}
@@ -146,7 +148,8 @@ const UserActivity: React.FC = () => {
                 goToNextPage={goToNextPage}
                 goToPrevPage={goToPrevPage}
                 perPage={itemsPerPage}
-              /> 
+              />
+            </div>
           ) : null}
         </div>
       </div>
