@@ -146,7 +146,7 @@ const ProjectPerformence = () => {
                   className="project-icon-img"
                   style={{ background: item.iconBgColor }}
                 >
-                  <img src={item.icon} alt="" />
+                  <img src={item.icon} alt="" style={{height: "24px", width: "24px"}}/>
                 </div>
                 <div className="doller-head">
                   <h2>

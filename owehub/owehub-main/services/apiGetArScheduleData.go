@@ -260,7 +260,7 @@ func PrepareArScheduleFilters(tableName string, dataFilter models.DataRequestBod
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(st.name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "sale_type_name":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ar.type_name) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(sy.type_name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "red_line":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ar.red_line) %s LOWER($%d)", operator, len(whereEleList)+1))
