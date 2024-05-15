@@ -30,11 +30,11 @@
   background-color: white;
   cursor: not-allowed;
   border-radius: 0.25rem;
-  width: 24px;
+  width: 28px;
   display: flex;
   align-items: center;
  justify-content: center;
-  height: 24px;
+  height: 28px;
   border: 1px solid #d9d9d9;
   font-weight: 600 !important;
 }
@@ -78,13 +78,14 @@
   background-color:white !important;
   border: 1px solid #d9d9d9;
   outline: none;
+  flex-shrink: 0;
   cursor: pointer;
-  width: 24px;
+  height: 28px;
+  width: 28px;
   display: flex;
   align-items: center;
  justify-content: center;
-  height: 24px;
-  font-size: .9rem;
+  font-size: .7rem;
   /* text-align: center; */
   border-radius: 0.25rem;
 }
