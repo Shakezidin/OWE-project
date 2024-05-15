@@ -84,7 +84,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   const totalPages = Math.ceil(count! / pageSize1);
 
   const startIndex = (currentPage1 - 1) * pageSize1 + 1;
-
+  const endIndex = currentPage1 * pageSize1 
   /** render table based on dropdown */
   const renderComponent = () => {
     switch (selectedOption.label) {
@@ -290,7 +290,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
         {userRoleBasedList?.length > 0 ? (
           <>
             <p className="page-heading">
-              {startIndex} - {count} of {userRoleBasedList?.length} item
+              {startIndex} - {endIndex} of {count} item
             </p>
             <PaginationComponent
               currentPage={currentPage1}

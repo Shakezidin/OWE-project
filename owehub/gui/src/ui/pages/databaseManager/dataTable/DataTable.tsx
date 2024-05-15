@@ -30,6 +30,7 @@ const DataTablle: React.FC = () => {
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const  data: RowData[] = useAppSelector((state) => state.dataTableSlice.tableData);
+  const {dbCount } = useAppSelector((state) => state.dataTableSlice)
   const loading = useAppSelector((state) => state.dealer.loading);
   const error = useAppSelector((state) => state.dealer.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
@@ -37,8 +38,8 @@ const DataTablle: React.FC = () => {
   const [editMode, setEditMode] = useState(false);
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
   const itemsPerPage = 10;
-
-
+const start = (currentPage-1)* itemsPerPage+1
+const end = currentPage* itemsPerPage
  
 
   useEffect(() => {
@@ -92,81 +93,8 @@ const DataTablle: React.FC = () => {
   const replaceEmptyOrNull = (value: string | number | null) => {
     return value === null || value === "" ? "N/A" : value;
   };
-  // const dataDb = [
-  //   {
-  //     col1: "1234567890",
-  //     col2: "Josh Morton",
-  //     col3: "Josh Morton",
-  //     col4: "Josh Morton",
-  //     col5: "$120,450",
-  //     col6: "$100,320",
-  //     col7: "$100,320"
-  //   },
-  //   {
-  //     col1: "1234567890",
-  //     col2: "Josh Morton",
-  //     col3: "Josh Morton",
-  //     col4: "Josh Morton",
-  //     col5: "$120,450",
-  //     col6: "$100,320",
-  //     col7: "$100,320"
-  //   },
-  //   {
-  //     col1: "1234567890",
-  //     col2: "Josh Morton",
-  //     col3: "Josh Morton",
-  //     col4: "Josh Morton",
-  //     col5: "$120,450",
-  //     col6: "$100,320",
-  //     col7: "$100,320"
-  //   },
-  //   {
-  //     col1: "1234567890",
-  //     col2: "Josh Morton",
-  //     col3: "Josh Morton",
-  //     col4: "Josh Morton",
-  //     col5: "$120,450",
-  //     col6: "$100,320",
-  //     col7: "$100,320"
-  //   },
-  //   {
-  //     col1: "1234567890",
-  //     col2: "Josh Morton",
-  //     col3: "Josh Morton",
-  //     col4: "Josh Morton",
-  //     col5: "$120,450",
-  //     col6: "$100,320",
-  //     col7: "$100,320"
-  //   },
-  //   {
-  //     col1: "1234567890",
-  //     col2: "Josh Morton",
-  //     col3: "Josh Morton",
-  //     col4: "Josh Morton",
-  //     col5: "$120,450",
-  //     col6: "$100,320",
-  //     col7: "$100,320"
-  //   },
-  //   {
-  //     col1: "1234567890",
-  //     col2: "Josh Morton",
-  //     col3: "Josh Morton",
-  //     col4: "Josh Morton",
-  //     col5: "$120,450",
-  //     col6: "$100,320",
-  //     col7: "$100,320"
-  //   },
-  //   {
-  //     col1: "1234567890",
-  //     col2: "Josh Morton",
-  //     col3: "Josh Morton",
-  //     col4: "Josh Morton",
-  //     col5: "$120,450",
-  //     col6: "$100,320",
-  //     col7: "$100,320"
-  //   },
-  // ]
-  const totalPages = Math.ceil(data.length / itemsPerPage );
+  
+  const totalPages = Math.ceil(dbCount / itemsPerPage );
 
   const currentPageData = data.slice(startIndex, endIndex);
   const isAnyRowSelected = selectedRows.size > 0;
@@ -174,8 +102,8 @@ const DataTablle: React.FC = () => {
   const fetchFunction = (req: any) => {
     // dispatch(fetchPaySchedule(req));
    };
-
-   console.log(selectedTable, "test")
+console.log(dbCount, "db")
+ 
   return (
     <div className="comm">
       <Breadcrumb head="" linkPara="Database Manager" route={""} linkparaSecond="Data" />
@@ -225,7 +153,7 @@ const DataTablle: React.FC = () => {
         <div className="page-heading-container">
       
       <p className="page-heading">
-       {currentPage} - {totalPages} of {currentPageData?.length} item
+       {start} - {end} of {dbCount} item
       </p>
  
    {
