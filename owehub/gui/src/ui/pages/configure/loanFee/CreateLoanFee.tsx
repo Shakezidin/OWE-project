@@ -258,8 +258,9 @@ console.log(newFormData,"formdddd");
                 </div>
 
                 <div className="create-input-field">
-                  <label className="inputLabel-select">Installer</label>
+                  <label className="inputLabel-select select-type-label">Installer</label>
                   <SelectOption
+                  menuListStyles={{height: "230px"}}
                     options={installerOption(newFormData)}
                     onChange={(newValue) => {
                       setNewFormData((prev) => ({

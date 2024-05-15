@@ -209,8 +209,9 @@ if (handleValidation()) {
 
               <div className="create-input-container">
                 <div className="create-input-field">
-                  <label className="inputLabel-select">State</label>
+                  <label className="inputLabel-select select-type-label">State</label>
                   <SelectOption
+                  menuListStyles={{height: "230px"}}
                     options={stateOption(newFormData)}
                     onChange={(newValue) => handleChange(newValue, "state")}
                     value={stateOption(newFormData)?.find(

@@ -171,7 +171,7 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                   )}
                 </div>
                 <div className="create-input-field">
-                  <label className="inputLabel-select">Partners</label>
+                  <label className="inputLabel-select select-type-label">Partners</label>
                   <SelectOption
                     options={partnerOption(formData)}
                     onChange={(newValue) => {
@@ -191,7 +191,7 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                   )}
                 </div>
                 <div className="create-input-field">
-                  <label className="inputLabel-select">Sale Type</label>
+                  <label className="inputLabel-select select-type-label">Sale Type</label>
                   <SelectOption
                     options={salesTypeOption(formData)}
                     onChange={(newValue) => {
@@ -264,8 +264,9 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
 
               <div className="create-input-container">
                 <div className="create-input-field">
-                  <label className="inputLabel-select">State</label>
+                  <label className="inputLabel-select select-type-label">State</label>
                   <SelectOption
+                  menuListStyles={{height: "165px"}}
                     options={stateOption(formData)}
                     onChange={(newValue) => {
                       setFormData((prev) => ({
@@ -322,8 +323,9 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
 
               <div className="create-input-container">
                 <div className="create-input-field">
-                  <label className="inputLabel-select">Installer</label>
+                  <label className="inputLabel-select select-type-label">Installer</label>
                   <SelectOption
+                  menuListStyles={{height: "85px"}}
                     options={installerOption(formData)}
                     onChange={(newValue) => {
                       setFormData((prev) => ({

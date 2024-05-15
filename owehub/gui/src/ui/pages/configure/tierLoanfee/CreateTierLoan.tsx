@@ -149,8 +149,9 @@ const CreateTierLoan:React.FC<tierLoanProps> = ({handleClose,tierEditedData,edit
                     />
                   </div>
                   <div className="create-input-field">
-                    <label className="inputLabel-select">OWE Cost</label>
+                    <label className="inputLabel-select select-type-label">OWE Cost</label>
                     <SelectOption
+                    menuListStyles={{height: "230px"}}
                       options={oweCostOption(newFormData)}
                       onChange={(newValue) => handleChange(newValue, 'owe_cost')}
                       value={oweCostOption(newFormData)?.find((option) => option.value === createTier.owe_cost)}
