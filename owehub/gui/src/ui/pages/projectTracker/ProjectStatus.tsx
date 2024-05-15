@@ -579,7 +579,7 @@ const ProjectStatus = () => {
                 {/* time */}
               </div>
               <div className="graph-pos"></div>
-              <img className="fade-graph" src={ICONS.linearGraph} alt="" />
+              <img className="fade-graph" src={ICONS.pmshadedgraph} alt="" />
             </div>
           </div>
         </div>
