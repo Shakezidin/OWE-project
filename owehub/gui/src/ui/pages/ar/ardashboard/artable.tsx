@@ -115,7 +115,7 @@ const ArDashBoardTable = () => {
   const Commissioncolumns = [
     {
       name: "unique_id",
-      displayName: "uniqueId",
+      displayName: "UID",
       type: "string",
       isCheckbox: true,
     },
