@@ -25,10 +25,12 @@ DECLARE
     v_customer_name character varying;
     v_sys_size DOUBLE PRECISION;
     v_bl DOUBLE PRECISION;
-    v_epc date;
+    v_epc DOUBLE PRECISION;
+    v_rep_1 character varying;
+    v_rep_2 character varying;
 BEGIN
-  SELECT home_owner, partner, instl, st, sys_size, per_rep_sales, epc
-    INTO v_customer_name, v_partner_name, v_installer_name, v_state_name, v_sys_size, v_bl, v_epc
+  SELECT home_owner, partner, instl, st, sys_size, epc, rep_1, rep_2
+    INTO v_customer_name, v_partner_name, v_installer_name, v_state_name, v_sys_size, v_epc, v_rep_1, v_rep_2
     FROM sales_ar_calc
     WHERE sales_ar_calc.unique_id = p_unique_id;
  
@@ -37,29 +39,36 @@ BEGIN
     FROM partners
     WHERE partner_name = v_partner_name;
  
-    IF v_partner_id IS NULL THEN
-        RAISE EXCEPTION 'Partner % not found', v_partner_name;
-    END IF;
+    -- IF v_partner_id IS NULL THEN
+    --     RAISE EXCEPTION 'Partner % not found', v_partner_name;
+    -- END IF;
  
     -- Get installer_id based on provided v_installer_name
     SELECT partner_id INTO v_installer_id
     FROM partners
     WHERE partner_name = v_installer_name;
  
-    -- Check if the installer exists
-    IF v_installer_id IS NULL THEN
-        RAISE EXCEPTION 'Installer % not found', v_installer_name;
-    END IF;
+    -- -- Check if the installer exists
+    -- IF v_installer_id IS NULL THEN
+    --     RAISE EXCEPTION 'Installer % not found', v_installer_name;
+    -- END IF;
  
     -- Get state_id based on provided v_state_name
     SELECT state_id INTO v_state_id
     FROM states
     WHERE name = v_state_name;
  
-    -- Check if the state exists
-    IF v_state_id IS NULL THEN
-        RAISE EXCEPTION 'State % not found', v_state_name;
-    END IF;
+    -- -- Check if the state exists
+    -- IF v_state_id IS NULL THEN
+    --     RAISE EXCEPTION 'State % not found', v_state_name;
+    -- END IF;
+
+    SELECT
+    CASE
+        WHEN LENGTH(v_rep_1) > 0 AND LENGTH(v_rep_2) > 0 THEN 2
+        WHEN LENGTH(v_rep_1) > 0 THEN 1
+        ELSE 0
+    END INTO v_bl;
 
   UPDATE adjustments
     SET 
