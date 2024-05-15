@@ -6,7 +6,7 @@ import { fetchCommissions } from "../../../../redux/apiSlice/configSlice/config_
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 import { DealerModel } from "../../../../core/models/configuration/create/DealerModel";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
-import DataTableHeader from "../../../components/tableHeader/DataTableHeader";
+import DataTableHeaderr from "../../../components/tableHeader/DataTableHeaderr";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import { toggleAllRows, toggleRowSelection } from "../../../components/chekbox/checkHelper";
 import FilterData from "./FilterData";
@@ -24,6 +24,7 @@ interface RowData {
 const DataTablle: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
+  const [selectedTable, setSelectedTable] = useState<any>("");
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const filterClose = () => setFilterOpen(false);
@@ -48,13 +49,13 @@ const DataTablle: React.FC = () => {
         {
             Column: "table_name",
             Operation: "=",
-            Data: "finance_metrics_schema"
+            Data: selectedTable.value || "finance_metrics_schema"
         }   
     ]
     };
     dispatch(getAnyTableData(pageNumber));
 
-  }, [dispatch, currentPage]);
+  }, [dispatch, currentPage, selectedTable]);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
 
@@ -86,7 +87,7 @@ const DataTablle: React.FC = () => {
   }
   
   const propertyNames: string[] = data.length > 0 ? Object.keys(data[0]) : [];
-  const orderedColumns: string[] = propertyNames.filter((name) => name !== "unique_id").reverse();
+  const orderedColumns: string[] = propertyNames.reverse();
 
   const replaceEmptyOrNull = (value: string | number | null) => {
     return value === null || value === "" ? "N/A" : value;
@@ -173,11 +174,13 @@ const DataTablle: React.FC = () => {
   const fetchFunction = (req: any) => {
     // dispatch(fetchPaySchedule(req));
    };
+
+   console.log(selectedTable, "test")
   return (
     <div className="comm">
       <Breadcrumb head="" linkPara="Database Manager" route={""} linkparaSecond="Data" />
       <div className="commissionContainer">
-        <DataTableHeader
+        <DataTableHeaderr
           title="Table Name"
           onPressFilter={() => filter()}
           onPressImport={() => { }}
@@ -186,6 +189,8 @@ const DataTablle: React.FC = () => {
           showFilterIcon={true}
           selectMarginLeft="-10px"
           selectMarginLeft1="-20px"
+          selectedTable={selectedTable}
+          setSelectedTable={setSelectedTable}
         />
              {filterOPen && <FilterModal handleClose={filterClose}  
                columns={DataTableColumn} 
@@ -198,7 +203,7 @@ const DataTablle: React.FC = () => {
             <thead>
               <tr>
                 <th>S.No</th>
-                <th>unique_id</th>
+                 
                 {orderedColumns.map((columnName, index) => (
                   <th key={index}>{columnName}</th>
                 ))}
@@ -208,7 +213,7 @@ const DataTablle: React.FC = () => {
               {data.map((item, rowIndex) => (
                     <tr key={rowIndex}>
                     <td>{startIndex + rowIndex + 1}</td>
-                    <td>{replaceEmptyOrNull(item["unique_id"])}</td>
+                  
                     {orderedColumns.map((columnName, colIndex) => (
                       <td key={colIndex}>{replaceEmptyOrNull(item[columnName])}</td>
                     ))}
