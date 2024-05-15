@@ -66,9 +66,9 @@ func HandleGetAdjustmentsDataRequest(resp http.ResponseWriter, req *http.Request
 	query = `
 		SELECT ad.id as record_id, ad.unique_id, ad.customer, ad.sys_size, ad.bl, ad.epc, ad.date, ad.notes, ad.amount, pr_partner.partner_name AS partner_name, pr_installer.partner_name AS installer_name, st.name AS state_name  
 		FROM adjustments ad
-		JOIN partners pr_partner ON pr_partner.partner_id = ad.partner
-		JOIN partners pr_installer ON pr_installer.partner_id = ad.installer
-		JOIN states st ON st.state_id = ad.state`
+		LEFT JOIN partners pr_partner ON pr_partner.partner_id = ad.partner
+		LEFT JOIN partners pr_installer ON pr_installer.partner_id = ad.installer
+		LEFT JOIN states st ON st.state_id = ad.state`
 
 	filter, whereEleList = PrepareAdjustmentsFilters(tableName, dataReq, false)
 	if filter != "" {
@@ -306,3 +306,5 @@ func PrepareAdjustmentsFilters(tableName string, dataFilter models.DataRequestBo
 	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
 	return filters, whereEleList
 }
+
+
