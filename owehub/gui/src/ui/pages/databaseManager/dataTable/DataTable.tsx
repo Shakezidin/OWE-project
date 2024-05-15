@@ -30,6 +30,7 @@ const DataTablle: React.FC = () => {
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const  data: RowData[] = useAppSelector((state) => state.dataTableSlice.tableData);
+  const {dbCount } = useAppSelector((state) => state.dataTableSlice)
   const loading = useAppSelector((state) => state.dealer.loading);
   const error = useAppSelector((state) => state.dealer.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
@@ -92,81 +93,8 @@ const DataTablle: React.FC = () => {
   const replaceEmptyOrNull = (value: string | number | null) => {
     return value === null || value === "" ? "N/A" : value;
   };
-  // const dataDb = [
-  //   {
-  //     col1: "1234567890",
-  //     col2: "Josh Morton",
-  //     col3: "Josh Morton",
-  //     col4: "Josh Morton",
-  //     col5: "$120,450",
-  //     col6: "$100,320",
-  //     col7: "$100,320"
-  //   },
-  //   {
-  //     col1: "1234567890",
-  //     col2: "Josh Morton",
-  //     col3: "Josh Morton",
-  //     col4: "Josh Morton",
-  //     col5: "$120,450",
-  //     col6: "$100,320",
-  //     col7: "$100,320"
-  //   },
-  //   {
-  //     col1: "1234567890",
-  //     col2: "Josh Morton",
-  //     col3: "Josh Morton",
-  //     col4: "Josh Morton",
-  //     col5: "$120,450",
-  //     col6: "$100,320",
-  //     col7: "$100,320"
-  //   },
-  //   {
-  //     col1: "1234567890",
-  //     col2: "Josh Morton",
-  //     col3: "Josh Morton",
-  //     col4: "Josh Morton",
-  //     col5: "$120,450",
-  //     col6: "$100,320",
-  //     col7: "$100,320"
-  //   },
-  //   {
-  //     col1: "1234567890",
-  //     col2: "Josh Morton",
-  //     col3: "Josh Morton",
-  //     col4: "Josh Morton",
-  //     col5: "$120,450",
-  //     col6: "$100,320",
-  //     col7: "$100,320"
-  //   },
-  //   {
-  //     col1: "1234567890",
-  //     col2: "Josh Morton",
-  //     col3: "Josh Morton",
-  //     col4: "Josh Morton",
-  //     col5: "$120,450",
-  //     col6: "$100,320",
-  //     col7: "$100,320"
-  //   },
-  //   {
-  //     col1: "1234567890",
-  //     col2: "Josh Morton",
-  //     col3: "Josh Morton",
-  //     col4: "Josh Morton",
-  //     col5: "$120,450",
-  //     col6: "$100,320",
-  //     col7: "$100,320"
-  //   },
-  //   {
-  //     col1: "1234567890",
-  //     col2: "Josh Morton",
-  //     col3: "Josh Morton",
-  //     col4: "Josh Morton",
-  //     col5: "$120,450",
-  //     col6: "$100,320",
-  //     col7: "$100,320"
-  //   },
-  // ]
-  const totalPages = Math.ceil(data.length / itemsPerPage );
+  
+  const totalPages = Math.ceil(dbCount / itemsPerPage );
 
   const currentPageData = data.slice(startIndex, endIndex);
   const isAnyRowSelected = selectedRows.size > 0;
@@ -174,8 +102,8 @@ const DataTablle: React.FC = () => {
   const fetchFunction = (req: any) => {
     // dispatch(fetchPaySchedule(req));
    };
-
-   console.log(selectedTable, "test")
+console.log(dbCount, "db")
+ 
   return (
     <div className="comm">
       <Breadcrumb head="" linkPara="Database Manager" route={""} linkparaSecond="Data" />

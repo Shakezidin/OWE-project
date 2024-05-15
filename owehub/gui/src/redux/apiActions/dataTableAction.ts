@@ -33,6 +33,7 @@ export const getDataTableName = createAsyncThunk(
       try {
         const response = await postCaller('get_app_data', params); // Assuming this is a GET request
         const tableData = response.data; // Extract the data from the response
+        return {tableData,count:response.record_count}
         return tableData;
       } catch (error) {
         return rejectWithValue((error as Error).message);

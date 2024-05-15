@@ -7,16 +7,18 @@ import { DBManagerUserActivityModel } from "../../../core/models/api_models/DBMa
 /** get user onboadring users */
 export const fetchDBManagerUserActivity = createAsyncThunk(
   "DBManager/userActivity",
-  async (data: any) => {
+  async (param: any) => {
     const response = await postCaller(
       EndPoints.Get_DBManager_User_Activity,
-      JSON.stringify(data)
+      JSON.stringify(param)
     );
     if (response.status !== HTTP_STATUS.OK) {
       throw new Error("Failed to fetch data");
     }
 
-    const { dblog_list_response, dbRecCount } = response.data;
+    const { data, dbRecCount } = response;
+
+    const { dblog_list_response } = data;
     if (!dblog_list_response || dblog_list_response.length === 0) {
       return { list: [], dbRecCount: 0 };
     }
