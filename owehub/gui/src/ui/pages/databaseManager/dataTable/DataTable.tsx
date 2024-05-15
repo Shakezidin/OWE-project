@@ -38,8 +38,8 @@ const DataTablle: React.FC = () => {
   const [editMode, setEditMode] = useState(false);
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
   const itemsPerPage = 10;
-
-
+const start = (currentPage-1)* itemsPerPage+1
+const end = currentPage* itemsPerPage
  
 
   useEffect(() => {
@@ -153,7 +153,7 @@ console.log(dbCount, "db")
         <div className="page-heading-container">
       
       <p className="page-heading">
-       {currentPage} - {totalPages} of {currentPageData?.length} item
+       {start} - {end} of {dbCount} item
       </p>
  
    {
