@@ -136,7 +136,7 @@ const TimeLine = () => {
           setSelectedRows(new Set());
           Swal.fire({
             title: 'Archived!',
-            text: 'All selected rows have been archived.',
+            text: 'The data has been archived .',
             icon: 'success',
             timer: 2000,
             showConfirmButton: false

@@ -120,7 +120,7 @@ const AdderValidation = () => {
           const isAnyRowSelected = remainingSelectedRows.length > 0;
           setSelectAllChecked(isAnyRowSelected);
           setSelectedRows(new Set());
-          await successSwal("Archived", "All Selected rows have been archived");
+          await successSwal("Archived", "The data has been archived ");
         }
         else {
           await successSwal("Error", "Failed to archive selected rows. Please try again later.");
