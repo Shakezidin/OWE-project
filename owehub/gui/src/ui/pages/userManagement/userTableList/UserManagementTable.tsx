@@ -20,7 +20,7 @@ import {
 } from "../../../../core/models/api_models/UserManagementModel";
 import { TYPE_OF_USER } from "../../../../resources/static_data/TypeOfUser";
 import PaginationComponent from "../../../components/pagination/PaginationComponent";
-import { fetchUserListBasedOnRole } from "../../../../redux/apiActions/userManagementActions";
+import { fetchUserListBasedOnRole } from "../../../../redux/apiActions/userManagement/userManagementActions";
 
 interface UserTableProos {
   userDropdownData: UserDropdownModel[];

@@ -7,7 +7,8 @@ export const cardData = [
     iconBgColor: `#800080`,
     color: "#800080",
     icon: ICONS.salesIcon,
-    type:"contract_date"
+    type:"contract_date",
+    key:""
   },
   {
     name: "NTP",
@@ -74,49 +75,56 @@ export const projectStatusHeadData = [
   para:"Arizona",
   viewButton:false,
   bgColor:"#E9F8FF",
-
+  key:"state"
 },
 {
   name:"Adder",
   para:"$65,000",
   bgColor:"#E9EBFF",
   viewButton:true,
+  key:"adder"
 },
 {
   name:"AJH",
   para:"NA",
   viewButton:false,
   bgColor:"#E9FFF7",
+  key:"ajh"
 },
 {
   name:"EPC",
   para:"NA",
   viewButton:false,
   bgColor:"#F9E7F9",
+  key:"epc"
 },
 {
   name:"Sys Size",
   para:"NA",
   viewButton:false,
   bgColor:"#FFE9E9",
+  key:"SystemSize"
 },
 {
   name:"Contract Amount",
   para:"NA",
   viewButton:false,
   bgColor:"#FFF6E4",
+  key:"contract_amount"
 },
 {
   name:"Finance Partner",
   para:"NA",
   viewButton:false,
   bgColor:"#E4F1FF",
+  key:"finance_partner"
 },
 {
   name:"Net EPC",
   para:"NA",
   viewButton:false,
   bgColor:"#FBF6DA",
+  key:"net_epc"
 },
 ]
 export const projects = [

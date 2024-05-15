@@ -4,7 +4,7 @@ import {
   fetchUserListBasedOnRole,
   fetchUserOnboarding,
   createTablePermission,
-} from "../../apiActions/userManagementActions";
+} from "../../apiActions/userManagement/userManagementActions";
 
 const initialState: UserOnboardingStateModel = {
   userOnboardingList: [],
@@ -12,7 +12,7 @@ const initialState: UserOnboardingStateModel = {
   dbTables: [],
   loading: false,
   error: null,
-  totalCount:0
+  totalCount: 0,
 };
 
 const userManagementSlice = createSlice({
@@ -58,7 +58,7 @@ const userManagementSlice = createSlice({
           state.loading = false;
           state.error = null;
           state.userRoleBasedList = action.payload.users_data_list;
-          state.totalCount = action.payload.count
+          state.totalCount = action.payload.count;
         }
       )
       .addCase(

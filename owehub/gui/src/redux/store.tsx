@@ -47,6 +47,7 @@ import perfomanceSlice from "./apiSlice/perfomanceSlice";
  
 import ArDataSlice from "./apiSlice/AR/ArDataSlice";
 import activeSlice from "./apiSlice/configSlice/config_get_slice/activeSlice";
+import DBManagerSlice from "./apiSlice/dbManagerSlice/DBManagerSlice";
 import projectManagement from "./apiSlice/projectManagement";
 export const store = configureStore({
   reducer: {
@@ -100,6 +101,8 @@ export const store = configureStore({
     perfomanceSlice,
     ardata:ArDataSlice,
     active:activeSlice,
+    //DB manager
+    dbManager: DBManagerSlice,
     projectManagement
   },
 });
