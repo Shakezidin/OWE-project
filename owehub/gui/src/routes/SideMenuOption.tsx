@@ -6,7 +6,7 @@ import { BsDatabaseGear } from "react-icons/bs";
 import { MdOutlinePayment } from "react-icons/md";
 import { FiServer } from "react-icons/fi";
 import { GrDocumentConfig } from "react-icons/gr";
-import { TYPE_OF_USER } from "../resources/static_data/TypeOfUser";
+import { TYPE_OF_USER } from "../resources/static_data/Constant";
 import { GrDocumentPerformance } from "react-icons/gr";
 import { AiOutlineProject } from "react-icons/ai";
 import { MdOutlineSpaceDashboard } from "react-icons/md";

@@ -18,7 +18,7 @@ import {
   UserDropdownModel,
   UserRoleBasedListModel,
 } from "../../../../core/models/api_models/UserManagementModel";
-import { TYPE_OF_USER } from "../../../../resources/static_data/TypeOfUser";
+import { TYPE_OF_USER } from "../../../../resources/static_data/Constant";
 import PaginationComponent from "../../../components/pagination/PaginationComponent";
 import { fetchUserListBasedOnRole } from "../../../../redux/apiActions/userManagement/userManagementActions";
 import DBUserTable from "../userManagerAllTable/DBUserTable";

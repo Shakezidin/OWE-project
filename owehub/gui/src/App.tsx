@@ -63,7 +63,7 @@ import Reconcile from "./ui/pages/configure/Reconcile/Reconcile";
 import ApptSetters from "./ui/pages/configure/apptSetters/ApptSetters";
 import { ARDashboardPage } from "./ui/pages/ar/ardashboard/ardashboard";
 import { useAppDispatch, useAppSelector } from "./redux/hooks";
-import { TYPE_OF_USER } from "./resources/static_data/TypeOfUser";
+import { TYPE_OF_USER } from "./resources/static_data/Constant";
 import AdderData from "./ui/pages/configure/adderData/AdderData";
 
 function App() {

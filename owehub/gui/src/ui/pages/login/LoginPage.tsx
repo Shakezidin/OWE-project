@@ -23,7 +23,7 @@ import { HTTP_STATUS } from "../../../core/models/api_models/RequestModel";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { RootState } from "../../../redux/store";
 import Loading from "../../components/loader/Loading";
-import { TYPE_OF_USER } from "../../../resources/static_data/TypeOfUser";
+import { TYPE_OF_USER } from "../../../resources/static_data/Constant";
 
 export const LoginPage = () => {
   const navigate = useNavigate();

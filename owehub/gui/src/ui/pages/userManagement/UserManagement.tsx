@@ -32,7 +32,7 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import {
   TYPE_OF_USER,
   ALL_USER_ROLE_LIST,
-} from "../../../resources/static_data/TypeOfUser";
+} from "../../../resources/static_data/Constant";
 import { showAlert } from "../../components/alert/ShowAlert";
 
 const UserManagement: React.FC = () => {
