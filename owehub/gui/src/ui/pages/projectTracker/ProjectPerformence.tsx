@@ -444,7 +444,10 @@ const ProjectPerformence = () => {
               </tbody>
             </table>
 
-            <div className="page-heading-container">
+          
+          </div>
+
+          <div className="page-heading-container">
               <p className="page-heading">
               {startIndex} - {endIndex} of {projectsCount} item
               </p>
@@ -463,7 +466,6 @@ const ProjectPerformence = () => {
                 />
               ) : null}
             </div>
-          </div>
         </div>
       </div>
     </div>
