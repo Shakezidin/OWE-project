@@ -46,7 +46,8 @@ interface IUpdateParams extends SolarInstallation{
 export const getArscheduleList = createAsyncThunk("get/arschedule",async(param:Ipaginate,{rejectWithValue})=>{
     try {
         const data = await postCaller("get_arschedule",param)
-        return data.data.ar_schedule_list as IARSchedule[] || []
+        const list = data.data.ar_schedule_list as IARSchedule[] || []
+        return {list,count:data?.dbRecCount}
     } catch (error) {
         return rejectWithValue((error as Error).message)
     }

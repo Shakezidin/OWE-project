@@ -24,8 +24,8 @@ interface IAdderCreateParams {
   rep_percent: number;
   description: string;
   notes: string;
-  sys_size: number;
-  adder_cal: number;
+  sys_size?: number;
+  adder_cal?: number;
 }
 
 export interface IAdderRowData extends IAdderCreateParams {
@@ -38,7 +38,9 @@ export const getarAdderData = createAsyncThunk(
   async (param:IAdderParams, { rejectWithValue }) => {
     try {
       const data = await postCaller("get_adderdata", param);
-      return (data.data.adder_data_list || []) as IAdderRowData[];
+     
+      const list =(data.data.adder_data_list || []) as IAdderRowData[];
+      return {list,count:data.dbRecCount}
     } catch (error) {
       return rejectWithValue((error as Error).message);
     }
@@ -51,7 +53,7 @@ export const createarAdderData = createAsyncThunk(
   async (param:IAdderCreateParams, { rejectWithValue, dispatch }) => {
     try {
       const data = await postCaller("create_adderdata", param);
-      if (data.status === 500 || data instanceof Error) {
+      if (data.status>201) {
         return rejectWithValue((data as Error).message);
       }
       await dispatch(getarAdderData({page_number:1,page_size:10}))

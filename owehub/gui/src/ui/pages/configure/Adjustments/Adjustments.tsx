@@ -35,7 +35,7 @@ const Adjustments  = () => {
 
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const {data:arAdjustmentsList,isLoading,error,count} = useAppSelector(
+  const {data:arAdjustmentsList,isLoading,error,count,isSuccess} = useAppSelector(
     (state) => state.arAdjusments
   );
 //   const loading = useAppSelector((state) => state.timelineSla.loading);
@@ -46,7 +46,7 @@ const Adjustments  = () => {
   const [editedTimeLineSla, setEditedTimeLineSla] = useState<IRateRow | null>(null);
   const itemsPerPage = 10;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
-  const currentPage = useAppSelector((state) => state.paginationType.currentPage);
+  const [currentPage,setCurrentPage] = useState(1);
   const [sortKey, setSortKey] = useState("");
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   useEffect(() => {
@@ -64,25 +64,35 @@ const Adjustments  = () => {
   }
 
   const paginate = (pageNumber: number) => {
-    dispatch(setCurrentPage(pageNumber));
+    setCurrentPage(pageNumber)
   };
 
-  const commissionList = useAppSelector((state) => state.arAdjusments.data);
   const goToNextPage = () => {
-    dispatch(setCurrentPage(currentPage + 1));
+   setCurrentPage(currentPage + 1)
   };
 
   const goToPrevPage = () => {
-    dispatch(setCurrentPage(currentPage - 1));
+    setCurrentPage(currentPage - 1)
   };
   const totalPages = Math.ceil(count / itemsPerPage);
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
+  const startIndex = (currentPage - 1) * itemsPerPage+1;
   const endIndex = startIndex + itemsPerPage;
   
-  const currentPageData = commissionList?.slice(startIndex, endIndex);
+  const currentPageData = arAdjustmentsList?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === arAdjustmentsList?.length;
+
+  useEffect(()=>{
+    if (isSuccess) {
+      const pageNumber = {
+        page_number: currentPage,
+        page_size: itemsPerPage,
+        archived:viewArchived
+      };
+      dispatch(getAdjustments({ ...pageNumber }));
+    }
+  },[isSuccess,currentPage,viewArchived])
   const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
@@ -283,7 +293,7 @@ const Adjustments  = () => {
         <div className="page-heading-container">
 
           <p className="page-heading">
-            {currentPage} - {totalPages} of {arAdjustmentsList?.length} item
+            {currentPage} - {endIndex} of {count} item
           </p>
 
           {

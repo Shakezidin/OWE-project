@@ -50,7 +50,7 @@ const DealerCredit: React.FC = () => {
   const [editMode, setEditMode] = useState(false);
   const [editedCommission, setEditedCommission] = useState<CommissionModel | null>(null);
   const itemsPerPage = 5;
-  const currentPage = useAppSelector((state) => state.paginationType.currentPage);
+  const [currentPage,setCurrentPage] = useState(1)
   const [viewArchived, setViewArchived] = useState<boolean>(false);
   const [sortKey, setSortKey] = useState("");
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
@@ -65,7 +65,7 @@ const DealerCredit: React.FC = () => {
   }, [dispatch, currentPage,viewArchived]);
 
   const paginate = (pageNumber: number) => {
-    dispatch(setCurrentPage(pageNumber));
+    setCurrentPage(pageNumber)
   };
 
 
@@ -81,11 +81,11 @@ const DealerCredit: React.FC = () => {
 
 
   const goToNextPage = () => {
-    dispatch(setCurrentPage(currentPage + 1));
+    setCurrentPage(currentPage + 1)
   };
 
   const goToPrevPage = () => {
-    dispatch(setCurrentPage(currentPage - 1));
+    setCurrentPage(currentPage - 1)
   };
 
   const filter = ()=>{

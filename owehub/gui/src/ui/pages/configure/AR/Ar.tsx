@@ -31,9 +31,7 @@ const AR = () => {
 
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const timelinesla_list = useAppSelector(
-    (state) => state.timelineSla.timelinesla_list
-  );
+ 
 //   const loading = useAppSelector((state) => state.timelineSla.loading);
   const error = useAppSelector((state) => state.timelineSla.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
@@ -42,10 +40,10 @@ const AR = () => {
   const [editedAr, setEditedAr] = useState(null);
   const itemsPerPage = 10;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
-  const currentPage = useAppSelector((state) => state.paginationType.currentPage);
+  const [currentPage,setCurrentPage] = useState(1);
   const [sortKey, setSortKey] = useState("");
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
-  
+  const {data,count,isSuccess} = useAppSelector((state) => state.ar);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -54,29 +52,40 @@ const AR = () => {
     };
     dispatch(fetchAr(pageNumber));
   }, [dispatch, currentPage, viewArchived]);
+
+  useEffect(()=>{
+    if (isSuccess) {
+      const pageNumber = {
+        page_number: currentPage,
+        page_size: itemsPerPage,
+        archived:viewArchived
+      };
+      dispatch(fetchAr({ ...pageNumber }));
+    }
+  },[isSuccess,currentPage,viewArchived])
   const filter = () => {
     setFilterOpen(true)
 
   }
 
   const paginate = (pageNumber: number) => {
-    dispatch(setCurrentPage(pageNumber));
+    setCurrentPage(pageNumber)
   };
 
-  const {data} = useAppSelector((state) => state.ar);
+ 
   const goToNextPage = () => {
-    dispatch(setCurrentPage(currentPage + 1));
+    setCurrentPage(currentPage + 1)
   };
 
   const goToPrevPage = () => {
-    dispatch(setCurrentPage(currentPage - 1));
+    setCurrentPage(currentPage - 1)
   };
-  const totalPages = Math.ceil(timelinesla_list?.length / itemsPerPage);
+  const totalPages = Math.ceil(count / itemsPerPage);
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
+  const startIndex = (currentPage - 1) * itemsPerPage+1;
+  const endIndex = currentPage * itemsPerPage;
   
-  const currentPageData = data?.slice(startIndex, endIndex);
+  const currentPageData = data?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === data?.length;
   const handleSort = (key: any) => {
@@ -337,11 +346,11 @@ const AR = () => {
         <div className="page-heading-container">
 
           <p className="page-heading">
-            {currentPage} - {totalPages} of {currentPageData?.length} item
+            {startIndex} - {endIndex} of {count} item
           </p>
 
           {
-            timelinesla_list?.length > 0 ? <Pagination
+            data?.length > 0 ? <Pagination
               currentPage={currentPage}
               totalPages={totalPages} // You need to calculate total pages
               paginate={paginate}

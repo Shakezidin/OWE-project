@@ -42,9 +42,7 @@ const DealerOverRides: React.FC = () => {
   const itemsPerPage = 10;
   const [sortKey, setSortKey] = useState("");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
-  const currentPage = useAppSelector(
-    (state) => state.paginationType.currentPage
-  );
+  const [currentPage,setCurrentPage] = useState(1)
   const [editedDealer, setEditDealer] = useState<DealerModel | null>(null);
   useEffect(() => {
     const pageNumber = {
@@ -55,15 +53,15 @@ const DealerOverRides: React.FC = () => {
     dispatch(fetchDealer(pageNumber));
   }, [dispatch, currentPage, viewArchived]);
   const paginate = (pageNumber: number) => {
-    dispatch(setCurrentPage(pageNumber));
+    setCurrentPage(pageNumber)
   };
 
   const goToNextPage = () => {
-    dispatch(setCurrentPage(currentPage + 1));
+    setCurrentPage(currentPage + 1)
   };
 
   const goToPrevPage = () => {
-    dispatch(setCurrentPage(currentPage - 1));
+    setCurrentPage(currentPage - 1)
   };
   const handleAddDealer = () => {
     setEditMode(false);
@@ -188,7 +186,7 @@ const DealerOverRides: React.FC = () => {
     setSelectAllChecked(false);
   };
   const fetchFunction = (req: any) => {
-    dispatch(fetchDealer(req));
+    dispatch(fetchDealer({...req,page_number:currentPage}));
   };
   if (error) {
     return (

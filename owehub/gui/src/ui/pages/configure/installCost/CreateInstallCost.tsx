@@ -15,7 +15,8 @@ interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
   editData: ICost | null;
-  setViewArchived:React.Dispatch<React.SetStateAction<boolean>>
+  setViewArchived:React.Dispatch<React.SetStateAction<boolean>>;
+  currentPage:number
 }
 interface IErrors {
   uniqueId?: string;
@@ -29,7 +30,8 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
   handleClose,
   editMode,
   editData,
-  setViewArchived
+  setViewArchived,
+  currentPage
 }) => {
   const dispatch = useAppDispatch();
   const [errors, setErrors] = useState<IErrors>({});
@@ -80,6 +82,7 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
             cost: parseFloat(newFormData.cost),
             start_date: format(new Date(newFormData.startDate), "yyyy-MM-dd"),
             end_date: format(new Date(newFormData.endDate), "yyyy-MM-dd"),
+            currentPage
           })
         );
       } else {
@@ -88,6 +91,7 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
             cost: parseFloat(newFormData.cost),
             start_date: format(new Date(newFormData.startDate), "yyyy-MM-dd"),
             end_date: format(new Date(newFormData.endDate), "yyyy-MM-dd"),
+            currentPage
           })
         );
       }

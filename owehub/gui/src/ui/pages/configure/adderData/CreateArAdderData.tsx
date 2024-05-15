@@ -35,8 +35,8 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
     rep_percent: editData?.rep_percent ? `${editData?.rep_percent}` : "",
     description: editData?.description || "",
     notes: editData?.notes || "",
-    sys_size: editData?.sys_size ? `${editData?.sys_size}` : "",
-    adder_cal: editData?.adder_cal ? `${editData?.adder_cal}` : "",
+    // sys_size: editData?.sys_size ? `${editData?.sys_size}` : "",
+    // adder_cal: editData?.adder_cal ? `${editData?.adder_cal}` : "",
   });
   const { isSuccess } = useAppSelector((state) => state.adderDataSlice);
 
@@ -66,8 +66,8 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
           per_kw_amt: parseFloat(newFormData.per_kw_amt),
           exact_amount:parseInt(newFormData.exact_amount),
           rep_percent: parseFloat(newFormData.rep_percent),
-          sys_size: parseFloat(newFormData.sys_size),
-          adder_cal: parseFloat(newFormData.adder_cal),
+          // sys_size: parseFloat(newFormData.sys_size),
+          // adder_cal: parseFloat(newFormData.adder_cal),
         })
       );
     } else {
@@ -77,8 +77,8 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
           per_kw_amt: parseFloat(newFormData.per_kw_amt),
           exact_amount:parseInt(newFormData.exact_amount),
           rep_percent: parseFloat(newFormData.rep_percent),
-          sys_size: parseFloat(newFormData.sys_size),
-          adder_cal: parseFloat(newFormData.adder_cal),
+          // sys_size: parseFloat(newFormData.sys_size),
+          // adder_cal: parseFloat(newFormData.adder_cal),
         })
       );
     }
