@@ -149,7 +149,7 @@ const SalesRepresentativeTable: React.FC<SalesRepresentativeProps> = ({
                   <td>
                     <div className="action-icon">
                       <div className="" style={{ cursor: "pointer" }} onClick={() => onClickDelete(el)}>
-                        <img src={ICONS.deleteIcon} alt="" />
+                        <img src={ICONS.deleteIcon} alt="" style={{marginRight: "14px"}}/>
                       </div>
                       {/* <div className="" style={{ cursor: "pointer" }} onClick={()=> onClickEdit(el)}>
                           <img src={ICONS.editIcon} alt="" />

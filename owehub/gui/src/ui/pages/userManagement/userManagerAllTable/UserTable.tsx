@@ -153,7 +153,7 @@ const UserTable: React.FC<UserTableProps> = ({
                         }
                       }}
                     >
-                      <img src={ICONS.deleteIcon} alt="" />
+                      <img src={ICONS.deleteIcon} alt="" style={{marginRight: "15px"}} />
                     </div>
                   </div>
                 </td>
