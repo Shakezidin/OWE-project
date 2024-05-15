@@ -24,6 +24,7 @@ import {
   getProjects,
 } from "../../../redux/apiSlice/projectManagement";
 import { format } from "date-fns";
+import MicroLoader from "../../components/loader/MicroLoader";
 interface ActivePopups {
   [key: number]: number | null;
 }
@@ -59,9 +60,13 @@ const data = [
 ];
 
 const ProjectStatus = () => {
-  const { projects, projectDetail } = useAppSelector(
+  const { projects, projectDetail,isLoading } = useAppSelector(
     (state) => state.projectManagement
   );
+
+  const getStatus = (arr:string[]) =>{
+    return arr.every((item)=>projectDetail[item as keyof typeof projectDetail])
+  }
   const newStatusData = [
     {
       name: "Sales",
@@ -618,7 +623,14 @@ const ProjectStatus = () => {
               <tr style={{ borderBottom: "none" }}>
                 <td style={{ padding: "0px" }}>
                   <div className="project-staus-progress-container">
-                    {newStatusData.map((item: any, i: any) => (
+                    {
+                      isLoading?
+                      <div style={{display:"flex",justifyContent:"center"}}>
+
+                        <MicroLoader/>
+                      </div>
+                      :
+                    newStatusData.map((item: any, i: any) => (
                       <>
                         <div className="project-status-table">
                           <div
@@ -632,7 +644,7 @@ const ProjectStatus = () => {
                                 color: item.numColor,
                               }}
                             >
-                              {item.number}
+                             {getStatus(item.childStatusData.map((item:any)=>item.key))?<FaCheck/>:i+1} 
                             </div>
                             <p
                               className="stage-1-para"
@@ -729,7 +741,8 @@ const ProjectStatus = () => {
                         </div>
                         {i === 9 ? null : <div className="dotted-border"></div>}
                       </>
-                    ))}
+                    ))
+                    }
                   </div>
                 </td>
               </tr>
