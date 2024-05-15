@@ -95,11 +95,7 @@ const ResetPassword = () => {
               />
 
               <br />
-              <ActionButton
-                title="Request OTP"
-                type="submit"
-                onClick={() => {}}
-              />
+              <button className="login-button" title="Request OTP" type="submit" onClick={() => {}}>Request OTP</button>
               <Link to={ROUTES.LOGIN} className="loginGoBackLink">
                 <FaArrowLeft />
                 <span>Go back to login screen</span>
