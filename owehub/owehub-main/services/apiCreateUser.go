@@ -184,7 +184,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 		// Handle other errors
 		log.FuncErrorTrace(0, "Failed to Add User in DB with err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to Create User because it references a non-existent record.", http.StatusInternalServerError, nil)
+		FormAndSendHttpResp(resp, "Failed to Create User in Database due to internal error.", http.StatusInternalServerError, nil)
 		return
 	}
 	// Send email to client
