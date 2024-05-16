@@ -7,7 +7,7 @@ import { updateTierLoanForm } from "../../../../redux/apiSlice/configSlice/confi
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
 import { useDispatch } from "react-redux";
 import Select from 'react-select';
-import { installerOption, oweCostOption, stateOption } from "../../../../core/models/data_models/SelectDataModel";
+import { installerOption, oweCostOption, stateOption, loanOption } from "../../../../core/models/data_models/SelectDataModel";
 import { TierLoanFeeModel } from "../../../../core/models/configuration/create/TierLoanFeeModel";
 import SelectOption from "../../../components/selectOption/SelectOption";
 interface tierLoanProps{
@@ -34,7 +34,7 @@ const CreateTierLoan:React.FC<tierLoanProps> = ({handleClose,tierEditedData,edit
   )
   const [newFormData, setNewFormData] = useState<any>([])
   const tableData = {
-    tableNames: ["partners", "states", "installers", "owe_cost"]
+    tableNames: ["partners", "states", "installers", "owe_cost", "loan_type"]
   }
   const getNewFormData = async () => {
     const res = await postCaller(EndPoints.get_newFormData, tableData)
@@ -138,14 +138,13 @@ const CreateTierLoan:React.FC<tierLoanProps> = ({handleClose,tierEditedData,edit
                 </div>
 
                 <div className="create-input-container">
-                  <div className="create-input-field">
-                    <Input
-                      type={"text"}
-                      label="Finance Type Name"
-                      value={createTier.finance_type}
-                      name="finance_type"
-                      placeholder={"Enter"}
-                      onChange={(e) => handleTierChange(e)}
+                <div className="create-input-field">
+                    <label className="inputLabel-select select-type-label">Loan Type</label>
+                    <SelectOption
+                    menuListStyles={{height: "230px"}}
+                      options={loanOption(newFormData)}
+                      onChange={(newValue) => handleChange(newValue, 'finance_type')}
+                      value={loanOption(newFormData)?.find((option) => option.value === createTier.finance_type)}
                     />
                   </div>
                   <div className="create-input-field">
