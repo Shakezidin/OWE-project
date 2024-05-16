@@ -124,7 +124,7 @@ func HandleGetDbLogsRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	// this bring in log for OweHubDB
-	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryWithFiler, whereEleList)
+	data, err = db.ReteriveFromDB(db.RowDataDBIndex, queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get Owehubdb data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get Owehubdb data from DB", http.StatusBadRequest, nil)
@@ -137,7 +137,8 @@ func HandleGetDbLogsRequest(resp http.ResponseWriter, req *http.Request) {
 		loglist.DbLogList = append(loglist.DbLogList, dbLog)
 	}
 
-	data, err = db.ReteriveFromDB(db.OweHubDbIndex, countQuery, nil)
+	qry := countQuery + filter
+	data, err = db.ReteriveFromDB(db.RowDataDBIndex, qry, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get DbLogs count from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get DbLogs count from DB", http.StatusBadRequest, nil)

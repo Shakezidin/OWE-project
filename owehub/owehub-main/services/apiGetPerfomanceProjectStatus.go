@@ -12,6 +12,7 @@ import (
 	models "OWEApp/shared/models"
 	"encoding/json"
 	"io/ioutil"
+	"math"
 	"strings"
 	"time"
 
@@ -40,9 +41,8 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		SiteD              string
 		InstallD           string
 		rgnSalesMgrCheck   bool
-		queryForAlldata    string
-		RecordCount        int64
-		SaleRepList        []interface{}
+		RecordCount int64
+		SaleRepList []interface{}
 	)
 
 	log.EnterFn(0, "HandleGetPerfomanceProjectStatusRequest")
@@ -68,11 +68,6 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		FormAndSendHttpResp(resp, "Failed to unmarshal get PerfomanceProjectStatus data Request body", http.StatusBadRequest, nil)
 		return
 	}
-
-	queryForAlldata = `
-		SELECT count(unique_id)
-		FROM consolidated_data_view 
-	`
 
 	allSaleRepQuery := models.SalesRepRetrieveQueryFunc()
 	saleMetricsQuery := models.SalesMetricsRetrieveQueryFunc()
@@ -150,7 +145,6 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
 		return
 	}
-
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get PerfomanceProjectStatus data from DB err: %v", err)
@@ -158,9 +152,13 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		return
 	}
 
+	RecordCount = int64(len(data))
+
+	// response after paginating the total response
+	paginateData := PaginateData(data, dataReq)
 	perfomanceList := models.PerfomanceListResponse{}
 
-	for _, item := range data {
+	for _, item := range paginateData {
 		// if no unique id is present we skip that project
 		UniqueId, ok := item["unique_id"].(string)
 		if !ok || UniqueId == "" {
@@ -227,22 +225,31 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		}
 		perfomanceList.PerfomanceList = append(perfomanceList.PerfomanceList, perfomanceResponse)
 	}
-	
-	// querying the total db records
-	filter, whereEleList = PrepareAdminDlrFilters(tableName, dataReq, true, true)
-	queryAll := queryForAlldata + filter
-	data, err = db.ReteriveFromDB(db.RowDataDBIndex, queryAll, whereEleList)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get PerfomanceProjectStatus from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get PerfomanceProjectStatus from DB", http.StatusBadRequest, nil)
-		return
-	}
-
-	if len(data) > 0 {
-		RecordCount = int64(data[0]["count"].(int64))
-	}
 	log.FuncInfoTrace(0, "Number of PerfomanceProjectStatus List fetched : %v list %+v", len(perfomanceList.PerfomanceList), perfomanceList)
 	FormAndSendHttpResp(resp, "PerfomanceProjectStatus Data", http.StatusOK, perfomanceList, RecordCount)
+}
+
+/******************************************************************************
+* FUNCTION:		PrepareAdminDlrFilters
+* DESCRIPTION:
+		PaginateData function paginates data directly from the returned data itself
+		without setting any offset value. For large data sizes, using an offset
+		was creating performance issues. This approach manages to keep the response
+		time under 2 seconds.
+******************************************************************************/
+
+func PaginateData(data []map[string]interface{}, req models.PerfomanceStatusReq) []map[string]interface{} {
+	paginatedData := make([]map[string]interface{}, 0, req.PageSize)
+
+	startIndex := (req.PageNumber - 1) * req.PageSize
+	endIndex := int(math.Min(float64(startIndex+req.PageSize), float64(len(data))))
+
+	if startIndex >= len(data) || startIndex >= endIndex {
+		return make([]map[string]interface{}, 0)
+	}
+
+	paginatedData = append(paginatedData, data[startIndex:endIndex]...)
+	return paginatedData
 }
 
 /******************************************************************************
@@ -274,7 +281,7 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 	if len(dataFilter.UniqueIds) > 0 && !fitlterCheck {
 
 		filtersBuilder.WriteString(" AND ")
-		filtersBuilder.WriteString(" sms.unique_id IN (")
+		filtersBuilder.WriteString(" unique_id IN (")
 
 		for i, filter := range dataFilter.UniqueIds {
 			filtersBuilder.WriteString(fmt.Sprintf("$%d", len(whereEleList)+1))
@@ -297,10 +304,7 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 		whereEleList = append(whereEleList, dataFilter.DealerName)
 	}
 
-	if !fitlterCheck && (dataFilter.PageNumber > 0 && dataFilter.PageSize > 0) {
-		offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
-		filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
-	}
+	filtersBuilder.WriteString(" ORDER BY unique_id")
 	filters = filtersBuilder.String()
 
 	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
@@ -364,12 +368,8 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 		}
 	}
 
-	filtersBuilder.WriteString(fmt.Sprintf(") AND dealer = $%d", len(whereEleList)+1))
+	filtersBuilder.WriteString(fmt.Sprintf(") AND dealer = $%d ORDER BY unique_id", len(whereEleList)+1))
 	whereEleList = append(whereEleList, dataFilter.DealerName)
-	if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
-		offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
-		filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
-	}
 	filters = filtersBuilder.String()
 
 	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
