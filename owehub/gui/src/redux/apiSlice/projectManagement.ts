@@ -98,7 +98,7 @@ export const getProjects = createAsyncThunk(
       if (data.status > 201) {
         return rejectWithValue((data as Error).message);
       }
-      const projects = (data?.data?.project_response_list || []) as IProjects[];
+      const projects = (data?.data || []) as string[];
       return { projects, count: data.dbRecCount };
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -125,7 +125,7 @@ export const getProjectDetail = createAsyncThunk(
 
 
 interface IState {
-  projects: IProjects[];
+  projects: string[];
   error: string;
   isLoading: boolean;
   projectsCount: number;

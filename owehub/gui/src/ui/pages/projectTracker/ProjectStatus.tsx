@@ -460,8 +460,8 @@ const ProjectStatus = () => {
   }, []);
   const projectOption: Option[] = projects.map(
     (item: (typeof projects)[0]) => ({
-      label: item.unqiue_id,
-      value: item.unqiue_id,
+      label: item,
+      value: item,
     })
   );
   useEffect(() => {
