@@ -64,15 +64,15 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
   };
   const handleTierChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    // if (name === "end_date") {
-    //   if (createTier.start_date && value < createTier.start_date) {
-    //     setErrors((prevErrors) => ({
-    //       ...prevErrors,
-    //       end_date: "End date cannot be before the start date",
-    //     }));
-    //     return;
-    //   }
-    // }
+    if (name === "end_date") {
+      if (createTier.start_date && value < createTier.start_date) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          end_date: "End date cannot be before the start date",
+        }));
+        return;
+      }
+    }
     setCreateTier((prevData) => ({
       ...prevData,
       [name]: value,
