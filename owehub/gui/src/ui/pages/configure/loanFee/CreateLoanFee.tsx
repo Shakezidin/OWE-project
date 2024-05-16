@@ -200,20 +200,14 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     </span>
                   )}
                 </div>
-
                 <div className="create-input-field">
-                  <label className="inputLabel-select">Dealer</label>
-                  <SelectOption
-                    options={dealerOption(newFormData)}
-                    onChange={(newValue) => {
-                      setNewFormData((prev) => ({
-                        ...prev,
-                        dealerName: newValue?.value!,
-                      }));
-                    }}
-                    value={dealerOption(newFormData)?.find(
-                      (option) => option.value === newFormData.dealerName
-                    )}
+                  <Input
+                    type={"text"}
+                    label="Dealer"
+                    value={newFormData.dealerName}
+                    name="dealerName"
+                    placeholder={"Enter"}
+                    onChange={handleChange}
                   />
                   {errors?.dealerName && (
                     <span style={{ display: "block", color: "#FF204E" }}>
@@ -221,6 +215,8 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     </span>
                   )}
                 </div>
+
+                
 
                 <div className="create-input-field">
                   <label className="inputLabel-select">State</label>

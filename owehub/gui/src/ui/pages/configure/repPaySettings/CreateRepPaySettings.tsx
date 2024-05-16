@@ -140,44 +140,44 @@ const CreateRepPaySettings: React.FC<createRepPayProps> = ({ handleClose, editMo
         <div className="createUserCrossButton" onClick={handleClose}>
           <CROSS_BUTTON />
 
-        </div>
-
-        <h3 className="createProfileText">{editMode === false ? "Rep Pay Settings" : "Update RepPay Settings"}</h3>
-
-        <div className="modal-body">
-          <div className="createProfileInputView">
-            <div className="createProfileTextView">
-              <div className="create-input-container">
-                <div className="create-input-field">
-                  <Input
-                    type={"text"}
-                    label="Name"
-                    value={createRePayData.name}
-                    name="name"
-                    placeholder={"Enter"}
-                    onChange={(e) => handlePayInputChange(e)}
-                  />
                 </div>
-                <div className="create-input-field">
-                  <label className="inputLabel-select">State</label>
-                  <SelectOption
-                    options={stateOption(newFormData)}
-                    onChange={(newValue) => handleChange(newValue, 'state')}
-                    value={stateOption(newFormData)?.find((option) => option.value === createRePayData.state)}
-                  />
+             
+                    <h3 className="createProfileText">{editMode===false?"Create Rep Pay":"Update RepPay"}</h3>
+                
+                  <div className="modal-body">
+                  <div className="createProfileInputView">
+                        <div className="createProfileTextView">
+                        <div className="create-input-container">
+                  <div className="create-input-field">
+                    <Input
+                      type={"text"}
+                      label="Name"
+                      value={createRePayData.name}
+                      name="name"
+                      placeholder={"Enter"}
+                      onChange={(e) => handlePayInputChange(e)}
+                    />
+                  </div>
+                  <div className="create-input-field">
+                                <label className="inputLabel-select">State</label>
+                                    <SelectOption
+                                        options={stateOption(newFormData)}
+                                        onChange={(newValue) => handleChange(newValue, 'state')}
+                                        value={stateOption(newFormData)?.find((option) => option.value === createRePayData.state)}
+                                    />
+                                </div>
+                        <div className="create-input-field">
+                          <Input
+                          type={"text"}
+                          label="Pay Scale"
+                          value={createRePayData.pay_scale}
+                          name="pay_scale"
+                          placeholder={"Enter"}
+                          onChange={(e) => handlePayInputChange(e)}
+                    />
+                  </div>
+                 
                 </div>
-                <div className="create-input-field">
-                  <Input
-                    type={"text"}
-                    label="Pay Scale"
-                    value={createRePayData.pay_scale}
-                    name="pay_scale"
-                    placeholder={"Enter"}
-                    onChange={(e) => handlePayInputChange(e)}
-                  />
-                </div>
-
-              </div>
 
 
 

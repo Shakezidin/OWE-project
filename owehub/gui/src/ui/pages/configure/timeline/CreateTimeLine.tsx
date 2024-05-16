@@ -141,7 +141,7 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
         </div>
 
         <h3 className="createProfileText">
-          {editMode === false ? "TimeLine SLA" : "Update TimeLine SLA"}
+          {editMode === false ? "Create TimeLine SLA" : "Update TimeLine SLA"}
         </h3>
 
         <div className="modal-body">

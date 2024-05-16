@@ -160,7 +160,7 @@ const CreateRebateData: React.FC<ButtonProps> = ({
         </div>
 
         <h3 className="createProfileText">
-          {editMode === false ? "Dealer Credit" : "Update Dealer Credit"}
+          {editMode === false ? "Create Rebate Data" : "Update Rebate Data"}
         </h3>
 
         <div className="modal-body">

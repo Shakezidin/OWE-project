@@ -13,6 +13,7 @@ export interface UserOnboardingStateModel {
   userRoleBasedList: UserRoleBasedListModel[];
   totalCount?: number;
   dbTables: DBTable[];
+  userPerformanceList: OnboardingChartModel[];
 }
 
 export interface CreateOnboardUserStateModel {

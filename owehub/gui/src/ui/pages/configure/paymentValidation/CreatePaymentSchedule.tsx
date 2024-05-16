@@ -123,11 +123,11 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({ handleClose, editMo
                     <CROSS_BUTTON />
 
                 </div>
-
-                <h3 className="createProfileText">{editMode === false ? "Payment Schedule" : "Update Payment Schedule"}</h3>
-
-                <div className="modal-body">
-                    <div className="createProfileInputView">
+             
+                    <h3 className="createProfileText">{editMode===false?"Create Payment Schedule":"Update Payment Schedule"}</h3>
+                
+                  <div className="modal-body">
+                  <div className="createProfileInputView">
                         <div className="createProfileTextView">
                             <div className="create-input-container">
                                 <div className="create-input-field">

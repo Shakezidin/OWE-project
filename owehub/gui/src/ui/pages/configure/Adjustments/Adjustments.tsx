@@ -257,9 +257,9 @@ const Adjustments  = () => {
                       {item.unique_id}
                     </div>
                   </td>
-                  <td>{item.customer}</td>
-                  <td>{item.partner_name}</td>
-                  <td>{item.installer_name}</td>
+                  <td>{item.customer || "N/A"}</td>
+                  <td>{item.partner_name || "N/A"}</td>
+                  <td>{item.installer_name || "N/A"}</td>
                   <td> {item.state_name} </td>
                   <td> {item.sys_size} </td>
                   <td> {item.bl} </td>
