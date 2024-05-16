@@ -12,14 +12,16 @@ interface IState {
   error: string;
   isLoading: boolean;
   isFormSubmitting: boolean;
-  isSuccess:boolean
+  isSuccess:boolean,
+  count:number
 }
 const initialState: IState = {
   isLoading: false,
   isFormSubmitting: false,
   error: "",
   data: [],
-  isSuccess:false
+  isSuccess:false,
+  count:0
 };
 
 const adderData = createSlice({
@@ -37,7 +39,8 @@ const adderData = createSlice({
       })
       .addCase(getarAdderData.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.data = action.payload;        
+        state.data = action.payload.list;  
+        state.count = action.payload.count      
       })
       .addCase(getarAdderData.rejected, (state, action) => {
         state.isLoading = false;
@@ -55,6 +58,7 @@ const adderData = createSlice({
       .addCase(createarAdderData.rejected, (state, action) => {
         state.isFormSubmitting = false;
         state.error = action.payload as string;
+        toast.error(action.payload as string)
       })
       .addCase(updatearAdderData.pending,(state, action) => {
         state.isFormSubmitting = true;

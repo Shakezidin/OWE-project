@@ -33,9 +33,9 @@ const ARSchedule = () => {
 
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const { data } = useAppSelector((state) => state.ArSchedule);
+  const { data,count } = useAppSelector((state) => state.ArSchedule);
   //   const loading = useAppSelector((state) => state.timelineSla.loading);
-  const error = useAppSelector((state) => state.timelineSla.error);
+  const error = useAppSelector((state) => state.ArSchedule.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
@@ -43,11 +43,12 @@ const ARSchedule = () => {
     useState<IARSchedule | null>(null);
   const itemsPerPage = 10;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
-  const currentPage = useAppSelector(
-    (state) => state.paginationType.currentPage
-  );
+  const [currentPage,setCurrentPage] = useState(1) 
   const [sortKey, setSortKey] = useState("");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
+  const { data: commissionList, isLoading,isSuccess } = useAppSelector(
+    (state) => state.ArSchedule
+  );
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -57,32 +58,41 @@ const ARSchedule = () => {
     dispatch(getArscheduleList(pageNumber));
   }, [dispatch, currentPage, viewArchived]);
 
+  useEffect(()=>{
+    if (isSuccess) {
+      const pageNumber = {
+        page_number: currentPage,
+        page_size: itemsPerPage,
+        archived:viewArchived
+      };
+      dispatch(getArscheduleList({ ...pageNumber }));
+    }
+  },[isSuccess,currentPage,viewArchived])
   const filter = () => {
     setFilterOpen(true);
   };
 
   const paginate = (pageNumber: number) => {
-    dispatch(setCurrentPage(pageNumber));
+    setCurrentPage(pageNumber);
   };
 
-  const { data: commissionList, isLoading } = useAppSelector(
-    (state) => state.ArSchedule
-  );
+
   const goToNextPage = () => {
-    dispatch(setCurrentPage(currentPage + 1));
+    setCurrentPage(currentPage + 1)
   };
 
   const goToPrevPage = () => {
-    dispatch(setCurrentPage(currentPage - 1));
+    setCurrentPage(currentPage - 1);
   };
-  const totalPages = Math.ceil(data?.length / itemsPerPage);
+  const totalPages = Math.ceil(count / itemsPerPage);
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
+  const startIndex = (currentPage - 1) * itemsPerPage+1;
+  const endIndex = currentPage * itemsPerPage;
 
-  const currentPageData = commissionList?.slice(startIndex, endIndex);
+  const currentPageData = commissionList?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === data?.length;
+
   const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === "desc" ? "asc" : "desc");
@@ -124,7 +134,8 @@ const ARSchedule = () => {
     handleOpen();
   };
   const fetchFunction = (req: any) => {
-    dispatch(getArscheduleList(req));
+    dispatch(getArscheduleList({...req,page_number: currentPage,
+      page_size: itemsPerPage}));
   };
 
   const handleArchiveClick = async (record_id: number[]) => {
@@ -309,7 +320,7 @@ console.log(selectedRows,"rorrrrr");
         </div>
         <div className="page-heading-container">
           <p className="page-heading">
-            {currentPage} - {totalPages} of {currentPageData?.length} item
+            {startIndex} - {endIndex} of {count} item
           </p>
 
           {data?.length > 0 ? (

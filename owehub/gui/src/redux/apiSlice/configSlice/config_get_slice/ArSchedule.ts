@@ -12,14 +12,16 @@ interface IState {
   error: string;
   isLoading: boolean;
   isFormSubmitting: boolean;
-  isSuccess:number
+  isSuccess:number,
+  count:number
 }
 const initialState: IState = {
   isLoading: false,
   isFormSubmitting: false,
   error: "",
   data: [],
-  isSuccess:0
+  isSuccess:0,
+  count:0
 };
 
 const arSchedule = createSlice({
@@ -37,7 +39,8 @@ const arSchedule = createSlice({
       })
       .addCase(getArscheduleList.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.data = action.payload;
+        state.data = action.payload.list;
+        state.count = action.payload.count;
       })
       .addCase(getArscheduleList.rejected, (state, action) => {
         state.isLoading = false;

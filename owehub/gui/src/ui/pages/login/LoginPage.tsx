@@ -23,6 +23,7 @@ import { HTTP_STATUS } from "../../../core/models/api_models/RequestModel";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { RootState } from "../../../redux/store";
 import Loading from "../../components/loader/Loading";
+import { TYPE_OF_USER } from "../../../resources/static_data/Constant";
 
 export const LoginPage = () => {
   const navigate = useNavigate();
@@ -108,7 +109,12 @@ export const LoginPage = () => {
             "is_password_change_required",
             is_password_change_required
           );
-          navigate(ROUTES.PROJECT_PERFORMANCE);
+          if(role_name === TYPE_OF_USER.DB_USER){
+            navigate(ROUTES.DB_MANAGER_DASHBOARD);
+          }else{
+            navigate(ROUTES.PROJECT_PERFORMANCE);
+          }
+         
         } else {
           toast.error(result.message);
         }

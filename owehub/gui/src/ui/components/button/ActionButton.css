@@ -12,7 +12,7 @@
   cursor: pointer;
   height: 40px;
   text-transform: capitalize;
-  width: 150px;
+  width: 100%;
 }
 .loginButton:hover {
   background-color: #0493ce;

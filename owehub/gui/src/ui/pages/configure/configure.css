@@ -370,3 +370,8 @@ table tbody tr td {
 .pto-width {
   width: 48px;
 }
+
+/* Remove hover background color for the specific row */
+table tbody tr:has(td[colspan="10"] .data-not-found):hover {
+  background-color: transparent;
+}

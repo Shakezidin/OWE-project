@@ -11,10 +11,16 @@ export interface ICostCreateparam {
   cost: number;
   start_date: string;
   end_date: string;
+  currentPage?:number
 }
 
 export interface ICost extends ICostCreateparam {
   record_id: number;
+  currentPage:number
+}
+
+export interface ICostPost extends ICostCreateparam {
+  currentPage:number
 }
 
 export const getInstallCost = createAsyncThunk(
@@ -33,13 +39,13 @@ export const getInstallCost = createAsyncThunk(
 
 export const createInstallCost = createAsyncThunk(
   "create/installCost",
-  async (params: ICostCreateparam, { rejectWithValue,dispatch }) => {
+  async (params: ICostPost, { rejectWithValue,dispatch }) => {
     try {
       const data = await postCaller("create_installcost", params);
       if (data instanceof Error) {
         return rejectWithValue((data as Error).message);
       }
-      await dispatch(getInstallCost({page_number:1,page_size:10,archived:false}))
+      await dispatch(getInstallCost({page_number:params.currentPage,page_size:10,archived:false}))
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -57,7 +63,7 @@ export const updateInstallCost = createAsyncThunk(
       if (data instanceof Error) {
         return rejectWithValue((data as Error).message);
       }
-      await dispatch(getInstallCost({page_number:1,page_size:10,archived:false}))
+      await dispatch(getInstallCost({page_number:params.currentPage,page_size:10,archived:false}))
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);

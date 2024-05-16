@@ -11,7 +11,8 @@ interface IState {
   isLoading: boolean;
   isFormSubmitting: boolean;
   tableData:[],
-  isSuccess:number
+  isSuccess:number,
+  dbCount:number,
 }
 const initialState: IState = {
   isLoading: false,
@@ -19,7 +20,8 @@ const initialState: IState = {
   error: "",
   option: [],
   tableData:[],
-  isSuccess:0
+  isSuccess:0,
+  dbCount:0,
 };
 
 const dataTableSlice = createSlice({
@@ -48,7 +50,8 @@ const dataTableSlice = createSlice({
       })
       .addCase(getAnyTableData.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.tableData = action.payload;
+        state.tableData = action.payload.tableData;
+        state.dbCount = action.payload.count
       })
       .addCase(getAnyTableData.rejected, (state, action) => {
         state.isLoading = false;

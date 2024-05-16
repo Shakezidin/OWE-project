@@ -24,6 +24,7 @@ import {
   getProjects,
 } from "../../../redux/apiSlice/projectManagement";
 import { format } from "date-fns";
+import MicroLoader from "../../components/loader/MicroLoader";
 interface ActivePopups {
   [key: number]: number | null;
 }
@@ -59,9 +60,13 @@ const data = [
 ];
 
 const ProjectStatus = () => {
-  const { projects, projectDetail } = useAppSelector(
+  const { projects, projectDetail,isLoading } = useAppSelector(
     (state) => state.projectManagement
   );
+
+  const getStatus = (arr:string[]) =>{
+    return arr.every((item)=>projectDetail[item as keyof typeof projectDetail])
+  }
   const newStatusData = [
     {
       name: "Sales",
@@ -75,7 +80,7 @@ const ProjectStatus = () => {
           process: "Completed",
           bgColor: projectDetail.sales_completed ? "#57B93A" : "#F2F4F6",
           color: projectDetail.sales_completed ? "white" : "#101828",
-          borderColor: "white",
+          borderColor: projectDetail.sales_completed ?"white":"#A5AAB2",
           key: "sales_completed",
         },
       ],
@@ -89,9 +94,9 @@ const ProjectStatus = () => {
       childStatusData: [
         {
           name: "10 Apr",
-          process: projectDetail.ntp_pending ? "Completed" : "Pending",
+          process:  "Pending",
           data: projectDetail.ntp_pending ? "" : "data is not available",
-          borderColor: "#A5AAB2",
+          borderColor:  projectDetail.ntp_pending ?"white":"#A5AAB2",
           key: "ntp_pending",
           bgColor: projectDetail.ntp_pending ? "#57B93A" : "#F2F4F6",
           color: projectDetail.ntp_pending ? "white" : "#101828",
@@ -100,7 +105,7 @@ const ProjectStatus = () => {
           name: "10 Apr",
           process: "Completed",
           data: projectDetail.ntp_completed ? "" : "data is not available",
-          borderColor: "#A5AAB2",
+          borderColor: projectDetail.ntp_completed ?"white":"#A5AAB2",
           key: "ntp_completed",
           bgColor: projectDetail.ntp_completed ? "#57B93A" : "#F2F4F6",
           color: projectDetail.ntp_completed ? "white" : "#101828",
@@ -116,26 +121,24 @@ const ProjectStatus = () => {
       childStatusData: [
         {
           name: "10 Apr",
-          process: projectDetail.site_survey_scheduled
-            ? "Scheduled"
-            : "Completed",
+          process: "Scheduled",
+            
           data: projectDetail.site_survey_scheduled
             ? ""
             : "data is not available",
-          borderColor: "#A5AAB2",
+          borderColor: projectDetail.site_survey_scheduled ?"white":"#A5AAB2",
           key: "site_survey_scheduled",
           bgColor: projectDetail.site_survey_scheduled ? "#57B93A" : "#F2F4F6",
           color: projectDetail.site_survey_scheduled ? "white" : "#101828",
         },
         {
           name: "10 Apr",
-          process: projectDetail.site_survey_rescheduled
-            ? "Re-Scheduled"
-            : "Completed",
+          process:  "Re-Scheduled"
+           ,
           data: projectDetail.site_survey_rescheduled
             ? ""
             : "data is not available",
-          borderColor: "#A5AAB2",
+          borderColor: projectDetail.site_survey_rescheduled ?"white":"#A5AAB2",
           key: "site_survey_rescheduled",
           bgColor: projectDetail.site_survey_rescheduled
             ? "#57B93A"
@@ -148,7 +151,7 @@ const ProjectStatus = () => {
           data: projectDetail.site_survey_completed
             ? ""
             : "data is not available",
-          borderColor: "#A5AAB2",
+          borderColor: projectDetail.site_survey_completed ?"white":"#A5AAB2",
           key: "site_survey_completed",
           bgColor: projectDetail.site_survey_completed ? "#57B93A" : "#F2F4F6",
           color: projectDetail.site_survey_completed ? "white" : "#101828",
@@ -164,18 +167,18 @@ const ProjectStatus = () => {
       childStatusData: [
         {
           name: "10 Apr",
-          process: projectDetail.roofing_pending ? "Completed" : "Pending",
+          process: "Pending",
           data: projectDetail.roofing_pending ? "" : "data is not available",
-          borderColor: "#A5AAB2",
+          borderColor:  projectDetail.roofing_pending ?"white":"#A5AAB2",
           key: "roofing_pending",
           bgColor: projectDetail.roofing_pending ? "#57B93A" : "#F2F4F6",
           color: projectDetail.roofing_pending ? "white" : "#101828",
         },
         {
           name: "10 Apr",
-          process: projectDetail.roofing_scheduled ? "Completed" : "Scheduled",
+          process:  "Scheduled",
           data: projectDetail.roofing_scheduled ? "" : "data is not available",
-          borderColor: "#A5AAB2",
+          borderColor: projectDetail.roofing_scheduled ?"white":"#A5AAB2",
           key: "roofing_scheduled",
           bgColor: projectDetail.roofing_scheduled ? "#57B93A" : "#F2F4F6",
           color: projectDetail.roofing_scheduled ? "white" : "#101828",
@@ -183,11 +186,11 @@ const ProjectStatus = () => {
         {
           name: "10 Apr",
           process: "Completed",
-          data: projectDetail.roofing_scheduled ? "" : "data is not available",
-          borderColor: "#A5AAB2",
+          data: projectDetail.roofing_completed ? "" : "data is not available",
+          borderColor: projectDetail.roofing_completed ?"white":"#A5AAB2",
           key: "roofing_scheduled",
-          bgColor: projectDetail.roofing_scheduled ? "#57B93A" : "#F2F4F6",
-          color: projectDetail.roofing_scheduled ? "white" : "#101828",
+          bgColor: projectDetail.roofing_completed ? "#57B93A" : "#F2F4F6",
+          color: projectDetail.roofing_completed ? "white" : "#101828",
         },
       ],
     },
@@ -201,22 +204,20 @@ const ProjectStatus = () => {
       childStatusData: [
         {
           name: "10 Apr",
-          process: projectDetail.electrical_pending ? "Completed" : "Pending",
+          process:  "Pending",
           data: projectDetail.electrical_pending ? "" : "data is not available",
-          borderColor: "#A5AAB2",
+          borderColor: projectDetail.electrical_pending ?"white":"#A5AAB2",
           key: "electrical_pending",
           bgColor: projectDetail.electrical_pending ? "#57B93A" : "#F2F4F6",
           color: projectDetail.electrical_pending ? "white" : "#101828",
         },
         {
           name: "10 Apr",
-          process: projectDetail.electrical_scheduled
-            ? "Completed"
-            : "Scheduled",
+          process: "Scheduled",
           data: projectDetail.electrical_scheduled
             ? ""
             : "data is not available",
-          borderColor: "#A5AAB2",
+          borderColor: projectDetail.electrical_scheduled ?"white":"#A5AAB2",
           key: "electrical_scheduled",
           bgColor: projectDetail.electrical_scheduled ? "#57B93A" : "#F2F4F6",
           color: projectDetail.electrical_scheduled ? "white" : "#101828",
@@ -227,7 +228,7 @@ const ProjectStatus = () => {
           data: projectDetail.electrical_completed
             ? ""
             : "data is not available",
-          borderColor: "#A5AAB2",
+          borderColor: projectDetail.electrical_completed ?"white":"#A5AAB2",
           key: "electrical_completed",
           bgColor: projectDetail.electrical_completed ? "#57B93A" : "#F2F4F6",
           color: projectDetail.electrical_completed ? "white" : "#101828",
@@ -244,22 +245,20 @@ const ProjectStatus = () => {
       childStatusData: [
         {
           name: "10 Apr",
-          process: projectDetail.pv_permit_pending ? "Completed" : "Pending",
+          process:"Pending",
           data: projectDetail.pv_permit_pending ? "" : "data is not available",
-          borderColor: "#A5AAB2",
+          borderColor: projectDetail.pv_permit_pending ?"white":"#A5AAB2",
           key: "pv_permit_pending",
           bgColor: projectDetail.pv_permit_pending ? "#57B93A" : "#F2F4F6",
           color: projectDetail.pv_permit_pending ? "white" : "#101828",
         },
         {
           name: "10 Apr",
-          process: projectDetail.pv_permit_scehduled
-            ? "Completed"
-            : "Submitted",
+          process:  "Submitted",
           data: projectDetail.pv_permit_scehduled
             ? ""
             : "data is not available",
-          borderColor: "#A5AAB2",
+          borderColor: projectDetail.pv_permit_scehduled ?"white":"#A5AAB2",
           key: "pv_permit_scehduled",
           bgColor: projectDetail.pv_permit_scehduled ? "#57B93A" : "#F2F4F6",
           color: projectDetail.pv_permit_scehduled ? "white" : "#101828",
@@ -270,7 +269,7 @@ const ProjectStatus = () => {
           data: projectDetail.pv_permit_completed
             ? ""
             : "data is not available",
-          borderColor: "#A5AAB2",
+          borderColor: projectDetail.pv_permit_completed ?"white":"#A5AAB2",
           key: "pv_permit_completed",
           bgColor: projectDetail.pv_permit_completed ? "#57B93A" : "#F2F4F6",
           color: projectDetail.pv_permit_completed ? "white" : "#101828",
@@ -287,22 +286,20 @@ const ProjectStatus = () => {
       childStatusData: [
         {
           name: "10 Apr",
-          process: projectDetail.ic_permit_pending ? "Completed" : "Pending",
+          process: "Pending",
           data: projectDetail.ic_permit_pending ? "" : "data is not available",
-          borderColor: "#A5AAB2",
+          borderColor:projectDetail.ic_permit_pending ?"white":"#A5AAB2",
           key: "ic_permit_pending",
           bgColor: projectDetail.ic_permit_pending ? "#57B93A" : "#F2F4F6",
           color: projectDetail.ic_permit_pending ? "white" : "#101828",
         },
         {
           name: "10 Apr",
-          process: projectDetail.ic_permit_scheduled
-            ? "Completed"
-            : "Submitted",
+          process: "Submitted",
           data: projectDetail.ic_permit_scheduled
             ? ""
             : "data is not available",
-          borderColor: "#A5AAB2",
+          borderColor: projectDetail.ic_permit_scheduled ?"white":"#A5AAB2",
           key: "ic_permit_scheduled",
           bgColor: projectDetail.ic_permit_scheduled ? "#57B93A" : "#F2F4F6",
           color: projectDetail.ic_permit_scheduled ? "white" : "#101828",
@@ -313,7 +310,7 @@ const ProjectStatus = () => {
           data: projectDetail.ic_permit_completed
             ? ""
             : "data is not available",
-          borderColor: "#A5AAB2",
+          borderColor:projectDetail.ic_permit_completed ?"white":"#A5AAB2",
           key: "ic_permit_completed",
           bgColor: projectDetail.ic_permit_completed ? "#57B93A" : "#F2F4F6",
           color: projectDetail.ic_permit_completed ? "white" : "#101828",
@@ -330,9 +327,9 @@ const ProjectStatus = () => {
       childStatusData: [
         {
           name: "10 Apr",
-          process: projectDetail.install_pending ? "Completed" : "Pending",
+          process:  "Pending",
           data: projectDetail.install_pending ? "" : "data is not available",
-          borderColor: "#A5AAB2",
+          borderColor: projectDetail.install_pending ?"white":"#A5AAB2",
           key: "install_pending",
           bgColor: projectDetail.install_pending ? "#57B93A" : "#F2F4F6",
           color: projectDetail.install_pending ? "white" : "#101828",
@@ -340,18 +337,18 @@ const ProjectStatus = () => {
 
         {
           name: "10 Apr",
-          process: projectDetail.install_ready ? "Completed" : "Ready",
+          process: "Ready",
           data: projectDetail.install_ready ? "" : "data is not available",
-          borderColor: "#A5AAB2",
+          borderColor: projectDetail.install_ready ?"white":"#A5AAB2",
           key: "install_ready",
           bgColor: projectDetail.install_ready ? "#57B93A" : "#F2F4F6",
           color: projectDetail.install_ready ? "white" : "#101828",
         },
         {
           name: "10 Apr",
-          process: projectDetail.install_scheduled ? "Completed" : "Scheduled",
+          process:"Scheduled",
           data: projectDetail.install_scheduled ? "" : "data is not available",
-          borderColor: "#A5AAB2",
+          borderColor: projectDetail.install_scheduled ?"white":"#A5AAB2",
           key: "install_scheduled",
           bgColor: projectDetail.install_scheduled ? "#57B93A" : "#F2F4F6",
           color: projectDetail.install_scheduled ? "white" : "#101828",
@@ -361,7 +358,7 @@ const ProjectStatus = () => {
           name: "10 Apr",
           process: "Completed",
           data: projectDetail.install_completed ? "" : "data is not available",
-          borderColor: "#A5AAB2",
+          borderColor: projectDetail.install_completed ?"white":"#A5AAB2",
           key: "install_completed",
           bgColor: projectDetail.install_completed ? "#57B93A" : "#F2F4F6",
           color: projectDetail.install_completed ? "white" : "#101828",
@@ -378,13 +375,11 @@ const ProjectStatus = () => {
       childStatusData: [
         {
           name: "10 Apr",
-          process: projectDetail.final_inspection_submitted
-            ? "Completed"
-            : "Scheduled",
+          process: "Scheduled",
           data: projectDetail.final_inspection_submitted
             ? ""
             : "data is not available",
-          borderColor: "#A5AAB2",
+          borderColor:  projectDetail.final_inspection_submitted ?"white":"#A5AAB2",
           key: "final_inspection_submitted",
           bgColor: projectDetail.final_inspection_submitted
             ? "#57B93A"
@@ -393,9 +388,7 @@ const ProjectStatus = () => {
         },
         {
           name: "10 Apr",
-          process: projectDetail.final_inspection_approved
-            ? "Completed"
-            : "Approved",
+          process:  "Approved",
           data: projectDetail.final_inspection_approved
             ? ""
             : "data is not available",
@@ -418,18 +411,18 @@ const ProjectStatus = () => {
       childStatusData: [
         {
           name: "10 Apr",
-          process: projectDetail.pto_in_process ? "Completed" : "In Process",
+          process:  "In Process",
           data: projectDetail.pto_in_process ? "" : "data is not available",
-          borderColor: "#A5AAB2",
+          borderColor: projectDetail.pto_in_process ?"white":"#A5AAB2",
           key: "pto_in_process",
           bgColor: projectDetail.pto_in_process ? "#57B93A" : "#F2F4F6",
           color: projectDetail.pto_in_process ? "white" : "#101828",
         },
         {
           name: "10 Apr",
-          process: projectDetail.pto_submitted ? "Completed" : "Submitted",
+          process:  "Submitted",
           data: projectDetail.pto_submitted ? "" : "data is not available",
-          borderColor: "#A5AAB2",
+          borderColor: projectDetail.pto_submitted ?"white":"#A5AAB2",
           key: "pto_submitted",
           bgColor: projectDetail.pto_submitted ? "#57B93A" : "#F2F4F6",
           color: projectDetail.pto_submitted ? "white" : "#101828",
@@ -439,7 +432,7 @@ const ProjectStatus = () => {
           name: "10 Apr",
           process: "Approved",
           data: projectDetail.pto_completed ? "" : "data is not available",
-          borderColor: "#A5AAB2",
+          borderColor:  projectDetail.pto_completed ?"white":"#A5AAB2",
           key: "pto_completed",
           bgColor: projectDetail.pto_completed ? "#57B93A" : "#F2F4F6",
           color: projectDetail.pto_completed ? "white" : "#101828",
@@ -579,7 +572,7 @@ const ProjectStatus = () => {
                 {/* time */}
               </div>
               <div className="graph-pos"></div>
-              <img className="fade-graph" src={ICONS.linearGraph} alt="" />
+              <img className="fade-graph" src={ICONS.pmshadedgraph} alt="" />
             </div>
           </div>
         </div>
@@ -618,7 +611,14 @@ const ProjectStatus = () => {
               <tr style={{ borderBottom: "none" }}>
                 <td style={{ padding: "0px" }}>
                   <div className="project-staus-progress-container">
-                    {newStatusData.map((item: any, i: any) => (
+                    {
+                      isLoading?
+                      <div style={{display:"flex",justifyContent:"center"}}>
+
+                        <MicroLoader/>
+                      </div>
+                      :
+                    newStatusData.map((item: any, i: any) => (
                       <>
                         <div className="project-status-table">
                           <div
@@ -632,7 +632,7 @@ const ProjectStatus = () => {
                                 color: item.numColor,
                               }}
                             >
-                              {item.number}
+                             {getStatus(item.childStatusData.map((item:any)=>item.key))?<FaCheck/>:i+1} 
                             </div>
                             <p
                               className="stage-1-para"
@@ -729,7 +729,8 @@ const ProjectStatus = () => {
                         </div>
                         {i === 9 ? null : <div className="dotted-border"></div>}
                       </>
-                    ))}
+                    ))
+                    }
                   </div>
                 </td>
               </tr>

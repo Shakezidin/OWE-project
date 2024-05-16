@@ -73,8 +73,8 @@ const Reconcile = () => {
   };
   const totalPages = Math.ceil(dbCount / itemsPerPage);
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
+  const startIndex = (currentPage - 1) * itemsPerPage+1;
+  const endIndex = currentPage * itemsPerPage;
 
   const currentPageData = data.slice();
   const isAnyRowSelected = selectedRows.size > 0;
@@ -120,7 +120,8 @@ const Reconcile = () => {
     setSelectAllChecked(false);
   };
   const fetchFunction = (req: any) => {
-    dispatch(fetchReconcile(req));
+    dispatch(fetchReconcile({...req,page_number: currentPage,
+      page_size: itemsPerPage}));
   };
   const handleEdit = (data: any) => {
     setEditMode(true);
@@ -363,7 +364,7 @@ const Reconcile = () => {
         </div>
         <div className="page-heading-container">
           <p className="page-heading">
-            {currentPage} - {dbCount} of {currentPageData?.length} item
+            {startIndex} - {endIndex} of {dbCount} item
           </p>
 
           {currentPageData?.length > 0 ? (

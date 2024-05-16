@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
 import Sidebar from "../sidebar/Sidebar";
 import Header from "./Header";
 import "./layout.css";
@@ -13,6 +13,7 @@ import ChangePassword from "../../pages/resetPassword/ChangePassword/ChangePassw
 
 const MainLayout = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const [isOpenChangePassword, setIsOpenChangePassword] = useState(localStorage.getItem('is_password_change_required') === 'true');
 
   const [toggleOpen, setToggleOpen] = useState<boolean>(false);
@@ -32,6 +33,7 @@ const MainLayout = () => {
       if (currentTime < parseInt(expirationTime, 10)) {
         const timeout = setTimeout(() => {
           dispatch(logout());
+          navigate("/login");
           toast.error("Session time expired. Please login again..");
         }, parseInt(expirationTimeInMin) * 60 * 1000); // 480 minutes in milliseconds
 
@@ -39,6 +41,7 @@ const MainLayout = () => {
       } else {
         // Token has expired
         dispatch(logout());
+        navigate("/login");
         toast.error("Session time expired. Please login again..");
       }
     }

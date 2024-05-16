@@ -8,7 +8,7 @@ interface IState {
     error: string,
     isLoading: boolean,
     isFormSubmitting:boolean
-   
+   count:0
     isSuccess:number,
 }
 
@@ -18,6 +18,7 @@ const initialState: IState = {
     isLoading: false,
     isFormSubmitting:false,
     isSuccess:0,
+    count:0
 }
 
 const ar = createSlice({
@@ -32,7 +33,8 @@ const ar = createSlice({
         })
             .addCase(fetchAr.fulfilled, (state, action: PayloadAction<any | null>) => {
                 state.isLoading = false
-                state.data = action.payload ? action.payload :[]
+                state.data = action.payload.list ? action.payload.list :[]
+                state.count = action.payload.count
             })
             .addCase(fetchAr.rejected, (state, action) => {
                 state.isLoading = false

@@ -119,7 +119,8 @@ const RateAdjustments = () => {
   };
 
   const fetchFunction = (req: any) => {
-    dispatch(fetchRateAdjustments(req));
+    dispatch(fetchRateAdjustments({...req,page_number: currentPage,
+      page_size: itemsPerPage}));
   };
   if (loading) {
     return <div>Loading...</div>;

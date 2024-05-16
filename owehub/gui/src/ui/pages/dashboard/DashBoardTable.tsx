@@ -389,18 +389,18 @@ const DashBoardTable: React.FC = () => {
                     <td style={{ color: "#101828" }}>{el.cn}</td>
                     <td style={{ color: "#101828" }}>{el.cm}</td>
                     <td style={{ color: "#101828" }}>{el.pg}</td>
-                    <td style={{ color: "#2E8B57", fontWeight: "500" }}>{el.amt}</td>
-                    <td style={{ color: "#8B0000", fontWeight: "500" }}>{el.pipeline}</td>
-                    <td style={{ color: "#00008B", fontWeight: "500" }}>{el.cd}</td>
+                    <td style={{ color: "#63BC51", fontWeight: "500" }}>{el.amt}</td>
+                    <td style={{ color: "#EB5CAE", fontWeight: "500" }}>{el.pipeline}</td>
+                    <td style={{ color: "#379DE3", fontWeight: "500" }}>{el.cd}</td>
                     <td>
                       {el.ps === 'Active' ? (
-                        <span style={{ color: 'green' }}>
-                          <span style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'green', marginRight: '5px' }}></span>
+                        <span style={{ color: '#41E418' }}>
+                          <span style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#41E418', marginRight: '5px' }}></span>
                           Active
                         </span>
                       ) : (
-                        <span style={{ color: 'red' }}>
-                          <span style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'red', marginRight: '5px' }}></span>
+                        <span style={{ color: '#EF1C28' }}>
+                          <span style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#EF1C28', marginRight: '5px' }}></span>
                           Inactive
                         </span>
                       )}

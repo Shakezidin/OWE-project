@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import UserPieChart from "./pieChart/UserPieChart";
 import UserOnboardingCreation from "./userOnboard/UserOnboardCreation";
 import { AddNewButton } from "../../components/button/AddNewButton";
@@ -7,7 +7,6 @@ import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import {
   fetchUserListBasedOnRole,
   fetchUserOnboarding,
-  createTablePermission,
 } from "../../../redux/apiActions/userManagement/userManagementActions";
 import {
   UserDropdownModel,
@@ -32,7 +31,7 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import {
   TYPE_OF_USER,
   ALL_USER_ROLE_LIST,
-} from "../../../resources/static_data/TypeOfUser";
+} from "../../../resources/static_data/Constant";
 import { showAlert } from "../../components/alert/ShowAlert";
 
 const UserManagement: React.FC = () => {
@@ -43,7 +42,7 @@ const UserManagement: React.FC = () => {
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
 
   const dispatch = useAppDispatch();
-  const { loading, userOnboardingList, userRoleBasedList, dbTables } =
+  const { loading, userOnboardingList, userRoleBasedList } =
     useAppSelector((state) => state.userManagement);
   const {
     formData,
@@ -89,25 +88,23 @@ const UserManagement: React.FC = () => {
   }, [selectedOption, createUserResult, deleteUserResult]);
 
   /** handle dropdown value */
-  const handleSelectChange = (selectedOption: UserDropdownModel) => {
-    setSelectedOption(selectedOption);
-  };
+  const handleSelectChange = useCallback((selectOption: UserDropdownModel) => {
+    setSelectedOption(selectOption);
+  },[selectedOption]);
 
-  /** get sub role */
-  const getSubRole = (): string => {
-    console.log(formData);
-    let subrole = "";
+  // Memoize the subRole value
+  const getSubRole = useMemo((): string => {
+    let subrole: string = "";
     if (formData.role_name === TYPE_OF_USER.SALE_MANAGER) {
       subrole = TYPE_OF_USER.REGIONAL_MANGER;
     } else if (formData.role_name === TYPE_OF_USER.SALES_REPRESENTATIVE) {
       subrole = TYPE_OF_USER.SALE_MANAGER;
     }
-
     return subrole;
-  };
+  }, [formData.role_name]);
 
   /** check role  */
-  const onChangeRole = async (role: string, value: string) => {
+  const onChangeRole = useCallback(async (role: string, value: string) => {
     if (role === "Role") {
       setSelectedOption(ALL_USER_ROLE_LIST?.find((role)=>role.value === value)!)
       await dispatch(
@@ -124,15 +121,14 @@ const UserManagement: React.FC = () => {
           fetchRegionList({
             role: TYPE_OF_USER.DEALER_OWNER,
             name: value,
-            sub_role: getSubRole(),
+            sub_role: getSubRole,
           })
         );
     }
-  };
+  },[formData.role_name]);
 
   /** submit button */
   const onSubmitCreateUser = (tablePermissions: any) => {
-    console.log(formData, tablePermissions);
     const arrayOfPermissions = Object.entries(tablePermissions).map(
       ([tableName, permission]) => ({
         table_name: tableName,
@@ -144,7 +140,6 @@ const UserManagement: React.FC = () => {
     if (Object.keys(formErrors).length === 0) {
       createUserRequest(arrayOfPermissions)
     } else {
-      //const firstKey = Object.keys(formErrors)[0]; //Todo: change in future
       toast.info(Object.keys(formErrors)[0] + " is required.");
     }
   };
@@ -192,7 +187,6 @@ const UserManagement: React.FC = () => {
       }
     }
   };
-console.log(selectedOption,"slected Role");
 
   /** render UI */
   return (

@@ -125,7 +125,7 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({
         </div>
 
         <h3 className="createProfileText">
-          {editMode === false ? "Rep Pay Settings" : "Update RepPay Settings"}
+          {editMode === false ? "Create Adjustment" : "Update Adjustment"}
         </h3>
 
         <div className="modal-body">

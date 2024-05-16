@@ -63,7 +63,7 @@ import Reconcile from "./ui/pages/configure/Reconcile/Reconcile";
 import ApptSetters from "./ui/pages/configure/apptSetters/ApptSetters";
 import { ARDashboardPage } from "./ui/pages/ar/ardashboard/ardashboard";
 import { useAppDispatch, useAppSelector } from "./redux/hooks";
-import { TYPE_OF_USER } from "./resources/static_data/TypeOfUser";
+import { TYPE_OF_USER } from "./resources/static_data/Constant";
 import AdderData from "./ui/pages/configure/adderData/AdderData";
 
 function App() {
@@ -139,6 +139,7 @@ function App() {
     );
   };
 
+  console.log("login isAuthenticated", isAuthenticated)
   /** other routes */
   const otherRoutes = () => {
     return (
@@ -157,6 +158,16 @@ function App() {
           element={<UserActivity />}
         />
         <Route path={ROUTES.DB_MANAGER_WEB_HOOKS} element={<Webhook />} />
+
+        <Route
+          path={ROUTES.REPPAY_DASHBOARD}
+          element={<RepPayDashboardPage />}
+        />
+        <Route
+          path={ROUTES.PROJECT_PERFORMANCE}
+          element={<ProjectPerformence />}
+        />
+        <Route path={ROUTES.PROJECT_STATUS} element={<ProjectStatus />} />
       </Route>
     );
   };
@@ -168,7 +179,13 @@ function App() {
           path="/"
           element={
             isAuthenticated ? (
-              <Navigate to={ROUTES.PROJECT_PERFORMANCE} />
+              <Navigate
+                to={
+                  role_name === TYPE_OF_USER.DB_USER
+                    ? ROUTES.DB_MANAGER_DASHBOARD
+                    : ROUTES.PROJECT_PERFORMANCE
+                }
+              />
             ) : (
               <WelcomePage />
             )
@@ -188,20 +205,32 @@ function App() {
         <Route path={ROUTES.OTP} element={<EnterOtpScreen />} />
         <Route element={<MainLayout />}>
           {role_name === TYPE_OF_USER.ADMIN && configAndUserManagementRoutes()}
-          <Route
-            path={ROUTES.REPPAY_DASHBOARD}
-            element={<RepPayDashboardPage />}
-          />
-          <Route
-            path={ROUTES.PROJECT_PERFORMANCE}
-            element={<ProjectPerformence />}
-          />
-          <Route path={ROUTES.PROJECT_STATUS} element={<ProjectStatus />} />
 
+          {(role_name === TYPE_OF_USER.ADMIN ||
+            role_name === TYPE_OF_USER.DEALER_OWNER ||
+            role_name === TYPE_OF_USER.FINANCE_ADMIN ||
+            role_name === TYPE_OF_USER.SUB_DEALER_OWNER ||
+            role_name === TYPE_OF_USER.APPOINTMENT_SETTER ||
+            role_name === TYPE_OF_USER.PARTNER) &&
+            otherRoutes()}
 
-          {(role_name === TYPE_OF_USER.ADMIN || role_name === TYPE_OF_USER.DEALER_OWNER || role_name === TYPE_OF_USER.FINANCE_ADMIN 
-           || role_name === TYPE_OF_USER.SUB_DEALER_OWNER  || role_name === TYPE_OF_USER.APPOINTMENT_SETTER  || role_name === TYPE_OF_USER.PARTNER
-          ) && otherRoutes()}
+          {role_name === TYPE_OF_USER.DB_USER && (
+            <Route>
+              <Route
+                path={ROUTES.DB_MANAGER_DASHBOARD}
+                element={<DbManagerDashboard />}
+              />
+              <Route
+                path={ROUTES.DB_MANAGER_DATA_TABLE}
+                element={<DataTablle />}
+              />
+              <Route
+                path={ROUTES.DB_MANAGER_USER_ACTIVITY}
+                element={<UserActivity />}
+              />
+              <Route path={ROUTES.DB_MANAGER_WEB_HOOKS} element={<Webhook />} />
+            </Route>
+          )}
 
           <Route
             path={ROUTES.TECHNICAL_SUPPORT}
