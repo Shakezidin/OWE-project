@@ -96,13 +96,24 @@ const CreateDealer: React.FC<dealerProps> = ({
 
   const handleDealerInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+  
+    if (name === "end_date") {
+      if (createDealer.start_date && value < createDealer.start_date) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          end_date: "End date cannot be before the start date",
+        }));
+        return;
+      }
+    }
+  
     setCreateDealer((prevData) => ({
       ...prevData,
       [name]: value,
     }));
-    setErrors(prevErrors => ({
+    setErrors((prevErrors) => ({
       ...prevErrors,
-      [name]: ''
+      [name]: "",
     }));
   };
   const page = {

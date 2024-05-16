@@ -98,6 +98,15 @@ const CreateRebateData: React.FC<ButtonProps> = ({
   };
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    if (name === "end_date") {
+      if (createCommission.start_date && value < createCommission.start_date) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          end_date: "End date cannot be before the start date",
+        }));
+        return;
+      }
+    }
     setCreateCommission((prevData) => ({
       ...prevData,
       [name]:
