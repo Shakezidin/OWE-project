@@ -458,7 +458,7 @@ const ProjectStatus = () => {
   useEffect(() => {
     dispatch(getProjects());
   }, []);
-  const projectOption: Option[] = projects.map(
+  const projectOption: Option[] = projects?.map?.(
     (item: (typeof projects)[0]) => ({
       label: item,
       value: item,
