@@ -873,7 +873,7 @@ CREATE TABLE adjustments (
     bl DOUBLE PRECISION,
     epc float,
     date date,
-    amount character varying,
+    amount float,
     notes character varying,
     is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
