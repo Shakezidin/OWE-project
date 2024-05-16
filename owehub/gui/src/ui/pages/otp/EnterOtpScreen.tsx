@@ -161,7 +161,8 @@ const EnterOtpScreen = () => {
               />
 
               <br />
-              <ActionButton title="Submit" type="submit" onClick={() => {}} />
+              {/* <ActionButton  title="Submit" type="submit" onClick={() => {}} /> */}
+              <button className="login-button" title="Submit" type="submit" onClick={() => {}}>Submit</button>
               <Link to={ROUTES.RESETPASSWORD} className="loginGoBackLink">
                 <FaArrowLeft />
                 <span>Re-enter email</span>
@@ -180,3 +181,4 @@ const EnterOtpScreen = () => {
 };
 
 export default EnterOtpScreen;
+
