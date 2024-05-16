@@ -220,6 +220,9 @@ const AR = () => {
     return <div>Error: {error}</div>;
   }
 
+  console.log(data, "data")
+  console.log(count, totalPages, "count")
+
   return (
     <div className="comm">
       <Breadcrumb head="" linkPara="Configure" route={ROUTES.CONFIG_PAGE} linkparaSecond="AR" />
