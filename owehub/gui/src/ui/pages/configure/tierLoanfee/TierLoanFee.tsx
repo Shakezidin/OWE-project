@@ -283,7 +283,7 @@ const TierLoanFee = () => {
                       </td>
                       <td>{el.installer}</td>
                       <td>{el.state}</td>
-                      <td>{el.finance_type}</td>
+                      <td>{el.loan_type}</td>
                       <td>{el.owe_cost}</td>
                       <td>{el.dlr_mu}</td>
                       <td>{el.dlr_cost}</td>
