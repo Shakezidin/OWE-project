@@ -66,8 +66,8 @@ func HandleGetARDataRequest(resp http.ResponseWriter, req *http.Request) {
 	query = `
 	  SELECT ar.id as record_id, ar.unique_id, ar.customer, ar.date, ar.amount, ar.payment_type, ar.bank, ar.ced, ar.total_paid, pr.partner_name AS partner_name, st.name AS state_name
 	  FROM ar
-		JOIN partners pr ON pr.partner_id = ar.partner
-		JOIN states st ON st.state_id = ar.state`
+	  LEFT JOIN partners pr ON pr.partner_id = ar.partner
+	  LEFT JOIN states st ON st.state_id = ar.state`
 
 	filter, whereEleList = PrepareARFilters(tableName, dataReq, false)
 	if filter != "" {
