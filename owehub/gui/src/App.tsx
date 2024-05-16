@@ -139,7 +139,6 @@ function App() {
     );
   };
 
-  console.log("login isAuthenticated", isAuthenticated)
   /** other routes */
   const otherRoutes = () => {
     return (
@@ -171,6 +170,22 @@ function App() {
       </Route>
     );
   };
+
+  const managerRoutes = ()=>{
+    return(
+      <Route>
+          <Route
+          path={ROUTES.PROJECT_PERFORMANCE}
+          element={<ProjectPerformence />}
+        />
+        <Route path={ROUTES.PROJECT_STATUS} element={<ProjectStatus />} />
+       <Route
+          path={ROUTES.REPPAY_DASHBOARD}
+          element={<RepPayDashboardPage />}
+        />
+      </Route>
+    )
+  }
 
   return (
     <BrowserRouter>
@@ -213,6 +228,13 @@ function App() {
             role_name === TYPE_OF_USER.APPOINTMENT_SETTER ||
             role_name === TYPE_OF_USER.PARTNER) &&
             otherRoutes()}
+
+            {
+              (role_name === TYPE_OF_USER.SALES_REPRESENTATIVE 
+              || role_name === TYPE_OF_USER.SALE_MANAGER
+              || role_name === TYPE_OF_USER.REGIONAL_MANGER)
+              && managerRoutes()
+            }
 
           {role_name === TYPE_OF_USER.DB_USER && (
             <Route>
