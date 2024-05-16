@@ -13,7 +13,7 @@ const initialState: TierLoanFeeModel = {
     dealer_tier: "",
     installer:"",
     state: "",
-    finance_type:"",
+    loan_type:"",
     owe_cost:"",
     dlr_mu: "",
     dlr_cost:"",
