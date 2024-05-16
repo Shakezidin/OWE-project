@@ -476,7 +476,8 @@ const ProjectStatus = () => {
 
   useEffect(() => {
     if (projectOption.length) {
-      setSelectedProject(projectOption[0]);
+      const val = {label:projectOption[0]?.value,value:projectOption[0]?.value}
+      setSelectedProject(val);
       dispatch(getProjectDetail(projectOption[0]?.value));
     }
   }, [projectOption.length]);
