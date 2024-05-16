@@ -93,12 +93,12 @@ export const LoginPage = () => {
           localStorage.setItem("role", role_name);
           localStorage.setItem("token", access_token);
           localStorage.setItem("password", credentials.password);
-          localStorage.setItem("expirationTimeInMin", '1');
+          localStorage.setItem("expirationTimeInMin", time_to_expire_minutes);
           localStorage.setItem(
             "expirationTime",
             (
               Date.now() +
-              parseInt('1') * 60 * 1000
+              parseInt(time_to_expire_minutes) * 60 * 1000
             ).toString()
           );
           localStorage.setItem(
