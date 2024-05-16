@@ -82,9 +82,9 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
   };
   React.useEffect(() => {
     setNewFormData({
-        dealerName: editData?.dealer || "Shushank Sharma",
+        dealerName: editData?.dealer || "",
         installerName: editData?.installer || "",
-        loanType: editData?.loan_type || "P123",
+        loanType: editData?.loan_type || "",
         dlrMu: editData?.dlr_mu?`${editData?.dlr_mu}` : "",
         dlrCost: editData?.dlr_cost?`${editData?.dlr_cost}` : "",
         startDate: editData?.start_date || "",
@@ -146,8 +146,8 @@ console.log(newFormData,"formdddd");
               dlr_cost:parseFloat( newFormData.dlrCost),
               dlr_mu:parseFloat( newFormData.dlrMu) ,
             owe_cost: parseFloat(newFormData.oweCost),
-            dealer: newFormData.dealerName || "Shushank Sharma",
-            loan_type: newFormData.loanType || "P123",
+            dealer: newFormData.dealerName || "",
+            loan_type: newFormData.loanType || "",
           })
         );
       }

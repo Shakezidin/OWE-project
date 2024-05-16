@@ -29,10 +29,10 @@ const CreateDealerTier: React.FC<dealerProps> = ({ handleClose, editMode, editDe
     const [createDealerTierData, setCreateDealerTierData] = useState<DealerTierModel>(
         {
             record_id: editDealerTier ? editDealerTier?.record_id : 0,
-            dealer_name: editDealerTier ? editDealerTier?.dealer_name : "Shushank Sharma",
+            dealer_name: editDealerTier ? editDealerTier?.dealer_name : "",
             tier: editDealerTier ? editDealerTier?.tier : "",
-            start_date: editDealerTier ? editDealerTier?.start_date : "2024-04-01",
-            end_date: editDealerTier ? editDealerTier?.end_date : "2024-04-30"
+            start_date: editDealerTier ? editDealerTier?.start_date : "",
+            end_date: editDealerTier ? editDealerTier?.end_date : ""
         }
     )
     const [newFormData, setNewFormData] = useState<any>([])
