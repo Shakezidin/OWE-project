@@ -467,7 +467,7 @@ const ProjectPerformence = () => {
 
           <div className="page-heading-container">
             <p className="page-heading">
-              {startIndex} - {endIndex} of {projectsCount} item
+              {startIndex} - {endIndex>projectsCount?projectsCount:endIndex} of {projectsCount} item
             </p>
 
             {projectStatus?.length > 0 ? (
