@@ -130,7 +130,7 @@ const CreateDealerTier: React.FC<dealerProps> = ({ handleClose, editMode, editDe
                     <CROSS_BUTTON />
                 </div>
 
-                <h3 className="createProfileText">{editMode === false ? "Dealer Tier" : "Update Dealer Tier"}</h3>
+                <h3 className="createProfileText">{editMode === false ? "Create Dealer Tier" : "Update Dealer Tier"}</h3>
 
                 <div className="modal-body">
                     <div className="createProfileInputView">

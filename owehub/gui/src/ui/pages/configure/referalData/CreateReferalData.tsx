@@ -151,7 +151,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
         </div>
 
         <h3 className="createProfileText">
-          {editMode === false ? "Dealer Credit" : "Update Dealer Credit"}
+          {editMode === false ? "Create Referal Data" : "Update Referal Data"}
         </h3>
 
         <div className="modal-body">

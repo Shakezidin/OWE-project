@@ -99,8 +99,8 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
 
         <h3 className="createProfileText">
           {!editMode
-            ? "Create Ar Adder Data Settings"
-            : "Update Ar Adder Data Settings"}
+            ? "Create Adder Data"
+            : "Update Adder Data"}
         </h3>
 
         <div className="modal-body">

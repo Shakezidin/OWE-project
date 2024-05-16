@@ -112,7 +112,7 @@ const CreatePaymentSchedule:React.FC<payScheduleProps> = ({handleClose,editMode,
 
                 </div>
              
-                    <h3 className="createProfileText">{editMode===false?"Payment Schedule":"Update Payment Schedule"}</h3>
+                    <h3 className="createProfileText">{editMode===false?"Create Payment Schedule":"Update Payment Schedule"}</h3>
                 
                   <div className="modal-body">
                   <div className="createProfileInputView">

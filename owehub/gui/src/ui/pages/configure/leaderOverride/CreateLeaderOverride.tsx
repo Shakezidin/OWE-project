@@ -152,7 +152,7 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
         </div>
 
         <h3 className="createProfileText">
-          {editMode === false ? "Leader Override" : "Update RepPay Settings"}
+          {editMode === false ? "Create Leader Override" : "Update RepPay Settings"}
         </h3>
 
         <div className="modal-body">

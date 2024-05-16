@@ -124,7 +124,7 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
         </div>
 
         <h3 className="createProfileText">
-          {editMode === false ? "Dealer Credit" : "Update Dealer Credit"}
+          {editMode === false ? "Create DLR-OTH" : "Update Dealer DLR-OTH"}
         </h3>
 
         <div className="modal-body">

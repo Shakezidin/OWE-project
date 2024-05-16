@@ -119,7 +119,7 @@ const CreateAdderCredit:React.FC<payScheduleProps> = ({handleClose,editMode, edi
  
                 </div>
              
-                    <h3 className="createProfileText">{editMode===false?"Leader Override":"Update RepPay Settings"}</h3>
+                    <h3 className="createProfileText">{editMode===false?"Create Adder Credit":"Update Adder Credit"}</h3>
                
                   <div className="modal-body">
                   <div className="createProfileInputView">

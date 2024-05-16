@@ -162,7 +162,7 @@ const CreateDealer: React.FC<dealerProps> = ({
         </div>
 
         <span className="createProfileText">
-          {editMode === false ? "Dealer Overrides" : "Update Dealer Overrides"}
+          {editMode === false ? "Create Dealer Overrides" : "Update Dealer Overrides"}
         </span>
         <div className="modal-body">
           <div className="createProfileInputView">
