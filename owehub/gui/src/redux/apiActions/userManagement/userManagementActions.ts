@@ -28,7 +28,15 @@ export const fetchUserOnboarding = createAsyncThunk(
       throw new Error("Failed to fetch onboarding data");
     }
 
-    const { usermgmt_onboarding_list } = response.data;
+    const { usermgmt_onboarding_list, active_sale_rep, inactive_sale_rep } =
+      response.data;
+    if (!usermgmt_onboarding_list || usermgmt_onboarding_list.length === 0) {
+      return {
+        usermgmt_onboarding_list: [],
+        performanceList: [],
+      };
+    }
+
     const mapList: OnboardingChartModel[] = usermgmt_onboarding_list.map(
       (el: UserOnboardingModel, index: number) => {
         return {
@@ -38,7 +46,19 @@ export const fetchUserOnboarding = createAsyncThunk(
         };
       }
     );
-    return mapList;
+    const userPerformanceList: OnboardingChartModel[] = [
+      {
+        name: "Active SaleRep",
+        value: active_sale_rep,
+        fill: "#0181ff",
+      },
+      {
+        name: "Inactive SaleRep",
+        value: Math.abs(inactive_sale_rep),
+        fill: "#fb7955",
+      },
+    ];
+    return { mapList, userPerformanceList };
   }
 );
 

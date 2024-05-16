@@ -9,6 +9,7 @@ import {
 const initialState: UserOnboardingStateModel = {
   userOnboardingList: [],
   userRoleBasedList: [],
+  userPerformanceList: [],
   dbTables: [],
   loading: false,
   error: null,
@@ -31,9 +32,15 @@ const userManagementSlice = createSlice({
       .addCase(
         fetchUserOnboarding.fulfilled,
         (state: UserOnboardingStateModel, action) => {
+          const { mapList, userPerformanceList } = action.payload;
           state.loading = false;
           state.error = null;
-          state.userOnboardingList = action.payload;
+          state.userOnboardingList =
+            mapList && mapList.length > 0 ? mapList : [];
+          state.userPerformanceList =
+            userPerformanceList && userPerformanceList.length
+              ? userPerformanceList
+              : [];
         }
       )
       .addCase(

@@ -5,38 +5,29 @@ import { OnboardingChartModel } from '../../../../core/models/api_models/UserMan
 
 interface UserPieChartProps{
   onboardingList: OnboardingChartModel[]
+  userPerformanceList: OnboardingChartModel[];
 }
-
-const data2 = [
-  {
-    name: "Inactive Sales Reps",
-    value: 300,
-    fill: "#fb7955",
-  },
-  {
-    name: "Active Sales Reps",
-    value: 700,
-    fill: "#0181ff",
-  }
-]
 
 const renderCustomizedLabelPercentage = (data: any, total = 32000) => {
   let percentageCalculated = data.value
   return `${percentageCalculated}`;
 };
 
-const UserPieChart:React.FC<UserPieChartProps> = ({ onboardingList }) => {
+const UserPieChart:React.FC<UserPieChartProps> = ({ onboardingList, userPerformanceList }) => {
   const renderLabel = useCallback((piePiece: any) => {
     return piePiece.name;
   }, []);
 
   return (
     <div className="PieChart-container" style={{display:"flex", width:'100%', gap:"1.2rem"}} >
-      <div className="pie-section" style={{width:"50%",height:"100%", background:"white", borderRadius:"16px", padding:"1rem"}} >
+      <div className="pie-section" style={{width:"50%",height:"100%", background:"white",
+       borderRadius:"16px", padding:"1rem",
+       alignItems:'center', justifyContent:'center'
+       }} >
         <div className="pieChart-section">
           <h2>Onboarding Detail</h2>
         </div>
-        <div style={{ width: "100%", height: "76%", outline: 'none'}} className="pie-chart-container">
+        <div style={{ width: "100%", height: "90%", outline: 'none' }} className="pie-chart-container">
           <ResponsiveContainer>
             <PieChart style={{ outline: 'none' }}>
               <Pie
@@ -69,22 +60,26 @@ const UserPieChart:React.FC<UserPieChartProps> = ({ onboardingList }) => {
         </div>
       </div>
 
-      <div className='pie-section' style={{width:"50%",height:"100%", background:"white", borderRadius:"16px", padding:"1rem"}}>
+      <div className="pie-section" style={{width:"50%",height:"100%", background:"white",
+       borderRadius:"16px", padding:"1rem",
+       alignItems:'center', justifyContent:'center'
+       }} >
         <div className="pieChart-section">
           <h2>Performance</h2>
         </div>
-        <div style={{ width: "100%", height: "78%" }}>
+        <div style={{ width: "100%", height: "90%" }}>
           <ResponsiveContainer>
             <PieChart  style={{outline: 'none'}}>
               <Pie
                 style={{outline: 'none'}}
                 dataKey="value"
-                data={data2}
+                data={userPerformanceList}
                 label={renderLabel}
                 cx="50%"
                 cy="50%"
                 outerRadius={"85%"}
                 nameKey="name"
+                 fontSize={12}
                 labelLine={true}
               >
                 <LabelList

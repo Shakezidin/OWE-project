@@ -42,7 +42,7 @@ const UserManagement: React.FC = () => {
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
 
   const dispatch = useAppDispatch();
-  const { loading, userOnboardingList, userRoleBasedList } =
+  const { loading, userOnboardingList, userRoleBasedList, userPerformanceList } =
     useAppSelector((state) => state.userManagement);
   const {
     formData,
@@ -224,7 +224,7 @@ const UserManagement: React.FC = () => {
         />
       )}
       <div className="barchart-section">
-        <UserPieChart onboardingList={userOnboardingList} />
+        <UserPieChart onboardingList={userOnboardingList} userPerformanceList={userPerformanceList} />
       </div>
 
       <div className="onboardrow">
