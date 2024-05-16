@@ -8,3 +8,9 @@
 .recharts-layer {
   outline: none !important;
 }
+
+.chart-view {
+  display: flex;
+  height: 350px;
+  gap: 1.2rem;
+}

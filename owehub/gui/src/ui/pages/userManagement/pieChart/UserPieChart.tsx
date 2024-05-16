@@ -18,9 +18,10 @@ const UserPieChart:React.FC<UserPieChartProps> = ({ onboardingList, userPerforma
     return piePiece.name;
   }, []);
 
+  console.log("pie chart...", onboardingList)
   return (
-    <div className="PieChart-container" style={{display:"flex", width:'100%', height:"90%", gap:"1.2rem"}} >
-      <div className="pie-section" style={{width:"50%",height:"90%", background:"white",
+    <div className='chart-view' >
+      <div className="pie-section" style={{width:"50%",height:"100%", background:"white",
        borderRadius:"16px", padding:"1rem",
        alignItems:'center', justifyContent:'center'
        }} >
@@ -60,7 +61,7 @@ const UserPieChart:React.FC<UserPieChartProps> = ({ onboardingList, userPerforma
         </div>
       </div>
 
-      <div className="pie-section" style={{width:"50%",height:"90%", background:"white",
+      <div className="pie-section" style={{width:"50%",height:"100%", background:"white",
        borderRadius:"16px", padding:"1rem",
        alignItems:'center', justifyContent:'center'
        }} >
