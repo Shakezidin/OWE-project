@@ -30,11 +30,11 @@
   background-color: white;
   cursor: not-allowed;
   border-radius: 0.25rem;
-  width: 28px;
+  width: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 28px;
+  height: 30px;
   border: 1px solid #d9d9d9;
   font-weight: 600 !important;
 }
@@ -44,9 +44,9 @@
   outline: none;
   display: flex;
   align-items: center;
-  width: 24px;
+  width: 30px;
   justify-content: center;
-  height: 24px;
+  height: 30px;
   /* padding: 6px 10px 6px 10px; */
   border-radius: 0.25rem !important;
   cursor: pointer;
@@ -68,9 +68,9 @@
   font-weight: 600 !important;
   cursor: pointer;
   align-items: center;
-  width: 24px;
+  width: 30px;
   justify-content: center;
-  height: 24px;
+  height: 30px;
   /* padding: 0rem 1rem 0rem 1rem; */
   border-radius: 2px;
 }
@@ -80,8 +80,8 @@
   outline: none;
   flex-shrink: 0;
   cursor: pointer;
-  height: 28px;
-  width: 28px;
+  height: 30px;
+  width: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
