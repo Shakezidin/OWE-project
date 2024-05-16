@@ -73,6 +73,15 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    if (name === "end_date") {
+      if (createReconcileData.start_date && value < createReconcileData.start_date) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          end_date: "End date cannot be before the start date",
+        }));
+        return;
+      }
+    }
     if (name === "amount"||name==="sys_size") {
       if (value === "" || /^\d*\.?\d*$/.test(value)) {
         setCreateReconcileData((prevData) => ({

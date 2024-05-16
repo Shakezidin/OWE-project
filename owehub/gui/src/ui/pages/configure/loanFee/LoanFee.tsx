@@ -36,6 +36,7 @@ const LoanFee = () => {
   const timelinesla_list = useAppSelector(
     (state) => state.loanFeeSlice.data
   );
+  const {dbCount} = useAppSelector((state) => state.loanFeeSlice)
 //   const loading = useAppSelector((state) => state.timelineSla.loading);
   const error = useAppSelector((state) => state.timelineSla.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
@@ -73,11 +74,11 @@ const LoanFee = () => {
   const goToPrevPage = () => {
   setCurrentPage(currentPage - 1);
   };
-  const totalPages = Math.ceil(timelinesla_list?.length / itemsPerPage);
+  const totalPages = Math.ceil(dbCount / itemsPerPage);
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
   
+  const endIndex = currentPage * itemsPerPage 
   const currentPageData = commissionList?.slice(startIndex, endIndex);
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === timelinesla_list?.length;
@@ -211,8 +212,8 @@ const LoanFee = () => {
               </tr>
             </thead>
             <tbody >
-              {currentPageData?.length > 0
-                ? currentPageData?.map((el: ILoanRow, i: number) => (
+              {timelinesla_list?.length > 0
+                ? timelinesla_list?.map((el: ILoanRow, i: number) => (
                   <tr
                     key={el.record_id}
                     className={selectedRows.has(i) ? "selected" : ""}
@@ -264,7 +265,7 @@ const LoanFee = () => {
         <div className="page-heading-container">
 
           <p className="page-heading">
-            {currentPage} - {totalPages} of {currentPageData?.length} item
+            {startIndex} - {endIndex} of {dbCount} item
           </p>
 
           {
@@ -275,7 +276,7 @@ const LoanFee = () => {
               currentPageData={currentPageData}
               goToNextPage={goToNextPage}
               goToPrevPage={goToPrevPage}
-perPage={itemsPerPage}
+             perPage={itemsPerPage}
             /> : null
           }
         </div>

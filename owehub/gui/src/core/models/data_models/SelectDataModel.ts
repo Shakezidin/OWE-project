@@ -72,7 +72,7 @@
   })) 
 
 
-  export const loanOption=(newFormData:any): Option[] => newFormData?.loan_types?.map((value:string)=>({
+  export const loanOption=(newFormData:any): Option[] => newFormData?.loan_type?.map((value:string)=>({
     value,
     label:value
   })) 

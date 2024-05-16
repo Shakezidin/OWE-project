@@ -48,30 +48,31 @@ const CreateDealer: React.FC<dealerProps> = ({
   const [createDealer, setCreateDealer] = useState<DealerModel>({
     record_id: dealerData ? dealerData?.record_id : 0,
     sub_dealer: dealerData ? dealerData?.sub_dealer : "",
-    dealer: dealerData ? dealerData?.dealer : "",
+
     pay_rate: dealerData ? dealerData?.pay_rate : "",
     start_date: dealerData ? dealerData?.start_date : "",
     end_date: dealerData ? dealerData?.end_date : "",
-    state:dealerData ? dealerData?.state : "",
+    state: dealerData ? dealerData?.state : "",
   });
+  const [delaerVal, setDealerVal] = useState(dealerData?.dealer || "");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [newFormData, setNewFormData] = useState<any>([]);
   const tableData = {
     tableNames: ["sub_dealer", "dealer", "states"],
   };
-  const userType={
-    role:"sub_dealer"
-  }
+  const userType = {
+    role: "sub_dealer",
+  };
   const getNewFormData = async () => {
     const res = await postCaller(EndPoints.get_newFormData, tableData);
     setNewFormData(res.data);
   };
   const getUser = async () => {
-    const res = await postCaller(EndPoints.get_user_by_role,userType);
+    const res = await postCaller(EndPoints.get_user_by_role, userType);
     setNewFormData(res.data);
   };
   useEffect(() => {
-    getUser()
+    getUser();
     getNewFormData();
   }, []);
 
@@ -80,12 +81,12 @@ const CreateDealer: React.FC<dealerProps> = ({
       ...prevData,
       [fieldName]: newValue ? newValue.value : "",
     }));
-    setErrors(prevErrors => ({
+    setErrors((prevErrors) => ({
       ...prevErrors,
-      [fieldName]: ''
+      [fieldName]: "",
     }));
   };
- 
+
   const getnewformData = async () => {
     const res = await postCaller(EndPoints.get_newFormData, tableData);
     setCreateDealer((prev) => ({ ...prev, ...res.data }));
@@ -96,7 +97,7 @@ const CreateDealer: React.FC<dealerProps> = ({
 
   const handleDealerInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-  
+
     if (name === "end_date") {
       if (createDealer.start_date && value < createDealer.start_date) {
         setErrors((prevErrors) => ({
@@ -106,7 +107,7 @@ const CreateDealer: React.FC<dealerProps> = ({
         return;
       }
     }
-  
+
     setCreateDealer((prevData) => ({
       ...prevData,
       [name]: value,
@@ -117,44 +118,71 @@ const CreateDealer: React.FC<dealerProps> = ({
     }));
   };
   const page = {
-    page_number:page_number,
+    page_number: page_number,
     page_size: page_size,
-
   };
   const submitDealer = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log(newFormData.sub_dealer);
+    
     const validationRules = {
-      sub_dealer: [{ condition: (value: any) => !!value, message: "Sub Dealer is required" }],
-      dealer: [{ condition: (value: any) => !!value, message: "Dealer is required" }],
-      pay_rate: [{ condition: (value: any) => !!value, message: "Pay rate is required" }],
-      state: [{ condition: (value: any) => !!value, message: "State is required" }],
-      start_date: [{ condition: (value: any) => !!value, message: "Start Date is required" }],
-      end_date: [{ condition: (value: any) => !!value, message: "End Date is required" }],
-  
+      sub_dealer: [
+        {
+          condition: (value: any) => !!value,
+          message: "Sub Dealer is required",
+        },
+      ],
+      dealer: [
+        { condition: (value: any) => !!value, message: "Dealer is required" },
+      ],
+      pay_rate: [
+        { condition: (value: any) => !!value, message: "Pay rate is required" },
+      ],
+      state: [
+        { condition: (value: any) => !!value, message: "State is required" },
+      ],
+      start_date: [
+        {
+          condition: (value: any) => !!value,
+          message: "Start Date is required",
+        },
+      ],
+      end_date: [
+        { condition: (value: any) => !!value, message: "End Date is required" },
+      ],
     };
-    const { isValid, errors } = validateConfigForm(createDealer!, validationRules);
+    const { isValid, errors } = validateConfigForm(
+      createDealer!,
+      validationRules
+    );
     if (!isValid) {
       setErrors(errors);
       return;
     }
     try {
-      dispatch(updateDealerForm(createDealer));
+      dispatch(updateDealerForm({ ...createDealer, dealer: delaerVal }));
       if (createDealer.record_id) {
-        const res = await postCaller(EndPoints.update_dealer, createDealer);
+        const res = await postCaller(EndPoints.update_dealer, {
+          ...createDealer,
+          dealer: delaerVal,
+        });
         if (res.status === 200) {
           await successSwal("", res.message);
           handleClose();
-          dispatch(fetchDealer(page))
+          dispatch(fetchDealer(page));
         } else {
           await errorSwal("", res.message);
         }
       } else {
         const { record_id, ...cleanedFormData } = createDealer;
-        const res = await postCaller(EndPoints.create_dealer, cleanedFormData);
+        const res = await postCaller(EndPoints.create_dealer, {
+          ...cleanedFormData,
+          dealer: delaerVal,
+        });
         if (res.status === 200) {
           await successSwal("", res.message);
           handleClose();
-          dispatch(fetchDealer(page))
+          dispatch(fetchDealer(page));
         } else {
           await errorSwal("", res.message);
         }
@@ -163,7 +191,6 @@ const CreateDealer: React.FC<dealerProps> = ({
       console.error("Error submitting form:", error);
     }
   };
- 
 
   return (
     <div className="transparent-model">
@@ -173,37 +200,47 @@ const CreateDealer: React.FC<dealerProps> = ({
         </div>
 
         <span className="createProfileText">
-          {editMode === false ? "Create Dealer Overrides" : "Update Dealer Overrides"}
+          {editMode === false
+            ? "Create Dealer Overrides"
+            : "Update Dealer Overrides"}
         </span>
         <div className="modal-body">
           <div className="createProfileInputView">
             <div className="createProfileTextView">
               <div className="create-input-container">
                 <div className="create-input-field">
-                  <label className="inputLabel-select select-type-label">Sub Dealer</label>
-                  <SelectOption
-                    options={subDealer}
-                    onChange={(newValue) =>
-                      handleChange(newValue, "sub_dealer")
+                  
+                  <Input
+                  label="Sub Dealer"
+                  type="text"
+                  name="sub_dealer"
+                  placeholder="Enter"
+                    onChange={(e) =>
+                      setCreateDealer({
+                        ...createDealer,
+                        sub_dealer: e.target.value,
+                      })
                     }
-                    value={
-                      subDealer?.find(
-                        (option) => option.value === createDealer.sub_dealer
-                      )
-                    }
+                    value={createDealer.sub_dealer}
                   />
-                   {errors.sub_dealer && <span className="error">{errors.sub_dealer}</span>}
+                  {errors.sub_dealer && (
+                    <span className="error">{errors.sub_dealer}</span>
+                  )}
                 </div>
                 <div className="create-input-field">
-                  <label className="inputLabel-select select-type-label">Dealer</label>
+                  <label className="inputLabel-select select-type-label">
+                    Dealer
+                  </label>
                   <SelectOption
-                    options={dealer}
-                    onChange={(newValue) => handleChange(newValue, "dealer")}
-                    value={
-                      dealer?.find(
-                        (option) => option.value === createDealer.dealer)}
+                    options={dealerOption(newFormData)}
+                    onChange={(newValue) => setDealerVal(newValue?.value!)}
+                    value={dealerOption(newFormData)?.find(
+                      (option) => option.value === delaerVal
+                    )}
                   />
-                   {errors.dealer && <span className="error">{errors.dealer}</span>}
+                  {errors.dealer && (
+                    <span className="error">{errors.dealer}</span>
+                  )}
                 </div>
                 <div className="create-input-field">
                   <Input
@@ -214,15 +251,18 @@ const CreateDealer: React.FC<dealerProps> = ({
                     placeholder={"Enter"}
                     onChange={(e) => handleDealerInputChange(e)}
                   />
-                   {errors.pay_rate && <span className="error">{errors.pay_rate}</span>}
+                  {errors.pay_rate && (
+                    <span className="error">{errors.pay_rate}</span>
+                  )}
                 </div>
-              
               </div>
               <div className="create-input-container">
-              <div className="create-input-field">
-                  <label className="inputLabel-select select-type-label">State</label>
+                <div className="create-input-field">
+                  <label className="inputLabel-select select-type-label">
+                    State
+                  </label>
                   <SelectOption
-                  menuListStyles={{height: "230px"}}
+                    menuListStyles={{ height: "230px" }}
                     options={stateOption(createDealer)}
                     onChange={(newValue) => {
                       setCreateDealer((prev) => ({
@@ -250,7 +290,9 @@ const CreateDealer: React.FC<dealerProps> = ({
                     placeholder={"Enter"}
                     onChange={(e) => handleDealerInputChange(e)}
                   />
-                   {errors.start_date && <span className="error">{errors.start_date}</span>}
+                  {errors.start_date && (
+                    <span className="error">{errors.start_date}</span>
+                  )}
                 </div>
                 <div className="create-input-field">
                   <Input
@@ -261,7 +303,9 @@ const CreateDealer: React.FC<dealerProps> = ({
                     placeholder={"Enter"}
                     onChange={(e) => handleDealerInputChange(e)}
                   />
-                   {errors.end_date && <span className="error">{errors.end_date}</span>}
+                  {errors.end_date && (
+                    <span className="error">{errors.end_date}</span>
+                  )}
                 </div>
               </div>
             </div>

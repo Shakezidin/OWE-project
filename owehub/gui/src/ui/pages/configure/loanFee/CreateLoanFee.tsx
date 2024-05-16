@@ -191,20 +191,14 @@ console.log(newFormData,"formdddd");
                     </span>
                   )}
                 </div>
-
                 <div className="create-input-field">
-                  <label className="inputLabel-select">Dealer</label>
-                  <SelectOption
-                    options={dealerOption(newFormData)}
-                    onChange={(newValue) => {
-                      setNewFormData((prev) => ({
-                        ...prev,
-                        dealerName: newValue?.value!,
-                      }));
-                    }}
-                    value={dealerOption(newFormData)?.find(
-                      (option) => option.value === newFormData.dealerName
-                    )}
+                  <Input
+                    type={"text"}
+                    label="Dealer"
+                    value={newFormData.dealerName}
+                    name="dealerName"
+                    placeholder={"Enter"}
+                    onChange={handleChange}
                   />
                   {errors?.dealerName && (
                     <span style={{ display: "block", color: "#FF204E" }}>
@@ -212,6 +206,8 @@ console.log(newFormData,"formdddd");
                     </span>
                   )}
                 </div>
+
+                
 
                 <div className="create-input-field">
                   <label className="inputLabel-select">State</label>
@@ -243,7 +239,7 @@ console.log(newFormData,"formdddd");
                     onChange={(newValue) => {
                       setNewFormData((prev) => ({
                         ...prev,
-                        dealerName: newValue?.value!,
+                        loanType: newValue?.value!,
                       }));
                     }}
                     value={loanOption(newFormData)?.find(
