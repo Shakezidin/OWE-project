@@ -16,7 +16,7 @@ AS $$
 BEGIN
     UPDATE loan_fee
     SET 
-        dealer_id = (SELECT user_id FROM user_details WHERE LOWER(name) = LOWER(p_dealer) LIMIT 1),
+        dealer_id = (SELECT id FROM v_dealer WHERE LOWER(dealer_name) = LOWER(p_dealer) LIMIT 1),
         installer = (SELECT partner_id FROM partners WHERE LOWER(partner_name) = LOWER(p_installer) LIMIT 1),
         state_id = (SELECT state_id FROM states WHERE LOWER(name) = LOWER(p_state_name) LIMIT 1),
         loan_type = (SELECT id FROM loan_type WHERE LOWER(product_code) = LOWER(p_loan_type) LIMIT 1),

@@ -8,7 +8,7 @@ interface IState {
     error: string,
     isLoading: boolean,
     isFormSubmitting:boolean
-   count:0
+   count:number
     isSuccess:number,
 }
 
@@ -46,6 +46,7 @@ const ar = createSlice({
             .addCase(createAr.fulfilled, (state) => {
                 state.isFormSubmitting = false
                 state.isSuccess=1
+                toast.success("Form submission completed")
             })
             .addCase(createAr.rejected, (state, action) => {
                 state.isFormSubmitting = false

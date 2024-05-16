@@ -9,7 +9,7 @@ interface Ipaginate {
 
 export interface IARSchedule {
     record_id:      number;
-    unique_id:      string;
+    unique_id:string;
     partner_name:   string;
     installer_name: string;
     sale_type_name: string;
@@ -25,7 +25,7 @@ export interface IARSchedule {
     end_date:       string;
 }
 interface SolarInstallation {
-    unique_id: string;
+  
     partner_name: string;
     installer_name: string;
     sale_type_name: string;

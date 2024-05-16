@@ -14,9 +14,9 @@ DECLARE
     v_state_id INT;
 BEGIN
     -- Check if the dealer exists
-    SELECT user_id INTO v_dealer_id
-    FROM user_details
-    WHERE name = p_dealer_name;
+    SELECT id INTO v_dealer_id
+    FROM v_dealer
+    WHERE dealer_name = p_dealer_name;
 
     IF v_dealer_id IS NULL THEN
         RAISE EXCEPTION 'Dealer with name % not found', p_dealer_name;

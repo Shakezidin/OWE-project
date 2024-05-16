@@ -64,10 +64,10 @@ func HandleGetDealersTierDataRequest(resp http.ResponseWriter, req *http.Request
 
 	tableName := db.TableName_dealer_tier
 	query = ` 
-	SELECT dt.id as record_id, ud.name as dealer_name, tr.tier_name as tier, dt.start_date, dt.end_date
+	SELECT dt.id as record_id, vd.dealer_name, tr.tier_name as tier, dt.start_date, dt.end_date
 	FROM dealer_tier dt
 	JOIN tier tr ON dt.tier_id = tr.id
-	JOIN user_details ud ON dt.dealer_id = ud.user_id`
+	JOIN v_dealer vd ON dt.dealer_id = vd.id`
 
 	filter, whereEleList = PrepareDealerTierFilters(tableName, dataReq, false)
 	if filter != "" {
@@ -188,7 +188,7 @@ func PrepareDealerTierFilters(tableName string, dataFilter models.DataRequestBod
 			}
 			switch column {
 			case "dealer_name":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud.name) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(vd.dealer_name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "tier":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(tr.tier_name) %s LOWER($%d)", operator, len(whereEleList)+1))
@@ -224,7 +224,7 @@ func PrepareDealerTierFilters(tableName string, dataFilter models.DataRequestBod
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY dt.id, ud.name, tr.tier_name, dt.start_date, dt.end_date")
+		filtersBuilder.WriteString(" GROUP BY dt.id, vd.dealer_name, tr.tier_name, dt.start_date, dt.end_date")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {

@@ -108,8 +108,11 @@ func HandleGetProjectMngmntRequest(resp http.ResponseWriter, req *http.Request) 
 
 		// This is thrown if no sale rep are available and also for remaining roles
 		if len(data) == 0 {
-			log.FuncErrorTrace(0, "No sale representative available")
-			FormAndSendHttpResp(resp, "", http.StatusBadRequest, nil)
+			emptyPerfomanceList := models.ProjectListResponse{
+				ProjectList: []models.ProjectResponse{},
+			}
+			log.FuncErrorTrace(0, "No projects or sale representatives: %v", err)
+			FormAndSendHttpResp(resp, "No projects or sale representatives", http.StatusOK, emptyPerfomanceList, int64(0))
 			return
 		}
 
