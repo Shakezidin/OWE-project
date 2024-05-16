@@ -244,10 +244,10 @@ const handleArchiveClick = async (record_id: any) => {
                           )
                         }
                       />
-                       {el.customer}
+                       {el.unique_id}
                     </div>
                     </td>
-                   
+                    <td>{el.customer}</td>
                     <td>{el.dealer_name}</td>
                     <td>{el.dealer_dba}</td>
                     <td>{el.exact_amount}</td>
