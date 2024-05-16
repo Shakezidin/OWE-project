@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cross_button.svg";
 import Input from "../../../components/text_input/Input";
 import { ActionButton } from "../../../components/button/ActionButton";
@@ -24,6 +24,8 @@ interface createUserProps {
   dealerList: any[];
   regionList: any[];
   selectedOption: { label?: string; value?: string };
+  tablePermissions:{},
+  setTablePermissions:Dispatch<SetStateAction<{}>>
 }
 
 const UserOnboardingCreation: React.FC<createUserProps> = ({
@@ -33,6 +35,8 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
   dealerList,
   regionList,
   selectedOption,
+  tablePermissions,
+  setTablePermissions
 }) => {
   const dispatch = useDispatch();
   const [phoneNumberError, setPhoneNumberError] = useState("");
@@ -40,8 +44,9 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
   const { loading, formData } = useAppSelector(
     (state) => state.createOnboardUser
   );
+  const [selected,setSelected] = useState<Set<number>>(new Set())
   const [selectTable, setSelectTable] = useState<boolean>(false);
-  const [tablePermissions, setTablePermissions] = useState({});
+
 
   /** handle change for role */
   const handleChange = (newValue: any, fieldName: string) => {
@@ -259,6 +264,8 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                       )}
                       {selectTable && (
                         <SelectTable
+                        selected={selected}
+                        setSelected={setSelected}
                           setSelectTable={setSelectTable}
                           setTablePermissions={setTablePermissions}
                           tablePermissions={tablePermissions}
