@@ -2,7 +2,8 @@ import { Column } from "../../../core/models/data_models/FilterSelectModel";
 
 export   const ARScheduleColumns: Column[] = [
     
-    { name: "partner", displayName: "Partner", type: "string",isCheckbox:true },
+    { name: "unique_id", displayName: "Unique ID", type: "string",isCheckbox:true },
+    { name: "partner", displayName: "Partner", type: "string",isCheckbox:false },
     { name: "installer", displayName: "Installer", type: "string",isCheckbox:false },
     { name: "sale_type", displayName: "Sale Type", type: "string",isCheckbox:false },
     { name: "state", displayName: "State", type: "string",isCheckbox:false },

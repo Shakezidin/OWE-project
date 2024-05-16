@@ -298,10 +298,10 @@ const DlrOthPay: React.FC = () => {
                             )
                           }
                         />
-                        {el.payee}
+                        {el.unique_id}
                       </div>
                     </td>
-
+                    <td>{el.payee}</td>
                     <td>{el.amount}</td>
                     <td>{el.description}</td>
                     <td>{el.balance}</td>
