@@ -116,7 +116,7 @@ func HandleGetDbLogsRequest(resp http.ResponseWriter, req *http.Request) {
 	tableName = db.TableName_Pg_Stat_Activity
 	loglist := models.DbLogListResp{}
 
-	filter, whereEleList = PrepareDbLogFilters(tableName, dataReq, adminCheck)
+	filter, whereEleList = PrepareDbLogFilters(tableName, dataReq, adminCheck, false)
 	if filter != "" {
 		queryWithFiler = query + filter
 	} else {
@@ -137,6 +137,7 @@ func HandleGetDbLogsRequest(resp http.ResponseWriter, req *http.Request) {
 		loglist.DbLogList = append(loglist.DbLogList, dbLog)
 	}
 
+	filter, whereEleList = PrepareDbLogFilters(tableName, dataReq, adminCheck, true)
 	qry := countQuery + filter
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, qry, whereEleList)
 	if err != nil {
@@ -216,7 +217,7 @@ func ConvertDate(dataReq models.DbLogReq) (string, string, error) {
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
-func PrepareDbLogFilters(tableName string, dataFilter models.DbLogReq, adminCheck bool) (filters string, whereEleList []interface{}) {
+func PrepareDbLogFilters(tableName string, dataFilter models.DbLogReq, adminCheck, countCheck bool) (filters string, whereEleList []interface{}) {
 	log.EnterFn(0, "PrepareProjectAdminDlrFilters")
 	defer func() { log.ExitFn(0, "PrepareProjectAdminDlrFilters", nil) }()
 
@@ -227,7 +228,7 @@ func PrepareDbLogFilters(tableName string, dataFilter models.DbLogReq, adminChec
 	filtersBuilder.WriteString(fmt.Sprintf("  query_start >= $%d AND query_start <= $%d", len(whereEleList)+1, len(whereEleList)+2))
 	whereEleList = append(whereEleList, dataFilter.StartDate, dataFilter.EndDate)
 
-	if !adminCheck {
+	if !adminCheck && !countCheck {
 		if !whereAdded {
 			filtersBuilder.WriteString(" WHERE ")
 		} else {
@@ -237,7 +238,7 @@ func PrepareDbLogFilters(tableName string, dataFilter models.DbLogReq, adminChec
 		whereEleList = append(whereEleList, dataFilter.Username)
 	}
 
-	if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+	if !countCheck && (dataFilter.PageNumber > 0 && dataFilter.PageSize > 0) {
 		offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
 		filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
 	}
