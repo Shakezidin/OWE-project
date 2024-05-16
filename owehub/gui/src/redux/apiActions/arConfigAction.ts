@@ -29,7 +29,8 @@ export const fetchAr = createAsyncThunk(
       const response = await postCaller("get_ar", data);
   
       const list = response.data.ar__list||[];
-      return {list,count:data.dbRecCount}
+
+      return {list,count:response.dbRecCount}
     }
   );
 
