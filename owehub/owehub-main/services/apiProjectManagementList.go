@@ -16,7 +16,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"reflect"
 )
 
 /******************************************************************************
@@ -147,41 +146,19 @@ func HandleGetPrjctMngmntListRequest(resp http.ResponseWriter, req *http.Request
 		return
 	}
 
-	projectList := models.ProjectLstsResponse{}
-
+	projectList := []string{}
 	for _, item := range data {
-		var projectData models.ProjectLstResponse
-		mapRowToStructPrjct(item, &projectData)
-		projectList.ProjectList = append(projectList.ProjectList, projectData)
+		UniqueId, ok := item["unique_id"].(string)
+		if !ok {
+			continue
+		}
+		projectList = append(projectList, UniqueId)
 	}
 
 	// Send the response
 	recordLen := len(data)
-	log.FuncInfoTrace(0, "Number of PerfomanceProjectStatus List fetched : %v list %+v", len(projectList.ProjectList), recordLen)
+	log.FuncInfoTrace(0, "Number of PerfomanceProjectStatus List fetched : %v list %+v", len(projectList), recordLen)
 	FormAndSendHttpResp(resp, "ProjectManagementStatus Data", http.StatusOK, projectList, int64(recordLen))
-}
-
-/******************************************************************************
-* FUNCTION:		mapRowToStruct
-* DESCRIPTION:     handler for to map db to struct
-* INPUT:			resp, req
-* RETURNS:    		void
-******************************************************************************/
-func mapRowToStructPrjct(item map[string]interface{}, v interface{}) {
-	val := reflect.ValueOf(v).Elem()
-	columnToField := models.ColumnToFields
-	for dbColumn, structField := range columnToField {
-		if dbValue, ok := item[dbColumn]; ok {
-			field := val.FieldByName(structField)
-			fieldValue := field.Interface()
-			switch fieldValue.(type) {
-			case string:
-				if dbValueStr, ok := dbValue.(string); ok {
-					field.SetString(dbValueStr)
-				}
-			}
-		}
-	}
 }
 
 /******************************************************************************
@@ -234,8 +211,6 @@ func PreparePrjtAdminDlrFilters(tableName string, dataFilter models.ProjectStatu
 		whereEleList = append(whereEleList, dataFilter.DealerName)
 	}
 
-	filtersBuilder.WriteString(fmt.Sprintf(" LIMIT $%d", len(whereEleList)+1))
-	whereEleList = append(whereEleList, dataFilter.ProjectLimit)
 	filters = filtersBuilder.String()
 
 	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
@@ -296,8 +271,8 @@ func PreparePrjtSaleRepFilters(tableName string, dataFilter models.ProjectStatus
 		}
 	}
 
-	filtersBuilder.WriteString(fmt.Sprintf(") AND dealer = $%d LIMIT $%d", len(whereEleList)+1, len(whereEleList)+2))
-	whereEleList = append(whereEleList, dataFilter.DealerName, dataFilter.ProjectLimit)
+	filtersBuilder.WriteString(fmt.Sprintf(") AND dealer = $%d", len(whereEleList)+1))
+	whereEleList = append(whereEleList, dataFilter.DealerName)
 	filters = filtersBuilder.String()
 
 	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
