@@ -3,6 +3,9 @@
   align-items: center;
   gap: 1rem;
 }
+.pagination-container >ul li.break a{
+  cursor: pointer;
+}
 .page-per-item {
   display: flex;
   gap: 0.5rem;
