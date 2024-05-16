@@ -12,6 +12,7 @@ import {
   oweCostOption,
   stateOption,
   loanOption,
+  dealertierOption
 } from "../../../../core/models/data_models/SelectDataModel";
 import { TierLoanFeeModel } from "../../../../core/models/configuration/create/TierLoanFeeModel";
 import SelectOption from "../../../components/selectOption/SelectOption";
@@ -126,13 +127,13 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
             <div className="createProfileTextView">
               <div className="create-input-container">
                 <div className="create-input-field">
-                  <Input
-                    type={"text"}
-                    label="Dealer Tier"
-                    value={createTier.dealer_tier}
-                    name="dealer_tier"
-                    placeholder={"Enter"}
-                    onChange={(e) => handleTierChange(e)}
+                  <label className="inputLabel-select">Dealer Tier</label>
+                  <SelectOption
+                    options={dealertierOption(newFormData)}
+                    onChange={(newValue) => handleChange(newValue, "dealer_tier")}
+                    value={dealertierOption(newFormData)?.find(
+                      (option) => option.value === createTier.dealer_tier
+                    )}
                   />
                 </div>
                 <div className="create-input-field">
