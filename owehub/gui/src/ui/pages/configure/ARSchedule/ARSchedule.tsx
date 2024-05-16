@@ -277,10 +277,10 @@ console.log(selectedRows,"rorrrrr");
                             }
                           />
 
-                          <td>{el.unique_id}</td>
+{el.partner_name}
                         </div>
                       </td>
-                      <td>{el.partner_name}</td>
+              
                       <td>{el.installer_name}</td>
                       <td>{el.sale_type_name}</td>
                       <td>{el.state_name}</td>

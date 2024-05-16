@@ -8,11 +8,13 @@ interface TierLoanState {
   tier_loan_fee_list: TierLoanFeeModel[];
   loading: boolean;
   error: string | null;
+  dbCount:number,
 }
 const initialState: TierLoanState = {
   tier_loan_fee_list: [],
   loading: false,
   error: null,
+  dbCount:0,
 };
 
 export const fetchTearLoan = createAsyncThunk(
@@ -43,6 +45,7 @@ const tearLoanSlice = createSlice({
           action.payload.data.tier_loan_fee_list
         ) {
           state.tier_loan_fee_list = action.payload.data.tier_loan_fee_list;
+          state.dbCount = action.payload.dbRecCount
         } else {
           state.tier_loan_fee_list = [];
         }

@@ -79,7 +79,7 @@ const LoanFee = () => {
   const startIndex = (currentPage - 1) * itemsPerPage + 1;
   
   const endIndex = currentPage * itemsPerPage 
-  const currentPageData = commissionList?.slice(startIndex, endIndex);
+  const currentPageData = commissionList?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === timelinesla_list?.length;
   const handleSort = (key: any) => {
@@ -212,8 +212,8 @@ const LoanFee = () => {
               </tr>
             </thead>
             <tbody >
-              {timelinesla_list?.length > 0
-                ? timelinesla_list?.map((el: ILoanRow, i: number) => (
+              {currentPageData?.length > 0
+                ? currentPageData?.map((el: ILoanRow, i: number) => (
                   <tr
                     key={el.record_id}
                     className={selectedRows.has(i) ? "selected" : ""}
