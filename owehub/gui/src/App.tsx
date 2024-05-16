@@ -139,6 +139,7 @@ function App() {
     );
   };
 
+  console.log("login isAuthenticated", isAuthenticated)
   /** other routes */
   const otherRoutes = () => {
     return (
