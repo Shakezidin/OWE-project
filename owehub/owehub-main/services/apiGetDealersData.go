@@ -64,9 +64,9 @@ func HandleGetDealersDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	tableName := db.TableName_dealer_override
 	query = `
-	SELECT dor.id as record_id, dor.sub_dealer, ud.name, dor.pay_rate, dor.start_date, dor.end_date, st.name AS state_name  
+	SELECT dor.id as record_id, dor.sub_dealer, vd.dealer_name, dor.pay_rate, dor.start_date, dor.end_date, st.name AS state_name  
 	FROM dealer_override dor
-	JOIN user_details ud ON ud.user_id = dor.dealer_id
+	JOIN v_dealer vd ON vd.id = dor.dealer_id
 	JOIN states st ON st.state_id = dor.state`
 
 	filter, whereEleList = PrepareDealerFilters(tableName, dataReq, false)
@@ -105,7 +105,7 @@ func HandleGetDealersDataRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 
 		// Dealer
-		Dealer, ok := item["name"].(string)
+		Dealer, ok := item["dealer_name"].(string)
 		if !ok || Dealer == "" {
 			log.FuncErrorTrace(0, "Failed to get dealer name for Record ID %v. Item: %+v\n", RecordId, item)
 			Dealer = ""
@@ -204,7 +204,7 @@ func PrepareDealerFilters(tableName string, dataFilter models.DataRequestBody, f
 			// Build the filter condition using correct db column name
 			switch column {
 			case "dealer":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud.name) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(vd.dealer_name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "start_date":
 				filtersBuilder.WriteString(fmt.Sprintf("dor.start_date %s $%d", operator, len(whereEleList)+1))
@@ -247,7 +247,7 @@ func PrepareDealerFilters(tableName string, dataFilter models.DataRequestBody, f
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY dor.id, dor.sub_dealer, ud.name, dor.pay_rate, dor.start_date, dor.end_date, st.name")
+		filtersBuilder.WriteString(" GROUP BY dor.id, dor.sub_dealer, vd.dealer_name, dor.pay_rate, dor.start_date, dor.end_date, st.name")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
