@@ -29,7 +29,7 @@ const CommissionForm:React.FC<formProps> = ({handleClose,handleSubmit,
       </div>
 
       <h3 className="createProfileText">
-        {editMode === false ? "Commission Rate" : "Update Commission Rate"}
+        {editMode === false ? "Create Commission Rate" : "Update Commission Rate"}
       </h3>
       <div className="modal-body">
         <div className="createProfileInputView">

@@ -143,7 +143,7 @@ const CreateNonComm: React.FC<ButtonProps> = ({
         </div>
 
         <h3 className="createProfileText">
-          {editMode === false ? "NON-Comm create" : "Update NON-Comm"}
+          {editMode === false ? "Create NON-Comm" : "Update NON-Comm"}
         </h3>
 
         <div className="modal-body">

@@ -113,8 +113,8 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
 
         <h3 className="createProfileText">
           {!editMode
-            ? "Create Install Cost Settings"
-            : "Update Install Cost Settings"}
+            ? "Create Install Cost"
+            : "Update Install Cost"}
         </h3>
 
         <div className="modal-body">

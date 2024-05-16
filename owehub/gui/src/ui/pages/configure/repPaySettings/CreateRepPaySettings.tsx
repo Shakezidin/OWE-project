@@ -142,7 +142,7 @@ useEffect(() => {
 
                 </div>
              
-                    <h3 className="createProfileText">{editMode===false?"Rep Pay Settings":"Update RepPay Settings"}</h3>
+                    <h3 className="createProfileText">{editMode===false?"Create Rep Pay":"Update RepPay"}</h3>
                 
                   <div className="modal-body">
                   <div className="createProfileInputView">

@@ -120,7 +120,7 @@ const CreateLoanType: React.FC<loanProps> = ({
         </div>
 
         <h3 className="createProfileText">
-          {editMode === false ? "Loan Type" : "Update Loan Type"}
+          {editMode === false ? "Create Loan Type" : "Update Loan Type"}
         </h3>
 
         <div className="modal-body">

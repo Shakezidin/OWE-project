@@ -154,7 +154,7 @@ const CreateMarketingFees: React.FC<marketingProps> = ({
           <CROSS_BUTTON />
         </div>
         <h3 className="createProfileText">
-          {editMode === false ? "Marketing Fees" : "Update Marketing Fees"}
+          {editMode === false ? "Create Marketing Fees" : "Update Marketing Fees"}
         </h3>
 
         <div className="modal-body">

@@ -146,8 +146,8 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
 
         <h3 className="createProfileText">
           {editMode === false
-            ? "AR Schedule Setting"
-            : "Update AR Schedule Settings"}
+            ? "Create AR Schedule"
+            : "Update AR Schedule"}
         </h3>
 
         <div className="modal-body">
