@@ -273,7 +273,6 @@ const AdderData = () => {
                         </div>
                       </td>
                       <td>{el.date}</td>
-                      <td>{el.type}</td>
                       <td>{el.gc}</td>
                       <td>{el.exact_amount}</td>
                       <td>{el.per_kw_amt}</td>
@@ -309,7 +308,7 @@ const AdderData = () => {
         </div>
         <div className="page-heading-container">
           <p className="page-heading">
-            Showing {currentPage} - {endIndex} of {count} item
+            Showing {currentPage} - {endIndex>count?count:endIndex} of {count} item
           </p>
 
           {commissionList?.length > 0 ? (

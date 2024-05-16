@@ -27,8 +27,7 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
   const [newFormData, setNewFormData] = useState({
     unique_id: editData?.unique_id || "",
     date: editData?.date || "",
-    type_ad_mktg: editData?.type_ad_mktg || "",
-    type: editData?.type || "",
+    type: editData?.type_ad_mktg || "",
     gc: editData?.gc || "",
     exact_amount: editData?.exact_amount || "",
     per_kw_amt: editData?.per_kw_amt ? `${editData?.per_kw_amt}` : "",
@@ -66,6 +65,7 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
           per_kw_amt: parseFloat(newFormData.per_kw_amt),
           exact_amount:parseInt(newFormData.exact_amount),
           rep_percent: parseFloat(newFormData.rep_percent),
+          type_ad_mktg:newFormData.type
           // sys_size: parseFloat(newFormData.sys_size),
           // adder_cal: parseFloat(newFormData.adder_cal),
         })
@@ -77,6 +77,7 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
           per_kw_amt: parseFloat(newFormData.per_kw_amt),
           exact_amount:parseInt(newFormData.exact_amount),
           rep_percent: parseFloat(newFormData.rep_percent),
+          type_ad_mktg:newFormData.type
           // sys_size: parseFloat(newFormData.sys_size),
           // adder_cal: parseFloat(newFormData.adder_cal),
         })
