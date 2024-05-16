@@ -81,6 +81,9 @@ import redcurveGraph from '../../resources/assets/perf.png'
 import rep1 from '../../resources/assets/rep1.png'
 import rep2 from '../../resources/assets/rep2.png'
 import rep3 from '../../resources/assets/rep3.png'
+import per2 from '../../resources/assets/per2.png'
+import per3 from '../../resources/assets/per3.png'
+import pmshadedgraph from '../../resources/assets/pmshadedgraph.png'
 // import browserIcon from '../../resources/assets/Cloud-upload.svg'
 // import whiteCross from '../../resources/assets/w'
 import dashboardSidebar from "../../resources/assets/sidebar-dashboard.png"
@@ -185,5 +188,8 @@ export const ICONS = {
   rep3:rep3,
   dashboardSidebar: dashboardSidebar,
   dataSidebar: dataSidebar,
-  activitySidebar: activitySidebar
+  activitySidebar: activitySidebar,
+  per3:per3,
+  per2:per2,
+  pmshadedgraph: pmshadedgraph,
 };

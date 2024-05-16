@@ -23,37 +23,38 @@ interface ReconcileCreateParams {
     end_date:string,
 }
  
-export const fetchAr = createAsyncThunk(
-    "ar/fetchar",
+export const fetchRebateData = createAsyncThunk(
+    "RebateData/fetchRebateData",
     async (data: any) => {
-      const response = await postCaller("get_ar", data);
+      const response = await postCaller("get_rebate_data", data);
   
-      const list = response.data.ar__list||[];
-      return {list,count:data.dbRecCount}
+      return response.data.data.ar_data_list
+      
     }
   );
 
+ 
 
-  export const createAr = createAsyncThunk(
-    "create/ar",
+  export const createRebateData = createAsyncThunk(
+    "create/rebatedata",
     async (params: any, { rejectWithValue,dispatch }) => {
       try {
-        const data = await postCaller("create_ar", params);
+        const data = await postCaller("create_rebate_data", params);
         if (data instanceof Error) {
           return rejectWithValue((data as Error).message);
         }
-        await dispatch(fetchAr({page_number:1,page_size:10}))
+        await dispatch(fetchRebateData({page_number:1,page_size:10}))
         return data;
       } catch (error) {
         return rejectWithValue((error as Error).message);
       }
     }
   );
-
-  export const updateAr = createAsyncThunk("update/ar",async(params:any,{rejectWithValue,dispatch})=>{
+  
+  export const updateRebateData = createAsyncThunk("update/rebatedata",async(params:any,{rejectWithValue,dispatch})=>{
     try {
-        const data = await postCaller("update_ar",params)
-        await dispatch(fetchAr({page_number:1,page_size:10}))
+        const data = await postCaller("update_rebate_data",params)
+        await dispatch(fetchRebateData({page_number:1,page_size:10}))
         return data.data
     } catch (error) {
         return rejectWithValue((error as Error).message)

@@ -75,6 +75,7 @@ const TimeLine = () => {
   const totalPages = Math.ceil(totalCount / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage+1;
+  const endIndex = currentPage * itemsPerPage 
  
   const currentPageData = timelinesla_list?.slice();
 
@@ -136,7 +137,7 @@ const TimeLine = () => {
           setSelectedRows(new Set());
           Swal.fire({
             title: 'Archived!',
-            text: 'All selected rows have been archived.',
+            text: 'The data has been archived .',
             icon: 'success',
             timer: 2000,
             showConfirmButton: false
@@ -208,6 +209,8 @@ const TimeLine = () => {
   if (loading) {
     return <div className="loader-container"><Loading/> {loading}</div>;
   }
+
+
 
   return (
     <div className="comm">
@@ -334,8 +337,8 @@ const TimeLine = () => {
         <div className="page-heading-container">
 
           <p className="page-heading">
-            {startIndex} - {totalCount} of {timelinesla_list?.length} item
-          </p>
+           Showing {startIndex} - {endIndex} of {totalCount} item
+          </p> 
 
           <Pagination
               currentPage={currentPage}
@@ -344,7 +347,7 @@ const TimeLine = () => {
               currentPageData={currentPageData}
               goToNextPage={goToNextPage}
               goToPrevPage={goToPrevPage}
-perPage={itemsPerPage}
+              perPage={itemsPerPage}
             /> 
         </div>
 : null

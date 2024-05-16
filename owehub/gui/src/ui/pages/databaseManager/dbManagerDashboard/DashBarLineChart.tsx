@@ -75,7 +75,11 @@ export default class BarChartComponent extends PureComponent {
               }}
             >
               <CartesianGrid vertical={false} />
-              <Tooltip />
+              <Tooltip
+                contentStyle={{
+                  fontSize: '13px', // Set the desired font size here
+                }}
+              />
               <XAxis
                 dataKey="name"
                 tickLine={false}

@@ -44,7 +44,7 @@ const LoanFee = () => {
   const [editedTimeLineSla, setEditedTimeLineSla] = useState<ILoanRow | null>(null);
   const itemsPerPage = 10;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
-  const currentPage = useAppSelector((state) => state.paginationType.currentPage);
+  const [currentPage,setCurrentPage] = useState(1)
   const [sortKey, setSortKey] = useState("");
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   useEffect(() => {
@@ -62,16 +62,16 @@ const LoanFee = () => {
   }
 
   const paginate = (pageNumber: number) => {
-    dispatch(setCurrentPage(pageNumber));
+    setCurrentPage(pageNumber);
   };
 
   const {data:commissionList,isLoading} = useAppSelector((state) => state.loanFeeSlice);
   const goToNextPage = () => {
-    dispatch(setCurrentPage(currentPage + 1));
+    setCurrentPage(currentPage + 1);
   };
 
   const goToPrevPage = () => {
-    dispatch(setCurrentPage(currentPage - 1));
+  setCurrentPage(currentPage - 1);
   };
   const totalPages = Math.ceil(timelinesla_list?.length / itemsPerPage);
 
@@ -126,9 +126,9 @@ const LoanFee = () => {
       const res = await postCaller("update_loan_fee_archive", newValue);
       if (res.status === HTTP_STATUS.OK) {
         dispatch(getLoanFee(pageNumber))
-        await successSwal("Archived", "All Selected rows have been archived");
+        await successSwal("Archived", "The data has been archived ");
       }else{
-        await successSwal("Archived", "All Selected rows have been archived");
+        await successSwal("Archived", "The data has been archived ");
       }
     }
   

@@ -147,9 +147,9 @@ const handleArchiveClick = async (record_id: any) => {
     const res = await postCaller("update_noncommdlrpay_archive", newValue);
     if (res.status === HTTP_STATUS.OK) {
       dispatch(getNonComm(pageNumber))
-      await successSwal("Archived", "All Selected rows have been archived");
+      await successSwal("Archived", "The data has been archived ");
     }else{
-      await successSwal("Archived", "All Selected rows have been archived");
+      await successSwal("Archived", "The data has been archived ");
     }
   }
 

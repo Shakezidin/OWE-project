@@ -31,9 +31,7 @@ const AdderData = () => {
 
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const timelinesla_list = useAppSelector(
-    (state) => state.timelineSla.timelinesla_list
-  );
+
   //   const loading = useAppSelector((state) => state.timelineSla.loading);
   const error = useAppSelector((state) => state.timelineSla.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
@@ -43,9 +41,7 @@ const AdderData = () => {
     useState<IAdderRowData | null>(null);
   const itemsPerPage = 10;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
-  const currentPage = useAppSelector(
-    (state) => state.paginationType.currentPage
-  );
+  const [currentPage, setCurrentPage] = useState(1);
   const [sortKey, setSortKey] = useState("");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   useEffect(() => {
@@ -55,33 +51,48 @@ const AdderData = () => {
     };
     dispatch(getarAdderData({ ...pageNumber }));
   }, [dispatch, currentPage]);
+  const {
+    data: commissionList,
+    isLoading,
+    count,
+    isSuccess
+  } = useAppSelector((state) => state.adderDataSlice);
+
+  useEffect(()=>{
+    if (isSuccess) {
+      const pageNumber = {
+        page_number: currentPage,
+        page_size: itemsPerPage,
+      };
+      dispatch(getarAdderData({ ...pageNumber }));
+    }
+  },[isSuccess,currentPage])
 
   const filter = () => {
     setFilterOpen(true);
   };
 
   const paginate = (pageNumber: number) => {
-    dispatch(setCurrentPage(pageNumber));
+    setCurrentPage(pageNumber);
   };
 
-  const { data: commissionList, isLoading } = useAppSelector(
-    (state) => state.adderDataSlice
-  );
+ 
   const goToNextPage = () => {
-    dispatch(setCurrentPage(currentPage + 1));
+    setCurrentPage(currentPage + 1);
   };
 
   const goToPrevPage = () => {
-    dispatch(setCurrentPage(currentPage - 1));
+    setCurrentPage(currentPage - 1);
   };
-  const totalPages = Math.ceil(timelinesla_list?.length / itemsPerPage);
+  const totalPages = Math.ceil(count / itemsPerPage);
+  console.log(count);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
 
   const currentPageData = commissionList?.slice(startIndex, endIndex);
   const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === timelinesla_list?.length;
+  const isAllRowsSelected = selectedRows.size === commissionList?.length;
   const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === "desc" ? "asc" : "desc");
@@ -146,15 +157,9 @@ const AdderData = () => {
       const res = await postCaller("update_adderdata_archive", newValue);
       if (res.status === HTTP_STATUS.OK) {
         dispatch(getarAdderData(pageNumber));
-        await successSwal(
-          "Archived",
-          "All Selected rows have been archived",
-        );
+        await successSwal("Archived", "The data has been archived ");
       } else {
-        await successSwal(
-          "Archived",
-          "All Selected rows have been archived",
-        );
+        await successSwal("Archived", "The data has been archived ");
       }
     }
   };
@@ -223,7 +228,7 @@ const AdderData = () => {
                     key={key}
                     isCheckbox={item.isCheckbox}
                     titleName={item.displayName}
-                    data={timelinesla_list}
+                    data={commissionList}
                     isAllRowsSelected={isAllRowsSelected}
                     isAnyRowSelected={isAnyRowSelected}
                     selectAllChecked={selectAllChecked}
@@ -304,19 +309,19 @@ const AdderData = () => {
         </div>
         <div className="page-heading-container">
           <p className="page-heading">
-            {currentPage} - {totalPages} of {currentPageData?.length} item
+            Showing {currentPage} - {endIndex} of {count} item
           </p>
 
-          {timelinesla_list?.length > 0 ? (
-           <Pagination
+          {commissionList?.length > 0 ? (
+            <Pagination
               currentPage={currentPage}
               totalPages={totalPages} // You need to calculate total pages
               paginate={paginate}
               currentPageData={currentPageData}
               goToNextPage={goToNextPage}
               goToPrevPage={goToPrevPage}
-perPage={itemsPerPage}
-            /> 
+              perPage={itemsPerPage}
+            />
           ) : null}
         </div>
       </div>

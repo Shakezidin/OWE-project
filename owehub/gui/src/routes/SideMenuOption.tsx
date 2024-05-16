@@ -1,4 +1,3 @@
-import colorConfig from "../config/colorConfig";
 import { ROUTES } from "./routes";
 import { CiWallet } from "react-icons/ci";
 import { BiSupport } from "react-icons/bi";
@@ -7,8 +6,7 @@ import { BsDatabaseGear } from "react-icons/bs";
 import { MdOutlinePayment } from "react-icons/md";
 import { FiServer } from "react-icons/fi";
 import { GrDocumentConfig } from "react-icons/gr";
-import { RiFileList3Line } from "react-icons/ri";
-import { TYPE_OF_USER } from "../resources/static_data/TypeOfUser";
+import { TYPE_OF_USER } from "../resources/static_data/Constant";
 import { GrDocumentPerformance } from "react-icons/gr";
 import { AiOutlineProject } from "react-icons/ai";
 import { MdOutlineSpaceDashboard } from "react-icons/md";
@@ -197,7 +195,6 @@ export const createSideMenuList = (): any[] => {
     sideMenu.push(support);
   } else {
     if (
-      role === TYPE_OF_USER.ADMIN ||
       role === TYPE_OF_USER.DEALER_OWNER ||
       role === TYPE_OF_USER.FINANCE_ADMIN ||
       role === TYPE_OF_USER.SUB_DEALER_OWNER ||
@@ -219,6 +216,9 @@ export const createSideMenuList = (): any[] => {
       sideMenu.push(performance);
       sideMenu.push(repayMenu);
       sideMenu.push(project);
+      sideMenu.push(support);
+    }else if( role === TYPE_OF_USER.DB_USER){
+      sideMenu.push(DB);
       sideMenu.push(support);
     }
   }

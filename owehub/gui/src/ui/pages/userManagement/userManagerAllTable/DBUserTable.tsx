@@ -7,7 +7,7 @@ import { UserManagementTableColumn } from "../../../../resources/static_data/Use
 import SortableHeader from "../../../components/tableHeader/SortableHeader";
 import DataNotFound from "../../../components/loader/DataNotFound";
 
-interface UserTableProps {
+interface DBUserTableProps {
   data: UserRoleBasedListModel[];
   onClickEdit: (item: UserRoleBasedListModel) => void;
   onClickDelete: (item: UserRoleBasedListModel) => void;
@@ -17,7 +17,7 @@ interface UserTableProps {
   setSelectedRows: React.Dispatch<React.SetStateAction<Set<number>>>;
   setSelectAllChecked: React.Dispatch<React.SetStateAction<boolean>>;
 }
-const UserTable: React.FC<UserTableProps> = ({
+const DBUserTable: React.FC<DBUserTableProps> = ({
   data,
   onClickDelete,
   onClickEdit,
@@ -153,7 +153,7 @@ const UserTable: React.FC<UserTableProps> = ({
                         }
                       }}
                     >
-                      <img src={ICONS.deleteIcon} alt="" style={{marginRight: "15px"}} />
+                      <img src={ICONS.deleteIcon} alt="" />
                     </div>
                   </div>
                 </td>
@@ -173,4 +173,4 @@ const UserTable: React.FC<UserTableProps> = ({
   );
 };
 
-export default UserTable;
+export default DBUserTable;

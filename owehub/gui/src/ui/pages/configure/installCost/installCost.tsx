@@ -45,8 +45,8 @@ const InstallCost = () => {
   );
   const itemsPerPage = 10;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
-  const currentPage = useAppSelector(
-    (state) => state.paginationType.currentPage
+  const [currentPage,setCurrentPage] = useState(
+  1
   );
   const [sortKey, setSortKey] = useState("");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
@@ -64,22 +64,23 @@ const InstallCost = () => {
   };
 
   const paginate = (pageNumber: number) => {
-    dispatch(setCurrentPage(pageNumber));
+    setCurrentPage(pageNumber)
   };
 
   const { data: commissionList, isLoading,dbCount } = useAppSelector(
     (state) => state.installConstSlice
   );
   const goToNextPage = () => {
-    dispatch(setCurrentPage(currentPage + 1));
+    setCurrentPage(currentPage + 1)
   };
 
   const goToPrevPage = () => {
-    dispatch(setCurrentPage(currentPage - 1));
+    setCurrentPage(currentPage - 1)
   };
   const totalPages = Math.ceil(dbCount / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage+1;
+  const endIndex = currentPage* itemsPerPage
 
   const currentPageData = timelinesla_list?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
@@ -144,12 +145,12 @@ const InstallCost = () => {
         dispatch(getInstallCost(pageNumber));
         await successSwal(
           "Archived",
-          "All Selected rows have been archived"
+          "The data has been archived "
         );
       } else {
         await successSwal(
           "Archived",
-          "All Selected rows have been archived"
+          "The data has been archived "
         );
       }
     }
@@ -161,7 +162,7 @@ const InstallCost = () => {
     handleOpen();
   };
   const fetchFunction = (req: any) => {
-    dispatch(getInstallCost(req));
+    dispatch(getInstallCost({...req,page_number:currentPage}));
   };
 
   if (error) {
@@ -201,6 +202,7 @@ console.log(timelinesla_list,"arrr");
             page_number={currentPage}
             fetchFunction={fetchFunction}
             page_size={itemsPerPage}
+            
           />
         )}
         {open && (
@@ -209,6 +211,7 @@ console.log(timelinesla_list,"arrr");
             editMode={editMode}
             handleClose={handleClose}
             setViewArchived={setViewArchived}
+            currentPage={currentPage}
           />
         )}
         <div
@@ -308,7 +311,7 @@ console.log(timelinesla_list,"arrr");
         </div>
         <div className="page-heading-container">
           <p className="page-heading">
-            {startIndex} - {dbCount} of {currentPageData?.length} item
+            {startIndex} - {endIndex} of {dbCount} item
           </p>
 
           {timelinesla_list?.length > 0 ? (

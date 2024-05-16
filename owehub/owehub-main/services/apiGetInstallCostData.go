@@ -207,7 +207,7 @@ func PrepareInstallCostFilters(tableName string, dataFilter models.DataRequestBo
 		filtersBuilder.WriteString("ic.is_archived = FALSE")
 	}
 
-	if forDataCount == true {
+	if forDataCount {
 		filtersBuilder.WriteString(" GROUP BY ic.id, ic.cost,ic.start_date, ic.end_date")
 	} else {
 		// Add pagination logic

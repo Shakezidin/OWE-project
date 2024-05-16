@@ -32,11 +32,11 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
   const dispatch = useDispatch();
   const [createTimeLine, setCreateTimeLine] = useState<TimeLineSlaModel>({
     record_id: timeLineSlaData ? timeLineSlaData?.record_id : 0,
-    type_m2m: timeLineSlaData ? timeLineSlaData?.type_m2m : "YourTypeM2MValue2",
-    state: timeLineSlaData ? timeLineSlaData?.state : "Alabama",
-    days: timeLineSlaData ? timeLineSlaData?.days : "10",
-    start_date: timeLineSlaData ? timeLineSlaData?.start_date : "2024-04-01",
-    end_date: timeLineSlaData ? timeLineSlaData?.end_date : "2024-04-10",
+    type_m2m: timeLineSlaData ? timeLineSlaData?.type_m2m : "",
+    state: timeLineSlaData ? timeLineSlaData?.state : "",
+    days: timeLineSlaData ? timeLineSlaData?.days : "",
+    start_date: timeLineSlaData ? timeLineSlaData?.start_date : "",
+    end_date: timeLineSlaData ? timeLineSlaData?.end_date : "",
   });
   const [errors, setErrors] = useState<IError>({} as IError);
   const [newFormData, setNewFormData] = useState<any>([]);
