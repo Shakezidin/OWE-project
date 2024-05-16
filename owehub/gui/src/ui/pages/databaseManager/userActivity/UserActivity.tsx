@@ -1,23 +1,21 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "../../configure/configure.css";
 import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
 import { FaArrowDown } from "react-icons/fa6";
-import Pagination from "../../../components/pagination/Pagination";
 import { fetchDBManagerUserActivity } from "../../../../redux/apiActions/DBManagerAction/DBManagerAction";
 import { getCurrentDateFormatted } from "../../../../utiles/formatDate";
 import { DBManagerUserActivityModel } from "../../../../core/models/api_models/DBManagerModel";
 import DataNotFound from "../../../components/loader/DataNotFound";
+import Pagination from "../../../components/pagination/Pagination";
 
 const UserActivity: React.FC = () => {
   const dispatch = useAppDispatch();
   const { loading, error, userActivityList, totalCount } = useAppSelector(
     (state) => state.dbManager
   );
-  const currentPage = useAppSelector(
-    (state) => state.paginationType.currentPage
-  );
+  const [currentPage,setCurrentPage] = useState(1)
   const itemsPerPage = 10;
 
   useEffect(() => {
@@ -31,15 +29,15 @@ const UserActivity: React.FC = () => {
   }, [dispatch, currentPage]);
 
   const paginate = (pageNumber: number) => {
-    dispatch(setCurrentPage(pageNumber));
+    setCurrentPage(pageNumber);
   };
 
   const goToNextPage = () => {
-    dispatch(setCurrentPage(currentPage + 1));
+    setCurrentPage(currentPage + 1);
   };
 
   const goToPrevPage = () => {
-    dispatch(setCurrentPage(currentPage - 1));
+    setCurrentPage(currentPage - 1);
   };
 
   const filter = () => {};
@@ -53,8 +51,9 @@ const UserActivity: React.FC = () => {
   // }
 
   const totalPages = Math.ceil(totalCount / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
+  const startIndex =  (currentPage-1)* itemsPerPage+1
+  const endIndex =  currentPage* itemsPerPage
+ 
 
   return (
     <div className="comm">
@@ -134,23 +133,23 @@ const UserActivity: React.FC = () => {
           </table>
         </div>
 
-        <div >
-          {userActivityList && userActivityList?.length > 0 ? (
-            <div className="page-heading-container">
-              <p className="page-heading">
-                {startIndex} - {userActivityList?.length} of {totalCount} item
-              </p>
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages} // You need to calculate total pages
-                paginate={paginate}
-                currentPageData={userActivityList.slice(startIndex, endIndex)}
-                goToNextPage={goToNextPage}
-                goToPrevPage={goToPrevPage}
-                perPage={itemsPerPage}
-              />
-            </div>
-          ) : null}
+        <div className="page-heading-container">
+      
+      <p className="page-heading">
+       {startIndex} - {endIndex} of {totalCount} item
+      </p>
+ 
+   {
+             userActivityList &&  userActivityList?.length > 0 ? <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages} // You need to calculate total pages
+              paginate={paginate}
+              currentPageData={userActivityList.slice(startIndex, endIndex)}
+              goToNextPage={goToNextPage}
+              goToPrevPage={goToPrevPage}
+             perPage={itemsPerPage}
+            />  : null
+  }
         </div>
       </div>
     </div>

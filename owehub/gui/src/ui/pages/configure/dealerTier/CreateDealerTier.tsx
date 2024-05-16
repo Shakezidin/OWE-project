@@ -7,7 +7,7 @@ import { updateDealerTierForm } from "../../../../redux/apiSlice/configSlice/con
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
 import { useDispatch } from "react-redux";
-import { dealertierOption } from "../../../../core/models/data_models/SelectDataModel";
+import { dealertierOption, dealerOption } from "../../../../core/models/data_models/SelectDataModel";
 
 
 import { DealerTierModel } from "../../../../core/models/configuration/create/DealerTierModel";
@@ -38,7 +38,7 @@ const CreateDealerTier: React.FC<dealerProps> = ({ handleClose, editMode, editDe
     const [newFormData, setNewFormData] = useState<any>([])
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
     const tableData = {
-        tableNames: ["tier"]
+        tableNames: ["tier", "dealer"]
     }
     const getNewFormData = async () => {
         const res = await postCaller(EndPoints.get_newFormData, tableData)
@@ -122,6 +122,8 @@ const CreateDealerTier: React.FC<dealerProps> = ({ handleClose, editMode, editDe
             console.error('Error submitting form:', error);
         }
     };
+
+    console.log(createDealerTierData, "ffjk")
     return (
         <div className="transparent-model">
             <form onSubmit={(e) => submitTierLoan(e)} className="modal">
@@ -130,14 +132,23 @@ const CreateDealerTier: React.FC<dealerProps> = ({ handleClose, editMode, editDe
                     <CROSS_BUTTON />
                 </div>
 
-                <h3 className="createProfileText">{editMode === false ? "Dealer Tier" : "Update Dealer Tier"}</h3>
+                <h3 className="createProfileText">{editMode === false ? "Create Dealer Tier" : "Update Dealer Tier"}</h3>
 
                 <div className="modal-body">
                     <div className="createProfileInputView">
                         <div className="createProfileTextView">
                             <div className="create-input-container">
+                                 
                                 <div className="create-input-field">
-                                    <Input
+                                    <label className="inputLabel-select">Dealer Name</label>
+                                    <SelectOption
+                                        options={dealerOption(newFormData)}
+                                        onChange={(newValue) => handleChange(newValue, 'dealer_name')}
+                                        value={dealerOption(newFormData)?.find((option) => option.value === createDealerTierData.dealer_name)}
+                                    />
+                                             {errors.dealer_name && <span className="error">{errors.dealer_name}</span>}
+                                </div>
+                                    {/* <Input
                                         type={"text"}
                                         label="Dealer Name"
                                         value={createDealerTierData.dealer_name}
@@ -145,8 +156,8 @@ const CreateDealerTier: React.FC<dealerProps> = ({ handleClose, editMode, editDe
                                         placeholder={"Enter"}
                                         onChange={(e) => handleTierChange(e)}
                                     />
-                                    {errors.dealer_name && <span className="error">{errors.dealer_name}</span>}
-                                </div>
+                                    {errors.dealer_name && <span className="error">{errors.dealer_name}</span>} */}
+                                
                                 <div className="create-input-field">
                                     <label className="inputLabel-select">Tier</label>
                                     <SelectOption

@@ -102,7 +102,7 @@ const CreateTierLoan:React.FC<tierLoanProps> = ({handleClose,tierEditedData,edit
 
         </div>
       
-          <h3 className="createProfileText">{editMode===false?"Tier Loan Fee":"Update Tier Loan Fee"}</h3>
+          <h3 className="createProfileText">{editMode===false?"Create Tier Loan Fee":"Update Tier Loan Fee"}</h3>
         
           <div className="modal-body">
           <div className="createProfileInputView">

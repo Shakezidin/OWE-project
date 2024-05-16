@@ -6,7 +6,7 @@ import {
 import { toast } from "react-toastify";
 
 interface IState {
-  option: [];
+  option: {table_name:string}[];
   error: string;
   isLoading: boolean;
   isFormSubmitting: boolean;
@@ -50,7 +50,7 @@ const dataTableSlice = createSlice({
       })
       .addCase(getAnyTableData.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.tableData = action.payload.tableData;
+        state.tableData = action.payload.tableData || [] ;
         state.dbCount = action.payload.count
       })
       .addCase(getAnyTableData.rejected, (state, action) => {

@@ -41,6 +41,7 @@ const DealerTier = () => {
   const dealerTierList = useAppSelector(
     (state) => state.dealerTier.dealers_tier_list
   );
+  const dbCount =  useAppSelector((state) => state.dealerTier.dbCount)
   const loading = useAppSelector((state) => state.dealerTier.loading);
   const error = useAppSelector((state) => state.dealerTier.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
@@ -83,10 +84,11 @@ const DealerTier = () => {
   const goToPrevPage = () => {
     setCurrentPage(currentPage - 1);
   };
-  const totalPages = Math.ceil(dealerTierList?.length / itemsPerPage);
+  const totalPages = Math.ceil(dbCount / itemsPerPage);
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
+  
+  const endIndex = currentPage * itemsPerPage 
   const handleEditDealerTier = (editDealerTier: DealerTierModel) => {
     setEditMode(true);
     setEditedDealerTier(editDealerTier);
@@ -256,8 +258,8 @@ const DealerTier = () => {
               </tr>
             </thead>
             <tbody>
-              {currentPageData?.length > 0
-                ? currentPageData?.map((el: any, i: any) => (
+              {dealerTierList?.length > 0
+                ? dealerTierList?.map((el: any, i: any) => (
                     <tr key={i}>
                    
                       <td style={{ fontWeight: "500", color: "black" }}>
@@ -316,7 +318,7 @@ const DealerTier = () => {
         <div className="page-heading-container">
       
       <p className="page-heading">
-       {currentPage} - {totalPages} of {currentPageData?.length} item
+       {startIndex} - {endIndex} of {dbCount} item
       </p>
   <Pagination
               currentPage={currentPage}
@@ -325,7 +327,7 @@ const DealerTier = () => {
               currentPageData={currentPageData}
               goToNextPage={goToNextPage}
               goToPrevPage={goToPrevPage}
-perPage={itemsPerPage}
+       perPage={itemsPerPage}
             />  
    </div>
    : null
