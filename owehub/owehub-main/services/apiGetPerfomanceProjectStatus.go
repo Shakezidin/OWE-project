@@ -41,8 +41,8 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		SiteD              string
 		InstallD           string
 		rgnSalesMgrCheck   bool
-		RecordCount int64
-		SaleRepList []interface{}
+		RecordCount        int64
+		SaleRepList        []interface{}
 	)
 
 	log.EnterFn(0, "HandleGetPerfomanceProjectStatusRequest")
@@ -80,9 +80,6 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
 		return
 	}
-
-	// this sets the response limit
-	dataReq.ProjectLimit = 100
 	// this sets the data interval bracket for querying
 	dataReq.IntervalDays = "90"
 	// Check whether the user is Admin, Dealer, Sales Rep
@@ -100,17 +97,24 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		switch role {
 		case "Admin":
 			filter, whereEleList = PrepareAdminDlrFilters(tableName, dataReq, true, false)
+			break
 		case "Dealer Owner":
 			dataReq.DealerName = name
 			filter, whereEleList = PrepareAdminDlrFilters(tableName, dataReq, false, false)
+			break
 		case "Sale Representative":
 			SaleRepList = append(SaleRepList, name)
 			dataReq.DealerName = dealerName
 			filter, whereEleList = PrepareSaleRepFilters(tableName, dataReq, SaleRepList)
+			break
 		// this is for the roles regional manager and sales manager
 		default:
 			rgnSalesMgrCheck = true
 		}
+	} else {
+		log.FuncErrorTrace(0, "Failed to get PerfomanceProjectStatus data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get PerfomanceProjectStatus data", http.StatusBadRequest, nil)
+		return
 	}
 
 	if rgnSalesMgrCheck {
@@ -118,8 +122,11 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 
 		// This is thrown if no sale rep are available and for other user roles
 		if len(data) == 0 {
-			log.FuncErrorTrace(0, "No sale representative available under user: %v", err)
-			FormAndSendHttpResp(resp, "No sale representativer", http.StatusBadRequest, nil)
+			emptyPerfomanceList := models.PerfomanceListResponse {
+				PerfomanceList: []models.PerfomanceResponse{},
+			}
+			log.FuncErrorTrace(0, "No projects or sale representatives: %v", err)
+			FormAndSendHttpResp(resp, "No projects or sale representatives", http.StatusOK, emptyPerfomanceList, int64(len(data)))
 			return
 		}
 
@@ -145,14 +152,24 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
 		return
 	}
+
+	// retrieving value from owe_db from here
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get PerfomanceProjectStatus data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get PerfomanceProjectStatus data from DB", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Failed to get PerfomanceProjectStatus data", http.StatusBadRequest, nil)
 		return
 	}
 
 	RecordCount = int64(len(data))
+	if RecordCount == 0 {
+		log.FuncInfoTrace(0, "No projects found")
+		emptyPerfomanceList := models.PerfomanceListResponse{
+			PerfomanceList: []models.PerfomanceResponse{},
+		}
+		FormAndSendHttpResp(resp, "No projects found", http.StatusOK, emptyPerfomanceList, RecordCount)
+		return
+	}
 
 	// response after paginating the total response
 	paginateData := PaginateData(data, dataReq)
@@ -225,6 +242,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		}
 		perfomanceList.PerfomanceList = append(perfomanceList.PerfomanceList, perfomanceResponse)
 	}
+
 	log.FuncInfoTrace(0, "Number of PerfomanceProjectStatus List fetched : %v list %+v", len(perfomanceList.PerfomanceList), perfomanceList)
 	FormAndSendHttpResp(resp, "PerfomanceProjectStatus Data", http.StatusOK, perfomanceList, RecordCount)
 }
