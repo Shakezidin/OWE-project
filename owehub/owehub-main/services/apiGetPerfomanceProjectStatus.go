@@ -80,9 +80,6 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		FormAndSendHttpResp(resp, "No user exist", http.StatusBadRequest, nil)
 		return
 	}
-
-	// this sets the response limit
-	dataReq.ProjectLimit = 100
 	// this sets the data interval bracket for querying
 	dataReq.IntervalDays = "90"
 	// Check whether the user is Admin, Dealer, Sales Rep
@@ -114,6 +111,10 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		default:
 			rgnSalesMgrCheck = true
 		}
+	} else {
+		log.FuncErrorTrace(0, "Failed to get PerfomanceProjectStatus data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get PerfomanceProjectStatus data", http.StatusBadRequest, nil)
+		return
 	}
 
 	if rgnSalesMgrCheck {
@@ -121,11 +122,11 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 
 		// This is thrown if no sale rep are available and for other user roles
 		if len(data) == 0 {
-			emptyPerfomanceList := models.PerfomanceListResponse{
+			emptyPerfomanceList := models.PerfomanceListResponse {
 				PerfomanceList: []models.PerfomanceResponse{},
 			}
-			log.FuncErrorTrace(0, "No sale representative : %v", err)
-			FormAndSendHttpResp(resp, "No sale representatives", http.StatusOK, emptyPerfomanceList, int64(len(data)))
+			log.FuncErrorTrace(0, "No projects or sale representatives: %v", err)
+			FormAndSendHttpResp(resp, "No projects or sale representatives", http.StatusOK, emptyPerfomanceList, int64(len(data)))
 			return
 		}
 
@@ -156,7 +157,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get PerfomanceProjectStatus data from DB err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to get PerfomanceProjectStatus data from DB", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Failed to get PerfomanceProjectStatus data", http.StatusBadRequest, nil)
 		return
 	}
 

@@ -130,7 +130,7 @@ func HandleGetPerfomanceSalesRequest(resp http.ResponseWriter, req *http.Request
 		data, err = db.ReteriveFromDB(db.RowDataDBIndex, queryWithFiler, whereEleList)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get perfomance sales from DB for %v err: %v", date, err)
-			FormAndSendHttpResp(resp, "Failed to get perfomance sales from DB for %v", http.StatusBadRequest, date)
+			FormAndSendHttpResp(resp, "Failed to get perfomance sales %v", http.StatusBadRequest, date)
 			return
 		}
 		allDatas[date] = data
