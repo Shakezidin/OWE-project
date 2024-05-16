@@ -41,6 +41,12 @@ func HandleGetPerfomanceSalesRequest(resp http.ResponseWriter, req *http.Request
 	log.EnterFn(0, "HandleGetPerfomanceSalesRequest")
 	defer func() { log.ExitFn(0, "HandleGetPerfomanceSalesRequest", err) }()
 
+	perfomanceData := models.PerfomanceMetricsResp{}
+	// this will give zero value and will be modified once the rep pay calculations are done
+	perfomanceData.PerfomanceCommissionMetrics.CancellationPeriod = 0
+	perfomanceData.PerfomanceCommissionMetrics.InstallationPeriod = 0
+	perfomanceData.PerfomanceCommissionMetrics.SalesPeriod = 0
+
 	query = `
 	SELECT SUM(system_size) AS sales_kw, COUNT(system_size) AS sales  FROM sales_metrics_schema`
 
@@ -68,13 +74,16 @@ func HandleGetPerfomanceSalesRequest(resp http.ResponseWriter, req *http.Request
 		switch role {
 		case "Admin":
 			filter, whereEleList = PreparePerfomanceAdminDlrFilters(tableName, dataReq, true)
+			break
 		case "Dealer Owner":
 			dataReq.DealerName = name
 			filter, whereEleList = PreparePerfomanceAdminDlrFilters(tableName, dataReq, false)
+			break
 		case "Sale Representative":
 			SaleRepList = append(SaleRepList, name)
 			dataReq.DealerName = dealerName
 			filter, whereEleList = PrepareSaleRepPerfFilters(tableName, dataReq, SaleRepList)
+			break
 		// this is for regional manager and sales manager
 		default:
 			rgnSalesMgrCheck = true
@@ -86,8 +95,13 @@ func HandleGetPerfomanceSalesRequest(resp http.ResponseWriter, req *http.Request
 
 		// This is thrown if no sale rep are available and for other user roles
 		if len(data) == 0 {
+			perfomanceData.PerfomanceSalesMetrics = append(perfomanceData.PerfomanceSalesMetrics, models.PerfomanceSales{
+				Type:    "",
+				Sales:   0,
+				SalesKw: 0,
+			})
 			log.FuncErrorTrace(0, "No sale representative available %v", err)
-			FormAndSendHttpResp(resp, "No sale representative", http.StatusBadRequest, nil)
+			FormAndSendHttpResp(resp, "No sale representatives", http.StatusOK, perfomanceData)
 			return
 		}
 
@@ -122,7 +136,6 @@ func HandleGetPerfomanceSalesRequest(resp http.ResponseWriter, req *http.Request
 		allDatas[date] = data
 	}
 
-	perfomanceData := models.PerfomanceMetricsResp{}
 	for date, data := range allDatas {
 		Sales, ok := data[0]["sales"].(int64)
 		if !ok {
@@ -141,11 +154,6 @@ func HandleGetPerfomanceSalesRequest(resp http.ResponseWriter, req *http.Request
 			SalesKw: SalesKw,
 		})
 	}
-
-	// this will give zero value and will be modified once the rep pay calculations are done
-	perfomanceData.PerfomanceCommissionMetrics.CancellationPeriod = 0
-	perfomanceData.PerfomanceCommissionMetrics.InstallationPeriod = 0
-	perfomanceData.PerfomanceCommissionMetrics.SalesPeriod = 0
 
 	log.FuncInfoTrace(0, "total perfomance report list %+v", len(perfomanceData.PerfomanceSalesMetrics))
 	FormAndSendHttpResp(resp, "perfomance report", http.StatusOK, perfomanceData)
