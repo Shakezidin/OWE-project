@@ -19,8 +19,8 @@ const UserPieChart:React.FC<UserPieChartProps> = ({ onboardingList, userPerforma
   }, []);
 
   return (
-    <div className="PieChart-container" style={{display:"flex", width:'100%', gap:"1.2rem"}} >
-      <div className="pie-section" style={{width:"50%",height:"100%", background:"white",
+    <div className="PieChart-container" style={{display:"flex", width:'100%', height:"90%", gap:"1.2rem"}} >
+      <div className="pie-section" style={{width:"50%",height:"90%", background:"white",
        borderRadius:"16px", padding:"1rem",
        alignItems:'center', justifyContent:'center'
        }} >
@@ -36,7 +36,7 @@ const UserPieChart:React.FC<UserPieChartProps> = ({ onboardingList, userPerforma
                 data={onboardingList}
                 label={renderLabel}
                 cx="50%"
-                cy="49%"
+                cy="50%"
                 outerRadius={"85%"}
                 nameKey="name"
                 fontSize={12}
@@ -60,7 +60,7 @@ const UserPieChart:React.FC<UserPieChartProps> = ({ onboardingList, userPerforma
         </div>
       </div>
 
-      <div className="pie-section" style={{width:"50%",height:"100%", background:"white",
+      <div className="pie-section" style={{width:"50%",height:"90%", background:"white",
        borderRadius:"16px", padding:"1rem",
        alignItems:'center', justifyContent:'center'
        }} >
@@ -75,8 +75,8 @@ const UserPieChart:React.FC<UserPieChartProps> = ({ onboardingList, userPerforma
                 dataKey="value"
                 data={userPerformanceList}
                 label={renderLabel}
-                cx="50%"
-                cy="50%"
+                cx="49%"
+                cy="51%"
                 outerRadius={"85%"}
                 nameKey="name"
                  fontSize={12}
@@ -88,9 +88,10 @@ const UserPieChart:React.FC<UserPieChartProps> = ({ onboardingList, userPerforma
                   dataKey={renderCustomizedLabelPercentage}
                   position="inside"
                   fontSize={12}
-                  angle={45}
+                  angle={0}
                   stroke="none"
                   className="label-percentage"
+                  offset={-30}
                 />
               </Pie>
             </PieChart>
