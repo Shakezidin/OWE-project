@@ -100,6 +100,15 @@ console.log(newFormData,"formdddd");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.target;
+    if (name === "endDate") {
+      if (newFormData.startDate && value < newFormData.startDate) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          endDate: "End date cannot be before the start date",
+        }));
+        return;
+      }
+    }
     if (name === "oweCost") {
       if (value === "" || value === "0" || Number(value)) {
         setNewFormData((prev) => ({ ...prev, [name]: value }));
