@@ -21,6 +21,13 @@
   font-weight: 500;
   width: 110px;
   margin-right: 10px;
+  cursor: pointer;
+  color: #222222;
+}
+
+.install-update:hover {
+  text-decoration: underline;
+  color: rgb(0, 141, 218);
 }
 .performance-project-name {
   font-size: 12px;

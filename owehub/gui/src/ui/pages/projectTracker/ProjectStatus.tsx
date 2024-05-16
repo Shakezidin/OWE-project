@@ -8,6 +8,7 @@ import Breadcrumb from "../../components/breadcrumb/Breadcrumb";
 import SelectOption from "../../components/selectOption/SelectOption";
 import { ICONS } from "../../icons/Icons";
 import { FaCheck } from "react-icons/fa6";
+import { useLocation } from "react-router-dom";
 import {
   LineChart,
   Line,
@@ -63,6 +64,8 @@ const ProjectStatus = () => {
   const { projects, projectDetail,isLoading } = useAppSelector(
     (state) => state.projectManagement
   );
+  const location = useLocation(); // Use the useLocation hook to get the current URL
+  const projectId = new URLSearchParams(location.search).get('project_id');
 
   const getStatus = (arr:string[]) =>{
     return arr.every((item)=>projectDetail[item as keyof typeof projectDetail])
@@ -475,12 +478,19 @@ const ProjectStatus = () => {
   }, [activePopups]);
 
   useEffect(() => {
-    if (projectOption.length) {
-      const val = {label:projectOption[0]?.value,value:projectOption[0]?.value}
+    if (projectId) {
+      const opt = { label: projectId, value: projectId };
+      setSelectedProject(opt);
+    } else if (projectOption.length) {
+      const val = { label: projectOption[0]?.value, value: projectOption[0]?.value };
       setSelectedProject(val);
       dispatch(getProjectDetail(projectOption[0]?.value));
     }
-  }, [projectOption.length]);
+  }, [projectOption.length, projectId, dispatch]);
+
+  useEffect(() => {
+    dispatch(getProjectDetail(selectedProject.value))
+  }, [selectedProject.value])
 
   return (
     <div className="">
@@ -508,7 +518,7 @@ const ProjectStatus = () => {
                   if (val) {
                     
                     setSelectedProject(val)
-                    dispatch(getProjectDetail(val.value))
+                    // dispatch(getProjectDetail(val.value))
                   }
 
 

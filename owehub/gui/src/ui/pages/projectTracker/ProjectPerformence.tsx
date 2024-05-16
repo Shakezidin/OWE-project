@@ -231,9 +231,11 @@ const ProjectPerformence = () => {
                         <tr key={index}>
                           <td style={{ padding: "0px" }}>
                             <div className="milestone-data">
+                            <a href ={`/project-management?project_id=${project.unqiue_id}`}>
                               <p className="install-update">
                                 {project.unqiue_id}
                               </p>
+                              </a>
                               <div
                                 className="milestone-strips"
                                 style={getColorStyle(project.contract_date)}
