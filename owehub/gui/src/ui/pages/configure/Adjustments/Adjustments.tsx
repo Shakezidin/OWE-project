@@ -307,7 +307,7 @@ const Adjustments = () => {
                     </td>
 
                     <td>
-                      {!viewArchived && (
+                      {(!viewArchived && selectedRows.size<2)&& (
                         <div className="action-icon">
                           <div
                             className=""
