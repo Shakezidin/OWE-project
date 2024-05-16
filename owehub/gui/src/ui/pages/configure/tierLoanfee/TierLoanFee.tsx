@@ -30,6 +30,8 @@ const TierLoanFee = () => {
   const tierloanList = useAppSelector(
     (state) => state.tierLoan.tier_loan_fee_list
   );
+
+  const {dbCount } = useAppSelector((state) => state.tierLoan)
   const loading = useAppSelector((state) => state.tierLoan.loading);
   const error = useAppSelector((state) => state.tierLoan.error);
   const [open, setOpen] = React.useState<boolean>(false);
@@ -45,7 +47,7 @@ const TierLoanFee = () => {
   const [sortKey, setSortKey] =  useState("");
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const itemsPerPage = 10;
-  const currentPage = useAppSelector((state) => state.paginationType.currentPage);
+  const [currentPage,setCurrentPage] = useState(1)
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -73,21 +75,22 @@ const TierLoanFee = () => {
     handleOpen()
   };
   const paginate = (pageNumber: number) => {
-    dispatch(setCurrentPage(pageNumber));
+    setCurrentPage(pageNumber);
   };
 
   const goToNextPage = () => {
-    dispatch(setCurrentPage(currentPage + 1));
+    setCurrentPage(currentPage + 1);
   };
 
   const goToPrevPage = () => {
-    dispatch(setCurrentPage(currentPage - 1));
+    setCurrentPage(currentPage - 1);
   };
-  const totalPages = Math.ceil(tierloanList?.length / itemsPerPage);
+  const totalPages = Math.ceil(dbCount / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
+  
+  const endIndex = currentPage * itemsPerPage 
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentPageData = tierloanList?.slice(startIndex, endIndex);
+  const currentPageData = tierloanList?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === tierloanList.length;
   const handleSort = (key:any) => {
@@ -324,10 +327,10 @@ const TierLoanFee = () => {
         <div className="page-heading-container">
       
       <p className="page-heading">
-       {currentPage} - {totalPages} of {currentPageData?.length} item
+       {startIndex} - {endIndex} of {dbCount} item
       </p>
  
-   <Pagination
+             <Pagination
               currentPage={currentPage}
               totalPages={totalPages} // You need to calculate total pages
               paginate={paginate}

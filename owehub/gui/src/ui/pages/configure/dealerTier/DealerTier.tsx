@@ -96,7 +96,7 @@ const DealerTier = () => {
   };
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === dealerTierList.length;
-  const currentPageData = dealerTierList?.slice(startIndex, endIndex);
+  const currentPageData = dealerTierList?.slice();
   const handleSort = (key:any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
@@ -258,8 +258,8 @@ const DealerTier = () => {
               </tr>
             </thead>
             <tbody>
-              {dealerTierList?.length > 0
-                ? dealerTierList?.map((el: any, i: any) => (
+              {currentPageData?.length > 0
+                ? currentPageData?.map((el: any, i: any) => (
                     <tr key={i}>
                    
                       <td style={{ fontWeight: "500", color: "black" }}>
