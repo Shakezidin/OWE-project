@@ -41,18 +41,16 @@ const FilterModal: React.FC<TableProps> = ({
     fetchFunction,
 }) => {
     const dispatch = useAppDispatch();
-    const [filters, setFilters] = useState<FilterModel[]>(() => {
-        const savedFilters = localStorage.getItem("filters");
-        return savedFilters ? JSON.parse(savedFilters) : [{ Column: "", Operation: "", Data: "" }];
-    });
+    const [filters, setFilters] = useState<FilterModel[]>(
+        
+          [{ Column: "", Operation: "", Data: "" }]
+    );
     const [errors, setErrors] = useState<ErrorState>({});
     const options: Option[] = columns.map((column) => ({
         value: column.name,
         label: column.displayName,
     }));
-    useEffect(() => {
-        localStorage.setItem("filters", JSON.stringify(filters));
-    }, [filters]);
+   
     const handleAddRow = () => {
         setFilters([...filters, { Column: "", Operation: "", Data: "" }]);
         setErrors({});
