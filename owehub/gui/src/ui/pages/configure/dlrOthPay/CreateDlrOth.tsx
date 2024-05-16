@@ -79,6 +79,15 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    if (name === "end_date") {
+      if (createCommission.start_date && value < createCommission.start_date) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          end_date: "End date cannot be before the start date",
+        }));
+        return;
+      }
+    }
     if (name === "balance" || name === "paid_amount") {
       if (value === "" || value === "0" || Number(value)) {
         setCreateCommission((prev) => ({ ...prev, [name]: value }));
@@ -96,7 +105,7 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
           ...createCommission,
           balance: parseFloat(createCommission.balance),
           paid_amount: parseFloat(createCommission.paid_amount),
-         record_id:commission?.record_id!
+          record_id: commission?.record_id!
         }))
       } else {
         dispatch(
@@ -237,7 +246,7 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                   />
                   {errors?.end_date && (
                     <span style={{ display: "block", color: "#FF204E" }}>
-                      {errors.start_date.replace("end_date", "end date")}
+                      {errors.end_date.replace("end_date", "end date")}
                     </span>
                   )}
                 </div>
@@ -266,7 +275,7 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
           <ActionButton
             title={editMode === false ? "Save" : "Update"}
             type="submit"
-            onClick={() => {}}
+            onClick={() => { }}
           />
         </div>
       </form>

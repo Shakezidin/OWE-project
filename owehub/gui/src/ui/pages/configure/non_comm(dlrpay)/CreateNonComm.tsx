@@ -41,18 +41,18 @@ const CreateNonComm: React.FC<ButtonProps> = ({
   const dispatch = useAppDispatch();
   const { isSuccess } = useAppSelector((state) => state.nonComm);
   const [createCommission, setCreateCommission] = useState({
-    unique_id:commission?.unique_id|| "",
-    customer:commission?.customer||  "",
-    dealer_name:commission?.dealer_name||  "",
-    dealer_dba:commission?.dealer_dba||  "",
-    exact_amount:commission?.exact_amount||  "",
-    approved_by:commission?.approved_by||  "",
-    notes:commission?.notes||  "",
-    balance:commission?.balance? `${commission?.balance}`:"",
-    paid_amount:commission?.paid_amount? `${commission?.paid_amount}`: "",
-    dba:commission?.dba|| "",
-    start_date:commission?.start_date|| "",
-    end_date:commission?.end_date|| "",
+    unique_id: commission?.unique_id || "",
+    customer: commission?.customer || "",
+    dealer_name: commission?.dealer_name || "",
+    dealer_dba: commission?.dealer_dba || "",
+    exact_amount: commission?.exact_amount || "",
+    approved_by: commission?.approved_by || "",
+    notes: commission?.notes || "",
+    balance: commission?.balance ? `${commission?.balance}` : "",
+    paid_amount: commission?.paid_amount ? `${commission?.paid_amount}` : "",
+    dba: commission?.dba || "",
+    start_date: commission?.start_date || "",
+    end_date: commission?.end_date || "",
   });
   const [errors, setErrors] = useState<IError>({} as IError);
   const [newFormData, setNewFormData] = useState<any>([]);
@@ -90,6 +90,16 @@ const CreateNonComm: React.FC<ButtonProps> = ({
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    if (name === "end_date") {
+      if (createCommission.start_date && value < createCommission.start_date) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          end_date: "End date cannot be before the start date",
+        }));
+        return;
+      }
+    }
+
     if (name === "balance" || name === "paid_amount") {
       if (value === "" || value === "0" || Number(value)) {
         setCreateCommission((prev) => ({ ...prev, [name]: value }));
@@ -266,9 +276,10 @@ const CreateNonComm: React.FC<ButtonProps> = ({
                   />
                   {errors?.end_date && (
                     <span style={{ display: "block", color: "#FF204E" }}>
-                      {errors.start_date.replace("end_date", "end date")}
+                      {errors.end_date.replace("end_date", "end date")}
                     </span>
                   )}
+
                 </div>
 
                 <div className="create-input-field">
@@ -314,9 +325,9 @@ const CreateNonComm: React.FC<ButtonProps> = ({
                     placeholder={"Enter"}
                     onChange={(e) => handleInputChange(e)}
                   />
-                  {errors?.end_date && (
+                  {errors?.notes && (
                     <span style={{ display: "block", color: "#FF204E" }}>
-                      {errors.start_date.replace("end_date", "end date")}
+                      {errors.notes}
                     </span>
                   )}
                 </div>
@@ -361,7 +372,7 @@ const CreateNonComm: React.FC<ButtonProps> = ({
           <ActionButton
             title={editMode === false ? "Save" : "Update"}
             type="submit"
-            onClick={() => {}}
+            onClick={() => { }}
           />
         </div>
       </form>

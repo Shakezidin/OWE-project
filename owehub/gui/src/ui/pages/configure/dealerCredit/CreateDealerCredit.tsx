@@ -88,6 +88,15 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
   };
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    if (name === "end_date") {
+      if (createCommission.start_date && value < createCommission.start_date) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          end_date: "End date cannot be before the start date",
+        }));
+        return;
+      }
+    }
     setCreateCommission((prevData) => ({
       ...prevData,
       [name]:
@@ -279,7 +288,7 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
                     />
                     {errors?.rl && (
                       <span style={{ display: "block", color: "#FF204E" }}>
-                        {errors.rl.replace("rl","rate list")}
+                        {errors.rl.replace("rl", "rate list")}
                       </span>
                     )}
                   </div>
@@ -296,7 +305,7 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
                     />
                     {errors?.start_date && (
                       <span style={{ display: "block", color: "#FF204E" }}>
-                        {errors.start_date.replace("start_date","start date")}
+                        {errors.start_date.replace("start_date", "start date")}
                       </span>
                     )}
                   </div>
@@ -311,9 +320,10 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
                     />
                     {errors?.end_date && (
                       <span style={{ display: "block", color: "#FF204E" }}>
-                        {errors.start_date.replace("end_date","end date")}
+                        {errors.end_date.replace("end_date", "end date")}
                       </span>
                     )}
+
                   </div>
                 </div>
               </div>
@@ -325,7 +335,7 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
           <ActionButton
             title={editMode === false ? "Save" : "Update"}
             type="submit"
-            onClick={() => {}}
+            onClick={() => { }}
           />
         </div>
       </form>
