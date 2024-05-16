@@ -42,7 +42,9 @@ export const getLoanFee = createAsyncThunk(
   async (param:ILoadFeeParams, { rejectWithValue }) => {
     try {
       const data = await postCaller("get_loan_fee", param);
-      return data.data.loan_fee_list || [] as ILoanRow[]
+      const list = data.data.loan_fee_list || [] as ILoanRow[]
+      
+      return {list, count:data.dbRecCount}
     } catch (error) {
       return rejectWithValue((error as Error).message);
     }
