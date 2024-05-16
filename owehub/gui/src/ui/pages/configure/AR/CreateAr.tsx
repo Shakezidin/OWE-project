@@ -57,6 +57,7 @@ const CreatedAr: React.FC<payScheduleProps> = ({ handleClose, editMode, editData
     getNewFormData();
   }, []);
 
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setCreateArData((prevData) => ({
@@ -144,6 +145,19 @@ const CreatedAr: React.FC<payScheduleProps> = ({ handleClose, editMode, editData
                     onChange={(e) => handleInputChange(e)}
                   />
                    {errors.amount && <span className="error">{errors.amount}</span>}
+                </div>
+
+
+                <div className="create-input-field">
+                  <Input
+                    type={"text"}
+                    label="Unique id"
+                    value={createArData.unique_id}
+                    name="unique_id"
+                    placeholder={"Enter"}
+                    onChange={(e) => handleInputChange(e)}
+                  />
+                   {errors.unique_id && <span className="error">{errors.unique_id}</span>}
                 </div>
               </div>
 
