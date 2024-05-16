@@ -34,21 +34,21 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
 }) => {
   const dispatch = useAppDispatch();
   const [newFormData, setNewFormData] = useState({
-    dealerName:"Shushank Sharma",
+    dealerName: "Shushank Sharma",
     installerName: "",
-    loanType:   "P123",
+    loanType: "P123",
     dlrMu: "",
-    dlrCost:  "",
+    dlrCost: "",
     startDate: "",
-    endDate:"",
-    stateName:  "",
+    endDate: "",
+    stateName: "",
     oweCost: editData?.owe_cost ? `${editData?.owe_cost}` : ""
   });
 
   const [errors, setErrors] = useState<typeof newFormData>({} as typeof newFormData);
- 
+
   const { isSuccess } = useAppSelector((state) => state.loanFeeSlice);
-  
+
 
   const tableData = {
     tableNames: [
@@ -62,13 +62,13 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
   };
   const getNewFormData = async () => {
     const res = await postCaller(EndPoints.get_newFormData, tableData);
-     setNewFormData((prev) => ({ ...prev, ...res.data }));
+    setNewFormData((prev) => ({ ...prev, ...res.data }));
   };
 
   const handleValidation = () => {
     const error: typeof newFormData = {} as typeof newFormData;
     for (const key in newFormData) {
-      if (key==="loan_type" || key==="dealers") {
+      if (key === "loan_type" || key === "dealers") {
         continue
       }
       if (!newFormData[key as keyof typeof newFormData]) {
@@ -82,24 +82,33 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
   };
   React.useEffect(() => {
     setNewFormData({
-        dealerName: editData?.dealer || "",
-        installerName: editData?.installer || "",
-        loanType: editData?.loan_type || "",
-        dlrMu: editData?.dlr_mu?`${editData?.dlr_mu}` : "",
-        dlrCost: editData?.dlr_cost?`${editData?.dlr_cost}` : "",
-        startDate: editData?.start_date || "",
-        endDate: editData?.end_date || "",
-        stateName: editData?.state || "",
-        oweCost:editData?.owe_cost ? `${editData?.owe_cost}` : ""
-      })
+      dealerName: editData?.dealer || "",
+      installerName: editData?.installer || "",
+      loanType: editData?.loan_type || "",
+      dlrMu: editData?.dlr_mu ? `${editData?.dlr_mu}` : "",
+      dlrCost: editData?.dlr_cost ? `${editData?.dlr_cost}` : "",
+      startDate: editData?.start_date || "",
+      endDate: editData?.end_date || "",
+      stateName: editData?.state || "",
+      oweCost: editData?.owe_cost ? `${editData?.owe_cost}` : ""
+    })
     getNewFormData();
-  }, [editMode,editData]);
-console.log(newFormData,"formdddd");
+  }, [editMode, editData]);
+  console.log(newFormData, "formdddd");
 
   //   const loanTypes = (newFormData["loan_types"]   ).map()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.target;
+    if (name === "endDate") {
+      if (newFormData.startDate && value < newFormData.startDate) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          endDate: "End date cannot be before the start date",
+        }));
+        return;
+      }
+    }
     if (name === "oweCost") {
       if (value === "" || value === "0" || Number(value)) {
         setNewFormData((prev) => ({ ...prev, [name]: value }));
@@ -115,7 +124,7 @@ console.log(newFormData,"formdddd");
         dispatch(
           updateLoanFee({
             record_id: editData?.record_id!,
-       
+
             state: newFormData.stateName,
             installer: newFormData.installerName,
             start_date: newFormData.startDate
@@ -124,8 +133,8 @@ console.log(newFormData,"formdddd");
             end_date: newFormData.endDate
               ? format(new Date(newFormData.endDate), "yyyy-MM-dd")
               : "",
-            dlr_cost:parseFloat( newFormData.dlrCost),
-            dlr_mu:parseFloat( newFormData.dlrMu) ,
+            dlr_cost: parseFloat(newFormData.dlrCost),
+            dlr_mu: parseFloat(newFormData.dlrMu),
             owe_cost: parseFloat(newFormData.oweCost),
             dealer: newFormData.dealerName || "Shushank Sharma",
             loan_type: newFormData.loanType || "P123",
@@ -134,7 +143,7 @@ console.log(newFormData,"formdddd");
       } else {
         dispatch(
           createLoanFee({
-       
+
             state: newFormData.stateName,
             installer: newFormData.installerName,
             start_date: newFormData.startDate
@@ -143,8 +152,8 @@ console.log(newFormData,"formdddd");
             end_date: newFormData.endDate
               ? format(new Date(newFormData.endDate), "yyyy-MM-dd")
               : "",
-              dlr_cost:parseFloat( newFormData.dlrCost),
-              dlr_mu:parseFloat( newFormData.dlrMu) ,
+            dlr_cost: parseFloat(newFormData.dlrCost),
+            dlr_mu: parseFloat(newFormData.dlrMu),
             owe_cost: parseFloat(newFormData.oweCost),
             dealer: newFormData.dealerName || "",
             loan_type: newFormData.loanType || "",
@@ -176,7 +185,7 @@ console.log(newFormData,"formdddd");
           <div className="createProfileInputView">
             <div className="createProfileTextView">
               <div className="create-input-container">
-              <div className="create-input-field">
+                <div className="create-input-field">
                   <Input
                     type={"text"}
                     label="DLR MU"
@@ -256,7 +265,7 @@ console.log(newFormData,"formdddd");
                 <div className="create-input-field">
                   <label className="inputLabel-select select-type-label">Installer</label>
                   <SelectOption
-                  menuListStyles={{height: "230px"}}
+                    menuListStyles={{ height: "230px" }}
                     options={installerOption(newFormData)}
                     onChange={(newValue) => {
                       setNewFormData((prev) => ({
@@ -268,7 +277,7 @@ console.log(newFormData,"formdddd");
                       (option) => option.value === newFormData.installerName
                     )}
                   />
-                   {errors?.installerName && (
+                  {errors?.installerName && (
                     <span style={{ display: "block", color: "#FF204E" }}>
                       {errors.installerName}
                     </span>
@@ -309,7 +318,7 @@ console.log(newFormData,"formdddd");
                   )}
                 </div>
 
-              
+
 
                 <div className="create-input-field">
                   <Input
@@ -320,7 +329,7 @@ console.log(newFormData,"formdddd");
                     placeholder={"Enter"}
                     onChange={handleChange}
                   />
-                   {errors?.startDate && (
+                  {errors?.startDate && (
                     <span style={{ display: "block", color: "#FF204E" }}>
                       {errors.startDate}
                     </span>
@@ -336,7 +345,7 @@ console.log(newFormData,"formdddd");
                     placeholder={"Enter"}
                     onChange={handleChange}
                   />
-                   {errors?.endDate && (
+                  {errors?.endDate && (
                     <span style={{ display: "block", color: "#FF204E" }}>
                       {errors.endDate}
                     </span>
@@ -356,7 +365,7 @@ console.log(newFormData,"formdddd");
           <ActionButton
             title={editMode === false ? "Save" : "Update"}
             type="submit"
-            onClick={() => {}}
+            onClick={() => { }}
           />
         </div>
       </form>
