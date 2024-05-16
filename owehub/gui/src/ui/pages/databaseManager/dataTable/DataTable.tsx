@@ -30,36 +30,47 @@ const DataTablle: React.FC = () => {
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const  data: RowData[] = useAppSelector((state) => state.dataTableSlice.tableData);
-  const {dbCount } = useAppSelector((state) => state.dataTableSlice)
+  const {dbCount,option } = useAppSelector((state) => state.dataTableSlice)
   const loading = useAppSelector((state) => state.dealer.loading);
   const error = useAppSelector((state) => state.dealer.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
+
   const currentPage = useAppSelector((state) => state.paginationType.currentPage);
   const itemsPerPage = 30;
 const start = (currentPage-1)* itemsPerPage+1
 const end = currentPage* itemsPerPage
+
+
+
  
 
   useEffect(() => {
-    const pageNumber = {
-      page_number: currentPage,
-      page_size: itemsPerPage,
-      filters: [
-        {
-            Column: "table_name",
-            Operation: "=",
-            Data: selectedTable.value || "finance_metrics_schema"
-        }   
-    ]
-    };
-    dispatch(getAnyTableData(pageNumber));
+    if (selectedTable.value) {
+      const pageNumber = {
+        page_number: currentPage,
+        page_size: itemsPerPage,
+        filters: [
+          {
+              Column: "table_name",
+              Operation: "=",
+              Data: selectedTable.value 
+          }   
+      ]
+      };
+      dispatch(getAnyTableData(pageNumber));
+    }
 
   }, [dispatch, currentPage, selectedTable]);
+
+  useEffect(()=>{
+    if(option.length){
+      setSelectedTable({label:option?.[0].table_name,value:option?.[0].table_name})      
+    }
+  },[option?.length])
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-
   const paginate = (pageNumber: number) => {
     dispatch(setCurrentPage(pageNumber));
   };
@@ -87,7 +98,7 @@ const end = currentPage* itemsPerPage
     return <div>Error: {error}</div>;
   }
   
-  const propertyNames: string[] = data.length > 0 ? Object.keys(data[0]) : [];
+  const propertyNames: string[] = data?.length > 0 ? Object.keys(data[0]) : [];
   const orderedColumns: string[] = propertyNames.reverse();
 
   const replaceEmptyOrNull = (value: string | number | null) => {
@@ -96,20 +107,13 @@ const end = currentPage* itemsPerPage
   
   const totalPages = Math.ceil(dbCount / itemsPerPage );
 
-  const currentPageData = data.slice(startIndex, endIndex);
-  const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === data.length;
-  const fetchFunction = (req: any) => {
-    // dispatch(fetchPaySchedule(req));
-   };
-console.log(dbCount, "db")
  
   return (
     <div className="comm">
       <Breadcrumb head="" linkPara="Database Manager" route={""} linkparaSecond="Data" />
       <div className="commissionContainer">
         <DataTableHeaderr
-          title={selectedTable.value}
+          title={selectedTable.value?.replaceAll("_"," ")}
           onPressFilter={() => filter()}
           onPressImport={() => { }}
           showImportIcon={false}
@@ -132,13 +136,13 @@ console.log(dbCount, "db")
               <tr>
                 <th>S.No</th>
                  
-                {orderedColumns.map((columnName, index) => (
-                  <th key={index}>{columnName}</th>
+                {orderedColumns?.map?.((columnName, index) => (
+                  <th style={{textTransform:"capitalize"}} key={index}>{columnName?.replaceAll?.("_"," ")}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
-              {data.map((item, rowIndex) => (
+              {data?.map?.((item, rowIndex) => (
                     <tr key={rowIndex}>
                     <td>{startIndex + rowIndex + 1}</td>
                   
@@ -161,7 +165,7 @@ console.log(dbCount, "db")
               currentPage={currentPage}
               totalPages={totalPages} // You need to calculate total pages
               paginate={paginate}
-              currentPageData={currentPageData}
+              currentPageData={data}
               goToNextPage={goToNextPage}
               goToPrevPage={goToPrevPage}
 perPage={itemsPerPage}

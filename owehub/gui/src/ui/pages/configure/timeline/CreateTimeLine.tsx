@@ -66,18 +66,34 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
   };
 
   const handleChange = (newValue: any, fieldName: string) => {
+
     setCreateTimeLine((prevData) => ({
       ...prevData,
       [fieldName]: newValue ? newValue.value : "",
     }));
   };
   const handleTimeLineInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setCreateTimeLine((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
+  const { name, value } = e.target;
+
+  if (name === "end_date") {
+    if (createTimeLine.start_date && value < createTimeLine.start_date) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        end_date: "End date cannot be before the start date",
+      }));
+      return;
+    }
+  }
+
+  setCreateTimeLine((prevData) => ({
+    ...prevData,
+    [name]: value,
+  }));
+  setErrors((prevErrors) => ({
+    ...prevErrors,
+    [name]: "",
+  }));
+};
 
   const submitTimeLineSla = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

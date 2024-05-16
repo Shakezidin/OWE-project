@@ -50,7 +50,7 @@ const DataTableHeaderr = (props: TableProps) => {
       };
 
   return (
-    <div className="commissionSection">
+    <div className="commissionSection" style={{textTransform:"capitalize"}}>
       <h3>{title}</h3>
 
       <div className="data-header-section">

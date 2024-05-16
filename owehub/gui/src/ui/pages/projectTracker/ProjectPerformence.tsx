@@ -15,6 +15,7 @@ import {
 import { format } from "date-fns";
 import Pagination from "../../components/pagination/Pagination";
 import MicroLoader from "../../components/loader/MicroLoader";
+import DataNotFound from "../../components/loader/DataNotFound";
 const ProjectPerformence = () => {
   const dispatch = useAppDispatch();
   const [page, setPage] = useState(1);
@@ -188,13 +189,13 @@ const ProjectPerformence = () => {
         <div className="performance-table-heading">
           <div className="performance-project">
             <h2>Projects</h2>
-            <input
+            {/* <input
               className="performance-search"
               type="search"
               placeholder="search "
               disabled
               onChange={() => {}}
-            />
+            /> */}
           </div>
           <div className="performance-milestone-table">
             <table>
@@ -222,7 +223,20 @@ const ProjectPerformence = () => {
                       <MicroLoader />
                     </td>
                   </tr>
-                ) : (
+                ) : 
+
+                projectStatus.length<1 && !isLoading?
+                <tr>
+                  <td colSpan={7} style={{textAlign:"center"}}>
+                    <div className="" style={{display:"flex",justifyContent:"center"}}>
+                      <DataNotFound/>
+                    </div>
+                    <span>No Data Found</span>
+                  </td>
+                </tr>
+                :
+                
+                (
                   projectStatus.map(
                     (project: (typeof projectStatus)[0], index: number) => {
                       const newObj: any = { ...project };
@@ -468,9 +482,9 @@ const ProjectPerformence = () => {
           </div>
 
           <div className="page-heading-container">
-            <p className="page-heading">
+            {!!projectsCount &&<p className="page-heading">
               {startIndex} - {endIndex>projectsCount?projectsCount:endIndex} of {projectsCount} item
-            </p>
+            </p>}
 
             {projectStatus?.length > 0 ? (
               <Pagination

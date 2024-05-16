@@ -121,6 +121,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({handleOpenNClose}) => {
                   showToast(result.message, 'success');
                  // localStorage.setItem('is_password_change_required', 'false');
                  dispatch(logout())
+                 navigate('/login')
               } else {
                   showToast(result.message, 'error');
               }
