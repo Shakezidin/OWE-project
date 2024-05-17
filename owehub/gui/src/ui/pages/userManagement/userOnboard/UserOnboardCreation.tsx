@@ -175,6 +175,18 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                           setSelected(new Set());
                           setDbAcess(false)
                         }
+                        if(newValue?.value===TYPE_OF_USER.ADMIN){
+                          setDbAcess(true)
+                          const set = new Set(
+                            Array.from({ length: tables.length }).map((_, i: number) => i)
+                          );
+                          setSelected(set);
+                          const obj: { [key: string]: string } = {};
+                          tables.forEach((table: { table_name: string }) => {
+                            obj[table.table_name] = 'Full';
+                          });
+                          setTablePermissions(obj);
+                        }
                       }}
                       value={ALL_USER_ROLE_LIST?.find(
                         (option) => option?.value === formData.role_name
