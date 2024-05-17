@@ -124,8 +124,6 @@ export const LoginPage = () => {
     }
   }; 
 
-  /** UI render */
-
   return (
     <div className="mainContainer">
       <div className={"overlay"} />
@@ -143,7 +141,6 @@ export const LoginPage = () => {
             {"YOUR TRUSTED SOLAR EXPERTS"}
           </span>
         </div>
-
         <div className={"loginBox2"}>
           <form onSubmit={(e) => handleLogin(e)}>
             <div className="loginTextView">
