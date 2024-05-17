@@ -30,7 +30,7 @@ const PaginationComponent: React.FC<PaginationProps> = ({ currentPage, totalPage
       }
       onPageChange={({ selected }:{selected:number}) => onPageChange(selected+1)}
       containerClassName="pagination"
-      pageRangeDisplayed={1}
+      pageRangeDisplayed={3}
       forcePage={currentPage-1}
       pageClassName="current-btn"
       pageCount={totalPages}

@@ -42,6 +42,7 @@ const UserManagement: React.FC = () => {
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
 
   const dispatch = useAppDispatch();
+  const [tablePermissions, setTablePermissions] = useState({});
   const { loading, userOnboardingList, userRoleBasedList, userPerformanceList } =
     useAppSelector((state) => state.userManagement);
   const {
@@ -216,6 +217,8 @@ const UserManagement: React.FC = () => {
           regionList={regionList}
           editMode={false}
           selectedOption={selectedOption}
+          tablePermissions={tablePermissions}
+          setTablePermissions={setTablePermissions}
           userOnboard={null}
           onSubmitCreateUser={onSubmitCreateUser}
           onChangeRole={(role, value) => {
