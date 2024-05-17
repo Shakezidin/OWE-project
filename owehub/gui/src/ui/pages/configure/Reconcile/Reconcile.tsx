@@ -20,6 +20,8 @@ import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import { showAlert, successSwal } from "../../../components/alert/ShowAlert";
 import Loading from "../../../components/loader/Loading";
 import { fetchRateAdjustments } from "../../../../redux/apiActions/RateAdjustmentsAction";
+import MicroLoader from "../../../components/loader/MicroLoader";
+import DataNotFound from "../../../components/loader/DataNotFound";
 
 const Reconcile = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -212,15 +214,7 @@ const Reconcile = () => {
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="loader-container">
-        {" "}
-        <Loading />{" "}
-      </div>
-    );
-  }
-
+  
   if (error) {
     return <div>Error: {error}</div>;
   }
@@ -301,7 +295,18 @@ const Reconcile = () => {
               </tr>
             </thead>
             <tbody>
-              {currentPageData?.length > 0
+              {
+                isLoading ? 
+                  <tr>
+                    <td colSpan={ReconcileColumns?.length}>
+                      <div style={{ display: "flex", justifyContent: "center" }}>
+                        <MicroLoader />
+                      </div>
+                    </td>
+                  </tr>:
+              
+              
+              currentPageData?.length > 0
                 ? currentPageData?.map((el: any, i: any) => (
                     <tr
                       key={i}
@@ -358,13 +363,20 @@ const Reconcile = () => {
                       )}
                     </tr>
                   ))
-                : null}
+                : <tr style={{ border: 0 }}>
+                <td colSpan={10}>
+                  <div className="data-not-found">
+                    <DataNotFound />
+                    <h3>Data Not Found</h3>
+                  </div>
+                </td>
+              </tr>}
             </tbody>
           </table>
         </div>
         <div className="page-heading-container">
           <p className="page-heading">
-            {startIndex} - {endIndex} of {dbCount} item
+            {startIndex} - {endIndex>dbCount?dbCount:endIndex} of {dbCount} item
           </p>
 
           {currentPageData?.length > 0 ? (

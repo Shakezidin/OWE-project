@@ -23,6 +23,7 @@ import {
 import CreateInstallCost from "./CreateInstallCost";
 import Loading from "../../../components/loader/Loading";
 import DataNotFound from "../../../components/loader/DataNotFound";
+import MicroLoader from "../../../components/loader/MicroLoader";
 const InstallCost = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -142,6 +143,7 @@ const InstallCost = () => {
       };
       const res = await postCaller("update_installcost_archive", newValue);
       if (res.status === HTTP_STATUS.OK) {
+        setSelectedRows(new Set())
         dispatch(getInstallCost(pageNumber));
         await successSwal(
           "Archived",
@@ -186,7 +188,8 @@ console.log(timelinesla_list,"arrr");
             
 
           }}
-          onPressArchive={() =>selectedRows.size && handleArchiveClick(Array.from(selectedRows).map((_,i:number)=>currentPageData[i].record_id))}
+          onPressArchive={() =>{selectedRows.size && 
+            handleArchiveClick(Array.from(selectedRows).map((_,i:number)=>currentPageData[i].record_id))}}
           onPressFilter={() => filter()}
           onPressImport={() => {}}
           checked={isAllRowsSelected}
@@ -249,9 +252,13 @@ console.log(timelinesla_list,"arrr");
             </thead>
             <tbody>
               {isLoading ? (
-                <div className="loader-container">
-                  <Loading />
-                </div>
+                <tr>
+                  <td colSpan={InstallCostColumns?.length}>
+                    <div style={{ display: "flex", justifyContent: "center" }}>
+                      <MicroLoader />
+                    </div>
+                  </td>
+                </tr>
               ) : currentPageData?.length > 0 ? (
                 currentPageData?.map((el: ICost, i: number) => (
                   <tr
@@ -279,7 +286,7 @@ console.log(timelinesla_list,"arrr");
                     <td>{el.start_date}</td>
                     <td>{el.end_date}</td>
                     <td>
-                     {!viewArchived && <div className="action-icon">
+                     {(!viewArchived && selectedRows.size<2)&& <div className="action-icon">
                         <div
                           className=""
                           style={{ cursor: "pointer" }}
@@ -311,7 +318,7 @@ console.log(timelinesla_list,"arrr");
         </div>
         <div className="page-heading-container">
           <p className="page-heading">
-            {startIndex} - {endIndex} of {dbCount} item
+            {startIndex} - {endIndex>dbCount?dbCount:endIndex} of {dbCount} item
           </p>
 
           {timelinesla_list?.length > 0 ? (

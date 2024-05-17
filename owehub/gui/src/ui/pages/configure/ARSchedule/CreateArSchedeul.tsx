@@ -24,7 +24,7 @@ import {
   createArSchedule,
   updateArchSchedule,
 } from "../../../../redux/apiActions/arScheduleAction";
-import { format } from "date-fns";
+import { addDays, format } from "date-fns";
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
@@ -367,7 +367,10 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                     value={formData.start}
                     name="start"
                     placeholder={"Enter"}
-                    onChange={handleChange}
+                    onChange={(e)=>{
+                      handleChange(e)
+                      setFormData((prev) => ({...prev, end:""}))
+                    }}
                   />
                   {errors?.start && (
                     <span style={{ display: "block", color: "#FF204E" }}>
@@ -384,6 +387,8 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                     label="End Date"
                     value={formData.end}
                     name="end"
+                    min={formData.start && format(addDays(new Date(formData.start),1),"yyyy-MM-dd")}
+                    disabled={!formData.start}
                     placeholder={"Enter"}
                     onChange={handleChange}
                   />

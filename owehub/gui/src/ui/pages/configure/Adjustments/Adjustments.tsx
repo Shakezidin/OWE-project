@@ -26,6 +26,7 @@ import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoin
 import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import Loading from "../../../components/loader/Loading";
+import MicroLoader from "../../../components/loader/MicroLoader";
 const Adjustments = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -175,14 +176,7 @@ const Adjustments = () => {
       })
     );
   };
-  if (isLoading) {
-    return (
-      <div className="loader-container">
-        {" "}
-        <Loading />{" "}
-      </div>
-    );
-  }
+
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -266,7 +260,18 @@ const Adjustments = () => {
               </tr>
             </thead>
             <tbody>
-              {arAdjustmentsList.map((item: Adjustment, ind: number) => {
+              {
+                isLoading ? 
+                  <tr>
+                    <td colSpan={AdjustmentsColumns?.length }>
+                      <div style={{ display: "flex", justifyContent: "center" }}>
+                        <MicroLoader />
+                      </div>
+                    </td>
+                  </tr>:
+              
+              
+              arAdjustmentsList.map((item: Adjustment, ind: number) => {
                 return (
                   <tr key={item.unique_id}>
                     <td style={{ paddingRight: 0, textAlign: "left" }}>

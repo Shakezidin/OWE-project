@@ -24,6 +24,7 @@ import { showAlert, successSwal } from "../../../components/alert/ShowAlert";
 import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
 import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
+import MicroLoader from "../../../components/loader/MicroLoader";
 const ARSchedule = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -171,14 +172,7 @@ const ARSchedule = () => {
       }
     }
   };
-  if (isLoading) {
-    return (
-      <div className="loader-container">
-        {" "}
-        <Loading />{" "}
-      </div>
-    );
-  }
+
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -257,7 +251,22 @@ console.log(selectedRows,"rorrrrr");
               </tr>
             </thead>
             <tbody>
-              {currentPageData?.length > 0
+              {
+
+                isLoading?
+                <tr>
+                  <td colSpan={10}>
+                  <div style={{display:"flex",justifyContent:"center"}}>
+
+<MicroLoader/>
+</div>
+                  </td>
+                </tr>
+                
+                :
+              
+              
+              currentPageData?.length > 0
                 ? currentPageData?.map((el: IARSchedule, i: number) => (
                     <tr
                       key={i}
@@ -293,7 +302,7 @@ console.log(selectedRows,"rorrrrr");
                       <td>{el.start_date}</td>
                       <td>{el.end_date}</td>
                       <td>
-                        {!viewArchived && (
+                        {(!viewArchived && selectedRows.size<2)&& (
                           <div className="action-icon">
                             <div
                               className=""
@@ -320,7 +329,7 @@ console.log(selectedRows,"rorrrrr");
         </div>
         <div className="page-heading-container">
           <p className="page-heading">
-            {startIndex} - {endIndex} of {count} item
+            {startIndex} - {endIndex>count?count:endIndex} of {count} item
           </p>
 
           {data?.length > 0 ? (

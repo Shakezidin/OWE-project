@@ -1,10 +1,10 @@
-import { ChangeEvent, FC } from "react";
+import { ChangeEvent, FC, HTMLAttributes, InputHTMLAttributes } from "react";
 import "./Input.css";
 import { ReactComponent as EYE_ICON } from "../../../resources/assets/eye-icon.svg";
 import { ReactComponent as EYE_OFF_ICON } from "../../../resources/assets/eye-off-icon.svg";
 import { ICONS } from "../../icons/Icons";
 
-interface InputProps {
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   type:
     | "text"
     | "number"
@@ -38,6 +38,7 @@ const Input: FC<InputProps> = ({
   onClickEyeIcon,
   isTypePassword,
   isTypeSearch,
+  ...rest
 }) => {
   return (
     <div className="input-wrapper">
@@ -51,6 +52,7 @@ const Input: FC<InputProps> = ({
           onChange={onChange}
           className="input"
           disabled={disabled}
+          {...rest}
         />
         {isTypePassword && type === "text" ? (
           <EYE_ICON

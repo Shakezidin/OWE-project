@@ -4,7 +4,7 @@ import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cro
 import Input from "../../../components/text_input/Input";
 import { ActionButton } from "../../../components/button/ActionButton";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-import { format } from "date-fns";
+import { addDays, format } from "date-fns";
 import { resetSuccess } from "../../../../redux/apiSlice/configSlice/config_get_slice/installConstSlice";
 import {
   createInstallCost,
@@ -145,7 +145,10 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
                     value={newFormData.startDate}
                     name="startDate"
                     placeholder={"Enter"}
-                    onChange={handleChange}
+                    onChange={(e)=>{
+                      handleChange(e)
+                      setNewFormData((prev) => ({...prev, endDate:""}))
+                    }}
                   />
                   {errors?.startDate && (
                     <span style={{ display: "block", color: "#FF204E" }}>
@@ -160,6 +163,8 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
                   label="End Date"
                   value={newFormData.endDate}
                   name="endDate"
+                  disabled={!newFormData.startDate}
+                  min={newFormData.startDate && format(addDays(new Date(newFormData.startDate),1),"yyyy-MM-dd")}
                   placeholder={"Enter"}
                   onChange={handleChange}
                 />
