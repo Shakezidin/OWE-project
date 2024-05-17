@@ -1,9 +1,7 @@
-import React from 'react'
+import React from 'react';
 
 const RepPayScale = () => {
-  return (
-    <div>RepPayScale</div>
-  )
-}
+  return <div>RepPayScale</div>;
+};
 
-export default RepPayScale
+export default RepPayScale;

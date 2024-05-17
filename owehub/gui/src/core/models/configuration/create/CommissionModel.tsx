@@ -1,6 +1,6 @@
 export interface CommissionModel {
   // [key: string]: string | number | Date
-  record_id: number,
+  record_id: number;
   partner: string;
   installer: string;
   state: string;

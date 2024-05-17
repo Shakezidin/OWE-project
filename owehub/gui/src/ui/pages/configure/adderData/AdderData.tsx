@@ -1,27 +1,27 @@
-import React, { useEffect, useState } from "react";
-import TableHeader from "../../../components/tableHeader/TableHeader";
-import { ICONS } from "../../../icons/Icons";
-import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
+import React, { useEffect, useState } from 'react';
+import TableHeader from '../../../components/tableHeader/TableHeader';
+import { ICONS } from '../../../icons/Icons';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import {
   getarAdderData,
   IAdderRowData,
-} from "../../../../redux/apiActions/arAdderDataAction";
-import { toggleRowSelection } from "../../../components/chekbox/checkHelper";
-import Pagination from "../../../components/pagination/Pagination";
-import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
-import { TimeLineSlaModel } from "../../../../core/models/configuration/create/TimeLineSlaModel";
-import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
-import CheckBox from "../../../components/chekbox/CheckBox";
-import SortableHeader from "../../../components/tableHeader/SortableHeader";
-import { AdderDataColumn } from "../../../../resources/static_data/configureHeaderData/adderDataColumn";
-import FilterModal from "../../../components/FilterModal/FilterModal";
-import { ROUTES } from "../../../../routes/routes";
-import CreateArAdderData from "./CreateArAdderData";
-import Loading from "../../../components/loader/Loading";
-import { showAlert, successSwal } from "../../../components/alert/ShowAlert";
-import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
-import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
-import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
+} from '../../../../redux/apiActions/arAdderDataAction';
+import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
+import Pagination from '../../../components/pagination/Pagination';
+import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
+import { TimeLineSlaModel } from '../../../../core/models/configuration/create/TimeLineSlaModel';
+import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
+import CheckBox from '../../../components/chekbox/CheckBox';
+import SortableHeader from '../../../components/tableHeader/SortableHeader';
+import { AdderDataColumn } from '../../../../resources/static_data/configureHeaderData/adderDataColumn';
+import FilterModal from '../../../components/FilterModal/FilterModal';
+import { ROUTES } from '../../../../routes/routes';
+import CreateArAdderData from './CreateArAdderData';
+import Loading from '../../../components/loader/Loading';
+import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
+import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
+import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
+import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 const AdderData = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -42,8 +42,8 @@ const AdderData = () => {
   const itemsPerPage = 10;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortKey, setSortKey] = useState("");
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
+  const [sortKey, setSortKey] = useState('');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -55,10 +55,10 @@ const AdderData = () => {
     data: commissionList,
     isLoading,
     count,
-    isSuccess
+    isSuccess,
   } = useAppSelector((state) => state.adderDataSlice);
 
-  useEffect(()=>{
+  useEffect(() => {
     if (isSuccess) {
       const pageNumber = {
         page_number: currentPage,
@@ -66,7 +66,7 @@ const AdderData = () => {
       };
       dispatch(getarAdderData({ ...pageNumber }));
     }
-  },[isSuccess,currentPage])
+  }, [isSuccess, currentPage]);
 
   const filter = () => {
     setFilterOpen(true);
@@ -76,7 +76,6 @@ const AdderData = () => {
     setCurrentPage(pageNumber);
   };
 
- 
   const goToNextPage = () => {
     setCurrentPage(currentPage + 1);
   };
@@ -95,10 +94,10 @@ const AdderData = () => {
   const isAllRowsSelected = selectedRows.size === commissionList?.length;
   const handleSort = (key: any) => {
     if (sortKey === key) {
-      setSortDirection(sortDirection === "desc" ? "asc" : "desc");
+      setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
     } else {
       setSortKey(key);
-      setSortDirection("asc");
+      setSortDirection('asc');
     }
   };
 
@@ -106,17 +105,17 @@ const AdderData = () => {
     currentPageData.sort((a: any, b: any) => {
       const aValue = a[sortKey];
       const bValue = b[sortKey];
-      if (typeof aValue === "string" && typeof bValue === "string") {
-        return sortDirection === "asc"
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        return sortDirection === 'asc'
           ? aValue.localeCompare(bValue)
           : bValue.localeCompare(aValue);
       } else {
         // Ensure numeric values for arithmetic operations
         const numericAValue =
-          typeof aValue === "number" ? aValue : parseFloat(aValue);
+          typeof aValue === 'number' ? aValue : parseFloat(aValue);
         const numericBValue =
-          typeof bValue === "number" ? bValue : parseFloat(bValue);
-        return sortDirection === "asc"
+          typeof bValue === 'number' ? bValue : parseFloat(bValue);
+        return sortDirection === 'asc'
           ? numericAValue - numericBValue
           : numericBValue - numericAValue;
       }
@@ -139,10 +138,10 @@ const AdderData = () => {
 
   const handleArchiveClick = async (record_id: any) => {
     const confirmed = await showAlert(
-      "Are Your Sure",
-      "This Action will archive your data",
-      "Yes",
-      "No"
+      'Are Your Sure',
+      'This Action will archive your data',
+      'Yes',
+      'No'
     );
     if (confirmed) {
       const archived: number[] = [record_id];
@@ -154,12 +153,12 @@ const AdderData = () => {
         page_number: currentPage,
         page_size: itemsPerPage,
       };
-      const res = await postCaller("update_adderdata_archive", newValue);
+      const res = await postCaller('update_adderdata_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
         dispatch(getarAdderData(pageNumber));
-        await successSwal("Archived", "The data has been archived ");
+        await successSwal('Archived', 'The data has been archived ');
       } else {
-        await successSwal("Archived", "The data has been archived ");
+        await successSwal('Archived', 'The data has been archived ');
       }
     }
   };
@@ -218,7 +217,7 @@ const AdderData = () => {
 
         <div
           className="TableContainer"
-          style={{ overflowX: "auto", whiteSpace: "nowrap" }}
+          style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}
         >
           <table>
             <thead>
@@ -254,9 +253,9 @@ const AdderData = () => {
                 ? currentPageData?.map((el: IAdderRowData, i: number) => (
                     <tr
                       key={i}
-                      className={selectedRows.has(i) ? "selected" : ""}
+                      className={selectedRows.has(i) ? 'selected' : ''}
                     >
-                      <td style={{ fontWeight: "500", color: "black" }}>
+                      <td style={{ fontWeight: '500', color: 'black' }}>
                         <div className="flex-check">
                           <CheckBox
                             checked={selectedRows.has(i)}
@@ -286,7 +285,7 @@ const AdderData = () => {
                         <div className="action-icon">
                           <div
                             className=""
-                            style={{ cursor: "pointer" }}
+                            style={{ cursor: 'pointer' }}
                             onClick={() => handleArchiveClick(el.record_id)}
                           >
                             <img src={ICONS.ARCHIVE} alt="" />
@@ -294,7 +293,7 @@ const AdderData = () => {
                           <div
                             className=""
                             onClick={() => handleEditTimeLineSla(el)}
-                            style={{ cursor: "pointer" }}
+                            style={{ cursor: 'pointer' }}
                           >
                             <img src={ICONS.editIcon} alt="" />
                           </div>
@@ -308,7 +307,8 @@ const AdderData = () => {
         </div>
         <div className="page-heading-container">
           <p className="page-heading">
-            Showing {currentPage} - {endIndex>count?count:endIndex} of {count} item
+            Showing {currentPage} - {endIndex > count ? count : endIndex} of{' '}
+            {count} item
           </p>
 
           {commissionList?.length > 0 ? (

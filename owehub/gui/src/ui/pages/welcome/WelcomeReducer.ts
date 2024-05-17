@@ -5,32 +5,27 @@
  * Project Name: owe_web_app
  * Path: src/ui/pages/welcome
  */
-import {createSlice} from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-    inProgress: true,
-    isLogin: false
-}
-
+  inProgress: true,
+  isLogin: false,
+};
 
 const welcomeReducer = (state = initialState, action: any) => {
-
-    switch (action.type) {
-
-        default:
-            return state;
-    }
-}
+  switch (action.type) {
+    default:
+      return state;
+  }
+};
 //createSlice -> toolkit
 export default welcomeReducer;
 
 //===
 const welcomeSlice = createSlice({
-    name: 'welcome',
-    initialState,
-    reducers: {
-        onChange: (state, action) => {
-
-        }
-    }
-})
+  name: 'welcome',
+  initialState,
+  reducers: {
+    onChange: (state, action) => {},
+  },
+});

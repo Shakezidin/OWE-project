@@ -1,15 +1,12 @@
-import React, { useEffect, useState } from "react";
-import "../../configure/configure.css";
-import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-import { fetchDealer } from "../../../../redux/apiSlice/configSlice/config_get_slice/dealerSlice";
-import { DealerModel } from "../../../../core/models/configuration/create/DealerModel";
-import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
-import DataTableHeader from "../../../components/tableHeader/DataTableHeader";
-import { FaArrowDown } from "react-icons/fa6";
+import React, { useEffect, useState } from 'react';
+import '../../configure/configure.css';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
+import { fetchDealer } from '../../../../redux/apiSlice/configSlice/config_get_slice/dealerSlice';
+import { DealerModel } from '../../../../core/models/configuration/create/DealerModel';
+import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
+import DataTableHeader from '../../../components/tableHeader/DataTableHeader';
+import { FaArrowDown } from 'react-icons/fa6';
 // import CreateDealer from "./CreateDealer";
-
-
-
 
 const CreateWebHook: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -37,7 +34,7 @@ const CreateWebHook: React.FC = () => {
   const handleAddDealer = () => {
     setEditMode(false);
     // setEditDealer(null);
-    handleOpen()
+    handleOpen();
   };
   const getColumnNames = () => {
     if (dealerList.length > 0) {
@@ -46,13 +43,13 @@ const CreateWebHook: React.FC = () => {
     }
   };
   const filter = () => {
-    setFilterOpen(true)
-    getColumnNames()
-  }
+    setFilterOpen(true);
+    getColumnNames();
+  };
   const handleEditDealer = (dealerData: DealerModel) => {
     setEditMode(true);
     // setEditDealer(dealerData);
-    handleOpen()
+    handleOpen();
   };
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === dealerList?.length;
@@ -66,36 +63,38 @@ const CreateWebHook: React.FC = () => {
 
   const dataDb = [
     {
-      uname: "1234567890",
-      dbname: "345612",
-      error:"Invalid data",
-      date: "10/04/2024  3:00AM",
-    
+      uname: '1234567890',
+      dbname: '345612',
+      error: 'Invalid data',
+      date: '10/04/2024  3:00AM',
     },
     {
-        uname: "1234567890",
-        dbname: "345612",
-        error:"Invalid data",
-        date: "10/04/2024  3:00AM",
-      
-      },
-      {
-        uname: "1234567890",
-        dbname: "345612",
-        error:"Invalid data",
-        date: "10/04/2024  3:00AM",
-      
-      },
-  ]
+      uname: '1234567890',
+      dbname: '345612',
+      error: 'Invalid data',
+      date: '10/04/2024  3:00AM',
+    },
+    {
+      uname: '1234567890',
+      dbname: '345612',
+      error: 'Invalid data',
+      date: '10/04/2024  3:00AM',
+    },
+  ];
 
   return (
     <div className="comm">
-      <Breadcrumb head="Created" linkPara="Database" route={""} linkparaSecond="Created" />
+      <Breadcrumb
+        head="Created"
+        linkPara="Database"
+        route={''}
+        linkparaSecond="Created"
+      />
       <div className="commissionContainer">
         <DataTableHeader
           title="Failed Webhooks"
           onPressFilter={() => filter()}
-          onPressImport={() => { }}
+          onPressImport={() => {}}
           showImportIcon={false}
           showSelectIcon={true}
           showFilterIcon={true}
@@ -107,50 +106,48 @@ const CreateWebHook: React.FC = () => {
 
         <div
           className="TableContainer"
-          style={{ overflowX: "auto", whiteSpace: "nowrap" }} >
+          style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}
+        >
           <table>
             <thead>
               <tr>
-               
                 <th>
                   <div className="table-header">
-                    <p>Webhook ID</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Webhook ID</p>{' '}
+                    <FaArrowDown style={{ color: '#667085' }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Item Id</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Item Id</p> <FaArrowDown style={{ color: '#667085' }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Error</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Error</p> <FaArrowDown style={{ color: '#667085' }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Data & Time</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Data & Time</p>{' '}
+                    <FaArrowDown style={{ color: '#667085' }} />
                   </div>
                 </th>
-                
               </tr>
             </thead>
 
             <tbody>
               {dataDb?.length > 0
                 ? dataDb?.map((el, i) => (
-                  <tr key={i}>
-                   
-                    <td style={{ fontWeight: "500", color: "black" }}>
-                      {el.uname}
-                    </td>
-                    <td>{el.dbname}</td>
-                    <td>{el.error}</td>
-                    <td>{el.date}</td>
-                  
-                    
-                  </tr>
-                ))
+                    <tr key={i}>
+                      <td style={{ fontWeight: '500', color: 'black' }}>
+                        {el.uname}
+                      </td>
+                      <td>{el.dbname}</td>
+                      <td>{el.error}</td>
+                      <td>{el.date}</td>
+                    </tr>
+                  ))
                 : null}
             </tbody>
           </table>

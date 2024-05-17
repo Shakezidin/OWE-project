@@ -1,5 +1,15 @@
 import React, { PureComponent } from 'react';
-import { BarChart, Bar, Rectangle, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import {
+  BarChart,
+  Bar,
+  Rectangle,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from 'recharts';
 
 const data = [
   {
@@ -59,8 +69,6 @@ export default class LineChart extends PureComponent {
 
   render() {
     return (
-        
-       
       <ResponsiveContainer>
         <BarChart
           width={500}
@@ -78,11 +86,14 @@ export default class LineChart extends PureComponent {
           <YAxis />
           <Tooltip />
           <Legend />
-          <Bar dataKey="Recived" fill="#4498ED" activeBar={<Rectangle fill="pink" stroke="blue" />} />
+          <Bar
+            dataKey="Recived"
+            fill="#4498ED"
+            activeBar={<Rectangle fill="pink" stroke="blue" />}
+          />
           {/* <Bar dataKey="Pending" fill="#FF583D" activeBar={<Rectangle fill="gold" stroke="purple" />} /> */}
         </BarChart>
       </ResponsiveContainer>
-     
     );
   }
 }

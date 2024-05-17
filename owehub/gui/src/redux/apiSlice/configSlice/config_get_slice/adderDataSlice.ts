@@ -1,36 +1,36 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 import {
-    getarAdderData,
-    createarAdderData,
-    IAdderRowData,
-    updatearAdderData
-} from "../../../apiActions/arAdderDataAction";
-import { toast } from "react-toastify";
+  getarAdderData,
+  createarAdderData,
+  IAdderRowData,
+  updatearAdderData,
+} from '../../../apiActions/arAdderDataAction';
+import { toast } from 'react-toastify';
 
 interface IState {
   data: IAdderRowData[];
   error: string;
   isLoading: boolean;
   isFormSubmitting: boolean;
-  isSuccess:boolean,
-  count:number
+  isSuccess: boolean;
+  count: number;
 }
 const initialState: IState = {
   isLoading: false,
   isFormSubmitting: false,
-  error: "",
+  error: '',
   data: [],
-  isSuccess:false,
-  count:0
+  isSuccess: false,
+  count: 0,
 };
 
 const adderData = createSlice({
-  name: "adderData",
+  name: 'adderData',
   initialState,
   reducers: {
-    resetSuccess:(state)=>{
-      state.isSuccess = false
-    }
+    resetSuccess: (state) => {
+      state.isSuccess = false;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -39,8 +39,8 @@ const adderData = createSlice({
       })
       .addCase(getarAdderData.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.data = action.payload.list;  
-        state.count = action.payload.count      
+        state.data = action.payload.list;
+        state.count = action.payload.count;
       })
       .addCase(getarAdderData.rejected, (state, action) => {
         state.isLoading = false;
@@ -52,27 +52,27 @@ const adderData = createSlice({
       })
       .addCase(createarAdderData.fulfilled, (state, action) => {
         state.isFormSubmitting = false;
-        state.isSuccess=true
-        toast.success("Form submission completed")
+        state.isSuccess = true;
+        toast.success('Form submission completed');
       })
       .addCase(createarAdderData.rejected, (state, action) => {
         state.isFormSubmitting = false;
         state.error = action.payload as string;
-        toast.error(action.payload as string)
+        toast.error(action.payload as string);
       })
-      .addCase(updatearAdderData.pending,(state, action) => {
+      .addCase(updatearAdderData.pending, (state, action) => {
         state.isFormSubmitting = true;
       })
       .addCase(updatearAdderData.fulfilled, (state, action) => {
         state.isFormSubmitting = false;
-        state.isSuccess=true
-        toast.success("Details updated successfully")
+        state.isSuccess = true;
+        toast.success('Details updated successfully');
       })
       .addCase(updatearAdderData.rejected, (state, action) => {
         state.isFormSubmitting = false;
         state.error = action.payload as string;
-      })
+      });
   },
 });
-export const {resetSuccess} =  adderData.actions
+export const { resetSuccess } = adderData.actions;
 export default adderData.reducer;

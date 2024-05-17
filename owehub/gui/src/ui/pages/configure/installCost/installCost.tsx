@@ -1,29 +1,32 @@
-import React, { useEffect, useState } from "react";
-import TableHeader from "../../../components/tableHeader/TableHeader";
-import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-import Pagination from "../../../components/pagination/Pagination";
-import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
-import { TimeLineSlaModel } from "../../../../core/models/configuration/create/TimeLineSlaModel";
-import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
-import { ICONS } from "../../../icons/Icons";
-import CheckBox from "../../../components/chekbox/CheckBox";
-import { toggleAllRows, toggleRowSelection } from "../../../components/chekbox/checkHelper";
-import { showAlert, successSwal } from "../../../components/alert/ShowAlert";
-import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
-import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
-import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
-import SortableHeader from "../../../components/tableHeader/SortableHeader";
-import { InstallCostColumns } from "../../../../resources/static_data/configureHeaderData/InstallCostColumn";
-import FilterModal from "../../../components/FilterModal/FilterModal";
-import { ROUTES } from "../../../../routes/routes";
+import React, { useEffect, useState } from 'react';
+import TableHeader from '../../../components/tableHeader/TableHeader';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
+import Pagination from '../../../components/pagination/Pagination';
+import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
+import { TimeLineSlaModel } from '../../../../core/models/configuration/create/TimeLineSlaModel';
+import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
+import { ICONS } from '../../../icons/Icons';
+import CheckBox from '../../../components/chekbox/CheckBox';
+import {
+  toggleAllRows,
+  toggleRowSelection,
+} from '../../../components/chekbox/checkHelper';
+import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
+import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
+import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
+import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
+import SortableHeader from '../../../components/tableHeader/SortableHeader';
+import { InstallCostColumns } from '../../../../resources/static_data/configureHeaderData/InstallCostColumn';
+import FilterModal from '../../../components/FilterModal/FilterModal';
+import { ROUTES } from '../../../../routes/routes';
 import {
   getInstallCost,
   ICost,
-} from "../../../../redux/apiActions/installCostAction";
-import CreateInstallCost from "./CreateInstallCost";
-import Loading from "../../../components/loader/Loading";
-import DataNotFound from "../../../components/loader/DataNotFound";
-import MicroLoader from "../../../components/loader/MicroLoader";
+} from '../../../../redux/apiActions/installCostAction';
+import CreateInstallCost from './CreateInstallCost';
+import Loading from '../../../components/loader/Loading';
+import DataNotFound from '../../../components/loader/DataNotFound';
+import MicroLoader from '../../../components/loader/MicroLoader';
 const InstallCost = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -46,11 +49,9 @@ const InstallCost = () => {
   );
   const itemsPerPage = 10;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
-  const [currentPage,setCurrentPage] = useState(
-  1
-  );
-  const [sortKey, setSortKey] = useState("");
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [sortKey, setSortKey] = useState('');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -65,33 +66,35 @@ const InstallCost = () => {
   };
 
   const paginate = (pageNumber: number) => {
-    setCurrentPage(pageNumber)
+    setCurrentPage(pageNumber);
   };
 
-  const { data: commissionList, isLoading,dbCount } = useAppSelector(
-    (state) => state.installConstSlice
-  );
+  const {
+    data: commissionList,
+    isLoading,
+    dbCount,
+  } = useAppSelector((state) => state.installConstSlice);
   const goToNextPage = () => {
-    setCurrentPage(currentPage + 1)
+    setCurrentPage(currentPage + 1);
   };
 
   const goToPrevPage = () => {
-    setCurrentPage(currentPage - 1)
+    setCurrentPage(currentPage - 1);
   };
   const totalPages = Math.ceil(dbCount / itemsPerPage);
 
-  const startIndex = (currentPage - 1) * itemsPerPage+1;
-  const endIndex = currentPage* itemsPerPage
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
+  const endIndex = currentPage * itemsPerPage;
 
   const currentPageData = timelinesla_list?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === timelinesla_list?.length;
   const handleSort = (key: any) => {
     if (sortKey === key) {
-      setSortDirection(sortDirection === "desc" ? "asc" : "desc");
+      setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
     } else {
       setSortKey(key);
-      setSortDirection("asc");
+      setSortDirection('asc');
     }
   };
 
@@ -99,19 +102,19 @@ const InstallCost = () => {
     currentPageData.sort((a: any, b: any) => {
       const aValue = a[sortKey];
       const bValue = b[sortKey];
-      console.log(aValue,bValue,"efjkngbjkgfn");
-      
-      if (typeof aValue === "string" && typeof bValue === "string") {
-        return sortDirection === "asc"
+      console.log(aValue, bValue, 'efjkngbjkgfn');
+
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        return sortDirection === 'asc'
           ? aValue.localeCompare(bValue)
           : bValue.localeCompare(aValue);
       } else {
         // Ensure numeric values for arithmetic operations
         const numericAValue =
-          typeof aValue === "number" ? aValue : parseFloat(aValue);
+          typeof aValue === 'number' ? aValue : parseFloat(aValue);
         const numericBValue =
-          typeof bValue === "number" ? bValue : parseFloat(bValue);
-        return sortDirection === "asc"
+          typeof bValue === 'number' ? bValue : parseFloat(bValue);
+        return sortDirection === 'asc'
           ? numericAValue - numericBValue
           : numericBValue - numericAValue;
       }
@@ -125,10 +128,10 @@ const InstallCost = () => {
 
   const handleArchiveClick = async (record_id: any) => {
     const confirmed = await showAlert(
-      "Are Your Sure",
-      "This Action will archive your data",
-      "Yes",
-      "No"
+      'Are Your Sure',
+      'This Action will archive your data',
+      'Yes',
+      'No'
     );
     if (confirmed) {
       const archived: number[] = record_id;
@@ -141,19 +144,13 @@ const InstallCost = () => {
         page_size: itemsPerPage,
         archived: viewArchived,
       };
-      const res = await postCaller("update_installcost_archive", newValue);
+      const res = await postCaller('update_installcost_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
-        setSelectedRows(new Set())
+        setSelectedRows(new Set());
         dispatch(getInstallCost(pageNumber));
-        await successSwal(
-          "Archived",
-          "The data has been archived "
-        );
+        await successSwal('Archived', 'The data has been archived ');
       } else {
-        await successSwal(
-          "Archived",
-          "The data has been archived "
-        );
+        await successSwal('Archived', 'The data has been archived ');
       }
     }
   };
@@ -164,13 +161,13 @@ const InstallCost = () => {
     handleOpen();
   };
   const fetchFunction = (req: any) => {
-    dispatch(getInstallCost({...req,page_number:currentPage}));
+    dispatch(getInstallCost({ ...req, page_number: currentPage }));
   };
 
   if (error) {
     return <div>Error: {error}</div>;
   }
-console.log(timelinesla_list,"arrr");
+  console.log(timelinesla_list, 'arrr');
 
   return (
     <div className="comm">
@@ -183,13 +180,17 @@ console.log(timelinesla_list,"arrr");
       <div className="commissionContainer">
         <TableHeader
           title="Install Cost"
-          onPressViewArchive={() =>{ 
-            setViewArchived((prev) => !prev)
-            
-
+          onPressViewArchive={() => {
+            setViewArchived((prev) => !prev);
           }}
-          onPressArchive={() =>{selectedRows.size && 
-            handleArchiveClick(Array.from(selectedRows).map((_,i:number)=>currentPageData[i].record_id))}}
+          onPressArchive={() => {
+            selectedRows.size &&
+              handleArchiveClick(
+                Array.from(selectedRows).map(
+                  (_, i: number) => currentPageData[i].record_id
+                )
+              );
+          }}
           onPressFilter={() => filter()}
           onPressImport={() => {}}
           checked={isAllRowsSelected}
@@ -205,7 +206,6 @@ console.log(timelinesla_list,"arrr");
             page_number={currentPage}
             fetchFunction={fetchFunction}
             page_size={itemsPerPage}
-            
           />
         )}
         {open && (
@@ -219,7 +219,7 @@ console.log(timelinesla_list,"arrr");
         )}
         <div
           className="TableContainer"
-          style={{ overflowX: "auto", whiteSpace: "nowrap" }}
+          style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}
         >
           <table>
             <thead>
@@ -254,7 +254,7 @@ console.log(timelinesla_list,"arrr");
               {isLoading ? (
                 <tr>
                   <td colSpan={InstallCostColumns?.length}>
-                    <div style={{ display: "flex", justifyContent: "center" }}>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
                       <MicroLoader />
                     </div>
                   </td>
@@ -263,11 +263,9 @@ console.log(timelinesla_list,"arrr");
                 currentPageData?.map((el: ICost, i: number) => (
                   <tr
                     key={i}
-                    className={
-                      selectedRows.has(el.record_id) ? "selected" : ""
-                    }
+                    className={selectedRows.has(el.record_id) ? 'selected' : ''}
                   >
-                    <td style={{ fontWeight: "500", color: "black" }}>
+                    <td style={{ fontWeight: '500', color: 'black' }}>
                       <div className="flex-check">
                         <CheckBox
                           checked={selectedRows.has(el.record_id)}
@@ -280,57 +278,62 @@ console.log(timelinesla_list,"arrr");
                             )
                           }
                         />
-                       {el.cost}
+                        {el.cost}
                       </div>
                     </td>
                     <td>{el.start_date}</td>
                     <td>{el.end_date}</td>
                     <td>
-                     {(!viewArchived && selectedRows.size<2)&& <div className="action-icon">
-                        <div
-                          className=""
-                          style={{ cursor: "pointer" }}
-                          onClick={() => handleArchiveClick([el.record_id])}
-                        >
-                          <img src={ICONS.ARCHIVE} alt="" />
+                      {!viewArchived && selectedRows.size < 2 && (
+                        <div className="action-icon">
+                          <div
+                            className=""
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => handleArchiveClick([el.record_id])}
+                          >
+                            <img src={ICONS.ARCHIVE} alt="" />
+                          </div>
+                          <div
+                            className=""
+                            onClick={() => handleEditTimeLineSla(el)}
+                            style={{ cursor: 'pointer' }}
+                          >
+                            <img src={ICONS.editIcon} alt="" />
+                          </div>
                         </div>
-                        <div
-                          className=""
-                          onClick={() => handleEditTimeLineSla(el)}
-                          style={{ cursor: "pointer" }}
-                        >
-                          <img src={ICONS.editIcon} alt="" />
-                        </div>
-                      </div>}
+                      )}
                     </td>
                   </tr>
                 ))
-              ) :  <tr style={{ border: 0 }}>
-              <td colSpan={10}>
-                <div className="data-not-found">
-                  <DataNotFound />
-                  <h3>Data Not Found</h3>
-                </div>
-              </td>
-            </tr>}
+              ) : (
+                <tr style={{ border: 0 }}>
+                  <td colSpan={10}>
+                    <div className="data-not-found">
+                      <DataNotFound />
+                      <h3>Data Not Found</h3>
+                    </div>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
         <div className="page-heading-container">
           <p className="page-heading">
-            {startIndex} - {endIndex>dbCount?dbCount:endIndex} of {dbCount} item
+            {startIndex} - {endIndex > dbCount ? dbCount : endIndex} of{' '}
+            {dbCount} item
           </p>
 
           {timelinesla_list?.length > 0 ? (
-           <Pagination
+            <Pagination
               currentPage={currentPage}
               totalPages={totalPages} // You need to calculate total pages
               paginate={paginate}
               currentPageData={currentPageData}
               goToNextPage={goToNextPage}
               goToPrevPage={goToPrevPage}
-perPage={itemsPerPage}
-            /> 
+              perPage={itemsPerPage}
+            />
           ) : null}
         </div>
       </div>

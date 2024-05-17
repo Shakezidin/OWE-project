@@ -3,23 +3,19 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { PayScheduleModel } from '../../../../core/models/configuration/create/PayScheduleModel';
 
-
-
-
-
 const initialState: PayScheduleModel = {
-  record_id:0,
+  record_id: 0,
   partner: '',
-  partner_name: "",
-  installer_name:"",
-  sale_type: "",
-  state:"",
-  rl:"",
-  draw:"",
-  draw_max:"",
-  rep_draw: "",
-  rep_draw_max:"",
-  rep_pay:"",
+  partner_name: '',
+  installer_name: '',
+  sale_type: '',
+  state: '',
+  rl: '',
+  draw: '',
+  draw_max: '',
+  rep_draw: '',
+  rep_draw_max: '',
+  rep_pay: '',
   start_date: '',
   end_date: '',
 };

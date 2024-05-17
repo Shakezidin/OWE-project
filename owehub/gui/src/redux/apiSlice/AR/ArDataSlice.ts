@@ -1,6 +1,6 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { getAR, IGetArdata } from "../../apiActions/arAction";
-import { toast } from "react-toastify";
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { getAR, IGetArdata } from '../../apiActions/arAction';
+import { toast } from 'react-toastify';
 
 interface IState {
   data: IGetArdata[];
@@ -25,15 +25,15 @@ interface IState {
 
 const initialState: IState = {
   data: [],
-  error: "",
+  error: '',
   isLoading: false,
   isFormSubmitting: false,
   isSuccess: 0,
   count: 0,
   filters: {
-    report_type: "ALL",
-    sale_partner: "ALL",
-    sort_by: "partner",
+    report_type: 'ALL',
+    sale_partner: 'ALL',
+    sort_by: 'partner',
     shaky: false,
     cancel: false,
     sold: false,
@@ -45,7 +45,7 @@ const initialState: IState = {
 };
 
 const ArData = createSlice({
-  name: "AR DATA",
+  name: 'AR DATA',
   initialState,
   reducers: {
     resetSuccess: (state) => {
@@ -101,5 +101,10 @@ const ArData = createSlice({
   },
 });
 
-export const { resetSuccess, handleChange,toggleAllDropdown,toggleOffDropdowns } = ArData.actions;
+export const {
+  resetSuccess,
+  handleChange,
+  toggleAllDropdown,
+  toggleOffDropdowns,
+} = ArData.actions;
 export default ArData.reducer;

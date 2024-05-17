@@ -1,27 +1,27 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { CreateOnboardUserStateModel } from "../../../core/models/data_models/UserManagementStateModel";
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { CreateOnboardUserStateModel } from '../../../core/models/data_models/UserManagementStateModel';
 import {
   createUserOnboarding,
   deleteUserOnboarding,
   fetchDealerOwner,
   fetchRegionList,
-} from "../../apiActions/createUserSliceActions";
+} from '../../apiActions/createUserSliceActions';
 
 const initialState: CreateOnboardUserStateModel = {
   loading: false,
   error: null,
   formData: {
     isEdit: false,
-    first_name: "",
-    last_name: "",
-    email_id: "",
-    mobile_number: "",
-    assigned_dealer_name: "",
-    role_name: "Admin",
-    add_region: "",
-    team_name: "",
-    description: "",
-    report_to: "",
+    first_name: '',
+    last_name: '',
+    email_id: '',
+    mobile_number: '',
+    assigned_dealer_name: '',
+    role_name: 'Admin',
+    add_region: '',
+    team_name: '',
+    description: '',
+    report_to: '',
   },
   dealerOwenerList: [],
   regionList: [],
@@ -30,7 +30,7 @@ const initialState: CreateOnboardUserStateModel = {
 };
 
 const createUserSlice = createSlice({
-  name: "CreateOnboardUser",
+  name: 'CreateOnboardUser',
   initialState,
   reducers: {
     updateUserForm(
@@ -48,7 +48,7 @@ const createUserSlice = createSlice({
     },
 
     userResetForm() {
-      console.log("inititaste reset");
+      console.log('inititaste reset');
       return initialState;
     },
   },
@@ -74,7 +74,7 @@ const createUserSlice = createSlice({
         fetchDealerOwner.rejected,
         (state: CreateOnboardUserStateModel, action) => {
           state.loading = false;
-          state.error = action.error.message ?? "Unable to fetch dealer Owener";
+          state.error = action.error.message ?? 'Unable to fetch dealer Owener';
         }
       )
       /** get region list */
@@ -97,7 +97,7 @@ const createUserSlice = createSlice({
         fetchRegionList.rejected,
         (state: CreateOnboardUserStateModel, action) => {
           state.loading = false;
-          state.error = action.error.message ?? "Unable to fetch dealer Owener";
+          state.error = action.error.message ?? 'Unable to fetch dealer Owener';
         }
       )
       /** create user */
@@ -121,7 +121,7 @@ const createUserSlice = createSlice({
         (state: CreateOnboardUserStateModel, action) => {
           state.loading = false;
           state.error =
-            action.error.message ?? "Unable to create Onboarding User";
+            action.error.message ?? 'Unable to create Onboarding User';
         }
       )
       /** delete */
@@ -146,7 +146,7 @@ const createUserSlice = createSlice({
         (state: CreateOnboardUserStateModel, action) => {
           state.loading = false;
           state.error =
-            action.error.message ?? "Unable to create Onboarding User";
+            action.error.message ?? 'Unable to create Onboarding User';
         }
       );
   },

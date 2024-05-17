@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import "../dashboard/dasboard.css";
-import { CommissionModel } from "../../../core/models/configuration/create/CommissionModel";
-import { ICONS } from "../../icons/Icons";
+import React, { useState } from 'react';
+import '../dashboard/dasboard.css';
+import { CommissionModel } from '../../../core/models/configuration/create/CommissionModel';
+import { ICONS } from '../../icons/Icons';
 
 interface ButtonProps {
   editMode: boolean;
@@ -13,27 +13,25 @@ const BreakdownAccordion = () => {
   // Add your accordion content here
   return (
     <>
-  
-      <tr style={{backgroundColor:"#F2F4F6"}}>
+      <tr style={{ backgroundColor: '#F2F4F6' }}>
         <td colSpan={2}>Adder content goes here</td>
       </tr>
-      <tr style={{backgroundColor:"#F2F4F6"}}>
+      <tr style={{ backgroundColor: '#F2F4F6' }}>
         <td>Small System Size</td>
         <td>21250</td>
       </tr>
-      <tr style={{backgroundColor:"#F2F4F6"}}>
+      <tr style={{ backgroundColor: '#F2F4F6' }}>
         <td>Credit</td>
         <td>21250</td>
       </tr>
-      <tr style={{backgroundColor:"#F2F4F6"}}>
+      <tr style={{ backgroundColor: '#F2F4F6' }}>
         <td>Referal</td>
         <td>21250</td>
       </tr>
-      <tr style={{backgroundColor:"#F2F4F6"}}>
+      <tr style={{ backgroundColor: '#F2F4F6' }}>
         <td>Rebates</td>
         <td>21250</td>
       </tr>
-   
     </>
   );
 };
@@ -86,10 +84,10 @@ const ProjectBreakdown: React.FC<ButtonProps> = ({
 
                 <tr
                   onClick={() => setToggleOpen(!toggleOpen)}
-                  style={{ backgroundColor: "lightcyan" }}
+                  style={{ backgroundColor: 'lightcyan' }}
                 >
-                  <td style={{cursor: "pointer"}}>
-                    Adder{" "}
+                  <td style={{ cursor: 'pointer' }}>
+                    Adder{' '}
                     {toggleOpen ? (
                       <span>&#x25B2;</span> // Up arrow
                     ) : (

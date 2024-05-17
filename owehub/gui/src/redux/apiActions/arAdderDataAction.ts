@@ -1,5 +1,5 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import { postCaller } from "../../infrastructure/web_api/services/apiUrl";
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
 
 interface IFilter {
   Column?: string;
@@ -32,31 +32,29 @@ export interface IAdderRowData extends IAdderCreateParams {
   record_id: number;
 }
 
-
 export const getarAdderData = createAsyncThunk(
-  "fetch/arAdderData",
-  async (param:IAdderParams, { rejectWithValue }) => {
+  'fetch/arAdderData',
+  async (param: IAdderParams, { rejectWithValue }) => {
     try {
-      const data = await postCaller("get_adderdata", param);
-     
-      const list =(data.data.adder_data_list || []) as IAdderRowData[];
-      return {list,count:data.dbRecCount}
+      const data = await postCaller('get_adderdata', param);
+
+      const list = (data.data.adder_data_list || []) as IAdderRowData[];
+      return { list, count: data.dbRecCount };
     } catch (error) {
       return rejectWithValue((error as Error).message);
     }
   }
 );
 
-
 export const createarAdderData = createAsyncThunk(
-  "create/arAdderData",
-  async (param:IAdderCreateParams, { rejectWithValue, dispatch }) => {
+  'create/arAdderData',
+  async (param: IAdderCreateParams, { rejectWithValue, dispatch }) => {
     try {
-      const data = await postCaller("create_adderdata", param);
-      if (data.status>201) {
+      const data = await postCaller('create_adderdata', param);
+      if (data.status > 201) {
         return rejectWithValue((data as Error).message);
       }
-      await dispatch(getarAdderData({page_number:1,page_size:10}))
+      await dispatch(getarAdderData({ page_number: 1, page_size: 10 }));
       return data.data;
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -64,20 +62,18 @@ export const createarAdderData = createAsyncThunk(
   }
 );
 
-
 export const updatearAdderData = createAsyncThunk(
-  "update/arAdderData",
-  async (param:IAdderRowData, { rejectWithValue, dispatch }) => {
+  'update/arAdderData',
+  async (param: IAdderRowData, { rejectWithValue, dispatch }) => {
     try {
-      const data = await postCaller("update_adderdata", param);
+      const data = await postCaller('update_adderdata', param);
       if (data.status === 500 || data instanceof Error) {
         return rejectWithValue((data as Error).message);
       }
-      await dispatch(getarAdderData({page_number:1,page_size:10}))
+      await dispatch(getarAdderData({ page_number: 1, page_size: 10 }));
       return data.data;
     } catch (error) {
       return rejectWithValue((error as Error).message);
     }
   }
 );
-

@@ -1,5 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { generateOTP } from "../../apiActions/authActions";
+import { createSlice } from '@reduxjs/toolkit';
+import { generateOTP } from '../../apiActions/authActions';
 
 export interface ResetPasswordModel {
   email: string;
@@ -12,14 +12,14 @@ export interface ResetPasswordModel {
 const initialState: ResetPasswordModel = {
   loading: false,
   error: null,
-  email: "",
-  message: "",
-  otp: "",
-  new_password: "",
+  email: '',
+  message: '',
+  otp: '',
+  new_password: '',
 };
 
 const resetPasswordSlice = createSlice({
-  name: "resetPassword",
+  name: 'resetPassword',
   initialState,
   reducers: {
     updateEmail(state, action) {
@@ -40,7 +40,7 @@ const resetPasswordSlice = createSlice({
       })
       .addCase(generateOTP.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message ?? "something went wrong";
+        state.error = action.error.message ?? 'something went wrong';
       });
   },
 });

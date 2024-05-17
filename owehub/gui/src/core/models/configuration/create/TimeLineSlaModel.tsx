@@ -1,5 +1,5 @@
 export interface TimeLineSlaModel {
-  record_id: number,
+  record_id: number;
   type_m2m: string;
   state: string;
   days: string;

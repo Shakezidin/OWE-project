@@ -1,9 +1,7 @@
-import React from 'react'
+import React from 'react';
 
 const AuthWrapper = () => {
-  return (
-    <div>AuthWrapper</div>
-  )
-}
+  return <div>AuthWrapper</div>;
+};
 
-export default AuthWrapper
+export default AuthWrapper;

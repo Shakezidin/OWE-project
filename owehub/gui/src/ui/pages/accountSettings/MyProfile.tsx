@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
-import Input from "../../components/text_input/Input";
-import { ICONS } from "../../icons/Icons";
-import Select from "react-select";
-import { ActionButton } from "../../components/button/ActionButton";
-import SelectOption from "../../components/selectOption/SelectOption";
+import React, { useState, useEffect } from 'react';
+import Input from '../../components/text_input/Input';
+import { ICONS } from '../../icons/Icons';
+import Select from 'react-select';
+import { ActionButton } from '../../components/button/ActionButton';
+import SelectOption from '../../components/selectOption/SelectOption';
 const MyProfile = () => {
   const [stateOptions, setStateOptions] = useState<any[]>([]);
   const [selectedState, setSelectedState] = useState<string | null>(null);
@@ -14,13 +14,12 @@ const MyProfile = () => {
         setStateOptions(options);
       })
       .catch((error) => {
-        console.error("Error fetching state options:", error);
+        console.error('Error fetching state options:', error);
       });
   }, []);
 
   const fetchStateOptions = async () => {
- 
-    const response = await fetch("https://api.example.com/states");
+    const response = await fetch('https://api.example.com/states');
     const data = await response.json();
     return data.map((state: string) => ({ value: state, label: state }));
   };
@@ -29,27 +28,27 @@ const MyProfile = () => {
     setSelectedState(selectedOption.value);
   };
 
-  const [street, setStreet] = useState("");
-  const [zipCode, setZipCode] = useState("");
-  const [country, setCountry] = useState("");
+  const [street, setStreet] = useState('');
+  const [zipCode, setZipCode] = useState('');
+  const [country, setCountry] = useState('');
 
   const [errors, setErrors] = useState({
-    street: "",
-    zipCode: "",
-    country: "",
+    street: '',
+    zipCode: '',
+    country: '',
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors = {
-      street: street ? "" : "Street is required",
-      zipCode: country ? "" : "Zip Code is required",
-      country: country ? "" : "Country is required",
+      street: street ? '' : 'Street is required',
+      zipCode: country ? '' : 'Zip Code is required',
+      country: country ? '' : 'Country is required',
     };
     setErrors(newErrors);
 
     if (!Object.values(newErrors).some((error) => error)) {
-      console.log("Form submitted successfully");
+      console.log('Form submitted successfully');
     }
   };
   return (
@@ -87,29 +86,28 @@ const MyProfile = () => {
               </div>
             </div>
 
-
             <div
               className="create-input-container"
-              style={{ padding: "0.5rem", marginLeft: "1rem", gap: "2.8%"}}
+              style={{ padding: '0.5rem', marginLeft: '1rem', gap: '2.8%' }}
             >
               <div className="create-input-field-profile">
                 <Input
-                  type={"text"}
+                  type={'text'}
                   label="First Name"
-                  value={""}
+                  value={''}
                   name="fee_rate"
-                  placeholder={"Enter"}
+                  placeholder={'Enter'}
                   onChange={(e) => {}}
                   disabled
                 />
               </div>
               <div className="create-input-field-profile">
                 <Input
-                  type={"text"}
+                  type={'text'}
                   label="Last Name"
-                  value={""}
+                  value={''}
                   name="fee_rate"
-                  placeholder={"Enter"}
+                  placeholder={'Enter'}
                   onChange={(e) => {}}
                   disabled
                 />
@@ -117,26 +115,26 @@ const MyProfile = () => {
             </div>
             <div
               className="create-input-container"
-              style={{ padding: "0.5rem", marginLeft: "1rem", gap: "2.8%" }}
+              style={{ padding: '0.5rem', marginLeft: '1rem', gap: '2.8%' }}
             >
               <div className="create-input-field-profile">
                 <Input
-                  type={"text"}
+                  type={'text'}
                   label="Email"
-                  value={""}
+                  value={''}
                   name="fee_rate"
-                  placeholder={"Enter"}
+                  placeholder={'Enter'}
                   onChange={(e) => {}}
                   disabled
                 />
               </div>
               <div className="create-input-field-profile">
                 <Input
-                  type={"text"}
+                  type={'text'}
                   label="Phone Number"
-                  value={""}
+                  value={''}
                   name="fee_rate"
-                  placeholder={"Enter"}
+                  placeholder={'Enter'}
                   onChange={(e) => {}}
                   disabled
                 />
@@ -155,17 +153,18 @@ const MyProfile = () => {
             </div>
             <div
               className="create-input-container"
-              style={{ padding: "0.5rem", marginLeft: "1rem", gap: "2.8%" }}
+              style={{ padding: '0.5rem', marginLeft: '1rem', gap: '2.8%' }}
             >
               <div className="create-input-field-address">
                 <Input
-                  type={"text"}
+                  type={'text'}
                   label="Street"
                   value={street}
                   name=""
-                  placeholder={"Enter"}
-                  onChange={(e) => {setStreet(e.target.value);
-                    setErrors({ ...errors, street: "" });
+                  placeholder={'Enter'}
+                  onChange={(e) => {
+                    setStreet(e.target.value);
+                    setErrors({ ...errors, street: '' });
                   }}
                 />
                 {errors.street && (
@@ -173,37 +172,40 @@ const MyProfile = () => {
                 )}
               </div>
               <div className="create-input-field-address">
-                <label className="inputLabel-select prof-fields-onboard">State</label>
+                <label className="inputLabel-select prof-fields-onboard">
+                  State
+                </label>
                 <SelectOption
                   onChange={handleStateChange}
                   options={stateOptions}
-                  value={stateOptions?.find((option) => option.value === " ")}
+                  value={stateOptions?.find((option) => option.value === ' ')}
                 />
               </div>
               <div className="create-input-field-address">
-                <label className="inputLabel-select prof-fields-onboard">City</label>
+                <label className="inputLabel-select prof-fields-onboard">
+                  City
+                </label>
                 <SelectOption
                   onChange={handleStateChange}
                   options={stateOptions}
-                  value={stateOptions?.find((option) => option.value === " ")}
+                  value={stateOptions?.find((option) => option.value === ' ')}
                 />
-                  
               </div>
             </div>
             <div
               className="create-input-container"
-              style={{ padding: "0.5rem", marginLeft: "1rem", gap: "24px"  }}
+              style={{ padding: '0.5rem', marginLeft: '1rem', gap: '24px' }}
             >
               <div className="create-input-field-address">
                 <Input
-                  type={"text"}
+                  type={'text'}
                   label="Zip Code"
                   value={zipCode}
                   name=""
-                  placeholder={"Enter"}
-                  onChange={(e) => {setZipCode(e.target.value);
-                    setErrors({ ...errors, zipCode: "" });
-
+                  placeholder={'Enter'}
+                  onChange={(e) => {
+                    setZipCode(e.target.value);
+                    setErrors({ ...errors, zipCode: '' });
                   }}
                 />
                 {errors.zipCode && (
@@ -212,14 +214,14 @@ const MyProfile = () => {
               </div>
               <div className="create-input-field-address">
                 <Input
-                  type={"text"}
+                  type={'text'}
                   label="Country"
                   value={country}
                   name=""
-                  placeholder={"Enter"}
+                  placeholder={'Enter'}
                   onChange={(e) => {
                     setCountry(e.target.value);
-                    setErrors({ ...errors, country: "" });
+                    setErrors({ ...errors, country: '' });
                   }}
                 />
                 {errors.country && (
@@ -230,8 +232,8 @@ const MyProfile = () => {
           </div>
           <div className="">
             <div className="profile-reset">
-              <ActionButton title={"Reset"} type="reset" onClick={() => {}} />
-              <ActionButton title={"Update"} type="submit" onClick={() => {}} />
+              <ActionButton title={'Reset'} type="reset" onClick={() => {}} />
+              <ActionButton title={'Update'} type="submit" onClick={() => {}} />
             </div>
           </div>
         </div>

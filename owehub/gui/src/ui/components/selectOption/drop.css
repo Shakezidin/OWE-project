@@ -1,13 +1,10 @@
-
-
 .dropdown > .css-1nmdiq5-menu {
   scrollbar-color: rgb(173, 173, 173) #fff;
   scrollbar-width: thin;
 }
 
-.dropdown>.css-1nmdiq5-menu::-webkit-scrollbar {
+.dropdown > .css-1nmdiq5-menu::-webkit-scrollbar {
   width: 8px;
-
 }
 
 .dropdown > .css-1nmdiq5-menu::-webkit-scrollbar-thumb {

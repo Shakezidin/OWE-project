@@ -1,9 +1,7 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
-import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
-import { LoanTypeModel } from "../../../../core/models/configuration/create/LoanTypeModel";
-
-
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
+import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
+import { LoanTypeModel } from '../../../../core/models/configuration/create/LoanTypeModel';
 
 interface loanTypeState {
   loantype_list: LoanTypeModel[];
@@ -17,7 +15,7 @@ const initialState: loanTypeState = {
 };
 
 export const fetchLoanType = createAsyncThunk(
-  "loanType/fetchLoanType",
+  'loanType/fetchLoanType',
   async (data: any) => {
     const response = await postCaller(EndPoints.loanType, data);
 
@@ -26,7 +24,7 @@ export const fetchLoanType = createAsyncThunk(
 );
 
 const loanTypeSlice = createSlice({
-  name: "loanType",
+  name: 'loanType',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -51,7 +49,7 @@ const loanTypeSlice = createSlice({
       .addCase(fetchLoanType.rejected, (state, action) => {
         state.loading = false;
         state.error =
-          action.error.message ?? "Failed to fetch LoanTypeModel data";
+          action.error.message ?? 'Failed to fetch LoanTypeModel data';
       });
   },
 });

@@ -1,9 +1,7 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
-import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
-import { SalesTypeModel } from "../../../../core/models/configuration/create/SalesTypeModel";
-
-
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
+import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
+import { SalesTypeModel } from '../../../../core/models/configuration/create/SalesTypeModel';
 
 interface SalesTypeState {
   saletype_list: SalesTypeModel[];
@@ -17,7 +15,7 @@ const initialState: SalesTypeState = {
 };
 
 export const fetchSalesType = createAsyncThunk(
-  "salesType/fetchSalesType",
+  'salesType/fetchSalesType',
   async (data: any) => {
     const response = await postCaller(EndPoints.salesType, data);
 
@@ -26,7 +24,7 @@ export const fetchSalesType = createAsyncThunk(
 );
 
 const salesSlice = createSlice({
-  name: "salesType",
+  name: 'salesType',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -50,7 +48,7 @@ const salesSlice = createSlice({
       })
       .addCase(fetchSalesType.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message ?? "Failed to fetch salesType data";
+        state.error = action.error.message ?? 'Failed to fetch salesType data';
       });
   },
 });

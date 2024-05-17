@@ -1,9 +1,9 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import { postCaller } from "../../infrastructure/web_api/services/apiUrl";
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
 interface Ipaginate {
   page_number: number;
   page_size: number;
-  archived:boolean
+  archived: boolean;
 }
 
 export interface ILeader {
@@ -25,7 +25,7 @@ export interface ILeaderRow extends ILeader {
 }
 
 export const getleaderOverride = createAsyncThunk(
-  "fetch/leaderOverride",
+  'fetch/leaderOverride',
   async (param: Ipaginate, { rejectWithValue }) => {
     try {
       const data = await postCaller("get_leaderoverride", param);
@@ -38,17 +38,19 @@ export const getleaderOverride = createAsyncThunk(
 );
 
 export const createleaderOverride = createAsyncThunk(
-  "create/leader-override",
+  'create/leader-override',
   async (params: ILeader, { rejectWithValue, dispatch }) => {
     try {
-      const data = await postCaller("create_leaderoverride", params);
+      const data = await postCaller('create_leaderoverride', params);
       if (data.status === 500) {
         return rejectWithValue((data as Error).message);
       }
-      await dispatch(getleaderOverride({ page_number: 1, page_size: 10,archived:false }));
+      await dispatch(
+        getleaderOverride({ page_number: 1, page_size: 10, archived: false })
+      );
       return data;
     } catch (error) {
-      console.error(error, "error blocking create_leaderoverride");
+      console.error(error, 'error blocking create_leaderoverride');
       return rejectWithValue((error as Error).message);
     }
   }
@@ -57,16 +59,18 @@ export const createleaderOverride = createAsyncThunk(
 // update_leaderOverride
 
 export const updateleaderOverride = createAsyncThunk(
-  "update/leaderOverride",
+  'update/leaderOverride',
   async (params: ILeaderRow, { rejectWithValue, dispatch }) => {
     try {
-      const data = await postCaller("update_leaderoverride", params);
-      console.log(data,"rejectttt");
-      
+      const data = await postCaller('update_leaderoverride', params);
+      console.log(data, 'rejectttt');
+
       if (data.status === 500 || data instanceof Error) {
         return rejectWithValue((data as Error).message);
       }
-      await dispatch(getleaderOverride({ page_number: 1, page_size: 10,archived:false }));
+      await dispatch(
+        getleaderOverride({ page_number: 1, page_size: 10, archived: false })
+      );
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);
