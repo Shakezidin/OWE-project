@@ -136,6 +136,8 @@ const LeaderOverride = () => {
       };
       const res = await postCaller('update_leaderoverride_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
+        setSelectAllChecked(false)
+        setSelectedRows(new Set());
         dispatch(getleaderOverride(pageNumber));
         await successSwal('Archived', 'The data has been archived ');
       } else {
