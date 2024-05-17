@@ -20,9 +20,9 @@ DECLARE
     v_dealer_id INT;
 BEGIN
     -- Retrieve the user_id for the given dealer_id
-    SELECT user_id INTO v_dealer_id
-    FROM user_details
-    WHERE name = p_dealer_name;
+    SELECT id INTO v_dealer_id
+    FROM v_dealer
+    WHERE dealer_name = p_dealer_name;
 
     -- Check if the dealer_id exists
     IF v_dealer_id IS NULL THEN

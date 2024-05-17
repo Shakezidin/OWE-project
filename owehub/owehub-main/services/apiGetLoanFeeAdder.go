@@ -63,7 +63,7 @@ func HandleGetLoanFeeAdderDataRequest(resp http.ResponseWriter, req *http.Reques
 
 	tableName := db.TableName_loan_fee_adder
 	query = `
-		  SELECT lfa.id as record_id, lfa.unique_id, lfa.type_mktg, ud3.name AS dealer_name, pt.partner_name AS installer_name, st.name AS state_name, lfa.contract_dol_dol, tr.tier_name AS dealer_tier_name,
+		  SELECT lfa.id as record_id, lfa.unique_id, lfa.type_mktg, vd.dealer_name, pt.partner_name AS installer_name, st.name AS state_name, lfa.contract_dol_dol, tr.tier_name AS dealer_tier_name,
 		  lfa.owe_cost, lfa.addr_amount, lfa.per_kw_amount, lfa.rep_doll_divby_per, lfa.description_rep_visible, lfa.notes_not_rep_visible, lfa.type, ud1.name as rep_1_name, ud2.name as rep_2_name, lfa.sys_size,
 		  lfa.rep_count, lfa.per_rep_addr_share, lfa.per_rep_ovrd_share, lfa.r1_pay_scale, lfa.rep_1_def_resp, lfa.r1_addr_resp, lfa.r2_pay_scale, lfa.rep_2_def_resp, lfa.r2_addr_resp, 
 		  lfa.start_date, lfa.end_date
@@ -71,7 +71,7 @@ func HandleGetLoanFeeAdderDataRequest(resp http.ResponseWriter, req *http.Reques
 		  JOIN states st ON st.state_id = lfa.state_id
 		  JOIN user_details ud1 ON ud1.user_id = lfa.rep_1
 		  JOIN user_details ud2 ON ud2.user_id = lfa.rep_2
-		  JOIN user_details ud3 ON ud3.user_id = lfa.dealer_id
+		  JOIN v_dealer vd ON vd.id = lfa.dealer_id
 		  JOIN partners pt ON pt.partner_id = lfa.installer_id
 		  JOIN tier tr ON tr.id = lfa.dealer_tier`
 
@@ -386,7 +386,7 @@ func PrepareLoanFeeAdderFilters(tableName string, dataFilter models.DataRequestB
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(lfa.type_mktg) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "dealer_name":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud3.name) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(vd.dealer_name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "installer_name":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(pt.partner_name) %s LOWER($%d)", operator, len(whereEleList)+1))
