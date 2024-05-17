@@ -280,7 +280,7 @@ const LeaderOverride = () => {
                       <td>{el.start_date}</td>
                       <td>{el.end_date}</td>
                       <td>
-                        {!viewArchived && (
+                        {(!viewArchived && selectedRows.size<2) && (
                           <div className="action-icon">
                             <div
                               className=""
