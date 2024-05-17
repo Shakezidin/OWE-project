@@ -19,7 +19,7 @@ import Select from 'react-select';
 import { paySaleTypeData } from '../../../../resources/static_data/StaticData';
 import { PayScheduleModel } from '../../../../core/models/configuration/create/PayScheduleModel';
 import SelectOption from '../../../components/selectOption/SelectOption';
-import { format } from 'date-fns';
+import { addDays, format } from 'date-fns';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import {
   createleaderOverride,
@@ -299,7 +299,14 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     value={formData.start}
                     name="start"
                     placeholder={'Enter'}
-                    onChange={handleChange}
+                    onChange={(e)=>{
+                      handleChange(e)
+                      setFormData((prev) => ({
+                       ...prev,
+                        end: "",
+                      }))
+
+                    }}
                   />
                   {errors?.start && (
                     <span style={{ display: 'block', color: '#FF204E' }}>
@@ -313,6 +320,8 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     label="End"
                     value={formData.end}
                     name="end"
+                    min={formData.start && format(addDays(new Date(formData.start),1),"yyyy-MM-dd")}
+                    disabled={!formData.start}
                     placeholder={'Enter'}
                     onChange={handleChange}
                   />

@@ -301,14 +301,21 @@ const LeaderOverride = () => {
                       </td>
                     </tr>
                   ))
-                : null}
+                :                 <tr style={{ border: 0 }}>
+                <td colSpan={LeaderOverrideColumns.length}>
+                  <div className="data-not-found">
+                    <DataNotFound />
+                    <h2>Data Not Found</h2>
+                  </div>
+                </td>
+              </tr>}
             </tbody>
           </table>
         </div>
         <div className="page-heading-container">
-          <p className="page-heading">
+         {!!count && <p className="page-heading">
             {startIndex} - {endIndex>count?count:endIndex} of {count} item
-          </p>
+          </p>}
 
           {timelinesla_list?.length > 0 ? (
             <Pagination
