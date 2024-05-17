@@ -155,10 +155,10 @@ export const ARDashboardPage: React.FC = () => {
                   option: (baseStyles, state) => ({
                     ...baseStyles,
                     fontSize: "13px",
-                    color: state.isSelected ? "#ffffff" : "#0493CE",
+                    color: state.isSelected ? "#ffffff" : "#000000",
                     backgroundColor: state.isSelected ? "#0493CE" : "#ffffff",
                     "&:hover": {
-                      backgroundColor: state.isSelected ? "#0493CE" : "#f2f2f2",
+                      backgroundColor: state.isSelected ? "#0493CE" : "#DDEBFF",
                     },
                   }),
                   singleValue: (baseStyles, state) => ({
@@ -231,10 +231,10 @@ export const ARDashboardPage: React.FC = () => {
                   option: (baseStyles, state) => ({
                     ...baseStyles,
                     fontSize: "13px",
-                    color: state.isSelected ? "#ffffff" : "#0493CE",
+                    color: state.isSelected ? "#ffffff" : "#000000",
                     backgroundColor: state.isSelected ? "#0493CE" : "#ffffff",
                     "&:hover": {
-                      backgroundColor: state.isSelected ? "#0493CE" : "#f2f2f2",
+                      backgroundColor: state.isSelected ? "#0493CE" : "#DDEBFF",
                     },
                   }),
                   singleValue: (baseStyles, state) => ({
@@ -306,10 +306,10 @@ export const ARDashboardPage: React.FC = () => {
                   option: (baseStyles, state) => ({
                     ...baseStyles,
                     fontSize: "13px",
-                    color: state.isSelected ? "#ffffff" : "#0493CE",
+                    color: state.isSelected ? "#ffffff" : "#000000",
                     backgroundColor: state.isSelected ? "#0493CE" : "#ffffff",
                     "&:hover": {
-                      backgroundColor: state.isSelected ? "#0493CE" : "#f2f2f2",
+                      backgroundColor: state.isSelected ? "#0493CE" : "#DDEBFF",
                     },
                   }),
                   singleValue: (baseStyles, state) => ({

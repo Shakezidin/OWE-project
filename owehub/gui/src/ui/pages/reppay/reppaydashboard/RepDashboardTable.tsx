@@ -11,6 +11,7 @@ import "../../configure/configure.css";
 import HelpDashboard from "../../dashboard/HelpDashboard";
 import { BiSupport } from "react-icons/bi";
 import PaginationComponent from "../../../components/pagination/PaginationComponent";
+import { MdOutlineHelp } from "react-icons/md";
 
 
 const RepDashBoardTable = () => {
@@ -653,7 +654,7 @@ const RepDashBoardTable = () => {
                     <td>{el.state}</td>
                     <td>{el.sub_total}</td>
                     <td className="zoom-out-help" >
-                      <BiSupport
+                      <MdOutlineHelp
                         onClick={() => handleIconOpen()}
                         style={{height: "16px", width: "16px", stroke: "0.2"}}
                       />

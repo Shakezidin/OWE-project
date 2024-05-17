@@ -10,6 +10,7 @@ import { CommissionModel } from "../../../core/models/configuration/create/Commi
 import ProjectBreakdown from "./ProjectBreakdown";
 import { BiSupport } from "react-icons/bi";
 import Pagination from "../../components/pagination/Pagination";
+import { MdOutlineHelp } from "react-icons/md";
 
 // import { installers, partners, respTypeData, statData } from "../../../../../core/models/data_models/SelectDataModel";
 
@@ -394,13 +395,13 @@ const DashBoardTable: React.FC = () => {
                     <td style={{ color: "#379DE3", fontWeight: "500" }}>{el.cd}</td>
                     <td>
                       {el.ps === 'Active' ? (
-                        <span style={{ color: '#41E418' }}>
-                          <span style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#41E418', marginRight: '5px' }}></span>
+                        <span style={{ color: '#15C31B' }}>
+                          <span style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#15C31B', marginRight: '5px' }}></span>
                           Active
                         </span>
                       ) : (
-                        <span style={{ color: '#EF1C28' }}>
-                          <span style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#EF1C28', marginRight: '5px' }}></span>
+                        <span style={{ color: '#F82C2C' }}>
+                          <span style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#F82C2C', marginRight: '5px' }}></span>
                           Inactive
                         </span>
                       )}
@@ -420,7 +421,7 @@ const DashBoardTable: React.FC = () => {
                         <BiSupport className="bi-support-icon" />
                       </td> */}
                     <td className="zoom-out-help" >
-                      <BiSupport
+                      <MdOutlineHelp
                         onClick={() => handleIconOpen()}
                         style={{ height: "16px", width: "16px", stroke: "0.2" }}
                       />
