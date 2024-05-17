@@ -40,7 +40,6 @@ const UserManagement: React.FC = () => {
   const [selectedOption, setSelectedOption] = useState(ALL_USER_ROLE_LIST[0]);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
-
   const dispatch = useAppDispatch();
   const [tablePermissions, setTablePermissions] = useState({});
   const { loading, userOnboardingList, userRoleBasedList, userPerformanceList } =

@@ -22,7 +22,7 @@ import { TYPE_OF_USER } from "../../../../resources/static_data/Constant";
 import PaginationComponent from "../../../components/pagination/PaginationComponent";
 import { fetchUserListBasedOnRole } from "../../../../redux/apiActions/userManagement/userManagementActions";
 import DBUserTable from "../userManagerAllTable/DBUserTable";
-
+import { getDataTableName } from "../../../../redux/apiActions/dataTableAction";
 interface UserTableProos {
   userDropdownData: UserDropdownModel[];
   userRoleBasedList: UserRoleBasedListModel[];
@@ -67,6 +67,12 @@ const UserManagementTable: React.FC<UserTableProos> = ({
     };
     dispatch(fetchUserListBasedOnRole(data));
   }, [dispatch, currentPage1, pageSize1]);
+
+
+    
+  useEffect(() =>{
+    dispatch(getDataTableName())
+   },[])
 
   const handlePageChange = (page: number) => {
     setCurrentPage1(page);
@@ -253,6 +259,8 @@ const UserManagementTable: React.FC<UserTableProos> = ({
     }
   };
 
+
+
   /** render UI */
   return (
     <>
@@ -290,7 +298,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
         {userRoleBasedList?.length > 0 ? (
           <>
             <p className="page-heading">
-              {startIndex} - {endIndex} of {count} item
+              {startIndex} - {endIndex>count!?count:endIndex} of {count} item
             </p>
             <PaginationComponent
               currentPage={currentPage1}
