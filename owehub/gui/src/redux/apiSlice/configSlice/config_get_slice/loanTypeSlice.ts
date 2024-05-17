@@ -7,11 +7,13 @@ interface loanTypeState {
   loantype_list: LoanTypeModel[];
   loading: boolean;
   error: string | null;
+  count:number
 }
 const initialState: loanTypeState = {
   loantype_list: [],
   loading: false,
   error: null,
+  count:0
 };
 
 export const fetchLoanType = createAsyncThunk(
@@ -45,6 +47,7 @@ const loanTypeSlice = createSlice({
         } else {
           state.loantype_list = [];
         }
+        state.count = action.payload.dbRecCount || 0
       })
       .addCase(fetchLoanType.rejected, (state, action) => {
         state.loading = false;

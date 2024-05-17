@@ -16,6 +16,7 @@ import {
 } from '../../../../core/models/data_models/SelectDataModel';
 import { TierLoanFeeModel } from '../../../../core/models/configuration/create/TierLoanFeeModel';
 import SelectOption from '../../../components/selectOption/SelectOption';
+import { addDays, format } from 'date-fns';
 interface tierLoanProps {
   handleClose: () => void;
   tierEditedData: TierLoanFeeModel | null;
@@ -236,7 +237,11 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
                     value={createTier.start_date}
                     name="start_date"
                     placeholder={'1/04/2004'}
-                    onChange={(e) => handleTierChange(e)}
+                    onChange={(e) => {
+                      handleTierChange(e)
+                      setCreateTier(prev=>({...prev,end_date:""}))
+
+                    }}
                   />
                 </div>
                 <div className="create-input-field">
@@ -244,6 +249,7 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
                     type={'date'}
                     label="End Date"
                     value={createTier.end_date}
+                    min={createTier.end_date && format(addDays(new Date(createTier.start_date),1),"yyyy-MM-dd")}
                     name="end_date"
                     placeholder={'10/04/2004'}
                     onChange={(e) => handleTierChange(e)}

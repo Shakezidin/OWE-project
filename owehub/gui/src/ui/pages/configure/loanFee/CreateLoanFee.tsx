@@ -18,7 +18,7 @@ import {
   dealerOption,
   loanOption,
 } from '../../../../core/models/data_models/SelectDataModel';
-import { format } from 'date-fns';
+import { addDays, format } from 'date-fns';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/loanFeeSlice';
 interface payScheduleProps {
@@ -324,7 +324,13 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     value={newFormData.startDate}
                     name="startDate"
                     placeholder={'Enter'}
-                    onChange={handleChange}
+                    onChange={(e)=>{
+                      handleChange(e)
+                      setNewFormData((prev) => ({
+                       ...prev,
+                        endDate:"",
+                      }));
+                    }}
                   />
                   {errors?.startDate && (
                     <span style={{ display: 'block', color: '#FF204E' }}>
@@ -337,7 +343,9 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                   <Input
                     type={'date'}
                     label="End"
+                    min={newFormData.startDate && format(addDays(new Date(newFormData.startDate),1),"yyyy-MM-dd")}
                     value={newFormData.endDate}
+                    disabled={!newFormData.startDate}
                     name="endDate"
                     placeholder={'Enter'}
                     onChange={handleChange}
