@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cross_button.svg";
 import Input from "../../../components/text_input/Input";
 import { ActionButton } from "../../../components/button/ActionButton";
@@ -46,7 +46,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
   );
   const [selected,setSelected] = useState<Set<number>>(new Set())
   const [selectTable, setSelectTable] = useState<boolean>(false);
-
+const tables = useAppSelector(state=>state.dataTableSlice.option)
 
   /** handle change for role */
   const handleChange = (newValue: any, fieldName: string) => {
@@ -94,7 +94,26 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
       dispatch(updateUserForm({ field: name, value }));
     }
   };
-  console.log(TYPE_OF_USER.ADMIN === selectedOption.value, "slectedd   ");
+
+  useEffect(()=>{
+    if (selectedOption.value===TYPE_OF_USER.ADMIN) {
+      const set  = new Set(Array.from({length:tables.length}).map((_,i:number)=>i))
+      setSelected(set)
+      const obj:{[key:string]:string}  = {}
+      tables.forEach((table:{table_name:string})=>{
+        obj[table.table_name] = "Full"
+      })
+      setTablePermissions(obj)
+    }
+    if (selectedOption.value===TYPE_OF_USER.ADMIN || selectedOption.value===TYPE_OF_USER.DB_USER) {
+      setDbAcess(true)
+    }  
+    else{
+      setTablePermissions({})
+      setDbAcess(false)
+    }
+  },[selectedOption])
+
   /** render ui */
   return (
     <div className="transparent-model">
@@ -145,8 +164,13 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                     </label>
                     <SelectOption
                       options={ALL_USER_ROLE_LIST}
-                      onChange={(newValue) =>
+                      onChange={(newValue) =>{
                         handleChange(newValue, "role_name")
+                        if (newValue?.value!==TYPE_OF_USER.ADMIN) {
+                          setTablePermissions({})
+                          setSelected(new Set())
+                        }
+                      }
                       }
                       value={ALL_USER_ROLE_LIST?.find(
                         (option) => option?.value === formData.role_name
@@ -220,7 +244,12 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                         selectedOption.value !== TYPE_OF_USER.ADMIN &&
                         selectedOption.value !== TYPE_OF_USER.DB_USER
                       }
-                      onChange={() => setDbAcess((prev) => !prev)}
+                      onChange={() =>{
+                         setDbAcess((prev) => !prev)
+                         if (dbAccess) {
+                          setTablePermissions({})
+                         }
+                        }}
                     />
                     <div className="access-data">
                     <p>Database Access</p>

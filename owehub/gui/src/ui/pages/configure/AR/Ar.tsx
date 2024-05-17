@@ -22,6 +22,7 @@ import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
 import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
 import { showAlert, successSwal } from "../../../components/alert/ShowAlert";
 import DataNotFound from "../../../components/loader/DataNotFound";
+import MicroLoader from "../../../components/loader/MicroLoader";
 const AR = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -34,7 +35,7 @@ const AR = () => {
   const dispatch = useAppDispatch();
  
 //   const loading = useAppSelector((state) => state.timelineSla.loading);
-  const error = useAppSelector((state) => state.timelineSla.error);
+
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
@@ -44,7 +45,7 @@ const AR = () => {
   const [currentPage,setCurrentPage] = useState(1);
   const [sortKey, setSortKey] = useState("");
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
-  const {data,count,isSuccess} = useAppSelector((state) => state.ar);
+  const {data,count,isSuccess,isLoading} = useAppSelector((state) => state.ar);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -216,9 +217,7 @@ const AR = () => {
 //     return <div>Loading...</div>;
 //   }
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+
 
   console.log(data, "data")
   console.log(count, totalPages, "count")
@@ -287,8 +286,20 @@ const AR = () => {
               </tr>
             </thead>
             <tbody >
-              {currentPageData?.length > 0
-                ? currentPageData?.map((el: any, i: any) => (
+              {
+             isLoading ? 
+              <tr>
+                <td colSpan={10} >
+                  <div style={{display:"flex",justifyContent:"center"}}>
+
+                  <MicroLoader/>
+                  </div>
+                </td>
+              </tr>
+              
+             : currentPageData?.length > 0
+                ? 
+                currentPageData?.map((el: any, i: any) => (
                   <tr
                     key={i}
                     className={selectedRows.has(i) ? "selected" : ""}
@@ -320,7 +331,7 @@ const AR = () => {
                     <td>{el.ced}</td>
                     <td>{el.partner_name}</td>
                     <td>{el.total_paid}</td>
-                    {viewArchived === true ? null : (
+                    {(!viewArchived && selectedRows.size<2)&&  (
                         <td>
                           <div className="action-icon">
                             <div
@@ -357,8 +368,8 @@ const AR = () => {
         </div>
         <div className="page-heading-container">
 
-         {count && <p className="page-heading">
-            {startIndex} - {endIndex} of {count } item
+         {!!count && <p className="page-heading">
+            {startIndex} - {endIndex>count?count:endIndex} of {count } item
           </p>}
 
           {

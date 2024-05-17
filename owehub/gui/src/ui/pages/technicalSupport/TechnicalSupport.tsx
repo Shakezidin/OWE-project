@@ -7,6 +7,7 @@ import emailjs from "@emailjs/browser";
 import Select from "react-select";
 import { ActionButton } from "../../components/button/ActionButton";
 import SelectOption from "../../components/selectOption/SelectOption";
+import { toast } from "react-toastify";
 
 const TechnicalSupport: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -46,10 +47,10 @@ const TechnicalSupport: React.FC = () => {
       message: message ? "" : "Message is required",
     };
     setErrors(newErrors);
-    if (!Object.values(newErrors).some((error) => error)) {
-      console.log("Form submitted successfully");
-    }
-    if (form.current) {
+    // if (!Object.values(newErrors).some((error) => error)) {
+    //   console.log("Form submitted successfully");
+    // }
+    if (form.current && Object.values(newErrors).every(err=>!err)) {
       emailjs
         .sendForm("service_nof7okz", "template_y3qbqr8", form.current, {
           publicKey: "iVTsTUymXutcfakaX",
@@ -57,6 +58,12 @@ const TechnicalSupport: React.FC = () => {
         .then(
           (response: any) => {
             console.log("SUCCESS!", response);
+            toast.success("Your form has been submitted!");
+            setFirstName("")
+            setLastName("")
+            setEmail("")
+            setPhoneNumber("")
+            setMessage("")
           },
           (error: any) => {
             console.error("FAILED...", error);
@@ -235,7 +242,6 @@ const TechnicalSupport: React.FC = () => {
 
             <div className="reset-Update-support">
               <button type="submit">Submit</button>
-
               {/* <ActionButton title={"Submit"} type="submit" onClick={() => {handleSubmit}} /> */}
             </div>
           </div>

@@ -4,6 +4,8 @@ import { ICONS } from "../../../icons/Icons";
 import { FaArrowDown } from "react-icons/fa6";
 import CheckBox from "../../../components/chekbox/CheckBox";
 import { ActionButton } from "../../../components/button/ActionButton";
+import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
+
 interface ButtonProps {
   setSelectTable: React.Dispatch<React.SetStateAction<boolean>>;
   setTablePermissions: React.Dispatch<React.SetStateAction<any>>;
@@ -19,7 +21,8 @@ const SelectTable: React.FC<ButtonProps> = ({
   selected
 }) => {
 
-
+const dispatch = useAppDispatch()
+const  {option} = useAppSelector((state) => state.dataTableSlice);
   function handleOptionChange(type: string, table: string,ind:number) {
     if (selected.has(ind)) {    
       setTablePermissions((permissions: any) => {
@@ -30,14 +33,10 @@ const SelectTable: React.FC<ButtonProps> = ({
       });
     }
   }
-  const tables = [
-    "internal_ops_metrics_schema",
-    "finance_metrics_schema",
-    "sales_metrics_schema",
-    "field_ops_metrics_schema",
-  ];
 
-
+  const tables = option.map((option:{table_name:string})=>option.table_name)
+  console.log(tables.length,selected.size,"acll check");
+  
   return (
     <>
       <div className="transparent-model">
@@ -53,7 +52,7 @@ const SelectTable: React.FC<ButtonProps> = ({
             <CROSS_BUTTON />
           </div>
           <div className="selectTable-section">
-            <img src={ICONS.leftArrow} alt="" />
+            
             <p> Section Table</p>
           </div>
 
@@ -111,7 +110,7 @@ const SelectTable: React.FC<ButtonProps> = ({
                 </tr>
               </thead>
               <tbody>
-                {tables.map((table, ind) => (
+                {tables.map((table:string, ind:number) => (
                   <tr>
                      <td>
                       <div>
@@ -187,14 +186,15 @@ const SelectTable: React.FC<ButtonProps> = ({
                   </tr>
                 ))}
               </tbody>
+              
             </table>
-            <div style={{display:"flex",justifyContent:"center",marginTop:"3rem"}}>
+           
+          </div>
+           
+          <div style={{display:"flex",justifyContent:"center"}}>
 
 <ActionButton  type="submit" title="Done" onClick={()=>setSelectTable(false)}/>
   </div>
-          </div>
-           
-          
         </div>
       </div>
     </>
