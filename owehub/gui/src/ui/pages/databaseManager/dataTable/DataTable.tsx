@@ -47,6 +47,7 @@ const DataTablle: React.FC = () => {
   const itemsPerPage = 30;
   const start = (currentPage - 1) * itemsPerPage + 1;
   const end = currentPage * itemsPerPage;
+console.log(currentPage * itemsPerPage,"",itemsPerPage);
 
   useEffect(() => {
     if (selectedTable.value) {
@@ -200,7 +201,7 @@ const DataTablle: React.FC = () => {
         </div>
         <div className="page-heading-container">
           <p className="page-heading">
-            {start} - {end} of {dbCount} item
+            {start} - {end>dbCount?dbCount:end} of {dbCount} item
           </p>
 
           {data?.length > 0 ? (
