@@ -1,18 +1,18 @@
-import { ChangeEvent, FC, HTMLAttributes, InputHTMLAttributes } from "react";
-import "./Input.css";
-import { ReactComponent as EYE_ICON } from "../../../resources/assets/eye-icon.svg";
-import { ReactComponent as EYE_OFF_ICON } from "../../../resources/assets/eye-off-icon.svg";
-import { ICONS } from "../../icons/Icons";
+import { ChangeEvent, FC, HTMLAttributes, InputHTMLAttributes } from 'react';
+import './Input.css';
+import { ReactComponent as EYE_ICON } from '../../../resources/assets/eye-icon.svg';
+import { ReactComponent as EYE_OFF_ICON } from '../../../resources/assets/eye-off-icon.svg';
+import { ICONS } from '../../icons/Icons';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   type:
-    | "text"
-    | "number"
-    | "email"
-    | "password"
-    | "date"
-    | "datetime-local"
-    | "file";
+    | 'text'
+    | 'number'
+    | 'email'
+    | 'password'
+    | 'date'
+    | 'datetime-local'
+    | 'file';
   value: string | number;
   placeholder: string;
   label?: string;
@@ -54,19 +54,19 @@ const Input: FC<InputProps> = ({
           disabled={disabled}
           {...rest}
         />
-        {isTypePassword && type === "text" ? (
+        {isTypePassword && type === 'text' ? (
           <EYE_ICON
             className="eyeIcon"
-            style={{ marginRight: "0.5rem" }}
+            style={{ marginRight: '0.5rem' }}
             onClick={onClickEyeIcon}
           />
         ) : (
           <></>
         )}
-        {isTypePassword && type === "password" ? (
+        {isTypePassword && type === 'password' ? (
           <EYE_OFF_ICON
             className="eyeIcon"
-            style={{ marginRight: "0.5rem" }}
+            style={{ marginRight: '0.5rem' }}
             onClick={onClickEyeIcon}
           />
         ) : (
@@ -76,7 +76,7 @@ const Input: FC<InputProps> = ({
           <img
             className="eyeIcon"
             src={ICONS.search}
-            style={{ marginRight: ".5rem" }}
+            style={{ marginRight: '.5rem' }}
             onClick={onClickEyeIcon}
             alt=""
           />

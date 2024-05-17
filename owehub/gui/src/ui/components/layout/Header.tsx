@@ -1,18 +1,18 @@
-import React, { useState, useEffect, useRef } from "react";
-import "./layout.css";
-import "../layout/layout.css";
+import React, { useState, useEffect, useRef } from 'react';
+import './layout.css';
+import '../layout/layout.css';
 import {
   MdKeyboardArrowDown,
   MdKeyboardArrowRight,
   MdKeyboardArrowUp,
-} from "react-icons/md";
-import { ICONS } from "../../icons/Icons";
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { logout } from "../../../redux/apiSlice/authSlice/authSlice";
-import { ROUTES } from "../../../routes/routes";
-import { FaUserCircle } from "react-icons/fa";
-import { IoMdLogOut } from "react-icons/io";
+} from 'react-icons/md';
+import { ICONS } from '../../icons/Icons';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { logout } from '../../../redux/apiSlice/authSlice/authSlice';
+import { ROUTES } from '../../../routes/routes';
+import { FaUserCircle } from 'react-icons/fa';
+import { IoMdLogOut } from 'react-icons/io';
 
 interface Toggleprops {
   toggleOpen: boolean;
@@ -28,8 +28,8 @@ const Header: React.FC<Toggleprops> = ({
   sidebarChange,
 }) => {
   const [name, setName] = useState<String>();
-  const userRole = localStorage.getItem("role");
-  const userName = localStorage.getItem("userName");
+  const userRole = localStorage.getItem('role');
+  const userName = localStorage.getItem('userName');
   const [openIcon, setOPenIcon] = useState<boolean>(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -37,7 +37,7 @@ const Header: React.FC<Toggleprops> = ({
 
   const handleLogout = () => {
     dispatch(logout());
-    navigate("/login");
+    navigate('/login');
   };
   useEffect(() => {
     if (userName) {
@@ -47,64 +47,66 @@ const Header: React.FC<Toggleprops> = ({
   }, [userName]);
   useEffect(() => {
     const handleScroll = () => {
-        const isScrolled = window.scrollY > 0;
-        if (isScrolled !== scrolled) {
-            setScrolled(isScrolled);
-        }
+      const isScrolled = window.scrollY > 0;
+      if (isScrolled !== scrolled) {
+        setScrolled(isScrolled);
+      }
     };
 
     window.addEventListener('scroll', handleScroll);
-    
+
     return () => {
-        window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('scroll', handleScroll);
     };
-}, [scrolled]);
+  }, [scrolled]);
 
+  // Code for if we click anywhere outside dropdown he will close
 
-
-// Code for if we click anywhere outside dropdown he will close
-
-const dropdownRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setOPenIcon(false);
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-
-
-
 
   return (
     <div className={`${scrolled ? 'header-scrolled' : ''} header-content`}>
       <div className="header-icon">
         <div
           className="header-logo"
-          style={{ marginLeft: toggleOpen ? "17px" : "" }}
+          style={{ marginLeft: toggleOpen ? '17px' : '' }}
         >
-          <object type="image/svg+xml" data={ICONS.LOGO} aria-label="login-icon"></object>
+          <object
+            type="image/svg+xml"
+            data={ICONS.LOGO}
+            aria-label="login-icon"
+          ></object>
         </div>
         {toggleOpen && (
           <div
-            className={`icon-shape ${toggleOpen ? "icon-shape-active" : ""}`}
+            className={`icon-shape ${toggleOpen ? 'icon-shape-active' : ''}`}
             onClick={() => setToggleOpen(!toggleOpen)}
             style={{
-              position: "absolute",
-              left: "0px",
-              top: "10px",
-              borderRadius: "0px 10px 10px 0px",
+              position: 'absolute',
+              left: '0px',
+              top: '10px',
+              borderRadius: '0px 10px 10px 0px',
             }}
           >
             <MdKeyboardArrowRight
-              style={{ fontSize: "1.2rem", color: "#23B364" }}
+              style={{ fontSize: '1.2rem', color: '#23B364' }}
             />
           </div>
         )}
@@ -176,9 +178,13 @@ const dropdownRef = useRef<HTMLDivElement>(null);
                   onClick={() => setOPenIcon(!openIcon)}
                 >
                   {openIcon ? (
-                    <img src={ICONS.upperIcon} style={{width: "12px"}} alt="" />
+                    <img
+                      src={ICONS.upperIcon}
+                      style={{ width: '12px' }}
+                      alt=""
+                    />
                   ) : (
-                    <MdKeyboardArrowDown style={{ fontSize: "1.5rem"}} />
+                    <MdKeyboardArrowDown style={{ fontSize: '1.5rem' }} />
                   )}
                   {openIcon && (
                     <div className="header-modal-1">
@@ -191,7 +197,7 @@ const dropdownRef = useRef<HTMLDivElement>(null);
                         </div>
                         <p
                           className=""
-                          style={{ fontSize: "12px", fontWeight: "500" }}
+                          style={{ fontSize: '12px', fontWeight: '500' }}
                         >
                           My Account
                         </p>
@@ -205,20 +211,18 @@ const dropdownRef = useRef<HTMLDivElement>(null);
                         <div className="image-icon">
                           <IoMdLogOut />
                         </div>
-                        
-                          <div
-                         
-                            style={
-                              {
-                                // color: "black",
-                              }
+
+                        <div
+                          style={
+                            {
+                              // color: "black",
                             }
-                          >
-                            <p style={{ fontSize: "12px", fontWeight: "500" }}>
-                              Logout
-                            </p>
-                          </div>
-                        
+                          }
+                        >
+                          <p style={{ fontSize: '12px', fontWeight: '500' }}>
+                            Logout
+                          </p>
+                        </div>
                       </div>
                     </div>
                   )}

@@ -1,28 +1,28 @@
-import React, { useEffect, useState } from "react";
-import "../configure.css";
-import CreateDealer from "./CreateDealer";
-import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
+import React, { useEffect, useState } from 'react';
+import '../configure.css';
+import CreateDealer from './CreateDealer';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 
-import { ICONS } from "../../../icons/Icons";
-import TableHeader from "../../../components/tableHeader/TableHeader";
-import { fetchDealer } from "../../../../redux/apiSlice/configSlice/config_get_slice/dealerSlice";
-import CheckBox from "../../../components/chekbox/CheckBox";
-import { toggleRowSelection } from "../../../components/chekbox/checkHelper";
-import { DealerModel } from "../../../../core/models/configuration/create/DealerModel";
-import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
-import Pagination from "../../../components/pagination/Pagination";
-import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
-import { DealerTableData } from "../../../../resources/static_data/configureHeaderData/DealerTableData";
-import SortableHeader from "../../../components/tableHeader/SortableHeader";
-import FilterModal from "../../../components/FilterModal/FilterModal";
-import DataNotFound from "../../../components/loader/DataNotFound";
-import Loading from "../../../components/loader/Loading";
-import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
-import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
-import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
-import Swal from "sweetalert2";
-import { ROUTES } from "../../../../routes/routes";
-import { showAlert, successSwal } from "../../../components/alert/ShowAlert";
+import { ICONS } from '../../../icons/Icons';
+import TableHeader from '../../../components/tableHeader/TableHeader';
+import { fetchDealer } from '../../../../redux/apiSlice/configSlice/config_get_slice/dealerSlice';
+import CheckBox from '../../../components/chekbox/CheckBox';
+import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
+import { DealerModel } from '../../../../core/models/configuration/create/DealerModel';
+import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
+import Pagination from '../../../components/pagination/Pagination';
+import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
+import { DealerTableData } from '../../../../resources/static_data/configureHeaderData/DealerTableData';
+import SortableHeader from '../../../components/tableHeader/SortableHeader';
+import FilterModal from '../../../components/FilterModal/FilterModal';
+import DataNotFound from '../../../components/loader/DataNotFound';
+import Loading from '../../../components/loader/Loading';
+import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
+import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
+import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
+import Swal from 'sweetalert2';
+import { ROUTES } from '../../../../routes/routes';
+import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
 
 const DealerOverRides: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -40,9 +40,9 @@ const DealerOverRides: React.FC = () => {
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
   const itemsPerPage = 10;
-  const [sortKey, setSortKey] = useState("");
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
-  const [currentPage,setCurrentPage] = useState(1)
+  const [sortKey, setSortKey] = useState('');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [currentPage, setCurrentPage] = useState(1);
   const [editedDealer, setEditDealer] = useState<DealerModel | null>(null);
   useEffect(() => {
     const pageNumber = {
@@ -53,15 +53,15 @@ const DealerOverRides: React.FC = () => {
     dispatch(fetchDealer(pageNumber));
   }, [dispatch, currentPage, viewArchived]);
   const paginate = (pageNumber: number) => {
-    setCurrentPage(pageNumber)
+    setCurrentPage(pageNumber);
   };
 
   const goToNextPage = () => {
-    setCurrentPage(currentPage + 1)
+    setCurrentPage(currentPage + 1);
   };
 
   const goToPrevPage = () => {
-    setCurrentPage(currentPage - 1)
+    setCurrentPage(currentPage - 1);
   };
   const handleAddDealer = () => {
     setEditMode(false);
@@ -82,14 +82,14 @@ const DealerOverRides: React.FC = () => {
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === dealerList?.length;
   const startIndex = (currentPage - 1) * itemsPerPage + 1;
-  
-  const endIndex = currentPage * itemsPerPage 
+
+  const endIndex = currentPage * itemsPerPage;
   const handleSort = (key: any) => {
     if (sortKey === key) {
-      setSortDirection(sortDirection === "desc" ? "asc" : "desc");
+      setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
     } else {
       setSortKey(key);
-      setSortDirection("asc");
+      setSortDirection('asc');
     }
   };
 
@@ -97,17 +97,17 @@ const DealerOverRides: React.FC = () => {
     currentPageData.sort((a: any, b: any) => {
       const aValue = a[sortKey];
       const bValue = b[sortKey];
-      if (typeof aValue === "string" && typeof bValue === "string") {
-        return sortDirection === "asc"
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        return sortDirection === 'asc'
           ? aValue.localeCompare(bValue)
           : bValue.localeCompare(aValue);
       } else {
         // Ensure numeric values for arithmetic operations
         const numericAValue =
-          typeof aValue === "number" ? aValue : parseFloat(aValue);
+          typeof aValue === 'number' ? aValue : parseFloat(aValue);
         const numericBValue =
-          typeof bValue === "number" ? bValue : parseFloat(bValue);
-        return sortDirection === "asc"
+          typeof bValue === 'number' ? bValue : parseFloat(bValue);
+        return sortDirection === 'asc'
           ? numericAValue - numericBValue
           : numericBValue - numericAValue;
       }
@@ -115,10 +115,10 @@ const DealerOverRides: React.FC = () => {
   }
   const handleArchiveAllClick = async () => {
     const confirmed = await showAlert(
-      "Are Your Sure",
-      "This Action will archive your data",
-      "Yes",
-      "No"
+      'Are Your Sure',
+      'This Action will archive your data',
+      'Yes',
+      'No'
     );
     if (confirmed) {
       const archivedRows = Array.from(selectedRows).map(
@@ -145,19 +145,19 @@ const DealerOverRides: React.FC = () => {
           const isAnyRowSelected = remainingSelectedRows.length > 0;
           setSelectAllChecked(isAnyRowSelected);
           setSelectedRows(new Set());
-          await successSwal("Archived", "The data has been archived ");
+          await successSwal('Archived', 'The data has been archived ');
         } else {
-          await successSwal("Archived", "The data has been archived ");
+          await successSwal('Archived', 'The data has been archived ');
         }
       }
     }
   };
   const handleArchiveClick = async (record_id: any) => {
     const confirmed = await showAlert(
-      "Are Your Sure",
-      "This Action will archive your data",
-      "Yes",
-      "No"
+      'Are Your Sure',
+      'This Action will archive your data',
+      'Yes',
+      'No'
     );
     if (confirmed) {
       const archived: number[] = [record_id];
@@ -172,9 +172,9 @@ const DealerOverRides: React.FC = () => {
       const res = await postCaller(EndPoints.update_dealer_archive, newValue);
       if (res.status === HTTP_STATUS.OK) {
         dispatch(fetchDealer(pageNumber));
-        await successSwal("Archived", "The data has been archived ");
+        await successSwal('Archived', 'The data has been archived ');
       } else {
-        await successSwal("Archived", "The data has been archived ");
+        await successSwal('Archived', 'The data has been archived ');
       }
     }
   };
@@ -186,7 +186,7 @@ const DealerOverRides: React.FC = () => {
     setSelectAllChecked(false);
   };
   const fetchFunction = (req: any) => {
-    dispatch(fetchDealer({...req,page_number:currentPage}));
+    dispatch(fetchDealer({ ...req, page_number: currentPage }));
   };
   if (error) {
     return (
@@ -202,8 +202,6 @@ const DealerOverRides: React.FC = () => {
       </div>
     );
   }
-
- 
 
   return (
     <div className="comm">
@@ -246,7 +244,7 @@ const DealerOverRides: React.FC = () => {
         )}
         <div
           className="TableContainer"
-          style={{ overflowX: "auto", whiteSpace: "nowrap" }}
+          style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}
         >
           <table>
             <thead>
@@ -283,7 +281,7 @@ const DealerOverRides: React.FC = () => {
               {currentPageData?.length > 0 ? (
                 currentPageData?.map((el: any, i: any) => (
                   <tr key={i}>
-                    <td style={{ fontWeight: "500", color: "black" }}>
+                    <td style={{ fontWeight: '500', color: 'black' }}>
                       <div className="flex-check">
                         <CheckBox
                           checked={selectedRows.has(i)}
@@ -310,16 +308,14 @@ const DealerOverRides: React.FC = () => {
                           <div className="action-icon">
                             <div
                               className="action-archive"
-                              style={{ cursor: "not-allowed" }}
-                          
+                              style={{ cursor: 'not-allowed' }}
                             >
                               <img src={ICONS.ARCHIVE} alt="" />
                               {/* <span className="tooltiptext">Archive</span> */}
                             </div>
                             <div
                               className="action-archive"
-                              style={{ cursor: "not-allowed" }}
-                            
+                              style={{ cursor: 'not-allowed' }}
                             >
                               <img src={ICONS.editIcon} alt="" />
                               {/* <span className="tooltiptext">Edit</span> */}
@@ -329,7 +325,7 @@ const DealerOverRides: React.FC = () => {
                           <div className="action-icon">
                             <div
                               className="action-archive"
-                              style={{ cursor: "pointer" }}
+                              style={{ cursor: 'pointer' }}
                               onClick={() => handleArchiveClick(el.record_id)}
                             >
                               <img src={ICONS.ARCHIVE} alt="" />
@@ -337,7 +333,7 @@ const DealerOverRides: React.FC = () => {
                             </div>
                             <div
                               className="action-archive"
-                              style={{ cursor: "pointer" }}
+                              style={{ cursor: 'pointer' }}
                               onClick={() => handleEditDealer(el)}
                             >
                               <img src={ICONS.editIcon} alt="" />
@@ -366,7 +362,7 @@ const DealerOverRides: React.FC = () => {
         {dealerList?.length > 0 ? (
           <div className="page-heading-container">
             <p className="page-heading">
-           Showing   {startIndex} - {endIndex} of {totalCount} item
+              Showing {startIndex} - {endIndex} of {totalCount} item
             </p>
             <Pagination
               currentPage={currentPage}

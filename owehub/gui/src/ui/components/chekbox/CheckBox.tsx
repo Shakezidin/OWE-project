@@ -8,7 +8,12 @@ interface CheckboxProps {
   disabled?: boolean;
 }
 
-const CheckBox: React.FC<CheckboxProps> = ({ checked, onChange, indeterminate, disabled }) => {
+const CheckBox: React.FC<CheckboxProps> = ({
+  checked,
+  onChange,
+  indeterminate,
+  disabled,
+}) => {
   const getClassNames = () => {
     let classNames = 'checkbox';
     if (indeterminate) {
@@ -22,7 +27,9 @@ const CheckBox: React.FC<CheckboxProps> = ({ checked, onChange, indeterminate, d
     return classNames;
   };
 
-  const handleMinusSignClick = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
+  const handleMinusSignClick = (
+    e: React.MouseEvent<HTMLSpanElement, MouseEvent>
+  ) => {
     e.stopPropagation(); // Prevent event from bubbling up to the parent elements
     onChange(); // Trigger onChange event to deselect the row
   };
@@ -36,7 +43,11 @@ const CheckBox: React.FC<CheckboxProps> = ({ checked, onChange, indeterminate, d
         className={getClassNames()}
         disabled={disabled}
       />
-      {indeterminate && <span className="minus-sign" onClick={handleMinusSignClick}>-</span>}
+      {indeterminate && (
+        <span className="minus-sign" onClick={handleMinusSignClick}>
+          -
+        </span>
+      )}
     </div>
   );
 };

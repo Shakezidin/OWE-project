@@ -1,5 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { changePasswordAction } from "../../apiActions/authActions";
+import { createSlice } from '@reduxjs/toolkit';
+import { changePasswordAction } from '../../apiActions/authActions';
 
 export interface ResetPasswordModel {
   loading: boolean;
@@ -13,7 +13,7 @@ const initialState: ResetPasswordModel = {
 };
 
 const ChangePasswordSlice = createSlice({
-  name: "chnagePassword",
+  name: 'chnagePassword',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -35,7 +35,7 @@ const ChangePasswordSlice = createSlice({
         changePasswordAction.rejected,
         (state: ResetPasswordModel, action) => {
           state.loading = false;
-          state.error = action.error.message ?? "something went wrong";
+          state.error = action.error.message ?? 'something went wrong';
         }
       );
   },

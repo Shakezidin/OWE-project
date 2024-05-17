@@ -1,24 +1,24 @@
-import React, { useEffect, useState } from "react";
-import TableHeader from "../../../components/tableHeader/TableHeader";
-import { ICONS } from "../../../icons/Icons";
-import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-import CheckBox from "../../../components/chekbox/CheckBox";
-import { toggleRowSelection } from "../../../components/chekbox/checkHelper";
-import Pagination from "../../../components/pagination/Pagination";
-import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
-import { TimeLineSlaModel } from "../../../../core/models/configuration/create/TimeLineSlaModel";
-import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
+import React, { useEffect, useState } from 'react';
+import TableHeader from '../../../components/tableHeader/TableHeader';
+import { ICONS } from '../../../icons/Icons';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
+import CheckBox from '../../../components/chekbox/CheckBox';
+import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
+import Pagination from '../../../components/pagination/Pagination';
+import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
+import { TimeLineSlaModel } from '../../../../core/models/configuration/create/TimeLineSlaModel';
+import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 
-import SortableHeader from "../../../components/tableHeader/SortableHeader";
-import { ApptSettersColumn } from "../../../../resources/static_data/configureHeaderData/ApptSettersColumn";
-import FilterModal from "../../../components/FilterModal/FilterModal";
-import { ROUTES } from "../../../../routes/routes";
-import { fetchApptSetters } from "../../../../redux/apiActions/apptSetterAction";
-import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
-import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
-import { showAlert, successSwal } from "../../../components/alert/ShowAlert";
-import Loading from "../../../components/loader/Loading";
-import CreateAppSetters from "./CreateAppSetters";
+import SortableHeader from '../../../components/tableHeader/SortableHeader';
+import { ApptSettersColumn } from '../../../../resources/static_data/configureHeaderData/ApptSettersColumn';
+import FilterModal from '../../../components/FilterModal/FilterModal';
+import { ROUTES } from '../../../../routes/routes';
+import { fetchApptSetters } from '../../../../redux/apiActions/apptSetterAction';
+import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
+import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
+import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
+import Loading from '../../../components/loader/Loading';
+import CreateAppSetters from './CreateAppSetters';
 const ApptSetters = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -39,8 +39,8 @@ const ApptSetters = () => {
   const currentPage = useAppSelector(
     (state) => state.paginationType.currentPage
   );
-  const [sortKey, setSortKey] = useState("");
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
+  const [sortKey, setSortKey] = useState('');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -76,10 +76,10 @@ const ApptSetters = () => {
   const isAllRowsSelected = selectedRows.size === data?.length;
   const handleSort = (key: any) => {
     if (sortKey === key) {
-      setSortDirection(sortDirection === "desc" ? "asc" : "desc");
+      setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
     } else {
       setSortKey(key);
-      setSortDirection("asc");
+      setSortDirection('asc');
     }
   };
 
@@ -87,17 +87,17 @@ const ApptSetters = () => {
     currentPageData.sort((a: any, b: any) => {
       const aValue = a[sortKey];
       const bValue = b[sortKey];
-      if (typeof aValue === "string" && typeof bValue === "string") {
-        return sortDirection === "asc"
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        return sortDirection === 'asc'
           ? aValue.localeCompare(bValue)
           : bValue.localeCompare(aValue);
       } else {
         // Ensure numeric values for arithmetic operations
         const numericAValue =
-          typeof aValue === "number" ? aValue : parseFloat(aValue);
+          typeof aValue === 'number' ? aValue : parseFloat(aValue);
         const numericBValue =
-          typeof bValue === "number" ? bValue : parseFloat(bValue);
-        return sortDirection === "asc"
+          typeof bValue === 'number' ? bValue : parseFloat(bValue);
+        return sortDirection === 'asc'
           ? numericAValue - numericBValue
           : numericBValue - numericAValue;
       }
@@ -125,10 +125,10 @@ const ApptSetters = () => {
   };
   const handleArchiveAllClick = async () => {
     const confirmed = await showAlert(
-      "Are Your Sure",
-      "This Action will archive your data",
-      "Yes",
-      "No"
+      'Are Your Sure',
+      'This Action will archive your data',
+      'Yes',
+      'No'
     );
     if (confirmed) {
       const archivedRows = Array.from(selectedRows).map(
@@ -145,7 +145,7 @@ const ApptSetters = () => {
           page_size: itemsPerPage,
         };
 
-        const res = await postCaller("update_appt_setters_archive", newValue);
+        const res = await postCaller('update_appt_setters_archive', newValue);
         if (res.status === HTTP_STATUS.OK) {
           // If API call is successful, refetch commissions
           dispatch(fetchApptSetters(pageNumber));
@@ -155,25 +155,19 @@ const ApptSetters = () => {
           const isAnyRowSelected = remainingSelectedRows.length > 0;
           setSelectAllChecked(isAnyRowSelected);
           setSelectedRows(new Set());
-          await successSwal(
-            "Archived",
-            "The data has been archived ",
-          );
+          await successSwal('Archived', 'The data has been archived ');
         } else {
-          await successSwal(
-            "Archived",
-            "The data has been archived ",
-          );
+          await successSwal('Archived', 'The data has been archived ');
         }
       }
     }
   };
   const handleArchiveClick = async (record_id: any) => {
     const confirmed = await showAlert(
-      "Are Your Sure",
-      "This Action will archive your data",
-      "Yes",
-      "No"
+      'Are Your Sure',
+      'This Action will archive your data',
+      'Yes',
+      'No'
     );
     if (confirmed) {
       const archived: number[] = [record_id];
@@ -185,18 +179,12 @@ const ApptSetters = () => {
         page_number: currentPage,
         page_size: itemsPerPage,
       };
-      const res = await postCaller("update_appt_setters_archive", newValue);
+      const res = await postCaller('update_appt_setters_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
         dispatch(fetchApptSetters(pageNumber));
-        await successSwal(
-          "Archived",
-          "The data has been archived "
-        );
+        await successSwal('Archived', 'The data has been archived ');
       } else {
-        await successSwal(
-          "Archived",
-          "The data has been archived "
-        );
+        await successSwal('Archived', 'The data has been archived ');
       }
     }
   };
@@ -250,7 +238,7 @@ const ApptSetters = () => {
         )}
         <div
           className="TableContainer"
-          style={{ overflowX: "auto", whiteSpace: "nowrap" }}
+          style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}
         >
           <table>
             <thead>
@@ -288,9 +276,9 @@ const ApptSetters = () => {
                 ? currentPageData?.map((el: any, i: any) => (
                     <tr
                       key={i}
-                      className={selectedRows.has(i) ? "selected" : ""}
+                      className={selectedRows.has(i) ? 'selected' : ''}
                     >
-                      <td style={{ fontWeight: "500", color: "black" }}>
+                      <td style={{ fontWeight: '500', color: 'black' }}>
                         <div className="flex-check">
                           <CheckBox
                             checked={selectedRows?.has(i)}
@@ -315,7 +303,7 @@ const ApptSetters = () => {
                           <div className="action-icon">
                             <div
                               className=""
-                              style={{ cursor: "pointer" }}
+                              style={{ cursor: 'pointer' }}
                               onClick={() => handleArchiveClick(el.record_id)}
                             >
                               <img src={ICONS.ARCHIVE} alt="" />
@@ -323,7 +311,7 @@ const ApptSetters = () => {
                             <div
                               className=""
                               onClick={() => handleEdit(el)}
-                              style={{ cursor: "pointer" }}
+                              style={{ cursor: 'pointer' }}
                             >
                               <img src={ICONS.editIcon} alt="" />
                             </div>
@@ -342,15 +330,15 @@ const ApptSetters = () => {
           </p>
 
           {data?.length > 0 ? (
-           <Pagination
+            <Pagination
               currentPage={currentPage}
               totalPages={totalPages} // You need to calculate total pages
               paginate={paginate}
               currentPageData={currentPageData}
               goToNextPage={goToNextPage}
               goToPrevPage={goToPrevPage}
-perPage={itemsPerPage}
-            /> 
+              perPage={itemsPerPage}
+            />
           ) : null}
         </div>
       </div>

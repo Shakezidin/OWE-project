@@ -1,30 +1,29 @@
-import React, { useEffect } from "react";
-import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cross_button.svg";
-import { ICONS } from "../../../icons/Icons";
-import { FaArrowDown } from "react-icons/fa6";
-import CheckBox from "../../../components/chekbox/CheckBox";
-import { ActionButton } from "../../../components/button/ActionButton";
-import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
+import React, { useEffect } from 'react';
+import { ReactComponent as CROSS_BUTTON } from '../../../../resources/assets/cross_button.svg';
+import { ICONS } from '../../../icons/Icons';
+import { FaArrowDown } from 'react-icons/fa6';
+import CheckBox from '../../../components/chekbox/CheckBox';
+import { ActionButton } from '../../../components/button/ActionButton';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 
 interface ButtonProps {
   setSelectTable: React.Dispatch<React.SetStateAction<boolean>>;
   setTablePermissions: React.Dispatch<React.SetStateAction<any>>;
   tablePermissions: any;
-  selected:Set<number>,
-  setSelected:React.Dispatch<React.SetStateAction<Set<number>>>,
+  selected: Set<number>;
+  setSelected: React.Dispatch<React.SetStateAction<Set<number>>>;
 }
 const SelectTable: React.FC<ButtonProps> = ({
   setSelectTable,
   setTablePermissions,
   tablePermissions,
   setSelected,
-  selected
+  selected,
 }) => {
-
-const dispatch = useAppDispatch()
-const  {option} = useAppSelector((state) => state.dataTableSlice);
-  function handleOptionChange(type: string, table: string,ind:number) {
-    if (selected.has(ind)) {    
+  const dispatch = useAppDispatch();
+  const { option } = useAppSelector((state) => state.dataTableSlice);
+  function handleOptionChange(type: string, table: string, ind: number) {
+    if (selected.has(ind)) {
       setTablePermissions((permissions: any) => {
         return {
           ...permissions,
@@ -34,9 +33,11 @@ const  {option} = useAppSelector((state) => state.dataTableSlice);
     }
   }
 
-  const tables = option.map((option:{table_name:string})=>option.table_name)
-  console.log(tables.length,selected.size,"acll check");
-  
+  const tables = option.map(
+    (option: { table_name: string }) => option.table_name
+  );
+  console.log(tables.length, selected.size, 'acll check');
+
   return (
     <>
       <div className="transparent-model">
@@ -52,19 +53,17 @@ const  {option} = useAppSelector((state) => state.dataTableSlice);
             <CROSS_BUTTON />
           </div>
           <div className="selectTable-section">
-            
             <p> Section Table</p>
           </div>
 
           <div
             className="TableContainer"
-            style={{ overflowX: "auto", whiteSpace: "nowrap" }}
+            style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}
           >
             <table>
               <thead>
                 <tr>
-
-                <th>
+                  <th>
                     <div>
                       <CheckBox
                         checked={tables.length === selected.size}
@@ -73,7 +72,7 @@ const  {option} = useAppSelector((state) => state.dataTableSlice);
                           if (set.size === tables.length) {
                             set.clear();
                             setSelected(set);
-                            setTablePermissions({})
+                            setTablePermissions({});
                           } else {
                             const newSet = new Set(
                               Array.from(Array(tables.length).keys())
@@ -81,38 +80,37 @@ const  {option} = useAppSelector((state) => state.dataTableSlice);
                             setSelected(newSet);
                           }
                         }}
-                       
                       />
                     </div>
                   </th>
-                 
+
                   <th>
                     <div className="table-header">
                       <p>Table Name</p>
-                      <FaArrowDown style={{ color: "#667085" }} />
+                      <FaArrowDown style={{ color: '#667085' }} />
                     </div>
                   </th>
                   <th>
                     <div className="table-header">
-                      <p>View</p> <FaArrowDown style={{ color: "#667085" }} />
+                      <p>View</p> <FaArrowDown style={{ color: '#667085' }} />
                     </div>
                   </th>
                   <th>
                     <div className="table-header">
-                      <p>Edit</p> <FaArrowDown style={{ color: "#667085" }} />
+                      <p>Edit</p> <FaArrowDown style={{ color: '#667085' }} />
                     </div>
                   </th>
                   <th>
                     <div className="table-header">
-                      <p>Full</p> <FaArrowDown style={{ color: "#667085" }} />
+                      <p>Full</p> <FaArrowDown style={{ color: '#667085' }} />
                     </div>
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {tables.map((table:string, ind:number) => (
+                {tables.map((table: string, ind: number) => (
                   <tr>
-                     <td>
+                    <td>
                       <div>
                         <CheckBox
                           checked={selected.has(ind)}
@@ -120,10 +118,10 @@ const  {option} = useAppSelector((state) => state.dataTableSlice);
                             const set = new Set(Array.from(selected));
                             if (set.has(ind)) {
                               set.delete(ind);
-                              const permissons = {...tablePermissions}
+                              const permissons = { ...tablePermissions };
                               if (table in permissons) {
-                                delete permissons[table]
-                                setTablePermissions(permissons) 
+                                delete permissons[table];
+                                setTablePermissions(permissons);
                               }
                             } else {
                               set.add(ind);
@@ -133,8 +131,8 @@ const  {option} = useAppSelector((state) => state.dataTableSlice);
                         />
                       </div>
                     </td>
-                   
-                    <td style={{ fontWeight: "500", color: "black" }}>
+
+                    <td style={{ fontWeight: '500', color: 'black' }}>
                       {table}
                     </td>
                     <td>
@@ -146,8 +144,10 @@ const  {option} = useAppSelector((state) => state.dataTableSlice);
                             name={table}
                             disabled={!selected.has(ind)}
                             id={table}
-                            checked={tablePermissions[table] === "View"}
-                            onChange={(e) => handleOptionChange("View", table,ind)}
+                            checked={tablePermissions[table] === 'View'}
+                            onChange={(e) =>
+                              handleOptionChange('View', table, ind)
+                            }
                           />
                         </div>
                       </div>
@@ -161,8 +161,10 @@ const  {option} = useAppSelector((state) => state.dataTableSlice);
                             name={table}
                             disabled={!selected.has(ind)}
                             id={table}
-                            checked={tablePermissions[table] === "Edit"}
-                            onChange={(e) => handleOptionChange("Edit", table,ind)}
+                            checked={tablePermissions[table] === 'Edit'}
+                            onChange={(e) =>
+                              handleOptionChange('Edit', table, ind)
+                            }
                           />
                         </div>
                       </div>
@@ -177,8 +179,10 @@ const  {option} = useAppSelector((state) => state.dataTableSlice);
                             disabled={!selected.has(ind)}
                             id={table}
                             // value={"1"}
-                            checked={tablePermissions[table] === "Full"}
-                            onChange={(e) => handleOptionChange("Full", table,ind)}
+                            checked={tablePermissions[table] === 'Full'}
+                            onChange={(e) =>
+                              handleOptionChange('Full', table, ind)
+                            }
                           />
                         </div>
                       </div>
@@ -186,15 +190,16 @@ const  {option} = useAppSelector((state) => state.dataTableSlice);
                   </tr>
                 ))}
               </tbody>
-              
             </table>
-           
           </div>
-           
-          <div style={{display:"flex",justifyContent:"center"}}>
 
-<ActionButton  type="submit" title="Done" onClick={()=>setSelectTable(false)}/>
-  </div>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <ActionButton
+              type="submit"
+              title="Done"
+              onClick={() => setSelectTable(false)}
+            />
+          </div>
         </div>
       </div>
     </>

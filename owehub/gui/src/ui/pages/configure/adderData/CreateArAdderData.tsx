@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
-import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cross_button.svg";
-import Input from "../../../components/text_input/Input";
-import { ActionButton } from "../../../components/button/ActionButton";
-import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-import { format } from "date-fns";
-import { resetSuccess } from "../../../../redux/apiSlice/configSlice/config_get_slice/adderDataSlice";
+import { ReactComponent as CROSS_BUTTON } from '../../../../resources/assets/cross_button.svg';
+import Input from '../../../components/text_input/Input';
+import { ActionButton } from '../../../components/button/ActionButton';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
+import { format } from 'date-fns';
+import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/adderDataSlice';
 import {
   createarAdderData,
   IAdderRowData,
   updatearAdderData,
-} from "../../../../redux/apiActions/arAdderDataAction";
+} from '../../../../redux/apiActions/arAdderDataAction';
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
@@ -25,15 +25,15 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
   const dispatch = useAppDispatch();
 
   const [newFormData, setNewFormData] = useState({
-    unique_id: editData?.unique_id || "",
-    date: editData?.date || "",
-    type: editData?.type_ad_mktg || "",
-    gc: editData?.gc || "",
-    exact_amount: editData?.exact_amount || "",
-    per_kw_amt: editData?.per_kw_amt ? `${editData?.per_kw_amt}` : "",
-    rep_percent: editData?.rep_percent ? `${editData?.rep_percent}` : "",
-    description: editData?.description || "",
-    notes: editData?.notes || "",
+    unique_id: editData?.unique_id || '',
+    date: editData?.date || '',
+    type: editData?.type_ad_mktg || '',
+    gc: editData?.gc || '',
+    exact_amount: editData?.exact_amount || '',
+    per_kw_amt: editData?.per_kw_amt ? `${editData?.per_kw_amt}` : '',
+    rep_percent: editData?.rep_percent ? `${editData?.rep_percent}` : '',
+    description: editData?.description || '',
+    notes: editData?.notes || '',
     // sys_size: editData?.sys_size ? `${editData?.sys_size}` : "",
     // adder_cal: editData?.adder_cal ? `${editData?.adder_cal}` : "",
   });
@@ -42,13 +42,13 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.target;
     if (
-      name === "per_kw_amt" ||
-      name === "exact_amount" ||
-      name === "rep_percent" ||
-      name === "sys_size" ||
-      name === "adder_cal"
+      name === 'per_kw_amt' ||
+      name === 'exact_amount' ||
+      name === 'rep_percent' ||
+      name === 'sys_size' ||
+      name === 'adder_cal'
     ) {
-      if (value === "" || value === "0" || Number(value)) {
+      if (value === '' || value === '0' || Number(value)) {
         setNewFormData((prev) => ({ ...prev, [name]: value }));
       }
     } else {
@@ -63,9 +63,9 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
           ...newFormData,
           record_id: editData?.record_id!,
           per_kw_amt: parseFloat(newFormData.per_kw_amt),
-          exact_amount:parseInt(newFormData.exact_amount),
+          exact_amount: parseInt(newFormData.exact_amount),
           rep_percent: parseFloat(newFormData.rep_percent),
-          type_ad_mktg:newFormData.type
+          type_ad_mktg: newFormData.type,
           // sys_size: parseFloat(newFormData.sys_size),
           // adder_cal: parseFloat(newFormData.adder_cal),
         })
@@ -75,9 +75,9 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
         createarAdderData({
           ...newFormData,
           per_kw_amt: parseFloat(newFormData.per_kw_amt),
-          exact_amount:parseInt(newFormData.exact_amount),
+          exact_amount: parseInt(newFormData.exact_amount),
           rep_percent: parseFloat(newFormData.rep_percent),
-          type_ad_mktg:newFormData.type
+          type_ad_mktg: newFormData.type,
           // sys_size: parseFloat(newFormData.sys_size),
           // adder_cal: parseFloat(newFormData.adder_cal),
         })
@@ -99,9 +99,7 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
         </div>
 
         <h3 className="createProfileText">
-          {!editMode
-            ? "Create Adder Data"
-            : "Update Adder Data"}
+          {!editMode ? 'Create Adder Data' : 'Update Adder Data'}
         </h3>
 
         <div className="modal-body">
@@ -110,117 +108,112 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
               <div className="create-input-container">
                 <div className="create-input-field">
                   <Input
-                    type={"text"}
+                    type={'text'}
                     label="Unique ID"
                     value={newFormData.unique_id}
                     name="unique_id"
-                    placeholder={"Enter"}
+                    placeholder={'Enter'}
                     onChange={handleChange}
                   />
                 </div>
                 <div className="create-input-field">
                   <Input
-                    type={"text"}
+                    type={'text'}
                     label="Type"
                     value={newFormData.type}
                     name="type"
-                    placeholder={"Enter"}
+                    placeholder={'Enter'}
                     onChange={handleChange}
                   />
                 </div>
                 <div className="create-input-field">
                   <Input
-                    type={"date"}
+                    type={'date'}
                     label="Date"
                     value={newFormData.date}
                     name="date"
-                    placeholder={"Enter"}
+                    placeholder={'Enter'}
                     onChange={handleChange}
                   />
                 </div>
               </div>
 
               <div className="create-input-container">
-              
                 <div className="create-input-field">
                   <Input
-                    type={"text"}
+                    type={'text'}
                     label="GC"
                     value={newFormData.gc}
                     name="gc"
-                    placeholder={"Enter"}
+                    placeholder={'Enter'}
                     onChange={handleChange}
                   />
                 </div>
                 <div className="create-input-field">
                   <Input
-                    type={"text"}
+                    type={'text'}
                     label="Exct Amount"
                     value={newFormData.exact_amount}
                     name="exact_amount"
-                    placeholder={"Enter"}
+                    placeholder={'Enter'}
                     onChange={handleChange}
                   />
                 </div>
                 <div className="create-input-field">
                   <Input
-                    type={"text"}
+                    type={'text'}
                     label="Per Kw Amt"
                     value={newFormData.per_kw_amt}
                     name="per_kw_amt"
-                    placeholder={"Enter"}
+                    placeholder={'Enter'}
                     onChange={handleChange}
                   />
                 </div>
               </div>
 
               <div className="create-input-container">
-              
                 <div className="create-input-field">
                   <Input
-                    type={"text"}
+                    type={'text'}
                     label="Rep Percent"
                     value={newFormData.rep_percent}
                     name="rep_percent"
-                    placeholder={"Enter"}
+                    placeholder={'Enter'}
                     onChange={handleChange}
                   />
                 </div>
                 <div className="create-input-field">
                   <Input
-                    type={"text"}
+                    type={'text'}
                     label="Description"
                     value={newFormData.description}
                     name="description"
-                    placeholder={"Enter"}
+                    placeholder={'Enter'}
                     onChange={handleChange}
                   />
                 </div>
                 <div className="create-input-field">
                   <Input
-                    type={"text"}
+                    type={'text'}
                     label="Notes"
                     value={newFormData.notes}
                     name="notes"
-                    placeholder={"Enter"}
+                    placeholder={'Enter'}
                     onChange={handleChange}
                   />
                 </div>
-               
               </div>
-
-           
             </div>
           </div>
         </div>
         <div className="createUserActionButton">
           <ActionButton
-            title={"Cancel"}
+            title={'Cancel'}
             type="reset"
             onClick={() => handleClose()}
           />
           <ActionButton
-            title={editMode === false ? "Save" : "Update"}
+            title={editMode === false ? 'Save' : 'Update'}
             type="submit"
             onClick={() => {}}
           />

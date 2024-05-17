@@ -1,22 +1,21 @@
-import React, { useState } from "react";
-import "../userManagement/user.css";
-import "../configure/configure.css";
-import { FaArrowDown } from "react-icons/fa6";
-import CheckBox from "../../components/chekbox/CheckBox";
-import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import { setCurrentPage } from "../../../redux/apiSlice/paginationslice/paginationSlice";
-import HelpDashboard from "./HelpDashboard";
-import { CommissionModel } from "../../../core/models/configuration/create/CommissionModel";
-import ProjectBreakdown from "./ProjectBreakdown";
-import { BiSupport } from "react-icons/bi";
-import Pagination from "../../components/pagination/Pagination";
-import { MdOutlineHelp } from "react-icons/md";
+import React, { useState } from 'react';
+import '../userManagement/user.css';
+import '../configure/configure.css';
+import { FaArrowDown } from 'react-icons/fa6';
+import CheckBox from '../../components/chekbox/CheckBox';
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
+import { setCurrentPage } from '../../../redux/apiSlice/paginationslice/paginationSlice';
+import HelpDashboard from './HelpDashboard';
+import { CommissionModel } from '../../../core/models/configuration/create/CommissionModel';
+import ProjectBreakdown from './ProjectBreakdown';
+import { BiSupport } from 'react-icons/bi';
+import Pagination from '../../components/pagination/Pagination';
+import { MdOutlineHelp } from 'react-icons/md';
 
 // import { installers, partners, respTypeData, statData } from "../../../../../core/models/data_models/SelectDataModel";
 
 const DashBoardTable: React.FC = () => {
-  const [editedCommission] =
-    useState<CommissionModel | null>(null);
+  const [editedCommission] = useState<CommissionModel | null>(null);
   const [open, setOpen] = useState<boolean>(false);
 
   const [openIcon, setOpenIcon] = useState<boolean>(false);
@@ -29,194 +28,194 @@ const DashBoardTable: React.FC = () => {
 
   const dataUser = [
     {
-      pi: "1234567890",
-      dn: "Josh Morton",
-      sr: "Josh Morton",
-      cn: "josh Morton",
-      cm: "Percentage",
-      pg: "80/20",
-      amt: "$123,456",
-      pipeline: "$100,362",
-      cd: "$300,652",
-      ps: "Active",
-      state: "Texas",
-      sysSize: "10.5",
-      type: "loan",
-      adder: "$62,500",
-      ajh: "12 Days",
-      rl: "$20.00",
-      epc: "2.444",
+      pi: '1234567890',
+      dn: 'Josh Morton',
+      sr: 'Josh Morton',
+      cn: 'josh Morton',
+      cm: 'Percentage',
+      pg: '80/20',
+      amt: '$123,456',
+      pipeline: '$100,362',
+      cd: '$300,652',
+      ps: 'Active',
+      state: 'Texas',
+      sysSize: '10.5',
+      type: 'loan',
+      adder: '$62,500',
+      ajh: '12 Days',
+      rl: '$20.00',
+      epc: '2.444',
     },
     {
-      pi: "1234567890",
-      dn: "Josh Morton",
-      sr: "Josh Morton",
-      cn: "josh Morton",
-      cm: "RL",
-      pg: "-",
-      amt: "$123,456",
-      pipeline: "$100,362",
-      cd: "$300,652",
-      ps: "Active",
-      state: "Texas",
-      sysSize: "10.5",
-      type: "loan",
-      adder: "$62,500",
-      ajh: "12 Days",
-      rl: "$20.00",
-      epc: "2.444",
+      pi: '1234567890',
+      dn: 'Josh Morton',
+      sr: 'Josh Morton',
+      cn: 'josh Morton',
+      cm: 'RL',
+      pg: '-',
+      amt: '$123,456',
+      pipeline: '$100,362',
+      cd: '$300,652',
+      ps: 'Active',
+      state: 'Texas',
+      sysSize: '10.5',
+      type: 'loan',
+      adder: '$62,500',
+      ajh: '12 Days',
+      rl: '$20.00',
+      epc: '2.444',
     },
     {
-      pi: "1234567890",
-      dn: "Josh Morton",
-      sr: "Josh Morton",
-      cn: "josh Morton",
-      cm: "Percentage",
-      pg: "70/30",
-      amt: "$123,456",
-      pipeline: "$100,362",
-      cd: "$300,652",
-      ps: "Active",
-      state: "Texas",
-      sysSize: "10.5",
-      type: "loan",
-      adder: "$62,500",
-      ajh: "12 Days",
-      rl: "$20.00",
-      epc: "2.444",
+      pi: '1234567890',
+      dn: 'Josh Morton',
+      sr: 'Josh Morton',
+      cn: 'josh Morton',
+      cm: 'Percentage',
+      pg: '70/30',
+      amt: '$123,456',
+      pipeline: '$100,362',
+      cd: '$300,652',
+      ps: 'Active',
+      state: 'Texas',
+      sysSize: '10.5',
+      type: 'loan',
+      adder: '$62,500',
+      ajh: '12 Days',
+      rl: '$20.00',
+      epc: '2.444',
     },
     {
-      pi: "1234567890",
-      dn: "Josh Morton",
-      sr: "Josh Morton",
-      cn: "josh Morton",
-      cm: "RL",
-      pg: "-",
-      amt: "$123,456",
-      pipeline: "$100,362",
-      cd: "$300,652",
-      ps: "Active",
-      state: "Texas",
-      sysSize: "10.5",
-      type: "loan",
-      adder: "$62,500",
-      ajh: "12 Days",
-      rl: "$20.00",
-      epc: "2.444",
+      pi: '1234567890',
+      dn: 'Josh Morton',
+      sr: 'Josh Morton',
+      cn: 'josh Morton',
+      cm: 'RL',
+      pg: '-',
+      amt: '$123,456',
+      pipeline: '$100,362',
+      cd: '$300,652',
+      ps: 'Active',
+      state: 'Texas',
+      sysSize: '10.5',
+      type: 'loan',
+      adder: '$62,500',
+      ajh: '12 Days',
+      rl: '$20.00',
+      epc: '2.444',
     },
     {
-      pi: "1234567890",
-      dn: "Josh Morton",
-      sr: "Josh Morton",
-      cn: "josh Morton",
-      cm: "Percentage",
-      pg: "80/20",
-      amt: "$123,456",
-      pipeline: "$100,362",
-      cd: "$300,652",
-      ps: "Inactive",
-      state: "Texas",
-      sysSize: "10.5",
-      type: "loan",
-      adder: "$62,500",
-      ajh: "12 Days",
-      rl: "$20.00",
-      epc: "2.444",
+      pi: '1234567890',
+      dn: 'Josh Morton',
+      sr: 'Josh Morton',
+      cn: 'josh Morton',
+      cm: 'Percentage',
+      pg: '80/20',
+      amt: '$123,456',
+      pipeline: '$100,362',
+      cd: '$300,652',
+      ps: 'Inactive',
+      state: 'Texas',
+      sysSize: '10.5',
+      type: 'loan',
+      adder: '$62,500',
+      ajh: '12 Days',
+      rl: '$20.00',
+      epc: '2.444',
     },
     {
-      pi: "1234567890",
-      dn: "Josh Morton",
-      sr: "Josh Morton",
-      cn: "josh Morton",
-      cm: "RL",
-      pg: "-",
-      amt: "$123,456",
-      pipeline: "$100,362",
-      cd: "$300,652",
-      ps: "Active",
-      state: "Texas",
-      sysSize: "10.5",
-      type: "loan",
-      adder: "$62,500",
-      ajh: "12 Days",
-      rl: "$20.00",
-      epc: "2.444",
+      pi: '1234567890',
+      dn: 'Josh Morton',
+      sr: 'Josh Morton',
+      cn: 'josh Morton',
+      cm: 'RL',
+      pg: '-',
+      amt: '$123,456',
+      pipeline: '$100,362',
+      cd: '$300,652',
+      ps: 'Active',
+      state: 'Texas',
+      sysSize: '10.5',
+      type: 'loan',
+      adder: '$62,500',
+      ajh: '12 Days',
+      rl: '$20.00',
+      epc: '2.444',
     },
     {
-      pi: "1234567890",
-      dn: "Josh Morton",
-      sr: "Josh Morton",
-      cn: "josh Morton",
-      cm: "Percentage",
-      pg: "70/30",
-      amt: "$123,456",
-      pipeline: "$100,362",
-      cd: "$300,652",
-      ps: "Active",
-      state: "Texas",
-      sysSize: "10.5",
-      type: "loan",
-      adder: "$62,500",
-      ajh: "12 Days",
-      rl: "$20.00",
-      epc: "2.444",
+      pi: '1234567890',
+      dn: 'Josh Morton',
+      sr: 'Josh Morton',
+      cn: 'josh Morton',
+      cm: 'Percentage',
+      pg: '70/30',
+      amt: '$123,456',
+      pipeline: '$100,362',
+      cd: '$300,652',
+      ps: 'Active',
+      state: 'Texas',
+      sysSize: '10.5',
+      type: 'loan',
+      adder: '$62,500',
+      ajh: '12 Days',
+      rl: '$20.00',
+      epc: '2.444',
     },
     {
-      pi: "1234567890",
-      dn: "Josh Morton",
-      sr: "Josh Morton",
-      cn: "josh Morton",
-      cm: "RL",
-      pg: "-",
-      amt: "$123,456",
-      pipeline: "$100,362",
-      cd: "$300,652",
-      ps: "Active",
-      state: "Texas",
-      sysSize: "10.5",
-      type: "loan",
-      adder: "$62,500",
-      ajh: "12 Days",
-      rl: "$20.00",
-      epc: "2.444",
+      pi: '1234567890',
+      dn: 'Josh Morton',
+      sr: 'Josh Morton',
+      cn: 'josh Morton',
+      cm: 'RL',
+      pg: '-',
+      amt: '$123,456',
+      pipeline: '$100,362',
+      cd: '$300,652',
+      ps: 'Active',
+      state: 'Texas',
+      sysSize: '10.5',
+      type: 'loan',
+      adder: '$62,500',
+      ajh: '12 Days',
+      rl: '$20.00',
+      epc: '2.444',
     },
     {
-      pi: "1234567890",
-      dn: "Josh Morton",
-      sr: "Josh Morton",
-      cn: "josh Morton",
-      cm: "Percentage",
-      pg: "80/20",
-      amt: "$123,456",
-      pipeline: "$100,362",
-      cd: "$300,652",
-      ps: "Active",
-      state: "Texas",
-      sysSize: "10.5",
-      type: "loan",
-      adder: "$62,500",
-      ajh: "12 Days",
-      rl: "$20.00",
-      epc: "2.444",
+      pi: '1234567890',
+      dn: 'Josh Morton',
+      sr: 'Josh Morton',
+      cn: 'josh Morton',
+      cm: 'Percentage',
+      pg: '80/20',
+      amt: '$123,456',
+      pipeline: '$100,362',
+      cd: '$300,652',
+      ps: 'Active',
+      state: 'Texas',
+      sysSize: '10.5',
+      type: 'loan',
+      adder: '$62,500',
+      ajh: '12 Days',
+      rl: '$20.00',
+      epc: '2.444',
     },
     {
-      pi: "1234567890",
-      dn: "Josh Morton",
-      sr: "Josh Morton",
-      cn: "josh Morton",
-      cm: "RL",
-      pg: "-",
-      amt: "$123,456",
-      pipeline: "$100,362",
-      cd: "$300,652",
-      ps: "Active",
-      state: "Texas",
-      sysSize: "10.5",
-      type: "loan",
-      adder: "$62,500",
-      ajh: "12 Days",
-      rl: "$20.00",
-      epc: "2.444",
+      pi: '1234567890',
+      dn: 'Josh Morton',
+      sr: 'Josh Morton',
+      cn: 'josh Morton',
+      cm: 'RL',
+      pg: '-',
+      amt: '$123,456',
+      pipeline: '$100,362',
+      cd: '$300,652',
+      ps: 'Active',
+      state: 'Texas',
+      sysSize: '10.5',
+      type: 'loan',
+      adder: '$62,500',
+      ajh: '12 Days',
+      rl: '$20.00',
+      epc: '2.444',
     },
   ];
   const dispatch = useAppDispatch();
@@ -246,111 +245,111 @@ const DashBoardTable: React.FC = () => {
       <div className="dashBoard-container">
         <div
           className="TableContainer"
-          style={{ overflowX: "auto", whiteSpace: "nowrap" }}
+          style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}
         >
           <table>
             <thead>
-              <tr  >
+              <tr>
                 <th>
                   <div>
                     <CheckBox
                       checked={false}
-                      onChange={() => { }}
-                    // indeterminate={isAnyRowSelected && !isAllRowsSelected}
+                      onChange={() => {}}
+                      // indeterminate={isAnyRowSelected && !isAllRowsSelected}
                     />
                   </div>
                 </th>
 
-                <th style={{ padding: "0px" }}>
+                <th style={{ padding: '0px' }}>
                   <div className="table-header">
-                    <p>Project ID</p>{" "}
-                    <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Project ID</p>{' '}
+                    <FaArrowDown style={{ color: '#667085' }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Dealer Name</p>{" "}
-                    <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Dealer Name</p>{' '}
+                    <FaArrowDown style={{ color: '#667085' }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Sales Rep</p>{" "}
-                    <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Sales Rep</p>{' '}
+                    <FaArrowDown style={{ color: '#667085' }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Cust Name</p>{" "}
-                    <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Cust Name</p>{' '}
+                    <FaArrowDown style={{ color: '#667085' }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Comm Model</p>{" "}
-                    <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Comm Model</p>{' '}
+                    <FaArrowDown style={{ color: '#667085' }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Percent</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Percent</p> <FaArrowDown style={{ color: '#667085' }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Amt Prep</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Amt Prep</p> <FaArrowDown style={{ color: '#667085' }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Pipe Rem</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Pipe Rem</p> <FaArrowDown style={{ color: '#667085' }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Curr Due</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Curr Due</p> <FaArrowDown style={{ color: '#667085' }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Proj Status</p>{" "}
-                    <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Proj Status</p>{' '}
+                    <FaArrowDown style={{ color: '#667085' }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>State</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>State</p> <FaArrowDown style={{ color: '#667085' }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Sys. Size</p>{" "}
-                    <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Sys. Size</p>{' '}
+                    <FaArrowDown style={{ color: '#667085' }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Type</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Type</p> <FaArrowDown style={{ color: '#667085' }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Adder</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Adder</p> <FaArrowDown style={{ color: '#667085' }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>AHJ</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>AHJ</p> <FaArrowDown style={{ color: '#667085' }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>RL</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>RL</p> <FaArrowDown style={{ color: '#667085' }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>EPC</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>EPC</p> <FaArrowDown style={{ color: '#667085' }} />
                   </div>
                 </th>
                 <th>
@@ -363,71 +362,99 @@ const DashBoardTable: React.FC = () => {
             <tbody>
               {dataUser.length > 0
                 ? dataUser.map((el, i) => (
-                  <tr key={i}>
-                    <td>
-                      <CheckBox
-                        checked={false}
-                        onChange={() => { }}
-                      // indeterminate={isAnyRowSelected && !isAllRowsSelected}
-                      />
-                    </td>
-                    <td
-                      onClick={() => {
-                        handleOpen();
-                      }}
-                      style={{
-                        color: "101828",
-                        paddingLeft: "0",
-                        cursor: "pointer",
-                        fontWeight: "500"
-                      }}
-                      className="zoom-out-td"
-                    >
-                      {el.pi}
-                    </td>
-                    <td style={{ color: "#101828" }}>{el.dn}</td>
-                    <td style={{ color: "#101828" }}>{el.sr}</td>
-                    <td style={{ color: "#101828" }}>{el.cn}</td>
-                    <td style={{ color: "#101828" }}>{el.cm}</td>
-                    <td style={{ color: "#101828" }}>{el.pg}</td>
-                    <td style={{ color: "#63BC51", fontWeight: "500" }}>{el.amt}</td>
-                    <td style={{ color: "#EB5CAE", fontWeight: "500" }}>{el.pipeline}</td>
-                    <td style={{ color: "#379DE3", fontWeight: "500" }}>{el.cd}</td>
-                    <td>
-                      {el.ps === 'Active' ? (
-                        <span style={{ color: '#15C31B' }}>
-                          <span style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#15C31B', marginRight: '5px' }}></span>
-                          Active
-                        </span>
-                      ) : (
-                        <span style={{ color: '#F82C2C' }}>
-                          <span style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#F82C2C', marginRight: '5px' }}></span>
-                          Inactive
-                        </span>
-                      )}
-                    </td>
-                    <td>{el.state}</td>
-                    <td>{el.sysSize}</td>
-                    <td>{el.type}</td>
-                    <td>{el.adder}</td>
-                    <td>{el.ajh}</td>
-                    <td>{el.rl}</td>
-                    <td>{el.epc}</td>
-                    {/* <td
+                    <tr key={i}>
+                      <td>
+                        <CheckBox
+                          checked={false}
+                          onChange={() => {}}
+                          // indeterminate={isAnyRowSelected && !isAllRowsSelected}
+                        />
+                      </td>
+                      <td
+                        onClick={() => {
+                          handleOpen();
+                        }}
+                        style={{
+                          color: '101828',
+                          paddingLeft: '0',
+                          cursor: 'pointer',
+                          fontWeight: '500',
+                        }}
+                        className="zoom-out-td"
+                      >
+                        {el.pi}
+                      </td>
+                      <td style={{ color: '#101828' }}>{el.dn}</td>
+                      <td style={{ color: '#101828' }}>{el.sr}</td>
+                      <td style={{ color: '#101828' }}>{el.cn}</td>
+                      <td style={{ color: '#101828' }}>{el.cm}</td>
+                      <td style={{ color: '#101828' }}>{el.pg}</td>
+                      <td style={{ color: '#63BC51', fontWeight: '500' }}>
+                        {el.amt}
+                      </td>
+                      <td style={{ color: '#EB5CAE', fontWeight: '500' }}>
+                        {el.pipeline}
+                      </td>
+                      <td style={{ color: '#379DE3', fontWeight: '500' }}>
+                        {el.cd}
+                      </td>
+                      <td>
+                        {el.ps === 'Active' ? (
+                          <span style={{ color: '#15C31B' }}>
+                            <span
+                              style={{
+                                display: 'inline-block',
+                                width: '8px',
+                                height: '8px',
+                                borderRadius: '50%',
+                                backgroundColor: '#15C31B',
+                                marginRight: '5px',
+                              }}
+                            ></span>
+                            Active
+                          </span>
+                        ) : (
+                          <span style={{ color: '#F82C2C' }}>
+                            <span
+                              style={{
+                                display: 'inline-block',
+                                width: '8px',
+                                height: '8px',
+                                borderRadius: '50%',
+                                backgroundColor: '#F82C2C',
+                                marginRight: '5px',
+                              }}
+                            ></span>
+                            Inactive
+                          </span>
+                        )}
+                      </td>
+                      <td>{el.state}</td>
+                      <td>{el.sysSize}</td>
+                      <td>{el.type}</td>
+                      <td>{el.adder}</td>
+                      <td>{el.ajh}</td>
+                      <td>{el.rl}</td>
+                      <td>{el.epc}</td>
+                      {/* <td
                         style={{ cursor: "pointer", color: "#101828" }}
                         onClick={() => handleIconOpen()}
                         className="zoom-out-help"
                       >
                         <BiSupport className="bi-support-icon" />
                       </td> */}
-                    <td className="zoom-out-help" >
-                      <MdOutlineHelp
-                        onClick={() => handleIconOpen()}
-                        style={{ height: "16px", width: "16px", stroke: "0.2" }}
-                      />
-                    </td>
-                  </tr>
-                ))
+                      <td className="zoom-out-help">
+                        <MdOutlineHelp
+                          onClick={() => handleIconOpen()}
+                          style={{
+                            height: '16px',
+                            width: '16px',
+                            stroke: '0.2',
+                          }}
+                        />
+                      </td>
+                    </tr>
+                  ))
                 : null}
             </tbody>
           </table>

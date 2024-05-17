@@ -1,21 +1,21 @@
-import React, { useState, useEffect, useRef } from "react";
-import "./dasboard.css";
-import Select from "react-select";
-import DashboardTotal from "./DashboardTotal";
-import { ICONS } from "../../icons/Icons";
-import DashBoardTable from "./DashBoardTable";
-import DashBoardChart from "./DashBoardChart";
-import { comissionValueData } from "../../../resources/static_data/StaticData";
-import FilterModal from "../../components/FilterModal/FilterModal";
-import "react-date-range/dist/styles.css"; // main style file
-import "react-date-range/dist/theme/default.css"; // theme css file
-import { DateRangePicker } from "react-date-range";
+import React, { useState, useEffect, useRef } from 'react';
+import './dasboard.css';
+import Select from 'react-select';
+import DashboardTotal from './DashboardTotal';
+import { ICONS } from '../../icons/Icons';
+import DashBoardTable from './DashBoardTable';
+import DashBoardChart from './DashBoardChart';
+import { comissionValueData } from '../../../resources/static_data/StaticData';
+import FilterModal from '../../components/FilterModal/FilterModal';
+import 'react-date-range/dist/styles.css'; // main style file
+import 'react-date-range/dist/theme/default.css'; // theme css file
+import { DateRangePicker } from 'react-date-range';
 
 export const DashboardPage: React.FC = () => {
   const [selectionRange, setSelectionRange] = useState({
     startDate: new Date(),
     endDate: new Date(),
-    key: "selection",
+    key: 'selection',
   });
   const [showDatePicker, setShowDatePicker] = useState(false);
 
@@ -31,7 +31,7 @@ export const DashboardPage: React.FC = () => {
     setSelectionRange({
       startDate: new Date(),
       endDate: new Date(),
-      key: "selection",
+      key: 'selection',
     });
   };
 
@@ -53,7 +53,7 @@ export const DashboardPage: React.FC = () => {
   const handleSelectChange2 = (
     selectedOption2: { value: string; label: string } | null
   ) => {
-    setSelectedOption2(selectedOption2 ? selectedOption2.value : "");
+    setSelectedOption2(selectedOption2 ? selectedOption2.value : '');
   };
   const filterClose = () => {
     setFilterModal(false);
@@ -71,13 +71,12 @@ export const DashboardPage: React.FC = () => {
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-
 
   return (
     <>
@@ -88,7 +87,7 @@ export const DashboardPage: React.FC = () => {
           </div> */}
           <div className="dashboard-payroll">
             <div className="dash-head-input">
-              <label className="inputLabel" style={{ color: "#344054" }}>
+              <label className="inputLabel" style={{ color: '#344054' }}>
                 Commission Model
               </label>
               <Select
@@ -100,50 +99,50 @@ export const DashboardPage: React.FC = () => {
                 styles={{
                   control: (baseStyles, state) => ({
                     ...baseStyles,
-                    fontSize: "13px",
-                    fontWeight: "500",
-                    borderRadius: ".40rem",
-                    border: "none",
-                    outline: "none",
-                    width: "6rem",
-                    minHeight: "unset",
-                    height: "30px",
-                    alignContent: "center",
-                    backgroundColor: "#ffffff",
-                    cursor: "pointer"
+                    fontSize: '13px',
+                    fontWeight: '500',
+                    borderRadius: '.40rem',
+                    border: 'none',
+                    outline: 'none',
+                    width: '6rem',
+                    minHeight: 'unset',
+                    height: '30px',
+                    alignContent: 'center',
+                    backgroundColor: '#ffffff',
+                    cursor: 'pointer',
                   }),
                   dropdownIndicator: (baseStyles, state) => ({
                     ...baseStyles,
-                    color: "#0493CE",
-                    "&:hover": {
-                      color: "#0493CE",
+                    color: '#0493CE',
+                    '&:hover': {
+                      color: '#0493CE',
                     },
                   }),
                   indicatorSeparator: () => ({
-                    display: "none",
+                    display: 'none',
                   }),
                   option: (baseStyles, state) => ({
                     ...baseStyles,
-                    fontSize: "13px",
-                    color: state.isSelected ? "#ffffff" : "#0000000",
-                    backgroundColor: state.isSelected ? "#0493CE" : "#ffffff",
-                    "&:hover": {
-                      backgroundColor: state.isSelected ? "#0493CE" : "#DDEBFF",
+                    fontSize: '13px',
+                    color: state.isSelected ? '#ffffff' : '#0000000',
+                    backgroundColor: state.isSelected ? '#0493CE' : '#ffffff',
+                    '&:hover': {
+                      backgroundColor: state.isSelected ? '#0493CE' : '#DDEBFF',
                     },
                   }),
                   singleValue: (baseStyles, state) => ({
                     ...baseStyles,
-                    color: "#0493CE",
+                    color: '#0493CE',
                   }),
                   menu: (baseStyles) => ({
                     ...baseStyles,
-                    width: "6rem",
-                  })
+                    width: '6rem',
+                  }),
                 }}
               />
             </div>
             <div className="dash-head-input">
-              <label className="inputLabel" style={{ color: "#344054" }}>
+              <label className="inputLabel" style={{ color: '#344054' }}>
                 Payroll Date
               </label>
               {/* <label className="payroll-label">Start:</label>
@@ -151,10 +150,18 @@ export const DashboardPage: React.FC = () => {
               <label className="payroll-label">End:</label>
               <input type="date" className="payroll-date" /> */}
               <div
-                style={{ position: "relative", top: "-1px", backgroundColor: "white" }}
+                style={{
+                  position: 'relative',
+                  top: '-1px',
+                  backgroundColor: 'white',
+                }}
                 ref={datePickerRef}
               >
-                <label className="date-button" onClick={handleToggleDatePicker} style={{ color: "#0493CE" }}>
+                <label
+                  className="date-button"
+                  onClick={handleToggleDatePicker}
+                  style={{ color: '#0493CE' }}
+                >
                   Select Date
                 </label>
                 {showDatePicker && (
@@ -181,12 +188,12 @@ export const DashboardPage: React.FC = () => {
             </div>
 
             <div className="dash-head-input">
-              <label className="inputLabel" style={{ color: "#344054" }}>
+              <label className="inputLabel" style={{ color: '#344054' }}>
                 Set Default
               </label>
               <label
                 className="inputLabel dashboard-chart-view"
-                style={{ color: "#0493CE" }}
+                style={{ color: '#0493CE' }}
               >
                 Chart View
               </label>
@@ -195,7 +202,7 @@ export const DashboardPage: React.FC = () => {
               <div className="line-graph">
                 <div
                   className={`filter-line ${
-                    active === 0 ? "active-filter-line" : ""
+                    active === 0 ? 'active-filter-line' : ''
                   }`}
                   onClick={() => setActive(0)}
                 >
@@ -207,10 +214,10 @@ export const DashboardPage: React.FC = () => {
                 </div>
                 <div
                   className={`filter-disable ${
-                    active === 1 ? "active-filter-line" : ""
+                    active === 1 ? 'active-filter-line' : ''
                   }`}
                   // onClick={() => setActive(1)}
-                  style={{ border: "1px solid #0493CE" }}
+                  style={{ border: '1px solid #0493CE' }}
                 >
                   {active === 1 ? (
                     <img src={ICONS.viewActive} alt="" />
@@ -221,7 +228,7 @@ export const DashboardPage: React.FC = () => {
                 <div
                   className="filter-line"
                   onClick={() => setFilterModal(true)}
-                  style={{ border: "1px solid #0493CE" }}
+                  style={{ border: '1px solid #0493CE' }}
                 >
                   <img src={ICONS.FILTER} alt="" />
                 </div>
@@ -243,7 +250,7 @@ export const DashboardPage: React.FC = () => {
           />
         )}
 
-        <div className="" style={{ marginTop: "20px" }}>
+        <div className="" style={{ marginTop: '20px' }}>
           {active === 0 && <DashBoardTable />}
           {active === 1 && <DashBoardChart />}
         </div>

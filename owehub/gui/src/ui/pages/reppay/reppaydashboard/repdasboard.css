@@ -14,33 +14,33 @@
   align-items: center;
   gap: 0.5rem;
 }
-.rep-payroll-date{
+.rep-payroll-date {
   font-size: 13px;
-  border-radius: 0.40rem;
+  border-radius: 0.4rem;
   border: none;
   outline: none;
-  background: #ECECEC;
+  background: #ececec;
   padding: 4px 8px;
 }
-.rep-dash-head-input{
+.rep-dash-head-input {
   display: flex;
   height: 36px;
-  background-color: #EAF2FE;
+  background-color: #eaf2fe;
   padding: 0 3px 0 12px;
   gap: 0.5rem;
   align-items: center;
   border-radius: 8px;
 }
-.rep-chart-view{
+.rep-chart-view {
   background: #ffffff;
-  border-radius: 0.40rem;
+  border-radius: 0.4rem;
   border: none;
   outline: none;
   padding: 8px;
   cursor: pointer;
   text-wrap: nowrap;
 }
-.rep-calendar-component2{
+.rep-calendar-component2 {
   cursor: pointer;
   text-wrap: nowrap;
 }
@@ -63,7 +63,7 @@
   justify-content: center;
 }
 .rep-active-filter-line {
-  background-color: #0493CE;
+  background-color: #0493ce;
 }
 .rep-active-filter-line img {
   fill: white;
@@ -77,29 +77,24 @@
   padding-left: 1rem;
   background: #0096d3;
   height: auto;
-
 }
-
 
 .rep-breakdown-container {
   display: flex;
   justify-content: space-between;
   padding: 0.5rem 0.5rem 0 1rem;
   background: #0096d3;
-
 }
 
 .rep-breakdown-img {
   cursor: pointer;
 }
 
-
 .rep-breakdown-table {
   display: block;
   height: 100%;
   overflow: auto;
   white-space: nowrap;
- 
 }
 .rep-breakdown-table tbody {
   font-weight: 700;
@@ -116,7 +111,6 @@
   justify-content: center;
   align-items: center;
   z-index: 100;
-
 }
 .rep-modal-down {
   background-color: #fefefe;
@@ -124,19 +118,16 @@
   width: 40%;
   max-width: 900px;
   height: 650px;
-  overflow: hidden; 
-
+  overflow: hidden;
 }
 
 .rep-modal-body-down {
-  height: calc(100% - 70px); 
+  height: calc(100% - 70px);
   overflow-y: auto;
 }
 
-
-
-.rep-date-button{
-  border-radius: 0.40rem;
+.rep-date-button {
+  border-radius: 0.4rem;
   border: none;
   outline: none;
   background-color: #ffffff;
@@ -148,17 +139,17 @@
   font-weight: 500;
   line-height: 14.5px;
 }
-.rep-calender-container{
+.rep-calender-container {
   position: absolute;
   z-index: 999;
   right: -7%;
   top: 130%;
   background-color: #fff;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4);
-  border-radius: 0.40rem;
+  border-radius: 0.4rem;
 }
-.rep-close-calender{
-  background: #3D91FF;
+.rep-close-calender {
+  background: #3d91ff;
   color: white;
   font-size: 12px;
   padding: 4px 15px;
@@ -169,8 +160,8 @@
   bottom: 10px;
   border: none;
 }
-.rep-reset-calender{
-  background: #3D91FF;
+.rep-reset-calender {
+  background: #3d91ff;
   color: white;
   font-size: 12px;
   padding: 4px 15px;
@@ -217,13 +208,12 @@
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 }
 
-
 .rep-total-section h4 {
   font-size: 28px;
   font-weight: 700;
   line-height: 28px;
   text-align: left;
-  color: #231F20;
+  color: #231f20;
 }
 .rep-total-section p {
   font-size: 14px;
@@ -232,4 +222,3 @@
   text-align: left;
   color: #747782;
 }
-

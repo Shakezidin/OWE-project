@@ -1,4 +1,4 @@
-import "./CustomBox.css";
+import './CustomBox.css';
 
 interface CustomBoxProps {
   icon: any;
@@ -14,7 +14,7 @@ const CustomBox = (props: CustomBoxProps) => {
   return (
     <div className="boxContainer" onClick={onClick}>
       <div className="boxUpperView">
-        <img src={icon} alt={"icon"} />
+        <img src={icon} alt={'icon'} />
       </div>
       <div className="boxBelowView">
         <span className="boxCommissionText">{title}</span>

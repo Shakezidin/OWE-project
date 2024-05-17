@@ -1,20 +1,19 @@
-.breadcrumb-container{
-    display: flex;
-    /* align-items: center; */
-    flex-direction: column;
+.breadcrumb-container {
+  display: flex;
+  /* align-items: center; */
+  flex-direction: column;
 
-    padding-bottom: .5rem;
+  padding-bottom: 0.5rem;
 }
-.bread-link{
-    display: flex;
-    align-items: center !important;
-    gap: .2rem;
-
+.bread-link {
+  display: flex;
+  align-items: center !important;
+  gap: 0.2rem;
 }
-.bread-link a{
-    font-size: 14px;
-    font-weight: 500;
+.bread-link a {
+  font-size: 14px;
+  font-weight: 500;
 }
-.bread-link span{
-    /* margin-top: .1rem; */
+.bread-link span {
+  /* margin-top: .1rem; */
 }

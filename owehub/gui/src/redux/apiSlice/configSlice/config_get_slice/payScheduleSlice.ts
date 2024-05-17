@@ -1,8 +1,7 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
-import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
-import { PayScheduleModel } from "../../../../core/models/configuration/create/PayScheduleModel";
-
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
+import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
+import { PayScheduleModel } from '../../../../core/models/configuration/create/PayScheduleModel';
 
 interface payScheduleState {
   payment_schedule_list: PayScheduleModel[];
@@ -16,7 +15,7 @@ const initialState: payScheduleState = {
 };
 
 export const fetchPaySchedule = createAsyncThunk(
-  "paySchedule/fetchPaySchedule",
+  'paySchedule/fetchPaySchedule',
   async (data: any) => {
     const response = await postCaller(EndPoints.paySchedule, data);
 
@@ -25,7 +24,7 @@ export const fetchPaySchedule = createAsyncThunk(
 );
 
 const payScheduleSlice = createSlice({
-  name: "paySchedule",
+  name: 'paySchedule',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -51,7 +50,7 @@ const payScheduleSlice = createSlice({
       .addCase(fetchPaySchedule.rejected, (state, action) => {
         state.loading = false;
         state.error =
-          action.error.message ?? "Failed to fetch PayScheduleModel data";
+          action.error.message ?? 'Failed to fetch PayScheduleModel data';
       });
   },
 });

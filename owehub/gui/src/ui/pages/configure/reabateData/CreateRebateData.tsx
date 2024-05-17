@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from "react";
-import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cross_button.svg";
-import Input from "../../../components/text_input/Input";
-import { ActionButton } from "../../../components/button/ActionButton";
-import { useDispatch } from "react-redux";
-import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
-import Select from "react-select";
+import React, { useEffect, useState } from 'react';
+import { ReactComponent as CROSS_BUTTON } from '../../../../resources/assets/cross_button.svg';
+import Input from '../../../components/text_input/Input';
+import { ActionButton } from '../../../components/button/ActionButton';
+import { useDispatch } from 'react-redux';
+import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
+import Select from 'react-select';
 import {
   installerOption,
   partnerOption,
   repTypeOption,
   stateOption,
-} from "../../../../core/models/data_models/SelectDataModel";
-import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
-import { respTypeData } from "../../../../resources/static_data/StaticData";
-import { updateForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createCommissionSlice";
-import { CommissionModel } from "../../../../core/models/configuration/create/CommissionModel";
-import SelectOption from "../../../components/selectOption/SelectOption";
+} from '../../../../core/models/data_models/SelectDataModel';
+import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
+import { respTypeData } from '../../../../resources/static_data/StaticData';
+import { updateForm } from '../../../../redux/apiSlice/configSlice/config_post_slice/createCommissionSlice';
+import { CommissionModel } from '../../../../core/models/configuration/create/CommissionModel';
+import SelectOption from '../../../components/selectOption/SelectOption';
 
 interface ButtonProps {
   editMode: boolean;
@@ -46,21 +46,21 @@ const CreateRebateData: React.FC<ButtonProps> = ({
 
   const [createCommission, setCreateCommission] = useState({
     record_id: commission ? commission?.record_id : 0,
-    partner: commission ? commission?.partner : "OWE",
-    installer: commission ? commission?.installer : "OWE",
-    state: commission ? commission?.state : "Alaska",
-    sale_type: commission ? commission?.sale_type : "BATTERY",
+    partner: commission ? commission?.partner : 'OWE',
+    installer: commission ? commission?.installer : 'OWE',
+    state: commission ? commission?.state : 'Alaska',
+    sale_type: commission ? commission?.sale_type : 'BATTERY',
     sale_price: commission ? commission?.sale_price : 1500.0,
-    rep_type: commission ? commission?.rep_type : "EMPLOYEE",
+    rep_type: commission ? commission?.rep_type : 'EMPLOYEE',
     rl: commission ? commission?.rl : 0.5,
     rate: commission ? commission?.rate : 0.1,
-    start_date: commission ? commission?.start_date : "2024-04-01",
-    end_date: commission ? commission?.end_date : "2024-06-30",
+    start_date: commission ? commission?.start_date : '2024-04-01',
+    end_date: commission ? commission?.end_date : '2024-06-30',
   });
   const [newFormData, setNewFormData] = useState<any>([]);
   const [errors, setErrors] = useState<IError>({} as IError);
   const tableData = {
-    tableNames: ["partners", "states", "installers", "rep_type"],
+    tableNames: ['partners', 'states', 'installers', 'rep_type'],
   };
   const getNewFormData = async () => {
     const res = await postCaller(EndPoints.get_newFormData, tableData);
@@ -79,7 +79,7 @@ const CreateRebateData: React.FC<ButtonProps> = ({
   const handleValidation = () => {
     const error: IError = {} as IError;
     for (const key in createCommission) {
-      if (key === "record_id") {
+      if (key === 'record_id') {
         continue;
       }
       if (!createCommission[key as keyof IError]) {
@@ -93,16 +93,16 @@ const CreateRebateData: React.FC<ButtonProps> = ({
   const handleChange = (newValue: any, fieldName: string) => {
     setCreateCommission((prevData) => ({
       ...prevData,
-      [fieldName]: newValue ? newValue.value : "",
+      [fieldName]: newValue ? newValue.value : '',
     }));
   };
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    if (name === "end_date") {
+    if (name === 'end_date') {
       if (createCommission.start_date && value < createCommission.start_date) {
         setErrors((prevErrors) => ({
           ...prevErrors,
-          end_date: "End date cannot be before the start date",
+          end_date: 'End date cannot be before the start date',
         }));
         return;
       }
@@ -110,7 +110,7 @@ const CreateRebateData: React.FC<ButtonProps> = ({
     setCreateCommission((prevData) => ({
       ...prevData,
       [name]:
-        name === "rl" || name === "sale_price" || name === "rate"
+        name === 'rl' || name === 'sale_price' || name === 'rate'
           ? parseFloat(value)
           : value,
     }));
@@ -148,7 +148,7 @@ const CreateRebateData: React.FC<ButtonProps> = ({
 
         // dispatch(resetForm());
       } catch (error) {
-        console.error("Error submitting form:", error);
+        console.error('Error submitting form:', error);
       }
     }
   };
@@ -160,7 +160,7 @@ const CreateRebateData: React.FC<ButtonProps> = ({
         </div>
 
         <h3 className="createProfileText">
-          {editMode === false ? "Create Rebate Data" : "Update Rebate Data"}
+          {editMode === false ? 'Create Rebate Data' : 'Update Rebate Data'}
         </h3>
 
         <div className="modal-body">
@@ -171,13 +171,13 @@ const CreateRebateData: React.FC<ButtonProps> = ({
                   <label className="inputLabel-select">Partner</label>
                   <SelectOption
                     options={partnerOption(newFormData)}
-                    onChange={(newValue) => handleChange(newValue, "partner")}
+                    onChange={(newValue) => handleChange(newValue, 'partner')}
                     value={partnerOption(newFormData)?.find(
                       (option) => option?.value === createCommission.partner
                     )}
                   />
                   {errors?.partner && (
-                    <span style={{ display: "block", color: "#FF204E" }}>
+                    <span style={{ display: 'block', color: '#FF204E' }}>
                       {errors.partner}
                     </span>
                   )}
@@ -188,14 +188,14 @@ const CreateRebateData: React.FC<ButtonProps> = ({
                     <SelectOption
                       options={installerOption(newFormData)}
                       onChange={(newValue) =>
-                        handleChange(newValue, "installer")
+                        handleChange(newValue, 'installer')
                       }
                       value={installerOption(newFormData)?.find(
                         (option) => option.value === createCommission.installer
                       )}
                     />
                     {errors?.installer && (
-                      <span style={{ display: "block", color: "#FF204E" }}>
+                      <span style={{ display: 'block', color: '#FF204E' }}>
                         {errors.installer}
                       </span>
                     )}
@@ -205,13 +205,13 @@ const CreateRebateData: React.FC<ButtonProps> = ({
                   <label className="inputLabel-select">State</label>
                   <SelectOption
                     options={stateOption(newFormData)}
-                    onChange={(newValue) => handleChange(newValue, "state")}
+                    onChange={(newValue) => handleChange(newValue, 'state')}
                     value={stateOption(newFormData)?.find(
                       (option) => option.value === createCommission.state
                     )}
                   />
                   {errors?.state && (
-                    <span style={{ display: "block", color: "#FF204E" }}>
+                    <span style={{ display: 'block', color: '#FF204E' }}>
                       {errors.state}
                     </span>
                   )}
@@ -221,31 +221,31 @@ const CreateRebateData: React.FC<ButtonProps> = ({
               <div className="create-input-container">
                 <div className="create-input-field">
                   <Input
-                    type={"text"}
+                    type={'text'}
                     label="Sales Type"
                     value={createCommission.sale_type}
                     name="sale_type"
-                    placeholder={"Sales Type"}
+                    placeholder={'Sales Type'}
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.sale_type && (
-                    <span style={{ display: "block", color: "#FF204E" }}>
-                      {errors.sale_type.replace("sale_type", "sale type")}
+                    <span style={{ display: 'block', color: '#FF204E' }}>
+                      {errors.sale_type.replace('sale_type', 'sale type')}
                     </span>
                   )}
                 </div>
                 <div className="create-input-field">
                   <Input
-                    type={"number"}
+                    type={'number'}
                     label="Sales Price"
                     value={createCommission.sale_price}
                     name="sale_price"
-                    placeholder={"sale price"}
+                    placeholder={'sale price'}
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.sale_price && (
-                    <span style={{ display: "block", color: "#FF204E" }}>
-                      {errors.sale_price.replace("sale_price", "sale price")}
+                    <span style={{ display: 'block', color: '#FF204E' }}>
+                      {errors.sale_price.replace('sale_price', 'sale price')}
                     </span>
                   )}
                 </div>
@@ -255,16 +255,16 @@ const CreateRebateData: React.FC<ButtonProps> = ({
                   </label>
                   <SelectOption
                     options={repTypeOption(newFormData)}
-                    onChange={(newValue) => handleChange(newValue, "rep_type")}
+                    onChange={(newValue) => handleChange(newValue, 'rep_type')}
                     value={repTypeOption(newFormData)?.find(
                       (option) => option.value === createCommission.rep_type
                     )}
                   />
                   {errors?.rep_type && (
-                    <span style={{ display: "block", color: "#FF204E" }}>
+                    <span style={{ display: 'block', color: '#FF204E' }}>
                       {errors.rep_type.replace(
-                        "rep_type",
-                        "Representative Type"
+                        'rep_type',
+                        'Representative Type'
                       )}
                     </span>
                   )}
@@ -274,31 +274,31 @@ const CreateRebateData: React.FC<ButtonProps> = ({
                 <div className="rate-input-container">
                   <div className="rate-input-field">
                     <Input
-                      type={"number"}
+                      type={'number'}
                       label="Rate"
                       value={createCommission.rate}
                       name="rate"
-                      placeholder={"Rate"}
+                      placeholder={'Rate'}
                       onChange={(e) => handleInputChange(e)}
                     />
                     {errors?.rate && (
-                      <span style={{ display: "block", color: "#FF204E" }}>
+                      <span style={{ display: 'block', color: '#FF204E' }}>
                         {errors.rate}
                       </span>
                     )}
                   </div>
                   <div className="rate-input-field">
                     <Input
-                      type={"number"}
+                      type={'number'}
                       label="Rate List"
                       value={createCommission.rl}
                       name="rl"
-                      placeholder={"Rate List"}
+                      placeholder={'Rate List'}
                       onChange={(e) => handleInputChange(e)}
                     />
                     {errors?.rl && (
-                      <span style={{ display: "block", color: "#FF204E" }}>
-                        {errors.rl.replace("rl","Rate List")}
+                      <span style={{ display: 'block', color: '#FF204E' }}>
+                        {errors.rl.replace('rl', 'Rate List')}
                       </span>
                     )}
                   </div>
@@ -306,31 +306,31 @@ const CreateRebateData: React.FC<ButtonProps> = ({
                 <div className="start-input-container">
                   <div className="rate-input-field">
                     <Input
-                      type={"date"}
+                      type={'date'}
                       label="Start Date"
                       value={createCommission.start_date}
                       name="start_date"
-                      placeholder={"1/04/2004"}
+                      placeholder={'1/04/2004'}
                       onChange={(e) => handleInputChange(e)}
                     />
                     {errors?.start_date && (
-                      <span style={{ display: "block", color: "#FF204E" }}>
-                        {errors.start_date.replace("start_date","start date ")}
+                      <span style={{ display: 'block', color: '#FF204E' }}>
+                        {errors.start_date.replace('start_date', 'start date ')}
                       </span>
                     )}
                   </div>
                   <div className="rate-input-field">
                     <Input
-                      type={"date"}
+                      type={'date'}
                       label="End Date"
                       value={createCommission.end_date}
                       name="end_date"
-                      placeholder={"10/04/2004"}
+                      placeholder={'10/04/2004'}
                       onChange={(e) => handleInputChange(e)}
                     />
-                     {errors?.end_date && (
-                      <span style={{ display: "block", color: "#FF204E" }}>
-                        {errors.end_date.replace("end_date","end date ")}
+                    {errors?.end_date && (
+                      <span style={{ display: 'block', color: '#FF204E' }}>
+                        {errors.end_date.replace('end_date', 'end date ')}
                       </span>
                     )}
                   </div>
@@ -340,9 +340,9 @@ const CreateRebateData: React.FC<ButtonProps> = ({
           </div>
         </div>
         <div className="createUserActionButton">
-          <ActionButton title={"Cancel"} type="button" onClick={handleClose} />
+          <ActionButton title={'Cancel'} type="button" onClick={handleClose} />
           <ActionButton
-            title={editMode === false ? "Save" : "Update"}
+            title={editMode === false ? 'Save' : 'Update'}
             type="submit"
             onClick={() => {}}
           />

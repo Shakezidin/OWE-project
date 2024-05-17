@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import "./TabBar.css";
+import React, { useState } from 'react';
+import './TabBar.css';
 
 interface TabBarProps {
   activeTab: string;
@@ -16,20 +16,20 @@ const TabBar: React.FC<TabBarProps> = ({
     <div className="tab-view">
       <div className="tab-buttons">
         <button
-          className={activeTab === "tab1" ? "active" : "inactive"}
-          onClick={() => handleTabClick("tab1")}
+          className={activeTab === 'tab1' ? 'active' : 'inactive'}
+          onClick={() => handleTabClick('tab1')}
         >
           {title[0]}
         </button>
         <button
-          className={activeTab === "tab2" ? "active" : "inactive"}
-          onClick={() => handleTabClick("tab2")}
+          className={activeTab === 'tab2' ? 'active' : 'inactive'}
+          onClick={() => handleTabClick('tab2')}
         >
           {title[1]}
         </button>
         <button
-          className={activeTab === "tab3" ? "active" : "inactive"}
-          onClick={() => handleTabClick("tab3")}
+          className={activeTab === 'tab3' ? 'active' : 'inactive'}
+          onClick={() => handleTabClick('tab3')}
         >
           {title[2]}
         </button>

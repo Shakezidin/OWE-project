@@ -1,12 +1,12 @@
-import { ICONS } from "../../icons/Icons";
-import { IoAddSharp } from "react-icons/io5";
-import "../../pages/configure/configure.css";
-import React, { useEffect } from "react";
-import { BiSearch, BiChevronDown } from "react-icons/bi";
-import "../tableHeader/dataTableHeader.css";
-import {getDataTableName} from '../../../redux/apiActions/dataTableAction'
-import { useAppSelector, useAppDispatch } from "../../../redux/hooks";
-import Select from "react-select";
+import { ICONS } from '../../icons/Icons';
+import { IoAddSharp } from 'react-icons/io5';
+import '../../pages/configure/configure.css';
+import React, { useEffect } from 'react';
+import { BiSearch, BiChevronDown } from 'react-icons/bi';
+import '../tableHeader/dataTableHeader.css';
+import { getDataTableName } from '../../../redux/apiActions/dataTableAction';
+import { useAppSelector, useAppDispatch } from '../../../redux/hooks';
+import Select from 'react-select';
 interface TableProps {
   title: string;
   onPressFilter: () => void;
@@ -33,9 +33,9 @@ const DataTableHeader = (props: TableProps) => {
     selectMarginLeft1,
   } = props;
 
-  useEffect(() =>{
-    dispatch(getDataTableName())
-     },[])
+  useEffect(() => {
+    dispatch(getDataTableName());
+  }, []);
 
   return (
     <div className="commissionSection">
@@ -46,31 +46,31 @@ const DataTableHeader = (props: TableProps) => {
           {props.showSelectIcon && (
             <Select
               isSearchable
-              value={""}
+              value={''}
               styles={{
                 control: (baseStyles, state) => ({
                   ...baseStyles,
-                  marginTop: "px",
-                  borderRadius: "8px",
-                  outline: "none",
-                  color: "black",
-                  width: "200px",
-                  fontSize: "13px",
-                  border: "1px solid #d0d5dd",
+                  marginTop: 'px',
+                  borderRadius: '8px',
+                  outline: 'none',
+                  color: 'black',
+                  width: '200px',
+                  fontSize: '13px',
+                  border: '1px solid #d0d5dd',
                   marginRight: selectMarginLeft,
-                  cursor: "pointer"
+                  cursor: 'pointer',
                 }),
                 indicatorSeparator: () => ({
-                  display: "none", // Hide the indicator separator
+                  display: 'none', // Hide the indicator separator
                 }),
                 option: (baseStyles) => ({
                   ...baseStyles,
-                  fontSize: "13px",
+                  fontSize: '13px',
                 }),
                 menu: (base) => ({
                   ...base,
                   zIndex: 999,
-                  width: "200px",
+                  width: '200px',
                 }),
               }}
             />
@@ -86,7 +86,7 @@ const DataTableHeader = (props: TableProps) => {
               <img
                 src={ICONS.filtercomm}
                 alt=""
-                style={{ width: "15px", height: "15px" }}
+                style={{ width: '15px', height: '15px' }}
               />
             </button>
           )}

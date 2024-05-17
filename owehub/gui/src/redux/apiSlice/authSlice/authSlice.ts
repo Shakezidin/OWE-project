@@ -1,7 +1,7 @@
 // authSlice.ts
-import { createSlice } from "@reduxjs/toolkit";
-import { loginAction } from "../../apiActions/authActions";
-import { HTTP_STATUS } from "../../../core/models/api_models/RequestModel";
+import { createSlice } from '@reduxjs/toolkit';
+import { loginAction } from '../../apiActions/authActions';
+import { HTTP_STATUS } from '../../../core/models/api_models/RequestModel';
 
 interface AuthState {
   loading: boolean;
@@ -17,16 +17,20 @@ interface AuthState {
 const initialState: AuthState = {
   loading: false,
   error: null,
-  email_id: localStorage.getItem("email"),
-  role_name: localStorage.getItem("role"),
-  access_token: localStorage.getItem("token"),
-  isAuthenticated: localStorage.getItem("token") ? true : false,
+  email_id: localStorage.getItem('email'),
+  role_name: localStorage.getItem('role'),
+  access_token: localStorage.getItem('token'),
+  isAuthenticated: localStorage.getItem('token') ? true : false,
   status: null,
-  is_password_change_required: localStorage.getItem('is_password_change_required') ? true: false
+  is_password_change_required: localStorage.getItem(
+    'is_password_change_required'
+  )
+    ? true
+    : false,
 };
 
 const authSlice = createSlice({
-  name: "auth",
+  name: 'auth',
   initialState,
   reducers: {
     // loginSuccess(state, action) {
@@ -41,9 +45,9 @@ const authSlice = createSlice({
       state.role_name = null;
       state.access_token = null;
       state.isAuthenticated = false;
-      localStorage.removeItem("token");
-      localStorage.removeItem("userName");
-      localStorage.removeItem("role");
+      localStorage.removeItem('token');
+      localStorage.removeItem('userName');
+      localStorage.removeItem('role');
     },
     initializeAuth(state) {
       state.isAuthenticated = state.access_token !== null;
@@ -58,7 +62,7 @@ const authSlice = createSlice({
       .addCase(loginAction.fulfilled, (state: AuthState, action) => {
         state.loading = false;
         state.error = null;
-        console.log(" action.payload........", action.payload);
+        console.log(' action.payload........', action.payload);
 
         const { status, data } = action.payload;
         if (status === HTTP_STATUS.OK) {
@@ -66,12 +70,12 @@ const authSlice = createSlice({
           state.role_name = data.role_name;
           state.access_token = data.access_token;
           state.isAuthenticated = true;
-          state.is_password_change_required = data.is_password_change_required      
+          state.is_password_change_required = data.is_password_change_required;
         }
       })
       .addCase(loginAction.rejected, (state: AuthState, action) => {
         state.loading = false;
-        state.error = action.error.message ?? "Unable to login User";
+        state.error = action.error.message ?? 'Unable to login User';
       });
   },
 });

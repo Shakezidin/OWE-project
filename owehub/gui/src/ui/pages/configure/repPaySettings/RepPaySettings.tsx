@@ -1,27 +1,27 @@
-import React, { useEffect, useState } from "react";
-import TableHeader from "../../../components/tableHeader/TableHeader";
-import { ICONS } from "../../../icons/Icons";
-import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
+import React, { useEffect, useState } from 'react';
+import TableHeader from '../../../components/tableHeader/TableHeader';
+import { ICONS } from '../../../icons/Icons';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import {
   fetchRepaySettings,
   RepayEditParams,
-} from "../../../../redux/apiActions/repPayAction";
-import CreateRepPaySettings from "./CreateRepPaySettings";
-import CheckBox from "../../../components/chekbox/CheckBox";
-import { toggleRowSelection } from "../../../components/chekbox/checkHelper";
-import Pagination from "../../../components/pagination/Pagination";
-import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
-import { RepPaySettingsModel } from "../../../../core/models/configuration/create/RepPaySettingsModel";
-import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
-import SortableHeader from "../../../components/tableHeader/SortableHeader";
-import { RepPaySettingsColumns } from "../../../../resources/static_data/configureHeaderData/RepPaySettingsColumn";
-import FilterModal from "../../../components/FilterModal/FilterModal";
-import { ROUTES } from "../../../../routes/routes";
-import DataNotFound from "../../../components/loader/DataNotFound";
-import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
-import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
-import { showAlert, successSwal } from "../../../components/alert/ShowAlert";
-import Loading from "../../../components/loader/Loading";
+} from '../../../../redux/apiActions/repPayAction';
+import CreateRepPaySettings from './CreateRepPaySettings';
+import CheckBox from '../../../components/chekbox/CheckBox';
+import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
+import Pagination from '../../../components/pagination/Pagination';
+import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
+import { RepPaySettingsModel } from '../../../../core/models/configuration/create/RepPaySettingsModel';
+import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
+import SortableHeader from '../../../components/tableHeader/SortableHeader';
+import { RepPaySettingsColumns } from '../../../../resources/static_data/configureHeaderData/RepPaySettingsColumn';
+import FilterModal from '../../../components/FilterModal/FilterModal';
+import { ROUTES } from '../../../../routes/routes';
+import DataNotFound from '../../../components/loader/DataNotFound';
+import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
+import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
+import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
+import Loading from '../../../components/loader/Loading';
 
 const RepPaySettings = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -32,8 +32,7 @@ const RepPaySettings = () => {
 
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
- 
-   
+
   const error = useAppSelector((state) => state.timelineSla.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
@@ -45,8 +44,8 @@ const RepPaySettings = () => {
   const currentPage = useAppSelector(
     (state) => state.paginationType.currentPage
   );
-  const [sortKey, setSortKey] = useState("");
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
+  const [sortKey, setSortKey] = useState('');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -64,15 +63,13 @@ const RepPaySettings = () => {
     dispatch(setCurrentPage(pageNumber));
   };
 
-  const { repPaySettingsList, loading,dbCount } = useAppSelector(
+  const { repPaySettingsList, loading, dbCount } = useAppSelector(
     (state) => state.repaySettings
   );
 
   const goToNextPage = () => {
     dispatch(setCurrentPage(currentPage + 1));
   };
-
- 
 
   const goToPrevPage = () => {
     dispatch(setCurrentPage(currentPage - 1));
@@ -84,17 +81,16 @@ const RepPaySettings = () => {
 
   const currentPageData = repPaySettingsList?.slice(startIndex, endIndex);
   const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size ===  repPaySettingsList?.length;
+  const isAllRowsSelected = selectedRows.size === repPaySettingsList?.length;
   const handleSort = (key: any) => {
     if (sortKey === key) {
-      setSortDirection(sortDirection === "desc" ? "asc" : "desc");
+      setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
     } else {
       setSortKey(key);
-      setSortDirection("asc");
+      setSortDirection('asc');
     }
   };
 
-  
   const handleRepPaySettings = () => {
     setEditMode(false);
     setEditedRepaySettings(null);
@@ -119,10 +115,10 @@ const RepPaySettings = () => {
   };
   const handleArchiveAllClick = async () => {
     const confirmed = await showAlert(
-      "Are Your Sure",
-      "This Action will archive your data",
-      "Yes",
-      "No"
+      'Are Your Sure',
+      'This Action will archive your data',
+      'Yes',
+      'No'
     );
     if (confirmed) {
       const archivedRows = Array.from(selectedRows).map(
@@ -139,35 +135,33 @@ const RepPaySettings = () => {
           page_size: itemsPerPage,
         };
 
-        const res = await postCaller("update_rep_pay_settings_archive", newValue);
+        const res = await postCaller(
+          'update_rep_pay_settings_archive',
+          newValue
+        );
         if (res.status === HTTP_STATUS.OK) {
           // If API call is successful, refetch commissions
           dispatch(fetchRepaySettings(pageNumber));
           const remainingSelectedRows = Array.from(selectedRows).filter(
-            (index) => !archivedRows.includes(repPaySettingsList[index].RecordId)
+            (index) =>
+              !archivedRows.includes(repPaySettingsList[index].RecordId)
           );
           const isAnyRowSelected = remainingSelectedRows.length > 0;
           setSelectAllChecked(isAnyRowSelected);
           setSelectedRows(new Set());
-          await successSwal(
-            "Archived",
-            "The data has been archived "
-          );
+          await successSwal('Archived', 'The data has been archived ');
         } else {
-          await successSwal(
-            "Archived",
-            "The data has been archived "
-          );
+          await successSwal('Archived', 'The data has been archived ');
         }
       }
     }
   };
   const handleArchiveClick = async (record_id: any) => {
     const confirmed = await showAlert(
-      "Are Your Sure",
-      "This Action will archive your data",
-      "Yes",
-      "No"
+      'Are Your Sure',
+      'This Action will archive your data',
+      'Yes',
+      'No'
     );
     if (confirmed) {
       const archived: number[] = [record_id];
@@ -179,18 +173,12 @@ const RepPaySettings = () => {
         page_number: currentPage,
         page_size: itemsPerPage,
       };
-      const res = await postCaller("update_rep_pay_settings_archive", newValue);
+      const res = await postCaller('update_rep_pay_settings_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
         dispatch(fetchRepaySettings(pageNumber));
-        await successSwal(
-          "Archived",
-          "The data has been archived ",
-        );
+        await successSwal('Archived', 'The data has been archived ');
       } else {
-        await successSwal(
-          "Archived",
-          "The data has been archived ",
-        );
+        await successSwal('Archived', 'The data has been archived ');
       }
     }
   };
@@ -198,8 +186,8 @@ const RepPaySettings = () => {
   if (loading) {
     return (
       <div className="loader-container">
-        {" "}
-        <Loading />{" "}
+        {' '}
+        <Loading />{' '}
       </div>
     );
   }
@@ -239,11 +227,15 @@ const RepPaySettings = () => {
           />
         )}
         {open && (
-          <CreateRepPaySettings editMode={editMode} handleClose={handleClose}    editData={editedRepPaySettings}/>
+          <CreateRepPaySettings
+            editMode={editMode}
+            handleClose={handleClose}
+            editData={editedRepPaySettings}
+          />
         )}
         <div
           className="TableContainer"
-          style={{ overflowX: "auto", whiteSpace: "nowrap" }}
+          style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}
         >
           <table>
             <thead>
@@ -267,21 +259,20 @@ const RepPaySettings = () => {
                     onClick={() => handleSort(item.name)}
                   />
                 ))}
-                 {viewArchived === true ? null : (
+                {viewArchived === true ? null : (
                   <th>
                     <div className="action-header">
                       <p>Action</p>
                     </div>
                   </th>
                 )}
-               
               </tr>
             </thead>
             <tbody>
               {repPaySettingsList?.length > 0 ? (
                 repPaySettingsList?.map((el: any, i: any) => (
                   <tr key={i}>
-                    <td style={{ fontWeight: "500", color: "black" }}>
+                    <td style={{ fontWeight: '500', color: 'black' }}>
                       <div className="flex-check">
                         <CheckBox
                           checked={selectedRows.has(i)}
@@ -305,25 +296,25 @@ const RepPaySettings = () => {
                     <td>{el?.start_date}</td>
                     <td>{el?.end_date}</td>
                     {viewArchived === true ? null : (
-                        <td>
-                          <div className="action-icon">
-                            <div
-                              className=""
-                              style={{ cursor: "pointer" }}
-                              onClick={() => handleArchiveClick(el.RecordId)}
-                            >
-                              <img src={ICONS.ARCHIVE} alt="" />
-                            </div>
-                            <div
-                              className=""
-                              onClick={() => handleEdit(el)}
-                              style={{ cursor: "pointer" }}
-                            >
-                              <img src={ICONS.editIcon} alt="" />
-                            </div>
+                      <td>
+                        <div className="action-icon">
+                          <div
+                            className=""
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => handleArchiveClick(el.RecordId)}
+                          >
+                            <img src={ICONS.ARCHIVE} alt="" />
                           </div>
-                        </td>
-                      )}
+                          <div
+                            className=""
+                            onClick={() => handleEdit(el)}
+                            style={{ cursor: 'pointer' }}
+                          >
+                            <img src={ICONS.editIcon} alt="" />
+                          </div>
+                        </div>
+                      </td>
+                    )}
                   </tr>
                 ))
               ) : (
@@ -345,15 +336,15 @@ const RepPaySettings = () => {
           </p>
 
           {repPaySettingsList?.length > 0 ? (
-           <Pagination
+            <Pagination
               currentPage={currentPage}
               totalPages={totalPages} // You need to calculate total pages
               paginate={paginate}
               currentPageData={currentPageData}
               goToNextPage={goToNextPage}
               goToPrevPage={goToPrevPage}
-perPage={itemsPerPage}
-            /> 
+              perPage={itemsPerPage}
+            />
           ) : null}
         </div>
       </div>

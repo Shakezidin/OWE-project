@@ -1,29 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
-import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cross_button.svg";
-import Input from "../../../components/text_input/Input";
-import { ActionButton } from "../../../components/button/ActionButton";
-import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-import { addDays, format } from "date-fns";
-import { resetSuccess } from "../../../../redux/apiSlice/configSlice/config_get_slice/installConstSlice";
+import { ReactComponent as CROSS_BUTTON } from '../../../../resources/assets/cross_button.svg';
+import Input from '../../../components/text_input/Input';
+import { ActionButton } from '../../../components/button/ActionButton';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
+import { addDays, format } from 'date-fns';
+import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/installConstSlice';
 import {
   createInstallCost,
   ICost,
   updateInstallCost,
-} from "../../../../redux/apiActions/installCostAction";
+} from '../../../../redux/apiActions/installCostAction';
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
   editData: ICost | null;
-  setViewArchived:React.Dispatch<React.SetStateAction<boolean>>;
-  currentPage:number
+  setViewArchived: React.Dispatch<React.SetStateAction<boolean>>;
+  currentPage: number;
 }
 interface IErrors {
   uniqueId?: string;
   cost?: string;
   startDate?: string;
   endDate?: string;
-
 }
 
 const CreateInstallCost: React.FC<payScheduleProps> = ({
@@ -31,30 +30,29 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
   editMode,
   editData,
   setViewArchived,
-  currentPage
+  currentPage,
 }) => {
   const dispatch = useAppDispatch();
   const [errors, setErrors] = useState<IErrors>({});
 
   const [newFormData, setNewFormData] = useState({
-    cost: editData?.cost ? `${editData?.cost}` : "",
-    startDate: editData?.start_date || "",
-    endDate: editData?.end_date || "",
+    cost: editData?.cost ? `${editData?.cost}` : '',
+    startDate: editData?.start_date || '',
+    endDate: editData?.end_date || '',
   });
   const { isSuccess } = useAppSelector((state) => state.installConstSlice);
-  function capitalizeWords(str:string) {
-    return str.replace(/\b\w/g, function(char) {
-        return char.toUpperCase();
+  function capitalizeWords(str: string) {
+    return str.replace(/\b\w/g, function (char) {
+      return char.toUpperCase();
     });
-}
+  }
   const handleValidation = () => {
     const error: IErrors = {};
     for (const key in newFormData) {
       if (!newFormData[key as keyof typeof newFormData]) {
-        
-        error[
-          key as keyof typeof newFormData
-        ] = capitalizeWords(`${key} is required`);
+        error[key as keyof typeof newFormData] = capitalizeWords(
+          `${key} is required`
+        );
       }
     }
     setErrors({ ...error });
@@ -63,8 +61,8 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.target;
-    if (name === "cost") {
-      if (value === "" || value === "0" || Number(value)) {
+    if (name === 'cost') {
+      if (value === '' || value === '0' || Number(value)) {
         setNewFormData((prev) => ({ ...prev, [name]: value }));
       }
     } else {
@@ -73,25 +71,25 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
   };
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setViewArchived(false)
+    setViewArchived(false);
     if (handleValidation()) {
       if (editMode) {
         dispatch(
           updateInstallCost({
             record_id: editData?.record_id!,
             cost: parseFloat(newFormData.cost),
-            start_date: format(new Date(newFormData.startDate), "yyyy-MM-dd"),
-            end_date: format(new Date(newFormData.endDate), "yyyy-MM-dd"),
-            currentPage
+            start_date: format(new Date(newFormData.startDate), 'yyyy-MM-dd'),
+            end_date: format(new Date(newFormData.endDate), 'yyyy-MM-dd'),
+            currentPage,
           })
         );
       } else {
         dispatch(
           createInstallCost({
             cost: parseFloat(newFormData.cost),
-            start_date: format(new Date(newFormData.startDate), "yyyy-MM-dd"),
-            end_date: format(new Date(newFormData.endDate), "yyyy-MM-dd"),
-            currentPage
+            start_date: format(new Date(newFormData.startDate), 'yyyy-MM-dd'),
+            end_date: format(new Date(newFormData.endDate), 'yyyy-MM-dd'),
+            currentPage,
           })
         );
       }
@@ -112,82 +110,83 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
         </div>
 
         <h3 className="createProfileText">
-          {!editMode
-            ? "Create Install Cost"
-            : "Update Install Cost"}
+          {!editMode ? 'Create Install Cost' : 'Update Install Cost'}
         </h3>
 
         <div className="modal-body">
           <div className="createProfileInputView">
             <div className="createProfileTextView">
               <div className="create-input-container">
-                
                 <div className="create-input-field">
                   <Input
-                    type={"text"}
+                    type={'text'}
                     label="Cost"
                     value={newFormData.cost}
                     name="cost"
-                    placeholder={"Enter"}
+                    placeholder={'Enter'}
                     onChange={handleChange}
                   />
 
                   {errors?.cost && (
-                    <span style={{ display: "block", color: "#FF204E" }}>
+                    <span style={{ display: 'block', color: '#FF204E' }}>
                       {errors.cost}
                     </span>
                   )}
                 </div>
                 <div className="create-input-field">
                   <Input
-                    type={"date"}
+                    type={'date'}
                     label="Start date"
                     value={newFormData.startDate}
                     name="startDate"
-                    placeholder={"Enter"}
-                    onChange={(e)=>{
-                      handleChange(e)
-                      setNewFormData((prev) => ({...prev, endDate:""}))
+                    placeholder={'Enter'}
+                    onChange={(e) => {
+                      handleChange(e);
+                      setNewFormData((prev) => ({ ...prev, endDate: '' }));
                     }}
                   />
                   {errors?.startDate && (
-                    <span style={{ display: "block", color: "#FF204E" }}>
+                    <span style={{ display: 'block', color: '#FF204E' }}>
                       {errors.startDate}
                     </span>
                   )}
                 </div>
 
                 <div className="create-input-field">
-                <Input
-                  type={"date"}
-                  label="End Date"
-                  value={newFormData.endDate}
-                  name="endDate"
-                  disabled={!newFormData.startDate}
-                  min={newFormData.startDate && format(addDays(new Date(newFormData.startDate),1),"yyyy-MM-dd")}
-                  placeholder={"Enter"}
-                  onChange={handleChange}
-                />
+                  <Input
+                    type={'date'}
+                    label="End Date"
+                    value={newFormData.endDate}
+                    name="endDate"
+                    disabled={!newFormData.startDate}
+                    min={
+                      newFormData.startDate &&
+                      format(
+                        addDays(new Date(newFormData.startDate), 1),
+                        'yyyy-MM-dd'
+                      )
+                    }
+                    placeholder={'Enter'}
+                    onChange={handleChange}
+                  />
                   {errors?.endDate && (
-                    <span style={{ display: "block", color: "#FF204E" }}>
+                    <span style={{ display: 'block', color: '#FF204E' }}>
                       {errors.endDate}
                     </span>
                   )}
+                </div>
               </div>
-              </div>
-
-             
             </div>
           </div>
         </div>
         <div className="createUserActionButton">
           <ActionButton
-            title={"Cancel"}
+            title={'Cancel'}
             type="reset"
             onClick={() => handleClose()}
           />
           <ActionButton
-            title={editMode === false ? "Save" : "Update"}
+            title={editMode === false ? 'Save' : 'Update'}
             type="submit"
             onClick={() => {}}
           />

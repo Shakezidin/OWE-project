@@ -1,8 +1,8 @@
-import React from "react";
-import "../commonConfigure/commonConfigure.css";
-import { useState } from "react";
-import { RiDeleteBin5Line } from "react-icons/ri";
-import { CiEdit } from "react-icons/ci";
+import React from 'react';
+import '../commonConfigure/commonConfigure.css';
+import { useState } from 'react';
+import { RiDeleteBin5Line } from 'react-icons/ri';
+import { CiEdit } from 'react-icons/ci';
 const CommonConfigure: React.FC = () => {
   // const [activeCard,setActiveCard] = useState(0)
   return (
@@ -66,11 +66,11 @@ const CommonConfigure: React.FC = () => {
                     It seems like you have a dataset with the dealer,
                     sub-dealer, and pay rate information.
                   </td>
-                  <td style={{ display: "flex", gap: "1rem" }}>
+                  <td style={{ display: 'flex', gap: '1rem' }}>
                     <RiDeleteBin5Line
-                      style={{ fontSize: "1.5rem", color: "#344054" }}
+                      style={{ fontSize: '1.5rem', color: '#344054' }}
                     />
-                    <CiEdit style={{ fontSize: "1.5rem", color: "#344054" }} />
+                    <CiEdit style={{ fontSize: '1.5rem', color: '#344054' }} />
                   </td>
                 </tr>
               </tbody>

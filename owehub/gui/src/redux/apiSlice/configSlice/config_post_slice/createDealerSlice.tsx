@@ -3,17 +3,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { DealerModel } from '../../../../core/models/configuration/create/DealerModel';
 
-
-
-
 const initialState: DealerModel = {
-    record_id:0,
-    sub_dealer: "",
-    dealer: "",
-    pay_rate:"",
-    state:"",
-    start_date:"",
-    end_date: ""
+  record_id: 0,
+  sub_dealer: '',
+  dealer: '',
+  pay_rate: '',
+  state: '',
+  start_date: '',
+  end_date: '',
 };
 
 const createDealerSlice = createSlice({

@@ -1,32 +1,32 @@
-import React, { useEffect, useState } from "react";
-import TableHeader from "../../../components/tableHeader/TableHeader";
-import { ICONS } from "../../../icons/Icons";
-import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
+import React, { useEffect, useState } from 'react';
+import TableHeader from '../../../components/tableHeader/TableHeader';
+import { ICONS } from '../../../icons/Icons';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 
 import {
   IRateRow,
   getAdjustments,
-} from "../../../../redux/apiActions/arAdjustmentsAction";
+} from '../../../../redux/apiActions/arAdjustmentsAction';
 
-import CheckBox from "../../../components/chekbox/CheckBox";
-import { toggleRowSelection } from "../../../components/chekbox/checkHelper";
-import Pagination from "../../../components/pagination/Pagination";
-import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
-import { TimeLineSlaModel } from "../../../../core/models/configuration/create/TimeLineSlaModel";
-import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
-import CreatedAdjustments from "./CreateAdjustments";
-import SortableHeader from "../../../components/tableHeader/SortableHeader";
-import { AdjustmentsColumns } from "../../../../resources/static_data/configureHeaderData/AdjustmentsColumn";
-import FilterModal from "../../../components/FilterModal/FilterModal";
-import { ROUTES } from "../../../../routes/routes";
-import { Adjustment } from "../../../../core/models/api_models/ArAdjustMentsModel";
-import { format } from "date-fns";
-import { showAlert, successSwal } from "../../../components/alert/ShowAlert";
-import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
-import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
-import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
-import Loading from "../../../components/loader/Loading";
-import MicroLoader from "../../../components/loader/MicroLoader";
+import CheckBox from '../../../components/chekbox/CheckBox';
+import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
+import Pagination from '../../../components/pagination/Pagination';
+import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
+import { TimeLineSlaModel } from '../../../../core/models/configuration/create/TimeLineSlaModel';
+import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
+import CreatedAdjustments from './CreateAdjustments';
+import SortableHeader from '../../../components/tableHeader/SortableHeader';
+import { AdjustmentsColumns } from '../../../../resources/static_data/configureHeaderData/AdjustmentsColumn';
+import FilterModal from '../../../components/FilterModal/FilterModal';
+import { ROUTES } from '../../../../routes/routes';
+import { Adjustment } from '../../../../core/models/api_models/ArAdjustMentsModel';
+import { format } from 'date-fns';
+import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
+import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
+import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
+import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
+import Loading from '../../../components/loader/Loading';
+import MicroLoader from '../../../components/loader/MicroLoader';
 const Adjustments = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -54,8 +54,8 @@ const Adjustments = () => {
   const itemsPerPage = 10;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortKey, setSortKey] = useState("");
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
+  const [sortKey, setSortKey] = useState('');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -101,10 +101,10 @@ const Adjustments = () => {
   }, [isSuccess, currentPage, viewArchived]);
   const handleSort = (key: any) => {
     if (sortKey === key) {
-      setSortDirection(sortDirection === "desc" ? "asc" : "desc");
+      setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
     } else {
       setSortKey(key);
-      setSortDirection("asc");
+      setSortDirection('asc');
     }
   };
 
@@ -112,17 +112,17 @@ const Adjustments = () => {
     currentPageData.sort((a: any, b: any) => {
       const aValue = a[sortKey];
       const bValue = b[sortKey];
-      if (typeof aValue === "string" && typeof bValue === "string") {
-        return sortDirection === "asc"
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        return sortDirection === 'asc'
           ? aValue.localeCompare(bValue)
           : bValue.localeCompare(aValue);
       } else {
         // Ensure numeric values for arithmetic operations
         const numericAValue =
-          typeof aValue === "number" ? aValue : parseFloat(aValue);
+          typeof aValue === 'number' ? aValue : parseFloat(aValue);
         const numericBValue =
-          typeof bValue === "number" ? bValue : parseFloat(bValue);
-        return sortDirection === "asc"
+          typeof bValue === 'number' ? bValue : parseFloat(bValue);
+        return sortDirection === 'asc'
           ? numericAValue - numericBValue
           : numericBValue - numericAValue;
       }
@@ -136,10 +136,10 @@ const Adjustments = () => {
 
   const handleArchiveClick = async (record_id: number[]) => {
     const confirmed = await showAlert(
-      "Archive",
-      "Are you sure do you want to archive",
-      "Yes",
-      "No"
+      'Archive',
+      'Are you sure do you want to archive',
+      'Yes',
+      'No'
     );
     if (confirmed) {
       const archived: number[] = record_id;
@@ -152,12 +152,12 @@ const Adjustments = () => {
         page_size: itemsPerPage,
         archived: viewArchived,
       };
-      const res = await postCaller("update_adjustments_archive", newValue);
+      const res = await postCaller('update_adjustments_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
         dispatch(getAdjustments(pageNumber));
-        await successSwal("Archived", "The data has been archived ");
+        await successSwal('Archived', 'The data has been archived ');
       } else {
-        await successSwal("Archived", "The data has been archived ");
+        await successSwal('Archived', 'The data has been archived ');
       }
     }
   };
@@ -176,7 +176,6 @@ const Adjustments = () => {
       })
     );
   };
-
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -228,7 +227,7 @@ const Adjustments = () => {
         )}
         <div
           className="TableContainer"
-          style={{ overflowX: "auto", whiteSpace: "nowrap" }}
+          style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}
         >
           <table>
             <thead>
@@ -260,86 +259,87 @@ const Adjustments = () => {
               </tr>
             </thead>
             <tbody>
-              {
-                isLoading ? 
-                  <tr>
-                    <td colSpan={AdjustmentsColumns?.length }>
-                      <div style={{ display: "flex", justifyContent: "center" }}>
-                        <MicroLoader />
-                      </div>
-                    </td>
-                  </tr>:
-              
-              
-              arAdjustmentsList.map((item: Adjustment, ind: number) => {
-                return (
-                  <tr key={item.unique_id}>
-                    <td style={{ paddingRight: 0, textAlign: "left" }}>
-                      <div className="flex-check">
-                        <td style={{ paddingInline: 0 }}>
-                          <CheckBox
-                            checked={selectedRows.has(ind)}
-                            onChange={() =>
-                              toggleRowSelection(
-                                ind,
-                                selectedRows,
-                                setSelectedRows,
-                                setSelectAllChecked
-                              )
-                            }
-                          />
-                        </td>
-                        {item.unique_id}
-                      </div>
-                    </td>
-                    <td>{item.customer || "N/A"}</td>
-                    <td>{item.partner_name || "N/A"}</td>
-                    <td>{item.installer_name || "N/A"}</td>
-                    <td> {item.state_name} </td>
-                    <td> {item.sys_size} </td>
-                    <td> {item.bl} </td>
-                    <td> {item.epc} </td>
-                    <td>
-                      {" "}
-                      {item.date &&
-                        format(new Date(item.date), "yyyy-MM-dd")}{" "}
-                    </td>
-                    <td>{item.amount}</td>
-                    <td>
-                      {item.notes.length > 40
-                        ? item.notes.slice(0, 40) + "..."
-                        : item.notes}
-                    </td>
-
-                    <td>
-                      {(!viewArchived && selectedRows.size<2)&& (
-                        <div className="action-icon">
-                          <div
-                            className=""
-                            style={{ cursor: "pointer" }}
-                            onClick={() => handleArchiveClick([item.record_id])}
-                          >
-                            <img src={ICONS.ARCHIVE} alt="" />
-                          </div>
-                          <div
-                            className=""
-                            style={{ cursor: "pointer" }}
-                            onClick={() => handleEditTimeLineSla(item)}
-                          >
-                            <img src={ICONS.editIcon} alt="" />
-                          </div>
+              {isLoading ? (
+                <tr>
+                  <td colSpan={AdjustmentsColumns?.length}>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <MicroLoader />
+                    </div>
+                  </td>
+                </tr>
+              ) : (
+                arAdjustmentsList.map((item: Adjustment, ind: number) => {
+                  return (
+                    <tr key={item.unique_id}>
+                      <td style={{ paddingRight: 0, textAlign: 'left' }}>
+                        <div className="flex-check">
+                          <td style={{ paddingInline: 0 }}>
+                            <CheckBox
+                              checked={selectedRows.has(ind)}
+                              onChange={() =>
+                                toggleRowSelection(
+                                  ind,
+                                  selectedRows,
+                                  setSelectedRows,
+                                  setSelectAllChecked
+                                )
+                              }
+                            />
+                          </td>
+                          {item.unique_id}
                         </div>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
+                      </td>
+                      <td>{item.customer || 'N/A'}</td>
+                      <td>{item.partner_name || 'N/A'}</td>
+                      <td>{item.installer_name || 'N/A'}</td>
+                      <td> {item.state_name} </td>
+                      <td> {item.sys_size} </td>
+                      <td> {item.bl} </td>
+                      <td> {item.epc} </td>
+                      <td>
+                        {' '}
+                        {item.date &&
+                          format(new Date(item.date), 'yyyy-MM-dd')}{' '}
+                      </td>
+                      <td>{item.amount}</td>
+                      <td>
+                        {item.notes.length > 40
+                          ? item.notes.slice(0, 40) + '...'
+                          : item.notes}
+                      </td>
+
+                      <td>
+                        {!viewArchived && selectedRows.size < 2 && (
+                          <div className="action-icon">
+                            <div
+                              className=""
+                              style={{ cursor: 'pointer' }}
+                              onClick={() =>
+                                handleArchiveClick([item.record_id])
+                              }
+                            >
+                              <img src={ICONS.ARCHIVE} alt="" />
+                            </div>
+                            <div
+                              className=""
+                              style={{ cursor: 'pointer' }}
+                              onClick={() => handleEditTimeLineSla(item)}
+                            >
+                              <img src={ICONS.editIcon} alt="" />
+                            </div>
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
             </tbody>
           </table>
         </div>
         <div className="page-heading-container">
           <p className="page-heading">
-            {currentPage} - {endIndex > count ? count : endIndex} of {count}{" "}
+            {currentPage} - {endIndex > count ? count : endIndex} of {count}{' '}
             item
           </p>
 
