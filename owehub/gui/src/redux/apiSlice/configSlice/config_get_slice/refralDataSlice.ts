@@ -6,7 +6,8 @@ interface IState {
   isFormSubmitting: boolean,
   error:string,
   data: ILeaderRow[],
-  isSuccess:boolean
+  isSuccess:boolean,
+  count:number
 };
 
   const initialState:IState = {
@@ -14,7 +15,8 @@ interface IState {
     isFormSubmitting: false,
     error: "",
     data: [],
-    isSuccess:false
+    isSuccess:false,
+    count:0
   };
   
 
@@ -33,7 +35,7 @@ const refralDataSlice = createSlice({
           })
           .addCase(getleaderOverride.fulfilled, (state, action) => {
             state.isLoading = false;
-            state.data = action.payload;                       
+            state.data = action.payload.list;                       
           })
           .addCase(getleaderOverride.rejected, (state, action) => {
             state.isLoading = false;

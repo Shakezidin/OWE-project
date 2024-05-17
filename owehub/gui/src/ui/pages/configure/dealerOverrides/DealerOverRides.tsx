@@ -366,7 +366,7 @@ const DealerOverRides: React.FC = () => {
         {dealerList?.length > 0 ? (
           <div className="page-heading-container">
             <p className="page-heading">
-           Showing   {startIndex} - {endIndex} of {totalCount} item
+           Showing   {startIndex} - {endIndex>totalCount?totalCount:endIndex} of {totalCount} item
             </p>
             <Pagination
               currentPage={currentPage}

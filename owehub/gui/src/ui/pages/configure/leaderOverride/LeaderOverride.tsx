@@ -22,6 +22,8 @@ import FilterModal from "../../../components/FilterModal/FilterModal";
 import { ROUTES } from "../../../../routes/routes";
 import CreateLeaderOverride from "./CreateLeaderOverride";
 import Loading from "../../../components/loader/Loading";
+import MicroLoader from "../../../components/loader/MicroLoader";
+import DataNotFound from "../../../components/loader/DataNotFound";
 
 const LeaderOverride = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -44,7 +46,9 @@ const LeaderOverride = () => {
   const [editedTimeLineSla, setEditedTimeLineSla] = useState<ILeaderRow | null>(null);
   const itemsPerPage = 5;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
-  const currentPage = useAppSelector((state) => state.paginationType.currentPage);
+  const [currentPage,setCurrentPage] = useState(1)
+  
+  const {data:commissionList,isLoading,count} = useAppSelector((state) => state.leaderOverride);
   const [sortKey, setSortKey] = useState("");
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   useEffect(() => {
@@ -62,23 +66,22 @@ const LeaderOverride = () => {
   }
 
   const paginate = (pageNumber: number) => {
-    dispatch(setCurrentPage(pageNumber));
+    setCurrentPage(pageNumber)
   };
 
-  const {data:commissionList,isLoading} = useAppSelector((state) => state.leaderOverride);
   const goToNextPage = () => {
-    dispatch(setCurrentPage(currentPage + 1));
+   setCurrentPage(currentPage + 1)
   };
 
   const goToPrevPage = () => {
-    dispatch(setCurrentPage(currentPage - 1));
+    setCurrentPage(currentPage - 1)
   };
-  const totalPages = Math.ceil(timelinesla_list?.length / itemsPerPage);
+  const totalPages = Math.ceil(count / itemsPerPage);
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
+  const startIndex = (currentPage - 1) * itemsPerPage+1;
+  const endIndex = currentPage * itemsPerPage;
   
-  const currentPageData = commissionList?.slice(startIndex, endIndex);
+  const currentPageData = commissionList?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === timelinesla_list?.length;
   const handleSort = (key: any) => {
@@ -152,11 +155,7 @@ const LeaderOverride = () => {
   const fetchFunction = (req: any) => {
     dispatch(getleaderOverride(req));
    };
-  if (isLoading) {
-    return <div className="loader-container">
-      <Loading/>
-    </div>;
-  }
+ 
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -230,7 +229,18 @@ const LeaderOverride = () => {
               </tr>
             </thead>
             <tbody >
-              {currentPageData?.length > 0
+              {
+                isLoading ? 
+                  <tr>
+                    <td colSpan={LeaderOverrideColumns?.length}>
+                      <div style={{ display: "flex", justifyContent: "center" }}>
+                        <MicroLoader />
+                      </div>
+                    </td>
+                  </tr>
+              
+              
+            :  currentPageData?.length > 0
                 ? currentPageData?.map((el: ILeaderRow, i: number) => (
                   <tr
                     key={i}
@@ -266,7 +276,7 @@ const LeaderOverride = () => {
                     <td
 
                     >
-                    {!viewArchived &&  <div className="action-icon">
+                    {(!viewArchived && selectedRows.size<2)&&  <div className="action-icon">
                         <div className="" style={{cursor:"pointer"}} onClick={()=>handleArchiveClick([el.record_id])}>
                           <img src={ICONS.ARCHIVE} alt="" />
                         </div>
@@ -277,7 +287,14 @@ const LeaderOverride = () => {
                     </td>
                   </tr>
                 ))
-                : null}
+                :  <tr style={{ border: 0 }}>
+                <td colSpan={LeaderOverrideColumns.length}>
+                  <div className="data-not-found">
+                    <DataNotFound />
+                    <h3>Data Not Found</h3>
+                  </div>
+                </td>
+              </tr>}
             </tbody>
 
           </table>
@@ -285,7 +302,7 @@ const LeaderOverride = () => {
         <div className="page-heading-container">
 
           <p className="page-heading">
-            {currentPage} - {totalPages} of {currentPageData?.length} item
+            {startIndex} - {endIndex>count?count:endIndex} of {count} item
           </p>
 
           {

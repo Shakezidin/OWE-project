@@ -29,7 +29,8 @@ export const getleaderOverride = createAsyncThunk(
   async (param: Ipaginate, { rejectWithValue }) => {
     try {
       const data = await postCaller("get_leaderoverride", param);
-      return data.data.leader_override_list || ([] as ILeaderRow[]);
+      const list = data.data.leader_override_list || ([] as ILeaderRow[]);
+      return {list ,count:data.dbRecCount}
     } catch (error) {
       return rejectWithValue((error as Error).message);
     }
