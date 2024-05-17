@@ -31,6 +31,7 @@ import {
   RepayEditParams,
 } from "../../../../redux/apiActions/repPayAction";
 import { resetSuccess } from "../../../../redux/apiSlice/configSlice/config_get_slice/reconcileSlice";
+import { addDays, format } from "date-fns";
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
@@ -274,7 +275,10 @@ if (handleValidation()) {
                     value={createReconcileData.start_date}
                     name="start_date"
                     placeholder={"Enter"}
-                    onChange={(e) => handleInputChange(e)}
+                    onChange={(e) => {
+                      handleInputChange(e)
+                      setCreateReconcileData(prev=>({...prev,end_date:""}))
+                    }}
                   />
                     {errors?.start_date && (
                     <span style={{ display: "block", color: "#FF204E" }}>
@@ -288,6 +292,8 @@ if (handleValidation()) {
                     label="End Date"
                     value={createReconcileData.end_date}
                     name="end_date"
+                    disabled={!createReconcileData.start_date}
+                    min={createReconcileData.start_date && format(addDays(new Date(createReconcileData.start_date),1),"yyyy-MM-dd")}
                     placeholder={"Enter"}
                     onChange={(e) => handleInputChange(e)}
                   />

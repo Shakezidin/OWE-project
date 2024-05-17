@@ -200,6 +200,8 @@ const Reconcile = () => {
       };
       const res = await postCaller("update_reconcile_archive", newValue);
       if (res.status === HTTP_STATUS.OK) {
+        setSelectAllChecked(false)
+        setSelectedRows(new Set());
         dispatch(fetchReconcile(pageNumber));
         await successSwal(
           "Archived",
