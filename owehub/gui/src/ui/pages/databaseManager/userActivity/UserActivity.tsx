@@ -161,7 +161,7 @@ const UserActivity: React.FC = () => {
                                   marginLeft: '5px',
                                   border: 'none',
                                   background: 'none',
-                                  color: '#3083e5',
+                                  color: openTooltipIndex === index ? '#F82C2C' : '#3083e5',
                                   cursor: 'pointer',
                                 }}
                               >
