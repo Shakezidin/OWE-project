@@ -123,7 +123,7 @@ const EnterOtpScreen = () => {
                 className="loginImageLogo"
                 data={ICONS.LOGO}
                 aria-label="login-icon"
-                style={{height: '60px'}}
+                height={60}
               ></object>
               <br />
               <div className="loginLogowithText">
