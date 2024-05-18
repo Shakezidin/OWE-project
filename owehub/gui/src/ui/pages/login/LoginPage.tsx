@@ -148,6 +148,7 @@ export const LoginPage = () => {
                 className="loginImageLogo"
                 data={ICONS.LOGO}
                 aria-label="login-icon"
+                style={{height: '60px'}}
               ></object>
               <br />
               <div className="loginLogowithText">

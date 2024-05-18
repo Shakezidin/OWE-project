@@ -63,9 +63,9 @@ func HandleGetUserMgmtOnboardingDataRequest(resp http.ResponseWriter, req *http.
 
 	dayCount = "90"
 	queryInactive = `
-		SELECT COUNT(DISTINCT primary_sales_rep) AS unique_sales_reps
+		SELECT primary_sales_rep AS unique_sales_reps
 		FROM consolidated_data_view
-		WHERE contract_date BETWEEN current_date - interval '1 day' * $1 AND current_date;	
+		WHERE contract_date BETWEEN current_date - interval '1 day' * $1 AND current_date GROUP BY unique_sales_reps;	
 	`
 
 	query = ` 
@@ -91,7 +91,8 @@ func HandleGetUserMgmtOnboardingDataRequest(resp http.ResponseWriter, req *http.
 		if !nameOk || RoleName == "" {
 			log.FuncErrorTrace(0, "Failed to get UserMgmt Onboarding role name for Item: %+v\n", item)
 			RoleName = ""
-		} else {
+		}
+		if RoleName == "Sale Representative" {
 			totalSaleRep += 1
 		}
 
@@ -121,11 +122,9 @@ func HandleGetUserMgmtOnboardingDataRequest(resp http.ResponseWriter, req *http.
 		return
 	}
 
-	if len(data) > 0 {
-		activeSaleRep = data[0]["unique_sales_reps"].(int64)
-		inactiveSaleRep = totalSaleRep - activeSaleRep
-		usrMgOnbList.InactiveSaleRep = inactiveSaleRep
-	}
+	activeSaleRep = int64(len(data))
+	inactiveSaleRep = totalSaleRep - activeSaleRep
+	usrMgOnbList.InactiveSaleRep = inactiveSaleRep
 
 	usrMgOnbList.ActiveSaleRep = activeSaleRep
 

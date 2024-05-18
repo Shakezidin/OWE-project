@@ -118,7 +118,13 @@ const EnterOtpScreen = () => {
         <div className={'loginBox2'}>
           <form onSubmit={(e) => handleOtpSubmit(e)}>
             <div className="loginTextView">
-              <img className="loginImageLogo" src={ICONS.LOGO} alt="" />
+              <object
+                type="image/svg+xml"
+                className="loginImageLogo"
+                data={ICONS.LOGO}
+                aria-label="login-icon"
+                style={{height: '60px'}}
+              ></object>
               <br />
               <div className="loginLogowithText">
                 <LOGO_SMALL />
