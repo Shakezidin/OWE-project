@@ -271,6 +271,8 @@ const UserManagementTable: React.FC<UserTableProos> = ({
               value={selectedOption}
               onChange={(data: any) => {
                 handleSelectChange(data);
+                setSelectedRows(new Set())
+                setSelectAllChecked(false);
               }}
             />
           </div>
