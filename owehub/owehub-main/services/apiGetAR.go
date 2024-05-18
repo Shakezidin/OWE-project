@@ -251,7 +251,7 @@ func PrepareARFilters(tableName string, dataFilter models.DataRequestBody, forDa
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ar.bank) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "ced":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ar.ced) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("ar.ced %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "partner_name":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(pr.partner_name) %s LOWER($%d)", operator, len(whereEleList)+1))
@@ -261,7 +261,7 @@ func PrepareARFilters(tableName string, dataFilter models.DataRequestBody, forDa
 				whereEleList = append(whereEleList, value)
 			default:
 				// For other columns, handle them accordingly
-				filtersBuilder.WriteString("LOWER(")
+				filtersBuilder.WriteString("LOWER(ar.")
 				filtersBuilder.WriteString(column)
 				filtersBuilder.WriteString(") ")
 				filtersBuilder.WriteString(operator)
