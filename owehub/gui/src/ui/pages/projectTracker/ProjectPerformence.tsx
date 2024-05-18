@@ -199,7 +199,7 @@ const ProjectPerformence = () => {
                   className="progress-box"
                   style={{ background: '#0493CE' }}
                 ></div>
-                <p>Stages</p>
+                <p>In Process</p>
               </div>
               <div className="progress-box-body">
                 <div
