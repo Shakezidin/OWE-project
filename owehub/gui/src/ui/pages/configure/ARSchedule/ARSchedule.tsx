@@ -165,6 +165,8 @@ const ARSchedule = () => {
       };
       const res = await postCaller('update_arschedule_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
+        setSelectAllChecked(false)
+        setSelectedRows(new Set());
         dispatch(getArscheduleList(pageNumber));
         await successSwal('Archived', 'The data has been archived ');
       } else {
