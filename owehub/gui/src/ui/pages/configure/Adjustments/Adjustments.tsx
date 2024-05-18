@@ -339,7 +339,7 @@ const Adjustments = () => {
         </div>
         <div className="page-heading-container">
           <p className="page-heading">
-            {currentPage} - {endIndex > count ? count : endIndex} of {count}{' '}
+            {startIndex} - {endIndex > count ? count : endIndex} of {count}{' '}
             item
           </p>
 
