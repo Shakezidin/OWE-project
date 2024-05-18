@@ -1,29 +1,27 @@
-import React, { useEffect, useState } from "react";
-import TableHeader from "../../../components/tableHeader/TableHeader";
-import { ICONS } from "../../../icons/Icons";
-import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-import { fetchTimeLineSla } from "../../../../redux/apiSlice/configSlice/config_get_slice/timeLineSlice";
+import React, { useEffect, useState } from 'react';
+import TableHeader from '../../../components/tableHeader/TableHeader';
+import { ICONS } from '../../../icons/Icons';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
+import { fetchTimeLineSla } from '../../../../redux/apiSlice/configSlice/config_get_slice/timeLineSlice';
 // import CreateTimeLine from "./CreateTimeLine";
-import CheckBox from "../../../components/chekbox/CheckBox";
-import {
-  toggleRowSelection,
-} from "../../../components/chekbox/checkHelper";
-import Pagination from "../../../components/pagination/Pagination";
-import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
-import { TimeLineSlaModel } from "../../../../core/models/configuration/create/TimeLineSlaModel";
-import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
+import CheckBox from '../../../components/chekbox/CheckBox';
+import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
+import Pagination from '../../../components/pagination/Pagination';
+import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
+import { TimeLineSlaModel } from '../../../../core/models/configuration/create/TimeLineSlaModel';
+import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 
-import SortableHeader from "../../../components/tableHeader/SortableHeader";
-import { AdderResponsibilityColumns } from "../../../../resources/static_data/configureHeaderData/adderResponsibilityColumn";
-import FilterModal from "../../../components/FilterModal/FilterModal";
-import { ROUTES } from "../../../../routes/routes";
-import CreateAdderResponsibility from "./CreateAdderResponsibility";
-import { fetchAdderResponsibility } from "../../../../redux/apiActions/adderResponsbilityAction";
-import { fetchApptSetters } from "../../../../redux/apiActions/apptSetterAction";
-import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
-import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
-import { showAlert, successSwal } from "../../../components/alert/ShowAlert";
-import Loading from "../../../components/loader/Loading";
+import SortableHeader from '../../../components/tableHeader/SortableHeader';
+import { AdderResponsibilityColumns } from '../../../../resources/static_data/configureHeaderData/adderResponsibilityColumn';
+import FilterModal from '../../../components/FilterModal/FilterModal';
+import { ROUTES } from '../../../../routes/routes';
+import CreateAdderResponsibility from './CreateAdderResponsibility';
+import { fetchAdderResponsibility } from '../../../../redux/apiActions/adderResponsbilityAction';
+import { fetchApptSetters } from '../../../../redux/apiActions/apptSetterAction';
+import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
+import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
+import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
+import Loading from '../../../components/loader/Loading';
 const AdderResponsibility = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -31,22 +29,22 @@ const AdderResponsibility = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const {data} = useAppSelector(
-    (state) => state.adderresponsbility
-  );
-//   const loading = useAppSelector((state) => state.timelineSla.loading);
+  const { data } = useAppSelector((state) => state.adderresponsbility);
+  //   const loading = useAppSelector((state) => state.timelineSla.loading);
   const error = useAppSelector((state) => state.timelineSla.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
-  const [editedAdderResponsbility, setEditedAdderResponsbility] = useState(null);
+  const [editedAdderResponsbility, setEditedAdderResponsbility] =
+    useState(null);
   const itemsPerPage = 10;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
-  const currentPage = useAppSelector((state) => state.paginationType.currentPage);
-  const [sortKey, setSortKey] = useState("");
+  const currentPage = useAppSelector(
+    (state) => state.paginationType.currentPage
+  );
+  const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   useEffect(() => {
     const pageNumber = {
@@ -57,11 +55,9 @@ const AdderResponsibility = () => {
     dispatch(fetchAdderResponsibility(pageNumber));
   }, [dispatch, currentPage, viewArchived]);
 
-
   const filter = () => {
-    setFilterOpen(true)
-
-  }
+    setFilterOpen(true);
+  };
 
   const paginate = (pageNumber: number) => {
     dispatch(setCurrentPage(pageNumber));
@@ -79,7 +75,7 @@ const AdderResponsibility = () => {
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  
+
   const currentPageData = data?.slice(startIndex, endIndex);
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === data?.length;
@@ -97,26 +93,31 @@ const AdderResponsibility = () => {
       const aValue = a[sortKey];
       const bValue = b[sortKey];
       if (typeof aValue === 'string' && typeof bValue === 'string') {
-        return sortDirection === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+        return sortDirection === 'asc'
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
       } else {
         // Ensure numeric values for arithmetic operations
-        const numericAValue = typeof aValue === 'number' ? aValue : parseFloat(aValue);
-        const numericBValue = typeof bValue === 'number' ? bValue : parseFloat(bValue);
-        return sortDirection === 'asc' ? numericAValue - numericBValue : numericBValue - numericAValue;
+        const numericAValue =
+          typeof aValue === 'number' ? aValue : parseFloat(aValue);
+        const numericBValue =
+          typeof bValue === 'number' ? bValue : parseFloat(bValue);
+        return sortDirection === 'asc'
+          ? numericAValue - numericBValue
+          : numericBValue - numericAValue;
       }
     });
   }
   const handleTimeLineSla = () => {
     setEditMode(false);
     setEditedAdderResponsbility(null);
-    handleOpen()
+    handleOpen();
   };
 
- 
   const fetchFunction = (req: any) => {
     dispatch(fetchAdderResponsibility(req));
-   };
-   const handleViewArchiveToggle = () => {
+  };
+  const handleViewArchiveToggle = () => {
     setViewArchived(!viewArchived);
     // When toggling, reset the selected rows
     setSelectedRows(new Set());
@@ -128,13 +129,12 @@ const AdderResponsibility = () => {
     handleOpen();
   };
 
-
-   const handleArchiveAllClick = async () => {
+  const handleArchiveAllClick = async () => {
     const confirmed = await showAlert(
-      "Are Your Sure",
-      "This Action will archive your data",
-      "Yes",
-      "No"
+      'Are Your Sure',
+      'This Action will archive your data',
+      'Yes',
+      'No'
     );
     if (confirmed) {
       const archivedRows = Array.from(selectedRows).map(
@@ -151,7 +151,10 @@ const AdderResponsibility = () => {
           page_size: itemsPerPage,
         };
 
-        const res = await postCaller("update_adder_responsibility_archive", newValue);
+        const res = await postCaller(
+          'update_adder_responsibility_archive',
+          newValue
+        );
         if (res.status === HTTP_STATUS.OK) {
           // If API call is successful, refetch commissions
           dispatch(fetchAdderResponsibility(pageNumber));
@@ -161,25 +164,19 @@ const AdderResponsibility = () => {
           const isAnyRowSelected = remainingSelectedRows.length > 0;
           setSelectAllChecked(isAnyRowSelected);
           setSelectedRows(new Set());
-          await successSwal(
-            "Archived",
-            "The data has been archived "
-          );
+          await successSwal('Archived', 'The data has been archived ');
         } else {
-          await successSwal(
-            "Archived",
-            "The data has been archived "
-          );
+          await successSwal('Archived', 'The data has been archived ');
         }
       }
     }
   };
   const handleArchiveClick = async (record_id: any) => {
     const confirmed = await showAlert(
-      "Are Your Sure",
-      "This Action will archive your data",
-      "Yes",
-      "No"
+      'Are Your Sure',
+      'This Action will archive your data',
+      'Yes',
+      'No'
     );
     if (confirmed) {
       const archived: number[] = [record_id];
@@ -191,24 +188,21 @@ const AdderResponsibility = () => {
         page_number: currentPage,
         page_size: itemsPerPage,
       };
-      const res = await postCaller("update_adder_responsibility_archive", newValue);
+      const res = await postCaller(
+        'update_adder_responsibility_archive',
+        newValue
+      );
       if (res.status === HTTP_STATUS.OK) {
         dispatch(fetchAdderResponsibility(pageNumber));
-        await successSwal(
-          "Archived",
-          "The data has been archived "
-        );
+        await successSwal('Archived', 'The data has been archived ');
       } else {
-        await successSwal(
-          "Archived",
-          "The data has been archived "
-        );
+        await successSwal('Archived', 'The data has been archived ');
       }
     }
   };
-//   if (loading) {
-//     return <div>Loading...</div>;
-//   }
+  //   if (loading) {
+  //     return <div>Loading...</div>;
+  //   }
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -216,59 +210,69 @@ const AdderResponsibility = () => {
 
   return (
     <div className="comm">
-      <Breadcrumb head="" linkPara="Configure" route={ROUTES.CONFIG_PAGE} linkparaSecond="Adder Responsbility" />
+      <Breadcrumb
+        head=""
+        linkPara="Configure"
+        route={ROUTES.CONFIG_PAGE}
+        linkparaSecond="Adder Responsbility"
+      />
       <div className="commissionContainer">
         <TableHeader
           title="Adder Responsbility"
           onPressViewArchive={() => handleViewArchiveToggle()}
           onPressArchive={() => handleArchiveAllClick()}
           onPressFilter={() => filter()}
-          onPressImport={() => { }}
+          onPressImport={() => {}}
           checked={isAllRowsSelected}
           viewArchive={viewArchived}
           isAnyRowSelected={isAnyRowSelected}
-          onpressExport={() => { }}
+          onpressExport={() => {}}
           onpressAddNew={() => handleTimeLineSla()}
         />
-        {filterOPen && <FilterModal handleClose={filterClose}
-          columns={AdderResponsibilityColumns}
-          page_number={currentPage}
-          fetchFunction={fetchFunction}
-          page_size={itemsPerPage} />}
+        {filterOPen && (
+          <FilterModal
+            handleClose={filterClose}
+            columns={AdderResponsibilityColumns}
+            page_number={currentPage}
+            fetchFunction={fetchFunction}
+            page_size={itemsPerPage}
+          />
+        )}
 
-        {open && <CreateAdderResponsibility
-          editMode={editMode}
-          editData={editedAdderResponsbility}
-          handleClose={handleClose} />}
-          
+        {open && (
+          <CreateAdderResponsibility
+            editMode={editMode}
+            editData={editedAdderResponsbility}
+            handleClose={handleClose}
+          />
+        )}
+
         <div
           className="TableContainer"
-          style={{ overflowX: "auto", whiteSpace: "nowrap" }}
+          style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}
         >
           <table>
-
-            <thead >
+            <thead>
               <tr>
-
-                {
-                  AdderResponsibilityColumns?.map((item, key) => (
-                    <SortableHeader
-                      key={key}
-                      isCheckbox={item.isCheckbox}
-                      titleName={item.displayName}
-                      data={data}
-                      isAllRowsSelected={isAllRowsSelected}
-                      isAnyRowSelected={isAnyRowSelected}
-                      selectAllChecked={selectAllChecked}
-                      setSelectAllChecked={setSelectAllChecked}
-                      selectedRows={selectedRows}
-                      setSelectedRows={setSelectedRows}
-                      sortKey={item.name}
-                      sortDirection={sortKey === item.name ? sortDirection : undefined}
-                      onClick={() => handleSort(item.name)}
-                    />
-                  ))
-                }
+                {AdderResponsibilityColumns?.map((item, key) => (
+                  <SortableHeader
+                    key={key}
+                    isCheckbox={item.isCheckbox}
+                    titleName={item.displayName}
+                    data={data}
+                    isAllRowsSelected={isAllRowsSelected}
+                    isAnyRowSelected={isAnyRowSelected}
+                    selectAllChecked={selectAllChecked}
+                    setSelectAllChecked={setSelectAllChecked}
+                    selectedRows={selectedRows}
+                    setSelectedRows={setSelectedRows}
+                    sortKey={item.name}
+                    sortDirection={
+                      sortKey === item.name ? sortDirection : undefined
+                    }
+                    onClick={() => handleSort(item.name)}
+                  />
+                ))}
                 {viewArchived === true ? null : (
                   <th>
                     <div className="action-header">
@@ -278,38 +282,37 @@ const AdderResponsibility = () => {
                 )}
               </tr>
             </thead>
-            <tbody >
+            <tbody>
               {currentPageData?.length > 0
                 ? currentPageData?.map((el: any, i: any) => (
-                  <tr
-                    key={i}
-                    className={selectedRows.has(i) ? "selected" : ""}
-                  >
+                    <tr
+                      key={i}
+                      className={selectedRows.has(i) ? 'selected' : ''}
+                    >
+                      <td style={{ fontWeight: '500', color: 'black' }}>
+                        <div className="flex-check">
+                          <CheckBox
+                            checked={selectedRows.has(i)}
+                            onChange={() =>
+                              toggleRowSelection(
+                                i,
+                                selectedRows,
+                                setSelectedRows,
+                                setSelectAllChecked
+                              )
+                            }
+                          />
+                          {el.pay_scale}
+                        </div>
+                      </td>
+                      <td>{el.percentage}</td>
 
-                    <td style={{ fontWeight: "500", color: "black" }}>
-                      <div className="flex-check">
-                        <CheckBox
-                          checked={selectedRows.has(i)}
-                          onChange={() =>
-                            toggleRowSelection(
-                              i,
-                              selectedRows,
-                              setSelectedRows,
-                              setSelectAllChecked
-                            )
-                          }
-                        />
-                        {el.pay_scale}
-                      </div>
-                    </td>
-                    <td>{el.percentage}</td>
- 
-                    {viewArchived === true ? null : (
+                      {viewArchived === true ? null : (
                         <td>
                           <div className="action-icon">
                             <div
                               className=""
-                              style={{ cursor: "pointer" }}
+                              style={{ cursor: 'pointer' }}
                               onClick={() => handleArchiveClick(el.record_id)}
                             >
                               <img src={ICONS.ARCHIVE} alt="" />
@@ -317,43 +320,38 @@ const AdderResponsibility = () => {
                             <div
                               className=""
                               onClick={() => handleEdit(el)}
-                              style={{ cursor: "pointer" }}
+                              style={{ cursor: 'pointer' }}
                             >
                               <img src={ICONS.editIcon} alt="" />
                             </div>
                           </div>
                         </td>
                       )}
-                  </tr>
-                ))
+                    </tr>
+                  ))
                 : null}
             </tbody>
-
           </table>
         </div>
         <div className="page-heading-container">
-
           <p className="page-heading">
             {currentPage} - {totalPages} of {currentPageData?.length} item
           </p>
 
-          {
-            data?.length > 0 ? <Pagination
+          {data?.length > 0 ? (
+            <Pagination
               currentPage={currentPage}
               totalPages={totalPages} // You need to calculate total pages
               paginate={paginate}
               currentPageData={currentPageData}
               goToNextPage={goToNextPage}
               goToPrevPage={goToPrevPage}
-perPage={itemsPerPage}
-            /> : null
-          }
+              perPage={itemsPerPage}
+            />
+          ) : null}
         </div>
-
       </div>
-
     </div>
-
   );
 };
 

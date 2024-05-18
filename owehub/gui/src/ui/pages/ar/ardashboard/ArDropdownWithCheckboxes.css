@@ -1,5 +1,5 @@
 .ar-dropdown-container {
-   position: relative;
+  position: relative;
 }
 
 .ar-dropdown-toggle {
@@ -18,7 +18,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: #0493CE;
+  color: #0493ce;
 }
 
 .ar-dropdown-toggle::after {
@@ -28,7 +28,7 @@
   background-size: contain;
   background-repeat: no-repeat;
   vertical-align: middle;
-  color: #0493CE; /* Change this to the desired color */
+  color: #0493ce; /* Change this to the desired color */
 }
 
 .ar-dropdown-menu {
@@ -37,7 +37,7 @@
   left: -78px;
   z-index: 5;
   background-color: white;
-  border: 1px solid #D0D5DD;
+  border: 1px solid #d0d5dd;
   border-radius: 8px;
   padding: 8px;
   margin-top: 4px;
@@ -45,18 +45,18 @@
   width: 178px;
   height: 180px;
   box-sizing: border-box;
-  color: #0493CE;
+  color: #0493ce;
 }
 
-.ar-dropdown-menu::-webkit-scrollbar{
-  scrollbar-width:thin;
-  display:block;
-  scrollbar-color:  rgb(173, 173, 173) #fff;
-  width:8px
+.ar-dropdown-menu::-webkit-scrollbar {
+  scrollbar-width: thin;
+  display: block;
+  scrollbar-color: rgb(173, 173, 173) #fff;
+  width: 8px;
 }
-.ar-dropdown-menu::-webkit-scrollbar-thumb{
-  background:rgb(173, 173, 173);
-  border-radius:30px
+.ar-dropdown-menu::-webkit-scrollbar-thumb {
+  background: rgb(173, 173, 173);
+  border-radius: 30px;
 }
 
 .ar-dropdown-item {
@@ -67,20 +67,20 @@
   font-weight: 500;
   font-size: 13px;
   margin-bottom: 1px;
-  color: #0493CE;
+  color: #0493ce;
 }
 
-.ar-dropdown-item input[type="checkbox"] {
+.ar-dropdown-item input[type='checkbox'] {
   margin-right: 8px;
   cursor: pointer;
   width: 18px;
   height: 18px;
   border-radius: 6px;
-  border: 1px solid #0493CE;
+  border: 1px solid #0493ce;
 }
 
 .ar-drop-icon {
-  color: #0493CE;
+  color: #0493ce;
   height: 120px;
   width: 20px;
   font-weight: 900;

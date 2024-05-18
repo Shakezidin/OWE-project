@@ -14,7 +14,7 @@ BEGIN
     UPDATE dealer_override
     SET 
         sub_dealer = p_sub_dealer,
-        dealer_id = (SELECT user_id FROM user_details WHERE LOWER(name) = LOWER(p_dealer) LIMIT 1),
+        dealer_id = (SELECT id FROM v_dealer WHERE LOWER(dealer_name) = LOWER(p_dealer) LIMIT 1),
         state = (SELECT state_id FROM states WHERE LOWER(name) = LOWER(p_state_name) LIMIT 1),
         pay_rate = p_pay_rate,
         start_date = p_start_date,

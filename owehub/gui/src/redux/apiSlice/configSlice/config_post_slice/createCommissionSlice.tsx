@@ -3,16 +3,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { CommissionModel } from '../../../../core/models/configuration/create/CommissionModel';
 
-
-
-
 const initialState: CommissionModel = {
-  record_id:0,
+  record_id: 0,
   partner: '',
   installer: '',
   state: '',
   sale_type: '',
-  sale_price:0,
+  sale_price: 0,
   rep_type: '',
   rl: 0,
   rate: 0,

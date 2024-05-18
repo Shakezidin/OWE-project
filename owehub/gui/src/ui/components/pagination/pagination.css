@@ -3,7 +3,7 @@
   align-items: center;
   gap: 1rem;
 }
-.pagination-container >ul li.break a{
+.pagination-container > ul li.break a {
   cursor: pointer;
 }
 .page-per-item {

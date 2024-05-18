@@ -1,65 +1,64 @@
 .error-message {
-    color: red;
-    font-size: 12px;
-    margin-top: 5px;
-  }
-  .db-access-disable{
-    opacity: .3;
-    cursor: not-allowed;
-  }
-  .selected-fields-onboard{
-    position: static !important;
-    display: block;
-    margin-bottom: -15px;
-  }
+  color: red;
+  font-size: 12px;
+  margin-top: 5px;
+}
+.db-access-disable {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+.selected-fields-onboard {
+  position: static !important;
+  display: block;
+  margin-bottom: -15px;
+}
 
-  .character-count {
-    margin-top: 1px;
-    font-size: 12px;
-    color: #888;
-  }
-  
-  .character-count.exceeded {
-    color: red;
-  }
-  .um-createUserActionButton {
-    margin-top: 2px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 24px 0 24px 0;
-    gap: 1rem;
-    border-top: 1px solid #d0d5dd;
-  }
+.character-count {
+  margin-top: 1px;
+  font-size: 12px;
+  color: #888;
+}
 
-  .scroll-user {
-    position: relative;
-    height: 100%;
-    background: var(--white-color);
-    overflow-y: auto;
-    overflow-x: auto;
-    scroll-behavior: smooth;
-  }
-  .scroll-user::-webkit-scrollbar {
-    width: 10px; 
-    height: 10px; 
-  }
-  .scroll-user::-webkit-scrollbar {
-    display: initial
-  }   
-  
-  .scroll-user::-webkit-scrollbar-thumb {
-    background-color: rgb(173, 173, 173);
-    border-radius: 30px; 
-  }
-  .scroll-user::-webkit-scrollbar-button {
-    display: initial; 
-  }
-  .scroll-user::-webkit-scrollbar {
-    -ms-overflow-style: initial; 
-    scrollbar-width: thin;
-  }
-  .scroll-user::-webkit-scrollbar-corner {
-    background-color: transparent;
-  }
-  
+.character-count.exceeded {
+  color: red;
+}
+.um-createUserActionButton {
+  margin-top: 2px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px 0 24px 0;
+  gap: 1rem;
+  border-top: 1px solid #d0d5dd;
+}
+
+.scroll-user {
+  position: relative;
+  height: 100%;
+  background: var(--white-color);
+  overflow-y: auto;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+}
+.scroll-user::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+.scroll-user::-webkit-scrollbar {
+  display: initial;
+}
+
+.scroll-user::-webkit-scrollbar-thumb {
+  background-color: rgb(173, 173, 173);
+  border-radius: 30px;
+}
+.scroll-user::-webkit-scrollbar-button {
+  display: initial;
+}
+.scroll-user::-webkit-scrollbar {
+  -ms-overflow-style: initial;
+  scrollbar-width: thin;
+}
+.scroll-user::-webkit-scrollbar-corner {
+  background-color: transparent;
+}

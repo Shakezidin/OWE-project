@@ -1,9 +1,7 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
-import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
-import { MarketingFeeModel } from "../../../../core/models/configuration/create/MarketingFeeModel";
-
-
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
+import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
+import { MarketingFeeModel } from '../../../../core/models/configuration/create/MarketingFeeModel';
 
 interface MarketingState {
   marketing_fees_list: MarketingFeeModel[];
@@ -17,7 +15,7 @@ const initialState: MarketingState = {
 };
 
 export const fetchmarketingFees = createAsyncThunk(
-  "marketing/fetchmarketingFees",
+  'marketing/fetchmarketingFees',
   async (data: any) => {
     const response = await postCaller(EndPoints.marketing, data);
 
@@ -26,7 +24,7 @@ export const fetchmarketingFees = createAsyncThunk(
 );
 
 const marketingSlice = createSlice({
-  name: "marketing",
+  name: 'marketing',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -50,7 +48,7 @@ const marketingSlice = createSlice({
       })
       .addCase(fetchmarketingFees.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message ?? "Failed to fetch marketing data";
+        state.error = action.error.message ?? 'Failed to fetch marketing data';
       });
   },
 });

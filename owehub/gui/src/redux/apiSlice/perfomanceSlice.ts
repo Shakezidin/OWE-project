@@ -1,6 +1,6 @@
-import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { toast } from "react-toastify";
-import { postCaller } from "../../infrastructure/web_api/services/apiUrl";
+import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { toast } from 'react-toastify';
+import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
 export interface IPerfomanceSale {
   Type: string;
   sales: number;
@@ -23,10 +23,10 @@ export interface ICommision {
   installation_period: number;
 }
 export const getPerfomance = createAsyncThunk(
-  "get/perfomance",
+  'get/perfomance',
   async (_, { rejectWithValue }) => {
     try {
-      const data = await postCaller("get_perfomancemetrics", {});
+      const data = await postCaller('get_perfomancemetrics', {});
       if (data.status > 201) {
         return rejectWithValue((data as Error).message);
       }
@@ -42,11 +42,17 @@ export const getPerfomance = createAsyncThunk(
 );
 
 export const getPerfomanceStatus = createAsyncThunk(
-  "get/perfomancestatus",
-  async ({page,perPage}:{page:number,perPage:number}, { rejectWithValue }) => {
+  'get/perfomancestatus',
+  async (
+    { page, perPage }: { page: number; perPage: number },
+    { rejectWithValue }
+  ) => {
     try {
       // get_perfomanceprojectstatus
-      const data = await postCaller("get_perfomanceprojectstatus", {page_size:perPage,page_number:page});
+      const data = await postCaller('get_perfomanceprojectstatus', {
+        page_size: perPage,
+        page_number: page,
+      });
       if (data.status > 201) {
         return rejectWithValue((data as Error).message);
       }
@@ -66,21 +72,21 @@ interface IState {
   isSuccess: number;
   commisionMetrics: ICommision;
   projectStatus: IProjectStatus[];
-  projectsCount:number
+  projectsCount: number;
 }
 
 const initialState: IState = {
   perfomaceSale: [],
-  error: "",
+  error: '',
   isLoading: false,
   isSuccess: 0,
   commisionMetrics: {} as ICommision,
   projectStatus: [],
-  projectsCount:0
+  projectsCount: 0,
 };
 
 const perfomanceSlice = createSlice({
-  name: "perfomanceSlice",
+  name: 'perfomanceSlice',
   initialState,
   reducers: {
     resetSuccess: (state) => {
@@ -109,7 +115,7 @@ const perfomanceSlice = createSlice({
       .addCase(getPerfomanceStatus.fulfilled, (state, action) => {
         state.isLoading = false;
         state.projectStatus = action.payload.list;
-        state.projectsCount = action.payload.count
+        state.projectsCount = action.payload.count;
       })
       .addCase(getPerfomanceStatus.rejected, (state, action) => {
         state.isLoading = false;

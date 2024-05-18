@@ -1,36 +1,36 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
-    getDataTableName,
-    getAnyTableData
-} from "../../../redux/apiActions/dataTableAction";
-import { toast } from "react-toastify";
+  getDataTableName,
+  getAnyTableData,
+} from '../../../redux/apiActions/dataTableAction';
+import { toast } from 'react-toastify';
 
 interface IState {
-  option: [];
+  option: { table_name: string }[];
   error: string;
   isLoading: boolean;
   isFormSubmitting: boolean;
-  tableData:[],
-  isSuccess:number,
-  dbCount:number,
+  tableData: [];
+  isSuccess: number;
+  dbCount: number;
 }
 const initialState: IState = {
   isLoading: false,
   isFormSubmitting: false,
-  error: "",
+  error: '',
   option: [],
-  tableData:[],
-  isSuccess:0,
-  dbCount:0,
+  tableData: [],
+  isSuccess: 0,
+  dbCount: 0,
 };
 
 const dataTableSlice = createSlice({
-  name: "dataTable",
+  name: 'dataTable',
   initialState,
   reducers: {
-    resetSuccess:(state)=>{
-      state.isSuccess = 0
-    }
+    resetSuccess: (state) => {
+      state.isSuccess = 0;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -50,16 +50,14 @@ const dataTableSlice = createSlice({
       })
       .addCase(getAnyTableData.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.tableData = action.payload.tableData;
-        state.dbCount = action.payload.count
+        state.tableData = action.payload.tableData || [];
+        state.dbCount = action.payload.count;
       })
       .addCase(getAnyTableData.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
-      })
-
-       
+      });
   },
 });
-export const {resetSuccess} =  dataTableSlice.actions
+export const { resetSuccess } = dataTableSlice.actions;
 export default dataTableSlice.reducer;

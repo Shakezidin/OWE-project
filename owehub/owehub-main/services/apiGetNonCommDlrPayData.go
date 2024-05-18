@@ -64,10 +64,10 @@ func HandleGetNonCommDlrPayDataRequest(resp http.ResponseWriter, req *http.Reque
 	tableName := db.TableName_noncomm_dlr_pay
 	query = `
 			SELECT ndp.id AS record_id, ndp.unique_id, ndp.customer, ndp.start_date,
-    		ndp.end_date, ndp.dealer_dba, ud.name as dealer_name, ndp.exact_amount,
+    		ndp.end_date, ndp.dealer_dba, vd.dealer_name, ndp.exact_amount,
     		ndp.approved_by, ndp.notes, ndp.balance, ndp.paid_amount, ndp.dba
 			FROM noncomm_dlrpay ndp
-			JOIN user_details ud ON ndp.dealer_id = ud.user_id`
+			JOIN v_dealer vd ON ndp.dealer_id = vd.id`
 
 	filter, whereEleList = PrepareNonCommDlrPayFilters(tableName, dataReq, false)
 	if filter != "" {
@@ -252,7 +252,7 @@ func PrepareNonCommDlrPayFilters(tableName string, dataFilter models.DataRequest
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ndp.customer) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "dealer_name":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud.name) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(vd.dealer_name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "dealer_dba":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ndp.dealer_dba) %s LOWER($%d)", operator, len(whereEleList)+1))

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 
 interface TypewriterProps {
   text: string;
@@ -6,7 +6,7 @@ interface TypewriterProps {
 }
 
 const Typewriter: React.FC<TypewriterProps> = ({ text, delay }) => {
-  const [currentText, setCurrentText] = useState("");
+  const [currentText, setCurrentText] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {

@@ -87,8 +87,8 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 			query = "SELECT name as data FROM " + db.TableName_source
 		case "adder_type":
 			query = "SELECT adder_type as data FROM " + db.TableName_adder_type
-		case "owe_cost":
-			query = "SELECT CAST(owe_cost AS VARCHAR) AS data FROM " + db.TableName_tier_loan_fee
+		// case "owe_cost":
+		// 	query = "SELECT CAST(owe_cost AS VARCHAR) AS data FROM " + db.TableName_tier_loan_fee
 		case "tier":
 			query = "SELECT tier_name as data FROM " + db.TableName_tier
 		case "roles":
@@ -100,7 +100,7 @@ func HandleGetNewFormDataRequest(resp http.ResponseWriter, req *http.Request) {
 		case "loan_type":
 			query = "SELECT product_code as data FROM " + db.TableName_loan_type
 		case "dealer":
-			query = "SELECT dealer_code as data FROM " + db.TableName_v_dealer
+			query = "SELECT dealer_name as data FROM " + db.TableName_v_dealer
 		default:
 			log.FuncErrorTrace(0, "Invalid table name provided: %v", tableName)
 			responseData[tableName] = nil

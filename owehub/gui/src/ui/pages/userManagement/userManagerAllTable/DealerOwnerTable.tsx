@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import "../../userManagement/user.css";
-import { ICONS } from "../../../icons/Icons";
-import CheckBox from "../../../components/chekbox/CheckBox";
-import "../../configure/configure.css";
-import { UserRoleBasedListModel } from "../../../../core/models/api_models/UserManagementModel";
-import { UserDealerTableColumn } from "../../../../resources/static_data/UserManagementColumn";
-import SortableHeader from "../../../components/tableHeader/SortableHeader";
-import { toggleRowSelection } from "../../../components/chekbox/checkHelper";
-import DataNotFound from "../../../components/loader/DataNotFound";
+import React, { useState } from 'react';
+import '../../userManagement/user.css';
+import { ICONS } from '../../../icons/Icons';
+import CheckBox from '../../../components/chekbox/CheckBox';
+import '../../configure/configure.css';
+import { UserRoleBasedListModel } from '../../../../core/models/api_models/UserManagementModel';
+import { UserDealerTableColumn } from '../../../../resources/static_data/UserManagementColumn';
+import SortableHeader from '../../../components/tableHeader/SortableHeader';
+import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
+import DataNotFound from '../../../components/loader/DataNotFound';
 interface DealerProps {
   data: UserRoleBasedListModel[];
   onClickEdit: (item: UserRoleBasedListModel) => void;
@@ -18,23 +18,27 @@ interface DealerProps {
   setSelectAllChecked: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const DealerOwnerTable: React.FC<DealerProps> = ({ data, onClickDelete, onClickEdit, selectAllChecked,
+const DealerOwnerTable: React.FC<DealerProps> = ({
+  data,
+  onClickDelete,
+  onClickEdit,
+  selectAllChecked,
   selectedRows,
   setSelectedRows,
-  setSelectAllChecked, }) => {
-
-  const [sortKey, setSortKey] = useState("");
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
+  setSelectAllChecked,
+}) => {
+  const [sortKey, setSortKey] = useState('');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
 
   const isAnyRowSelected = selectedRows?.size > 0;
   const isAllRowsSelected = selectedRows?.size === data?.length;
 
   const handleSort = (key: any) => {
     if (sortKey === key) {
-      setSortDirection(sortDirection === "desc" ? "asc" : "desc");
+      setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
     } else {
       setSortKey(key);
-      setSortDirection("asc");
+      setSortDirection('asc');
     }
   };
 
@@ -42,17 +46,17 @@ const DealerOwnerTable: React.FC<DealerProps> = ({ data, onClickDelete, onClickE
     data?.sort((a: any, b: any) => {
       const aValue = a[sortKey];
       const bValue = b[sortKey];
-      if (typeof aValue === "string" && typeof bValue === "string") {
-        return sortDirection === "asc"
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        return sortDirection === 'asc'
           ? aValue.localeCompare(bValue)
           : bValue.localeCompare(aValue);
       } else {
         // Ensure numeric values for arithmetic operations
         const numericAValue =
-          typeof aValue === "number" ? aValue : parseFloat(aValue);
+          typeof aValue === 'number' ? aValue : parseFloat(aValue);
         const numericBValue =
-          typeof bValue === "number" ? bValue : parseFloat(bValue);
-        return sortDirection === "asc"
+          typeof bValue === 'number' ? bValue : parseFloat(bValue);
+        return sortDirection === 'asc'
           ? numericAValue - numericBValue
           : numericBValue - numericAValue;
       }
@@ -64,11 +68,11 @@ const DealerOwnerTable: React.FC<DealerProps> = ({ data, onClickDelete, onClickE
       {/* <UserHeaderSection  name="Dealer Owner"/> */}
       <div
         className="UserManageTable"
-        style={{ overflowX: "auto", whiteSpace: "nowrap" }}
+        style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}
       >
         <table>
           <thead>
-            <tr style={{ backgroundColor: "#F5F5F5" }}>
+            <tr style={{ backgroundColor: '#F5F5F5' }}>
               {UserDealerTableColumn.map((item, key) => (
                 <SortableHeader
                   key={key}
@@ -82,8 +86,8 @@ const DealerOwnerTable: React.FC<DealerProps> = ({ data, onClickDelete, onClickE
                   selectedRows={selectedRows}
                   setSelectedRows={setSelectedRows}
                   sortKey={item.name}
-                  sortDirection={"desc"}
-                  onClick={() => { }}
+                  sortDirection={'desc'}
+                  onClick={() => {}}
                 />
               ))}
               <th>
@@ -95,8 +99,8 @@ const DealerOwnerTable: React.FC<DealerProps> = ({ data, onClickDelete, onClickE
           </thead>
 
           <tbody>
-            {data?.length > 0
-              ? data?.map((el: UserRoleBasedListModel, i: number) => (
+            {data?.length > 0 ? (
+              data?.map((el: UserRoleBasedListModel, i: number) => (
                 <tr key={el.email_id}>
                   <td>
                     <div className="flex-check">
@@ -120,21 +124,21 @@ const DealerOwnerTable: React.FC<DealerProps> = ({ data, onClickDelete, onClickE
                       {el.user_code}
                     </div>
                   </td>
-                  <td >
-                    {el.name}
-                  </td>
-                  <td >
-                    {el.email_id}
-                  </td>
-                  <td >
-                    {el.mobile_number}
-                  </td>
-                  <td style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+                  <td>{el.name}</td>
+                  <td>{el.email_id}</td>
+                  <td>{el.mobile_number}</td>
+                  <td
+                    style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
+                  >
                     {el.description ? el.description : 'NA'}
                   </td>
                   <td>
                     <div className="action-icon">
-                      <div className="" style={{ cursor: "pointer" }} onClick={() => onClickDelete(el)}>
+                      <div
+                        className=""
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => onClickDelete(el)}
+                      >
                         <img src={ICONS.deleteIcon} alt="" />
                       </div>
                       {/* <div className="" style={{ cursor: "pointer" }} onClick={()=> onClickEdit(el)}>
@@ -144,14 +148,16 @@ const DealerOwnerTable: React.FC<DealerProps> = ({ data, onClickDelete, onClickE
                   </td>
                 </tr>
               ))
-              : <tr style={{ border: 0 }}>
+            ) : (
+              <tr style={{ border: 0 }}>
                 <td colSpan={10}>
                   <div className="data-not-found">
                     <DataNotFound />
                     <h3>Data Not Found</h3>
                   </div>
                 </td>
-              </tr>}
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

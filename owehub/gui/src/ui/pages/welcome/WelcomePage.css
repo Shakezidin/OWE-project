@@ -11,7 +11,7 @@
 }
 
 .welcomeBannerView {
-  background: url("../../../resources/assets/banner.jpg");
+  background: url('../../../resources/assets/banner.jpg');
   background-repeat: no-repeat;
   background-size: cover;
   position: relative;
@@ -32,7 +32,7 @@
   justify-content: space-between;
   align-items: center;
 }
-.welcomeHeaderView object{
+.welcomeHeaderView object {
   height: 93px;
   width: 334px;
 }
@@ -62,8 +62,8 @@
 }
 
 .welcome-logo {
-  width: "274px";
-  height: "74px";
+  width: '274px';
+  height: '74px';
 }
 
 .welcome-text-view {
@@ -139,8 +139,6 @@
   transform-style: preserve-3d;
 }
 
-
-
 /** Our application view Csss*/
 
 .welcomeApplicationView {
@@ -169,7 +167,7 @@
   padding: 15px 0 0 20px;
 }
 
-.welcome-main{
+.welcome-main {
   display: flex;
   padding: 0 20px;
 }
@@ -295,7 +293,6 @@
   align-items: flex-start;
   width: 90rem;
 }
-
 
 .welcomeOverProcessTitle {
   /* margin-left: 60px; */
@@ -436,14 +433,14 @@
   align-items: center;
   padding: 10px 120px;
 }
-.landing-table{
+.landing-table {
   padding-top: 1.5rem;
   display: flex;
   gap: 1.5rem;
   align-items: center;
   width: 100%;
 }
-.footer-logo{
+.footer-logo {
   width: 0;
 }
 

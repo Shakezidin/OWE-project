@@ -8,14 +8,14 @@ interface Option {
 }
 
 const options: Option[] = [
-  { value: "All", label: "All" },
-  { value: "AP-DTH", label: "AP-DTH" },
-  { value: "AP-PDA", label: "AP-PDA" },
-  { value: "AP-ADV", label: "AP-ADV" },
-  { value: "AP-DED", label: "AP-DED" },
-  { value: "REP-COMM", label: "REP-COMM" },
-  { value: "REP BONUS", label: "REP BONUS" },
-  { value: "LEADER", label: "LEADER" }
+  { value: 'All', label: 'All' },
+  { value: 'AP-DTH', label: 'AP-DTH' },
+  { value: 'AP-PDA', label: 'AP-PDA' },
+  { value: 'AP-ADV', label: 'AP-ADV' },
+  { value: 'AP-DED', label: 'AP-DED' },
+  { value: 'REP-COMM', label: 'REP-COMM' },
+  { value: 'REP BONUS', label: 'REP BONUS' },
+  { value: 'LEADER', label: 'LEADER' },
 ];
 
 const DropdownWithCheckboxes = () => {
@@ -44,8 +44,8 @@ const DropdownWithCheckboxes = () => {
 
   const handleOptionChange = (option: string) => {
     setSelectedOptions((prevSelectedOptions) => {
-      if (option === "All") {
-        return prevSelectedOptions.includes("All")
+      if (option === 'All') {
+        return prevSelectedOptions.includes('All')
           ? []
           : options.map((o) => o.value);
       } else {
@@ -54,7 +54,7 @@ const DropdownWithCheckboxes = () => {
           : [...prevSelectedOptions, option];
 
         return newSelectedOptions.length === options.length - 1
-          ? ["All", ...newSelectedOptions]
+          ? ['All', ...newSelectedOptions]
           : newSelectedOptions;
       }
     });
@@ -65,7 +65,7 @@ const DropdownWithCheckboxes = () => {
       <div className="dropdown-toggle" onClick={toggleDropdown}>
         {/* {selectedOptions.length > 0 ? `(${selectedOptions})` : 'Select'} */}
         Select
-        <FiChevronDown className='drop-icon'/>
+        <FiChevronDown className="drop-icon" />
       </div>
       {isOpen && (
         <div className="dropdown-menu">

@@ -1,12 +1,12 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import { postCaller } from "../../../infrastructure/web_api/services/apiUrl";
-import { EndPoints } from "../../../infrastructure/web_api/api_client/EndPoints";
-import { HTTP_STATUS } from "../../../core/models/api_models/RequestModel";
-import { DBManagerUserActivityModel } from "../../../core/models/api_models/DBManagerModel";
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
+import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints';
+import { HTTP_STATUS } from '../../../core/models/api_models/RequestModel';
+import { DBManagerUserActivityModel } from '../../../core/models/api_models/DBManagerModel';
 
 /** get user onboadring users */
 export const fetchDBManagerUserActivity = createAsyncThunk(
-  "DBManager/userActivity",
+  'DBManager/userActivity',
   async (param: any) => {
     const response = await postCaller(
       EndPoints.Get_DBManager_User_Activity,

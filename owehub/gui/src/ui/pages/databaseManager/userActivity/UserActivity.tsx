@@ -1,48 +1,63 @@
-import React, { useEffect } from "react";
-import "../../configure/configure.css";
-import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
-import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
-import { FaArrowDown } from "react-icons/fa6";
-import Pagination from "../../../components/pagination/Pagination";
-import { fetchDBManagerUserActivity } from "../../../../redux/apiActions/DBManagerAction/DBManagerAction";
-import { getCurrentDateFormatted } from "../../../../utiles/formatDate";
-import { DBManagerUserActivityModel } from "../../../../core/models/api_models/DBManagerModel";
-import DataNotFound from "../../../components/loader/DataNotFound";
+import React, { useEffect, useState } from 'react';
+import '../../configure/configure.css';
+import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
+import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
+import { FaArrowDown } from 'react-icons/fa6';
+import { fetchDBManagerUserActivity } from '../../../../redux/apiActions/DBManagerAction/DBManagerAction';
+import { getCurrentDateFormatted } from '../../../../utiles/formatDate';
+import { DBManagerUserActivityModel } from '../../../../core/models/api_models/DBManagerModel';
+import DataNotFound from '../../../components/loader/DataNotFound';
+import Pagination from '../../../components/pagination/Pagination';
+import { Tooltip as ReactTooltip } from 'react-tooltip';
+import './Useractivity.css'
+import { createPortal } from 'react-dom';
 
 const UserActivity: React.FC = () => {
   const dispatch = useAppDispatch();
   const { loading, error, userActivityList, totalCount } = useAppSelector(
     (state) => state.dbManager
   );
-  const currentPage = useAppSelector(
-    (state) => state.paginationType.currentPage
-  );
+  const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const [openTooltipIndex, setOpenTooltipIndex] = useState<number | null>(null);
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (openTooltipIndex !== null && !(event.target as HTMLElement).closest(`[data-tooltip-id="tooltip-${openTooltipIndex}"]`)) {
+        setOpenTooltipIndex(null);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [openTooltipIndex]);
 
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
-      start_date: "2024-05-01", //TODO: Need to change in future
+      start_date: '2024-05-01', //TODO: Need to change in future
       end_date: getCurrentDateFormatted(), // current date
     };
     dispatch(fetchDBManagerUserActivity(pageNumber));
   }, [dispatch, currentPage]);
 
   const paginate = (pageNumber: number) => {
-    dispatch(setCurrentPage(pageNumber));
+    setCurrentPage(pageNumber);
   };
 
   const goToNextPage = () => {
-    dispatch(setCurrentPage(currentPage + 1));
+    setCurrentPage(currentPage + 1);
   };
 
   const goToPrevPage = () => {
-    dispatch(setCurrentPage(currentPage - 1));
+    setCurrentPage(currentPage - 1);
   };
 
-  const filter = () => {};
+  const filter = () => { };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -52,16 +67,20 @@ const UserActivity: React.FC = () => {
   //   return <div>Error: {error}</div>;
   // }
 
+  const countWords = (str: string): number => {
+    return str.trim().split(/\s+/).length;
+  };
+
   const totalPages = Math.ceil(totalCount / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
+  const endIndex = currentPage * itemsPerPage;
 
   return (
     <div className="comm">
       <Breadcrumb
         head="User Activity"
         linkPara="Database Manager"
-        route={""}
+        route={''}
         linkparaSecond="User Activity"
       />
       <div className="commissionContainer">
@@ -70,56 +89,160 @@ const UserActivity: React.FC = () => {
         </div>
         <div
           className="TableContainer"
-          style={{ overflowX: "auto", whiteSpace: "nowrap" }}
+          style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}
         >
           <table>
             <thead>
               <tr>
-                <th style={{ paddingLeft: "10px" }}>
+                <th style={{ paddingLeft: '10px' }}>
                   <div className="table-header">
-                    <p>User Name</p>{" "}
-                    <FaArrowDown style={{ color: "#667085" }} />
+                    <p>User Name</p>{' '}
+                    <FaArrowDown style={{ color: '#667085' }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>DB Name</p> <FaArrowDown style={{ color: "#667085" }} />
+                    <p>DB Name</p> <FaArrowDown style={{ color: '#667085' }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Time & Date</p>{" "}
-                    <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Time & Date</p>{' '}
+                    <FaArrowDown style={{ color: '#667085' }} />
                   </div>
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Query Details</p>{" "}
-                    <FaArrowDown style={{ color: "#667085" }} />
+                    <p>Query Details</p>{' '}
+                    <FaArrowDown style={{ color: '#667085' }} />
                   </div>
                 </th>
               </tr>
             </thead>
 
+            {/* <tbody>
+              {userActivityList && userActivityList?.length > 0 ? (
+                userActivityList?.map((el: DBManagerUserActivityModel, index: number) => {
+                  // if (el.query_details === ';') {
+                  //   return null; // Skip rendering the row
+                  // }
+                  const tooltipId = `tooltip-${index}`;
+                  const truncatedQueryDetails = el.query_details.slice(0, 50) + '...';
+                  const wordCount = countWords(el.query_details);
+
+                 
+
+                  return (
+                    <tr key={el.time_date}>
+                      <td
+                        style={{
+                          fontWeight: '500',
+                          color: 'black',
+                          paddingLeft: '10px',
+                          textAlign: 'left',
+                        }}
+                      >
+                        {el.username}
+                      </td>
+                      <td style={{ textAlign: 'left' }}>{el.db_name}</td>
+                      <td style={{ textAlign: 'left' }}>{el.time_date}</td>
+                      <td style={{ textAlign: 'left' }}>
+                        {wordCount <= 5 ? el.query_details : truncatedQueryDetails}
+                        {wordCount > 5 && (
+                          <>
+                            <button
+                              onClick={() => setOpenTooltipIndex(openTooltipIndex === index ? null : index)}
+                              data-tooltip-id={tooltipId}
+                              data-tooltip-content={el.query_details}
+                              data-tooltip-place="bottom"
+                              style={{
+                                marginLeft: '5px',
+                                border: 'none',
+                                background: 'none',
+                                color: 'blue',
+                                cursor: 'pointer',
+                              }}
+                            >
+                              {openTooltipIndex === index ? 'Show less' : 'Show more'}
+                            </button>
+                            <ReactTooltip
+                              id={tooltipId}
+                              className="custom-tooltip"
+                              isOpen={openTooltipIndex === index}
+                            />
+                          </>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr style={{ border: 0 }}>
+                  <td colSpan={10}>
+                    <div className="data-not-found">
+                      <DataNotFound />
+                      <h3>Data Not Found</h3>
+                    </div>
+                  </td>
+                </tr>
+              )}
+            </tbody> */}
+
             <tbody>
               {userActivityList && userActivityList?.length > 0 ? (
-                userActivityList?.map((el: DBManagerUserActivityModel) => (
-                  <tr key={el.time_date}>
-                    <td
-                      style={{
-                        fontWeight: "500",
-                        color: "black",
-                        paddingLeft: "10px",
-                        textAlign: "left",
-                      }}
-                    >
-                      {el.username}
-                    </td>
-                    <td style={{ textAlign: "left" }}>{el.db_name}</td>
-                    <td style={{ textAlign: "left" }}>{el.time_date}</td>
-                    <td style={{ textAlign: "left" }}>{el.query_details}</td>
-                  </tr>
-                ))
+                userActivityList
+                  ?.filter((el: DBManagerUserActivityModel) => el.query_details !== ';') // Filter out rows where query_details is ';'
+                  ?.map((el: DBManagerUserActivityModel, index: number) => {
+                    const tooltipId = `tooltip-${index}`;
+                    const truncatedQueryDetails = el.query_details.slice(0, 50) + '...';
+                    const wordCount = countWords(el.query_details);
+
+
+
+                    return (
+                      <tr key={el.time_date}>
+                        <td
+                          style={{
+                            fontWeight: '500',
+                            color: 'black',
+                            paddingLeft: '10px',
+                            textAlign: 'left',
+                          }}
+                        >
+                          {el.username}
+                        </td>
+                        <td style={{ textAlign: 'left' }}>{el.db_name}</td>
+                        <td style={{ textAlign: 'left' }}>{el.time_date}</td>
+                        <td style={{ textAlign: 'left' }}>
+                          {wordCount <= 5 ? el.query_details : truncatedQueryDetails}
+                          {wordCount > 5 && (
+                            <>
+                              <button
+                                onClick={() => setOpenTooltipIndex(openTooltipIndex === index ? null : index)}
+                                data-tooltip-id={tooltipId}
+                                data-tooltip-content={el.query_details}
+                                data-tooltip-place="bottom"
+                                style={{
+                                  marginLeft: '5px',
+                                  border: 'none',
+                                  background: 'none',
+                                  color: 'blue',
+                                  cursor: 'pointer',
+                                }}
+                              >
+                                {openTooltipIndex === index ? 'Show less' : 'Show more'}
+                              </button>
+                              <ReactTooltip
+                                id={tooltipId}
+                                className="custom-tooltip"
+                                isOpen={openTooltipIndex === index}
+                              />
+                            </>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={10}>
@@ -131,25 +254,25 @@ const UserActivity: React.FC = () => {
                 </tr>
               )}
             </tbody>
+
           </table>
         </div>
 
-        <div >
+        <div className="page-heading-container">
+          <p className="page-heading">
+            {startIndex} - {endIndex>totalCount?totalCount:endIndex} of {totalCount} item
+          </p>
+
           {userActivityList && userActivityList?.length > 0 ? (
-            <div className="page-heading-container">
-              <p className="page-heading">
-                {startIndex} - {userActivityList?.length} of {totalCount} item
-              </p>
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages} // You need to calculate total pages
-                paginate={paginate}
-                currentPageData={userActivityList.slice(startIndex, endIndex)}
-                goToNextPage={goToNextPage}
-                goToPrevPage={goToPrevPage}
-                perPage={itemsPerPage}
-              />
-            </div>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages} // You need to calculate total pages
+              paginate={paginate}
+              currentPageData={userActivityList.slice(startIndex, endIndex)}
+              goToNextPage={goToNextPage}
+              goToPrevPage={goToPrevPage}
+              perPage={itemsPerPage}
+            />
           ) : null}
         </div>
       </div>

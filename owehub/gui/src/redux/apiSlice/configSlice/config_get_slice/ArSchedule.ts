@@ -1,36 +1,36 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
   getArscheduleList,
   IARSchedule,
   createArSchedule,
-  updateArchSchedule
-} from "../../../apiActions/arScheduleAction";
-import { toast } from "react-toastify";
+  updateArchSchedule,
+} from '../../../apiActions/arScheduleAction';
+import { toast } from 'react-toastify';
 
 interface IState {
   data: IARSchedule[];
   error: string;
   isLoading: boolean;
   isFormSubmitting: boolean;
-  isSuccess:number,
-  count:number
+  isSuccess: number;
+  count: number;
 }
 const initialState: IState = {
   isLoading: false,
   isFormSubmitting: false,
-  error: "",
+  error: '',
   data: [],
-  isSuccess:0,
-  count:0
+  isSuccess: 0,
+  count: 0,
 };
 
 const arSchedule = createSlice({
-  name: "arSchedule",
+  name: 'arSchedule',
   initialState,
   reducers: {
-    resetSuccess:(state)=>{
-      state.isSuccess = 0
-    }
+    resetSuccess: (state) => {
+      state.isSuccess = 0;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -52,26 +52,26 @@ const arSchedule = createSlice({
       })
       .addCase(createArSchedule.fulfilled, (state, action) => {
         state.isFormSubmitting = false;
-        state.isSuccess=1
-        toast.success("Form submission completed")
+        state.isSuccess = 1;
+        toast.success('Form submission completed');
       })
       .addCase(createArSchedule.rejected, (state, action) => {
         state.isFormSubmitting = false;
         state.error = action.payload as string;
       })
-      .addCase(updateArchSchedule.pending,(state, action) => {
+      .addCase(updateArchSchedule.pending, (state, action) => {
         state.isFormSubmitting = true;
       })
       .addCase(updateArchSchedule.fulfilled, (state, action) => {
         state.isFormSubmitting = false;
-        state.isSuccess=1
-        toast.success("Details updated successfully")
+        state.isSuccess = 1;
+        toast.success('Details updated successfully');
       })
       .addCase(updateArchSchedule.rejected, (state, action) => {
         state.isFormSubmitting = false;
         state.error = action.payload as string;
-      })
+      });
   },
 });
-export const {resetSuccess} =  arSchedule.actions
+export const { resetSuccess } = arSchedule.actions;
 export default arSchedule.reducer;

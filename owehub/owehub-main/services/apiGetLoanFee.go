@@ -64,10 +64,10 @@ func HandleGetLoanFeeDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	tableName := db.TableName_LoanFee
 	query = `
-	   SELECT lf.id as record_id, ud.name AS dealer_name, pt.partner_name AS installer, st.name AS state_name, lt.product_code AS loan_type,
+	   SELECT lf.id as record_id, vd.dealer_name, pt.partner_name AS installer, st.name AS state_name, lt.product_code AS loan_type,
 	   lf.owe_cost, lf.dlr_mu, lf.dlr_cost,lf.start_date, lf.end_date
 	   FROM loan_fee lf
-	   JOIN user_details ud ON ud.user_id = lf.dealer_id
+	   JOIN v_dealer vd ON vd.id = lf.dealer_id
 	   JOIN partners pt ON pt.partner_id = lf.installer
 	   JOIN states st ON st.state_id = lf.state_id
 	   JOIN loan_type lt ON lt.id = lf.loan_type`
@@ -231,7 +231,7 @@ func PrepareLoanFeeFilters(tableName string, dataFilter models.DataRequestBody, 
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(lf.unique_id) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "dealer_name":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud.name) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(vd.dealer_name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "installer":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(pt.partner_name) %s LOWER($%d)", operator, len(whereEleList)+1))
@@ -282,7 +282,7 @@ func PrepareLoanFeeFilters(tableName string, dataFilter models.DataRequestBody, 
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY lf.id, ud.name, pt.partner_name, st.name, lt.product_code, lf.owe_cost, lf.dlr_mu, lf.dlr_cost")
+		filtersBuilder.WriteString(" GROUP BY lf.id, vd.dealer_name, pt.partner_name, st.name, lt.product_code, lf.owe_cost, lf.dlr_mu, lf.dlr_cost")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {

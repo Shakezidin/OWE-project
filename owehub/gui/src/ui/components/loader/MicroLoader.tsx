@@ -1,5 +1,5 @@
-import React from "react";
-import "./microloader.css"
+import React from 'react';
+import './microloader.css';
 const MicroLoader = () => {
   return <div className="loader"></div>;
 };

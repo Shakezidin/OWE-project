@@ -1,31 +1,32 @@
-import React, { useEffect, useState } from "react";
-import { cardData, projectDashData } from "./projectData";
-import { ICONS } from "../../icons/Icons";
-import "../projectTracker/projectTracker.css";
-import { IoMdInformationCircleOutline } from "react-icons/io";
-import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
-import "react-circular-progressbar/dist/styles.css";
-import { projects } from "./projectData";
-import Breadcrumb from "../../components/breadcrumb/Breadcrumb";
-import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
+import React, { useEffect, useState } from 'react';
+import { cardData, projectDashData } from './projectData';
+import { ICONS } from '../../icons/Icons';
+import '../projectTracker/projectTracker.css';
+import { IoMdInformationCircleOutline } from 'react-icons/io';
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
+import { projects } from './projectData';
+import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import {
   getPerfomance,
   getPerfomanceStatus,
-} from "../../../redux/apiSlice/perfomanceSlice";
-import { format } from "date-fns";
-import Pagination from "../../components/pagination/Pagination";
-import MicroLoader from "../../components/loader/MicroLoader";
+} from '../../../redux/apiSlice/perfomanceSlice';
+import { format } from 'date-fns';
+import Pagination from '../../components/pagination/Pagination';
+import MicroLoader from '../../components/loader/MicroLoader';
+import DataNotFound from '../../components/loader/DataNotFound';
 const ProjectPerformence = () => {
   const dispatch = useAppDispatch();
   const [page, setPage] = useState(1);
   const perPage = 10;
   const getColorStyle = (date: string | null) => {
     if (!date) {
-      return { backgroundColor: "#F2F4F6", color: "#7D7D7D" };
-    } else if (date === "Completed") {
-      return { backgroundColor: "#57B93A", color: "white" };
+      return { backgroundColor: '#F2F4F6', color: '#7D7D7D' };
+    } else if (date === 'Completed') {
+      return { backgroundColor: '#57B93A', color: 'white' };
     } else {
-      return { backgroundColor: "#008DDA", color: "white" };
+      return { backgroundColor: '#008DDA', color: 'white' };
     }
   };
 
@@ -38,7 +39,7 @@ const ProjectPerformence = () => {
   } = useAppSelector((state) => state.perfomanceSlice);
 
   useEffect(() => {
-    const current = format(new Date(), "yyyy-MM-dd");
+    const current = format(new Date(), 'yyyy-MM-dd');
     dispatch(getPerfomance());
   }, []);
 
@@ -59,7 +60,7 @@ const ProjectPerformence = () => {
 
   const formatFloat = (number: number | undefined) => {
     if (
-      typeof number === "number" &&
+      typeof number === 'number' &&
       !isNaN(number) &&
       Number.isFinite(number) &&
       Number.isInteger(number) === false
@@ -76,7 +77,7 @@ const ProjectPerformence = () => {
       <Breadcrumb
         head=""
         linkPara="Performance"
-        route={""}
+        route={''}
         linkparaSecond="Dashboard"
       />
       <div className="project-container">
@@ -85,12 +86,12 @@ const ProjectPerformence = () => {
           <div className="iconsSection-filter">
             <button
               type="button"
-              style={{ cursor: "not-allowed", opacity: "0.5" }}
+              style={{ cursor: 'not-allowed', opacity: '0.5' }}
             >
               <img
                 src={ICONS.filtercomm}
                 alt=""
-                style={{ width: "15px", height: "15px" }}
+                style={{ width: '15px', height: '15px' }}
               />
             </button>
           </div>
@@ -121,18 +122,18 @@ const ProjectPerformence = () => {
                 </div>
                 <div className="project-card-body">
                   <div className="project-body-details">
-                    <h2 style={{ fontSize: "14px" }}>
-                      {" "}
-                      {formatFloat(findSale?.sales)}{" "}
+                    <h2 style={{ fontSize: '14px' }}>
+                      {' '}
+                      {formatFloat(findSale?.sales)}{' '}
                     </h2>
-                    <p style={{ fontSize: "14px" }}>Sales</p>
+                    <p style={{ fontSize: '14px' }}>Sales</p>
                   </div>
                   <div className="project-body-details">
-                    <h2 style={{ fontSize: "14px" }}>
-                      {" "}
-                      {formatFloat(findSale?.sales_kw)}{" "}
+                    <h2 style={{ fontSize: '14px' }}>
+                      {' '}
+                      {formatFloat(findSale?.sales_kw)}{' '}
                     </h2>
-                    <p style={{ fontSize: "14px" }}>Sales KW</p>
+                    <p style={{ fontSize: '14px' }}>Sales KW</p>
                   </div>
                 </div>
               </div>
@@ -150,7 +151,7 @@ const ProjectPerformence = () => {
                   <img
                     src={item.icon}
                     alt=""
-                    style={{ height: "24px", width: "24px" }}
+                    style={{ height: '24px', width: '24px' }}
                   />
                 </div>
                 <div className="doller-head">
@@ -183,24 +184,24 @@ const ProjectPerformence = () => {
 
       <div
         className="project-container"
-        style={{ marginTop: "1rem", padding: "0 0 1rem 0" }}
+        style={{ marginTop: '1rem', padding: '0 0 1rem 0' }}
       >
         <div className="performance-table-heading">
           <div className="performance-project">
             <h2>Projects</h2>
-            <input
+            {/* <input
               className="performance-search"
               type="search"
               placeholder="search "
               disabled
               onChange={() => {}}
-            />
+            /> */}
           </div>
           <div className="performance-milestone-table">
             <table>
               <thead>
                 <tr>
-                  <th style={{ padding: "0px" }}>
+                  <th style={{ padding: '0px' }}>
                     <div className="milestone-header">
                       <p>Project Name</p>
                       <p>Milestone</p>
@@ -213,27 +214,43 @@ const ProjectPerformence = () => {
                   <tr>
                     <td
                       style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
                       }}
                       colSpan={6}
                     >
                       <MicroLoader />
                     </td>
                   </tr>
+                ) : projectStatus.length < 1 && !isLoading ? (
+                  <tr>
+                    <td colSpan={7} style={{ textAlign: 'center' }}>
+                      <div
+                        className=""
+                        style={{ display: 'flex', justifyContent: 'center' }}
+                      >
+                        <DataNotFound />
+                      </div>
+                      <span>No Data Found</span>
+                    </td>
+                  </tr>
                 ) : (
                   projectStatus.map(
                     (project: (typeof projectStatus)[0], index: number) => {
                       const newObj: any = { ...project };
-                      delete newObj?.["unqiue_id"];
+                      delete newObj?.['unqiue_id'];
                       return (
                         <tr key={index}>
-                          <td style={{ padding: "0px" }}>
+                          <td style={{ padding: '0px' }}>
                             <div className="milestone-data">
-                              <p className="install-update">
-                                {project.unqiue_id}
-                              </p>
+                              <a
+                                href={`/project-management?project_id=${project.unqiue_id}`}
+                              >
+                                <p className="install-update">
+                                  {project.unqiue_id}
+                                </p>
+                              </a>
                               <div
                                 className="milestone-strips"
                                 style={getColorStyle(project.contract_date)}
@@ -243,32 +260,32 @@ const ProjectPerformence = () => {
                                     {project.contract_date
                                       ? format(
                                           new Date(project.contract_date),
-                                          "dd MMMM"
+                                          'dd MMMM'
                                         ).slice(0, 6)
-                                      : "No Data"}
+                                      : 'No Data'}
                                   </p>
                                   <p>
                                     {project.contract_date
                                       ? format(
                                           new Date(project.contract_date),
-                                          "yyyy"
+                                          'yyyy'
                                         )
-                                      : "No Data"}
+                                      : 'No Data'}
                                   </p>
                                 </div>
                                 <div
                                   className="strip-line"
                                   style={{
                                     borderColor: project.contract_date
-                                      ? "#fff"
-                                      : "#d6d6d6",
+                                      ? '#fff'
+                                      : '#d6d6d6',
                                   }}
                                 ></div>
                                 <div className="strip-des">
                                   <p>
-                                    Sales{" "}
+                                    Sales{' '}
                                     <IoMdInformationCircleOutline
-                                      style={{ cursor: "pointer" }}
+                                      style={{ cursor: 'pointer' }}
                                     />
                                   </p>
                                 </div>
@@ -286,21 +303,24 @@ const ProjectPerformence = () => {
                                           new Date(
                                             project.site_survey_complete_date
                                           ),
-                                          "dd MMMM"
+                                          'dd MMMM'
                                         ).slice(0, 6)
-                                      : "No Data"}
+                                      : 'No Data'}
                                   </p>
                                 </div>
                                 <div
                                   className="strip-line"
-                                  style={{ borderColor: project.site_survey_complete_date
-                                    ? "#fff"
-                                    : "#d6d6d6",}}
+                                  style={{
+                                    borderColor:
+                                      project.site_survey_complete_date
+                                        ? '#fff'
+                                        : '#d6d6d6',
+                                  }}
                                 ></div>
                                 <div className="notch-strip-des">
                                   <p>Site Survey</p>
                                   <IoMdInformationCircleOutline
-                                    style={{ cursor: "pointer" }}
+                                    style={{ cursor: 'pointer' }}
                                   />
                                 </div>
                                 <div className="child-notch"></div>
@@ -319,21 +339,23 @@ const ProjectPerformence = () => {
                                           new Date(
                                             project.permit_approved_date
                                           ),
-                                          "dd MMMM"
+                                          'dd MMMM'
                                         ).slice(0, 6)
-                                      : "No Data"}
+                                      : 'No Data'}
                                   </p>
                                 </div>
                                 <div
                                   className="strip-line"
-                                  style={{ borderColor: project.permit_approved_date
-                                    ? "#fff"
-                                    : "#d6d6d6", }}
+                                  style={{
+                                    borderColor: project.permit_approved_date
+                                      ? '#fff'
+                                      : '#d6d6d6',
+                                  }}
                                 ></div>
                                 <div className="notch-strip-des">
                                   <p>Permit Submitted </p>
                                   <IoMdInformationCircleOutline
-                                    style={{ cursor: "pointer" }}
+                                    style={{ cursor: 'pointer' }}
                                   />
                                 </div>
                                 <div className="child-notch"></div>
@@ -350,21 +372,23 @@ const ProjectPerformence = () => {
                                     {project.install_ready_date
                                       ? format(
                                           new Date(project.install_ready_date),
-                                          "dd MMMM"
+                                          'dd MMMM'
                                         ).slice(0, 6)
-                                      : "No Data"}
+                                      : 'No Data'}
                                   </p>
                                 </div>
                                 <div
                                   className="strip-line"
-                                  style={{ borderColor: project.install_ready_date
-                                    ? "#fff"
-                                    : "#d6d6d6",  }}
+                                  style={{
+                                    borderColor: project.install_ready_date
+                                      ? '#fff'
+                                      : '#d6d6d6',
+                                  }}
                                 ></div>
                                 <div className="notch-strip-des">
                                   <p>Install Ready</p>
                                   <IoMdInformationCircleOutline
-                                    style={{ cursor: "pointer" }}
+                                    style={{ cursor: 'pointer' }}
                                   />
                                 </div>
                                 <div className="child-notch"></div>
@@ -383,21 +407,23 @@ const ProjectPerformence = () => {
                                           new Date(
                                             project.install_completed_date
                                           ),
-                                          "dd MMMM"
+                                          'dd MMMM'
                                         ).slice(0, 6)
-                                      : "No Data"}
+                                      : 'No Data'}
                                   </p>
                                 </div>
                                 <div
                                   className="strip-line"
-                                  style={{borderColor: project.install_completed_date
-                                    ? "#fff"
-                                    : "#d6d6d6", }}
+                                  style={{
+                                    borderColor: project.install_completed_date
+                                      ? '#fff'
+                                      : '#d6d6d6',
+                                  }}
                                 ></div>
                                 <div className="notch-strip-des">
                                   <p>Install Completed</p>
                                   <IoMdInformationCircleOutline
-                                    style={{ cursor: "pointer" }}
+                                    style={{ cursor: 'pointer' }}
                                   />
                                 </div>
                                 <div className="child-notch"></div>
@@ -412,21 +438,23 @@ const ProjectPerformence = () => {
                                     {project.pto_date
                                       ? format(
                                           new Date(project.pto_date),
-                                          "dd MMMM"
+                                          'dd MMMM'
                                         ).slice(0, 6)
-                                      : "No Data"}
+                                      : 'No Data'}
                                   </p>
                                 </div>
                                 <div
                                   className="strip-line"
-                                  style={{ borderColor: project.pto_date
-                                    ? "#fff"
-                                    : "#d6d6d6",  }}
+                                  style={{
+                                    borderColor: project.pto_date
+                                      ? '#fff'
+                                      : '#d6d6d6',
+                                  }}
                                 ></div>
                                 <div className="notch-strip-des">
                                   <p>PTO</p>
                                   <IoMdInformationCircleOutline
-                                    style={{ cursor: "pointer" }}
+                                    style={{ cursor: 'pointer' }}
                                   />
                                 </div>
                                 <div className="child-notch"></div>
@@ -436,10 +464,10 @@ const ProjectPerformence = () => {
                               </div>
 
                               <div className="all-progress">
-                                <div style={{ width: "25px" }}>
+                                <div style={{ width: '25px' }}>
                                   <CircularProgressbar
                                     styles={buildStyles({
-                                      pathColor: "#57B93A",
+                                      pathColor: '#57B93A',
                                     })}
                                     strokeWidth={10}
                                     value={parseInt(
@@ -466,9 +494,13 @@ const ProjectPerformence = () => {
           </div>
 
           <div className="page-heading-container">
-            <p className="page-heading">
-              {startIndex} - {endIndex} of {projectsCount} item
-            </p>
+            {!!projectsCount && (
+              <p className="page-heading">
+                {startIndex} -{' '}
+                {endIndex > projectsCount ? projectsCount : endIndex} of{' '}
+                {projectsCount} item
+              </p>
+            )}
 
             {projectStatus?.length > 0 ? (
               <Pagination

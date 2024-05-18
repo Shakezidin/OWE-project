@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-import { fetchCommissions } from "../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice";
-import CheckBox from "../../../components/chekbox/CheckBox";
-import { toggleRowSelection } from "../../../components/chekbox/checkHelper";
-import Pagination from "../../../components/pagination/Pagination";
-import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
-import { CommissionModel } from "../../../../core/models/configuration/create/CommissionModel";
-import SortableHeader from "../../../components/tableHeader/SortableHeader";
-import "../../configure/configure.css";
-import HelpDashboard from "../../dashboard/HelpDashboard";
-import { BiSupport } from "react-icons/bi";
-import PaginationComponent from "../../../components/pagination/PaginationComponent";
-import { getAR } from "../../../../redux/apiActions/arAction";
+import React, { useEffect, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
+import { fetchCommissions } from '../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice';
+import CheckBox from '../../../components/chekbox/CheckBox';
+import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
+import Pagination from '../../../components/pagination/Pagination';
+import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
+import { CommissionModel } from '../../../../core/models/configuration/create/CommissionModel';
+import SortableHeader from '../../../components/tableHeader/SortableHeader';
+import '../../configure/configure.css';
+import HelpDashboard from '../../dashboard/HelpDashboard';
+import { BiSupport } from 'react-icons/bi';
+import PaginationComponent from '../../../components/pagination/PaginationComponent';
+import { getAR } from '../../../../redux/apiActions/arAction';
 
 const ArDashBoardTable = () => {
   const [pageSize1, setPageSize1] = useState(10);
@@ -25,7 +25,7 @@ const ArDashBoardTable = () => {
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const commissionList = useAppSelector((state) => state.comm.commissionsList);
-  const {data,count,filters} = useAppSelector((state) => state.ardata)
+  const { data, count, filters } = useAppSelector((state) => state.ardata);
   // const loading = useAppSelector((state) => state.comm.loading);
   const error = useAppSelector((state) => state.comm.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
@@ -38,17 +38,17 @@ const ArDashBoardTable = () => {
   const currentPage = useAppSelector(
     (state) => state.paginationType.currentPage
   );
-  const [sortKey, setSortKey] = useState("");
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
+  const [sortKey, setSortKey] = useState('');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [currentPage1, setCurrentPage1] = useState(1);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage1,
       page_size: pageSize1,
       archived: viewArchived ? true : undefined,
-      report_type:filters.report_type,
-      sale_partner:filters.sale_partner,
-      sort_by:filters.sort_by,
+      report_type: filters.report_type,
+      sale_partner: filters.sale_partner,
+      sort_by: filters.sort_by,
       shaky: filters.shaky,
       cancel: filters.cancel,
       sold: filters.sold,
@@ -58,7 +58,7 @@ const ArDashBoardTable = () => {
       pto: filters.pto,
     };
     dispatch(getAR(pageNumber));
-  }, [dispatch, currentPage1, pageSize1, viewArchived,filters]);
+  }, [dispatch, currentPage1, pageSize1, viewArchived, filters]);
   const handleItemsPerPageChange = (e: any) => {
     const newItemsPerPage = parseInt(e.target.value, 10);
     setPageSize1(newItemsPerPage);
@@ -78,10 +78,10 @@ const ArDashBoardTable = () => {
 
   const handleSort = (key: any) => {
     if (sortKey === key) {
-      setSortDirection(sortDirection === "desc" ? "asc" : "desc");
+      setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
     } else {
       setSortKey(key);
-      setSortDirection("asc");
+      setSortDirection('asc');
     }
   };
 
@@ -89,17 +89,17 @@ const ArDashBoardTable = () => {
     currentPageData.sort((a: any, b: any) => {
       const aValue = a[sortKey];
       const bValue = b[sortKey];
-      if (typeof aValue === "string" && typeof bValue === "string") {
-        return sortDirection === "asc"
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        return sortDirection === 'asc'
           ? aValue.localeCompare(bValue)
           : bValue.localeCompare(aValue);
       } else {
         // Ensure numeric values for arithmetic operations
         const numericAValue =
-          typeof aValue === "number" ? aValue : parseFloat(aValue);
+          typeof aValue === 'number' ? aValue : parseFloat(aValue);
         const numericBValue =
-          typeof bValue === "number" ? bValue : parseFloat(bValue);
-        return sortDirection === "asc"
+          typeof bValue === 'number' ? bValue : parseFloat(bValue);
+        return sortDirection === 'asc'
           ? numericAValue - numericBValue
           : numericBValue - numericAValue;
       }
@@ -114,55 +114,95 @@ const ArDashBoardTable = () => {
 
   const Commissioncolumns = [
     {
-      name: "unique_id",
-      displayName: "UID",
-      type: "string",
+      name: 'unique_id',
+      displayName: 'UID',
+      type: 'string',
       isCheckbox: true,
     },
     {
-      name: "partner",
-      displayName: "Partner",
-      type: "string",
+      name: 'partner',
+      displayName: 'Partner',
+      type: 'string',
       isCheckbox: false,
     },
     {
-      name: "installer",
-      displayName: "Installer",
-      type: "string",
+      name: 'installer',
+      displayName: 'Installer',
+      type: 'string',
       isCheckbox: false,
     },
     {
-      name: "type",
-      displayName: "Type",
-      type: "string",
+      name: 'type',
+      displayName: 'Type',
+      type: 'string',
       isCheckbox: false,
     },
-   
+
     {
-      name: "home_owner",
-      displayName: "Home Owner",
-      type: "number",
+      name: 'home_owner',
+      displayName: 'Home Owner',
+      type: 'number',
       isCheckbox: false,
     },
     {
-      name: "street_Address",
-      displayName: "Strt Add",
-      type: "string",
+      name: 'street_Address',
+      displayName: 'Strt Add',
+      type: 'string',
       isCheckbox: false,
     },
-    { name: "city", displayName: "City", type: "string", isCheckbox: false },
-    { name: "st", displayName: "State", type: "string", isCheckbox: false },
-    { name: "zip", displayName: "Zip", type: "string", isCheckbox: false },
-    { name: "sys-size", displayName: "SysSize", type: "string", isCheckbox: false },
-    { name: "wc", displayName: "WC", type: "string", isCheckbox: false },
-    { name: "inst_sys", displayName: "InstSys", type: "string", isCheckbox: false },
-    { name: "status", displayName: "Status", type: "string", isCheckbox: false },
-    { name: "status_date", displayName: "Status Date", type: "string", isCheckbox: false },
-    { name: "contract_calc", displayName: "ContractCalc", type: "string", isCheckbox: false },
-    { name: "owe_ar", displayName: "OweAr", type: "string", isCheckbox: false },
-    { name: "total_paid", displayName: "Total Paid", type: "string", isCheckbox: false },
-    { name: "current_due", displayName: "Current Due", type: "string", isCheckbox: false },
-    { name: "balance", displayName: "Balance", type: "string", isCheckbox: false },
+    { name: 'city', displayName: 'City', type: 'string', isCheckbox: false },
+    { name: 'st', displayName: 'State', type: 'string', isCheckbox: false },
+    { name: 'zip', displayName: 'Zip', type: 'string', isCheckbox: false },
+    {
+      name: 'sys-size',
+      displayName: 'SysSize',
+      type: 'string',
+      isCheckbox: false,
+    },
+    { name: 'wc', displayName: 'WC', type: 'string', isCheckbox: false },
+    {
+      name: 'inst_sys',
+      displayName: 'InstSys',
+      type: 'string',
+      isCheckbox: false,
+    },
+    {
+      name: 'status',
+      displayName: 'Status',
+      type: 'string',
+      isCheckbox: false,
+    },
+    {
+      name: 'status_date',
+      displayName: 'Status Date',
+      type: 'string',
+      isCheckbox: false,
+    },
+    {
+      name: 'contract_calc',
+      displayName: 'ContractCalc',
+      type: 'string',
+      isCheckbox: false,
+    },
+    { name: 'owe_ar', displayName: 'OweAr', type: 'string', isCheckbox: false },
+    {
+      name: 'total_paid',
+      displayName: 'Total Paid',
+      type: 'string',
+      isCheckbox: false,
+    },
+    {
+      name: 'current_due',
+      displayName: 'Current Due',
+      type: 'string',
+      isCheckbox: false,
+    },
+    {
+      name: 'balance',
+      displayName: 'Balance',
+      type: 'string',
+      isCheckbox: false,
+    },
   ];
 
   const handleIconOpen = () => setOpenIcon(true);
@@ -173,7 +213,7 @@ const ArDashBoardTable = () => {
       <div className="commissionContainer">
         <div
           className="TableContainer"
-          style={{ overflowX: "auto", whiteSpace: "nowrap" }}
+          style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}
         >
           <table>
             <thead>
@@ -209,62 +249,64 @@ const ArDashBoardTable = () => {
 
             <tbody>
               {currentPageData?.length > 0
-                ? currentPageData?.map((el: typeof currentPageData[0], i: any) => (
-                    <tr
-                      key={i}
-                      className={selectedRows.has(i) ? "selected" : ""}
-                    >
-                      <td style={{ fontWeight: "500", color: "black" }}>
-                        <div className="flex-check">
-                          <CheckBox
-                            checked={selectedRows.has(i)}
-                            onChange={() => {
-                              // If there's only one row of data and the user clicks its checkbox, select all rows
-                              if (currentPageData?.length === 1) {
-                                setSelectAllChecked(true);
-                                setSelectedRows(new Set([0]));
-                              } else {
-                                toggleRowSelection(
-                                  i,
-                                  selectedRows,
-                                  setSelectedRows,
-                                  setSelectAllChecked
-                                );
-                              }
-                            }}
-                          />
-                          {el.unique_id}
-                        </div>
-                      </td>
-                      <td>{el.partner}</td>
-                      <td>{el.installer}</td>
-                      <td>{el.type}</td>
-                      <td>{el.home_owner}</td>
-                      <td>{el.street_address}</td>
-                      <td>{el.city}</td>
-                      <td>{el.st}</td>
-                      <td>{el.zip}</td>
-                      <td>{el.sys_size}</td>
-                      <td>{el.status}</td>
-                      <td>{el.status_date}</td>
-                      <td>{el.contract_calc}</td>
-                      <td>{el.owe_ar}</td>
-                      <td>{el.total_paid}</td>
-                      <td>{el.current_due}</td>
-                      <td>{el.balance}</td>
-               
-                      <td
-                        style={{
-                          height: "14px",
-                          width: "14px",
-                          stroke: "0.2",
-                          cursor: "pointer",
-                        }}
+                ? currentPageData?.map(
+                    (el: (typeof currentPageData)[0], i: any) => (
+                      <tr
+                        key={i}
+                        className={selectedRows.has(i) ? 'selected' : ''}
                       >
-                        <BiSupport onClick={() => handleIconOpen()} />
-                      </td>
-                    </tr>
-                  ))
+                        <td style={{ fontWeight: '500', color: 'black' }}>
+                          <div className="flex-check">
+                            <CheckBox
+                              checked={selectedRows.has(i)}
+                              onChange={() => {
+                                // If there's only one row of data and the user clicks its checkbox, select all rows
+                                if (currentPageData?.length === 1) {
+                                  setSelectAllChecked(true);
+                                  setSelectedRows(new Set([0]));
+                                } else {
+                                  toggleRowSelection(
+                                    i,
+                                    selectedRows,
+                                    setSelectedRows,
+                                    setSelectAllChecked
+                                  );
+                                }
+                              }}
+                            />
+                            {el.unique_id}
+                          </div>
+                        </td>
+                        <td>{el.partner}</td>
+                        <td>{el.installer}</td>
+                        <td>{el.type}</td>
+                        <td>{el.home_owner}</td>
+                        <td>{el.street_address}</td>
+                        <td>{el.city}</td>
+                        <td>{el.st}</td>
+                        <td>{el.zip}</td>
+                        <td>{el.sys_size}</td>
+                        <td>{el.status}</td>
+                        <td>{el.status_date}</td>
+                        <td>{el.contract_calc}</td>
+                        <td>{el.owe_ar}</td>
+                        <td>{el.total_paid}</td>
+                        <td>{el.current_due}</td>
+                        <td>{el.balance}</td>
+
+                        <td
+                          style={{
+                            height: '14px',
+                            width: '14px',
+                            stroke: '0.2',
+                            cursor: 'pointer',
+                          }}
+                        >
+                          <BiSupport onClick={() => handleIconOpen()} />
+                        </td>
+                      </tr>
+                    )
+                  )
                 : null}
             </tbody>
           </table>

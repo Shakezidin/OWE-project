@@ -1,28 +1,28 @@
-import React, { useEffect, useState } from "react";
-import "../../userManagement/user.css";
-import { ICONS } from "../../../icons/Icons";
-import "../../configure/configure.css";
-import UserTable from "../userManagerAllTable/UserTable";
-import AppointmentSetterTable from "../userManagerAllTable/AppointmentSetterTable";
-import PartnerTable from "../userManagerAllTable/PartnerTable";
-import SalesManagerTable from "../userManagerAllTable/SalesManagerTable";
-import SalesRepresentativeTable from "../userManagerAllTable/SalesRepresentativeTable";
-import DealerOwnerTable from "../userManagerAllTable/DealerOwnerTable";
-import RegionalManagerTable from "../userManagerAllTable/RegionalManagerTable";
-import "./UserHeader.css";
-import Pagination from "../../../components/pagination/Pagination";
-import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
-import SelectOption from "../../../components/selectOption/SelectOption";
+import React, { useEffect, useState } from 'react';
+import '../../userManagement/user.css';
+import { ICONS } from '../../../icons/Icons';
+import '../../configure/configure.css';
+import UserTable from '../userManagerAllTable/UserTable';
+import AppointmentSetterTable from '../userManagerAllTable/AppointmentSetterTable';
+import PartnerTable from '../userManagerAllTable/PartnerTable';
+import SalesManagerTable from '../userManagerAllTable/SalesManagerTable';
+import SalesRepresentativeTable from '../userManagerAllTable/SalesRepresentativeTable';
+import DealerOwnerTable from '../userManagerAllTable/DealerOwnerTable';
+import RegionalManagerTable from '../userManagerAllTable/RegionalManagerTable';
+import './UserHeader.css';
+import Pagination from '../../../components/pagination/Pagination';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
+import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
+import SelectOption from '../../../components/selectOption/SelectOption';
 import {
   UserDropdownModel,
   UserRoleBasedListModel,
-} from "../../../../core/models/api_models/UserManagementModel";
-import { TYPE_OF_USER } from "../../../../resources/static_data/Constant";
-import PaginationComponent from "../../../components/pagination/PaginationComponent";
-import { fetchUserListBasedOnRole } from "../../../../redux/apiActions/userManagement/userManagementActions";
-import DBUserTable from "../userManagerAllTable/DBUserTable";
-
+} from '../../../../core/models/api_models/UserManagementModel';
+import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
+import PaginationComponent from '../../../components/pagination/PaginationComponent';
+import { fetchUserListBasedOnRole } from '../../../../redux/apiActions/userManagement/userManagementActions';
+import DBUserTable from '../userManagerAllTable/DBUserTable';
+import { getDataTableName } from '../../../../redux/apiActions/dataTableAction';
 interface UserTableProos {
   userDropdownData: UserDropdownModel[];
   userRoleBasedList: UserRoleBasedListModel[];
@@ -59,14 +59,18 @@ const UserManagementTable: React.FC<UserTableProos> = ({
       page_size: pageSize1,
       filters: [
         {
-          Column: "role_name",
-          Operation: "=",
+          Column: 'role_name',
+          Operation: '=',
           Data: selectedOption.value,
         },
       ],
     };
     dispatch(fetchUserListBasedOnRole(data));
   }, [dispatch, currentPage1, pageSize1]);
+
+  useEffect(() => {
+    dispatch(getDataTableName());
+  }, []);
 
   const handlePageChange = (page: number) => {
     setCurrentPage1(page);
@@ -84,7 +88,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   const totalPages = Math.ceil(count! / pageSize1);
 
   const startIndex = (currentPage1 - 1) * pageSize1 + 1;
-  const endIndex = currentPage1 * pageSize1 
+  const endIndex = currentPage1 * pageSize1;
   /** render table based on dropdown */
   const renderComponent = () => {
     switch (selectedOption.label) {
@@ -120,7 +124,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             setSelectAllChecked={setSelectAllChecked}
           />
         );
-        case TYPE_OF_USER.DB_USER:
+      case TYPE_OF_USER.DB_USER:
         return (
           <DBUserTable
             data={userRoleBasedList}
@@ -267,13 +271,15 @@ const UserManagementTable: React.FC<UserTableProos> = ({
               value={selectedOption}
               onChange={(data: any) => {
                 handleSelectChange(data);
+                setSelectedRows(new Set())
+                setSelectAllChecked(false);
               }}
             />
           </div>
 
           <div
             className="iconsSection-delete"
-            style={{ marginTop: "1.2rem" }}
+            style={{ marginTop: '1.2rem' }}
             onClick={() => {
               onClickMultiDelete();
             }}
@@ -290,7 +296,8 @@ const UserManagementTable: React.FC<UserTableProos> = ({
         {userRoleBasedList?.length > 0 ? (
           <>
             <p className="page-heading">
-              {startIndex} - {endIndex} of {count} item
+              {startIndex} - {endIndex > count! ? count : endIndex} of {count}{' '}
+              item
             </p>
             <PaginationComponent
               currentPage={currentPage1}

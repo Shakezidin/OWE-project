@@ -1,12 +1,12 @@
 // api.ts
 
-import axios, { AxiosRequestConfig, AxiosResponse, isAxiosError } from "axios";
+import axios, { AxiosRequestConfig, AxiosResponse, isAxiosError } from 'axios';
 import {
   HTTP_METHOD,
   HTTP_STATUS,
-} from "../../../core/models/api_models/RequestModel";
-import { Credentials } from "../../../core/models/api_models/AuthModel";
-import { EndPoints } from "../api_client/EndPoints";
+} from '../../../core/models/api_models/RequestModel';
+import { Credentials } from '../../../core/models/api_models/AuthModel';
+import { EndPoints } from '../api_client/EndPoints';
 
 const BASE_URL = `${process.env.REACT_APP_BASE_URL}`;
 // authService.ts
@@ -29,11 +29,11 @@ export const login = async (
       credentials
     );
     if (response.status === HTTP_STATUS.OK) {
-      console.log("Login Successfully");
+      console.log('Login Successfully');
     }
     return response.data;
   } catch (error) {
-    throw new Error("Login failed. Please check your credentials.");
+    throw new Error('Login failed. Please check your credentials.');
   }
 };
 export const postCaller = async (
@@ -42,8 +42,8 @@ export const postCaller = async (
 ): Promise<any> => {
   const config: AxiosRequestConfig = {
     headers: {
-      Authorization: `${localStorage.getItem("token")}`,
-      "Content-Type": "application/json",
+      Authorization: `${localStorage.getItem('token')}`,
+      'Content-Type': 'application/json',
     },
   };
   try {
@@ -54,25 +54,25 @@ export const postCaller = async (
     );
     return response.data; // Return the data from the response
   } catch (error) {
-    console.log("axios error", error);
+    console.log('axios error', error);
 
     if (isAxiosError(error)) {
       if (error.response) return error.response.data;
 
       // handle network error
-      if (error.message === "Network Error")
-        return new Error("No internet connection");
+      if (error.message === 'Network Error')
+        return new Error('No internet connection');
     }
 
-    throw new Error("Failed to fetch data");
+    throw new Error('Failed to fetch data');
   }
 };
 
 export const getCaller = async (endpoint: string): Promise<any> => {
   const config: AxiosRequestConfig = {
     headers: {
-      Authorization: `${localStorage.getItem("token")}`,
-      "Content-Type": "application/json",
+      Authorization: `${localStorage.getItem('token')}`,
+      'Content-Type': 'application/json',
     },
   };
   try {
@@ -82,7 +82,7 @@ export const getCaller = async (endpoint: string): Promise<any> => {
     );
     return response.data; // Return the data from the response
   } catch (error) {
-    throw new Error("Failed to fetch data");
+    throw new Error('Failed to fetch data');
   }
 };
 
@@ -90,8 +90,8 @@ export const putCaller = async (endpoint: string, data: any) => {
   const response = await fetch(`${BASE_URL}/${endpoint}`, {
     method: HTTP_METHOD.PUT,
     headers: {
-      Authorization: ` ${localStorage.getItem("token")}`,
-      "Content-Type": "application/json",
+      Authorization: ` ${localStorage.getItem('token')}`,
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify(data),
   });

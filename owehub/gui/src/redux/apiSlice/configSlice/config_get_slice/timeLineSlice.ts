@@ -1,25 +1,23 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
-import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
-import { TimeLineSlaModel } from "../../../../core/models/configuration/create/TimeLineSlaModel";
-
-
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
+import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
+import { TimeLineSlaModel } from '../../../../core/models/configuration/create/TimeLineSlaModel';
 
 interface timeLineState {
   timelinesla_list: TimeLineSlaModel[];
   loading: boolean;
   error: string | null;
-  totalCount:number,
+  totalCount: number;
 }
 const initialState: timeLineState = {
   timelinesla_list: [],
   loading: false,
   error: null,
-  totalCount:0
+  totalCount: 0,
 };
 
 export const fetchTimeLineSla = createAsyncThunk(
-  "timeLineSla/fetchTimeLineSla",
+  'timeLineSla/fetchTimeLineSla',
   async (data: any) => {
     const response = await postCaller(EndPoints.timeLineSla, data);
 
@@ -28,7 +26,7 @@ export const fetchTimeLineSla = createAsyncThunk(
 );
 
 const timeLineSlice = createSlice({
-  name: "timeLineSla",
+  name: 'timeLineSla',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -40,7 +38,7 @@ const timeLineSlice = createSlice({
       .addCase(fetchTimeLineSla.fulfilled, (state, action) => {
         state.loading = false;
         state.error = null;
-        state.totalCount = action.payload.dbRecCount
+        state.totalCount = action.payload.dbRecCount;
         if (
           action.payload &&
           action.payload.data &&
@@ -54,7 +52,7 @@ const timeLineSlice = createSlice({
       .addCase(fetchTimeLineSla.rejected, (state, action) => {
         state.loading = false;
         state.error =
-          action.error.message ?? "Failed to fetch TimeLineSlaModel data";
+          action.error.message ?? 'Failed to fetch TimeLineSlaModel data';
       });
   },
 });

@@ -6,65 +6,65 @@
  * Path: /
  */
 
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
-import WelcomePage from "./ui/pages/welcome/WelcomePage";
-import ResetPassword from "./ui/pages/resetPassword/ResetPassword";
-import { LoginPage } from "./ui/pages/login/LoginPage";
+import WelcomePage from './ui/pages/welcome/WelcomePage';
+import ResetPassword from './ui/pages/resetPassword/ResetPassword';
+import { LoginPage } from './ui/pages/login/LoginPage';
 
-import MainLayout from "./ui/components/layout/MainLayout";
-import EnterOtpScreen from "./ui/pages/otp/EnterOtpScreen";
-import { useEffect } from "react";
-import { RootState } from "./redux/store";
-import { initializeAuth } from "./redux/apiSlice/authSlice/authSlice";
-import { DashboardPage } from "./ui/pages/dashboard/DashboardPage";
-import { ROUTES } from "./routes/routes";
-import CommissionRate from "./ui/pages/configure/commissionRate/CommissionRate";
-import DealerOverRides from "./ui/pages/configure/dealerOverrides/DealerOverRides";
-import MarketingFees from "./ui/pages/configure/marketingFees/MarketingFees";
-import DealerTier from "./ui/pages/configure/dealerTier/DealerTier";
-import LoanType from "./ui/pages/configure/loanType/LoanType";
-import SaleType from "./ui/pages/configure/saleType/SaleType";
-import AdderValidation from "./ui/pages/configure/adderValidation/AdderValidation";
-import PaymentSchedule from "./ui/pages/configure/paymentValidation/PaymentSchedule";
-import TierLoanFee from "./ui/pages/configure/tierLoanfee/TierLoanFee";
-import TimeLine from "./ui/pages/configure/timeline/TimeLine";
-import AutoAdder from "./ui/pages/configure/autoAdder/AutoAdder";
-import DealerCredit from "./ui/pages/configure/dealerCredit/DealerCredit";
-import RebateData from "./ui/pages/configure/reabateData/RebateData";
-import ReferalData from "./ui/pages/configure/referalData/ReferalData";
-import DlrOthPay from "./ui/pages/configure/dlrOthPay/DlrOthPay";
-import NonCommDlrPay from "./ui/pages/configure/non_comm(dlrpay)/NonCommDlrPay";
-import LoanFeeAddr from "./ui/pages/configure/loanFeeAddr/LoanFeeAddr";
-import UserManagement from "./ui/pages/userManagement/UserManagement";
-import AccountSettings from "./ui/pages/accountSettings/AccountSettings";
-import Report from "./ui/pages/report/Report";
-import TechnicalSupport from "./ui/pages/technicalSupport/TechnicalSupport";
-import DataTablle from "./ui/pages/databaseManager/dataTable/DataTable";
-import UserActivity from "./ui/pages/databaseManager/userActivity/UserActivity";
-import DbManagerDashboard from "./ui/pages/databaseManager/dbManagerDashboard/DbManagerDashboard";
-import Webhook from "./ui/pages/databaseManager/webhookTable/Webhook";
-import ConfigurePage from "./ui/pages/configure/ConfigurePage";
-import { RepPayDashboardPage } from "./ui/pages/reppay/reppaydashboard/reppaydashboard";
-import RepPaySettings from "./ui/pages/configure/repPaySettings/RepPaySettings";
-import RateAdjustments from "./ui/pages/configure/rateAdjustments/RateAdjustments";
-import ARSchedule from "./ui/pages/configure/ARSchedule/ARSchedule";
-import AR from "./ui/pages/configure/AR/Ar";
-import InstallCost from "./ui/pages/configure/installCost/installCost";
-import LeaderOverride from "./ui/pages/configure/leaderOverride/LeaderOverride";
-import AdderCredit from "./ui/pages/configure/adderCredit/AdderCredit";
-import AdderResponsibility from "./ui/pages/configure/adderResponsibility/adderResponsibility";
-import LoanFee from "./ui/pages/configure/loanFee/LoanFee";
-import ProjectPerformence from "./ui/pages/projectTracker/ProjectPerformence";
-import ProjectStatus from "./ui/pages/projectTracker/ProjectStatus";
-import ArImport from "./ui/pages/configure/arImport/ArImport";
-import Adjustments from "./ui/pages/configure/Adjustments/Adjustments";
-import Reconcile from "./ui/pages/configure/Reconcile/Reconcile";
-import ApptSetters from "./ui/pages/configure/apptSetters/ApptSetters";
-import { ARDashboardPage } from "./ui/pages/ar/ardashboard/ardashboard";
-import { useAppDispatch, useAppSelector } from "./redux/hooks";
-import { TYPE_OF_USER } from "./resources/static_data/Constant";
-import AdderData from "./ui/pages/configure/adderData/AdderData";
+import MainLayout from './ui/components/layout/MainLayout';
+import EnterOtpScreen from './ui/pages/otp/EnterOtpScreen';
+import { useEffect } from 'react';
+import { RootState } from './redux/store';
+import { initializeAuth } from './redux/apiSlice/authSlice/authSlice';
+import { DashboardPage } from './ui/pages/dashboard/DashboardPage';
+import { ROUTES } from './routes/routes';
+import CommissionRate from './ui/pages/configure/commissionRate/CommissionRate';
+import DealerOverRides from './ui/pages/configure/dealerOverrides/DealerOverRides';
+import MarketingFees from './ui/pages/configure/marketingFees/MarketingFees';
+import DealerTier from './ui/pages/configure/dealerTier/DealerTier';
+import LoanType from './ui/pages/configure/loanType/LoanType';
+import SaleType from './ui/pages/configure/saleType/SaleType';
+import AdderValidation from './ui/pages/configure/adderValidation/AdderValidation';
+import PaymentSchedule from './ui/pages/configure/paymentValidation/PaymentSchedule';
+import TierLoanFee from './ui/pages/configure/tierLoanfee/TierLoanFee';
+import TimeLine from './ui/pages/configure/timeline/TimeLine';
+import AutoAdder from './ui/pages/configure/autoAdder/AutoAdder';
+import DealerCredit from './ui/pages/configure/dealerCredit/DealerCredit';
+import RebateData from './ui/pages/configure/reabateData/RebateData';
+import ReferalData from './ui/pages/configure/referalData/ReferalData';
+import DlrOthPay from './ui/pages/configure/dlrOthPay/DlrOthPay';
+import NonCommDlrPay from './ui/pages/configure/non_comm(dlrpay)/NonCommDlrPay';
+import LoanFeeAddr from './ui/pages/configure/loanFeeAddr/LoanFeeAddr';
+import UserManagement from './ui/pages/userManagement/UserManagement';
+import AccountSettings from './ui/pages/accountSettings/AccountSettings';
+import Report from './ui/pages/report/Report';
+import TechnicalSupport from './ui/pages/technicalSupport/TechnicalSupport';
+import DataTablle from './ui/pages/databaseManager/dataTable/DataTable';
+import UserActivity from './ui/pages/databaseManager/userActivity/UserActivity';
+import DbManagerDashboard from './ui/pages/databaseManager/dbManagerDashboard/DbManagerDashboard';
+import Webhook from './ui/pages/databaseManager/webhookTable/Webhook';
+import ConfigurePage from './ui/pages/configure/ConfigurePage';
+import { RepPayDashboardPage } from './ui/pages/reppay/reppaydashboard/reppaydashboard';
+import RepPaySettings from './ui/pages/configure/repPaySettings/RepPaySettings';
+import RateAdjustments from './ui/pages/configure/rateAdjustments/RateAdjustments';
+import ARSchedule from './ui/pages/configure/ARSchedule/ARSchedule';
+import AR from './ui/pages/configure/AR/Ar';
+import InstallCost from './ui/pages/configure/installCost/installCost';
+import LeaderOverride from './ui/pages/configure/leaderOverride/LeaderOverride';
+import AdderCredit from './ui/pages/configure/adderCredit/AdderCredit';
+import AdderResponsibility from './ui/pages/configure/adderResponsibility/adderResponsibility';
+import LoanFee from './ui/pages/configure/loanFee/LoanFee';
+import ProjectPerformence from './ui/pages/projectTracker/ProjectPerformence';
+import ProjectStatus from './ui/pages/projectTracker/ProjectStatus';
+import ArImport from './ui/pages/configure/arImport/ArImport';
+import Adjustments from './ui/pages/configure/Adjustments/Adjustments';
+import Reconcile from './ui/pages/configure/Reconcile/Reconcile';
+import ApptSetters from './ui/pages/configure/apptSetters/ApptSetters';
+import { ARDashboardPage } from './ui/pages/ar/ardashboard/ardashboard';
+import { useAppDispatch, useAppSelector } from './redux/hooks';
+import { TYPE_OF_USER } from './resources/static_data/Constant';
+import AdderData from './ui/pages/configure/adderData/AdderData';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -139,7 +139,6 @@ function App() {
     );
   };
 
-  console.log("login isAuthenticated", isAuthenticated)
   /** other routes */
   const otherRoutes = () => {
     return (
@@ -168,6 +167,22 @@ function App() {
           element={<ProjectPerformence />}
         />
         <Route path={ROUTES.PROJECT_STATUS} element={<ProjectStatus />} />
+      </Route>
+    );
+  };
+
+  const managerRoutes = () => {
+    return (
+      <Route>
+        <Route
+          path={ROUTES.PROJECT_PERFORMANCE}
+          element={<ProjectPerformence />}
+        />
+        <Route path={ROUTES.PROJECT_STATUS} element={<ProjectStatus />} />
+        <Route
+          path={ROUTES.REPPAY_DASHBOARD}
+          element={<RepPayDashboardPage />}
+        />
       </Route>
     );
   };
@@ -213,6 +228,11 @@ function App() {
             role_name === TYPE_OF_USER.APPOINTMENT_SETTER ||
             role_name === TYPE_OF_USER.PARTNER) &&
             otherRoutes()}
+
+          {(role_name === TYPE_OF_USER.SALES_REPRESENTATIVE ||
+            role_name === TYPE_OF_USER.SALE_MANAGER ||
+            role_name === TYPE_OF_USER.REGIONAL_MANGER) &&
+            managerRoutes()}
 
           {role_name === TYPE_OF_USER.DB_USER && (
             <Route>

@@ -1,6 +1,6 @@
-import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { toast } from "react-toastify";
-import { postCaller } from "../../infrastructure/web_api/services/apiUrl";
+import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { toast } from 'react-toastify';
+import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
 export interface IPerfomanceSale {
   Type: string;
   sales: number;
@@ -8,97 +8,96 @@ export interface IPerfomanceSale {
 }
 
 interface Project {
-    unique_id: string;
-    sales_completed: string;
-    ntp_pending: string;
-    ntp_completed: string;
-    site_survey_scheduled: string;
-    site_survey_rescheduled: string;
-    site_survey_completed: string;
-    roofing_pending: string;
-    roofing_scheduled: string;
-    roofing_completed: string;
-    electrical_pending: string;
-    electrical_scheduled: string;
-    electrical_completed: string;
-    pv_permit_pending: string;
-    pv_permit_scheduled: string;
-    pv_permit_completed: string;
-    ic_permit_pending: string;
-    ic_permit_scheduled: string;
-    ic_permit_completed: string;
-    install_pending: string;
-    install_ready: string;
-    install_scheduled: string;
-    install_completed: string;
-    final_inspection_submitted: string;
-    final_inspection_approved: string;
-    pto_in_process: string;
-    pto_submitted: string;
-    pto_completed: string;
-    SystemSize: number;
-    adder: string;
-    ajh: string;
-    epc: string;
-    state: string;
-    contract_amount: number;
-    finance_partner: string;
-    net_epc: number;
+  unique_id: string;
+  sales_completed: string;
+  ntp_pending: string;
+  ntp_completed: string;
+  site_survey_scheduled: string;
+  site_survey_rescheduled: string;
+  site_survey_completed: string;
+  roofing_pending: string;
+  roofing_scheduled: string;
+  roofing_completed: string;
+  electrical_pending: string;
+  electrical_scheduled: string;
+  electrical_completed: string;
+  pv_permit_pending: string;
+  pv_permit_scheduled: string;
+  pv_permit_completed: string;
+  ic_permit_pending: string;
+  ic_permit_scheduled: string;
+  ic_permit_completed: string;
+  install_pending: string;
+  install_ready: string;
+  install_scheduled: string;
+  install_completed: string;
+  final_inspection_submitted: string;
+  final_inspection_approved: string;
+  pto_in_process: string;
+  pto_submitted: string;
+  pto_completed: string;
+  SystemSize: number;
+  adder: string;
+  ajh: string;
+  epc: string;
+  state: string;
+  contract_amount: number;
+  finance_partner: string;
+  net_epc: number;
 }
 
 interface IProject {
-  unqiue_id:                  string;
-  sales_completed:            string;
-  ntp_pending:                string;
-  ntp_completed:              string;
-  site_survey_scheduled:      string;
-  site_survey_rescheduled:    string;
-  site_survey_completed:      string;
-  roofing_pending:            string;
-  roofing_scheduled:          string;
-  roofing_completed:          string;
-  electrical_pending:         string;
-  electrical_scheduled:       string;
-  electrical_completed:       string;
-  pv_permit_pending:          string;
-  pv_permit_scehduled:        string;
-  pv_permit_completed:        string;
-  ic_permit_pending:          string;
-  ic_permit_scheduled:        string;
-  ic_permit_completed:        string;
-  install_pending:            string;
-  install_ready:              string;
-  install_scheduled:          string;
-  install_completed:          string;
+  unqiue_id: string;
+  sales_completed: string;
+  ntp_pending: string;
+  ntp_completed: string;
+  site_survey_scheduled: string;
+  site_survey_rescheduled: string;
+  site_survey_completed: string;
+  roofing_pending: string;
+  roofing_scheduled: string;
+  roofing_completed: string;
+  electrical_pending: string;
+  electrical_scheduled: string;
+  electrical_completed: string;
+  pv_permit_pending: string;
+  pv_permit_scehduled: string;
+  pv_permit_completed: string;
+  ic_permit_pending: string;
+  ic_permit_scheduled: string;
+  ic_permit_completed: string;
+  install_pending: string;
+  install_ready: string;
+  install_scheduled: string;
+  install_completed: string;
   final_inspection_submitted: string;
-  final_inspection_approved:  string;
-  pto_in_process:             string;
-  pto_submitted:              string;
-  pto_completed:              string;
-  SystemSize:                 number;
-  adder:                      string;
-  ajh:                        string;
-  epc:                        string;
-  state:                      string;
-  contract_amount:            number;
-  finance_partner:            string;
-  net_epc:                    number;
+  final_inspection_approved: string;
+  pto_in_process: string;
+  pto_submitted: string;
+  pto_completed: string;
+  SystemSize: number;
+  adder: string;
+  ajh: string;
+  epc: string;
+  state: string;
+  contract_amount: number;
+  finance_partner: string;
+  net_epc: number;
 }
-
 
 export interface IProjects {
   unqiue_id: string;
 }
 
 export const getProjects = createAsyncThunk(
-  "get/projects",
+  'get/projects',
   async (_, { rejectWithValue }) => {
     try {
-      const data = await postCaller("get_projectmanagementlist",{});
+      const data = await postCaller('get_projectmanagementlist', {});
       if (data.status > 201) {
         return rejectWithValue((data as Error).message);
       }
-      const projects = (data?.data?.project_response_list || []) as IProjects[];
+      const projects = (data?.data || []) as string[];
       return { projects, count: data.dbRecCount };
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -107,41 +106,40 @@ export const getProjects = createAsyncThunk(
 );
 
 export const getProjectDetail = createAsyncThunk(
-    "get/projectDetail",
-    async (id:string, { rejectWithValue }) => {
-      try {
-        const data = await postCaller("get_projectmgmnt", {unique_id:id});
-        if (data.status > 201) {
-          return rejectWithValue((data as Error).message);
-        }
-        const project = (data?.data?.project_response_list?.[0] || {}) as IProject;
-        return { project};
-      } catch (error) {
-        return rejectWithValue((error as Error).message);
+  'get/projectDetail',
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const data = await postCaller('get_projectmgmnt', { unique_id: id });
+      if (data.status > 201) {
+        return rejectWithValue((data as Error).message);
       }
+      const project = (data?.data?.project_response_list?.[0] ||
+        {}) as IProject;
+      return { project };
+    } catch (error) {
+      return rejectWithValue((error as Error).message);
     }
-  )
-
-
+  }
+);
 
 interface IState {
-  projects: IProjects[];
+  projects: string[];
   error: string;
   isLoading: boolean;
   projectsCount: number;
-  projectDetail: IProject
+  projectDetail: IProject;
 }
 
 const initialState: IState = {
   projects: [],
-  error: "",
+  error: '',
   isLoading: false,
   projectsCount: 0,
-  projectDetail:{} as IProject
+  projectDetail: {} as IProject,
 };
 
 const projectManagementSlice = createSlice({
-  name: "projectManagementSlice",
+  name: 'projectManagementSlice',
   initialState,
   reducers: {},
   extraReducers: (builder) => {

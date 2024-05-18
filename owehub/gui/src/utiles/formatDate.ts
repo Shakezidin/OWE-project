@@ -28,23 +28,23 @@ export const formatDate = (dateString: string, inputFormat: string) => {
     const formattedYear = formattedDate.getFullYear();
     const formattedMonth = String(formattedDate.getMonth() + 1).padStart(
       2,
-      "0"
+      '0'
     );
-    const formattedDay = String(formattedDate.getDate()).padStart(2, "0");
+    const formattedDay = String(formattedDate.getDate()).padStart(2, '0');
 
     // Return the formatted date string
     return `${formattedYear}-${formattedMonth}-${formattedDay}`;
   }
 
   // If any component is missing or invalid, return a default date
-  return "2024-04-01";
+  return '2024-04-01';
 };
 
 export const getCurrentDateFormatted = (): string => {
   const date = new Date();
   const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
 
   return `${year}-${month}-${day}`;
 };

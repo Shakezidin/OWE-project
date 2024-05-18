@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { ReactComponent as CROSS_BUTTON } from "../../../../resources/assets/cross_button.svg";
-import Input from "../../../components/text_input/Input";
-import { ActionButton } from "../../../components/button/ActionButton";
-import { updateTimeLineForm } from "../../../../redux/apiSlice/configSlice/config_post_slice/createTimeLineSlaSlice";
-import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
-import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
-import { useDispatch } from "react-redux";
-import Select from "react-select";
-import { stateOption } from "../../../../core/models/data_models/SelectDataModel";
-import { TimeLineSlaModel } from "../../../../core/models/configuration/create/TimeLineSlaModel";
-import SelectOption from "../../../components/selectOption/SelectOption";
-import { toast } from "react-toastify";
+import React, { useEffect, useState } from 'react';
+import { ReactComponent as CROSS_BUTTON } from '../../../../resources/assets/cross_button.svg';
+import Input from '../../../components/text_input/Input';
+import { ActionButton } from '../../../components/button/ActionButton';
+import { updateTimeLineForm } from '../../../../redux/apiSlice/configSlice/config_post_slice/createTimeLineSlaSlice';
+import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
+import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
+import { useDispatch } from 'react-redux';
+import Select from 'react-select';
+import { stateOption } from '../../../../core/models/data_models/SelectDataModel';
+import { TimeLineSlaModel } from '../../../../core/models/configuration/create/TimeLineSlaModel';
+import SelectOption from '../../../components/selectOption/SelectOption';
+import { toast } from 'react-toastify';
 interface timeLineProps {
   handleClose: () => void;
   editMode: boolean;
@@ -32,16 +32,16 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
   const dispatch = useDispatch();
   const [createTimeLine, setCreateTimeLine] = useState<TimeLineSlaModel>({
     record_id: timeLineSlaData ? timeLineSlaData?.record_id : 0,
-    type_m2m: timeLineSlaData ? timeLineSlaData?.type_m2m : "",
-    state: timeLineSlaData ? timeLineSlaData?.state : "",
-    days: timeLineSlaData ? timeLineSlaData?.days : "",
-    start_date: timeLineSlaData ? timeLineSlaData?.start_date : "",
-    end_date: timeLineSlaData ? timeLineSlaData?.end_date : "",
+    type_m2m: timeLineSlaData ? timeLineSlaData?.type_m2m : '',
+    state: timeLineSlaData ? timeLineSlaData?.state : '',
+    days: timeLineSlaData ? timeLineSlaData?.days : '',
+    start_date: timeLineSlaData ? timeLineSlaData?.start_date : '',
+    end_date: timeLineSlaData ? timeLineSlaData?.end_date : '',
   });
   const [errors, setErrors] = useState<IError>({} as IError);
   const [newFormData, setNewFormData] = useState<any>([]);
   const tableData = {
-    tableNames: ["states"],
+    tableNames: ['states'],
   };
   const getNewFormData = async () => {
     const res = await postCaller(EndPoints.get_newFormData, tableData);
@@ -54,9 +54,9 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
   const handleValidation = () => {
     const error = {} as IError;
     for (const key in createTimeLine) {
-        if (key==="record_id") {
-            continue
-        }
+      if (key === 'record_id') {
+        continue;
+      }
       if (!createTimeLine[key as keyof IError]) {
         error[key as keyof IError] = `${key.toLocaleLowerCase()} is required`;
       }
@@ -68,29 +68,44 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
   const handleChange = (newValue: any, fieldName: string) => {
     setCreateTimeLine((prevData) => ({
       ...prevData,
-      [fieldName]: newValue ? newValue.value : "",
+      [fieldName]: newValue ? newValue.value : '',
     }));
   };
   const handleTimeLineInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+
+    if (name === 'end_date') {
+      if (createTimeLine.start_date && value < createTimeLine.start_date) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          end_date: 'End date cannot be before the start date',
+        }));
+        return;
+      }
+    }
+
     setCreateTimeLine((prevData) => ({
       ...prevData,
       [name]: value,
+    }));
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: '',
     }));
   };
 
   const submitTimeLineSla = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("working");
-    
+    console.log('working');
+
     if (handleValidation()) {
       try {
         dispatch(updateTimeLineForm(createTimeLine));
         if (createTimeLine.record_id) {
-          const res = await postCaller(
-            EndPoints.update_timelinesla,
-            {...createTimeLine,days:parseInt(createTimeLine.days)}
-          );
+          const res = await postCaller(EndPoints.update_timelinesla, {
+            ...createTimeLine,
+            days: parseInt(createTimeLine.days),
+          });
           if (res?.status === 200) {
             toast.success(res.message);
             handleClose();
@@ -100,10 +115,10 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
           }
         } else {
           const { record_id, ...cleanedFormData } = createTimeLine;
-          const res = await postCaller(
-            EndPoints.create_timelinesla,
-            {...cleanedFormData,days:parseInt(cleanedFormData.days)}
-          );
+          const res = await postCaller(EndPoints.create_timelinesla, {
+            ...cleanedFormData,
+            days: parseInt(cleanedFormData.days),
+          });
           if (res?.status === 200) {
             toast.success(res.message);
             handleClose();
@@ -113,7 +128,7 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
           }
         }
       } catch (error) {
-        console.error("Error submitting form:", error);
+        console.error('Error submitting form:', error);
       }
     }
   };
@@ -125,7 +140,7 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
         </div>
 
         <h3 className="createProfileText">
-          {editMode === false ? "TimeLine SLA" : "Update TimeLine SLA"}
+          {editMode === false ? 'Create TimeLine SLA' : 'Update TimeLine SLA'}
         </h3>
 
         <div className="modal-body">
@@ -134,15 +149,15 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
               <div className="create-input-container">
                 <div className="create-input-field">
                   <Input
-                    type={"text"}
+                    type={'text'}
                     label="Type/M2M"
                     value={createTimeLine.type_m2m}
                     name="type_m2m"
-                    placeholder={"Enter"}
+                    placeholder={'Enter'}
                     onChange={(e) => handleTimeLineInput(e)}
                   />
                   {errors?.type_m2m && (
-                    <span style={{ display: "block", color: "#FF204E" }}>
+                    <span style={{ display: 'block', color: '#FF204E' }}>
                       {errors.type_m2m}
                     </span>
                   )}
@@ -151,28 +166,28 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
                   <label className="inputLabel-select">State</label>
                   <SelectOption
                     options={stateOption(newFormData)}
-                    onChange={(newValue) => handleChange(newValue, "state")}
+                    onChange={(newValue) => handleChange(newValue, 'state')}
                     value={stateOption(newFormData)?.find(
                       (option) => option.value === createTimeLine.state
                     )}
                   />
                   {errors?.state && (
-                    <span style={{ display: "block", color: "#FF204E" }}>
+                    <span style={{ display: 'block', color: '#FF204E' }}>
                       {errors.state}
                     </span>
                   )}
                 </div>
                 <div className="create-input-field">
                   <Input
-                    type={"text"}
+                    type={'text'}
                     label="Days"
                     value={createTimeLine.days}
                     name="days"
-                    placeholder={"Enter"}
+                    placeholder={'Enter'}
                     onChange={(e) => handleTimeLineInput(e)}
                   />
                   {errors?.days && (
-                    <span style={{ display: "block", color: "#FF204E" }}>
+                    <span style={{ display: 'block', color: '#FF204E' }}>
                       {errors.days}
                     </span>
                   )}
@@ -182,31 +197,31 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
               <div className="create-input-container">
                 <div className="create-input-field">
                   <Input
-                    type={"date"}
+                    type={'date'}
                     label="Start Date"
                     value={createTimeLine.start_date}
                     name="start_date"
-                    placeholder={"1/04/2004"}
+                    placeholder={'1/04/2004'}
                     onChange={(e) => handleTimeLineInput(e)}
                   />
-                   {errors?.start_date && (
-                    <span style={{ display: "block", color: "#FF204E" }}>
-                      {errors.start_date.replace("start_date","start date")}
+                  {errors?.start_date && (
+                    <span style={{ display: 'block', color: '#FF204E' }}>
+                      {errors.start_date.replace('start_date', 'start date')}
                     </span>
                   )}
                 </div>
                 <div className="create-input-field">
                   <Input
-                    type={"date"}
+                    type={'date'}
                     label="End Date"
                     value={createTimeLine.end_date}
                     name="end_date"
-                    placeholder={"10/04/2004"}
+                    placeholder={'10/04/2004'}
                     onChange={(e) => handleTimeLineInput(e)}
                   />
                   {errors?.end_date && (
-                    <span style={{ display: "block", color: "#FF204E" }}>
-                      {errors.end_date.replace("end_date","end date")}
+                    <span style={{ display: 'block', color: '#FF204E' }}>
+                      {errors.end_date.replace('end_date', 'end date')}
                     </span>
                   )}
                 </div>
@@ -216,12 +231,12 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
         </div>
         <div className="createUserActionButton">
           <ActionButton
-            title={"Cancel"}
+            title={'Cancel'}
             type="reset"
             onClick={() => handleClose()}
           />
           <ActionButton
-            title={editMode === false ? "Save" : "Update"}
+            title={editMode === false ? 'Save' : 'Update'}
             type="submit"
             onClick={() => {}}
           />

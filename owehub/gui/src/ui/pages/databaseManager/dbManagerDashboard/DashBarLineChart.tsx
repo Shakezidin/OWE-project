@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React, { PureComponent } from 'react';
 import {
   BarChart,
   Bar,
@@ -8,47 +8,47 @@ import {
   Legend,
   ResponsiveContainer,
   Tooltip,
-} from "recharts";
+} from 'recharts';
 
 const data = [
   {
-    name: "Table 1",
+    name: 'Table 1',
     Total_Records: 800,
     Historical_Records: 1400,
     amt: 2000,
   },
   {
-    name: "Table 2",
+    name: 'Table 2',
     Total_Records: 500,
     Historical_Records: 1500,
     amt: 2000,
   },
   {
-    name: "Table 3",
+    name: 'Table 3',
     Total_Records: 100,
     Historical_Records: 300,
     amt: 2000,
   },
   {
-    name: "Table 4",
+    name: 'Table 4',
     Total_Records: 300,
     Historical_Records: 900,
     amt: 2000,
   },
   {
-    name: "Table 5",
+    name: 'Table 5',
     Total_Records: 50,
     Historical_Records: 150,
     amt: 2000,
   },
   {
-    name: "Table 6",
+    name: 'Table 6',
     Total_Records: 800,
     Historical_Records: 200,
     amt: 2000,
   },
   {
-    name: "Table 7",
+    name: 'Table 7',
     Total_Records: 200,
     Historical_Records: 800,
     amt: 2000,
@@ -58,11 +58,11 @@ const data = [
 export default class BarChartComponent extends PureComponent {
   render() {
     return (
-      <div className="" style={{ width: "100%" }}>
-        <div className="dash-section" style={{ padding: "1rem" }}>
+      <div className="" style={{ width: '100%' }}>
+        <div className="dash-section" style={{ padding: '1rem' }}>
           <p>Total Table Record</p>
         </div>
-        <div style={{ width: "100%", height: "280px", marginTop: "1rem" }}>
+        <div style={{ width: '100%', height: '280px', marginTop: '1rem' }}>
           <ResponsiveContainer width="100%" height="110%">
             <BarChart
               width={500}
@@ -83,16 +83,16 @@ export default class BarChartComponent extends PureComponent {
               <XAxis
                 dataKey="name"
                 tickLine={false}
-                tick={{ fill: "#000000", fontWeight: 500, fontSize: "10px" }}
-                axisLine={{ stroke: "rgb(204, 204, 204)" }}
+                tick={{ fill: '#000000', fontWeight: 500, fontSize: '10px' }}
+                axisLine={{ stroke: 'rgb(204, 204, 204)' }}
               />
               <YAxis
                 axisLine={false}
                 tick={{
-                  fontFamily: "Inter",
+                  fontFamily: 'Inter',
                   fontWeight: 500,
                   fontSize: 12,
-                  fill: "#101828",
+                  fill: '#101828',
                 }}
                 tickLine={false}
               />
@@ -103,9 +103,9 @@ export default class BarChartComponent extends PureComponent {
                 dataKey="Total_Records"
                 fill="#FB7955"
                 label={{
-                  position: "top",
-                  fill: "#565656",
-                  fontSize: "10px",
+                  position: 'top',
+                  fill: '#565656',
+                  fontSize: '10px',
                   fontWeight: 500,
                 }}
                 radius={[8, 8, 0, 0]}
@@ -114,9 +114,9 @@ export default class BarChartComponent extends PureComponent {
                 dataKey="Historical_Records"
                 fill="#007AF5"
                 label={{
-                  position: "top",
-                  fill: "#565656",
-                  fontSize: "10px",
+                  position: 'top',
+                  fill: '#565656',
+                  fontSize: '10px',
                   fontWeight: 500,
                 }}
                 radius={[8, 8, 0, 0]}

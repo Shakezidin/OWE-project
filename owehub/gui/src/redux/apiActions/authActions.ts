@@ -1,11 +1,11 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import { postCaller } from "../../infrastructure/web_api/services/apiUrl";
-import { EndPoints } from "../../infrastructure/web_api/api_client/EndPoints";
-import { Credentials } from "../../core/models/api_models/AuthModel";
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
+import { EndPoints } from '../../infrastructure/web_api/api_client/EndPoints';
+import { Credentials } from '../../core/models/api_models/AuthModel';
 
 /** Create user */
 export const loginAction = createAsyncThunk(
-  "user/login",
+  'user/login',
   async (data: Credentials, { rejectWithValue }): Promise<any> => {
     try {
       const response = await postCaller(EndPoints.login, data);
@@ -19,13 +19,10 @@ export const loginAction = createAsyncThunk(
 
 /** send OTP */
 export const generateOTP = createAsyncThunk(
-  "user/Send_otp",
+  'user/Send_otp',
   async (data: any, { rejectWithValue }): Promise<any> => {
     try {
-      const response = await postCaller(
-         EndPoints.resetPassword,
-        data
-      );
+      const response = await postCaller(EndPoints.resetPassword, data);
       console.log(response);
       return response;
     } catch (error) {
@@ -36,13 +33,10 @@ export const generateOTP = createAsyncThunk(
 
 /** Change password */
 export const changePasswordAction = createAsyncThunk(
-  "user/Change_password",
+  'user/Change_password',
   async (data: any, { rejectWithValue }): Promise<any> => {
     try {
-      const response = await postCaller(
-         EndPoints.changePassword,
-        data
-      );
+      const response = await postCaller(EndPoints.changePassword, data);
       console.log(response);
       return response;
     } catch (error) {

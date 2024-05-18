@@ -1,12 +1,12 @@
-import { ICONS } from "../../icons/Icons";
-import { IoAddSharp } from "react-icons/io5";
-import "../../pages/configure/configure.css";
-import React, { useEffect } from "react";
-import { BiSearch, BiChevronDown } from "react-icons/bi";
-import "../tableHeader/dataTableHeader.css";
-import {getDataTableName} from '../../../redux/apiActions/dataTableAction'
-import { useAppSelector, useAppDispatch } from "../../../redux/hooks";
-import Select from "react-select";
+import { ICONS } from '../../icons/Icons';
+import { IoAddSharp } from 'react-icons/io5';
+import '../../pages/configure/configure.css';
+import React, { useEffect } from 'react';
+import { BiSearch, BiChevronDown } from 'react-icons/bi';
+import '../tableHeader/dataTableHeader.css';
+import { getDataTableName } from '../../../redux/apiActions/dataTableAction';
+import { useAppSelector, useAppDispatch } from '../../../redux/hooks';
+import Select from 'react-select';
 interface TableProps {
   title: string;
   onPressFilter: () => void;
@@ -16,13 +16,12 @@ interface TableProps {
   showFilterIcon: boolean;
   selectMarginLeft?: string;
   selectMarginLeft1?: string;
-  selectedTable:any;
-  setSelectedTable:any;
+  selectedTable: any;
+  setSelectedTable: any;
 }
- 
 
 const DataTableHeaderr = (props: TableProps) => {
-    const  {option} = useAppSelector((state) => state.dataTableSlice);
+  const { option } = useAppSelector((state) => state.dataTableSlice);
   const dispatch = useAppDispatch();
 
   const {
@@ -32,60 +31,57 @@ const DataTableHeaderr = (props: TableProps) => {
     selectMarginLeft,
     selectMarginLeft1,
     selectedTable,
-    setSelectedTable
+    setSelectedTable,
   } = props;
 
-  useEffect(() =>{
-    dispatch(getDataTableName())
-     },[])
- 
-    
-    const tableOption = option?.map((opt:any) => ({
-        value: opt.table_name,
-        label: opt.table_name,
-      }));
+  useEffect(() => {
+    dispatch(getDataTableName());
+  }, []);
 
-      const handleTableChange = (selectedOption: any| null) => {
-        setSelectedTable(selectedOption);
-      };
+  const tableOption = option?.map((opt: any) => ({
+    value: opt.table_name,
+    label: opt.table_name,
+  }));
+
+  const handleTableChange = (selectedOption: any | null) => {
+    setSelectedTable(selectedOption);
+  };
 
   return (
-    <div className="commissionSection">
+    <div className="commissionSection" style={{ textTransform: 'capitalize' }}>
       <h3>{title}</h3>
 
       <div className="data-header-section">
         <div className="search-container-data">
           {props.showSelectIcon && (
             <Select
-           
               options={tableOption}
               value={selectedTable}
               onChange={handleTableChange}
-          
               styles={{
                 control: (baseStyles, state) => ({
                   ...baseStyles,
-                  marginTop: "px",
-                  borderRadius: "8px",
-                  outline: "none",
-                  color: "black",
-                  width: "200px",
-                  fontSize: "13px",
-                  border: "1px solid #d0d5dd",
+                  marginTop: 'px',
+                  borderRadius: '8px',
+                  outline: 'none',
+                  color: 'black',
+                  width: '200px',
+                  fontSize: '13px',
+                  border: '1px solid #d0d5dd',
                   marginRight: selectMarginLeft,
-                  cursor: "pointer"
+                  cursor: 'pointer',
                 }),
                 indicatorSeparator: () => ({
-                  display: "none", // Hide the indicator separator
+                  display: 'none', // Hide the indicator separator
                 }),
                 option: (baseStyles) => ({
                   ...baseStyles,
-                  fontSize: "13px",
+                  fontSize: '13px',
                 }),
                 menu: (base) => ({
                   ...base,
                   zIndex: 999,
-                  width: "200px",
+                  width: '200px',
                 }),
               }}
             />
@@ -101,7 +97,7 @@ const DataTableHeaderr = (props: TableProps) => {
               <img
                 src={ICONS.filtercomm}
                 alt=""
-                style={{ width: "15px", height: "15px" }}
+                style={{ width: '15px', height: '15px' }}
               />
             </button>
           )}

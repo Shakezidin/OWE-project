@@ -63,10 +63,10 @@ func HandleGetDealerCreditDataRequest(resp http.ResponseWriter, req *http.Reques
 
 	tableName := db.TableName_dealer_credit
 	query = `SELECT dc.id AS record_id, dc.unique_id, dc.customer, dc.start_date,
-    dc.end_date, ud.name AS dealer_name , dc.dealer_dba, dc.exact_amount, dc.per_kw_amount,
+    dc.end_date, vd.dealer_name , dc.dealer_dba, dc.exact_amount, dc.per_kw_amount,
     dc.approved_by, dc.notes, dc.total_amount, dc.sys_size
 	FROM dealer_credit dc
-	JOIN user_details ud ON ud.user_id = dc.dealer_id`
+	JOIN v_dealer vd ON vd.id = dc.dealer_id`
 
 	filter, whereEleList = PrepareDealerCreditFilters(tableName, dataReq, false)
 	if filter != "" {
@@ -251,7 +251,7 @@ func PrepareDealerCreditFilters(tableName string, dataFilter models.DataRequestB
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(dc.customer) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "dealer_name":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud.name) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(vd.dealer_name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "dealer_dba":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(dc.dealer_dba) %s LOWER($%d)", operator, len(whereEleList)+1))

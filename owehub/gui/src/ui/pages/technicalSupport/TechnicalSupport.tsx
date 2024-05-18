@@ -1,12 +1,13 @@
-import React, { useRef, useState } from "react";
-import Input from "../../components/text_input/Input";
-import { ICONS } from "../../icons/Icons";
-import "./support.css";
-import emailjs from "@emailjs/browser";
+import React, { useRef, useState } from 'react';
+import Input from '../../components/text_input/Input';
+import { ICONS } from '../../icons/Icons';
+import './support.css';
+import emailjs from '@emailjs/browser';
 
-import Select from "react-select";
-import { ActionButton } from "../../components/button/ActionButton";
-import SelectOption from "../../components/selectOption/SelectOption";
+import Select from 'react-select';
+import { ActionButton } from '../../components/button/ActionButton';
+import SelectOption from '../../components/selectOption/SelectOption';
+import { toast } from 'react-toastify';
 
 const TechnicalSupport: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -15,18 +16,18 @@ const TechnicalSupport: React.FC = () => {
   const [stateOptions, setStateOptions] = useState<any[]>([]);
   const form = useRef<HTMLFormElement>(null);
 
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [message, setMessage] = useState("");
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [message, setMessage] = useState('');
 
   const [errors, setErrors] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phoneNumber: "",
-    message: "",
+    firstName: '',
+    lastName: '',
+    email: '',
+    phoneNumber: '',
+    message: '',
   });
 
   const phoneRegex =
@@ -39,27 +40,33 @@ const TechnicalSupport: React.FC = () => {
     e.preventDefault();
     // Validation logic
     const newErrors = {
-      firstName: firstName ? "" : "First name is required",
-      lastName: lastName ? "" : "Last name is required",
-      email: emailRegex.test(email) ? "" : "Invalid email address",
-      phoneNumber: phoneRegex.test(phoneNumber) ? "" : "Invalid phone number",
-      message: message ? "" : "Message is required",
+      firstName: firstName ? '' : 'First name is required',
+      lastName: lastName ? '' : 'Last name is required',
+      email: emailRegex.test(email) ? '' : 'Invalid email address',
+      phoneNumber: phoneRegex.test(phoneNumber) ? '' : 'Invalid phone number',
+      message: message ? '' : 'Message is required',
     };
     setErrors(newErrors);
-    if (!Object.values(newErrors).some((error) => error)) {
-      console.log("Form submitted successfully");
-    }
-    if (form.current) {
+    // if (!Object.values(newErrors).some((error) => error)) {
+    //   console.log("Form submitted successfully");
+    // }
+    if (form.current && Object.values(newErrors).every((err) => !err)) {
       emailjs
-        .sendForm("service_nof7okz", "template_y3qbqr8", form.current, {
-          publicKey: "iVTsTUymXutcfakaX",
+        .sendForm('service_nof7okz', 'template_y3qbqr8', form.current, {
+          publicKey: 'iVTsTUymXutcfakaX',
         })
         .then(
           (response: any) => {
-            console.log("SUCCESS!", response);
+            console.log('SUCCESS!', response);
+            toast.success('Your form has been submitted!');
+            setFirstName('');
+            setLastName('');
+            setEmail('');
+            setPhoneNumber('');
+            setMessage('');
           },
           (error: any) => {
-            console.error("FAILED...", error);
+            console.error('FAILED...', error);
           }
         );
     }
@@ -70,9 +77,9 @@ const TechnicalSupport: React.FC = () => {
   };
 
   const options = [
-    { value: "option1", label: "OWE" },
-    { value: "option2", label: "OWE 2" },
-    { value: "option3", label: "OWE 3" },
+    { value: 'option1', label: 'OWE' },
+    { value: 'option2', label: 'OWE 2' },
+    { value: 'option3', label: 'OWE 3' },
   ];
   const handleSelectChange = (selectedOption: any) => {
     setSelectedOption(selectedOption);
@@ -109,14 +116,14 @@ const TechnicalSupport: React.FC = () => {
             <div className="create-input-container-support">
               <div className="create-input-field-support">
                 <Input
-                  type={"text"}
+                  type={'text'}
                   label="First Name"
                   value={firstName}
                   name="user_name"
-                  placeholder={"Enter"}
+                  placeholder={'Enter'}
                   onChange={(e) => {
                     setFirstName(e.target.value);
-                    setErrors({ ...errors, firstName: "" });
+                    setErrors({ ...errors, firstName: '' });
                   }}
                 />
                 {errors.firstName && (
@@ -125,14 +132,14 @@ const TechnicalSupport: React.FC = () => {
               </div>
               <div className="create-input-field-support">
                 <Input
-                  type={"text"}
+                  type={'text'}
                   label="Last Name"
                   value={lastName}
                   name="lastName"
-                  placeholder={"Enter"}
+                  placeholder={'Enter'}
                   onChange={(e) => {
                     setLastName(e.target.value);
-                    setErrors({ ...errors, lastName: "" });
+                    setErrors({ ...errors, lastName: '' });
                   }}
                 />
                 {errors.lastName && (
@@ -143,28 +150,28 @@ const TechnicalSupport: React.FC = () => {
             <div className="create-input-container-support">
               <div className="create-input-field-support">
                 <Input
-                  type={"text"}
+                  type={'text'}
                   label="Email"
                   value={email}
                   name="email"
-                  placeholder={"Enter"}
+                  placeholder={'Enter'}
                   onChange={(e) => {
                     setEmail(e.target.value);
-                    setErrors({ ...errors, email: "" });
+                    setErrors({ ...errors, email: '' });
                   }}
                 />
                 {errors.email && <span className="error">{errors.email}</span>}
               </div>
               <div className="create-input-field-support">
                 <Input
-                  type={"number"}
+                  type={'number'}
                   label="Phone Number"
                   value={phoneNumber}
                   name="phoneNum"
-                  placeholder={"Enter"}
+                  placeholder={'Enter'}
                   onChange={(e) => {
                     setPhoneNumber(e.target.value);
-                    setErrors({ ...errors, phoneNumber: "" });
+                    setErrors({ ...errors, phoneNumber: '' });
                   }}
                 />
                 {errors.phoneNumber && (
@@ -179,7 +186,7 @@ const TechnicalSupport: React.FC = () => {
                 <SelectOption
                   onChange={handleStateChange}
                   options={stateOptions}
-                  value={stateOptions?.find((option) => option.value === " ")}
+                  value={stateOptions?.find((option) => option.value === ' ')}
                 />
               </div>
 
@@ -210,7 +217,7 @@ const TechnicalSupport: React.FC = () => {
 
             <div
               className="create-input-field-note-support"
-              style={{ marginTop: "0.3rem" }}
+              style={{ marginTop: '0.3rem' }}
             >
               <label htmlFor="" className="inputLabel-support">
                 Message
@@ -222,10 +229,10 @@ const TechnicalSupport: React.FC = () => {
                 rows={4}
                 value={message}
                 placeholder="Type here..."
-                style={{ marginTop: "0.3rem" }}
+                style={{ marginTop: '0.3rem' }}
                 onChange={(e) => {
                   setMessage(e.target.value);
-                  setErrors({ ...errors, message: "" });
+                  setErrors({ ...errors, message: '' });
                 }}
               ></textarea>
               {errors.message && (
@@ -235,7 +242,6 @@ const TechnicalSupport: React.FC = () => {
 
             <div className="reset-Update-support">
               <button type="submit">Submit</button>
-
               {/* <ActionButton title={"Submit"} type="submit" onClick={() => {handleSubmit}} /> */}
             </div>
           </div>

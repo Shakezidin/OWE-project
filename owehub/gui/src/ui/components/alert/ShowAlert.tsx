@@ -1,4 +1,4 @@
-import Swal from "sweetalert2";
+import Swal from 'sweetalert2';
 
 export const showAlert = async (
   title: string,
@@ -9,12 +9,12 @@ export const showAlert = async (
   const result = await Swal.fire({
     title: title,
     text: text,
-    icon: "warning",
+    icon: 'warning',
     showCancelButton: true,
-    confirmButtonColor: "#3085d6",
-    cancelButtonColor: "#d33",
-    confirmButtonText: confirmBtnText ? confirmBtnText : "Submit",
-    cancelButtonText: cancelBtnText ? cancelBtnText : "Cancel",
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: confirmBtnText ? confirmBtnText : 'Submit',
+    cancelButtonText: cancelBtnText ? cancelBtnText : 'Cancel',
   });
 
   return result.isConfirmed;
@@ -24,7 +24,7 @@ export const successSwal = async (title: string, text: string) => {
   const result = await Swal.fire({
     title: title,
     text: text,
-    icon: "success",
+    icon: 'success',
     timer: 2000,
     showConfirmButton: false,
   });
@@ -35,7 +35,7 @@ export const errorSwal = async (title: string, text: string) => {
   const result = await Swal.fire({
     title: title,
     text: text,
-    icon: "error",
+    icon: 'error',
     timer: 2000,
     showConfirmButton: false,
   });

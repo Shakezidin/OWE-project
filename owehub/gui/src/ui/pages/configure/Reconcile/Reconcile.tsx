@@ -1,25 +1,27 @@
-import React, { useEffect, useState } from "react";
-import TableHeader from "../../../components/tableHeader/TableHeader";
-import { ICONS } from "../../../icons/Icons";
-import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-import { fetchTimeLineSla } from "../../../../redux/apiSlice/configSlice/config_get_slice/timeLineSlice";
-import CheckBox from "../../../components/chekbox/CheckBox";
-import { toggleRowSelection } from "../../../components/chekbox/checkHelper";
-import Pagination from "../../../components/pagination/Pagination";
-import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
-import { TimeLineSlaModel } from "../../../../core/models/configuration/create/TimeLineSlaModel";
-import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
-import CreateReconcile from "./CreateReconcile";
-import SortableHeader from "../../../components/tableHeader/SortableHeader";
-import { ReconcileColumns } from "../../../../resources/static_data/configureHeaderData/ReconcileColumn";
-import FilterModal from "../../../components/FilterModal/FilterModal";
-import { ROUTES } from "../../../../routes/routes";
-import { fetchReconcile } from "../../../../redux/apiActions/reconcileAction";
-import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
-import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
-import { showAlert, successSwal } from "../../../components/alert/ShowAlert";
-import Loading from "../../../components/loader/Loading";
-import { fetchRateAdjustments } from "../../../../redux/apiActions/RateAdjustmentsAction";
+import React, { useEffect, useState } from 'react';
+import TableHeader from '../../../components/tableHeader/TableHeader';
+import { ICONS } from '../../../icons/Icons';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
+import { fetchTimeLineSla } from '../../../../redux/apiSlice/configSlice/config_get_slice/timeLineSlice';
+import CheckBox from '../../../components/chekbox/CheckBox';
+import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
+import Pagination from '../../../components/pagination/Pagination';
+import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
+import { TimeLineSlaModel } from '../../../../core/models/configuration/create/TimeLineSlaModel';
+import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
+import CreateReconcile from './CreateReconcile';
+import SortableHeader from '../../../components/tableHeader/SortableHeader';
+import { ReconcileColumns } from '../../../../resources/static_data/configureHeaderData/ReconcileColumn';
+import FilterModal from '../../../components/FilterModal/FilterModal';
+import { ROUTES } from '../../../../routes/routes';
+import { fetchReconcile } from '../../../../redux/apiActions/reconcileAction';
+import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
+import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
+import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
+import Loading from '../../../components/loader/Loading';
+import { fetchRateAdjustments } from '../../../../redux/apiActions/RateAdjustmentsAction';
+import MicroLoader from '../../../components/loader/MicroLoader';
+import DataNotFound from '../../../components/loader/DataNotFound';
 
 const Reconcile = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -44,8 +46,8 @@ const Reconcile = () => {
   const currentPage = useAppSelector(
     (state) => state.paginationType.currentPage
   );
-  const [sortKey, setSortKey] = useState("");
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
+  const [sortKey, setSortKey] = useState('');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -73,7 +75,7 @@ const Reconcile = () => {
   };
   const totalPages = Math.ceil(dbCount / itemsPerPage);
 
-  const startIndex = (currentPage - 1) * itemsPerPage+1;
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
   const endIndex = currentPage * itemsPerPage;
 
   const currentPageData = data.slice();
@@ -81,32 +83,32 @@ const Reconcile = () => {
   const isAllRowsSelected = selectedRows.size === data?.length;
   const handleSort = (key: any) => {
     if (sortKey === key) {
-      setSortDirection(sortDirection === "desc" ? "asc" : "desc");
+      setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
     } else {
       setSortKey(key);
-      setSortDirection("asc");
+      setSortDirection('asc');
     }
   };
 
   if (sortKey) {
-    console.log(sortKey, "testtt");
+    console.log(sortKey, 'testtt');
 
     currentPageData.sort((a: any, b: any) => {
       const aValue = a[sortKey];
       const bValue = b[sortKey];
       console.log(aValue, bValue);
 
-      if (typeof aValue === "string" && typeof bValue === "string") {
-        return sortDirection === "asc"
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        return sortDirection === 'asc'
           ? aValue.localeCompare(bValue)
           : bValue.localeCompare(aValue);
       } else {
         // Ensure numeric values for arithmetic operations
         const numericAValue =
-          typeof aValue === "number" ? aValue : parseFloat(aValue);
+          typeof aValue === 'number' ? aValue : parseFloat(aValue);
         const numericBValue =
-          typeof bValue === "number" ? bValue : parseFloat(bValue);
-        return sortDirection === "asc"
+          typeof bValue === 'number' ? bValue : parseFloat(bValue);
+        return sortDirection === 'asc'
           ? numericAValue - numericBValue
           : numericBValue - numericAValue;
       }
@@ -120,8 +122,13 @@ const Reconcile = () => {
     setSelectAllChecked(false);
   };
   const fetchFunction = (req: any) => {
-    dispatch(fetchReconcile({...req,page_number: currentPage,
-      page_size: itemsPerPage}));
+    dispatch(
+      fetchReconcile({
+        ...req,
+        page_number: currentPage,
+        page_size: itemsPerPage,
+      })
+    );
   };
   const handleEdit = (data: any) => {
     setEditMode(true);
@@ -136,10 +143,10 @@ const Reconcile = () => {
   };
   const handleArchiveAllClick = async () => {
     const confirmed = await showAlert(
-      "Are Your Sure",
-      "This Action will archive all selected rows",
-      "Yes",
-      "No"
+      'Are Your Sure',
+      'This Action will archive all selected rows',
+      'Yes',
+      'No'
     );
     if (confirmed) {
       const archivedRows = Array.from(selectedRows).map(
@@ -156,7 +163,7 @@ const Reconcile = () => {
           page_size: itemsPerPage,
         };
 
-        const res = await postCaller("update_reconcile_archive", newValue);
+        const res = await postCaller('update_reconcile_archive', newValue);
         if (res.status === HTTP_STATUS.OK) {
           // If API call is successful, refetch commissions
           dispatch(fetchReconcile(pageNumber));
@@ -166,25 +173,19 @@ const Reconcile = () => {
           const isAnyRowSelected = remainingSelectedRows.length > 0;
           setSelectAllChecked(isAnyRowSelected);
           setSelectedRows(new Set());
-          await successSwal(
-            "Archived",
-            "The data has been archived "
-          );
+          await successSwal('Archived', 'The data has been archived ');
         } else {
-          await successSwal(
-            "Archived",
-            "The data has been archived "
-          );
+          await successSwal('Archived', 'The data has been archived ');
         }
       }
     }
   };
   const handleArchiveClick = async (record_id: any) => {
     const confirmed = await showAlert(
-      "Are Your Sure",
-      "This Action will archive your data",
-      "Yes",
-      "No"
+      'Are Your Sure',
+      'This Action will archive your data',
+      'Yes',
+      'No'
     );
     if (confirmed) {
       const archived: number[] = [record_id];
@@ -196,36 +197,23 @@ const Reconcile = () => {
         page_number: currentPage,
         page_size: itemsPerPage,
       };
-      const res = await postCaller("update_reconcile_archive", newValue);
+      const res = await postCaller('update_reconcile_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
+        setSelectAllChecked(false);
+        setSelectedRows(new Set());
         dispatch(fetchReconcile(pageNumber));
-        await successSwal(
-          "Archived",
-          "The data has been archived "
-        );
+        await successSwal('Archived', 'The data has been archived ');
       } else {
-        await successSwal(
-          "Archived",
-          "The data has been archived ",
-        );
+        await successSwal('Archived', 'The data has been archived ');
       }
     }
   };
-
-  if (isLoading) {
-    return (
-      <div className="loader-container">
-        {" "}
-        <Loading />{" "}
-      </div>
-    );
-  }
 
   if (error) {
     return <div>Error: {error}</div>;
   }
 
-  console.log(selectedRows.size > 1, "data");
+  console.log(selectedRows.size > 1, 'data');
 
   return (
     <div className="comm">
@@ -267,7 +255,7 @@ const Reconcile = () => {
 
         <div
           className="TableContainer"
-          style={{ overflowX: "auto", whiteSpace: "nowrap" }}
+          style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}
         >
           <table>
             <thead>
@@ -301,70 +289,85 @@ const Reconcile = () => {
               </tr>
             </thead>
             <tbody>
-              {currentPageData?.length > 0
-                ? currentPageData?.map((el: any, i: any) => (
-                    <tr
-                      key={i}
-                      className={selectedRows.has(i) ? "selected" : ""}
-                    >
-                      <td style={{ fontWeight: "500", color: "black" }}>
-                        <div className="flex-check">
-                          <CheckBox
-                            checked={selectedRows.has(i)}
-                            onChange={() =>
-                              toggleRowSelection(
-                                i,
-                                selectedRows,
-                                setSelectedRows,
-                                setSelectAllChecked
-                              )
-                            }
-                          />
-                          {el.unique_id}
+              {isLoading ? (
+                <tr>
+                  <td colSpan={ReconcileColumns?.length}>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <MicroLoader />
+                    </div>
+                  </td>
+                </tr>
+              ) : currentPageData?.length > 0 ? (
+                currentPageData?.map((el: any, i: any) => (
+                  <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
+                    <td style={{ fontWeight: '500', color: 'black' }}>
+                      <div className="flex-check">
+                        <CheckBox
+                          checked={selectedRows.has(i)}
+                          onChange={() =>
+                            toggleRowSelection(
+                              i,
+                              selectedRows,
+                              setSelectedRows,
+                              setSelectAllChecked
+                            )
+                          }
+                        />
+                        {el.unique_id}
+                      </div>
+                    </td>
+                    <td>{el.customer}</td>
+                    <td>{el.partner_name}</td>
+                    <td>{el.state_name}</td>
+                    <td>{el.sys_size}</td>
+                    <td>{el.status}</td>
+                    <td>{el.start_date}</td>
+                    <td>{el.end_date}</td>
+                    <td>{el.amount}</td>
+                    <td>
+                      {el.notes.length > 40
+                        ? el.notes.slice(0, 40) + '...'
+                        : el.notes}
+                    </td>
+                    {!viewArchived && selectedRows.size < 2 && (
+                      <td>
+                        <div className="action-icon">
+                          <div
+                            className=""
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => handleArchiveClick(el.record_id)}
+                          >
+                            <img src={ICONS.ARCHIVE} alt="" />
+                          </div>
+                          <div
+                            className=""
+                            onClick={() => handleEdit(el)}
+                            style={{ cursor: 'pointer' }}
+                          >
+                            <img src={ICONS.editIcon} alt="" />
+                          </div>
                         </div>
                       </td>
-                      <td>{el.customer}</td>
-                      <td>{el.partner_name}</td>
-                      <td>{el.state_name}</td>
-                      <td>{el.sys_size}</td>
-                      <td>{el.status}</td>
-                      <td>{el.start_date}</td>
-                      <td>{el.end_date}</td>
-                      <td>{el.amount}</td>
-                      <td>
-                        {el.notes.length > 40
-                          ? el.notes.slice(0, 40) + "..."
-                          : el.notes}
-                      </td>
-                      {!viewArchived && selectedRows.size < 2 && (
-                        <td>
-                          <div className="action-icon">
-                            <div
-                              className=""
-                              style={{ cursor: "pointer" }}
-                              onClick={() => handleArchiveClick(el.record_id)}
-                            >
-                              <img src={ICONS.ARCHIVE} alt="" />
-                            </div>
-                            <div
-                              className=""
-                              onClick={() => handleEdit(el)}
-                              style={{ cursor: "pointer" }}
-                            >
-                              <img src={ICONS.editIcon} alt="" />
-                            </div>
-                          </div>
-                        </td>
-                      )}
-                    </tr>
-                  ))
-                : null}
+                    )}
+                  </tr>
+                ))
+              ) : (
+                <tr style={{ border: 0 }}>
+                  <td colSpan={10}>
+                    <div className="data-not-found">
+                      <DataNotFound />
+                      <h3>Data Not Found</h3>
+                    </div>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
         <div className="page-heading-container">
           <p className="page-heading">
-            {startIndex} - {endIndex} of {dbCount} item
+            {startIndex} - {endIndex > dbCount ? dbCount : endIndex} of{' '}
+            {dbCount} item
           </p>
 
           {currentPageData?.length > 0 ? (

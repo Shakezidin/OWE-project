@@ -4,7 +4,7 @@ import {
   OnboardingChartModel,
   UserDropdownModel,
   UserRoleBasedListModel,
-} from "../api_models/UserManagementModel";
+} from '../api_models/UserManagementModel';
 
 export interface UserOnboardingStateModel {
   error: string | null;
@@ -13,6 +13,7 @@ export interface UserOnboardingStateModel {
   userRoleBasedList: UserRoleBasedListModel[];
   totalCount?: number;
   dbTables: DBTable[];
+  userPerformanceList: OnboardingChartModel[];
 }
 
 export interface CreateOnboardUserStateModel {
