@@ -34,7 +34,7 @@ const LoanFee = () => {
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const timelinesla_list = useAppSelector((state) => state.loanFeeSlice.data);
-  const { dbCount } = useAppSelector((state) => state.loanFeeSlice);
+  const { dbCount,isSuccess } = useAppSelector((state) => state.loanFeeSlice);
   //   const loading = useAppSelector((state) => state.timelineSla.loading);
   const error = useAppSelector((state) => state.timelineSla.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
@@ -56,6 +56,18 @@ const LoanFee = () => {
     };
     dispatch(getLoanFee(pageNumber));
   }, [dispatch, currentPage, viewArchived]);
+
+
+  useEffect(() => {
+    if (isSuccess) {
+      const pageNumber = {
+        page_number: currentPage,
+        page_size: itemsPerPage,
+        archived: viewArchived 
+      };
+      dispatch(getLoanFee(pageNumber));
+    }
+  }, [isSuccess, viewArchived, currentPage]);
 
   const filter = () => {
     setFilterOpen(true);
@@ -138,6 +150,8 @@ const LoanFee = () => {
       };
       const res = await postCaller('update_loan_fee_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
+        setSelectAllChecked(false)
+        setSelectedRows(new Set())
         dispatch(getLoanFee(pageNumber));
         await successSwal('Archived', 'The data has been archived ');
       } else {
@@ -178,7 +192,13 @@ const LoanFee = () => {
       <div className="commissionContainer">
         <TableHeader
           title="Loan Fee"
-          onPressViewArchive={() => setViewArchived((prev) => !prev)}
+          onPressViewArchive={() =>{ 
+            setViewArchived((prev) => !prev)
+            setSelectAllChecked(false)
+            setSelectedRows(new Set())
+            setCurrentPage(1)
+
+          }}
           onPressArchive={() =>
             handleArchiveClick(
               Array.from(selectedRows).map(

@@ -29,6 +29,7 @@ import {
   stateOption,
 } from '../../../../core/models/data_models/SelectDataModel';
 import { addDays, format } from 'date-fns';
+import { toast } from 'react-toastify';
 interface dealerProps {
   handleClose: () => void;
   editMode: boolean;
@@ -46,9 +47,9 @@ const CreateDealer: React.FC<dealerProps> = ({
 }) => {
   const dispatch = useAppDispatch();
 
-  const [createDealer, setCreateDealer] = useState<DealerModel>({
+  const [createDealer, setCreateDealer] = useState({
     record_id: dealerData ? dealerData?.record_id : 0,
-    sub_dealer: dealerData ? dealerData?.sub_dealer : '',
+    sub_dealers: dealerData ? dealerData?.sub_dealer : '',
 
     pay_rate: dealerData ? dealerData?.pay_rate : '',
     start_date: dealerData ? dealerData?.start_date : '',
@@ -61,6 +62,8 @@ const CreateDealer: React.FC<dealerProps> = ({
   const tableData = {
     tableNames: ['sub_dealer', 'dealer', 'states'],
   };
+
+  
   const userType = {
     role: 'sub_dealer',
   };
@@ -127,7 +130,7 @@ const CreateDealer: React.FC<dealerProps> = ({
     console.log(newFormData.sub_dealer);
 
     const validationRules = {
-      sub_dealer: [
+      sub_dealers: [
         {
           condition: (value: any) => !!value,
           message: 'Sub Dealer is required',
@@ -161,31 +164,33 @@ const CreateDealer: React.FC<dealerProps> = ({
       return;
     }
     try {
-      dispatch(updateDealerForm({ ...createDealer, dealer: delaerVal }));
+      dispatch(updateDealerForm({ ...createDealer, dealer: delaerVal, sub_dealer: createDealer.sub_dealers, }));
       if (createDealer.record_id) {
         const res = await postCaller(EndPoints.update_dealer, {
           ...createDealer,
           dealer: delaerVal,
+          sub_dealer: createDealer.sub_dealers,
         });
         if (res.status === 200) {
-          await successSwal('', res.message);
+          toast.success(res.message);
           handleClose();
           dispatch(fetchDealer(page));
         } else {
-          await errorSwal('', res.message);
+            toast.error(res.message);
         }
       } else {
         const { record_id, ...cleanedFormData } = createDealer;
         const res = await postCaller(EndPoints.create_dealer, {
           ...cleanedFormData,
           dealer: delaerVal,
+          sub_dealer: createDealer.sub_dealers
         });
         if (res.status === 200) {
-          await successSwal('', res.message);
+         toast.success(res.message);
           handleClose();
           dispatch(fetchDealer(page));
         } else {
-          await errorSwal('', res.message);
+           toast.error( res.message);
         }
       }
     } catch (error) {
@@ -215,16 +220,17 @@ const CreateDealer: React.FC<dealerProps> = ({
                     type="text"
                     name="sub_dealer"
                     placeholder="Enter"
+                    
                     onChange={(e) =>
                       setCreateDealer({
                         ...createDealer,
-                        sub_dealer: e.target.value,
+                        sub_dealers: e.target.value,
                       })
                     }
-                    value={createDealer.sub_dealer}
+                    value={createDealer.sub_dealers}
                   />
-                  {errors.sub_dealer && (
-                    <span className="error">{errors.sub_dealer}</span>
+                  {errors.sub_dealers && (
+                    <span className="error">{errors.sub_dealers}</span>
                   )}
                 </div>
                 <div className="create-input-field">

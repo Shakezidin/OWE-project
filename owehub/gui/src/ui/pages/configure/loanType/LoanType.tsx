@@ -149,8 +149,8 @@ const LoanType = () => {
           const remainingSelectedRows = Array.from(selectedRows).filter(
             (index) => !archivedRows.includes(loanTypeList[index].record_id)
           );
-          const isAnyRowSelected = remainingSelectedRows.length > 0;
-          setSelectAllChecked(isAnyRowSelected);
+      
+          setSelectAllChecked(false);
           setSelectedRows(new Set());
           await successSwal('Archived', 'The data has been archived ');
         } else {
@@ -179,6 +179,8 @@ const LoanType = () => {
       const res = await postCaller(EndPoints.update_dealer_archive, newValue);
       if (res.status === HTTP_STATUS.OK) {
         dispatch(fetchLoanType(pageNumber));
+        setSelectAllChecked(false);
+        setSelectedRows(new Set());
         await successSwal('Archived', 'The data has been archived ');
       } else {
         await successSwal('Archived', 'The data has been archived ');
@@ -191,6 +193,7 @@ const LoanType = () => {
     // When toggling, reset the selected rows
     setSelectedRows(new Set());
     setSelectAllChecked(false);
+    setCurrentPage(1)
   };
   const fetchFunction = (req: any) => {
     dispatch(fetchLoanType(req));

@@ -71,22 +71,39 @@ const DataTableHeaderr = (props: TableProps) => {
                   marginRight: selectMarginLeft,
                   cursor: 'pointer',
                 }),
-                indicatorSeparator: () => ({
-                  display: 'none', // Hide the indicator separator
+                dropdownIndicator: (baseStyles, state) => ({
+                  ...baseStyles,
+                  color: '#0493CE',
+                  '&:hover': {
+                    color: '#0493CE',
+                  },
                 }),
-                option: (baseStyles) => ({
+                indicatorSeparator: () => ({
+                  display: 'none',
+                }),
+                option: (baseStyles, state) => ({
                   ...baseStyles,
                   fontSize: '13px',
+                  color: state.isSelected ? '#ffffff' : '#0000000',
+                  backgroundColor: state.isSelected ? '#0493CE' : '#ffffff',
+                  '&:hover': {
+                    backgroundColor: state.isSelected ? '#0493CE' : '#DDEBFF',
+                  },
                 }),
-                menu: (base) => ({
-                  ...base,
-                  zIndex: 999,
-                  width: '200px',
+                singleValue: (baseStyles, state) => ({
+                  ...baseStyles,
+                  color: '#0493CE',
+                }),
+                menu: (baseStyles) => ({
+                  ...baseStyles,
+                  width: '220px',
+                  zIndex: 9999, // Add this line to set a higher zIndex value
                 }),
               }}
             />
           )}
         </div>
+
 
         <div
           className="iconsSection-filter"

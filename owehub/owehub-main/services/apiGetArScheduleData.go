@@ -122,7 +122,7 @@ func HandleGetArScheduleDataRequest(resp http.ResponseWriter, req *http.Request)
 
 		// RedLine
 		RedLine, ok := item["red_line"].(float64)
-		if !ok  {
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get red line for Record ID %v. Item: %+v\n", RecordId, item)
 			RedLine = 0
 		}
@@ -136,7 +136,7 @@ func HandleGetArScheduleDataRequest(resp http.ResponseWriter, req *http.Request)
 
 		// PermitPay
 		PermitPay, ok := item["permit_pay"].(float64)
-		if !ok  {
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get permit pay for Record ID %v. Item: %+v\n", RecordId, item)
 			PermitPay = 0
 		}
@@ -263,22 +263,22 @@ func PrepareArScheduleFilters(tableName string, dataFilter models.DataRequestBod
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(sy.type_name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "red_line":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ar.red_line) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("ar.red_line %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "calc_date":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ar.calc_date) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "permit_pay":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ar.permit_pay) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("ar.permit_pay %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "permit_max":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ar.permit_max) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("ar.permit_max %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "install_pay":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ar.install_pay) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("ar.install_pay %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "pto_pay":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ar.pto_pay) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("ar.pto_pay %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "start_date":
 				filtersBuilder.WriteString(fmt.Sprintf("ar.start_date %s $%d", operator, len(whereEleList)+1))
@@ -287,7 +287,7 @@ func PrepareArScheduleFilters(tableName string, dataFilter models.DataRequestBod
 				filtersBuilder.WriteString(fmt.Sprintf("ar.end_date %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ar.%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			}
 		}

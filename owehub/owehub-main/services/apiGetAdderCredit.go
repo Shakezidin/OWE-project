@@ -63,7 +63,7 @@ func HandleGetAdderCreditDataRequest(resp http.ResponseWriter, req *http.Request
 
 	tableName := db.TableName_AdderCredit
 	query = `
-	  SELECT ac.id as record_id, ac.unique_id, ac.pay_scale, ac.type, ac.min_rate, ac.max_rate, ac.is_archived
+	  SELECT ac.id as record_id, ac.unique_id, ac.pay_scale, ac.type, ac.min_rate, ac.max_rate
 	  FROM adder_credit ac`
 
 	filter, whereEleList = PrepareAdderCreditFilters(tableName, dataReq, false)
@@ -197,7 +197,7 @@ func PrepareAdderCreditFilters(tableName string, dataFilter models.DataRequestBo
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ac.pay_scale) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "type":
-				filtersBuilder.WriteString(fmt.Sprintf("ac.percentage %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ac.type) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "min_rate":
 				filtersBuilder.WriteString(fmt.Sprintf("ac.min_rate %s $%d", operator, len(whereEleList)+1))

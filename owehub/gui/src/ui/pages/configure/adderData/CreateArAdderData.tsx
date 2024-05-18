@@ -90,7 +90,7 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
       handleClose();
       dispatch(resetSuccess());
     }
-  }, []);
+  }, [isSuccess]);
   return (
     <div className="transparent-model">
       <form className="modal" onSubmit={handleSubmit}>

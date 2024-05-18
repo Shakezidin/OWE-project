@@ -154,6 +154,8 @@ const Adjustments = () => {
       };
       const res = await postCaller('update_adjustments_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
+            setSelectAllChecked(false);
+            setSelectedRows(new Set());
         dispatch(getAdjustments(pageNumber));
         await successSwal('Archived', 'The data has been archived ');
       } else {
@@ -192,7 +194,12 @@ const Adjustments = () => {
       <div className="commissionContainer">
         <TableHeader
           title="Adjustments"
-          onPressViewArchive={() => setViewArchived((prev) => !prev)}
+          onPressViewArchive={() =>{ 
+            setViewArchived((prev) => !prev)
+            setCurrentPage(1);
+            setSelectAllChecked(false);
+            setSelectedRows(new Set());
+          }}
           onPressArchive={() =>
             handleArchiveClick(
               Array.from(selectedRows).map(

@@ -240,7 +240,7 @@ func PrepareTierLoanFeesFilters(tableName string, dataFilter models.DataRequestB
 			case "state":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(st.name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-			case "finance_type":
+			case "loan_type":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(lnt.product_code) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "owe_cost", "dlr_mu", "dlr_cost":
@@ -253,7 +253,7 @@ func PrepareTierLoanFeesFilters(tableName string, dataFilter models.DataRequestB
 				filtersBuilder.WriteString(fmt.Sprintf("tlf.end_date %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(tlf.%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			}
 		}

@@ -252,7 +252,7 @@ func PrepareAdjustmentsFilters(tableName string, dataFilter models.DataRequestBo
 				filtersBuilder.WriteString(fmt.Sprintf("as.sys_size %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "bl":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.bl) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("ad.bl %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "epc":
 				filtersBuilder.WriteString(fmt.Sprintf("ad.epc %s $%d", operator, len(whereEleList)+1))
@@ -267,7 +267,7 @@ func PrepareAdjustmentsFilters(tableName string, dataFilter models.DataRequestBo
 				filtersBuilder.WriteString(fmt.Sprintf("ad.amount %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			}
 
