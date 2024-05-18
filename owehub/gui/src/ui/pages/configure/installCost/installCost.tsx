@@ -147,6 +147,8 @@ const InstallCost = () => {
       const res = await postCaller('update_installcost_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
         setSelectedRows(new Set());
+            setSelectAllChecked(false);
+
         dispatch(getInstallCost(pageNumber));
         await successSwal('Archived', 'The data has been archived ');
       } else {
@@ -182,14 +184,19 @@ const InstallCost = () => {
           title="Install Cost"
           onPressViewArchive={() => {
             setViewArchived((prev) => !prev);
+            setCurrentPage(1);
+            setSelectAllChecked(false);
+            setSelectedRows(new Set());
           }}
           onPressArchive={() => {
-            selectedRows.size &&
+           
               handleArchiveClick(
                 Array.from(selectedRows).map(
                   (_, i: number) => currentPageData[i].record_id
                 )
               );
+              setSelectAllChecked(false);
+              setSelectedRows(new Set());
           }}
           onPressFilter={() => filter()}
           onPressImport={() => {}}
