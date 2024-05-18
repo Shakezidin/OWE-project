@@ -22,6 +22,7 @@ import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
+import MicroLoader from '../../../components/loader/MicroLoader';
 const AdderData = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -162,13 +163,7 @@ const AdderData = () => {
       }
     }
   };
-  if (isLoading) {
-    return (
-      <div className=" loader-container">
-        <Loading />
-      </div>
-    );
-  }
+
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -249,7 +244,17 @@ const AdderData = () => {
               </tr>
             </thead>
             <tbody>
-              {currentPageData?.length > 0
+              {
+              isLoading?
+              <tr>
+                <td colSpan={AdderDataColumn.length}>
+                  <div style={{display:"flex",justifyContent:"center"}}>
+                    <MicroLoader/>
+                  </div>
+                </td>
+              </tr>
+              
+              :currentPageData?.length > 0
                 ? currentPageData?.map((el: IAdderRowData, i: number) => (
                     <tr
                       key={i}
@@ -306,10 +311,10 @@ const AdderData = () => {
           </table>
         </div>
         <div className="page-heading-container">
-          <p className="page-heading">
-            Showing {currentPage} - {endIndex > count ? count : endIndex} of{' '}
+        {!!count &&  <p className="page-heading">
+             {currentPage} - {endIndex > count ? count : endIndex} of{' '}
             {count} item
-          </p>
+          </p>}
 
           {commissionList?.length > 0 ? (
             <Pagination

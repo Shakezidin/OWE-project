@@ -16,6 +16,7 @@ import { respTypeData } from '../../../../resources/static_data/StaticData';
 import { updateForm } from '../../../../redux/apiSlice/configSlice/config_post_slice/createCommissionSlice';
 import { CommissionModel } from '../../../../core/models/configuration/create/CommissionModel';
 import SelectOption from '../../../components/selectOption/SelectOption';
+import { addDays, format } from 'date-fns';
 
 interface ButtonProps {
   editMode: boolean;
@@ -228,7 +229,11 @@ const CreateAutoAdder: React.FC<ButtonProps> = ({
                       value={createCommission.start_date}
                       name="start_date"
                       placeholder={'1/04/2004'}
-                      onChange={(e) => handleInputChange(e)}
+                      onChange={(e) => {
+                        handleInputChange(e)
+                        setCreateCommission(prev=>({...prev,end_date:""}))
+
+                      }}
                     />
                   </div>
                   <div className="rate-input-field">
@@ -236,6 +241,8 @@ const CreateAutoAdder: React.FC<ButtonProps> = ({
                       type={'date'}
                       label="End Date"
                       value={createCommission.end_date}
+                      min={createCommission.start_date && format(addDays(new Date(createCommission.start_date),1),"yyyy-MM-dd")}
+                      disabled={!createCommission.start_date}
                       name="end_date"
                       placeholder={'10/04/2004'}
                       onChange={(e) => handleInputChange(e)}

@@ -24,6 +24,11 @@ import (
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
+type tablePermission struct {
+	TableName     string `json:"table_name"`
+	PrivilegeType string `json:"privilege_type"`
+}
+
 func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
 		err             error
@@ -81,7 +86,8 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 			ud.country,
 			st.name AS state_name,
 			ur.role_name,
-			zc.zipcode
+			zc.zipcode,
+			ud.tables_permissions
 			FROM user_details ud
 			LEFT JOIN user_details ud1 ON ud.reporting_manager = ud1.user_id
 			LEFT JOIN user_details ud2 ON ud.dealer_owner = ud2.user_id
@@ -222,6 +228,18 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 			Country = ""
 		}
 
+		// tablesPermissions
+		tablesPermissionsJSON, Ok := item["tables_permissions"].([]byte)
+		if !Ok || tablesPermissionsJSON == nil {
+			tablesPermissionsJSON = nil
+		}
+		// Unmarshal the JSONB data into the TablesPermissions field
+		var tablePermissions []models.GetTablePermission
+		err = json.Unmarshal(tablesPermissionsJSON, &tablePermissions)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to unmarshall table permission data err: %v", err)
+		}
+
 		usersData := models.GetUsersData{
 			RecordId:          Record_Id,
 			Name:              Name,
@@ -241,6 +259,7 @@ func HandleGetUsersDataRequest(resp http.ResponseWriter, req *http.Request) {
 			City:              City,
 			Zipcode:           Zipcode,
 			Country:           Country,
+			TablePermission:   tablePermissions,
 		}
 
 		usersDetailsList.UsersDataList = append(usersDetailsList.UsersDataList, usersData)

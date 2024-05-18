@@ -7,20 +7,23 @@ import {
   ILeaderRow,
 } from '../../../apiActions/leaderOverrideAction';
 interface IState {
-  isLoading: boolean;
-  isFormSubmitting: boolean;
-  error: string;
-  data: ILeaderRow[];
-  isSuccess: boolean;
-}
-
-const initialState: IState = {
-  isLoading: false,
-  isFormSubmitting: false,
-  error: '',
-  data: [],
-  isSuccess: false,
+  isLoading: boolean,
+  isFormSubmitting: boolean,
+  error:string,
+  data: ILeaderRow[],
+  isSuccess:boolean,
+  count:number
 };
+
+  const initialState:IState = {
+    isLoading: false,
+    isFormSubmitting: false,
+    error: "",
+    data: [],
+    isSuccess:false,
+    count:0
+  };
+  
 
 const leaderOverride = createSlice({
   name: 'leaderOverride',
@@ -37,7 +40,8 @@ const leaderOverride = createSlice({
       })
       .addCase(getleaderOverride.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.data = action.payload;
+        state.data = action.payload.list;
+        state.count = action.payload.count;
       })
       .addCase(getleaderOverride.rejected, (state, action) => {
         state.isLoading = false;

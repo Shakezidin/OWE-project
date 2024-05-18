@@ -98,7 +98,11 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
   };
 
   useEffect(() => {
-    if (selectedOption.value === TYPE_OF_USER.ADMIN) {
+   
+    if (
+      selectedOption.value === TYPE_OF_USER.ADMIN 
+    ) {
+      setDbAcess(true);
       const set = new Set(
         Array.from({ length: tables.length }).map((_, i: number) => i)
       );
@@ -108,12 +112,6 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
         obj[table.table_name] = 'Full';
       });
       setTablePermissions(obj);
-    }
-    if (
-      selectedOption.value === TYPE_OF_USER.ADMIN ||
-      selectedOption.value === TYPE_OF_USER.DB_USER
-    ) {
-      setDbAcess(true);
     } else {
       setTablePermissions({});
       setDbAcess(false);
@@ -175,6 +173,19 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                         if (newValue?.value !== TYPE_OF_USER.ADMIN) {
                           setTablePermissions({});
                           setSelected(new Set());
+                          setDbAcess(false)
+                        }
+                        if(newValue?.value===TYPE_OF_USER.ADMIN){
+                          setDbAcess(true)
+                          const set = new Set(
+                            Array.from({ length: tables.length }).map((_, i: number) => i)
+                          );
+                          setSelected(set);
+                          const obj: { [key: string]: string } = {};
+                          tables.forEach((table: { table_name: string }) => {
+                            obj[table.table_name] = 'Full';
+                          });
+                          setTablePermissions(obj);
                         }
                       }}
                       value={ALL_USER_ROLE_LIST?.find(

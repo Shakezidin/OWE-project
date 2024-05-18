@@ -28,6 +28,7 @@ import {
   salesTypeOption,
   stateOption,
 } from '../../../../core/models/data_models/SelectDataModel';
+import { addDays, format } from 'date-fns';
 interface dealerProps {
   handleClose: () => void;
   editMode: boolean;
@@ -287,7 +288,9 @@ const CreateDealer: React.FC<dealerProps> = ({
                     value={createDealer.start_date}
                     name="start_date"
                     placeholder={'Enter'}
-                    onChange={(e) => handleDealerInputChange(e)}
+                    onChange={(e) =>{ handleDealerInputChange(e)
+                      setCreateDealer(prev=>({...prev,end_date:""}))
+                    }}
                   />
                   {errors.start_date && (
                     <span className="error">{errors.start_date}</span>
@@ -299,6 +302,8 @@ const CreateDealer: React.FC<dealerProps> = ({
                     label="End Date"
                     name="end_date"
                     value={createDealer.end_date}
+                    min={createDealer.start_date && format(addDays(new Date(createDealer.start_date),1),"yyyy-MM-dd")}
+                    disabled={!createDealer.start_date}
                     placeholder={'Enter'}
                     onChange={(e) => handleDealerInputChange(e)}
                   />

@@ -260,7 +260,7 @@ const UserActivity: React.FC = () => {
 
         <div className="page-heading-container">
           <p className="page-heading">
-            {startIndex} - {endIndex} of {totalCount} item
+            {startIndex} - {endIndex>totalCount?totalCount:endIndex} of {totalCount} item
           </p>
 
           {userActivityList && userActivityList?.length > 0 ? (
