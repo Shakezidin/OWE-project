@@ -37,7 +37,7 @@ BEGIN
     SET 
         unique_id = p_unique_id,
         type_mktg = p_type_mktg,
-        dealer_id = (SELECT user_id FROM user_details WHERE LOWER(name) = LOWER(p_dealer) LIMIT 1),
+        dealer_id = (SELECT id FROM v_dealer WHERE LOWER(dealer_name) = LOWER(p_dealer) LIMIT 1),
         installer_id = (SELECT partner_id FROM partners WHERE LOWER(partner_name) = LOWER(p_installer) LIMIT 1),
         state_id = (SELECT state_id FROM states WHERE LOWER(name) = LOWER(p_state_name) LIMIT 1),
         contract_dol_dol = p_contract_amount,

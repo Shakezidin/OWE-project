@@ -301,10 +301,9 @@ const LoanFee = () => {
           </table>
         </div>
         <div className="page-heading-container">
-          <p className="page-heading">
-            {startIndex} - {endIndex} of {dbCount} item
-          </p>
-
+        {!!dbCount &&  <p className="page-heading">
+            {startIndex} - {endIndex>dbCount?dbCount:endIndex} of {dbCount} item
+          </p>}
           {timelinesla_list?.length > 0 ? (
             <Pagination
               currentPage={currentPage}

@@ -35,8 +35,8 @@ const LoanType = () => {
   const handleClose = () => setOpen(false);
 
   const filterClose = () => setFilterOpen(false);
-  const loanTypeList = useAppSelector(
-    (state) => state?.loanType?.loantype_list
+  const {loantype_list:loanTypeList,count} = useAppSelector(
+    (state) => state?.loanType
   );
   const loading = useAppSelector((state) => state.loanType.loading);
   const error = useAppSelector((state) => state.loanType.error);
@@ -47,9 +47,7 @@ const LoanType = () => {
     null
   );
   const itemsPerPage = 10;
-  const currentPage = useAppSelector(
-    (state) => state.paginationType.currentPage
-  );
+  const [currentPage,setCurrentPage] = useState(1)
   const [sortKey, setSortKey] = useState('');
   const [viewArchived, setViewArchived] = useState<boolean>(false);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
@@ -62,15 +60,15 @@ const LoanType = () => {
     dispatch(fetchLoanType(pageNumber));
   }, [dispatch, currentPage, viewArchived]);
   const paginate = (pageNumber: number) => {
-    dispatch(setCurrentPage(pageNumber));
+    setCurrentPage(pageNumber)
   };
 
   const goToNextPage = () => {
-    dispatch(setCurrentPage(currentPage + 1));
+   setCurrentPage(currentPage + 1)
   };
 
   const goToPrevPage = () => {
-    dispatch(setCurrentPage(currentPage - 1));
+   setCurrentPage(currentPage - 1)
   };
   const handleAddLoan = () => {
     setEditMode(false);
@@ -81,16 +79,16 @@ const LoanType = () => {
   const filter = () => {
     setFilterOpen(true);
   };
-  const totalPages = Math.ceil(loanTypeList?.length / itemsPerPage);
+  const totalPages = Math.ceil(count / itemsPerPage);
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
+  const startIndex = (currentPage - 1) * itemsPerPage+1;
+  const endIndex = currentPage * itemsPerPage;
   const handleEditLoan = (loanData: LoanTypeModel) => {
     setEditMode(true);
     setEditedLoanData(loanData);
     handleOpen();
   };
-  const currentPageData = loanTypeList?.slice(startIndex, endIndex);
+  const currentPageData = loanTypeList?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === loanTypeList.length;
   const handleSort = (key: any) => {
@@ -353,7 +351,7 @@ const LoanType = () => {
         {loanTypeList?.length > 0 ? (
           <div className="page-heading-container">
             <p className="page-heading">
-              {currentPage} - {totalPages} of {currentPageData?.length} item
+              {startIndex} - {endIndex>count?count:endIndex} of {count} item
             </p>
             <Pagination
               currentPage={currentPage}

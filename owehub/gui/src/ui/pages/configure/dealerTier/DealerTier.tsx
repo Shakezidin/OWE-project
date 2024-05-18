@@ -352,7 +352,7 @@ const DealerTier = () => {
         {dealerTierList?.length > 0 ? (
           <div className="page-heading-container">
             <p className="page-heading">
-              {startIndex} - {endIndex} of {dbCount} item
+              {startIndex} - {endIndex>dbCount?dbCount:endIndex} of {dbCount} item
             </p>
             <Pagination
               currentPage={currentPage}

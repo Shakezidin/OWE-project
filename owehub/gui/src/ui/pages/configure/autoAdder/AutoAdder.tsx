@@ -28,6 +28,7 @@ import { AutoAdderColumn } from '../../../../resources/static_data/configureHead
 import { fetchAutoAdder } from '../../../../redux/apiActions/AutoAdderAction';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import PaginationComponent from '../../../components/pagination/PaginationComponent';
+import MicroLoader from '../../../components/loader/MicroLoader';
 interface Column {
   name: string;
   displayName: string;
@@ -93,8 +94,8 @@ const AutoAdder: React.FC = () => {
   const dbCount = 10;
   const totalPages1 = Math.ceil(dbCount / pageSize1);
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
+  const startIndex = (currentPage - 1) * itemsPerPage +1;
+  const endIndex = startIndex * itemsPerPage;
   const handleAddCommission = () => {
     setEditMode(false);
     setEditedCommission(null);
@@ -107,9 +108,10 @@ const AutoAdder: React.FC = () => {
     handleOpen();
   };
 
-  const currentPageData = commissionList?.slice(startIndex, endIndex);
+  const currentPageData = commissionList?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === commissionList?.length;
+  
   const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
@@ -147,14 +149,7 @@ const AutoAdder: React.FC = () => {
       </div>
     );
   }
-  if (loading) {
-    return (
-      <div className="loader-container">
-        <Loading /> {loading}
-      </div>
-    );
-  }
-
+ 
   return (
     <div className="comm">
       <Breadcrumb
@@ -231,7 +226,18 @@ const AutoAdder: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {currentPageData?.length > 0
+              {
+               loading?
+               <tr>
+                 <td colSpan={AutoAdderColumn.length}>
+                   <div style={{display:"flex",justifyContent:"center"}}>
+                     <MicroLoader/>
+                   </div>
+                 </td>
+               </tr>
+              : 
+              
+              currentPageData?.length > 0
                 ? currentPageData?.map((el: any, i: any) => (
                     <tr
                       key={i}
@@ -303,9 +309,9 @@ const AutoAdder: React.FC = () => {
         </div>
         {commissionList?.length > 0 ? (
           <div className="page-heading-container">
-            <p className="page-heading">
-              {currentPage} - {totalPages1} of {currentPageData?.length} item
-            </p>
+           {!!dbCount && <p className="page-heading">
+              {startIndex} - {endIndex>dbCount?dbCount:endIndex} of {dbCount} item
+            </p>}
             <PaginationComponent
               currentPage={currentPage1}
               itemsPerPage={pageSize1}

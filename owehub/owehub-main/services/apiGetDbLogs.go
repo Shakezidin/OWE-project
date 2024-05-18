@@ -81,7 +81,7 @@ func HandleGetDbLogsRequest(resp http.ResponseWriter, req *http.Request) {
 	`
 
 	roleQuery = `
-		SELECT ud.name as name
+		SELECT name
 		FROM user_details WHERE email_id = $1;
 	`
 
@@ -228,13 +228,13 @@ func PrepareDbLogFilters(tableName string, dataFilter models.DbLogReq, adminChec
 	filtersBuilder.WriteString(fmt.Sprintf("  query_start >= $%d AND query_start <= $%d", len(whereEleList)+1, len(whereEleList)+2))
 	whereEleList = append(whereEleList, dataFilter.StartDate, dataFilter.EndDate)
 
-	if !adminCheck && !countCheck {
+	if !adminCheck {
 		if !whereAdded {
 			filtersBuilder.WriteString(" WHERE ")
 		} else {
 			filtersBuilder.WriteString(" AND ")
 		}
-		filtersBuilder.WriteString(fmt.Sprintf("usename = $%d", len(whereEleList)+1))
+		filtersBuilder.WriteString(fmt.Sprintf(" usename = $%d", len(whereEleList)+1))
 		whereEleList = append(whereEleList, dataFilter.Username)
 	}
 

@@ -9,6 +9,7 @@ import { getCurrentDateFormatted } from '../../../../utiles/formatDate';
 import { DBManagerUserActivityModel } from '../../../../core/models/api_models/DBManagerModel';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import Pagination from '../../../components/pagination/Pagination';
+import MicroLoader from '../../../components/loader/MicroLoader';
 
 const UserActivity: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -42,9 +43,7 @@ const UserActivity: React.FC = () => {
 
   const filter = () => {};
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+
 
   // if (error) {
   //   return <div>Error: {error}</div>;
@@ -100,7 +99,18 @@ const UserActivity: React.FC = () => {
             </thead>
 
             <tbody>
-              {userActivityList && userActivityList?.length > 0 ? (
+              {
+                
+              loading?
+            <tr >
+              <td colSpan={7}>
+                  <div style={{display:"flex",justifyContent:"center"}}>
+                    <MicroLoader/>
+                  </div>
+              </td>
+            </tr>:
+              
+              userActivityList && userActivityList?.length > 0 ? (
                 userActivityList?.map((el: DBManagerUserActivityModel) => (
                   <tr key={el.time_date}>
                     <td
@@ -134,7 +144,7 @@ const UserActivity: React.FC = () => {
 
         <div className="page-heading-container">
           <p className="page-heading">
-            {startIndex} - {endIndex} of {totalCount} item
+            {startIndex} - {endIndex>totalCount?totalCount:endIndex} of {totalCount} item
           </p>
 
           {userActivityList && userActivityList?.length > 0 ? (
