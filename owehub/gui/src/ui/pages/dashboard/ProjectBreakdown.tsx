@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import '../dashboard/dasboard.css';
 import { CommissionModel } from '../../../core/models/configuration/create/CommissionModel';
 import { ICONS } from '../../icons/Icons';
+import { SlArrowDown, SlArrowUp } from 'react-icons/sl';
+
 
 interface ButtonProps {
   editMode: boolean;
@@ -13,23 +15,23 @@ const BreakdownAccordion = () => {
   // Add your accordion content here
   return (
     <>
-      <tr style={{ backgroundColor: '#F2F4F6' }}>
-        <td colSpan={2}>Adder content goes here</td>
+      <tr style={{ backgroundColor: '#DDEBFF' }}>
+        <td colSpan={2} style={{ paddingLeft: '70px' }}>Adder content goes here</td>
       </tr>
-      <tr style={{ backgroundColor: '#F2F4F6' }}>
-        <td>Small System Size</td>
+      <tr style={{ backgroundColor: '#DDEBFF' }}>
+        <td style={{ paddingLeft: '70px' }}>Small System Size</td>
         <td>21250</td>
       </tr>
-      <tr style={{ backgroundColor: '#F2F4F6' }}>
-        <td>Credit</td>
+      <tr style={{ backgroundColor: '#DDEBFF' }}>
+        <td style={{ paddingLeft: '70px' }}>Credit</td>
         <td>21250</td>
       </tr>
-      <tr style={{ backgroundColor: '#F2F4F6' }}>
-        <td>Referal</td>
+      <tr style={{ backgroundColor: '#DDEBFF' }}>
+        <td style={{ paddingLeft: '70px' }}>Referal</td>
         <td>21250</td>
       </tr>
-      <tr style={{ backgroundColor: '#F2F4F6' }}>
-        <td>Rebates</td>
+      <tr style={{ backgroundColor: '#DDEBFF' }}>
+        <td style={{ paddingLeft: '70px' }}>Rebates</td>
         <td>21250</td>
       </tr>
     </>
@@ -89,9 +91,9 @@ const ProjectBreakdown: React.FC<ButtonProps> = ({
                   <td style={{ cursor: 'pointer' }}>
                     Adder{' '}
                     {toggleOpen ? (
-                      <span>&#x25B2;</span> // Up arrow
+                      <SlArrowUp className="add-arrow-icon up" />
                     ) : (
-                      <span>&#x25BC;</span> // Down arrow
+                      <SlArrowDown className="add-arrow-icon down" />
                     )}
                   </td>
 
