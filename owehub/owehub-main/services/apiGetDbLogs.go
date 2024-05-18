@@ -234,7 +234,7 @@ func PrepareDbLogFilters(tableName string, dataFilter models.DbLogReq, adminChec
 		} else {
 			filtersBuilder.WriteString(" AND ")
 		}
-		filtersBuilder.WriteString(fmt.Sprintf(" usename = $%d", len(whereEleList)+1))
+		filtersBuilder.WriteString(fmt.Sprintf(" usename = LOWER($%d)", len(whereEleList)+1))
 		whereEleList = append(whereEleList, dataFilter.Username)
 	}
 
