@@ -21,6 +21,7 @@ import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import MicroLoader from '../../../components/loader/MicroLoader';
+import FilterHoc from '../../../components/FilterModal/FilterHoc';
 const AR = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -136,7 +137,7 @@ const AR = () => {
     setViewArchived(!viewArchived);
     setSelectedRows(new Set());
     setSelectAllChecked(false);
-    setCurrentPage(1)
+    setCurrentPage(1);
   };
   const handleArchiveAllClick = async () => {
     const confirmed = await showAlert(
@@ -236,15 +237,17 @@ const AR = () => {
           onpressExport={() => {}}
           onpressAddNew={() => handleTimeLineSla()}
         />
-        {filterOPen && (
-          <FilterModal
-            handleClose={filterClose}
-            columns={ARColumns}
-            page_number={currentPage}
-            fetchFunction={fetchFunction}
-            page_size={itemsPerPage}
-          />
-        )}
+
+        <FilterHoc
+          isOpen={filterOPen}
+          resetOnChange={viewArchived}
+          handleClose={filterClose}
+          columns={ARColumns}
+          page_number={currentPage}
+          fetchFunction={fetchFunction}
+          page_size={itemsPerPage}
+        />
+
         {open && (
           <CreateAr
             editMode={editMode}

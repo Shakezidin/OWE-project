@@ -230,6 +230,7 @@ const DealerOverRides: React.FC = () => {
         />
 
         <FilterHoc
+        resetOnChange={viewArchived}
           isOpen={filterOPen}
           handleClose={filterClose}
           columns={DealerTableData}
