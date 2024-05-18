@@ -82,6 +82,10 @@ func HandleGetAnyTableDataRequest(resp http.ResponseWriter, req *http.Request) {
 		SelectedTableName = "next_steps_schema"
 	case "sales_metrics_schema":
 		SelectedTableName = "sales_metrics_schema"
+	case "consolidated_data_view":
+		SelectedTableName = "consolidated_data_view"
+	case "ops_analysis_timelines_view":
+		SelectedTableName = "ops_analysis_timelines_view"
 	}
 
 	query = fmt.Sprintf("select * from %s", SelectedTableName)
