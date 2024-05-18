@@ -32,7 +32,7 @@ const Reconcile = () => {
 
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const { data, isLoading, dbCount } = useAppSelector(
+  const { data, isLoading, dbCount, isSuccess } = useAppSelector(
     (state) => state.reconcile
   );
 
@@ -43,9 +43,7 @@ const Reconcile = () => {
   const [editedReconcile, setEditedReconcile] = useState(null);
   const itemsPerPage = 10;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
-  const currentPage = useAppSelector(
-    (state) => state.paginationType.currentPage
-  );
+  const [currentPage, setCurrentPage] = useState(1);
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   useEffect(() => {
@@ -62,16 +60,16 @@ const Reconcile = () => {
   };
 
   const paginate = (pageNumber: number) => {
-    dispatch(setCurrentPage(pageNumber));
+    setCurrentPage(pageNumber);
   };
 
   const commissionList = useAppSelector((state) => state.comm.commissionsList);
   const goToNextPage = () => {
-    dispatch(setCurrentPage(currentPage + 1));
+    setCurrentPage(currentPage + 1);
   };
 
   const goToPrevPage = () => {
-    dispatch(setCurrentPage(currentPage - 1));
+    setCurrentPage(currentPage - 1);
   };
   const totalPages = Math.ceil(dbCount / itemsPerPage);
 
@@ -115,10 +113,22 @@ const Reconcile = () => {
     });
   }
 
+  useEffect(() => {
+    if (isSuccess) {
+      const pageNumber = {
+        page_number: currentPage,
+        page_size: itemsPerPage,
+        archived: viewArchived ? true : undefined,
+      };
+      dispatch(fetchReconcile(pageNumber));
+    }
+  }, [isSuccess, viewArchived, currentPage]);
+
   const handleViewArchiveToggle = () => {
     setViewArchived(!viewArchived);
     // When toggling, reset the selected rows
     setSelectedRows(new Set());
+    setCurrentPage(1);
     setSelectAllChecked(false);
   };
   const fetchFunction = (req: any) => {
@@ -127,6 +137,7 @@ const Reconcile = () => {
         ...req,
         page_number: currentPage,
         page_size: itemsPerPage,
+        archived: viewArchived,
       })
     );
   };
@@ -171,7 +182,7 @@ const Reconcile = () => {
             (index) => !archivedRows.includes(data[index].RecordId)
           );
           const isAnyRowSelected = remainingSelectedRows.length > 0;
-          setSelectAllChecked(isAnyRowSelected);
+          setSelectAllChecked(false);
           setSelectedRows(new Set());
           await successSwal('Archived', 'The data has been archived ');
         } else {

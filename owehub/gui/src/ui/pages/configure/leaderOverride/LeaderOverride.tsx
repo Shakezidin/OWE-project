@@ -138,6 +138,7 @@ const LeaderOverride = () => {
       if (res.status === HTTP_STATUS.OK) {
         setSelectAllChecked(false)
         setSelectedRows(new Set());
+       
         dispatch(getleaderOverride(pageNumber));
         await successSwal('Archived', 'The data has been archived ');
       } else {
@@ -171,7 +172,13 @@ const LeaderOverride = () => {
       <div className="commissionContainer">
         <TableHeader
           title="Leader Override"
-          onPressViewArchive={() => setViewArchived((prev) => !prev)}
+          onPressViewArchive={() =>{ 
+            setViewArchived((prev) => !prev)
+            setCurrentPage(1);
+            setSelectAllChecked(false);
+            setSelectedRows(new Set());
+
+          }}
           onPressArchive={() =>
             handleArchiveClick(
               Array.from(selectedRows).map(

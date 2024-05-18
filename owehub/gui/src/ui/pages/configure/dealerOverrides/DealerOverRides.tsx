@@ -138,6 +138,8 @@ const DealerOverRides: React.FC = () => {
         const res = await postCaller(EndPoints.update_dealer_archive, newValue);
         if (res.status === HTTP_STATUS.OK) {
           // If API call is successful, refetch commissions
+          setSelectAllChecked(false);
+          setSelectedRows(new Set());
           dispatch(fetchDealer(pageNumber));
           const remainingSelectedRows = Array.from(selectedRows).filter(
             (index) => !archivedRows.includes(dealerList[index].record_id)
@@ -172,6 +174,8 @@ const DealerOverRides: React.FC = () => {
       const res = await postCaller(EndPoints.update_dealer_archive, newValue);
       if (res.status === HTTP_STATUS.OK) {
         dispatch(fetchDealer(pageNumber));
+        setSelectAllChecked(false);
+        setSelectedRows(new Set());
         await successSwal('Archived', 'The data has been archived ');
       } else {
         await successSwal('Archived', 'The data has been archived ');
@@ -214,7 +218,12 @@ const DealerOverRides: React.FC = () => {
       <div className="commissionContainer">
         <TableHeader
           title="Dealer OverRides"
-          onPressViewArchive={() => handleViewArchiveToggle()}
+          onPressViewArchive={() => {
+            handleViewArchiveToggle();
+            setCurrentPage(1);
+            setSelectAllChecked(false);
+            setSelectedRows(new Set());
+          }}
           onPressArchive={() => handleArchiveAllClick()}
           onPressFilter={() => filter()}
           onPressImport={() => {}}
@@ -362,7 +371,9 @@ const DealerOverRides: React.FC = () => {
         {dealerList?.length > 0 ? (
           <div className="page-heading-container">
             <p className="page-heading">
-           Showing   {startIndex} - {endIndex>totalCount?totalCount:endIndex} of {totalCount} item
+              Showing {startIndex} -{' '}
+              {endIndex > totalCount ? totalCount : endIndex} of {totalCount}{' '}
+              item
             </p>
             <Pagination
               currentPage={currentPage}

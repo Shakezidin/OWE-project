@@ -49,9 +49,10 @@ const AdderData = () => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
+      archived: viewArchived,
     };
     dispatch(getarAdderData({ ...pageNumber }));
-  }, [dispatch, currentPage]);
+  }, [dispatch, currentPage, viewArchived, currentPage]);
   const {
     data: commissionList,
     isLoading,
@@ -64,10 +65,11 @@ const AdderData = () => {
       const pageNumber = {
         page_number: currentPage,
         page_size: itemsPerPage,
+        archived: viewArchived,
       };
       dispatch(getarAdderData({ ...pageNumber }));
     }
-  }, [isSuccess, currentPage]);
+  }, [isSuccess, currentPage, viewArchived]);
 
   const filter = () => {
     setFilterOpen(true);
@@ -137,15 +139,15 @@ const AdderData = () => {
     dispatch(getarAdderData(req));
   };
 
-  const handleArchiveClick = async (record_id: any) => {
+  const handleArchiveClick = async (record_id: number[]) => {
     const confirmed = await showAlert(
       'Are Your Sure',
-      'This Action will archive your data',
+      `This action will archive your selected ${record_id.length > 1 ? 'data' : 'row'}`,
       'Yes',
       'No'
     );
     if (confirmed) {
-      const archived: number[] = [record_id];
+      const archived: number[] = record_id;
       let newValue = {
         record_id: archived,
         is_archived: true,
@@ -153,9 +155,12 @@ const AdderData = () => {
       const pageNumber = {
         page_number: currentPage,
         page_size: itemsPerPage,
+        archived: viewArchived,
       };
       const res = await postCaller('update_adderdata_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
+        setSelectAllChecked(false);
+        setSelectedRows(new Set());
         dispatch(getarAdderData(pageNumber));
         await successSwal('Archived', 'The data has been archived ');
       } else {
@@ -163,7 +168,6 @@ const AdderData = () => {
       }
     }
   };
-
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -182,8 +186,19 @@ const AdderData = () => {
       <div className="commissionContainer">
         <TableHeader
           title="Adder Data"
-          onPressViewArchive={() => {}}
-          onPressArchive={() => {}}
+          onPressViewArchive={() => {
+            setViewArchived((prev) => !prev);
+            setCurrentPage(1);
+            setSelectAllChecked(false);
+            setSelectedRows(new Set());
+          }}
+          onPressArchive={() => {
+            handleArchiveClick(
+              Array.from(selectedRows).map(
+                (_, i: number) => currentPageData[i].record_id
+              )
+            );
+          }}
           onPressFilter={() => filter()}
           onPressImport={() => {}}
           checked={isAllRowsSelected}
@@ -244,77 +259,74 @@ const AdderData = () => {
               </tr>
             </thead>
             <tbody>
-              {
-              isLoading?
-              <tr>
-                <td colSpan={AdderDataColumn.length}>
-                  <div style={{display:"flex",justifyContent:"center"}}>
-                    <MicroLoader/>
-                  </div>
-                </td>
-              </tr>
-              
-              :currentPageData?.length > 0
-                ? currentPageData?.map((el: IAdderRowData, i: number) => (
-                    <tr
-                      key={i}
-                      className={selectedRows.has(i) ? 'selected' : ''}
-                    >
-                      <td style={{ fontWeight: '500', color: 'black' }}>
-                        <div className="flex-check">
-                          <CheckBox
-                            checked={selectedRows.has(i)}
-                            onChange={() =>
-                              toggleRowSelection(
-                                i,
-                                selectedRows,
-                                setSelectedRows,
-                                setSelectAllChecked
-                              )
-                            }
-                          />
-                          {el.unique_id}
+              {isLoading ? (
+                <tr>
+                  <td colSpan={AdderDataColumn.length}>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <MicroLoader />
+                    </div>
+                  </td>
+                </tr>
+              ) : currentPageData?.length > 0 ? (
+                currentPageData?.map((el: IAdderRowData, i: number) => (
+                  <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
+                    <td style={{ fontWeight: '500', color: 'black' }}>
+                      <div className="flex-check">
+                        <CheckBox
+                          checked={selectedRows.has(i)}
+                          onChange={() =>
+                            toggleRowSelection(
+                              i,
+                              selectedRows,
+                              setSelectedRows,
+                              setSelectAllChecked
+                            )
+                          }
+                        />
+                        {el.unique_id}
+                      </div>
+                    </td>
+                    <td>{el.date}</td>
+                    <td>{el.gc}</td>
+                    <td>{el.exact_amount}</td>
+                    <td>{el.per_kw_amt}</td>
+                    <td>{el.rep_percent}</td>
+                    <td>{el.description}</td>
+                    <td>{el.notes}</td>
+                    <td>{el.type_ad_mktg}</td>
+                    <td>{el.sys_size}</td>
+                    <td>{el.adder_cal}</td>
+                    <td>
+                      <div className="action-icon">
+                        <div
+                          className=""
+                          style={{ cursor: 'pointer' }}
+                          onClick={() => handleArchiveClick([el.record_id])}
+                        >
+                          <img src={ICONS.ARCHIVE} alt="" />
                         </div>
-                      </td>
-                      <td>{el.date}</td>
-                      <td>{el.gc}</td>
-                      <td>{el.exact_amount}</td>
-                      <td>{el.per_kw_amt}</td>
-                      <td>{el.rep_percent}</td>
-                      <td>{el.description}</td>
-                      <td>{el.notes}</td>
-                      <td>{el.type_ad_mktg}</td>
-                      <td>{el.sys_size}</td>
-                      <td>{el.adder_cal}</td>
-                      <td>
-                        <div className="action-icon">
-                          <div
-                            className=""
-                            style={{ cursor: 'pointer' }}
-                            onClick={() => handleArchiveClick(el.record_id)}
-                          >
-                            <img src={ICONS.ARCHIVE} alt="" />
-                          </div>
-                          <div
-                            className=""
-                            onClick={() => handleEditTimeLineSla(el)}
-                            style={{ cursor: 'pointer' }}
-                          >
-                            <img src={ICONS.editIcon} alt="" />
-                          </div>
+                        <div
+                          className=""
+                          onClick={() => handleEditTimeLineSla(el)}
+                          style={{ cursor: 'pointer' }}
+                        >
+                          <img src={ICONS.editIcon} alt="" />
                         </div>
-                      </td>
-                    </tr>
-                  ))
-                : null}
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : null}
             </tbody>
           </table>
         </div>
         <div className="page-heading-container">
-        {!!count &&  <p className="page-heading">
-             {currentPage} - {endIndex > count ? count : endIndex} of{' '}
-            {count} item
-          </p>}
+          {!!count && (
+            <p className="page-heading">
+              {currentPage} - {endIndex > count ? count : endIndex} of {count}{' '}
+              item
+            </p>
+          )}
 
           {commissionList?.length > 0 ? (
             <Pagination

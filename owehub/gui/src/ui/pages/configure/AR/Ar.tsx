@@ -134,9 +134,9 @@ const AR = () => {
   };
   const handleViewArchiveToggle = () => {
     setViewArchived(!viewArchived);
-    // When toggling, reset the selected rows
     setSelectedRows(new Set());
     setSelectAllChecked(false);
+    setCurrentPage(1)
   };
   const handleArchiveAllClick = async () => {
     const confirmed = await showAlert(
@@ -162,6 +162,8 @@ const AR = () => {
 
         const res = await postCaller('update_ar_archive', newValue);
         if (res.status === HTTP_STATUS.OK) {
+          setSelectedRows(new Set());
+          setSelectAllChecked(false);
           // If API call is successful, refetch commissions
           dispatch(fetchAr(pageNumber));
           const remainingSelectedRows = Array.from(selectedRows).filter(
@@ -196,6 +198,8 @@ const AR = () => {
       };
       const res = await postCaller('update_ar_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
+        setSelectedRows(new Set());
+        setSelectAllChecked(false);
         dispatch(fetchAr(pageNumber));
         await successSwal('Archived', 'The data has been archived ');
       } else {

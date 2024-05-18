@@ -148,6 +148,8 @@ const DealerTier = () => {
         const res = await postCaller(EndPoints.update_dealer_archive, newValue);
         if (res.status === HTTP_STATUS.OK) {
           // If API call is successful, refetch commissions
+            setSelectAllChecked(false);
+            setSelectedRows(new Set());
           dispatch(fetchDealerTier(pageNumber));
           const remainingSelectedRows = Array.from(selectedRows).filter(
             (index) => !archivedRows.includes(dealerTierList[index].record_id)
@@ -181,6 +183,8 @@ const DealerTier = () => {
       };
       const res = await postCaller(EndPoints.update_dealer_archive, newValue);
       if (res.status === HTTP_STATUS.OK) {
+            setSelectAllChecked(false);
+            setSelectedRows(new Set());
         dispatch(fetchDealerTier(pageNumber));
         await successSwal('Archived', 'The data has been archived ');
       } else {
@@ -224,7 +228,13 @@ const DealerTier = () => {
       <div className="commissionContainer">
         <TableHeader
           title="Dealer Tier"
-          onPressViewArchive={() => handleViewArchiveToggle()}
+          onPressViewArchive={() => {
+            handleViewArchiveToggle()
+            setCurrentPage(1);
+            setSelectAllChecked(false);
+            setSelectedRows(new Set());
+
+          }}
           onPressArchive={() => handleArchiveAllClick()}
           checked={isAllRowsSelected}
           isAnyRowSelected={isAnyRowSelected}
