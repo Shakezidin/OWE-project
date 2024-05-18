@@ -86,7 +86,7 @@ const ProjectBreakdown: React.FC<ButtonProps> = ({
 
                 <tr
                   onClick={() => setToggleOpen(!toggleOpen)}
-                  style={{ backgroundColor: 'lightcyan' }}
+                  style={{ backgroundColor: '#B5D1F9' }}
                 >
                   <td style={{ cursor: 'pointer' }}>
                     Adder{' '}
