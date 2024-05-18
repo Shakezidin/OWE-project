@@ -1,5 +1,15 @@
 import React, { PureComponent } from 'react';
-import { BarChart, Bar, Rectangle, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import {
+  BarChart,
+  Bar,
+  Rectangle,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from 'recharts';
 
 const data = [
   {
@@ -20,30 +30,30 @@ const data = [
     Pending: 9800,
     amt: 2290,
   },
-//   {
-//     name: 'Page D',
-//     uv: 2780,
-//     pv: 3908,
-//     amt: 2000,
-//   },
-//   {
-//     name: 'Page E',
-//     uv: 1890,
-//     pv: 4800,
-//     amt: 2181,
-//   },
-//   {
-//     name: 'Page F',
-//     uv: 2390,
-//     pv: 3800,
-//     amt: 2500,
-//   },
-//   {
-//     name: 'Page G',
-//     uv: 3490,
-//     pv: 4300,
-//     amt: 2100,
-//   },
+  //   {
+  //     name: 'Page D',
+  //     uv: 2780,
+  //     pv: 3908,
+  //     amt: 2000,
+  //   },
+  //   {
+  //     name: 'Page E',
+  //     uv: 1890,
+  //     pv: 4800,
+  //     amt: 2181,
+  //   },
+  //   {
+  //     name: 'Page F',
+  //     uv: 2390,
+  //     pv: 3800,
+  //     amt: 2500,
+  //   },
+  //   {
+  //     name: 'Page G',
+  //     uv: 3490,
+  //     pv: 4300,
+  //     amt: 2100,
+  //   },
 ];
 
 export default class LineChart extends PureComponent {
@@ -51,7 +61,6 @@ export default class LineChart extends PureComponent {
 
   render() {
     return (
-       
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
           width={500}
@@ -69,11 +78,18 @@ export default class LineChart extends PureComponent {
           <YAxis />
           <Tooltip />
           <Legend />
-          <Bar dataKey="Recived" fill="#4498ED" activeBar={<Rectangle fill="pink" stroke="blue" />} />
-          <Bar dataKey="Pending" fill="#FF583D" activeBar={<Rectangle fill="gold" stroke="purple" />} />
+          <Bar
+            dataKey="Recived"
+            fill="#4498ED"
+            activeBar={<Rectangle fill="pink" stroke="blue" />}
+          />
+          <Bar
+            dataKey="Pending"
+            fill="#FF583D"
+            activeBar={<Rectangle fill="gold" stroke="purple" />}
+          />
         </BarChart>
       </ResponsiveContainer>
-     
     );
   }
 }

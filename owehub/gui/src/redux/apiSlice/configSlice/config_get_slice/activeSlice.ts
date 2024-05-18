@@ -1,7 +1,7 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
-import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
-import { DealerModel } from "../../../../core/models/configuration/create/DealerModel";
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
+import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
+import { DealerModel } from '../../../../core/models/configuration/create/DealerModel';
 
 interface Active {
   start_time: string | null;
@@ -14,14 +14,14 @@ const initialState: Active = {
   error: null,
 };
 
-export const fetchActive = createAsyncThunk("active/start_time", async () => {
+export const fetchActive = createAsyncThunk('active/start_time', async () => {
   const response = await postCaller(EndPoints.active, {});
 
   return response;
 });
 
 const activeSlice = createSlice({
-  name: "active",
+  name: 'active',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -43,7 +43,7 @@ const activeSlice = createSlice({
       })
       .addCase(fetchActive.rejected, (state, action) => {
         state.loading = false;
-        state.error = action?.error?.message ?? "Failed to fetch dealer data";
+        state.error = action?.error?.message ?? 'Failed to fetch dealer data';
       });
   },
 });

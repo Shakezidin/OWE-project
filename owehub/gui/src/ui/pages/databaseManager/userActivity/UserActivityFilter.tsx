@@ -1,15 +1,14 @@
-import { IoAddSharp } from "react-icons/io5";
+import { IoAddSharp } from 'react-icons/io5';
 // import "../commissionRate/Filter.css";
-import Input from "../../../components/text_input/Input";
-import { ActionButton } from "../../../components/button/ActionButton";
+import Input from '../../../components/text_input/Input';
+import { ActionButton } from '../../../components/button/ActionButton';
 
-import { useAppDispatch } from "../../../../redux/hooks";
-import { fetchCommissions } from "../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice";
-import { ICONS } from "../../../icons/Icons";
-import { useState } from "react";
-import OperationSelect from "../../../components/FilterModal/OperationSelect";
-import SelectOption from "../../../components/selectOption/SelectOption";
-
+import { useAppDispatch } from '../../../../redux/hooks';
+import { fetchCommissions } from '../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice';
+import { ICONS } from '../../../icons/Icons';
+import { useState } from 'react';
+import OperationSelect from '../../../components/FilterModal/OperationSelect';
+import SelectOption from '../../../components/selectOption/SelectOption';
 
 interface Column {
   name: string;
@@ -17,13 +16,15 @@ interface Column {
   type: string;
 }
 interface TableProps {
-  handleClose: () => void,
-  columns: Column[],
-  page_number: number,
-  page_size: number
+  handleClose: () => void;
+  columns: Column[];
+  page_number: number;
+  page_size: number;
 }
 interface FilterModel {
-  Column: string, Operation: string, Data: string
+  Column: string;
+  Operation: string;
+  Data: string;
 }
 interface Option {
   value: string;
@@ -34,18 +35,21 @@ interface ErrorState {
   [key: string]: string;
 }
 // Filter component
-const UserActivityFilter: React.FC<TableProps> = ({ handleClose, columns, page_number, page_size }) => {
+const UserActivityFilter: React.FC<TableProps> = ({
+  handleClose,
+  columns,
+  page_number,
+  page_size,
+}) => {
   const dispatch = useAppDispatch();
   const [filters, setFilters] = useState<FilterModel[]>([
-    { Column: "", Operation: "", Data: "" }
+    { Column: '', Operation: '', Data: '' },
   ]);
   const [errors, setErrors] = useState<ErrorState>({});
   const options: Option[] = columns.map((column) => ({
     value: column.name,
-    label: column.displayName
+    label: column.displayName,
   }));
-
-
 
   const handleAddRow = () => {
     setFilters([...filters, { Column: '', Operation: '', Data: '' }]);
@@ -58,24 +62,28 @@ const UserActivityFilter: React.FC<TableProps> = ({ handleClose, columns, page_n
     setFilters(updatedFilters);
   };
 
-
-  const handleChange = (index: number, field: keyof FilterModel, value: any) => {
+  const handleChange = (
+    index: number,
+    field: keyof FilterModel,
+    value: any
+  ) => {
     const newRules = [...filters];
     newRules[index][field] = value;
     newRules[index].Data = '';
     setFilters(newRules);
-
-
   };
-  const handleDataChange=(index: number, value: string)=>{
+  const handleDataChange = (index: number, value: string) => {
     const newFilters = [...filters];
     // Convert ".1" to "0.1" if the column is "rate" or "rate list"
-    if (newFilters[index].Column === 'rate' || newFilters[index].Column === 'rl') {
+    if (
+      newFilters[index].Column === 'rate' ||
+      newFilters[index].Column === 'rl'
+    ) {
       value = value.replace(/^(\.)(\d+)/, '0$1$2');
     }
     newFilters[index].Data = value;
-    setFilters(newFilters)
-  }
+    setFilters(newFilters);
+  };
   const getInputType = (columnName: string) => {
     if (columnName === 'time_date') {
       return 'date';
@@ -84,12 +92,14 @@ const UserActivityFilter: React.FC<TableProps> = ({ handleClose, columns, page_n
     }
   };
 
-
   const applyFilter = async () => {
-
     setErrors({});
-    if (filters.some((filter) => !filter.Column || filter.Column === 'Select')) {
-      console.log("Column not selected or 'Select' chosen. Skipping validation and API call.");
+    if (
+      filters.some((filter) => !filter.Column || filter.Column === 'Select')
+    ) {
+      console.log(
+        "Column not selected or 'Select' chosen. Skipping validation and API call."
+      );
       return;
     }
     // Perform validation
@@ -109,26 +119,24 @@ const UserActivityFilter: React.FC<TableProps> = ({ handleClose, columns, page_n
 
     // If no errors, proceed with API call
     if (Object.keys(newErrors).length === 0) {
-      const formattedFilters = filters.map(filter => ({
+      const formattedFilters = filters.map((filter) => ({
         Column: filter.Column,
         Operation: filter.Operation,
         Data: filter.Data,
       }));
-      console.log(formattedFilters)
+      console.log(formattedFilters);
       const req = {
         page_number: page_number,
         page_size: page_size,
-        filters: formattedFilters
-      }
+        filters: formattedFilters,
+      };
       dispatch(fetchCommissions(req));
       // handleClose()
     }
+  };
 
-  }
-
-  console.log(errors)
+  console.log(errors);
   return (
-
     <div className="transparent-model">
       <div className="filter-modal">
         <div className="createUserContainer">
@@ -138,8 +146,8 @@ const UserActivityFilter: React.FC<TableProps> = ({ handleClose, columns, page_n
               <button
                 type="button"
                 style={{
-                  color: "black",
-                  border: "1px solid #ACACAC",
+                  color: 'black',
+                  border: '1px solid #ACACAC',
                 }}
                 onClick={handleAddRow}
               >
@@ -155,70 +163,86 @@ const UserActivityFilter: React.FC<TableProps> = ({ handleClose, columns, page_n
                     <label className="inputLabel">Column Name</label>
                     <div className="">
                       <SelectOption
-                        options={[{ value: 'Select', label: 'Select' }, ...options]}
-              
-                        value={options.find(option => option.value === filter.Column) || undefined}
+                        options={[
+                          { value: 'Select', label: 'Select' },
+                          ...options,
+                        ]}
+                        value={
+                          options.find(
+                            (option) => option.value === filter.Column
+                          ) || undefined
+                        }
                         onChange={(selectedOption: any) => {
                           handleChange(index, 'Column', selectedOption.value);
                           setErrors({ ...errors, [`column${index}`]: '' });
                         }}
                       />
-
                     </div>
                   </div>
                   <div className="create-input-field">
                     <label className="inputLabel">Operation</label>
-                   <OperationSelect
-                   options={options}
-                   columnType={columns.find(option => option.name === filter.Column)?.type || ''}
-                   value={filter.Operation}
-                   onChange={(value:any) =>{ handleChange(index, 'Operation', value);
-                   setErrors({ ...errors, [`operation${index}`]: '' });
-                   }}
-                   errors={errors}
-                   index={index}
-                   />
+                    <OperationSelect
+                      options={options}
+                      columnType={
+                        columns.find((option) => option.name === filter.Column)
+                          ?.type || ''
+                      }
+                      value={filter.Operation}
+                      onChange={(value: any) => {
+                        handleChange(index, 'Operation', value);
+                        setErrors({ ...errors, [`operation${index}`]: '' });
+                      }}
+                      errors={errors}
+                      index={index}
+                    />
                   </div>
 
                   <div className="create-input-field">
-
                     <Input
                       type={getInputType(filter.Column)}
                       label="Data"
                       name="Data"
                       value={filter.Data}
-                      onChange={(e) =>{ handleDataChange(index, e.target.value);
+                      onChange={(e) => {
+                        handleDataChange(index, e.target.value);
                         setErrors({ ...errors, [`data${index}`]: '' });
                       }}
-                      placeholder={"Enter"}
-
+                      placeholder={'Enter'}
                     />
-                    {errors[`data${index}`] && <span style={{ color: "red", fontSize: "12px" }}>{errors[`data${index}`]}</span>}
-
-
+                    {errors[`data${index}`] && (
+                      <span style={{ color: 'red', fontSize: '12px' }}>
+                        {errors[`data${index}`]}
+                      </span>
+                    )}
                   </div>
-                  <div className="cross-btn" onClick={() => handleRemoveRow(index)}>
+                  <div
+                    className="cross-btn"
+                    onClick={() => handleRemoveRow(index)}
+                  >
                     <img src={ICONS.cross} alt="" />
                   </div>
                 </div>
               ))}
             </div>
           </div>
-          <div className="createUserActionButton" >
-            <div className="" style={{ gap: "2rem", display: "flex"}}>
-              <ActionButton title={"Apply"} type="submit" onClick={() => applyFilter()} />
+          <div className="createUserActionButton">
+            <div className="" style={{ gap: '2rem', display: 'flex' }}>
+              <ActionButton
+                title={'Apply'}
+                type="submit"
+                onClick={() => applyFilter()}
+              />
 
               <ActionButton
-                title={"cancel"}
+                title={'cancel'}
                 type="reset"
                 onClick={handleClose}
               />
             </div>
           </div>
-
         </div>
       </div>
     </div>
   );
 };
-export default UserActivityFilter
+export default UserActivityFilter;

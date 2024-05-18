@@ -40,7 +40,7 @@
   overflow: hidden;
 }
 .configure-cards.open {
-  max-height: 1000px; 
+  max-height: 1000px;
 }
 .configure-cards:not(.open) {
   visibility: hidden;
@@ -103,25 +103,25 @@
 }
 .payer-type {
   padding-bottom: 5px;
-} 
+}
 
 .configure-main::-webkit-scrollbar {
   width: 10px;
-  height: auto; 
+  height: auto;
 }
 .configure-main::-webkit-scrollbar {
-  display: initial
-}   
+  display: initial;
+}
 
 .configure-main::-webkit-scrollbar-thumb {
   background-color: rgb(173, 173, 173);
-  border-radius: 30px; 
+  border-radius: 30px;
 }
 .configure-main::-webkit-scrollbar-button {
-  display: block; 
+  display: block;
 }
 .configure-main::-webkit-scrollbar {
-  -ms-overflow-style: initial; 
+  -ms-overflow-style: initial;
   scrollbar-width: thin;
 }
 .configure-main::-webkit-scrollbar-corner {

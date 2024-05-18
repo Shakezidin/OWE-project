@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from "react";
-import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
-import "./dbManagerDash.css";
-import { BiChevronDown } from "react-icons/bi";
-import DashBarLineChart from "../../databaseManager/dbManagerDashboard/DashBarLineChart";
-import PieChartWithPaddingAngle from "./PieChartWithPaddingAngle";
-import { useNavigate } from "react-router-dom";
-import Boxes from "./Boxes";
-import Select from "react-select";
-import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-import { fetchActive } from "../../../../redux/apiSlice/configSlice/config_get_slice/activeSlice";
-import moment from "moment";
-import Loading from "../../../components/loader/Loading";
+import React, { useEffect, useState } from 'react';
+import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
+import './dbManagerDash.css';
+import { BiChevronDown } from 'react-icons/bi';
+import DashBarLineChart from '../../databaseManager/dbManagerDashboard/DashBarLineChart';
+import PieChartWithPaddingAngle from './PieChartWithPaddingAngle';
+import { useNavigate } from 'react-router-dom';
+import Boxes from './Boxes';
+import Select from 'react-select';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
+import { fetchActive } from '../../../../redux/apiSlice/configSlice/config_get_slice/activeSlice';
+import moment from 'moment';
+import Loading from '../../../components/loader/Loading';
 
 const DbManagerDashboard = () => {
   const navigate = useNavigate();
-  const [selectedOption, setSelectedOption] = useState("");
+  const [selectedOption, setSelectedOption] = useState('');
 
   const { start_time, loading } = useAppSelector((state) => state.active);
 
@@ -29,9 +29,9 @@ const DbManagerDashboard = () => {
     const selectedValue = event.target.value;
     setSelectedOption(selectedValue);
     if (
-      selectedValue === "Today" ||
-      selectedValue === "This Week" ||
-      selectedValue === "All"
+      selectedValue === 'Today' ||
+      selectedValue === 'This Week' ||
+      selectedValue === 'All'
     ) {
       navigate(`/userManagement`);
     }
@@ -39,22 +39,22 @@ const DbManagerDashboard = () => {
 
   const data = [
     {
-      name: "Group A",
+      name: 'Group A',
       value: 200,
       Historical_Records: 100,
       Total_Records: 150,
     },
     {
-      name: "Group B",
+      name: 'Group B',
       value: 500,
       Historical_Records: 250,
       Total_Records: 300,
     },
   ];
   const data1 = [
-    { name: "Group A", value: 50, Historical_Records: 100, Total_Records: 130 },
+    { name: 'Group A', value: 50, Historical_Records: 100, Total_Records: 130 },
     {
-      name: "Group B",
+      name: 'Group B',
       value: 200,
       Historical_Records: 200,
       Total_Records: 340,
@@ -62,27 +62,27 @@ const DbManagerDashboard = () => {
   ];
   const data2 = [
     {
-      name: "Group A",
+      name: 'Group A',
       value: 100,
       Historical_Records: 100,
       Total_Records: 150,
     },
     {
-      name: "Group B",
+      name: 'Group B',
       value: 300,
       Historical_Records: 250,
       Total_Records: 300,
     },
   ];
   const options = [
-    { value: "today", label: "Today" },
-    { value: "this_week", label: "This week" },
-    { value: "all", label: "All" },
+    { value: 'today', label: 'Today' },
+    { value: 'this_week', label: 'This week' },
+    { value: 'all', label: 'All' },
   ];
   const options1 = [
-    { value: "today", label: "Table1 Data" },
-    { value: "this_week", label: "Table2 Data" },
-    { value: "all", label: "Table3 Data" },
+    { value: 'today', label: 'Table1 Data' },
+    { value: 'this_week', label: 'Table2 Data' },
+    { value: 'all', label: 'Table3 Data' },
   ];
 
   if (loading) {
@@ -99,18 +99,18 @@ const DbManagerDashboard = () => {
           head="DB Manager"
           linkPara="DB Manager"
           linkparaSecond="Dashboard"
-          route={""}
+          route={''}
         />
       </div>
 
       <div className="Db-manager-container">
         <div className="runner-section">
           <h3>DB Status</h3>
-          <p>Application {!start_time && "Not"} Running</p>
+          <p>Application {!start_time && 'Not'} Running</p>
           <div className="active-button">
             <div className="active-since-section">
               {!start_time ? (
-                <button type="button" style={{ background: "#CA0B00" }}>
+                <button type="button" style={{ background: '#CA0B00' }}>
                   Inactive
                 </button>
               ) : (
@@ -121,7 +121,7 @@ const DbManagerDashboard = () => {
             {start_time && (
               <div className="since-section">
                 <h3>Active Since</h3>
-                <p>{moment(start_time).format("MM/DD/YYYY hh:mm A")}</p>
+                <p>{moment(start_time).format('MM/DD/YYYY hh:mm A')}</p>
               </div>
             )}
           </div>
@@ -144,26 +144,25 @@ const DbManagerDashboard = () => {
             styles={{
               control: (baseStyles, state) => ({
                 ...baseStyles,
-                marginTop: "px",
-                borderRadius: "8px",
-                outline: "none",
-                color: "black",
-                width: "212px",
-                height: "36px",
-                fontSize: "12px",
-                border: "1px solid #d0d5dd",
-                fontWeight: "500",
-                cursor: "pointer"
+                marginTop: 'px',
+                borderRadius: '8px',
+                outline: 'none',
+                color: 'black',
+                width: '212px',
+                height: '36px',
+                fontSize: '12px',
+                border: '1px solid #d0d5dd',
+                fontWeight: '500',
+                cursor: 'pointer',
               }),
               indicatorSeparator: () => ({
-                display: "none", // Hide the indicator separator
+                display: 'none', // Hide the indicator separator
               }),
               option: (baseStyles) => ({
                 ...baseStyles,
-                fontSize: "13px",
-                cursor: "pointer"
+                fontSize: '13px',
+                cursor: 'pointer',
               }),
-             
             }}
           />
         </div>
@@ -178,23 +177,23 @@ const DbManagerDashboard = () => {
                 styles={{
                   control: (baseStyles, state) => ({
                     ...baseStyles,
-                    marginTop: "px",
-                    borderRadius: "8px",
-                    outline: "none",
-                    color: "black",
-                    width: "120px",
-                    fontSize: "12px",
-                    border: "1px solid #d0d5dd",
-                    fontWeight: "500",
-                    cursor: "pointer"
+                    marginTop: 'px',
+                    borderRadius: '8px',
+                    outline: 'none',
+                    color: 'black',
+                    width: '120px',
+                    fontSize: '12px',
+                    border: '1px solid #d0d5dd',
+                    fontWeight: '500',
+                    cursor: 'pointer',
                   }),
                   indicatorSeparator: () => ({
-                    display: "none", // Hide the indicator separator
+                    display: 'none', // Hide the indicator separator
                   }),
                   option: (baseStyles) => ({
                     ...baseStyles,
-                    fontSize: "13px",
-                    cursor: "pointer"
+                    fontSize: '13px',
+                    cursor: 'pointer',
                   }),
                 }}
               />
@@ -220,23 +219,23 @@ const DbManagerDashboard = () => {
                 styles={{
                   control: (baseStyles, state) => ({
                     ...baseStyles,
-                    marginTop: "px",
-                    borderRadius: "8px",
-                    outline: "none",
-                    color: "black",
-                    width: "120px",
-                    fontSize: "12px",
-                    border: "1px solid #d0d5dd",
-                    fontWeight: "500",
-                    cursor: "pointer"
+                    marginTop: 'px',
+                    borderRadius: '8px',
+                    outline: 'none',
+                    color: 'black',
+                    width: '120px',
+                    fontSize: '12px',
+                    border: '1px solid #d0d5dd',
+                    fontWeight: '500',
+                    cursor: 'pointer',
                   }),
                   indicatorSeparator: () => ({
-                    display: "none", // Hide the indicator separator
+                    display: 'none', // Hide the indicator separator
                   }),
                   option: (baseStyles) => ({
                     ...baseStyles,
-                    fontSize: "13px",
-                    cursor: "pointer"
+                    fontSize: '13px',
+                    cursor: 'pointer',
                   }),
                 }}
               />
@@ -261,23 +260,23 @@ const DbManagerDashboard = () => {
                 styles={{
                   control: (baseStyles, state) => ({
                     ...baseStyles,
-                    marginTop: "px",
-                    borderRadius: "8px",
-                    outline: "none",
-                    color: "black",
-                    width: "120px",
-                    fontSize: "12px",
-                    border: "1px solid #d0d5dd",
-                    fontWeight: "500",
-                    cursor: "pointer"
+                    marginTop: 'px',
+                    borderRadius: '8px',
+                    outline: 'none',
+                    color: 'black',
+                    width: '120px',
+                    fontSize: '12px',
+                    border: '1px solid #d0d5dd',
+                    fontWeight: '500',
+                    cursor: 'pointer',
                   }),
                   indicatorSeparator: () => ({
-                    display: "none", // Hide the indicator separator
+                    display: 'none', // Hide the indicator separator
                   }),
                   option: (baseStyles) => ({
                     ...baseStyles,
-                    fontSize: "13px",
-                    cursor: "pointer"
+                    fontSize: '13px',
+                    cursor: 'pointer',
                   }),
                 }}
               />

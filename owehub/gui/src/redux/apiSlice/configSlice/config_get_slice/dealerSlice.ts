@@ -1,23 +1,23 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
-import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
-import { DealerModel } from "../../../../core/models/configuration/create/DealerModel";
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
+import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
+import { DealerModel } from '../../../../core/models/configuration/create/DealerModel';
 
 interface DealerState {
   Dealers_list: DealerModel[];
   loading: boolean;
   error: string | null;
-  totalCount:number
+  totalCount: number;
 }
 const initialState: DealerState = {
   Dealers_list: [],
   loading: false,
   error: null,
-  totalCount:0
+  totalCount: 0,
 };
 
 export const fetchDealer = createAsyncThunk(
-  "dealer/fetchDealer",
+  'dealer/fetchDealer',
   async (data: any) => {
     const response = await postCaller(EndPoints.dealer, data);
 
@@ -26,7 +26,7 @@ export const fetchDealer = createAsyncThunk(
 );
 
 const dealerSlice = createSlice({
-  name: "dealer",
+  name: 'dealer',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -53,7 +53,7 @@ const dealerSlice = createSlice({
       .addCase(fetchDealer.fulfilled, (state, action) => {
         state.loading = false;
         state.error = null;
-        state.totalCount = action.payload.dbRecCount
+        state.totalCount = action.payload.dbRecCount;
         if (
           action.payload &&
           action.payload.data &&
@@ -66,7 +66,7 @@ const dealerSlice = createSlice({
       })
       .addCase(fetchDealer.rejected, (state, action) => {
         state.loading = false;
-        state.error = action?.error?.message ?? "Failed to fetch dealer data";
+        state.error = action?.error?.message ?? 'Failed to fetch dealer data';
       });
   },
 });

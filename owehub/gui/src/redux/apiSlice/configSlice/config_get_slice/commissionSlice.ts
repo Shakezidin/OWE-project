@@ -1,37 +1,33 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
-import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
-import { CommissionModel } from "../../../../core/models/configuration/create/CommissionModel";
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
+import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
+import { CommissionModel } from '../../../../core/models/configuration/create/CommissionModel';
 
 interface CommissionsState {
   commissionsList: CommissionModel[];
   loading: boolean;
   error: string | null;
-  dbCount:number
- 
+  dbCount: number;
 }
 const initialState: CommissionsState = {
   commissionsList: [],
   loading: false,
   error: null,
-  dbCount:0
+  dbCount: 0,
 };
 
 export const fetchCommissions = createAsyncThunk(
-  "commissions/fetchCommissions",
-  async (data: any,thunkAPI) => {
+  'commissions/fetchCommissions',
+  async (data: any, thunkAPI) => {
     const response = await postCaller(EndPoints.commission, data);
     return response;
   }
 );
 
-
-
 // Define fetchCommissions async thunk without filters
 
-
 const commissionSlice = createSlice({
-  name: "commissions",
+  name: 'commissions',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -43,7 +39,7 @@ const commissionSlice = createSlice({
       .addCase(fetchCommissions.fulfilled, (state, action) => {
         state.loading = false;
         state.error = null;
-        state.dbCount=action?.payload?.dbRecCount
+        state.dbCount = action?.payload?.dbRecCount;
         if (
           action.payload &&
           action.payload.data &&
@@ -57,9 +53,8 @@ const commissionSlice = createSlice({
       .addCase(fetchCommissions.rejected, (state, action) => {
         state.loading = false;
         state.error =
-          action.error.message ?? "Failed to fetch commissions data";
-      })
-      
+          action.error.message ?? 'Failed to fetch commissions data';
+      });
   },
 });
 

@@ -32,7 +32,6 @@
   padding-bottom: 2rem;
   /* width: 700px; */
   gap: 1rem;
- 
 }
 .profile-sec-button {
   padding: 1rem;
@@ -61,7 +60,6 @@
 }
 .tab-content {
   width: 80%;
-  
 }
 .active-profile {
   background-color: #e9f0ff;
@@ -71,7 +69,7 @@
   border-left: 1px solid #dbdddf;
   margin-top: 1.5rem;
   /* border: 1px 0px 0px 0px; */
-/* margin-left: 2rem; */
+  /* margin-left: 2rem; */
 }
 .myProf-section {
   /* margin-top: 1.5rem; */
@@ -80,7 +78,6 @@
   text-align: left;
   padding: 1rem;
   margin-right: 2rem;
-
 }
 .admin-section {
   display: flex;
@@ -130,7 +127,7 @@
   border: 1px solid #e0e0e0;
   border-radius: 16px;
 }
-.create-input-container{
+.create-input-container {
   width: 100%;
 }
 .caleb-container {
@@ -151,7 +148,6 @@
   padding: 1rem;
 }
 .reset-Update button {
-
   /* width: 280px; */
   width: 28%;
   height: 44px;
@@ -166,12 +162,12 @@
   cursor: pointer;
   background-color: #0493ce;
   border-radius: 8px;
-
 }
 .reset-Update :hover {
-  transition: background-color  0.5s ease, color 0.5s ease;
-background-color: #0470a0;
- 
+  transition:
+    background-color 0.5s ease,
+    color 0.5s ease;
+  background-color: #0470a0;
 }
 
 .profile-reset {
@@ -180,8 +176,7 @@ background-color: #0470a0;
   gap: 1rem;
   margin-top: 1rem;
 }
-.profile-reset :hover{
-
+.profile-reset :hover {
   background-color: #0470a0;
 }
 
@@ -281,8 +276,9 @@ background-color: #0470a0;
   cursor: pointer;
   background-color: #0493ce;
   border-radius: 8px;
-  transition: background-color  0.5s ease, color 0.5s ease;
-
+  transition:
+    background-color 0.5s ease,
+    color 0.5s ease;
 }
 .reset-Update-support :hover {
   background-color: #0470a0;
@@ -330,8 +326,7 @@ background-color: #0470a0;
   padding: 1rem;
 }
 
-
-.prof-fields-onboard{
+.prof-fields-onboard {
   position: static !important;
   display: block;
   margin-bottom: -15px;

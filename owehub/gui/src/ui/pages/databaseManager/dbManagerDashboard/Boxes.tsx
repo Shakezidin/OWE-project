@@ -7,7 +7,12 @@ interface BoxProps {
   borderRadius?: number; // Added borderRadius prop
 }
 
-const Box: React.FC<BoxProps> = ({ width, height, color, borderRadius = 0 }) => {
+const Box: React.FC<BoxProps> = ({
+  width,
+  height,
+  color,
+  borderRadius = 0,
+}) => {
   const boxStyle: React.CSSProperties = {
     width: `${width}px`,
     height: `${height}px`,

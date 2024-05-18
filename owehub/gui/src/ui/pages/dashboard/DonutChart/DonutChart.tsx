@@ -1,15 +1,15 @@
 /* eslint-disable no-shadow */
-import React, { PureComponent } from "react";
-import { PieChart, Pie, Cell } from "recharts";
-import LineChart from "./BarLineChart";
-import TinyBarChart from "./TinyBarChart";
-import DashboardTotal from "../DashboardTotal";
+import React, { PureComponent } from 'react';
+import { PieChart, Pie, Cell } from 'recharts';
+import LineChart from './BarLineChart';
+import TinyBarChart from './TinyBarChart';
+import DashboardTotal from '../DashboardTotal';
 
 // const RADIAN = Math.PI / 180;
 const data = [
-  { name: "A", value: 80, color: "#ff0000" },
-  { name: "B", value: 45, color: "#00ff00" },
-  { name: "C", value: 25, color: "#0000ff" },
+  { name: 'A', value: 80, color: '#ff0000' },
+  { name: 'B', value: 45, color: '#00ff00' },
+  { name: 'C', value: 25, color: '#0000ff' },
 ];
 const cx = 280;
 const cy = 150;
@@ -48,17 +48,17 @@ export default class DonutChart extends PureComponent {
       <>
         <div
           className="PieChart-container"
-          style={{ display: "flex", gap: "2rem" }}
+          style={{ display: 'flex', gap: '2rem' }}
         >
           <div
             className="pie-section"
             style={{
-              width: "50%",
-              height: "60vh",
-              background: "white",
-              borderRadius: "16px",
-              padding: "1rem",
-              border: "1px solid #D0D5DD",
+              width: '50%',
+              height: '60vh',
+              background: 'white',
+              borderRadius: '16px',
+              padding: '1rem',
+              border: '1px solid #D0D5DD',
             }}
           >
             <div className="pieChart-section">
@@ -87,12 +87,12 @@ export default class DonutChart extends PureComponent {
           <div
             className="pie-section"
             style={{
-              width: "50%",
-              height: "60vh",
-              background: "white",
-              borderRadius: "16px",
-              padding: "1rem",
-              border: "1px solid #D0D5DD",
+              width: '50%',
+              height: '60vh',
+              background: 'white',
+              borderRadius: '16px',
+              padding: '1rem',
+              border: '1px solid #D0D5DD',
             }}
           >
             <div className="pieChart-section">
@@ -100,29 +100,25 @@ export default class DonutChart extends PureComponent {
             </div>
             <LineChart />
           </div>
-        
         </div>
         <div
-            className="pie-section"
-            style={{
-              marginTop:"2rem", 
-              width: "100%",
-              height: "80vh",
-              background: "white",
-              borderRadius: "16px",
-              padding: "1rem",
-              border: "1px solid #D0D5DD",
-            }}
-          >
-           <div className="pieChart-section">
-              <p>Top 10 Sales Rep.</p>
-            </div>
-          
-            <TinyBarChart />
-       
-          
+          className="pie-section"
+          style={{
+            marginTop: '2rem',
+            width: '100%',
+            height: '80vh',
+            background: 'white',
+            borderRadius: '16px',
+            padding: '1rem',
+            border: '1px solid #D0D5DD',
+          }}
+        >
+          <div className="pieChart-section">
+            <p>Top 10 Sales Rep.</p>
           </div>
 
+          <TinyBarChart />
+        </div>
       </>
     );
   }

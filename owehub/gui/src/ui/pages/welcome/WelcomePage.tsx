@@ -6,40 +6,40 @@
  * Path: src/ui/pages/welcome
  */
 
-import React, { useState } from "react";
-import "./WelcomePage.css";
+import React, { useState } from 'react';
+import './WelcomePage.css';
 // import LogoImage from "../../../resources/assets/logo.png";
-import LaptopImage from "../../../resources/assets/laptop.svg";
-import { ReactComponent as CallIcon } from "../../../resources/assets/phone-fill.svg";
-import CustomBox from "../../components/box/CustomBox";
-import CommissionIcon from "../../../resources/assets/commission.svg";
-import OweIcon from "../../../resources/assets/OWE.svg";
-import ContractorIcon from "../../../resources/assets/contractor.svg";
-import logo from "../../../resources/assets/logo.svg";
-import pandoIcon from "../../../resources/assets/pando.svg";
-import AboutUsBig from "../../../resources/assets/AboutUsBig.svg";
-import AboutUsSmall from "../../../resources/assets/AboutUsSmall.svg";
-import { useNavigate } from "react-router-dom";
-import ImageLayout from "../../components/imageLayout/ImageLayout";
-import Grid_1 from "../../../resources/assets/grid_1.svg";
-import Grid_2 from "../../../resources/assets/grid_2.svg";
-import Grid_3 from "../../../resources/assets/grid_3.svg";
-import Grid_4 from "../../../resources/assets/grid_4.svg";
-import Grid_5 from "../../../resources/assets/grid_5.svg";
-import TabBar from "../../components/tabBar/TabBar";
-import WhiteLogo from "../../../resources/assets/white-image-logo.svg";
-import { ReactComponent as Facebook } from "../../../resources/assets/facebook.svg";
-import { ReactComponent as Linkedin } from "../../../resources/assets/linkedin.svg";
-import { ReactComponent as Twitter } from "../../../resources/assets/twitter.svg";
-import { ReactComponent as YouTube } from "../../../resources/assets/youTube.svg";
-import { ReactComponent as Instagram } from "../../../resources/assets/Instagram.svg";
-import BusinessLogo from "../../../resources/assets/business_logo.svg";
+import LaptopImage from '../../../resources/assets/laptop.svg';
+import { ReactComponent as CallIcon } from '../../../resources/assets/phone-fill.svg';
+import CustomBox from '../../components/box/CustomBox';
+import CommissionIcon from '../../../resources/assets/commission.svg';
+import OweIcon from '../../../resources/assets/OWE.svg';
+import ContractorIcon from '../../../resources/assets/contractor.svg';
+import logo from '../../../resources/assets/logo.svg';
+import pandoIcon from '../../../resources/assets/pando.svg';
+import AboutUsBig from '../../../resources/assets/AboutUsBig.svg';
+import AboutUsSmall from '../../../resources/assets/AboutUsSmall.svg';
+import { useNavigate } from 'react-router-dom';
+import ImageLayout from '../../components/imageLayout/ImageLayout';
+import Grid_1 from '../../../resources/assets/grid_1.svg';
+import Grid_2 from '../../../resources/assets/grid_2.svg';
+import Grid_3 from '../../../resources/assets/grid_3.svg';
+import Grid_4 from '../../../resources/assets/grid_4.svg';
+import Grid_5 from '../../../resources/assets/grid_5.svg';
+import TabBar from '../../components/tabBar/TabBar';
+import WhiteLogo from '../../../resources/assets/white-image-logo.svg';
+import { ReactComponent as Facebook } from '../../../resources/assets/facebook.svg';
+import { ReactComponent as Linkedin } from '../../../resources/assets/linkedin.svg';
+import { ReactComponent as Twitter } from '../../../resources/assets/twitter.svg';
+import { ReactComponent as YouTube } from '../../../resources/assets/youTube.svg';
+import { ReactComponent as Instagram } from '../../../resources/assets/Instagram.svg';
+import BusinessLogo from '../../../resources/assets/business_logo.svg';
 
-import Typewriter from "../../components/animation/Typewriter";
+import Typewriter from '../../components/animation/Typewriter';
 
 export const WelcomePage = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("tab1");
+  const [activeTab, setActiveTab] = useState('tab1');
 
   const handleTabClick = (tabName: string) => {
     setActiveTab(tabName);
@@ -48,27 +48,27 @@ export const WelcomePage = () => {
   const data = [
     {
       id: 1,
-      title: "Site Survey",
-      step: "Step 1",
-      time: "Timeline: 1-5 Days",
+      title: 'Site Survey',
+      step: 'Step 1',
+      time: 'Timeline: 1-5 Days',
       description:
-        "Our Site Technician will visit to measure, examine, and approve our previously discussed plans.",
+        'Our Site Technician will visit to measure, examine, and approve our previously discussed plans.',
     },
     {
       id: 2,
-      title: "Blueprints",
-      step: "Step 2",
-      time: "Timeline: 1-2 Days",
+      title: 'Blueprints',
+      step: 'Step 2',
+      time: 'Timeline: 1-2 Days',
       description:
-        "Our Site Technician will visit to measure, examine, and approve our previously discussed plans.",
+        'Our Site Technician will visit to measure, examine, and approve our previously discussed plans.',
     },
     {
       id: 3,
-      title: "Permitting",
-      step: "Step 3",
-      time: "Timeline: 2-6 Days",
+      title: 'Permitting',
+      step: 'Step 3',
+      time: 'Timeline: 2-6 Days',
       description:
-        "Our Site Technician will visit to measure, examine, and approve our previously discussed plans.",
+        'Our Site Technician will visit to measure, examine, and approve our previously discussed plans.',
     },
   ];
 
@@ -79,7 +79,11 @@ export const WelcomePage = () => {
           <div className="welcomeInnerBannerView">
             <div className="welcomeHeaderView">
               <div>
-                <object type="image/svg+xml" data={logo} aria-label="logo"></object>
+                <object
+                  type="image/svg+xml"
+                  data={logo}
+                  aria-label="logo"
+                ></object>
               </div>
 
               <div className="welcome-phone-view">
@@ -95,7 +99,7 @@ export const WelcomePage = () => {
                   <br />
                   Around <span className="welcome-text-green">
                     Powering
-                  </span>{" "}
+                  </span>{' '}
                   Yours
                   <br />
                   <span className="welcome-sub-text">
@@ -104,7 +108,12 @@ export const WelcomePage = () => {
                 </h1>
               </div>
               <div className="welcome-right-view">
-                <object className="welcome-right-view" type="image/svg+xml" data={LaptopImage} aria-label="laptop"></object>
+                <object
+                  className="welcome-right-view"
+                  type="image/svg+xml"
+                  data={LaptopImage}
+                  aria-label="laptop"
+                ></object>
               </div>
             </div>
           </div>
@@ -118,7 +127,7 @@ export const WelcomePage = () => {
                 title="OWE HUB"
                 description="More than that, you can have any amount of layers attached "
                 onClick={() => {
-                  navigate("/login");
+                  navigate('/login');
                 }}
               />
               <CustomBox
@@ -126,7 +135,7 @@ export const WelcomePage = () => {
                 title="OWE ChatBot"
                 description="More than that, you can have any amount of layers attached "
                 onClick={() => {
-                  alert("Owe");
+                  alert('Owe');
                 }}
               />
               <CustomBox
@@ -134,7 +143,7 @@ export const WelcomePage = () => {
                 title="Sub Contractor Hub"
                 description="More than that, you can have any amount of layers attached "
                 onClick={() => {
-                  window.open("https://subcontractorhub.com/");
+                  window.open('https://subcontractorhub.com/');
                 }}
               />
               <CustomBox
@@ -142,7 +151,7 @@ export const WelcomePage = () => {
                 title="Pando"
                 description="More than that, you can have any amount of layers attached "
                 onClick={() => {
-                  window.open("https://www.pando.com/");
+                  window.open('https://www.pando.com/');
                 }}
               />
             </div>
@@ -152,8 +161,18 @@ export const WelcomePage = () => {
         <section className="welcomeAboutUsContainer">
           <div className="welcomeAboutUsView">
             <div className="welcomeAboutUsLeftView">
-                <object className="welcomeAboutUsBig" type="image/svg+xml" data={AboutUsBig} aria-label="welcomeAboutUsBig"></object>
-                <object className="welcomeAboutUsSmall" type="image/svg+xml" data={AboutUsSmall} aria-label="welcomeAboutUsSmall"></object> 
+              <object
+                className="welcomeAboutUsBig"
+                type="image/svg+xml"
+                data={AboutUsBig}
+                aria-label="welcomeAboutUsBig"
+              ></object>
+              <object
+                className="welcomeAboutUsSmall"
+                type="image/svg+xml"
+                data={AboutUsSmall}
+                aria-label="welcomeAboutUsSmall"
+              ></object>
             </div>
 
             <div className="welcomeAboutUsRightView">
@@ -204,9 +223,9 @@ export const WelcomePage = () => {
             <div className="welcomeTabView">
               <TabBar
                 title={[
-                  "Phase 1 – Preparation",
-                  "Phase 2 – Construction",
-                  "Phase 3 – Final Inspections",
+                  'Phase 1 – Preparation',
+                  'Phase 2 – Construction',
+                  'Phase 3 – Final Inspections',
                 ]}
                 activeTab={activeTab}
                 handleTabClick={(e) => handleTabClick(e)}
@@ -240,7 +259,7 @@ export const WelcomePage = () => {
                   <div className="table-box">
                     <div className="welcomeRowTitle">{item.title}</div>
                     <div>
-                      <span className="welcomeRowStep">{item.step}</span>{" "}
+                      <span className="welcomeRowStep">{item.step}</span>{' '}
                       <span className="welcomeRowTime">{item.time}</span>
                     </div>
                     <div className="welcomeRowDescription">
@@ -256,7 +275,12 @@ export const WelcomePage = () => {
       <footer className="welcomeFooterView">
         <div className="welcomeInnerView">
           <div id="welcomeFooterUpperView">
-            <object id="welcomeWhiteLogo" type="image/svg+xml" data={WhiteLogo} aria-label="WhiteLogo"></object>
+            <object
+              id="welcomeWhiteLogo"
+              type="image/svg+xml"
+              data={WhiteLogo}
+              aria-label="WhiteLogo"
+            ></object>
             <div id="welcomeSocialMedia">
               <a
                 href="https://www.facebook.com/ourworldenergy/"
@@ -305,10 +329,14 @@ export const WelcomePage = () => {
           <div id="welcomeUnderLine"></div>
           <div id="welcomeFooterLowerView">
             <div className="footer-logo">
-            <object type="image/svg+xml" data={BusinessLogo} aria-label="BusinessLogo"></object>
+              <object
+                type="image/svg+xml"
+                data={BusinessLogo}
+                aria-label="BusinessLogo"
+              ></object>
             </div>
             <div className="footer-text">
-              © 2024 BY OUR WORLD ENERGY. ALL RIGHTS RESERVED.{" "}
+              © 2024 BY OUR WORLD ENERGY. ALL RIGHTS RESERVED.{' '}
             </div>
           </div>
         </div>

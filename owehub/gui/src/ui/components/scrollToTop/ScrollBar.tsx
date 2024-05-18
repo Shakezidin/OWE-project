@@ -1,9 +1,7 @@
-import React from 'react'
+import React from 'react';
 
 const ScrollBar = () => {
-  return (
-    <div>ScrollBar</div>
-  )
-}
+  return <div>ScrollBar</div>;
+};
 
-export default ScrollBar
+export default ScrollBar;

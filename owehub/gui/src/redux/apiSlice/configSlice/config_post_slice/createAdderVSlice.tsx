@@ -3,17 +3,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AdderVModel } from '../../../../core/models/configuration/create/AdderVModel';
 
-
-
-
 const initialState: AdderVModel = {
-  record_id:0,
-    active:1,
-    adder_name:"",
-    adder_type:"",
-    description:"",
-    price_amount: "",
-    price_type: ""
+  record_id: 0,
+  active: 1,
+  adder_name: '',
+  adder_type: '',
+  description: '',
+  price_amount: '',
+  price_type: '',
 };
 
 const createAdderVSlice = createSlice({

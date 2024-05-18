@@ -41,12 +41,11 @@
   padding-top: 0.5rem;
 }
 
-
 .create-input-field-support label {
   font-size: 12px;
   font-weight: 400;
   line-height: 18px;
-  text-align: left; 
+  text-align: left;
   margin-bottom: -5px;
   /* background-color: #0493CE; */
 }
@@ -60,7 +59,7 @@
 }
 .touch-container {
   width: 55%;
-  height: "50vh";
+  height: '50vh';
   padding: 2rem;
 }
 .touch-info {
@@ -70,11 +69,10 @@
   text-align: left;
 }
 .touch-info p {
-font-size: 18px;
-font-weight: 600;
-line-height: 27px;
-text-align: left;
-
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 27px;
+  text-align: left;
 }
 .reset-Update-support {
   display: flex;
@@ -128,19 +126,17 @@ text-align: left;
   align-items: center;
 }
 
-.inputLabel p{
-
-font-size: 12px;
-font-weight: 400;
-/* line-height: 18px; */
-text-align: left;
-
+.inputLabel p {
+  font-size: 12px;
+  font-weight: 400;
+  /* line-height: 18px; */
+  text-align: left;
 }
 .custom-button {
   display: flex;
   gap: 0.5rem;
   align-items: center;
-  background-color: #F8F8F8;
+  background-color: #f8f8f8;
   color: #0493ce;
   padding: 5px 15px;
   border: none;
@@ -151,9 +147,8 @@ text-align: left;
   line-height: 18px;
   margin-right: -0.7px;
   margin-top: -1.3px;
-  border: 1px solid #D9D9D9;
+  border: 1px solid #d9d9d9;
 }
-
 
 .file-input-placeholder {
   margin-left: 10px;

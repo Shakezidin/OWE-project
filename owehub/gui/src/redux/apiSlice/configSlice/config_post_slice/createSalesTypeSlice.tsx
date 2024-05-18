@@ -3,15 +3,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { SalesTypeModel } from '../../../../core/models/configuration/create/SalesTypeModel';
 
-
-
-
-
-
 const initialState: SalesTypeModel = {
-  record_id:0,
-    type_name:"",
-    description: ""
+  record_id: 0,
+  type_name: '',
+  description: '',
 };
 
 const createSalesTypeSlice = createSlice({

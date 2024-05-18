@@ -111,8 +111,8 @@ func HandleGetPrjctMngmntListRequest(resp http.ResponseWriter, req *http.Request
 
 		// This is thrown is there are no sale rep are available under this particular user
 		if len(data) == 0 {
-			log.FuncErrorTrace(0, "No sale representative available under user: %v", err)
-			FormAndSendHttpResp(resp, "No sale representative", http.StatusBadRequest, nil)
+			log.FuncErrorTrace(0, "No projects or sale representatives: %v", err)
+			FormAndSendHttpResp(resp, "No projects or sale representatives", http.StatusOK, []string{}, int64(0))
 			return
 		}
 

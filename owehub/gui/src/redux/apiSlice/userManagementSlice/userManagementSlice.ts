@@ -1,10 +1,10 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { UserOnboardingStateModel } from "../../../core/models/data_models/UserManagementStateModel";
+import { createSlice } from '@reduxjs/toolkit';
+import { UserOnboardingStateModel } from '../../../core/models/data_models/UserManagementStateModel';
 import {
   fetchUserListBasedOnRole,
   fetchUserOnboarding,
   createTablePermission,
-} from "../../apiActions/userManagement/userManagementActions";
+} from '../../apiActions/userManagement/userManagementActions';
 
 const initialState: UserOnboardingStateModel = {
   userOnboardingList: [],
@@ -17,7 +17,7 @@ const initialState: UserOnboardingStateModel = {
 };
 
 const userManagementSlice = createSlice({
-  name: "userManagement",
+  name: 'userManagement',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -48,7 +48,7 @@ const userManagementSlice = createSlice({
         (state: UserOnboardingStateModel, action) => {
           state.loading = false;
           state.error =
-            action.error.message ?? "Unable to fetch Onboarding User";
+            action.error.message ?? 'Unable to fetch Onboarding User';
         }
       )
       //get user based list
@@ -72,7 +72,7 @@ const userManagementSlice = createSlice({
         fetchUserListBasedOnRole.rejected,
         (state: UserOnboardingStateModel, action) => {
           state.loading = false;
-          state.error = action.error.message ?? "Unable to fetch User list";
+          state.error = action.error.message ?? 'Unable to fetch User list';
         }
       )
 
@@ -96,7 +96,7 @@ const userManagementSlice = createSlice({
         createTablePermission.rejected,
         (state: UserOnboardingStateModel, action) => {
           state.loading = false;
-          state.error = action.error.message ?? "Unable to fetch User list";
+          state.error = action.error.message ?? 'Unable to fetch User list';
         }
       );
   },

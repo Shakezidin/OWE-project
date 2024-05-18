@@ -1,6 +1,6 @@
-import React from "react";
-import { PieChart, Pie, Cell, Label, LabelList, Tooltip } from "recharts";
-import { useNavigate } from "react-router-dom";
+import React from 'react';
+import { PieChart, Pie, Cell, Label, LabelList, Tooltip } from 'recharts';
+import { useNavigate } from 'react-router-dom';
 
 interface DataItem {
   name: string;
@@ -13,14 +13,15 @@ interface PieChartProps {
   data: DataItem[];
 }
 
-const COLORS = ["#FB7955", "#0088FE"];
+const COLORS = ['#FB7955', '#0088FE'];
 
 const renderCustomizedLabelPercentage = (data: any, total = 32000) => {
   let percentageCalculated = data.value;
   return `${percentageCalculated}`;
 };
 
-function PieChartWithPaddingAngle({ data }: PieChartProps) { // Destructure data from props
+function PieChartWithPaddingAngle({ data }: PieChartProps) {
+  // Destructure data from props
   const navigate = useNavigate();
 
   const handleClick = (entry: DataItem, index: number) => {
@@ -29,18 +30,44 @@ function PieChartWithPaddingAngle({ data }: PieChartProps) { // Destructure data
 
   const totalValue = data.reduce((acc, cur) => acc + cur.value, 0);
 
-
   return (
-    <div style={{ width: "100%", display: "flex", justifyContent: "center", outline: 'none' }}>
-      <div style={{ position: "relative", width: "300px", height: "400px", marginTop: "-75px", marginLeft: "40px", outline: 'none' }}>
-        <PieChart width={300} height={400} style={{outline: 'none', cursor: "pointer"}}>
+    <div
+      style={{
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        outline: 'none',
+      }}
+    >
+      <div
+        style={{
+          position: 'relative',
+          width: '300px',
+          height: '400px',
+          marginTop: '-75px',
+          marginLeft: '40px',
+          outline: 'none',
+        }}
+      >
+        <PieChart
+          width={300}
+          height={400}
+          style={{ outline: 'none', cursor: 'pointer' }}
+        >
           {/* <Tooltip formatter={(value: number, name: string, props: any) => [`${value} webhooks`, props]} /> */}
           <Tooltip
             content={({ payload }) => {
               if (payload && payload.length > 0) {
                 const { value } = payload[0];
                 return (
-                  <div style={{ backgroundColor: 'black', color: 'white', borderRadius: '10px', padding: '5px' }}>
+                  <div
+                    style={{
+                      backgroundColor: 'black',
+                      color: 'white',
+                      borderRadius: '10px',
+                      padding: '5px',
+                    }}
+                  >
                     {value} webhooks
                   </div>
                 );
@@ -49,7 +76,7 @@ function PieChartWithPaddingAngle({ data }: PieChartProps) { // Destructure data
             }}
           />
           <Pie
-            style={{outline: 'none', cursor: "pointer"}}
+            style={{ outline: 'none', cursor: 'pointer' }}
             data={data}
             cx={120}
             cy={200}
@@ -72,7 +99,9 @@ function PieChartWithPaddingAngle({ data }: PieChartProps) { // Destructure data
                   className="center-label"
                 >
                   Total
-                  <tspan x={120} dy={24} fontSize="1.5em" fontWeight="bold">{totalValue}</tspan>
+                  <tspan x={120} dy={24} fontSize="1.5em" fontWeight="bold">
+                    {totalValue}
+                  </tspan>
                 </text>
               )}
             />

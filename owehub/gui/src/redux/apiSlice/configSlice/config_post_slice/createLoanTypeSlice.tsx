@@ -3,15 +3,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { LoanTypeModel } from '../../../../core/models/configuration/create/LoanTypeModel';
 
-
-
-
 const initialState: LoanTypeModel = {
-  record_id:0,
-    product_code:"",
-    active:1,
-    adder:0,
-    description:""
+  record_id: 0,
+  product_code: '',
+  active: 1,
+  adder: 0,
+  description: '',
 };
 
 const createLoanTypeSlice = createSlice({
@@ -27,5 +24,6 @@ const createLoanTypeSlice = createSlice({
   },
 });
 
-export const { updateLoanTypeForm, loanTyperesetForm } = createLoanTypeSlice.actions;
+export const { updateLoanTypeForm, loanTyperesetForm } =
+  createLoanTypeSlice.actions;
 export default createLoanTypeSlice.reducer;

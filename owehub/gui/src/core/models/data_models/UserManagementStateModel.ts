@@ -4,7 +4,7 @@ import {
   OnboardingChartModel,
   UserDropdownModel,
   UserRoleBasedListModel,
-} from "../api_models/UserManagementModel";
+} from '../api_models/UserManagementModel';
 
 export interface UserOnboardingStateModel {
   error: string | null;

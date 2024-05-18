@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS user_details(
     reporting_manager INT,
     dealer_owner INT,
     role_id INT,
-    user_status VARCHAR(255) NOT NULL,
+    user_status VARCHAR(255),
     user_designation VARCHAR(255),
     description VARCHAR(255),
     region VARCHAR(255),

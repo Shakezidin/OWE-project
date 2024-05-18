@@ -1,6 +1,6 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { fetchDBManagerUserActivity } from "../../apiActions/DBManagerAction/DBManagerAction";
-import { DBManagerStateModel } from "../../../core/models/data_models/DBManagerStateModel";
+import { createSlice } from '@reduxjs/toolkit';
+import { fetchDBManagerUserActivity } from '../../apiActions/DBManagerAction/DBManagerAction';
+import { DBManagerStateModel } from '../../../core/models/data_models/DBManagerStateModel';
 
 const initialState: DBManagerStateModel = {
   loading: false,
@@ -10,7 +10,7 @@ const initialState: DBManagerStateModel = {
 };
 
 const DBManagerSlice = createSlice({
-  name: "DBManager",
+  name: 'DBManager',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -36,7 +36,7 @@ const DBManagerSlice = createSlice({
         fetchDBManagerUserActivity.rejected,
         (state: DBManagerStateModel, action) => {
           state.loading = false;
-          state.error = action.error.message ?? "Unable to fetch data";
+          state.error = action.error.message ?? 'Unable to fetch data';
         }
       );
   },

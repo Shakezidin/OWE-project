@@ -1,9 +1,9 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import { postCaller } from "../../infrastructure/web_api/services/apiUrl";
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
 interface Ipaginate {
   page_number: number;
   page_size: number;
-  archived:boolean
+  archived: boolean;
 }
 
 export interface ICostCreateparam {
@@ -11,26 +11,26 @@ export interface ICostCreateparam {
   cost: number;
   start_date: string;
   end_date: string;
-  currentPage?:number
+  currentPage?: number;
 }
 
 export interface ICost extends ICostCreateparam {
   record_id: number;
-  currentPage:number
+  currentPage: number;
 }
 
 export interface ICostPost extends ICostCreateparam {
-  currentPage:number
+  currentPage: number;
 }
 
 export const getInstallCost = createAsyncThunk(
-  "fetch/installCost",
+  'fetch/installCost',
   async (param: Ipaginate, { rejectWithValue }) => {
     try {
-      const data = await postCaller("get_installcost", param);
-      const count = data.dbRecCount
+      const data = await postCaller('get_installcost', param);
+      const count = data.dbRecCount;
       const list = data.data.install_cost_list || ([] as ICost[]);
-      return {count,list}
+      return { count, list };
     } catch (error) {
       return rejectWithValue((error as Error).message);
     }
@@ -38,14 +38,20 @@ export const getInstallCost = createAsyncThunk(
 );
 
 export const createInstallCost = createAsyncThunk(
-  "create/installCost",
-  async (params: ICostPost, { rejectWithValue,dispatch }) => {
+  'create/installCost',
+  async (params: ICostPost, { rejectWithValue, dispatch }) => {
     try {
-      const data = await postCaller("create_installcost", params);
+      const data = await postCaller('create_installcost', params);
       if (data instanceof Error) {
         return rejectWithValue((data as Error).message);
       }
-      await dispatch(getInstallCost({page_number:params.currentPage,page_size:10,archived:false}))
+      await dispatch(
+        getInstallCost({
+          page_number: params.currentPage,
+          page_size: 10,
+          archived: false,
+        })
+      );
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -56,14 +62,20 @@ export const createInstallCost = createAsyncThunk(
 // update_installcost
 
 export const updateInstallCost = createAsyncThunk(
-  "update/installCost",
-  async (params: ICost, { rejectWithValue,dispatch }) => {
+  'update/installCost',
+  async (params: ICost, { rejectWithValue, dispatch }) => {
     try {
-      const data = await postCaller("update_installcost", params);
+      const data = await postCaller('update_installcost', params);
       if (data instanceof Error) {
         return rejectWithValue((data as Error).message);
       }
-      await dispatch(getInstallCost({page_number:params.currentPage,page_size:10,archived:false}))
+      await dispatch(
+        getInstallCost({
+          page_number: params.currentPage,
+          page_size: 10,
+          archived: false,
+        })
+      );
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);

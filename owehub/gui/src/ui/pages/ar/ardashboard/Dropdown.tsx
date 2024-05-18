@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useRef } from "react";
-import { FiChevronDown } from "react-icons/fi";
-import "./ArDropdownWithCheckboxes.css";
-import { useAppDispatch } from "../../../../redux/hooks";
+import React, { useState, useEffect, useRef } from 'react';
+import { FiChevronDown } from 'react-icons/fi';
+import './ArDropdownWithCheckboxes.css';
+import { useAppDispatch } from '../../../../redux/hooks';
 import {
   handleChange as filterChange,
   toggleAllDropdown,
-  toggleOffDropdowns
-} from "../../../../redux/apiSlice/AR/ArDataSlice";
+  toggleOffDropdowns,
+} from '../../../../redux/apiSlice/AR/ArDataSlice';
 
 interface Option {
   label: string;
@@ -36,10 +36,10 @@ const ArDropdownWithCheckboxes: React.FC<ArDropdownWithCheckboxesProps> = ({
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
 
@@ -48,19 +48,19 @@ const ArDropdownWithCheckboxes: React.FC<ArDropdownWithCheckboxesProps> = ({
   };
 
   const handleOptionChange = (option: string, key: string) => {
-    console.log(key==="all");
-    
-    if (key !== "all") {
+    console.log(key === 'all');
+
+    if (key !== 'all') {
       dispatch(
         filterChange({ name: key, value: !selectedOptions.includes(option) })
       );
-    } else if (key === "all" && !selectedOptions.includes("All")) {
+    } else if (key === 'all' && !selectedOptions.includes('All')) {
       dispatch(toggleAllDropdown());
-    }else{
-      dispatch(toggleOffDropdowns())
+    } else {
+      dispatch(toggleOffDropdowns());
     }
     setSelectedOptions((prevSelectedOptions) => {
-      if (option === "All") {
+      if (option === 'All') {
         if (prevSelectedOptions.length === options.length) {
           // If all options are already selected, uncheck them all
           return [];

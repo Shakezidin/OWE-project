@@ -1,20 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-import { fetchCommissions } from "../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice";
-import CheckBox from "../../../components/chekbox/CheckBox";
-import {
-  toggleRowSelection,
-} from "../../../components/chekbox/checkHelper";
-import { CommissionModel } from "../../../../core/models/configuration/create/CommissionModel";
-import SortableHeader from "../../../components/tableHeader/SortableHeader";
-import "../../configure/configure.css";
-import HelpDashboard from "../../dashboard/HelpDashboard";
-import { BiSupport } from "react-icons/bi";
-import PaginationComponent from "../../../components/pagination/PaginationComponent";
-
+import React, { useEffect, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
+import { fetchCommissions } from '../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice';
+import CheckBox from '../../../components/chekbox/CheckBox';
+import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
+import { CommissionModel } from '../../../../core/models/configuration/create/CommissionModel';
+import SortableHeader from '../../../components/tableHeader/SortableHeader';
+import '../../configure/configure.css';
+import HelpDashboard from '../../dashboard/HelpDashboard';
+import { BiSupport } from 'react-icons/bi';
+import PaginationComponent from '../../../components/pagination/PaginationComponent';
+import { MdOutlineHelp } from 'react-icons/md';
 
 const RepDashBoardTable = () => {
-
   const [pageSize1, setPageSize1] = useState(10);
   const [openIcon, setOpenIcon] = useState<boolean>(false);
   const [open, setOpen] = React.useState<boolean>(false);
@@ -25,13 +22,16 @@ const RepDashBoardTable = () => {
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
-  const [editedCommission, setEditedCommission] = useState<CommissionModel | null>(null);
+  const [editedCommission, setEditedCommission] =
+    useState<CommissionModel | null>(null);
   const itemsPerPage = 10;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
-  const currentPage = useAppSelector((state) => state.paginationType.currentPage);
-  const [sortKey, setSortKey] = useState("");
+  const currentPage = useAppSelector(
+    (state) => state.paginationType.currentPage
+  );
+  const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
-  const [currentPage1, setCurrentPage1] = useState(1)
+  const [currentPage1, setCurrentPage1] = useState(1);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -39,19 +39,16 @@ const RepDashBoardTable = () => {
       archived: viewArchived ? true : undefined,
     };
     dispatch(fetchCommissions(pageNumber));
-
   }, [dispatch, currentPage, pageSize1, viewArchived]);
 
   const handleItemsPerPageChange = (e: any) => {
     const newItemsPerPage = parseInt(e.target.value, 10);
     setPageSize1(newItemsPerPage);
-    setCurrentPage1(1) // Reset to the first page when changing items per page
+    setCurrentPage1(1); // Reset to the first page when changing items per page
   };
   const handlePageChange = (page: number) => {
-    setCurrentPage1(page)
+    setCurrentPage1(page);
   };
-
-
 
   const commissionList = [
     {
@@ -62,8 +59,8 @@ const RepDashBoardTable = () => {
       sale_type: 'LOAN',
       sale_price: 25000,
       rep_type: 'Sales Rep',
-      rl: "Percentage",
-      rate: "80/20",
+      rl: 'Percentage',
+      rate: '80/20',
       start_date: '2023-01-01',
       end_date: '2023-12-31',
       curr_status: 'Approved',
@@ -92,7 +89,7 @@ const RepDashBoardTable = () => {
       balance: 500,
       dealer_code: 'ABC123',
       contr_date: '2023-01-15',
-      sub_total: 24000
+      sub_total: 24000,
     },
     {
       record_id: 2,
@@ -102,8 +99,8 @@ const RepDashBoardTable = () => {
       sale_type: 'CHECK',
       sale_price: 30000,
       rep_type: 'Sales Manager',
-      rl: "RL",
-      rate: "-",
+      rl: 'RL',
+      rate: '-',
       start_date: '2023-02-01',
       end_date: '2024-01-31',
       curr_status: 'Pending',
@@ -132,7 +129,7 @@ const RepDashBoardTable = () => {
       balance: 500,
       dealer_code: 'XYZ789',
       contr_date: '2023-02-20',
-      sub_total: 28500
+      sub_total: 28500,
     },
     {
       record_id: 3,
@@ -142,8 +139,8 @@ const RepDashBoardTable = () => {
       sale_type: 'LEASE',
       sale_price: 40000,
       rep_type: 'Sales Rep',
-      rl: "Percentage",
-      rate: "70/30",
+      rl: 'Percentage',
+      rate: '70/30',
       start_date: '2023-03-15',
       end_date: '2024-03-14',
       curr_status: 'Approved',
@@ -172,7 +169,7 @@ const RepDashBoardTable = () => {
       balance: 500,
       dealer_code: 'DEF456',
       contr_date: '2023-03-25',
-      sub_total: 38000
+      sub_total: 38000,
     },
     {
       record_id: 4,
@@ -182,8 +179,8 @@ const RepDashBoardTable = () => {
       sale_type: 'PPA',
       sale_price: 35000,
       rep_type: 'Sales Manager',
-      rl: "RL",
-      rate: "-",
+      rl: 'RL',
+      rate: '-',
       start_date: '2023-04-01',
       end_date: '2024-03-31',
       curr_status: 'Pending',
@@ -212,7 +209,7 @@ const RepDashBoardTable = () => {
       balance: 500,
       dealer_code: 'GHI789',
       contr_date: '2023-04-10',
-      sub_total: 33200
+      sub_total: 33200,
     },
     {
       record_id: 5,
@@ -222,8 +219,8 @@ const RepDashBoardTable = () => {
       sale_type: 'LOAN',
       sale_price: 45000,
       rep_type: 'Sales Rep',
-      rl: "Percentage",
-      rate: "80/30",
+      rl: 'Percentage',
+      rate: '80/30',
       start_date: '2023-05-01',
       end_date: '2024-04-30',
       curr_status: 'Approved',
@@ -252,7 +249,7 @@ const RepDashBoardTable = () => {
       balance: 500,
       dealer_code: 'JKL012',
       contr_date: '2023-05-05',
-      sub_total: 43500
+      sub_total: 43500,
     },
     {
       record_id: 6,
@@ -262,8 +259,8 @@ const RepDashBoardTable = () => {
       sale_type: 'CHECK',
       sale_price: 28000,
       rep_type: 'Sales Manager',
-      rl: "RL",
-      rate: "-",
+      rl: 'RL',
+      rate: '-',
       start_date: '2023-06-01',
       end_date: '2024-05-31',
       curr_status: 'Pending',
@@ -292,7 +289,7 @@ const RepDashBoardTable = () => {
       balance: 500,
       dealer_code: 'MNO345',
       contr_date: '2023-06-05',
-      sub_total: 26600
+      sub_total: 26600,
     },
     {
       record_id: 7,
@@ -302,8 +299,8 @@ const RepDashBoardTable = () => {
       sale_type: 'LEASE',
       sale_price: 32000,
       rep_type: 'Sales Rep',
-      rl: "Percentage",
-      rate: "50/20",
+      rl: 'Percentage',
+      rate: '50/20',
       start_date: '2023-07-01',
       end_date: '2024-06-30',
       curr_status: 'Approved',
@@ -332,7 +329,7 @@ const RepDashBoardTable = () => {
       balance: 500,
       dealer_code: 'PQR678',
       contr_date: '2023-07-10',
-      sub_total: 30400
+      sub_total: 30400,
     },
     {
       record_id: 8,
@@ -342,8 +339,8 @@ const RepDashBoardTable = () => {
       sale_type: 'PPA',
       sale_price: 38000,
       rep_type: 'Sales Manager',
-      rl: "RL",
-      rate: "-",
+      rl: 'RL',
+      rate: '-',
       start_date: '2023-08-01',
       end_date: '2024-07-31',
       curr_status: 'Pending',
@@ -372,7 +369,7 @@ const RepDashBoardTable = () => {
       balance: 500,
       dealer_code: 'STU901',
       contr_date: '2023-08-15',
-      sub_total: 36200
+      sub_total: 36200,
     },
     {
       record_id: 9,
@@ -382,8 +379,8 @@ const RepDashBoardTable = () => {
       sale_type: 'LOAN',
       sale_price: 42000,
       rep_type: 'Sales Rep',
-      rl: "Percentage",
-      rate: "60/20",
+      rl: 'Percentage',
+      rate: '60/20',
       start_date: '2023-09-01',
       end_date: '2024-08-31',
       curr_status: 'Approved',
@@ -412,7 +409,7 @@ const RepDashBoardTable = () => {
       balance: 500,
       dealer_code: 'VWX234',
       contr_date: '2023-09-05',
-      sub_total: 40800
+      sub_total: 40800,
     },
     {
       record_id: 10,
@@ -422,8 +419,8 @@ const RepDashBoardTable = () => {
       sale_type: 'CHECK',
       sale_price: 30000,
       rep_type: 'Sales Manager',
-      rl: "RL",
-      rate: "-",
+      rl: 'RL',
+      rate: '-',
       start_date: '2023-10-01',
       end_date: '2024-09-30',
       curr_status: 'Pending',
@@ -452,8 +449,8 @@ const RepDashBoardTable = () => {
       balance: 500,
       dealer_code: 'YZA567',
       contr_date: '2023-10-10',
-      sub_total: 28500
-    }
+      sub_total: 28500,
+    },
   ];
 
   const totalPages = Math.ceil(commissionList?.length / itemsPerPage);
@@ -462,20 +459,19 @@ const RepDashBoardTable = () => {
   const handleAddCommission = () => {
     setEditMode(false);
     setEditedCommission(null);
-    handleOpen()
+    handleOpen();
   };
 
   const handleEditCommission = (commission: CommissionModel) => {
     setEditMode(true);
     setEditedCommission(commission);
-    handleOpen()
+    handleOpen();
   };
 
   const currentPageData = commissionList?.slice(startIndex, endIndex);
   const isAnyRowSelected = selectedRows?.size > 0;
   const isAllRowsSelected = selectedRows?.size === commissionList?.length;
   const totalPages1 = Math.ceil(commissionList?.length / pageSize1);
-
 
   const handleSort = (key: any) => {
     if (sortKey === key) {
@@ -491,12 +487,18 @@ const RepDashBoardTable = () => {
       const aValue = a[sortKey];
       const bValue = b[sortKey];
       if (typeof aValue === 'string' && typeof bValue === 'string') {
-        return sortDirection === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+        return sortDirection === 'asc'
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
       } else {
         // Ensure numeric values for arithmetic operations
-        const numericAValue = typeof aValue === 'number' ? aValue : parseFloat(aValue);
-        const numericBValue = typeof bValue === 'number' ? bValue : parseFloat(bValue);
-        return sortDirection === 'asc' ? numericAValue - numericBValue : numericBValue - numericAValue;
+        const numericAValue =
+          typeof aValue === 'number' ? aValue : parseFloat(aValue);
+        const numericBValue =
+          typeof bValue === 'number' ? bValue : parseFloat(bValue);
+        return sortDirection === 'asc'
+          ? numericAValue - numericBValue
+          : numericBValue - numericAValue;
       }
     });
   }
@@ -509,162 +511,266 @@ const RepDashBoardTable = () => {
 
   const Commissioncolumns = [
     { name: 'partner', displayName: 'UID', type: 'string', isCheckbox: true },
-    { name: 'installer', displayName: 'Home Owner', type: 'string', isCheckbox: false },
-    { name: 'state', displayName: 'Curr Stat', type: 'string', isCheckbox: false },
-    { name: 'sale_type', displayName: 'Stat Date', type: 'string', isCheckbox: false },
-    { name: 'sale_price', displayName: 'Owe Contr', type: 'number', isCheckbox: false },
+    {
+      name: 'installer',
+      displayName: 'Home Owner',
+      type: 'string',
+      isCheckbox: false,
+    },
+    {
+      name: 'state',
+      displayName: 'Curr Stat',
+      type: 'string',
+      isCheckbox: false,
+    },
+    {
+      name: 'sale_type',
+      displayName: 'Stat Date',
+      type: 'string',
+      isCheckbox: false,
+    },
+    {
+      name: 'sale_price',
+      displayName: 'Owe Contr',
+      type: 'number',
+      isCheckbox: false,
+    },
     { name: 'rep_type', displayName: 'DBA', type: 'string', isCheckbox: false },
-    { name: 'rl', displayName: 'Comm Model', type: 'number', isCheckbox: false },
+    {
+      name: 'rl',
+      displayName: 'Comm Model',
+      type: 'number',
+      isCheckbox: false,
+    },
     { name: 'rate', displayName: 'Percent', type: 'number', isCheckbox: false },
-    { name: 'start_date', displayName: 'Type', type: 'date', isCheckbox: false },
+    {
+      name: 'start_date',
+      displayName: 'Type',
+      type: 'date',
+      isCheckbox: false,
+    },
     { name: 'end_date', displayName: 'Today', type: 'date', isCheckbox: false },
 
-    { name: 'installer', displayName: 'Amt', type: 'string', isCheckbox: false },
-    { name: 'state', displayName: 'Fin Type', type: 'string', isCheckbox: false },
-    { name: 'sale_type', displayName: 'Sys Size', type: 'string', isCheckbox: false },
-    { name: 'sale_price', displayName: 'Contract', type: 'number', isCheckbox: false },
-    { name: 'rep_type', displayName: 'Loan Fee', type: 'string', isCheckbox: false },
+    {
+      name: 'installer',
+      displayName: 'Amt',
+      type: 'string',
+      isCheckbox: false,
+    },
+    {
+      name: 'state',
+      displayName: 'Fin Type',
+      type: 'string',
+      isCheckbox: false,
+    },
+    {
+      name: 'sale_type',
+      displayName: 'Sys Size',
+      type: 'string',
+      isCheckbox: false,
+    },
+    {
+      name: 'sale_price',
+      displayName: 'Contract',
+      type: 'number',
+      isCheckbox: false,
+    },
+    {
+      name: 'rep_type',
+      displayName: 'Loan Fee',
+      type: 'string',
+      isCheckbox: false,
+    },
     { name: 'rl', displayName: 'EPC', type: 'number', isCheckbox: false },
     { name: 'rate', displayName: 'Address', type: 'number', isCheckbox: false },
     { name: 'start_date', displayName: 'R+R', type: 'date', isCheckbox: false },
-    { name: 'end_date', displayName: 'Comm Rate', type: 'date', isCheckbox: false },
+    {
+      name: 'end_date',
+      displayName: 'Comm Rate',
+      type: 'date',
+      isCheckbox: false,
+    },
 
-    { name: 'installer', displayName: 'Net EPC', type: 'string', isCheckbox: false },
+    {
+      name: 'installer',
+      displayName: 'Net EPC',
+      type: 'string',
+      isCheckbox: false,
+    },
     { name: 'state', displayName: 'Credit', type: 'string', isCheckbox: false },
-    { name: 'sale_type', displayName: 'Rep 2', type: 'string', isCheckbox: false },
-    { name: 'sale_price', displayName: 'Net Comm', type: 'number', isCheckbox: false },
-    { name: 'rep_type', displayName: 'Draw AMT', type: 'string', isCheckbox: false },
+    {
+      name: 'sale_type',
+      displayName: 'Rep 2',
+      type: 'string',
+      isCheckbox: false,
+    },
+    {
+      name: 'sale_price',
+      displayName: 'Net Comm',
+      type: 'number',
+      isCheckbox: false,
+    },
+    {
+      name: 'rep_type',
+      displayName: 'Draw AMT',
+      type: 'string',
+      isCheckbox: false,
+    },
     { name: 'rl', displayName: 'Amt Paid', type: 'number', isCheckbox: false },
     { name: 'rate', displayName: 'Bal', type: 'number', isCheckbox: false },
-    { name: 'start_date', displayName: 'DLR Code', type: 'date', isCheckbox: false },
-    { name: 'end_date', displayName: 'Contr date', type: 'date', isCheckbox: false },
+    {
+      name: 'start_date',
+      displayName: 'DLR Code',
+      type: 'date',
+      isCheckbox: false,
+    },
+    {
+      name: 'end_date',
+      displayName: 'Contr date',
+      type: 'date',
+      isCheckbox: false,
+    },
 
-    { name: 'start_date', displayName: 'State', type: 'date', isCheckbox: false },
-    { name: 'end_date', displayName: 'Sub Total', type: 'date', isCheckbox: false },
+    {
+      name: 'start_date',
+      displayName: 'State',
+      type: 'date',
+      isCheckbox: false,
+    },
+    {
+      name: 'end_date',
+      displayName: 'Sub Total',
+      type: 'date',
+      isCheckbox: false,
+    },
   ];
 
   const handleIconOpen = () => setOpenIcon(true);
   const handleIconClose = () => setOpenIcon(false);
-
-
 
   return (
     <div className="comm">
       <div className="commissionContainer">
         <div
           className="TableContainer"
-          style={{ overflowX: "auto", whiteSpace: "nowrap" }}
+          style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}
         >
           <table>
             <thead>
               <tr>
-                {
-                  Commissioncolumns?.map((item, key) => (
-                    <SortableHeader
-                      key={key}
-                      isCheckbox={item.isCheckbox}
-                      titleName={item.displayName}
-                      data={commissionList}
-                      isAllRowsSelected={isAllRowsSelected}
-                      isAnyRowSelected={isAnyRowSelected}
-                      selectAllChecked={selectAllChecked}
-                      setSelectAllChecked={setSelectAllChecked}
-                      selectedRows={selectedRows}
-                      setSelectedRows={setSelectedRows}
-                      sortKey={item.name}
-                      sortDirection={sortKey === item.name ? sortDirection : undefined}
-                      onClick={() => handleSort(item.name)}
-                    />
-
-                  ))
-                }
-                {
-                  viewArchived === true ? null : <th>
+                {Commissioncolumns?.map((item, key) => (
+                  <SortableHeader
+                    key={key}
+                    isCheckbox={item.isCheckbox}
+                    titleName={item.displayName}
+                    data={commissionList}
+                    isAllRowsSelected={isAllRowsSelected}
+                    isAnyRowSelected={isAnyRowSelected}
+                    selectAllChecked={selectAllChecked}
+                    setSelectAllChecked={setSelectAllChecked}
+                    selectedRows={selectedRows}
+                    setSelectedRows={setSelectedRows}
+                    sortKey={item.name}
+                    sortDirection={
+                      sortKey === item.name ? sortDirection : undefined
+                    }
+                    onClick={() => handleSort(item.name)}
+                  />
+                ))}
+                {viewArchived === true ? null : (
+                  <th>
                     <div className="action-header">
                       <p>Help</p>
                     </div>
                   </th>
-                }
+                )}
               </tr>
             </thead>
 
             <tbody>
               {currentPageData?.length > 0
                 ? currentPageData?.map((el: any, i: any) => (
-                  <tr
-                    key={i}
-                    className={selectedRows.has(i) ? "selected" : ""}
-                  >
-                    <td style={{ fontWeight: "500" }}>
-                      <div className="flex-check">
-                        <CheckBox
-                          checked={selectedRows.has(i)}
-                          onChange={() => {
-                            // If there's only one row of data and the user clicks its checkbox, select all rows
-                            if (currentPageData?.length === 1) {
-                              setSelectAllChecked(true);
-                              setSelectedRows(new Set([0]));
-                            } else {
-                              toggleRowSelection(
-                                i,
-                                selectedRows,
-                                setSelectedRows,
-                                setSelectAllChecked
-                              );
-                            }
+                    <tr
+                      key={i}
+                      className={selectedRows.has(i) ? 'selected' : ''}
+                    >
+                      <td style={{ fontWeight: '500' }}>
+                        <div className="flex-check">
+                          <CheckBox
+                            checked={selectedRows.has(i)}
+                            onChange={() => {
+                              // If there's only one row of data and the user clicks its checkbox, select all rows
+                              if (currentPageData?.length === 1) {
+                                setSelectAllChecked(true);
+                                setSelectedRows(new Set([0]));
+                              } else {
+                                toggleRowSelection(
+                                  i,
+                                  selectedRows,
+                                  setSelectedRows,
+                                  setSelectAllChecked
+                                );
+                              }
+                            }}
+                          />
+                          <span className="zoom-out-td">{el.partner}</span>
+                        </div>
+                      </td>
+                      <td>{el.installer}</td>
+
+                      <div
+                        className={`state-container ${el.state === 'NTP' ? 'ntp-bg ntp-width' : el.state === 'PTO' ? 'pto-bg pto-width' : 'install-bg install-width'}`}
+                      >
+                        <td
+                          className={`state-text ${el.state === 'NTP' ? 'ntp-color' : el.state === 'PTO' ? 'pto-color' : 'install-color'}`}
+                        >
+                          {el.state}
+                        </td>
+                      </div>
+
+                      <td>{el.sale_type}</td>
+                      <td>{el.sale_price}</td>
+                      <td>{el.rep_type}</td>
+                      <td>{el.rl}</td>
+                      <td>{el.rate}</td>
+                      <td>{el.start_date}</td>
+                      <td>{el.end_date}</td>
+                      <td style={{ color: '#0096D3' }}>${el.amount}</td>
+                      <td>{el.fin_type}</td>
+                      <td>{el.sys_size}</td>
+                      <td>{el.contract}</td>
+                      <td>{el.loan_fee}</td>
+                      <td>{el.epc}</td>
+                      <td>{el.address}</td>
+                      <td>{el.rr}</td>
+                      <td>{el.comm_rate}</td>
+                      <td>{el.net_epc}</td>
+                      <td>{el.credit}</td>
+                      <td>{el.rep_2}</td>
+                      <td>{el.net_comm}</td>
+                      <td>{el.draw_amt}</td>
+                      <td>{el.amt_paid}</td>
+                      <td>{el.balance}</td>
+                      <td>{el.dealer_code}</td>
+                      <td>{el.contr_date}</td>
+                      <td>{el.state}</td>
+                      <td>{el.sub_total}</td>
+                      <td className="zoom-out-help">
+                        <MdOutlineHelp
+                          onClick={() => handleIconOpen()}
+                          style={{
+                            height: '16px',
+                            width: '16px',
+                            stroke: '0.2',
                           }}
                         />
-                        <span className="zoom-out-td" >{el.partner}</span>
-                      </div>
-                    </td>
-                    <td>{el.installer}</td>
-
-                    <div className={`state-container ${el.state === 'NTP' ? 'ntp-bg ntp-width' : el.state === 'PTO' ? 'pto-bg pto-width' : 'install-bg install-width'}`}>
-                      <td className={`state-text ${el.state === 'NTP' ? 'ntp-color' : el.state === 'PTO' ? 'pto-color' : 'install-color'}`}>
-                        {el.state}
                       </td>
-                    </div>
-
-                    <td>{el.sale_type}</td>
-                    <td>{el.sale_price}</td>
-                    <td>{el.rep_type}</td>
-                    <td>{el.rl}</td>
-                    <td>{el.rate}</td>
-                    <td>{el.start_date}</td>
-                    <td>{el.end_date}</td>
-                    <td style={{ color: '#0096D3' }}>${el.amount}</td>
-                    <td>{el.fin_type}</td>
-                    <td>{el.sys_size}</td>
-                    <td>{el.contract}</td>
-                    <td>{el.loan_fee}</td>
-                    <td>{el.epc}</td>
-                    <td>{el.address}</td>
-                    <td>{el.rr}</td>
-                    <td>{el.comm_rate}</td>
-                    <td>{el.net_epc}</td>
-                    <td>{el.credit}</td>
-                    <td>{el.rep_2}</td>
-                    <td>{el.net_comm}</td>
-                    <td>{el.draw_amt}</td>
-                    <td>{el.amt_paid}</td>
-                    <td>{el.balance}</td>
-                    <td>{el.dealer_code}</td>
-                    <td>{el.contr_date}</td>
-                    <td>{el.state}</td>
-                    <td>{el.sub_total}</td>
-                    <td className="zoom-out-help" >
-                      <BiSupport
-                        onClick={() => handleIconOpen()}
-                        style={{height: "16px", width: "16px", stroke: "0.2"}}
-                      />
-                    </td>
-                  </tr>
-                ))
+                    </tr>
+                  ))
                 : null}
             </tbody>
           </table>
         </div>
-
 
         <div className="page-heading-container">
           <p className="page-heading">
@@ -688,7 +794,6 @@ const RepDashBoardTable = () => {
               onPageChange={handlePageChange}
               handleItemsPerPageChange={handleItemsPerPageChange}
             />
-
           }
           {openIcon && (
             <HelpDashboard
@@ -698,7 +803,6 @@ const RepDashBoardTable = () => {
             />
           )}
         </div>
-
       </div>
     </div>
   );

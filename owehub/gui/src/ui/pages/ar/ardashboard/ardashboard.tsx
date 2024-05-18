@@ -1,18 +1,18 @@
-import React, { useEffect, useState, useRef } from "react";
-import "./ardashboard.css";
-import { ICONS } from "../../../icons/Icons";
+import React, { useEffect, useState, useRef } from 'react';
+import './ardashboard.css';
+import { ICONS } from '../../../icons/Icons';
 import {
   comissionValueData,
   payRollData,
-} from "../../../../resources/static_data/StaticData";
-import FilterModal from "../../../components/FilterModal/FilterModal";
-import ArDashBoardTable from "./artable";
-import ArDropdownWithCheckboxes from "./Dropdown";
-import "react-date-range/dist/styles.css"; // main style file
-import "react-date-range/dist/theme/default.css"; // theme css file
-import Select from "react-select";
-import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
-import { handleChange as filterChange } from "../../../../redux/apiSlice/AR/ArDataSlice";
+} from '../../../../resources/static_data/StaticData';
+import FilterModal from '../../../components/FilterModal/FilterModal';
+import ArDashBoardTable from './artable';
+import ArDropdownWithCheckboxes from './Dropdown';
+import 'react-date-range/dist/styles.css'; // main style file
+import 'react-date-range/dist/theme/default.css'; // theme css file
+import Select from 'react-select';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
+import { handleChange as filterChange } from '../../../../redux/apiSlice/AR/ArDataSlice';
 
 export const ARDashboardPage: React.FC = () => {
   const [active, setActive] = React.useState<number>(0);
@@ -23,45 +23,45 @@ export const ARDashboardPage: React.FC = () => {
     setFilterModal(false);
   };
   const options = [
-    { value: "All", label: "All", key: "all" },
-    { value: "Shaky", label: "Shaky", key: "shaky" },
-    { value: "Cancel", label: "Cancel", key: "cancel" },
-    { value: "QC/Permit/NTP", label: "QC/Permit/NTP", key: "permits" },
-    { value: "Install", label: "Install", key: "install" },
-    { value: "PTO", label: "PTO", key: "pto" },
+    { value: 'All', label: 'All', key: 'all' },
+    { value: 'Shaky', label: 'Shaky', key: 'shaky' },
+    { value: 'Cancel', label: 'Cancel', key: 'cancel' },
+    { value: 'QC/Permit/NTP', label: 'QC/Permit/NTP', key: 'permits' },
+    { value: 'Install', label: 'Install', key: 'install' },
+    { value: 'PTO', label: 'PTO', key: 'pto' },
   ];
 
   const options1 = [
-    { value: "All", label: "All" },
-    { value: "Current Due", label: "Current Due" },
-    { value: "Overpaid", label: "Overpaid" },
+    { value: 'All', label: 'All' },
+    { value: 'Current Due', label: 'Current Due' },
+    { value: 'Overpaid', label: 'Overpaid' },
   ];
   const options2 = [
-    { value: "All", label: "All" },
-    { value: "N/A", label: "N/A" },
+    { value: 'All', label: 'All' },
+    { value: 'N/A', label: 'N/A' },
   ];
   const options3 = [
-    { value: "Select", label: "Select" },
-    { value: "Partner", label: "Partner" },
-    { value: "Installer", label: "Installer" },
-    { value: "Type", label: "Type" },
-    { value: "Service", label: "Service" },
-    { value: "Home Owner", label: "Home Owner" },
-    { value: "Street Address", label: "Street Address" },
-    { value: "City", label: "City" },
-    { value: "ST", label: "State" },
-    { value: "Zip", label: "Zip" },
-    { value: "KW", label: "KW" },
-    { value: "Contract Date", label: "Contract Date" },
-    { value: "Install date", label: "Install date" },
-    { value: "Current Status", label: "Current Status" },
-    { value: "Status date", label: "Status date" },
-    { value: "Contract", label: "Contract" },
-    { value: "AR Total", label: "AR Total" },
-    { value: "Amt paid", label: "Amt paid" },
-    { value: "Current Due", label: "Current Due" },
-    { value: "Est Pipeline", label: "Est Pipeline" },
-    { value: "Subtotal", label: "Subtotal" },
+    { value: 'Select', label: 'Select' },
+    { value: 'Partner', label: 'Partner' },
+    { value: 'Installer', label: 'Installer' },
+    { value: 'Type', label: 'Type' },
+    { value: 'Service', label: 'Service' },
+    { value: 'Home Owner', label: 'Home Owner' },
+    { value: 'Street Address', label: 'Street Address' },
+    { value: 'City', label: 'City' },
+    { value: 'ST', label: 'State' },
+    { value: 'Zip', label: 'Zip' },
+    { value: 'KW', label: 'KW' },
+    { value: 'Contract Date', label: 'Contract Date' },
+    { value: 'Install date', label: 'Install date' },
+    { value: 'Current Status', label: 'Current Status' },
+    { value: 'Status date', label: 'Status date' },
+    { value: 'Contract', label: 'Contract' },
+    { value: 'AR Total', label: 'AR Total' },
+    { value: 'Amt paid', label: 'Amt paid' },
+    { value: 'Current Due', label: 'Current Due' },
+    { value: 'Est Pipeline', label: 'Est Pipeline' },
+    { value: 'Subtotal', label: 'Subtotal' },
   ];
 
   // used for close date click outside anywhere
@@ -78,10 +78,10 @@ export const ARDashboardPage: React.FC = () => {
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
 
@@ -91,7 +91,7 @@ export const ARDashboardPage: React.FC = () => {
   const handleSelectChange3 = (
     selectedOption3: { value: string; label: string } | null
   ) => {
-    setSelectedOption3(selectedOption3 ? selectedOption3.value : "");
+    setSelectedOption3(selectedOption3 ? selectedOption3.value : '');
   };
   const [selectedOption4, setSelectedOption4] = useState<string>(
     options3[0].label
@@ -99,7 +99,7 @@ export const ARDashboardPage: React.FC = () => {
   const handleSelectChange4 = (
     selectedOption4: { value: string; label: string } | null
   ) => {
-    setSelectedOption4(selectedOption4 ? selectedOption4.value : "");
+    setSelectedOption4(selectedOption4 ? selectedOption4.value : '');
   };
   const [open, setOpen] = useState<boolean>(false);
   const handleOpen = () => setOpen(true);
@@ -107,7 +107,7 @@ export const ARDashboardPage: React.FC = () => {
   const handleChange = (name: string, value: string) => {
     dispatch(filterChange({ name, value }));
   };
-  console.log(filters, "guhvjhg");
+  console.log(filters, 'guhvjhg');
 
   return (
     <>
@@ -116,71 +116,73 @@ export const ARDashboardPage: React.FC = () => {
           <div className=""></div>
           <div className="dashboard-payroll">
             <div className="ar-dash-head-input">
-              <label className="inputLabel" style={{ color: "#344054" }}>
+              <label className="inputLabel" style={{ color: '#344054' }}>
                 Report Types
               </label>
               <Select
                 options={options1}
-                value={options1.find((option) => option.value === filters.report_type)}
-                onChange={(value) => handleChange("report_type", value?.value!)}
+                value={options1.find(
+                  (option) => option.value === filters.report_type
+                )}
+                onChange={(value) => handleChange('report_type', value?.value!)}
                 styles={{
                   control: (baseStyles, state) => ({
                     ...baseStyles,
-                    fontSize: "13px",
-                    fontWeight: "500",
-                    borderRadius: ".40rem",
-                    border: "none",
-                    outline: "none",
-                    width: "6rem",
-                    minHeight: "unset",
-                    height: "30px",
-                    alignContent: "center",
-                    backgroundColor: "#ffffff",
-                    cursor: "pointer",
+                    fontSize: '13px',
+                    fontWeight: '500',
+                    borderRadius: '.40rem',
+                    border: 'none',
+                    outline: 'none',
+                    width: '6rem',
+                    minHeight: 'unset',
+                    height: '30px',
+                    alignContent: 'center',
+                    backgroundColor: '#ffffff',
+                    cursor: 'pointer',
                   }),
                   placeholder: (baseStyles) => ({
                     ...baseStyles,
-                    color: "#0493CE", // Change the placeholder color here
+                    color: '#0493CE', // Change the placeholder color here
                   }),
                   indicatorSeparator: () => ({
-                    display: "none",
+                    display: 'none',
                   }),
                   dropdownIndicator: (baseStyles, state) => ({
                     ...baseStyles,
-                    color: "#0493CE",
-                    "&:hover": {
-                      color: "#0493CE",
+                    color: '#0493CE',
+                    '&:hover': {
+                      color: '#0493CE',
                     },
                   }),
                   option: (baseStyles, state) => ({
                     ...baseStyles,
-                    fontSize: "13px",
-                    color: state.isSelected ? "#ffffff" : "#0493CE",
-                    backgroundColor: state.isSelected ? "#0493CE" : "#ffffff",
-                    "&:hover": {
-                      backgroundColor: state.isSelected ? "#0493CE" : "#f2f2f2",
+                    fontSize: '13px',
+                    color: state.isSelected ? '#ffffff' : '#000000',
+                    backgroundColor: state.isSelected ? '#0493CE' : '#ffffff',
+                    '&:hover': {
+                      backgroundColor: state.isSelected ? '#0493CE' : '#DDEBFF',
                     },
                   }),
                   singleValue: (baseStyles, state) => ({
                     ...baseStyles,
-                    color: "#0493CE",
+                    color: '#0493CE',
                   }),
                   menu: (baseStyles) => ({
                     ...baseStyles,
-                    width: "6rem",
+                    width: '6rem',
                     zIndex: 999,
                   }),
                   menuList: (base) => ({
                     ...base,
-                    "&::-webkit-scrollbar": {
-                      scrollbarWidth: "thin",
-                      display: "block",
-                      scrollbarColor: "rgb(173, 173, 173) #fff",
+                    '&::-webkit-scrollbar': {
+                      scrollbarWidth: 'thin',
+                      display: 'block',
+                      scrollbarColor: 'rgb(173, 173, 173) #fff',
                       width: 8,
                     },
-                    "&::-webkit-scrollbar-thumb": {
-                      background: "rgb(173, 173, 173)",
-                      borderRadius: "30px",
+                    '&::-webkit-scrollbar-thumb': {
+                      background: 'rgb(173, 173, 173)',
+                      borderRadius: '30px',
                     },
                   }),
                 }}
@@ -188,7 +190,7 @@ export const ARDashboardPage: React.FC = () => {
             </div>
 
             <div className="ar-dash-head-input">
-              <label className="inputLabel" style={{ color: "#344054" }}>
+              <label className="inputLabel" style={{ color: '#344054' }}>
                 Sales Partner
               </label>
               <Select
@@ -197,66 +199,66 @@ export const ARDashboardPage: React.FC = () => {
                   (option) => option.value === filters.sale_partner
                 )}
                 onChange={(value) =>
-                  handleChange("sale_partner", value?.value!)
+                  handleChange('sale_partner', value?.value!)
                 }
                 styles={{
                   control: (baseStyles, state) => ({
                     ...baseStyles,
-                    fontSize: "13px",
-                    fontWeight: "500",
-                    borderRadius: ".40rem",
-                    border: "none",
-                    outline: "none",
-                    width: "6rem",
-                    minHeight: "unset",
-                    height: "30px",
-                    alignContent: "center",
-                    backgroundColor: "#ffffff",
-                    cursor: "pointer",
+                    fontSize: '13px',
+                    fontWeight: '500',
+                    borderRadius: '.40rem',
+                    border: 'none',
+                    outline: 'none',
+                    width: '6rem',
+                    minHeight: 'unset',
+                    height: '30px',
+                    alignContent: 'center',
+                    backgroundColor: '#ffffff',
+                    cursor: 'pointer',
                   }),
                   placeholder: (baseStyles) => ({
                     ...baseStyles,
-                    color: "#0493CE", // Change the placeholder color here
+                    color: '#0493CE', // Change the placeholder color here
                   }),
                   indicatorSeparator: () => ({
-                    display: "none",
+                    display: 'none',
                   }),
                   dropdownIndicator: (baseStyles, state) => ({
                     ...baseStyles,
-                    color: "#0493CE",
-                    "&:hover": {
-                      color: "#0493CE",
+                    color: '#0493CE',
+                    '&:hover': {
+                      color: '#0493CE',
                     },
                   }),
                   option: (baseStyles, state) => ({
                     ...baseStyles,
-                    fontSize: "13px",
-                    color: state.isSelected ? "#ffffff" : "#0493CE",
-                    backgroundColor: state.isSelected ? "#0493CE" : "#ffffff",
-                    "&:hover": {
-                      backgroundColor: state.isSelected ? "#0493CE" : "#f2f2f2",
+                    fontSize: '13px',
+                    color: state.isSelected ? '#ffffff' : '#000000',
+                    backgroundColor: state.isSelected ? '#0493CE' : '#ffffff',
+                    '&:hover': {
+                      backgroundColor: state.isSelected ? '#0493CE' : '#DDEBFF',
                     },
                   }),
                   singleValue: (baseStyles, state) => ({
                     ...baseStyles,
-                    color: "#0493CE",
+                    color: '#0493CE',
                   }),
                   menu: (baseStyles) => ({
                     ...baseStyles,
-                    width: "6rem",
+                    width: '6rem',
                     zIndex: 999,
                   }),
                   menuList: (base) => ({
                     ...base,
-                    "&::-webkit-scrollbar": {
-                      scrollbarWidth: "thin",
-                      display: "block",
-                      scrollbarColor: "rgb(173, 173, 173) #fff",
+                    '&::-webkit-scrollbar': {
+                      scrollbarWidth: 'thin',
+                      display: 'block',
+                      scrollbarColor: 'rgb(173, 173, 173) #fff',
                       width: 8,
                     },
-                    "&::-webkit-scrollbar-thumb": {
-                      background: "rgb(173, 173, 173)",
-                      borderRadius: "30px",
+                    '&::-webkit-scrollbar-thumb': {
+                      background: 'rgb(173, 173, 173)',
+                      borderRadius: '30px',
                     },
                   }),
                 }}
@@ -264,7 +266,7 @@ export const ARDashboardPage: React.FC = () => {
             </div>
 
             <div className="ar-dash-head-input">
-              <label className="inputLabel" style={{ color: "#344054" }}>
+              <label className="inputLabel" style={{ color: '#344054' }}>
                 Elements
               </label>
               <Select
@@ -272,68 +274,68 @@ export const ARDashboardPage: React.FC = () => {
                 value={options3.find(
                   (option) => option.value === filters.sort_by
                 )}
-                onChange={(value) => handleChange("sort_by", value?.value!)}
+                onChange={(value) => handleChange('sort_by', value?.value!)}
                 styles={{
                   control: (baseStyles, state) => ({
                     ...baseStyles,
-                    fontSize: "13px",
-                    fontWeight: "500",
-                    borderRadius: ".40rem",
-                    border: "none",
-                    outline: "none",
-                    width: "6rem",
-                    minHeight: "unset",
-                    height: "30px",
-                    alignContent: "center",
-                    backgroundColor: "#ffffff",
-                    cursor: "pointer",
+                    fontSize: '13px',
+                    fontWeight: '500',
+                    borderRadius: '.40rem',
+                    border: 'none',
+                    outline: 'none',
+                    width: '6rem',
+                    minHeight: 'unset',
+                    height: '30px',
+                    alignContent: 'center',
+                    backgroundColor: '#ffffff',
+                    cursor: 'pointer',
                   }),
                   placeholder: (baseStyles) => ({
                     ...baseStyles,
-                    color: "#0493CE", // Change the placeholder color here
+                    color: '#0493CE', // Change the placeholder color here
                   }),
 
                   indicatorSeparator: () => ({
-                    display: "none",
+                    display: 'none',
                   }),
                   dropdownIndicator: (baseStyles, state) => ({
                     ...baseStyles,
-                    color: "#0493CE",
-                    "&:hover": {
-                      color: "#0493CE",
+                    color: '#0493CE',
+                    '&:hover': {
+                      color: '#0493CE',
                     },
                   }),
                   option: (baseStyles, state) => ({
                     ...baseStyles,
-                    fontSize: "13px",
-                    color: state.isSelected ? "#ffffff" : "#0493CE",
-                    backgroundColor: state.isSelected ? "#0493CE" : "#ffffff",
-                    "&:hover": {
-                      backgroundColor: state.isSelected ? "#0493CE" : "#f2f2f2",
+                    fontSize: '13px',
+                    color: state.isSelected ? '#ffffff' : '#000000',
+                    backgroundColor: state.isSelected ? '#0493CE' : '#ffffff',
+                    '&:hover': {
+                      backgroundColor: state.isSelected ? '#0493CE' : '#DDEBFF',
                     },
                   }),
                   singleValue: (baseStyles, state) => ({
                     ...baseStyles,
-                    color: "#0493CE",
+                    color: '#0493CE',
                   }),
                   menu: (baseStyles) => ({
                     ...baseStyles,
-                    width: "6rem",
-                    height: "auto",
-                    overflowY: "auto",
+                    width: '6rem',
+                    height: 'auto',
+                    overflowY: 'auto',
                     zIndex: 999,
                   }),
                   menuList: (base) => ({
                     ...base,
-                    "&::-webkit-scrollbar": {
-                      scrollbarWidth: "thin",
-                      display: "block",
-                      scrollbarColor: "rgb(173, 173, 173) #fff",
+                    '&::-webkit-scrollbar': {
+                      scrollbarWidth: 'thin',
+                      display: 'block',
+                      scrollbarColor: 'rgb(173, 173, 173) #fff',
                       width: 8,
                     },
-                    "&::-webkit-scrollbar-thumb": {
-                      background: "rgb(173, 173, 173)",
-                      borderRadius: "30px",
+                    '&::-webkit-scrollbar-thumb': {
+                      background: 'rgb(173, 173, 173)',
+                      borderRadius: '30px',
                     },
                   }),
                 }}
@@ -341,7 +343,7 @@ export const ARDashboardPage: React.FC = () => {
             </div>
 
             <div className="ar-dash-head-input">
-              <label className="inputLabel" style={{ color: "#344054" }}>
+              <label className="inputLabel" style={{ color: '#344054' }}>
                 Includes
               </label>
               <ArDropdownWithCheckboxes options={options} />
@@ -350,8 +352,9 @@ export const ARDashboardPage: React.FC = () => {
             <div className="Line-container">
               <div className="ar-line-graph">
                 <div
-                  className={`rep-filter-line ${active === 0 ? "rep-active-filter-line" : ""
-                    }`}
+                  className={`rep-filter-line ${
+                    active === 0 ? 'rep-active-filter-line' : ''
+                  }`}
                   onClick={() => setActive(0)}
                 >
                   {active === 0 ? (
@@ -361,10 +364,11 @@ export const ARDashboardPage: React.FC = () => {
                   )}
                 </div>
                 <div
-                  className={`filter-disable ${active === 1 ? "rep-active-filter-line" : ""
-                    }`}
+                  className={`filter-disable ${
+                    active === 1 ? 'rep-active-filter-line' : ''
+                  }`}
                   // onClick={() => setActive(1)}
-                  style={{ border: "1px solid #0493CE" }}
+                  style={{ border: '1px solid #0493CE' }}
                 >
                   {active === 1 ? (
                     <img src={ICONS.viewActive} alt="" />
@@ -375,7 +379,7 @@ export const ARDashboardPage: React.FC = () => {
                 <div
                   className="rep-filter-line"
                   onClick={() => setFilterModal(true)}
-                  style={{ border: "1px solid #0493CE" }}
+                  style={{ border: '1px solid #0493CE' }}
                 >
                   <img src={ICONS.FILTER} alt="" />
                 </div>
@@ -389,10 +393,10 @@ export const ARDashboardPage: React.FC = () => {
             columns={[]}
             page_number={1}
             page_size={10}
-            fetchFunction={() => { }}
+            fetchFunction={() => {}}
           />
         )}
-        <div className="" style={{ marginTop: "20px" }}>
+        <div className="" style={{ marginTop: '20px' }}>
           {active === 0 && <ArDashBoardTable />}
         </div>
       </div>

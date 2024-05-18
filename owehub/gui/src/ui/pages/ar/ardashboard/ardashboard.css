@@ -14,42 +14,42 @@
   align-items: center;
   gap: 1rem;
 }
-.sm-box{
-  border-radius: 0.40rem;
+.sm-box {
+  border-radius: 0.4rem;
   border: none;
   outline: none;
   background: #acaaaa;
   padding: 8px 10px;
 }
 
-.ar-payroll-date{
+.ar-payroll-date {
   font-size: 13px;
-  border-radius: 0.40rem;
+  border-radius: 0.4rem;
   border: none;
   outline: none;
-  background: #ECECEC;
+  background: #ececec;
   padding: 4px 8px;
 }
-.ar-dash-head-input{
+.ar-dash-head-input {
   display: flex;
   height: 36px;
-  background-color: #EAF2FE;
+  background-color: #eaf2fe;
   padding: 0 3px 0 12px;
   gap: 0.5rem;
   align-items: center;
   border-radius: 8px;
 }
-.ar-chart-view{
-  background: #ECECEC;
-  border-radius: 0.40rem;
+.ar-chart-view {
+  background: #ececec;
+  border-radius: 0.4rem;
   border: none;
   outline: none;
-  background: #ECECEC;
+  background: #ececec;
   padding: 8px;
   cursor: pointer;
   text-wrap: nowrap;
 }
-.ar-calendar-component2{
+.ar-calendar-component2 {
   cursor: pointer;
   text-wrap: nowrap;
 }
@@ -72,7 +72,7 @@
   justify-content: center;
 }
 .ar-active-filter-line {
-  background-color: #19B87E;
+  background-color: #19b87e;
 }
 .ar-active-filter-line img {
   fill: white;
@@ -86,29 +86,24 @@
   padding-left: 1rem;
   background: #0096d3;
   height: auto;
-
 }
-
 
 .ar-breakdown-container {
   display: flex;
   justify-content: space-between;
   padding: 0.5rem 0.5rem 0 1rem;
   background: #0096d3;
-
 }
 
 .ar-breakdown-img {
   cursor: pointer;
 }
 
-
 .ar-breakdown-table {
   display: block;
   height: 100%;
   overflow: auto;
   white-space: nowrap;
- 
 }
 .ar-breakdown-table tbody {
   font-weight: 700;
@@ -125,7 +120,6 @@
   justify-content: center;
   align-items: center;
   z-index: 100;
-
 }
 .ar-modal-down {
   background-color: #fefefe;
@@ -133,23 +127,19 @@
   width: 40%;
   max-width: 900px;
   height: 650px;
-  overflow: hidden; 
-
+  overflow: hidden;
 }
 
 .ar-modal-body-down {
-  height: calc(100% - 70px); 
+  height: calc(100% - 70px);
   overflow-y: auto;
 }
 
-
-
-
-.ar-date-button{
-  border-radius: 0.40rem;
+.ar-date-button {
+  border-radius: 0.4rem;
   border: none;
   outline: none;
-  background: #ECECEC;
+  background: #ececec;
   padding: 6px;
   cursor: pointer;
   text-wrap: nowrap;
@@ -158,17 +148,17 @@
   font-weight: 500;
   line-height: 14.5px;
 }
-.ar-calender-container{
+.ar-calender-container {
   position: absolute;
   z-index: 999;
   right: -7%;
   top: 130%;
   background-color: #fff;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4);
-  border-radius: 0.40rem;
+  border-radius: 0.4rem;
 }
-.ar-close-calender{
-  background: #3D91FF;
+.ar-close-calender {
+  background: #3d91ff;
   color: white;
   font-size: 12px;
   padding: 4px 15px;
@@ -179,8 +169,8 @@
   bottom: 10px;
   border: none;
 }
-.ar-reset-calender{
-  background: #3D91FF;
+.ar-reset-calender {
+  background: #3d91ff;
   color: white;
   font-size: 12px;
   padding: 4px 15px;
@@ -191,4 +181,3 @@
   bottom: 10px;
   border: none;
 }
-

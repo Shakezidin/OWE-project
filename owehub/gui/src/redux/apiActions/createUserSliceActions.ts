@@ -1,17 +1,17 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import { postCaller } from "../../infrastructure/web_api/services/apiUrl";
-import { EndPoints } from "../../infrastructure/web_api/api_client/EndPoints";
-import { HTTP_STATUS } from "../../core/models/api_models/RequestModel";
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
+import { EndPoints } from '../../infrastructure/web_api/api_client/EndPoints';
+import { HTTP_STATUS } from '../../core/models/api_models/RequestModel';
 import {
   CreateUserParamModel,
   DealerOwner,
   DeleteUserModel,
   UserDropdownModel,
-} from "../../core/models/api_models/UserManagementModel";
+} from '../../core/models/api_models/UserManagementModel';
 
 /** get dealer */
 export const fetchDealerOwner = createAsyncThunk(
-  "user/get_dealer_owner",
+  'user/get_dealer_owner',
   async (data: DealerOwner) => {
     const response = await postCaller(
       EndPoints.get_user_by_role,
@@ -36,7 +36,7 @@ export const fetchDealerOwner = createAsyncThunk(
 
 /** get region list */
 export const fetchRegionList = createAsyncThunk(
-  "user/get_region",
+  'user/get_region',
   async (data: DealerOwner) => {
     const response = await postCaller(
       EndPoints.get_user_by_role,
@@ -47,7 +47,7 @@ export const fetchRegionList = createAsyncThunk(
     }
 
     const { users_name_list } = response.data;
-    
+
     if (users_name_list) {
       const mapList: UserDropdownModel[] = users_name_list.map(
         (el: { name: string }) => {
@@ -65,7 +65,7 @@ export const fetchRegionList = createAsyncThunk(
 /**cretae user */
 
 export const createUserOnboarding = createAsyncThunk(
-  "user/create_onboarding_users",
+  'user/create_onboarding_users',
   async (data: CreateUserParamModel, { rejectWithValue }): Promise<any> => {
     try {
       const response = await postCaller(EndPoints.create_user, data);
@@ -79,7 +79,7 @@ export const createUserOnboarding = createAsyncThunk(
 
 /** delete user */
 export const deleteUserOnboarding = createAsyncThunk(
-  "user/delete_onboarding_users",
+  'user/delete_onboarding_users',
   async (data: DeleteUserModel, { rejectWithValue }): Promise<any> => {
     try {
       const response = await postCaller(EndPoints.delete_users, data);

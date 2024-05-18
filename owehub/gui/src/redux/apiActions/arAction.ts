@@ -1,6 +1,6 @@
 // get_dlr_oth_data
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import { postCaller } from "../../infrastructure/web_api/services/apiUrl";
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
 
 interface Ipaginate {
   page_number: number;
@@ -33,10 +33,10 @@ export interface IGetArdata {
 }
 
 export const getAR = createAsyncThunk(
-  "fetch/get-ar",
+  'fetch/get-ar',
   async (param: Ipaginate, { rejectWithValue }) => {
     try {
-      const data = await postCaller("get_ar_data", param);
+      const data = await postCaller('get_ar_data', param);
       const list = (data.data?.ar_data_list || []) as IGetArdata[];
       return { list, count: data.dbRecCount };
     } catch (error) {
