@@ -98,14 +98,22 @@ const FilterModal: React.FC<TableProps> = ({
   };
 
   const resetAllFilter = () => {
-    localStorage.removeItem('filters');
-    const resetFilters = filters.map((filter) => ({
+    const resetFilters = filters.filter(
+      (_, ind) =>
+        ind===0
+    ).map(filter =>({
       ...filter,
       Column: '',
       Operation: '',
       Data: '',
-    }));
-
+    }))
+    if (filters.some(filter=>filter.Operation||filter.Data||filter.Column)) {   
+      const req = {
+        page_number: page_number,
+        page_size: page_size,
+      };
+      fetchFunction(req);
+    }
     setFilters(resetFilters);
     setErrors({});
   };
@@ -149,11 +157,6 @@ const FilterModal: React.FC<TableProps> = ({
     }
   };
   const handleCloseModal = () => {
-    const req = {
-      page_number: page_number,
-      page_size: page_size,
-    };
-    fetchFunction(req);
     handleClose();
   };
 
