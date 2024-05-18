@@ -226,13 +226,13 @@ func PrepareAdderDataConfigFilters(tableName string, dataFilter models.DataReque
 				filtersBuilder.WriteString(fmt.Sprintf("adcs.price %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "rep_commission":
-				filtersBuilder.WriteString(fmt.Sprintf("adcs.rep_commission %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(adcs.rep_commission) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "rep_commission_type":
-				filtersBuilder.WriteString(fmt.Sprintf("adcs.rep_commission_type %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(adcs.rep_commission_type) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "details":
-				filtersBuilder.WriteString(fmt.Sprintf("adcs.details %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(adcs.details) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
