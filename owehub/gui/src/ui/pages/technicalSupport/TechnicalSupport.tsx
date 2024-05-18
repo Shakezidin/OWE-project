@@ -187,7 +187,7 @@ const TechnicalSupport: React.FC = () => {
 
             <div className="create-input-container-support">
               <div className="create-input-field-support">
-                <label className="inputLabel-select">Issue</label>
+                <label className="inputLabel-select select-type-label">Issue</label>
                 <SelectOption
                   onChange={handleStateChange}
                   options={stateOptions}
