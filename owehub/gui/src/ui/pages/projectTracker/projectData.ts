@@ -87,7 +87,7 @@ export const projectStatusHeadData = [
     key: 'adder',
   },
   {
-    name: 'AJH',
+    name: 'AHJ',
     para: 'NA',
     viewButton: false,
     bgColor: '#E9FFF7',

@@ -18,6 +18,7 @@ import Pagination from '../../../components/pagination/Pagination';
 import { DataTableColumn } from '../../../../resources/static_data/DataTableColumn';
 import FilterModal from '../../../components/FilterModal/FilterModal';
 import { getAnyTableData } from '../../../../redux/apiActions/dataTableAction';
+import { Tooltip as ReactTooltip } from 'react-tooltip';
 
 interface RowData {
   [key: string]: string | number | null; // Define possible data types for table cells
@@ -40,6 +41,27 @@ const DataTablle: React.FC = () => {
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
+
+
+  const [openTooltipIndex, setOpenTooltipIndex] = useState<number | null>(null);
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (openTooltipIndex !== null && !(event.target as HTMLElement).closest(`[data-tooltip-id="tooltip-${openTooltipIndex}"]`)) {
+        setOpenTooltipIndex(null);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [openTooltipIndex]);
+
+  const countWords = (str: string): number => {
+    return str.trim().split(/\s+/).length;
+  };
+
 
   const currentPage = useAppSelector(
     (state) => state.paginationType.currentPage
@@ -108,20 +130,11 @@ console.log(currentPage * itemsPerPage,"",itemsPerPage);
   };
 
   const totalPages = Math.ceil(dbCount / itemsPerPage);
-  console.log(data);
-
-  return (
-    <div className="comm">
-      <Breadcrumb
-        head=""
-        linkPara="Database Manager"
-        route={''}
-        linkparaSecond="Data"
-      />
+    return (
       <div className="commissionContainer">
         <DataTableHeaderr
           title={selectedTable.value?.replaceAll('_', ' ')}
-          onPressFilter={() => filter()}
+          onPressFilter={() => {}}
           onPressImport={() => {}}
           showImportIcon={false}
           showSelectIcon={true}
@@ -131,21 +144,11 @@ console.log(currentPage * itemsPerPage,"",itemsPerPage);
           selectedTable={selectedTable}
           setSelectedTable={setSelectedTable}
         />
-        {/* {filterOPen && <FilterModal handleClose={filterClose}  
-               columns={DataTableColumn} 
-               fetchFunction={fetchFunction}
-               page_number = {currentPage}
-               page_size = {itemsPerPage}
-             />} */}
-        <div
-          className="TableContainer"
-          style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}
-        >
+        <div className="TableContainer" style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
           <table>
             <thead>
               <tr>
                 <th>S.No</th>
-
                 {orderedColumns?.map?.((columnName, index) => (
                   <th style={{ textTransform: 'capitalize' }} key={index}>
                     {columnName?.replaceAll?.('_', ' ')}
@@ -189,6 +192,50 @@ console.log(currentPage * itemsPerPage,"",itemsPerPage);
                             Inactive
                           </span>
                         )
+                      ) : columnName === 'details' ? (
+                        <>
+                          {item.details ? (
+                            typeof item.details === 'string' ? (
+                              <>
+                                {item.details.length > 5 ? (
+                                  <>
+                                    {item.details.slice(0, 5)}...
+                                    <button
+                                      onClick={() =>
+                                        setOpenTooltipIndex(
+                                          openTooltipIndex === rowIndex ? null : rowIndex
+                                        )
+                                      }
+                                      data-tooltip-id={`tooltip-${rowIndex}`}
+                                      data-tooltip-content={item.details}
+                                      data-tooltip-place="bottom"
+                                      style={{
+                                        marginLeft: '5px',
+                                        border: 'none',
+                                        background: 'none',
+                                        color: 'blue',
+                                        cursor: 'pointer',
+                                      }}
+                                    >
+                                      {openTooltipIndex === rowIndex ? 'Show less' : 'Show more'}
+                                    </button>
+                                    <ReactTooltip
+                                      id={`tooltip-${rowIndex}`}
+                                      className="custom-tooltip"
+                                      isOpen={openTooltipIndex === rowIndex}
+                                    />
+                                  </>
+                                ) : (
+                                  item.details
+                                )}
+                              </>
+                            ) : (
+                              item.details.toString()
+                            )
+                          ) : (
+                            replaceEmptyOrNull(item[columnName])
+                          )}
+                        </>
                       ) : (
                         replaceEmptyOrNull(item[columnName])
                       )}
@@ -201,13 +248,12 @@ console.log(currentPage * itemsPerPage,"",itemsPerPage);
         </div>
         <div className="page-heading-container">
           <p className="page-heading">
-            {start} - {end>dbCount?dbCount:end} of {dbCount} item
+            {start} - {end > dbCount ? dbCount : end} of {dbCount} item
           </p>
-
           {data?.length > 0 ? (
             <Pagination
               currentPage={currentPage}
-              totalPages={totalPages} // You need to calculate total pages
+              totalPages={totalPages}
               paginate={paginate}
               currentPageData={data}
               goToNextPage={goToNextPage}
@@ -217,8 +263,9 @@ console.log(currentPage * itemsPerPage,"",itemsPerPage);
           ) : null}
         </div>
       </div>
-    </div>
-  );
-};
+    );
+  };
+  
+
 
 export default DataTablle;

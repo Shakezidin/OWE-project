@@ -9,6 +9,8 @@ import { getCurrentDateFormatted } from '../../../../utiles/formatDate';
 import { DBManagerUserActivityModel } from '../../../../core/models/api_models/DBManagerModel';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import Pagination from '../../../components/pagination/Pagination';
+import { Tooltip as ReactTooltip } from 'react-tooltip';
+import './Useractivity.css'
 import MicroLoader from '../../../components/loader/MicroLoader';
 
 const UserActivity: React.FC = () => {
@@ -18,6 +20,20 @@ const UserActivity: React.FC = () => {
   );
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const [openTooltipIndex, setOpenTooltipIndex] = useState<number | null>(null);
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (openTooltipIndex !== null && !(event.target as HTMLElement).closest(`[data-tooltip-id="tooltip-${openTooltipIndex}"]`)) {
+        setOpenTooltipIndex(null);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [openTooltipIndex]);
 
   useEffect(() => {
     const pageNumber = {
@@ -41,13 +57,11 @@ const UserActivity: React.FC = () => {
     setCurrentPage(currentPage - 1);
   };
 
-  const filter = () => {};
+  const filter = () => { };
 
-
-
-  // if (error) {
-  //   return <div>Error: {error}</div>;
-  // }
+  const countWords = (str: string): number => {
+    return str.trim().split(/\s+/).length;
+  };
 
   const totalPages = Math.ceil(totalCount / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage + 1;
@@ -99,35 +113,71 @@ const UserActivity: React.FC = () => {
             </thead>
 
             <tbody>
+            
+  
               {
-                
               loading?
-            <tr >
-              <td colSpan={7}>
-                  <div style={{display:"flex",justifyContent:"center"}}>
-                    <MicroLoader/>
-                  </div>
-              </td>
-            </tr>:
-              
+              <tr >
+                <td colSpan={7}>
+                    <div style={{display:"flex",justifyContent:"center"}}>
+                      <MicroLoader/>
+                    </div>
+                </td>
+              </tr>:
               userActivityList && userActivityList?.length > 0 ? (
-                userActivityList?.map((el: DBManagerUserActivityModel) => (
-                  <tr key={el.time_date}>
-                    <td
-                      style={{
-                        fontWeight: '500',
-                        color: 'black',
-                        paddingLeft: '10px',
-                        textAlign: 'left',
-                      }}
-                    >
-                      {el.username}
-                    </td>
-                    <td style={{ textAlign: 'left' }}>{el.db_name}</td>
-                    <td style={{ textAlign: 'left' }}>{el.time_date}</td>
-                    <td style={{ textAlign: 'left' }}>{el.query_details}</td>
-                  </tr>
-                ))
+                userActivityList
+                  ?.filter((el: DBManagerUserActivityModel) => el.query_details !== ';') // Filter out rows where query_details is ';'
+                  ?.map((el: DBManagerUserActivityModel, index: number) => {
+                    const tooltipId = `tooltip-${index}`;
+                    const truncatedQueryDetails = el.query_details.slice(0, 50) + '...';
+                    const wordCount = countWords(el.query_details);
+
+
+
+                    return (
+                      <tr key={el.time_date}>
+                        <td
+                          style={{
+                            fontWeight: '500',
+                            color: 'black',
+                            paddingLeft: '10px',
+                            textAlign: 'left',
+                          }}
+                        >
+                          {el.username}
+                        </td>
+                        <td style={{ textAlign: 'left' }}>{el.db_name}</td>
+                        <td style={{ textAlign: 'left' }}>{el.time_date}</td>
+                        <td style={{ textAlign: 'left' }}>
+                          {wordCount <= 5 ? el.query_details : truncatedQueryDetails}
+                          {wordCount > 5 && (
+                            <>
+                              <button
+                                onClick={() => setOpenTooltipIndex(openTooltipIndex === index ? null : index)}
+                                data-tooltip-id={tooltipId}
+                                data-tooltip-content={el.query_details}
+                                data-tooltip-place="bottom"
+                                style={{
+                                  marginLeft: '5px',
+                                  border: 'none',
+                                  background: 'none',
+                                  color: '#3083e5',
+                                  cursor: 'pointer',
+                                }}
+                              >
+                                {openTooltipIndex === index ? 'Show less' : 'Show more'}
+                              </button>
+                              <ReactTooltip
+                                id={tooltipId}
+                                className="custom-tooltip"
+                                isOpen={openTooltipIndex === index}
+                              />
+                            </>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={10}>
@@ -139,6 +189,7 @@ const UserActivity: React.FC = () => {
                 </tr>
               )}
             </tbody>
+
           </table>
         </div>
 

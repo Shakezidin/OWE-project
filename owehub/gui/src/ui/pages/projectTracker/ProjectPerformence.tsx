@@ -23,7 +23,7 @@ const ProjectPerformence = () => {
   const getColorStyle = (date: string | null) => {
     if (!date) {
       return { backgroundColor: '#F2F4F6', color: '#7D7D7D' };
-    } else if (date === 'Completed') {
+    } else if (new Date(date) <= new Date()) {
       return { backgroundColor: '#57B93A', color: 'white' };
     } else {
       return { backgroundColor: '#008DDA', color: 'white' };
@@ -83,6 +83,7 @@ const ProjectPerformence = () => {
       <div className="project-container">
         <div className="project-heading">
           <h2>Performance</h2>
+          
           <div className="iconsSection-filter">
             <button
               type="button"
@@ -187,8 +188,36 @@ const ProjectPerformence = () => {
         style={{ marginTop: '1rem', padding: '0 0 1rem 0' }}
       >
         <div className="performance-table-heading">
+          
           <div className="performance-project">
+            <div>
             <h2>Projects</h2>
+
+            <div className="progress-box-container" >
+              <div className="progress-box-body">
+                <div
+                  className="progress-box"
+                  style={{ background: '#0493CE' }}
+                ></div>
+                <p>In Process</p>
+              </div>
+              <div className="progress-box-body">
+                <div
+                  className="progress-box"
+                  style={{ background: '#57B93A' }}
+                ></div>
+                <p>Completed</p>
+              </div>
+              <div className="progress-box-body">
+                <div
+                  className="progress-box"
+                  style={{ background: '#E9E9E9' }}
+                ></div>
+                <p>Not Started yet</p>
+              </div>
+            </div>
+
+            </div>
             {/* <input
               className="performance-search"
               type="search"
@@ -197,6 +226,10 @@ const ProjectPerformence = () => {
               onChange={() => {}}
             /> */}
           </div>
+
+
+      
+        
           <div className="performance-milestone-table">
             <table>
               <thead>
@@ -270,7 +303,7 @@ const ProjectPerformence = () => {
                                           new Date(project.contract_date),
                                           'yyyy'
                                         )
-                                      : 'No Data'}
+                                      : ''}
                                   </p>
                                 </div>
                                 <div
@@ -306,6 +339,17 @@ const ProjectPerformence = () => {
                                           'dd MMMM'
                                         ).slice(0, 6)
                                       : 'No Data'}
+                                  </p>
+
+                                  <p>
+                                    {project.site_survey_complete_date
+                                      ? format(
+                                          new Date(
+                                            project.site_survey_complete_date
+                                          ),
+                                          'yyyy'
+                                        )
+                                      : ''}
                                   </p>
                                 </div>
                                 <div
@@ -343,6 +387,17 @@ const ProjectPerformence = () => {
                                         ).slice(0, 6)
                                       : 'No Data'}
                                   </p>
+
+                                  <p>
+                                    {project.permit_approved_date
+                                      ? format(
+                                          new Date(
+                                            project.permit_approved_date
+                                          ),
+                                          'yyyy'
+                                        )
+                                      : ''}
+                                  </p>
                                 </div>
                                 <div
                                   className="strip-line"
@@ -375,6 +430,15 @@ const ProjectPerformence = () => {
                                           'dd MMMM'
                                         ).slice(0, 6)
                                       : 'No Data'}
+                                  </p>
+
+                                  <p>
+                                    {project.install_ready_date
+                                      ? format(
+                                          new Date(project.install_ready_date),
+                                          'yyyy'
+                                        )
+                                      : ''}
                                   </p>
                                 </div>
                                 <div
@@ -409,7 +473,17 @@ const ProjectPerformence = () => {
                                           ),
                                           'dd MMMM'
                                         ).slice(0, 6)
-                                      : 'No Data'}
+                                      : ''}
+                                  </p>
+                                  <p>
+                                    {project.install_completed_date
+                                      ? format(
+                                          new Date(
+                                            project.install_completed_date
+                                          ),
+                                          'yyyy'
+                                        ).slice(0, 6)
+                                      : ''}
                                   </p>
                                 </div>
                                 <div
@@ -441,6 +515,14 @@ const ProjectPerformence = () => {
                                           'dd MMMM'
                                         ).slice(0, 6)
                                       : 'No Data'}
+                                  </p>
+                                  <p>
+                                    {project.pto_date
+                                      ? format(
+                                          new Date(project.pto_date),
+                                          'yyyy'
+                                        ).slice(0, 6)
+                                      : ''}
                                   </p>
                                 </div>
                                 <div
