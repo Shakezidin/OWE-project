@@ -158,6 +158,7 @@ const FilterModal: React.FC<TableProps> = ({
   };
   const handleCloseModal = () => {
     handleClose();
+    setErrors({});
   };
 
   console.log(errors);
