@@ -89,15 +89,20 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
 
   const handleValidation = () => {
     const error: typeof formData = {} as typeof formData;
+  
     for (const key in formData) {
       if (!formData[key as keyof typeof formData]) {
-        error[key as keyof typeof formData] =
-          `${key.toLocaleLowerCase()} is required`;
+        // Capitalize the first letter of the key
+        const capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
+        // Assign an error message with the capitalized key
+        error[key as keyof typeof formData] = `${capitalizedKey} is required`;
       }
     }
+  
     setErrors({ ...error });
     return Object.keys(error).length ? false : true;
   };
+  
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -132,6 +137,8 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
       dispatch(resetSuccess());
     }
   }, [isSuccess]);
+
+  console.log(errors, "error")
 
   return (
     <div className="transparent-model">
@@ -387,9 +394,9 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                     placeholder={'Enter'}
                     onChange={handleChange}
                   />
-                  {errors?.start && (
+                  {errors?.end && (
                     <span style={{ display: 'block', color: '#FF204E' }}>
-                      {errors.start.replace('end', 'end date')}
+                      {errors.end.replace('end', 'end date')}
                     </span>
                   )}
                 </div>
