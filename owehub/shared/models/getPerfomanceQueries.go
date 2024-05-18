@@ -1,6 +1,5 @@
 package models
 
-
 func SalesRepRetrieveQueryFunc() string {
 	salerRepRetrieveQuery := `
     WITH RECURSIVE RegionalManagerHierarchy AS (
@@ -24,12 +23,19 @@ func SalesRepRetrieveQueryFunc() string {
 	return salerRepRetrieveQuery
 }
 
-
 func SalesMetricsRetrieveQueryFunc() string {
 	SalesMetricsRetrieveQuery := `
         SELECT unique_id, contract_date, permit_approved_date, 
             pv_install_completed_date, pto_date, site_survey_completed_date, 
             install_ready_date, dealer, primary_sales_rep
+        FROM consolidated_data_view
+    `
+	return SalesMetricsRetrieveQuery
+}
+
+func SalesRetrieveQueryFunc() string {
+	SalesMetricsRetrieveQuery := `
+        SELECT unique_id
         FROM consolidated_data_view
     `
 	return SalesMetricsRetrieveQuery
