@@ -28,7 +28,7 @@ func SalesMetricsRetrieveQueryFunc() string {
         SELECT unique_id, contract_date, permit_approved_date, 
             pv_install_completed_date, pto_date, site_survey_completed_date, 
             install_ready_date, dealer, primary_sales_rep
-        FROM dev_test_consolidated_data_view
+        FROM consolidated_data_view
     `
 	return SalesMetricsRetrieveQuery
 }
