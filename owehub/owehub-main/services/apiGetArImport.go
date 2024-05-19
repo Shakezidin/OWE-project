@@ -206,7 +206,7 @@ func PrepareArImportFilters(tableName string, dataFilter models.DataRequestBody,
 				whereEleList = append(whereEleList, value)
 			default:
 				// For other columns, handle them accordingly
-				filtersBuilder.WriteString("LOWER(")
+				filtersBuilder.WriteString("LOWER(ai.")
 				filtersBuilder.WriteString(column)
 				filtersBuilder.WriteString(") ")
 				filtersBuilder.WriteString(operator)

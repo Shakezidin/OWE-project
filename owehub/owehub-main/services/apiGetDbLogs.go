@@ -72,8 +72,7 @@ func HandleGetDbLogsRequest(resp http.ResponseWriter, req *http.Request) {
 
 	query = `
 		SELECT usename, datname, query_start, query
-		FROM pg_stat_activity
-	`
+		FROM pg_stat_activity`
 
 	countQuery = `
 		SELECT count(datname)
@@ -223,18 +222,18 @@ func PrepareDbLogFilters(tableName string, dataFilter models.DbLogReq, adminChec
 
 	var filtersBuilder strings.Builder
 	whereAdded := true
-	filtersBuilder.WriteString(" WHERE")
+	filtersBuilder.WriteString(" WHERE LENGTH(query) > 5 AND")
 
 	filtersBuilder.WriteString(fmt.Sprintf("  query_start >= $%d AND query_start <= $%d", len(whereEleList)+1, len(whereEleList)+2))
 	whereEleList = append(whereEleList, dataFilter.StartDate, dataFilter.EndDate)
 
 	if !adminCheck {
 		if !whereAdded {
-			filtersBuilder.WriteString(" WHERE ")
+			filtersBuilder.WriteString(" WHERE LENGTH(query) > 5 AND ")
 		} else {
 			filtersBuilder.WriteString(" AND ")
 		}
-		filtersBuilder.WriteString(fmt.Sprintf(" usename = $%d", len(whereEleList)+1))
+		filtersBuilder.WriteString(fmt.Sprintf(" usename = LOWER($%d)", len(whereEleList)+1))
 		whereEleList = append(whereEleList, dataFilter.Username)
 	}
 

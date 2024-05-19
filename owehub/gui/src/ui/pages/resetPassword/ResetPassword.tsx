@@ -79,6 +79,7 @@ const ResetPassword = () => {
                 className="loginImageLogo"
                 data={ICONS.LOGO}
                 aria-label="login-icon"
+                height={60}
               ></object>
               <br />
               <div className="loginLogowithText">

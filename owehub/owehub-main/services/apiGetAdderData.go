@@ -277,7 +277,7 @@ func PrepareAdderDataFilters(tableName string, dataFilter models.DataRequestBody
 				filtersBuilder.WriteString(fmt.Sprintf("ad.adder_cal %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ad.%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			}
 		}

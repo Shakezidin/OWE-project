@@ -21,6 +21,7 @@ import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import MicroLoader from '../../../components/loader/MicroLoader';
+import FilterHoc from '../../../components/FilterModal/FilterHoc';
 const AR = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -134,9 +135,9 @@ const AR = () => {
   };
   const handleViewArchiveToggle = () => {
     setViewArchived(!viewArchived);
-    // When toggling, reset the selected rows
     setSelectedRows(new Set());
     setSelectAllChecked(false);
+    setCurrentPage(1);
   };
   const handleArchiveAllClick = async () => {
     const confirmed = await showAlert(
@@ -162,6 +163,8 @@ const AR = () => {
 
         const res = await postCaller('update_ar_archive', newValue);
         if (res.status === HTTP_STATUS.OK) {
+          setSelectedRows(new Set());
+          setSelectAllChecked(false);
           // If API call is successful, refetch commissions
           dispatch(fetchAr(pageNumber));
           const remainingSelectedRows = Array.from(selectedRows).filter(
@@ -196,6 +199,8 @@ const AR = () => {
       };
       const res = await postCaller('update_ar_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
+        setSelectedRows(new Set());
+        setSelectAllChecked(false);
         dispatch(fetchAr(pageNumber));
         await successSwal('Archived', 'The data has been archived ');
       } else {
@@ -232,15 +237,17 @@ const AR = () => {
           onpressExport={() => {}}
           onpressAddNew={() => handleTimeLineSla()}
         />
-        {filterOPen && (
-          <FilterModal
-            handleClose={filterClose}
-            columns={ARColumns}
-            page_number={currentPage}
-            fetchFunction={fetchFunction}
-            page_size={itemsPerPage}
-          />
-        )}
+
+        <FilterHoc
+          isOpen={filterOPen}
+          resetOnChange={viewArchived}
+          handleClose={filterClose}
+          columns={ARColumns}
+          page_number={currentPage}
+          fetchFunction={fetchFunction}
+          page_size={itemsPerPage}
+        />
+
         {open && (
           <CreateAr
             editMode={editMode}

@@ -1,6 +1,8 @@
 import React from 'react';
 import { ICONS } from '../../icons/Icons';
 import '../../pages/configure/configure.css';
+import { useAppSelector } from '../../../redux/hooks';
+import { useLocation } from 'react-router-dom';
 
 interface TableProps {
   title: string;
@@ -27,7 +29,8 @@ const TableHeader = (props: TableProps) => {
     onpressAddNew,
     isAnyRowSelected,
   } = props;
-  console.log(viewArchive);
+  const { isActive } = useAppSelector((state) => state.filterSlice);
+  const { pathname } = useLocation();
   return (
     <div className="commissionSection">
       <h3>{title}</h3>
@@ -59,7 +62,7 @@ const TableHeader = (props: TableProps) => {
         ) : null}
 
         <div className="iconsSection-filter">
-          <button type="button" onClick={onPressFilter}>
+          <button style={{border:isActive[pathname]?"1px solid rgb(87, 185, 58)":""}} type="button" onClick={onPressFilter}>
             <img
               src={ICONS.filtercomm}
               alt=""

@@ -7,6 +7,7 @@
 }
 .support-container {
   padding: 2rem;
+  width: 520px;
 }
 .create-input-container-support {
   display: flex;

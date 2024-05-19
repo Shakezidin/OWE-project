@@ -59,7 +59,7 @@ const ARSchedule = () => {
       archived: viewArchived,
     };
     dispatch(getArscheduleList(pageNumber));
-  }, [dispatch, currentPage, viewArchived]);
+  }, [dispatch, currentPage, viewArchived,currentPage]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -165,6 +165,8 @@ const ARSchedule = () => {
       };
       const res = await postCaller('update_arschedule_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
+        setSelectAllChecked(false)
+        setSelectedRows(new Set());
         dispatch(getArscheduleList(pageNumber));
         await successSwal('Archived', 'The data has been archived ');
       } else {
@@ -189,7 +191,13 @@ const ARSchedule = () => {
       <div className="commissionContainer">
         <TableHeader
           title="AR Schedule"
-          onPressViewArchive={() => setViewArchived((prev) => !prev)}
+          onPressViewArchive={() =>{ 
+            
+            setViewArchived((prev) => !prev)
+            setCurrentPage(1)
+            setSelectAllChecked(false)
+            setSelectedRows(new Set())
+          }}
           onPressArchive={() =>
             handleArchiveClick(
               Array.from(selectedRows).map(

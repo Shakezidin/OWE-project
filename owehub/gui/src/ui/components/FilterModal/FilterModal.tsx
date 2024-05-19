@@ -5,6 +5,8 @@ import { ICONS } from '../../icons/Icons';
 import SelectOption from '../selectOption/SelectOption';
 import Input from '../text_input/Input';
 import { ActionButton } from '../button/ActionButton';
+import { activeFilter, disableFilter } from '../../../redux/apiSlice/filterSlice/filterSlice';
+import { useLocation } from 'react-router-dom';
 
 interface Column {
   name: string;
@@ -17,6 +19,7 @@ interface TableProps {
   page_number: number;
   page_size: number;
   fetchFunction: (req: any) => void;
+  resetOnChange?: boolean;
 }
 interface FilterModel {
   Column: string;
@@ -38,6 +41,7 @@ const FilterModal: React.FC<TableProps> = ({
   page_number,
   page_size,
   fetchFunction,
+  resetOnChange
 }) => {
   const dispatch = useAppDispatch();
   const [filters, setFilters] = useState<FilterModel[]>([
@@ -48,6 +52,35 @@ const FilterModal: React.FC<TableProps> = ({
     value: column.name,
     label: column.displayName,
   }));
+  const {pathname} = useLocation()
+
+  const resetAllFilter = () => {
+    const resetFilters = filters.filter(
+      (_, ind) =>
+        ind===0
+    ).map(filter =>({
+      ...filter,
+      Column: '',
+      Operation: '',
+      Data: '',
+    }))
+    if (filters.some(filter=>filter.Operation||filter.Data||filter.Column)) {   
+      const req = {
+        page_number: page_number,
+        page_size: page_size,
+      };
+      fetchFunction(req);
+    }
+    dispatch(disableFilter({name:pathname}))
+    setFilters(resetFilters);
+    setErrors({});
+  };
+  useEffect(()=>{
+    resetAllFilter()
+    return (()=>{
+      dispatch(disableFilter({name:pathname}))
+    })
+  },[resetOnChange])
 
   const handleAddRow = () => {
     setFilters([...filters, { Column: '', Operation: '', Data: '' }]);
@@ -64,6 +97,8 @@ const FilterModal: React.FC<TableProps> = ({
     updatedFilters.splice(index, 1);
     setFilters(updatedFilters);
   };
+
+
 
   const handleChange = (
     index: number,
@@ -97,18 +132,7 @@ const FilterModal: React.FC<TableProps> = ({
     }
   };
 
-  const resetAllFilter = () => {
-    localStorage.removeItem('filters');
-    const resetFilters = filters.map((filter) => ({
-      ...filter,
-      Column: '',
-      Operation: '',
-      Data: '',
-    }));
 
-    setFilters(resetFilters);
-    setErrors({});
-  };
 
   const applyFilter = async () => {
     setErrors({});
@@ -144,17 +168,14 @@ const FilterModal: React.FC<TableProps> = ({
         page_size: page_size,
         filters: formattedFilters,
       };
+      dispatch(activeFilter({name:pathname}))
       handleClose();
       fetchFunction(req);
     }
   };
   const handleCloseModal = () => {
-    const req = {
-      page_number: page_number,
-      page_size: page_size,
-    };
-    fetchFunction(req);
     handleClose();
+    setErrors({});
   };
 
   console.log(errors);
