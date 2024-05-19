@@ -1,9 +1,9 @@
 import { Column } from '../../../core/models/data_models/FilterSelectModel';
 
 export const ARScheduleColumns: Column[] = [
-  { name: 'partner', displayName: 'Partner', type: 'string', isCheckbox: true },
+  { name: 'partner_name', displayName: 'Partner', type: 'string', isCheckbox: true },
   {
-    name: 'installer',
+    name: 'installer_name',
     displayName: 'Installer',
     type: 'string',
     isCheckbox: false,
@@ -14,7 +14,7 @@ export const ARScheduleColumns: Column[] = [
     type: 'string',
     isCheckbox: false,
   },
-  { name: 'state', displayName: 'State', type: 'string', isCheckbox: false },
+  { name: 'state_name', displayName: 'State', type: 'string', isCheckbox: false },
   {
     name: 'red_line',
     displayName: 'Red Line',
@@ -52,10 +52,10 @@ export const ARScheduleColumns: Column[] = [
     isCheckbox: false,
   },
   {
-    name: 'start',
+    name: 'start_date',
     displayName: 'Start Date',
     type: 'string',
     isCheckbox: false,
   },
-  { name: 'end', displayName: 'End Date', type: 'string', isCheckbox: false },
+  { name: 'end_date', displayName: 'End Date', type: 'string', isCheckbox: false },
 ];

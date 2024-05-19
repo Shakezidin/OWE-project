@@ -38,7 +38,6 @@ export const createAr = createAsyncThunk(
       if (data instanceof Error) {
         return rejectWithValue((data as Error).message);
       }
-      await dispatch(fetchAr({ page_number: 1, page_size: 10 }));
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -51,7 +50,7 @@ export const updateAr = createAsyncThunk(
   async (params: any, { rejectWithValue, dispatch }) => {
     try {
       const data = await postCaller('update_ar', params);
-      await dispatch(fetchAr({ page_number: 1, page_size: 10 }));
+      
       return data.data;
     } catch (error) {
       return rejectWithValue((error as Error).message);

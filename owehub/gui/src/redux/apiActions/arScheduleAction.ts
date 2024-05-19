@@ -1,10 +1,12 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
+import { FilterModel } from '../../core/models/data_models/FilterSelectModel';
 
 interface Ipaginate {
   page_number: number;
   page_size: number;
   archived: boolean;
+  filters:FilterModel[]
 }
 
 export interface IARSchedule {
@@ -63,9 +65,6 @@ export const createArSchedule = createAsyncThunk(
       if (data.status > 201 || data instanceof Error) {
         return rejectWithValue((data as Error).message);
       }
-      await dispatch(
-        getArscheduleList({ page_number: 1, page_size: 10, archived: false })
-      );
       return data.data;
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -81,9 +80,6 @@ export const updateArchSchedule = createAsyncThunk(
       if (data.status > 201 || data instanceof Error) {
         return rejectWithValue((data as Error).message);
       }
-      await dispatch(
-        getArscheduleList({ page_number: 1, page_size: 10, archived: false })
-      );
       return data.data;
     } catch (error) {
       return rejectWithValue((error as Error).message);

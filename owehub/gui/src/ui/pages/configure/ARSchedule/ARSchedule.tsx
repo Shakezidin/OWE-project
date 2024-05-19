@@ -25,6 +25,8 @@ import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoin
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import MicroLoader from '../../../components/loader/MicroLoader';
+import FilterHoc from '../../../components/FilterModal/FilterHoc';
+import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 const ARSchedule = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -47,6 +49,8 @@ const ARSchedule = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [filters, setFilters] = useState<FilterModel[]>([
+  ]);
   const {
     data: commissionList,
     isLoading,
@@ -57,9 +61,10 @@ const ARSchedule = () => {
       page_number: currentPage,
       page_size: itemsPerPage,
       archived: viewArchived,
+      filters
     };
     dispatch(getArscheduleList(pageNumber));
-  }, [dispatch, currentPage, viewArchived,currentPage]);
+  }, [dispatch, currentPage, viewArchived, currentPage,filters]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -67,10 +72,11 @@ const ARSchedule = () => {
         page_number: currentPage,
         page_size: itemsPerPage,
         archived: viewArchived,
+        filters
       };
       dispatch(getArscheduleList({ ...pageNumber }));
     }
-  }, [isSuccess, currentPage, viewArchived]);
+  }, [isSuccess, currentPage, viewArchived,filters]);
   const filter = () => {
     setFilterOpen(true);
   };
@@ -136,13 +142,8 @@ const ARSchedule = () => {
     handleOpen();
   };
   const fetchFunction = (req: any) => {
-    dispatch(
-      getArscheduleList({
-        ...req,
-        page_number: currentPage,
-        page_size: itemsPerPage,
-      })
-    );
+    setCurrentPage(1)
+    setFilters(req.filters)
   };
 
   const handleArchiveClick = async (record_id: number[]) => {
@@ -162,10 +163,11 @@ const ARSchedule = () => {
         page_number: currentPage,
         page_size: itemsPerPage,
         archived: viewArchived,
+        filters
       };
       const res = await postCaller('update_arschedule_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
-        setSelectAllChecked(false)
+        setSelectAllChecked(false);
         setSelectedRows(new Set());
         dispatch(getArscheduleList(pageNumber));
         await successSwal('Archived', 'The data has been archived ');
@@ -191,12 +193,11 @@ const ARSchedule = () => {
       <div className="commissionContainer">
         <TableHeader
           title="AR Schedule"
-          onPressViewArchive={() =>{ 
-            
-            setViewArchived((prev) => !prev)
-            setCurrentPage(1)
-            setSelectAllChecked(false)
-            setSelectedRows(new Set())
+          onPressViewArchive={() => {
+            setViewArchived((prev) => !prev);
+            setCurrentPage(1);
+            setSelectAllChecked(false);
+            setSelectedRows(new Set());
           }}
           onPressArchive={() =>
             handleArchiveClick(
@@ -213,15 +214,17 @@ const ARSchedule = () => {
           onpressExport={() => {}}
           onpressAddNew={() => handleTimeLineSla()}
         />
-        {filterOPen && (
-          <FilterModal
-            handleClose={filterClose}
-            columns={ARScheduleColumns}
-            page_number={currentPage}
-            fetchFunction={fetchFunction}
-            page_size={itemsPerPage}
-          />
-        )}
+
+        <FilterHoc
+          isOpen={filterOPen}
+          resetOnChange={viewArchived}
+          handleClose={filterClose}
+          columns={ARScheduleColumns}
+          page_number={currentPage}
+          fetchFunction={fetchFunction}
+          page_size={itemsPerPage}
+        />
+
         {open && (
           <CreatedArSchedule
             editMode={editMode}

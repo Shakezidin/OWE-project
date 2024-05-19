@@ -25,6 +25,7 @@ import { ROUTES } from '../../../../routes/routes';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import MicroLoader from '../../../components/loader/MicroLoader';
+import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 
 const DealerOverRides: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -46,14 +47,17 @@ const DealerOverRides: React.FC = () => {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [currentPage, setCurrentPage] = useState(1);
   const [editedDealer, setEditDealer] = useState<DealerModel | null>(null);
+  const [filters, setFilters] = useState<FilterModel[]>([
+  ]);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
       archived: viewArchived ? true : undefined,
+      filters
     };
     dispatch(fetchDealer(pageNumber));
-  }, [dispatch, currentPage, viewArchived]);
+  }, [dispatch, currentPage, viewArchived,filters]);
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
@@ -192,7 +196,8 @@ const DealerOverRides: React.FC = () => {
     setSelectAllChecked(false);
   };
   const fetchFunction = (req: any) => {
-    dispatch(fetchDealer({ ...req, page_number: currentPage }));
+    setCurrentPage(1)
+    setFilters(req.filters)
   };
   if (error) {
     return (
