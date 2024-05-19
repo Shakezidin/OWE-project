@@ -177,13 +177,13 @@ func CalculateContractAmount(netEPC float64, contractTotal float64, systemSize f
  * DESCRIPTION:    calculates the EPC based on the provided data
  * RETURNS:         contact amount
  *****************************************************************************/
-func CalculateEPCCalc(contractCalc float64, wc1 time.Time, netEPC float64, systemSize float64) float64 {
+func CalculateEPCCalc(contractCalc float64, wc1 time.Time, netEPC float64, systemSize float64, wc1Filterdate time.Time) float64 {
 
 	log.EnterFn(0, "CalculateEPCCalc")
 	defer func() { log.ExitFn(0, "CalculateEPCCalc", nil) }()
 
 	if contractCalc > 0.0 {
-		if wc1.Equal(Wc1FilterDate) {
+		if wc1.Equal(wc1Filterdate) {
 			/* Use net_epc if wc_1 is less than 44287*/
 			if netEPC != 0.0 {
 				return netEPC

@@ -175,6 +175,7 @@ const (
 	TableName_finance_metrics_schema         string = "finance_metrics_schema"
 	TableName_Pg_Stat_Activity               string = "pg_stat_activity"
 	TableName_v_dealer                       string = "v_dealer"
+	TableName_DLR_PAY_APCALC                 string = "ap_calc_dealer_pay_calc"
 )
 
 /******************************************************************************
