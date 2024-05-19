@@ -115,17 +115,19 @@ func (ArSkdConfig *ArSkdCfgStruct) LoadArSkdCfg() (err error) {
 			PtoPay = 0.0
 		}
 
-		StartDate, ok := item["start_date"].(string)
-		if !ok || StartDate == "" {
+		StDate, ok := item["start_date"].(time.Time)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
-			StartDate = ""
+			StDate = time.Time{}
 		}
 
-		EndDate, ok := item["end_date"].(string)
-		if !ok || EndDate == "" {
+		EdDate, ok := item["end_date"].(time.Time)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get end date for Record ID %v. Item: %+v\n", RecordId, item)
-			EndDate = ""
+			EdDate = time.Time{}
 		}
+		StartDate := StDate.Format("2006-01-02")
+		EndDate := EdDate.Format("2006-01-02")
 
 		arSchedule := models.GetArSchedule{
 			RecordId:      RecordId,

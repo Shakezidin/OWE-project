@@ -56,7 +56,7 @@ INSERT INTO loan_type (product_code,active,adder,description) VALUES ('P123',1,1
 \copy dealer_tier(dealer_id,tier_id,start_date,end_date) FROM '/docker-entrypoint-initdb.d/dealer_tier.csv' DELIMITER ',' CSV;
 \copy loan_fee(dealer_id,installer,state_id,loan_type,owe_cost,dlr_mu,dlr_cost,start_date,end_date) FROM '/docker-entrypoint-initdb.d/loan_fee.csv' DELIMITER ',' CSV;
 \copy tier_loan_fee(dealer_tier,installer_id,state_id,loan_type,owe_cost,dlr_mu,dlr_cost,start_date,end_date) FROM '/docker-entrypoint-initdb.d/tier_loan_fee.csv' DELIMITER ',' CSV;
-\copy adjustments(unique_id,date,amount,notes) FROM '/docker-entrypoint-initdb.d/adjustments.csv' DELIMITER ',' CSV;
+\copy adjustments(unique_id,customer,partner,installer,state,sys_size,bl,epc,date,amount,notes) FROM '/docker-entrypoint-initdb.d/adjustments.csv' DELIMITER ',' CSV;
 \copy ar(unique_id,date,amount) FROM '/docker-entrypoint-initdb.d/ar.csv' DELIMITER ',' CSV;
 \copy ar_schedule(partner,installer,sale_type_id,state_id,red_line,calc_date,permit_pay,permit_max,install_pay,pto_pay,start_date,end_date) FROM '/docker-entrypoint-initdb.d/ar_schedule.csv' DELIMITER ',' CSV;
 \copy install_cost(cost,start_date,end_date) FROM '/docker-entrypoint-initdb.d/install_cost.csv' DELIMITER ',' CSV;

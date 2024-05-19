@@ -41,6 +41,7 @@ func ExecArInitialCalculation(resultChan chan string) {
 		} else {
 			arDataList = append(arDataList, arData)
 		}
+		break //Jaitunjai to remove
 	}
 	/* Update Calculated and Fetched data AR.Data Table */
 	err = db.AddMultipleRecordInDB(db.OweHubDbIndex, db.TableName_SalesArCalc, arDataList)
