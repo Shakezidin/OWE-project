@@ -21,7 +21,7 @@ import SelectOption from '../../../components/selectOption/SelectOption';
 import {
   createAdderResponsibility,
   updateAdderResponsibility,
-} from '../../../../redux/apiActions/adderResponsbilityAction';
+} from '../../../../redux/apiActions/config/adderResponsbilityAction';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/adderResponsbilitySlice';
 
 interface payScheduleProps {

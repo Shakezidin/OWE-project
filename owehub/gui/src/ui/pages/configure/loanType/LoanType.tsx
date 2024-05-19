@@ -35,7 +35,7 @@ const LoanType = () => {
   const handleClose = () => setOpen(false);
 
   const filterClose = () => setFilterOpen(false);
-  const {loantype_list:loanTypeList,count} = useAppSelector(
+  const { loantype_list: loanTypeList, count } = useAppSelector(
     (state) => state?.loanType
   );
   const loading = useAppSelector((state) => state.loanType.loading);
@@ -47,7 +47,7 @@ const LoanType = () => {
     null
   );
   const itemsPerPage = 10;
-  const [currentPage,setCurrentPage] = useState(1)
+  const [currentPage, setCurrentPage] = useState(1);
   const [sortKey, setSortKey] = useState('');
   const [viewArchived, setViewArchived] = useState<boolean>(false);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
@@ -60,15 +60,15 @@ const LoanType = () => {
     dispatch(fetchLoanType(pageNumber));
   }, [dispatch, currentPage, viewArchived]);
   const paginate = (pageNumber: number) => {
-    setCurrentPage(pageNumber)
+    setCurrentPage(pageNumber);
   };
 
   const goToNextPage = () => {
-   setCurrentPage(currentPage + 1)
+    setCurrentPage(currentPage + 1);
   };
 
   const goToPrevPage = () => {
-   setCurrentPage(currentPage - 1)
+    setCurrentPage(currentPage - 1);
   };
   const handleAddLoan = () => {
     setEditMode(false);
@@ -81,7 +81,7 @@ const LoanType = () => {
   };
   const totalPages = Math.ceil(count / itemsPerPage);
 
-  const startIndex = (currentPage - 1) * itemsPerPage+1;
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
   const endIndex = currentPage * itemsPerPage;
   const handleEditLoan = (loanData: LoanTypeModel) => {
     setEditMode(true);
@@ -149,7 +149,7 @@ const LoanType = () => {
           const remainingSelectedRows = Array.from(selectedRows).filter(
             (index) => !archivedRows.includes(loanTypeList[index].record_id)
           );
-      
+
           setSelectAllChecked(false);
           setSelectedRows(new Set());
           await successSwal('Archived', 'The data has been archived ');
@@ -193,7 +193,7 @@ const LoanType = () => {
     // When toggling, reset the selected rows
     setSelectedRows(new Set());
     setSelectAllChecked(false);
-    setCurrentPage(1)
+    setCurrentPage(1);
   };
   const fetchFunction = (req: any) => {
     dispatch(fetchLoanType(req));
@@ -354,7 +354,8 @@ const LoanType = () => {
         {loanTypeList?.length > 0 ? (
           <div className="page-heading-container">
             <p className="page-heading">
-              {startIndex} - {endIndex>count?count:endIndex} of {count} item
+              {startIndex} - {endIndex > count ? count : endIndex} of {count}{' '}
+              item
             </p>
             <Pagination
               currentPage={currentPage}

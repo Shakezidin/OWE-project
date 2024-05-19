@@ -4,7 +4,7 @@ import {
   createDlrOth,
   IRowDLR,
   updateDlrOth,
-} from '../../../apiActions/dlrAction';
+} from '../../../apiActions/config/dlrAction';
 import { toast } from 'react-toastify';
 
 interface IState {

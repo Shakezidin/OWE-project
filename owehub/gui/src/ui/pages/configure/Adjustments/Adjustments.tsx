@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import {
   IRateRow,
   getAdjustments,
-} from '../../../../redux/apiActions/arAdjustmentsAction';
+} from '../../../../redux/apiActions/config/arAdjustmentsAction';
 
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';

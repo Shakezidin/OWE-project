@@ -348,7 +348,7 @@ br {
   width: 19px;
   height: 20px;
 }
-.select-type-label{
+.select-type-label {
   position: static !important;
   display: block;
   margin-bottom: -15px !important;

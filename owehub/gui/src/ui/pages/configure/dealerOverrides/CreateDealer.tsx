@@ -63,7 +63,6 @@ const CreateDealer: React.FC<dealerProps> = ({
     tableNames: ['sub_dealer', 'dealer', 'states'],
   };
 
-  
   const userType = {
     role: 'sub_dealer',
   };
@@ -164,7 +163,13 @@ const CreateDealer: React.FC<dealerProps> = ({
       return;
     }
     try {
-      dispatch(updateDealerForm({ ...createDealer, dealer: delaerVal, sub_dealer: createDealer.sub_dealers, }));
+      dispatch(
+        updateDealerForm({
+          ...createDealer,
+          dealer: delaerVal,
+          sub_dealer: createDealer.sub_dealers,
+        })
+      );
       if (createDealer.record_id) {
         const res = await postCaller(EndPoints.update_dealer, {
           ...createDealer,
@@ -176,21 +181,21 @@ const CreateDealer: React.FC<dealerProps> = ({
           handleClose();
           dispatch(fetchDealer(page));
         } else {
-            toast.error(res.message);
+          toast.error(res.message);
         }
       } else {
         const { record_id, ...cleanedFormData } = createDealer;
         const res = await postCaller(EndPoints.create_dealer, {
           ...cleanedFormData,
           dealer: delaerVal,
-          sub_dealer: createDealer.sub_dealers
+          sub_dealer: createDealer.sub_dealers,
         });
         if (res.status === 200) {
-         toast.success(res.message);
+          toast.success(res.message);
           handleClose();
           dispatch(fetchDealer(page));
         } else {
-           toast.error( res.message);
+          toast.error(res.message);
         }
       }
     } catch (error) {
@@ -220,7 +225,6 @@ const CreateDealer: React.FC<dealerProps> = ({
                     type="text"
                     name="sub_dealer"
                     placeholder="Enter"
-                    
                     onChange={(e) =>
                       setCreateDealer({
                         ...createDealer,
@@ -294,8 +298,9 @@ const CreateDealer: React.FC<dealerProps> = ({
                     value={createDealer.start_date}
                     name="start_date"
                     placeholder={'Enter'}
-                    onChange={(e) =>{ handleDealerInputChange(e)
-                      setCreateDealer(prev=>({...prev,end_date:""}))
+                    onChange={(e) => {
+                      handleDealerInputChange(e);
+                      setCreateDealer((prev) => ({ ...prev, end_date: '' }));
                     }}
                   />
                   {errors.start_date && (
@@ -308,7 +313,13 @@ const CreateDealer: React.FC<dealerProps> = ({
                     label="End Date"
                     name="end_date"
                     value={createDealer.end_date}
-                    min={createDealer.start_date && format(addDays(new Date(createDealer.start_date),1),"yyyy-MM-dd")}
+                    min={
+                      createDealer.start_date &&
+                      format(
+                        addDays(new Date(createDealer.start_date), 1),
+                        'yyyy-MM-dd'
+                      )
+                    }
                     disabled={!createDealer.start_date}
                     placeholder={'Enter'}
                     onChange={(e) => handleDealerInputChange(e)}

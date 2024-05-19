@@ -1,6 +1,6 @@
 // get_dlr_oth_data
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
+import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 
 interface Ipaginate {
   page_number: number;

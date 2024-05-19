@@ -25,7 +25,12 @@ export const AdjustmentsColumns: Column[] = [
     type: 'string',
     isCheckbox: false,
   },
-  { name: 'state_name', displayName: 'State', type: 'string', isCheckbox: false },
+  {
+    name: 'state_name',
+    displayName: 'State',
+    type: 'string',
+    isCheckbox: false,
+  },
   {
     name: 'sys_size',
     displayName: 'Sys. Size',

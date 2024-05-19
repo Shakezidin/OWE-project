@@ -104,7 +104,6 @@ const DataTableHeaderr = (props: TableProps) => {
           )}
         </div>
 
-
         <div
           className="iconsSection-filter"
           style={{ marginRight: selectMarginLeft1 }}

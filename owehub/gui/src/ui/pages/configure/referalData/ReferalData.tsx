@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { CSVLink } from 'react-csv';
 import { ICONS } from '../../../icons/Icons';
 import TableHeader from '../../../components/tableHeader/TableHeader';
-import { getrefralData } from '../../../../redux/apiActions/refralDataAction';
+import { getrefralData } from '../../../../redux/apiActions/config/refralDataAction';
 
 // import FilterCommission from "./FilterCommission";
 

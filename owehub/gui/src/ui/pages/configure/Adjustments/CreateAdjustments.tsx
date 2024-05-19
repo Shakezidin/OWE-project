@@ -10,7 +10,7 @@ import {
   createAdjustments,
   updateAdjustments,
   IRateRow,
-} from '../../../../redux/apiActions/arAdjustmentsAction';
+} from '../../../../redux/apiActions/config/arAdjustmentsAction';
 import {
   installerOption,
   partnerOption,

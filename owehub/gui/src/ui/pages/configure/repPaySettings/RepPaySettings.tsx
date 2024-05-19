@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import {
   fetchRepaySettings,
   RepayEditParams,
-} from '../../../../redux/apiActions/repPayAction';
+} from '../../../../redux/apiActions/config/repPayAction';
 import CreateRepPaySettings from './CreateRepPaySettings';
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';

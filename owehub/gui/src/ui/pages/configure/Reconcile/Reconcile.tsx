@@ -14,12 +14,12 @@ import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import { ReconcileColumns } from '../../../../resources/static_data/configureHeaderData/ReconcileColumn';
 import FilterModal from '../../../components/FilterModal/FilterModal';
 import { ROUTES } from '../../../../routes/routes';
-import { fetchReconcile } from '../../../../redux/apiActions/reconcileAction';
+import { fetchReconcile } from '../../../../redux/apiActions/config/reconcileAction';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
 import Loading from '../../../components/loader/Loading';
-import { fetchRateAdjustments } from '../../../../redux/apiActions/RateAdjustmentsAction';
+import { fetchRateAdjustments } from '../../../../redux/apiActions/config/RateAdjustmentsAction';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import DataNotFound from '../../../components/loader/DataNotFound';
 

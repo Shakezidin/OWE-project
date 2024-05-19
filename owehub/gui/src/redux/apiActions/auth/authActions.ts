@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
-import { EndPoints } from '../../infrastructure/web_api/api_client/EndPoints';
-import { Credentials } from '../../core/models/api_models/AuthModel';
+import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
+import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints';
+import { Credentials } from '../../../core/models/api_models/AuthModel';
 
 /** Create user */
 export const loginAction = createAsyncThunk(

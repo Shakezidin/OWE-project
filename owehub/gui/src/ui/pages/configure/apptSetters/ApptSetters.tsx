@@ -13,7 +13,7 @@ import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import { ApptSettersColumn } from '../../../../resources/static_data/configureHeaderData/ApptSettersColumn';
 import FilterModal from '../../../components/FilterModal/FilterModal';
 import { ROUTES } from '../../../../routes/routes';
-import { fetchApptSetters } from '../../../../redux/apiActions/apptSetterAction';
+import { fetchApptSetters } from '../../../../redux/apiActions/config/apptSetterAction';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';

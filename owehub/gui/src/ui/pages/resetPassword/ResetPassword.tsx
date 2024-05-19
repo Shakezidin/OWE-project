@@ -9,7 +9,7 @@ import Input from '../../components/text_input/Input';
 import { ActionButton } from '../../components/button/ActionButton';
 import { resetPassword } from '../../../core/models/api_models/AuthModel';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
-import { generateOTP } from '../../../redux/apiActions/authActions';
+import { generateOTP } from '../../../redux/apiActions/auth/authActions';
 import { HTTP_STATUS } from '../../../core/models/api_models/RequestModel';
 import { toast } from 'react-toastify';
 import { updateEmail } from '../../../redux/apiSlice/authSlice/resetPasswordSlice';

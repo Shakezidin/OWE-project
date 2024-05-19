@@ -22,7 +22,7 @@ import { ROUTES } from '../../../../routes/routes';
 import {
   getInstallCost,
   ICost,
-} from '../../../../redux/apiActions/installCostAction';
+} from '../../../../redux/apiActions/config/installCostAction';
 import CreateInstallCost from './CreateInstallCost';
 import Loading from '../../../components/loader/Loading';
 import DataNotFound from '../../../components/loader/DataNotFound';
@@ -147,7 +147,7 @@ const InstallCost = () => {
       const res = await postCaller('update_installcost_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
         setSelectedRows(new Set());
-            setSelectAllChecked(false);
+        setSelectAllChecked(false);
 
         dispatch(getInstallCost(pageNumber));
         await successSwal('Archived', 'The data has been archived ');
@@ -189,14 +189,13 @@ const InstallCost = () => {
             setSelectedRows(new Set());
           }}
           onPressArchive={() => {
-           
-              handleArchiveClick(
-                Array.from(selectedRows).map(
-                  (_, i: number) => currentPageData[i].record_id
-                )
-              );
-              setSelectAllChecked(false);
-              setSelectedRows(new Set());
+            handleArchiveClick(
+              Array.from(selectedRows).map(
+                (_, i: number) => currentPageData[i].record_id
+              )
+            );
+            setSelectAllChecked(false);
+            setSelectedRows(new Set());
           }}
           onPressFilter={() => filter()}
           onPressImport={() => {}}

@@ -62,7 +62,13 @@ const TableHeader = (props: TableProps) => {
         ) : null}
 
         <div className="iconsSection-filter">
-          <button style={{border:isActive[pathname]?"1px solid rgb(87, 185, 58)":""}} type="button" onClick={onPressFilter}>
+          <button
+            style={{
+              border: isActive[pathname] ? '1px solid rgb(87, 185, 58)' : '',
+            }}
+            type="button"
+            onClick={onPressFilter}
+          >
             <img
               src={ICONS.filtercomm}
               alt=""

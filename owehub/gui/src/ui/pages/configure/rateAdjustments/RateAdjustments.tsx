@@ -19,7 +19,7 @@ import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
 import Loading from '../../../components/loader/Loading';
-import { fetchRateAdjustments } from '../../../../redux/apiActions/RateAdjustmentsAction';
+import { fetchRateAdjustments } from '../../../../redux/apiActions/config/RateAdjustmentsAction';
 import DataNotFound from '../../../components/loader/DataNotFound';
 
 const RateAdjustments = () => {

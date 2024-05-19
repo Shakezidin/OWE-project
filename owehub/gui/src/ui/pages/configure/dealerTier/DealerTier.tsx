@@ -148,8 +148,8 @@ const DealerTier = () => {
         const res = await postCaller(EndPoints.update_dealer_archive, newValue);
         if (res.status === HTTP_STATUS.OK) {
           // If API call is successful, refetch commissions
-            setSelectAllChecked(false);
-            setSelectedRows(new Set());
+          setSelectAllChecked(false);
+          setSelectedRows(new Set());
           dispatch(fetchDealerTier(pageNumber));
           const remainingSelectedRows = Array.from(selectedRows).filter(
             (index) => !archivedRows.includes(dealerTierList[index].record_id)
@@ -183,8 +183,8 @@ const DealerTier = () => {
       };
       const res = await postCaller(EndPoints.update_dealer_archive, newValue);
       if (res.status === HTTP_STATUS.OK) {
-            setSelectAllChecked(false);
-            setSelectedRows(new Set());
+        setSelectAllChecked(false);
+        setSelectedRows(new Set());
         dispatch(fetchDealerTier(pageNumber));
         await successSwal('Archived', 'The data has been archived ');
       } else {
@@ -229,11 +229,10 @@ const DealerTier = () => {
         <TableHeader
           title="Dealer Tier"
           onPressViewArchive={() => {
-            handleViewArchiveToggle()
+            handleViewArchiveToggle();
             setCurrentPage(1);
             setSelectAllChecked(false);
             setSelectedRows(new Set());
-
           }}
           onPressArchive={() => handleArchiveAllClick()}
           checked={isAllRowsSelected}
@@ -362,7 +361,8 @@ const DealerTier = () => {
         {dealerTierList?.length > 0 ? (
           <div className="page-heading-container">
             <p className="page-heading">
-              {startIndex} - {endIndex>dbCount?dbCount:endIndex} of {dbCount} item
+              {startIndex} - {endIndex > dbCount ? dbCount : endIndex} of{' '}
+              {dbCount} item
             </p>
             <Pagination
               currentPage={currentPage}

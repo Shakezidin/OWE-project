@@ -22,7 +22,7 @@ import {
   createApttSetters,
   fetchApptSetters,
   updateApptSetters,
-} from '../../../../redux/apiActions/apptSetterAction';
+} from '../../../../redux/apiActions/config/apptSetterAction';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/apptSetterSlice';
 
 interface payScheduleProps {

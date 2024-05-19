@@ -21,7 +21,7 @@ import SelectOption from '../../../components/selectOption/SelectOption';
 import {
   createRateAdjustments,
   updateRateAdjustment,
-} from '../../../../redux/apiActions/RateAdjustmentsAction';
+} from '../../../../redux/apiActions/config/RateAdjustmentsAction';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/rateAdjustmentsSlice';
 interface payScheduleProps {

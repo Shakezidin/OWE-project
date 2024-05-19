@@ -1,12 +1,12 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
-import { FilterModel } from '../../core/models/data_models/FilterSelectModel';
+import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
+import { FilterModel } from '../../../core/models/data_models/FilterSelectModel';
 
 interface Ipaginate {
   page_number: number;
   page_size: number;
   archived: boolean;
-  filters:FilterModel[]
+  filters: FilterModel[];
 }
 
 export interface IARSchedule {

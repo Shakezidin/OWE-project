@@ -107,7 +107,7 @@ export const store = configureStore({
     dbManager: DBManagerSlice,
     projectManagement,
     dataTableSlice,
-    filterSlice
+    filterSlice,
   },
 });
 

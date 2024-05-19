@@ -24,12 +24,12 @@ import SelectOption from '../../../components/selectOption/SelectOption';
 import {
   createReconcile,
   updateReconcile,
-} from '../../../../redux/apiActions/reconcileAction';
+} from '../../../../redux/apiActions/config/reconcileAction';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import {
   fetchRepaySettings,
   RepayEditParams,
-} from '../../../../redux/apiActions/repPayAction';
+} from '../../../../redux/apiActions/config/repPayAction';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/reconcileSlice';
 import { addDays, format } from 'date-fns';
 interface payScheduleProps {

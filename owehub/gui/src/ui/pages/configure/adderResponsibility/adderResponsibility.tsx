@@ -16,8 +16,8 @@ import { AdderResponsibilityColumns } from '../../../../resources/static_data/co
 import FilterModal from '../../../components/FilterModal/FilterModal';
 import { ROUTES } from '../../../../routes/routes';
 import CreateAdderResponsibility from './CreateAdderResponsibility';
-import { fetchAdderResponsibility } from '../../../../redux/apiActions/adderResponsbilityAction';
-import { fetchApptSetters } from '../../../../redux/apiActions/apptSetterAction';
+import { fetchAdderResponsibility } from '../../../../redux/apiActions/config/adderResponsbilityAction';
+import { fetchApptSetters } from '../../../../redux/apiActions/config/apptSetterAction';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';

@@ -12,7 +12,12 @@ export const ARColumns: Column[] = [
     type: 'string',
     isCheckbox: false,
   },
-  { name: 'state_name', displayName: 'State', type: 'string', isCheckbox: false },
+  {
+    name: 'state_name',
+    displayName: 'State',
+    type: 'string',
+    isCheckbox: false,
+  },
   { name: 'date', displayName: 'Date', type: 'string', isCheckbox: false },
   { name: 'amount', displayName: 'Amount', type: 'string', isCheckbox: false },
   {

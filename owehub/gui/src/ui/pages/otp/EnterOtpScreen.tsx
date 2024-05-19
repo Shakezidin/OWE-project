@@ -8,7 +8,7 @@ import { ActionButton } from '../../components/button/ActionButton';
 import { otpModel } from '../../../core/models/api_models/AuthModel';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
-import { generateOTP } from '../../../redux/apiActions/authActions';
+import { generateOTP } from '../../../redux/apiActions/auth/authActions';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { HTTP_STATUS } from '../../../core/models/api_models/RequestModel';
 import { toast } from 'react-toastify';

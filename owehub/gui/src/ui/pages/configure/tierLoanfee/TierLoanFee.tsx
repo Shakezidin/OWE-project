@@ -194,7 +194,7 @@ const TierLoanFee = () => {
   const handleViewArchiveToggle = () => {
     setViewArchived(!viewArchived);
     // When toggling, reset the selected rows
-    setCurrentPage(1)
+    setCurrentPage(1);
     setSelectedRows(new Set());
     setSelectAllChecked(false);
   };
@@ -355,7 +355,8 @@ const TierLoanFee = () => {
         {tierloanList?.length > 0 ? (
           <div className="page-heading-container">
             <p className="page-heading">
-              {startIndex} - {endIndex>dbCount?dbCount:endIndex} of {dbCount} item
+              {startIndex} - {endIndex > dbCount ? dbCount : endIndex} of{' '}
+              {dbCount} item
             </p>
 
             <Pagination

@@ -83,7 +83,7 @@ const ProjectPerformence = () => {
       <div className="project-container">
         <div className="project-heading">
           <h2>Performance</h2>
-          
+
           <div className="iconsSection-filter">
             <button
               type="button"
@@ -188,35 +188,33 @@ const ProjectPerformence = () => {
         style={{ marginTop: '1rem', padding: '0 0 1rem 0' }}
       >
         <div className="performance-table-heading">
-          
           <div className="performance-project">
             <div>
-            <h2>Projects</h2>
+              <h2>Projects</h2>
 
-            <div className="progress-box-container" >
-              <div className="progress-box-body">
-                <div
-                  className="progress-box"
-                  style={{ background: '#0493CE' }}
-                ></div>
-                <p>In Process</p>
+              <div className="progress-box-container">
+                <div className="progress-box-body">
+                  <div
+                    className="progress-box"
+                    style={{ background: '#0493CE' }}
+                  ></div>
+                  <p>In Process</p>
+                </div>
+                <div className="progress-box-body">
+                  <div
+                    className="progress-box"
+                    style={{ background: '#57B93A' }}
+                  ></div>
+                  <p>Completed</p>
+                </div>
+                <div className="progress-box-body">
+                  <div
+                    className="progress-box"
+                    style={{ background: '#E9E9E9' }}
+                  ></div>
+                  <p>Not Started yet</p>
+                </div>
               </div>
-              <div className="progress-box-body">
-                <div
-                  className="progress-box"
-                  style={{ background: '#57B93A' }}
-                ></div>
-                <p>Completed</p>
-              </div>
-              <div className="progress-box-body">
-                <div
-                  className="progress-box"
-                  style={{ background: '#E9E9E9' }}
-                ></div>
-                <p>Not Started yet</p>
-              </div>
-            </div>
-
             </div>
             {/* <input
               className="performance-search"
@@ -227,9 +225,6 @@ const ProjectPerformence = () => {
             /> */}
           </div>
 
-
-      
-        
           <div className="performance-milestone-table">
             <table>
               <thead>

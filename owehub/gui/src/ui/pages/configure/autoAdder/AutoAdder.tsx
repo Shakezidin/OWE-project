@@ -25,7 +25,7 @@ import { ROUTES } from '../../../../routes/routes';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { AutoAdderColumn } from '../../../../resources/static_data/configureHeaderData/AutoAdderColumn';
-import { fetchAutoAdder } from '../../../../redux/apiActions/AutoAdderAction';
+import { fetchAutoAdder } from '../../../../redux/apiActions/config/AutoAdderAction';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import PaginationComponent from '../../../components/pagination/PaginationComponent';
 import MicroLoader from '../../../components/loader/MicroLoader';
@@ -94,7 +94,7 @@ const AutoAdder: React.FC = () => {
   const dbCount = 10;
   const totalPages1 = Math.ceil(dbCount / pageSize1);
 
-  const startIndex = (currentPage - 1) * itemsPerPage +1;
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
   const endIndex = startIndex * itemsPerPage;
   const handleAddCommission = () => {
     setEditMode(false);
@@ -111,7 +111,7 @@ const AutoAdder: React.FC = () => {
   const currentPageData = commissionList?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === commissionList?.length;
-  
+
   const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
@@ -149,7 +149,7 @@ const AutoAdder: React.FC = () => {
       </div>
     );
   }
- 
+
   return (
     <div className="comm">
       <Breadcrumb
@@ -226,92 +226,89 @@ const AutoAdder: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {
-               loading?
-               <tr>
-                 <td colSpan={AutoAdderColumn.length}>
-                   <div style={{display:"flex",justifyContent:"center"}}>
-                     <MicroLoader/>
-                   </div>
-                 </td>
-               </tr>
-              : 
-              
-              currentPageData?.length > 0
-                ? currentPageData?.map((el: any, i: any) => (
-                    <tr
-                      key={i}
-                      className={selectedRows.has(i) ? 'selected' : ''}
-                    >
-                      <td>
-                        <div className="flex-check">
-                          <CheckBox
-                            checked={selectedRows.has(i)}
-                            onChange={() =>
-                              toggleRowSelection(
-                                i,
-                                selectedRows,
-                                setSelectedRows,
-                                setSelectAllChecked
-                              )
-                            }
-                          />
+              {loading ? (
+                <tr>
+                  <td colSpan={AutoAdderColumn.length}>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <MicroLoader />
+                    </div>
+                  </td>
+                </tr>
+              ) : currentPageData?.length > 0 ? (
+                currentPageData?.map((el: any, i: any) => (
+                  <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
+                    <td>
+                      <div className="flex-check">
+                        <CheckBox
+                          checked={selectedRows.has(i)}
+                          onChange={() =>
+                            toggleRowSelection(
+                              i,
+                              selectedRows,
+                              setSelectedRows,
+                              setSelectAllChecked
+                            )
+                          }
+                        />
 
-                          {el.partner}
+                        {el.partner}
+                      </div>
+                    </td>
+                    <td>{el.installer}</td>
+                    <td>{el.state}</td>
+                    <td>{el.sale_type}</td>
+                    <td>{el.sale_price}</td>
+                    <td>{el.rep_type}</td>
+                    <td>{el.rl}</td>
+                    <td>{el.rate}</td>
+                    <td>{el.state}</td>
+                    <td>{el.sale_type}</td>
+                    <td>{el.sale_price}</td>
+                    <td>{el.rep_type}</td>
+                    <td>{el.rl}</td>
+                    <td>{el.rate}</td>
+                    <td>{el.state}</td>
+                    <td>{el.sale_type}</td>
+                    <td>{el.sale_price}</td>
+                    <td>{el.rep_type}</td>
+                    <td>{el.rl}</td>
+                    <td>{el.rate}</td>
+                    <td>{el.state}</td>
+                    <td>{el.sale_type}</td>
+                    <td>{el.sale_price}</td>
+                    <td>{el.rep_type}</td>
+                    <td>{el.rl}</td>
+                    <td>{el.rate}</td>
+                    <td>{el.sale_price}</td>
+                    <td>{el.rep_type}</td>
+                    <td>{el.rl}</td>
+                    <td>{el.rate}</td>
+                    <td>{el.start_date}</td>
+                    <td>{el.end_date}</td>
+                    <td>
+                      <div className="action-icon">
+                        <div className="" style={{ cursor: 'pointer' }}>
+                          <img src={ICONS.ARCHIVE} alt="" />
                         </div>
-                      </td>
-                      <td>{el.installer}</td>
-                      <td>{el.state}</td>
-                      <td>{el.sale_type}</td>
-                      <td>{el.sale_price}</td>
-                      <td>{el.rep_type}</td>
-                      <td>{el.rl}</td>
-                      <td>{el.rate}</td>
-                      <td>{el.state}</td>
-                      <td>{el.sale_type}</td>
-                      <td>{el.sale_price}</td>
-                      <td>{el.rep_type}</td>
-                      <td>{el.rl}</td>
-                      <td>{el.rate}</td>
-                      <td>{el.state}</td>
-                      <td>{el.sale_type}</td>
-                      <td>{el.sale_price}</td>
-                      <td>{el.rep_type}</td>
-                      <td>{el.rl}</td>
-                      <td>{el.rate}</td>
-                      <td>{el.state}</td>
-                      <td>{el.sale_type}</td>
-                      <td>{el.sale_price}</td>
-                      <td>{el.rep_type}</td>
-                      <td>{el.rl}</td>
-                      <td>{el.rate}</td>
-                      <td>{el.sale_price}</td>
-                      <td>{el.rep_type}</td>
-                      <td>{el.rl}</td>
-                      <td>{el.rate}</td>
-                      <td>{el.start_date}</td>
-                      <td>{el.end_date}</td>
-                      <td>
-                        <div className="action-icon">
-                          <div className="" style={{ cursor: 'pointer' }}>
-                            <img src={ICONS.ARCHIVE} alt="" />
-                          </div>
-                          {/* <div className="" style={{ cursor: "pointer" }} onClick={() => handleEditCommission(el)}>
+                        {/* <div className="" style={{ cursor: "pointer" }} onClick={() => handleEditCommission(el)}>
                         <img src={ICONS.editIcon} alt="" />
                         </div> */}
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                : null}
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : null}
             </tbody>
           </table>
         </div>
         {commissionList?.length > 0 ? (
           <div className="page-heading-container">
-           {!!dbCount && <p className="page-heading">
-              {startIndex} - {endIndex>dbCount?dbCount:endIndex} of {dbCount} item
-            </p>}
+            {!!dbCount && (
+              <p className="page-heading">
+                {startIndex} - {endIndex > dbCount ? dbCount : endIndex} of{' '}
+                {dbCount} item
+              </p>
+            )}
             <PaginationComponent
               currentPage={currentPage1}
               itemsPerPage={pageSize1}

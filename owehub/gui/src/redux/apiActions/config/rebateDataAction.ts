@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
-import { EndPoints } from '../../infrastructure/web_api/api_client/EndPoints';
+import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
+import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints';
 
 export interface ReconcileEditParams {
   unique_id: string;
@@ -22,22 +22,24 @@ interface ReconcileCreateParams {
   end_date: string;
 }
 
-export const fetchAr = createAsyncThunk('ar/fetchar', async (data: any) => {
-  const response = await postCaller('get_ar', data);
+export const fetchRebateData = createAsyncThunk(
+  'RebateData/fetchRebateData',
+  async (data: any) => {
+    const response = await postCaller('get_rebate_data', data);
 
-  const list = response.data.ar__list || [];
+    return response.data.data.ar_data_list;
+  }
+);
 
-  return { list, count: response.dbRecCount };
-});
-
-export const createAr = createAsyncThunk(
-  'create/ar',
+export const createRebateData = createAsyncThunk(
+  'create/rebatedata',
   async (params: any, { rejectWithValue, dispatch }) => {
     try {
-      const data = await postCaller('create_ar', params);
+      const data = await postCaller('create_rebate_data', params);
       if (data instanceof Error) {
         return rejectWithValue((data as Error).message);
       }
+      await dispatch(fetchRebateData({ page_number: 1, page_size: 10 }));
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -45,12 +47,12 @@ export const createAr = createAsyncThunk(
   }
 );
 
-export const updateAr = createAsyncThunk(
-  'update/ar',
+export const updateRebateData = createAsyncThunk(
+  'update/rebatedata',
   async (params: any, { rejectWithValue, dispatch }) => {
     try {
-      const data = await postCaller('update_ar', params);
-      
+      const data = await postCaller('update_rebate_data', params);
+      await dispatch(fetchRebateData({ page_number: 1, page_size: 10 }));
       return data.data;
     } catch (error) {
       return rejectWithValue((error as Error).message);

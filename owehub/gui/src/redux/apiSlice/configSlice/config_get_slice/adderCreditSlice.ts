@@ -3,7 +3,7 @@ import {
   fetchAdderCredit,
   createAdderCredit,
   updateAdderCredit,
-} from '../../../apiActions/adderCreditAction';
+} from '../../../apiActions/config/adderCreditAction';
 import { RateAdjustment } from '../../../../core/models/api_models/RateAdjustmentModel';
 import { toast } from 'react-toastify';
 

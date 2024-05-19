@@ -5,25 +5,24 @@ import {
   getleaderOverride,
   updateleaderOverride,
   ILeaderRow,
-} from '../../../apiActions/leaderOverrideAction';
+} from '../../../apiActions/config/leaderOverrideAction';
 interface IState {
-  isLoading: boolean,
-  isFormSubmitting: boolean,
-  error:string,
-  data: ILeaderRow[],
-  isSuccess:boolean,
-  count:number
-};
+  isLoading: boolean;
+  isFormSubmitting: boolean;
+  error: string;
+  data: ILeaderRow[];
+  isSuccess: boolean;
+  count: number;
+}
 
-  const initialState:IState = {
-    isLoading: false,
-    isFormSubmitting: false,
-    error: "",
-    data: [],
-    isSuccess:false,
-    count:0
-  };
-  
+const initialState: IState = {
+  isLoading: false,
+  isFormSubmitting: false,
+  error: '',
+  data: [],
+  isSuccess: false,
+  count: 0,
+};
 
 const refralDataSlice = createSlice({
   name: 'refralDataSlice',

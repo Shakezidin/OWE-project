@@ -15,13 +15,13 @@ import {
   IRowDLR,
   createDlrOth,
   updateDlrOth,
-} from '../../../../redux/apiActions/dlrAction';
+} from '../../../../redux/apiActions/config/dlrAction';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import {
   INonCommRowDLR,
   createNonComm,
   updateNoncom,
-} from '../../../../redux/apiActions/nocCommAction';
+} from '../../../../redux/apiActions/config/nocCommAction';
 import SelectOption from '../../../components/selectOption/SelectOption';
 interface ButtonProps {
   editMode: boolean;

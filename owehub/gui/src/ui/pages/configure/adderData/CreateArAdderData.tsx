@@ -10,7 +10,7 @@ import {
   createarAdderData,
   IAdderRowData,
   updatearAdderData,
-} from '../../../../redux/apiActions/arAdderDataAction';
+} from '../../../../redux/apiActions/config/arAdderDataAction';
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;

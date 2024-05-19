@@ -1,6 +1,6 @@
 // authSlice.ts
 import { createSlice } from '@reduxjs/toolkit';
-import { loginAction } from '../../apiActions/authActions';
+import { loginAction } from '../../apiActions/auth/authActions';
 import { HTTP_STATUS } from '../../../core/models/api_models/RequestModel';
 
 interface AuthState {

@@ -3,7 +3,7 @@ import {
   createAr,
   fetchAr,
   updateAr,
-} from '../../../apiActions/arConfigAction';
+} from '../../../apiActions/config/arConfigAction';
 import { RateAdjustment } from '../../../../core/models/api_models/RateAdjustmentModel';
 import { toast } from 'react-toastify';
 

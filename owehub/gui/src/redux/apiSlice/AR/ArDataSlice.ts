@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { getAR, IGetArdata } from '../../apiActions/arAction';
+import { getAR, IGetArdata } from '../../apiActions/config/arAction';
 import { toast } from 'react-toastify';
 
 interface IState {

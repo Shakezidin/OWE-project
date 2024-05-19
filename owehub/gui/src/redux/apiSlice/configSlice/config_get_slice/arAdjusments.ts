@@ -3,7 +3,7 @@ import {
   createAdjustments,
   getAdjustments,
   updateAdjustments,
-} from '../../../apiActions/arAdjustmentsAction';
+} from '../../../apiActions/config/arAdjustmentsAction';
 import { Adjustment } from '../../../../core/models/api_models/ArAdjustMentsModel';
 import { toast } from 'react-toastify';
 

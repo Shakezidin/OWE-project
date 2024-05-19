@@ -169,7 +169,7 @@
   border-radius: 7px;
 }
 .side-accordian:hover {
-  background-color: #DDEBFF;
+  background-color: #ddebff;
 }
 .side-accordian:hover svg,
 .side-accordian:hover .tablinkk {
@@ -192,7 +192,7 @@
 }
 .side-icon-container:hover {
   /* background: #E1F5EA; */
-  background: #DDEBFF;
+  background: #ddebff;
 }
 .side-icon-container:hover svg,
 .side-icon-container:hover .side-icon-db,
@@ -266,9 +266,9 @@
 }
 
 .sidebaricon {
-  color: var(--coloumn-text-color);;
+  color: var(--coloumn-text-color);
 }
 
 .sidebariconn {
-  color: var(--coloumn-text-color);;
+  color: var(--coloumn-text-color);
 }

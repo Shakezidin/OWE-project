@@ -193,7 +193,13 @@ const SelectTable: React.FC<ButtonProps> = ({
             </table>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'center',marginBottom:"3rem" }}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              marginBottom: '3rem',
+            }}
+          >
             <ActionButton
               type="submit"
               title="Done"

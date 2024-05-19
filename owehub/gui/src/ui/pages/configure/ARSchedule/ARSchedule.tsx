@@ -17,7 +17,7 @@ import { ROUTES } from '../../../../routes/routes';
 import {
   getArscheduleList,
   IARSchedule,
-} from '../../../../redux/apiActions/arScheduleAction';
+} from '../../../../redux/apiActions/config/arScheduleAction';
 import CreatedArSchedule from './CreateArSchedeul';
 import Loading from '../../../components/loader/Loading';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
@@ -49,8 +49,7 @@ const ARSchedule = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
-  const [filters, setFilters] = useState<FilterModel[]>([
-  ]);
+  const [filters, setFilters] = useState<FilterModel[]>([]);
   const {
     data: commissionList,
     isLoading,
@@ -61,10 +60,10 @@ const ARSchedule = () => {
       page_number: currentPage,
       page_size: itemsPerPage,
       archived: viewArchived,
-      filters
+      filters,
     };
     dispatch(getArscheduleList(pageNumber));
-  }, [dispatch, currentPage, viewArchived, currentPage,filters]);
+  }, [dispatch, currentPage, viewArchived, currentPage, filters]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -72,11 +71,11 @@ const ARSchedule = () => {
         page_number: currentPage,
         page_size: itemsPerPage,
         archived: viewArchived,
-        filters
+        filters,
       };
       dispatch(getArscheduleList({ ...pageNumber }));
     }
-  }, [isSuccess, currentPage, viewArchived,filters]);
+  }, [isSuccess, currentPage, viewArchived, filters]);
   const filter = () => {
     setFilterOpen(true);
   };
@@ -142,8 +141,8 @@ const ARSchedule = () => {
     handleOpen();
   };
   const fetchFunction = (req: any) => {
-    setCurrentPage(1)
-    setFilters(req.filters)
+    setCurrentPage(1);
+    setFilters(req.filters);
   };
 
   const handleArchiveClick = async (record_id: number[]) => {
@@ -163,7 +162,7 @@ const ARSchedule = () => {
         page_number: currentPage,
         page_size: itemsPerPage,
         archived: viewArchived,
-        filters
+        filters,
       };
       const res = await postCaller('update_arschedule_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
