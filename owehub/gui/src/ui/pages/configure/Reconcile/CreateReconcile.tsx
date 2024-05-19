@@ -133,11 +133,11 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
         customer: createReconcileData?.customer,
         partner_name: createReconcileData?.partner_name,
         state_name: createReconcileData.state,
-        sys_size: parseInt(createReconcileData.sys_size),
+        sys_size: parseFloat(createReconcileData.sys_size),
         status: createReconcileData.status,
         start_date: createReconcileData.start_date,
         end_date: createReconcileData.end_date,
-        amount: parseInt(createReconcileData.amount),
+        amount: parseFloat(createReconcileData.amount),
         notes: createReconcileData.notes,
       };
 

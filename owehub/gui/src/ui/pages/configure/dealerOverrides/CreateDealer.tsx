@@ -244,9 +244,11 @@ const CreateDealer: React.FC<dealerProps> = ({
                   <SelectOption
                     options={dealerOption(newFormData)}
                     onChange={(newValue) => setDealerVal(newValue?.value!)}
-                    value={dealerOption(newFormData)?.find(
-                      (option) => option.value === delaerVal
-                    )}
+                    value={
+                      dealerOption(newFormData)?.find(
+                        (option) => option.value === delaerVal
+                      ) || { label: delaerVal, value: delaerVal }
+                    }
                   />
                   {errors.dealer && (
                     <span className="error">{errors.dealer}</span>
