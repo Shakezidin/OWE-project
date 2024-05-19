@@ -15,7 +15,7 @@ export const DealerTableData: Column[] = [
     type: 'string',
     isCheckbox: false,
   },
-  { name: 'state_name', displayName: 'State', type: 'string', isCheckbox: false },
+  { name: 'state', displayName: 'State', type: 'string', isCheckbox: false },
   {
     name: 'start_date',
     displayName: 'Start Date',

@@ -65,10 +65,11 @@ const AR = () => {
         page_number: currentPage,
         page_size: itemsPerPage,
         archived: viewArchived,
+        filters
       };
       dispatch(fetchAr({ ...pageNumber }));
     }
-  }, [isSuccess, currentPage, viewArchived]);
+  }, [isSuccess, currentPage, viewArchived,filters]);
   const filter = () => {
     setFilterOpen(true);
   };
