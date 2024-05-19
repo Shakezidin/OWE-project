@@ -27,6 +27,8 @@ import CreateInstallCost from './CreateInstallCost';
 import Loading from '../../../components/loader/Loading';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import MicroLoader from '../../../components/loader/MicroLoader';
+import FilterHoc from '../../../components/FilterModal/FilterHoc';
+import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 const InstallCost = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -36,8 +38,8 @@ const InstallCost = () => {
 
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const timelinesla_list = useAppSelector(
-    (state) => state.installConstSlice.data
+  const {data:timelinesla_list,isSuccess} = useAppSelector(
+    (state) => state.installConstSlice
   );
   //   const loading = useAppSelector((state) => state.timelineSla.loading);
   const error = useAppSelector((state) => state.timelineSla.error);
@@ -52,14 +54,16 @@ const InstallCost = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [filters, setFilters] = useState<FilterModel[]>([]);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
       archived: viewArchived,
+      filters
     };
     dispatch(getInstallCost(pageNumber));
-  }, [dispatch, currentPage, viewArchived]);
+  }, [dispatch, currentPage, viewArchived,filters,isSuccess]);
 
   const filter = () => {
     setFilterOpen(true);
@@ -143,6 +147,7 @@ const InstallCost = () => {
         page_number: currentPage,
         page_size: itemsPerPage,
         archived: viewArchived,
+        filters
       };
       const res = await postCaller('update_installcost_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
@@ -163,7 +168,8 @@ const InstallCost = () => {
     handleOpen();
   };
   const fetchFunction = (req: any) => {
-    dispatch(getInstallCost({ ...req, page_number: currentPage }));
+    setCurrentPage(1);
+    setFilters(req.filters);
   };
 
   if (error) {
@@ -205,15 +211,17 @@ const InstallCost = () => {
           onpressExport={() => {}}
           onpressAddNew={() => handleTimeLineSla()}
         />
-        {filterOPen && (
-          <FilterModal
-            handleClose={filterClose}
-            columns={InstallCostColumns}
-            page_number={currentPage}
-            fetchFunction={fetchFunction}
-            page_size={itemsPerPage}
-          />
-        )}
+
+        <FilterHoc
+          isOpen={filterOPen}
+          resetOnChange={viewArchived}
+          handleClose={filterClose}
+          columns={InstallCostColumns}
+          page_number={currentPage}
+          fetchFunction={fetchFunction}
+          page_size={itemsPerPage}
+        />
+
         {open && (
           <CreateInstallCost
             editData={editedTimeLineSla}

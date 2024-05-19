@@ -302,7 +302,7 @@ const Adjustments = () => {
                       <td>{item.customer || 'N/A'}</td>
                       <td>{item.partner_name || 'N/A'}</td>
                       <td>{item.installer_name || 'N/A'}</td>
-                      <td> {item.state_name} </td>
+                      <td> {item.state_name || "N/A"} </td>
                       <td> {item.sys_size} </td>
                       <td> {item.bl} </td>
                       <td> {item.epc} </td>

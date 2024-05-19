@@ -1,9 +1,11 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
+import { FilterModel } from '../../../core/models/data_models/FilterSelectModel';
 interface Ipaginate {
   page_number: number;
   page_size: number;
   archived: boolean;
+  filters:FilterModel[]
 }
 
 export interface ICostCreateparam {
@@ -45,13 +47,7 @@ export const createInstallCost = createAsyncThunk(
       if (data instanceof Error) {
         return rejectWithValue((data as Error).message);
       }
-      await dispatch(
-        getInstallCost({
-          page_number: params.currentPage,
-          page_size: 10,
-          archived: false,
-        })
-      );
+      
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -69,13 +65,7 @@ export const updateInstallCost = createAsyncThunk(
       if (data instanceof Error) {
         return rejectWithValue((data as Error).message);
       }
-      await dispatch(
-        getInstallCost({
-          page_number: params.currentPage,
-          page_size: 10,
-          archived: false,
-        })
-      );
+      
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);
