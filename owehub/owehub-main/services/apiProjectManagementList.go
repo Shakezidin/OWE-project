@@ -62,7 +62,7 @@ func HandleGetPrjctMngmntListRequest(resp http.ResponseWriter, req *http.Request
 	}
 
 	allSaleRepQuery := models.SalesRepRetrieveQueryFunc()
-	saleMetricsQuery := models.SalesMetricsRetrieveQueryFunc()
+	saleMetricsQuery := models.SalesRetrieveQueryFunc()
 	otherRoleQuery := models.AdminDlrSaleRepRetrieveQueryFunc()
 
 	// change table name here
