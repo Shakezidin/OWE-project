@@ -67,6 +67,7 @@ const FilterModal: React.FC<TableProps> = ({
     setApplyFilters([...filters]);
   }, []);
   const resetAllFilter = async () => {
+  
     const confirmed = await showAlert(
       'Reset Filters',
       'Are you sure you want to reset all of your filters?',
@@ -328,6 +329,8 @@ const FilterModal: React.FC<TableProps> = ({
               title={'reset'}
               type="reset"
               onClick={resetAllFilter}
+              disabled={!(filters.some((filter) => filter.Operation || filter.Data || filter.Column))}
+              style={{color:'#0493ce'}}
             />
             <ActionButton
               title={'Apply'}
