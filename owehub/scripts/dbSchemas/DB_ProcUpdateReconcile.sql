@@ -36,7 +36,9 @@ BEGIN
     END IF;
 
 EXCEPTION
-    WHEN OTHERS THEN
-        RAISE EXCEPTION 'Error updating record in reconcile: %', SQLERRM;
+    WHEN unique_violation THEN
+            RAISE EXCEPTION 'Unique constraint violation: unique_id % already exists.', p_unique_id;
+    WHEN others THEN
+            RAISE EXCEPTION 'An error occurred: %', SQLERRM;
 END;
 $$ LANGUAGE plpgsql;

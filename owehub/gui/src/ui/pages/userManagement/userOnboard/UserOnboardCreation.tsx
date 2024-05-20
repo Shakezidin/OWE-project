@@ -101,7 +101,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
     if (selectedOption.value === TYPE_OF_USER.ADMIN) {
       setDbAcess(true);
       const set = new Set(
-        Array.from({ length: tables.length }).map((_, i: number) => i)
+        Array.from({ length: tables?.length }).map((_, i: number) => i)
       );
       setSelected(set);
       const obj: { [key: string]: string } = {};
@@ -113,7 +113,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
       setTablePermissions({});
       setDbAcess(false);
     }
-  }, [selectedOption]);
+  }, [selectedOption,tables]);
 
   /** render ui */
   return (

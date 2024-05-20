@@ -13,6 +13,7 @@ import Pagination from '../../../components/pagination/Pagination';
 import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
 import { TimeLineSlaModel } from '../../../../core/models/configuration/create/TimeLineSlaModel';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
+import MicroLoader from '../../../components/loader/MicroLoader';
 
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import { LoanFeesColumn } from '../../../../resources/static_data/configureHeaderData/LoanFeeColumn';
@@ -24,6 +25,9 @@ import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoin
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import Loading from '../../../components/loader/Loading';
+import FilterHoc from '../../../components/FilterModal/FilterHoc';
+import DataNotFound from '../../../components/loader/DataNotFound';
+import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 const LoanFee = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -34,7 +38,7 @@ const LoanFee = () => {
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const timelinesla_list = useAppSelector((state) => state.loanFeeSlice.data);
-  const { dbCount, isSuccess } = useAppSelector((state) => state.loanFeeSlice);
+  const { dbCount, isSuccess  } = useAppSelector((state) => state.loanFeeSlice);
   //   const loading = useAppSelector((state) => state.timelineSla.loading);
   const error = useAppSelector((state) => state.timelineSla.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
@@ -48,14 +52,16 @@ const LoanFee = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [filters, setFilters] = useState<FilterModel[]>([]);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
       archived: viewArchived,
+      filters
     };
     dispatch(getLoanFee(pageNumber));
-  }, [dispatch, currentPage, viewArchived]);
+  }, [dispatch, currentPage, viewArchived,filters]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -76,7 +82,7 @@ const LoanFee = () => {
     setCurrentPage(pageNumber);
   };
 
-  const { data: commissionList, isLoading } = useAppSelector(
+  const { data: commissionList, isLoading} = useAppSelector(
     (state) => state.loanFeeSlice
   );
   const goToNextPage = () => {
@@ -146,6 +152,7 @@ const LoanFee = () => {
         page_number: currentPage,
         page_size: itemsPerPage,
         archived: viewArchived,
+        filters
       };
       const res = await postCaller('update_loan_fee_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
@@ -165,20 +172,12 @@ const LoanFee = () => {
     handleOpen();
   };
   const fetchFunction = (req: any) => {
-    dispatch(getLoanFee(req));
+    setCurrentPage(1);
+    setFilters(req.filters);
   };
-  if (isLoading) {
-    return (
-      <div className="loader-container">
-        {' '}
-        <Loading />{' '}
-      </div>
-    );
-  }
+ 
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+  
 
   return (
     <div className="comm">
@@ -212,15 +211,17 @@ const LoanFee = () => {
           onpressExport={() => {}}
           onpressAddNew={() => handleTimeLineSla()}
         />
-        {filterOPen && (
-          <FilterModal
-            handleClose={filterClose}
-            columns={LoanFeesColumn}
-            page_number={currentPage}
-            fetchFunction={fetchFunction}
-            page_size={itemsPerPage}
-          />
-        )}
+        
+        
+        <FilterHoc
+          resetOnChange={viewArchived}
+          isOpen={filterOPen}
+          handleClose={filterClose}
+          columns={LoanFeesColumn}
+          fetchFunction={fetchFunction}
+          page_number={currentPage}
+          page_size={itemsPerPage}
+        />
         {open && (
           <CreatedLoanFee
             editMode={editMode}
@@ -262,8 +263,16 @@ const LoanFee = () => {
               </tr>
             </thead>
             <tbody>
-              {currentPageData?.length > 0
-                ? currentPageData?.map((el: ILoanRow, i: number) => (
+            {isLoading ? (
+                <tr>
+                  <td colSpan={LoanFeesColumn.length}>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <MicroLoader />
+                    </div>
+                  </td>
+                </tr> 
+                ) :currentPageData?.length > 0
+                ? (currentPageData?.map((el: ILoanRow, i: number) => (
                     <tr
                       key={el.record_id}
                       className={selectedRows.has(i) ? 'selected' : ''}
@@ -314,7 +323,16 @@ const LoanFee = () => {
                       </td>
                     </tr>
                   ))
-                : null}
+                ) : (
+                  <tr style={{ border: 0 }}>
+                    <td colSpan={10}>
+                      <div className="data-not-found">
+                        <DataNotFound />
+                        <h2>Data Not Found</h2>
+                      </div>
+                    </td>
+                  </tr>
+                 )}
             </tbody>
           </table>
         </div>

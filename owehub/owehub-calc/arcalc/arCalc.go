@@ -41,7 +41,6 @@ func ExecArInitialCalculation(resultChan chan string) {
 		} else {
 			arDataList = append(arDataList, arData)
 		}
-		break //Jaitunjai to remove
 	}
 	/* Update Calculated and Fetched data AR.Data Table */
 	err = db.AddMultipleRecordInDB(db.OweHubDbIndex, db.TableName_SalesArCalc, arDataList)
@@ -83,7 +82,7 @@ func CalculateARProject(saleData dataMgmt.SaleDataStruct) (outData map[string]in
 	defer func() { log.ExitFn(0, "CalculateARProject", err) }()
 
 	outData = make(map[string]interface{})
-	outData["serial_num"] = saleData.UniqueId
+	//outData["serial_num"] = saleData.UniqueId
 	outData["dealer"] = saleData.Dealer
 	outData["partner"] = saleData.Partner
 	outData["instl"] = saleData.Installer

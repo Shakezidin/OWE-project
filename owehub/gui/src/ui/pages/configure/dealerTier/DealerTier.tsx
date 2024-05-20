@@ -61,10 +61,10 @@ const DealerTier = () => {
       page_number: currentPage,
       page_size: itemsPerPage,
       archived: viewArchived ? true : undefined,
-      filters
+      filters,
     };
     dispatch(fetchDealerTier(pageNumber));
-  }, [dispatch, currentPage, viewArchived,filters]);
+  }, [dispatch, currentPage, viewArchived, filters]);
   console.log(dealerTierList);
 
   const filter = () => {
@@ -148,7 +148,7 @@ const DealerTier = () => {
         const pageNumber = {
           page_number: currentPage,
           page_size: itemsPerPage,
-          filters
+          filters,
         };
 
         const res = await postCaller(EndPoints.update_dealer_archive, newValue);
@@ -180,7 +180,7 @@ const DealerTier = () => {
       const pageNumber = {
         page_number: currentPage,
         page_size: itemsPerPage,
-        filters
+        filters,
       };
       const res = await postCaller(EndPoints.update_dealer_archive, newValue);
       if (res.status === HTTP_STATUS.OK) {
@@ -202,7 +202,7 @@ const DealerTier = () => {
   };
   const fetchFunction = (req: any) => {
     setCurrentPage(1);
-    setFilters(req.filters)
+    setFilters(req.filters);
   };
   if (error) {
     return (
@@ -324,7 +324,7 @@ const DealerTier = () => {
                     <td>{el.tier}</td>
                     <td>{el.start_date}</td>
                     <td>{el.end_date}</td>
-                    {viewArchived === true ? null : (
+                    {!viewArchived && selectedRows.size < 2 && (
                       <td>
                         <div className="action-icon">
                           <div

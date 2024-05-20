@@ -106,7 +106,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	// If the user role is "DB User", create the database user and grant privileges
-	if createUserReq.RoleName == "DB User" {
+	if createUserReq.RoleName == "DB User" || createUserReq.RoleName == "Admin" {
 		whereEleList = append(whereEleList, createUserReq.Name)
 		data, err := db.ReteriveFromDB(db.OweHubDbIndex, nameQuery, whereEleList)
 		if err != nil {

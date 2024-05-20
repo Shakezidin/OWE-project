@@ -1,5 +1,4 @@
 import React from 'react';
-import Select from 'react-select/dist/declarations/src/Select';
 import { CommissionModel } from '../../../core/models/configuration/create/CommissionModel';
 import SelectOption from '../../components/selectOption/SelectOption';
 import Input from '../../components/text_input/Input';

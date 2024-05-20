@@ -454,6 +454,7 @@ const ProjectStatus = () => {
     },
   ];
   const [activePopups, setActivePopups] = useState<boolean>(false);
+  const refBtn = useRef<null|HTMLDivElement>(null);
 
   const [selectedProject, setSelectedProject] = useState<{
     label: string;
@@ -462,8 +463,11 @@ const ProjectStatus = () => {
   const dispatch = useAppDispatch();
 
   const handleClickOutside = (e: MouseEvent) => {
-    const elm = e.target as HTMLElement;
-    if (!elm.closest('.popup') && !elm.classList.contains('view-flex')) {
+    const elm = e.target as HTMLElement
+    if (refBtn?.current && (elm === refBtn?.current || refBtn?.current?.contains(elm))) {
+      return;
+    }
+    if (!elm.closest('.popup')) {
       setActivePopups(false);
     }
   };
@@ -558,6 +562,7 @@ const ProjectStatus = () => {
                 {el.viewButton ? (
                   <div
                     className="view-flex"
+                    ref={refBtn}
                     onClick={() => setActivePopups((prev) => !prev)}
                   >
                     <p>View</p>
