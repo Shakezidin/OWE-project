@@ -52,6 +52,7 @@ const TierLoanFee = () => {
   const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState<FilterModel[]>([]);
+  const [refetch, setRefetch] = useState(1);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -59,7 +60,7 @@ const TierLoanFee = () => {
       archived: viewArchived ? true : undefined,
     };
     dispatch(fetchTearLoan(pageNumber));
-  }, [dispatch, currentPage, viewArchived, filters]);
+  }, [dispatch, currentPage, viewArchived, filters, refetch]);
 
   const handleAddTierLoan = () => {
     setEditMode(false);
@@ -204,12 +205,10 @@ const TierLoanFee = () => {
     setSelectAllChecked(false);
   };
   const fetchFunction = (req: any) => {
-      setCurrentPage(1);
-      setFilters(req.filters);
-      
-    
+    setCurrentPage(1);
+    setFilters(req.filters);
   };
- 
+
   return (
     <div className="comm">
       <Breadcrumb
@@ -225,7 +224,6 @@ const TierLoanFee = () => {
           onPressArchive={() => handleArchiveAllClick()}
           checked={isAllRowsSelected}
           isAnyRowSelected={isAnyRowSelected}
-          
           onPressFilter={() => filter()}
           onPressImport={() => {}}
           onpressExport={() => {}}
@@ -241,13 +239,13 @@ const TierLoanFee = () => {
           page_number={currentPage}
           page_size={itemsPerPage}
         />
-        
+
         {open && (
           <CreateTierLoan
             editMode={editMode}
             tierEditedData={editedTierLoanfee}
             handleClose={handleClose}
-           
+            setRefetch={setRefetch}
           />
         )}
         <div
@@ -286,7 +284,15 @@ const TierLoanFee = () => {
               </tr>
             </thead>
             <tbody>
-              {currentPageData?.length > 0 ? (
+              {loading ? (
+                <tr>
+                  <td colSpan={TierLoanColumn.length}>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <MicroLoader />
+                    </div>
+                  </td>
+                </tr>
+              ) : currentPageData?.length > 0 ? (
                 currentPageData?.map((el: any, i: any) => (
                   <tr key={i}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
@@ -313,7 +319,7 @@ const TierLoanFee = () => {
                     <td>{el.dlr_cost}</td>
                     <td>{el.start_date}</td>
                     <td>{el.end_date}</td>
-                    {viewArchived === true ? null : (
+                    {!viewArchived && selectedRows.size < 2 && (
                       <td>
                         <div className="action-icon">
                           <div
