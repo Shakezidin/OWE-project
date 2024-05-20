@@ -865,7 +865,7 @@ CREATE TABLE appt_setters (
 
 CREATE TABLE adjustments (
     id serial NOT NULL,
-    unique_id varchar NOT NULL UNIQUE,
+    unique_id varchar NOT NULL,
     customer character varying,
     partner INT,
     installer INT,
@@ -887,7 +887,7 @@ CREATE TABLE adjustments (
 
 CREATE TABLE reconcile (
     id serial NOT NULL,
-    unique_id varchar NOT NULL UNIQUE,
+    unique_id varchar NOT NULL,
     customer character varying,
     partner_id INT,
     state_id INT,
