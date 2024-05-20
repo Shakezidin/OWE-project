@@ -92,8 +92,6 @@ IF NOT FOUND THEN
 
     -- No need for a RETURN statement when using OUT parameters
 EXCEPTION
-    WHEN unique_violation THEN
-            RAISE EXCEPTION 'Unique constraint violation: unique_id % already exists.', p_unique_id;
     WHEN others THEN
             RAISE EXCEPTION 'An error occurred: %', SQLERRM;
 END;
