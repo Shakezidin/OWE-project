@@ -17,7 +17,7 @@ export const UserManagementTableColumn: Column[] = [
     isCheckbox: false,
   },
   {
-    name: 'phone_number',
+    name: 'mobile_number',
     displayName: 'Phone Number',
     type: 'string',
     isCheckbox: false,
