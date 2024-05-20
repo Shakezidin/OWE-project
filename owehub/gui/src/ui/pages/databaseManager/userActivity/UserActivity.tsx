@@ -128,9 +128,6 @@ const UserActivity: React.FC = () => {
                 </tr>
               ) : userActivityList && userActivityList?.length > 0 ? (
                 userActivityList
-                  ?.filter(
-                    (el: DBManagerUserActivityModel) => el.query_details !== ';'
-                  ) // Filter out rows where query_details is ';'
                   ?.map((el: DBManagerUserActivityModel, index: number) => {
                     const tooltipId = `tooltip-${index}`;
                     const truncatedQueryDetails =
