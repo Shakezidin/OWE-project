@@ -22,6 +22,9 @@ import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import Swal from 'sweetalert2';
+import MicroLoader from '../../../components/loader/MicroLoader';
+import FilterHoc from '../../../components/FilterModal/FilterHoc';
+
 import { ROUTES } from '../../../../routes/routes';
 const TierLoanFee = () => {
   const dispatch = useAppDispatch();
@@ -201,20 +204,7 @@ const TierLoanFee = () => {
   const fetchFunction = (req: any) => {
     dispatch(fetchTearLoan(req));
   };
-  if (error) {
-    return (
-      <div className="loader-container">
-        <Loading />
-      </div>
-    );
-  }
-  if (loading) {
-    return (
-      <div className="loader-container">
-        <Loading /> {loading}
-      </div>
-    );
-  }
+ 
   return (
     <div className="comm">
       <Breadcrumb
@@ -236,15 +226,16 @@ const TierLoanFee = () => {
           viewArchive={viewArchived}
           onpressAddNew={() => handleAddTierLoan()}
         />
-        {filterOPen && (
-          <FilterModal
-            handleClose={filterClose}
-            columns={TierLoanColumn}
-            page_number={currentPage}
-            fetchFunction={fetchFunction}
-            page_size={itemsPerPage}
-          />
-        )}
+        <FilterHoc
+          resetOnChange={viewArchived}
+          isOpen={filterOPen}
+          handleClose={filterClose}
+          columns={TierLoanColumn}
+          fetchFunction={fetchFunction}
+          page_number={currentPage}
+          page_size={itemsPerPage}
+        />
+        
         {open && (
           <CreateTierLoan
             editMode={editMode}
