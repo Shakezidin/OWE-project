@@ -23,6 +23,7 @@ interface TableProps {
   page_size: number;
   fetchFunction: (req: any) => void;
   resetOnChange?: boolean;
+  isOpen?: boolean;
 }
 interface FilterModel {
   Column: string;
@@ -45,9 +46,14 @@ const FilterModal: React.FC<TableProps> = ({
   page_size,
   fetchFunction,
   resetOnChange,
+  isOpen,
 }) => {
   const dispatch = useAppDispatch();
   const [filters, setFilters] = useState<FilterModel[]>([
+    { Column: '', Operation: '', Data: '' },
+  ]);
+
+  const [applyFilters, setApplyFilters] = useState<FilterModel[]>([
     { Column: '', Operation: '', Data: '' },
   ]);
   const [errors, setErrors] = useState<ErrorState>({});
@@ -57,6 +63,10 @@ const FilterModal: React.FC<TableProps> = ({
   }));
   const { pathname } = useLocation();
 
+  useEffect(() => {
+    console.log("working count",);
+    setApplyFilters(filters);
+  }, []);
   const resetAllFilter = () => {
     const resetFilters = filters
       .filter((_, ind) => ind === 0)
@@ -75,7 +85,7 @@ const FilterModal: React.FC<TableProps> = ({
       };
       fetchFunction(req);
     }
-    handleClose()
+    handleClose();
     dispatch(disableFilter({ name: pathname }));
     setFilters(resetFilters);
     setErrors({});
@@ -136,7 +146,7 @@ const FilterModal: React.FC<TableProps> = ({
 
   const applyFilter = async () => {
     setErrors({});
-    
+
     // Perform validation
     const newErrors: ErrorState = {};
 
@@ -158,23 +168,23 @@ const FilterModal: React.FC<TableProps> = ({
         Operation: filter.Operation,
         Data: filter.Data,
       }));
-      console.log(formattedFilters);
       const req = {
         page_number: page_number,
         page_size: page_size,
         filters: formattedFilters,
       };
+      setApplyFilters(formattedFilters)
       dispatch(activeFilter({ name: pathname }));
       handleClose();
       fetchFunction(req);
     }
   };
+
   const handleCloseModal = () => {
     handleClose();
     setErrors({});
   };
-
-  console.log(errors);
+  console.log(filters, 'filtersss', applyFilters);
   return (
     <div className="transparent-model">
       <div className="modal">
@@ -224,11 +234,11 @@ const FilterModal: React.FC<TableProps> = ({
                         }}
                       />
 
-{errors[`column${index}`] && (
-                      <span style={{ color: 'red', fontSize: '12px' }}>
-                        {errors[`column${index}`]}
-                      </span>
-                    )}
+                      {errors[`column${index}`] && (
+                        <span style={{ color: 'red', fontSize: '12px' }}>
+                          {errors[`column${index}`]}
+                        </span>
+                      )}
                     </div>
                   </div>
                   <div className="create-input-field">
@@ -291,7 +301,10 @@ const FilterModal: React.FC<TableProps> = ({
             <ActionButton
               title={'Cancel'}
               type="reset"
-              onClick={handleCloseModal}
+              onClick={()=>{
+                handleCloseModal()
+                setFilters(applyFilters);
+              }}
             />
             <ActionButton
               title={'reset'}
