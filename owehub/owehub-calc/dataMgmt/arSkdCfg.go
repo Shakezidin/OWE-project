@@ -167,8 +167,9 @@ func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct)
 		var endDate time.Time
 
 		//01-02-06 : MM-DD-YY
+		//date Format("2006-01-02")
 		if len(arSkd.StartDate) > 0 {
-			startDate, err = time.Parse("01-02-06", arSkd.StartDate)
+			startDate, err = time.Parse("2006-01-02", arSkd.StartDate)
 			if err != nil {
 				log.FuncErrorTrace(0, "Failed to convert arSkd.StartDate:%+v to time.Time err: %+v", arSkd.StartDate, err)
 			}
@@ -179,7 +180,7 @@ func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct)
 
 		//01-02-06 : MM-DD-YY
 		if len(arSkd.EndDate) > 0 {
-			endDate, err = time.Parse("01-02-06", arSkd.EndDate)
+			endDate, err = time.Parse("2006-01-02", arSkd.EndDate)
 			if err != nil {
 				log.FuncErrorTrace(0, "Failed to convert arSkd.EndDate:%+v to time.Time err: %+v", arSkd.EndDate, err)
 				continue
@@ -257,7 +258,7 @@ func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct)
 
 			//01-02-06 : MM-DD-YY
 			if len(arSkd.StartDate) > 0 {
-				startDate, err = time.Parse("01-02-06", arSkd.StartDate)
+				startDate, err = time.Parse("2006-01-02", arSkd.StartDate)
 				if err != nil {
 					log.FuncErrorTrace(0, "Failed to convert arSkd.StartDate:%+v to time.Time err: %+v", arSkd.StartDate, err)
 				}
@@ -268,7 +269,7 @@ func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct)
 
 			//01-02-06 : MM-DD-YY
 			if len(arSkd.EndDate) > 0 {
-				endDate, err = time.Parse("01-02-06", arSkd.EndDate)
+				endDate, err = time.Parse("2006-01-02", arSkd.EndDate)
 				if err != nil {
 					log.FuncErrorTrace(0, "Failed to convert arSkd.EndDate:%+v to time.Time err: %+v", arSkd.EndDate, err)
 					continue
