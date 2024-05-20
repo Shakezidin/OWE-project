@@ -39,7 +39,7 @@ const dataTableSlice = createSlice({
       })
       .addCase(getDataTableName.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.option = action.payload;
+        state.option = action.payload || [];
       })
       .addCase(getDataTableName.rejected, (state, action) => {
         state.isLoading = false;
