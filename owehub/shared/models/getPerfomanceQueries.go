@@ -58,12 +58,12 @@ func ProjectMngmntRetrieveQueryFunc() string {
 	ProjectMngmntRetrieveQuery := `
         SELECT unique_id, contract_date, ntp_working_date, 
         ntp_date, site_survey_scheduled_date, site_survey_rescheduled_date, 
-        site_survey_completed_date, roofing_scheduled_date, roofing_created_date
+        site_survey_completed_date, roofing_scheduled_date, roofing_created_date,
         roofing_completed_date, electrical_permit_created_date, electrical_submitted_date, 
         electrical_approved_date, pv_install_created_date, pv_install_scheduled_date,
         pv_install_completed_date, ic_created_date, ic_submitted_date, 
         ic_approved_date, credit_expiration_date, permit_created,
-        permit_submitted_date, permit_approved_date, fin_scheduled_dat, 
+        permit_submitted_date, permit_approved_date, fin_scheduled_date, 
         fin_pass_date, pto_created_date, pto_submitted_date,
         pto_date, system_size, prospect,
         ahj, project_status, state,
