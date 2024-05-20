@@ -26,6 +26,7 @@ import { ROUTES } from '../../../../routes/routes';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
+import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 
 const LoanType = () => {
   const dispatch = useAppDispatch();
@@ -53,14 +54,16 @@ const LoanType = () => {
   const [sortKey, setSortKey] = useState('');
   const [viewArchived, setViewArchived] = useState<boolean>(false);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [filters, setFilters] = useState<FilterModel[]>([]);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
       archived: viewArchived ? true : undefined,
+      filters,
     };
     dispatch(fetchLoanType(pageNumber));
-  }, [dispatch, currentPage, viewArchived]);
+  }, [dispatch, currentPage, viewArchived, filters]);
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
@@ -142,6 +145,7 @@ const LoanType = () => {
         const pageNumber = {
           page_number: currentPage,
           page_size: itemsPerPage,
+          filters
         };
 
         const res = await postCaller(EndPoints.update_dealer_archive, newValue);
@@ -177,6 +181,7 @@ const LoanType = () => {
       const pageNumber = {
         page_number: currentPage,
         page_size: itemsPerPage,
+        filters
       };
       const res = await postCaller(EndPoints.update_dealer_archive, newValue);
       if (res.status === HTTP_STATUS.OK) {
@@ -198,10 +203,9 @@ const LoanType = () => {
     setCurrentPage(1);
   };
   const fetchFunction = (req: any) => {
-    dispatch(fetchLoanType(req));
+    setCurrentPage(1);
+    setFilters(req.filters);
   };
-  
-  
 
   return (
     <div className="comm">
@@ -224,16 +228,17 @@ const LoanType = () => {
           viewArchive={viewArchived}
           onpressAddNew={() => handleAddLoan()}
         />
-        {filterOPen && (
-          <FilterModal
-            handleClose={filterClose}
-            columns={LoanTypeColumns}
-            page_number={currentPage}
-            fetchFunction={fetchFunction}
-            page_size={itemsPerPage}
-          />
-        )}
-        
+
+        <FilterHoc
+          isOpen={filterOPen}
+          resetOnChange={viewArchived}
+          handleClose={filterClose}
+          columns={LoanTypeColumns}
+          page_number={currentPage}
+          fetchFunction={fetchFunction}
+          page_size={itemsPerPage}
+        />
+
         <FilterHoc
           resetOnChange={viewArchived}
           isOpen={filterOPen}
@@ -288,14 +293,15 @@ const LoanType = () => {
               </tr>
             </thead>
             <tbody>
-            {loading ?  ( <tr>
+              {loading ? (
+                <tr>
                   <td colSpan={LoanTypeColumns.length}>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                       <MicroLoader />
                     </div>
                   </td>
-                </tr> 
-                ) :  currentPageData?.length > 0 ? (
+                </tr>
+              ) : currentPageData?.length > 0 ? (
                 currentPageData?.map((el: any, i: any) => (
                   <tr key={i}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
@@ -354,7 +360,6 @@ const LoanType = () => {
                   </td>
                 </tr>
               )}
-
             </tbody>
           </table>
         </div>

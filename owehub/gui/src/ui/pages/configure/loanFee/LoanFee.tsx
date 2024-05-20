@@ -27,6 +27,7 @@ import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import Loading from '../../../components/loader/Loading';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import DataNotFound from '../../../components/loader/DataNotFound';
+import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 const LoanFee = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -51,14 +52,16 @@ const LoanFee = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [filters, setFilters] = useState<FilterModel[]>([]);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
       archived: viewArchived,
+      filters
     };
     dispatch(getLoanFee(pageNumber));
-  }, [dispatch, currentPage, viewArchived]);
+  }, [dispatch, currentPage, viewArchived,filters]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -149,6 +152,7 @@ const LoanFee = () => {
         page_number: currentPage,
         page_size: itemsPerPage,
         archived: viewArchived,
+        filters
       };
       const res = await postCaller('update_loan_fee_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
@@ -168,7 +172,8 @@ const LoanFee = () => {
     handleOpen();
   };
   const fetchFunction = (req: any) => {
-    dispatch(getLoanFee(req));
+    setCurrentPage(1);
+    setFilters(req.filters);
   };
  
 

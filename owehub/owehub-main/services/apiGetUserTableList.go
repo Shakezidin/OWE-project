@@ -34,30 +34,12 @@ func HandleGetUserTableListRequest(resp http.ResponseWriter, req *http.Request) 
 	defer func() { log.ExitFn(0, "HandleGetUserTableListRequest", err) }()
 
 	emailId := req.Context().Value("emailid").(string)
-	roleName := req.Context().Value("rolename").(string)
+	// roleName := req.Context().Value("rolename").(string)
 
 	tableList := models.TableList{}
-	if roleName == "Admin" {
-		tables := []models.Table{
-			{TableName: "adder_data_cfg_schema"},
-			{TableName: "field_ops_metrics_schema"},
-			{TableName: "finance_metrics_schema"},
-			{TableName: "internal_ops_metrics_schema"},
-			{TableName: "next_steps_schema"},
-			{TableName: "sales_metrics_schema"},
-			{TableName: "consolidated_data_view"},
-			{TableName: "ops_analysis_timelines_view"},
-		}
 
-		// Append the new tables to the tableList
-		tableList.DbTables = append(tableList.DbTables, tables...)
-		// Send the response
-		log.FuncInfoTrace(0, "Number of User table List fetched : %v list %+v", len(tableList.DbTables), tableList)
-		FormAndSendHttpResp(resp, "User table list", http.StatusOK, tableList)
-		return
-	} else {
-		query = `SELECT jsonb_array_elements(tables_permissions)->>'table_name' AS table_name FROM user_details WHERE email_id = $1`
-	}
+	query = `SELECT jsonb_array_elements(tables_permissions)->>'table_name' AS table_name FROM user_details WHERE email_id = $1`
+
 	whereEleList = append(whereEleList, emailId)
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {

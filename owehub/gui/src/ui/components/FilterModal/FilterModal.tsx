@@ -68,7 +68,7 @@ const FilterModal: React.FC<TableProps> = ({
   }, []);
   const resetAllFilter = async () => {
     const confirmed = await showAlert(
-      'Archive',
+      'Reset Filters',
       'Are you sure you want to reset all of your filters?',
       'Yes',
       'No'

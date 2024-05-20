@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { ReactComponent as CROSS_BUTTON } from '../../../../resources/assets/cross_button.svg';
 import Input from '../../../components/text_input/Input';
 import { ActionButton } from '../../../components/button/ActionButton';
@@ -22,6 +22,7 @@ interface tierLoanProps {
   handleClose: () => void;
   tierEditedData: TierLoanFeeModel | null;
   editMode: boolean;
+  setRefetch:Dispatch<SetStateAction<number>>
 }
 interface IError {
   [key: string]: string;
@@ -30,6 +31,7 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
   handleClose,
   tierEditedData,
   editMode,
+  setRefetch
 }) => {
   const dispatch = useDispatch();
   const [errors, setErrors] = useState<IError>({} as IError);
@@ -107,9 +109,9 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
           dlr_mu: parseFloat(createTier.dlr_mu as string),
         });
         if (res?.status === 200) {
-          console.log(res?.message);
+          toast.success(res?.message);
           handleClose();
-          window.location.reload();
+          setRefetch(prev=>prev+1)
         } else {
           console.log(res.message);
         }
@@ -125,7 +127,7 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
           console.log(res?.message);
           toast.success(res?.message);
           handleClose();
-          window.location.reload();
+          setRefetch(prev=>prev+1)
         } else {
           toast.error(res?.message);
           console.log(res.message);
