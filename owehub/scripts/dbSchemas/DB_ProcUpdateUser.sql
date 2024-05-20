@@ -1,6 +1,7 @@
 CREATE OR REPLACE FUNCTION update_user(
     p_record_id INT,
     p_name VARCHAR(255),
+    p_db_username VARCHAR(255),
     p_reporting_manager VARCHAR(255),
     p_dealer_owner VARCHAR(255),
     p_role_name VARCHAR(50),
@@ -24,6 +25,7 @@ BEGIN
     UPDATE user_details
     SET 
         name = p_name,
+        db_username = p_db_username,
         reporting_manager = CASE WHEN p_reporting_manager IS NOT NULL AND p_reporting_manager != '' THEN (SELECT user_id FROM user_details WHERE LOWER(name) = LOWER(p_reporting_manager) LIMIT 1) ELSE NULL END,
         dealer_owner = CASE WHEN p_dealer_owner IS NOT NULL AND p_dealer_owner != '' THEN (SELECT user_id FROM user_details WHERE LOWER(name) = LOWER(p_dealer_owner) LIMIT 1) ELSE NULL END,
         role_id = CASE WHEN p_role_name IS NOT NULL AND p_role_name != '' THEN (SELECT role_id FROM user_roles WHERE LOWER(role_name) = LOWER(p_role_name) LIMIT 1) ELSE NULL END,

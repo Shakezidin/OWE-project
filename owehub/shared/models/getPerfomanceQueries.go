@@ -62,11 +62,11 @@ func ProjectMngmntRetrieveQueryFunc() string {
         roofing_completed_date, electrical_permit_created_date, electrical_submitted_date, 
         electrical_approved_date, pv_install_created_date, pv_install_scheduled_date,
         pv_install_completed_date, ic_created_date, ic_submitted_date, 
-        ic_approved_date, credit_expiration_date, install_ready_date,
-        install_rescheduled_date, install_eta, pto_fail_date, 
-        canceled_date, pto_created_date, pto_submitted_date,
+        ic_approved_date, credit_expiration_date, permit_created,
+        permit_submitted_date, permit_approved_date, fin_scheduled_dat, 
+        fin_pass_date, pto_created_date, pto_submitted_date,
         pto_date, system_size, prospect,
-        installer, project_status, state,
+        ahj, project_status, state,
         contract_total, finance_company, net_epc
         FROM consolidated_data_view
     `

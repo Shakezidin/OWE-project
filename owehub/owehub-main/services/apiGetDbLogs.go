@@ -40,10 +40,10 @@ func HandleGetDbLogsRequest(resp http.ResponseWriter, req *http.Request) {
 		adminCheck     bool
 		queryWithFiler string
 		filter         string
-		username       string
 		tableName      string
 		countQuery     string
 		totalDatas     int64
+		allUserList    bool
 	)
 
 	log.EnterFn(0, "HandleGetProjectManagementRequest")
@@ -79,8 +79,12 @@ func HandleGetDbLogsRequest(resp http.ResponseWriter, req *http.Request) {
 		FROM pg_stat_activity
 	`
 
+	userQuery := `
+		SELECT db_username FROM user_details where role_id = 10
+	`
+
 	roleQuery = `
-		SELECT name
+		SELECT db_username
 		FROM user_details WHERE email_id = $1;
 	`
 
@@ -89,8 +93,11 @@ func HandleGetDbLogsRequest(resp http.ResponseWriter, req *http.Request) {
 	whereEleList = append(whereEleList, userEmailId)
 
 	// this control flow checks if admin or db user.
-	if role == "Admin" {
+	if role == "Admin" && dataReq.Username == "" {
+		allUserList = true
 		adminCheck = true
+	} else if role == "Admin" && dataReq.Username != "" {
+		adminCheck = false
 	} else {
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, roleQuery, whereEleList)
 		if err != nil {
@@ -98,9 +105,8 @@ func HandleGetDbLogsRequest(resp http.ResponseWriter, req *http.Request) {
 			FormAndSendHttpResp(resp, "No user exists", http.StatusBadRequest, nil)
 			return
 		}
-		name = data[0]["name"].(string)
-		username = strings.Join(strings.Fields(name)[0:2], "_")
-		dataReq.Username = username
+		name = data[0]["db_username"].(string)
+		dataReq.Username = name
 	}
 
 	start, end, err := ConvertDate(dataReq)
@@ -147,6 +153,20 @@ func HandleGetDbLogsRequest(resp http.ResponseWriter, req *http.Request) {
 
 	if len(data) > 0 {
 		totalDatas = int64(data[0]["count"].(int64))
+	}
+
+	usersList := []string{}
+	if allUserList {
+		data, err = db.ReteriveFromDB(db.OweHubDbIndex, userQuery, nil)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get user from DB err: %v", err)
+			FormAndSendHttpResp(resp, "No user exists", http.StatusBadRequest, nil)
+			return
+		}
+		for _, item := range data {
+			usersList = append(usersList, item["db_username"].(string))
+		}
+		loglist.UserList = usersList
 	}
 
 	log.FuncInfoTrace(0, "Number of DbLogs List fetched : %v list %+v", len(loglist.DbLogList), totalDatas)

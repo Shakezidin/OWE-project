@@ -54,6 +54,7 @@ CREATE TABLE IF NOT EXISTS user_roles (
 CREATE TABLE IF NOT EXISTS user_details(
     user_id SERIAL,
     name VARCHAR(255) NOT NULL,
+    db_username VARCHAR(255),
     user_code VARCHAR(255),
     mobile_number VARCHAR(20) NOT NULL UNIQUE,
     email_id VARCHAR(255) NOT NULL UNIQUE,
