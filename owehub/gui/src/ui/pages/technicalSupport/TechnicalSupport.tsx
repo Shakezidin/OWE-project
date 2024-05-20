@@ -22,6 +22,9 @@ const TechnicalSupport: React.FC = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [message, setMessage] = useState('');
 
+  const [selectedFileName, setSelectedFileName] = useState('');
+
+
   const [errors, setErrors] = useState({
     firstName: '',
     lastName: '',
@@ -47,14 +50,14 @@ const TechnicalSupport: React.FC = () => {
       message: message ? '' : 'Message is required',
     };
     setErrors(newErrors);
-    // if (!Object.values(newErrors).some((error) => error)) {
-    //   console.log("Form submitted successfully");
-    // }
     if (form.current && Object.values(newErrors).every((err) => !err)) {
       emailjs
         .sendForm('service_nof7okz', 'template_y3qbqr8', form.current, {
           publicKey: 'iVTsTUymXutcfakaX',
         })
+        // .sendForm('service_25asrxf', 'template_1nxgn8l', form.current, {
+        //   publicKey: '9zrYKpc6-M02ZEmHn',
+        // })
         .then(
           (response: any) => {
             console.log('SUCCESS!', response);
@@ -64,6 +67,10 @@ const TechnicalSupport: React.FC = () => {
             setEmail('');
             setPhoneNumber('');
             setMessage('');
+            setSelectedFileName(''); // Clear the selected file name
+            if (fileInputRef.current) {
+              fileInputRef.current.value = ''; // Clear the file input value
+            }
           },
           (error: any) => {
             console.error('FAILED...', error);
@@ -71,6 +78,54 @@ const TechnicalSupport: React.FC = () => {
         );
     }
   };
+
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   // Validation logic
+  //   const newErrors = {
+  //     firstName: firstName ? '' : 'First name is required',
+  //     lastName: lastName ? '' : 'Last name is required',
+  //     email: emailRegex.test(email) ? '' : 'Invalid email address',
+  //     phoneNumber: phoneRegex.test(phoneNumber) ? '' : 'Invalid phone number',
+  //     message: message ? '' : 'Message is required',
+  //   };
+  //   setErrors(newErrors);
+  //   if (form.current && Object.values(newErrors).every((err) => !err)) {
+  //     if (fileInputRef.current && fileInputRef.current.files) {
+  //       const file = fileInputRef.current.files[0];
+  //       const maxSizeInBytes = 50 * 1024; // 50Kb
+  //       if (file.size > maxSizeInBytes) {
+  //         toast.error('File size exceeds the maximum allowed limit of 50Kb.');
+  //         return;
+  //       }
+  //     }
+  
+  //     emailjs
+  //       .sendForm('service_cknkzcd', 'template_ert8id2', form.current, {
+  //         publicKey: '9zrYKpc6-M02ZEmHn',
+  //       })
+  //       .then(
+  //         (response: any) => {
+  //           console.log('SUCCESS!', response);
+  //           toast.success('Your form has been submitted!');
+  //           setFirstName('');
+  //           setLastName('');
+  //           setEmail('');
+  //           setPhoneNumber('');
+  //           setMessage('');
+  //           setSelectedFileName(''); // Clear the selected file name
+  //           if (fileInputRef.current) {
+  //             fileInputRef.current.value = ''; // Clear the file input value
+  //           }
+  //         },
+  //         (error: any) => {
+  //           console.error('FAILED...', error);
+  //         }
+  //       );
+  //   }
+  // };
+
+
 
   const handleStateChange = (selectedOption: any) => {
     setSelectedState(selectedOption.value);
@@ -84,9 +139,13 @@ const TechnicalSupport: React.FC = () => {
   const handleSelectChange = (selectedOption: any) => {
     setSelectedOption(selectedOption);
   };
-  const handleFileInputChange = (e: any) => {
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    console.log(file);
+    if (file) {
+      setSelectedFileName(file.name);
+    } else {
+      setSelectedFileName('');
+    }
   };
 
   const handleButtonClick = () => {
@@ -102,7 +161,6 @@ const TechnicalSupport: React.FC = () => {
               <h3>Support</h3>
             </div>
             <div className="supportImage">
-              {/* <img src={ICONS.supportImage} alt="" /> */}
               <object
                 type="image/svg+xml"
                 data={ICONS.supportImage}
@@ -127,13 +185,16 @@ const TechnicalSupport: React.FC = () => {
                   name="user_name"
                   placeholder={'Enter'}
                   onChange={(e) => {
-                    setFirstName(e.target.value);
-                    setErrors({ ...errors, firstName: '' });
+                    const inputValue = e.target.value;
+                    if (/^[a-zA-Z\s]*$/.test(inputValue)) {
+                      setFirstName(inputValue);
+                      setErrors({ ...errors, firstName: '' });
+                    } else {
+                      setErrors({ ...errors, firstName: 'Only letters are allowed' });
+                    }
                   }}
                 />
-                {errors.firstName && (
-                  <span className="error">{errors.firstName}</span>
-                )}
+                {errors.firstName && <span className="error">{errors.firstName}</span>}
               </div>
               <div className="create-input-field-support">
                 <Input
@@ -143,8 +204,13 @@ const TechnicalSupport: React.FC = () => {
                   name="lastName"
                   placeholder={'Enter'}
                   onChange={(e) => {
-                    setLastName(e.target.value);
-                    setErrors({ ...errors, lastName: '' });
+                    const inputValue = e.target.value;
+                    if (/^[a-zA-Z\s]*$/.test(inputValue)) {
+                      setLastName(inputValue);
+                      setErrors({ ...errors, lastName: '' });
+                    } else {
+                      setErrors({ ...errors, lastName: 'Only letters are allowed' });
+                    }
                   }}
                 />
                 {errors.lastName && (
@@ -209,12 +275,13 @@ const TechnicalSupport: React.FC = () => {
                     className="file-input"
                   />
                   <div className="custom-button-container">
-                    <span className="file-input-placeholder">Select File</span>
+                    <span className="file-input-placeholder">
+                      {selectedFileName || 'Select File'}
+                    </span>
                     <button
                       className="custom-button"
                       onClick={handleButtonClick}
                     >
-                      {/* <img src={ICONS.browserIcon} alt="" /> */}
                       Browse
                     </button>
                   </div>
