@@ -26,6 +26,7 @@ import { ROUTES } from '../../../../routes/routes';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
+import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 
 const LoanType = () => {
   const dispatch = useAppDispatch();
@@ -53,14 +54,16 @@ const LoanType = () => {
   const [sortKey, setSortKey] = useState('');
   const [viewArchived, setViewArchived] = useState<boolean>(false);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [filters, setFilters] = useState<FilterModel[]>([]);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
       archived: viewArchived ? true : undefined,
+      filters,
     };
     dispatch(fetchLoanType(pageNumber));
-  }, [dispatch, currentPage, viewArchived]);
+  }, [dispatch, currentPage, viewArchived,filters]);
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
@@ -198,7 +201,8 @@ const LoanType = () => {
     setCurrentPage(1);
   };
   const fetchFunction = (req: any) => {
-    dispatch(fetchLoanType(req));
+    setCurrentPage(1);
+    setFilters(req.filters);
   };
   
   
