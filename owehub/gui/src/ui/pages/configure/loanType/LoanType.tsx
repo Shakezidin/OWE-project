@@ -24,6 +24,8 @@ import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import Swal from 'sweetalert2';
 import { ROUTES } from '../../../../routes/routes';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
+import MicroLoader from '../../../components/loader/MicroLoader';
+import FilterHoc from '../../../components/FilterModal/FilterHoc';
 
 const LoanType = () => {
   const dispatch = useAppDispatch();
@@ -198,20 +200,8 @@ const LoanType = () => {
   const fetchFunction = (req: any) => {
     dispatch(fetchLoanType(req));
   };
-  if (error) {
-    return (
-      <div className="loader-container">
-        <Loading />
-      </div>
-    );
-  }
-  if (loading) {
-    return (
-      <div className="loader-container">
-        <Loading /> {loading}
-      </div>
-    );
-  }
+  
+  
 
   return (
     <div className="comm">
@@ -243,6 +233,16 @@ const LoanType = () => {
             page_size={itemsPerPage}
           />
         )}
+        
+        <FilterHoc
+          resetOnChange={viewArchived}
+          isOpen={filterOPen}
+          handleClose={filterClose}
+          columns={LoanTypeColumns}
+          fetchFunction={fetchFunction}
+          page_number={currentPage}
+          page_size={itemsPerPage}
+        />
         {open && (
           <CreateLoanType
             loanData={editedLoanData}
@@ -288,7 +288,14 @@ const LoanType = () => {
               </tr>
             </thead>
             <tbody>
-              {currentPageData?.length > 0 ? (
+            {loading ?  ( <tr>
+                  <td colSpan={LoanTypeColumns.length}>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <MicroLoader />
+                    </div>
+                  </td>
+                </tr> 
+                ) :  currentPageData?.length > 0 ? (
                 currentPageData?.map((el: any, i: any) => (
                   <tr key={i}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
@@ -347,6 +354,7 @@ const LoanType = () => {
                   </td>
                 </tr>
               )}
+
             </tbody>
           </table>
         </div>

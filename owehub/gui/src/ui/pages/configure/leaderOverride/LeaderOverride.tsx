@@ -24,6 +24,8 @@ import {
   getleaderOverride,
 } from '../../../../redux/apiActions/config/leaderOverrideAction';
 import CheckBox from '../../../components/chekbox/CheckBox';
+import FilterHoc from '../../../components/FilterModal/FilterHoc';
+import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 
 const LeaderOverride = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -54,14 +56,16 @@ const LeaderOverride = () => {
   } = useAppSelector((state) => state.leaderOverride);
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [filters,setFilters] = useState<FilterModel[]>()
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
       archived: viewArchived,
+      filters
     };
     dispatch(getleaderOverride(pageNumber));
-  }, [dispatch, currentPage, viewArchived]);
+  }, [dispatch, currentPage, viewArchived, filters]);
 
   const filter = () => {
     setFilterOpen(true);
@@ -138,6 +142,7 @@ const LeaderOverride = () => {
         page_number: currentPage,
         page_size: itemsPerPage,
         archived: viewArchived,
+        filters
       };
       const res = await postCaller('update_leaderoverride_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
@@ -158,7 +163,8 @@ const LeaderOverride = () => {
     handleOpen();
   };
   const fetchFunction = (req: any) => {
-    dispatch(getleaderOverride(req));
+    setCurrentPage(1);
+    setFilters(req.filters);
   };
 
   if (error) {
@@ -197,15 +203,17 @@ const LeaderOverride = () => {
           onpressExport={() => {}}
           onpressAddNew={() => handleTimeLineSla()}
         />
-        {filterOPen && (
-          <FilterModal
-            handleClose={filterClose}
-            columns={LeaderOverrideColumns}
-            page_number={currentPage}
-            fetchFunction={fetchFunction}
-            page_size={itemsPerPage}
-          />
-        )}
+
+        <FilterHoc
+          resetOnChange={viewArchived}
+          isOpen={filterOPen}
+          handleClose={filterClose}
+          columns={LeaderOverrideColumns}
+          page_number={currentPage}
+          fetchFunction={fetchFunction}
+          page_size={itemsPerPage}
+        />
+
         {open && (
           <CreateLeaderOverride
             editMode={editMode}
