@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import TableHeader from '../../../components/tableHeader/TableHeader';
 import { ICONS } from '../../../icons/Icons';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-import { fetchAr } from '../../../../redux/apiActions/arConfigAction';
+import { fetchAr } from '../../../../redux/apiActions/config/arConfigAction';
 // import CreateTimeLine from "./CreateTimeLine";
 import CreateAr from './CreateAr';
 import CheckBox from '../../../components/chekbox/CheckBox';
@@ -21,6 +21,8 @@ import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import MicroLoader from '../../../components/loader/MicroLoader';
+import FilterHoc from '../../../components/FilterModal/FilterHoc';
+import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 const AR = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -45,14 +47,16 @@ const AR = () => {
   const { data, count, isSuccess, isLoading } = useAppSelector(
     (state) => state.ar
   );
+  const [filters, setFilters] = useState<FilterModel[]>([]);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
       archived: viewArchived ? true : undefined,
+      filters,
     };
     dispatch(fetchAr(pageNumber));
-  }, [dispatch, currentPage, viewArchived]);
+  }, [dispatch, currentPage, viewArchived, filters]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -60,10 +64,11 @@ const AR = () => {
         page_number: currentPage,
         page_size: itemsPerPage,
         archived: viewArchived,
+        filters,
       };
       dispatch(fetchAr({ ...pageNumber }));
     }
-  }, [isSuccess, currentPage, viewArchived]);
+  }, [isSuccess, currentPage, viewArchived, filters]);
   const filter = () => {
     setFilterOpen(true);
   };
@@ -128,15 +133,14 @@ const AR = () => {
   };
 
   const fetchFunction = (req: any) => {
-    dispatch(
-      fetchAr({ ...req, page_number: currentPage, page_size: itemsPerPage })
-    );
+    setCurrentPage(1);
+    setFilters(req.filters);
   };
   const handleViewArchiveToggle = () => {
     setViewArchived(!viewArchived);
-    // When toggling, reset the selected rows
     setSelectedRows(new Set());
     setSelectAllChecked(false);
+    setCurrentPage(1);
   };
   const handleArchiveAllClick = async () => {
     const confirmed = await showAlert(
@@ -158,17 +162,17 @@ const AR = () => {
         const pageNumber = {
           page_number: currentPage,
           page_size: itemsPerPage,
+          filters,
         };
 
         const res = await postCaller('update_ar_archive', newValue);
         if (res.status === HTTP_STATUS.OK) {
+          setSelectedRows(new Set());
+          setSelectAllChecked(false);
           // If API call is successful, refetch commissions
           dispatch(fetchAr(pageNumber));
-          const remainingSelectedRows = Array.from(selectedRows).filter(
-            (index) => !archivedRows.includes(data[index].record_id)
-          );
-          const isAnyRowSelected = remainingSelectedRows.length > 0;
-          setSelectAllChecked(isAnyRowSelected);
+
+          setSelectAllChecked(false);
           setSelectedRows(new Set());
           await successSwal('Archived', 'The data has been archived ');
         } else {
@@ -193,9 +197,12 @@ const AR = () => {
       const pageNumber = {
         page_number: currentPage,
         page_size: itemsPerPage,
+        filters,
       };
       const res = await postCaller('update_ar_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
+        setSelectedRows(new Set());
+        setSelectAllChecked(false);
         dispatch(fetchAr(pageNumber));
         await successSwal('Archived', 'The data has been archived ');
       } else {
@@ -232,15 +239,17 @@ const AR = () => {
           onpressExport={() => {}}
           onpressAddNew={() => handleTimeLineSla()}
         />
-        {filterOPen && (
-          <FilterModal
-            handleClose={filterClose}
-            columns={ARColumns}
-            page_number={currentPage}
-            fetchFunction={fetchFunction}
-            page_size={itemsPerPage}
-          />
-        )}
+
+        <FilterHoc
+          isOpen={filterOPen}
+          resetOnChange={viewArchived}
+          handleClose={filterClose}
+          columns={ARColumns}
+          page_number={currentPage}
+          fetchFunction={fetchFunction}
+          page_size={itemsPerPage}
+        />
+
         {open && (
           <CreateAr
             editMode={editMode}
@@ -311,15 +320,15 @@ const AR = () => {
                         {el.unique_id}
                       </div>
                     </td>
-                    <td>{el.customer_name}</td>
-                    <td>{el.state_name}</td>
+                    <td>{el.customer_name || 'N/A'}</td>
+                    <td>{el.state_name || 'N/A'}</td>
 
-                    <td>{el.date}</td>
-                    <td>{el.amount}</td>
-                    <td>{el.payment_type}</td>
-                    <td>{el.bank}</td>
-                    <td>{el.ced}</td>
-                    <td>{el.partner_name}</td>
+                    <td>{el.date || 'N/A'}</td>
+                    <td>{el.amount || 'N/A'}</td>
+                    <td>{el.payment_type || 'N/A'}</td>
+                    <td>{el.bank || 'N/A'}</td>
+                    <td>{el.ced || 'N/A'}</td>
+                    <td>{el.partner_name || 'N/A'}</td>
                     <td>{el.total_paid}</td>
                     {!viewArchived && selectedRows.size < 2 && (
                       <td>

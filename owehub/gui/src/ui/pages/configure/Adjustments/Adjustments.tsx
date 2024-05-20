@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import {
   IRateRow,
   getAdjustments,
-} from '../../../../redux/apiActions/arAdjustmentsAction';
+} from '../../../../redux/apiActions/config/arAdjustmentsAction';
 
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
@@ -27,6 +27,8 @@ import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import Loading from '../../../components/loader/Loading';
 import MicroLoader from '../../../components/loader/MicroLoader';
+import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
+import FilterHoc from '../../../components/FilterModal/FilterHoc';
 const Adjustments = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -56,14 +58,16 @@ const Adjustments = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [filters, setFilters] = useState<FilterModel[]>([]);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
       archived: viewArchived,
+      filters,
     };
     dispatch(getAdjustments(pageNumber));
-  }, [dispatch, currentPage, viewArchived]);
+  }, [dispatch, currentPage, viewArchived, filters]);
 
   const filter = () => {
     setFilterOpen(true);
@@ -95,10 +99,11 @@ const Adjustments = () => {
         page_number: currentPage,
         page_size: itemsPerPage,
         archived: viewArchived,
+        filters,
       };
       dispatch(getAdjustments({ ...pageNumber }));
     }
-  }, [isSuccess, currentPage, viewArchived]);
+  }, [isSuccess, currentPage, viewArchived, filters]);
   const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
@@ -151,9 +156,12 @@ const Adjustments = () => {
         page_number: currentPage,
         page_size: itemsPerPage,
         archived: viewArchived,
+        filters,
       };
       const res = await postCaller('update_adjustments_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
+        setSelectAllChecked(false);
+        setSelectedRows(new Set());
         dispatch(getAdjustments(pageNumber));
         await successSwal('Archived', 'The data has been archived ');
       } else {
@@ -168,13 +176,8 @@ const Adjustments = () => {
     handleOpen();
   };
   const fetchFunction = (req: any) => {
-    dispatch(
-      getAdjustments({
-        ...req,
-        page_number: currentPage,
-        page_size: itemsPerPage,
-      })
-    );
+    setCurrentPage(1);
+    setFilters(req.filters);
   };
 
   if (error) {
@@ -192,7 +195,12 @@ const Adjustments = () => {
       <div className="commissionContainer">
         <TableHeader
           title="Adjustments"
-          onPressViewArchive={() => setViewArchived((prev) => !prev)}
+          onPressViewArchive={() => {
+            setViewArchived((prev) => !prev);
+            setCurrentPage(1);
+            setSelectAllChecked(false);
+            setSelectedRows(new Set());
+          }}
           onPressArchive={() =>
             handleArchiveClick(
               Array.from(selectedRows).map(
@@ -208,15 +216,17 @@ const Adjustments = () => {
           onpressExport={() => {}}
           onpressAddNew={() => handleTimeLineSla()}
         />
-        {filterOPen && (
-          <FilterModal
-            handleClose={filterClose}
-            columns={AdjustmentsColumns}
-            page_number={currentPage}
-            fetchFunction={fetchFunction}
-            page_size={itemsPerPage}
-          />
-        )}
+
+        <FilterHoc
+          resetOnChange={viewArchived}
+          isOpen={filterOPen}
+          handleClose={filterClose}
+          columns={AdjustmentsColumns}
+          page_number={currentPage}
+          fetchFunction={fetchFunction}
+          page_size={itemsPerPage}
+        />
+
         {open && (
           <CreatedAdjustments
             setViewArchived={setViewArchived}
@@ -292,7 +302,7 @@ const Adjustments = () => {
                       <td>{item.customer || 'N/A'}</td>
                       <td>{item.partner_name || 'N/A'}</td>
                       <td>{item.installer_name || 'N/A'}</td>
-                      <td> {item.state_name} </td>
+                      <td> {item.state_name || "N/A"} </td>
                       <td> {item.sys_size} </td>
                       <td> {item.bl} </td>
                       <td> {item.epc} </td>
@@ -339,8 +349,7 @@ const Adjustments = () => {
         </div>
         <div className="page-heading-container">
           <p className="page-heading">
-            {startIndex} - {endIndex > count ? count : endIndex} of {count}{' '}
-            item
+            {startIndex} - {endIndex > count ? count : endIndex} of {count} item
           </p>
 
           {arAdjustmentsList?.length > 0 ? (

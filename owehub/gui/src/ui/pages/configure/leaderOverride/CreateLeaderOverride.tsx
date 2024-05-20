@@ -25,7 +25,7 @@ import {
   createleaderOverride,
   ILeaderRow,
   updateleaderOverride,
-} from '../../../../redux/apiActions/leaderOverrideAction';
+} from '../../../../redux/apiActions/config/leaderOverrideAction';
 
 interface payScheduleProps {
   handleClose: () => void;
@@ -299,13 +299,12 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     value={formData.start}
                     name="start"
                     placeholder={'Enter'}
-                    onChange={(e)=>{
-                      handleChange(e)
+                    onChange={(e) => {
+                      handleChange(e);
                       setFormData((prev) => ({
-                       ...prev,
-                        end: "",
-                      }))
-
+                        ...prev,
+                        end: '',
+                      }));
                     }}
                   />
                   {errors?.start && (
@@ -320,7 +319,10 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     label="End"
                     value={formData.end}
                     name="end"
-                    min={formData.start && format(addDays(new Date(formData.start),1),"yyyy-MM-dd")}
+                    min={
+                      formData.start &&
+                      format(addDays(new Date(formData.start), 1), 'yyyy-MM-dd')
+                    }
                     disabled={!formData.start}
                     placeholder={'Enter'}
                     onChange={handleChange}

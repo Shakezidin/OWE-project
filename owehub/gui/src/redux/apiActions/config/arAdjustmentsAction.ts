@@ -1,11 +1,13 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
+import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
+import { FilterModel } from '../../../core/models/data_models/FilterSelectModel';
 
 interface Ipaginate {
   page_number: number;
   page_size: number;
   archived: boolean;
+  filters: FilterModel[];
 }
 
 interface IRateCreateParams {
@@ -50,9 +52,7 @@ export const createAdjustments = createAsyncThunk(
         console.log('workinggg', data.status);
         return rejectWithValue((data as Error).message);
       }
-      await dispatch(
-        getAdjustments({ page_number: 1, page_size: 10, archived: false })
-      );
+
       return data.data;
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -69,9 +69,6 @@ export const updateAdjustments = createAsyncThunk(
         console.log('workinggg', data.status);
         return rejectWithValue((data as Error).message);
       }
-      await dispatch(
-        getAdjustments({ page_number: 1, page_size: 10, archived: false })
-      );
       return data.data;
     } catch (error) {
       return rejectWithValue((error as Error).message);

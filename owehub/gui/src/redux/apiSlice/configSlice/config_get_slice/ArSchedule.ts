@@ -4,7 +4,7 @@ import {
   IARSchedule,
   createArSchedule,
   updateArchSchedule,
-} from '../../../apiActions/arScheduleAction';
+} from '../../../apiActions/config/arScheduleAction';
 import { toast } from 'react-toastify';
 
 interface IState {

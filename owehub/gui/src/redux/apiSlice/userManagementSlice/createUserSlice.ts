@@ -5,7 +5,7 @@ import {
   deleteUserOnboarding,
   fetchDealerOwner,
   fetchRegionList,
-} from '../../apiActions/createUserSliceActions';
+} from '../../apiActions/auth/createUserSliceActions';
 
 const initialState: CreateOnboardUserStateModel = {
   loading: false,

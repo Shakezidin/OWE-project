@@ -3,7 +3,7 @@ import {
   createReconcile,
   fetchReconcile,
   updateReconcile,
-} from '../../../apiActions/reconcileAction';
+} from '../../../apiActions/config/reconcileAction';
 import { RateAdjustment } from '../../../../core/models/api_models/RateAdjustmentModel';
 import { toast } from 'react-toastify';
 

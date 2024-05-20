@@ -7,7 +7,7 @@ import TableHeader from '../../../components/tableHeader/TableHeader';
 import {
   getNonComm,
   INonCommRowDLR,
-} from '../../../../redux/apiActions/nocCommAction';
+} from '../../../../redux/apiActions/config/nocCommAction';
 
 import CheckBox from '../../../components/chekbox/CheckBox';
 import {

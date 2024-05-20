@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ReactComponent as CROSS_BUTTON } from '../../../../resources/assets/cross_button.svg';
 import { ICONS } from '../../../icons/Icons';
 import { FaArrowDown } from 'react-icons/fa6';
@@ -22,6 +22,7 @@ const SelectTable: React.FC<ButtonProps> = ({
 }) => {
   const dispatch = useAppDispatch();
   const { option } = useAppSelector((state) => state.dataTableSlice);
+  const [sortType, setSortType] = useState('asc');
   function handleOptionChange(type: string, table: string, ind: number) {
     if (selected.has(ind)) {
       setTablePermissions((permissions: any) => {
@@ -32,11 +33,24 @@ const SelectTable: React.FC<ButtonProps> = ({
       });
     }
   }
-
-  const tables = option.map(
-    (option: { table_name: string }) => option.table_name
+  const [tables, setTables] = useState(() =>
+    option.map((option: { table_name: string }) => option.table_name)
   );
-  console.log(tables.length, selected.size, 'acll check');
+  const handleSort = () => {
+    console.log('woringgg');
+
+    if (sortType === 'asc') {
+      setSortType('desc');
+      const table = tables.sort((a: string, b: string) => b.localeCompare(a));
+      setTables(table)
+    } else {
+      setSortType('asc');
+     const table =  tables.sort((a: string, b: string) => a.localeCompare(b));
+     setTables(table)
+    }
+  };
+
+  
 
   return (
     <>
@@ -85,24 +99,32 @@ const SelectTable: React.FC<ButtonProps> = ({
                   </th>
 
                   <th>
-                    <div className="table-header">
+                    <div
+                      onClick={handleSort}
+                      className="table-header"
+                      style={{ cursor: 'pointer' }}
+                    >
                       <p>Table Name</p>
-                      <FaArrowDown style={{ color: '#667085' }} />
+                      {sortType === 'asc' ? (
+                        <FaArrowDown style={{ color: '#667085' }} />
+                      ) : (
+                        <FaArrowDown style={{ color: '#667085' }} />
+                      )}
                     </div>
                   </th>
                   <th>
                     <div className="table-header">
-                      <p>View</p> <FaArrowDown style={{ color: '#667085' }} />
+                      <p>View</p>
                     </div>
                   </th>
                   <th>
                     <div className="table-header">
-                      <p>Edit</p> <FaArrowDown style={{ color: '#667085' }} />
+                      <p>Edit</p>
                     </div>
                   </th>
                   <th>
                     <div className="table-header">
-                      <p>Full</p> <FaArrowDown style={{ color: '#667085' }} />
+                      <p>Full</p>
                     </div>
                   </th>
                 </tr>
@@ -193,7 +215,13 @@ const SelectTable: React.FC<ButtonProps> = ({
             </table>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              marginTop: '.5rem',
+            }}
+          >
             <ActionButton
               type="submit"
               title="Done"

@@ -6,12 +6,12 @@ import { ActionButton } from '../../../components/button/ActionButton';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-import { createAdjustments } from '../../../../redux/apiActions/arAdjustmentsAction';
+import { createAdjustments } from '../../../../redux/apiActions/config/arAdjustmentsAction';
 import {
   createLoanFee,
   ILoanRow,
   updateLoanFee,
-} from '../../../../redux/apiActions/loanFeeActions';
+} from '../../../../redux/apiActions/config/loanFeeActions';
 import {
   installerOption,
   stateOption,
@@ -324,11 +324,11 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     value={newFormData.startDate}
                     name="startDate"
                     placeholder={'Enter'}
-                    onChange={(e)=>{
-                      handleChange(e)
+                    onChange={(e) => {
+                      handleChange(e);
                       setNewFormData((prev) => ({
-                       ...prev,
-                        endDate:"",
+                        ...prev,
+                        endDate: '',
                       }));
                     }}
                   />
@@ -343,7 +343,13 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                   <Input
                     type={'date'}
                     label="End"
-                    min={newFormData.startDate && format(addDays(new Date(newFormData.startDate),1),"yyyy-MM-dd")}
+                    min={
+                      newFormData.startDate &&
+                      format(
+                        addDays(new Date(newFormData.startDate), 1),
+                        'yyyy-MM-dd'
+                      )
+                    }
                     value={newFormData.endDate}
                     disabled={!newFormData.startDate}
                     name="endDate"

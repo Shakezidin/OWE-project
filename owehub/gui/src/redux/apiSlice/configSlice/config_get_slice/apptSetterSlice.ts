@@ -3,7 +3,7 @@ import {
   fetchApptSetters,
   updateApptSetters,
   createApttSetters,
-} from '../../../apiActions/apptSetterAction';
+} from '../../../apiActions/config/apptSetterAction';
 import { RateAdjustment } from '../../../../core/models/api_models/RateAdjustmentModel';
 import { toast } from 'react-toastify';
 

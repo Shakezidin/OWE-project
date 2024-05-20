@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
+import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 interface Ipaginate {
   page_number: number;
   page_size: number;
@@ -28,9 +28,9 @@ export const getleaderOverride = createAsyncThunk(
   'fetch/leaderOverride',
   async (param: Ipaginate, { rejectWithValue }) => {
     try {
-      const data = await postCaller("get_leaderoverride", param);
+      const data = await postCaller('get_leaderoverride', param);
       const list = data.data.leader_override_list || ([] as ILeaderRow[]);
-      return {list ,count:data.dbRecCount}
+      return { list, count: data.dbRecCount };
     } catch (error) {
       return rejectWithValue((error as Error).message);
     }

@@ -23,6 +23,9 @@ import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import Swal from 'sweetalert2';
 import { ROUTES } from '../../../../routes/routes';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
+import FilterHoc from '../../../components/FilterModal/FilterHoc';
+import MicroLoader from '../../../components/loader/MicroLoader';
+import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 
 const DealerOverRides: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -44,14 +47,16 @@ const DealerOverRides: React.FC = () => {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [currentPage, setCurrentPage] = useState(1);
   const [editedDealer, setEditDealer] = useState<DealerModel | null>(null);
+  const [filters, setFilters] = useState<FilterModel[]>([]);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
       archived: viewArchived ? true : undefined,
+      filters,
     };
     dispatch(fetchDealer(pageNumber));
-  }, [dispatch, currentPage, viewArchived]);
+  }, [dispatch, currentPage, viewArchived, filters]);
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
@@ -138,6 +143,8 @@ const DealerOverRides: React.FC = () => {
         const res = await postCaller(EndPoints.update_dealer_archive, newValue);
         if (res.status === HTTP_STATUS.OK) {
           // If API call is successful, refetch commissions
+          setSelectAllChecked(false);
+          setSelectedRows(new Set());
           dispatch(fetchDealer(pageNumber));
           const remainingSelectedRows = Array.from(selectedRows).filter(
             (index) => !archivedRows.includes(dealerList[index].record_id)
@@ -172,6 +179,8 @@ const DealerOverRides: React.FC = () => {
       const res = await postCaller(EndPoints.update_dealer_archive, newValue);
       if (res.status === HTTP_STATUS.OK) {
         dispatch(fetchDealer(pageNumber));
+        setSelectAllChecked(false);
+        setSelectedRows(new Set());
         await successSwal('Archived', 'The data has been archived ');
       } else {
         await successSwal('Archived', 'The data has been archived ');
@@ -186,19 +195,13 @@ const DealerOverRides: React.FC = () => {
     setSelectAllChecked(false);
   };
   const fetchFunction = (req: any) => {
-    dispatch(fetchDealer({ ...req, page_number: currentPage }));
+    setCurrentPage(1);
+    setFilters(req.filters);
   };
   if (error) {
     return (
       <div className="loader-container">
         <Loading />
-      </div>
-    );
-  }
-  if (loading) {
-    return (
-      <div className="loader-container">
-        <Loading /> {loading}
       </div>
     );
   }
@@ -214,7 +217,12 @@ const DealerOverRides: React.FC = () => {
       <div className="commissionContainer">
         <TableHeader
           title="Dealer OverRides"
-          onPressViewArchive={() => handleViewArchiveToggle()}
+          onPressViewArchive={() => {
+            handleViewArchiveToggle();
+            setCurrentPage(1);
+            setSelectAllChecked(false);
+            setSelectedRows(new Set());
+          }}
           onPressArchive={() => handleArchiveAllClick()}
           onPressFilter={() => filter()}
           onPressImport={() => {}}
@@ -224,15 +232,17 @@ const DealerOverRides: React.FC = () => {
           isAnyRowSelected={isAnyRowSelected}
           onpressAddNew={() => handleAddDealer()}
         />
-        {filterOPen && (
-          <FilterModal
-            handleClose={filterClose}
-            columns={DealerTableData}
-            fetchFunction={fetchFunction}
-            page_number={currentPage}
-            page_size={itemsPerPage}
-          />
-        )}
+
+        <FilterHoc
+          resetOnChange={viewArchived}
+          isOpen={filterOPen}
+          handleClose={filterClose}
+          columns={DealerTableData}
+          fetchFunction={fetchFunction}
+          page_number={currentPage}
+          page_size={itemsPerPage}
+        />
+
         {open && (
           <CreateDealer
             handleClose={handleClose}
@@ -278,7 +288,15 @@ const DealerOverRides: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {currentPageData?.length > 0 ? (
+              {loading ? (
+                <tr>
+                  <td colSpan={DealerTableData.length}>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <MicroLoader />
+                    </div>
+                  </td>
+                </tr>
+              ) : currentPageData?.length > 0 ? (
                 currentPageData?.map((el: any, i: any) => (
                   <tr key={i}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
@@ -362,7 +380,9 @@ const DealerOverRides: React.FC = () => {
         {dealerList?.length > 0 ? (
           <div className="page-heading-container">
             <p className="page-heading">
-           Showing   {startIndex} - {endIndex>totalCount?totalCount:endIndex} of {totalCount} item
+              Showing {startIndex} -{' '}
+              {endIndex > totalCount ? totalCount : endIndex} of {totalCount}{' '}
+              item
             </p>
             <Pagination
               currentPage={currentPage}

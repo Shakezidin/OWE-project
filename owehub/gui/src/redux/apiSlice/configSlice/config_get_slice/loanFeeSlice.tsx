@@ -4,7 +4,7 @@ import {
   createLoanFee,
   ILoanRow,
   updateLoanFee,
-} from '../../../apiActions/loanFeeActions';
+} from '../../../apiActions/config/loanFeeActions';
 import { toast } from 'react-toastify';
 
 interface IState {

@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
-import { EndPoints } from '../../infrastructure/web_api/api_client/EndPoints';
+import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
+import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints';
 
 export interface ReconcileEditParams {
   unique_id: string;
@@ -22,24 +22,22 @@ interface ReconcileCreateParams {
   end_date: string;
 }
 
-export const fetchApptSetters = createAsyncThunk(
-  'apptsetters/fetchapptsetters',
-  async (data: any) => {
-    const response = await postCaller('get_appt_setters', data);
+export const fetchAr = createAsyncThunk('ar/fetchar', async (data: any) => {
+  const response = await postCaller('get_ar', data);
 
-    return response.data.appt_setters_list;
-  }
-);
+  const list = response.data.ar__list || [];
 
-export const createApttSetters = createAsyncThunk(
-  'create/appsetters',
+  return { list, count: response.dbRecCount };
+});
+
+export const createAr = createAsyncThunk(
+  'create/ar',
   async (params: any, { rejectWithValue, dispatch }) => {
     try {
-      const data = await postCaller('create_appt_setters', params);
+      const data = await postCaller('create_ar', params);
       if (data instanceof Error) {
         return rejectWithValue((data as Error).message);
       }
-      await dispatch(fetchApptSetters({ page_number: 1, page_size: 10 }));
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -47,12 +45,12 @@ export const createApttSetters = createAsyncThunk(
   }
 );
 
-export const updateApptSetters = createAsyncThunk(
-  'update/appsetters',
+export const updateAr = createAsyncThunk(
+  'update/ar',
   async (params: any, { rejectWithValue, dispatch }) => {
     try {
-      const data = await postCaller('update_appt_setters', params);
-      await dispatch(fetchApptSetters({ page_number: 1, page_size: 10 }));
+      const data = await postCaller('update_ar', params);
+
       return data.data;
     } catch (error) {
       return rejectWithValue((error as Error).message);

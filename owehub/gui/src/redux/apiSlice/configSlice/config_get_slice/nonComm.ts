@@ -4,7 +4,7 @@ import {
   createNonComm,
   updateNoncom,
   INonCommRowDLR,
-} from '../../../apiActions/nocCommAction';
+} from '../../../apiActions/config/nocCommAction';
 import { toast } from 'react-toastify';
 
 interface IState {

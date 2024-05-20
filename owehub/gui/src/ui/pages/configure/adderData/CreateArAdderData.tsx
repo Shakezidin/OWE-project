@@ -10,7 +10,7 @@ import {
   createarAdderData,
   IAdderRowData,
   updatearAdderData,
-} from '../../../../redux/apiActions/arAdderDataAction';
+} from '../../../../redux/apiActions/config/arAdderDataAction';
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
@@ -90,7 +90,7 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
       handleClose();
       dispatch(resetSuccess());
     }
-  }, []);
+  }, [isSuccess]);
   return (
     <div className="transparent-model">
       <form className="modal" onSubmit={handleSubmit}>

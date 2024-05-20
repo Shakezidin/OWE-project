@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
-import { EndPoints } from '../../infrastructure/web_api/api_client/EndPoints';
+import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
+import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints';
 
 export interface ReconcileEditParams {
   unique_id: string;
@@ -22,24 +22,24 @@ interface ReconcileCreateParams {
   end_date: string;
 }
 
-export const fetchRebateData = createAsyncThunk(
-  'RebateData/fetchRebateData',
+export const fetchApptSetters = createAsyncThunk(
+  'apptsetters/fetchapptsetters',
   async (data: any) => {
-    const response = await postCaller('get_rebate_data', data);
+    const response = await postCaller('get_appt_setters', data);
 
-    return response.data.data.ar_data_list;
+    return response.data.appt_setters_list;
   }
 );
 
-export const createRebateData = createAsyncThunk(
-  'create/rebatedata',
+export const createApttSetters = createAsyncThunk(
+  'create/appsetters',
   async (params: any, { rejectWithValue, dispatch }) => {
     try {
-      const data = await postCaller('create_rebate_data', params);
+      const data = await postCaller('create_appt_setters', params);
       if (data instanceof Error) {
         return rejectWithValue((data as Error).message);
       }
-      await dispatch(fetchRebateData({ page_number: 1, page_size: 10 }));
+      await dispatch(fetchApptSetters({ page_number: 1, page_size: 10 }));
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -47,12 +47,12 @@ export const createRebateData = createAsyncThunk(
   }
 );
 
-export const updateRebateData = createAsyncThunk(
-  'update/rebatedata',
+export const updateApptSetters = createAsyncThunk(
+  'update/appsetters',
   async (params: any, { rejectWithValue, dispatch }) => {
     try {
-      const data = await postCaller('update_rebate_data', params);
-      await dispatch(fetchRebateData({ page_number: 1, page_size: 10 }));
+      const data = await postCaller('update_appt_setters', params);
+      await dispatch(fetchApptSetters({ page_number: 1, page_size: 10 }));
       return data.data;
     } catch (error) {
       return rejectWithValue((error as Error).message);

@@ -21,7 +21,7 @@ import {
   createRepaySettings,
   RepayEditParams,
   updateRepaySettings,
-} from '../../../../redux/apiActions/repPayAction';
+} from '../../../../redux/apiActions/config/repPayAction';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/repPaySettingsSlice';
 

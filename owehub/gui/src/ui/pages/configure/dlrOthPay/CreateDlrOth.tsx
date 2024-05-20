@@ -17,7 +17,7 @@ import {
   IRowDLR,
   createDlrOth,
   updateDlrOth,
-} from '../../../../redux/apiActions/dlrAction';
+} from '../../../../redux/apiActions/config/dlrAction';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 
 interface ButtonProps {

@@ -702,15 +702,22 @@ const ProjectStatus = () => {
                                     width: '35px',
                                   }}
                                 >
-                                 {!(el.key &&
+                                  {!(
+                                    el.key &&
                                     projectDetail[
                                       el.key as keyof typeof projectDetail
-                                    ]) &&<span
-                                    className="date-para"
-                                    style={{ color: el.color, fontSize: '9px' }}
-                                  >
-                                    ETA
-                                  </span>}
+                                    ]
+                                  ) && (
+                                    <span
+                                      className="date-para"
+                                      style={{
+                                        color: el.color,
+                                        fontSize: '9px',
+                                      }}
+                                    >
+                                      ETA
+                                    </span>
+                                  )}
                                   <p
                                     style={{ color: el.color, fontSize: '9px' }}
                                   >

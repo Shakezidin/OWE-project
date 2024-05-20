@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
-import { EndPoints } from '../../infrastructure/web_api/api_client/EndPoints';
+import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
+import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints';
 
 export interface ReconcileEditParams {
   unique_id: string;
@@ -47,7 +47,7 @@ export const createReconcile = createAsyncThunk(
       if (data.status > 201) {
         return rejectWithValue((data as Error).message);
       }
-      await dispatch(fetchReconcile({ page_number: 1, page_size: 10 }));
+
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -60,7 +60,7 @@ export const updateReconcile = createAsyncThunk(
   async (params: any, { rejectWithValue, dispatch }) => {
     try {
       const data = await postCaller('update_reconcile', params);
-      await dispatch(fetchReconcile({ page_number: 1, page_size: 10 }));
+
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);

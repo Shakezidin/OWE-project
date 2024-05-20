@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import {
   getarAdderData,
   IAdderRowData,
-} from '../../../../redux/apiActions/arAdderDataAction';
+} from '../../../../redux/apiActions/config/arAdderDataAction';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import Pagination from '../../../components/pagination/Pagination';
 import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
@@ -23,6 +23,9 @@ import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoin
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import MicroLoader from '../../../components/loader/MicroLoader';
+import FilterHoc from '../../../components/FilterModal/FilterHoc';
+import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
+import DataNotFound from '../../../components/loader/DataNotFound';
 const AdderData = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -44,14 +47,16 @@ const AdderData = () => {
   const [viewArchived, setViewArchived] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortKey, setSortKey] = useState('');
+  const [filters, setFilters] = useState<FilterModel[]>([]);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
+      archived: viewArchived,
     };
     dispatch(getarAdderData({ ...pageNumber }));
-  }, [dispatch, currentPage]);
+  }, [dispatch, currentPage, viewArchived, currentPage, filters]);
   const {
     data: commissionList,
     isLoading,
@@ -64,10 +69,12 @@ const AdderData = () => {
       const pageNumber = {
         page_number: currentPage,
         page_size: itemsPerPage,
+        archived: viewArchived,
+        filters,
       };
       dispatch(getarAdderData({ ...pageNumber }));
     }
-  }, [isSuccess, currentPage]);
+  }, [isSuccess, currentPage, viewArchived, filters]);
 
   const filter = () => {
     setFilterOpen(true);
@@ -90,7 +97,7 @@ const AdderData = () => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
 
-  const currentPageData = commissionList?.slice(startIndex, endIndex);
+  const currentPageData = commissionList?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === commissionList?.length;
   const handleSort = (key: any) => {
@@ -134,18 +141,19 @@ const AdderData = () => {
     handleOpen();
   };
   const fetchFunction = (req: any) => {
-    dispatch(getarAdderData(req));
+    setCurrentPage(1);
+    setFilters(req.filters);
   };
 
-  const handleArchiveClick = async (record_id: any) => {
+  const handleArchiveClick = async (record_id: number[]) => {
     const confirmed = await showAlert(
       'Are Your Sure',
-      'This Action will archive your data',
+      `This action will archive your selected ${record_id.length > 1 ? 'data' : 'row'}`,
       'Yes',
       'No'
     );
     if (confirmed) {
-      const archived: number[] = [record_id];
+      const archived: number[] = record_id;
       let newValue = {
         record_id: archived,
         is_archived: true,
@@ -153,9 +161,13 @@ const AdderData = () => {
       const pageNumber = {
         page_number: currentPage,
         page_size: itemsPerPage,
+        archived: viewArchived,
+        filters,
       };
       const res = await postCaller('update_adderdata_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
+        setSelectAllChecked(false);
+        setSelectedRows(new Set());
         dispatch(getarAdderData(pageNumber));
         await successSwal('Archived', 'The data has been archived ');
       } else {
@@ -163,7 +175,6 @@ const AdderData = () => {
       }
     }
   };
-
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -182,8 +193,19 @@ const AdderData = () => {
       <div className="commissionContainer">
         <TableHeader
           title="Adder Data"
-          onPressViewArchive={() => {}}
-          onPressArchive={() => {}}
+          onPressViewArchive={() => {
+            setViewArchived((prev) => !prev);
+            setCurrentPage(1);
+            setSelectAllChecked(false);
+            setSelectedRows(new Set());
+          }}
+          onPressArchive={() => {
+            handleArchiveClick(
+              Array.from(selectedRows).map(
+                (_, i: number) => currentPageData[i].record_id
+              )
+            );
+          }}
           onPressFilter={() => filter()}
           onPressImport={() => {}}
           checked={isAllRowsSelected}
@@ -192,15 +214,16 @@ const AdderData = () => {
           onpressExport={() => {}}
           onpressAddNew={() => handleTimeLineSla()}
         />
-        {filterOPen && (
-          <FilterModal
-            handleClose={filterClose}
-            columns={AdderDataColumn}
-            page_number={currentPage}
-            fetchFunction={fetchFunction}
-            page_size={itemsPerPage}
-          />
-        )}
+
+        <FilterHoc
+          isOpen={filterOPen}
+          resetOnChange={viewArchived}
+          handleClose={filterClose}
+          columns={AdderDataColumn}
+          page_number={currentPage}
+          fetchFunction={fetchFunction}
+          page_size={itemsPerPage}
+        />
 
         {open && (
           <CreateArAdderData
@@ -244,54 +267,50 @@ const AdderData = () => {
               </tr>
             </thead>
             <tbody>
-              {
-              isLoading?
-              <tr>
-                <td colSpan={AdderDataColumn.length}>
-                  <div style={{display:"flex",justifyContent:"center"}}>
-                    <MicroLoader/>
-                  </div>
-                </td>
-              </tr>
-              
-              :currentPageData?.length > 0
-                ? currentPageData?.map((el: IAdderRowData, i: number) => (
-                    <tr
-                      key={i}
-                      className={selectedRows.has(i) ? 'selected' : ''}
-                    >
-                      <td style={{ fontWeight: '500', color: 'black' }}>
-                        <div className="flex-check">
-                          <CheckBox
-                            checked={selectedRows.has(i)}
-                            onChange={() =>
-                              toggleRowSelection(
-                                i,
-                                selectedRows,
-                                setSelectedRows,
-                                setSelectAllChecked
-                              )
-                            }
-                          />
-                          {el.unique_id}
-                        </div>
-                      </td>
-                      <td>{el.date}</td>
-                      <td>{el.gc}</td>
-                      <td>{el.exact_amount}</td>
-                      <td>{el.per_kw_amt}</td>
-                      <td>{el.rep_percent}</td>
-                      <td>{el.description}</td>
-                      <td>{el.notes}</td>
-                      <td>{el.type_ad_mktg}</td>
-                      <td>{el.sys_size}</td>
-                      <td>{el.adder_cal}</td>
-                      <td>
+              {isLoading ? (
+                <tr>
+                  <td colSpan={AdderDataColumn.length}>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <MicroLoader />
+                    </div>
+                  </td>
+                </tr>
+              ) : currentPageData?.length > 0 ? (
+                currentPageData?.map((el: IAdderRowData, i: number) => (
+                  <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
+                    <td style={{ fontWeight: '500', color: 'black' }}>
+                      <div className="flex-check">
+                        <CheckBox
+                          checked={selectedRows.has(i)}
+                          onChange={() =>
+                            toggleRowSelection(
+                              i,
+                              selectedRows,
+                              setSelectedRows,
+                              setSelectAllChecked
+                            )
+                          }
+                        />
+                        {el.unique_id}
+                      </div>
+                    </td>
+                    <td>{el.date}</td>
+                    <td>{el.gc}</td>
+                    <td>{el.exact_amount}</td>
+                    <td>{el.per_kw_amt}</td>
+                    <td>{el.rep_percent}</td>
+                    <td>{el.description}</td>
+                    <td>{el.notes}</td>
+                    <td>{el.type_ad_mktg}</td>
+                    <td>{el.sys_size}</td>
+                    <td>{el.adder_cal}</td>
+                    <td>
+                      {!viewArchived && selectedRows.size < 2 && (
                         <div className="action-icon">
                           <div
                             className=""
                             style={{ cursor: 'pointer' }}
-                            onClick={() => handleArchiveClick(el.record_id)}
+                            onClick={() => handleArchiveClick([el.record_id])}
                           >
                             <img src={ICONS.ARCHIVE} alt="" />
                           </div>
@@ -303,18 +322,30 @@ const AdderData = () => {
                             <img src={ICONS.editIcon} alt="" />
                           </div>
                         </div>
-                      </td>
-                    </tr>
-                  ))
-                : null}
+                      )}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr style={{ border: 0 }}>
+                  <td colSpan={AdderDataColumn.length}>
+                    <div className="data-not-found">
+                      <DataNotFound />
+                      <h3>Data Not Found</h3>
+                    </div>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
         <div className="page-heading-container">
-        {!!count &&  <p className="page-heading">
-             {currentPage} - {endIndex > count ? count : endIndex} of{' '}
-            {count} item
-          </p>}
+          {!!count && (
+            <p className="page-heading">
+              {currentPage} - {endIndex > count ? count : endIndex} of {count}{' '}
+              item
+            </p>
+          )}
 
           {commissionList?.length > 0 ? (
             <Pagination

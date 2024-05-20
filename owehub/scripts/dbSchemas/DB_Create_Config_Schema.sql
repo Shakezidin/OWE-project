@@ -865,7 +865,7 @@ CREATE TABLE appt_setters (
 
 CREATE TABLE adjustments (
     id serial NOT NULL,
-    unique_id varchar NOT NULL UNIQUE,
+    unique_id varchar NOT NULL,
     customer character varying,
     partner INT,
     installer INT,

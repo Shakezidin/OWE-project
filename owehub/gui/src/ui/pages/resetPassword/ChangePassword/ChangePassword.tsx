@@ -3,7 +3,7 @@ import './ChangePassword.css';
 import Input from '../../../components/text_input/Input';
 import { toast } from 'react-toastify';
 import { useAppDispatch } from '../../../../redux/hooks';
-import { changePasswordAction } from '../../../../redux/apiActions/authActions';
+import { changePasswordAction } from '../../../../redux/apiActions/auth/authActions';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { ICONS } from '../../../icons/Icons';

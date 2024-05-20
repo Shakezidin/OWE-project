@@ -5,7 +5,7 @@ import {
   fetchRepaySettings,
   createRepaySettings,
   updateRepaySettings,
-} from '../../../apiActions/repPayAction';
+} from '../../../apiActions/config/repPayAction';
 import { toast } from 'react-toastify';
 
 interface repaySettings {

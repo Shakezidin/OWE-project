@@ -5,6 +5,12 @@ import { ICONS } from '../../icons/Icons';
 import SelectOption from '../selectOption/SelectOption';
 import Input from '../text_input/Input';
 import { ActionButton } from '../button/ActionButton';
+import {
+  activeFilter,
+  disableFilter,
+} from '../../../redux/apiSlice/filterSlice/filterSlice';
+import { useLocation } from 'react-router-dom';
+import { showAlert } from '../alert/ShowAlert';
 
 interface Column {
   name: string;
@@ -17,6 +23,8 @@ interface TableProps {
   page_number: number;
   page_size: number;
   fetchFunction: (req: any) => void;
+  resetOnChange?: boolean;
+  isOpen?: boolean;
 }
 interface FilterModel {
   Column: string;
@@ -38,9 +46,14 @@ const FilterModal: React.FC<TableProps> = ({
   page_number,
   page_size,
   fetchFunction,
+  resetOnChange,
 }) => {
   const dispatch = useAppDispatch();
   const [filters, setFilters] = useState<FilterModel[]>([
+    { Column: '', Operation: '', Data: '' },
+  ]);
+
+  const [applyFilters, setApplyFilters] = useState<FilterModel[]>([
     { Column: '', Operation: '', Data: '' },
   ]);
   const [errors, setErrors] = useState<ErrorState>({});
@@ -48,10 +61,62 @@ const FilterModal: React.FC<TableProps> = ({
     value: column.name,
     label: column.displayName,
   }));
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    setApplyFilters([...filters]);
+  }, []);
+  const resetAllFilter = async () => {
+    const confirmed = await showAlert(
+      'Archive',
+      'Are you sure you want to reset all of your filters?',
+      'Yes',
+      'No'
+    );
+    if (confirmed) {
+      const resetFilters = filters
+        .filter((_, ind) => ind === 0)
+        .map((filter) => ({
+          ...filter,
+          Column: '',
+          Operation: '',
+          Data: '',
+        }));
+      setFilters(resetFilters);
+      if (
+        filters.some(
+          (filter) => filter.Operation || filter.Data || filter.Column
+        )
+      ) {
+        const req = {
+          page_number: page_number,
+          page_size: page_size,
+        };
+        fetchFunction(req);
+      }
+      handleClose();
+      dispatch(disableFilter({ name: pathname }));
+      setErrors({});
+    }
+  };
+  useEffect(() => {
+    const resetFilters = filters
+      .filter((_, ind) => ind === 0)
+      .map((filter) => ({
+        ...filter,
+        Column: '',
+        Operation: '',
+        Data: '',
+      }));
+    setFilters(resetFilters);
+    setErrors({});
+    return () => {
+      dispatch(disableFilter({ name: pathname }));
+    };
+  }, [resetOnChange]);
 
   const handleAddRow = () => {
     setFilters([...filters, { Column: '', Operation: '', Data: '' }]);
-    setErrors({});
   };
 
   const handleRemoveRow = (index: number) => {
@@ -97,33 +162,16 @@ const FilterModal: React.FC<TableProps> = ({
     }
   };
 
-  const resetAllFilter = () => {
-    localStorage.removeItem('filters');
-    const resetFilters = filters.map((filter) => ({
-      ...filter,
-      Column: '',
-      Operation: '',
-      Data: '',
-    }));
-
-    setFilters(resetFilters);
-    setErrors({});
-  };
-
   const applyFilter = async () => {
     setErrors({});
-    if (
-      filters.some((filter) => !filter.Column || filter.Column === 'Select')
-    ) {
-      console.log(
-        "Column not selected or 'Select' chosen. Skipping validation and API call."
-      );
-      return;
-    }
+
     // Perform validation
     const newErrors: ErrorState = {};
 
     filters.forEach((filter, index) => {
+      if (!filter.Column) {
+        newErrors[`column${index}`] = `Please provide Column`;
+      }
       if (!filter.Operation) {
         newErrors[`operation${index}`] = `Please provide Operation`;
       }
@@ -138,26 +186,23 @@ const FilterModal: React.FC<TableProps> = ({
         Operation: filter.Operation,
         Data: filter.Data,
       }));
-      console.log(formattedFilters);
       const req = {
         page_number: page_number,
         page_size: page_size,
         filters: formattedFilters,
       };
+      setApplyFilters([...formattedFilters]);
+      dispatch(activeFilter({ name: pathname }));
       handleClose();
       fetchFunction(req);
     }
   };
-  const handleCloseModal = () => {
-    const req = {
-      page_number: page_number,
-      page_size: page_size,
-    };
-    fetchFunction(req);
-    handleClose();
-  };
 
-  console.log(errors);
+  const handleCloseModal = () => {
+    handleClose();
+    setErrors({});
+  };
+  console.log(filters, 'filtersss', applyFilters);
   return (
     <div className="transparent-model">
       <div className="modal">
@@ -206,6 +251,12 @@ const FilterModal: React.FC<TableProps> = ({
                           setErrors({ ...errors, [`column${index}`]: '' });
                         }}
                       />
+
+                      {errors[`column${index}`] && (
+                        <span style={{ color: 'red', fontSize: '12px' }}>
+                          {errors[`column${index}`]}
+                        </span>
+                      )}
                     </div>
                   </div>
                   <div className="create-input-field">
@@ -268,7 +319,10 @@ const FilterModal: React.FC<TableProps> = ({
             <ActionButton
               title={'Cancel'}
               type="reset"
-              onClick={handleCloseModal}
+              onClick={() => {
+                handleCloseModal();
+                setFilters(applyFilters);
+              }}
             />
             <ActionButton
               title={'reset'}

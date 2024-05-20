@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
+import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 
 interface IFilter {
   Column?: string;
@@ -11,6 +11,7 @@ interface IAdderParams {
   page_number: number;
   page_size: number;
   filters?: IFilter[];
+  archived: boolean;
 }
 
 interface IAdderCreateParams {
@@ -37,7 +38,6 @@ export const getarAdderData = createAsyncThunk(
   async (param: IAdderParams, { rejectWithValue }) => {
     try {
       const data = await postCaller('get_adderdata', param);
-
       const list = (data.data.adder_data_list || []) as IAdderRowData[];
       return { list, count: data.dbRecCount };
     } catch (error) {
@@ -54,7 +54,6 @@ export const createarAdderData = createAsyncThunk(
       if (data.status > 201) {
         return rejectWithValue((data as Error).message);
       }
-      await dispatch(getarAdderData({ page_number: 1, page_size: 10 }));
       return data.data;
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -70,7 +69,6 @@ export const updatearAdderData = createAsyncThunk(
       if (data.status === 500 || data instanceof Error) {
         return rejectWithValue((data as Error).message);
       }
-      await dispatch(getarAdderData({ page_number: 1, page_size: 10 }));
       return data.data;
     } catch (error) {
       return rejectWithValue((error as Error).message);

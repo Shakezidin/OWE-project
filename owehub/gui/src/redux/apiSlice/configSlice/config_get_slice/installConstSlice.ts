@@ -4,7 +4,7 @@ import {
   createInstallCost,
   ICost,
   updateInstallCost,
-} from '../../../apiActions/installCostAction';
+} from '../../../apiActions/config/installCostAction';
 import { toast } from 'react-toastify';
 
 interface IState {

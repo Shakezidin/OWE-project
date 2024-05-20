@@ -365,7 +365,8 @@ const TimeLine = () => {
         {timelinesla_list?.length > 0 ? (
           <div className="page-heading-container">
             <p className="page-heading">
-               {startIndex} - {endIndex>totalCount?totalCount:endIndex} of {totalCount} item
+              {startIndex} - {endIndex > totalCount ? totalCount : endIndex} of{' '}
+              {totalCount} item
             </p>
 
             <Pagination

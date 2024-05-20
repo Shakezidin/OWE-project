@@ -151,11 +151,7 @@ const TierLoanFee = () => {
         if (res.status === HTTP_STATUS.OK) {
           // If API call is successful, refetch commissions
           dispatch(fetchTearLoan(pageNumber));
-          const remainingSelectedRows = Array.from(selectedRows).filter(
-            (index) => !archivedRows.includes(tierloanList[index].record_id)
-          );
-          const isAnyRowSelected = remainingSelectedRows.length > 0;
-          setSelectAllChecked(isAnyRowSelected);
+          setSelectAllChecked(false);
           setSelectedRows(new Set());
           Swal.fire({
             title: 'Archived!',
@@ -198,6 +194,7 @@ const TierLoanFee = () => {
   const handleViewArchiveToggle = () => {
     setViewArchived(!viewArchived);
     // When toggling, reset the selected rows
+    setCurrentPage(1);
     setSelectedRows(new Set());
     setSelectAllChecked(false);
   };
@@ -358,7 +355,8 @@ const TierLoanFee = () => {
         {tierloanList?.length > 0 ? (
           <div className="page-heading-container">
             <p className="page-heading">
-              {startIndex} - {endIndex>dbCount?dbCount:endIndex} of {dbCount} item
+              {startIndex} - {endIndex > dbCount ? dbCount : endIndex} of{' '}
+              {dbCount} item
             </p>
 
             <Pagination

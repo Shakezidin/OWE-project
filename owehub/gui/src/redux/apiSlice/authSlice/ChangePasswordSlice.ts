@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { changePasswordAction } from '../../apiActions/authActions';
+import { changePasswordAction } from '../../apiActions/auth/authActions';
 
 export interface ResetPasswordModel {
   loading: boolean;

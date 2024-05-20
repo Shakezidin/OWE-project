@@ -4,7 +4,7 @@ import {
   createarAdderData,
   IAdderRowData,
   updatearAdderData,
-} from '../../../apiActions/arAdderDataAction';
+} from '../../../apiActions/config/arAdderDataAction';
 import { toast } from 'react-toastify';
 
 interface IState {

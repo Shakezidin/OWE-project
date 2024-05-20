@@ -3,7 +3,7 @@ import {
   createRateAdjustments,
   fetchRateAdjustments,
   updateRateAdjustment,
-} from '../../../apiActions/RateAdjustmentsAction';
+} from '../../../apiActions/config/RateAdjustmentsAction';
 import { RateAdjustment } from '../../../../core/models/api_models/RateAdjustmentModel';
 import { toast } from 'react-toastify';
 
