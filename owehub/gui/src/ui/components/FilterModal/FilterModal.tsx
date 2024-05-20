@@ -10,6 +10,7 @@ import {
   disableFilter,
 } from '../../../redux/apiSlice/filterSlice/filterSlice';
 import { useLocation } from 'react-router-dom';
+import { showAlert } from '../alert/ShowAlert';
 
 interface Column {
   name: string;
@@ -65,9 +66,14 @@ const FilterModal: React.FC<TableProps> = ({
   useEffect(() => {
     setApplyFilters([...filters]);
   }, []);
-  const resetAllFilter = () => {
-    if (window.confirm("Are you sure you want to reset filters?")) {
-      
+  const resetAllFilter = async () => {
+    const confirmed = await showAlert(
+      'Archive',
+      'Are you sure you want to reset all of your filters?',
+      'Yes',
+      'No'
+    );
+    if (confirmed) {
       const resetFilters = filters
         .filter((_, ind) => ind === 0)
         .map((filter) => ({
@@ -76,9 +82,11 @@ const FilterModal: React.FC<TableProps> = ({
           Operation: '',
           Data: '',
         }));
-        setFilters(resetFilters);
+      setFilters(resetFilters);
       if (
-        filters.some((filter) => filter.Operation || filter.Data || filter.Column)
+        filters.some(
+          (filter) => filter.Operation || filter.Data || filter.Column
+        )
       ) {
         const req = {
           page_number: page_number,
@@ -100,8 +108,8 @@ const FilterModal: React.FC<TableProps> = ({
         Operation: '',
         Data: '',
       }));
-      setFilters(resetFilters);
-      setErrors({})
+    setFilters(resetFilters);
+    setErrors({});
     return () => {
       dispatch(disableFilter({ name: pathname }));
     };
@@ -183,7 +191,7 @@ const FilterModal: React.FC<TableProps> = ({
         page_size: page_size,
         filters: formattedFilters,
       };
-      setApplyFilters([...formattedFilters])
+      setApplyFilters([...formattedFilters]);
       dispatch(activeFilter({ name: pathname }));
       handleClose();
       fetchFunction(req);
@@ -311,8 +319,8 @@ const FilterModal: React.FC<TableProps> = ({
             <ActionButton
               title={'Cancel'}
               type="reset"
-              onClick={()=>{
-                handleCloseModal()
+              onClick={() => {
+                handleCloseModal();
                 setFilters(applyFilters);
               }}
             />
