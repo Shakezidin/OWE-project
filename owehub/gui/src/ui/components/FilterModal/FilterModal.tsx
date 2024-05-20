@@ -75,6 +75,7 @@ const FilterModal: React.FC<TableProps> = ({
       };
       fetchFunction(req);
     }
+    handleClose()
     dispatch(disableFilter({ name: pathname }));
     setFilters(resetFilters);
     setErrors({});
@@ -88,7 +89,6 @@ const FilterModal: React.FC<TableProps> = ({
 
   const handleAddRow = () => {
     setFilters([...filters, { Column: '', Operation: '', Data: '' }]);
-    setErrors({});
   };
 
   const handleRemoveRow = (index: number) => {
@@ -136,18 +136,14 @@ const FilterModal: React.FC<TableProps> = ({
 
   const applyFilter = async () => {
     setErrors({});
-    if (
-      filters.some((filter) => !filter.Column || filter.Column === 'Select')
-    ) {
-      console.log(
-        "Column not selected or 'Select' chosen. Skipping validation and API call."
-      );
-      return;
-    }
+    
     // Perform validation
     const newErrors: ErrorState = {};
 
     filters.forEach((filter, index) => {
+      if (!filter.Column) {
+        newErrors[`column${index}`] = `Please provide Column`;
+      }
       if (!filter.Operation) {
         newErrors[`operation${index}`] = `Please provide Operation`;
       }
@@ -227,6 +223,12 @@ const FilterModal: React.FC<TableProps> = ({
                           setErrors({ ...errors, [`column${index}`]: '' });
                         }}
                       />
+
+{errors[`column${index}`] && (
+                      <span style={{ color: 'red', fontSize: '12px' }}>
+                        {errors[`column${index}`]}
+                      </span>
+                    )}
                     </div>
                   </div>
                   <div className="create-input-field">
