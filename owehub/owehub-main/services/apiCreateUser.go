@@ -99,7 +99,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	// If the user role is "DB User", create the database user and grant privileges
-	if createUserReq.RoleName == "DB User" {
+	if createUserReq.RoleName == "DB User" || createUserReq.RoleName == "Admin" {
 		// Join selected parts with underscores
 		username := strings.Join(strings.Fields(createUserReq.Name)[0:2], "_")
 

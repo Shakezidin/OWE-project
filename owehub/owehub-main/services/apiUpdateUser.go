@@ -101,7 +101,7 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	if updateUserReq.RoleName == "DB User" {
+	if updateUserReq.RoleName == "DB User" || updateUserReq.RoleName == "Admin" {
 		// Join selected parts with underscores
 
 		query := fmt.Sprintf("SELECT name, tables_permissions FROM user_details WHERE email_id = '%s';", updateUserReq.EmailId)
@@ -198,21 +198,22 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, updateUserReq.Name)
-	//queryParameters = append(queryParameters, updateUserReq.MobileNumber)
-	//queryParameters = append(queryParameters, updateUserReq.EmailId)
-	//queryParameters = append(queryParameters, updateUserReq.PasswordChangeReq)
-	//queryParameters = append(queryParameters, updateUserReq.ReportingManager)
-	//queryParameters = append(queryParameters, updateUserReq.DealerOwner)
-	//queryParameters = append(queryParameters, updateUserReq.RoleName)
-	//queryParameters = append(queryParameters, updateUserReq.UserStatus)
-	//queryParameters = append(queryParameters, updateUserReq.Designation)
-	//queryParameters = append(queryParameters, updateUserReq.Description)
-	//queryParameters = append(queryParameters, updateUserReq.Region)
-	//queryParameters = append(queryParameters, updateUserReq.StreetAddress)
-	//queryParameters = append(queryParameters, updateUserReq.State)
-	//queryParameters = append(queryParameters, updateUserReq.City)
-	//queryParameters = append(queryParameters, updateUserReq.Zipcode)
-	//queryParameters = append(queryParameters, updateUserReq.Country)
+	// queryParameters = append(queryParameters, updateUserReq.MobileNumber)
+	// queryParameters = append(queryParameters, updateUserReq.EmailId)
+	// queryParameters = append(queryParameters, updateUserReq.PasswordChangeReq)
+	queryParameters = append(queryParameters, updateUserReq.ReportingManager)
+	queryParameters = append(queryParameters, updateUserReq.DealerOwner)
+	queryParameters = append(queryParameters, updateUserReq.RoleName)
+	queryParameters = append(queryParameters, updateUserReq.UserStatus)
+	queryParameters = append(queryParameters, updateUserReq.Designation)
+	queryParameters = append(queryParameters, updateUserReq.Description)
+	queryParameters = append(queryParameters, updateUserReq.Region)
+	queryParameters = append(queryParameters, updateUserReq.StreetAddress)
+	queryParameters = append(queryParameters, updateUserReq.State)
+	queryParameters = append(queryParameters, updateUserReq.City)
+	queryParameters = append(queryParameters, updateUserReq.Zipcode)
+	queryParameters = append(queryParameters, updateUserReq.Country)
+	queryParameters = append(queryParameters, updateUserReq.UserCode)
 	queryParameters = append(queryParameters, tablesPermissionsJSON)
 
 	// Call the database function

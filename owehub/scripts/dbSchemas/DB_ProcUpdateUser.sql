@@ -1,5 +1,4 @@
 CREATE OR REPLACE FUNCTION update_user(
-    p_record_id INT,
     p_name VARCHAR(255),
     p_reporting_manager VARCHAR(255),
     p_dealer_owner VARCHAR(255),
