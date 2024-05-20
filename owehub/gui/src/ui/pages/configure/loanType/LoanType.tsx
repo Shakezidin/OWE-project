@@ -63,7 +63,7 @@ const LoanType = () => {
       filters,
     };
     dispatch(fetchLoanType(pageNumber));
-  }, [dispatch, currentPage, viewArchived,filters]);
+  }, [dispatch, currentPage, viewArchived, filters]);
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
@@ -145,6 +145,7 @@ const LoanType = () => {
         const pageNumber = {
           page_number: currentPage,
           page_size: itemsPerPage,
+          filters
         };
 
         const res = await postCaller(EndPoints.update_dealer_archive, newValue);
@@ -180,6 +181,7 @@ const LoanType = () => {
       const pageNumber = {
         page_number: currentPage,
         page_size: itemsPerPage,
+        filters
       };
       const res = await postCaller(EndPoints.update_dealer_archive, newValue);
       if (res.status === HTTP_STATUS.OK) {
@@ -204,8 +206,6 @@ const LoanType = () => {
     setCurrentPage(1);
     setFilters(req.filters);
   };
-  
-  
 
   return (
     <div className="comm">
@@ -228,16 +228,17 @@ const LoanType = () => {
           viewArchive={viewArchived}
           onpressAddNew={() => handleAddLoan()}
         />
-        {filterOPen && (
-          <FilterModal
-            handleClose={filterClose}
-            columns={LoanTypeColumns}
-            page_number={currentPage}
-            fetchFunction={fetchFunction}
-            page_size={itemsPerPage}
-          />
-        )}
-        
+
+        <FilterHoc
+          isOpen={filterOPen}
+          resetOnChange={viewArchived}
+          handleClose={filterClose}
+          columns={LoanTypeColumns}
+          page_number={currentPage}
+          fetchFunction={fetchFunction}
+          page_size={itemsPerPage}
+        />
+
         <FilterHoc
           resetOnChange={viewArchived}
           isOpen={filterOPen}
@@ -292,14 +293,15 @@ const LoanType = () => {
               </tr>
             </thead>
             <tbody>
-            {loading ?  ( <tr>
+              {loading ? (
+                <tr>
                   <td colSpan={LoanTypeColumns.length}>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                       <MicroLoader />
                     </div>
                   </td>
-                </tr> 
-                ) :  currentPageData?.length > 0 ? (
+                </tr>
+              ) : currentPageData?.length > 0 ? (
                 currentPageData?.map((el: any, i: any) => (
                   <tr key={i}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
@@ -358,7 +360,6 @@ const LoanType = () => {
                   </td>
                 </tr>
               )}
-
             </tbody>
           </table>
         </div>
