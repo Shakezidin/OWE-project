@@ -46,7 +46,6 @@ const FilterModal: React.FC<TableProps> = ({
   page_size,
   fetchFunction,
   resetOnChange,
-  isOpen,
 }) => {
   const dispatch = useAppDispatch();
   const [filters, setFilters] = useState<FilterModel[]>([
@@ -64,10 +63,35 @@ const FilterModal: React.FC<TableProps> = ({
   const { pathname } = useLocation();
 
   useEffect(() => {
-    console.log("working count",);
-    setApplyFilters(filters);
+    setApplyFilters([...filters]);
   }, []);
   const resetAllFilter = () => {
+    if (window.confirm("Are you sure you want to reset filters?")) {
+      
+      const resetFilters = filters
+        .filter((_, ind) => ind === 0)
+        .map((filter) => ({
+          ...filter,
+          Column: '',
+          Operation: '',
+          Data: '',
+        }));
+        setFilters(resetFilters);
+      if (
+        filters.some((filter) => filter.Operation || filter.Data || filter.Column)
+      ) {
+        const req = {
+          page_number: page_number,
+          page_size: page_size,
+        };
+        fetchFunction(req);
+      }
+      handleClose();
+      dispatch(disableFilter({ name: pathname }));
+      setErrors({});
+    }
+  };
+  useEffect(() => {
     const resetFilters = filters
       .filter((_, ind) => ind === 0)
       .map((filter) => ({
@@ -76,22 +100,8 @@ const FilterModal: React.FC<TableProps> = ({
         Operation: '',
         Data: '',
       }));
-    if (
-      filters.some((filter) => filter.Operation || filter.Data || filter.Column)
-    ) {
-      const req = {
-        page_number: page_number,
-        page_size: page_size,
-      };
-      fetchFunction(req);
-    }
-    handleClose();
-    dispatch(disableFilter({ name: pathname }));
-    setFilters(resetFilters);
-    setErrors({});
-  };
-  useEffect(() => {
-    resetAllFilter();
+      setFilters(resetFilters);
+      setErrors({})
     return () => {
       dispatch(disableFilter({ name: pathname }));
     };
@@ -173,7 +183,7 @@ const FilterModal: React.FC<TableProps> = ({
         page_size: page_size,
         filters: formattedFilters,
       };
-      setApplyFilters(formattedFilters)
+      setApplyFilters([...formattedFilters])
       dispatch(activeFilter({ name: pathname }));
       handleClose();
       fetchFunction(req);
