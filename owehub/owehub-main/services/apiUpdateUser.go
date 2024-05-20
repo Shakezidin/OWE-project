@@ -66,6 +66,9 @@ func HandleUpdateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	emailId := req.Context().Value("emailid").(string)
+	updateUserReq.EmailId = emailId
+
 	if len(updateUserReq.Name) <= 0 {
 		//(len(updateUserReq.EmailId) <= 0) || can not update this
 		//(len(updateUserReq.MobileNumber) <= 0) || can not update this
