@@ -24,6 +24,7 @@ import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import Swal from 'sweetalert2';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
+import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 
 import { ROUTES } from '../../../../routes/routes';
 const TierLoanFee = () => {
@@ -50,6 +51,7 @@ const TierLoanFee = () => {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
+  const [filters, setFilters] = useState<FilterModel[]>([]);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -57,7 +59,7 @@ const TierLoanFee = () => {
       archived: viewArchived ? true : undefined,
     };
     dispatch(fetchTearLoan(pageNumber));
-  }, [dispatch, currentPage, viewArchived]);
+  }, [dispatch, currentPage, viewArchived, filters]);
 
   const handleAddTierLoan = () => {
     setEditMode(false);
@@ -202,7 +204,10 @@ const TierLoanFee = () => {
     setSelectAllChecked(false);
   };
   const fetchFunction = (req: any) => {
-    dispatch(fetchTearLoan(req));
+      setCurrentPage(1);
+      setFilters(req.filters);
+      
+    
   };
  
   return (
@@ -220,6 +225,7 @@ const TierLoanFee = () => {
           onPressArchive={() => handleArchiveAllClick()}
           checked={isAllRowsSelected}
           isAnyRowSelected={isAnyRowSelected}
+          
           onPressFilter={() => filter()}
           onPressImport={() => {}}
           onpressExport={() => {}}
@@ -241,6 +247,7 @@ const TierLoanFee = () => {
             editMode={editMode}
             tierEditedData={editedTierLoanfee}
             handleClose={handleClose}
+           
           />
         )}
         <div
