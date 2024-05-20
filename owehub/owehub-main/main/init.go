@@ -1146,13 +1146,13 @@ var apiRoutes = ApiRoutes{
 		true,
 		[]types.UserGroup{types.GroupDb},
 	},
-	// {
-	// 	strings.ToUpper("POST"),
-	// 	"/owe-commisions-service/v1/get_finance_metrics_schema",
-	// 	apiHandler.HandleGetFinanceMetricsShemaDataRequest,
-	// 	true,
-	// 	[]types.UserGroup{types.GroupAdmin},
-	// },
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_profile",
+		apiHandler.HandleGetProfileDataRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
 }
 
 /******************************************************************************
