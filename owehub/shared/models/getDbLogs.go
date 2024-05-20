@@ -5,7 +5,7 @@ type DbLogReq struct {
 	PageSize   int    `json:"page_size"`
 	StartDate  string `json:"start_date"`
 	EndDate    string `json:"end_date"`
-	Username   string
+	Username   string `json:"username"`
 }
 
 type DbLogResp struct {
@@ -17,6 +17,7 @@ type DbLogResp struct {
 
 type DbLogListResp struct {
 	DbLogList []DbLogResp `json:"dblog_list_response"`
+	UserList  []string    `json:"user_list"`
 }
 
 var DbColumnToFields = map[string]string{

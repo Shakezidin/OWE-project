@@ -128,7 +128,7 @@ func HandleGetPrjctMngmntListRequest(resp http.ResponseWriter, req *http.Request
 
 		dealerName := data[0]["dealer_name"]
 		dataReq.DealerName = dealerName
-		filter, whereEleList = PrepareProjectSaleRepFilters(tableName, dataReq, SaleRepList)
+		filter, whereEleList = PreparePrjtSaleRepFilters(tableName, dataReq, SaleRepList)
 	}
 
 	if filter != "" || role == "Admin" {
