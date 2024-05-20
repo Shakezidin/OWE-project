@@ -17,6 +17,7 @@ import {
 import { TierLoanFeeModel } from '../../../../core/models/configuration/create/TierLoanFeeModel';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import { addDays, format } from 'date-fns';
+import { toast } from 'react-toastify';
 interface tierLoanProps {
   handleClose: () => void;
   tierEditedData: TierLoanFeeModel | null;
@@ -93,17 +94,17 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
       dispatch(
         updateTierLoanForm({
           ...createTier,
-          owe_cost: parseInt(createTier.owe_cost as string),
-          dlr_cost: parseInt(createTier.dlr_cost as string),
-          dlr_mu: parseInt(createTier.dlr_mu as string),
+          owe_cost: parseFloat(createTier.owe_cost as string),
+          dlr_cost: parseFloat(createTier.dlr_cost as string),
+          dlr_mu: parseFloat(createTier.dlr_mu as string),
         })
       );
       if (createTier.record_id) {
         const res = await postCaller(EndPoints.update_tierloanfee, {
           ...createTier,
-          owe_cost: parseInt(createTier.owe_cost as string),
-          dlr_cost: parseInt(createTier.dlr_cost as string),
-          dlr_mu: parseInt(createTier.dlr_mu as string),
+          owe_cost: parseFloat(createTier.owe_cost as string),
+          dlr_cost: parseFloat(createTier.dlr_cost as string),
+          dlr_mu: parseFloat(createTier.dlr_mu as string),
         });
         if (res?.status === 200) {
           console.log(res?.message);
@@ -116,15 +117,17 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
         const { record_id, ...cleanedFormData } = createTier;
         const res = await postCaller(EndPoints.create_tierloanfee, {
           ...cleanedFormData,
-          owe_cost: parseInt(createTier.owe_cost as string),
-          dlr_cost: parseInt(createTier.dlr_cost as string),
-          dlr_mu: parseInt(createTier.dlr_mu as string),
+          owe_cost: parseFloat(createTier.owe_cost as string),
+          dlr_cost: parseFloat(createTier.dlr_cost as string),
+          dlr_mu: parseFloat(createTier.dlr_mu as string),
         });
         if (res?.status === 200) {
           console.log(res?.message);
+          toast.success(res?.message);
           handleClose();
           window.location.reload();
         } else {
+          toast.error(res?.message);
           console.log(res.message);
         }
       }
@@ -196,16 +199,14 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
                   />
                 </div>
                 <div className="create-input-field">
-                  <label className="inputLabel-select select-type-label">
-                    OWE Cost
-                  </label>
-                  <SelectOption
-                    menuListStyles={{ height: '230px' }}
-                    options={oweCostOption(newFormData)}
-                    onChange={(newValue) => handleChange(newValue, 'owe_cost')}
-                    value={oweCostOption(newFormData)?.find(
-                      (option) => option.value === createTier.owe_cost
-                    )}
+
+                  <Input
+                    type={'text'}
+                    label="OWE Cost"
+                    value={createTier.owe_cost}
+                    name="owe_cost"
+                    placeholder={'Enter'}
+                    onChange={(e) => handleTierChange(e)}
                   />
                 </div>
                 <div className="create-input-field">
@@ -255,6 +256,7 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
                         'yyyy-MM-dd'
                       )
                     }
+                    disabled={!createTier.start_date}
                     name="end_date"
                     placeholder={'10/04/2004'}
                     onChange={(e) => handleTierChange(e)}
