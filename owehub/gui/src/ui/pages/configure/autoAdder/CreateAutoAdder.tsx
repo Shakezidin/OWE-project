@@ -230,9 +230,11 @@ const CreateAutoAdder: React.FC<ButtonProps> = ({
                       name="start_date"
                       placeholder={'1/04/2004'}
                       onChange={(e) => {
-                        handleInputChange(e)
-                        setCreateCommission(prev=>({...prev,end_date:""}))
-
+                        handleInputChange(e);
+                        setCreateCommission((prev) => ({
+                          ...prev,
+                          end_date: '',
+                        }));
                       }}
                     />
                   </div>
@@ -241,7 +243,13 @@ const CreateAutoAdder: React.FC<ButtonProps> = ({
                       type={'date'}
                       label="End Date"
                       value={createCommission.end_date}
-                      min={createCommission.start_date && format(addDays(new Date(createCommission.start_date),1),"yyyy-MM-dd")}
+                      min={
+                        createCommission.start_date &&
+                        format(
+                          addDays(new Date(createCommission.start_date), 1),
+                          'yyyy-MM-dd'
+                        )
+                      }
                       disabled={!createCommission.start_date}
                       name="end_date"
                       placeholder={'10/04/2004'}

@@ -1,7 +1,10 @@
 import React from 'react';
 import { ICONS } from '../../icons/Icons';
 import '../../pages/configure/configure.css';
-
+import { useAppSelector } from '../../../redux/hooks';
+import { useLocation } from 'react-router-dom';
+import { FaFilter } from "react-icons/fa";
+import { CiFilter } from "react-icons/ci";
 interface TableProps {
   title: string;
   onPressViewArchive: () => void;
@@ -27,7 +30,8 @@ const TableHeader = (props: TableProps) => {
     onpressAddNew,
     isAnyRowSelected,
   } = props;
-  console.log(viewArchive);
+  const { isActive } = useAppSelector((state) => state.filterSlice);
+  const { pathname } = useLocation();
   return (
     <div className="commissionSection">
       <h3>{title}</h3>
@@ -59,12 +63,21 @@ const TableHeader = (props: TableProps) => {
         ) : null}
 
         <div className="iconsSection-filter">
-          <button type="button" onClick={onPressFilter}>
-            <img
-              src={ICONS.filtercomm}
-              alt=""
-              style={{ width: '15px', height: '15px' }}
-            />
+          <button
+            style={{
+              backgroundColor: isActive[pathname] ? '#eaecf0' : '',
+            }}
+            type="button"
+            onClick={onPressFilter}
+          >
+            {
+              isActive[pathname] ?
+              <FaFilter
+                size={15}
+                
+              />:
+              <CiFilter  size={15}/>
+            }
           </button>
         </div>
         {/* <div className="iconsSection2">

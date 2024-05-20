@@ -7,7 +7,10 @@ import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { CSVLink } from 'react-csv';
 import { ICONS } from '../../../icons/Icons';
 import TableHeader from '../../../components/tableHeader/TableHeader';
-import { IRowDLR, getDlrOth } from '../../../../redux/apiActions/dlrAction';
+import {
+  IRowDLR,
+  getDlrOth,
+} from '../../../../redux/apiActions/config/dlrAction';
 import FilterModal from '../../../components/FilterModal/FilterModal';
 // import FilterCommission from "./FilterCommission";
 

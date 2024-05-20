@@ -238,9 +238,8 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
                     name="start_date"
                     placeholder={'1/04/2004'}
                     onChange={(e) => {
-                      handleTierChange(e)
-                      setCreateTier(prev=>({...prev,end_date:""}))
-
+                      handleTierChange(e);
+                      setCreateTier((prev) => ({ ...prev, end_date: '' }));
                     }}
                   />
                 </div>
@@ -249,7 +248,13 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
                     type={'date'}
                     label="End Date"
                     value={createTier.end_date}
-                    min={createTier.end_date && format(addDays(new Date(createTier.start_date),1),"yyyy-MM-dd")}
+                    min={
+                      createTier.end_date &&
+                      format(
+                        addDays(new Date(createTier.start_date), 1),
+                        'yyyy-MM-dd'
+                      )
+                    }
                     name="end_date"
                     placeholder={'10/04/2004'}
                     onChange={(e) => handleTierChange(e)}

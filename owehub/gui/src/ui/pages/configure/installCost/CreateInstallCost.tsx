@@ -10,7 +10,7 @@ import {
   createInstallCost,
   ICost,
   updateInstallCost,
-} from '../../../../redux/apiActions/installCostAction';
+} from '../../../../redux/apiActions/config/installCostAction';
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;

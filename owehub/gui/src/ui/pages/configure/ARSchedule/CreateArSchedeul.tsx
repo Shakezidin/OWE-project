@@ -23,7 +23,7 @@ import {
   IARSchedule,
   createArSchedule,
   updateArchSchedule,
-} from '../../../../redux/apiActions/arScheduleAction';
+} from '../../../../redux/apiActions/config/arScheduleAction';
 import { addDays, format } from 'date-fns';
 interface payScheduleProps {
   handleClose: () => void;
@@ -77,7 +77,7 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
       name === 'ptoPay' ||
       name === 'permitPay'
     ) {
-      if (/^\d+(\.\d*)?$/.test(value)||value==="") {
+      if (/^\d+(\.\d*)?$/.test(value) || value === '') {
         setFormData((prev) => ({ ...prev, [name]: value }));
       } else {
         return;
@@ -89,7 +89,7 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
 
   const handleValidation = () => {
     const error: typeof formData = {} as typeof formData;
-  
+
     for (const key in formData) {
       if (!formData[key as keyof typeof formData]) {
         // Capitalize the first letter of the key
@@ -98,11 +98,10 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
         error[key as keyof typeof formData] = `${capitalizedKey} is required`;
       }
     }
-  
+
     setErrors({ ...error });
     return Object.keys(error).length ? false : true;
   };
-  
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -138,7 +137,7 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
     }
   }, [isSuccess]);
 
-  console.log(errors, "error")
+  console.log(errors, 'error');
 
   return (
     <div className="transparent-model">
@@ -155,7 +154,6 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
           <div className="createProfileInputView">
             <div className="createProfileTextView">
               <div className="create-input-container">
-             
                 <div className="create-input-field">
                   <label className="inputLabel-select select-type-label">
                     Partners
@@ -219,8 +217,6 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
               </div>
 
               <div className="create-input-container">
-                
-
                 <div className="create-input-field">
                   <Input
                     type={'text'}
@@ -280,8 +276,6 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
               </div>
 
               <div className="create-input-container">
-               
-
                 <div className="create-input-field">
                   <Input
                     type={'text'}
@@ -316,7 +310,6 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                   )}
                 </div>
 
-
                 <div className="create-input-field">
                   <label className="inputLabel-select select-type-label">
                     Installer
@@ -343,7 +336,6 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
               </div>
 
               <div className="create-input-container">
-                
                 <div className="create-input-field">
                   <Input
                     type={'date'}
@@ -401,7 +393,6 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                   )}
                 </div>
               </div>
-
             </div>
           </div>
         </div>

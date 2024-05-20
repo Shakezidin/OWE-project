@@ -3,7 +3,7 @@ import {
   fetchRebateData,
   createRebateData,
   updateRebateData,
-} from '../../../apiActions/rebateDataAction';
+} from '../../../apiActions/config/rebateDataAction';
 import { toast } from 'react-toastify';
 
 interface IState {

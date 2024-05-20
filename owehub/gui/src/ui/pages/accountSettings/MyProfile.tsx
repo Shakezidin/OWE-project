@@ -80,10 +80,10 @@ const MyProfile = () => {
               <div className="">
                 <p>Personal Information</p>
               </div>
-              <div className="edit-section">
+              {/* <div className="edit-section">
                 <img src={ICONS.editIcon} alt="" />
                 <p>Edit</p>
-              </div>
+              </div> */}
             </div>
 
             <div

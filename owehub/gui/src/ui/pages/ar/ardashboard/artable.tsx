@@ -11,7 +11,7 @@ import '../../configure/configure.css';
 import HelpDashboard from '../../dashboard/HelpDashboard';
 import { BiSupport } from 'react-icons/bi';
 import PaginationComponent from '../../../components/pagination/PaginationComponent';
-import { getAR } from '../../../../redux/apiActions/arAction';
+import { getAR } from '../../../../redux/apiActions/config/arAction';
 
 const ArDashBoardTable = () => {
   const [pageSize1, setPageSize1] = useState(10);

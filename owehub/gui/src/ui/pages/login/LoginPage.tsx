@@ -17,7 +17,7 @@ import { ActionButton } from '../../components/button/ActionButton';
 import { Credentials } from '../../../core/models/api_models/AuthModel';
 import { ROUTES } from '../../../routes/routes';
 import { toast } from 'react-toastify';
-import { loginAction } from '../../../redux/apiActions/authActions';
+import { loginAction } from '../../../redux/apiActions/auth/authActions';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { HTTP_STATUS } from '../../../core/models/api_models/RequestModel';
 import { unwrapResult } from '@reduxjs/toolkit';
@@ -148,7 +148,7 @@ export const LoginPage = () => {
                 className="loginImageLogo"
                 data={ICONS.LOGO}
                 aria-label="login-icon"
-                style={{height: '60px'}}
+                height={60}
               ></object>
               <br />
               <div className="loginLogowithText">

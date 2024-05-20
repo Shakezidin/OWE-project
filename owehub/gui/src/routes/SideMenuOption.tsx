@@ -108,7 +108,7 @@ const DB = {
               <MdOutlineSpaceDashboard
                 size={16}
                 style={{ marginLeft: '20px' }}
-                color="#7D7D7D"
+                color="#101828"
                 className="side-icon-db"
               />
             ),
@@ -122,7 +122,7 @@ const DB = {
               <AiOutlineDatabase
                 size={16}
                 style={{ marginLeft: '20px' }}
-                color="#7D7D7D"
+                color="#101828"
                 className="side-icon-db"
               />
             ),
@@ -136,7 +136,7 @@ const DB = {
               <AiOutlineUserSwitch
                 size={16}
                 style={{ marginLeft: '20px' }}
-                color="#7D7D7D"
+                color="#101828"
                 className="side-icon-db"
               />
             ),

@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import {
   getarAdderData,
   IAdderRowData,
-} from '../../../../redux/apiActions/arAdderDataAction';
+} from '../../../../redux/apiActions/config/arAdderDataAction';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import Pagination from '../../../components/pagination/Pagination';
 import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';

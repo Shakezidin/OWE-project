@@ -3,7 +3,7 @@ import {
   createAdderResponsibility,
   fetchAdderResponsibility,
   updateAdderResponsibility,
-} from '../../../apiActions/adderResponsbilityAction';
+} from '../../../apiActions/config/adderResponsbilityAction';
 import { RateAdjustment } from '../../../../core/models/api_models/RateAdjustmentModel';
 import { toast } from 'react-toastify';
 

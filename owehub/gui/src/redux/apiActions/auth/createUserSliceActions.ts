@@ -1,13 +1,13 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
-import { EndPoints } from '../../infrastructure/web_api/api_client/EndPoints';
-import { HTTP_STATUS } from '../../core/models/api_models/RequestModel';
+import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
+import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints';
+import { HTTP_STATUS } from '../../../core/models/api_models/RequestModel';
 import {
   CreateUserParamModel,
   DealerOwner,
   DeleteUserModel,
   UserDropdownModel,
-} from '../../core/models/api_models/UserManagementModel';
+} from '../../../core/models/api_models/UserManagementModel';
 
 /** get dealer */
 export const fetchDealerOwner = createAsyncThunk(

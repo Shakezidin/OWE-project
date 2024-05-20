@@ -21,7 +21,7 @@ import SelectOption from '../../../components/selectOption/SelectOption';
 import {
   createAdderCredit,
   updateAdderCredit,
-} from '../../../../redux/apiActions/adderCreditAction';
+} from '../../../../redux/apiActions/config/adderCreditAction';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/adderCreditSlice';
 
 interface payScheduleProps {

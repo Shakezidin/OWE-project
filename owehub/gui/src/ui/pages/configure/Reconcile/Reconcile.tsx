@@ -14,14 +14,16 @@ import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import { ReconcileColumns } from '../../../../resources/static_data/configureHeaderData/ReconcileColumn';
 import FilterModal from '../../../components/FilterModal/FilterModal';
 import { ROUTES } from '../../../../routes/routes';
-import { fetchReconcile } from '../../../../redux/apiActions/reconcileAction';
+import { fetchReconcile } from '../../../../redux/apiActions/config/reconcileAction';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
 import Loading from '../../../components/loader/Loading';
-import { fetchRateAdjustments } from '../../../../redux/apiActions/RateAdjustmentsAction';
+import { fetchRateAdjustments } from '../../../../redux/apiActions/config/RateAdjustmentsAction';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import DataNotFound from '../../../components/loader/DataNotFound';
+import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
+import FilterHoc from '../../../components/FilterModal/FilterHoc';
 
 const Reconcile = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -46,14 +48,16 @@ const Reconcile = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [filters, setFilters] = useState<FilterModel[]>([]);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
       archived: viewArchived ? true : undefined,
+      filters,
     };
     dispatch(fetchReconcile(pageNumber));
-  }, [dispatch, currentPage, viewArchived]);
+  }, [dispatch, currentPage, viewArchived, isSuccess, filters]);
 
   const filter = () => {
     setFilterOpen(true);
@@ -113,17 +117,6 @@ const Reconcile = () => {
     });
   }
 
-  useEffect(() => {
-    if (isSuccess) {
-      const pageNumber = {
-        page_number: currentPage,
-        page_size: itemsPerPage,
-        archived: viewArchived ? true : undefined,
-      };
-      dispatch(fetchReconcile(pageNumber));
-    }
-  }, [isSuccess, viewArchived, currentPage]);
-
   const handleViewArchiveToggle = () => {
     setViewArchived(!viewArchived);
     // When toggling, reset the selected rows
@@ -132,14 +125,8 @@ const Reconcile = () => {
     setSelectAllChecked(false);
   };
   const fetchFunction = (req: any) => {
-    dispatch(
-      fetchReconcile({
-        ...req,
-        page_number: currentPage,
-        page_size: itemsPerPage,
-        archived: viewArchived,
-      })
-    );
+    setCurrentPage(1);
+    setFilters(req.filters);
   };
   const handleEdit = (data: any) => {
     setEditMode(true);
@@ -247,15 +234,17 @@ const Reconcile = () => {
           onpressExport={() => {}}
           onpressAddNew={() => handleRepPaySettings()}
         />
-        {filterOPen && (
-          <FilterModal
-            handleClose={filterClose}
-            columns={ReconcileColumns}
-            page_number={currentPage}
-            fetchFunction={fetchFunction}
-            page_size={itemsPerPage}
-          />
-        )}
+
+        <FilterHoc
+          isOpen={filterOPen}
+          resetOnChange={viewArchived}
+          handleClose={filterClose}
+          columns={ReconcileColumns}
+          page_number={currentPage}
+          fetchFunction={fetchFunction}
+          page_size={itemsPerPage}
+        />
+
         {open && (
           <CreateReconcile
             editMode={editMode}

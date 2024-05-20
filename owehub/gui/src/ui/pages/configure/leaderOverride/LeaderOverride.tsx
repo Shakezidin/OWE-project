@@ -2,26 +2,27 @@ import React, { useEffect, useState } from 'react';
 import TableHeader from '../../../components/tableHeader/TableHeader';
 import { ICONS } from '../../../icons/Icons';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
+import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
+import Pagination from '../../../components/pagination/Pagination';
+import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
+import { TimeLineSlaModel } from '../../../../core/models/configuration/create/TimeLineSlaModel';
+import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
+import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
+import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
+import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
+import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
+import SortableHeader from '../../../components/tableHeader/SortableHeader';
+import { LeaderOverrideColumns } from '../../../../resources/static_data/configureHeaderData/LeaderOverrideColumn';
+import FilterModal from '../../../components/FilterModal/FilterModal';
+import { ROUTES } from '../../../../routes/routes';
+import CreateLeaderOverride from './CreateLeaderOverride';
+import Loading from '../../../components/loader/Loading';
+import MicroLoader from '../../../components/loader/MicroLoader';
+import DataNotFound from '../../../components/loader/DataNotFound';
 import {
-  toggleRowSelection,
-} from "../../../components/chekbox/checkHelper";
-import Pagination from "../../../components/pagination/Pagination";
-import { setCurrentPage } from "../../../../redux/apiSlice/paginationslice/paginationSlice";
-import { TimeLineSlaModel } from "../../../../core/models/configuration/create/TimeLineSlaModel";
-import Breadcrumb from "../../../components/breadcrumb/Breadcrumb";
-import { showAlert, successSwal } from "../../../components/alert/ShowAlert";
-import { EndPoints } from "../../../../infrastructure/web_api/api_client/EndPoints";
-import { HTTP_STATUS } from "../../../../core/models/api_models/RequestModel";
-import { postCaller } from "../../../../infrastructure/web_api/services/apiUrl";
-import SortableHeader from "../../../components/tableHeader/SortableHeader";
-import { LeaderOverrideColumns} from "../../../../resources/static_data/configureHeaderData/LeaderOverrideColumn";
-import FilterModal from "../../../components/FilterModal/FilterModal";
-import { ROUTES } from "../../../../routes/routes";
-import CreateLeaderOverride from "./CreateLeaderOverride";
-import Loading from "../../../components/loader/Loading";
-import MicroLoader from "../../../components/loader/MicroLoader";
-import DataNotFound from "../../../components/loader/DataNotFound";
-import { ILeaderRow, getleaderOverride } from '../../../../redux/apiActions/leaderOverrideAction';
+  ILeaderRow,
+  getleaderOverride,
+} from '../../../../redux/apiActions/config/leaderOverrideAction';
 import CheckBox from '../../../components/chekbox/CheckBox';
 
 const LeaderOverride = () => {
@@ -44,10 +45,14 @@ const LeaderOverride = () => {
   );
   const itemsPerPage = 5;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
-  const [currentPage,setCurrentPage] = useState(1)
-  
-  const {data:commissionList,isLoading,count} = useAppSelector((state) => state.leaderOverride);
-  const [sortKey, setSortKey] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const {
+    data: commissionList,
+    isLoading,
+    count,
+  } = useAppSelector((state) => state.leaderOverride);
+  const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   useEffect(() => {
     const pageNumber = {
@@ -63,21 +68,21 @@ const LeaderOverride = () => {
   };
 
   const paginate = (pageNumber: number) => {
-    setCurrentPage(pageNumber)
+    setCurrentPage(pageNumber);
   };
 
   const goToNextPage = () => {
-   setCurrentPage(currentPage + 1)
+    setCurrentPage(currentPage + 1);
   };
 
   const goToPrevPage = () => {
-    setCurrentPage(currentPage - 1)
+    setCurrentPage(currentPage - 1);
   };
   const totalPages = Math.ceil(count / itemsPerPage);
 
-  const startIndex = (currentPage - 1) * itemsPerPage+1;
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
   const endIndex = currentPage * itemsPerPage;
-  
+
   const currentPageData = commissionList?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === timelinesla_list?.length;
@@ -136,9 +141,9 @@ const LeaderOverride = () => {
       };
       const res = await postCaller('update_leaderoverride_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
-        setSelectAllChecked(false)
+        setSelectAllChecked(false);
         setSelectedRows(new Set());
-       
+
         dispatch(getleaderOverride(pageNumber));
         await successSwal('Archived', 'The data has been archived ');
       } else {
@@ -154,8 +159,7 @@ const LeaderOverride = () => {
   };
   const fetchFunction = (req: any) => {
     dispatch(getleaderOverride(req));
-   };
- 
+  };
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -172,12 +176,11 @@ const LeaderOverride = () => {
       <div className="commissionContainer">
         <TableHeader
           title="Leader Override"
-          onPressViewArchive={() =>{ 
-            setViewArchived((prev) => !prev)
+          onPressViewArchive={() => {
+            setViewArchived((prev) => !prev);
             setCurrentPage(1);
             setSelectAllChecked(false);
             setSelectedRows(new Set());
-
           }}
           onPressArchive={() =>
             handleArchiveClick(
@@ -244,87 +247,86 @@ const LeaderOverride = () => {
                 </th>
               </tr>
             </thead>
-            <tbody >
-              {
-                isLoading ? 
-                  <tr>
-                    <td colSpan={LeaderOverrideColumns?.length}>
-                      <div style={{ display: "flex", justifyContent: "center" }}>
-                        <MicroLoader />
+            <tbody>
+              {isLoading ? (
+                <tr>
+                  <td colSpan={LeaderOverrideColumns?.length}>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <MicroLoader />
+                    </div>
+                  </td>
+                </tr>
+              ) : currentPageData?.length > 0 ? (
+                currentPageData?.map((el: ILeaderRow, i: number) => (
+                  <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
+                    <td style={{ fontWeight: '500', color: 'black' }}>
+                      <div className="flex-check">
+                        <CheckBox
+                          checked={selectedRows.has(i)}
+                          onChange={() =>
+                            toggleRowSelection(
+                              i,
+                              selectedRows,
+                              setSelectedRows,
+                              setSelectAllChecked
+                            )
+                          }
+                        />
+                        {el.team_name}
                       </div>
                     </td>
-                  </tr>
-              
-              
-            :  currentPageData?.length > 0
-                ? currentPageData?.map((el: ILeaderRow, i: number) => (
-                    <tr
-                      key={i}
-                      className={selectedRows.has(i) ? 'selected' : ''}
-                    >
-                      <td style={{ fontWeight: '500', color: 'black' }}>
-                        <div className="flex-check">
-                          <CheckBox
-                            checked={selectedRows.has(i)}
-                            onChange={() =>
-                              toggleRowSelection(
-                                i,
-                                selectedRows,
-                                setSelectedRows,
-                                setSelectAllChecked
-                              )
-                            }
-                          />
-                          {el.team_name}
-                        </div>
-                      </td>
-                      <td>{el.unique_id}</td>
-                      <td>{el.leader_name}</td>
-                      <td>{el.type}</td>
-                      <td>{el.term}</td>
-                      <td>{el.qual}</td>
-                      <td>{el.sales_q}</td>
-                      <td>{el.team_kw_q}</td>
-                      <td>{el.pay_rate}</td>
-                      <td>{el.start_date}</td>
-                      <td>{el.end_date}</td>
-                      <td>
-                        {(!viewArchived && selectedRows.size<2) && (
-                          <div className="action-icon">
-                            <div
-                              className=""
-                              style={{ cursor: 'pointer' }}
-                              onClick={() => handleArchiveClick([el.record_id])}
-                            >
-                              <img src={ICONS.ARCHIVE} alt="" />
-                            </div>
-                            <div
-                              className=""
-                              onClick={() => handleEditTimeLineSla(el)}
-                              style={{ cursor: 'pointer' }}
-                            >
-                              <img src={ICONS.editIcon} alt="" />
-                            </div>
+                    <td>{el.unique_id}</td>
+                    <td>{el.leader_name}</td>
+                    <td>{el.type}</td>
+                    <td>{el.term}</td>
+                    <td>{el.qual}</td>
+                    <td>{el.sales_q}</td>
+                    <td>{el.team_kw_q}</td>
+                    <td>{el.pay_rate}</td>
+                    <td>{el.start_date}</td>
+                    <td>{el.end_date}</td>
+                    <td>
+                      {!viewArchived && selectedRows.size < 2 && (
+                        <div className="action-icon">
+                          <div
+                            className=""
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => handleArchiveClick([el.record_id])}
+                          >
+                            <img src={ICONS.ARCHIVE} alt="" />
                           </div>
-                        )}
-                      </td>
-                    </tr>
-                  ))
-                :                 <tr style={{ border: 0 }}>
-                <td colSpan={LeaderOverrideColumns.length}>
-                  <div className="data-not-found">
-                    <DataNotFound />
-                    <h2>Data Not Found</h2>
-                  </div>
-                </td>
-              </tr>}
+                          <div
+                            className=""
+                            onClick={() => handleEditTimeLineSla(el)}
+                            style={{ cursor: 'pointer' }}
+                          >
+                            <img src={ICONS.editIcon} alt="" />
+                          </div>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr style={{ border: 0 }}>
+                  <td colSpan={LeaderOverrideColumns.length}>
+                    <div className="data-not-found">
+                      <DataNotFound />
+                      <h2>Data Not Found</h2>
+                    </div>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
         <div className="page-heading-container">
-         {!!count && <p className="page-heading">
-            {startIndex} - {endIndex>count?count:endIndex} of {count} item
-          </p>}
+          {!!count && (
+            <p className="page-heading">
+              {startIndex} - {endIndex > count ? count : endIndex} of {count}{' '}
+              item
+            </p>
+          )}
 
           {timelinesla_list?.length > 0 ? (
             <Pagination

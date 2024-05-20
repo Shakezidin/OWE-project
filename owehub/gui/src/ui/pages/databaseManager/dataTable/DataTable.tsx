@@ -42,11 +42,15 @@ const DataTablle: React.FC = () => {
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
 
-
   const [openTooltipIndex, setOpenTooltipIndex] = useState<number | null>(null);
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (openTooltipIndex !== null && !(event.target as HTMLElement).closest(`[data-tooltip-id="tooltip-${openTooltipIndex}"]`)) {
+      if (
+        openTooltipIndex !== null &&
+        !(event.target as HTMLElement).closest(
+          `[data-tooltip-id="tooltip-${openTooltipIndex}"]`
+        )
+      ) {
         setOpenTooltipIndex(null);
       }
     };
@@ -62,14 +66,13 @@ const DataTablle: React.FC = () => {
     return str.trim().split(/\s+/).length;
   };
 
-
   const currentPage = useAppSelector(
     (state) => state.paginationType.currentPage
   );
   const itemsPerPage = 30;
   const start = (currentPage - 1) * itemsPerPage + 1;
   const end = currentPage * itemsPerPage;
-  console.log(currentPage * itemsPerPage, "", itemsPerPage);
+  console.log(currentPage * itemsPerPage, '', itemsPerPage);
 
   useEffect(() => {
     if (selectedTable.value) {
@@ -134,8 +137,8 @@ const DataTablle: React.FC = () => {
     <div className="commissionContainer">
       <DataTableHeaderr
         title={selectedTable.value?.replaceAll('_', ' ')}
-        onPressFilter={() => { }}
-        onPressImport={() => { }}
+        onPressFilter={() => {}}
+        onPressImport={() => {}}
         showImportIcon={false}
         showSelectIcon={true}
         showFilterIcon={false}
@@ -144,7 +147,10 @@ const DataTablle: React.FC = () => {
         selectedTable={selectedTable}
         setSelectedTable={setSelectedTable}
       />
-      <div className="TableContainer" style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
+      <div
+        className="TableContainer"
+        style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}
+      >
         <table>
           <thead>
             <tr>
@@ -201,7 +207,13 @@ const DataTablle: React.FC = () => {
                                 <>
                                   {item.details.slice(0, 5)}...
                                   <button
-                                    onClick={() => setOpenTooltipIndex(openTooltipIndex === rowIndex ? null : rowIndex)}
+                                    onClick={() =>
+                                      setOpenTooltipIndex(
+                                        openTooltipIndex === rowIndex
+                                          ? null
+                                          : rowIndex
+                                      )
+                                    }
                                     data-tooltip-id={`tooltip-${rowIndex}`}
                                     data-tooltip-content={item.details}
                                     data-tooltip-place="bottom"
@@ -209,11 +221,16 @@ const DataTablle: React.FC = () => {
                                       marginLeft: '5px',
                                       border: 'none',
                                       background: 'none',
-                                      color: openTooltipIndex === rowIndex ? '#F82C2C' : '#3083e5',
+                                      color:
+                                        openTooltipIndex === rowIndex
+                                          ? '#F82C2C'
+                                          : '#3083e5',
                                       cursor: 'pointer',
                                     }}
                                   >
-                                    {openTooltipIndex === rowIndex ? 'Show less' : 'Show more'}
+                                    {openTooltipIndex === rowIndex
+                                      ? 'Show less'
+                                      : 'Show more'}
                                   </button>
                                   <ReactTooltip
                                     id={`tooltip-${rowIndex}`}
@@ -261,7 +278,5 @@ const DataTablle: React.FC = () => {
     </div>
   );
 };
-
-
 
 export default DataTablle;

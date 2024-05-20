@@ -16,7 +16,7 @@ import { AdderCreditsColumn } from '../../../../resources/static_data/configureH
 import FilterModal from '../../../components/FilterModal/FilterModal';
 import { ROUTES } from '../../../../routes/routes';
 import CreateAdderCredit from './CreateAdderCredit';
-import { fetchAdderCredit } from '../../../../redux/apiActions/adderCreditAction';
+import { fetchAdderCredit } from '../../../../redux/apiActions/config/adderCreditAction';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
