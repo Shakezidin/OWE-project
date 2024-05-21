@@ -111,9 +111,6 @@ const FilterModal: React.FC<TableProps> = ({
       }));
     setFilters(resetFilters);
     setErrors({});
-    if (resetOnChange) {
-      setApplyFilters([...resetFilters])
-    }
     return () => {
       dispatch(disableFilter({ name: pathname }));
     };
