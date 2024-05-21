@@ -10,6 +10,7 @@ import { useAppDispatch } from '../../../redux/hooks';
 import { logout } from '../../../redux/apiSlice/authSlice/authSlice';
 import { toast } from 'react-toastify';
 import ChangePassword from '../../pages/resetPassword/ChangePassword/ChangePassword';
+import { checkUserExists } from '../../../redux/apiActions/auth/authActions';
 
 const MainLayout = () => {
   const dispatch = useAppDispatch();
@@ -51,6 +52,29 @@ const MainLayout = () => {
       }
     }
   }, [dispatch, isAuthenticated]);
+
+    /** check whether user exist or not */
+  useEffect(() => {
+    const email = localStorage.getItem('email');
+    
+    if (email) {
+      dispatch(checkUserExists(email))
+        .then((response: any) => {
+          if (response.payload) {
+            console.log('User exists');
+          } else {
+            // User does not exist, log out
+            dispatch(logout());
+            navigate('/login');
+            toast.error('User does not exist. Please register..');
+          }
+        })
+        .catch((error: any) => {
+          console.error('Error checking user existence:', error);
+        });
+    }
+  }, [dispatch, navigate]);
+
 
   return isAuthenticated ? (
     <div className="main-container">
