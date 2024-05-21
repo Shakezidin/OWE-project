@@ -609,21 +609,16 @@ CREATE TABLE referral_data (
 CREATE TABLE dealer_credit (
     id serial NOT NULL,
     unique_id varchar NOT NULL UNIQUE,
-    customer text,
-    dealer_id INT,
-    dealer_dba text,
-    exact_amount text,
+    date date,
+    exact_amount float,
     per_kw_amount float,
     approved_by text,
     notes text,
     total_amount float,
     sys_size float,
-    start_date character varying NOT NULL,
-    end_date character varying,
     is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
-    updated_at timestamp without time zone,
-    FOREIGN KEY (dealer_id) REFERENCES user_details(user_id)
+    updated_at timestamp without time zone
 );
 
 CREATE TABLE noncomm_dlrpay (
@@ -918,6 +913,23 @@ CREATE TABLE adder_data_cfg_schema (
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     PRIMARY KEY (id)
+);
+
+CREATE TABLE ap_rep (
+    id serial NOT NULL,
+	unique_id varchar NOT NULL UNIQUE,
+    rep varchar,
+    dba varchar,
+    type varchar,
+    date date,
+    amount float,
+    method varchar,
+    cbiz varchar,
+    transaction varchar,
+    notes character varying,
+    is_archived BOOLEAN DEFAULT FALSE,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone
 );
 
 /*
