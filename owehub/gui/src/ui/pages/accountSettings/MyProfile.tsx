@@ -4,11 +4,22 @@ import { ICONS } from '../../icons/Icons';
 import Select from 'react-select';
 import { ActionButton } from '../../components/button/ActionButton';
 import SelectOption from '../../components/selectOption/SelectOption';
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
+import { getUser } from '../../../redux/apiActions/GetUser/getUserAction';
+
 const MyProfile = () => {
   const [stateOptions, setStateOptions] = useState<any[]>([]);
   const [selectedState, setSelectedState] = useState<string | null>(null);
+  const dispatch = useAppDispatch();
+  const {userDetail} = useAppSelector((state) => state.userSlice);
+  console.log(userDetail)
+  const [name, setName] = useState<String>(userDetail?.name);
+  const userRole = userDetail?.role_name;
+  const userName = userDetail?.name;
+  const [isEditMode, setIsEditMode] = useState(true);
 
   useEffect(() => {
+    dispatch(getUser({page_number: 1, page_size: 10}))
     fetchStateOptions()
       .then((options) => {
         setStateOptions(options);
@@ -17,6 +28,13 @@ const MyProfile = () => {
         console.error('Error fetching state options:', error);
       });
   }, []);
+
+  useEffect(() => {
+    if (userName) {
+      const firstLetter = userName.charAt(0).toUpperCase();
+      setName(firstLetter);
+    }
+  }, [userName]);
 
   const fetchStateOptions = async () => {
     const response = await fetch('https://api.example.com/states');
@@ -28,9 +46,9 @@ const MyProfile = () => {
     setSelectedState(selectedOption.value);
   };
 
-  const [street, setStreet] = useState('');
-  const [zipCode, setZipCode] = useState('');
-  const [country, setCountry] = useState('');
+  const [street, setStreet] = useState(userDetail?.city || '');
+  const [zipCode, setZipCode] = useState(userDetail?.zipcode || '');
+  const [country, setCountry] = useState(userDetail?.country || '');
 
   const [errors, setErrors] = useState({
     street: '',
@@ -59,19 +77,15 @@ const MyProfile = () => {
             <p>My Profile</p>
           </div>
           <div className="admin-section">
-            <div className="">
-              <img src={ICONS.userPic} alt="" />
+            <div className="profile-img">
+              {name}
             </div>
 
             <div className="caleb-container">
               <div className="caleb-section">
-                <h3>Shushank </h3>
-                <p>Admin</p>
+                <h3>{userName}</h3>
+                <p>{userRole}</p>
               </div>
-              {/* <div className='edit-section'>
-                            <img src={ICONS.editIcon} alt="" />
-                            <p>Edit</p>
-                        </div> */}
             </div>
           </div>
 
@@ -88,40 +102,24 @@ const MyProfile = () => {
 
             <div
               className="create-input-container"
-              style={{ padding: '0.5rem', marginLeft: '1rem', gap: '2.8%' }}
+              style={{ padding: '0.5rem', marginLeft: '1rem' }}
             >
               <div className="create-input-field-profile">
                 <Input
                   type={'text'}
-                  label="First Name"
-                  value={''}
+                  label="Name"
+                  value={userDetail?.name}
                   name="fee_rate"
                   placeholder={'Enter'}
                   onChange={(e) => {}}
                   disabled
                 />
               </div>
-              <div className="create-input-field-profile">
-                <Input
-                  type={'text'}
-                  label="Last Name"
-                  value={''}
-                  name="fee_rate"
-                  placeholder={'Enter'}
-                  onChange={(e) => {}}
-                  disabled
-                />
-              </div>
-            </div>
-            <div
-              className="create-input-container"
-              style={{ padding: '0.5rem', marginLeft: '1rem', gap: '2.8%' }}
-            >
               <div className="create-input-field-profile">
                 <Input
                   type={'text'}
                   label="Email"
-                  value={''}
+                  value={userDetail?.email_id}
                   name="fee_rate"
                   placeholder={'Enter'}
                   onChange={(e) => {}}
@@ -132,7 +130,7 @@ const MyProfile = () => {
                 <Input
                   type={'text'}
                   label="Phone Number"
-                  value={''}
+                  value={userDetail?.mobile_number}
                   name="fee_rate"
                   placeholder={'Enter'}
                   onChange={(e) => {}}
@@ -146,7 +144,7 @@ const MyProfile = () => {
               <div className="">
                 <p>Address Detail</p>
               </div>
-              <div className="edit-section">
+              <div className="edit-section"  onClick={() => setIsEditMode(!isEditMode)}>
                 <img src={ICONS.editIcon} alt="" />
                 <p>Edit</p>
               </div>
@@ -166,6 +164,7 @@ const MyProfile = () => {
                     setStreet(e.target.value);
                     setErrors({ ...errors, street: '' });
                   }}
+                  disabled = {isEditMode}
                 />
                 {errors.street && (
                   <span className="error">{errors.street}</span>
@@ -179,6 +178,7 @@ const MyProfile = () => {
                   onChange={handleStateChange}
                   options={stateOptions}
                   value={stateOptions?.find((option) => option.value === ' ')}
+                  disabled = {isEditMode}
                 />
               </div>
               <div className="create-input-field-address">
@@ -189,6 +189,7 @@ const MyProfile = () => {
                   onChange={handleStateChange}
                   options={stateOptions}
                   value={stateOptions?.find((option) => option.value === ' ')}
+                  disabled = {isEditMode}
                 />
               </div>
             </div>
@@ -207,6 +208,7 @@ const MyProfile = () => {
                     setZipCode(e.target.value);
                     setErrors({ ...errors, zipCode: '' });
                   }}
+                  disabled = {isEditMode}
                 />
                 {errors.zipCode && (
                   <span className="error">{errors.zipCode}</span>
@@ -223,6 +225,7 @@ const MyProfile = () => {
                     setCountry(e.target.value);
                     setErrors({ ...errors, country: '' });
                   }}
+                  disabled = {isEditMode}
                 />
                 {errors.country && (
                   <span className="error">{errors.country}</span>

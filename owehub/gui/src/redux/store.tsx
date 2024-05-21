@@ -51,6 +51,7 @@ import DBManagerSlice from './apiSlice/dbManagerSlice/DBManagerSlice';
 import projectManagement from './apiSlice/projectManagement';
 import dataTableSlice from './apiSlice/DbManager/dataTableSlice';
 import filterSlice from './apiSlice/filterSlice/filterSlice';
+import userSlice from './apiSlice/UserSlice/userSlice';
 export const store = configureStore({
   reducer: {
     appState: appStateSlice,
@@ -108,6 +109,7 @@ export const store = configureStore({
     projectManagement,
     dataTableSlice,
     filterSlice,
+    userSlice
   },
 });
 
