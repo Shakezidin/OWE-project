@@ -1,12 +1,12 @@
 /**************************************************************************
- *	Function	: UpdateArRepModels.go
- *	DESCRIPTION : Files contains struct for Update ar_rep API Model
+ *	Function	: UpdateApRepModels.go
+ *	DESCRIPTION : Files contains struct for Update ap_rep API Model
  *	DATE        : 21-May-2024
  **************************************************************************/
 
 package models
 
-type UpdateArRep struct {
+type UpdateApRep struct {
 	RecordId    int64   `json:"record_id"`
 	Rep         string  `json:"rep"`
 	Dba         string  `json:"dba"`
@@ -19,7 +19,7 @@ type UpdateArRep struct {
 	Notes       string  `json:"notes"`
 }
 
-type UpdateArRepArchive struct {
+type UpdateApRepArchive struct {
 	RecordId   []int64 `json:"record_id"`
 	IsArchived bool    `json:"is_archived"`
 }

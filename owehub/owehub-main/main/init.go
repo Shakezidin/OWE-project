@@ -1153,6 +1153,20 @@ var apiRoutes = ApiRoutes{
 		true,
 		[]types.UserGroup{types.GroupAdmin},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/create_aprep",
+		apiHandler.HandleCreateArRepRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_aprep_archive",
+		apiHandler.HandleApRepArchiveRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
 }
 
 /******************************************************************************
