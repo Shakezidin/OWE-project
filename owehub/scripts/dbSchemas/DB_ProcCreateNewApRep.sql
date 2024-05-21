@@ -39,6 +39,5 @@ BEGIN
         p_notes
     )
     RETURNING id INTO v_aprep_id;
-
 END;
 $$ LANGUAGE plpgsql;
