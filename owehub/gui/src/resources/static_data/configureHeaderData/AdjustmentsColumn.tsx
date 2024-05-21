@@ -34,12 +34,12 @@ export const AdjustmentsColumns: Column[] = [
   {
     name: 'sys_size',
     displayName: 'Sys. Size',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
-  { name: 'bl', displayName: 'BL', type: 'string', isCheckbox: false },
-  { name: 'epc', displayName: 'Epc', type: 'string', isCheckbox: false },
-  { name: 'date', displayName: 'Date', type: 'string', isCheckbox: false },
-  { name: 'amount', displayName: 'Amount', type: 'string', isCheckbox: false },
+  { name: 'bl', displayName: 'BL', type: 'number', isCheckbox: false },
+  { name: 'epc', displayName: 'Epc', type: 'number', isCheckbox: false },
+  { name: 'date', displayName: 'Date', type: 'date', isCheckbox: false },
+  { name: 'amount', displayName: 'Amount', type: 'number', isCheckbox: false },
   { name: 'notes', displayName: 'Notes', type: 'string', isCheckbox: false },
 ];

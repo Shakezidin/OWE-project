@@ -29,25 +29,37 @@ func ExecArInitialCalculation(resultChan chan string) {
 	log.EnterFn(0, "ExecArInitialCalculation")
 	defer func() { log.ExitFn(0, "ExecArInitialCalculation", err) }()
 
-	for _, saleData := range dataMgmt.SaleData.SaleDataList {
+	for i, saleData := range dataMgmt.SaleData.SaleDataList {
 		var arData map[string]interface{}
 		arData, err = CalculateARProject(saleData)
 		if err != nil || arData == nil {
 			if len(saleData.UniqueId) <= 0 {
-				log.FuncErrorTrace(0, "Failed to calculate AR Data for unique id : %+v err: %+v", saleData.UniqueId, err)
+				log.FuncErrorTrace(0, "Failed to calculate AR Data for unique id: %+v err: %+v", saleData.UniqueId, err)
 			} else {
-				log.FuncErrorTrace(0, "Failed to calculate AR Data err : %+v", err)
+				log.FuncErrorTrace(0, "Failed to calculate AR Data err: %+v", err)
 			}
 		} else {
 			arDataList = append(arDataList, arData)
 		}
-	}
-	/* Update Calculated and Fetched data AR.Data Table */
-	err = db.AddMultipleRecordInDB(db.OweHubDbIndex, db.TableName_SalesArCalc, arDataList)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to insert initial AR Data in DB err: %v", err)
-	}
 
+		// Process and clear the batch every 1000 records
+		if (i+1)%1000 == 0 && len(arDataList) > 0 {
+			err = db.AddMultipleRecordInDB(db.OweHubDbIndex, db.TableName_SalesArCalc, arDataList)
+			if err != nil {
+				log.FuncErrorTrace(0, "Failed to insert initial AR Data in DB err: %v", err)
+			}
+			arDataList = nil // Clear the arDataList
+		}
+	}
+	/*
+		// Process remaining records if any
+		if len(arDataList) > 0 {
+			err = db.AddMultipleRecordInDB(db.OweHubDbIndex, db.TableName_SalesArCalc, arDataList)
+			if err != nil {
+				log.FuncErrorTrace(0, "Failed to insert initial AR Data in DB err: %v", err)
+			}
+		}
+	*/
 	resultChan <- "SUCCESS"
 }
 

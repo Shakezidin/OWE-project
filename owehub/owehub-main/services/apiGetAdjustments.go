@@ -249,7 +249,7 @@ func PrepareAdjustmentsFilters(tableName string, dataFilter models.DataRequestBo
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(st.name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "sys_size":
-				filtersBuilder.WriteString(fmt.Sprintf("as.sys_size %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("ad.sys_size %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "bl":
 				filtersBuilder.WriteString(fmt.Sprintf("ad.bl %s $%d", operator, len(whereEleList)+1))

@@ -61,6 +61,7 @@ const ar = createSlice({
       .addCase(createAr.rejected, (state, action) => {
         state.isFormSubmitting = false;
         state.error = action.payload as string;
+        toast.error(action.payload as string)
       })
       .addCase(updateAr.pending, (state, action) => {
         state.isFormSubmitting = true;

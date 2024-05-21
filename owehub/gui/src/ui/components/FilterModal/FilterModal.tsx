@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import OperationSelect from './OperationSelect';
 import { useAppDispatch } from '../../../redux/hooks';
 import { ICONS } from '../../icons/Icons';
@@ -62,12 +62,12 @@ const FilterModal: React.FC<TableProps> = ({
     label: column.displayName,
   }));
   const { pathname } = useLocation();
+  const init = useRef(true);
 
   useEffect(() => {
     setApplyFilters([...filters]);
   }, []);
   const resetAllFilter = async () => {
-  
     const confirmed = await showAlert(
       'Reset Filters',
       'Are you sure you want to reset all of your filters?',
@@ -84,6 +84,7 @@ const FilterModal: React.FC<TableProps> = ({
           Data: '',
         }));
       setFilters(resetFilters);
+      setApplyFilters(resetFilters);
       if (
         filters.some(
           (filter) => filter.Operation || filter.Data || filter.Column
@@ -111,6 +112,13 @@ const FilterModal: React.FC<TableProps> = ({
       }));
     setFilters(resetFilters);
     setErrors({});
+    if (init.current) {
+      init.current = false;
+    } else {
+      fetchFunction({ page_number, page_size });
+      setApplyFilters([...resetFilters]);
+    }
+
     return () => {
       dispatch(disableFilter({ name: pathname }));
     };
@@ -154,9 +162,10 @@ const FilterModal: React.FC<TableProps> = ({
     setFilters(newFilters);
   };
   const getInputType = (columnName: string) => {
-    if (columnName === 'rate' || columnName === 'rl') {
+    const type = columns.find((option) => option.name === columnName)?.type;
+    if (type === 'number') {
       return 'number';
-    } else if (columnName === 'start_date' || columnName === 'end_date') {
+    } else if (type === 'date') {
       return 'date';
     } else {
       return 'text';
@@ -322,15 +331,20 @@ const FilterModal: React.FC<TableProps> = ({
               type="reset"
               onClick={() => {
                 handleCloseModal();
-                setFilters(applyFilters);
+                const deepCopy = JSON.parse(JSON.stringify(applyFilters))
+                setFilters(deepCopy);
               }}
             />
             <ActionButton
               title={'reset'}
               type="reset"
               onClick={resetAllFilter}
-              disabled={!(filters.some((filter) => filter.Operation || filter.Data || filter.Column))}
-              style={{color:'#0493ce'}}
+              disabled={
+                !filters.some(
+                  (filter) => filter.Operation || filter.Data || filter.Column
+                )
+              }
+              style={{ color: '#0493ce' }}
             />
             <ActionButton
               title={'Apply'}

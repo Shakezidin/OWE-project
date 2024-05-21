@@ -44,3 +44,19 @@ export const changePasswordAction = createAsyncThunk(
     }
   }
 );
+
+// check user exist
+
+/** Check if user exists */
+export const checkUserExists = createAsyncThunk(
+  'user/check_exists',
+  async (email: string, { rejectWithValue }): Promise<any> => {
+    try {
+      const response = await postCaller(EndPoints.checkUser, { email });
+      return response.data.exists;
+    } catch (error) {
+      return rejectWithValue((error as Error).message);
+    }
+  }
+);
+
