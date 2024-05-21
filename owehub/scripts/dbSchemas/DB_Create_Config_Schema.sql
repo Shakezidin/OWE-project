@@ -921,6 +921,7 @@ CREATE TABLE adder_data_cfg_schema (
 );
 
 CREATE TABLE ap_rep (
+    id serial NOT NULL,
 	unique_id varchar NOT NULL UNIQUE,
     rep varchar,
     dba varchar,
