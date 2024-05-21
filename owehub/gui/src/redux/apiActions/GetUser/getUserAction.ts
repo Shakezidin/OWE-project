@@ -19,3 +19,16 @@ export const getUser = createAsyncThunk(
     }
   }
 );
+
+export const updateUser = createAsyncThunk(
+  'fetch/updateUser',
+  async (params: any, { rejectWithValue }) => {
+    try {
+      const response = await postCaller('update_user', params); // Assuming this is a GET request
+      const tableName = response.data; // Extract the data from the response
+      return tableName;
+    } catch (error) {
+      return rejectWithValue((error as Error).message);
+    }
+  }
+);

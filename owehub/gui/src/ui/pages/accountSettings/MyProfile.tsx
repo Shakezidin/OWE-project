@@ -5,18 +5,35 @@ import Select from 'react-select';
 import { ActionButton } from '../../components/button/ActionButton';
 import SelectOption from '../../components/selectOption/SelectOption';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
-import { getUser } from '../../../redux/apiActions/GetUser/getUserAction';
+import { getUser, updateUser } from '../../../redux/apiActions/GetUser/getUserAction';
+import {stateOption} from '../../../core/models/data_models/SelectDataModel';
+import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
+import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints';
+
 
 const MyProfile = () => {
   const [stateOptions, setStateOptions] = useState<any[]>([]);
   const [selectedState, setSelectedState] = useState<string | null>(null);
   const dispatch = useAppDispatch();
-  const {userDetail} = useAppSelector((state) => state.userSlice);
+  const {userDetail, userUpdate} = useAppSelector((state) => state.userSlice);
   console.log(userDetail)
+  console.log(userUpdate)
   const [name, setName] = useState<String>(userDetail?.name);
   const userRole = userDetail?.role_name;
   const userName = userDetail?.name;
   const [isEditMode, setIsEditMode] = useState(true);
+  const [newFormData, setNewFormData] = useState<any>([]);
+
+  const tableData = {
+    tableNames: [
+      'partners',
+      'states',
+      'installers',
+      'owe_cost',
+      'loan_type',
+      'tier',
+    ],
+  };
 
   useEffect(() => {
     dispatch(getUser({page_number: 1, page_size: 10}))
@@ -36,6 +53,34 @@ const MyProfile = () => {
     }
   }, [userName]);
 
+  const getNewFormData = async () => {
+    const res = await postCaller(EndPoints.get_newFormData, tableData);
+    setNewFormData(res.data);
+  };
+  useEffect(() => {
+    getNewFormData();
+  }, []);
+
+  const updateSubmit = () => {
+    const data = {
+      user_code: userDetail.user_code,
+      name: userDetail.name, 
+      street_address: street,
+      zipcode: zipCode,
+      country: country,
+      city: city,
+      state
+    }
+    dispatch(updateUser(data))
+  }
+
+  const handleReset = () => {
+    setCity("")
+    setStreet("")
+    setZipCode("")
+    setCountry("")
+  }
+
   const fetchStateOptions = async () => {
     const response = await fetch('https://api.example.com/states');
     const data = await response.json();
@@ -46,9 +91,11 @@ const MyProfile = () => {
     setSelectedState(selectedOption.value);
   };
 
-  const [street, setStreet] = useState(userDetail?.city || '');
+  const [city, setCity] = useState(userDetail?.city || '');
+  const [street, setStreet] = useState(userDetail?.street_address || '');
   const [zipCode, setZipCode] = useState(userDetail?.zipcode || '');
   const [country, setCountry] = useState(userDetail?.country || '');
+  const [state, setState] = useState(userDetail?.state || '') ;
 
   const [errors, setErrors] = useState({
     street: '',
@@ -59,9 +106,11 @@ const MyProfile = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors = {
+      city: city ? '' : 'City is required',
       street: street ? '' : 'Street is required',
       zipCode: country ? '' : 'Zip Code is required',
       country: country ? '' : 'Country is required',
+      state: state ? '' : 'State is required',
     };
     setErrors(newErrors);
 
@@ -175,22 +224,30 @@ const MyProfile = () => {
                   State
                 </label>
                 <SelectOption
-                  onChange={handleStateChange}
-                  options={stateOptions}
-                  value={stateOptions?.find((option) => option.value === ' ')}
+                    options={stateOption(newFormData)}
+                    onChange={(newValue) => setState(newValue?.value)}
+                    value={stateOption(newFormData)?.find(
+                      (option) => option.value === state
+                    )}
                   disabled = {isEditMode}
-                />
+                  />
               </div>
               <div className="create-input-field-address">
-                <label className="inputLabel-select prof-fields-onboard">
-                  City
-                </label>
-                <SelectOption
-                  onChange={handleStateChange}
-                  options={stateOptions}
-                  value={stateOptions?.find((option) => option.value === ' ')}
+              <Input
+                  type={'text'}
+                  label="City"
+                  value={city}
+                  name=""
+                  placeholder={'Enter'}
+                  onChange={(e) => {
+                    setCity(e.target.value);
+                    setErrors({ ...errors, zipCode: '' });
+                  }}
                   disabled = {isEditMode}
                 />
+                {errors.zipCode && (
+                  <span className="error">{errors.zipCode}</span>
+                )}
               </div>
             </div>
             <div
@@ -235,8 +292,8 @@ const MyProfile = () => {
           </div>
           <div className="">
             <div className="profile-reset">
-              <ActionButton title={'Reset'} type="reset" onClick={() => {}} />
-              <ActionButton title={'Update'} type="submit" onClick={() => {}} />
+              <ActionButton title={'Reset'} type="reset" onClick={() => {handleReset()}} />
+              <ActionButton title={'Update'} type="submit" onClick={() => {updateSubmit()}} />
             </div>
           </div>
         </div>

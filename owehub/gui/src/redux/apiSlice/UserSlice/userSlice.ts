@@ -1,10 +1,11 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { getAR, IGetArdata } from '../../apiActions/config/arAction';
 import { toast } from 'react-toastify';
-import { getUser } from '../../apiActions/GetUser/getUserAction';
+import { getUser, updateUser } from '../../apiActions/GetUser/getUserAction';
 
 interface IState {
   userDetail: any;
+  userUpdate: any;
   error: string;
   isLoading: boolean;
   isFormSubmitting: boolean;
@@ -14,6 +15,7 @@ interface IState {
 
 const initialState: IState = {
   userDetail: [],
+  userUpdate: [],
   error: '',
   isLoading: false,
   isFormSubmitting: false,
@@ -45,4 +47,27 @@ const userData = createSlice({
   },
 });
 
+const updateData = createSlice({
+  name: 'UPDATE DATA',
+  initialState,
+  reducers: {
+  
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(updateUser.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.userUpdate = action.payload
+      })
+      .addCase(updateUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      });
+  },
+});
+
+export const updateDataReducer = updateData.reducer;
 export default userData.reducer;
