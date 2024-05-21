@@ -177,9 +177,7 @@ const AdderData = () => {
     }
   };
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+
 
   // update_adderdata_archive
 

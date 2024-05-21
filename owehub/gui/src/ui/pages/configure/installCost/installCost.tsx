@@ -172,9 +172,7 @@ const InstallCost = () => {
     setFilters(req.filters);
   };
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+
   console.log(timelinesla_list, 'arrr');
 
   return (

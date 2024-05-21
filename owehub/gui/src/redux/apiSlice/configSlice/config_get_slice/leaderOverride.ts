@@ -40,11 +40,13 @@ const leaderOverride = createSlice({
       .addCase(getleaderOverride.fulfilled, (state, action) => {
         state.isLoading = false;
         state.data = action.payload.list;
+        state.error = ""
         state.count = action.payload.count;
       })
       .addCase(getleaderOverride.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
+        toast.error(action.payload as string);
       });
 
     builder

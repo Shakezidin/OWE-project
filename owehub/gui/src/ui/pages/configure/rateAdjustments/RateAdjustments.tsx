@@ -131,9 +131,7 @@ const RateAdjustments = () => {
     return <div>Loading...</div>;
   }
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+
 
   const handleEdit = (data: any) => {
     setEditMode(true);

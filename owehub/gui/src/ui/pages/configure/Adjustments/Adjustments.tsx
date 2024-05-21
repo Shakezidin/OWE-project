@@ -181,9 +181,7 @@ const Adjustments = () => {
     setFilters(req.filters);
   };
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+
 
   return (
     <div className="comm">

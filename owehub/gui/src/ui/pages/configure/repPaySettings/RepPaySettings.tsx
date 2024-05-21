@@ -192,9 +192,7 @@ const RepPaySettings = () => {
     );
   }
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+
 
   return (
     <div className="comm">
