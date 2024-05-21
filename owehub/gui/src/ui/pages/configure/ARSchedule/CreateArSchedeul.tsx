@@ -315,7 +315,7 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                     Installer
                   </label>
                   <SelectOption
-                    menuListStyles={{ height: '85px' }}
+                    menuListStyles={{ height: '150px' }}
                     options={installerOption(formData)}
                     onChange={(newValue) => {
                       setFormData((prev) => ({
