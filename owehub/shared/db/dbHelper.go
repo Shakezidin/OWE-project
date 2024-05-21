@@ -102,7 +102,7 @@ func AddMultipleRecordInDB(dbIdx uint8, tableName string, data []map[string]inte
 	defer func() { log.ExitFn(0, "AddMultipleRecordInDB", err) }()
 	log.EnterFn(0, "AddMultipleRecordInDB")
 
-	if len(data) <= 0 {
+	if len(data) == 0 {
 		err = fmt.Errorf("Empty data received")
 		log.FuncErrorTrace(0, "%+v", err)
 		return err
@@ -123,45 +123,35 @@ func AddMultipleRecordInDB(dbIdx uint8, tableName string, data []map[string]inte
 	col := strings.Join(keys, ", ")
 
 	var dataList []interface{}
-	colIndex := ""
-	itr := 1
-	for _, record := range data {
-		recordColIndex := ""
-		for _, key := range keys {
-			recordColIndex += fmt.Sprintf("$%d, ", itr)
-			switch values := record[key].(type) {
-			case []uint8:
-				// Assuming []uint8 is for binary data, you can handle this case as needed
-				valIns := fmt.Sprintf("%s", values)
-				dataList = append(dataList, valIns)
-			case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64:
-				dataList = append(dataList, values)
-			case float32:
-				dataList = append(dataList, float64(values))
-			case float64:
-				dataList = append(dataList, values)
-			case string:
-				dataList = append(dataList, values)
-			case bool:
-				dataList = append(dataList, values)
-			case time.Time:
-				if values.IsZero() {
-					dataList = append(dataList, nil) // Insert NULL for empty timestamp
-				} else {
-					dataList = append(dataList, values)
-				}
-			default:
-				// If the type is not one of the expected types, convert to a string
-				dataList = append(dataList, fmt.Sprintf("%v", values))
-			}
+	var placeholders []string
 
-			itr += 1
+	for _, record := range data {
+		var recordPlaceholders []string
+		for _, key := range keys {
+			recordPlaceholders = append(recordPlaceholders, fmt.Sprintf("$%d", len(dataList)+1))
+			value := record[key]
+
+			switch v := value.(type) {
+			case []uint8:
+				dataList = append(dataList, string(v))
+			case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64, float32, float64, string, bool:
+				dataList = append(dataList, v)
+			case time.Time:
+				if v.IsZero() {
+					dataList = append(dataList, nil)
+				} else {
+					dataList = append(dataList, v)
+				}
+			case nil:
+				dataList = append(dataList, nil)
+			default:
+				dataList = append(dataList, fmt.Sprintf("%v", v))
+			}
 		}
-		colIndex += " (" + recordColIndex[0:(len(recordColIndex)-2)] + "), "
+		placeholders = append(placeholders, fmt.Sprintf("(%s)", strings.Join(recordPlaceholders, ", ")))
 	}
 
-	query := fmt.Sprintf("INSERT INTO %v (%v) VALUES %v",
-		tableName, col, colIndex[0:(len(colIndex)-2)])
+	query := fmt.Sprintf("INSERT INTO %v (%v) VALUES %v", tableName, col, strings.Join(placeholders, ", "))
 
 	//log.FuncDebugTrace(0, "query = %v dataList = %v", query, dataList)
 
@@ -406,5 +396,3 @@ func convertToType(value interface{}, columnType *sql.ColumnType) (interface{}, 
 		return nil, fmt.Errorf("unsupported column type: %v", columnType.ScanType().Kind())
 	}
 }
-
-
