@@ -15,6 +15,6 @@ type CreateApRepReq struct {
 	Amount      float64 `json:"amount"`
 	Method      string  `json:"method"`
 	Cbiz        string  `json:"cbiz"`
-	Transaction string   `json:"transaction"`
+	Transaction string  `json:"transaction"`
 	Notes       string  `json:"notes"`
 }

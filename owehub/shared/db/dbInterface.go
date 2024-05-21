@@ -131,7 +131,7 @@ const (
 	UpdateReconcileFunction                  string = "update_reconcile"
 	UpdateReconcileArchiveFunction           string = "update_reconcile_archive"
 	UpdateAdderDataConfigFunction            string = "update_adder_data_config"
-	UpdateApRepFunction                      string = "update_ar_rep"
+	UpdateApRepFunction                      string = "update_ap_rep"
 	TableName_teams                          string = "teams"
 	TableName_commission_rates               string = "commission_rates"
 	TableName_users_details                  string = "user_details"
@@ -178,6 +178,7 @@ const (
 	TableName_finance_metrics_schema         string = "finance_metrics_schema"
 	TableName_Pg_Stat_Activity               string = "pg_stat_activity"
 	TableName_v_dealer                       string = "v_dealer"
+	TableName_ap_rep                         string = "ap_rep"
 )
 
 /******************************************************************************

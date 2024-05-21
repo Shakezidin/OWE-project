@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION update_ar_rep(
+CREATE OR REPLACE FUNCTION update_ap_rep(
     p_id INT,
     p_unique_id VARCHAR,
     p_rep VARCHAR,
@@ -12,10 +12,9 @@ CREATE OR REPLACE FUNCTION update_ar_rep(
     p_notes VARCHAR,
     OUT v_ar_rep_id INT
 )
-RETURNS INT 
 AS $$
 BEGIN
-    UPDATE ar_rep
+    UPDATE ap_rep
     SET 
         unique_id = p_unique_id,
         rep = p_rep,
@@ -35,7 +34,7 @@ BEGIN
         RAISE EXCEPTION 'Record with ID % not found in ar_rep table', p_id;
     END IF;
 
-    RETURN v_ar_rep_id;
+    -- No need to return v_ar_rep_id explicitly since it's an OUT parameter
 EXCEPTION
     WHEN OTHERS THEN
         -- Handle the exception, you can log or re-raise as needed

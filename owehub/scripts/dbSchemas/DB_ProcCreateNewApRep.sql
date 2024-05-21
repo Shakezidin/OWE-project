@@ -14,7 +14,7 @@ CREATE OR REPLACE FUNCTION create_new_ap_rep(
 RETURNS INT
 AS $$
 BEGIN
-    INSERT INTO appt_setters (
+    INSERT INTO ap_rep (
         unique_id,
         rep,
         dba,
