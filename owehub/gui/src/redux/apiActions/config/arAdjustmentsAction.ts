@@ -35,7 +35,7 @@ export const getAdjustments = createAsyncThunk(
   async (params: Ipaginate, { rejectWithValue }) => {
     try {
       const data = await postCaller('get_adjustments', params);
-      const list = data.data.adjustments_list || ([] as IRateRow[]);
+      const list = data?.data?.adjustments_list || ([] as IRateRow[]);
       return { list, count: data.dbRecCount };
     } catch (error) {
       return rejectWithValue((error as Error).message);

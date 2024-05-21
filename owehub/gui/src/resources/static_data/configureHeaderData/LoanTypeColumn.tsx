@@ -9,7 +9,7 @@ export const LoanTypeColumns: Column[] = [
     type: 'string',
     isCheckbox: true,
   },
-  { name: 'active', displayName: 'Active', type: 'number', isCheckbox: false },
+  { name: 'active', displayName: 'Active', type: 'string', isCheckbox: false },
   { name: 'adder', displayName: 'Adder', type: 'number', isCheckbox: false },
   {
     name: 'description',

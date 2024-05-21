@@ -27,6 +27,7 @@ import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
+import DataNotFound from '../../../components/loader/DataNotFound';
 const ARSchedule = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -328,14 +329,23 @@ const ARSchedule = () => {
                     </td>
                   </tr>
                 ))
-              ) : null}
+              ) : (
+                <tr>
+                  <td colSpan={ARScheduleColumns.length}>
+                    <div className="data-not-found">
+                      <DataNotFound />
+                      <h3>Data Not Found</h3>
+                    </div>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
         <div className="page-heading-container">
-          <p className="page-heading">
+        {!!count &&  <p className="page-heading">
             {startIndex} - {endIndex > count ? count : endIndex} of {count} item
-          </p>
+          </p>}
 
           {data?.length > 0 ? (
             <Pagination
