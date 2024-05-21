@@ -64,6 +64,7 @@ const (
 	CreateApptSettersFunction                string = "create_new_appt_setters"
 	CreateReconcileFunction                  string = "create_new_reconcile"
 	CreateAdderDataConfigFunction            string = "create_new_adder_data_config"
+	CreateApRepFunction                      string = "create_new_ap_rep"
 	UpdateCommissionFunction                 string = "update_commission"
 	UpdateCommissionArchiveFunction          string = "update_commission_archive"
 	UpdateDealerOverrideFunction             string = "update_dealer_override"
@@ -102,6 +103,7 @@ const (
 	UpdateDealerCreditFunction               string = "update_dealer_credit"
 	UpdateDealerCreditArchiveFunction        string = "update_dealer_credit_archive"
 	UpdateAdjustmentsFunction                string = "update_adjustments"
+	UpdateApRepArchiveFunction               string = "update_aprep_archive"
 	UpdateAdjustmentsArchiveFunction         string = "update_adjustments_archive"
 	UpdateNonCommDlrPayFunction              string = "update_non_comm_dlr_pay"
 	UpdateNonCommDlrPayArchiveFunction       string = "update_noncomm_dlr_pay_archive"
@@ -129,6 +131,7 @@ const (
 	UpdateReconcileFunction                  string = "update_reconcile"
 	UpdateReconcileArchiveFunction           string = "update_reconcile_archive"
 	UpdateAdderDataConfigFunction            string = "update_adder_data_config"
+	UpdateApRepFunction                      string = "update_ap_rep"
 	TableName_teams                          string = "teams"
 	TableName_commission_rates               string = "commission_rates"
 	TableName_users_details                  string = "user_details"
@@ -175,6 +178,7 @@ const (
 	TableName_finance_metrics_schema         string = "finance_metrics_schema"
 	TableName_Pg_Stat_Activity               string = "pg_stat_activity"
 	TableName_v_dealer                       string = "v_dealer"
+	TableName_ap_rep                         string = "ap_rep"
 )
 
 /******************************************************************************

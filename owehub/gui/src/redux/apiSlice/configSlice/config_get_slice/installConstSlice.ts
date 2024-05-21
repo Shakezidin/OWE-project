@@ -53,11 +53,13 @@ const installCost = createSlice({
       .addCase(createInstallCost.fulfilled, (state, action) => {
         state.isFormSubmitting = false;
         state.isSuccess = true;
+        state.error = ""
         toast.success('Form submission completed');
       })
       .addCase(createInstallCost.rejected, (state, action) => {
         state.isFormSubmitting = false;
         state.error = action.payload as string;
+        toast.error(action.payload as string);
       })
 
       .addCase(updateInstallCost.pending, (state, action) => {

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import OperationSelect from './OperationSelect';
 import { useAppDispatch } from '../../../redux/hooks';
 import { ICONS } from '../../icons/Icons';
@@ -62,6 +62,7 @@ const FilterModal: React.FC<TableProps> = ({
     label: column.displayName,
   }));
   const { pathname } = useLocation();
+  const init = useRef(true);
 
   useEffect(() => {
     setApplyFilters([...filters]);
@@ -111,6 +112,13 @@ const FilterModal: React.FC<TableProps> = ({
       }));
     setFilters(resetFilters);
     setErrors({});
+    if (init.current) {
+      init.current = false;
+    } else {
+      fetchFunction({ page_number, page_size });
+      setApplyFilters([...resetFilters]);
+    }
+
     return () => {
       dispatch(disableFilter({ name: pathname }));
     };
@@ -323,9 +331,8 @@ const FilterModal: React.FC<TableProps> = ({
               type="reset"
               onClick={() => {
                 handleCloseModal();
-                console.log(applyFilters,"appplied");
-                
-                setFilters([...applyFilters]);
+                const deepCopy = JSON.parse(JSON.stringify(applyFilters))
+                setFilters(deepCopy);
               }}
             />
             <ActionButton

@@ -159,6 +159,7 @@ const Reconcile = () => {
         const pageNumber = {
           page_number: currentPage,
           page_size: itemsPerPage,
+          filters
         };
 
         const res = await postCaller('update_reconcile_archive', newValue);
@@ -194,6 +195,7 @@ const Reconcile = () => {
       const pageNumber = {
         page_number: currentPage,
         page_size: itemsPerPage,
+        filters
       };
       const res = await postCaller('update_reconcile_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
@@ -207,9 +209,7 @@ const Reconcile = () => {
     }
   };
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+
 
   console.log(selectedRows.size > 1, 'data');
 
