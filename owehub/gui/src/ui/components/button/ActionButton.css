@@ -23,6 +23,10 @@
   background-color: transparent !important;
 }
 
+.cancel:disabled {
+  color: #a9a9a9;
+  cursor: not-allowed;
+}
 .add_view_button {
   display: flex;
   background-color: #0493ce;

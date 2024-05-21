@@ -27,6 +27,7 @@ import (
 * RETURNS:    		void
 ******************************************************************************/
 func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http.Request) {
+
 	var (
 		err                error
 		dataReq            models.PerfomanceStatusReq
@@ -122,7 +123,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 
 		// This is thrown if no sale rep are available and for other user roles
 		if len(data) == 0 {
-			emptyPerfomanceList := models.PerfomanceListResponse {
+			emptyPerfomanceList := models.PerfomanceListResponse{
 				PerfomanceList: []models.PerfomanceResponse{},
 			}
 			log.FuncErrorTrace(0, "No projects or sale representatives: %v", err)
@@ -153,14 +154,18 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		return
 	}
 
+	// till here 0.107 seconds from start of code
 	// retrieving value from owe_db from here
+	// from here to end  1.71 seconds
+	
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get PerfomanceProjectStatus data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get PerfomanceProjectStatus data", http.StatusBadRequest, nil)
 		return
 	}
-
+	s := time.Now()
+	// from here to end  0.003 seconds
 	RecordCount = int64(len(data))
 	if RecordCount == 0 {
 		log.FuncInfoTrace(0, "No projects found")
@@ -243,6 +248,9 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 		perfomanceList.PerfomanceList = append(perfomanceList.PerfomanceList, perfomanceResponse)
 	}
 
+	endTime := time.Now()
+	timeDifference := endTime.Sub(s)
+	log.FuncErrorTrace(0, "=================: %v", timeDifference.Seconds())
 	log.FuncInfoTrace(0, "Number of PerfomanceProjectStatus List fetched : %v list %+v", len(perfomanceList.PerfomanceList), perfomanceList)
 	FormAndSendHttpResp(resp, "PerfomanceProjectStatus Data", http.StatusOK, perfomanceList, RecordCount)
 }

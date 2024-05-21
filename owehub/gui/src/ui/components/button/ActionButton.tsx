@@ -13,24 +13,27 @@ interface ActionButtonProps {
   title: string;
   type: 'submit' | 'button' | 'reset';
   onClick: () => void;
+  disabled?: boolean
+  style?: React.CSSProperties;
 }
 
 export const ActionButton = (props: ActionButtonProps) => {
+
+  const { title, type, disabled, onClick, style} = props;
   return (
     <button
-      style={{
-        color: props?.title?.toLowerCase() === 'reset' ? '#0493ce' : '',
-      }}
+      style={style}
       className={
-        props?.title?.toLowerCase() === 'cancel' ||
-        props?.title?.toLowerCase() === 'reset'
+        title?.toLowerCase() === 'cancel' ||
+        title?.toLowerCase() === 'reset'
           ? 'cancel'
           : 'loginButton'
       }
-      onClick={props.onClick}
-      type={props.type}
+      onClick={onClick}
+      type={type}
+      disabled={disabled}
     >
-      {props.title}
+      {title}
     </button>
   );
 };
