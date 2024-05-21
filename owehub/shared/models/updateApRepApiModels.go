@@ -1,12 +1,13 @@
 /**************************************************************************
- *	Function	: createApRepApiModels.go
- *	DESCRIPTION : Files contains struct for create ap-rep API
+ *	Function	: UpdateApRepModels.go
+ *	DESCRIPTION : Files contains struct for Update ar_rep API Model
  *	DATE        : 21-May-2024
  **************************************************************************/
 
 package models
 
-type CreateApRepReq struct {
+type UpdateApRep struct {
+	RecordId    int64   `json:"record_id"`
 	UniqueId    string  `json:"unique_id"`
 	Rep         string  `json:"rep"`
 	Dba         string  `json:"dba"`
@@ -17,4 +18,9 @@ type CreateApRepReq struct {
 	Cbiz        string  `json:"cbiz"`
 	Transaction string  `json:"transaction"`
 	Notes       string  `json:"notes"`
+}
+
+type UpdateApRepArchive struct {
+	RecordId   []int64 `json:"record_id"`
+	IsArchived bool    `json:"is_archived"`
 }
