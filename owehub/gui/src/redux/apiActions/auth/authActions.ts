@@ -53,7 +53,6 @@ export const checkUserExists = createAsyncThunk(
   async (email: string, { rejectWithValue }): Promise<any> => {
     try {
       const response = await postCaller(EndPoints.checkUser, { email });
-      console.log("checkuser ka res",response);
       return response.data.exists;
     } catch (error) {
       return rejectWithValue((error as Error).message);
