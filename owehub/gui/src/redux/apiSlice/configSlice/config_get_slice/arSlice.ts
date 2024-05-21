@@ -69,10 +69,13 @@ const ar = createSlice({
       .addCase(updateAr.fulfilled, (state, action) => {
         state.isFormSubmitting = false;
         state.isSuccess = 1;
+        state.error = ""
+        toast.success('Details updated Successfully');
       })
       .addCase(updateAr.rejected, (state, action) => {
         state.isFormSubmitting = false;
         state.error = action.payload as string;
+        toast.error(action.payload as string)
       });
   },
 });
