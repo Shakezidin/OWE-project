@@ -920,6 +920,22 @@ CREATE TABLE adder_data_cfg_schema (
     PRIMARY KEY (id)
 );
 
+CREATE TABLE ar_rep {
+    unique_id varchar NOT NULL UNIQUE,
+    rep varchar,
+    dba varchar,
+    type varchar,
+    date date,
+    amount float,
+    method varchar,
+    cbiz text,
+    transaction int,
+    notes text,
+    is_archived BOOLEAN DEFAULT FALSE,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
+}
+
 /*
 CREATE TABLE AR_Schedule (
     Partner text,
