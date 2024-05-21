@@ -10,6 +10,8 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"errors"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -29,6 +31,9 @@ func HandleUpdateDealerCreditRequest(resp http.ResponseWriter, req *http.Request
 		updateDealerCredit models.UpdateDealerCredit
 		queryParameters    []interface{}
 		result             []interface{}
+		totalAmount     float64
+		sysSize         float64
+		whereEleList    []interface{}
 	)
 
 	log.EnterFn(0, "HandleUpdateDealerCreditRequest")
@@ -55,60 +60,69 @@ func HandleUpdateDealerCreditRequest(resp http.ResponseWriter, req *http.Request
 		return
 	}
 
-	if (len(updateDealerCredit.UniqueID) <= 0) || (len(updateDealerCredit.Customer) <= 0) ||
-		(len(updateDealerCredit.DealerName) <= 0) || (len(updateDealerCredit.DealerDBA) <= 0) ||
-		(len(updateDealerCredit.ExactAmount) <= 0) || (len(updateDealerCredit.ApprovedBy) <= 0) ||
-		(len(updateDealerCredit.Notes) <= 0) || (len(updateDealerCredit.StartDate) <= 0) ||
-		(updateDealerCredit.EndDate != nil && len(*updateDealerCredit.EndDate) <= 0) {
-		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
+	if (len(updateDealerCredit.UniqueId) <= 0) || (len(updateDealerCredit.Date) <= 0) ||
+		(len(updateDealerCredit.ApprovedBy) <= 0) || (len(updateDealerCredit.Notes) <= 0) {
+		err = errors.New("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed, Update failed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
 	if updateDealerCredit.RecordId <= int64(0) {
-		err = fmt.Errorf("Invalid record_id Not Allowed")
+		err = errors.New("Invalid record_id Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Invalid record_id Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
-	if updateDealerCredit.PerKWAmount <= float64(0) {
-		err = fmt.Errorf("Invalid PerKWAmount price Not Allowed")
+	if updateDealerCredit.ExactAmount <= float64(0) {
+		err = errors.New("Invalid ExactAmount Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid PerKWAmount price Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid ExactAmount Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
-	if updateDealerCredit.TotalAmount <= float64(0) {
-		err = fmt.Errorf("Invalid TotalAmount value: %f, Not Allowed", updateDealerCredit.TotalAmount)
+	if updateDealerCredit.PerKwAmount <= float64(0) {
+		err = errors.New("Invalid PerKwAmount Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Total Amount value Not Allowed, Update failed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid PerKwAmount Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
-	if updateDealerCredit.SysSize <= float64(0) {
-		err = fmt.Errorf("Invalid SysSize value: %f, Not Allowed", updateDealerCredit.SysSize)
-		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Sys Size value Not Allowed, Update failed", http.StatusBadRequest, nil)
+	Date, err := time.Parse("2006-01-02", updateDealerCredit.Date)
+	if err != nil {
+		fmt.Println("Error parsing date:", err)
 		return
 	}
 
-	// Populate query parameters in the correct order
-	queryParameters = append(queryParameters, updateDealerCredit.UniqueID)
-	queryParameters = append(queryParameters, updateDealerCredit.Customer)
-	queryParameters = append(queryParameters, updateDealerCredit.DealerName)
-	queryParameters = append(queryParameters, updateDealerCredit.DealerDBA)
+	query := `
+		SELECT system_size FROM consolidated_data_view WHERE unique_id = $1`
+	whereEleList = append(whereEleList, updateDealerCredit.UniqueId)
+
+	data, err := db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
+	if err != nil || len(data) <= 0 {
+		log.FuncErrorTrace(0, "Failed to get new form data for table name from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get Data", http.StatusBadRequest, nil)
+		return
+	}
+
+	sysSize = data[0]["system_size"].(float64)
+	if updateDealerCredit.ExactAmount > 0 {
+		totalAmount = updateDealerCredit.ExactAmount
+	} else if updateDealerCredit.PerKwAmount > 0 {
+		totalAmount = (sysSize * updateDealerCredit.PerKwAmount)
+	}
+
+	queryParameters = append(queryParameters, updateDealerCredit.RecordId)
+	queryParameters = append(queryParameters, updateDealerCredit.UniqueId)
+	queryParameters = append(queryParameters, Date)
 	queryParameters = append(queryParameters, updateDealerCredit.ExactAmount)
-	queryParameters = append(queryParameters, updateDealerCredit.PerKWAmount)
+	queryParameters = append(queryParameters, updateDealerCredit.PerKwAmount)
 	queryParameters = append(queryParameters, updateDealerCredit.ApprovedBy)
 	queryParameters = append(queryParameters, updateDealerCredit.Notes)
-	queryParameters = append(queryParameters, updateDealerCredit.TotalAmount)
-	queryParameters = append(queryParameters, updateDealerCredit.SysSize)
-	queryParameters = append(queryParameters, updateDealerCredit.StartDate)
-	queryParameters = append(queryParameters, updateDealerCredit.EndDate)
+	queryParameters = append(queryParameters, totalAmount)
+	queryParameters = append(queryParameters, sysSize)
 
-	// Call the database function
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateDealerCreditFunction, queryParameters)
 	if err != nil || len(result) <= 0 {
 		log.FuncErrorTrace(0, "Failed to update dealer credit in DB with err: %v", err)
@@ -116,8 +130,8 @@ func HandleUpdateDealerCreditRequest(resp http.ResponseWriter, req *http.Request
 		return
 	}
 
-	data := result[0].(map[string]interface{})
+	resultData := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "dealer credit updated with Id: %+v", data["result"])
+	log.DBTransDebugTrace(0, "dealer credit updated with Id: %+v", resultData["result"])
 	FormAndSendHttpResp(resp, "Dealer Credit Updated Successfully", http.StatusOK, nil)
 }
