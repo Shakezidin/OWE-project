@@ -24,13 +24,13 @@ export const LeaderOverrideColumns: Column[] = [
   {
     name: 'sales_q',
     displayName: 'Sales Q',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
   {
     name: 'team_kw_q',
     displayName: 'Team kW Q',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
   {

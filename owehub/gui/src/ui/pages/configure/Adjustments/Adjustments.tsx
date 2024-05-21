@@ -29,6 +29,7 @@ import Loading from '../../../components/loader/Loading';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
+import DataNotFound from '../../../components/loader/DataNotFound';
 const Adjustments = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -278,6 +279,8 @@ const Adjustments = () => {
                   </td>
                 </tr>
               ) : (
+
+                arAdjustmentsList?.length?
                 arAdjustmentsList.map((item: Adjustment, ind: number) => {
                   return (
                     <tr key={item.unique_id}>
@@ -343,14 +346,23 @@ const Adjustments = () => {
                     </tr>
                   );
                 })
+                :<tr>
+                  <td 
+                   colSpan={AdjustmentsColumns.length}>
+                    <div className="data-not-found">
+                      <DataNotFound />
+                      <h3>Data Not Found</h3>
+                    </div>
+                   </td>
+                </tr>
               )}
             </tbody>
           </table>
         </div>
         <div className="page-heading-container">
-          <p className="page-heading">
+         {!!count && <p className="page-heading">
             {startIndex} - {endIndex > count ? count : endIndex} of {count} item
-          </p>
+          </p>}
 
           {arAdjustmentsList?.length > 0 ? (
             <Pagination
