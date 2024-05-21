@@ -1153,6 +1153,13 @@ var apiRoutes = ApiRoutes{
 		true,
 		[]types.UserGroup{types.GroupAdmin},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_ap_rep",
+		apiHandler.HandleUpdateApRepDataRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
 }
 
 /******************************************************************************

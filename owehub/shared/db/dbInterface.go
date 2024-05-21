@@ -129,6 +129,7 @@ const (
 	UpdateReconcileFunction                  string = "update_reconcile"
 	UpdateReconcileArchiveFunction           string = "update_reconcile_archive"
 	UpdateAdderDataConfigFunction            string = "update_adder_data_config"
+	UpdateApRepFunction                      string = "update_ar_rep"
 	TableName_teams                          string = "teams"
 	TableName_commission_rates               string = "commission_rates"
 	TableName_users_details                  string = "user_details"
