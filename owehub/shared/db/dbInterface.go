@@ -60,7 +60,7 @@ const (
 	CreateAdderCreditFunction                string = "create_new_adder_credit"
 	CreateLoanFeeFunction                    string = "create_new_loan_fee"
 	CreateArImportFunction                   string = "create_new_ar_import"
-	CreateArFunction                         string = "create_new_aprep"
+	CreateArFunction                         string = "create_new_ar"
 	CreateApptSettersFunction                string = "create_new_appt_setters"
 	CreateReconcileFunction                  string = "create_new_reconcile"
 	CreateAdderDataConfigFunction            string = "create_new_adder_data_config"
