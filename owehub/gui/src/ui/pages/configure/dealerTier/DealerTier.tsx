@@ -25,7 +25,7 @@ import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoin
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import Swal from 'sweetalert2';
 import { ROUTES } from '../../../../routes/routes';
-import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
+import { errorSwal, showAlert, successSwal } from '../../../components/alert/ShowAlert';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
@@ -137,7 +137,7 @@ const DealerTier = () => {
     );
     if (confirmed) {
       const archivedRows = Array.from(selectedRows).map(
-        (index) => dealerTierList[index].record_id
+        (index) => currentPageData[index].record_id
       );
       if (archivedRows.length > 0) {
         const newValue = {
@@ -151,7 +151,7 @@ const DealerTier = () => {
           filters,
         };
 
-        const res = await postCaller(EndPoints.update_dealer_archive, newValue);
+        const res = await postCaller("update_dealertier_archive", newValue);
         if (res.status === HTTP_STATUS.OK) {
           // If API call is successful, refetch commissions
           setSelectAllChecked(false);
@@ -182,14 +182,14 @@ const DealerTier = () => {
         page_size: itemsPerPage,
         filters,
       };
-      const res = await postCaller(EndPoints.update_dealer_archive, newValue);
+      const res = await postCaller("update_dealertier_archive", newValue);
       if (res.status === HTTP_STATUS.OK) {
         setSelectAllChecked(false);
         setSelectedRows(new Set());
         dispatch(fetchDealerTier(pageNumber));
         await successSwal('Archived', 'The data has been archived ');
       } else {
-        await successSwal('Archived', 'The data has been archived ');
+        await errorSwal('Archived', 'Something went wrong');
       }
     }
   };
