@@ -267,7 +267,12 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
                     value={createTier.owe_cost}
                     name="owe_cost"
                     placeholder={'Enter'}
-                    onChange={(e) => handleTierChange(e)}
+                    // onChange={(e) => handleTierChange(e)}
+                    onChange={(e) => {
+                      const sanitizedValue = e.target.value.replace(/[^0-9.]/g, '');
+                      e.target.value = sanitizedValue;
+                      handleTierChange(e);
+                    }}
                   />
                   {errors?.owe_cost && (
                     <span
@@ -288,7 +293,11 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
                     value={createTier.dlr_mu}
                     name="dlr_mu"
                     placeholder={'Enter'}
-                    onChange={(e) => handleTierChange(e)}
+                    onChange={(e) => {
+                      const sanitizedValue = e.target.value.replace(/[^0-9.]/g, '');
+                      e.target.value = sanitizedValue;
+                      handleTierChange(e);
+                    }}
                   />
                   {errors?.dlr_mu && (
                     <span
@@ -311,7 +320,11 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
                     value={createTier.dlr_cost}
                     name="dlr_cost"
                     placeholder={'Enter'}
-                    onChange={(e) => handleTierChange(e)}
+                    onChange={(e) => {
+                      const sanitizedValue = e.target.value.replace(/[^0-9.]/g, '');
+                      e.target.value = sanitizedValue;
+                      handleTierChange(e);
+                    }}
                   />
 
                   {errors?.dlr_cost && (

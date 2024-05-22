@@ -37,7 +37,7 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
     // sys_size: editData?.sys_size ? `${editData?.sys_size}` : "",
     // adder_cal: editData?.adder_cal ? `${editData?.adder_cal}` : "",
   })
-  
+
   const [errors, setErrors] = useState<typeof newFormData>(
     {} as typeof newFormData
   );;
@@ -47,7 +47,7 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
     for (const key in newFormData) {
       if (!newFormData[key as keyof typeof newFormData]) {
         error[key as keyof typeof newFormData] =
-          `${key.replaceAll("_"," ").toLocaleLowerCase()} is required`;
+          `${key.replaceAll("_", " ").toLocaleLowerCase()} is required`;
       }
     }
     setErrors({ ...error });
@@ -62,7 +62,7 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
       name === 'sys_size' ||
       name === 'adder_cal'
     ) {
-      if (value === '' || value === '0' || Number(value)||value===".") {
+      if (value === '' || value === '0' || Number(value) || value === ".") {
         setNewFormData((prev) => ({ ...prev, [name]: value }));
       }
     } else {
@@ -72,7 +72,7 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (handleValidation()) {
- 
+
       if (editMode) {
         dispatch(
           updatearAdderData({
@@ -132,8 +132,8 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
                     placeholder={'Enter'}
                     onChange={handleChange}
                   />
-                 {errors?.unique_id && (
-                    <span style={{ display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                  {errors?.unique_id && (
+                    <span style={{ display: 'block', color: '#FF204E', textTransform: "capitalize" }}>
                       {errors.unique_id}
                     </span>
                   )}
@@ -148,7 +148,7 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
                     onChange={handleChange}
                   />
                   {errors?.type && (
-                    <span style={{ display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span style={{ display: 'block', color: '#FF204E', textTransform: "capitalize" }}>
                       {errors.type}
                     </span>
                   )}
@@ -163,7 +163,7 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
                     onChange={handleChange}
                   />
                   {errors?.date && (
-                    <span style={{ display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span style={{ display: 'block', color: '#FF204E', textTransform: "capitalize" }}>
                       {errors.date}
                     </span>
                   )}
@@ -178,10 +178,14 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
                     value={newFormData.gc}
                     name="gc"
                     placeholder={'Enter'}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      const sanitizedValue = e.target.value.replace(/[^0-9.]/g, '');
+                      e.target.value = sanitizedValue;
+                      handleChange(e);
+                    }}
                   />
-                   {errors?.gc && (
-                    <span style={{ display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                  {errors?.gc && (
+                    <span style={{ display: 'block', color: '#FF204E', textTransform: "capitalize" }}>
                       {errors.gc}
                     </span>
                   )}
@@ -193,10 +197,14 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
                     value={newFormData.exact_amount}
                     name="exact_amount"
                     placeholder={'Enter'}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      const sanitizedValue = e.target.value.replace(/[^0-9.]/g, '');
+                      e.target.value = sanitizedValue;
+                      handleChange(e);
+                    }}
                   />
-                   {errors?.exact_amount && (
-                    <span style={{ display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                  {errors?.exact_amount && (
+                    <span style={{ display: 'block', color: '#FF204E', textTransform: "capitalize" }}>
                       {errors.exact_amount}
                     </span>
                   )}
@@ -208,10 +216,14 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
                     value={newFormData.per_kw_amt}
                     name="per_kw_amt"
                     placeholder={'Enter'}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      const sanitizedValue = e.target.value.replace(/[^0-9.]/g, '');
+                      e.target.value = sanitizedValue;
+                      handleChange(e);
+                    }}
                   />
                   {errors?.per_kw_amt && (
-                    <span style={{ display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span style={{ display: 'block', color: '#FF204E', textTransform: "capitalize" }}>
                       {errors.per_kw_amt}
                     </span>
                   )}
@@ -226,11 +238,15 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
                     value={newFormData.rep_percent}
                     name="rep_percent"
                     placeholder={'Enter'}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      const sanitizedValue = e.target.value.replace(/[^0-9.]/g, '');
+                      e.target.value = sanitizedValue;
+                      handleChange(e);
+                    }}
                   />
 
-{errors?.rep_percent && (
-                    <span style={{ display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                  {errors?.rep_percent && (
+                    <span style={{ display: 'block', color: '#FF204E', textTransform: "capitalize" }}>
                       {errors.rep_percent}
                     </span>
                   )}
@@ -244,9 +260,9 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
                     placeholder={'Enter'}
                     onChange={handleChange}
                   />
-                  
-{errors?.description && (
-                    <span style={{ display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+
+                  {errors?.description && (
+                    <span style={{ display: 'block', color: '#FF204E', textTransform: "capitalize" }}>
                       {errors.description}
                     </span>
                   )}
@@ -260,9 +276,9 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
                     placeholder={'Enter'}
                     onChange={handleChange}
                   />
-                  
-{errors?.notes && (
-                    <span style={{ display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+
+                  {errors?.notes && (
+                    <span style={{ display: 'block', color: '#FF204E', textTransform: "capitalize" }}>
                       {errors.notes}
                     </span>
                   )}
@@ -280,7 +296,7 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
           <ActionButton
             title={editMode === false ? 'Save' : 'Update'}
             type="submit"
-            onClick={() => {}}
+            onClick={() => { }}
           />
         </div>
       </form>

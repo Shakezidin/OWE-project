@@ -187,7 +187,12 @@ const CreateLoanType: React.FC<loanProps> = ({
                     value={createLoanTypeData.adder}
                     name="adder"
                     placeholder={'Enter'}
-                    onChange={(e) => handleloanTypeChange(e)}
+                    // onChange={(e) => handleloanTypeChange(e)}
+                    onChange={(e) => {
+                      const sanitizedValue = e.target.value.replace(/[^0-9.]/g, '');
+                      e.target.value = sanitizedValue;
+                      handleloanTypeChange(e);
+                    }}
                   />
                   {errors.adder && (
                     <span className="error">{errors.adder}</span>
