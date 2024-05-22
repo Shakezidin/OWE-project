@@ -38,7 +38,7 @@ const InstallCost = () => {
 
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const {data:timelinesla_list,isSuccess} = useAppSelector(
+  const { data: timelinesla_list, isSuccess } = useAppSelector(
     (state) => state.installConstSlice
   );
   //   const loading = useAppSelector((state) => state.timelineSla.loading);
@@ -60,10 +60,10 @@ const InstallCost = () => {
       page_number: currentPage,
       page_size: itemsPerPage,
       archived: viewArchived,
-      filters
+      filters,
     };
     dispatch(getInstallCost(pageNumber));
-  }, [dispatch, currentPage, viewArchived,filters,isSuccess]);
+  }, [dispatch, currentPage, viewArchived, filters, isSuccess]);
 
   const filter = () => {
     setFilterOpen(true);
@@ -147,7 +147,7 @@ const InstallCost = () => {
         page_number: currentPage,
         page_size: itemsPerPage,
         archived: viewArchived,
-        filters
+        filters,
       };
       const res = await postCaller('update_installcost_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
@@ -171,7 +171,6 @@ const InstallCost = () => {
     setCurrentPage(1);
     setFilters(req.filters);
   };
-
 
   console.log(timelinesla_list, 'arrr');
 

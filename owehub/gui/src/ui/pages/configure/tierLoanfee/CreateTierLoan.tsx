@@ -52,11 +52,11 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
   const handleValidation = () => {
     const error: IError = {};
     for (const key in createTier) {
-      if (key==="record_id") {
-        continue
+      if (key === 'record_id') {
+        continue;
       }
       if (!createTier[key as keyof typeof createTier]) {
-        error[key] = `${key.replaceAll("_"," ")} is required`;
+        error[key] = `${key.replaceAll('_', ' ')} is required`;
       }
     }
     setErrors({ ...error });
@@ -269,7 +269,10 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
                     placeholder={'Enter'}
                     // onChange={(e) => handleTierChange(e)}
                     onChange={(e) => {
-                      const sanitizedValue = e.target.value.replace(/[^0-9.]/g, '');
+                      const sanitizedValue = e.target.value.replace(
+                        /[^0-9.]/g,
+                        ''
+                      );
                       e.target.value = sanitizedValue;
                       handleTierChange(e);
                     }}
@@ -294,7 +297,10 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
                     name="dlr_mu"
                     placeholder={'Enter'}
                     onChange={(e) => {
-                      const sanitizedValue = e.target.value.replace(/[^0-9.]/g, '');
+                      const sanitizedValue = e.target.value.replace(
+                        /[^0-9.]/g,
+                        ''
+                      );
                       e.target.value = sanitizedValue;
                       handleTierChange(e);
                     }}
@@ -321,7 +327,10 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
                     name="dlr_cost"
                     placeholder={'Enter'}
                     onChange={(e) => {
-                      const sanitizedValue = e.target.value.replace(/[^0-9.]/g, '');
+                      const sanitizedValue = e.target.value.replace(
+                        /[^0-9.]/g,
+                        ''
+                      );
                       e.target.value = sanitizedValue;
                       handleTierChange(e);
                     }}

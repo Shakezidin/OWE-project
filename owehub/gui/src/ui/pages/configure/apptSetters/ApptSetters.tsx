@@ -192,8 +192,6 @@ const ApptSetters = () => {
   //   return <div>Loading...</div>;
   // }
 
-
-
   console.log(data);
 
   return (

@@ -20,7 +20,12 @@ export const AdderDataColumn: Column[] = [
     type: 'number',
     isCheckbox: false,
   },
-  { name: 'rep_percent', displayName: 'Rep $ / %', type: 'number', isCheckbox: false },
+  {
+    name: 'rep_percent',
+    displayName: 'Rep $ / %',
+    type: 'number',
+    isCheckbox: false,
+  },
   {
     name: 'description',
     displayName: 'Description',

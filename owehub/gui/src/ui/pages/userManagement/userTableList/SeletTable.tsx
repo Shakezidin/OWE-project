@@ -42,15 +42,13 @@ const SelectTable: React.FC<ButtonProps> = ({
     if (sortType === 'asc') {
       setSortType('desc');
       const table = tables.sort((a: string, b: string) => b.localeCompare(a));
-      setTables(table)
+      setTables(table);
     } else {
       setSortType('asc');
-     const table =  tables.sort((a: string, b: string) => a.localeCompare(b));
-     setTables(table)
+      const table = tables.sort((a: string, b: string) => a.localeCompare(b));
+      setTables(table);
     }
   };
-
-  
 
   return (
     <>

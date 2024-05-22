@@ -251,7 +251,10 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     name="salesQ"
                     placeholder={'Enter'}
                     onChange={(e) => {
-                      const sanitizedValue = e.target.value.replace(/[^0-9.]/g, '');
+                      const sanitizedValue = e.target.value.replace(
+                        /[^0-9.]/g,
+                        ''
+                      );
                       e.target.value = sanitizedValue;
                       handleChange(e);
                     }}
@@ -273,7 +276,10 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     name="teamKwQ"
                     placeholder={'Enter'}
                     onChange={(e) => {
-                      const sanitizedValue = e.target.value.replace(/[^0-9.]/g, '');
+                      const sanitizedValue = e.target.value.replace(
+                        /[^0-9.]/g,
+                        ''
+                      );
                       e.target.value = sanitizedValue;
                       handleChange(e);
                     }}
@@ -292,7 +298,10 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     name="payRate"
                     placeholder={'Enter'}
                     onChange={(e) => {
-                      const sanitizedValue = e.target.value.replace(/[^0-9.]/g, '');
+                      const sanitizedValue = e.target.value.replace(
+                        /[^0-9.]/g,
+                        ''
+                      );
                       e.target.value = sanitizedValue;
                       handleChange(e);
                     }}

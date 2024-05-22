@@ -54,7 +54,7 @@ const AdderData = () => {
       page_number: currentPage,
       page_size: itemsPerPage,
       archived: viewArchived,
-      filters
+      filters,
     };
     dispatch(getarAdderData({ ...pageNumber }));
   }, [dispatch, currentPage, viewArchived, currentPage, filters]);
@@ -176,8 +176,6 @@ const AdderData = () => {
       }
     }
   };
-
-
 
   // update_adderdata_archive
 

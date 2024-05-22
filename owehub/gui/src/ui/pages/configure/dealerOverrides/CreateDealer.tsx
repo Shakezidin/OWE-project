@@ -150,7 +150,7 @@ const CreateDealer: React.FC<dealerProps> = ({
       ],
     };
     const { isValid, errors } = validateConfigForm(
-      {...createDealer,delaerVal}!,
+      { ...createDealer, delaerVal }!,
       validationRules
     );
     if (!isValid) {
@@ -197,7 +197,7 @@ const CreateDealer: React.FC<dealerProps> = ({
       console.error('Error submitting form:', error);
     }
   };
-console.log(errors);
+  console.log(errors);
 
   return (
     <div className="transparent-model">

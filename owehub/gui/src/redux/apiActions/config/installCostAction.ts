@@ -5,7 +5,7 @@ interface Ipaginate {
   page_number: number;
   page_size: number;
   archived: boolean;
-  filters:FilterModel[]
+  filters: FilterModel[];
 }
 
 export interface ICostCreateparam {
@@ -47,7 +47,7 @@ export const createInstallCost = createAsyncThunk(
       if (data instanceof Error) {
         return rejectWithValue((data as Error).message);
       }
-      
+
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -65,7 +65,7 @@ export const updateInstallCost = createAsyncThunk(
       if (data instanceof Error) {
         return rejectWithValue((data as Error).message);
       }
-      
+
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);

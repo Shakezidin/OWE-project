@@ -113,7 +113,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
       setTablePermissions({});
       setDbAcess(false);
     }
-  }, [selectedOption,tables]);
+  }, [selectedOption, tables]);
 
   /** render ui */
   return (

@@ -101,11 +101,9 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
   //   }
   // };
 
-
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-  
+
     if (name === 'end_date') {
       if (createCommission.start_date && value < createCommission.start_date) {
         setErrors((prevErrors) => ({
@@ -115,8 +113,13 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
         return;
       }
     }
-  
-    if (name === 'balance' || name === 'payee' || name === 'amount' || name === 'paid_amount') {
+
+    if (
+      name === 'balance' ||
+      name === 'payee' ||
+      name === 'amount' ||
+      name === 'paid_amount'
+    ) {
       const sanitizedValue = value.replace(/[^0-9]/g, '');
       if (sanitizedValue === '' || Number(sanitizedValue) >= 0) {
         setCreateCommission((prev) => ({ ...prev, [name]: sanitizedValue }));
@@ -131,9 +134,6 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
       setCreateCommission((prev) => ({ ...prev, [name]: value }));
     }
   };
-  
-
-
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -315,7 +315,7 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
           <ActionButton
             title={editMode === false ? 'Save' : 'Update'}
             type="submit"
-            onClick={() => { }}
+            onClick={() => {}}
           />
         </div>
       </form>

@@ -200,7 +200,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                   )}
                 </div>
                 <div className="create-input-field">
-                <label className="inputLabel-select">Dealer</label>
+                  <label className="inputLabel-select">Dealer</label>
 
                   <SelectOption
                     options={dealerOption(newFormData)}
@@ -297,7 +297,10 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     name="dlrCost"
                     placeholder={'Enter'}
                     onChange={(e) => {
-                      const sanitizedValue = e.target.value.replace(/[^0-9.]/g, '');
+                      const sanitizedValue = e.target.value.replace(
+                        /[^0-9.]/g,
+                        ''
+                      );
                       e.target.value = sanitizedValue;
                       handleChange(e);
                     }}
@@ -319,7 +322,10 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     name="oweCost"
                     placeholder={'Enter'}
                     onChange={(e) => {
-                      const sanitizedValue = e.target.value.replace(/[^0-9.]/g, '');
+                      const sanitizedValue = e.target.value.replace(
+                        /[^0-9.]/g,
+                        ''
+                      );
                       e.target.value = sanitizedValue;
                       handleChange(e);
                     }}

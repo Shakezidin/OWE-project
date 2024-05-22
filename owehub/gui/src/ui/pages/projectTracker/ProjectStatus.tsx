@@ -454,7 +454,7 @@ const ProjectStatus = () => {
     },
   ];
   const [activePopups, setActivePopups] = useState<boolean>(false);
-  const refBtn = useRef<null|HTMLDivElement>(null);
+  const refBtn = useRef<null | HTMLDivElement>(null);
 
   const [selectedProject, setSelectedProject] = useState<{
     label: string;
@@ -463,8 +463,11 @@ const ProjectStatus = () => {
   const dispatch = useAppDispatch();
 
   const handleClickOutside = (e: MouseEvent) => {
-    const elm = e.target as HTMLElement
-    if (refBtn?.current && (elm === refBtn?.current || refBtn?.current?.contains(elm))) {
+    const elm = e.target as HTMLElement;
+    if (
+      refBtn?.current &&
+      (elm === refBtn?.current || refBtn?.current?.contains(elm))
+    ) {
       return;
     }
     if (!elm.closest('.popup')) {

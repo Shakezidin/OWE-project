@@ -112,7 +112,7 @@ export const store = configureStore({
     projectManagement,
     dataTableSlice,
     filterSlice,
-    userSlice
+    userSlice,
   },
 });
 

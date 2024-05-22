@@ -204,8 +204,6 @@ const AdderResponsibility = () => {
   //     return <div>Loading...</div>;
   //   }
 
-
-
   return (
     <div className="comm">
       <Breadcrumb

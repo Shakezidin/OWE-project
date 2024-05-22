@@ -2,12 +2,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { postCaller } from '../../infrastructure/web_api/services/apiUrl';
 
-interface Ipaginate {
-  page_number: number;
-  page_size: number;
-  filter: any;
-}
-
 export const getDataTableName = createAsyncThunk(
   'fetch/get-table-name',
   async (_, { rejectWithValue }) => {

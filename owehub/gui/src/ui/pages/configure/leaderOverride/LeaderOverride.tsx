@@ -56,13 +56,13 @@ const LeaderOverride = () => {
   } = useAppSelector((state) => state.leaderOverride);
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
-  const [filters,setFilters] = useState<FilterModel[]>()
+  const [filters, setFilters] = useState<FilterModel[]>();
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
       archived: viewArchived,
-      filters
+      filters,
     };
     dispatch(getleaderOverride(pageNumber));
   }, [dispatch, currentPage, viewArchived, filters]);
@@ -142,7 +142,7 @@ const LeaderOverride = () => {
         page_number: currentPage,
         page_size: itemsPerPage,
         archived: viewArchived,
-        filters
+        filters,
       };
       const res = await postCaller('update_leaderoverride_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
@@ -166,8 +166,6 @@ const LeaderOverride = () => {
     setCurrentPage(1);
     setFilters(req.filters);
   };
-
-
 
   return (
     <div className="comm">

@@ -3,8 +3,8 @@ import { ICONS } from '../../icons/Icons';
 import '../../pages/configure/configure.css';
 import { useAppSelector } from '../../../redux/hooks';
 import { useLocation } from 'react-router-dom';
-import { FaFilter } from "react-icons/fa";
-import { CiFilter } from "react-icons/ci";
+import { FaFilter } from 'react-icons/fa';
+import { CiFilter } from 'react-icons/ci';
 interface TableProps {
   title: string;
   onPressViewArchive: () => void;
@@ -70,14 +70,11 @@ const TableHeader = (props: TableProps) => {
             type="button"
             onClick={onPressFilter}
           >
-            {
-              isActive[pathname] ?
-              <FaFilter
-                size={15}
-                
-              />:
-              <CiFilter  size={15}/>
-            }
+            {isActive[pathname] ? (
+              <FaFilter size={15} />
+            ) : (
+              <CiFilter size={15} />
+            )}
           </button>
         </div>
         {/* <div className="iconsSection2">

@@ -1,7 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
-import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints';
 
 export interface ReconcileEditParams {
   unique_id: string;
@@ -15,19 +13,6 @@ export interface ReconcileEditParams {
   amount: number;
   notes: string;
   record_id: string;
-}
-
-interface ReconcileCreateParams {
-  unique_id: string;
-  customer: string;
-  partner_name: string;
-  state_name: string;
-  sys_size: number;
-  status: string;
-  start_date: string;
-  end_date: string;
-  amount: number;
-  notes: string;
 }
 
 export const fetchReconcile = createAsyncThunk(

@@ -210,9 +210,12 @@ const CreateDealerTier: React.FC<dealerProps> = ({
                     value={createDealerTierData.start_date}
                     name="start_date"
                     placeholder={'1/04/2004'}
-                    onChange={(e) =>{ 
-                      handleTierChange(e)
-                      setCreateDealerTierData(prev=>({...prev,end_date:""}))
+                    onChange={(e) => {
+                      handleTierChange(e);
+                      setCreateDealerTierData((prev) => ({
+                        ...prev,
+                        end_date: '',
+                      }));
                     }}
                   />
                   {errors.start_date && (
@@ -226,7 +229,13 @@ const CreateDealerTier: React.FC<dealerProps> = ({
                     type={'date'}
                     label="End Date"
                     value={createDealerTierData.end_date}
-                    min={createDealerTierData.start_date && format(addDays(new Date(createDealerTierData.start_date),1),"yyyy-MM-dd")}
+                    min={
+                      createDealerTierData.start_date &&
+                      format(
+                        addDays(new Date(createDealerTierData.start_date), 1),
+                        'yyyy-MM-dd'
+                      )
+                    }
                     name="end_date"
                     disabled={!createDealerTierData.start_date}
                     placeholder={'10/04/2004'}
