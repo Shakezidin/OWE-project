@@ -77,7 +77,7 @@ func HandleCreateLoanFeeDataRequest(resp http.ResponseWriter, req *http.Request)
 	if createLoanFeeReq.DlrMu <= float64(0) {
 		err = fmt.Errorf("Invalid dlr_mu Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid dlr)mu Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid dlr mu Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 

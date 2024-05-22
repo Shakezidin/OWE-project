@@ -146,6 +146,7 @@ CREATE TABLE v_dealer (
     dealer_code character varying,
     dealer_name character varying,
     description character varying,
+    is_archived BOOLEAN DEFAULT FALSE, 
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     PRIMARY KEY (id)
