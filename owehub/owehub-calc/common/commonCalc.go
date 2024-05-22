@@ -9,6 +9,8 @@ package Common
 
 import (
 	log "OWEApp/shared/logger"
+	"fmt"
+	"strconv"
 	"time"
 )
 
@@ -217,4 +219,41 @@ func CalculateInstallPay(status string, grossRev, netRev float64, installPayM2 f
 		}
 	}
 	return installPay
+}
+
+/******************************************************************************
+ * FUNCTION:        CalculatePayRateSemi
+ * DESCRIPTION:     calculates the "installPay" value based on the provided data
+ * RETURNS:         float or error string
+ *****************************************************************************/
+
+func CalculatePayRateSemi(anValue, arValue string) string {
+	anFloat, errAn := strconv.ParseFloat(anValue, 64)
+	arFloat, errAr := strconv.ParseFloat(arValue, 64)
+
+	if errAn == nil && errAr == nil {
+		result := (anFloat - arFloat) * 1000
+		return fmt.Sprintf("%.2f", result)
+	}
+	return "ERROR"
+}
+
+/******************************************************************************
+ * FUNCTION:        CalculateADDR
+ * DESCRIPTION:     calculates the addr value based on the provided data
+ * RETURNS:         addr value
+ *****************************************************************************/
+
+func CalculateADDR(gValue string, criteriaRange, sumRange []string) float64 {
+	var sum float64 = 0
+	for i, val := range criteriaRange {
+		if val == gValue {
+			sumVal, err := strconv.ParseFloat(sumRange[i], 64)
+			if err != nil {
+				return sum
+			}
+			sum += sumVal
+		}
+	}
+	return sum
 }

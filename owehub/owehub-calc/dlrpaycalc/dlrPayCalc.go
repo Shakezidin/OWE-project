@@ -60,6 +60,12 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 		status       string
 		contractCalc float64
 		epcCalc      float64
+	
+		payRateSemi  interface{}
+		addr         interface{}
+		loanFee      float64
+		referral     float64
+		rebate      float64
 		//credit       float64
 	)
 
@@ -96,9 +102,32 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	epcCalc = common.CalculateEPCCalc(contractCalc, saleData.WC1, saleData.NetEpc, saleData.SystemSize, common.DlrPayWc1FilterDate)
 	//credit = dataMgmt.DealerCreditCfg.CalculateCreaditForUniqueId(saleData.Dealer, saleData.UniqueId)
 
+
+
+	arValue := "1000"
+
+	adderData := map[string]int{
+		"G3": 10,
+		"G4": 20,
+		"G5": 30,
+	}
+
+	payRateSemi = common.CalculatePayRateSemi(epcCalc, arValue)
+	addr = common.CalculateADDR(saleData.UniqueId, adderData)
+	loanFee = common.CalculateExpense(saleData.UniqueId, adderData)
+	rebate = common.CalculateAutoAddr(saleData.UniqueId, LoanFeeAdder)
+	referral = common.CalculateLoanFee(saleData.UniqueId, rebateData)
+	referral = common.CalculateRebate(saleData.UniqueId, referralData)
+	referral = common.CalculateReferral(saleData.UniqueId, adderData)
+
+	// Saquib
+
+
 	outData["status"] = status
 	outData["contract_calc"] = contractCalc
 	outData["epc_calc"] = epcCalc
+	outData["pay_rate_semi"] = payRateSemi
+	outData["addr"] = addr
 
 	return outData, err
 }
