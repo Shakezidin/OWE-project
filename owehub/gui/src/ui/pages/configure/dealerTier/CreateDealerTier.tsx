@@ -18,6 +18,7 @@ import { useAppDispatch } from '../../../../redux/hooks';
 import { fetchDealerTier } from '../../../../redux/apiSlice/configSlice/config_get_slice/dealerTierSlice';
 import { errorSwal, successSwal } from '../../../components/alert/ShowAlert';
 import { validateConfigForm } from '../../../../utiles/configFormValidation';
+import { addDays, format } from 'date-fns';
 interface dealerProps {
   handleClose: () => void;
   editMode: boolean;
@@ -209,7 +210,10 @@ const CreateDealerTier: React.FC<dealerProps> = ({
                     value={createDealerTierData.start_date}
                     name="start_date"
                     placeholder={'1/04/2004'}
-                    onChange={(e) => handleTierChange(e)}
+                    onChange={(e) =>{ 
+                      handleTierChange(e)
+                      setCreateDealerTierData(prev=>({...prev,end_date:""}))
+                    }}
                   />
                   {errors.start_date && (
                     <span className="error">{errors.start_date}</span>
@@ -222,7 +226,9 @@ const CreateDealerTier: React.FC<dealerProps> = ({
                     type={'date'}
                     label="End Date"
                     value={createDealerTierData.end_date}
+                    min={createDealerTierData.start_date && format(addDays(new Date(createDealerTierData.start_date),1),"yyyy-MM-dd")}
                     name="end_date"
+                    disabled={!createDealerTierData.start_date}
                     placeholder={'10/04/2004'}
                     onChange={(e) => handleTierChange(e)}
                   />

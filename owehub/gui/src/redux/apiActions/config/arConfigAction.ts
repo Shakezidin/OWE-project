@@ -35,7 +35,7 @@ export const createAr = createAsyncThunk(
   async (params: any, { rejectWithValue, dispatch }) => {
     try {
       const data = await postCaller('create_ar', params);
-      if (data instanceof Error) {
+      if (data.status>201) {
         return rejectWithValue((data as Error).message);
       }
       return data;
@@ -50,7 +50,9 @@ export const updateAr = createAsyncThunk(
   async (params: any, { rejectWithValue, dispatch }) => {
     try {
       const data = await postCaller('update_ar', params);
-
+      if (data.status>201) {
+        return rejectWithValue((data as Error).message);
+      }
       return data.data;
     } catch (error) {
       return rejectWithValue((error as Error).message);
