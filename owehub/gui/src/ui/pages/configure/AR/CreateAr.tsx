@@ -105,7 +105,7 @@ const CreatedAr: React.FC<payScheduleProps> = ({
     }
 
     if (editMode) {
-      dispatch(updateAr({ ...createArData, record_id: editData?.record_id!,amount: parseFloat(createArData.amount), }));
+      dispatch(updateAr({ ...createArData, record_id: editData?.record_id!, amount: parseFloat(createArData.amount), }));
     } else {
       dispatch(
         createAr({
@@ -162,11 +162,13 @@ const CreatedAr: React.FC<payScheduleProps> = ({
                     value={createArData.amount}
                     name="amount"
                     placeholder={'Enter'}
-                    onChange={(e) => handleInputChange(e)}
+                    onChange={(e) => {
+                      const sanitizedValue = e.target.value.replace(/[^0-9.]/g, '');
+                      e.target.value = sanitizedValue;
+                      handleInputChange(e);
+                    }}
                   />
-                  {errors.amount && (
-                    <span className="error">{errors.amount}</span>
-                  )}
+                  {errors.amount && <span className="error">{errors.amount}</span>}
                 </div>
 
                 <div className="create-input-field">
@@ -233,7 +235,7 @@ const CreatedAr: React.FC<payScheduleProps> = ({
           <ActionButton
             title={editMode === false ? 'Save' : 'Update'}
             type="submit"
-            onClick={() => {}}
+            onClick={() => { }}
           />
         </div>
       </form>

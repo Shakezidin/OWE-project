@@ -168,7 +168,11 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({
                     value={newFormData.amount}
                     name="amount"
                     placeholder={'Enter'}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      const sanitizedValue = e.target.value.replace(/[^0-9.]/g, '');
+                      e.target.value = sanitizedValue;
+                      handleChange(e);
+                    }}
                   />
                   {errors?.amount && (
                     <span style={{ display: 'block', color: '#FF204E' }}>
