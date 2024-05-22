@@ -90,6 +90,7 @@ const CreateNonComm: React.FC<ButtonProps> = ({
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+
     if (name === 'end_date') {
       if (createCommission.start_date && value < createCommission.start_date) {
         setErrors((prevErrors) => ({
@@ -101,12 +102,27 @@ const CreateNonComm: React.FC<ButtonProps> = ({
     }
 
     if (name === 'balance' || name === 'paid_amount') {
-      if (value === '' || value === '0' || Number(value)) {
-        setCreateCommission((prev) => ({ ...prev, [name]: value }));
+      // Remove non-numeric characters and "--" from the input value
+      const sanitizedValue = value.replace(/[^0-9.]/g, '').replace(/-/g, '');
+      
+      if (sanitizedValue === '' || sanitizedValue === '0' || Number(sanitizedValue)) {
+        setCreateCommission((prev) => ({
+          ...prev,
+          [name]: sanitizedValue,
+        }));
       }
     } else {
-      setCreateCommission((prev) => ({ ...prev, [name]: value }));
+      setCreateCommission((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
     }
+
+    // Clear the error for the specific field
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: '',
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -371,7 +387,7 @@ const CreateNonComm: React.FC<ButtonProps> = ({
           <ActionButton
             title={editMode === false ? 'Save' : 'Update'}
             type="submit"
-            onClick={() => {}}
+            onClick={() => { }}
           />
         </div>
       </form>
