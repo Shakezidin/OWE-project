@@ -1,0 +1,19 @@
+/**************************************************************************
+ *	Function	: UpdateVDealerApiModels.go
+ *	DESCRIPTION : Files contains struct for update Dealer models
+ *	DATE        : 22-May-2024
+ **************************************************************************/
+
+package models
+
+type UpdateVDealer struct {
+	RecordId    int64  `json:"record_id"`
+	DealerCode  string `json:"dealer_code"`
+	DealerName  string `json:"dealer_name"`
+	Description string `json:"Description"`
+}
+
+type UpdateVDealerArchive struct {
+	RecordId   []int64 `json:"record_id"`
+	IsArchived bool    `json:"is_archived"`
+}
