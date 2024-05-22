@@ -110,14 +110,9 @@ const CreateDealer: React.FC<dealerProps> = ({
         return;
       }
     }
-
     setCreateDealer((prevData) => ({
       ...prevData,
       [name]: value,
-    }));
-    setErrors((prevErrors) => ({
-      ...prevErrors,
-      [name]: '',
     }));
   };
   const page = {
@@ -135,7 +130,7 @@ const CreateDealer: React.FC<dealerProps> = ({
           message: 'Sub Dealer is required',
         },
       ],
-      dealer: [
+      delaerVal: [
         { condition: (value: any) => !!value, message: 'Dealer is required' },
       ],
       pay_rate: [
@@ -155,7 +150,7 @@ const CreateDealer: React.FC<dealerProps> = ({
       ],
     };
     const { isValid, errors } = validateConfigForm(
-      createDealer!,
+      {...createDealer,delaerVal}!,
       validationRules
     );
     if (!isValid) {
@@ -202,6 +197,7 @@ const CreateDealer: React.FC<dealerProps> = ({
       console.error('Error submitting form:', error);
     }
   };
+console.log(errors);
 
   return (
     <div className="transparent-model">
@@ -250,8 +246,8 @@ const CreateDealer: React.FC<dealerProps> = ({
                       ) || { label: delaerVal, value: delaerVal }
                     }
                   />
-                  {errors.dealer && (
-                    <span className="error">{errors.dealer}</span>
+                  {errors.delaerVal && (
+                    <span className="error">{errors.delaerVal}</span>
                   )}
                 </div>
                 <div className="create-input-field">
