@@ -296,7 +296,11 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     value={newFormData.dlrCost}
                     name="dlrCost"
                     placeholder={'Enter'}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      const sanitizedValue = e.target.value.replace(/[^0-9.]/g, '');
+                      e.target.value = sanitizedValue;
+                      handleChange(e);
+                    }}
                   />
                   {errors?.dlrCost && (
                     <span style={{ display: 'block', color: '#FF204E' }}>
@@ -314,7 +318,11 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     value={newFormData.oweCost}
                     name="oweCost"
                     placeholder={'Enter'}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      const sanitizedValue = e.target.value.replace(/[^0-9.]/g, '');
+                      e.target.value = sanitizedValue;
+                      handleChange(e);
+                    }}
                   />
                   {errors?.oweCost && (
                     <span style={{ display: 'block', color: '#FF204E' }}>
