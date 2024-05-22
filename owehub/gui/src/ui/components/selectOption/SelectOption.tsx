@@ -11,7 +11,8 @@ interface Props {
   options: Option[];
   value: Option | undefined;
   onChange: (newValue: Option | null) => void;
-  menuListStyles?: { [key: string]: string };
+  menuListStyles?: { [key: string]: string }; 
+  disabled?:boolean
 }
 
 const SelectOption: React.FC<Props> = ({
@@ -19,6 +20,7 @@ const SelectOption: React.FC<Props> = ({
   value,
   onChange,
   menuListStyles = {},
+  disabled = false
 }) => {
   const scrollRef = useRef(null);
   useEffect(() => {
@@ -35,6 +37,7 @@ const SelectOption: React.FC<Props> = ({
         placeholder="Select"
         ref={scrollRef}
         value={value ? value : { label: 'Select', value: 'Select' }}
+        isDisabled={disabled}
         styles={{
           control: (baseStyles: any, state: any) => ({
             ...baseStyles,
