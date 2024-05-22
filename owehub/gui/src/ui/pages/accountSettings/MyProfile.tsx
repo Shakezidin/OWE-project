@@ -1,23 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import Input from '../../components/text_input/Input';
 import { ICONS } from '../../icons/Icons';
-import Select from 'react-select';
 import { ActionButton } from '../../components/button/ActionButton';
 import SelectOption from '../../components/selectOption/SelectOption';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
-import { getUser, updateUser } from '../../../redux/apiActions/GetUser/getUserAction';
-import {stateOption} from '../../../core/models/data_models/SelectDataModel';
+import {
+  getUser,
+  updateUser,
+} from '../../../redux/apiActions/GetUser/getUserAction';
+import { stateOption } from '../../../core/models/data_models/SelectDataModel';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints';
-
 
 const MyProfile = () => {
   const [stateOptions, setStateOptions] = useState<any[]>([]);
   const [selectedState, setSelectedState] = useState<string | null>(null);
   const dispatch = useAppDispatch();
-  const {userDetail, userUpdate} = useAppSelector((state) => state.userSlice);
-  console.log(userDetail)
-  console.log(userUpdate)
+  const { userDetail, userUpdate } = useAppSelector((state) => state.userSlice);
+  console.log(userDetail);
+  console.log(userUpdate);
   const [name, setName] = useState<String>(userDetail?.name);
   const userRole = userDetail?.role_name;
   const userName = userDetail?.name;
@@ -36,7 +37,7 @@ const MyProfile = () => {
   };
 
   useEffect(() => {
-    dispatch(getUser({page_number: 1, page_size: 10}))
+    dispatch(getUser({ page_number: 1, page_size: 10 }));
     fetchStateOptions()
       .then((options) => {
         setStateOptions(options);
@@ -64,22 +65,22 @@ const MyProfile = () => {
   const updateSubmit = () => {
     const data = {
       user_code: userDetail.user_code,
-      name: userDetail.name, 
+      name: userDetail.name,
       street_address: street,
       zipcode: zipCode,
       country: country,
       city: city,
-      state
-    }
-    dispatch(updateUser(data))
-  }
+      state,
+    };
+    dispatch(updateUser(data));
+  };
 
   const handleReset = () => {
-    setCity("")
-    setStreet("")
-    setZipCode("")
-    setCountry("")
-  }
+    setCity('');
+    setStreet('');
+    setZipCode('');
+    setCountry('');
+  };
 
   const fetchStateOptions = async () => {
     const response = await fetch('https://api.example.com/states');
@@ -95,7 +96,7 @@ const MyProfile = () => {
   const [street, setStreet] = useState(userDetail?.street_address || '');
   const [zipCode, setZipCode] = useState(userDetail?.zipcode || '');
   const [country, setCountry] = useState(userDetail?.country || '');
-  const [state, setState] = useState(userDetail?.state || '') ;
+  const [state, setState] = useState(userDetail?.state || '');
 
   const [errors, setErrors] = useState({
     street: '',
@@ -126,9 +127,7 @@ const MyProfile = () => {
             <p>My Profile</p>
           </div>
           <div className="admin-section">
-            <div className="profile-img">
-              {name}
-            </div>
+            <div className="profile-img">{name}</div>
 
             <div className="caleb-container">
               <div className="caleb-section">
@@ -193,7 +192,10 @@ const MyProfile = () => {
               <div className="">
                 <p>Address Detail</p>
               </div>
-              <div className="edit-section"  onClick={() => setIsEditMode(!isEditMode)}>
+              <div
+                className="edit-section"
+                onClick={() => setIsEditMode(!isEditMode)}
+              >
                 <img src={ICONS.editIcon} alt="" />
                 <p>Edit</p>
               </div>
@@ -213,7 +215,7 @@ const MyProfile = () => {
                     setStreet(e.target.value);
                     setErrors({ ...errors, street: '' });
                   }}
-                  disabled = {isEditMode}
+                  disabled={isEditMode}
                 />
                 {errors.street && (
                   <span className="error">{errors.street}</span>
@@ -224,16 +226,16 @@ const MyProfile = () => {
                   State
                 </label>
                 <SelectOption
-                    options={stateOption(newFormData)}
-                    onChange={(newValue) => setState(newValue?.value)}
-                    value={stateOption(newFormData)?.find(
-                      (option) => option.value === state
-                    )}
-                  disabled = {isEditMode}
-                  />
+                  options={stateOption(newFormData)}
+                  onChange={(newValue) => setState(newValue?.value)}
+                  value={stateOption(newFormData)?.find(
+                    (option) => option.value === state
+                  )}
+                  disabled={isEditMode}
+                />
               </div>
               <div className="create-input-field-address">
-              <Input
+                <Input
                   type={'text'}
                   label="City"
                   value={city}
@@ -243,7 +245,7 @@ const MyProfile = () => {
                     setCity(e.target.value);
                     setErrors({ ...errors, zipCode: '' });
                   }}
-                  disabled = {isEditMode}
+                  disabled={isEditMode}
                 />
                 {errors.zipCode && (
                   <span className="error">{errors.zipCode}</span>
@@ -265,7 +267,7 @@ const MyProfile = () => {
                     setZipCode(e.target.value);
                     setErrors({ ...errors, zipCode: '' });
                   }}
-                  disabled = {isEditMode}
+                  disabled={isEditMode}
                 />
                 {errors.zipCode && (
                   <span className="error">{errors.zipCode}</span>
@@ -282,7 +284,7 @@ const MyProfile = () => {
                     setCountry(e.target.value);
                     setErrors({ ...errors, country: '' });
                   }}
-                  disabled = {isEditMode}
+                  disabled={isEditMode}
                 />
                 {errors.country && (
                   <span className="error">{errors.country}</span>
@@ -292,8 +294,20 @@ const MyProfile = () => {
           </div>
           <div className="">
             <div className="profile-reset">
-              <ActionButton title={'Reset'} type="reset" onClick={() => {handleReset()}} />
-              <ActionButton title={'Update'} type="submit" onClick={() => {updateSubmit()}} />
+              <ActionButton
+                title={'Reset'}
+                type="reset"
+                onClick={() => {
+                  handleReset();
+                }}
+              />
+              <ActionButton
+                title={'Update'}
+                type="submit"
+                onClick={() => {
+                  updateSubmit();
+                }}
+              />
             </div>
           </div>
         </div>

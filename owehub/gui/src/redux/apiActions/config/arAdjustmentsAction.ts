@@ -1,5 +1,4 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { FilterModel } from '../../../core/models/data_models/FilterSelectModel';
 

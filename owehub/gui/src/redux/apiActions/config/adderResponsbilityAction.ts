@@ -1,19 +1,11 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
-import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints';
 
 export interface ReconcileEditParams {
   unique_id: string;
   pay_scale: number;
   percentage: number;
   record_id: number;
-}
-
-interface ReconcileCreateParams {
-  unique_id: string;
-  pay_scale: number;
-  percentage: number;
 }
 
 export const fetchAdderResponsibility = createAsyncThunk(

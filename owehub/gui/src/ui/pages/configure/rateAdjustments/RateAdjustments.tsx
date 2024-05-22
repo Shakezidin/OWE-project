@@ -131,8 +131,6 @@ const RateAdjustments = () => {
     return <div>Loading...</div>;
   }
 
-
-
   const handleEdit = (data: any) => {
     setEditMode(true);
     setEditedRateAdjustment(data);

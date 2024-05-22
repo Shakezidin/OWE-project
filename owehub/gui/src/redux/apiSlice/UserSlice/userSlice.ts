@@ -1,6 +1,4 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { getAR, IGetArdata } from '../../apiActions/config/arAction';
-import { toast } from 'react-toastify';
+import { createSlice } from '@reduxjs/toolkit';
 import { getUser, updateUser } from '../../apiActions/GetUser/getUserAction';
 
 interface IState {
@@ -26,9 +24,7 @@ const initialState: IState = {
 const userData = createSlice({
   name: 'USER DATA',
   initialState,
-  reducers: {
-  
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(getUser.pending, (state) => {
@@ -36,7 +32,7 @@ const userData = createSlice({
       })
       .addCase(getUser.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.userDetail = action.payload
+        state.userDetail = action.payload;
         // state.count = action.payload.count;
         // state.data = action.payload.list;
       })
@@ -50,9 +46,7 @@ const userData = createSlice({
 const updateData = createSlice({
   name: 'UPDATE DATA',
   initialState,
-  reducers: {
-  
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(updateUser.pending, (state) => {
@@ -60,7 +54,7 @@ const updateData = createSlice({
       })
       .addCase(updateUser.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.userUpdate = action.payload
+        state.userUpdate = action.payload;
       })
       .addCase(updateUser.rejected, (state, action) => {
         state.isLoading = false;

@@ -200,7 +200,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                   )}
                 </div>
                 <div className="create-input-field">
-                <label className="inputLabel-select">Dealer</label>
+                  <label className="inputLabel-select">Dealer</label>
 
                   <SelectOption
                     options={dealerOption(newFormData)}
@@ -297,7 +297,10 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     name="dlrCost"
                     placeholder={'Enter'}
                     onChange={(e) => {
-                      const sanitizedValue = e.target.value.replace(/[^0-9.]/g, '');
+                      const sanitizedValue = e.target.value.replace(
+                        /[^0-9.]/g,
+                        ''
+                      );
                       e.target.value = sanitizedValue;
                       handleChange(e);
                     }}
@@ -319,7 +322,10 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     name="oweCost"
                     placeholder={'Enter'}
                     onChange={(e) => {
-                      const sanitizedValue = e.target.value.replace(/[^0-9.]/g, '');
+                      const sanitizedValue = e.target.value.replace(
+                        /[^0-9.]/g,
+                        ''
+                      );
                       e.target.value = sanitizedValue;
                       handleChange(e);
                     }}
@@ -334,7 +340,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={'date'}
-                    label="Start "
+                    label="Start Date"
                     value={newFormData.startDate}
                     name="startDate"
                     placeholder={'Enter'}
@@ -356,7 +362,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={'date'}
-                    label="End"
+                    label="End Date"
                     min={
                       newFormData.startDate &&
                       format(

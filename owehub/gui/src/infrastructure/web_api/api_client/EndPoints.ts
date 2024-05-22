@@ -12,7 +12,7 @@ interface Endpoints {
   login: string;
   resetPassword: string;
   changePassword: string;
-  checkUser: string,
+  checkUser: string;
   // get config
   commission: string;
   dealer: string;

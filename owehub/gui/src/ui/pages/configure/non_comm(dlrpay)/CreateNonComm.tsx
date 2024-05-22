@@ -104,8 +104,12 @@ const CreateNonComm: React.FC<ButtonProps> = ({
     if (name === 'balance' || name === 'paid_amount') {
       // Remove non-numeric characters and "--" from the input value
       const sanitizedValue = value.replace(/[^0-9.]/g, '').replace(/-/g, '');
-      
-      if (sanitizedValue === '' || sanitizedValue === '0' || Number(sanitizedValue)) {
+
+      if (
+        sanitizedValue === '' ||
+        sanitizedValue === '0' ||
+        Number(sanitizedValue)
+      ) {
         setCreateCommission((prev) => ({
           ...prev,
           [name]: sanitizedValue,
@@ -387,7 +391,7 @@ const CreateNonComm: React.FC<ButtonProps> = ({
           <ActionButton
             title={editMode === false ? 'Save' : 'Update'}
             type="submit"
-            onClick={() => { }}
+            onClick={() => {}}
           />
         </div>
       </form>

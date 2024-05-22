@@ -3,9 +3,6 @@ import Input from '../../components/text_input/Input';
 import { ICONS } from '../../icons/Icons';
 import './support.css';
 import emailjs from '@emailjs/browser';
-
-import Select from 'react-select';
-import { ActionButton } from '../../components/button/ActionButton';
 import SelectOption from '../../components/selectOption/SelectOption';
 import { toast } from 'react-toastify';
 
@@ -23,7 +20,6 @@ const TechnicalSupport: React.FC = () => {
   const [message, setMessage] = useState('');
 
   const [selectedFileName, setSelectedFileName] = useState('');
-
 
   const [errors, setErrors] = useState({
     firstName: '',
@@ -99,7 +95,7 @@ const TechnicalSupport: React.FC = () => {
   //         return;
   //       }
   //     }
-  
+
   //     emailjs
   //       .sendForm('service_cknkzcd', 'template_ert8id2', form.current, {
   //         publicKey: '9zrYKpc6-M02ZEmHn',
@@ -124,8 +120,6 @@ const TechnicalSupport: React.FC = () => {
   //       );
   //   }
   // };
-
-
 
   const handleStateChange = (selectedOption: any) => {
     setSelectedState(selectedOption.value);
@@ -190,11 +184,16 @@ const TechnicalSupport: React.FC = () => {
                       setFirstName(inputValue);
                       setErrors({ ...errors, firstName: '' });
                     } else {
-                      setErrors({ ...errors, firstName: 'Only letters are allowed' });
+                      setErrors({
+                        ...errors,
+                        firstName: 'Only letters are allowed',
+                      });
                     }
                   }}
                 />
-                {errors.firstName && <span className="error">{errors.firstName}</span>}
+                {errors.firstName && (
+                  <span className="error">{errors.firstName}</span>
+                )}
               </div>
               <div className="create-input-field-support">
                 <Input
@@ -209,7 +208,10 @@ const TechnicalSupport: React.FC = () => {
                       setLastName(inputValue);
                       setErrors({ ...errors, lastName: '' });
                     } else {
-                      setErrors({ ...errors, lastName: 'Only letters are allowed' });
+                      setErrors({
+                        ...errors,
+                        lastName: 'Only letters are allowed',
+                      });
                     }
                   }}
                 />

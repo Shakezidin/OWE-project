@@ -127,8 +127,8 @@ const UserActivity: React.FC = () => {
                   </td>
                 </tr>
               ) : userActivityList && userActivityList?.length > 0 ? (
-                userActivityList
-                  ?.map((el: DBManagerUserActivityModel, index: number) => {
+                userActivityList?.map(
+                  (el: DBManagerUserActivityModel, index: number) => {
                     const tooltipId = `tooltip-${index}`;
                     const truncatedQueryDetails =
                       el.query_details.slice(0, 50) + '...';
@@ -188,7 +188,8 @@ const UserActivity: React.FC = () => {
                         </td>
                       </tr>
                     );
-                  })
+                  }
+                )
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={10}>

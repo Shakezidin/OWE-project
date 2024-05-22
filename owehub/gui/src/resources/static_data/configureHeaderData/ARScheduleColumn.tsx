@@ -14,7 +14,7 @@ export const ARScheduleColumns: Column[] = [
     isCheckbox: false,
   },
   {
-    name: 'sale_type',
+    name: 'sale_type_name',
     displayName: 'Sale Type',
     type: 'string',
     isCheckbox: false,
