@@ -139,7 +139,8 @@ const Adjustments = () => {
     setEditedTimeLineSla(null);
     handleOpen();
   };
-
+  console.log(currentPageData,currentPageData.length,"data");
+  
   const handleArchiveClick = async (record_id: number[]) => {
     const confirmed = await showAlert(
       'Archive',
@@ -281,7 +282,7 @@ const Adjustments = () => {
                 currentPageData?.length?
                 currentPageData.map((item: Adjustment, ind: number) => {
                   return (
-                    <tr key={item.unique_id}>
+                    <tr key={item.record_id}>
                       <td style={{ paddingRight: 0, textAlign: 'left' }}>
                         <div className="flex-check">
                           <td style={{ paddingInline: 0 }}>
