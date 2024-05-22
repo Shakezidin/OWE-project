@@ -278,8 +278,8 @@ const Adjustments = () => {
                 </tr>
               ) : (
 
-                arAdjustmentsList?.length?
-                arAdjustmentsList.map((item: Adjustment, ind: number) => {
+                currentPageData?.length?
+                currentPageData.map((item: Adjustment, ind: number) => {
                   return (
                     <tr key={item.unique_id}>
                       <td style={{ paddingRight: 0, textAlign: 'left' }}>
@@ -362,7 +362,7 @@ const Adjustments = () => {
             {startIndex} - {endIndex > count ? count : endIndex} of {count} item
           </p>}
 
-          {arAdjustmentsList?.length > 0 ? (
+          {currentPageData?.length > 0 ? (
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages} // You need to calculate total pages

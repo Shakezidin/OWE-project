@@ -105,7 +105,7 @@ const CreatedAr: React.FC<payScheduleProps> = ({
     }
 
     if (editMode) {
-      dispatch(updateAr({ ...createArData, record_id: editData?.record_id! }));
+      dispatch(updateAr({ ...createArData, record_id: editData?.record_id!,amount: parseFloat(createArData.amount), }));
     } else {
       dispatch(
         createAr({

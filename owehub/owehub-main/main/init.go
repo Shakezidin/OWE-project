@@ -1181,6 +1181,41 @@ var apiRoutes = ApiRoutes{
 		true,
 		[]types.UserGroup{types.GroupAdmin},
 	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_profile",
+		apiHandler.HandleUpdateProfileRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/create_vdealer",
+		apiHandler.HandleCreateVDealerRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_vdealer",
+		apiHandler.HandleUpdateVDealerDataRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/update_vdealer_archive",
+		apiHandler.HandleUpdateVDealerArchiveRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_vdealer",
+		apiHandler.HandleGetVDealerDataRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
 }
 
 /******************************************************************************

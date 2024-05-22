@@ -45,5 +45,5 @@ export const ReconcileColumns: Column[] = [
     isCheckbox: false,
   },
   { name: 'amount', displayName: 'Amount', type: 'number', isCheckbox: false },
-  { name: 'note', displayName: 'Notes', type: 'string', isCheckbox: false },
+  { name: 'notes', displayName: 'Notes', type: 'string', isCheckbox: false },
 ];
