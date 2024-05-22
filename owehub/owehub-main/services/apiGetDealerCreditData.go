@@ -11,6 +11,7 @@ import (
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	"strings"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -62,11 +63,10 @@ func HandleGetDealerCreditDataRequest(resp http.ResponseWriter, req *http.Reques
 	}
 
 	tableName := db.TableName_dealer_credit
-	query = `SELECT dc.id AS record_id, dc.unique_id, dc.customer, dc.start_date,
-    dc.end_date, vd.dealer_name , dc.dealer_dba, dc.exact_amount, dc.per_kw_amount,
-    dc.approved_by, dc.notes, dc.total_amount, dc.sys_size
-	FROM dealer_credit dc
-	JOIN v_dealer vd ON vd.id = dc.dealer_id`
+	query = `SELECT dc.id AS record_id, dc.unique_id, dc.date,
+    dc.exact_amount, dc.per_kw_amount , dc.approved_by, dc.notes, dc.total_amount,
+    dc.sys_size
+	FROM dealer_credit dc`
 
 	filter, whereEleList = PrepareDealerCreditFilters(tableName, dataReq, false)
 	if filter != "" {
@@ -95,32 +95,11 @@ func HandleGetDealerCreditDataRequest(resp http.ResponseWriter, req *http.Reques
 			UniqueID = ""
 		}
 
-		// customer
-		Customer, ok := item["customer"].(string)
-		if !ok || Customer == "" {
-			log.FuncErrorTrace(0, "Failed to get customer for Record ID %v. Item: %+v\n", RecordId, item)
-			Customer = ""
-		}
-
-		// dealer_name
-		DealerName, nameOk := item["dealer_name"].(string)
-		if !nameOk || DealerName == "" {
-			log.FuncErrorTrace(0, "Failed to get dealer name for Record ID %v. Item: %+v\n", RecordId, item)
-			DealerName = ""
-		}
-
-		// dealer_dba
-		DealerDBA, ok := item["dealer_dba"].(string)
-		if !ok || DealerDBA == "" {
-			log.FuncErrorTrace(0, "Failed to get dealer dba for Record ID %v. Item: %+v\n", RecordId, item)
-			DealerDBA = ""
-		}
-
 		// exact_amount
-		ExactAmount, ok := item["exact_amount"].(string)
-		if !ok || ExactAmount == "" {
+		ExactAmount, ok := item["exact_amount"].(float64)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get exact amount for Record ID %v. Item: %+v\n", RecordId, item)
-			ExactAmount = ""
+			ExactAmount = 0.0
 		}
 
 		// per_kw_amount
@@ -159,33 +138,23 @@ func HandleGetDealerCreditDataRequest(resp http.ResponseWriter, req *http.Reques
 		}
 
 		// start_date
-		StartDate, ok := item["start_date"].(string)
-		if !ok || StartDate == "" {
-			log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
-			StartDate = ""
+		Date, ok := item["date"].(time.Time)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get Date for Record ID %v. Item: %+v\n", RecordId, item)
+			Date = time.Time{}
 		}
 
-		// end_date
-		EndDate, ok := item["end_date"].(*string)
-		if !ok || EndDate == nil {
-			log.FuncErrorTrace(0, "Failed to get end date for Record ID %v. Item: %+v\n", RecordId, item)
-			EndDate = nil
-		}
-
+		dateString := Date.Format("2006-01-02")
 		DealerCreditData := models.GetDealerCredit{
 			RecordId:    RecordId,
 			UniqueID:    UniqueID,
-			Customer:    Customer,
-			DealerName:  DealerName,
-			DealerDBA:   DealerDBA,
 			ExactAmount: ExactAmount,
 			PerKWAmount: PerKWAmount,
 			ApprovedBy:  ApprovedBy,
 			Notes:       Notes,
 			TotalAmount: TotalAmount,
 			SysSize:     SysSize,
-			StartDate:   StartDate,
-			EndDate:     EndDate,
+			Date:        dateString,
 		}
 		DealerCreditDataList.DealerCreditList = append(DealerCreditDataList.DealerCreditList, DealerCreditData)
 	}
@@ -247,17 +216,8 @@ func PrepareDealerCreditFilters(tableName string, dataFilter models.DataRequestB
 			case "unique_id":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(dc.unique_id) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-			case "customer":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(dc.customer) %s LOWER($%d)", operator, len(whereEleList)+1))
-				whereEleList = append(whereEleList, value)
-			case "dealer_name":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(vd.dealer_name) %s LOWER($%d)", operator, len(whereEleList)+1))
-				whereEleList = append(whereEleList, value)
-			case "dealer_dba":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(dc.dealer_dba) %s LOWER($%d)", operator, len(whereEleList)+1))
-				whereEleList = append(whereEleList, value)
-			case "exact_amtount":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(dc.exact_amount) %s LOWER($%d)", operator, len(whereEleList)+1))
+			case "exact_amount":
+				filtersBuilder.WriteString(fmt.Sprintf("dc.exact_amount %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "per_kw_amount":
 				filtersBuilder.WriteString(fmt.Sprintf("dc.per_kw_amount %s $%d", operator, len(whereEleList)+1))
@@ -274,11 +234,8 @@ func PrepareDealerCreditFilters(tableName string, dataFilter models.DataRequestB
 			case "sys_size":
 				filtersBuilder.WriteString(fmt.Sprintf("dc.sys_size %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-			case "start_date":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(dc.start_date) %s LOWER($%d)", operator, len(whereEleList)+1))
-				whereEleList = append(whereEleList, value)
-			case "end_date":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(dc.end_date) %s LOWER($%d)", operator, len(whereEleList)+1))
+			case "date":
+				filtersBuilder.WriteString(fmt.Sprintf("dc.date %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
@@ -306,7 +263,7 @@ func PrepareDealerCreditFilters(tableName string, dataFilter models.DataRequestB
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY dc.id, dc.unique_id, dc.customer, dc.start_date, dc.end_date, ud.name, dc.dealer_dba, dc.exact_amount, dc.per_kw_amount, dc.approved_by, dc.notes, dc.total_amount, dc.sys_size")
+		filtersBuilder.WriteString(" GROUP BY dc.id, dc.unique_id, dc.date, dc.exact_amount, dc.per_kw_amount, dc.approved_by, dc.notes, dc.total_amount, dc.sys_size")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
