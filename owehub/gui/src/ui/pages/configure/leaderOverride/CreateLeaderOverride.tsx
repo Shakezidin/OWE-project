@@ -250,7 +250,11 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     value={formData.salesQ}
                     name="salesQ"
                     placeholder={'Enter'}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      const sanitizedValue = e.target.value.replace(/[^0-9.]/g, '');
+                      e.target.value = sanitizedValue;
+                      handleChange(e);
+                    }}
                   />
                   {errors?.salesQ && (
                     <span style={{ display: 'block', color: '#FF204E' }}>
@@ -268,7 +272,11 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     value={formData.teamKwQ}
                     name="teamKwQ"
                     placeholder={'Enter'}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      const sanitizedValue = e.target.value.replace(/[^0-9.]/g, '');
+                      e.target.value = sanitizedValue;
+                      handleChange(e);
+                    }}
                   />
                   {errors?.teamKwQ && (
                     <span style={{ display: 'block', color: '#FF204E' }}>
@@ -283,7 +291,11 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     value={formData.payRate}
                     name="payRate"
                     placeholder={'Enter'}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      const sanitizedValue = e.target.value.replace(/[^0-9.]/g, '');
+                      e.target.value = sanitizedValue;
+                      handleChange(e);
+                    }}
                   />
 
                   {errors?.payRate && (

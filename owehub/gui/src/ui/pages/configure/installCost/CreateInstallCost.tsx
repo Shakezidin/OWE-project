@@ -124,7 +124,12 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
                     value={newFormData.cost}
                     name="cost"
                     placeholder={'Enter'}
-                    onChange={handleChange}
+                    // onChange={handleChange}
+                    onChange={(e) => {
+                      const sanitizedValue = e.target.value.replace(/[^0-9.]/g, '');
+                      e.target.value = sanitizedValue;
+                      handleChange(e);
+                    }}
                   />
 
                   {errors?.cost && (
