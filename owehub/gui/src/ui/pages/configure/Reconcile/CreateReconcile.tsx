@@ -32,7 +32,7 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
   editData,
 }) => {
   const dispatch = useAppDispatch();
-  const { isSuccess } = useAppSelector((state) => state.reconcile);
+  const { isSuccess,isFormSubmitting } = useAppSelector((state) => state.reconcile);
 
   const [createReconcileData, setCreateReconcileData] = useState({
     unique_id: editData?.unique_id || '',
@@ -352,6 +352,7 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
           <ActionButton
             title={editMode === false ? 'Save' : 'Update'}
             type="submit"
+            disabled={isFormSubmitting}
             onClick={() => {}}
           />
         </div>

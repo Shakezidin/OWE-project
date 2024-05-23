@@ -37,7 +37,7 @@ const CreatedAr: React.FC<payScheduleProps> = ({
   editData,
 }) => {
   const dispatch = useAppDispatch();
-  const { isSuccess } = useAppSelector((state) => state.ar);
+  const { isSuccess,isFormSubmitting } = useAppSelector((state) => state.ar);
 
   const [createArData, setCreateArData] = useState({
     // customer_name:editData?.customer_name || "",
@@ -247,6 +247,7 @@ const CreatedAr: React.FC<payScheduleProps> = ({
           <ActionButton
             title={editMode === false ? 'Save' : 'Update'}
             type="submit"
+            disabled={isFormSubmitting}
             onClick={() => {}}
           />
         </div>

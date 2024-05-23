@@ -41,7 +41,7 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
     startDate: editData?.start_date || '',
     endDate: editData?.end_date || '',
   });
-  const { isSuccess } = useAppSelector((state) => state.installConstSlice);
+  const { isSuccess,isFormSubmitting } = useAppSelector((state) => state.installConstSlice);
   function capitalizeWords(str: string) {
     return str.replace(/\b\w/g, function (char) {
       return char.toUpperCase();
@@ -197,6 +197,7 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
           <ActionButton
             title={editMode === false ? 'Save' : 'Update'}
             type="submit"
+            disabled={isFormSubmitting}
             onClick={() => {}}
           />
         </div>
