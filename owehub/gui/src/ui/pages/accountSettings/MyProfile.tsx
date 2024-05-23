@@ -11,13 +11,13 @@ import {
 import { stateOption } from '../../../core/models/data_models/SelectDataModel';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints';
+import { toast } from 'react-toastify';
 
 const MyProfile = () => {
   const [stateOptions, setStateOptions] = useState<any[]>([]);
   const [selectedState, setSelectedState] = useState<string | null>(null);
   const dispatch = useAppDispatch();
   const { userDetail, userUpdate } = useAppSelector((state) => state.userSlice);
-  console.log(userDetail);
   console.log(userUpdate);
   const [name, setName] = useState<String>(userDetail?.name);
   const userRole = userDetail?.role_name;
@@ -47,6 +47,17 @@ const MyProfile = () => {
       });
   }, []);
 
+  useEffect(()=>{
+    if (userDetail) {
+      setStreet(userDetail?.street_address ||"")
+      setState(userDetail?.state ||"")
+      setCity(userDetail?.city ||"")
+      setZipCode(userDetail?.zipcode ||"")
+      setCountry(userDetail?.country ||"")
+    }
+
+  },[userDetail])
+
   useEffect(() => {
     if (userName) {
       const firstLetter = userName.charAt(0).toUpperCase();
@@ -72,7 +83,12 @@ const MyProfile = () => {
       city: city,
       state,
     };
-    dispatch(updateUser(data));
+    Promise.resolve(dispatch(updateUser(data)))
+    .then(()=>{
+      toast.success("Update Successfully")
+      setIsEditMode(!isEditMode)
+    })
+    
   };
 
   const handleReset = () => {
@@ -102,10 +118,12 @@ const MyProfile = () => {
     street: '',
     zipCode: '',
     country: '',
+    city: ''
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if(!isEditMode){
     const newErrors = {
       city: city ? '' : 'City is required',
       street: street ? '' : 'Street is required',
@@ -114,11 +132,9 @@ const MyProfile = () => {
       state: state ? '' : 'State is required',
     };
     setErrors(newErrors);
-
-    if (!Object.values(newErrors).some((error) => error)) {
-      console.log('Form submitted successfully');
-    }
+  }
   };
+  console.log(userDetail, city, "hey ankit");
   return (
     <>
       <form onSubmit={handleSubmit}>
@@ -194,7 +210,14 @@ const MyProfile = () => {
               </div>
               <div
                 className="edit-section"
-                onClick={() => setIsEditMode(!isEditMode)}
+                onClick={() =>{ setIsEditMode(!isEditMode)
+                  setErrors({
+                    street: '',
+                    zipCode: '',
+                    country: '',
+                    city: ''
+                  })
+                }}
               >
                 <img src={ICONS.editIcon} alt="" />
                 <p>Edit</p>
@@ -247,8 +270,8 @@ const MyProfile = () => {
                   }}
                   disabled={isEditMode}
                 />
-                {errors.zipCode && (
-                  <span className="error">{errors.zipCode}</span>
+                {errors.city && (
+                  <span className="error">{errors.city}</span>
                 )}
               </div>
             </div>
@@ -256,7 +279,7 @@ const MyProfile = () => {
               className="create-input-container"
               style={{ padding: '0.5rem', marginLeft: '1rem', gap: '24px' }}
             >
-              <div className="create-input-field-address">
+              {/* <div className="create-input-field-address">
                 <Input
                   type={'text'}
                   label="Zip Code"
@@ -272,7 +295,7 @@ const MyProfile = () => {
                 {errors.zipCode && (
                   <span className="error">{errors.zipCode}</span>
                 )}
-              </div>
+              </div> */}
               <div className="create-input-field-address">
                 <Input
                   type={'text'}
@@ -305,7 +328,7 @@ const MyProfile = () => {
                 title={'Update'}
                 type="submit"
                 onClick={() => {
-                  updateSubmit();
+                 !isEditMode && updateSubmit();
                 }}
               />
             </div>
