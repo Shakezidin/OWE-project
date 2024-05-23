@@ -18,7 +18,11 @@ import { TierLoanFeeModel } from '../../../../core/models/configuration/create/T
 import SelectOption from '../../../components/selectOption/SelectOption';
 import { addDays, format } from 'date-fns';
 import { toast } from 'react-toastify';
-import { FormEvent, FormInput } from '../../../../core/models/data_models/typesModel';
+import {
+  FormEvent,
+  FormInput,
+} from '../../../../core/models/data_models/typesModel';
+import { useAppSelector } from '../../../../redux/hooks';
 interface tierLoanProps {
   handleClose: () => void;
   tierEditedData: TierLoanFeeModel | null;
@@ -36,6 +40,8 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
 }) => {
   const dispatch = useDispatch();
   const [errors, setErrors] = useState<IError>({} as IError);
+  const [isPending, setIsPending] = useState(false);
+  const {loading} = useAppSelector(state=>state.tierLoan)
 
   const [createTier, setCreateTier] = useState<TierLoanFeeModel>({
     record_id: tierEditedData ? tierEditedData?.record_id : 0,
@@ -107,16 +113,22 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
 
   const submitTierLoad = async (e: FormEvent) => {
     e.preventDefault();
+    if (isPending || loading) {
+      return 
+    }
     if (handleValidation()) {
+      setIsPending(true);
       try {
-        dispatch(
-          updateTierLoanForm({
-            ...createTier,
-            owe_cost: parseFloat(createTier.owe_cost as string),
-            dlr_cost: parseFloat(createTier.dlr_cost as string),
-            dlr_mu: parseFloat(createTier.dlr_mu as string),
-          })
-        );
+        
+          dispatch(
+            updateTierLoanForm({
+              ...createTier,
+              owe_cost: parseFloat(createTier.owe_cost as string),
+              dlr_cost: parseFloat(createTier.dlr_cost as string),
+              dlr_mu: parseFloat(createTier.dlr_mu as string),
+            })
+          )
+        
         if (createTier.record_id) {
           const res = await postCaller(EndPoints.update_tierloanfee, {
             ...createTier,
@@ -124,11 +136,13 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
             dlr_cost: parseFloat(createTier.dlr_cost as string),
             dlr_mu: parseFloat(createTier.dlr_mu as string),
           });
-          if (res?.status === 200) {
+          if ((await res?.status) === 200) {
             toast.success(res?.message);
             handleClose();
+            setIsPending(false);
             setRefetch((prev) => prev + 1);
           } else {
+            toast.error(res?.message);
             console.log(res.message);
           }
         } else {
@@ -139,10 +153,11 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
             dlr_cost: parseFloat(createTier.dlr_cost as string),
             dlr_mu: parseFloat(createTier.dlr_mu as string),
           });
-          if (res?.status === 200) {
+          if ((await res?.status) === 200) {
             console.log(res?.message);
             toast.success(res?.message);
             handleClose();
+            setIsPending(false);
             setRefetch((prev) => prev + 1);
           } else {
             toast.error(res?.message);
@@ -154,6 +169,8 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
       }
     }
   };
+  console.log(isPending);
+
   return (
     <div className="transparent-model">
       <form onSubmit={(e) => submitTierLoad(e)} className="modal">
@@ -379,7 +396,7 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
                     label="End Date"
                     value={createTier.end_date}
                     min={
-                      createTier.end_date &&
+                      createTier.start_date &&
                       format(
                         addDays(new Date(createTier.start_date), 1),
                         'yyyy-MM-dd'
@@ -412,11 +429,14 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
             type="reset"
             onClick={() => handleClose()}
           />
-          <ActionButton
-            title={editMode === false ? 'Save' : 'Update'}
-            type="submit"
-            onClick={() => {}}
-          />
+          
+            <ActionButton
+              title={editMode === false ? 'Save' : 'Update'}
+              type="submit"
+              disabled={loading||isPending}
+              onClick={() => {}}
+            />
+          
         </div>
       </form>
     </div>

@@ -178,7 +178,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                     )}
                   />
                   {errors?.partner && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.partner}
                     </span>
                   )}
@@ -196,7 +196,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                       )}
                     />
                     {errors?.installer && (
-                      <span style={{ display: 'block', color: '#FF204E' }}>
+                      <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                         {errors.partner}
                       </span>
                     )}
@@ -212,7 +212,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                     )}
                   />
                   {errors?.state && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.state}
                     </span>
                   )}
@@ -230,7 +230,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.sale_type && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.sale_type.replace('sale_type', 'sale type')}
                     </span>
                   )}
@@ -245,7 +245,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.sale_price && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.sale_price.replace('sale_price', 'sale price')}
                     </span>
                   )}
@@ -262,7 +262,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                     )}
                   />
                   {errors?.rep_type && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.rep_type.replace(
                         'rep_type',
                         'representative type'
@@ -283,7 +283,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                       onChange={(e) => handleInputChange(e)}
                     />
                     {errors?.rate && (
-                      <span style={{ display: 'block', color: '#FF204E' }}>
+                      <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                         {errors.rate}
                       </span>
                     )}
@@ -299,7 +299,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                     />
 
                     {errors?.rl && (
-                      <span style={{ display: 'block', color: '#FF204E' }}>
+                      <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                         {errors.rl.replace('rl', 'rate list')}
                       </span>
                     )}
@@ -317,7 +317,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                     />
 
                     {errors?.start_date && (
-                      <span style={{ display: 'block', color: '#FF204E' }}>
+                      <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                         {errors.rl.replace('start_date', 'start date')}
                       </span>
                     )}
@@ -332,7 +332,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                       onChange={(e) => handleInputChange(e)}
                     />
                     {errors?.end_date && (
-                      <span style={{ display: 'block', color: '#FF204E' }}>
+                      <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                         {errors.end_date.replace('end_date', 'end date')}
                       </span>
                     )}

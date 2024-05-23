@@ -46,7 +46,7 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({
   const [errors, setErrors] = useState<typeof newFormData>(
     {} as typeof newFormData
   );
-  const { isSuccess } = useAppSelector((state) => state.arAdjusments);
+  const { isSuccess,isFormSubmitting } = useAppSelector((state) => state.arAdjusments);
 
   const handleValidation = () => {
     const error: typeof newFormData = {} as typeof newFormData;
@@ -142,7 +142,7 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({
                     onChange={handleChange}
                   />
                   {errors?.uniqueId && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.uniqueId}
                     </span>
                   )}
@@ -157,7 +157,7 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({
                     onChange={handleChange}
                   />
                   {errors?.date && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.date}
                     </span>
                   )}
@@ -179,7 +179,7 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({
                     }}
                   />
                   {errors?.amount && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.amount}
                     </span>
                   )}
@@ -197,7 +197,7 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({
                     onChange={handleChange}
                   />
                   {errors?.notes && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.notes}
                     </span>
                   )}
@@ -215,6 +215,7 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({
           <ActionButton
             title={editMode === false ? 'Save' : 'Update'}
             type="submit"
+            disabled={isFormSubmitting}
             onClick={() => {}}
           />
         </div>

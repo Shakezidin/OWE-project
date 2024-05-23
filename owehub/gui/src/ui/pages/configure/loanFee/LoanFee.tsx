@@ -10,24 +10,21 @@ import {
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import Pagination from '../../../components/pagination/Pagination';
-import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
-import { TimeLineSlaModel } from '../../../../core/models/configuration/create/TimeLineSlaModel';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 import MicroLoader from '../../../components/loader/MicroLoader';
 
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import { LoanFeesColumn } from '../../../../resources/static_data/configureHeaderData/LoanFeeColumn';
-import FilterModal from '../../../components/FilterModal/FilterModal';
 import { ROUTES } from '../../../../routes/routes';
 import CreatedLoanFee from './CreateLoanFee';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
-import Loading from '../../../components/loader/Loading';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
+import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/loanFeeSlice';
 const LoanFee = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -70,9 +67,17 @@ const LoanFee = () => {
         page_size: itemsPerPage,
         archived: viewArchived,
       };
+      dispatch(resetSuccess());
       dispatch(getLoanFee(pageNumber));
     }
   }, [isSuccess, viewArchived, currentPage]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      handleClose();
+      
+    }
+  }, [isSuccess]);
 
   const filter = () => {
     setFilterOpen(true);

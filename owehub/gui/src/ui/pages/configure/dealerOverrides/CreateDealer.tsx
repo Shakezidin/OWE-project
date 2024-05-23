@@ -46,6 +46,7 @@ const CreateDealer: React.FC<dealerProps> = ({
     state: dealerData ? dealerData?.state : '',
   });
   const [delaerVal, setDealerVal] = useState(dealerData?.dealer || '');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [newFormData, setNewFormData] = useState<any>([]);
   const tableData = {
@@ -138,6 +139,7 @@ const CreateDealer: React.FC<dealerProps> = ({
       return;
     }
     try {
+      setIsSubmitting(true);
       dispatch(
         updateDealerForm({
           ...createDealer,
@@ -173,7 +175,9 @@ const CreateDealer: React.FC<dealerProps> = ({
           toast.error(res.message);
         }
       }
+      setIsSubmitting(false);
     } catch (error) {
+      setIsSubmitting(false);
       console.error('Error submitting form:', error);
     }
   };
@@ -264,7 +268,7 @@ const CreateDealer: React.FC<dealerProps> = ({
                   />
 
                   {errors?.state && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.state}
                     </span>
                   )}
@@ -320,6 +324,7 @@ const CreateDealer: React.FC<dealerProps> = ({
             title={editMode === false ? 'Save' : 'Update'}
             type="submit"
             onClick={() => {}}
+            disabled={isSubmitting}
           />
         </div>
       </form>

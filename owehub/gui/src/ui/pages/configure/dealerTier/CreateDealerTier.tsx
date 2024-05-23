@@ -19,7 +19,10 @@ import { fetchDealerTier } from '../../../../redux/apiSlice/configSlice/config_g
 import { errorSwal, successSwal } from '../../../components/alert/ShowAlert';
 import { validateConfigForm } from '../../../../utiles/configFormValidation';
 import { addDays, format } from 'date-fns';
-import { FormEvent, FormInput } from '../../../../core/models/data_models/typesModel';
+import {
+  FormEvent,
+  FormInput,
+} from '../../../../core/models/data_models/typesModel';
 interface dealerProps {
   handleClose: () => void;
   editMode: boolean;
@@ -46,6 +49,7 @@ const CreateDealerTier: React.FC<dealerProps> = ({
     });
   const [newFormData, setNewFormData] = useState<any>([]);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [isPending, setIsPending] = useState(false);
   const tableData = {
     tableNames: ['tier', 'dealer'],
   };
@@ -119,18 +123,21 @@ const CreateDealerTier: React.FC<dealerProps> = ({
       return;
     }
     try {
+      setIsPending(true);
       dispatch(updateDealerTierForm(createDealerTierData));
       if (createDealerTierData.record_id) {
         const res = await postCaller(
           EndPoints.update_dealertier,
           createDealerTierData
         );
-        if (res?.status === 200) {
+        if ((await res?.status) === 200) {
           await successSwal('', res.message);
           handleClose();
-          dispatch(fetchDealerTier(page));
+           dispatch(fetchDealerTier(page));
+          setIsPending(false);
         } else {
           await errorSwal('', res.message);
+          setIsPending(false);
         }
       } else {
         const { record_id, ...cleanedFormData } = createDealerTierData;
@@ -142,8 +149,10 @@ const CreateDealerTier: React.FC<dealerProps> = ({
           await successSwal('', res.message);
           handleClose();
           dispatch(fetchDealerTier(page));
+          setIsPending(false);
         } else {
           await errorSwal('', res.message);
+          setIsPending(false);
         }
       }
     } catch (error) {
@@ -259,6 +268,7 @@ const CreateDealerTier: React.FC<dealerProps> = ({
           <ActionButton
             title={editMode === false ? 'Save' : 'Update'}
             type="submit"
+            disabled={isPending}
             onClick={() => {}}
           />
         </div>
