@@ -19,6 +19,7 @@ import {
   updateDlrOth,
 } from '../../../../redux/apiActions/config/dlrAction';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
+import { FormEvent, FormInput } from '../../../../core/models/data_models/typesModel';
 
 interface ButtonProps {
   editMode: boolean;
@@ -81,7 +82,7 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
     }));
   };
 
-  // const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // const handleInputChange = (e: FormInput) => {
   //   const { name, value } = e.target;
   //   if (name === 'end_date') {
   //     if (createCommission.start_date && value < createCommission.start_date) {
@@ -101,7 +102,7 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
   //   }
   // };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
 
     if (name === 'end_date') {
@@ -135,7 +136,7 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (handleValidation()) {
       if (editMode) {

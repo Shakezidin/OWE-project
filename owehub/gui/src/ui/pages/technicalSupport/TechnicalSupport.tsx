@@ -5,6 +5,7 @@ import './support.css';
 import emailjs from '@emailjs/browser';
 import SelectOption from '../../components/selectOption/SelectOption';
 import { toast } from 'react-toastify';
+import { FormInput } from '../../../core/models/data_models/typesModel';
 
 const TechnicalSupport: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -133,7 +134,7 @@ const TechnicalSupport: React.FC = () => {
   const handleSelectChange = (selectedOption: any) => {
     setSelectedOption(selectedOption);
   };
-  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileInputChange = (e: FormInput) => {
     const file = e.target.files?.[0];
     if (file) {
       setSelectedFileName(file.name);

@@ -15,6 +15,7 @@ import Loading from '../../../components/loader/Loading';
 import { ALL_USER_ROLE_LIST } from '../../../../resources/static_data/Constant';
 import './Userboard.css';
 import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
+import { FormInput } from '../../../../core/models/data_models/typesModel';
 interface createUserProps {
   editMode: boolean;
   handleClose: () => void;
@@ -76,7 +77,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
 
   const handleInputChange = (
     e:
-      | React.ChangeEvent<HTMLInputElement>
+      | FormInput
       | React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;

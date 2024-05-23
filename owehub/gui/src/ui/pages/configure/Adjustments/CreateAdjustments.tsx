@@ -20,6 +20,7 @@ import {
 import { format } from 'date-fns';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/arAdjusments';
+import { FormInput } from '../../../../core/models/data_models/typesModel';
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
@@ -70,7 +71,7 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({
     getNewFormData();
   }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: FormInput) => {
     const { value, name } = e.target;
     if (name === 'amount' || name === 'epc' || name === 'sysSize') {
       if (value === '' || value === '0' || Number(value)) {

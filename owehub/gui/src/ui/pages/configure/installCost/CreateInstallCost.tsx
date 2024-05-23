@@ -11,6 +11,7 @@ import {
   ICost,
   updateInstallCost,
 } from '../../../../redux/apiActions/config/installCostAction';
+import { FormInput } from '../../../../core/models/data_models/typesModel';
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
@@ -59,7 +60,7 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
     return Object.keys(error).length ? false : true;
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: FormInput) => {
     const { value, name } = e.target;
     if (name === 'cost') {
       if (value === '' || value === '0' || Number(value)) {

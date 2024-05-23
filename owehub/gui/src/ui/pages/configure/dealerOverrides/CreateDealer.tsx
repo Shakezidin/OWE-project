@@ -1,35 +1,24 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ReactComponent as CROSS_BUTTON } from '../../../../resources/assets/cross_button.svg';
 import Input from '../../../components/text_input/Input';
 import { ActionButton } from '../../../components/button/ActionButton';
-import { useDispatch } from 'react-redux';
-
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
-import Select from 'react-select';
 import {
-  dealerOption,
-  subDealerOption,
+  dealerOption
 } from '../../../../core/models/data_models/SelectDataModel';
 import { updateDealerForm } from '../../../../redux/apiSlice/configSlice/config_post_slice/createDealerSlice';
-import {
-  dealer,
-  subDealer,
-} from '../../../../resources/static_data/StaticData';
 import { DealerModel } from '../../../../core/models/configuration/create/DealerModel';
 import SelectOption from '../../../components/selectOption/SelectOption';
-import { errorSwal, successSwal } from '../../../components/alert/ShowAlert';
 import { useAppDispatch } from '../../../../redux/hooks';
 import { fetchDealer } from '../../../../redux/apiSlice/configSlice/config_get_slice/dealerSlice';
 import { validateConfigForm } from '../../../../utiles/configFormValidation';
 import {
-  installerOption,
-  partnerOption,
-  salesTypeOption,
   stateOption,
 } from '../../../../core/models/data_models/SelectDataModel';
 import { addDays, format } from 'date-fns';
 import { toast } from 'react-toastify';
+import { FormInput } from '../../../../core/models/data_models/typesModel';
 interface dealerProps {
   handleClose: () => void;
   editMode: boolean;
@@ -79,17 +68,6 @@ const CreateDealer: React.FC<dealerProps> = ({
     getNewFormData();
   }, []);
 
-  const handleChange = (newValue: any, fieldName: string) => {
-    setCreateDealer((prevData) => ({
-      ...prevData,
-      [fieldName]: newValue ? newValue.value : '',
-    }));
-    setErrors((prevErrors) => ({
-      ...prevErrors,
-      [fieldName]: '',
-    }));
-  };
-
   const getnewformData = async () => {
     const res = await postCaller(EndPoints.get_newFormData, tableData);
     setCreateDealer((prev) => ({ ...prev, ...res.data }));
@@ -98,7 +76,7 @@ const CreateDealer: React.FC<dealerProps> = ({
     getnewformData();
   }, []);
 
-  const handleDealerInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleDealerInputChange = (e: FormInput) => {
     const { name, value } = e.target;
 
     if (name === 'end_date') {
@@ -119,6 +97,8 @@ const CreateDealer: React.FC<dealerProps> = ({
     page_number: page_number,
     page_size: page_size,
   };
+
+  /** on submit form */
   const submitDealer = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log(newFormData.sub_dealer);
@@ -197,8 +177,8 @@ const CreateDealer: React.FC<dealerProps> = ({
       console.error('Error submitting form:', error);
     }
   };
-  console.log(errors);
 
+  /**render UI */
   return (
     <div className="transparent-model">
       <form onSubmit={(e) => submitDealer(e)} className="modal">

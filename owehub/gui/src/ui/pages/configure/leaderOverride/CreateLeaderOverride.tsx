@@ -26,6 +26,7 @@ import {
   ILeaderRow,
   updateleaderOverride,
 } from '../../../../redux/apiActions/config/leaderOverrideAction';
+import { FormInput } from '../../../../core/models/data_models/typesModel';
 
 interface payScheduleProps {
   handleClose: () => void;
@@ -92,7 +93,7 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
     return Object.keys(error).length ? false : true;
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: FormInput) => {
     const { value, name } = e.target;
     if (name === 'salesQ' || name === 'teamKwQ') {
       if (value === '' || value === '0' || Number(value)) {

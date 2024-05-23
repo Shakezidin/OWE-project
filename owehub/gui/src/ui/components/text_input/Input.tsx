@@ -3,6 +3,7 @@ import './Input.css';
 import { ReactComponent as EYE_ICON } from '../../../resources/assets/eye-icon.svg';
 import { ReactComponent as EYE_OFF_ICON } from '../../../resources/assets/eye-off-icon.svg';
 import { ICONS } from '../../icons/Icons';
+import { FormInput } from '../../../core/models/data_models/typesModel';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   type:
@@ -20,7 +21,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   error?: boolean;
   disabled?: boolean;
 
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (e: FormInput) => void;
   onClickEyeIcon?: () => void;
   isTypePassword?: boolean;
   isTypeSearch?: boolean;

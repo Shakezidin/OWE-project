@@ -18,6 +18,7 @@ import { TierLoanFeeModel } from '../../../../core/models/configuration/create/T
 import SelectOption from '../../../components/selectOption/SelectOption';
 import { addDays, format } from 'date-fns';
 import { toast } from 'react-toastify';
+import { FormEvent, FormInput } from '../../../../core/models/data_models/typesModel';
 interface tierLoanProps {
   handleClose: () => void;
   tierEditedData: TierLoanFeeModel | null;
@@ -87,7 +88,7 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
       [fieldName]: newValue ? newValue.value : '',
     }));
   };
-  const handleTierChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTierChange = (e: FormInput) => {
     const { name, value } = e.target;
     if (name === 'end_date') {
       if (createTier.start_date && value < createTier.start_date) {
@@ -104,7 +105,7 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
     }));
   };
 
-  const submitTierLoad = async (e: React.FormEvent<HTMLFormElement>) => {
+  const submitTierLoad = async (e: FormEvent) => {
     e.preventDefault();
     if (handleValidation()) {
       try {

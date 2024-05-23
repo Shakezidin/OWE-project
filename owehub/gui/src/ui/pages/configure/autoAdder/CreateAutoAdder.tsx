@@ -17,6 +17,7 @@ import { updateForm } from '../../../../redux/apiSlice/configSlice/config_post_s
 import { CommissionModel } from '../../../../core/models/configuration/create/CommissionModel';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import { addDays, format } from 'date-fns';
+import { FormEvent, FormInput } from '../../../../core/models/data_models/typesModel';
 
 interface ButtonProps {
   editMode: boolean;
@@ -68,7 +69,7 @@ const CreateAutoAdder: React.FC<ButtonProps> = ({
       [fieldName]: newValue ? newValue.value : '',
     }));
   };
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
     setCreateCommission((prevData) => ({
       ...prevData,
@@ -78,8 +79,8 @@ const CreateAutoAdder: React.FC<ButtonProps> = ({
           : value,
     }));
   };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
       dispatch(updateForm(createCommission));

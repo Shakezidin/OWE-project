@@ -24,6 +24,7 @@ import {
   updateApptSetters,
 } from '../../../../redux/apiActions/config/apptSetterAction';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/apptSetterSlice';
+import { FormInput } from '../../../../core/models/data_models/typesModel';
 
 interface payScheduleProps {
   handleClose: () => void;
@@ -59,7 +60,7 @@ const CreateAppSetters: React.FC<payScheduleProps> = ({
     start_date: editData?.start_date || '',
     end_date: editData?.end_date || '',
   });
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
     setAppSettersData((prevData) => ({
       ...prevData,

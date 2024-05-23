@@ -17,6 +17,7 @@ import { unwrapResult } from '@reduxjs/toolkit';
 import Loading from '../../components/loader/Loading';
 import { FaArrowLeft } from 'react-icons/fa';
 import { ROUTES } from '../../../routes/routes';
+import { FormEvent, FormInput } from '../../../core/models/data_models/typesModel';
 
 const ResetPassword = () => {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ const ResetPassword = () => {
   });
   const { loading } = useAppSelector((state) => state.resetPassword);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
     setCredentials((prevState) => ({
       ...prevState,
@@ -34,7 +35,7 @@ const ResetPassword = () => {
     }));
   };
   /** on submit  */
-  const handleEmailSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleEmailSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     if (credentials.email_id.length === 0) {

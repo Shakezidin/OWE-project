@@ -23,6 +23,7 @@ import {
   updateNoncom,
 } from '../../../../redux/apiActions/config/nocCommAction';
 import SelectOption from '../../../components/selectOption/SelectOption';
+import { FormEvent, FormInput } from '../../../../core/models/data_models/typesModel';
 interface ButtonProps {
   editMode: boolean;
   handleClose: () => void;
@@ -88,7 +89,7 @@ const CreateNonComm: React.FC<ButtonProps> = ({
     }));
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
 
     if (name === 'end_date') {
@@ -129,7 +130,7 @@ const CreateNonComm: React.FC<ButtonProps> = ({
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (editMode) {
       dispatch(

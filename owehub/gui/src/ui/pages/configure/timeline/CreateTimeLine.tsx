@@ -11,6 +11,7 @@ import { stateOption } from '../../../../core/models/data_models/SelectDataModel
 import { TimeLineSlaModel } from '../../../../core/models/configuration/create/TimeLineSlaModel';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import { toast } from 'react-toastify';
+import { FormEvent, FormInput } from '../../../../core/models/data_models/typesModel';
 interface timeLineProps {
   handleClose: () => void;
   editMode: boolean;
@@ -71,7 +72,7 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
       [fieldName]: newValue ? newValue.value : '',
     }));
   };
-  const handleTimeLineInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTimeLineInput = (e: FormInput) => {
     const { name, value } = e.target;
 
     if (name === 'end_date') {
@@ -94,7 +95,7 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
     }));
   };
 
-  const submitTimeLineSla = async (e: React.FormEvent<HTMLFormElement>) => {
+  const submitTimeLineSla = async (e: FormEvent) => {
     e.preventDefault();
     console.log('working');
 

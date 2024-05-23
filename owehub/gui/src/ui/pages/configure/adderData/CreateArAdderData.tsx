@@ -11,6 +11,7 @@ import {
   IAdderRowData,
   updatearAdderData,
 } from '../../../../redux/apiActions/config/arAdderDataAction';
+import { FormInput } from '../../../../core/models/data_models/typesModel';
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
@@ -53,7 +54,7 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
     setErrors({ ...error });
     return Object.keys(error).length ? false : true;
   };
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: FormInput) => {
     const { value, name } = e.target;
     if (
       name === 'per_kw_amt' ||

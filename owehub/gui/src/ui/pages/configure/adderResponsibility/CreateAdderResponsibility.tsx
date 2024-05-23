@@ -23,6 +23,7 @@ import {
   updateAdderResponsibility,
 } from '../../../../redux/apiActions/config/adderResponsbilityAction';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/adderResponsbilitySlice';
+import { FormInput } from '../../../../core/models/data_models/typesModel';
 
 interface payScheduleProps {
   handleClose: () => void;
@@ -55,7 +56,7 @@ const CreateAdderResponsibility: React.FC<payScheduleProps> = ({
     pay_scale: editData?.pay_scale || 0,
     percentage: editData?.percentage || 0,
   });
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
     setAdderResponsbilityData((prevData) => ({
       ...prevData,

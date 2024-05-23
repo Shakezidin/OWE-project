@@ -19,6 +19,7 @@ import {
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/reconcileSlice';
 import { addDays, format } from 'date-fns';
+import { FormInput } from '../../../../core/models/data_models/typesModel';
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
@@ -61,7 +62,7 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
     getNewFormData();
   }, []);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
     if (name === 'end_date') {
       if (

@@ -24,6 +24,7 @@ import { PayScheduleModel } from '../../../../core/models/configuration/create/P
 import SelectOption from '../../../components/selectOption/SelectOption';
 import { validateConfigForm } from '../../../../utiles/configFormValidation';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/arSlice';
+import { FormInput } from '../../../../core/models/data_models/typesModel';
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
@@ -62,7 +63,7 @@ const CreatedAr: React.FC<payScheduleProps> = ({
     getNewFormData();
   }, []);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
     setCreateArData((prevData) => ({
       ...prevData,

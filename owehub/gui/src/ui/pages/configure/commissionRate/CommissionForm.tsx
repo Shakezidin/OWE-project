@@ -10,13 +10,14 @@ import {
 } from '../../../../core/models/data_models/SelectDataModel';
 import { CommissionModel } from '../../../../core/models/configuration/create/CommissionModel';
 import { respTypeData } from '../../../../resources/static_data/StaticData';
+import { FormEvent, FormInput } from '../../../../core/models/data_models/typesModel';
 
 interface formProps {
-  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  handleSubmit: (e: FormEvent) => void;
   editMode: boolean;
   handleClose: () => void;
   handleChange: (newValue: any, fieldName: string) => void;
-  handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleInputChange: (e: FormInput) => void;
   errors: any;
   newFormData: any;
   createCommission: CommissionModel;

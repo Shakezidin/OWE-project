@@ -12,3 +12,6 @@ export interface ApiState {
   loading: boolean;
   error: string | null;
 }
+
+export type FormEvent = React.FormEvent<HTMLFormElement>;
+export type FormInput = React.ChangeEvent<HTMLInputElement>

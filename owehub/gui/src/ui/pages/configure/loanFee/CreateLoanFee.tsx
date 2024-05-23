@@ -21,6 +21,7 @@ import {
 import { addDays, format } from 'date-fns';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/loanFeeSlice';
+import { FormInput } from '../../../../core/models/data_models/typesModel';
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
@@ -98,7 +99,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
 
   //   const loanTypes = (newFormData["loan_types"]   ).map()
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: FormInput) => {
     const { value, name } = e.target;
     if (name === 'endDate') {
       if (newFormData.startDate && value < newFormData.startDate) {
