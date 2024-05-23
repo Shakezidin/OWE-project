@@ -341,7 +341,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={'date'}
-                    label="Start "
+                    label="Start Date"
                     value={newFormData.startDate}
                     name="startDate"
                     placeholder={'Enter'}
@@ -363,7 +363,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={'date'}
-                    label="End"
+                    label="End Date"
                     min={
                       newFormData.startDate &&
                       format(
