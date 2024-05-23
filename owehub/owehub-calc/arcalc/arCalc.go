@@ -10,7 +10,7 @@ package arcalc
 import (
 	common "OWEApp/owehub-calc/common"
 	dataMgmt "OWEApp/owehub-calc/dataMgmt"
-	"OWEApp/shared/db"
+	db "OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	"time"
 )
@@ -122,7 +122,7 @@ func CalculateARProject(saleData dataMgmt.SaleDataStruct) (outData map[string]in
 	status = saleData.ProjectStatus
 	redLine, permitPayM1, permitMax, installPayM2 = dataMgmt.ArSkdConfig.GetArSkdForSaleData(&saleData)
 	contractCalc = common.CalculateContractAmount(saleData.NetEpc, outData["contract"].(float64), outData["sys_size"].(float64))
-	epcCalc = common.CalculateEPCCalc(contractCalc, saleData.WC1, saleData.NetEpc, saleData.SystemSize)
+	epcCalc = common.CalculateEPCCalc(contractCalc, saleData.WC1, saleData.NetEpc, saleData.SystemSize, common.ARWc1FilterDate)
 	grossRev = CalculateGrossRev(epcCalc, redLine, saleData.SystemSize)
 	addrPtr = dataMgmt.AdderDataCfg.CalculateAddrPtr(saleData.Dealer, saleData.UniqueId)
 	addrAuto = dataMgmt.AutoAdderCfg.CalculateAddrAuto(saleData.Dealer, saleData.UniqueId, saleData.SystemType)
