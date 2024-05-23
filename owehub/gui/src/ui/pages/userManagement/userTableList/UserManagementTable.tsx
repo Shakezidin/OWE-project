@@ -69,7 +69,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
   }, [dispatch, currentPage1, pageSize1]);
 
   useEffect(() => {
-    dispatch(getDataTableName());
+    dispatch(getDataTableName({get_all_table:true}));
   }, []);
 
   const handlePageChange = (page: number) => {
