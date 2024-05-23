@@ -31,6 +31,10 @@ const dataTableSlice = createSlice({
     resetSuccess: (state) => {
       state.isSuccess = 0;
     },
+    resetOpt:(state)=>{
+      state.option = []
+      state.tableData = []
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -59,5 +63,5 @@ const dataTableSlice = createSlice({
       });
   },
 });
-export const { resetSuccess } = dataTableSlice.actions;
+export const { resetSuccess,resetOpt } = dataTableSlice.actions;
 export default dataTableSlice.reducer;
