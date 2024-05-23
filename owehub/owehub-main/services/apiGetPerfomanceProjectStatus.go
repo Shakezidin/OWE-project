@@ -122,7 +122,7 @@ func HandleGetPerfomanceProjectStatusRequest(resp http.ResponseWriter, req *http
 
 		// This is thrown if no sale rep are available and for other user roles
 		if len(data) == 0 {
-			emptyPerfomanceList := models.PerfomanceListResponse {
+			emptyPerfomanceList := models.PerfomanceListResponse{
 				PerfomanceList: []models.PerfomanceResponse{},
 			}
 			log.FuncErrorTrace(0, "No projects or sale representatives: %v", err)
@@ -322,7 +322,6 @@ func PrepareAdminDlrFilters(tableName string, dataFilter models.PerfomanceStatus
 		whereEleList = append(whereEleList, dataFilter.DealerName)
 	}
 
-	filtersBuilder.WriteString(" ORDER BY unique_id")
 	filters = filtersBuilder.String()
 
 	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
@@ -386,7 +385,7 @@ func PrepareSaleRepFilters(tableName string, dataFilter models.PerfomanceStatusR
 		}
 	}
 
-	filtersBuilder.WriteString(fmt.Sprintf(") AND dealer = $%d ORDER BY unique_id", len(whereEleList)+1))
+	filtersBuilder.WriteString(fmt.Sprintf(") AND dealer = $%d ", len(whereEleList)+1))
 	whereEleList = append(whereEleList, dataFilter.DealerName)
 	filters = filtersBuilder.String()
 
