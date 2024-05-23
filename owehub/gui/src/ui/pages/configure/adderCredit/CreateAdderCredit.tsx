@@ -23,6 +23,7 @@ import {
   updateAdderCredit,
 } from '../../../../redux/apiActions/config/adderCreditAction';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/adderCreditSlice';
+import { FormInput } from '../../../../core/models/data_models/typesModel';
 
 interface payScheduleProps {
   handleClose: () => void;
@@ -97,7 +98,7 @@ const CreateAdderCredit: React.FC<payScheduleProps> = ({
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
     setAdderCreditData((prevData) => ({
       ...prevData,

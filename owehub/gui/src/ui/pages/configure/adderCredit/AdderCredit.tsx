@@ -151,7 +151,6 @@ const AdderCredit = () => {
     }
   };
 
-
   console.log(data);
 
   return (

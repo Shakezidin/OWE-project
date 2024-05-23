@@ -1,36 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import '../../configure/configure.css';
-import { FaArrowDown } from 'react-icons/fa6';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-import { fetchCommissions } from '../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice';
 import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
-import { DealerModel } from '../../../../core/models/configuration/create/DealerModel';
-import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 import DataTableHeaderr from '../../../components/tableHeader/DataTableHeaderr';
-import CheckBox from '../../../components/chekbox/CheckBox';
-import {
-  toggleAllRows,
-  toggleRowSelection,
-} from '../../../components/chekbox/checkHelper';
-import FilterData from './FilterData';
-import { Column } from '../../../../core/models/data_models/FilterSelectModel';
 import Pagination from '../../../components/pagination/Pagination';
-import { DataTableColumn } from '../../../../resources/static_data/DataTableColumn';
-import FilterModal from '../../../components/FilterModal/FilterModal';
 import { getAnyTableData } from '../../../../redux/apiActions/dataTableAction';
 import { Tooltip as ReactTooltip } from 'react-tooltip';
+import DataNotFound from '../../../components/loader/DataNotFound';
 
 interface RowData {
   [key: string]: string | number | null; // Define possible data types for table cells
 }
 
 const DataTablle: React.FC = () => {
-  const [open, setOpen] = React.useState<boolean>(false);
-  const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
   const [selectedTable, setSelectedTable] = useState<any>('');
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-  const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const data: RowData[] = useAppSelector(
     (state) => state.dataTableSlice.tableData
@@ -38,9 +21,6 @@ const DataTablle: React.FC = () => {
   const { dbCount, option } = useAppSelector((state) => state.dataTableSlice);
   const loading = useAppSelector((state) => state.dealer.loading);
   const error = useAppSelector((state) => state.dealer.error);
-  const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
-  const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
-  const [editMode, setEditMode] = useState(false);
 
   const [openTooltipIndex, setOpenTooltipIndex] = useState<number | null>(null);
   useEffect(() => {
@@ -114,7 +94,7 @@ const DataTablle: React.FC = () => {
   };
 
   const filter = () => {
-    setFilterOpen(true);
+  
   };
 
   if (loading) {
@@ -147,7 +127,8 @@ const DataTablle: React.FC = () => {
         selectedTable={selectedTable}
         setSelectedTable={setSelectedTable}
       />
-      <div
+      {data && data.length > 0 ? <>
+        <div
         className="TableContainer"
         style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}
       >
@@ -263,7 +244,6 @@ const DataTablle: React.FC = () => {
         <p className="page-heading">
           {start} - {end > dbCount ? dbCount : end} of {dbCount} item
         </p>
-        {data?.length > 0 ? (
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
@@ -273,8 +253,13 @@ const DataTablle: React.FC = () => {
             goToPrevPage={goToPrevPage}
             perPage={itemsPerPage}
           />
-        ) : null}
-      </div>
+      </div></>:
+       <div className="data-not-found">
+       <DataNotFound />
+       <h3>You don't have any table permissions.</h3>
+       <br/>
+     </div>
+     }
     </div>
   );
 };

@@ -18,6 +18,7 @@ import Select from 'react-select';
 import { paySaleTypeData } from '../../../../resources/static_data/StaticData';
 import { PayScheduleModel } from '../../../../core/models/configuration/create/PayScheduleModel';
 import SelectOption from '../../../components/selectOption/SelectOption';
+import { FormEvent, FormInput } from '../../../../core/models/data_models/typesModel';
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
@@ -69,7 +70,7 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
       [fieldName]: newValue ? newValue.value : '',
     }));
   };
-  const handlePayInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePayInputChange = (e: FormInput) => {
     const { name, value } = e.target;
     if (name === 'end_date') {
       if (createPayData.start_date && value < createPayData.start_date) {
@@ -86,7 +87,7 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
     }));
   };
 
-  const submitPaySchedule = async (e: React.FormEvent<HTMLFormElement>) => {
+  const submitPaySchedule = async (e: FormEvent) => {
     e.preventDefault();
     try {
       dispatch(updatePayForm(createPayData));

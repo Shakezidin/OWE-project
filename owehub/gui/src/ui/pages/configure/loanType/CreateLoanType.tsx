@@ -11,6 +11,7 @@ import { useAppDispatch } from '../../../../redux/hooks';
 import { validateConfigForm } from '../../../../utiles/configFormValidation';
 import { fetchLoanType } from '../../../../redux/apiSlice/configSlice/config_get_slice/loanTypeSlice';
 import { errorSwal, successSwal } from '../../../components/alert/ShowAlert';
+import { FormEvent, FormInput } from '../../../../core/models/data_models/typesModel';
 
 interface loanProps {
   handleClose: () => void;
@@ -41,7 +42,7 @@ const CreateLoanType: React.FC<loanProps> = ({
     page_number: page_number,
     page_size: page_size,
   };
-  const handleOptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleOptionChange = (e: FormInput) => {
     const { value } = e.target;
     setCreateLoanTypeData((prevData) => ({
       ...prevData,
@@ -63,7 +64,7 @@ const CreateLoanType: React.FC<loanProps> = ({
     }));
   };
 
-  const submitLoanType = async (e: React.FormEvent<HTMLFormElement>) => {
+  const submitLoanType = async (e: FormEvent) => {
     e.preventDefault();
     const validationRules = {
       product_code: [
@@ -187,7 +188,15 @@ const CreateLoanType: React.FC<loanProps> = ({
                     value={createLoanTypeData.adder}
                     name="adder"
                     placeholder={'Enter'}
-                    onChange={(e) => handleloanTypeChange(e)}
+                    // onChange={(e) => handleloanTypeChange(e)}
+                    onChange={(e) => {
+                      const sanitizedValue = e.target.value.replace(
+                        /[^0-9.]/g,
+                        ''
+                      );
+                      e.target.value = sanitizedValue;
+                      handleloanTypeChange(e);
+                    }}
                   />
                   {errors.adder && (
                     <span className="error">{errors.adder}</span>

@@ -4,34 +4,22 @@ import { ReactComponent as CROSS_BUTTON } from '../../../../resources/assets/cro
 import Input from '../../../components/text_input/Input';
 
 import { ActionButton } from '../../../components/button/ActionButton';
-import { updatePayForm } from '../../../../redux/apiSlice/configSlice/config_post_slice/createPayScheduleSlice';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
-import { useDispatch } from 'react-redux';
 import {
-  installerOption,
   partnerOption,
-  salesTypeOption,
   stateOption,
 } from '../../../../core/models/data_models/SelectDataModel';
-import Select from 'react-select';
-import {
-  partners,
-  paySaleTypeData,
-} from '../../../../resources/static_data/StaticData';
-import { ReconcileModel } from '../../../../core/models/configuration/create/ReconcileModel';
+
 import SelectOption from '../../../components/selectOption/SelectOption';
 import {
   createReconcile,
   updateReconcile,
 } from '../../../../redux/apiActions/config/reconcileAction';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-import {
-  fetchRepaySettings,
-  RepayEditParams,
-} from '../../../../redux/apiActions/config/repPayAction';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/reconcileSlice';
 import { addDays, format } from 'date-fns';
+import { FormInput } from '../../../../core/models/data_models/typesModel';
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
@@ -74,7 +62,7 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
     getNewFormData();
   }, []);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
     if (name === 'end_date') {
       if (

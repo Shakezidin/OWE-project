@@ -53,10 +53,10 @@ const MainLayout = () => {
     }
   }, [dispatch, isAuthenticated]);
 
-    /** check whether user exist or not */
+  /** check whether user exist or not */
   useEffect(() => {
     const email = localStorage.getItem('email');
-    
+
     if (email) {
       dispatch(checkUserExists(email))
         .then((response: any) => {
@@ -74,7 +74,6 @@ const MainLayout = () => {
         });
     }
   }, [dispatch, navigate]);
-
 
   return isAuthenticated ? (
     <div className="main-container">

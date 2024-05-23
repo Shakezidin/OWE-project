@@ -192,8 +192,6 @@ const RepPaySettings = () => {
     );
   }
 
-
-
   return (
     <div className="comm">
       <Breadcrumb

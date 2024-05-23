@@ -1,7 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
-import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints';
 
 export interface ReconcileEditParams {
   unique_id: string;
@@ -10,15 +8,6 @@ export interface ReconcileEditParams {
   min_rate: string;
   max_rate: string;
   record_id: string;
-}
-
-interface ReconcileCreateParams {
-  unique_id: string;
-  pay_scale: string;
-  type: string;
-  min_rate: string;
-  max_rate: string;
-  end_date: string;
 }
 
 export const fetchAdderCredit = createAsyncThunk(

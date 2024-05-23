@@ -24,6 +24,7 @@ import { unwrapResult } from '@reduxjs/toolkit';
 import { RootState } from '../../../redux/store';
 import Loading from '../../components/loader/Loading';
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
+import { FormEvent } from '../../../core/models/data_models/typesModel';
 
 export const LoginPage = () => {
   const navigate = useNavigate();
@@ -65,7 +66,7 @@ export const LoginPage = () => {
     return emailPattern.test(email);
   };
 
-  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (e: FormEvent) => {
     try {
       e.preventDefault();
 

@@ -7,6 +7,7 @@ import { updateSalesForm } from '../../../../redux/apiSlice/configSlice/config_p
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { SalesTypeModel } from '../../../../core/models/configuration/create/SalesTypeModel';
+import { FormEvent } from '../../../../core/models/data_models/typesModel';
 
 interface salesProps {
   handleClose: () => void;
@@ -37,7 +38,7 @@ const CreateSaleType: React.FC<salesProps> = ({
     }));
   };
 
-  const submitSalesType = async (e: React.FormEvent<HTMLFormElement>) => {
+  const submitSalesType = async (e: FormEvent) => {
     e.preventDefault();
     try {
       dispatch(updateSalesForm(createSales));

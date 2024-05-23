@@ -24,6 +24,7 @@ import {
 } from '../../../../redux/apiActions/config/repPayAction';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/repPaySettingsSlice';
+import { FormInput } from '../../../../core/models/data_models/typesModel';
 
 interface createRepPayProps {
   handleClose: () => void;
@@ -71,7 +72,7 @@ const CreateRepPaySettings: React.FC<createRepPayProps> = ({
       [fieldName]: newValue ? newValue.value : '',
     }));
   };
-  const handlePayInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePayInputChange = (e: FormInput) => {
     const { name, value } = e.target;
     setCreatePayData((prevData) => ({
       ...prevData,

@@ -177,7 +177,6 @@ const ARSchedule = () => {
     }
   };
 
-
   console.log(selectedRows, 'rorrrrr');
 
   return (
@@ -341,9 +340,12 @@ const ARSchedule = () => {
           </table>
         </div>
         <div className="page-heading-container">
-        {!!count &&  <p className="page-heading">
-            {startIndex} - {endIndex > count ? count : endIndex} of {count} item
-          </p>}
+          {!!count && (
+            <p className="page-heading">
+              {startIndex} - {endIndex > count ? count : endIndex} of {count}{' '}
+              item
+            </p>
+          )}
 
           {data?.length > 0 ? (
             <Pagination

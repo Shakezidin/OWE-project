@@ -9,6 +9,7 @@ import { validateConfigForm } from '../../../../utiles/configFormValidation';
 import { fetchCommissions } from '../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice';
 import CommissionForm from './CommissionForm';
 import { errorSwal, successSwal } from '../../../components/alert/ShowAlert';
+import { FormEvent, FormInput } from '../../../../core/models/data_models/typesModel';
 interface ButtonProps {
   editMode: boolean;
   handleClose: () => void;
@@ -76,7 +77,7 @@ const CreateCommissionRate: React.FC<ButtonProps> = ({
       [fieldName]: '',
     }));
   };
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
     setCreateCommission((prevData) => ({
       ...prevData,
@@ -94,7 +95,7 @@ const CreateCommissionRate: React.FC<ButtonProps> = ({
     page_number: pageNumber,
     page_size: pageSize,
   };
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     // Define validation rules for each field
     const validationRules = {

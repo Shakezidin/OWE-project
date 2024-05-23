@@ -21,6 +21,7 @@ import {
 import { addDays, format } from 'date-fns';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/loanFeeSlice';
+import { FormInput } from '../../../../core/models/data_models/typesModel';
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
@@ -98,7 +99,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
 
   //   const loanTypes = (newFormData["loan_types"]   ).map()
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: FormInput) => {
     const { value, name } = e.target;
     if (name === 'endDate') {
       if (newFormData.startDate && value < newFormData.startDate) {
@@ -200,7 +201,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                   )}
                 </div>
                 <div className="create-input-field">
-                <label className="inputLabel-select">Dealer</label>
+                  <label className="inputLabel-select">Dealer</label>
 
                   <SelectOption
                     options={dealerOption(newFormData)}
@@ -296,7 +297,14 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     value={newFormData.dlrCost}
                     name="dlrCost"
                     placeholder={'Enter'}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      const sanitizedValue = e.target.value.replace(
+                        /[^0-9.]/g,
+                        ''
+                      );
+                      e.target.value = sanitizedValue;
+                      handleChange(e);
+                    }}
                   />
                   {errors?.dlrCost && (
                     <span style={{ display: 'block', color: '#FF204E' }}>
@@ -314,7 +322,14 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     value={newFormData.oweCost}
                     name="oweCost"
                     placeholder={'Enter'}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      const sanitizedValue = e.target.value.replace(
+                        /[^0-9.]/g,
+                        ''
+                      );
+                      e.target.value = sanitizedValue;
+                      handleChange(e);
+                    }}
                   />
                   {errors?.oweCost && (
                     <span style={{ display: 'block', color: '#FF204E' }}>
@@ -326,7 +341,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={'date'}
-                    label="Start "
+                    label="Start Date"
                     value={newFormData.startDate}
                     name="startDate"
                     placeholder={'Enter'}
@@ -348,7 +363,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={'date'}
-                    label="End"
+                    label="End Date"
                     min={
                       newFormData.startDate &&
                       format(

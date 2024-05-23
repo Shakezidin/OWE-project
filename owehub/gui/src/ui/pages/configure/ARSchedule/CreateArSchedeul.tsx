@@ -25,6 +25,7 @@ import {
   updateArchSchedule,
 } from '../../../../redux/apiActions/config/arScheduleAction';
 import { addDays, format } from 'date-fns';
+import { FormInput } from '../../../../core/models/data_models/typesModel';
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
@@ -68,7 +69,7 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
     getnewformData();
   }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: FormInput) => {
     const { name, value } = e.target;
     if (
       name === 'installPay' ||

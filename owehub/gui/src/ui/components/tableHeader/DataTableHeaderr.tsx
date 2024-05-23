@@ -35,7 +35,7 @@ const DataTableHeaderr = (props: TableProps) => {
   } = props;
 
   useEffect(() => {
-    dispatch(getDataTableName());
+    dispatch(getDataTableName({get_all_table:false}));
   }, []);
 
   const tableOption = option?.map((opt: any) => ({

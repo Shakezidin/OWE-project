@@ -12,11 +12,8 @@ import { TierLoanFeeModel } from '../../../../core/models/configuration/create/T
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 
 import Pagination from '../../../components/pagination/Pagination';
-import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import { TierLoanColumn } from '../../../../resources/static_data/configureHeaderData/TierLoanFeeColumn';
-import FilterModal from '../../../components/FilterModal/FilterModal';
-import Loading from '../../../components/loader/Loading';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';

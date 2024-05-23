@@ -26,6 +26,7 @@ import {
   ILeaderRow,
   updateleaderOverride,
 } from '../../../../redux/apiActions/config/leaderOverrideAction';
+import { FormInput } from '../../../../core/models/data_models/typesModel';
 
 interface payScheduleProps {
   handleClose: () => void;
@@ -92,7 +93,7 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
     return Object.keys(error).length ? false : true;
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: FormInput) => {
     const { value, name } = e.target;
     if (name === 'salesQ' || name === 'teamKwQ') {
       if (value === '' || value === '0' || Number(value)) {
@@ -250,7 +251,14 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     value={formData.salesQ}
                     name="salesQ"
                     placeholder={'Enter'}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      const sanitizedValue = e.target.value.replace(
+                        /[^0-9.]/g,
+                        ''
+                      );
+                      e.target.value = sanitizedValue;
+                      handleChange(e);
+                    }}
                   />
                   {errors?.salesQ && (
                     <span style={{ display: 'block', color: '#FF204E' }}>
@@ -268,7 +276,14 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     value={formData.teamKwQ}
                     name="teamKwQ"
                     placeholder={'Enter'}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      const sanitizedValue = e.target.value.replace(
+                        /[^0-9.]/g,
+                        ''
+                      );
+                      e.target.value = sanitizedValue;
+                      handleChange(e);
+                    }}
                   />
                   {errors?.teamKwQ && (
                     <span style={{ display: 'block', color: '#FF204E' }}>
@@ -283,7 +298,14 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     value={formData.payRate}
                     name="payRate"
                     placeholder={'Enter'}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      const sanitizedValue = e.target.value.replace(
+                        /[^0-9.]/g,
+                        ''
+                      );
+                      e.target.value = sanitizedValue;
+                      handleChange(e);
+                    }}
                   />
 
                   {errors?.payRate && (

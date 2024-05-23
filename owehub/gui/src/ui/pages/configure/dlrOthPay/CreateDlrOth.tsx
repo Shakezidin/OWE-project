@@ -19,6 +19,7 @@ import {
   updateDlrOth,
 } from '../../../../redux/apiActions/config/dlrAction';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
+import { FormEvent, FormInput } from '../../../../core/models/data_models/typesModel';
 
 interface ButtonProps {
   editMode: boolean;
@@ -81,8 +82,29 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
     }));
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // const handleInputChange = (e: FormInput) => {
+  //   const { name, value } = e.target;
+  //   if (name === 'end_date') {
+  //     if (createCommission.start_date && value < createCommission.start_date) {
+  //       setErrors((prevErrors) => ({
+  //         ...prevErrors,
+  //         end_date: 'End date cannot be before the start date',
+  //       }));
+  //       return;
+  //     }
+  //   }
+  //   if (name === 'balance' || name === 'paid_amount') {
+  //     if (value === '' || value === '0' || Number(value)) {
+  //       setCreateCommission((prev) => ({ ...prev, [name]: value }));
+  //     }
+  //   } else {
+  //     setCreateCommission((prev) => ({ ...prev, [name]: value }));
+  //   }
+  // };
+
+  const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
+
     if (name === 'end_date') {
       if (createCommission.start_date && value < createCommission.start_date) {
         setErrors((prevErrors) => ({
@@ -92,16 +114,29 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
         return;
       }
     }
-    if (name === 'balance' || name === 'paid_amount') {
-      if (value === '' || value === '0' || Number(value)) {
-        setCreateCommission((prev) => ({ ...prev, [name]: value }));
+
+    if (
+      name === 'balance' ||
+      name === 'payee' ||
+      name === 'amount' ||
+      name === 'paid_amount'
+    ) {
+      const sanitizedValue = value.replace(/[^0-9]/g, '');
+      if (sanitizedValue === '' || Number(sanitizedValue) >= 0) {
+        setCreateCommission((prev) => ({ ...prev, [name]: sanitizedValue }));
+        setErrors((prevErrors) => ({ ...prevErrors, [name]: '' }));
+      } else {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          [name]: 'Invalid input. Please enter a non-negative number.',
+        }));
       }
     } else {
       setCreateCommission((prev) => ({ ...prev, [name]: value }));
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (handleValidation()) {
       if (editMode) {
@@ -268,7 +303,7 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                   />
                   {errors?.amount && (
                     <span style={{ display: 'block', color: '#FF204E' }}>
-                      {errors.amount}
+                      {errors.paid_amount}
                     </span>
                   )}
                 </div>

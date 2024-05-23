@@ -8,7 +8,7 @@ export const AdjustmentsColumns: Column[] = [
     isCheckbox: true,
   },
   {
-    name: 'customer_name',
+    name: 'customer',
     displayName: 'Customer',
     type: 'string',
     isCheckbox: false,

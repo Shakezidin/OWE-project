@@ -24,6 +24,7 @@ import { PayScheduleModel } from '../../../../core/models/configuration/create/P
 import SelectOption from '../../../components/selectOption/SelectOption';
 import { validateConfigForm } from '../../../../utiles/configFormValidation';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/arSlice';
+import { FormInput } from '../../../../core/models/data_models/typesModel';
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
@@ -62,7 +63,7 @@ const CreatedAr: React.FC<payScheduleProps> = ({
     getNewFormData();
   }, []);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
     setCreateArData((prevData) => ({
       ...prevData,
@@ -105,7 +106,13 @@ const CreatedAr: React.FC<payScheduleProps> = ({
     }
 
     if (editMode) {
-      dispatch(updateAr({ ...createArData, record_id: editData?.record_id!,amount: parseFloat(createArData.amount), }));
+      dispatch(
+        updateAr({
+          ...createArData,
+          record_id: editData?.record_id!,
+          amount: parseFloat(createArData.amount),
+        })
+      );
     } else {
       dispatch(
         createAr({
@@ -162,7 +169,14 @@ const CreatedAr: React.FC<payScheduleProps> = ({
                     value={createArData.amount}
                     name="amount"
                     placeholder={'Enter'}
-                    onChange={(e) => handleInputChange(e)}
+                    onChange={(e) => {
+                      const sanitizedValue = e.target.value.replace(
+                        /[^0-9.]/g,
+                        ''
+                      );
+                      e.target.value = sanitizedValue;
+                      handleInputChange(e);
+                    }}
                   />
                   {errors.amount && (
                     <span className="error">{errors.amount}</span>

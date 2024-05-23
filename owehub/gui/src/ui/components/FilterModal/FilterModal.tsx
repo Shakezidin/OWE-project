@@ -331,7 +331,7 @@ const FilterModal: React.FC<TableProps> = ({
               type="reset"
               onClick={() => {
                 handleCloseModal();
-                const deepCopy = JSON.parse(JSON.stringify(applyFilters))
+                const deepCopy = JSON.parse(JSON.stringify(applyFilters));
                 setFilters(deepCopy);
               }}
             />
