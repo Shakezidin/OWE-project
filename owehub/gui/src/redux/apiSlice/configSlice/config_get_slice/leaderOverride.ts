@@ -56,6 +56,7 @@ const leaderOverride = createSlice({
       .addCase(createleaderOverride.fulfilled, (state, action) => {
         state.isFormSubmitting = false;
         state.isSuccess = true;
+        toast.success('Form submission completed');
       })
       .addCase(createleaderOverride.rejected, (state, action) => {
         state.isFormSubmitting = false;
@@ -68,14 +69,14 @@ const leaderOverride = createSlice({
         state.isFormSubmitting = true;
       })
       .addCase(updateleaderOverride.fulfilled, (state, action) => {
+        toast.success('Form submission completed');
         state.isFormSubmitting = false;
         state.isSuccess = true;
-        toast.success('Form submission completed');
       })
       .addCase(updateleaderOverride.rejected, (state, action) => {
+        toast.error(action.payload as string);
         state.isFormSubmitting = false;
         state.error = action.payload as string;
-        toast.error(action.payload as string);
       });
   },
 });

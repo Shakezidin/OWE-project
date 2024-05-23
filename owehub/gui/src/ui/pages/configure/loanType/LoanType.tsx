@@ -253,6 +253,7 @@ const LoanType = () => {
             loanData={editedLoanData}
             editMode={editMode}
             page_number={currentPage}
+            filters={filters}
             page_size={itemsPerPage}
             handleClose={handleClose}
           />

@@ -172,7 +172,7 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                     )}
                   />
                   {errors?.partner && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.partner}
                     </span>
                   )}
@@ -194,7 +194,7 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                     )}
                   />
                   {errors?.saleType && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.saleType}
                     </span>
                   )}
@@ -210,7 +210,7 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                     onChange={handleChange}
                   />
                   {errors?.ptoPay && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.ptoPay}
                     </span>
                   )}
@@ -228,7 +228,7 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                     onChange={handleChange}
                   />
                   {errors?.redline && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.redline}
                     </span>
                   )}
@@ -244,7 +244,7 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                     onChange={handleChange}
                   />
                   {errors?.permitMax && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.permitMax}
                     </span>
                   )}
@@ -269,7 +269,7 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                   />
 
                   {errors?.state && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.state}
                     </span>
                   )}
@@ -288,7 +288,7 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                   />
 
                   {errors?.permitPay && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.permitPay}
                     </span>
                   )}
@@ -305,7 +305,7 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                   />
 
                   {errors?.installPay && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.installPay}
                     </span>
                   )}
@@ -329,7 +329,7 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                     )}
                   />
                   {errors?.installer && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.installer}
                     </span>
                   )}
@@ -348,7 +348,7 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                   />
 
                   {errors?.calcDate && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.calcDate}
                     </span>
                   )}
@@ -367,8 +367,8 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                     }}
                   />
                   {errors?.start && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
-                      {errors.start.replace('start', 'start date')}
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                      {errors.start.replace('Start', 'Start date')}
                     </span>
                   )}
                 </div>
@@ -388,8 +388,8 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                     onChange={handleChange}
                   />
                   {errors?.end && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
-                      {errors.end.replace('end', 'end date')}
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize",}}>
+                      {errors.end.replace('End', 'end date')}
                     </span>
                   )}
                 </div>

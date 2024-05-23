@@ -54,9 +54,6 @@ export const createLoanFee = createAsyncThunk(
         return rejectWithValue((data as Error).message);
       }
 
-      await dispatch(
-        getLoanFee({ page_number: 1, page_size: 10, archived: false })
-      );
       return data.data;
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -72,9 +69,7 @@ export const updateLoanFee = createAsyncThunk(
       if (data.status > 201 || data instanceof Error) {
         return rejectWithValue((data as Error).message);
       }
-      await dispatch(
-        getLoanFee({ page_number: 1, page_size: 10, archived: false })
-      );
+    
       return data.data;
     } catch (error) {
       return rejectWithValue((error as Error).message);

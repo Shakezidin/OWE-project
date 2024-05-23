@@ -20,7 +20,6 @@ import {
 } from '../../../../core/models/data_models/SelectDataModel';
 import { addDays, format } from 'date-fns';
 import SelectOption from '../../../components/selectOption/SelectOption';
-import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/loanFeeSlice';
 import { FormInput } from '../../../../core/models/data_models/typesModel';
 interface payScheduleProps {
   handleClose: () => void;
@@ -50,7 +49,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
     {} as typeof newFormData
   );
 
-  const { isSuccess } = useAppSelector((state) => state.loanFeeSlice);
+  const { isFormSubmitting } = useAppSelector((state) => state.loanFeeSlice);
 
   const tableData = {
     tableNames: [
@@ -75,7 +74,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
       }
       if (!newFormData[key as keyof typeof newFormData]) {
         error[key as keyof typeof newFormData] =
-          `${key.toLocaleLowerCase()} is required`;
+          `${key} is required`;
       }
     }
     setErrors({ ...error });
@@ -163,12 +162,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
     }
   };
 
-  useEffect(() => {
-    if (isSuccess) {
-      handleClose();
-      dispatch(resetSuccess());
-    }
-  }, [isSuccess]);
+
 
   return (
     <div className="transparent-model">
@@ -195,7 +189,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     onChange={handleChange}
                   />
                   {errors?.dlrMu && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.dlrMu}
                     </span>
                   )}
@@ -216,7 +210,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     )}
                   />
                   {errors?.dealerName && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.dealerName}
                     </span>
                   )}
@@ -237,8 +231,8 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     )}
                   />
                   {errors?.stateName && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
-                      {errors.stateName}
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                      {errors.stateName.replace("stateName","state")}
                     </span>
                   )}
                 </div>
@@ -260,7 +254,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     )}
                   />
                   {errors?.loanType && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.loanType}
                     </span>
                   )}
@@ -284,7 +278,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     )}
                   />
                   {errors?.installerName && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.installerName}
                     </span>
                   )}
@@ -307,7 +301,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     }}
                   />
                   {errors?.dlrCost && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.dlrCost}
                     </span>
                   )}
@@ -332,7 +326,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     }}
                   />
                   {errors?.oweCost && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.oweCost}
                     </span>
                   )}
@@ -354,8 +348,8 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     }}
                   />
                   {errors?.startDate && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
-                      {errors.startDate}
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                      {errors.startDate.replace("startDate","start date")}
                     </span>
                   )}
                 </div>
@@ -378,8 +372,8 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     onChange={handleChange}
                   />
                   {errors?.endDate && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
-                      {errors.endDate}
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                      {errors.endDate.replace("endDate","end date")}
                     </span>
                   )}
                 </div>
@@ -396,6 +390,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
           <ActionButton
             title={editMode === false ? 'Save' : 'Update'}
             type="submit"
+            disabled={isFormSubmitting}
             onClick={() => {}}
           />
         </div>

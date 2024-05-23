@@ -287,7 +287,7 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
                     onChange={(e) => handlePayInputChange(e)}
                   />
                   {errors?.end_date && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.end_date.replace('end_date', 'end date')}
                     </span>
                   )}

@@ -191,7 +191,7 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.unique_id && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.unique_id.replace('unique_id', 'unique id')}
                     </span>
                   )}
@@ -206,7 +206,7 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.payee && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.payee}
                     </span>
                   )}
@@ -221,7 +221,7 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.amount && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.amount}
                     </span>
                   )}
@@ -238,7 +238,7 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.balance && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.balance}
                     </span>
                   )}
@@ -254,7 +254,7 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.description && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.description}
                     </span>
                   )}
@@ -269,7 +269,7 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.start_date && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.start_date.replace('start_date', 'start date')}
                     </span>
                   )}
@@ -286,7 +286,7 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.end_date && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.end_date.replace('end_date', 'end date')}
                     </span>
                   )}
@@ -302,7 +302,7 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.amount && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.paid_amount}
                     </span>
                   )}

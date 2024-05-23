@@ -168,7 +168,7 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
                     )}
                   />
                   {errors?.partner && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.partner}
                     </span>
                   )}
@@ -186,7 +186,7 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
                       )}
                     />
                     {errors?.installer && (
-                      <span style={{ display: 'block', color: '#FF204E' }}>
+                      <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                         {errors.installer}
                       </span>
                     )}
@@ -202,7 +202,7 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
                     )}
                   />
                   {errors?.state && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.state}
                     </span>
                   )}
@@ -220,7 +220,7 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.sale_type && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.sale_type.replace('sale_type', 'sale type')}
                     </span>
                   )}
@@ -235,7 +235,7 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.sale_price && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.sale_price.replace('sale_price', 'sale pricee')}
                     </span>
                   )}
@@ -252,7 +252,7 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
                     )}
                   />
                   {errors?.rep_type && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.sale_price.replace(
                         'rep_type',
                         'representative type'
@@ -273,7 +273,7 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
                       onChange={(e) => handleInputChange(e)}
                     />
                     {errors?.rate && (
-                      <span style={{ display: 'block', color: '#FF204E' }}>
+                      <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                         {errors.rate}
                       </span>
                     )}
@@ -288,7 +288,7 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
                       onChange={(e) => handleInputChange(e)}
                     />
                     {errors?.rl && (
-                      <span style={{ display: 'block', color: '#FF204E' }}>
+                      <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                         {errors.rl.replace('rl', 'rate list')}
                       </span>
                     )}
@@ -305,7 +305,7 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
                       onChange={(e) => handleInputChange(e)}
                     />
                     {errors?.start_date && (
-                      <span style={{ display: 'block', color: '#FF204E' }}>
+                      <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                         {errors.start_date.replace('start_date', 'start date')}
                       </span>
                     )}
@@ -320,7 +320,7 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
                       onChange={(e) => handleInputChange(e)}
                     />
                     {errors?.end_date && (
-                      <span style={{ display: 'block', color: '#FF204E' }}>
+                      <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                         {errors.end_date.replace('end_date', 'end date')}
                       </span>
                     )}

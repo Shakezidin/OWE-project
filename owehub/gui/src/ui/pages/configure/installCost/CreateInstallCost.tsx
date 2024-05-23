@@ -137,7 +137,7 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
                   />
 
                   {errors?.cost && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.cost}
                     </span>
                   )}
@@ -155,7 +155,7 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
                     }}
                   />
                   {errors?.startDate && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.startDate}
                     </span>
                   )}
@@ -179,7 +179,7 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
                     onChange={handleChange}
                   />
                   {errors?.endDate && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
                       {errors.endDate}
                     </span>
                   )}

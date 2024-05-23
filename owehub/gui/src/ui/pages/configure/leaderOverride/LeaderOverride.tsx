@@ -23,6 +23,8 @@ import {
   ILeaderRow,
   getleaderOverride,
 } from '../../../../redux/apiActions/config/leaderOverrideAction';
+import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/leaderOverride';
+
 import CheckBox from '../../../components/chekbox/CheckBox';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
@@ -52,6 +54,7 @@ const LeaderOverride = () => {
   const {
     data: commissionList,
     isLoading,
+    isSuccess,
     count,
   } = useAppSelector((state) => state.leaderOverride);
   const [sortKey, setSortKey] = useState('');
@@ -66,6 +69,22 @@ const LeaderOverride = () => {
     };
     dispatch(getleaderOverride(pageNumber));
   }, [dispatch, currentPage, viewArchived, filters]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      handleClose();
+      const pageNumber = {
+        page_number: currentPage,
+        page_size: itemsPerPage,
+        archived: viewArchived,
+        filters,
+      };
+      dispatch(getleaderOverride(pageNumber));
+    }
+    return () => {
+      isSuccess && dispatch(resetSuccess());
+    };
+  }, [isSuccess, currentPage, viewArchived, filters]);
 
   const filter = () => {
     setFilterOpen(true);
