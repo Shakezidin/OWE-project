@@ -10,12 +10,13 @@ import SelectTable from '../userTableList/SeletTable';
 import UserBasedInput from './UserBasedInput';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import { CreateUserModel } from '../../../../core/models/api_models/UserManagementModel';
-import { useAppSelector } from '../../../../redux/hooks';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import Loading from '../../../components/loader/Loading';
 import { ALL_USER_ROLE_LIST } from '../../../../resources/static_data/Constant';
 import './Userboard.css';
 import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
 import { FormInput } from '../../../../core/models/data_models/typesModel';
+import { getDataTableName } from '../../../../redux/apiActions/dataTableAction';
 interface createUserProps {
   editMode: boolean;
   handleClose: () => void;
@@ -39,7 +40,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
   tablePermissions,
   setTablePermissions,
 }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [phoneNumberError, setPhoneNumberError] = useState('');
   const [dbAccess, setDbAcess] = useState(false);
   const { loading, formData } = useAppSelector(
@@ -115,7 +116,9 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
       setDbAcess(false);
     }
   }, [selectedOption, tables]);
-
+  useEffect(() => {
+    dispatch(getDataTableName({get_all_table:true}));
+  }, []);
   /** render ui */
   return (
     <div className="transparent-model">

@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { CSVLink } from 'react-csv';
 import { ICONS } from '../../../icons/Icons';
 import TableHeader from '../../../components/tableHeader/TableHeader';
-import { fetchCommissions } from '../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice';
+import { getDealerCredit } from '../../../../redux/apiActions/config/dealerCreditAction';
 import FilterModal from '../../../components/FilterModal/FilterModal';
 // import FilterCommission from "./FilterCommission";
 
@@ -27,6 +27,9 @@ import DataNotFound from '../../../components/loader/DataNotFound';
 import { ROUTES } from '../../../../routes/routes';
 import { DealerCreditColumn } from '../../../../resources/static_data/configureHeaderData/dealerCreditColumn';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
+import MicroLoader from '../../../components/loader/MicroLoader';
+import FilterHoc from '../../../components/FilterModal/FilterHoc';
+import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 interface Column {
   name: string;
   displayName: string;
@@ -55,27 +58,22 @@ const DealerCredit: React.FC = () => {
   const [viewArchived, setViewArchived] = useState<boolean>(false);
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [filters, setFilters] = useState<FilterModel[]>([]);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
       archived: viewArchived,
+      filters
     };
-    dispatch(fetchCommissions(pageNumber));
-  }, [dispatch, currentPage, viewArchived]);
+    dispatch(getDealerCredit(pageNumber));
+  }, [dispatch, currentPage, viewArchived, filters]);
 
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
 
-  const fetchFunction = (req: any) => {
-    const pageNumber = {
-      page_number: currentPage,
-      page_size: itemsPerPage,
-      archived: viewArchived,
-    };
-    dispatch(fetchCommissions({ pageNumber, ...req }));
-  };
+  
 
   const goToNextPage = () => {
     setCurrentPage(currentPage + 1);
@@ -137,20 +135,10 @@ const DealerCredit: React.FC = () => {
       }
     });
   }
-  if (error) {
-    return (
-      <div className="loader-container">
-        <Loading />
-      </div>
-    );
-  }
-  if (loading) {
-    return (
-      <div className="loader-container">
-        <Loading /> {loading}
-      </div>
-    );
-  }
+  const fetchFunction = (req: any) => {
+    setCurrentPage(1);
+    setFilters(req.filters);
+  };
   return (
     <div className="comm">
       <Breadcrumb
@@ -190,21 +178,24 @@ const DealerCredit: React.FC = () => {
              />} */}
         {open && (
           <CreateDealerCredit
-            commission={editedCommission}
-            editMode={editMode}
-            handleClose={handleClose}
+          editMode={editMode}
+          setViewArchived={setViewArchived}
+          editData={editedCommission}
+          handleClose={handleClose}
           />
         )}
 
-        {filterOPen && (
-          <FilterModal
-            handleClose={filterClose}
-            columns={DealerCreditColumn}
-            page_number={currentPage}
-            fetchFunction={fetchFunction}
-            page_size={itemsPerPage}
-          />
-        )}
+         
+        <FilterHoc
+          isOpen={filterOPen}
+          resetOnChange={viewArchived}
+          handleClose={filterClose}
+          columns={DealerCreditColumn}
+          page_number={currentPage}
+          fetchFunction={fetchFunction}
+          page_size={itemsPerPage}
+        />
+
         <div
           className="TableContainer"
           style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}
@@ -267,8 +258,7 @@ const DealerCredit: React.FC = () => {
                     <td>{el.rl}</td>
                     <td>{el.rl}</td>
                     <td>{el.rate}</td>
-                    <td>{el.start_date}</td>
-                    <td>{el.end_date}</td>
+                
                     <td>
                       <div className="action-icon">
                         <div className="" style={{ cursor: 'pointer' }}>

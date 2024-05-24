@@ -7,6 +7,7 @@ import Pagination from '../../../components/pagination/Pagination';
 import { getAnyTableData } from '../../../../redux/apiActions/dataTableAction';
 import { Tooltip as ReactTooltip } from 'react-tooltip';
 import DataNotFound from '../../../components/loader/DataNotFound';
+import MicroLoader from '../../../components/loader/MicroLoader';
 
 interface RowData {
   [key: string]: string | number | null; // Define possible data types for table cells
@@ -18,7 +19,9 @@ const DataTablle: React.FC = () => {
   const data: RowData[] = useAppSelector(
     (state) => state.dataTableSlice.tableData
   );
-  const { dbCount, option } = useAppSelector((state) => state.dataTableSlice);
+  const { dbCount, option, isLoading } = useAppSelector(
+    (state) => state.dataTableSlice
+  );
   const loading = useAppSelector((state) => state.dealer.loading);
   const error = useAppSelector((state) => state.dealer.error);
 
@@ -72,13 +75,12 @@ const DataTablle: React.FC = () => {
   }, [dispatch, currentPage, selectedTable]);
 
   useEffect(() => {
-    if (option.length) {
+   
       setSelectedTable({
-        label: option?.[0].table_name,
-        value: option?.[0].table_name,
-      });
-    }
-  }, [option?.length]);
+        label: option?.[0]?.table_name,
+        value: option?.[0]?.table_name,
+      })
+  }, [option]);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const paginate = (pageNumber: number) => {
@@ -93,13 +95,7 @@ const DataTablle: React.FC = () => {
     dispatch(setCurrentPage(currentPage - 1));
   };
 
-  const filter = () => {
-  
-  };
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  const filter = () => {};
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -127,139 +123,146 @@ const DataTablle: React.FC = () => {
         selectedTable={selectedTable}
         setSelectedTable={setSelectedTable}
       />
-      {data && data.length > 0 ? <>
-        <div
-        className="TableContainer"
-        style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}
-      >
-        <table>
-          <thead>
-            <tr>
-              <th>S.No</th>
-              {orderedColumns?.map?.((columnName, index) => (
-                <th style={{ textTransform: 'capitalize' }} key={index}>
-                  {columnName?.replaceAll?.('_', ' ')}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {data?.map?.((item, rowIndex) => (
-              <tr key={rowIndex}>
-                <td>{startIndex + rowIndex + 1}</td>
-                {orderedColumns.map((columnName, colIndex) => (
-                  <td key={colIndex}>
-                    {columnName === 'status' ? (
-                      item[columnName] === 'Active' ? (
-                        <span style={{ color: '#15C31B' }}>
-                          <span
-                            style={{
-                              display: 'inline-block',
-                              width: '8px',
-                              height: '8px',
-                              borderRadius: '50%',
-                              backgroundColor: '#15C31B',
-                              marginRight: '5px',
-                            }}
-                          ></span>
-                          Active
-                        </span>
-                      ) : (
-                        <span style={{ color: '#F82C2C' }}>
-                          <span
-                            style={{
-                              display: 'inline-block',
-                              width: '8px',
-                              height: '8px',
-                              borderRadius: '50%',
-                              backgroundColor: '#F82C2C',
-                              marginRight: '5px',
-                            }}
-                          ></span>
-                          Inactive
-                        </span>
-                      )
-                    ) : columnName === 'details' ? (
-                      <>
-                        {item.details ? (
-                          typeof item.details === 'string' ? (
-                            <>
-                              {item.details.length > 5 ? (
+      {isLoading || loading ? (
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <MicroLoader />
+        </div>
+      ) : data && data.length > 0 ? (
+        <>
+          <div
+            className="TableContainer"
+            style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}
+          >
+            <table>
+              <thead>
+                <tr>
+                  <th>S.No</th>
+                  {orderedColumns?.map?.((columnName, index) => (
+                    <th style={{ textTransform: 'capitalize' }} key={index}>
+                      {columnName?.replaceAll?.('_', ' ')}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {data?.map?.((item, rowIndex) => (
+                  <tr key={rowIndex}>
+                    <td>{startIndex + rowIndex + 1}</td>
+                    {orderedColumns.map((columnName, colIndex) => (
+                      <td key={colIndex}>
+                        {columnName === 'status' ? (
+                          item[columnName] === 'Active' ? (
+                            <span style={{ color: '#15C31B' }}>
+                              <span
+                                style={{
+                                  display: 'inline-block',
+                                  width: '8px',
+                                  height: '8px',
+                                  borderRadius: '50%',
+                                  backgroundColor: '#15C31B',
+                                  marginRight: '5px',
+                                }}
+                              ></span>
+                              Active
+                            </span>
+                          ) : (
+                            <span style={{ color: '#F82C2C' }}>
+                              <span
+                                style={{
+                                  display: 'inline-block',
+                                  width: '8px',
+                                  height: '8px',
+                                  borderRadius: '50%',
+                                  backgroundColor: '#F82C2C',
+                                  marginRight: '5px',
+                                }}
+                              ></span>
+                              Inactive
+                            </span>
+                          )
+                        ) : columnName === 'details' ? (
+                          <>
+                            {item.details ? (
+                              typeof item.details === 'string' ? (
                                 <>
-                                  {item.details.slice(0, 5)}...
-                                  <button
-                                    onClick={() =>
-                                      setOpenTooltipIndex(
-                                        openTooltipIndex === rowIndex
-                                          ? null
-                                          : rowIndex
-                                      )
-                                    }
-                                    data-tooltip-id={`tooltip-${rowIndex}`}
-                                    data-tooltip-content={item.details}
-                                    data-tooltip-place="bottom"
-                                    style={{
-                                      marginLeft: '5px',
-                                      border: 'none',
-                                      background: 'none',
-                                      color:
-                                        openTooltipIndex === rowIndex
-                                          ? '#F82C2C'
-                                          : '#3083e5',
-                                      cursor: 'pointer',
-                                    }}
-                                  >
-                                    {openTooltipIndex === rowIndex
-                                      ? 'Show less'
-                                      : 'Show more'}
-                                  </button>
-                                  <ReactTooltip
-                                    id={`tooltip-${rowIndex}`}
-                                    className="custom-tooltip"
-                                    isOpen={openTooltipIndex === rowIndex}
-                                  />
+                                  {item.details.length > 5 ? (
+                                    <>
+                                      {item.details.slice(0, 5)}...
+                                      <button
+                                        onClick={() =>
+                                          setOpenTooltipIndex(
+                                            openTooltipIndex === rowIndex
+                                              ? null
+                                              : rowIndex
+                                          )
+                                        }
+                                        data-tooltip-id={`tooltip-${rowIndex}`}
+                                        data-tooltip-content={item.details}
+                                        data-tooltip-place="bottom"
+                                        style={{
+                                          marginLeft: '5px',
+                                          border: 'none',
+                                          background: 'none',
+                                          color:
+                                            openTooltipIndex === rowIndex
+                                              ? '#F82C2C'
+                                              : '#3083e5',
+                                          cursor: 'pointer',
+                                        }}
+                                      >
+                                        {openTooltipIndex === rowIndex
+                                          ? 'Show less'
+                                          : 'Show more'}
+                                      </button>
+                                      <ReactTooltip
+                                        id={`tooltip-${rowIndex}`}
+                                        className="custom-tooltip"
+                                        isOpen={openTooltipIndex === rowIndex}
+                                      />
+                                    </>
+                                  ) : (
+                                    item.details
+                                  )}
                                 </>
                               ) : (
-                                item.details
-                              )}
-                            </>
-                          ) : (
-                            item.details.toString()
-                          )
+                                item.details.toString()
+                              )
+                            ) : (
+                              replaceEmptyOrNull(item[columnName])
+                            )}
+                          </>
                         ) : (
                           replaceEmptyOrNull(item[columnName])
                         )}
-                      </>
-                    ) : (
-                      replaceEmptyOrNull(item[columnName])
-                    )}
-                  </td>
+                      </td>
+                    ))}
+                  </tr>
                 ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <div className="page-heading-container">
-        <p className="page-heading">
-          {start} - {end > dbCount ? dbCount : end} of {dbCount} item
-        </p>
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            paginate={paginate}
-            currentPageData={data}
-            goToNextPage={goToNextPage}
-            goToPrevPage={goToPrevPage}
-            perPage={itemsPerPage}
-          />
-      </div></>:
-       <div className="data-not-found">
-       <DataNotFound />
-       <h3>You don't have any table permissions.</h3>
-       <br/>
-     </div>
-     }
+              </tbody>
+            </table>
+          </div>
+          <div className="page-heading-container">
+            <p className="page-heading">
+              {start} - {end > dbCount ? dbCount : end} of {dbCount} item
+            </p>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              paginate={paginate}
+              currentPageData={data}
+              goToNextPage={goToNextPage}
+              goToPrevPage={goToPrevPage}
+              perPage={itemsPerPage}
+            />
+          </div>
+        </>
+      ) : (
+        <div className="data-not-found">
+          <DataNotFound />
+          <h3>You don't have any table permissions.</h3>
+          <br />
+        </div>
+      )}
     </div>
   );
 };
