@@ -81,7 +81,7 @@ const MyProfile = () => {
       zipcode: zipCode,
       country: country,
       city: city,
-      state,
+      state: state,
     };
     Promise.resolve(dispatch(updateUser(data)))
     .then(()=>{
@@ -96,6 +96,7 @@ const MyProfile = () => {
     setStreet('');
     setZipCode('');
     setCountry('');
+    setState('');
   };
 
   const fetchStateOptions = async () => {
@@ -118,7 +119,8 @@ const MyProfile = () => {
     street: '',
     zipCode: '',
     country: '',
-    city: ''
+    city: '',
+    state: ''
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -215,7 +217,8 @@ const MyProfile = () => {
                     street: '',
                     zipCode: '',
                     country: '',
-                    city: ''
+                    city: '',
+                    state: ''
                   })
                 }}
               >
