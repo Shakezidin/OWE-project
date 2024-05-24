@@ -156,11 +156,7 @@
   padding: 1rem;
   align-items: center;
 }
-.reset-Update {
-  display: flex;
-  justify-content: right;
-  padding: 1rem;
-}
+
 .reset-Update button {
   /* width: 280px; */
   width: 28%;
@@ -343,4 +339,19 @@
   position: static !important;
   display: block;
   margin-bottom: -15px;
+}
+
+.reset-profile-form{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.reset-pass-fields{
+  display: flex;
+  justify-content: space-between;
+}
+.reset-Update {
+  display: flex;
+  justify-content: right;
+  padding: 1rem;
 }
