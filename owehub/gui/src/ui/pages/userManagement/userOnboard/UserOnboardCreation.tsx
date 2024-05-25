@@ -17,6 +17,9 @@ import './Userboard.css';
 import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
 import { FormInput } from '../../../../core/models/data_models/typesModel';
 import { getDataTableName } from '../../../../redux/apiActions/dataTableAction';
+import 'react-phone-number-input/style.css';
+import PhoneInput from 'react-phone-number-input';
+
 interface createUserProps {
   editMode: boolean;
   handleClose: () => void;
@@ -117,9 +120,13 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
     }
   }, [selectedOption, tables]);
   useEffect(() => {
-    dispatch(getDataTableName({get_all_table:true}));
+    dispatch(getDataTableName({ get_all_table: true }));
   }, []);
   /** render ui */
+
+  console.log("jhg", formData.mobile_number)
+
+
   return (
     <div className="transparent-model">
       {loading && (
@@ -209,24 +216,27 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                       disabled={formData.isEdit}
                     />
                   </div>
+
                   <div className="create-input-field">
-                    <Input
-                      type={'text'}
-                      label="Phone Number"
+                    <label className="inputLabel">Phone Number</label>
+                    <PhoneInput
+                      international
+                      defaultCountry="US"
                       value={formData.mobile_number}
-                      placeholder={'Phone Number'}
-                      onChange={(e) => handleInputChange(e)}
-                      name={'mobile_number'}
+                      onChange={(value) => {
+                        console.log("date",value)
+                        dispatch(updateUserForm({ field: 'mobile_number', value }));
+                      }}
+                      placeholder="Enter phone number"
                     />
-                    {phoneNumberError && (
-                      <p className="error-message">{phoneNumberError}</p>
-                    )}
+                    {phoneNumberError && <p className="error-message">{phoneNumberError}</p>}
                   </div>
+
                   {formData.role_name === 'Admin' ||
-                  formData.role_name === 'SubDealer Owner' ||
-                  formData.role_name === 'DB User' ||
-                  formData.role_name === 'Dealer Owner' ||
-                  formData.role_name === 'Finance Admin' ? null : (
+                    formData.role_name === 'SubDealer Owner' ||
+                    formData.role_name === 'DB User' ||
+                    formData.role_name === 'Dealer Owner' ||
+                    formData.role_name === 'Finance Admin' ? null : (
                     <div className="create-input-field">
                       <label className="inputLabel-select selected-fields-onboard">
                         Dealer Owner
@@ -347,9 +357,8 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                     placeholder="Type"
                   ></textarea>
                   <p
-                    className={`character-count ${
-                      formData.description.length >= 255 ? 'exceeded' : ''
-                    }`}
+                    className={`character-count ${formData.description.length >= 255 ? 'exceeded' : ''
+                      }`}
                   >
                     {formData.description.length}/255 characters
                   </p>
@@ -364,7 +373,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
             onClick={handleClose}
             type={'button'}
           />
-          <ActionButton title={'Create'} onClick={() => {}} type={'submit'} />
+          <ActionButton title={'Create'} onClick={() => { }} type={'submit'} />
         </div>
       </form>
     </div>
