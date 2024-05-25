@@ -21,6 +21,10 @@ import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
 import Loading from '../../../components/loader/Loading';
+import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
+import DataNotFound from '../../../components/loader/DataNotFound';
+import MicroLoader from '../../../components/loader/MicroLoader';
+import FilterHoc from '../../../components/FilterModal/FilterHoc';
 const AdderCredit = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -30,49 +34,53 @@ const AdderCredit = () => {
 
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const { data } = useAppSelector((state) => state.addercredit);
+  const { data, isLoading, totalCount } = useAppSelector(
+    (state) => state.addercredit
+  );
   //   const loading = useAppSelector((state) => state.timelineSla.loading);
   const error = useAppSelector((state) => state.timelineSla.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
   const [editedAdderCredit, setEditedAdderCredit] = useState(null);
+  const [refetch, setRefetch] = useState(1);
   const itemsPerPage = 10;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
-  const currentPage = useAppSelector(
-    (state) => state.paginationType.currentPage
-  );
+  const [currentPage, setCurrentPage] = useState(1);
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [filters, setFilters] = useState<FilterModel[]>([]);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
+      filters,
+      archived: viewArchived,
     };
     dispatch(fetchAdderCredit(pageNumber));
-  }, [dispatch, currentPage]);
+  }, [dispatch, currentPage, filters, refetch, viewArchived]);
 
   const filter = () => {
     setFilterOpen(true);
   };
 
   const paginate = (pageNumber: number) => {
-    dispatch(setCurrentPage(pageNumber));
+    setCurrentPage(pageNumber);
   };
 
   const goToNextPage = () => {
-    dispatch(setCurrentPage(currentPage + 1));
+    setCurrentPage(currentPage + 1);
   };
 
   const goToPrevPage = () => {
-    dispatch(setCurrentPage(currentPage - 1));
+    setCurrentPage(currentPage - 1);
   };
-  const totalPages = Math.ceil(data?.length / itemsPerPage);
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
+  const endIndex = startIndex * itemsPerPage;
 
-  const currentPageData = data?.slice(startIndex, endIndex);
+  const currentPageData = data?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === data?.length;
   const handleSort = (key: any) => {
@@ -110,13 +118,9 @@ const AdderCredit = () => {
     handleOpen();
   };
 
-  const handleEditTimeLineSla = () => {
-    setEditMode(true);
-    setEditedAdderCredit(null);
-    handleOpen();
-  };
   const fetchFunction = (req: any) => {
-    dispatch(fetchAdderCredit(req));
+    setCurrentPage(1);
+    setFilters(req.filters);
   };
 
   const handleEdit = (data: any) => {
@@ -124,7 +128,7 @@ const AdderCredit = () => {
     setEditedAdderCredit(data);
     handleOpen();
   };
-  const handleArchiveClick = async (record_id: any) => {
+  const handleArchiveClick = async (record_id: number[]) => {
     const confirmed = await showAlert(
       'Are Your Sure',
       'This Action will archive your data',
@@ -132,7 +136,7 @@ const AdderCredit = () => {
       'No'
     );
     if (confirmed) {
-      const archived: number[] = [record_id];
+      const archived: number[] = record_id;
       let newValue = {
         record_id: archived,
         is_archived: true,
@@ -140,6 +144,8 @@ const AdderCredit = () => {
       const pageNumber = {
         page_number: currentPage,
         page_size: itemsPerPage,
+        filters,
+        archived: viewArchived,
       };
       const res = await postCaller('update_adder_credit_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
@@ -164,8 +170,18 @@ const AdderCredit = () => {
       <div className="commissionContainer">
         <TableHeader
           title="Adder Credit"
-          onPressViewArchive={() => {}}
-          onPressArchive={() => {}}
+          onPressViewArchive={() => {
+            setViewArchived((prev) => !prev);
+            setSelectAllChecked(false);
+            setSelectedRows(new Set());
+          }}
+          onPressArchive={() =>
+            handleArchiveClick(
+              Array.from(selectedRows).map(
+                (_, i: number) => currentPageData[i].record_id
+              )
+            )
+          }
           onPressFilter={() => filter()}
           onPressImport={() => {}}
           checked={isAllRowsSelected}
@@ -174,21 +190,23 @@ const AdderCredit = () => {
           onpressExport={() => {}}
           onpressAddNew={() => handleTimeLineSla()}
         />
-        {filterOPen && (
-          <FilterModal
-            handleClose={filterClose}
-            columns={AdderCreditsColumn}
-            page_number={currentPage}
-            fetchFunction={fetchFunction}
-            page_size={itemsPerPage}
-          />
-        )}
+
+        <FilterHoc
+          isOpen={filterOPen}
+          resetOnChange={viewArchived}
+          handleClose={filterClose}
+          columns={AdderCreditsColumn}
+          page_number={currentPage}
+          fetchFunction={fetchFunction}
+          page_size={itemsPerPage}
+        />
 
         {open && (
           <CreateAdderCredit
             editMode={editMode}
             editData={editedAdderCredit}
             handleClose={handleClose}
+            setRefetch={setRefetch}
           />
         )}
 
@@ -226,38 +244,45 @@ const AdderCredit = () => {
               </tr>
             </thead>
             <tbody>
-              {currentPageData?.length > 0
-                ? currentPageData?.map((el: any, i: any) => (
-                    <tr
-                      key={i}
-                      className={selectedRows.has(i) ? 'selected' : ''}
-                    >
-                      <td style={{ fontWeight: '500', color: 'black' }}>
-                        <div className="flex-check">
-                          <CheckBox
-                            checked={selectedRows.has(i)}
-                            onChange={() =>
-                              toggleRowSelection(
-                                i,
-                                selectedRows,
-                                setSelectedRows,
-                                setSelectAllChecked
-                              )
-                            }
-                          />
-                          {el.pay_scale}
-                        </div>
-                      </td>
-                      <td>{el.type}</td>
-                      <td>{el.max_rate}</td>
-                      <td>{el.min_rate}</td>
+              {isLoading ? (
+                <tr>
+                  <td colSpan={AdderCreditsColumn.length}>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <MicroLoader />
+                    </div>
+                  </td>
+                </tr>
+              ) : currentPageData?.length > 0 ? (
+                currentPageData?.map((el: any, i: number) => (
+                  <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
+                    <td style={{ fontWeight: '500', color: 'black' }}>
+                      <div className="flex-check">
+                        <CheckBox
+                          checked={selectedRows.has(i)}
+                          onChange={() =>
+                            toggleRowSelection(
+                              i,
+                              selectedRows,
+                              setSelectedRows,
+                              setSelectAllChecked
+                            )
+                          }
+                        />
+                        {el.unique_id}
+                      </div>
+                    </td>
+                    <td>{el.pay_scale}</td>
+                    <td>{el.type}</td>
+                    <td>{el.max_rate}</td>
+                    <td>{el.min_rate}</td>
 
-                      <td>
+                    <td>
+                      {!viewArchived && selectedRows.size < 2 && (
                         <div className="action-icon">
                           <div
                             className=""
                             style={{ cursor: 'pointer' }}
-                            onClick={() => handleArchiveClick(el.record_id)}
+                            onClick={() => handleArchiveClick([el.record_id])}
                           >
                             <img src={ICONS.ARCHIVE} alt="" />
                           </div>
@@ -269,28 +294,41 @@ const AdderCredit = () => {
                             <img src={ICONS.editIcon} alt="" />
                           </div>
                         </div>
-                      </td>
-                    </tr>
-                  ))
-                : null}
+                      )}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={AdderCreditsColumn.length}>
+                    <div className="data-not-found">
+                      <DataNotFound />
+                      <h3>Data Not Found</h3>
+                    </div>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
         <div className="page-heading-container">
-          <p className="page-heading">
-            {currentPage} - {totalPages} of {currentPageData?.length} item
-          </p>
-
           {data?.length > 0 ? (
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages} // You need to calculate total pages
-              paginate={paginate}
-              currentPageData={currentPageData}
-              goToNextPage={goToNextPage}
-              goToPrevPage={goToPrevPage}
-              perPage={itemsPerPage}
-            />
+            <>
+              <p className="page-heading">
+                {startIndex} - {endIndex > totalCount ? totalCount : endIndex}{' '}
+                of {currentPageData?.length} item
+              </p>
+
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages} // You need to calculate total pages
+                paginate={paginate}
+                currentPageData={currentPageData}
+                goToNextPage={goToNextPage}
+                goToPrevPage={goToPrevPage}
+                perPage={itemsPerPage}
+              />
+            </>
           ) : null}
         </div>
       </div>
