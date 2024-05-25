@@ -92,6 +92,8 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 		// fca      time.Time // af
 		pto time.Time // ag
 
+		payRateSubTotal float64 // verify the column number
+
 		status     string    // aj
 		statusDate time.Time // ak
 		// contractCalc       float64   // am
@@ -248,7 +250,7 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	adderTot = calculateAdderTotal(saleData.UniqueId, addr, autoAdder, rebate, referral)
 	netEpc = calculateEpcCalc(epcCalc, contractCalc, adderLF, SysSize)
 	adderPerKw = calculateAdderPerKW(dealer, adderLF, SysSize)
-	payRate = calculatePayRateSubTotal(dealer, payRateSemi, adderPerKw)
+	payRateSubTotal = calculatePayRateSubTotal(dealer, payRateSemi, adderPerKw)
 	commTotal = calculateCommTotal(dealer, payRate, SysSize, dealerPaymentBonus)
 	overdTotal = calculateOVRDTotal(dealer, payRate, SysSize)
 	statusCheck = calculateStatusCheck(dealer, status, expense, commTotal, credit, repPay)
@@ -316,6 +318,7 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	   =========================== short words used ============================ */
 
 	// this is for 1st sheet
+	outData["pay_rate_sub_total float"] = payRateSubTotal
 	outData["rl"] = rl
 	outData["pay_rate_semi"] = payRateSemi
 	outData["addr"] = addr
