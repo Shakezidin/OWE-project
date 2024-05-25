@@ -179,6 +179,7 @@ CREATE TABLE ap_calc_dealer_pay_calc (
     pto date,
  
     -- calculated fields
+    pay_rate_sub_total float,
     rl float,
     pay_rate_semi float,
     addr float,
@@ -249,7 +250,6 @@ CREATE TABLE ap_calc_dealer_pay_calc (
     rep_2_team   text,
     rate   float,
     adjustment   float,
-    pay_rate_sub_total float,
     min_rate   float,
     max_rate   float,
     r1_incentive   float,
