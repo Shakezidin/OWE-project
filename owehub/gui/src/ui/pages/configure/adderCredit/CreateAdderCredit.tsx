@@ -1,23 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Dispatch, SetStateAction } from 'react';
 
 import { ReactComponent as CROSS_BUTTON } from '../../../../resources/assets/cross_button.svg';
 import Input from '../../../components/text_input/Input';
-
 import { ActionButton } from '../../../components/button/ActionButton';
-import { updatePayForm } from '../../../../redux/apiSlice/configSlice/config_post_slice/createPayScheduleSlice';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-import {
-  installerOption,
-  partnerOption,
-  salesTypeOption,
-  stateOption,
-} from '../../../../core/models/data_models/SelectDataModel';
-import Select from 'react-select';
-import { paySaleTypeData } from '../../../../resources/static_data/StaticData';
-import { PayScheduleModel } from '../../../../core/models/configuration/create/PayScheduleModel';
-import SelectOption from '../../../components/selectOption/SelectOption';
 import {
   createAdderCredit,
   updateAdderCredit,
@@ -29,72 +17,66 @@ interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
   editData: any;
+  setRefetch: Dispatch<SetStateAction<number>>;
 }
 
 const CreateAdderCredit: React.FC<payScheduleProps> = ({
   handleClose,
   editMode,
   editData,
+  setRefetch
 }) => {
   const dispatch = useAppDispatch();
-  const { isSuccess } = useAppSelector((state) => state.addercredit);
-  function generateRandomId(length: number): string {
-    const characters =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const charactersLength = characters.length;
-    let result = '';
-
-    for (let i = 0; i < length; i++) {
-      const randomIndex = Math.floor(Math.random() * charactersLength);
-      result += characters.charAt(randomIndex);
-    }
-
-    return result;
-  }
+  const { isSuccess, isFormSubmitting } = useAppSelector(
+    (state) => state.addercredit
+  );
   const [createAdderCreditData, setAdderCreditData] = useState({
-    unique_id: editData?.unique_id || generateRandomId(6),
+    unique_id: editData?.unique_id || '',
     pay_scale: editData?.pay_scale || '',
     type: editData?.type || '',
     min_rate: editData?.min_rate || '',
     max_rate: editData?.max_rate || '',
   });
-  const [newFormData, setNewFormData] = useState<any>([]);
+  type TError = typeof createAdderCreditData;
+  const [errors, setErrors] = useState<TError>({} as TError);
 
-  const tableData = {
-    tableNames: ['partners', 'states', 'installers', 'sale_type'],
+  const handleValidation = () => {
+    const error: TError = {} as TError;
+    for (const key in createAdderCreditData) {
+      if (!createAdderCreditData[key as keyof typeof createAdderCreditData]) {
+        error[key as keyof typeof createAdderCreditData] =
+          `${key.replaceAll('_', ' ')} is required`;
+      }
+    }
+    setErrors({ ...error });
+    return Object.keys(error).length ? false : true;
   };
-  const getNewFormData = async () => {
-    const res = await postCaller(EndPoints.get_newFormData, tableData);
-    setNewFormData(res.data);
-  };
-  useEffect(() => {
-    getNewFormData();
-  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (editMode) {
-      dispatch(
-        updateAdderCredit({
-          unique_id: createAdderCreditData.unique_id,
-          pay_scale: createAdderCreditData.pay_scale,
-          type: createAdderCreditData.type,
-          max_rate: parseInt(createAdderCreditData.max_rate), // Parsing string to integer
-          min_rate: parseInt(createAdderCreditData.min_rate), // Parsing string to integer
-          record_id: editData?.record_id!,
-        })
-      );
-    } else {
-      dispatch(
-        createAdderCredit({
-          unique_id: createAdderCreditData.unique_id,
-          pay_scale: createAdderCreditData.pay_scale,
-          type: createAdderCreditData.type,
-          max_rate: parseInt(createAdderCreditData.max_rate), // Parsing string to integer
-          min_rate: parseInt(createAdderCreditData.min_rate), // Parsing string to integer
-        })
-      );
+    if (handleValidation()) {
+      if (editMode) {
+        dispatch(
+          updateAdderCredit({
+            unique_id: createAdderCreditData.unique_id,
+            pay_scale: createAdderCreditData.pay_scale,
+            type: createAdderCreditData.type,
+            max_rate: parseInt(createAdderCreditData.max_rate), // Parsing string to integer
+            min_rate: parseInt(createAdderCreditData.min_rate), // Parsing string to integer
+            record_id: editData?.record_id!,
+          })
+        );
+      } else {
+        dispatch(
+          createAdderCredit({
+            unique_id: createAdderCreditData.unique_id,
+            pay_scale: createAdderCreditData.pay_scale,
+            type: createAdderCreditData.type,
+            max_rate: parseInt(createAdderCreditData.max_rate), // Parsing string to integer
+            min_rate: parseInt(createAdderCreditData.min_rate), // Parsing string to integer
+          })
+        );
+      }
     }
   };
 
@@ -109,6 +91,7 @@ const CreateAdderCredit: React.FC<payScheduleProps> = ({
   useEffect(() => {
     if (isSuccess) {
       handleClose();
+      setRefetch(prev=>prev+1)
     }
     return () => {
       isSuccess && dispatch(resetSuccess());
@@ -133,12 +116,46 @@ const CreateAdderCredit: React.FC<payScheduleProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={'text'}
+                    label="Unique Id"
+                    value={createAdderCreditData.unique_id}
+                    name="unique_id"
+                    placeholder={'Enter'}
+                    onChange={(e) => handleInputChange(e)}
+                  />
+
+                  {errors?.unique_id && (
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.unique_id}
+                    </span>
+                  )}
+                </div>
+                <div className="create-input-field">
+                  <Input
+                    type={'text'}
                     label="Pay Scale"
                     value={createAdderCreditData.pay_scale}
                     name="pay_scale"
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
+
+                  {errors?.pay_scale && (
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.pay_scale}
+                    </span>
+                  )}
                 </div>
                 <div className="create-input-field">
                   <Input
@@ -149,26 +166,62 @@ const CreateAdderCredit: React.FC<payScheduleProps> = ({
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
+
+                  {errors?.type && (
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.type}
+                    </span>
+                  )}
                 </div>
                 <div className="create-input-field">
                   <Input
                     type={'text'}
-                    label="Max $"
+                    label="Max Rate"
                     value={createAdderCreditData.max_rate}
                     name="max_rate"
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
+
+                  {errors?.max_rate && (
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.max_rate}
+                    </span>
+                  )}
                 </div>
                 <div className="create-input-field">
                   <Input
                     type={'text'}
-                    label="Max %"
+                    label="Min Rate"
                     value={createAdderCreditData.min_rate}
                     name="min_rate"
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
+
+                  {errors?.min_rate && (
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.min_rate}
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
@@ -183,6 +236,7 @@ const CreateAdderCredit: React.FC<payScheduleProps> = ({
           <ActionButton
             title={editMode === false ? 'Save' : 'Update'}
             type="submit"
+            disabled={isFormSubmitting}
             onClick={() => {}}
           />
         </div>

@@ -13,6 +13,7 @@ interface IState {
   isLoading: boolean;
   isFormSubmitting: boolean;
   isSuccess: boolean;
+  totalCount: number;
 }
 
 const initialState: IState = {
@@ -21,6 +22,7 @@ const initialState: IState = {
   isLoading: false,
   isFormSubmitting: false,
   isSuccess: false,
+  totalCount: 0,
 };
 
 const adderResponsibility = createSlice({
@@ -40,7 +42,8 @@ const adderResponsibility = createSlice({
         fetchAdderResponsibility.fulfilled,
         (state, action: PayloadAction<any | null>) => {
           state.isLoading = false;
-          state.data = action.payload ? action.payload : [];
+          state.data = action.payload.list || [];
+          state.totalCount = action.payload.count;
         }
       )
       .addCase(fetchAdderResponsibility.rejected, (state, action) => {
@@ -53,10 +56,12 @@ const adderResponsibility = createSlice({
       .addCase(createAdderResponsibility.fulfilled, (state) => {
         state.isFormSubmitting = false;
         state.isSuccess = true;
+        toast.success(`Form submitted successfully`);
       })
       .addCase(createAdderResponsibility.rejected, (state, action) => {
         state.isFormSubmitting = false;
         state.error = action.payload as string;
+        toast.error(action.payload as string);
       })
       .addCase(updateAdderResponsibility.pending, (state, action) => {
         state.isFormSubmitting = true;
@@ -64,10 +69,12 @@ const adderResponsibility = createSlice({
       .addCase(updateAdderResponsibility.fulfilled, (state, action) => {
         state.isFormSubmitting = false;
         state.isSuccess = true;
+        toast.success(`Form submitted successfully`);
       })
       .addCase(updateAdderResponsibility.rejected, (state, action) => {
         state.isFormSubmitting = false;
         state.error = action.payload as string;
+        toast.error(action.payload as string);
       });
   },
 });

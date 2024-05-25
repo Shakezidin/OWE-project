@@ -5,6 +5,4 @@ export interface rateAdjustmentModel {
   adjustment: string;
   min_rate: string;
   max_rate: string;
-  start_date: string;
-  end_date: string;
 }

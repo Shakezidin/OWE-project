@@ -15,8 +15,7 @@ export const fetchApptSetters = createAsyncThunk(
   'apptsetters/fetchapptsetters',
   async (data: any) => {
     const response = await postCaller('get_appt_setters', data);
-
-    return response.data.appt_setters_list;
+    return {list:response.data.appt_setters_list,count:response.dbRecCount};
   }
 );
 
@@ -25,10 +24,9 @@ export const createApttSetters = createAsyncThunk(
   async (params: any, { rejectWithValue, dispatch }) => {
     try {
       const data = await postCaller('create_appt_setters', params);
-      if (data instanceof Error) {
+      if (data.status > 201) {
         return rejectWithValue((data as Error).message);
       }
-      await dispatch(fetchApptSetters({ page_number: 1, page_size: 10 }));
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -41,7 +39,9 @@ export const updateApptSetters = createAsyncThunk(
   async (params: any, { rejectWithValue, dispatch }) => {
     try {
       const data = await postCaller('update_appt_setters', params);
-      await dispatch(fetchApptSetters({ page_number: 1, page_size: 10 }));
+      if (data.status > 201) {
+        return rejectWithValue((data as Error).message);
+      }
       return data.data;
     } catch (error) {
       return rejectWithValue((error as Error).message);

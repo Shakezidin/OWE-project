@@ -2,22 +2,21 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { postCaller } from '../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints';
 
-interface RateAdjustmentsParams {
+export interface RateAdjustmentsParams {
   unique_id: string;
   position: string;
   adjustment: string;
   pay_scale: String;
   max_rate: number;
   min_rate: number;
-  start_date: string;
-  end_date: string;
+  record_id?: number;
 }
 export const fetchRateAdjustments = createAsyncThunk(
   'rateadjustment/fetchrateadjustments',
   async (data: any) => {
     const response = await postCaller(EndPoints.rateAdjustments, data);
-
-    return response.data.rate_adjustments_list;
+    const list = response.data.rate_adjustments_list || []
+    return {list,count:response.dbRecCount} ;
   }
 );
 
@@ -41,7 +40,7 @@ export const updateRateAdjustment = createAsyncThunk(
   async (param: any, { rejectWithValue, dispatch }) => {
     try {
       const data = await postCaller('update_rateadjustments', param);
-      await dispatch(fetchRateAdjustments({ page_number: 1, page_size: 10 }));
+      
       return data.data;
     } catch (error) {
       return rejectWithValue((error as Error).message);
