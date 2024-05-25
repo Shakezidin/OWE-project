@@ -126,7 +126,6 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
             createPayData
           );
           if ((await res?.status) === 200) {
-           
             handleClose();
             setIsPending(false);
             setRefetch((prev) => prev + 1);
@@ -140,7 +139,6 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
             cleanedFormData
           );
           if ((await res?.status) === 200) {
-           
             handleClose();
             setIsPending(false);
             setRefetch((prev) => prev + 1);
@@ -174,31 +172,10 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
                   <Input
                     type={'text'}
                     label="Partner Name"
-                    value={createPayData.partner_name}
-                    name="partner_name"
+                    value={createPayData.partner}
+                    name="partner"
                     placeholder={'Enter'}
                     onChange={(e) => handlePayInputChange(e)}
-                  />
-                  {errors?.partner_name && (
-                    <span
-                      style={{
-                        display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
-                      }}
-                    >
-                      {errors.partner_name}
-                    </span>
-                  )}
-                </div>
-                <div className="create-input-field">
-                  <label className="inputLabel-select">Partner</label>
-                  <SelectOption
-                    options={partnerOption(newFormData)}
-                    onChange={(newValue) => handleChange(newValue, 'partner')}
-                    value={partnerOption(newFormData)?.find(
-                      (option) => option.value === createPayData.partner
-                    )}
                   />
                   {errors?.partner && (
                     <span
@@ -209,6 +186,29 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
                       }}
                     >
                       {errors.partner}
+                    </span>
+                  )}
+                </div>
+                <div className="create-input-field">
+                  <label className="inputLabel-select">Partner Name</label>
+                  <SelectOption
+                    options={partnerOption(newFormData)}
+                    onChange={(newValue) =>
+                      handleChange(newValue, 'partner_name')
+                    }
+                    value={partnerOption(newFormData)?.find(
+                      (option) => option.value === createPayData.partner_name
+                    )}
+                  />
+                  {errors?.partner_name && (
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.partner_name}
                     </span>
                   )}
                 </div>
@@ -295,17 +295,17 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
                     placeholder={'Enter'}
                     onChange={(e) => handlePayInputChange(e)}
                   />
-                {errors?.rl && (
-                  <span
-                    style={{
-                      display: 'block',
-                      color: '#FF204E',
-                      textTransform: 'capitalize',
-                    }}
-                  >
-                    {errors.rl}
-                  </span>
-                )}
+                  {errors?.rl && (
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.rl}
+                    </span>
+                  )}
                 </div>
               </div>
               <div className="create-input-container">
