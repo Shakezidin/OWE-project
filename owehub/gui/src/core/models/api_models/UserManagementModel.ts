@@ -53,7 +53,7 @@ export interface CreateUserModel {
   first_name: string;
   last_name: string;
   email_id: string;
-  mobile_number: string;
+  mobile_number: any;
   assigned_dealer_name: string;
   role_name: string;
   add_region: string;
