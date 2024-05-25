@@ -58,83 +58,54 @@ func ExecDlrPayInitialCalculation(resultChan chan string) {
 *****************************************************************************/
 func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[string]interface{}, err error) {
 	var (
-		// dealer        string    // a
-		// partner       string  // b
-		// installer     string  // c
-		// source        string  // d
-		// types         string  // e
-		// loanType      string  // f
-		uniqueId string // g
-		// homeOwner     string  // h
-		// streetAddress string  // i
-		// city          string  // j
-		// st            string  // k
-		// zip           string  // l
-		rep_1 string // m
-		rep_2 string // n
-		// ApptSetter    string  // o
-		SysSize float64 // p
-		// kwh           float64 // q
-		contract float64 // r
-		// epc           float64   // s
-		// created  time.Time // T
-		wc time.Time // u
-		// pp       time.Time // v
-		ntp     time.Time // w
-		permSub time.Time // x
-		// permApp  time.Time // y
-		// icSub    time.Time // z
-		// icApp    time.Time // aa
-		hand    bool      // ab -- doubt
-		cancel  time.Time // ac
-		instSys time.Time // ad
-		// instElec time.Time // ae
-		// fca      time.Time // af
-		pto time.Time // ag
+		uniqueId string    // g
+		rep_1    string    // m
+		rep_2    string    // n
+		SysSize  float64   // p
+		contract float64   // r
+		wc       time.Time // u
+		ntp      time.Time // w
+		permSub  time.Time // x
+		hand     bool      // ab -- doubt
+		cancel   time.Time // ac
+		instSys  time.Time // ad
+		pto      time.Time // ag
 
 		payRateSubTotal float64 // verify the column number
 
-		status     string    // aj
-		statusDate time.Time // ak
-		// contractCalc       float64   // am
-		// epcCalc            float64   // an
-		dealer string // ap
-		// dealerDba string // aq
-		// rl                 float64   // ar
-		credit      float64 // as
-		repPay      float64 // at
-		payRateSemi float64 // au
-		addr        float64 // av
-		expense     float64 // aw
-		autoAdder   float64 // ax
-		loanFee     float64 // ay
-		rebate      float64 // az
-		referral    float64 // ba
-		adderTot    float64 // bb
-		adderLF     float64 // bc
-		epc         float64 // bd
-		netEpc      float64 // be
-		adderPerKw  float64 // bf
-		// payRate            float64   // bg
-		commTotal          float64 // bh
-		statusCheck        float64 // bi
-		dealerPaymentBonus float64 // bj
-		parentDlr          string  // bk
-		payRate            float64 // bl
-		// dealerDba          string    // bm
-		overdTotal float64 // bn
+		status             string    // aj
+		statusDate         time.Time // ak
+		dealer             string    // ap
+		credit             float64   // as
+		repPay             float64   // at
+		payRateSemi        float64   // au
+		addr               float64   // av
+		expense            float64   // aw
+		autoAdder          float64   // ax
+		loanFee            float64   // ay
+		rebate             float64   // az
+		referral           float64   // ba
+		adderTot           float64   // bb
+		adderLF            float64   // bc
+		epc                float64   // bd
+		netEpc             float64   // be
+		adderPerKw         float64   // bf
+		commTotal          float64   // bh
+		statusCheck        float64   // bi
+		dealerPaymentBonus float64   // bj
+		parentDlr          string    // bk
+		payRate            float64   // bl
+		overdTotal         float64   // bn
 
-		DlrDrawPerc float64 // bp
-		DlrDrawMax  float64 // bq
-		r1DrawAmt   float64 // bs
-		r1DrawPaid  float64 // bt
-		amtCheck    float64 // bu
-		r1CommPaid  float64 // bv
-		r1Balance   float64 // bw
-		ovrdPaid    float64 // by
-		ovrdBalance float64 // bz
-		// Status       string    // cb
-		// StatusDate   time.Time // cc
+		DlrDrawPerc  float64 // bp
+		DlrDrawMax   float64 // bq
+		r1DrawAmt    float64 // bs
+		r1DrawPaid   float64 // bt
+		amtCheck     float64 // bu
+		r1CommPaid   float64 // bv
+		r1Balance    float64 // bw
+		ovrdPaid     float64 // by
+		ovrdBalance  float64 // bz
 		repCount     float64 // cd
 		perRepSales  float64 // ce
 		perRepkW     float64 // cf
@@ -147,21 +118,12 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 		perTeamSales float64 // cn
 		perTeamKw    float64 // co
 
-		r1Name string // cq
-		// rep1Dba           float64 // cr
-		r1PayScale float64 // cs
-		position   float64 // ct
-		rl         float64 // cu
-		// r1Rate            string  // cv
-		// r1Incentive       string  // cz
-		r1Credit      float64 // da
-		r1PayRateSemi float64 // db
-		// r1AddrResp        float64 // dc
-		// r1Addr            float64 // dd
-		// r1AutoAddr        float64 // de
-		// r1LoanFee         float64 // df
-		// r1Rebate          float64 // dg
-		// r1Referral        float64 // dh
+		r1Name            string  // cq
+		r1PayScale        float64 // cs
+		position          float64 // ct
+		rl                float64 // cu
+		r1Credit          float64 // da
+		r1PayRateSemi     float64 // db
 		r1Rr              float64 // di
 		r1AdderTotal      float64 // dj
 		r1AdderPerKw      float64 // dk
@@ -171,21 +133,8 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 		r1CommTotal       float64 // do
 		r1CommStatusCheck float64 // dp
 
-		r2Name string // dr
-		// rep2Dba           float64 // ds
-		// r2PayScale        string  // dt
-		// position2         string  // du
-		// rl                string  // dv
-		// r2Rate            string  // dw
-		// r2Incentive       string  // ea
-		// r2Credit          float64 // eb
-		r2PayRateSemi float64 // ec
-		// r2AddrResp        float64 // ed
-		// r2Addr            float64 // ee
-		// r2AutoAddr        float64 // ef
-		// r2LoanFee         float64 // eg
-		// r2Rebate          float64 // eh
-		// r2Referral        float64 // ei
+		r2Name            string  // dr
+		r2PayRateSemi     float64 // ec
 		r2Rr              float64 // ej
 		r2AdderTotal      float64 // ek
 		r2AdderPerKw      float64 // el
@@ -229,7 +178,7 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	status = saleData.ProjectStatus
 	contractCalc = common.CalculateContractAmount(saleData.NetEpc, outData["contract"].(float64), outData["sys_size"].(float64))
 	epcCalc = common.CalculateEPCCalc(contractCalc, saleData.WC1, saleData.NetEpc, saleData.SystemSize, common.DlrPayWc1FilterDate)
-	// credit = dataMgmt.PayScheduleCfg.CalculateCreaditForUniqueId(saleData.Dealer, saleData.UniqueId)
+	credit = dataMgmt.DealerCreditCfg.CalculateCreaditForUniqueId(saleData.Dealer, saleData.UniqueId)
 	adderLF = CalculateAdderLf(saleData.Dealer, addr, expense, autoAdder, loanFee, rebate, referral)
 	epc = CalculateAdderEPC(epcCalc, contractCalc, loanFee, SysSize)
 	dealer = saleData.Dealer
@@ -261,7 +210,7 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	amtCheck = CalculateAmtCheck(r1DrawPaid, r1DrawAmt)
 	r1Balance = calculateR1Balance(dealer, statusCheck, r1CommPaid)
 	ovrdBalance = CalculateOvrdBalance(dealer, overdTotal, ovrdPaid)
-	status = CalculateStatus(uniqueId, hand, pto, instSys, cancel, ntp, permSub, wc)
+	//status = CalculateStatus(uniqueId, hand, pto, instSys, cancel, ntp, permSub, wc)
 	statusDate = CalculateStatusDate(uniqueId, hand, pto, instSys, cancel, ntp, permSub, wc)
 	repCount = calculateRepCount(rep_1, netEpc, adderPerKw)
 	perRepSales = calculateRepSales(rep_1, netEpc, adderPerKw)
@@ -294,32 +243,10 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	r2CommTotal = calculateRCommTotal(rep_2, epcCalc, epcCalc, loanFee2)                                 //  problem mention in sheet
 	r2CommStatusCheck = calculateRStatusCommCheck(rep_2, status, contractCalc)                           //  problem mention in sheet
 
-	/* =========================== short words used ============================
-	   nocal = here we are not calculating anything, need to sort where value comes
-
-	   arValue := "1000"
-
-	   adderData := map[string]int{
-	       "G3": 10,
-	       "G4": 20,
-	       "G5": 30,
-	   }
-
-	   payRateSemi = common.CalculatePayRateSemi(epcCalc, arValue)
-	   addr = common.CalculateADDR(saleData.UniqueId, adderData)
-	   loanFee = common.CalculateExpense(saleData.UniqueId, adderData)
-	   rebate = common.CalculateAutoAddr(saleData.UniqueId, LoanFeeAdder)
-	   referral = common.CalculateLoanFee(saleData.UniqueId, rebateData)
-	   referral = common.CalculateRebate(saleData.UniqueId, referralData)
-	   referral = common.CalculateReferral(saleData.UniqueId, adderData)
-
-	   Saquib
-
-	   =========================== short words used ============================ */
-
 	// this is for 1st sheet
 	outData["pay_rate_sub_total float"] = payRateSubTotal
 	outData["rl"] = rl
+	outData["credit"] = credit
 	outData["pay_rate_semi"] = payRateSemi
 	outData["addr"] = addr
 	outData["expense"] = expense

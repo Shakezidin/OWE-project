@@ -28,44 +28,6 @@ CREATE TABLE dlr_pay_pr_data(
     Contract_Date Date 
 );
 
-CREATE VIEW pr_dlr_d_standard AS
-SELECT
-    dealer_pay_calc_standard.home_owner AS home_owner,
-    dealer_pay_calc_standard.status AS current_status,
-    dealer_pay_calc_standard.status_date AS status_date,
-    dealer_pay_calc_standard.unique_id AS unique_id,
-    dealer_pay_calc_standard.dealer AS dealer,
-    dealer_pay_calc_standard.r1_draw_amt AS amount,
-    dealer_pay_calc_standard.loan_type AS type,
-    dealer_pay_calc_standard.sys_size AS sys_size,
-    dealer_pay_calc_standard.contract_calc AS contract_calc,
-    dealer_pay_calc_standard.loan_fee AS loan_fee,
-    dealer_pay_calc_standard.adder_total AS other_adders,
-    dealer_pay_calc_standard.epc AS epc,
-    dealer_pay_calc_standard.net_epc AS net_epc,
-    dealer_pay_calc_standard.rl AS rl,
-    dealer_pay_calc_standard.credit AS credit,
-    dealer_pay_calc_standard.rep_1 AS rep_1,
-    dealer_pay_calc_standard.rep_2 AS rep_2,
-    dealer_pay_calc_standard.rep_pay AS rep_pay,
-    dealer_pay_calc_standard.status_check AS net_rev,
-    dealer_pay_calc_standard.r1_draw_amt AS draw_amt,
-    dealer_pay_calc_standard.r1_comm_paid AS amt_paid,
-    dealer_pay_calc_standard.r1_balance AS balance,
-    dealer_pay_calc_standard.st AS st,
-    dealer_pay_calc_standard.wc AS contract_date
-FROM
-    dealer_pay_calc_standard
-WHERE
-(
-    dealer_pay_calc_standard.wc > '2019-04-01'    AND
-    dealer_pay_calc_standard.dealer <> 'House'  AND
-    dealer_pay_calc_standard.r1_balance <> 0    AND
-    dealer_pay_calc_standard,r1_draw_paid <> 0  AND
-    dealer_pay_calc_standard.ntp <> ''          AND
-    dealer_pay_calc_standard.inst_sys <> ''
-);
-
 CREATE TABLE dealer_pay_calc_standard (
     -- this is from sales data
     dealer text,
@@ -96,6 +58,7 @@ CREATE TABLE dealer_pay_calc_standard (
     -- calculated fields
     pay_rate_sub_total float,
     rl float,
+    credit float,
     pay_rate_semi float,
     addr float,
     expense float,
@@ -192,6 +155,125 @@ CREATE TABLE dealer_pay_calc_standard (
     sales_rep_type   text
 );
  
+CREATE VIEW pr_dlr_d_standard AS
+SELECT
+    dealer_pay_calc_standard.home_owner AS home_owner,
+    dealer_pay_calc_standard.status AS current_status,
+    dealer_pay_calc_standard.status_date AS status_date,    --not required
+    dealer_pay_calc_standard.unique_id AS unique_id,
+    dealer_pay_calc_standard.dealer AS dealer,
+    dealer_pay_calc_standard.r1_draw_amt AS amount,
+    dealer_pay_calc_standard.loan_type AS type,
+    dealer_pay_calc_standard.sys_size AS sys_size,
+    dealer_pay_calc_standard.contract_calc AS contract_calc,
+    dealer_pay_calc_standard.loan_fee AS loan_fee,              --TODO
+    dealer_pay_calc_standard.adder_total AS other_adders,
+    dealer_pay_calc_standard.epc AS epc,
+    dealer_pay_calc_standard.net_epc AS net_epc,
+    dealer_pay_calc_standard.rl AS rl,
+    dealer_pay_calc_standard.credit AS credit,                  --Done Later By Shushank
+    dealer_pay_calc_standard.rep_1 AS rep_1,
+    dealer_pay_calc_standard.rep_2 AS rep_2,
+    dealer_pay_calc_standard.rep_pay AS rep_pay,
+    dealer_pay_calc_standard.status_check AS net_rev,
+    dealer_pay_calc_standard.r1_draw_amt AS draw_amt,
+    dealer_pay_calc_standard.r1_comm_paid AS amt_paid,          --TODO
+    dealer_pay_calc_standard.r1_balance AS balance,
+    dealer_pay_calc_standard.st AS st,
+    dealer_pay_calc_standard.wc AS contract_date
+FROM
+    dealer_pay_calc_standard
+WHERE
+(
+    dealer_pay_calc_standard.wc > '2019-04-01'    AND
+    dealer_pay_calc_standard.dealer <> 'House'  AND
+    dealer_pay_calc_standard.r1_balance <> 0    AND
+    dealer_pay_calc_standard.r1_draw_paid <> 0  AND
+    dealer_pay_calc_standard.ntp <> ''          AND
+    dealer_pay_calc_standard.inst_sys <> ''
+);
+
+CREATE VIEW pr_dlr_f_standard AS
+SELECT
+    dealer_pay_calc_standard.home_owner AS home_owner,
+    dealer_pay_calc_standard.status AS current_status,
+    dealer_pay_calc_standard.status_date AS status_date,    --not required
+    dealer_pay_calc_standard.unique_id AS unique_id,
+    dealer_pay_calc_standard.dealer AS dealer,
+    dealer_pay_calc_standard.r1_balance AS amount,
+    dealer_pay_calc_standard.loan_type AS type,
+    dealer_pay_calc_standard.sys_size AS sys_size,
+    dealer_pay_calc_standard.contract_calc AS contract_calc,
+    dealer_pay_calc_standard.loan_fee AS loan_fee,              --TODO
+    dealer_pay_calc_standard.adder_total AS other_adders,
+    dealer_pay_calc_standard.epc AS epc,
+    dealer_pay_calc_standard.net_epc AS net_epc,
+    dealer_pay_calc_standard.rl AS rl,
+    dealer_pay_calc_standard.credit AS credit,                  --Later done by Shushank
+    dealer_pay_calc_standard.rep_1 AS rep_1,
+    dealer_pay_calc_standard.rep_2 AS rep_2,
+    dealer_pay_calc_standard.rep_pay AS rep_pay,
+    dealer_pay_calc_standard.status_check AS net_rev,
+    dealer_pay_calc_standard.r1_draw_amt AS draw_amt,
+    dealer_pay_calc_standard.r1_comm_paid AS amt_paid,          --TODO
+    dealer_pay_calc_standard.r1_balance AS balance,
+    dealer_pay_calc_standard.st AS st,
+    dealer_pay_calc_standard.wc AS contract_date
+FROM
+    dealer_pay_calc_standard
+WHERE
+(
+    dealer_pay_calc_standard.wc > '2019-04-01'    AND
+    dealer_pay_calc_standard.dealer <> 'House'  AND
+    dealer_pay_calc_standard.r1_balance <> 0    AND
+    (
+        --HandSign = TRUE                             OR            --TODO
+        dealer_pay_calc_standard.cancel <> ''       OR
+        (
+            dealer_pay_calc_standard.inst_sys <> ''          AND
+            dealer_pay_calc_standard.ntp <> ''
+        )
+    )
+);
+
+CREATE VIEW pr_dlr_or_standard AS
+SELECT
+    --dealer_pay_calc_standard.dealer_dba AS dealer_dba,    --TODO
+    dealer_pay_calc_standard.status AS current_status,
+    dealer_pay_calc_standard.status_date AS status_date,    --not required
+    dealer_pay_calc_standard.unique_id AS unique_id,
+    dealer_pay_calc_standard.parent_dlr AS dealer_code,
+    dealer_pay_calc_standard.ovrd_balance AS amount,
+    dealer_pay_calc_standard.loan_type AS type,
+    dealer_pay_calc_standard.sys_size AS sys_size,
+    dealer_pay_calc_standard.contract_calc AS contract_calc,
+    dealer_pay_calc_standard.loan_fee AS loan_fee,              --TODO
+    dealer_pay_calc_standard.adder_total AS other_adders,
+    dealer_pay_calc_standard.epc AS epc,
+    dealer_pay_calc_standard.net_epc AS net_epc,
+    dealer_pay_calc_standard.rl AS rl,
+    dealer_pay_calc_standard.credit AS credit,                  --Later done by Shushank
+    dealer_pay_calc_standard.rep_1 AS rep_1,
+    dealer_pay_calc_standard.rep_2 AS rep_2,
+    dealer_pay_calc_standard.rep_pay AS rep_pay,
+    dealer_pay_calc_standard.status_check AS net_rev,
+    dealer_pay_calc_standard.r1_draw_amt AS draw_amt,
+    dealer_pay_calc_standard.ovrd_paid AS amt_paid,             --TODO
+    dealer_pay_calc_standard.ovrd_balance AS balance,
+    dealer_pay_calc_standard.st AS st,
+    dealer_pay_calc_standard.wc AS contract_date
+FROM
+    dealer_pay_calc_standard
+WHERE
+(
+    dealer_pay_calc_standard.wc > '2019-04-01'      AND
+    dealer_pay_calc_standard.dealer <> 'House'      AND
+    dealer_pay_calc_standard.ovrd_balance <> 0      AND
+    (
+        dealer_pay_calc_standard.inst_sys <> ''     AND
+        dealer_pay_calc_standard.ntp <> ''
+    )
+);
 
 CREATE TABLE ap_calc_dealer_80_20_pay_calc (
 	        Dealer   text,
