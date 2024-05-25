@@ -9,9 +9,7 @@ import { FormInput } from '../../../core/models/data_models/typesModel';
 
 const TechnicalSupport: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [selectedOption, setSelectedOption] = useState(null);
-  const [selectedState, setSelectedState] = useState<string | null>(null);
-  const [stateOptions, setStateOptions] = useState<any[]>([]);
+  const [selectedIssue, setSelectedIssue] = useState<string | null>(null);
   const form = useRef<HTMLFormElement>(null);
 
   const [firstName, setFirstName] = useState('');
@@ -52,9 +50,6 @@ const TechnicalSupport: React.FC = () => {
         .sendForm('service_nof7okz', 'template_y3qbqr8', form.current, {
           publicKey: 'iVTsTUymXutcfakaX',
         })
-        // .sendForm('service_25asrxf', 'template_1nxgn8l', form.current, {
-        //   publicKey: '9zrYKpc6-M02ZEmHn',
-        // })
         .then(
           (response: any) => {
             console.log('SUCCESS!', response);
@@ -76,54 +71,8 @@ const TechnicalSupport: React.FC = () => {
     }
   };
 
-  // const handleSubmit = (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   // Validation logic
-  //   const newErrors = {
-  //     firstName: firstName ? '' : 'First name is required',
-  //     lastName: lastName ? '' : 'Last name is required',
-  //     email: emailRegex.test(email) ? '' : 'Invalid email address',
-  //     phoneNumber: phoneRegex.test(phoneNumber) ? '' : 'Invalid phone number',
-  //     message: message ? '' : 'Message is required',
-  //   };
-  //   setErrors(newErrors);
-  //   if (form.current && Object.values(newErrors).every((err) => !err)) {
-  //     if (fileInputRef.current && fileInputRef.current.files) {
-  //       const file = fileInputRef.current.files[0];
-  //       const maxSizeInBytes = 50 * 1024; // 50Kb
-  //       if (file.size > maxSizeInBytes) {
-  //         toast.error('File size exceeds the maximum allowed limit of 50Kb.');
-  //         return;
-  //       }
-  //     }
-
-  //     emailjs
-  //       .sendForm('service_cknkzcd', 'template_ert8id2', form.current, {
-  //         publicKey: '9zrYKpc6-M02ZEmHn',
-  //       })
-  //       .then(
-  //         (response: any) => {
-  //           console.log('SUCCESS!', response);
-  //           toast.success('Your form has been submitted!');
-  //           setFirstName('');
-  //           setLastName('');
-  //           setEmail('');
-  //           setPhoneNumber('');
-  //           setMessage('');
-  //           setSelectedFileName(''); // Clear the selected file name
-  //           if (fileInputRef.current) {
-  //             fileInputRef.current.value = ''; // Clear the file input value
-  //           }
-  //         },
-  //         (error: any) => {
-  //           console.error('FAILED...', error);
-  //         }
-  //       );
-  //   }
-  // };
-
   const handleStateChange = (selectedOption: any) => {
-    setSelectedState(selectedOption.value);
+    setSelectedIssue(selectedOption.value);
   };
 
   const options = [
@@ -131,9 +80,7 @@ const TechnicalSupport: React.FC = () => {
     { value: 'option2', label: 'OWE 2' },
     { value: 'option3', label: 'OWE 3' },
   ];
-  const handleSelectChange = (selectedOption: any) => {
-    setSelectedOption(selectedOption);
-  };
+
   const handleFileInputChange = (e: FormInput) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -261,8 +208,8 @@ const TechnicalSupport: React.FC = () => {
                 </label>
                 <SelectOption
                   onChange={handleStateChange}
-                  options={stateOptions}
-                  value={stateOptions?.find((option) => option.value === ' ')}
+                  options={options}
+                  value={options?.find((option) => option.value === selectedIssue)}
                 />
               </div>
 

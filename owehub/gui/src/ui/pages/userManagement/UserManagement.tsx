@@ -240,6 +240,7 @@ const UserManagement: React.FC = () => {
         <UserPieChart
           onboardingList={userOnboardingList}
           userPerformanceList={userPerformanceList}
+          loading={loading}
         />
       </div>
 

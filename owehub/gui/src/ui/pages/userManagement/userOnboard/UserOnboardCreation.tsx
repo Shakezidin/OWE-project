@@ -116,9 +116,11 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
       setDbAcess(false);
     }
   }, [selectedOption, tables]);
+
   useEffect(() => {
     dispatch(getDataTableName({get_all_table:true}));
   }, []);
+  
   /** render ui */
   return (
     <div className="transparent-model">
