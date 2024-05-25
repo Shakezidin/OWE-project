@@ -1,9 +1,9 @@
 /**************************************************************************
- * File            : saleData.go
- * DESCRIPTION     : This file contains the model and data form Sale Data
-					 on which we need to perform calculations
- * DATE            : 03-May-2024
- **************************************************************************/
+* File            : saleData.go
+* DESCRIPTION     : This file contains the model and data form Sale Data
+                     on which we need to perform calculations
+* DATE            : 03-May-2024
+**************************************************************************/
 
 package datamgmt
 
@@ -40,6 +40,9 @@ type SaleDataStruct struct {
 	PtoDate                time.Time
 	ProjectStatus          string
 	SystemType             string
+	StartDate              time.Time // added by zidhin
+	EndDate                time.Time //field added by zidhin
+	ChargeDlr              string    // field added by zidhiin
 }
 
 type SaleDataList struct {

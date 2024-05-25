@@ -1,8 +1,8 @@
 /**************************************************************************
- * File            : autoAdderCfg.go
- * DESCRIPTION     : This file contains the model and data form autoAdder
- * DATE            : 05-May-2024
- **************************************************************************/
+* File            : autoAdderCfg.go
+* DESCRIPTION     : This file contains the model and data form autoAdder
+* DATE            : 05-May-2024
+**************************************************************************/
 
 package datamgmt
 
@@ -22,6 +22,7 @@ type AutoAdder struct {
 	ExactAmt               float64
 	PerKwAmt               float64
 	RepPercentage          float64
+	SysSize                float64
 	DescriptionRepvisibale string
 	NotesNoRepvisibale     string
 	AdderType              string
@@ -36,37 +37,37 @@ var (
 )
 
 /******************************************************************************
- * FUNCTION:        CalculateAddrAuto
- * DESCRIPTION:     calculates the addrAuto value based on the provided data
- * RETURNS:         addrAuto
- *****************************************************************************/
+* FUNCTION:        CalculateAddrAuto
+* DESCRIPTION:     calculates the addrAuto value based on the provided data
+* RETURNS:         addrAuto
+*****************************************************************************/
 func (AutoAdderCfg *AutoAdderCfgStruct) CalculateAddrAuto(dealer string, uniqueId string, systemType string) (addrAuto float64) {
 	log.EnterFn(0, "CalculateAddrAuto")
 	defer func() { log.ExitFn(0, "CalculateAddrAuto", nil) }()
 
-	/* 	Autoadder is reterived from sale data,
-	So there is no chance that unique_id repeat in autoadder */
+	/*  Autoadder is reterived from sale data,
+	    So there is no chance that unique_id repeat in autoadder */
 	excatAmt := calculateExactAmount(uniqueId, systemType)
 	addrAuto = excatAmt
 
 	/*
-		if len(dealer) > 0 {
-			for _, data := range AutoAdderCfg.AutoAdderList {
-				if data.UniqueId == uniqueId {
-					excatAmt := calculateExactAmount(uniqueId, systemType)
-					addrAuto += excatAmt
-				}
-			}
-		}
+	   if len(dealer) > 0 {
+	       for _, data := range AutoAdderCfg.AutoAdderList {
+	           if data.UniqueId == uniqueId {
+	               excatAmt := calculateExactAmount(uniqueId, systemType)
+	               addrAuto += excatAmt
+	           }
+	       }
+	   }
 	*/
 	return addrAuto
 }
 
 /******************************************************************************
- * FUNCTION:        calculateExactAmount
- * DESCRIPTION:     calculates the Excat Amount value based on the provided data
- * RETURNS:         excatAmount
- *****************************************************************************/
+* FUNCTION:        calculateExactAmount
+* DESCRIPTION:     calculates the Excat Amount value based on the provided data
+* RETURNS:         excatAmount
+*****************************************************************************/
 func calculateExactAmount(uniqueId string, systemType string) (excatAmt float64) {
 
 	log.EnterFn(0, "calculateExactAmount")
@@ -100,10 +101,10 @@ func (AutoAdderCfg *AutoAdderCfgStruct) LoadAutoAdderCfg() (err error) {
 	defer func() { log.ExitFn(0, "LoadAutoAdderCfg", err) }()
 
 	query = `
-	 SELECT oa.id as record_id, oa.unique_id as uniqueId, oa.date, oa.type,
-	oa.gc, oa.exact_amt, oa.Per_KW_Amt, oa.rep_percentage, oa.Description_Repvisibale, oa.Notes_No_Repvisibale,
-	oa.Adder_Type
-	 FROM ` + db.TableName_auto_adder + ` oa`
+     SELECT oa.id as record_id, oa.unique_id as uniqueId, oa.date, oa.type,
+    oa.gc, oa.exact_amt, oa.Per_KW_Amt, oa.rep_percentage, oa.Description_Repvisibale, oa.Notes_No_Repvisibale,
+    oa.Adder_Type
+     FROM ` + db.TableName_auto_adder + ` oa`
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil || len(data) == 0 {
@@ -201,4 +202,54 @@ func (AutoAdderCfg *AutoAdderCfgStruct) LoadAutoAdderCfg() (err error) {
 	}
 
 	return err
+}
+
+/******************************************************************************
+* FUNCTION:        CalculateAutoAddr
+* DESCRIPTION:     calculates the "autoaddr" value based on the provided data
+* RETURNS:         autoAdder
+*****************************************************************************/
+func (AutoAdderCfg *AutoAdderCfgStruct) CalculateAutoAddr(dealer string, uniqueId string, chargeDlr string) (autoAdder float64) {
+	log.EnterFn(0, "CalculateAutoAddr")
+	defer func() { log.ExitFn(0, "CalculateAutoAddr", nil) }()
+
+	if len(dealer) > 0 {
+		if chargeDlr == "true" {
+			for _, data := range AutoAdderCfg.AutoAdderList {
+				if data.UniqueId == uniqueId {
+					addramount := AutoAdderCfg.CalculateExactAmount(data.UniqueId)
+					if addramount > 0 {
+						autoAdder = addramount
+					} else if data.PerKwAmt > 0 {
+						autoAdder = data.PerKwAmt * data.SysSize
+					}
+				}
+			}
+		} else {
+			autoAdder = 0
+		}
+	}
+	return autoAdder
+}
+
+func (AutoAdderCfg *AutoAdderCfgStruct) CalculateExactAmount(uniqueId string) (ExactAmount float64) {
+	if len(uniqueId) > 0 {
+		for _, data := range AutoAdderCfg.AutoAdderList {
+			if data.UniqueId == uniqueId {
+				switch {
+				case data.Type1[:2] == "MK":
+					ExactAmount = 0
+				case data.Type1 == "SM-UNI2":
+					ExactAmount = 1200
+				case data.Type1 == "SM-UNI3":
+					ExactAmount = 600
+				case data.Type1 == "SM-CA2":
+					ExactAmount = 600
+				default:
+					ExactAmount = 0
+				}
+			}
+		}
+	}
+	return ExactAmount
 }

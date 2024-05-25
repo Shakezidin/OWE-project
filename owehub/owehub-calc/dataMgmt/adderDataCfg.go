@@ -1,8 +1,8 @@
 /**************************************************************************
- * File            : adderDataCfg.go
- * DESCRIPTION     : This file contains the model and data form adderData
- * DATE            : 05-May-2024
- **************************************************************************/
+* File            : adderDataCfg.go
+* DESCRIPTION     : This file contains the model and data form adderData
+* DATE            : 05-May-2024
+**************************************************************************/
 
 package datamgmt
 
@@ -31,8 +31,8 @@ func (AdderDataCfg *AdderDataCfgStruct) LoadAdderDataCfg() (err error) {
 	defer func() { log.ExitFn(0, "LoadAdderDataCfg", err) }()
 
 	query = `
-		SELECT ad.id AS record_id, ad.unique_id, ad.date, ad.type_ad_mktg, ad.type1, ad.gc, ad.exact_amount, ad.per_kw_amt, ad.rep_percent, ad.description, ad.notes, ad.sys_size, ad.adder_cal
-		FROM ` + db.TableName_adder_data + ` ad`
+        SELECT ad.id AS record_id, ad.unique_id, ad.date, ad.type_ad_mktg, ad.type1, ad.gc, ad.exact_amount, ad.per_kw_amt, ad.rep_percent, ad.description, ad.notes, ad.sys_size, ad.adder_cal
+        FROM ` + db.TableName_adder_data + ` ad`
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {
@@ -144,10 +144,10 @@ func (AdderDataCfg *AdderDataCfgStruct) LoadAdderDataCfg() (err error) {
 }
 
 /******************************************************************************
- * FUNCTION:        CalculateAddrPtr
- * DESCRIPTION:     calculates the "addr_ptr" value based on the provided data
- * RETURNS:         addrPtr
- *****************************************************************************/
+* FUNCTION:        CalculateAddrPtr
+* DESCRIPTION:     calculates the "addr_ptr" value based on the provided data
+* RETURNS:         addrPtr
+*****************************************************************************/
 func (AdderDataCfg *AdderDataCfgStruct) CalculateAddrPtr(dealer string, uniqueId string) (addrPtrSum float64) {
 	log.EnterFn(0, "CalculateAddrPtr")
 	defer func() { log.ExitFn(0, "CalculateAddrPtr", nil) }()
@@ -160,4 +160,48 @@ func (AdderDataCfg *AdderDataCfgStruct) CalculateAddrPtr(dealer string, uniqueId
 		}
 	}
 	return addrPtrSum
+}
+
+/******************************************************************************
+* FUNCTION:        CalculateExpense
+* DESCRIPTION:     calculates the "addr_ptr" value based on the provided data
+* RETURNS:         addrPtr
+*****************************************************************************/
+func (AdderDataCfg *AdderDataCfgStruct) CalculateExpence(dealer string, uniqueId string) (Expence float64) {
+	log.EnterFn(0, "CalculateExpence")
+	defer func() { log.ExitFn(0, "CalculateExpence", nil) }()
+
+	if len(dealer) > 0 {
+		for _, data := range AdderDataCfg.AdderDataList.AdderDataList {
+			if (data.UniqueId + data.Gc) == (uniqueId + "Expence") {
+				Expence += data.AdderCal
+			}
+		}
+	}
+	return Expence
+}
+
+/******************************************************************************
+* FUNCTION:        CalculateAddrPtr
+* DESCRIPTION:     calculates the "addr_ptr" value based on the provided data
+* RETURNS:         addrPtr
+*****************************************************************************/
+func (AdderDataCfg *AdderDataCfgStruct) CalculateAddr(dealer string, uniqueId string) (addr float64) {
+	log.EnterFn(0, "CalculateAddrPtr")
+	defer func() { log.ExitFn(0, "CalculateAddrPtr", nil) }()
+
+	if len(dealer) > 0 {
+		for _, data := range AdderDataCfg.AdderDataList.AdderDataList {
+			if (data.UniqueId) == (uniqueId) {
+				var adderamount float64
+				if data.ExactAmount > 0 {
+					adderamount = data.ExactAmount
+				} else if data.PerKwAmt > 0 {
+					adderamount = data.PerKwAmt * data.SysSize
+				}
+				addr += adderamount
+			}
+		}
+	}
+	return addr
 }
