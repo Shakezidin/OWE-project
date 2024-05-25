@@ -8,6 +8,7 @@ import { logout } from '../../../redux/apiSlice/authSlice/authSlice';
 import { useAppDispatch } from '../../../redux/hooks';
 import { useNavigate } from 'react-router-dom';
 
+
 const AccountSettings = () => {
   const [activeTab, setActiveTab] = useState(0);
   const dispatch = useAppDispatch();
@@ -19,6 +20,11 @@ const AccountSettings = () => {
     dispatch(logout());
     navigate('/');
   };
+
+  const handleOpenNClose = () => {
+    handleLogout()
+  }
+
   return (
     <>
       <div className="account-container">
@@ -57,7 +63,7 @@ const AccountSettings = () => {
             )}
             {activeTab === 1 && (
               <div>
-                <ResetPasswordAccount />
+                <ResetPasswordAccount handleOpenNClose={handleOpenNClose} />
               </div>
             )}
           </div>
