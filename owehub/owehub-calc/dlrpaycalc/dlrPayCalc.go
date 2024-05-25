@@ -256,7 +256,7 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
  
     //second sheet calculations
     r1DrawAmt = CalculateR1DrawAmt(statusCheck, DlrDrawMax, DlrDrawPerc)
-    DlrDrawPerc = dataMgmt.PayScheduleCfg.CalculateDlrDrawPerc(saleData.Dealer, saleData.Partner, saleData.Installer, saleData.LoanType, saleData.State, saleData.StartDate.Format("2006-01-02"), saleData.EndDate.Format("2006-01-02"), saleData.WC1.Format("2006-01-02"))
+    // DlrDrawPerc = dataMgmt.PayScheduleCfg.CalculateDlrDrawPerc(saleData.Dealer, saleData.Partner, saleData.Installer, saleData.LoanType, saleData.State, saleData.StartDate.Format("2006-01-02"), saleData.EndDate.Format("2006-01-02"), saleData.WC1.Format("2006-01-02"))
     amtCheck = CalculateAmtCheck(r1DrawPaid, r1DrawAmt)
     r1Balance = calculateR1Balance(dealer, statusCheck, r1CommPaid)
     ovrdBalance = CalculateOvrdBalance(dealer, overdTotal, ovrdPaid)
