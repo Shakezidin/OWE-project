@@ -13,7 +13,7 @@ export const fetchAdderResponsibility = createAsyncThunk(
   async (data: any) => {
     const response = await postCaller('get_adder_responsibility', data);
 
-    return response.data.adder_responsibility_list;
+    return {list:response.data.adder_responsibility_list,count:response.dbRecCount};
   }
 );
 
@@ -22,6 +22,9 @@ export const createAdderResponsibility = createAsyncThunk(
   async (params: any, { rejectWithValue }) => {
     try {
       const response = await postCaller('create_adder_responsibility', params);
+      if (response.status > 201) {
+        return rejectWithValue((response as Error).message);
+      }
       return response.data;
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -34,9 +37,11 @@ export const updateAdderResponsibility = createAsyncThunk(
   async (params: any, { rejectWithValue, dispatch }) => {
     try {
       const data = await postCaller('update_adder_responsibility', params);
-      await dispatch(
-        fetchAdderResponsibility({ page_number: 1, page_size: 10 })
-      );
+
+      if (data.status > 201) {
+        return rejectWithValue((data as Error).message);
+      }
+
       return data.data;
     } catch (error) {
       return rejectWithValue((error as Error).message);

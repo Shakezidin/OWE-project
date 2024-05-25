@@ -13,6 +13,7 @@ interface IState {
   isLoading: boolean;
   isFormSubmitting: boolean;
   isSuccess: boolean;
+  totalCount: number;
 }
 
 const initialState: IState = {
@@ -21,6 +22,7 @@ const initialState: IState = {
   isLoading: false,
   isFormSubmitting: false,
   isSuccess: false,
+  totalCount: 0,
 };
 
 const adderCredit = createSlice({
@@ -40,9 +42,10 @@ const adderCredit = createSlice({
         fetchAdderCredit.fulfilled,
         (state, action: PayloadAction<any | null>) => {
           state.isLoading = false;
-          state.data = action.payload
+          state.data = action.payload?.data?.adder_credit_list
             ? action.payload.data.adder_credit_list
             : [];
+          state.totalCount = action.payload.dbRecCount || 0;
         }
       )
       .addCase(fetchAdderCredit.rejected, (state, action) => {

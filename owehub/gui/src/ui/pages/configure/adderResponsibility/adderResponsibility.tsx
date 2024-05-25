@@ -22,6 +22,10 @@ import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
 import Loading from '../../../components/loader/Loading';
+import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
+import FilterHoc from '../../../components/FilterModal/FilterHoc';
+import DataNotFound from '../../../components/loader/DataNotFound';
+import MicroLoader from '../../../components/loader/MicroLoader';
 const AdderResponsibility = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -31,7 +35,9 @@ const AdderResponsibility = () => {
 
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const { data } = useAppSelector((state) => state.adderresponsbility);
+  const { data, isLoading } = useAppSelector(
+    (state) => state.adderresponsbility
+  );
   //   const loading = useAppSelector((state) => state.timelineSla.loading);
   const error = useAppSelector((state) => state.timelineSla.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
@@ -41,42 +47,42 @@ const AdderResponsibility = () => {
     useState(null);
   const itemsPerPage = 10;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
-  const currentPage = useAppSelector(
-    (state) => state.paginationType.currentPage
-  );
+  const [currentPage, setCurrentPage] = useState(1);
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [filters, setFilters] = useState<FilterModel[]>([]);
+  const [refetch,setRefetch]  = useState(1)
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
       archived: viewArchived ? true : undefined,
+      filters,
     };
     dispatch(fetchAdderResponsibility(pageNumber));
-  }, [dispatch, currentPage, viewArchived]);
+  }, [dispatch, currentPage, viewArchived, filters,refetch]);
 
   const filter = () => {
     setFilterOpen(true);
   };
 
   const paginate = (pageNumber: number) => {
-    dispatch(setCurrentPage(pageNumber));
+    setCurrentPage(pageNumber);
   };
 
-  const commissionList = useAppSelector((state) => state.comm.commissionsList);
   const goToNextPage = () => {
-    dispatch(setCurrentPage(currentPage + 1));
+    setCurrentPage(currentPage + 1);
   };
 
   const goToPrevPage = () => {
-    dispatch(setCurrentPage(currentPage - 1));
+    setCurrentPage(currentPage - 1);
   };
   const totalPages = Math.ceil(data?.length / itemsPerPage);
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
+  const endIndex = startIndex * itemsPerPage;
 
-  const currentPageData = data?.slice(startIndex, endIndex);
+  const currentPageData = data?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === data?.length;
   const handleSort = (key: any) => {
@@ -115,7 +121,8 @@ const AdderResponsibility = () => {
   };
 
   const fetchFunction = (req: any) => {
-    dispatch(fetchAdderResponsibility(req));
+    setCurrentPage(1);
+    setFilters(req.filters);
   };
   const handleViewArchiveToggle = () => {
     setViewArchived(!viewArchived);
@@ -138,7 +145,7 @@ const AdderResponsibility = () => {
     );
     if (confirmed) {
       const archivedRows = Array.from(selectedRows).map(
-        (index) => data[index].record_id
+        (index) => currentPageData[index].record_id
       );
       if (archivedRows.length > 0) {
         const newValue = {
@@ -149,6 +156,7 @@ const AdderResponsibility = () => {
         const pageNumber = {
           page_number: currentPage,
           page_size: itemsPerPage,
+          filters,
         };
 
         const res = await postCaller(
@@ -158,11 +166,8 @@ const AdderResponsibility = () => {
         if (res.status === HTTP_STATUS.OK) {
           // If API call is successful, refetch commissions
           dispatch(fetchAdderResponsibility(pageNumber));
-          const remainingSelectedRows = Array.from(selectedRows).filter(
-            (index) => !archivedRows.includes(data[index].record_id)
-          );
-          const isAnyRowSelected = remainingSelectedRows.length > 0;
-          setSelectAllChecked(isAnyRowSelected);
+
+          setSelectAllChecked(false);
           setSelectedRows(new Set());
           await successSwal('Archived', 'The data has been archived ');
         } else {
@@ -187,6 +192,7 @@ const AdderResponsibility = () => {
       const pageNumber = {
         page_number: currentPage,
         page_size: itemsPerPage,
+        filters,
       };
       const res = await postCaller(
         'update_adder_responsibility_archive',
@@ -194,6 +200,8 @@ const AdderResponsibility = () => {
       );
       if (res.status === HTTP_STATUS.OK) {
         dispatch(fetchAdderResponsibility(pageNumber));
+        setSelectAllChecked(false);
+        setSelectedRows(new Set());
         await successSwal('Archived', 'The data has been archived ');
       } else {
         await successSwal('Archived', 'The data has been archived ');
@@ -225,19 +233,21 @@ const AdderResponsibility = () => {
           onpressExport={() => {}}
           onpressAddNew={() => handleTimeLineSla()}
         />
-        {filterOPen && (
-          <FilterModal
-            handleClose={filterClose}
-            columns={AdderResponsibilityColumns}
-            page_number={currentPage}
-            fetchFunction={fetchFunction}
-            page_size={itemsPerPage}
-          />
-        )}
+
+        <FilterHoc
+          isOpen={filterOPen}
+          resetOnChange={viewArchived}
+          handleClose={filterClose}
+          columns={AdderResponsibilityColumns}
+          page_number={currentPage}
+          fetchFunction={fetchFunction}
+          page_size={itemsPerPage}
+        />
 
         {open && (
           <CreateAdderResponsibility
             editMode={editMode}
+            setRefetch={setRefetch}
             editData={editedAdderResponsbility}
             handleClose={handleClose}
           />
@@ -279,71 +289,88 @@ const AdderResponsibility = () => {
               </tr>
             </thead>
             <tbody>
-              {currentPageData?.length > 0
-                ? currentPageData?.map((el: any, i: any) => (
-                    <tr
-                      key={i}
-                      className={selectedRows.has(i) ? 'selected' : ''}
-                    >
-                      <td style={{ fontWeight: '500', color: 'black' }}>
-                        <div className="flex-check">
-                          <CheckBox
-                            checked={selectedRows.has(i)}
-                            onChange={() =>
-                              toggleRowSelection(
-                                i,
-                                selectedRows,
-                                setSelectedRows,
-                                setSelectAllChecked
-                              )
-                            }
-                          />
-                          {el.pay_scale}
+              {isLoading ? (
+                <tr>
+                  <td colSpan={AdderResponsibilityColumns.length+1}>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <MicroLoader />
+                    </div>
+                  </td>
+                </tr>
+              ) : currentPageData?.length > 0 ? (
+                currentPageData?.map((el: any, i: any) => (
+                  <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
+                    <td style={{ fontWeight: '500', color: 'black' }}>
+                      <div className="flex-check">
+                        <CheckBox
+                          checked={selectedRows.has(i)}
+                          onChange={() =>
+                            toggleRowSelection(
+                              i,
+                              selectedRows,
+                              setSelectedRows,
+                              setSelectAllChecked
+                            )
+                          }
+                        />
+                        {el.unique_id}
+                      </div>
+                    </td>
+                    <td>  {el.pay_scale}</td>
+                    <td>{el.percentage}</td>
+
+                    {!viewArchived && selectedRows.size < 2 && (
+                      <td>
+                        <div className="action-icon">
+                          <div
+                            className=""
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => handleArchiveClick(el.record_id)}
+                          >
+                            <img src={ICONS.ARCHIVE} alt="" />
+                          </div>
+                          <div
+                            className=""
+                            onClick={() => handleEdit(el)}
+                            style={{ cursor: 'pointer' }}
+                          >
+                            <img src={ICONS.editIcon} alt="" />
+                          </div>
                         </div>
                       </td>
-                      <td>{el.percentage}</td>
-
-                      {viewArchived === true ? null : (
-                        <td>
-                          <div className="action-icon">
-                            <div
-                              className=""
-                              style={{ cursor: 'pointer' }}
-                              onClick={() => handleArchiveClick(el.record_id)}
-                            >
-                              <img src={ICONS.ARCHIVE} alt="" />
-                            </div>
-                            <div
-                              className=""
-                              onClick={() => handleEdit(el)}
-                              style={{ cursor: 'pointer' }}
-                            >
-                              <img src={ICONS.editIcon} alt="" />
-                            </div>
-                          </div>
-                        </td>
-                      )}
-                    </tr>
-                  ))
-                : null}
+                    )}
+                  </tr>
+                ))
+              ) : (
+                <tr style={{ border: 0 }}>
+                  <td colSpan={AdderResponsibilityColumns.length}>
+                    <div className="data-not-found">
+                      <DataNotFound />
+                      <h3>Data Not Found</h3>
+                    </div>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
         <div className="page-heading-container">
-          <p className="page-heading">
-            {currentPage} - {totalPages} of {currentPageData?.length} item
-          </p>
-
           {data?.length > 0 ? (
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages} // You need to calculate total pages
-              paginate={paginate}
-              currentPageData={currentPageData}
-              goToNextPage={goToNextPage}
-              goToPrevPage={goToPrevPage}
-              perPage={itemsPerPage}
-            />
+            <>
+              <p className="page-heading">
+                {startIndex} - {endIndex} of {currentPageData?.length} item
+              </p>
+
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages} // You need to calculate total pages
+                paginate={paginate}
+                currentPageData={currentPageData}
+                goToNextPage={goToNextPage}
+                goToPrevPage={goToPrevPage}
+                perPage={itemsPerPage}
+              />
+            </>
           ) : null}
         </div>
       </div>

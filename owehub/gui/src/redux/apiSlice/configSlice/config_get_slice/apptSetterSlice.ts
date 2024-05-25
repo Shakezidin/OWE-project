@@ -13,6 +13,7 @@ interface IState {
   isLoading: boolean;
   isFormSubmitting: boolean;
   isSuccess: boolean;
+  totalCount: number;
 }
 
 const initialState: IState = {
@@ -21,6 +22,7 @@ const initialState: IState = {
   isLoading: false,
   isFormSubmitting: false,
   isSuccess: false,
+  totalCount:0
 };
 
 const apptSetters = createSlice({
@@ -40,7 +42,9 @@ const apptSetters = createSlice({
         fetchApptSetters.fulfilled,
         (state, action: PayloadAction<any | null>) => {
           state.isLoading = false;
-          state.data = action.payload ? action.payload : [];
+          state.data = action.payload.list || [];
+          state.totalCount = action.payload.count || 0
+
         }
       )
       .addCase(fetchApptSetters.rejected, (state, action) => {
@@ -53,10 +57,12 @@ const apptSetters = createSlice({
       .addCase(createApttSetters.fulfilled, (state) => {
         state.isFormSubmitting = false;
         state.isSuccess = true;
+        toast.success('Form submitted successfully');
       })
       .addCase(createApttSetters.rejected, (state, action) => {
         state.isFormSubmitting = false;
         state.error = action.payload as string;
+        toast.error(action.payload as string);
       })
       .addCase(updateApptSetters.pending, (state, action) => {
         state.isFormSubmitting = true;
@@ -64,10 +70,12 @@ const apptSetters = createSlice({
       .addCase(updateApptSetters.fulfilled, (state, action) => {
         state.isFormSubmitting = false;
         state.isSuccess = true;
+        toast.success('Details updated successfully');
       })
       .addCase(updateApptSetters.rejected, (state, action) => {
         state.isFormSubmitting = false;
         state.error = action.payload as string;
+        toast.error(action.payload as string);
       });
   },
 });

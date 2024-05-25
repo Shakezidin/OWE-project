@@ -2,12 +2,28 @@ import { Column } from '../../../core/models/data_models/FilterSelectModel';
 
 export const AdderCreditsColumn: Column[] = [
   {
-    name: 'payscale',
-    displayName: 'Pay Scale',
+    name: 'unique_id',
+    displayName: 'Unique Id',
     type: 'string',
     isCheckbox: true,
   },
+  {
+    name: 'pay_scale',
+    displayName: 'Pay Scale',
+    type: 'string',
+    isCheckbox: false,
+  },
   { name: 'type', displayName: 'Type', type: 'string', isCheckbox: false },
-  { name: 'max$', displayName: 'Max $', type: 'string', isCheckbox: false },
-  { name: 'max%', displayName: 'Max %', type: 'string', isCheckbox: false },
+  {
+    name: 'min_rate',
+    displayName: 'Min Rate',
+    type: 'number',
+    isCheckbox: false,
+  },
+  {
+    name: 'max_rate',
+    displayName: 'Max Rate',
+    type: 'number',
+    isCheckbox: false,
+  },
 ];
