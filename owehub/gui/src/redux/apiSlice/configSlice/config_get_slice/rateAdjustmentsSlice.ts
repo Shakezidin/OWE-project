@@ -65,6 +65,7 @@ const rateAdjustments = createSlice({
       .addCase(createRateAdjustments.rejected, (state, action) => {
         state.isFormSubmitting = false;
         state.error = action.payload as string;
+        toast.error(action.payload as string);
       })
       .addCase(updateRateAdjustment.pending, (state, action) => {
         state.isFormSubmitting = true;
@@ -77,6 +78,7 @@ const rateAdjustments = createSlice({
       .addCase(updateRateAdjustment.rejected, (state, action) => {
         state.isFormSubmitting = false;
         state.error = action.payload as string;
+        toast.error(action.payload as string);
       });
   },
 });

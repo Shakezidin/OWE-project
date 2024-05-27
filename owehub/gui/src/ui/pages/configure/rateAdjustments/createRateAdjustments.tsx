@@ -89,8 +89,8 @@ const CreateRateAdjustments: React.FC<payScheduleProps> = ({
             pay_scale: createRateAdjustmentData.pay_scale,
             position: createRateAdjustmentData.position,
             adjustment: createRateAdjustmentData.adjustment,
-            min_rate: parseInt(createRateAdjustmentData.min_rate),
-            max_rate: parseInt(createRateAdjustmentData.max_rate),
+            min_rate: parseFloat(createRateAdjustmentData.min_rate),
+            max_rate: parseFloat(createRateAdjustmentData.max_rate),
             record_id: editData?.record_id!,
           })
         );
@@ -101,8 +101,8 @@ const CreateRateAdjustments: React.FC<payScheduleProps> = ({
             pay_scale: createRateAdjustmentData.pay_scale,
             position: createRateAdjustmentData.position,
             adjustment: createRateAdjustmentData.adjustment,
-            min_rate: parseInt(createRateAdjustmentData.min_rate),
-            max_rate: parseInt(createRateAdjustmentData.max_rate),
+            min_rate: parseFloat(createRateAdjustmentData.min_rate),
+            max_rate: parseFloat(createRateAdjustmentData.max_rate),
           })
         );
       }

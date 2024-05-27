@@ -25,13 +25,13 @@ export const RateAdjustmentsColumns: Column[] = [
   {
     name: 'unique_id',
     displayName: 'Unique Id',
-    type: 'number',
+    type: 'string',
     isCheckbox: true,
   },
   {
     name: 'pay_scale',
     displayName: 'PayScale',
-    type: 'number',
+    type: 'string',
     isCheckbox: false,
   },
   {

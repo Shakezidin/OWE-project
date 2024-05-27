@@ -73,6 +73,7 @@ const LeaderOverride = () => {
   useEffect(() => {
     if (isSuccess) {
       handleClose();
+      dispatch(resetSuccess());
       const pageNumber = {
         page_number: currentPage,
         page_size: itemsPerPage,
@@ -81,9 +82,7 @@ const LeaderOverride = () => {
       };
       dispatch(getleaderOverride(pageNumber));
     }
-    return () => {
-      isSuccess && dispatch(resetSuccess());
-    };
+   
   }, [isSuccess, currentPage, viewArchived, filters]);
 
   const filter = () => {

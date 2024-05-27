@@ -17,7 +17,7 @@ import FilterModal from '../../../components/FilterModal/FilterModal';
 import { ROUTES } from '../../../../routes/routes';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
-import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
+import { errorSwal, showAlert, successSwal } from '../../../components/alert/ShowAlert';
 import Loading from '../../../components/loader/Loading';
 import { fetchRateAdjustments } from '../../../../redux/apiActions/config/RateAdjustmentsAction';
 import DataNotFound from '../../../components/loader/DataNotFound';
@@ -62,10 +62,9 @@ const RateAdjustments = () => {
     if (isSuccess) {
       handleClose();
       setRefetch((prev) => prev + 1);
+      dispatch(resetSuccess());
     }
-    return () => {
-      isSuccess && dispatch(resetSuccess());
-    };
+   
   }, [isSuccess]);
 
   const filter = () => {
@@ -178,13 +177,13 @@ const RateAdjustments = () => {
           setSelectedRows(new Set());
           await successSwal('Archived', 'The data has been archived ');
         } else {
-          await successSwal('Archived', 'The data has been archived ');
+          await errorSwal('Failed', 'Something went wrong');
         }
       }
     }
   };
 
-  const handleArchiveClick = async (record_id: any) => {
+  const handleArchiveClick = async (record_id: number[]) => {
     const confirmed = await showAlert(
       'Are Your Sure',
       'This Action will archive your data',
@@ -209,7 +208,7 @@ const RateAdjustments = () => {
         setSelectedRows(new Set());
         await successSwal('Archived', 'The data has been archived ');
       } else {
-        await successSwal('Archived', 'The data has been archived ');
+        await errorSwal('Failed', 'Something went wrong');
       }
     }
   };
@@ -328,7 +327,7 @@ const RateAdjustments = () => {
                           <div
                             className=""
                             style={{ cursor: 'pointer' }}
-                            onClick={() => handleArchiveClick(el.RecordId)}
+                            onClick={() => handleArchiveClick([el.record_id])}
                           >
                             <img src={ICONS.ARCHIVE} alt="" />
                           </div>
