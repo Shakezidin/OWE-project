@@ -24,6 +24,7 @@ import { ROUTES } from '../../../../routes/routes';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
+import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 const TimeLine = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -45,34 +46,35 @@ const TimeLine = () => {
     useState<TimeLineSlaModel | null>(null);
   const itemsPerPage = 10;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
-  const currentPage = useAppSelector(
-    (state) => state.paginationType.currentPage
-  );
+  const [currentPage, setCurrentPage] = useState(1);
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [filters,setFilters] = useState<FilterModel[]>([])
+  const [refetch, setRefetch] = useState(1)
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
       archived: viewArchived ? true : undefined,
+      filters
     };
     dispatch(fetchTimeLineSla(pageNumber));
-  }, [dispatch, currentPage, viewArchived]);
+  }, [dispatch, currentPage, viewArchived,filters,refetch]);
 
   const filter = () => {
     setFilterOpen(true);
   };
 
   const paginate = (pageNumber: number) => {
-    dispatch(setCurrentPage(pageNumber));
+    setCurrentPage(pageNumber);
   };
 
   const goToNextPage = () => {
-    dispatch(setCurrentPage(currentPage + 1));
+    setCurrentPage(currentPage + 1);
   };
 
   const goToPrevPage = () => {
-    dispatch(setCurrentPage(currentPage - 1));
+    setCurrentPage(currentPage - 1);
   };
   const totalPages = Math.ceil(totalCount / itemsPerPage);
 
@@ -124,7 +126,7 @@ const TimeLine = () => {
     });
     if (confirmationResult.isConfirmed) {
       const archivedRows = Array.from(selectedRows).map(
-        (index) => timelinesla_list[index].record_id
+        (index) => currentPageData[index].record_id
       );
       if (archivedRows.length > 0) {
         const newValue = {
@@ -135,6 +137,7 @@ const TimeLine = () => {
         const pageNumber = {
           page_number: currentPage,
           page_size: itemsPerPage,
+          filters
         };
 
         const res = await postCaller(
@@ -185,6 +188,7 @@ const TimeLine = () => {
       const pageNumber = {
         page_number: currentPage,
         page_size: itemsPerPage,
+        filters
       };
       const res = await postCaller(
         EndPoints.update_timelinesla_archive,
@@ -206,6 +210,7 @@ const TimeLine = () => {
     // When toggling, reset the selected rows
     setSelectedRows(new Set());
     setSelectAllChecked(false);
+    setCurrentPage(1)
   };
   const handleTimeLineSla = () => {
     setEditMode(false);
@@ -219,7 +224,8 @@ const TimeLine = () => {
     handleOpen();
   };
   const fetchFunction = (req: any) => {
-    dispatch(fetchTimeLineSla(req));
+    setCurrentPage(1)
+    setFilters(req.filters)
   };
   if (error) {
     return (
@@ -270,6 +276,7 @@ const TimeLine = () => {
             timeLineSlaData={editedTimeLineSla}
             editMode={editMode}
             handleClose={handleClose}
+            setRefetch={setRefetch}
           />
         )}
         <div
@@ -339,43 +346,26 @@ const TimeLine = () => {
                     <td>{el.days}</td>
                     <td>{el.start_date}</td>
                     <td>{el.end_date}</td>
-                    {viewArchived === true ? null : (
-                      <td>
-                        {selectedRows.size > 0 ? (
-                          <div className="action-icon">
-                            <div
-                              className="action-archive"
-                              style={{ cursor: 'not-allowed' }}
-                            >
-                              <img src={ICONS.ARCHIVE} alt="" />
-                            </div>
-                            <div
-                              className="action-archive"
-                              style={{ cursor: 'not-allowed' }}
-                            >
-                              <img src={ICONS.editIcon} alt="" />
-                            </div>
+                    <td>
+                      {!viewArchived && selectedRows.size < 2 && (
+                        <div className="action-icon">
+                          <div
+                            className="action-archive"
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => handleArchiveClick(el.record_id)}
+                          >
+                            <img src={ICONS.ARCHIVE} alt="" />
                           </div>
-                        ) : (
-                          <div className="action-icon">
-                            <div
-                              className="action-archive"
-                              style={{ cursor: 'pointer' }}
-                              onClick={() => handleArchiveClick(el.record_id)}
-                            >
-                              <img src={ICONS.ARCHIVE} alt="" />
-                            </div>
-                            <div
-                              className="action-archive"
-                              style={{ cursor: 'pointer' }}
-                              onClick={() => handleEditTimeLineSla(el)}
-                            >
-                              <img src={ICONS.editIcon} alt="" />
-                            </div>
+                          <div
+                            className="action-archive"
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => handleEditTimeLineSla(el)}
+                          >
+                            <img src={ICONS.editIcon} alt="" />
                           </div>
-                        )}
-                      </td>
-                    )}
+                        </div>
+                      )}
+                    </td>
                   </tr>
                 ))
               ) : (
