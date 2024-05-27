@@ -13,6 +13,7 @@ import {
   FormEvent,
   FormInput,
 } from '../../../../core/models/data_models/typesModel';
+import { toast } from 'react-toastify';
 interface ButtonProps {
   editMode: boolean;
   handleClose: () => void;
@@ -35,18 +36,19 @@ const CreateCommissionRate: React.FC<ButtonProps> = ({
     partner: commission ? commission?.partner : '',
     installer: commission ? commission?.installer : '',
     state: commission ? commission?.state : '',
-    sale_type: commission ? commission?.sale_type : 'BATTERY',
-    sale_price: commission ? commission?.sale_price : 1500.0,
+    sale_type: commission ? commission?.sale_type : '',
+    sale_price: commission ? commission?.sale_price : '',
     rep_type: commission ? commission?.rep_type : '',
-    rl: commission ? commission?.rl : 0.5,
-    rate: commission ? commission?.rate : 0.1,
-    start_date: commission ? commission?.start_date : '2024-04-01',
-    end_date: commission ? commission?.end_date : '2024-06-30',
+    rl: commission ? commission?.rl : '',
+    rate: commission ? commission?.rate : '',
+    start_date: commission ? commission?.start_date : '',
+    end_date: commission ? commission?.end_date : '',
   });
   const [newFormData, setNewFormData] = useState<any>([]);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [isPending,setIsPending] = useState(false)
   const tableData = {
-    tableNames: ['partners', 'states', 'installers', 'rep_type'],
+    tableNames: ['partners', 'states', 'installers', 'rep_type', 'sale_type'],
   };
   const userType = {
     role: 'rep_type',
@@ -75,23 +77,23 @@ const CreateCommissionRate: React.FC<ButtonProps> = ({
       ...prevData,
       [fieldName]: newValue ? newValue.value : '',
     }));
-    setErrors((prevErrors) => ({
-      ...prevErrors,
-      [fieldName]: '',
-    }));
   };
   const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
+    if (name === 'start_date') {
+      setCreateCommission((prevData) => ({
+        ...prevData,
+        [name]: value,
+        end_date: '',
+      }));
+      return;
+    }
     setCreateCommission((prevData) => ({
       ...prevData,
       [name]:
         name === 'rl' || name === 'sale_price' || name === 'rate'
           ? parseFloat(value)
           : value,
-    }));
-    setErrors((prevErrors) => ({
-      ...prevErrors,
-      [name]: '',
     }));
   };
   const page = {
@@ -152,6 +154,7 @@ const CreateCommissionRate: React.FC<ButtonProps> = ({
       return;
     }
     try {
+      setIsPending(true)
       dispatch(updateForm(createCommission));
       if (createCommission.record_id) {
         const res = await postCaller(
@@ -159,11 +162,13 @@ const CreateCommissionRate: React.FC<ButtonProps> = ({
           createCommission
         );
         if (res.status === HTTP_STATUS.OK) {
-          await successSwal('', res.message);
+          toast.success(res.message);
           handleClose();
+          setIsPending(false)
           dispatch(fetchCommissions(page));
         } else {
-          await errorSwal('', res.message);
+          toast.error(res.message);
+          setIsPending(false)
         }
       } else {
         const { record_id, ...cleanedFormData } = createCommission;
@@ -172,11 +177,13 @@ const CreateCommissionRate: React.FC<ButtonProps> = ({
           cleanedFormData
         );
         if (res.status === HTTP_STATUS.OK) {
-          await successSwal('', res.message);
+          toast.success(res.message);
           handleClose();
+          setIsPending(false)
           dispatch(fetchCommissions(page));
         } else {
-          await errorSwal('', res.message);
+          toast.error(res.message);
+          setIsPending(false)
         }
       }
       // dispatch(resetForm());
@@ -194,6 +201,7 @@ const CreateCommissionRate: React.FC<ButtonProps> = ({
       createCommission={createCommission}
       errors={errors}
       newFormData={newFormData}
+      isPending={isPending}
     />
   );
 };
