@@ -75,7 +75,6 @@ const LoanFee = () => {
   useEffect(() => {
     if (isSuccess) {
       handleClose();
-      
     }
   }, [isSuccess]);
 

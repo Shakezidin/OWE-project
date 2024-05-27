@@ -55,7 +55,7 @@ const ApptSetters = () => {
       filters,
     };
     dispatch(fetchApptSetters(pageNumber));
-  }, [dispatch, currentPage, viewArchived, filters,refetch]);
+  }, [dispatch, currentPage, viewArchived, filters, refetch]);
 
   const filter = () => {
     setFilterOpen(true);
@@ -121,13 +121,13 @@ const ApptSetters = () => {
     handleOpen();
   };
   const fetchFunction = (req: any) => {
-    setCurrentPage(1)
-    setFilters(req.filters)
+    setCurrentPage(1);
+    setFilters(req.filters);
   };
   const handleViewArchiveToggle = () => {
     setViewArchived(!viewArchived);
     // When toggling, reset the selected rows
-    setCurrentPage(1)
+    setCurrentPage(1);
     setSelectedRows(new Set());
     setSelectAllChecked(false);
   };
@@ -152,7 +152,7 @@ const ApptSetters = () => {
           page_number: currentPage,
           page_size: itemsPerPage,
           filters,
-          archived:viewArchived
+          archived: viewArchived,
         };
 
         const res = await postCaller('update_appt_setters_archive', newValue);
@@ -186,7 +186,7 @@ const ApptSetters = () => {
         page_number: currentPage,
         page_size: itemsPerPage,
         filters,
-        archived:viewArchived
+        archived: viewArchived,
       };
       const res = await postCaller('update_appt_setters_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
@@ -335,14 +335,16 @@ const ApptSetters = () => {
                     )}
                   </tr>
                 ))
-              ) :  <tr style={{ border: 0 }}>
-              <td colSpan={ApptSettersColumn.length}>
-                <div className="data-not-found">
-                  <DataNotFound />
-                  <h3>Data Not Found</h3>
-                </div>
-              </td>
-            </tr>}
+              ) : (
+                <tr style={{ border: 0 }}>
+                  <td colSpan={ApptSettersColumn.length}>
+                    <div className="data-not-found">
+                      <DataNotFound />
+                      <h3>Data Not Found</h3>
+                    </div>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

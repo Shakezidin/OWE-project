@@ -34,10 +34,10 @@ const RateAdjustments = () => {
 
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const { data, totalCount, isLoading,isSuccess } = useAppSelector(
+  const { data, totalCount, isLoading, isSuccess } = useAppSelector(
     (state) => state.rateAdjustment
   );
- const [refetch,setRefetch] = useState(1)
+  const [refetch, setRefetch] = useState(1);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
@@ -56,13 +56,12 @@ const RateAdjustments = () => {
       filters,
     };
     dispatch(fetchRateAdjustments(pageNumber));
-  }, [dispatch, currentPage, viewArchived, filters,refetch]);
+  }, [dispatch, currentPage, viewArchived, filters, refetch]);
 
-  
   useEffect(() => {
     if (isSuccess) {
       handleClose();
-      setRefetch(prev=>prev+1)
+      setRefetch((prev) => prev + 1);
     }
     return () => {
       isSuccess && dispatch(resetSuccess());
@@ -135,7 +134,7 @@ const RateAdjustments = () => {
   };
 
   const fetchFunction = (req: any) => {
-    setCurrentPage(1)
+    setCurrentPage(1);
     setFilters(req.filters);
   };
 
@@ -165,7 +164,7 @@ const RateAdjustments = () => {
         const pageNumber = {
           page_number: currentPage,
           page_size: itemsPerPage,
-          filters
+          filters,
         };
 
         const res = await postCaller(
@@ -202,7 +201,7 @@ const RateAdjustments = () => {
         page_number: currentPage,
         page_size: itemsPerPage,
         archive: viewArchived,
-        filters
+        filters,
       };
       const res = await postCaller('update_rateadjustments_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
@@ -214,8 +213,6 @@ const RateAdjustments = () => {
       }
     }
   };
-
-
 
   return (
     <div className="comm">

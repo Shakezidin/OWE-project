@@ -18,7 +18,7 @@ const renderCustomizedLabelPercentage = (data: any, total = 32000) => {
 const UserPieChart: React.FC<UserPieChartProps> = ({
   onboardingList,
   userPerformanceList,
-  loading
+  loading,
 }) => {
   const renderLabel = useCallback((piePiece: any) => {
     return piePiece.name;
@@ -93,41 +93,43 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
         <div className="pieChart-section">
           <h2>Performance</h2>
         </div>
-        {userPerformanceList && userPerformanceList.length > 0?
-        <div style={{ width: '100%', height: '90%' }}>
-          <ResponsiveContainer>
-            <PieChart style={{ outline: 'none' }}>
-              <Pie
-                style={{ outline: 'none' }}
-                dataKey="value"
-                data={userPerformanceList}
-                label={renderLabel}
-                cx="49%"
-                cy="51%"
-                outerRadius={'85%'}
-                nameKey="name"
-                fontSize={12}
-                labelLine={true}
-              >
-                <LabelList
-                  dy={0}
-                  fill="white"
-                  dataKey={renderCustomizedLabelPercentage}
-                  position="inside"
+        {userPerformanceList && userPerformanceList.length > 0 ? (
+          <div style={{ width: '100%', height: '90%' }}>
+            <ResponsiveContainer>
+              <PieChart style={{ outline: 'none' }}>
+                <Pie
+                  style={{ outline: 'none' }}
+                  dataKey="value"
+                  data={userPerformanceList}
+                  label={renderLabel}
+                  cx="49%"
+                  cy="51%"
+                  outerRadius={'85%'}
+                  nameKey="name"
                   fontSize={12}
-                  angle={0}
-                  stroke="none"
-                  className="label-percentage"
-                  offset={-30}
-                />
-              </Pie>
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-        : <div className="data-not-found">
-        <DataNotFound />
-        <h3>{loading ? 'Searching..':"No SaleRep Found"}</h3>
-      </div>}
+                  labelLine={true}
+                >
+                  <LabelList
+                    dy={0}
+                    fill="white"
+                    dataKey={renderCustomizedLabelPercentage}
+                    position="inside"
+                    fontSize={12}
+                    angle={0}
+                    stroke="none"
+                    className="label-percentage"
+                    offset={-30}
+                  />
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        ) : (
+          <div className="data-not-found">
+            <DataNotFound />
+            <h3>{loading ? 'Searching..' : 'No SaleRep Found'}</h3>
+          </div>
+        )}
       </div>
     </div>
   );

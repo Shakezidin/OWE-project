@@ -11,7 +11,10 @@ import { stateOption } from '../../../../core/models/data_models/SelectDataModel
 import { TimeLineSlaModel } from '../../../../core/models/configuration/create/TimeLineSlaModel';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import { toast } from 'react-toastify';
-import { FormEvent, FormInput } from '../../../../core/models/data_models/typesModel';
+import {
+  FormEvent,
+  FormInput,
+} from '../../../../core/models/data_models/typesModel';
 interface timeLineProps {
   handleClose: () => void;
   editMode: boolean;
@@ -84,7 +87,6 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
         return;
       }
     }
-
 
     setCreateTimeLine((prevData) => ({
       ...prevData,
@@ -159,7 +161,13 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
                     onChange={(e) => handleTimeLineInput(e)}
                   />
                   {errors?.type_m2m && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.type_m2m}
                     </span>
                   )}
@@ -174,7 +182,13 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
                     )}
                   />
                   {errors?.state && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.state}
                     </span>
                   )}
@@ -189,7 +203,13 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
                     onChange={(e) => handleTimeLineInput(e)}
                   />
                   {errors?.days && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.days}
                     </span>
                   )}
@@ -207,7 +227,13 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
                     onChange={(e) => handleTimeLineInput(e)}
                   />
                   {errors?.start_date && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.start_date.replace('start_date', 'start date')}
                     </span>
                   )}
@@ -223,7 +249,13 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
                     min={createTimeLine.start_date}
                   />
                   {errors?.end_date && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.end_date.replace('end_date', 'end date')}
                     </span>
                   )}

@@ -16,7 +16,10 @@ import { respTypeData } from '../../../../resources/static_data/StaticData';
 import { updateForm } from '../../../../redux/apiSlice/configSlice/config_post_slice/createCommissionSlice';
 import { CommissionModel } from '../../../../core/models/configuration/create/CommissionModel';
 import SelectOption from '../../../components/selectOption/SelectOption';
-import { FormEvent, FormInput } from '../../../../core/models/data_models/typesModel';
+import {
+  FormEvent,
+  FormInput,
+} from '../../../../core/models/data_models/typesModel';
 
 interface ButtonProps {
   editMode: boolean;

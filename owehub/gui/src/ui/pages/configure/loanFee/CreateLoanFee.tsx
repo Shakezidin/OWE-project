@@ -73,8 +73,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
         continue;
       }
       if (!newFormData[key as keyof typeof newFormData]) {
-        error[key as keyof typeof newFormData] =
-          `${key} is required`;
+        error[key as keyof typeof newFormData] = `${key} is required`;
       }
     }
     setErrors({ ...error });
@@ -162,8 +161,6 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
     }
   };
 
-
-
   return (
     <div className="transparent-model">
       <form className="modal" onSubmit={handleSubmit}>
@@ -189,7 +186,13 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     onChange={handleChange}
                   />
                   {errors?.dlrMu && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.dlrMu}
                     </span>
                   )}
@@ -210,7 +213,13 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     )}
                   />
                   {errors?.dealerName && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.dealerName}
                     </span>
                   )}
@@ -231,8 +240,14 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     )}
                   />
                   {errors?.stateName && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
-                      {errors.stateName.replace("stateName","state")}
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.stateName.replace('stateName', 'state')}
                     </span>
                   )}
                 </div>
@@ -254,7 +269,13 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     )}
                   />
                   {errors?.loanType && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.loanType}
                     </span>
                   )}
@@ -278,7 +299,13 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     )}
                   />
                   {errors?.installerName && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.installerName}
                     </span>
                   )}
@@ -301,7 +328,13 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     }}
                   />
                   {errors?.dlrCost && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.dlrCost}
                     </span>
                   )}
@@ -326,7 +359,13 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     }}
                   />
                   {errors?.oweCost && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.oweCost}
                     </span>
                   )}
@@ -348,8 +387,14 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     }}
                   />
                   {errors?.startDate && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
-                      {errors.startDate.replace("startDate","start date")}
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.startDate.replace('startDate', 'start date')}
                     </span>
                   )}
                 </div>
@@ -372,8 +417,14 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     onChange={handleChange}
                   />
                   {errors?.endDate && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
-                      {errors.endDate.replace("endDate","end date")}
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.endDate.replace('endDate', 'end date')}
                     </span>
                   )}
                 </div>

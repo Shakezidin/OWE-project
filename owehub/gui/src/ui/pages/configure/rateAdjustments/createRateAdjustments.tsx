@@ -136,8 +136,14 @@ const CreateRateAdjustments: React.FC<payScheduleProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
 
-{errors?.unique_id && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                  {errors?.unique_id && (
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.unique_id}
                     </span>
                   )}
@@ -153,7 +159,13 @@ const CreateRateAdjustments: React.FC<payScheduleProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.position && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.position}
                     </span>
                   )}
@@ -167,8 +179,14 @@ const CreateRateAdjustments: React.FC<payScheduleProps> = ({
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
-                   {errors?.adjustment && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                  {errors?.adjustment && (
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.adjustment}
                     </span>
                   )}
@@ -186,7 +204,13 @@ const CreateRateAdjustments: React.FC<payScheduleProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.pay_scale && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.pay_scale}
                     </span>
                   )}
@@ -201,7 +225,13 @@ const CreateRateAdjustments: React.FC<payScheduleProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.min_rate && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.min_rate}
                     </span>
                   )}
@@ -216,7 +246,13 @@ const CreateRateAdjustments: React.FC<payScheduleProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.max_rate && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.max_rate}
                     </span>
                   )}

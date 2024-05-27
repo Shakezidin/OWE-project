@@ -69,7 +69,7 @@ export const updateLoanFee = createAsyncThunk(
       if (data.status > 201 || data instanceof Error) {
         return rejectWithValue((data as Error).message);
       }
-    
+
       return data.data;
     } catch (error) {
       return rejectWithValue((error as Error).message);

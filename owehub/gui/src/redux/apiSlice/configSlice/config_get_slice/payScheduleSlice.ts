@@ -7,8 +7,7 @@ interface payScheduleState {
   payment_schedule_list: PayScheduleModel[];
   loading: boolean;
   error: string | null;
-  totalCount: number,
-
+  totalCount: number;
 }
 const initialState: payScheduleState = {
   payment_schedule_list: [],

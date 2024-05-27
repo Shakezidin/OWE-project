@@ -204,7 +204,7 @@ const PaymentSchedule = () => {
     setViewArchived(!viewArchived);
     // When toggling, reset the selected rows
     setSelectedRows(new Set());
-    setCurrentPage(1)
+    setCurrentPage(1);
     setSelectAllChecked(false);
   };
   const fetchFunction = (req: any) => {

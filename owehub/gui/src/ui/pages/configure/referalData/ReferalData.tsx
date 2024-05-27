@@ -157,7 +157,10 @@ const ReferalData: React.FC = () => {
         page_number: currentPage,
         page_size: itemsPerPage,
       };
-      const res = await postCaller(EndPoints.update_commission_archive, newValue);
+      const res = await postCaller(
+        EndPoints.update_commission_archive,
+        newValue
+      );
       if (res.status === HTTP_STATUS.OK) {
         dispatch(fetchDealer(pageNumber));
         setSelectAllChecked(false);
@@ -181,7 +184,7 @@ const ReferalData: React.FC = () => {
       </div>
     );
   }
-  
+
   return (
     <div className="comm">
       <Breadcrumb
@@ -193,10 +196,10 @@ const ReferalData: React.FC = () => {
       <div className="commissionContainer">
         <TableHeader
           title="Referal Data"
-          onPressViewArchive={() => { }}
-          onPressArchive={() => { }}
+          onPressViewArchive={() => {}}
+          onPressArchive={() => {}}
           onPressFilter={() => filter()}
-          onPressImport={() => { }}
+          onPressImport={() => {}}
           checked={isAllRowsSelected}
           isAnyRowSelected={isAnyRowSelected}
           viewArchive={viewArchived}
@@ -214,7 +217,7 @@ const ReferalData: React.FC = () => {
             </CSVLink>
           </div>
         )}
-       <FilterHoc
+        <FilterHoc
           resetOnChange={viewArchived}
           isOpen={filterOPen}
           handleClose={filterClose}
@@ -318,44 +321,44 @@ const ReferalData: React.FC = () => {
                     <td>{el.start_date}</td>
                     <td>{el.end_date}</td>
                     <td>
-                        {selectedRows.size > 0 ? (
-                          <div className="action-icon">
-                            <div
-                              className="action-archive"
-                              style={{ cursor: 'not-allowed' }}
-                            >
-                              <img src={ICONS.ARCHIVE} alt="" />
-                              {/* <span className="tooltiptext">Archive</span> */}
-                            </div>
-                            <div
-                              className="action-archive"
-                              style={{ cursor: 'not-allowed' }}
-                            >
-                              <img src={ICONS.editIcon} alt="" />
-                              {/* <span className="tooltiptext">Edit</span> */}
-                            </div>
+                      {selectedRows.size > 0 ? (
+                        <div className="action-icon">
+                          <div
+                            className="action-archive"
+                            style={{ cursor: 'not-allowed' }}
+                          >
+                            <img src={ICONS.ARCHIVE} alt="" />
+                            {/* <span className="tooltiptext">Archive</span> */}
                           </div>
-                        ) : (
-                          <div className="action-icon">
-                            <div
-                              className="action-archive"
-                              style={{ cursor: 'pointer' }}
-                              onClick={() => handleArchiveClick(el.record_id)}
-                            >
-                              <img src={ICONS.ARCHIVE} alt="" />
-                              {/* <span className="tooltiptext">Archive</span> */}
-                            </div>
-                            <div
-                              className="action-archive"
-                              style={{ cursor: 'pointer' }}
-                              onClick={() => handleEditCommission(el)}
-                            >
-                              <img src={ICONS.editIcon} alt="" />
-                              {/* <span className="tooltiptext">Edit</span> */}
-                            </div>
+                          <div
+                            className="action-archive"
+                            style={{ cursor: 'not-allowed' }}
+                          >
+                            <img src={ICONS.editIcon} alt="" />
+                            {/* <span className="tooltiptext">Edit</span> */}
                           </div>
-                        )}
-                      </td>
+                        </div>
+                      ) : (
+                        <div className="action-icon">
+                          <div
+                            className="action-archive"
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => handleArchiveClick(el.record_id)}
+                          >
+                            <img src={ICONS.ARCHIVE} alt="" />
+                            {/* <span className="tooltiptext">Archive</span> */}
+                          </div>
+                          <div
+                            className="action-archive"
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => handleEditCommission(el)}
+                          >
+                            <img src={ICONS.editIcon} alt="" />
+                            {/* <span className="tooltiptext">Edit</span> */}
+                          </div>
+                        </div>
+                      )}
+                    </td>
                   </tr>
                 ))
               ) : (

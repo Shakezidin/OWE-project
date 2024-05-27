@@ -64,7 +64,7 @@ const DealerCredit: React.FC = () => {
       page_number: currentPage,
       page_size: itemsPerPage,
       archived: viewArchived,
-      filters
+      filters,
     };
     dispatch(getDealerCredit(pageNumber));
   }, [dispatch, currentPage, viewArchived, filters]);
@@ -72,8 +72,6 @@ const DealerCredit: React.FC = () => {
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
-
-  
 
   const goToNextPage = () => {
     setCurrentPage(currentPage + 1);
@@ -178,14 +176,13 @@ const DealerCredit: React.FC = () => {
              />} */}
         {open && (
           <CreateDealerCredit
-          editMode={editMode}
-          setViewArchived={setViewArchived}
-          editData={editedCommission}
-          handleClose={handleClose}
+            editMode={editMode}
+            setViewArchived={setViewArchived}
+            editData={editedCommission}
+            handleClose={handleClose}
           />
         )}
 
-         
         <FilterHoc
           isOpen={filterOPen}
           resetOnChange={viewArchived}
@@ -258,7 +255,7 @@ const DealerCredit: React.FC = () => {
                     <td>{el.rl}</td>
                     <td>{el.rl}</td>
                     <td>{el.rate}</td>
-                
+
                     <td>
                       <div className="action-icon">
                         <div className="" style={{ cursor: 'pointer' }}>

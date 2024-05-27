@@ -42,7 +42,9 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
   const [errors, setErrors] = useState<typeof newFormData>(
     {} as typeof newFormData
   );
-  const { isSuccess,isFormSubmitting,isLoading } = useAppSelector((state) => state.adderDataSlice);
+  const { isSuccess, isFormSubmitting, isLoading } = useAppSelector(
+    (state) => state.adderDataSlice
+  );
   const handleValidation = () => {
     const error: typeof newFormData = {} as typeof newFormData;
     for (const key in newFormData) {
@@ -362,7 +364,7 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
           <ActionButton
             title={editMode === false ? 'Save' : 'Update'}
             type="submit"
-            disabled={isFormSubmitting||isLoading}
+            disabled={isFormSubmitting || isLoading}
             onClick={() => {}}
           />
         </div>

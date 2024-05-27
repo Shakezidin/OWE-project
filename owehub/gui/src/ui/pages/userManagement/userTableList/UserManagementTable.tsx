@@ -67,12 +67,10 @@ const UserManagementTable: React.FC<UserTableProos> = ({
       ],
     };
     dispatch(fetchUserListBasedOnRole(data));
-    return (()=>{
-      dispatch(resetOpt())
-    })
+    return () => {
+      dispatch(resetOpt());
+    };
   }, [dispatch, currentPage1, pageSize1]);
-
-
 
   const handlePageChange = (page: number) => {
     setCurrentPage1(page);

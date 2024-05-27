@@ -9,7 +9,9 @@ export const getDataTableName = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await postCaller('get_app_table_list', {get_all_table}); // Assuming this is a GET request
+      const response = await postCaller('get_app_table_list', {
+        get_all_table,
+      }); // Assuming this is a GET request
       const tableName = response.data.db_tables; // Extract the data from the response
       return tableName;
     } catch (error) {

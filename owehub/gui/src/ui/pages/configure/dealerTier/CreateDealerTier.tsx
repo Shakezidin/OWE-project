@@ -133,7 +133,7 @@ const CreateDealerTier: React.FC<dealerProps> = ({
         if ((await res?.status) === 200) {
           await successSwal('', res.message);
           handleClose();
-           dispatch(fetchDealerTier(page));
+          dispatch(fetchDealerTier(page));
           setIsPending(false);
         } else {
           await errorSwal('', res.message);

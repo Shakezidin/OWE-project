@@ -41,7 +41,7 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
   const dispatch = useDispatch();
   const [errors, setErrors] = useState<IError>({} as IError);
   const [isPending, setIsPending] = useState(false);
-  const {loading} = useAppSelector(state=>state.tierLoan)
+  const { loading } = useAppSelector((state) => state.tierLoan);
 
   const [createTier, setCreateTier] = useState<TierLoanFeeModel>({
     record_id: tierEditedData ? tierEditedData?.record_id : 0,
@@ -114,21 +114,20 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
   const submitTierLoad = async (e: FormEvent) => {
     e.preventDefault();
     if (isPending || loading) {
-      return 
+      return;
     }
     if (handleValidation()) {
       setIsPending(true);
       try {
-        
-          dispatch(
-            updateTierLoanForm({
-              ...createTier,
-              owe_cost: parseFloat(createTier.owe_cost as string),
-              dlr_cost: parseFloat(createTier.dlr_cost as string),
-              dlr_mu: parseFloat(createTier.dlr_mu as string),
-            })
-          )
-        
+        dispatch(
+          updateTierLoanForm({
+            ...createTier,
+            owe_cost: parseFloat(createTier.owe_cost as string),
+            dlr_cost: parseFloat(createTier.dlr_cost as string),
+            dlr_mu: parseFloat(createTier.dlr_mu as string),
+          })
+        );
+
         if (createTier.record_id) {
           const res = await postCaller(EndPoints.update_tierloanfee, {
             ...createTier,
@@ -429,14 +428,13 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
             type="reset"
             onClick={() => handleClose()}
           />
-          
-            <ActionButton
-              title={editMode === false ? 'Save' : 'Update'}
-              type="submit"
-              disabled={loading||isPending}
-              onClick={() => {}}
-            />
-          
+
+          <ActionButton
+            title={editMode === false ? 'Save' : 'Update'}
+            type="submit"
+            disabled={loading || isPending}
+            onClick={() => {}}
+          />
         </div>
       </form>
     </div>

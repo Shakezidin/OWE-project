@@ -4,18 +4,14 @@ import Input from '../../../components/text_input/Input';
 import { ActionButton } from '../../../components/button/ActionButton';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
-import {
-  dealerOption
-} from '../../../../core/models/data_models/SelectDataModel';
+import { dealerOption } from '../../../../core/models/data_models/SelectDataModel';
 import { updateDealerForm } from '../../../../redux/apiSlice/configSlice/config_post_slice/createDealerSlice';
 import { DealerModel } from '../../../../core/models/configuration/create/DealerModel';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import { useAppDispatch } from '../../../../redux/hooks';
 import { fetchDealer } from '../../../../redux/apiSlice/configSlice/config_get_slice/dealerSlice';
 import { validateConfigForm } from '../../../../utiles/configFormValidation';
-import {
-  stateOption,
-} from '../../../../core/models/data_models/SelectDataModel';
+import { stateOption } from '../../../../core/models/data_models/SelectDataModel';
 import { addDays, format } from 'date-fns';
 import { toast } from 'react-toastify';
 import { FormInput } from '../../../../core/models/data_models/typesModel';
@@ -268,7 +264,13 @@ const CreateDealer: React.FC<dealerProps> = ({
                   />
 
                   {errors?.state && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.state}
                     </span>
                   )}

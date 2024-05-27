@@ -11,7 +11,10 @@ import { useAppDispatch } from '../../../../redux/hooks';
 import { validateConfigForm } from '../../../../utiles/configFormValidation';
 import { fetchLoanType } from '../../../../redux/apiSlice/configSlice/config_get_slice/loanTypeSlice';
 import { errorSwal, successSwal } from '../../../components/alert/ShowAlert';
-import { FormEvent, FormInput } from '../../../../core/models/data_models/typesModel';
+import {
+  FormEvent,
+  FormInput,
+} from '../../../../core/models/data_models/typesModel';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 
 interface loanProps {
@@ -29,7 +32,7 @@ const CreateLoanType: React.FC<loanProps> = ({
   loanData,
   page_number,
   page_size,
-  filters
+  filters,
 }) => {
   const dispatch = useAppDispatch();
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -40,12 +43,12 @@ const CreateLoanType: React.FC<loanProps> = ({
     adder: loanData ? loanData?.adder : 2,
     description: loanData ? loanData?.description : 'description',
   });
-  const [isPending,setIsPending] = useState(false)
+  const [isPending, setIsPending] = useState(false);
 
   const page = {
     page_number: page_number,
     page_size: page_size,
-    filters
+    filters,
   };
   const handleOptionChange = (e: FormInput) => {
     const { value } = e.target;
@@ -98,21 +101,21 @@ const CreateLoanType: React.FC<loanProps> = ({
       return;
     }
     try {
-      setIsPending(true)
+      setIsPending(true);
       dispatch(updateLoanTypeForm(createLoanTypeData));
       if (createLoanTypeData.record_id) {
         const res = await postCaller(
           EndPoints.update_loantype,
           createLoanTypeData
         );
-        if (await res.status === 200) {
+        if ((await res.status) === 200) {
           await successSwal('', res.message);
           handleClose();
           dispatch(fetchLoanType(page));
-          setIsPending(false)
+          setIsPending(false);
         } else {
           await errorSwal('', res.message);
-          setIsPending(false)
+          setIsPending(false);
         }
       } else {
         const { record_id, ...cleanedFormData } = createLoanTypeData;
@@ -120,14 +123,14 @@ const CreateLoanType: React.FC<loanProps> = ({
           EndPoints.create_loantype,
           cleanedFormData
         );
-        if ( await res.status === 200) {
+        if ((await res.status) === 200) {
           await successSwal('', res.message);
           handleClose();
           dispatch(fetchLoanType(page));
-          setIsPending(false)
+          setIsPending(false);
         } else {
           await errorSwal('', res.message);
-          setIsPending(false)
+          setIsPending(false);
         }
       }
     } catch (error) {

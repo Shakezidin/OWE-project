@@ -24,10 +24,10 @@ export const createAdderCredit = createAsyncThunk(
   async (params: any, { rejectWithValue, dispatch }) => {
     try {
       const data = await postCaller('create_adder_credit', params);
-      if (data.status>201) {
+      if (data.status > 201) {
         return rejectWithValue((data as Error).message);
       }
-     
+
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -40,7 +40,7 @@ export const updateAdderCredit = createAsyncThunk(
   async (params: any, { rejectWithValue, dispatch }) => {
     try {
       const data = await postCaller('update_adder_credit', params);
-     
+
       return data.data;
     } catch (error) {
       return rejectWithValue((error as Error).message);

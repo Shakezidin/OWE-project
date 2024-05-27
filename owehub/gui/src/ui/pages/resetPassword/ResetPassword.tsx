@@ -17,7 +17,10 @@ import { unwrapResult } from '@reduxjs/toolkit';
 import Loading from '../../components/loader/Loading';
 import { FaArrowLeft } from 'react-icons/fa';
 import { ROUTES } from '../../../routes/routes';
-import { FormEvent, FormInput } from '../../../core/models/data_models/typesModel';
+import {
+  FormEvent,
+  FormInput,
+} from '../../../core/models/data_models/typesModel';
 
 const ResetPassword = () => {
   const navigate = useNavigate();

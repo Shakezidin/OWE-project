@@ -125,7 +125,7 @@ const ResetPasswordAccount: React.FC<ChangePasswordProps> = ({
         <div className="Personal-container per-info-pad">
           <div className="create-input-container">
             <form className="reset-profile-form" onSubmit={handleSubmit}>
-              <div className='reset-pass-fields'>
+              <div className="reset-pass-fields">
                 <div className="create-input-field-profile-password">
                   <label className="inputLabel">Current Password</label>
                   <Input

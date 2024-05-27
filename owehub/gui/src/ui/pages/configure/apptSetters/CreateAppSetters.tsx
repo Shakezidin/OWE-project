@@ -26,17 +26,19 @@ interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
   editData: any;
-  setRefetch:Dispatch<SetStateAction<number>>
+  setRefetch: Dispatch<SetStateAction<number>>;
 }
 
 const CreateAppSetters: React.FC<payScheduleProps> = ({
   handleClose,
   editMode,
   editData,
-  setRefetch
+  setRefetch,
 }) => {
   const dispatch = useAppDispatch();
-  const { isSuccess,isFormSubmitting } = useAppSelector((state) => state.apptsetters);
+  const { isSuccess, isFormSubmitting } = useAppSelector(
+    (state) => state.apptsetters
+  );
   const [createAppSettersData, setAppSettersData] = useState({
     unique_id: editData?.unique_id || '',
     name: editData?.name || '',
@@ -106,7 +108,7 @@ const CreateAppSetters: React.FC<payScheduleProps> = ({
   useEffect(() => {
     if (isSuccess) {
       handleClose();
-      setRefetch(prev=>prev+1)
+      setRefetch((prev) => prev + 1);
     }
     return () => {
       isSuccess && dispatch(resetSuccess());

@@ -75,11 +75,10 @@ const DataTablle: React.FC = () => {
   }, [dispatch, currentPage, selectedTable]);
 
   useEffect(() => {
-   
-      setSelectedTable({
-        label: option?.[0]?.table_name,
-        value: option?.[0]?.table_name,
-      })
+    setSelectedTable({
+      label: option?.[0]?.table_name,
+      value: option?.[0]?.table_name,
+    });
   }, [option]);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;

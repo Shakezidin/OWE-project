@@ -37,7 +37,7 @@ const CreatedAr: React.FC<payScheduleProps> = ({
   editData,
 }) => {
   const dispatch = useAppDispatch();
-  const { isSuccess,isFormSubmitting } = useAppSelector((state) => state.ar);
+  const { isSuccess, isFormSubmitting } = useAppSelector((state) => state.ar);
 
   const [createArData, setCreateArData] = useState({
     // customer_name:editData?.customer_name || "",

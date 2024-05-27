@@ -5,16 +5,16 @@ interface Ipaginate {
   page_number: number;
   page_size: number;
   archived: boolean;
-  filters:FilterModel[]
+  filters: FilterModel[];
 }
 
 export interface DCreditCreateparam {
   unique_id: string;
-  date:string;
+  date: string;
   exact_amt: number;
   per_kw_amt: number;
   approved_by: string;
-  notes:string;
+  notes: string;
   currentPage?: number;
 }
 
@@ -49,15 +49,13 @@ export const createDealerCredit = createAsyncThunk(
       if (data instanceof Error) {
         return rejectWithValue((data as Error).message);
       }
-      
+
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);
     }
   }
 );
-
-
 
 // update_installcost
 
@@ -69,7 +67,7 @@ export const updateDealerCredit = createAsyncThunk(
       if (data instanceof Error) {
         return rejectWithValue((data as Error).message);
       }
-      
+
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);

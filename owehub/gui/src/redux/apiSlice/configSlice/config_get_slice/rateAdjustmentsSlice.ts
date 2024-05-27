@@ -12,7 +12,7 @@ interface IState {
   error: string;
   isLoading: boolean;
   isFormSubmitting: boolean;
-  totalCount:number;
+  totalCount: number;
   isSuccess: number;
 }
 
@@ -22,7 +22,7 @@ const initialState: IState = {
   isLoading: false,
   isFormSubmitting: false,
   isSuccess: 0,
-  totalCount:0
+  totalCount: 0,
 };
 
 const rateAdjustments = createSlice({
@@ -40,10 +40,13 @@ const rateAdjustments = createSlice({
       })
       .addCase(
         fetchRateAdjustments.fulfilled,
-        (state, action: PayloadAction<{list:RateAdjustment[],count:number}>) => {
+        (
+          state,
+          action: PayloadAction<{ list: RateAdjustment[]; count: number }>
+        ) => {
           state.isLoading = false;
-          state.data = action.payload.list 
-          state.totalCount = action.payload.count
+          state.data = action.payload.list;
+          state.totalCount = action.payload.count;
         }
       )
       .addCase(fetchRateAdjustments.rejected, (state, action) => {
@@ -56,8 +59,8 @@ const rateAdjustments = createSlice({
       .addCase(createRateAdjustments.fulfilled, (state) => {
         state.isFormSubmitting = false;
         state.isSuccess = 1;
-        state.error = ""
-        toast.success("Form submitted successfully")
+        state.error = '';
+        toast.success('Form submitted successfully');
       })
       .addCase(createRateAdjustments.rejected, (state, action) => {
         state.isFormSubmitting = false;

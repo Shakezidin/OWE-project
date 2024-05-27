@@ -9,7 +9,10 @@ import { validateConfigForm } from '../../../../utiles/configFormValidation';
 import { fetchCommissions } from '../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice';
 import CommissionForm from './CommissionForm';
 import { errorSwal, successSwal } from '../../../components/alert/ShowAlert';
-import { FormEvent, FormInput } from '../../../../core/models/data_models/typesModel';
+import {
+  FormEvent,
+  FormInput,
+} from '../../../../core/models/data_models/typesModel';
 interface ButtonProps {
   editMode: boolean;
   handleClose: () => void;

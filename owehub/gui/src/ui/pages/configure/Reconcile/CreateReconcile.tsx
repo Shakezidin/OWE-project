@@ -32,7 +32,9 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
   editData,
 }) => {
   const dispatch = useAppDispatch();
-  const { isSuccess,isFormSubmitting } = useAppSelector((state) => state.reconcile);
+  const { isSuccess, isFormSubmitting } = useAppSelector(
+    (state) => state.reconcile
+  );
 
   const [createReconcileData, setCreateReconcileData] = useState({
     unique_id: editData?.unique_id || '',
@@ -169,7 +171,13 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.unique_id && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.unique_id}
                     </span>
                   )}
@@ -184,7 +192,13 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.customer && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.customer}
                     </span>
                   )}
@@ -202,7 +216,13 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
                     )}
                   />
                   {errors?.partner_name && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.partner_name}
                     </span>
                   )}
@@ -223,7 +243,13 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
                     )}
                   />
                   {errors?.state && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.state}
                     </span>
                   )}
@@ -238,7 +264,13 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.sys_size && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.sys_size}
                     </span>
                   )}
@@ -254,7 +286,13 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.status && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.status}
                     </span>
                   )}
@@ -278,7 +316,13 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
                     }}
                   />
                   {errors?.start_date && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.start_date}
                     </span>
                   )}
@@ -301,7 +345,13 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.end_date && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.end_date}
                     </span>
                   )}
@@ -317,7 +367,13 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.amount && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.amount}
                     </span>
                   )}
@@ -333,7 +389,13 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.notes && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.notes}
                     </span>
                   )}

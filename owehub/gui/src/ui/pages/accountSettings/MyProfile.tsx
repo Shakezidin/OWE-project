@@ -47,16 +47,15 @@ const MyProfile = () => {
       });
   }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     if (userDetail) {
-      setStreet(userDetail?.street_address ||"")
-      setState(userDetail?.state ||"")
-      setCity(userDetail?.city ||"")
-      setZipCode(userDetail?.zipcode ||"")
-      setCountry(userDetail?.country ||"")
+      setStreet(userDetail?.street_address || '');
+      setState(userDetail?.state || '');
+      setCity(userDetail?.city || '');
+      setZipCode(userDetail?.zipcode || '');
+      setCountry(userDetail?.country || '');
     }
-
-  },[userDetail])
+  }, [userDetail]);
 
   useEffect(() => {
     if (userName) {
@@ -83,12 +82,10 @@ const MyProfile = () => {
       city: city,
       state: state,
     };
-    Promise.resolve(dispatch(updateUser(data)))
-    .then(()=>{
-      toast.success("Update Successfully")
-      setIsEditMode(!isEditMode)
-    })
-    
+    Promise.resolve(dispatch(updateUser(data))).then(() => {
+      toast.success('Update Successfully');
+      setIsEditMode(!isEditMode);
+    });
   };
 
   const handleReset = () => {
@@ -120,23 +117,23 @@ const MyProfile = () => {
     zipCode: '',
     country: '',
     city: '',
-    state: ''
+    state: '',
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if(!isEditMode){
-    const newErrors = {
-      city: city ? '' : 'City is required',
-      street: street ? '' : 'Street is required',
-      zipCode: country ? '' : 'Zip Code is required',
-      country: country ? '' : 'Country is required',
-      state: state ? '' : 'State is required',
-    };
-    setErrors(newErrors);
-  }
+    if (!isEditMode) {
+      const newErrors = {
+        city: city ? '' : 'City is required',
+        street: street ? '' : 'Street is required',
+        zipCode: country ? '' : 'Zip Code is required',
+        country: country ? '' : 'Country is required',
+        state: state ? '' : 'State is required',
+      };
+      setErrors(newErrors);
+    }
   };
-  console.log(userDetail, city, "hey ankit");
+  console.log(userDetail, city, 'hey ankit');
   return (
     <>
       <form onSubmit={handleSubmit}>
@@ -212,14 +209,15 @@ const MyProfile = () => {
               </div>
               <div
                 className="edit-section"
-                onClick={() =>{ setIsEditMode(!isEditMode)
+                onClick={() => {
+                  setIsEditMode(!isEditMode);
                   setErrors({
                     street: '',
                     zipCode: '',
                     country: '',
                     city: '',
-                    state: ''
-                  })
+                    state: '',
+                  });
                 }}
               >
                 <img src={ICONS.editIcon} alt="" />
@@ -273,9 +271,7 @@ const MyProfile = () => {
                   }}
                   disabled={isEditMode}
                 />
-                {errors.city && (
-                  <span className="error">{errors.city}</span>
-                )}
+                {errors.city && <span className="error">{errors.city}</span>}
               </div>
             </div>
             <div
@@ -331,7 +327,7 @@ const MyProfile = () => {
                 title={'Update'}
                 type="submit"
                 onClick={() => {
-                 !isEditMode && updateSubmit();
+                  !isEditMode && updateSubmit();
                 }}
               />
             </div>
