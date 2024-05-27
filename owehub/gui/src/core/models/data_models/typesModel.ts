@@ -14,4 +14,4 @@ export interface ApiState {
 }
 
 export type FormEvent = React.FormEvent<HTMLFormElement>;
-export type FormInput = React.ChangeEvent<HTMLInputElement>
+export type FormInput = React.ChangeEvent<HTMLInputElement>;

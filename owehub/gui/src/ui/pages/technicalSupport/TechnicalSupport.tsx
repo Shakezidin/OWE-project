@@ -209,7 +209,9 @@ const TechnicalSupport: React.FC = () => {
                 <SelectOption
                   onChange={handleStateChange}
                   options={options}
-                  value={options?.find((option) => option.value === selectedIssue)}
+                  value={options?.find(
+                    (option) => option.value === selectedIssue
+                  )}
                 />
               </div>
 

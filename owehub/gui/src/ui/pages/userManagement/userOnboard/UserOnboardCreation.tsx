@@ -2,7 +2,6 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { ReactComponent as CROSS_BUTTON } from '../../../../resources/assets/cross_button.svg';
 import Input from '../../../components/text_input/Input';
 import { ActionButton } from '../../../components/button/ActionButton';
-import { useDispatch } from 'react-redux';
 import { updateUserForm } from '../../../../redux/apiSlice/userManagementSlice/createUserSlice';
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { ICONS } from '../../../icons/Icons';
@@ -80,9 +79,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
   };
 
   const handleInputChange = (
-    e:
-      | FormInput
-      | React.ChangeEvent<HTMLTextAreaElement>
+    e: FormInput | React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     if (name === 'first_name' || name === 'last_name') {
@@ -123,11 +120,10 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
   useEffect(() => {
     dispatch(getDataTableName({ get_all_table: true }));
   }, []);
-  
+
   /** render ui */
 
-  console.log("jhg", formData.mobile_number)
-
+  console.log('jhg', formData.mobile_number);
 
   return (
     <div className="transparent-model">
@@ -219,26 +215,30 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                     />
                   </div>
 
-                  <div className="create-input-field">
+                  <div className="create-input-field" style={{marginTop:'-5px'}}>
                     <label className="inputLabel">Phone Number</label>
                     <PhoneInput
                       international
                       defaultCountry="US"
                       value={formData.mobile_number}
-                      onChange={(value) => {
-                        console.log("date",value)
-                        dispatch(updateUserForm({ field: 'mobile_number', value }));
+                      onChange={(value: any) => {
+                        console.log('date', value);
+                        dispatch(
+                          updateUserForm({ field: 'mobile_number', value })
+                        );
                       }}
                       placeholder="Enter phone number"
                     />
-                    {phoneNumberError && <p className="error-message">{phoneNumberError}</p>}
+                    {phoneNumberError && (
+                      <p className="error-message">{phoneNumberError}</p>
+                    )}
                   </div>
 
                   {formData.role_name === 'Admin' ||
-                    formData.role_name === 'SubDealer Owner' ||
-                    formData.role_name === 'DB User' ||
-                    formData.role_name === 'Dealer Owner' ||
-                    formData.role_name === 'Finance Admin' ? null : (
+                  formData.role_name === 'SubDealer Owner' ||
+                  formData.role_name === 'DB User' ||
+                  formData.role_name === 'Dealer Owner' ||
+                  formData.role_name === 'Finance Admin' ? null : (
                     <div className="create-input-field">
                       <label className="inputLabel-select selected-fields-onboard">
                         Dealer Owner
@@ -359,8 +359,9 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                     placeholder="Type"
                   ></textarea>
                   <p
-                    className={`character-count ${formData.description.length >= 255 ? 'exceeded' : ''
-                      }`}
+                    className={`character-count ${
+                      formData.description.length >= 255 ? 'exceeded' : ''
+                    }`}
                   >
                     {formData.description.length}/255 characters
                   </p>
@@ -375,7 +376,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
             onClick={handleClose}
             type={'button'}
           />
-          <ActionButton title={'Create'} onClick={() => { }} type={'submit'} />
+          <ActionButton title={'Create'} onClick={() => {}} type={'submit'} />
         </div>
       </form>
     </div>

@@ -25,6 +25,7 @@ import {
 import { useAppSelector } from '../../../../redux/hooks';
 import { errorSwal } from '../../../components/alert/ShowAlert';
 import { addDays, format } from 'date-fns';
+import { toast } from 'react-toastify';
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
@@ -127,10 +128,11 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
           );
           if ((await res?.status) === 200) {
             handleClose();
+            toast.success(res.message)
             setIsPending(false);
             setRefetch((prev) => prev + 1);
           } else {
-            await errorSwal('Error', res.message);
+            toast.error(res.message);
           }
         } else {
           const { record_id, ...cleanedFormData } = createPayData;
@@ -140,10 +142,11 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
           );
           if ((await res?.status) === 200) {
             handleClose();
+            toast.success(res.message)
             setIsPending(false);
             setRefetch((prev) => prev + 1);
           } else {
-            await errorSwal('Error', res.message);
+            toast.error('Error', res.message);
           }
         }
       }

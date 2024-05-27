@@ -18,7 +18,7 @@ export const PayScheduleColumns: Column[] = [
   },
   {
     name: 'sale_type',
-    displayName: 'Partner',
+    displayName: 'Sale Type',
     type: 'string',
     isCheckbox: false,
   },

@@ -3,7 +3,7 @@ import {
   getDealerCredit,
   updateDealerCredit,
   createDealerCredit,
-DCredit
+  DCredit,
 } from '../../../apiActions/config/dealerCreditAction';
 import { toast } from 'react-toastify';
 
@@ -53,7 +53,7 @@ const dealerCredit = createSlice({
       .addCase(createDealerCredit.fulfilled, (state, action) => {
         state.isFormSubmitting = false;
         state.isSuccess = true;
-        state.error = ""
+        state.error = '';
         toast.success('Form submission completed');
       })
       .addCase(createDealerCredit.rejected, (state, action) => {

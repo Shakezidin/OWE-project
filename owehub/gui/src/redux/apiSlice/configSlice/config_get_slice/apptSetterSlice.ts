@@ -22,7 +22,7 @@ const initialState: IState = {
   isLoading: false,
   isFormSubmitting: false,
   isSuccess: false,
-  totalCount:0
+  totalCount: 0,
 };
 
 const apptSetters = createSlice({
@@ -43,8 +43,7 @@ const apptSetters = createSlice({
         (state, action: PayloadAction<any | null>) => {
           state.isLoading = false;
           state.data = action.payload.list || [];
-          state.totalCount = action.payload.count || 0
-
+          state.totalCount = action.payload.count || 0;
         }
       )
       .addCase(fetchApptSetters.rejected, (state, action) => {

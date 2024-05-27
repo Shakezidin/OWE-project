@@ -13,7 +13,10 @@ export const fetchAdderResponsibility = createAsyncThunk(
   async (data: any) => {
     const response = await postCaller('get_adder_responsibility', data);
 
-    return {list:response.data.adder_responsibility_list,count:response.dbRecCount};
+    return {
+      list: response.data.adder_responsibility_list,
+      count: response.dbRecCount,
+    };
   }
 );
 

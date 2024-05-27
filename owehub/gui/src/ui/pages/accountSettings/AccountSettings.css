@@ -341,12 +341,12 @@
   margin-bottom: -15px;
 }
 
-.reset-profile-form{
+.reset-profile-form {
   display: flex;
   flex-direction: column;
   width: 100%;
 }
-.reset-pass-fields{
+.reset-pass-fields {
   display: flex;
   justify-content: space-between;
 }

@@ -51,7 +51,7 @@ const AdderResponsibility = () => {
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [filters, setFilters] = useState<FilterModel[]>([]);
-  const [refetch,setRefetch]  = useState(1)
+  const [refetch, setRefetch] = useState(1);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -60,7 +60,7 @@ const AdderResponsibility = () => {
       filters,
     };
     dispatch(fetchAdderResponsibility(pageNumber));
-  }, [dispatch, currentPage, viewArchived, filters,refetch]);
+  }, [dispatch, currentPage, viewArchived, filters, refetch]);
 
   const filter = () => {
     setFilterOpen(true);
@@ -218,11 +218,11 @@ const AdderResponsibility = () => {
         head=""
         linkPara="Configure"
         route={ROUTES.CONFIG_PAGE}
-        linkparaSecond="Adder Responsbility"
+        linkparaSecond="Adder Responsibilty"
       />
       <div className="commissionContainer">
         <TableHeader
-          title="Adder Responsbility"
+          title="Adder Responsibilty"
           onPressViewArchive={() => handleViewArchiveToggle()}
           onPressArchive={() => handleArchiveAllClick()}
           onPressFilter={() => filter()}
@@ -291,7 +291,7 @@ const AdderResponsibility = () => {
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan={AdderResponsibilityColumns.length+1}>
+                  <td colSpan={AdderResponsibilityColumns.length + 1}>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                       <MicroLoader />
                     </div>
@@ -316,11 +316,10 @@ const AdderResponsibility = () => {
                         {el.unique_id}
                       </div>
                     </td>
-                    <td>  {el.pay_scale}</td>
+                    <td> {el.pay_scale}</td>
                     <td>{el.percentage}</td>
-
-                    {!viewArchived && selectedRows.size < 2 && (
-                      <td>
+                    <td>
+                      {!viewArchived && selectedRows.size < 2 && (
                         <div className="action-icon">
                           <div
                             className=""
@@ -337,8 +336,8 @@ const AdderResponsibility = () => {
                             <img src={ICONS.editIcon} alt="" />
                           </div>
                         </div>
-                      </td>
-                    )}
+                      )}
+                    </td>
                   </tr>
                 ))
               ) : (

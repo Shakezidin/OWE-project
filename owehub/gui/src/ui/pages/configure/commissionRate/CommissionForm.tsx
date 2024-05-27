@@ -10,7 +10,10 @@ import {
 } from '../../../../core/models/data_models/SelectDataModel';
 import { CommissionModel } from '../../../../core/models/configuration/create/CommissionModel';
 import { respTypeData } from '../../../../resources/static_data/StaticData';
-import { FormEvent, FormInput } from '../../../../core/models/data_models/typesModel';
+import {
+  FormEvent,
+  FormInput,
+} from '../../../../core/models/data_models/typesModel';
 
 interface formProps {
   handleSubmit: (e: FormEvent) => void;

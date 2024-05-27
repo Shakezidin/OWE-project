@@ -137,8 +137,6 @@ const RebeteData: React.FC = () => {
     setFilters(req.filters);
   };
 
-
-
   const handleArchiveClick = async (record_id: any) => {
     const confirmed = await showAlert(
       'Are Your Sure',
@@ -156,7 +154,10 @@ const RebeteData: React.FC = () => {
         page_number: currentPage,
         page_size: itemsPerPage,
       };
-      const res = await postCaller(EndPoints.update_commission_archive, newValue);
+      const res = await postCaller(
+        EndPoints.update_commission_archive,
+        newValue
+      );
       if (res.status === HTTP_STATUS.OK) {
         dispatch(fetchCommissions(pageNumber));
         setSelectAllChecked(false);
@@ -168,9 +169,6 @@ const RebeteData: React.FC = () => {
     }
   };
 
-
-
-
   if (error) {
     return (
       <div className="loader-container">
@@ -178,7 +176,6 @@ const RebeteData: React.FC = () => {
       </div>
     );
   }
-
 
   return (
     <div className="comm">

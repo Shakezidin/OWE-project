@@ -12,7 +12,10 @@ import { SalesTypeModel } from '../../../../core/models/configuration/create/Sal
 import Pagination from '../../../components/pagination/Pagination';
 import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
-import { Column } from '../../../../core/models/data_models/FilterSelectModel';
+import {
+  Column,
+  FilterModel,
+} from '../../../../core/models/data_models/FilterSelectModel';
 import { SalesTypeColumn } from '../../../../resources/static_data/configureHeaderData/SalesTypeColumn';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import FilterModal from '../../../components/FilterModal/FilterModal';
@@ -23,6 +26,8 @@ import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoin
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import Swal from 'sweetalert2';
 import { ROUTES } from '../../../../routes/routes';
+import FilterHoc from '../../../components/FilterModal/FilterHoc';
+import MicroLoader from '../../../components/loader/MicroLoader';
 
 const SaleType = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -32,11 +37,10 @@ const SaleType = () => {
   const handleClose = () => setOpen(false);
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const salesTypeList = useAppSelector(
-    (state) => state.salesType.saletype_list
+  const {saletype_list:salesTypeList,totalCount,loading} = useAppSelector(
+    (state) => state.salesType
   );
-  const loading = useAppSelector((state) => state.salesType.loading);
-  const error = useAppSelector((state) => state.salesType.error);
+ 
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
@@ -45,38 +49,39 @@ const SaleType = () => {
   );
   const itemsPerPage = 10;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
-  const currentPage = useAppSelector(
-    (state) => state.paginationType.currentPage
-  );
+  const [currentPage, setCurrentPage] = useState(1);
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [filters, setFilters] = useState<FilterModel[]>([]);
+  const [refetch, setRefetch] = useState(1);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
       archived: viewArchived ? true : undefined,
+      filters,
     };
     dispatch(fetchSalesType(pageNumber));
-  }, [dispatch, currentPage, viewArchived]);
+  }, [dispatch, currentPage, viewArchived, filters, refetch]);
   const paginate = (pageNumber: number) => {
-    dispatch(setCurrentPage(pageNumber));
+    setCurrentPage(pageNumber);
   };
 
   const filter = () => {
     setFilterOpen(true);
   };
   const goToNextPage = () => {
-    dispatch(setCurrentPage(currentPage + 1));
+    setCurrentPage(currentPage + 1);
   };
 
   const goToPrevPage = () => {
-    dispatch(setCurrentPage(currentPage - 1));
+    setCurrentPage(currentPage - 1);
   };
-  const totalPages = Math.ceil(salesTypeList?.length / itemsPerPage);
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentPageData = salesTypeList?.slice(startIndex, endIndex);
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
+  const endIndex = startIndex * itemsPerPage;
+  const currentPageData = salesTypeList?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === salesTypeList.length;
   const handleAddSaleType = () => {
@@ -131,7 +136,7 @@ const SaleType = () => {
     });
     if (confirmationResult.isConfirmed) {
       const archivedRows = Array.from(selectedRows).map(
-        (index) => salesTypeList[index].record_id
+        (index) => currentPageData[index].record_id
       );
       if (archivedRows.length > 0) {
         const newValue = {
@@ -142,20 +147,18 @@ const SaleType = () => {
         const pageNumber = {
           page_number: currentPage,
           page_size: itemsPerPage,
+          filters,
+          archived: viewArchived,
         };
 
         const res = await postCaller(
-          EndPoints.update_commission_archive,
+          "update_saletype_archive",
           newValue
         );
         if (res.status === HTTP_STATUS.OK) {
           // If API call is successful, refetch commissions
           dispatch(fetchSalesType(pageNumber));
-          const remainingSelectedRows = Array.from(selectedRows).filter(
-            (index) => !archivedRows.includes(salesTypeList[index].record_id)
-          );
-          const isAnyRowSelected = remainingSelectedRows.length > 0;
-          setSelectAllChecked(isAnyRowSelected);
+          setSelectAllChecked(false);
           setSelectedRows(new Set());
           Swal.fire({
             title: 'Archived!',
@@ -177,18 +180,32 @@ const SaleType = () => {
     }
   };
   const handleArchiveClick = async (record_id: any) => {
-    const archived: number[] = [record_id];
-    let newValue = {
-      record_id: archived,
-      is_archived: true,
-    };
-    const pageNumber = {
-      page_number: currentPage,
-      page_size: itemsPerPage,
-    };
-    const res = await postCaller(EndPoints.update_saletype_archive, newValue);
-    if (res.status === HTTP_STATUS.OK) {
-      dispatch(fetchSalesType(pageNumber));
+
+    const confirmationResult = await Swal.fire({
+      title: 'Are you sure?',
+      text: 'This action will archive your data.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, archive',
+    });
+    if (confirmationResult.isConfirmed){
+      const archived: number[] = [record_id];
+      let newValue = {
+        record_id: archived,
+        is_archived: true,
+      };
+      const pageNumber = {
+        page_number: currentPage,
+        page_size: itemsPerPage,
+        filters,
+        archived: viewArchived,
+      };
+      const res = await postCaller("update_saletype_archive", newValue);
+      if (res.status === HTTP_STATUS.OK) {
+        dispatch(fetchSalesType(pageNumber));
+      }
     }
   };
 
@@ -197,24 +214,13 @@ const SaleType = () => {
     // When toggling, reset the selected rows
     setSelectedRows(new Set());
     setSelectAllChecked(false);
+    setCurrentPage(1)
   };
   const fetchFunction = (req: any) => {
-    dispatch(fetchSalesType(req));
+    setCurrentPage(1);
+    setFilters(req.filters);
   };
-  if (error) {
-    return (
-      <div className="loader-container">
-        <Loading />
-      </div>
-    );
-  }
-  if (loading) {
-    return (
-      <div className="loader-container">
-        <Loading /> {loading}
-      </div>
-    );
-  }
+
   return (
     <div className="comm">
       <Breadcrumb
@@ -236,19 +242,22 @@ const SaleType = () => {
           onpressExport={() => {}}
           onpressAddNew={() => handleAddSaleType()}
         />
-        {filterOPen && (
-          <FilterModal
-            handleClose={filterClose}
-            columns={SalesTypeColumn}
-            fetchFunction={fetchFunction}
-            page_number={currentPage}
-            page_size={itemsPerPage}
-          />
-        )}
+
+        <FilterHoc
+          isOpen={filterOPen}
+          resetOnChange={viewArchived}
+          handleClose={filterClose}
+          columns={SalesTypeColumn}
+          fetchFunction={fetchFunction}
+          page_number={currentPage}
+          page_size={itemsPerPage}
+        />
+
         {open && (
           <CreateSaleType
             salesTypeData={editedSalesType}
             editMode={editMode}
+            setRefetch={setRefetch}
             handleClose={handleClose}
           />
         )}
@@ -289,7 +298,17 @@ const SaleType = () => {
               </tr>
             </thead>
             <tbody>
-              {currentPageData?.length > 0 ? (
+              {
+                loading?
+                <tr>
+                  <td colSpan={SalesTypeColumn.length}>
+                  <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <MicroLoader />
+                    </div>
+                  </td>
+                </tr>
+              
+             : currentPageData?.length > 0 ? (
                 currentPageData?.map((el: any, i: any) => (
                   <tr key={i}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
@@ -309,9 +328,9 @@ const SaleType = () => {
                       </div>
                     </td>
 
-                    <td>{el.description}</td>
+                    <td>{el.description || "N/A"}</td>
 
-                    {viewArchived === true ? null : (
+                    {!viewArchived && selectedRows.size < 2 && (
                       <td>
                         <div className="action-icon">
                           <div
@@ -328,7 +347,6 @@ const SaleType = () => {
                             onClick={() => handleEditSaleType(el)}
                           >
                             <img src={ICONS.editIcon} alt="" />
-                            {/* <span className="tooltiptext">Edit</span> */}
                           </div>
                         </div>
                       </td>
@@ -351,7 +369,7 @@ const SaleType = () => {
         {salesTypeList?.length > 0 ? (
           <div className="page-heading-container">
             <p className="page-heading">
-              {currentPage} - {totalPages} of {currentPageData?.length} item
+              {startIndex} - {endIndex>totalCount?totalCount:endIndex} of {currentPageData?.length} item
             </p>
 
             <Pagination

@@ -15,8 +15,8 @@ export const fetchRateAdjustments = createAsyncThunk(
   'rateadjustment/fetchrateadjustments',
   async (data: any) => {
     const response = await postCaller(EndPoints.rateAdjustments, data);
-    const list = response.data.rate_adjustments_list || []
-    return {list,count:response.dbRecCount} ;
+    const list = response.data.rate_adjustments_list || [];
+    return { list, count: response.dbRecCount };
   }
 );
 
@@ -28,6 +28,9 @@ export const createRateAdjustments = createAsyncThunk(
         EndPoints.create_rateadjustments,
         params
       );
+      if (response.status > 201) {
+        return rejectWithValue((response as Error).message);
+      }
       return response.data;
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -40,7 +43,9 @@ export const updateRateAdjustment = createAsyncThunk(
   async (param: any, { rejectWithValue, dispatch }) => {
     try {
       const data = await postCaller('update_rateadjustments', param);
-      
+      if (data.status > 201) {
+        return rejectWithValue((data as Error).message);
+      }
       return data.data;
     } catch (error) {
       return rejectWithValue((error as Error).message);

@@ -7,18 +7,19 @@ interface SalesTypeState {
   saletype_list: SalesTypeModel[];
   loading: boolean;
   error: string | null;
+  totalCount:number
 }
 const initialState: SalesTypeState = {
   saletype_list: [],
   loading: false,
   error: null,
+  totalCount: 0,
 };
 
 export const fetchSalesType = createAsyncThunk(
   'salesType/fetchSalesType',
   async (data: any) => {
     const response = await postCaller(EndPoints.salesType, data);
-
     return response;
   }
 );
@@ -45,6 +46,7 @@ const salesSlice = createSlice({
         } else {
           state.saletype_list = [];
         }
+        state.totalCount = action.payload.dbRecCount || 0
       })
       .addCase(fetchSalesType.rejected, (state, action) => {
         state.loading = false;

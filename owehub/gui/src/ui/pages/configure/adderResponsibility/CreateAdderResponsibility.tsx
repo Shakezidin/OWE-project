@@ -29,7 +29,7 @@ const CreateAdderResponsibility: React.FC<payScheduleProps> = ({
   handleClose,
   editMode,
   editData,
-  setRefetch
+  setRefetch,
 }) => {
   const dispatch = useAppDispatch();
   const { isSuccess, isFormSubmitting } = useAppSelector(
@@ -94,7 +94,7 @@ const CreateAdderResponsibility: React.FC<payScheduleProps> = ({
   useEffect(() => {
     if (isSuccess) {
       handleClose();
-      setRefetch(prev=>prev+1)
+      setRefetch((prev) => prev + 1);
     }
     return () => {
       isSuccess && dispatch(resetSuccess());

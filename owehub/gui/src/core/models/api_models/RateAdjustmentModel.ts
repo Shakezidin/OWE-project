@@ -8,5 +8,5 @@ export interface RateAdjustment {
   is_archived: string;
   start_date: string;
   end_date: string;
-  record_id?:number
+  record_id?: number;
 }

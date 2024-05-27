@@ -23,7 +23,10 @@ import {
   updateNoncom,
 } from '../../../../redux/apiActions/config/nocCommAction';
 import SelectOption from '../../../components/selectOption/SelectOption';
-import { FormEvent, FormInput } from '../../../../core/models/data_models/typesModel';
+import {
+  FormEvent,
+  FormInput,
+} from '../../../../core/models/data_models/typesModel';
 interface ButtonProps {
   editMode: boolean;
   handleClose: () => void;
@@ -191,7 +194,13 @@ const CreateNonComm: React.FC<ButtonProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.unique_id && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.unique_id.replace('unique_id', 'unique id')}
                     </span>
                   )}
@@ -211,7 +220,13 @@ const CreateNonComm: React.FC<ButtonProps> = ({
                     )}
                   />
                   {errors?.dealer_name && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.dealer_name}
                     </span>
                   )}
@@ -231,7 +246,13 @@ const CreateNonComm: React.FC<ButtonProps> = ({
                     )}
                   />
                   {errors?.dba && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.dba}
                     </span>
                   )}
@@ -248,7 +269,13 @@ const CreateNonComm: React.FC<ButtonProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.balance && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.balance}
                     </span>
                   )}
@@ -264,7 +291,13 @@ const CreateNonComm: React.FC<ButtonProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.exact_amount && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.exact_amount.replace('exact amount', 'amount')}
                     </span>
                   )}
@@ -279,7 +312,13 @@ const CreateNonComm: React.FC<ButtonProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.start_date && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.start_date.replace('start_date', 'start date')}
                     </span>
                   )}
@@ -296,7 +335,13 @@ const CreateNonComm: React.FC<ButtonProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.end_date && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.end_date.replace('end_date', 'end date')}
                     </span>
                   )}
@@ -312,7 +357,13 @@ const CreateNonComm: React.FC<ButtonProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.dealer_dba && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.dealer_dba}
                     </span>
                   )}
@@ -328,7 +379,13 @@ const CreateNonComm: React.FC<ButtonProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.balance && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.balance}
                     </span>
                   )}
@@ -346,7 +403,13 @@ const CreateNonComm: React.FC<ButtonProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.notes && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.notes}
                     </span>
                   )}
@@ -362,7 +425,13 @@ const CreateNonComm: React.FC<ButtonProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.dealer_dba && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.dealer_dba}
                     </span>
                   )}
@@ -378,7 +447,13 @@ const CreateNonComm: React.FC<ButtonProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.customer && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.customer}
                     </span>
                   )}

@@ -50,7 +50,11 @@ const Input: FC<InputProps> = ({
           name={name}
           placeholder={placeholder}
           value={value}
-          onChange={onChange}
+          onChange={(e) =>
+            typeof onChange !== 'undefined' && !e.target.value.startsWith(' ')
+              ? onChange(e)
+              : undefined
+          }
           className="input"
           disabled={disabled}
           {...rest}

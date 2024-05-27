@@ -41,7 +41,9 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
     startDate: editData?.start_date || '',
     endDate: editData?.end_date || '',
   });
-  const { isSuccess,isFormSubmitting } = useAppSelector((state) => state.installConstSlice);
+  const { isSuccess, isFormSubmitting } = useAppSelector(
+    (state) => state.installConstSlice
+  );
   function capitalizeWords(str: string) {
     return str.replace(/\b\w/g, function (char) {
       return char.toUpperCase();
@@ -137,7 +139,13 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
                   />
 
                   {errors?.cost && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.cost}
                     </span>
                   )}
@@ -155,7 +163,13 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
                     }}
                   />
                   {errors?.startDate && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.startDate}
                     </span>
                   )}
@@ -179,7 +193,13 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
                     onChange={handleChange}
                   />
                   {errors?.endDate && (
-                    <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.endDate}
                     </span>
                   )}

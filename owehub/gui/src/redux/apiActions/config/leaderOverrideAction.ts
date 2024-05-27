@@ -45,7 +45,7 @@ export const createleaderOverride = createAsyncThunk(
       if (data.status === 500) {
         return rejectWithValue((data as Error).message);
       }
-     
+
       return data;
     } catch (error) {
       console.error(error, 'error blocking create_leaderoverride');
@@ -66,7 +66,7 @@ export const updateleaderOverride = createAsyncThunk(
       if (data.status === 500 || data instanceof Error) {
         return rejectWithValue((data as Error).message);
       }
-      
+
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);

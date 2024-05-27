@@ -292,9 +292,9 @@ const FilterModal: React.FC<TableProps> = ({
                       type={getInputType(filter.Column)}
                       label="Data"
                       name="Data"
-                      onKeyUp={(e)=>{
-                        if (e.key==="Enter") {
-                          applyFilter()
+                      onKeyUp={(e) => {
+                        if (e.key === 'Enter') {
+                          applyFilter();
                         }
                       }}
                       value={filter.Data}

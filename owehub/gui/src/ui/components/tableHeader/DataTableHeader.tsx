@@ -34,7 +34,7 @@ const DataTableHeader = (props: TableProps) => {
   } = props;
 
   useEffect(() => {
-    dispatch(getDataTableName({get_all_table:false}));
+    dispatch(getDataTableName({ get_all_table: false }));
   }, []);
 
   return (

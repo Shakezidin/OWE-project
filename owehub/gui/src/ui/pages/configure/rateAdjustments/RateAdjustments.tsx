@@ -17,7 +17,11 @@ import FilterModal from '../../../components/FilterModal/FilterModal';
 import { ROUTES } from '../../../../routes/routes';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
-import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
+import {
+  errorSwal,
+  showAlert,
+  successSwal,
+} from '../../../components/alert/ShowAlert';
 import Loading from '../../../components/loader/Loading';
 import { fetchRateAdjustments } from '../../../../redux/apiActions/config/RateAdjustmentsAction';
 import DataNotFound from '../../../components/loader/DataNotFound';
@@ -34,10 +38,10 @@ const RateAdjustments = () => {
 
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const { data, totalCount, isLoading,isSuccess } = useAppSelector(
+  const { data, totalCount, isLoading, isSuccess } = useAppSelector(
     (state) => state.rateAdjustment
   );
- const [refetch,setRefetch] = useState(1)
+  const [refetch, setRefetch] = useState(1);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
@@ -56,17 +60,14 @@ const RateAdjustments = () => {
       filters,
     };
     dispatch(fetchRateAdjustments(pageNumber));
-  }, [dispatch, currentPage, viewArchived, filters,refetch]);
+  }, [dispatch, currentPage, viewArchived, filters, refetch]);
 
-  
   useEffect(() => {
     if (isSuccess) {
       handleClose();
-      setRefetch(prev=>prev+1)
+      setRefetch((prev) => prev + 1);
+      dispatch(resetSuccess());
     }
-    return () => {
-      isSuccess && dispatch(resetSuccess());
-    };
   }, [isSuccess]);
 
   const filter = () => {
@@ -135,7 +136,7 @@ const RateAdjustments = () => {
   };
 
   const fetchFunction = (req: any) => {
-    setCurrentPage(1)
+    setCurrentPage(1);
     setFilters(req.filters);
   };
 
@@ -165,7 +166,7 @@ const RateAdjustments = () => {
         const pageNumber = {
           page_number: currentPage,
           page_size: itemsPerPage,
-          filters
+          filters,
         };
 
         const res = await postCaller(
@@ -179,13 +180,13 @@ const RateAdjustments = () => {
           setSelectedRows(new Set());
           await successSwal('Archived', 'The data has been archived ');
         } else {
-          await successSwal('Archived', 'The data has been archived ');
+          await errorSwal('Failed', 'Something went wrong');
         }
       }
     }
   };
 
-  const handleArchiveClick = async (record_id: any) => {
+  const handleArchiveClick = async (record_id: number[]) => {
     const confirmed = await showAlert(
       'Are Your Sure',
       'This Action will archive your data',
@@ -202,7 +203,7 @@ const RateAdjustments = () => {
         page_number: currentPage,
         page_size: itemsPerPage,
         archive: viewArchived,
-        filters
+        filters,
       };
       const res = await postCaller('update_rateadjustments_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
@@ -210,12 +211,10 @@ const RateAdjustments = () => {
         setSelectedRows(new Set());
         await successSwal('Archived', 'The data has been archived ');
       } else {
-        await successSwal('Archived', 'The data has been archived ');
+        await errorSwal('Failed', 'Something went wrong');
       }
     }
   };
-
-
 
   return (
     <div className="comm">
@@ -325,13 +324,13 @@ const RateAdjustments = () => {
                     <td>{el.adjustment}</td>
                     <td>{el.min_rate}</td>
                     <td>{el.max_rate}</td>
-                    {!viewArchived && selectedRows.size < 2 && (
-                      <td>
+                    <td>
+                      {!viewArchived && selectedRows.size < 2 && (
                         <div className="action-icon">
                           <div
                             className=""
                             style={{ cursor: 'pointer' }}
-                            onClick={() => handleArchiveClick(el.RecordId)}
+                            onClick={() => handleArchiveClick([el.record_id])}
                           >
                             <img src={ICONS.ARCHIVE} alt="" />
                           </div>
@@ -343,8 +342,8 @@ const RateAdjustments = () => {
                             <img src={ICONS.editIcon} alt="" />
                           </div>
                         </div>
-                      </td>
-                    )}
+                      )}
+                    </td>
                   </tr>
                 ))
               ) : (

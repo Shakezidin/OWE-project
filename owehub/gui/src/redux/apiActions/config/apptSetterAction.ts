@@ -15,7 +15,10 @@ export const fetchApptSetters = createAsyncThunk(
   'apptsetters/fetchapptsetters',
   async (data: any) => {
     const response = await postCaller('get_appt_setters', data);
-    return {list:response.data.appt_setters_list,count:response.dbRecCount};
+    return {
+      list: response.data.appt_setters_list,
+      count: response.dbRecCount,
+    };
   }
 );
 

@@ -58,7 +58,7 @@ const PaymentSchedule = () => {
       filters,
     };
     dispatch(fetchPaySchedule(pageNumber));
-  }, [dispatch, currentPage, viewArchived, refetch]);
+  }, [dispatch, currentPage, viewArchived, refetch,filters]);
   // Extract column names
 
   const filter = () => {
@@ -204,7 +204,7 @@ const PaymentSchedule = () => {
     setViewArchived(!viewArchived);
     // When toggling, reset the selected rows
     setSelectedRows(new Set());
-    setCurrentPage(1)
+    setCurrentPage(1);
     setSelectAllChecked(false);
   };
   const fetchFunction = (req: any) => {
@@ -218,11 +218,11 @@ const PaymentSchedule = () => {
         head="Commission"
         linkPara="Configure"
         route={ROUTES.CONFIG_PAGE}
-        linkparaSecond="Payment Scheduler"
+        linkparaSecond="Payment Schedule"
       />
       <div className="commissionContainer">
         <TableHeader
-          title="Payment Scheduler"
+          title="Payment Schedule"
           onPressViewArchive={() => handleViewArchiveToggle()}
           onPressArchive={() => handleArchiveAllClick()}
           viewArchive={viewArchived}
@@ -312,10 +312,11 @@ const PaymentSchedule = () => {
                             )
                           }
                         />
-                        {el.partner_name}
+                       {el.partner} 
+                       
                       </div>
                     </td>
-                    <td>{el.partner}</td>
+                    <td> {el.partner_name}</td>
                     <td>{el.installer_name}</td>
                     <td>{el.sale_type}</td>
                     <td>{el.state}</td>

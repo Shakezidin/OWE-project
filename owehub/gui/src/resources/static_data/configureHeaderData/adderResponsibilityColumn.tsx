@@ -1,7 +1,6 @@
 import { Column } from '../../../core/models/data_models/FilterSelectModel';
 
 export const AdderResponsibilityColumns: Column[] = [
-
   {
     name: 'unique_id',
     displayName: 'Unique id',
@@ -9,7 +8,7 @@ export const AdderResponsibilityColumns: Column[] = [
     isCheckbox: true,
   },
   {
-    name: 'payscale',
+    name: 'pay_scale',
     displayName: 'Pay Scale',
     type: 'string',
     isCheckbox: false,
@@ -17,7 +16,7 @@ export const AdderResponsibilityColumns: Column[] = [
   {
     name: 'percentage',
     displayName: 'Percentage',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
 ];

@@ -26,7 +26,7 @@ export const DealerCreditColumn: Column[] = [
     type: 'string',
     isCheckbox: false,
   },
-  
+
   {
     name: 'approved_by',
     displayName: 'Approved By',
@@ -46,5 +46,4 @@ export const DealerCreditColumn: Column[] = [
     type: 'string',
     isCheckbox: false,
   },
-  
 ];

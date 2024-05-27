@@ -63,9 +63,6 @@
   background-color: transparent;
 }
 
-
-
-
 .PhoneInput {
   display: flex;
   align-items: center;
@@ -115,4 +112,8 @@
 }
 .PhoneInput select::-webkit-scrollbar-corner {
   background-color: transparent;
+}
+
+.phoneParentView {
+  width: 30%;
 }
