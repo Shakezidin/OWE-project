@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import { ReactComponent as CROSS_BUTTON } from '../../../../resources/assets/cross_button.svg';
 import Input from '../../../components/text_input/Input';
 import { ActionButton } from '../../../components/button/ActionButton';
@@ -8,17 +8,20 @@ import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { SalesTypeModel } from '../../../../core/models/configuration/create/SalesTypeModel';
 import { FormEvent } from '../../../../core/models/data_models/typesModel';
+import { toast } from 'react-toastify';
 
 interface salesProps {
   handleClose: () => void;
   salesTypeData: SalesTypeModel | null;
   editMode: boolean;
+  setRefetch:Dispatch<SetStateAction<number>>
 }
 
 const CreateSaleType: React.FC<salesProps> = ({
   handleClose,
   salesTypeData,
   editMode,
+  setRefetch
 }) => {
   const dispatch = useDispatch();
   console.log(salesTypeData);
@@ -45,11 +48,11 @@ const CreateSaleType: React.FC<salesProps> = ({
       if (createSales.record_id) {
         const res = await postCaller(EndPoints.update_saletype, createSales);
         if (res.status === 200) {
-          alert(res.message);
+          toast.success(res.message);
           handleClose();
-          window.location.reload();
+          setRefetch(prev=>prev+1)
         } else {
-          alert(res.message);
+          toast.error(res.message);
         }
       } else {
         const { record_id, ...cleanedFormData } = createSales;
@@ -58,11 +61,11 @@ const CreateSaleType: React.FC<salesProps> = ({
           cleanedFormData
         );
         if (res.status === 200) {
-          alert(res.message);
+          toast.success(res.message);
           handleClose();
-          window.location.reload();
+          setRefetch(prev=>prev+1)
         } else {
-          alert(res.message);
+          toast.error(res.message);
         }
       }
     } catch (error) {
