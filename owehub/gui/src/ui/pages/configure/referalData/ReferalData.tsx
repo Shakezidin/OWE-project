@@ -27,6 +27,14 @@ import DataNotFound from '../../../components/loader/DataNotFound';
 import { ROUTES } from '../../../../routes/routes';
 import { ReferalDataColumn } from '../../../../resources/static_data/configureHeaderData/ReferalDataColumn';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
+import MicroLoader from '../../../components/loader/MicroLoader';
+import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
+import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
+import { fetchDealer } from '../../../../redux/apiSlice/configSlice/config_get_slice/dealerSlice';
+import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
+import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
+import FilterHoc from '../../../components/FilterModal/FilterHoc';
+import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 interface Column {
   name: string;
   displayName: string;
@@ -57,6 +65,7 @@ const ReferalData: React.FC = () => {
   const [viewArchived, setViewArchived] = useState<boolean>(false);
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [filters, setFilters] = useState<FilterModel[]>([]);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -131,6 +140,40 @@ const ReferalData: React.FC = () => {
     });
   }
 
+  const handleArchiveClick = async (record_id: any) => {
+    const confirmed = await showAlert(
+      'Are Your Sure',
+      'This Action will archive your data',
+      'Yes',
+      'No'
+    );
+    if (confirmed) {
+      const archived: number[] = [record_id];
+      let newValue = {
+        record_id: archived,
+        is_archived: true,
+      };
+      const pageNumber = {
+        page_number: currentPage,
+        page_size: itemsPerPage,
+      };
+      const res = await postCaller(EndPoints.update_commission_archive, newValue);
+      if (res.status === HTTP_STATUS.OK) {
+        dispatch(fetchDealer(pageNumber));
+        setSelectAllChecked(false);
+        setSelectedRows(new Set());
+        await successSwal('Archived', 'The data has been archived ');
+      } else {
+        await successSwal('Archived', 'The data has been archived ');
+      }
+    }
+  };
+
+  const fetchFunction = (req: any) => {
+    setCurrentPage(1);
+    setFilters(req.filters);
+  };
+
   if (error) {
     return (
       <div className="loader-container">
@@ -138,13 +181,7 @@ const ReferalData: React.FC = () => {
       </div>
     );
   }
-  if (loading) {
-    return (
-      <div className="loader-container">
-        <Loading /> {loading}
-      </div>
-    );
-  }
+  
   return (
     <div className="comm">
       <Breadcrumb
@@ -156,10 +193,10 @@ const ReferalData: React.FC = () => {
       <div className="commissionContainer">
         <TableHeader
           title="Referal Data"
-          onPressViewArchive={() => {}}
-          onPressArchive={() => {}}
+          onPressViewArchive={() => { }}
+          onPressArchive={() => { }}
           onPressFilter={() => filter()}
-          onPressImport={() => {}}
+          onPressImport={() => { }}
           checked={isAllRowsSelected}
           isAnyRowSelected={isAnyRowSelected}
           viewArchive={viewArchived}
@@ -177,11 +214,15 @@ const ReferalData: React.FC = () => {
             </CSVLink>
           </div>
         )}
-        {/* {filterOPen && <FilterCommission handleClose={filterClose}  
-            columns={columns} 
-             page_number = {currentPage}
-             page_size = {itemsPerPage}
-             />} */}
+       <FilterHoc
+          resetOnChange={viewArchived}
+          isOpen={filterOPen}
+          handleClose={filterClose}
+          columns={ReferalDataColumn}
+          fetchFunction={fetchFunction}
+          page_number={currentPage}
+          page_size={itemsPerPage}
+        />
         {open && (
           <CreateReferalData
             commission={editedCommission}
@@ -223,7 +264,15 @@ const ReferalData: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {currentPageData?.length > 0 ? (
+              {loading ? (
+                <tr>
+                  <td colSpan={currentPageData.length}>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <MicroLoader />
+                    </div>
+                  </td>
+                </tr>
+              ) : currentPageData?.length > 0 ? (
                 currentPageData?.map((el: any, i: any) => (
                   <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
@@ -242,7 +291,6 @@ const ReferalData: React.FC = () => {
                         {el.partner}
                       </div>
                     </td>
-
                     <td>{el.installer}</td>
                     <td>{el.state}</td>
                     <td>{el.sale_type}</td>
@@ -267,23 +315,47 @@ const ReferalData: React.FC = () => {
                     <td>{el.sale_price}</td>
                     <td>{el.sale_type}</td>
                     <td>{el.sale_price}</td>
-
                     <td>{el.start_date}</td>
                     <td>{el.end_date}</td>
                     <td>
-                      <div className="action-icon">
-                        <div className="" style={{ cursor: 'pointer' }}>
-                          <img src={ICONS.ARCHIVE} alt="" />
-                        </div>
-                        <div
-                          className=""
-                          style={{ cursor: 'pointer' }}
-                          onClick={() => handleEditCommission(el)}
-                        >
-                          <img src={ICONS.editIcon} alt="" />
-                        </div>
-                      </div>
-                    </td>
+                        {selectedRows.size > 0 ? (
+                          <div className="action-icon">
+                            <div
+                              className="action-archive"
+                              style={{ cursor: 'not-allowed' }}
+                            >
+                              <img src={ICONS.ARCHIVE} alt="" />
+                              {/* <span className="tooltiptext">Archive</span> */}
+                            </div>
+                            <div
+                              className="action-archive"
+                              style={{ cursor: 'not-allowed' }}
+                            >
+                              <img src={ICONS.editIcon} alt="" />
+                              {/* <span className="tooltiptext">Edit</span> */}
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="action-icon">
+                            <div
+                              className="action-archive"
+                              style={{ cursor: 'pointer' }}
+                              onClick={() => handleArchiveClick(el.record_id)}
+                            >
+                              <img src={ICONS.ARCHIVE} alt="" />
+                              {/* <span className="tooltiptext">Archive</span> */}
+                            </div>
+                            <div
+                              className="action-archive"
+                              style={{ cursor: 'pointer' }}
+                              onClick={() => handleEditCommission(el)}
+                            >
+                              <img src={ICONS.editIcon} alt="" />
+                              {/* <span className="tooltiptext">Edit</span> */}
+                            </div>
+                          </div>
+                        )}
+                      </td>
                   </tr>
                 ))
               ) : (

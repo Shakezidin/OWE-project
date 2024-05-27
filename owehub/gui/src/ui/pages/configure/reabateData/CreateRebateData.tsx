@@ -328,6 +328,7 @@ const CreateRebateData: React.FC<ButtonProps> = ({
                       name="end_date"
                       placeholder={'10/04/2004'}
                       onChange={(e) => handleInputChange(e)}
+                      min={createCommission.start_date}
                     />
                     {errors?.end_date && (
                       <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>

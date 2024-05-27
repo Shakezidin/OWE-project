@@ -21,6 +21,9 @@ import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoin
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import Swal from 'sweetalert2';
 import { ROUTES } from '../../../../routes/routes';
+import FilterHoc from '../../../components/FilterModal/FilterHoc';
+import MicroLoader from '../../../components/loader/MicroLoader';
+import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
 const TimeLine = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -167,30 +170,34 @@ const TimeLine = () => {
     }
   };
   const handleArchiveClick = async (record_id: any) => {
-    const archived: number[] = [record_id];
-    let newValue = {
-      record_id: archived,
-      is_archived: true,
-    };
-    const pageNumber = {
-      page_number: currentPage,
-      page_size: itemsPerPage,
-    };
-    const res = await postCaller(
-      EndPoints.update_timelinesla_archive,
-      newValue
+    const confirmed = await showAlert(
+      'Are Your Sure',
+      'This Action will archive your data',
+      'Yes',
+      'No'
     );
-    if (res.status === HTTP_STATUS.OK) {
-      await dispatch(fetchTimeLineSla(pageNumber));
-      console.log('working as hgelll');
-
-      Swal.fire({
-        title: 'Archived!',
-        text: 'Selected row have been archived.',
-        icon: 'success',
-        timer: 2000,
-        showConfirmButton: false,
-      });
+    if (confirmed) {
+      const archived: number[] = [record_id];
+      let newValue = {
+        record_id: archived,
+        is_archived: true,
+      };
+      const pageNumber = {
+        page_number: currentPage,
+        page_size: itemsPerPage,
+      };
+      const res = await postCaller(
+        EndPoints.update_timelinesla_archive,
+        newValue
+      );
+      if (res.status === HTTP_STATUS.OK) {
+        await dispatch(fetchTimeLineSla(pageNumber));
+        setSelectAllChecked(false);
+        setSelectedRows(new Set());
+        await successSwal('Archived', 'The data has been archived ');
+      } else {
+        await successSwal('Archived', 'The data has been archived ');
+      }
     }
   };
 
@@ -221,13 +228,7 @@ const TimeLine = () => {
       </div>
     );
   }
-  if (loading) {
-    return (
-      <div className="loader-container">
-        <Loading /> {loading}
-      </div>
-    );
-  }
+
 
   return (
     <div className="comm">
@@ -240,7 +241,13 @@ const TimeLine = () => {
       <div className="commissionContainer">
         <TableHeader
           title="Time Line SLA"
-          onPressViewArchive={() => handleViewArchiveToggle()}
+          // onPressViewArchive={() => handleViewArchiveToggle()}
+          onPressViewArchive={() => {
+            handleViewArchiveToggle();
+            setCurrentPage(1);
+            setSelectAllChecked(false);
+            setSelectedRows(new Set());
+          }}
           onPressArchive={() => handleArchiveAllClick()}
           onPressFilter={() => filter()}
           onPressImport={() => {}}
@@ -250,15 +257,15 @@ const TimeLine = () => {
           onpressExport={() => {}}
           onpressAddNew={() => handleTimeLineSla()}
         />
-        {filterOPen && (
-          <FilterModal
-            handleClose={filterClose}
-            columns={TimeLineSlaColumns}
-            page_number={currentPage}
-            fetchFunction={fetchFunction}
-            page_size={itemsPerPage}
-          />
-        )}
+        <FilterHoc
+          resetOnChange={viewArchived}
+          isOpen={filterOPen}
+          handleClose={filterClose}
+          columns={TimeLineSlaColumns}
+          fetchFunction={fetchFunction}
+          page_number={currentPage}
+          page_size={itemsPerPage}
+        />
         {open && (
           <CreateTimeLine
             timeLineSlaData={editedTimeLineSla}
@@ -302,7 +309,15 @@ const TimeLine = () => {
               </tr>
             </thead>
             <tbody>
-              {currentPageData?.length > 0 ? (
+              {loading ? (
+                <tr>
+                  <td colSpan={currentPageData.length}>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <MicroLoader />
+                    </div>
+                  </td>
+                </tr>
+              ) : currentPageData?.length > 0 ? (
                 currentPageData?.map((el: any, i: any) => (
                   <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
@@ -327,24 +342,39 @@ const TimeLine = () => {
                     <td>{el.end_date}</td>
                     {viewArchived === true ? null : (
                       <td>
-                        <div className="action-icon">
-                          <div
-                            className="action-archive"
-                            style={{ cursor: 'pointer' }}
-                            onClick={() => handleArchiveClick(el.record_id)}
-                          >
-                            <img src={ICONS.ARCHIVE} alt="" />
-                            {/* <span className="tooltiptext">Archive</span> */}
+                        {selectedRows.size > 0 ? (
+                          <div className="action-icon">
+                            <div
+                              className="action-archive"
+                              style={{ cursor: 'not-allowed' }}
+                            >
+                              <img src={ICONS.ARCHIVE} alt="" />
+                            </div>
+                            <div
+                              className="action-archive"
+                              style={{ cursor: 'not-allowed' }}
+                            >
+                              <img src={ICONS.editIcon} alt="" />
+                            </div>
                           </div>
-                          <div
-                            className="action-archive"
-                            onClick={() => handleEditTimeLineSla(el)}
-                            style={{ cursor: 'pointer' }}
-                          >
-                            <img src={ICONS.editIcon} alt="" />
-                            {/* <span className="tooltiptext">Edit</span> */}
+                        ) : (
+                          <div className="action-icon">
+                            <div
+                              className="action-archive"
+                              style={{ cursor: 'pointer' }}
+                              onClick={() => handleArchiveClick(el.record_id)}
+                            >
+                              <img src={ICONS.ARCHIVE} alt="" />
+                            </div>
+                            <div
+                              className="action-archive"
+                              style={{ cursor: 'pointer' }}
+                              onClick={() => handleEditTimeLineSla(el)}
+                            >
+                              <img src={ICONS.editIcon} alt="" />
+                            </div>
                           </div>
-                        </div>
+                        )}
                       </td>
                     )}
                   </tr>
@@ -362,16 +392,15 @@ const TimeLine = () => {
             </tbody>
           </table>
         </div>
-        {timelinesla_list?.length > 0 ? (
+        {timelinesla_list?.length > 0 && (
           <div className="page-heading-container">
             <p className="page-heading">
               {startIndex} - {endIndex > totalCount ? totalCount : endIndex} of{' '}
               {totalCount} item
             </p>
-
             <Pagination
               currentPage={currentPage}
-              totalPages={totalPages} // You need to calculate total pages
+              totalPages={totalPages}
               paginate={paginate}
               currentPageData={currentPageData}
               goToNextPage={goToNextPage}
@@ -379,7 +408,7 @@ const TimeLine = () => {
               perPage={itemsPerPage}
             />
           </div>
-        ) : null}
+        )}
       </div>
     </div>
   );
