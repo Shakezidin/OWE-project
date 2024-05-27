@@ -94,9 +94,12 @@ export const RepPayDashboardPage: React.FC = () => {
     <>
       <div className="rep-Dashboard-section-container">
         <div className="rep-Dashboard-container">
-          <div className="manage-user"></div>
-          <div className="rep-dashboard-payroll">
-            <div className="rep-dash-head-input">
+          <div className="rep-manage-user">
+            
+          <div className="rep-dash-head-input">
+            <div className='rep-drop_label'>
+            <img src={ICONS.includes_icon} alt="" />
+            </div>
               <label className="rep-inputLabel" style={{ color: '#344054' }}>
                 Includes
               </label>
@@ -104,7 +107,10 @@ export const RepPayDashboardPage: React.FC = () => {
             </div>
 
             <div className="rep-dash-head-input">
-              <label className="inputLabel" style={{ color: '#344054' }}>
+            <div className='rep-drop_label'>
+            <img src={ICONS.lable_img} alt="" />
+            </div>
+              <label className="inputLabel" style={{color: '#344054' }}>
                 Commission Model
               </label>
               <Select
@@ -133,9 +139,9 @@ export const RepPayDashboardPage: React.FC = () => {
                   }),
                   dropdownIndicator: (baseStyles, state) => ({
                     ...baseStyles,
-                    color: '#0493CE',
+                    color: '#292929',
                     '&:hover': {
-                      color: '#0493CE',
+                      color: '#292929',
                     },
                   }),
                   option: (baseStyles, state) => ({
@@ -160,6 +166,9 @@ export const RepPayDashboardPage: React.FC = () => {
             </div>
 
             <div className="rep-dash-head-input">
+            <div className='rep-drop_label'>
+            <img src={ICONS.lable_img} alt="" />
+            </div>
               <label className="inputLabel" style={{ color: '#344054' }}>
                 Payroll Date
               </label>
@@ -213,7 +222,9 @@ export const RepPayDashboardPage: React.FC = () => {
                 Chart View
               </label>
             </div>
+          </div>
 
+          <div className="rep-dashboard-payroll">
             <div className="Line-container">
               <div className="rep-line-graph">
                 <div
@@ -223,7 +234,7 @@ export const RepPayDashboardPage: React.FC = () => {
                   onClick={() => setActive(0)}
                 >
                   {active === 0 ? (
-                    <img src={ICONS.dashActive} alt="" />
+                    <img src={ICONS.dashHead} alt="" />
                   ) : (
                     <img src={ICONS.dashHead} alt="" />
                   )}
@@ -233,7 +244,7 @@ export const RepPayDashboardPage: React.FC = () => {
                     active === 1 ? 'rep-active-filter-line' : ''
                   }`}
                   // onClick={() => setActive(1)}
-                  style={{ border: '1px solid #0493CE' }}
+                  // style={{ border: '1px solid #0493CE' }}
                 >
                   {active === 1 ? (
                     <img src={ICONS.viewActive} alt="" />
@@ -243,7 +254,7 @@ export const RepPayDashboardPage: React.FC = () => {
                 </div>
                 <div
                   className="rep-filter-line"
-                  style={{ border: '1px solid #0493CE' }}
+                  // style={{ border: '1px solid #0493CE' }}
                   onClick={() => setFilterModal(true)}
                 >
                   <img src={ICONS.FILTER} alt="" />

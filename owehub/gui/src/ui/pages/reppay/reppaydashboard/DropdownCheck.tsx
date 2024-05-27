@@ -20,7 +20,10 @@ const options: Option[] = [
 
 const DropdownWithCheckboxes = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+  // const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+  const [selectedOptions, setSelectedOptions] = useState<string[]>(
+    options.map((o) => o.value)
+  );
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -63,8 +66,20 @@ const DropdownWithCheckboxes = () => {
   return (
     <div className="dropdown-container" ref={dropdownRef}>
       <div className="dropdown-toggle" onClick={toggleDropdown}>
-        {/* {selectedOptions.length > 0 ? `(${selectedOptions})` : 'Select'} */}
-        Select
+        <span className="toggle-text">
+          {selectedOptions.length > 0 ? (
+            selectedOptions.includes('All') ? (
+              'All'
+            ) : (
+              ''
+            )
+          ) : (
+            'All'
+          )}
+        </span>
+        {selectedOptions.length > 0 && !selectedOptions.includes('All') && (
+          <span className="selected-count">{selectedOptions.length}</span>
+        )}
         <FiChevronDown className="drop-icon" />
       </div>
       {isOpen && (

@@ -6,7 +6,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 2rem;
+  gap: 1%;
   padding: 10px 0;
 }
 .rep-dashboard-payroll {
@@ -25,11 +25,12 @@
 .rep-dash-head-input {
   display: flex;
   height: 36px;
-  background-color: #eaf2fe;
-  padding: 0 3px 0 12px;
-  gap: 0.5rem;
+  background-color: #ffffff;
+  padding: 0 3px 0 3px;   /*here change for reduce left space ***************/
+  gap: 0.4rem;
   align-items: center;
   border-radius: 8px;
+  border: solid 1px #333333;
 }
 .rep-chart-view {
   background: #ffffff;
@@ -48,7 +49,7 @@
   display: flex;
   /* align-items: center; */
   /* margin-top: 0.4rem; */
-  gap: 0.5rem;
+  gap: 0.3rem;
   /* align-content: center;
   justify-content: center; */
 }
@@ -63,14 +64,14 @@
   justify-content: center;
 }
 .rep-active-filter-line {
-  background-color: #0493ce;
+  background-color: #ffffff;
 }
 .rep-active-filter-line img {
   fill: white;
 }
 .rep-filter-line img {
-  width: 20px;
-  height: 20px;
+  width: 50%;
+  height: 50%;
 }
 
 .rep-breakdown-container {
@@ -173,14 +174,6 @@
   border: none;
 }
 
-.rep-inputLabel {
-  color: #000000;
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 14.5px;
-  /* text-align: left; */
-}
-
 .rep-teamImg {
   width: 80.43px;
   height: 80px;
@@ -221,4 +214,26 @@
   line-height: 28px;
   text-align: left;
   color: #747782;
+}
+.rep-manage-user{
+  display: flex;
+  gap: 8px;
+}
+
+.rep-drop_label {
+  width: 30px;
+  height: 82%;
+  border-radius: 5px;
+  background-color: #F2F2F2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.rep-inputLabel {
+  color: #000000;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 14.5px;
+  /* text-align: left; */
+  width: 53px;
 }
