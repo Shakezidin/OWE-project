@@ -127,38 +127,38 @@ func HandleGetPaymentSchedulesDataRequest(resp http.ResponseWriter, req *http.Re
 		}
 
 		// Rl
-		Rl, ok := item["rl"].(string)
-		if !ok || Rl == "" {
+		Rl, ok := item["rl"].(float64)
+		if !ok || Rl == 0.0 {
 			log.FuncErrorTrace(0, "Failed to get Rl for Record ID %v. Item: %+v\n", RecordId, item)
-			Rl = ""
+			Rl = 0.0
 		}
 
 		// Draw
-		Draw, ok := item["draw"].(string)
-		if !ok || Draw == "" {
+		Draw, ok := item["draw"].(float64)
+		if !ok || Draw == 0.0 {
 			log.FuncErrorTrace(0, "Failed to get draw for Record ID %v. Item: %+v\n", RecordId, item)
-			Draw = ""
+			Draw = 0.0
 		}
 
 		// DrawMax
-		DrawMax, ok := item["draw_max"].(string)
-		if !ok || DrawMax == "" {
+		DrawMax, ok := item["draw_max"].(float64)
+		if !ok || DrawMax == 0.0 {
 			log.FuncErrorTrace(0, "Failed to get draw max for Record ID %v. Item: %+v\n", RecordId, item)
-			DrawMax = ""
+			DrawMax = 0.0
 		}
 
 		// RepDraw
-		RepDraw, ok := item["rep_draw"].(string)
-		if !ok || RepDraw == "" {
+		RepDraw, ok := item["rep_draw"].(float64)
+		if !ok || RepDraw == 0.0 {
 			log.FuncErrorTrace(0, "Failed to get rep draw for Record ID %v. Item: %+v\n", RecordId, item)
-			RepDraw = ""
+			RepDraw = 0.0
 		}
 
 		// RepDrawMax
-		RepDrawMax, ok := item["rep_draw_max"].(string)
-		if !ok || RepDrawMax == "" {
+		RepDrawMax, ok := item["rep_draw_max"].(float64)
+		if !ok || RepDrawMax == 0.0 {
 			log.FuncErrorTrace(0, "Failed to get rep_draw_max for Record ID %v. Item: %+v\n", RecordId, item)
-			RepDrawMax = ""
+			RepDrawMax = 0.0
 		}
 
 		// RepPay
@@ -286,7 +286,7 @@ func PreparePaymentScheduleFilters(tableName string, dataFilter models.DataReque
 				filtersBuilder.WriteString(fmt.Sprintf("ps.rep_draw_max %s $%d", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "rep_pay":
-				filtersBuilder.WriteString(fmt.Sprintf("ps.rep_pay %s $%d", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ps.rep_pay) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ps.%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))

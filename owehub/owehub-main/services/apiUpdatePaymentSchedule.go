@@ -58,11 +58,8 @@ func HandleUpdatePaymentScheduleRequest(resp http.ResponseWriter, req *http.Requ
 
 	if ((len(updatePaymentSchedule.Partner) <= 0) || len(updatePaymentSchedule.PartnerName) <= 0) ||
 		(len(updatePaymentSchedule.InstallerName) <= 0) || (len(updatePaymentSchedule.SaleType) <= 0) ||
-		(len(updatePaymentSchedule.State) <= 0) || (len(updatePaymentSchedule.Rl) <= 0) ||
-		(len(updatePaymentSchedule.Draw) <= 0) || (len(updatePaymentSchedule.DrawMax) <= 0) ||
-		(len(updatePaymentSchedule.RepDraw) <= 0) || (len(updatePaymentSchedule.RepDrawMax) <= 0) ||
-		(len(updatePaymentSchedule.RepPay) <= 0) || (len(updatePaymentSchedule.StartDate) <= 0) ||
-		(len(updatePaymentSchedule.EndDate) <= 0) {
+		(len(updatePaymentSchedule.State) <= 0) || (len(updatePaymentSchedule.RepPay) <= 0) ||
+		(len(updatePaymentSchedule.StartDate) <= 0) || (len(updatePaymentSchedule.EndDate) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed, Update failed", http.StatusBadRequest, nil)
@@ -72,6 +69,41 @@ func HandleUpdatePaymentScheduleRequest(resp http.ResponseWriter, req *http.Requ
 		err = fmt.Errorf("Invalid Record Id, unable to proceed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Invalid Record Id, Update failed", http.StatusBadRequest, nil)
+		return
+	}
+
+	if updatePaymentSchedule.Rl <= float64(0) {
+		err = fmt.Errorf("Invalid rate list Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid rate list Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+
+	if updatePaymentSchedule.Draw <= float64(0) {
+		err = fmt.Errorf("Invalid draw percentage Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Draw Percentage Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+
+	if updatePaymentSchedule.DrawMax <= float64(0) {
+		err = fmt.Errorf("Invalid draw max Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Draw Max Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+
+	if updatePaymentSchedule.RepDraw <= float64(0) {
+		err = fmt.Errorf("Invalid Rep Draw Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Rep Draw Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+
+	if updatePaymentSchedule.RepDrawMax <= float64(0) {
+		err = fmt.Errorf("Invalid Rep Draw Max Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Rep Draw Max Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 	// Populate query parameters in the correct order
