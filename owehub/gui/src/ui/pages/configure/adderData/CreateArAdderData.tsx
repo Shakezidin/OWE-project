@@ -65,9 +65,9 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
       name === 'sys_size' ||
       name === 'adder_cal'
     ) {
-      if (value === '' || value === '0' || Number(value) || value === '.') {
-        setNewFormData((prev) => ({ ...prev, [name]: value }));
-      }
+      const sanitized = value.replace(/[^0-9.]/g, '');
+        setNewFormData((prev) => ({ ...prev, [name]: sanitized }));
+      
     } else {
       setNewFormData((prev) => ({ ...prev, [name]: value }));
     }

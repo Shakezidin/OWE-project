@@ -218,11 +218,11 @@ const AdderResponsibility = () => {
         head=""
         linkPara="Configure"
         route={ROUTES.CONFIG_PAGE}
-        linkparaSecond="Adder Responsbility"
+        linkparaSecond="Adder Responsibilty"
       />
       <div className="commissionContainer">
         <TableHeader
-          title="Adder Responsbility"
+          title="Adder Responsibilty"
           onPressViewArchive={() => handleViewArchiveToggle()}
           onPressArchive={() => handleArchiveAllClick()}
           onPressFilter={() => filter()}
@@ -318,9 +318,8 @@ const AdderResponsibility = () => {
                     </td>
                     <td> {el.pay_scale}</td>
                     <td>{el.percentage}</td>
-
-                    {!viewArchived && selectedRows.size < 2 && (
-                      <td>
+                    <td>
+                      {!viewArchived && selectedRows.size < 2 && (
                         <div className="action-icon">
                           <div
                             className=""
@@ -337,8 +336,8 @@ const AdderResponsibility = () => {
                             <img src={ICONS.editIcon} alt="" />
                           </div>
                         </div>
-                      </td>
-                    )}
+                      )}
+                    </td>
                   </tr>
                 ))
               ) : (
