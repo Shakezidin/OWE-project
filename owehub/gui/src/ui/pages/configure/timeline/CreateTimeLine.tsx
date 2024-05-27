@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { ReactComponent as CROSS_BUTTON } from '../../../../resources/assets/cross_button.svg';
 import Input from '../../../components/text_input/Input';
 import { ActionButton } from '../../../components/button/ActionButton';
@@ -15,10 +15,12 @@ import {
   FormEvent,
   FormInput,
 } from '../../../../core/models/data_models/typesModel';
+import { addDays, format } from 'date-fns';
 interface timeLineProps {
   handleClose: () => void;
   editMode: boolean;
   timeLineSlaData: TimeLineSlaModel | null;
+  setRefetch:Dispatch<SetStateAction<number>>
 }
 
 interface IError {
@@ -32,6 +34,7 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
   handleClose,
   editMode,
   timeLineSlaData,
+  setRefetch
 }) => {
   const dispatch = useDispatch();
   const [createTimeLine, setCreateTimeLine] = useState<TimeLineSlaModel>({
@@ -44,6 +47,7 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
   });
   const [errors, setErrors] = useState<IError>({} as IError);
   const [newFormData, setNewFormData] = useState<any>([]);
+  const [isPending,setIsPending] = useState(false)
   const tableData = {
     tableNames: ['states'],
   };
@@ -77,32 +81,36 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
   };
   const handleTimeLineInput = (e: FormInput) => {
     const { name, value } = e.target;
-
-    if (name === 'end_date') {
-      if (createTimeLine.start_date && value < createTimeLine.start_date) {
-        setErrors((prevErrors) => ({
-          ...prevErrors,
-          end_date: 'End date cannot be before the start date',
+    if (name==="days") {
+      if (value === '' || /^\d*\.?\d*$/.test(value)) {
+        setCreateTimeLine((prevData) => ({
+          ...prevData,
+          [name]: value,
         }));
-        return;
+      }else{
+        return 
       }
     }
 
+    if (name === 'start_date') {
+      setCreateTimeLine((prevData) => ({
+        ...prevData,
+        [name]: value,
+        end_date: '',
+      }));
+      return;
+    }
     setCreateTimeLine((prevData) => ({
       ...prevData,
       [name]: value,
-    }));
-    setErrors((prevErrors) => ({
-      ...prevErrors,
-      [name]: '',
     }));
   };
 
   const submitTimeLineSla = async (e: FormEvent) => {
     e.preventDefault();
-    console.log('working');
-
+    
     if (handleValidation()) {
+      setIsPending(true);
       try {
         dispatch(updateTimeLineForm(createTimeLine));
         if (createTimeLine.record_id) {
@@ -113,8 +121,10 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
           if (res?.status === 200) {
             toast.success(res.message);
             handleClose();
-            window.location.reload();
+            setIsPending(false);
+            setRefetch(prev=>prev+1)
           } else {
+            setIsPending(false);
             toast.error(res.message);
           }
         } else {
@@ -126,11 +136,14 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
           if (res?.status === 200) {
             toast.success(res.message);
             handleClose();
-            window.location.reload();
+            setIsPending(false);
+            setRefetch(prev=>prev+1)
           } else {
+            setIsPending(false);
             toast.error(res.message);
           }
         }
+       
       } catch (error) {
         console.error('Error submitting form:', error);
       }
@@ -246,7 +259,8 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
                     name="end_date"
                     placeholder={'10/04/2004'}
                     onChange={(e) => handleTimeLineInput(e)}
-                    min={createTimeLine.start_date}
+                    min={createTimeLine.start_date && format(addDays(new Date(createTimeLine.start_date),1),"yyyy-MM-dd") }
+                    disabled={!createTimeLine.start_date}
                   />
                   {errors?.end_date && (
                     <span
@@ -273,6 +287,7 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
           <ActionButton
             title={editMode === false ? 'Save' : 'Update'}
             type="submit"
+            disabled={isPending}
             onClick={() => {}}
           />
         </div>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import { ActionButton } from '../../../components/button/ActionButton';
 import Input from '../../../components/text_input/Input';
 import SelectOption from '../../../components/selectOption/SelectOption';
@@ -7,6 +7,7 @@ import {
   installerOption,
   partnerOption,
   stateOption,
+  salesTypeOption,
 } from '../../../../core/models/data_models/SelectDataModel';
 import { CommissionModel } from '../../../../core/models/configuration/create/CommissionModel';
 import { respTypeData } from '../../../../resources/static_data/StaticData';
@@ -14,6 +15,7 @@ import {
   FormEvent,
   FormInput,
 } from '../../../../core/models/data_models/typesModel';
+import { addDays, format } from 'date-fns';
 
 interface formProps {
   handleSubmit: (e: FormEvent) => void;
@@ -24,6 +26,7 @@ interface formProps {
   errors: any;
   newFormData: any;
   createCommission: CommissionModel;
+  isPending: boolean;
 }
 const CommissionForm: React.FC<formProps> = ({
   handleClose,
@@ -34,6 +37,7 @@ const CommissionForm: React.FC<formProps> = ({
   handleChange,
   handleInputChange,
   errors,
+  isPending,
 }) => {
   return (
     <div className="transparent-model">
@@ -99,14 +103,24 @@ const CommissionForm: React.FC<formProps> = ({
 
               <div className="create-input-container">
                 <div className="create-input-field">
-                  <Input
+                  <label className="inputLabel-select">Sales Type</label>
+                  {/* <Input
                     type={'text'}
                     label="Sales Type"
                     value={createCommission.sale_type}
                     name="sale_type"
                     placeholder={'Sales Type'}
                     onChange={(e) => handleInputChange(e)}
+                  /> */}
+
+                  <SelectOption
+                    options={salesTypeOption(newFormData)}
+                    onChange={(newValue) => handleChange(newValue, 'sale_type')}
+                    value={salesTypeOption(newFormData)?.find(
+                      (option) => option.value === createCommission.sale_type
+                    )}
                   />
+
                   {errors.sale_type && (
                     <span className="error">{errors.sale_type}</span>
                   )}
@@ -140,8 +154,14 @@ const CommissionForm: React.FC<formProps> = ({
                   )}
                 </div>
               </div>
-              <div className="create-input-container">
-                <div className="rate-input-container">
+              <div
+                className="create-input-container"
+                style={{ flexWrap: 'nowrap' }}
+              >
+                <div
+                  className="create-input-field"
+                  style={{ display: 'flex', gap: 8 }}
+                >
                   <div className="rate-input-field">
                     <Input
                       type={'number'}
@@ -167,33 +187,39 @@ const CommissionForm: React.FC<formProps> = ({
                     {errors.rl && <span className="error">{errors.rl}</span>}
                   </div>
                 </div>
-                <div className="start-input-container">
-                  <div className="rate-input-field">
-                    <Input
-                      type={'date'}
-                      label="Start Date"
-                      value={createCommission.start_date}
-                      name={createCommission.start_date}
-                      placeholder={'1/04/2004'}
-                      onChange={(e) => handleInputChange(e)}
-                    />
-                    {errors.start_date && (
-                      <span className="error">{errors.start_date}</span>
-                    )}
-                  </div>
-                  <div className="rate-input-field">
-                    <Input
-                      type={'date'}
-                      label="End Date"
-                      value={createCommission.end_date}
-                      name={createCommission.end_date}
-                      placeholder={'10/04/2004'}
-                      onChange={(e) => handleInputChange(e)}
-                    />
-                    {errors.end_date && (
-                      <span className="error">{errors.end_date}</span>
-                    )}
-                  </div>
+                <div className="create-input-field">
+                  <Input
+                    type={'date'}
+                    label="Start Date"
+                    value={createCommission.start_date}
+                    name={'start_date'}
+                    placeholder={'1/04/2004'}
+                    onChange={(e) => handleInputChange(e)}
+                  />
+                  {errors.start_date && (
+                    <span className="error">{errors.start_date}</span>
+                  )}
+                </div>
+                <div className="create-input-field">
+                  <Input
+                    type={'date'}
+                    label="End Date"
+                    value={createCommission.end_date}
+                    disabled={!createCommission.start_date}
+                    name={'end_date'}
+                    min={
+                      createCommission.start_date &&
+                      format(
+                        addDays(new Date(createCommission.start_date), 1),
+                        'yyyy-MM-dd'
+                      )
+                    }
+                    placeholder={'10/04/2004'}
+                    onChange={(e) => handleInputChange(e)}
+                  />
+                  {errors.end_date && (
+                    <span className="error">{errors.end_date}</span>
+                  )}
                 </div>
               </div>
             </div>
@@ -208,6 +234,7 @@ const CommissionForm: React.FC<formProps> = ({
           <ActionButton
             title={editMode === false ? 'Save' : 'Update'}
             type="submit"
+            disabled={isPending}
             onClick={() => {}}
           />
         </div>

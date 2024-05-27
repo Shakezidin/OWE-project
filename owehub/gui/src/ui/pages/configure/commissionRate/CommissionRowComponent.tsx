@@ -7,6 +7,7 @@ import { Commissioncolumns } from '../../../../resources/static_data/configureHe
 import { useAppSelector } from '../../../../redux/hooks';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import { CommissionModel } from '../../../../core/models/configuration/create/CommissionModel';
+import MicroLoader from '../../../components/loader/MicroLoader';
 
 interface rowProps {
   selectAllChecked: boolean;
@@ -38,9 +39,7 @@ const CommissionRowComponent: React.FC<rowProps> = ({
   sortDirection,
   sortKey,
 }) => {
-  const commissionList = useAppSelector(
-    (state: any) => state.comm.commissionsList
-  );
+  const { commissionsList, loading } = useAppSelector((state) => state.comm);
   return (
     <div
       className="TableContainer"
@@ -54,7 +53,7 @@ const CommissionRowComponent: React.FC<rowProps> = ({
                 key={key}
                 isCheckbox={item.isCheckbox}
                 titleName={item.displayName}
-                data={commissionList}
+                data={commissionsList}
                 isAllRowsSelected={isAllRowsSelected}
                 isAnyRowSelected={isAnyRowSelected}
                 selectAllChecked={selectAllChecked}
@@ -78,7 +77,15 @@ const CommissionRowComponent: React.FC<rowProps> = ({
           </tr>
         </thead>
         <tbody>
-          {currentPageData?.length > 0 ? (
+          {loading ? (
+            <tr>
+              <td colSpan={Commissioncolumns.length}>
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  <MicroLoader />
+                </div>
+              </td>
+            </tr>
+          ) : currentPageData?.length > 0 ? (
             currentPageData?.map((el: any, i: any) => (
               <tr
                 key={i}
@@ -115,8 +122,8 @@ const CommissionRowComponent: React.FC<rowProps> = ({
                 <td>{el.rate}</td>
                 <td>{el.start_date}</td>
                 <td>{el.end_date}</td>
-                {viewArchived === true ? null : (
-                  <td>
+                <td>
+                  {!viewArchived && selectedRows.size < 2 && (
                     <div className="action-icon">
                       <div
                         className="action-archive"
@@ -135,8 +142,8 @@ const CommissionRowComponent: React.FC<rowProps> = ({
                         {/* <span className="tooltiptext">Edit</span> */}
                       </div>
                     </div>
-                  </td>
-                )}
+                  )}
+                </td>
               </tr>
             ))
           ) : (
