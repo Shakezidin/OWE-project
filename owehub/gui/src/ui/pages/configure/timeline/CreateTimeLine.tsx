@@ -85,6 +85,7 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
       }
     }
 
+
     setCreateTimeLine((prevData) => ({
       ...prevData,
       [name]: value,
@@ -219,6 +220,7 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
                     name="end_date"
                     placeholder={'10/04/2004'}
                     onChange={(e) => handleTimeLineInput(e)}
+                    min={createTimeLine.start_date}
                   />
                   {errors?.end_date && (
                     <span style={{display: 'block', color: '#FF204E',textTransform:"capitalize" }}>
