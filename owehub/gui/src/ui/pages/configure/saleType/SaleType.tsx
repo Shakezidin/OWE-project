@@ -214,6 +214,7 @@ const SaleType = () => {
     // When toggling, reset the selected rows
     setSelectedRows(new Set());
     setSelectAllChecked(false);
+    setCurrentPage(1)
   };
   const fetchFunction = (req: any) => {
     setCurrentPage(1);
