@@ -113,3 +113,7 @@
 .PhoneInput select::-webkit-scrollbar-corner {
   background-color: transparent;
 }
+
+.phoneParentView {
+  width: 30%;
+}

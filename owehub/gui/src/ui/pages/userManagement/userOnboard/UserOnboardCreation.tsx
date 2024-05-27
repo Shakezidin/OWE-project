@@ -215,7 +215,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                     />
                   </div>
 
-                  <div className="create-input-field">
+                  <div className="create-input-field" style={{marginTop:'-5px'}}>
                     <label className="inputLabel">Phone Number</label>
                     <PhoneInput
                       international
