@@ -17,7 +17,11 @@ import FilterModal from '../../../components/FilterModal/FilterModal';
 import { ROUTES } from '../../../../routes/routes';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
-import { errorSwal, showAlert, successSwal } from '../../../components/alert/ShowAlert';
+import {
+  errorSwal,
+  showAlert,
+  successSwal,
+} from '../../../components/alert/ShowAlert';
 import Loading from '../../../components/loader/Loading';
 import { fetchRateAdjustments } from '../../../../redux/apiActions/config/RateAdjustmentsAction';
 import DataNotFound from '../../../components/loader/DataNotFound';
@@ -64,7 +68,6 @@ const RateAdjustments = () => {
       setRefetch((prev) => prev + 1);
       dispatch(resetSuccess());
     }
-   
   }, [isSuccess]);
 
   const filter = () => {
@@ -321,8 +324,8 @@ const RateAdjustments = () => {
                     <td>{el.adjustment}</td>
                     <td>{el.min_rate}</td>
                     <td>{el.max_rate}</td>
-                    {!viewArchived && selectedRows.size < 2 && (
-                      <td>
+                    <td>
+                      {!viewArchived && selectedRows.size < 2 && (
                         <div className="action-icon">
                           <div
                             className=""
@@ -339,8 +342,8 @@ const RateAdjustments = () => {
                             <img src={ICONS.editIcon} alt="" />
                           </div>
                         </div>
-                      </td>
-                    )}
+                      )}
+                    </td>
                   </tr>
                 ))
               ) : (

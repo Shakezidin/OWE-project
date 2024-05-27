@@ -30,6 +30,7 @@ const CreateSaleType: React.FC<salesProps> = ({
     type_name: salesTypeData ? salesTypeData?.type_name : '',
     description: salesTypeData ? salesTypeData?.description : '',
   });
+  const [isPending, setIsPending] = useState(false)
 
   const handleSalesChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -43,6 +44,7 @@ const CreateSaleType: React.FC<salesProps> = ({
 
   const submitSalesType = async (e: FormEvent) => {
     e.preventDefault();
+    setIsPending(true)
     try {
       dispatch(updateSalesForm(createSales));
       if (createSales.record_id) {
@@ -50,8 +52,10 @@ const CreateSaleType: React.FC<salesProps> = ({
         if (res.status === 200) {
           toast.success(res.message);
           handleClose();
+          setIsPending(false)
           setRefetch(prev=>prev+1)
         } else {
+          setIsPending(false)
           toast.error(res.message);
         }
       } else {
@@ -63,8 +67,10 @@ const CreateSaleType: React.FC<salesProps> = ({
         if (res.status === 200) {
           toast.success(res.message);
           handleClose();
+          setIsPending(false)
           setRefetch(prev=>prev+1)
         } else {
+          setIsPending(false)
           toast.error(res.message);
         }
       }
@@ -124,6 +130,7 @@ const CreateSaleType: React.FC<salesProps> = ({
                 <ActionButton
                   title={editMode === false ? 'Create' : 'Update'}
                   type="submit"
+                  disabled={isPending}
                   onClick={() => {}}
                 />
               </div>
