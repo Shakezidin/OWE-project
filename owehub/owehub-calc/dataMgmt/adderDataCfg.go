@@ -10,7 +10,6 @@ import (
 	db "OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	"OWEApp/shared/models"
-	"fmt"
 )
 
 type AdderDataCfgStruct struct {
@@ -36,8 +35,8 @@ func (AdderDataCfg *AdderDataCfgStruct) LoadAdderDataCfg() (err error) {
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get Adder data Config from DB err: %v", err)
-		err = fmt.Errorf("failed to get adder data config from db")
+		// log.FuncErrorTrace(0, "Failed to get Adder data Config from DB err: %v", err)
+		// err = fmt.Errorf("failed to get adder data config from db")
 		return err
 	}
 
@@ -45,79 +44,79 @@ func (AdderDataCfg *AdderDataCfgStruct) LoadAdderDataCfg() (err error) {
 
 		RecordId, ok := item["record_id"].(int64)
 		if !ok {
-			log.ConfWarnTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.ConfWarnTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
 			continue
 		}
 
 		UniqueId, ok := item["unique_id"].(string)
 		if !ok || UniqueId == "" {
-			log.ConfWarnTrace(0, "Failed to get UniqueId for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.ConfWarnTrace(0, "Failed to get UniqueId for Record ID %v. Item: %+v\n", RecordId, item)
 			UniqueId = ""
 		}
 
 		Date, ok := item["date"].(string)
 		if !ok || Date == "" {
-			log.ConfWarnTrace(0, "Failed to get Date for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.ConfWarnTrace(0, "Failed to get Date for Record ID %v. Item: %+v\n", RecordId, item)
 			Date = ""
 		}
 
 		TypeAdMktg, ok := item["type_ad_mktg"].(string)
 		if !ok || TypeAdMktg == "" {
-			log.ConfWarnTrace(0, "Failed to get TypeAdMktg for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.ConfWarnTrace(0, "Failed to get TypeAdMktg for Record ID %v. Item: %+v\n", RecordId, item)
 			TypeAdMktg = ""
 		}
 
 		Type, ok := item["type1"].(string)
 		if !ok || Type == "" {
-			log.ConfWarnTrace(0, "Failed to get Type for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.ConfWarnTrace(0, "Failed to get Type for Record ID %v. Item: %+v\n", RecordId, item)
 			Type = ""
 		}
 
 		Gc, ok := item["gc"].(string)
 		if !ok || Gc == "" {
-			log.ConfWarnTrace(0, "Failed to get Gc for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.ConfWarnTrace(0, "Failed to get Gc for Record ID %v. Item: %+v\n", RecordId, item)
 			Gc = ""
 		}
 
 		ExactAmount, ok := item["exact_amount"].(float64)
 		if !ok || ExactAmount <= 0.0 {
-			log.ConfWarnTrace(0, "Failed to get ExactAmount for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.ConfWarnTrace(0, "Failed to get ExactAmount for Record ID %v. Item: %+v\n", RecordId, item)
 			ExactAmount = 0.0
 		}
 
 		Description, ok := item["description"].(string)
 		if !ok || Description == "" {
-			log.ConfWarnTrace(0, "Failed to get description for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.ConfWarnTrace(0, "Failed to get description for Record ID %v. Item: %+v\n", RecordId, item)
 			Description = ""
 		}
 
 		Notes, ok := item["notes"].(string)
 		if !ok || Notes == "" {
-			log.ConfWarnTrace(0, "Failed to get Notes for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.ConfWarnTrace(0, "Failed to get Notes for Record ID %v. Item: %+v\n", RecordId, item)
 			Notes = ""
 		}
 
 		PerKwAmt, ok := item["per_kw_amt"].(float64)
 		if !ok {
-			log.ConfWarnTrace(0, "Failed to get PerKwAmt for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.ConfWarnTrace(0, "Failed to get PerKwAmt for Record ID %v. Item: %+v\n", RecordId, item)
 			PerKwAmt = 0.0
 		}
 
 		RepPercent, ok := item["rep_percent"].(float64)
 		if !ok {
-			log.ConfWarnTrace(0, "Failed to get RepPercent for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.ConfWarnTrace(0, "Failed to get RepPercent for Record ID %v. Item: %+v\n", RecordId, item)
 			RepPercent = 0.0
 		}
 
 		SysSize, ok := item["sys_size"].(float64)
 		if !ok {
-			log.ConfWarnTrace(0, "Failed to get SysSize for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.ConfWarnTrace(0, "Failed to get SysSize for Record ID %v. Item: %+v\n", RecordId, item)
 			SysSize = 0.0
 		}
 
 		AdderCal, ok := item["adder_cal"].(float64)
 		if !ok {
-			log.ConfWarnTrace(0, "Failed to get RepPercent for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.ConfWarnTrace(0, "Failed to get RepPercent for Record ID %v. Item: %+v\n", RecordId, item)
 			AdderCal = 0.0
 		}
 
@@ -149,8 +148,8 @@ func (AdderDataCfg *AdderDataCfgStruct) LoadAdderDataCfg() (err error) {
 * RETURNS:         addrPtr
 *****************************************************************************/
 func (AdderDataCfg *AdderDataCfgStruct) CalculateAddrPtr(dealer string, uniqueId string) (addrPtrSum float64) {
-	log.EnterFn(0, "CalculateAddrPtr")
-	defer func() { log.ExitFn(0, "CalculateAddrPtr", nil) }()
+	// log.EnterFn(0, "CalculateAddrPtr")
+	// defer func() { log.ExitFn(0, "CalculateAddrPtr", nil) }()
 
 	if len(dealer) > 0 {
 		for _, data := range AdderDataCfg.AdderDataList.AdderDataList {
@@ -168,8 +167,8 @@ func (AdderDataCfg *AdderDataCfgStruct) CalculateAddrPtr(dealer string, uniqueId
 * RETURNS:         addrPtr
 *****************************************************************************/
 func (AdderDataCfg *AdderDataCfgStruct) CalculateExpence(dealer string, uniqueId string) (Expence float64) {
-	log.EnterFn(0, "CalculateExpence")
-	defer func() { log.ExitFn(0, "CalculateExpence", nil) }()
+	// log.EnterFn(0, "CalculateExpence")
+	// defer func() { log.ExitFn(0, "CalculateExpence", nil) }()
 
 	if len(dealer) > 0 {
 		for _, data := range AdderDataCfg.AdderDataList.AdderDataList {

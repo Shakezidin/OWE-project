@@ -10,7 +10,6 @@ package datamgmt
 import (
 	db "OWEApp/shared/db"
 	log "OWEApp/shared/logger"
-	"fmt"
 	"time"
 )
 
@@ -59,8 +58,8 @@ func (saleDataList *SaleDataList) LoadSaleData(uniqueIDs []string) (err error) {
 		dataList []map[string]interface{}
 	)
 
-	log.EnterFn(0, "LoadSaleData")
-	defer func() { log.ExitFn(0, "LoadSaleData", err) }()
+	// log.EnterFn(0, "LoadSaleData")
+	// defer func() { log.ExitFn(0, "LoadSaleData", err) }()
 	query = "SELECT * from " + db.ViewName_ConsolidatedDataView
 	if (uniqueIDs != nil) && (len(uniqueIDs) > 0) {
 		query += "WHERE unique_id IN ("
@@ -75,8 +74,8 @@ func (saleDataList *SaleDataList) LoadSaleData(uniqueIDs []string) (err error) {
 
 	dataList, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
 	if err != nil || len(dataList) == 0 {
-		log.FuncErrorTrace(0, "Failed to Sale Data from DB err: %+v", err)
-		err = fmt.Errorf("Failed to fetch Sale Data from DB")
+		// log.FuncErrorTrace(0, "Failed to Sale Data from DB err: %+v", err)
+		// err = fmt.Errorf("Failed to fetch Sale Data from DB")
 		return err
 	}
 	log.FuncInfoTrace(0, "Reterived raw data frm DB Count: %+v", len(dataList))
@@ -89,7 +88,7 @@ func (saleDataList *SaleDataList) LoadSaleData(uniqueIDs []string) (err error) {
 		if uniqueId, ok := data["unique_id"]; (ok) && (uniqueId != nil) {
 			saleData.UniqueId = uniqueId.(string)
 		} else {
-			log.ConfWarnTrace(0, "No UniqueId for found in Sale Data")
+			// log.ConfWarnTrace(0, "No UniqueId for found in Sale Data")
 			continue
 		}
 
@@ -196,31 +195,31 @@ func (saleDataList *SaleDataList) LoadSaleData(uniqueIDs []string) (err error) {
 		if WC1, ok := data["wc_1"]; ok && WC1 != nil {
 			saleData.WC1 = WC1.(time.Time)
 		} else {
-			log.FuncWarnTrace(0, "Empty value received in WC1 for Unique Id: %v", saleData.UniqueId)
+			// log.FuncWarnTrace(0, "Empty value received in WC1 for Unique Id: %v", saleData.UniqueId)
 		}
 
 		if pvInstallCompletedDate, ok := data["pv_install_completed_date"]; ok && pvInstallCompletedDate != nil {
 			saleData.PvInstallCompletedDate = pvInstallCompletedDate.(time.Time)
 		} else {
-			log.FuncWarnTrace(0, "Empty value received in pvInstallCompletedDate for Unique Id: %v", saleData.UniqueId)
+			// log.FuncWarnTrace(0, "Empty value received in pvInstallCompletedDate for Unique Id: %v", saleData.UniqueId)
 		}
 
 		if permitSubmittedDate, ok := data["permit_submitted_date"]; ok && permitSubmittedDate != nil {
 			saleData.PermitSubmittedDate = permitSubmittedDate.(time.Time)
 		} else {
-			log.FuncWarnTrace(0, "Empty value received in permitSubmittedDate for Unique Id: %v", saleData.UniqueId)
+			// log.FuncWarnTrace(0, "Empty value received in permitSubmittedDate for Unique Id: %v", saleData.UniqueId)
 		}
 
 		if cancelledDate, ok := data["cancelled_date"]; ok && cancelledDate != nil {
 			saleData.CancelledDate = cancelledDate.(time.Time)
 		} else {
-			log.FuncWarnTrace(0, "Empty value received in cancelledDate for Unique Id: %v", saleData.UniqueId)
+			// log.FuncWarnTrace(0, "Empty value received in cancelledDate for Unique Id: %v", saleData.UniqueId)
 		}
 
 		if ptoDate, ok := data["pto_date"]; ok && ptoDate != nil {
 			saleData.PtoDate = ptoDate.(time.Time)
 		} else {
-			log.FuncWarnTrace(0, "Empty value received in ptoDate for Unique Id: %v", saleData.UniqueId)
+			// log.FuncWarnTrace(0, "Empty value received in ptoDate for Unique Id: %v", saleData.UniqueId)
 		}
 
 		saleData.SystemType = determineSystemType(saleData.SystemSize, saleData.State)
@@ -230,12 +229,12 @@ func (saleDataList *SaleDataList) LoadSaleData(uniqueIDs []string) (err error) {
 }
 
 func determineSystemType(sysSize float64, state string) string {
-	var (
-		err error
-	)
+	// var (
+	// 	err error
+	// )
 
-	log.EnterFn(0, "determineSystemType")
-	defer func() { log.ExitFn(0, "determineSystemType", err) }()
+	// log.EnterFn(0, "determineSystemType")
+	// defer func() { log.ExitFn(0, "determineSystemType", err) }()
 
 	if sysSize < 3 {
 		if state == "CA" {

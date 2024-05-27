@@ -13,8 +13,8 @@ import (
 
 func LoadConfigurations() (err error) {
 
-	log.EnterFn(0, "LoadConfigurations")
-	defer func() { log.ExitFn(0, "LoadConfigurations", err) }()
+	// log.EnterFn(0, "LoadConfigurations")
+	// defer func() { log.ExitFn(0, "LoadConfigurations", err) }()
 
 	/* Feth Config from DB */
 	err = ArCfgData.LoadARCfg()

@@ -10,7 +10,6 @@ import (
 	db "OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	"OWEApp/shared/models"
-	"fmt"
 	"time"
 )
 
@@ -41,8 +40,8 @@ func (ArSkdConfig *ArSkdCfgStruct) LoadArSkdCfg() (err error) {
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil || len(data) == 0 {
-		log.FuncErrorTrace(0, "Failed to get AR Skd import config from DB err: %v", err)
-		err = fmt.Errorf("failed to get ar skd import config err")
+		// log.FuncErrorTrace(0, "Failed to get AR Skd import config from DB err: %v", err)
+		// err = fmt.Errorf("failed to get ar skd import config err")
 		return err
 	}
 
@@ -51,79 +50,79 @@ func (ArSkdConfig *ArSkdCfgStruct) LoadArSkdCfg() (err error) {
 	for _, item := range data {
 		RecordId, ok := item["record_id"].(int64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
 			continue
 		}
 
 		PartnerName, ok := item["partner_name"].(string)
 		if !ok || PartnerName == "" {
-			log.FuncErrorTrace(0, "Failed to get partner name for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get partner name for Record ID %v. Item: %+v\n", RecordId, item)
 			PartnerName = ""
 		}
 
 		InstallerName, ok := item["installer_name"].(string)
 		if !ok || InstallerName == "" {
-			log.FuncErrorTrace(0, "Failed to get installer name for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get installer name for Record ID %v. Item: %+v\n", RecordId, item)
 			InstallerName = ""
 		}
 
 		SaleTypeName, ok := item["sale_type_name"].(string)
 		if !ok || SaleTypeName == "" {
-			log.FuncErrorTrace(0, "Failed to get sale type name for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get sale type name for Record ID %v. Item: %+v\n", RecordId, item)
 			SaleTypeName = ""
 		}
 
 		StateName, ok := item["state_name"].(string)
 		if !ok || StateName == "" {
-			log.FuncErrorTrace(0, "Failed to get state name for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get state name for Record ID %v. Item: %+v\n", RecordId, item)
 			StateName = ""
 		}
 
 		RedLine, ok := item["red_line"].(float64)
 		if !ok || RedLine <= 0.0 {
-			log.FuncErrorTrace(0, "Failed to get red line for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get red line for Record ID %v. Item: %+v\n", RecordId, item)
 			RedLine = 0.0
 		}
 
 		CalcDate, ok := item["calc_date"].(string)
 		if !ok || CalcDate == "" {
-			log.FuncErrorTrace(0, "Failed to get calc date for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get calc date for Record ID %v. Item: %+v\n", RecordId, item)
 			CalcDate = ""
 		}
 
 		PermitPay, ok := item["permit_pay"].(float64)
 		if !ok || PermitPay <= 0.0 {
-			log.FuncErrorTrace(0, "Failed to get permit pay for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get permit pay for Record ID %v. Item: %+v\n", RecordId, item)
 			PermitPay = 0.0
 		}
 
 		PermitMax, ok := item["permit_max"].(float64)
 		if !ok || PermitMax <= 0.0 {
-			log.FuncErrorTrace(0, "Failed to get permit max for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get permit max for Record ID %v. Item: %+v\n", RecordId, item)
 			PermitMax = 0.0
 		}
 
 		InstallPay, ok := item["install_pay"].(float64)
 		if !ok || InstallPay <= 0.0 {
-			log.FuncErrorTrace(0, "Failed to get install pay for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get install pay for Record ID %v. Item: %+v\n", RecordId, item)
 			InstallPay = 0.0
 		}
 
 		PtoPay, ok := item["pto_pay"].(float64)
 		if !ok || PtoPay == 0.0 {
-			log.FuncErrorTrace(0, "Failed to get PTO pay for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get PTO pay for Record ID %v. Item: %+v\n", RecordId, item)
 			PtoPay = 0.0
 		}
 
 		StDate, ok := item["start_date"].(time.Time)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
 			StDate = time.Time{}
 		}
 
 		EdDate, ok := item["end_date"].(time.Time)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get end date for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get end date for Record ID %v. Item: %+v\n", RecordId, item)
 			EdDate = time.Time{}
 		}
 		StartDate := StDate.Format("2006-01-02")
@@ -185,7 +184,7 @@ func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct)
 				continue
 			}
 		} else {
-			log.FuncWarnTrace(0, "Empty EndDate Received in arSkd config")
+			// log.FuncWarnTrace(0, "Empty EndDate Received in arSkd config")
 			continue
 		}
 
@@ -262,7 +261,7 @@ func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct)
 					log.FuncErrorTrace(0, "Failed to convert arSkd.StartDate:%+v to time.Time err: %+v", arSkd.StartDate, err)
 				}
 			} else {
-				log.FuncWarnTrace(0, "Empty StartDate Received in arSkd config")
+				// log.FuncWarnTrace(0, "Empty StartDate Received in arSkd config")
 				continue
 			}
 
@@ -274,7 +273,7 @@ func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct)
 					continue
 				}
 			} else {
-				log.FuncWarnTrace(0, "Empty EndDate Received in arSkd config")
+				// log.FuncWarnTrace(0, "Empty EndDate Received in arSkd config")
 				continue
 			}
 
