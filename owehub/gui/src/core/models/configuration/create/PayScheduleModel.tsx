@@ -5,11 +5,11 @@ export interface PayScheduleModel {
   installer_name: string;
   sale_type: string;
   state: string;
-  rl: string;
-  draw: string;
-  draw_max: string;
-  rep_draw: string;
-  rep_draw_max: string;
+  rl: number|string;
+  draw: number|string;
+  draw_max: number|string;
+  rep_draw: number|string;
+  rep_draw_max: number|string;
   rep_pay: string;
   start_date: string;
   end_date: string;

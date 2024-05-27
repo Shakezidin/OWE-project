@@ -150,6 +150,8 @@ const AdderCredit = () => {
       const res = await postCaller('update_adder_credit_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
         dispatch(fetchAdderCredit(pageNumber));
+        setSelectedRows(new Set())
+        setSelectAllChecked(false)
         await successSwal('Archived', 'The data has been archived ');
       } else {
         await successSwal('Archived', 'The data has been archived ');

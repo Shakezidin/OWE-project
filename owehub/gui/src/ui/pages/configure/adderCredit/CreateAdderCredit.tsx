@@ -81,7 +81,17 @@ const CreateAdderCredit: React.FC<payScheduleProps> = ({
   };
 
   const handleInputChange = (e: FormInput) => {
-    const { name, value } = e.target;
+    let { name, value } = e.target;
+
+    if (name === 'min_rate' || name === 'max_rate') {
+      const sanitizedValue = value.replace(/[^0-9.]/g, '');
+      value = sanitizedValue;
+      setAdderCreditData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+      return;
+    }
     setAdderCreditData((prevData) => ({
       ...prevData,
       [name]: value,
