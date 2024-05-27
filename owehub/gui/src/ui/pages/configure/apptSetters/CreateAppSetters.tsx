@@ -224,7 +224,7 @@ const CreateAppSetters: React.FC<payScheduleProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={'date'}
-                    label="Start"
+                    label="Start Date"
                     value={createAppSettersData.start_date}
                     name="start_date"
                     placeholder={'Enter'}
@@ -245,7 +245,7 @@ const CreateAppSetters: React.FC<payScheduleProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={'date'}
-                    label="End"
+                    label="End Date"
                     disabled={!createAppSettersData.start_date}
                     value={createAppSettersData.end_date}
                     min={
