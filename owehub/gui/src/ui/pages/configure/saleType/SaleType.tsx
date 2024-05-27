@@ -136,7 +136,7 @@ const SaleType = () => {
     });
     if (confirmationResult.isConfirmed) {
       const archivedRows = Array.from(selectedRows).map(
-        (index) => salesTypeList[index].record_id
+        (index) => currentPageData[index].record_id
       );
       if (archivedRows.length > 0) {
         const newValue = {
