@@ -182,7 +182,12 @@ const NonCommDlrPay: React.FC = () => {
       <div className="commissionContainer">
         <TableHeader
           title="NON-Comm"
-          onPressViewArchive={() => setViewArchived((prev) => !prev)}
+          onPressViewArchive={() =>{ 
+            setViewArchived((prev) => !prev)
+            setCurrentPage(1)
+            setSelectedRows(new Set())
+            setSelectAllChecked(false)
+          }}
           onPressArchive={() =>
             handleArchiveClick(
               Array.from(selectedRows).map(

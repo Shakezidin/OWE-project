@@ -16,7 +16,7 @@ import Select from 'react-select';
 import { paySaleTypeData } from '../../../../resources/static_data/StaticData';
 import { repPaySettingModel } from '../../../../core/models/configuration/create/repPaySettingModel';
 import SelectOption from '../../../components/selectOption/SelectOption';
-import { format } from 'date-fns';
+import { addDays, format } from 'date-fns';
 import {
   createRepaySettings,
   RepayEditParams,
@@ -74,20 +74,19 @@ const CreateRepPaySettings: React.FC<createRepPayProps> = ({
   };
   const handlePayInputChange = (e: FormInput) => {
     const { name, value } = e.target;
+    if (name==="start_date") {
+      setCreatePayData((prevData) => ({
+        ...prevData,
+        [name]: value,
+        end_date:""
+      }));
+      return;
+    }
     setCreatePayData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
   };
-  const [viewArchived, setViewArchived] = useState<boolean>(false);
-
-  const handleViewArchiveToggle = () => {
-    setViewArchived(!viewArchived);
-    // When toggling, reset the selected rows
-    setSelectedRows(new Set());
-    setSelectAllChecked(false);
-  };
-
   const tableData = {
     tableNames: ['partners', 'states', 'installers', 'sale_type'],
   };
@@ -219,6 +218,8 @@ const CreateRepPaySettings: React.FC<createRepPayProps> = ({
                     label="End"
                     value={createRePayData.end_date}
                     name="end_date"
+                    min={createRePayData.start_date && format(addDays(new Date(createRePayData.start_date),1),"yyyy-MM-dd") }
+                    disabled={!createRePayData.start_date}
                     placeholder={'Enter'}
                     onChange={(e) => handlePayInputChange(e)}
                   />

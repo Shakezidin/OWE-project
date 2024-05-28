@@ -22,6 +22,7 @@ import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
 import Loading from '../../../components/loader/Loading';
+import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 
 const RepPaySettings = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -41,26 +42,26 @@ const RepPaySettings = () => {
     useState<RepayEditParams | null>(null);
   const itemsPerPage = 10;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
-  const currentPage = useAppSelector(
-    (state) => state.paginationType.currentPage
-  );
+  const [currentPage,setCurrentPage] = useState(1)
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [filters, setFilters] = useState<FilterModel[]>([])
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
       archived: viewArchived ? true : undefined,
+      filters
     };
     dispatch(fetchRepaySettings(pageNumber));
-  }, [dispatch, currentPage, viewArchived]);
+  }, [dispatch, currentPage, viewArchived,filters]);
 
   const filter = () => {
     setFilterOpen(true);
   };
 
   const paginate = (pageNumber: number) => {
-    dispatch(setCurrentPage(pageNumber));
+    setCurrentPage(pageNumber)
   };
 
   const { repPaySettingsList, loading, dbCount } = useAppSelector(
@@ -68,18 +69,18 @@ const RepPaySettings = () => {
   );
 
   const goToNextPage = () => {
-    dispatch(setCurrentPage(currentPage + 1));
+    setCurrentPage(currentPage + 1)
   };
 
   const goToPrevPage = () => {
-    dispatch(setCurrentPage(currentPage - 1));
+    setCurrentPage(currentPage - 1)
   };
   const totalPages = Math.ceil(dbCount / itemsPerPage);
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
+  const endIndex = startIndex * itemsPerPage;
 
-  const currentPageData = repPaySettingsList?.slice(startIndex, endIndex);
+  const currentPageData = repPaySettingsList?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === repPaySettingsList?.length;
   const handleSort = (key: any) => {
@@ -99,8 +100,8 @@ const RepPaySettings = () => {
 
   const handleViewArchiveToggle = () => {
     setViewArchived(!viewArchived);
-    // When toggling, reset the selected rows
     setSelectedRows(new Set());
+    setCurrentPage(1)
     setSelectAllChecked(false);
   };
 
@@ -111,7 +112,8 @@ const RepPaySettings = () => {
   };
 
   const fetchFunction = (req: any) => {
-    dispatch(fetchRepaySettings(req));
+    setCurrentPage(1)
+    setFilters(req.filters)
   };
   const handleArchiveAllClick = async () => {
     const confirmed = await showAlert(
@@ -142,12 +144,7 @@ const RepPaySettings = () => {
         if (res.status === HTTP_STATUS.OK) {
           // If API call is successful, refetch commissions
           dispatch(fetchRepaySettings(pageNumber));
-          const remainingSelectedRows = Array.from(selectedRows).filter(
-            (index) =>
-              !archivedRows.includes(repPaySettingsList[index].RecordId)
-          );
-          const isAnyRowSelected = remainingSelectedRows.length > 0;
-          setSelectAllChecked(isAnyRowSelected);
+          setSelectAllChecked(false);
           setSelectedRows(new Set());
           await successSwal('Archived', 'The data has been archived ');
         } else {
@@ -172,25 +169,19 @@ const RepPaySettings = () => {
       const pageNumber = {
         page_number: currentPage,
         page_size: itemsPerPage,
+        filters
       };
       const res = await postCaller('update_rep_pay_settings_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
         dispatch(fetchRepaySettings(pageNumber));
+        setSelectedRows(new Set())
+        setSelectAllChecked(false)
         await successSwal('Archived', 'The data has been archived ');
       } else {
         await successSwal('Archived', 'The data has been archived ');
       }
     }
   };
-
-  if (loading) {
-    return (
-      <div className="loader-container">
-        {' '}
-        <Loading />{' '}
-      </div>
-    );
-  }
 
   return (
     <div className="comm">
@@ -265,9 +256,9 @@ const RepPaySettings = () => {
               </tr>
             </thead>
             <tbody>
-              {repPaySettingsList?.length > 0 ? (
-                repPaySettingsList?.map((el: any, i: any) => (
-                  <tr key={i}>
+              {currentPageData?.length > 0 ? (
+                currentPageData?.map((el: any, i: any) => (
+                  <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
                       <div className="flex-check">
                         <CheckBox
@@ -291,8 +282,8 @@ const RepPaySettings = () => {
                     <td>{el?.b_e}</td>
                     <td>{el?.start_date}</td>
                     <td>{el?.end_date}</td>
-                    {viewArchived === true ? null : (
-                      <td>
+                    <td>
+                      {!viewArchived && selectedRows.size < 2 && (
                         <div className="action-icon">
                           <div
                             className=""
@@ -309,8 +300,8 @@ const RepPaySettings = () => {
                             <img src={ICONS.editIcon} alt="" />
                           </div>
                         </div>
-                      </td>
-                    )}
+                      )}
+                    </td>
                   </tr>
                 ))
               ) : (
@@ -328,10 +319,11 @@ const RepPaySettings = () => {
         </div>
         <div className="page-heading-container">
           <p className="page-heading">
-            {currentPage} - {totalPages} of {repPaySettingsList?.length} item
+            {currentPage} - {endIndex > dbCount ? dbCount : endIndex} of{' '}
+            {currentPageData?.length} item
           </p>
 
-          {repPaySettingsList?.length > 0 ? (
+          {currentPageData?.length > 0 ? (
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages} // You need to calculate total pages

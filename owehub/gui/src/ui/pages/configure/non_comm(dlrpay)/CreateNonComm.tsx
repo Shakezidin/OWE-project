@@ -64,7 +64,7 @@ const CreateNonComm: React.FC<ButtonProps> = ({
   const [errors, setErrors] = useState<IError>({} as IError);
   const [newFormData, setNewFormData] = useState<any>([]);
   const tableData = {
-    tableNames: ['dbas', 'dealers'],
+    tableNames: ['dbas', 'dealer'],
   };
   const getNewFormData = async () => {
     const res = await postCaller(EndPoints.get_newFormData, tableData);
@@ -102,6 +102,7 @@ const CreateNonComm: React.FC<ButtonProps> = ({
       setCreateCommission((prev) => ({
         ...prev,
         end_date: '',
+        [name]:value
       }));
       return;
     }
