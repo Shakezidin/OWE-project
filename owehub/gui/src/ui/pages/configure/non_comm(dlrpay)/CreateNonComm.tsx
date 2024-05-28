@@ -231,19 +231,14 @@ const CreateNonComm: React.FC<ButtonProps> = ({
                     </span>
                   )}
                 </div>
-                <div className="create-input-field">
-                  <label className="inputLabel-select">DBA</label>
-                  <SelectOption
-                    options={dbaOption(newFormData)}
-                    onChange={(newValue) => {
-                      setCreateCommission((prev) => ({
-                        ...prev,
-                        dba: newValue?.value!,
-                      }));
-                    }}
-                    value={dealerOption(newFormData)?.find(
-                      (option) => option.value === createCommission.dba
-                    )}
+                <div className="create-input-field">              
+                  <Input
+                    type={'text'}
+                    label="DBA"
+                    value={createCommission.dba}
+                    name="dba"
+                    placeholder={'Enter'}
+                    onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.dba && (
                     <span
@@ -424,7 +419,7 @@ const CreateNonComm: React.FC<ButtonProps> = ({
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
-                  {errors?.dealer_dba && (
+                  {errors?.approved_by && (
                     <span
                       style={{
                         display: 'block',
@@ -432,7 +427,7 @@ const CreateNonComm: React.FC<ButtonProps> = ({
                         textTransform: 'capitalize',
                       }}
                     >
-                      {errors.dealer_dba}
+                      {errors.approved_by}
                     </span>
                   )}
                 </div>

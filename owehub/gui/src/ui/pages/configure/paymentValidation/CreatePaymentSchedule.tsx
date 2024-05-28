@@ -158,6 +158,7 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
             setIsPending(false);
             setRefetch((prev) => prev + 1);
           } else {
+            setIsPending(false);
             toast.error(res.message);
           }
         } else {
@@ -176,6 +177,7 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
             setIsPending(false);
             setRefetch((prev) => prev + 1);
           } else {
+            setIsPending(false);
             toast.error('Error', res.message);
           }
         }

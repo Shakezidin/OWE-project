@@ -313,8 +313,8 @@ const ApptSetters = () => {
                     <td>{el.pay_rate}</td>
                     <td>{el.start_date}</td>
                     <td>{el.end_date}</td>
-                    {!viewArchived && selectedRows.size < 2 && (
-                      <td>
+                    <td>
+                      {!viewArchived && selectedRows.size < 2 && (
                         <div className="action-icon">
                           <div
                             className=""
@@ -331,8 +331,8 @@ const ApptSetters = () => {
                             <img src={ICONS.editIcon} alt="" />
                           </div>
                         </div>
-                      </td>
-                    )}
+                      )}
+                    </td>
                   </tr>
                 ))
               ) : (
