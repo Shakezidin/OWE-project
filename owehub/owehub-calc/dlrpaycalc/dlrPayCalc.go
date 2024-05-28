@@ -206,8 +206,8 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	rl = dataMgmt.PayScheduleCfg.CalculateRL(saleData.Dealer, saleData.Partner, saleData.Installer, saleData.LoanType, saleData.State, saleData.WC1.Format("2006-01-02"))
 	log.FuncFuncTrace(0, "rl ->  %v", rl)
 
-	credit = dataMgmt.PayScheduleCfg.CalculateCreaditForUniqueId(saleData.Dealer, saleData.UniqueId)
-	log.FuncFuncTrace(0, "credit ->  %v", credit)
+	// credit = dataMgmt.PayScheduleCfg.CalculateCreaditForUniqueId(saleData.Dealer, saleData.UniqueId)
+	// log.FuncFuncTrace(0, "credit ->  %v", credit)
 
 	repPay = dataMgmt.ApRepCfg.CalculateApRepForUniqueId(dealer, saleData.UniqueId)
 	log.FuncFuncTrace(0, "repPay ->  %v", repPay)
