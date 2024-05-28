@@ -9,7 +9,7 @@ export const DlrOthPayColumn: Column[] = [
     isCheckbox: true,
   },
   { name: 'payee', displayName: 'Payee', type: 'string', isCheckbox: false },
-  { name: 'amt', displayName: 'Amount', type: 'string', isCheckbox: false },
+  { name: 'amount', displayName: 'Amount', type: 'number', isCheckbox: false },
   {
     name: 'description',
     displayName: 'Description',
@@ -19,13 +19,13 @@ export const DlrOthPayColumn: Column[] = [
   {
     name: 'balance',
     displayName: 'Balance',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
   {
-    name: 'paid_amt',
+    name: 'paid_amount',
     displayName: 'Paid Amt',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
   {

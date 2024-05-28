@@ -34,6 +34,9 @@ import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
+import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
+import MicroLoader from '../../../components/loader/MicroLoader';
+import FilterHoc from '../../../components/FilterModal/FilterHoc';
 interface Column {
   name: string;
   displayName: string;
@@ -60,58 +63,46 @@ const DlrOthPay: React.FC = () => {
   const [editedCommission, setEditedCommission] = useState<IRowDLR | null>(
     null
   );
-  const itemsPerPage = 5;
-  const currentPage = useAppSelector(
-    (state) => state.paginationType.currentPage
-  );
+  const itemsPerPage = 10;
+  const [currentPage, setCurrentPage] = useState(1);
   const [viewArchived, setViewArchived] = useState<boolean>(false);
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
-
+  const [filters, setFilters] = useState<FilterModel[]>([]);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
+      filters,
     };
     dispatch(getDlrOth({ ...pageNumber, archived: viewArchived }));
-  }, [dispatch, currentPage, viewArchived]);
+  }, [dispatch, currentPage, viewArchived, filters]);
 
   const fetchFunction = (req: any) => {
-    dispatch(getDlrOth(req));
+    setCurrentPage(1);
+    setFilters(req.filters);
   };
 
   const paginate = (pageNumber: number) => {
-    dispatch(setCurrentPage(pageNumber));
+    setCurrentPage(pageNumber);
   };
 
   const goToNextPage = () => {
-    dispatch(setCurrentPage(currentPage + 1));
+    setCurrentPage(currentPage + 1);
   };
 
   const goToPrevPage = () => {
-    dispatch(setCurrentPage(currentPage - 1));
+    setCurrentPage(currentPage - 1);
   };
-  const columns: Column[] = [
-    // { name: "record_id", displayName: "Record ID", type: "number" },
-    { name: 'partner', displayName: 'Partner', type: 'string' },
-    { name: 'installer', displayName: 'Installer', type: 'string' },
-    { name: 'state', displayName: 'State', type: 'string' },
-    { name: 'sale_type', displayName: 'Sale Type', type: 'string' },
-    { name: 'sale_price', displayName: 'Sale Price', type: 'number' },
-    { name: 'rep_type', displayName: 'Rep Type', type: 'string' },
-    { name: 'rl', displayName: 'RL', type: 'number' },
-    { name: 'rate', displayName: 'Rate', type: 'number' },
-    { name: 'start_date', displayName: 'Start Date', type: 'date' },
-    { name: 'end_date', displayName: 'End Date', type: 'date' },
-  ];
+
   const filter = () => {
     setFilterOpen(true);
   };
 
   const totalPages = Math.ceil(dbCount / itemsPerPage);
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
+  const endIndex = startIndex * itemsPerPage;
   const handleAddCommission = () => {
     setEditMode(false);
     setEditedCommission(null);
@@ -152,7 +143,7 @@ const DlrOthPay: React.FC = () => {
     }
   };
 
-  const currentPageData = commissionList?.slice(startIndex, endIndex);
+  const currentPageData = commissionList?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === commissionList.length;
   const handleSort = (key: any) => {
@@ -184,20 +175,7 @@ const DlrOthPay: React.FC = () => {
       }
     });
   }
-  if (error) {
-    return (
-      <div className="loader-container">
-        <Loading />
-      </div>
-    );
-  }
-  if (loading) {
-    return (
-      <div className="loader-container">
-        <Loading /> {loading}
-      </div>
-    );
-  }
+
   return (
     <div className="comm">
       <Breadcrumb
@@ -248,15 +226,17 @@ const DlrOthPay: React.FC = () => {
             handleClose={handleClose}
           />
         )}
-        {filterOPen && (
-          <FilterModal
-            handleClose={filterClose}
-            columns={DlrOthPayColumn}
-            fetchFunction={fetchFunction}
-            page_number={currentPage}
-            page_size={itemsPerPage}
-          />
-        )}
+
+        <FilterHoc
+          isOpen={filterOPen}
+          resetOnChange={viewArchived}
+          handleClose={filterClose}
+          columns={DlrOthPayColumn}
+          fetchFunction={fetchFunction}
+          page_number={currentPage}
+          page_size={itemsPerPage}
+        />
+
         <div
           className="TableContainer"
           style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}
@@ -291,8 +271,16 @@ const DlrOthPay: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {commissionList?.length > 0 ? (
-                commissionList?.map((el: IRowDLR, i: number) => (
+              {loading ? (
+                <tr>
+                  <td colSpan={DlrOthPayColumn.length}>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <MicroLoader />
+                    </div>
+                  </td>
+                </tr>
+              ) : currentPageData?.length > 0 ? (
+                currentPageData?.map((el: IRowDLR, i: number) => (
                   <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
                       <div className="flex-check">
@@ -318,7 +306,7 @@ const DlrOthPay: React.FC = () => {
                     <td>{el.start_date}</td>
                     <td>{el.end_date}</td>
                     <td>
-                      {!viewArchived && (
+                      {!viewArchived && selectedRows.size < 2 && (
                         <div className="action-icon">
                           <div
                             className=""
@@ -355,7 +343,8 @@ const DlrOthPay: React.FC = () => {
         {commissionList?.length > 0 ? (
           <div className="page-heading-container">
             <p className="page-heading">
-              {currentPage} - {totalPages} of {commissionList?.length} item
+              {startIndex} - {endIndex > dbCount ? dbCount : endIndex} of{' '}
+              {commissionList?.length} item
             </p>
 
             <Pagination
