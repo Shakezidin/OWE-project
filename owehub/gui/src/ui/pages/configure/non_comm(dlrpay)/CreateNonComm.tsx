@@ -27,11 +27,12 @@ import {
   FormEvent,
   FormInput,
 } from '../../../../core/models/data_models/typesModel';
+import { addDays, format } from 'date-fns';
 interface ButtonProps {
   editMode: boolean;
   handleClose: () => void;
   commission: INonCommRowDLR | null;
-  setRefetch:Dispatch<SetStateAction<number>>
+  setRefetch: Dispatch<SetStateAction<number>>;
 }
 
 interface IError {
@@ -42,7 +43,7 @@ const CreateNonComm: React.FC<ButtonProps> = ({
   handleClose,
   commission,
   editMode,
-  setRefetch
+  setRefetch,
 }) => {
   const dispatch = useAppDispatch();
   const { isSuccess } = useAppSelector((state) => state.nonComm);
@@ -97,14 +98,12 @@ const CreateNonComm: React.FC<ButtonProps> = ({
   const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
 
-    if (name === 'end_date') {
-      if (createCommission.start_date && value < createCommission.start_date) {
-        setErrors((prevErrors) => ({
-          ...prevErrors,
-          end_date: 'End date cannot be before the start date',
-        }));
-        return;
-      }
+    if (name === 'start_date') {
+      setCreateCommission((prev) => ({
+        ...prev,
+        end_date: '',
+      }));
+      return;
     }
 
     if (name === 'balance' || name === 'paid_amount') {
@@ -169,7 +168,7 @@ const CreateNonComm: React.FC<ButtonProps> = ({
     if (isSuccess) {
       handleClose();
       dispatch(resetSuccess());
-      setRefetch(prev=>prev+1)
+      setRefetch((prev) => prev + 1);
     }
   }, [isSuccess]);
   return (
@@ -234,7 +233,7 @@ const CreateNonComm: React.FC<ButtonProps> = ({
                     </span>
                   )}
                 </div>
-                <div className="create-input-field">              
+                <div className="create-input-field">
                   <Input
                     type={'text'}
                     label="DBA"
@@ -326,7 +325,15 @@ const CreateNonComm: React.FC<ButtonProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={'date'}
+                    disabled={!createCommission.start_date}
                     label="End Date"
+                    min={
+                      createCommission.start_date &&
+                      format(
+                        addDays(new Date(createCommission.start_date), 1),
+                        'yyyy-MM-dd'
+                      )
+                    }
                     value={createCommission.end_date}
                     name="end_date"
                     placeholder={'10/04/2004'}
