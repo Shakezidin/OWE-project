@@ -74,7 +74,7 @@ CREATE TABLE dealer_pay_calc_standard (
     comm_total float,
     ovrd_total float,
     status_check float,
-    pay_rate float64,
+    pay_rate float,
     dlr_draw_max float,
     r1_draw_amt float,
     amt_check float,
