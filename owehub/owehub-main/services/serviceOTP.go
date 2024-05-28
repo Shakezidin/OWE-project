@@ -9,9 +9,11 @@ package services
 import (
 	log "OWEApp/shared/logger"
 	"fmt"
-	"net/smtp"
 	"sync"
 	"time"
+
+	"github.com/sendgrid/sendgrid-go"
+	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
 
 const (
@@ -52,30 +54,36 @@ func InitializeOTPServices() {
  ******************************************************************************/
 func SendOTPToClient(email string, otp string) (err error) {
 
-	log.EnterFn(0, "SendOTPToClient")
-	defer func() { log.ExitFn(0, "SendOTPToClient", nil) }()
-
-	to := email
+	from := mail.NewEmail("OWE", "it@ourworldenergy.com")
 	subject := "OTP for Password Reset"
-	body := fmt.Sprintf("Your OTP for password reset is: %s\nOTP is valid for %v Minutes", otp, ForgotPassOtpExpireInMin)
+	to := mail.NewEmail("", email)
 
-	// Set up the authentication
-	auth := smtp.PlainAuth("", FromEmailId, FromPassword, "smtp.gmail.com")
+	plainTextContent := fmt.Sprintf("OTP for password reset. Valid for %v Minutes", ForgotPassOtpExpireInMin)
+	htmlContent := fmt.Sprintf(`
+    <div style="
+        border: 2px solid black;
+        padding: 10px;
+        font-size: 24px;
+        width: fit-content;
+        margin: auto;
+    ">
+        <strong>%s</strong>
+    </div>
+`, otp)
 
-	// Set up the email content
-	msg := []byte("To: " + to + "\r\n" +
-		"Subject: " + subject + "\r\n" +
-		"\r\n" +
-		body)
-
-	log.FuncDebugTrace(0, "Shushank %+v", string(msg))
-
-	// Connect to the SMTP server
-	err = smtp.SendMail("smtp.gmail.com:587", auth, FromEmailId, []string{to}, msg)
+	message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)
+	client := sendgrid.NewSendClient("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")
+	response, err := client.Send(message)
 	if err != nil {
-		return err
+		fmt.Println(err)
+	} else {
+		fmt.Println(response.StatusCode)
+		fmt.Println(response.Body)
+		fmt.Println(response.Headers)
 	}
 
+	log.EnterFn(0, "SendOTPToClient")
+	defer func() { log.ExitFn(0, "SendOTPToClient", nil) }()
 	return nil
 }
 

@@ -54,6 +54,7 @@ CREATE TABLE IF NOT EXISTS user_roles (
 CREATE TABLE IF NOT EXISTS user_details(
     user_id SERIAL,
     name VARCHAR(255) NOT NULL,
+    db_username VARCHAR(255),
     user_code VARCHAR(255),
     mobile_number VARCHAR(20) NOT NULL UNIQUE,
     email_id VARCHAR(255) NOT NULL UNIQUE,
@@ -145,6 +146,7 @@ CREATE TABLE v_dealer (
     dealer_code character varying,
     dealer_name character varying,
     description character varying,
+    is_archived BOOLEAN DEFAULT FALSE, 
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     PRIMARY KEY (id)
@@ -270,11 +272,11 @@ CREATE TABLE payment_schedule (
     installer_id INT,
     sale_type_id INT,
     state_id INT,
-    rl character varying,
-    draw character varying,
-    draw_max character varying,
-    rep_draw character varying,
-    rep_draw_max character varying,
+    rl float,
+    draw float,
+    draw_max float,
+    rep_draw float,
+    rep_draw_max float,
     rep_pay character varying,
     start_date character varying NOT NULL,
     end_date character varying,
@@ -608,21 +610,16 @@ CREATE TABLE referral_data (
 CREATE TABLE dealer_credit (
     id serial NOT NULL,
     unique_id varchar NOT NULL UNIQUE,
-    customer text,
-    dealer_id INT,
-    dealer_dba text,
-    exact_amount text,
+    date date,
+    exact_amount float,
     per_kw_amount float,
     approved_by text,
     notes text,
     total_amount float,
     sys_size float,
-    start_date character varying NOT NULL,
-    end_date character varying,
     is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
-    updated_at timestamp without time zone,
-    FOREIGN KEY (dealer_id) REFERENCES user_details(user_id)
+    updated_at timestamp without time zone
 );
 
 CREATE TABLE noncomm_dlrpay (
@@ -917,6 +914,23 @@ CREATE TABLE adder_data_cfg_schema (
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     PRIMARY KEY (id)
+);
+
+CREATE TABLE ap_rep (
+    id serial NOT NULL,
+	unique_id varchar NOT NULL UNIQUE,
+    rep varchar,
+    dba varchar,
+    type varchar,
+    date date,
+    amount float,
+    method varchar,
+    cbiz varchar,
+    transaction varchar,
+    notes character varying,
+    is_archived BOOLEAN DEFAULT FALSE,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone
 );
 
 /*

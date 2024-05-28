@@ -17,8 +17,13 @@ import {
   IRowDLR,
   createDlrOth,
   updateDlrOth,
-} from '../../../../redux/apiActions/dlrAction';
+} from '../../../../redux/apiActions/config/dlrAction';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
+import {
+  FormEvent,
+  FormInput,
+} from '../../../../core/models/data_models/typesModel';
+import { addDays, format } from 'date-fns';
 
 interface ButtonProps {
   editMode: boolean;
@@ -81,27 +86,50 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
     }));
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // const handleInputChange = (e: FormInput) => {
+  //   const { name, value } = e.target;
+  //   if (name === 'end_date') {
+  //     if (createCommission.start_date && value < createCommission.start_date) {
+  //       setErrors((prevErrors) => ({
+  //         ...prevErrors,
+  //         end_date: 'End date cannot be before the start date',
+  //       }));
+  //       return;
+  //     }
+  //   }
+  //   if (name === 'balance' || name === 'paid_amount') {
+  //     if (value === '' || value === '0' || Number(value)) {
+  //       setCreateCommission((prev) => ({ ...prev, [name]: value }));
+  //     }
+  //   } else {
+  //     setCreateCommission((prev) => ({ ...prev, [name]: value }));
+  //   }
+  // };
+
+  const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
-    if (name === 'end_date') {
-      if (createCommission.start_date && value < createCommission.start_date) {
-        setErrors((prevErrors) => ({
-          ...prevErrors,
-          end_date: 'End date cannot be before the start date',
-        }));
-        return;
-      }
+
+    if (name === 'start_date') {
+      setCreateCommission((prev) => ({ ...prev, [name]: value, end_date: '' }));
     }
-    if (name === 'balance' || name === 'paid_amount') {
-      if (value === '' || value === '0' || Number(value)) {
-        setCreateCommission((prev) => ({ ...prev, [name]: value }));
+
+    if (
+      name === 'balance' ||
+      name === 'payee' ||
+      name === 'amount' ||
+      name === 'paid_amount'
+    ) {
+      const sanitizedValue = value.replace(/[^0-9]/g, '');
+      if (sanitizedValue === '' || Number(sanitizedValue) >= 0) {
+        setCreateCommission((prev) => ({ ...prev, [name]: sanitizedValue }));
+        return;
       }
     } else {
       setCreateCommission((prev) => ({ ...prev, [name]: value }));
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (handleValidation()) {
       if (editMode) {
@@ -156,7 +184,13 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.unique_id && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.unique_id.replace('unique_id', 'unique id')}
                     </span>
                   )}
@@ -171,7 +205,13 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.payee && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.payee}
                     </span>
                   )}
@@ -186,7 +226,13 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.amount && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.amount}
                     </span>
                   )}
@@ -203,7 +249,13 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.balance && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.balance}
                     </span>
                   )}
@@ -219,7 +271,13 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.description && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.description}
                     </span>
                   )}
@@ -234,7 +292,13 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.start_date && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.start_date.replace('start_date', 'start date')}
                     </span>
                   )}
@@ -247,11 +311,19 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                     label="End Date"
                     value={createCommission.end_date}
                     name="end_date"
+                    min={createCommission.start_date && format(addDays(new Date(createCommission.start_date),1),"yyyy-MM-dd")}
+                    disabled={!createCommission.start_date}
                     placeholder={'10/04/2004'}
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.end_date && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.end_date.replace('end_date', 'end date')}
                     </span>
                   )}
@@ -263,12 +335,19 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                     label="Paid Amount"
                     value={createCommission.paid_amount}
                     name="paid_amount"
+                  
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.amount && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
-                      {errors.amount}
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.paid_amount}
                     </span>
                   )}
                 </div>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import TableHeader from '../../../components/tableHeader/TableHeader';
 import { ICONS } from '../../../icons/Icons';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-import { fetchAr } from '../../../../redux/apiActions/arConfigAction';
+import { fetchAr } from '../../../../redux/apiActions/config/arConfigAction';
 // import CreateTimeLine from "./CreateTimeLine";
 import CreateAr from './CreateAr';
 import CheckBox from '../../../components/chekbox/CheckBox';
@@ -47,17 +47,16 @@ const AR = () => {
   const { data, count, isSuccess, isLoading } = useAppSelector(
     (state) => state.ar
   );
-  const [filters, setFilters] = useState<FilterModel[]>([
-  ]);
+  const [filters, setFilters] = useState<FilterModel[]>([]);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
       archived: viewArchived ? true : undefined,
-      filters
+      filters,
     };
     dispatch(fetchAr(pageNumber));
-  }, [dispatch, currentPage, viewArchived,filters]);
+  }, [dispatch, currentPage, viewArchived, filters]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -65,11 +64,11 @@ const AR = () => {
         page_number: currentPage,
         page_size: itemsPerPage,
         archived: viewArchived,
-        filters
+        filters,
       };
       dispatch(fetchAr({ ...pageNumber }));
     }
-  }, [isSuccess, currentPage, viewArchived,filters]);
+  }, [isSuccess, currentPage, viewArchived, filters]);
   const filter = () => {
     setFilterOpen(true);
   };
@@ -134,8 +133,8 @@ const AR = () => {
   };
 
   const fetchFunction = (req: any) => {
-    setCurrentPage(1)
-    setFilters(req.filters)
+    setCurrentPage(1);
+    setFilters(req.filters);
   };
   const handleViewArchiveToggle = () => {
     setViewArchived(!viewArchived);
@@ -163,7 +162,7 @@ const AR = () => {
         const pageNumber = {
           page_number: currentPage,
           page_size: itemsPerPage,
-          filters
+          filters,
         };
 
         const res = await postCaller('update_ar_archive', newValue);
@@ -172,7 +171,7 @@ const AR = () => {
           setSelectAllChecked(false);
           // If API call is successful, refetch commissions
           dispatch(fetchAr(pageNumber));
-         
+
           setSelectAllChecked(false);
           setSelectedRows(new Set());
           await successSwal('Archived', 'The data has been archived ');
@@ -198,7 +197,7 @@ const AR = () => {
       const pageNumber = {
         page_number: currentPage,
         page_size: itemsPerPage,
-        filters
+        filters,
       };
       const res = await postCaller('update_ar_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {

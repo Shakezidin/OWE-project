@@ -8,7 +8,7 @@ import { ActionButton } from '../../components/button/ActionButton';
 import { otpModel } from '../../../core/models/api_models/AuthModel';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
-import { generateOTP } from '../../../redux/apiActions/authActions';
+import { generateOTP } from '../../../redux/apiActions/auth/authActions';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { HTTP_STATUS } from '../../../core/models/api_models/RequestModel';
 import { toast } from 'react-toastify';
@@ -16,6 +16,10 @@ import Loading from '../../components/loader/Loading';
 import { ROUTES } from '../../../routes/routes';
 import { FaArrowLeft } from 'react-icons/fa';
 import ResendOtpButton from './ResendOtpButton';
+import {
+  FormEvent,
+  FormInput,
+} from '../../../core/models/data_models/typesModel';
 
 const PasswordInput = (props: {
   placeholder: string;
@@ -50,7 +54,7 @@ const EnterOtpScreen = () => {
     new_password: '',
     confirm_password: '',
   });
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
     setOtpCred((prevState) => ({
       ...prevState,
@@ -68,7 +72,7 @@ const EnterOtpScreen = () => {
     }
   };
 
-  const handleOtpSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleOtpSubmit = async (e: FormEvent) => {
     e.preventDefault();
     console.log(otpCred);
 

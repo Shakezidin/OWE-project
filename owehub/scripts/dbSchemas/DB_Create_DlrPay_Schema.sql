@@ -128,6 +128,7 @@ CREATE TABLE dealer_pay_calc_standard (
     rep_2_team   text,
     rate   float,
     adjustment   float,
+    pay_rate_sub_total float,
     min_rate   float,
     max_rate   float,
     r1_incentive   float,

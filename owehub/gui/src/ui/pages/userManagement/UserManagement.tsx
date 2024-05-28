@@ -18,7 +18,7 @@ import {
   deleteUserOnboarding,
   fetchDealerOwner,
   fetchRegionList,
-} from '../../../redux/apiActions/createUserSliceActions';
+} from '../../../redux/apiActions/auth/createUserSliceActions';
 import { createUserObject, validateForm } from '../../../utiles/Validation';
 import {
   updateUserForm,
@@ -240,6 +240,7 @@ const UserManagement: React.FC = () => {
         <UserPieChart
           onboardingList={userOnboardingList}
           userPerformanceList={userPerformanceList}
+          loading={loading}
         />
       </div>
 

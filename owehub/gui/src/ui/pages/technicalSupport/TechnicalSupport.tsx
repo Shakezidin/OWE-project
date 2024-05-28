@@ -3,17 +3,13 @@ import Input from '../../components/text_input/Input';
 import { ICONS } from '../../icons/Icons';
 import './support.css';
 import emailjs from '@emailjs/browser';
-
-import Select from 'react-select';
-import { ActionButton } from '../../components/button/ActionButton';
 import SelectOption from '../../components/selectOption/SelectOption';
 import { toast } from 'react-toastify';
+import { FormInput } from '../../../core/models/data_models/typesModel';
 
 const TechnicalSupport: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [selectedOption, setSelectedOption] = useState(null);
-  const [selectedState, setSelectedState] = useState<string | null>(null);
-  const [stateOptions, setStateOptions] = useState<any[]>([]);
+  const [selectedIssue, setSelectedIssue] = useState<string | null>(null);
   const form = useRef<HTMLFormElement>(null);
 
   const [firstName, setFirstName] = useState('');
@@ -21,6 +17,8 @@ const TechnicalSupport: React.FC = () => {
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [message, setMessage] = useState('');
+
+  const [selectedFileName, setSelectedFileName] = useState('');
 
   const [errors, setErrors] = useState({
     firstName: '',
@@ -47,9 +45,6 @@ const TechnicalSupport: React.FC = () => {
       message: message ? '' : 'Message is required',
     };
     setErrors(newErrors);
-    // if (!Object.values(newErrors).some((error) => error)) {
-    //   console.log("Form submitted successfully");
-    // }
     if (form.current && Object.values(newErrors).every((err) => !err)) {
       emailjs
         .sendForm('service_nof7okz', 'template_y3qbqr8', form.current, {
@@ -64,6 +59,10 @@ const TechnicalSupport: React.FC = () => {
             setEmail('');
             setPhoneNumber('');
             setMessage('');
+            setSelectedFileName(''); // Clear the selected file name
+            if (fileInputRef.current) {
+              fileInputRef.current.value = ''; // Clear the file input value
+            }
           },
           (error: any) => {
             console.error('FAILED...', error);
@@ -73,7 +72,7 @@ const TechnicalSupport: React.FC = () => {
   };
 
   const handleStateChange = (selectedOption: any) => {
-    setSelectedState(selectedOption.value);
+    setSelectedIssue(selectedOption.value);
   };
 
   const options = [
@@ -81,12 +80,14 @@ const TechnicalSupport: React.FC = () => {
     { value: 'option2', label: 'OWE 2' },
     { value: 'option3', label: 'OWE 3' },
   ];
-  const handleSelectChange = (selectedOption: any) => {
-    setSelectedOption(selectedOption);
-  };
-  const handleFileInputChange = (e: any) => {
+
+  const handleFileInputChange = (e: FormInput) => {
     const file = e.target.files?.[0];
-    console.log(file);
+    if (file) {
+      setSelectedFileName(file.name);
+    } else {
+      setSelectedFileName('');
+    }
   };
 
   const handleButtonClick = () => {
@@ -102,7 +103,6 @@ const TechnicalSupport: React.FC = () => {
               <h3>Support</h3>
             </div>
             <div className="supportImage">
-              {/* <img src={ICONS.supportImage} alt="" /> */}
               <object
                 type="image/svg+xml"
                 data={ICONS.supportImage}
@@ -127,8 +127,16 @@ const TechnicalSupport: React.FC = () => {
                   name="user_name"
                   placeholder={'Enter'}
                   onChange={(e) => {
-                    setFirstName(e.target.value);
-                    setErrors({ ...errors, firstName: '' });
+                    const inputValue = e.target.value;
+                    if (/^[a-zA-Z\s]*$/.test(inputValue)) {
+                      setFirstName(inputValue);
+                      setErrors({ ...errors, firstName: '' });
+                    } else {
+                      setErrors({
+                        ...errors,
+                        firstName: 'Only letters are allowed',
+                      });
+                    }
                   }}
                 />
                 {errors.firstName && (
@@ -143,8 +151,16 @@ const TechnicalSupport: React.FC = () => {
                   name="lastName"
                   placeholder={'Enter'}
                   onChange={(e) => {
-                    setLastName(e.target.value);
-                    setErrors({ ...errors, lastName: '' });
+                    const inputValue = e.target.value;
+                    if (/^[a-zA-Z\s]*$/.test(inputValue)) {
+                      setLastName(inputValue);
+                      setErrors({ ...errors, lastName: '' });
+                    } else {
+                      setErrors({
+                        ...errors,
+                        lastName: 'Only letters are allowed',
+                      });
+                    }
                   }}
                 />
                 {errors.lastName && (
@@ -187,11 +203,15 @@ const TechnicalSupport: React.FC = () => {
 
             <div className="create-input-container-support">
               <div className="create-input-field-support">
-                <label className="inputLabel-select select-type-label">Issue</label>
+                <label className="inputLabel-select select-type-label">
+                  Issue
+                </label>
                 <SelectOption
                   onChange={handleStateChange}
-                  options={stateOptions}
-                  value={stateOptions?.find((option) => option.value === ' ')}
+                  options={options}
+                  value={options?.find(
+                    (option) => option.value === selectedIssue
+                  )}
                 />
               </div>
 
@@ -207,12 +227,13 @@ const TechnicalSupport: React.FC = () => {
                     className="file-input"
                   />
                   <div className="custom-button-container">
-                    <span className="file-input-placeholder">Select File</span>
+                    <span className="file-input-placeholder">
+                      {selectedFileName || 'Select File'}
+                    </span>
                     <button
                       className="custom-button"
                       onClick={handleButtonClick}
                     >
-                      {/* <img src={ICONS.browserIcon} alt="" /> */}
                       Browse
                     </button>
                   </div>

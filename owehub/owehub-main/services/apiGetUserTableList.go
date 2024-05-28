@@ -10,6 +10,9 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
 
 	"net/http"
 )
@@ -21,10 +24,14 @@ import (
  * RETURNS:    		void
  ******************************************************************************/
 
+type TableList struct {
+	GetAllTable bool `json:"get_all_table"`
+}
+
 func HandleGetUserTableListRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err error
-		// dataReq      models.DataRequestBody
+		err          error
+		dataReq      TableList
 		data         []map[string]interface{}
 		whereEleList []interface{}
 		query        string
@@ -33,11 +40,29 @@ func HandleGetUserTableListRequest(resp http.ResponseWriter, req *http.Request) 
 	log.EnterFn(0, "HandleGetUserTableListRequest")
 	defer func() { log.ExitFn(0, "HandleGetUserTableListRequest", err) }()
 
-	emailId := req.Context().Value("emailid").(string)
-	roleName := req.Context().Value("rolename").(string)
+	if req.Body == nil {
+		err = fmt.Errorf("HTTP Request body is null in get timeline sla data request")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
+		return
+	}
+
+	reqBody, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from get timeline sla data request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
+		return
+	}
+
+	err = json.Unmarshal(reqBody, &dataReq)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to unmarshal get timeline sla data request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal get timeline sla data Request body", http.StatusBadRequest, nil)
+		return
+	}
 
 	tableList := models.TableList{}
-	if roleName == "Admin" {
+	if dataReq.GetAllTable {
 		tables := []models.Table{
 			{TableName: "adder_data_cfg_schema"},
 			{TableName: "field_ops_metrics_schema"},
@@ -55,9 +80,12 @@ func HandleGetUserTableListRequest(resp http.ResponseWriter, req *http.Request) 
 		log.FuncInfoTrace(0, "Number of User table List fetched : %v list %+v", len(tableList.DbTables), tableList)
 		FormAndSendHttpResp(resp, "User table list", http.StatusOK, tableList)
 		return
-	} else {
-		query = `SELECT jsonb_array_elements(tables_permissions)->>'table_name' AS table_name FROM user_details WHERE email_id = $1`
 	}
+	emailId := req.Context().Value("emailid").(string)
+	// roleName := req.Context().Value("rolename").(string)
+
+	query = `SELECT jsonb_array_elements(tables_permissions)->>'table_name' AS table_name FROM user_details WHERE email_id = $1`
+
 	whereEleList = append(whereEleList, emailId)
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {

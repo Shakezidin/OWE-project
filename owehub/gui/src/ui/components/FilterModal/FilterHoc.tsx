@@ -17,9 +17,9 @@ interface TableProps {
   page_number: number;
   page_size: number;
   fetchFunction: (req: any) => void;
-  resetOnChange:boolean
+  resetOnChange: boolean;
 }
-const FilterHoc = ({ isOpen = false,...rest }: TableProps) => {
+const FilterHoc = ({ isOpen = false, ...rest }: TableProps) => {
   const dispatch = useAppDispatch();
   const { pathname } = useLocation();
   useEffect(() => {
@@ -29,7 +29,7 @@ const FilterHoc = ({ isOpen = false,...rest }: TableProps) => {
   }, []);
   return (
     <div className={`filter-modal ${isOpen ? 'modal-open' : 'modal-close'} `}>
-      <FilterModal  {...rest} />
+      <FilterModal {...rest} />
     </div>
   );
 };

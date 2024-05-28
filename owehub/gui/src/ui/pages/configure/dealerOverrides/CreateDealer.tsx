@@ -1,35 +1,20 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ReactComponent as CROSS_BUTTON } from '../../../../resources/assets/cross_button.svg';
 import Input from '../../../components/text_input/Input';
 import { ActionButton } from '../../../components/button/ActionButton';
-import { useDispatch } from 'react-redux';
-
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
-import Select from 'react-select';
-import {
-  dealerOption,
-  subDealerOption,
-} from '../../../../core/models/data_models/SelectDataModel';
+import { dealerOption } from '../../../../core/models/data_models/SelectDataModel';
 import { updateDealerForm } from '../../../../redux/apiSlice/configSlice/config_post_slice/createDealerSlice';
-import {
-  dealer,
-  subDealer,
-} from '../../../../resources/static_data/StaticData';
 import { DealerModel } from '../../../../core/models/configuration/create/DealerModel';
 import SelectOption from '../../../components/selectOption/SelectOption';
-import { errorSwal, successSwal } from '../../../components/alert/ShowAlert';
 import { useAppDispatch } from '../../../../redux/hooks';
 import { fetchDealer } from '../../../../redux/apiSlice/configSlice/config_get_slice/dealerSlice';
 import { validateConfigForm } from '../../../../utiles/configFormValidation';
-import {
-  installerOption,
-  partnerOption,
-  salesTypeOption,
-  stateOption,
-} from '../../../../core/models/data_models/SelectDataModel';
+import { stateOption } from '../../../../core/models/data_models/SelectDataModel';
 import { addDays, format } from 'date-fns';
 import { toast } from 'react-toastify';
+import { FormInput } from '../../../../core/models/data_models/typesModel';
 interface dealerProps {
   handleClose: () => void;
   editMode: boolean;
@@ -57,13 +42,13 @@ const CreateDealer: React.FC<dealerProps> = ({
     state: dealerData ? dealerData?.state : '',
   });
   const [delaerVal, setDealerVal] = useState(dealerData?.dealer || '');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [newFormData, setNewFormData] = useState<any>([]);
   const tableData = {
     tableNames: ['sub_dealer', 'dealer', 'states'],
   };
 
-  
   const userType = {
     role: 'sub_dealer',
   };
@@ -80,17 +65,6 @@ const CreateDealer: React.FC<dealerProps> = ({
     getNewFormData();
   }, []);
 
-  const handleChange = (newValue: any, fieldName: string) => {
-    setCreateDealer((prevData) => ({
-      ...prevData,
-      [fieldName]: newValue ? newValue.value : '',
-    }));
-    setErrors((prevErrors) => ({
-      ...prevErrors,
-      [fieldName]: '',
-    }));
-  };
-
   const getnewformData = async () => {
     const res = await postCaller(EndPoints.get_newFormData, tableData);
     setCreateDealer((prev) => ({ ...prev, ...res.data }));
@@ -99,7 +73,7 @@ const CreateDealer: React.FC<dealerProps> = ({
     getnewformData();
   }, []);
 
-  const handleDealerInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleDealerInputChange = (e: FormInput) => {
     const { name, value } = e.target;
 
     if (name === 'end_date') {
@@ -111,20 +85,17 @@ const CreateDealer: React.FC<dealerProps> = ({
         return;
       }
     }
-
     setCreateDealer((prevData) => ({
       ...prevData,
       [name]: value,
-    }));
-    setErrors((prevErrors) => ({
-      ...prevErrors,
-      [name]: '',
     }));
   };
   const page = {
     page_number: page_number,
     page_size: page_size,
   };
+
+  /** on submit form */
   const submitDealer = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log(newFormData.sub_dealer);
@@ -136,7 +107,7 @@ const CreateDealer: React.FC<dealerProps> = ({
           message: 'Sub Dealer is required',
         },
       ],
-      dealer: [
+      delaerVal: [
         { condition: (value: any) => !!value, message: 'Dealer is required' },
       ],
       pay_rate: [
@@ -156,7 +127,7 @@ const CreateDealer: React.FC<dealerProps> = ({
       ],
     };
     const { isValid, errors } = validateConfigForm(
-      createDealer!,
+      { ...createDealer, delaerVal }!,
       validationRules
     );
     if (!isValid) {
@@ -164,7 +135,14 @@ const CreateDealer: React.FC<dealerProps> = ({
       return;
     }
     try {
-      dispatch(updateDealerForm({ ...createDealer, dealer: delaerVal, sub_dealer: createDealer.sub_dealers, }));
+      setIsSubmitting(true);
+      dispatch(
+        updateDealerForm({
+          ...createDealer,
+          dealer: delaerVal,
+          sub_dealer: createDealer.sub_dealers,
+        })
+      );
       if (createDealer.record_id) {
         const res = await postCaller(EndPoints.update_dealer, {
           ...createDealer,
@@ -176,28 +154,31 @@ const CreateDealer: React.FC<dealerProps> = ({
           handleClose();
           dispatch(fetchDealer(page));
         } else {
-            toast.error(res.message);
+          toast.error(res.message);
         }
       } else {
         const { record_id, ...cleanedFormData } = createDealer;
         const res = await postCaller(EndPoints.create_dealer, {
           ...cleanedFormData,
           dealer: delaerVal,
-          sub_dealer: createDealer.sub_dealers
+          sub_dealer: createDealer.sub_dealers,
         });
         if (res.status === 200) {
-         toast.success(res.message);
+          toast.success(res.message);
           handleClose();
           dispatch(fetchDealer(page));
         } else {
-           toast.error( res.message);
+          toast.error(res.message);
         }
       }
+      setIsSubmitting(false);
     } catch (error) {
+      setIsSubmitting(false);
       console.error('Error submitting form:', error);
     }
   };
 
+  /**render UI */
   return (
     <div className="transparent-model">
       <form onSubmit={(e) => submitDealer(e)} className="modal">
@@ -220,7 +201,6 @@ const CreateDealer: React.FC<dealerProps> = ({
                     type="text"
                     name="sub_dealer"
                     placeholder="Enter"
-                    
                     onChange={(e) =>
                       setCreateDealer({
                         ...createDealer,
@@ -240,12 +220,14 @@ const CreateDealer: React.FC<dealerProps> = ({
                   <SelectOption
                     options={dealerOption(newFormData)}
                     onChange={(newValue) => setDealerVal(newValue?.value!)}
-                    value={dealerOption(newFormData)?.find(
-                      (option) => option.value === delaerVal
-                    )}
+                    value={
+                      dealerOption(newFormData)?.find(
+                        (option) => option.value === delaerVal
+                      ) || { label: delaerVal, value: delaerVal }
+                    }
                   />
-                  {errors.dealer && (
-                    <span className="error">{errors.dealer}</span>
+                  {errors.delaerVal && (
+                    <span className="error">{errors.delaerVal}</span>
                   )}
                 </div>
                 <div className="create-input-field">
@@ -282,7 +264,13 @@ const CreateDealer: React.FC<dealerProps> = ({
                   />
 
                   {errors?.state && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.state}
                     </span>
                   )}
@@ -294,8 +282,9 @@ const CreateDealer: React.FC<dealerProps> = ({
                     value={createDealer.start_date}
                     name="start_date"
                     placeholder={'Enter'}
-                    onChange={(e) =>{ handleDealerInputChange(e)
-                      setCreateDealer(prev=>({...prev,end_date:""}))
+                    onChange={(e) => {
+                      handleDealerInputChange(e);
+                      setCreateDealer((prev) => ({ ...prev, end_date: '' }));
                     }}
                   />
                   {errors.start_date && (
@@ -308,7 +297,13 @@ const CreateDealer: React.FC<dealerProps> = ({
                     label="End Date"
                     name="end_date"
                     value={createDealer.end_date}
-                    min={createDealer.start_date && format(addDays(new Date(createDealer.start_date),1),"yyyy-MM-dd")}
+                    min={
+                      createDealer.start_date &&
+                      format(
+                        addDays(new Date(createDealer.start_date), 1),
+                        'yyyy-MM-dd'
+                      )
+                    }
                     disabled={!createDealer.start_date}
                     placeholder={'Enter'}
                     onChange={(e) => handleDealerInputChange(e)}
@@ -331,6 +326,7 @@ const CreateDealer: React.FC<dealerProps> = ({
             title={editMode === false ? 'Save' : 'Update'}
             type="submit"
             onClick={() => {}}
+            disabled={isSubmitting}
           />
         </div>
       </form>

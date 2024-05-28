@@ -30,6 +30,9 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		createUserReq         models.CreateUserReq
 		queryParameters       []interface{}
 		tablesPermissionsJSON []byte
+		whereEleList          []interface{}
+		username              string
+		usernamePrefix        string
 	)
 
 	log.EnterFn(0, "HandleCreateUserRequest")
@@ -55,6 +58,10 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		FormAndSendHttpResp(resp, "Failed to unmarshal create user request", http.StatusBadRequest, nil)
 		return
 	}
+
+	nameQuery := `
+			select count(name) from user_details where name = $1
+		`
 
 	if (len(createUserReq.Name) <= 0) || (len(createUserReq.EmailId) <= 0) ||
 		(len(createUserReq.MobileNumber) <= 0) ||
@@ -99,9 +106,21 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	// If the user role is "DB User", create the database user and grant privileges
-	if createUserReq.RoleName == "DB User" {
-		// Join selected parts with underscores
-		username := strings.Join(strings.Fields(createUserReq.Name)[0:2], "_")
+	if createUserReq.RoleName == "DB User" || createUserReq.RoleName == "Admin" {
+		whereEleList = append(whereEleList, createUserReq.Name)
+		data, err := db.ReteriveFromDB(db.OweHubDbIndex, nameQuery, whereEleList)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get new form data for table name from DB err: %v", err)
+			FormAndSendHttpResp(resp, "Failed to get Data", http.StatusBadRequest, nil)
+			return
+		}
+
+		// here we get the count of users having the same name and create a
+		// unique username for every coming user
+		count := data[0]["count"].(int64)
+		usernamePrefix = strings.Join(strings.Fields(createUserReq.Name)[0:2], "_")
+		username = fmt.Sprintf("%s_%d", usernamePrefix, count+1)
+		username = strings.ToLower(username)
 
 		sqlStatement := fmt.Sprintf("CREATE USER %s WITH LOGIN PASSWORD '%s';", username, createUserReq.Password)
 		err = db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
@@ -143,6 +162,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	queryParameters = append(queryParameters, createUserReq.Name)
+	queryParameters = append(queryParameters, username)
 	queryParameters = append(queryParameters, createUserReq.MobileNumber)
 	queryParameters = append(queryParameters, createUserReq.EmailId)
 	queryParameters = append(queryParameters, string(hashedPassBytes))
@@ -164,8 +184,6 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	// Call the stored procedure or function to create the user
 	_, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateUserFunction, queryParameters)
 	if err != nil {
-		// Join selected parts with underscores
-		username := strings.Join(strings.Fields(createUserReq.Name)[0:2], "_")
 		dropErr := db.ExecQueryDB(db.RowDataDBIndex, fmt.Sprintf("REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM %s;", username))
 		dropErr = db.ExecQueryDB(db.RowDataDBIndex, fmt.Sprintf("DROP USER %s;", username))
 		if dropErr != nil {

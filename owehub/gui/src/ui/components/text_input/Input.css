@@ -68,6 +68,7 @@ input :focus {
   color: #db4437;
   font-size: 14px;
   font-weight: 400;
+  text-transform: capitalize;
   /* margin-left: 12px; */
   margin-top: 4px;
 }

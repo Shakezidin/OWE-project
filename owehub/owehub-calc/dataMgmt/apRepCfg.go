@@ -1,37 +1,20 @@
 /**************************************************************************
-* File            : apRep.go
-* DESCRIPTION     : This file contains the model and data form apRep config
-* DATE            : 23-May-2024
-**************************************************************************/
+ * File            : apRep.go
+ * DESCRIPTION     : This file contains the model and data form apRep config
+ * DATE            : 23-May-2024
+ **************************************************************************/
 
 package datamgmt
 
 import (
 	db "OWEApp/shared/db"
 	log "OWEApp/shared/logger"
+	"OWEApp/shared/models"
 	"time"
 )
 
-type GetApRep struct {
-	RecordId    int64   `json:"record_id"`
-	UniqueId    string  `json:"unique_id"`
-	Rep         string  `json:"rep"`
-	Dba         string  `json:"dba"`
-	Type        string  `json:"final"`
-	Date        string  `json:"date"`
-	Amount      float64 `json:"amount"`
-	Method      string  `json:"method"`
-	Cbiz        string  `json:"cbiz"`
-	Transaction string  `json:"transaction"`
-	Notes       string  `json:"notes"`
-}
-
-type GetApRepDataList struct {
-	ApRepList []GetApRep `json:"ap_rep_list"`
-}
-
 type ApRepCfgStruct struct {
-	ApRepList GetApRepDataList
+	ApRepList models.GetApRepDataList
 }
 
 var (
@@ -46,8 +29,8 @@ func (pApRepCfg *ApRepCfgStruct) LoadApRepCfg() (err error) {
 	)
 
 	query = `
-     SELECT ar.id as record_id, ar.unique_id, ar.rep, ar.dba, ar.type, ar.date, ar.amount, ar.method, ar.cbiz, ar.transaction, ar.notes
-     FROM ap_rep ar`
+	 SELECT ar.id as record_id, ar.unique_id, ar.rep, ar.dba, ar.type, ar.date, ar.amount, ar.method, ar.cbiz, ar.transaction, ar.notes
+	 FROM ap_rep ar`
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {
@@ -132,7 +115,7 @@ func (pApRepCfg *ApRepCfgStruct) LoadApRepCfg() (err error) {
 			Notes = ""
 		}
 
-		apRepData := GetApRep{
+		apRepData := models.GetApRep{
 			RecordId:    RecordId,
 			UniqueId:    UniqueId,
 			Rep:         Rep,
@@ -152,10 +135,10 @@ func (pApRepCfg *ApRepCfgStruct) LoadApRepCfg() (err error) {
 }
 
 /******************************************************************************
-* FUNCTION:        CalculateApRepForUniqueId
-* DESCRIPTION:     calculates the ap rep value based on the unique Id
-* RETURNS:         credit
-*****************************************************************************/
+ * FUNCTION:        CalculateApRepForUniqueId
+ * DESCRIPTION:     calculates the ap rep value based on the unique Id
+ * RETURNS:         credit
+ *****************************************************************************/
 
 func (pApRepCfg *ApRepCfgStruct) CalculateApRepForUniqueId(dealer string, uniqueId string) (apRep float64) {
 

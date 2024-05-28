@@ -23,6 +23,8 @@ BEGIN
         )
         RETURNING id INTO v_adder_responsibility_id;
     EXCEPTION
+        WHEN unique_violation THEN
+            RAISE EXCEPTION 'Unique constraint violation: unique_id % already exists.', p_unique_id;
         WHEN others THEN
             RAISE NOTICE 'Error: %', SQLERRM;
     END;

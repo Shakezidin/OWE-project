@@ -8,7 +8,6 @@
 package arcalc
 
 import (
-	common "OWEApp/owehub-calc/common"
 	dataMgmt "OWEApp/owehub-calc/dataMgmt"
 	db "OWEApp/shared/db"
 	log "OWEApp/shared/logger"
@@ -176,8 +175,8 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	outData["pto"] = saleData.PtoDate
 
 	status = saleData.ProjectStatus
-	contractCalc = common.CalculateContractAmount(saleData.NetEpc, outData["contract"].(float64), outData["sys_size"].(float64))
-	epcCalc = common.CalculateEPCCalc(contractCalc, saleData.WC1, saleData.NetEpc, saleData.SystemSize, common.DlrPayWc1FilterDate)
+	// contractCalc = common.CalculateContractAmount(saleData.NetEpc, outData["contract"].(float64), outData["sys_size"].(float64))
+	// epcCalc = common.CalculateEPCCalc(contractCalc, saleData.WC1, saleData.NetEpc, saleData.SystemSize, common.DlrPayWc1FilterDate)
 	credit = dataMgmt.DealerCreditCfg.CalculateCreaditForUniqueId(saleData.Dealer, saleData.UniqueId)
 	adderLF = CalculateAdderLf(saleData.Dealer, addr, expense, autoAdder, loanFee, rebate, referral)
 	epc = CalculateAdderEPC(epcCalc, contractCalc, loanFee, SysSize)

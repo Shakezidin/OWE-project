@@ -16,6 +16,10 @@ import { respTypeData } from '../../../../resources/static_data/StaticData';
 import { updateForm } from '../../../../redux/apiSlice/configSlice/config_post_slice/createCommissionSlice';
 import { CommissionModel } from '../../../../core/models/configuration/create/CommissionModel';
 import SelectOption from '../../../components/selectOption/SelectOption';
+import {
+  FormEvent,
+  FormInput,
+} from '../../../../core/models/data_models/typesModel';
 
 interface ButtonProps {
   editMode: boolean;
@@ -96,7 +100,7 @@ const CreateRebateData: React.FC<ButtonProps> = ({
       [fieldName]: newValue ? newValue.value : '',
     }));
   };
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
     if (name === 'end_date') {
       if (createCommission.start_date && value < createCommission.start_date) {
@@ -116,7 +120,7 @@ const CreateRebateData: React.FC<ButtonProps> = ({
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (handleValidation()) {
       try {
@@ -177,7 +181,13 @@ const CreateRebateData: React.FC<ButtonProps> = ({
                     )}
                   />
                   {errors?.partner && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.partner}
                     </span>
                   )}
@@ -195,7 +205,13 @@ const CreateRebateData: React.FC<ButtonProps> = ({
                       )}
                     />
                     {errors?.installer && (
-                      <span style={{ display: 'block', color: '#FF204E' }}>
+                      <span
+                        style={{
+                          display: 'block',
+                          color: '#FF204E',
+                          textTransform: 'capitalize',
+                        }}
+                      >
                         {errors.installer}
                       </span>
                     )}
@@ -211,7 +227,13 @@ const CreateRebateData: React.FC<ButtonProps> = ({
                     )}
                   />
                   {errors?.state && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.state}
                     </span>
                   )}
@@ -229,7 +251,13 @@ const CreateRebateData: React.FC<ButtonProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.sale_type && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.sale_type.replace('sale_type', 'sale type')}
                     </span>
                   )}
@@ -244,7 +272,13 @@ const CreateRebateData: React.FC<ButtonProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.sale_price && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.sale_price.replace('sale_price', 'sale price')}
                     </span>
                   )}
@@ -261,7 +295,13 @@ const CreateRebateData: React.FC<ButtonProps> = ({
                     )}
                   />
                   {errors?.rep_type && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.rep_type.replace(
                         'rep_type',
                         'Representative Type'
@@ -282,7 +322,13 @@ const CreateRebateData: React.FC<ButtonProps> = ({
                       onChange={(e) => handleInputChange(e)}
                     />
                     {errors?.rate && (
-                      <span style={{ display: 'block', color: '#FF204E' }}>
+                      <span
+                        style={{
+                          display: 'block',
+                          color: '#FF204E',
+                          textTransform: 'capitalize',
+                        }}
+                      >
                         {errors.rate}
                       </span>
                     )}
@@ -297,7 +343,13 @@ const CreateRebateData: React.FC<ButtonProps> = ({
                       onChange={(e) => handleInputChange(e)}
                     />
                     {errors?.rl && (
-                      <span style={{ display: 'block', color: '#FF204E' }}>
+                      <span
+                        style={{
+                          display: 'block',
+                          color: '#FF204E',
+                          textTransform: 'capitalize',
+                        }}
+                      >
                         {errors.rl.replace('rl', 'Rate List')}
                       </span>
                     )}
@@ -314,7 +366,13 @@ const CreateRebateData: React.FC<ButtonProps> = ({
                       onChange={(e) => handleInputChange(e)}
                     />
                     {errors?.start_date && (
-                      <span style={{ display: 'block', color: '#FF204E' }}>
+                      <span
+                        style={{
+                          display: 'block',
+                          color: '#FF204E',
+                          textTransform: 'capitalize',
+                        }}
+                      >
                         {errors.start_date.replace('start_date', 'start date ')}
                       </span>
                     )}
@@ -327,9 +385,16 @@ const CreateRebateData: React.FC<ButtonProps> = ({
                       name="end_date"
                       placeholder={'10/04/2004'}
                       onChange={(e) => handleInputChange(e)}
+                      min={createCommission.start_date}
                     />
                     {errors?.end_date && (
-                      <span style={{ display: 'block', color: '#FF204E' }}>
+                      <span
+                        style={{
+                          display: 'block',
+                          color: '#FF204E',
+                          textTransform: 'capitalize',
+                        }}
+                      >
                         {errors.end_date.replace('end_date', 'end date ')}
                       </span>
                     )}

@@ -154,14 +154,40 @@ const DbManagerDashboard = () => {
                 border: '1px solid #d0d5dd',
                 fontWeight: '500',
                 cursor: 'pointer',
+                alignContent: 'center',
+                backgroundColor: '#ffffff',
+              }),
+              placeholder: (baseStyles) => ({
+                ...baseStyles,
+                color: '#0493CE', // Change the placeholder color here
               }),
               indicatorSeparator: () => ({
-                display: 'none', // Hide the indicator separator
+                display: 'none',
               }),
-              option: (baseStyles) => ({
+              dropdownIndicator: (baseStyles, state) => ({
+                ...baseStyles,
+                color: '#292929',
+                '&:hover': {
+                  color: '#292929',
+                },
+              }),
+              option: (baseStyles, state) => ({
                 ...baseStyles,
                 fontSize: '13px',
+                color: state.isSelected ? '#ffffff' : '#000000',
+                backgroundColor: state.isSelected ? '#0493CE' : '#ffffff',
+                '&:hover': {
+                  backgroundColor: state.isSelected ? '#0493CE' : '#DDEBFF',
+                },
                 cursor: 'pointer',
+              }),
+              singleValue: (baseStyles, state) => ({
+                ...baseStyles,
+                color: '#0493CE',
+              }),
+              menu: (baseStyles) => ({
+                ...baseStyles,
+                width: '212px',
               }),
             }}
           />
@@ -187,13 +213,50 @@ const DbManagerDashboard = () => {
                     fontWeight: '500',
                     cursor: 'pointer',
                   }),
+                  placeholder: (baseStyles) => ({
+                    ...baseStyles,
+                    color: '#0493CE', // Change the placeholder color here
+                  }),
+                  dropdownIndicator: (baseStyles, state) => ({
+                    ...baseStyles,
+                    color: '#292929',
+                    '&:hover': {
+                      color: '#292929',
+                    },
+                  }),
                   indicatorSeparator: () => ({
                     display: 'none', // Hide the indicator separator
                   }),
-                  option: (baseStyles) => ({
+                  option: (baseStyles, state) => ({
                     ...baseStyles,
                     fontSize: '13px',
-                    cursor: 'pointer',
+                    color: state.isSelected ? '#ffffff' : '#000000',
+                    backgroundColor: state.isSelected ? '#0493CE' : '#ffffff',
+                    '&:hover': {
+                      backgroundColor: state.isSelected ? '#0493CE' : '#DDEBFF',
+                    },
+                  }),
+                  singleValue: (baseStyles, state) => ({
+                    ...baseStyles,
+                    color: '#0493CE',
+                  }),
+                  menu: (baseStyles) => ({
+                    ...baseStyles,
+                    width: '120px',
+                    zIndex: 999,
+                  }),
+                  menuList: (base) => ({
+                    ...base,
+                    '&::-webkit-scrollbar': {
+                      scrollbarWidth: 'thin',
+                      display: 'block',
+                      scrollbarColor: 'rgb(173, 173, 173) #fff',
+                      width: 8,
+                    },
+                    '&::-webkit-scrollbar-thumb': {
+                      background: 'rgb(173, 173, 173)',
+                      borderRadius: '30px',
+                    },
                   }),
                 }}
               />
@@ -229,13 +292,50 @@ const DbManagerDashboard = () => {
                     fontWeight: '500',
                     cursor: 'pointer',
                   }),
-                  indicatorSeparator: () => ({
-                    display: 'none', // Hide the indicator separator
+                  placeholder: (baseStyles) => ({
+                    ...baseStyles,
+                    color: '#0493CE', // Change the placeholder color here
                   }),
-                  option: (baseStyles) => ({
+                  indicatorSeparator: () => ({
+                    display: 'none',
+                  }),
+                  dropdownIndicator: (baseStyles, state) => ({
+                    ...baseStyles,
+                    color: '#292929',
+                    '&:hover': {
+                      color: '#292929',
+                    },
+                  }),
+                  option: (baseStyles, state) => ({
                     ...baseStyles,
                     fontSize: '13px',
-                    cursor: 'pointer',
+                    color: state.isSelected ? '#ffffff' : '#000000',
+                    backgroundColor: state.isSelected ? '#0493CE' : '#ffffff',
+                    '&:hover': {
+                      backgroundColor: state.isSelected ? '#0493CE' : '#DDEBFF',
+                    },
+                  }),
+                  singleValue: (baseStyles, state) => ({
+                    ...baseStyles,
+                    color: '#0493CE',
+                  }),
+                  menu: (baseStyles) => ({
+                    ...baseStyles,
+                    width: '120px',
+                    zIndex: 999,
+                  }),
+                  menuList: (base) => ({
+                    ...base,
+                    '&::-webkit-scrollbar': {
+                      scrollbarWidth: 'thin',
+                      display: 'block',
+                      scrollbarColor: 'rgb(173, 173, 173) #fff',
+                      width: 8,
+                    },
+                    '&::-webkit-scrollbar-thumb': {
+                      background: 'rgb(173, 173, 173)',
+                      borderRadius: '30px',
+                    },
                   }),
                 }}
               />
@@ -270,13 +370,50 @@ const DbManagerDashboard = () => {
                     fontWeight: '500',
                     cursor: 'pointer',
                   }),
-                  indicatorSeparator: () => ({
-                    display: 'none', // Hide the indicator separator
+                  placeholder: (baseStyles) => ({
+                    ...baseStyles,
+                    color: '#0493CE', // Change the placeholder color here
                   }),
-                  option: (baseStyles) => ({
+                  indicatorSeparator: () => ({
+                    display: 'none',
+                  }),
+                  dropdownIndicator: (baseStyles, state) => ({
+                    ...baseStyles,
+                    color: '#292929',
+                    '&:hover': {
+                      color: '#292929',
+                    },
+                  }),
+                  option: (baseStyles, state) => ({
                     ...baseStyles,
                     fontSize: '13px',
-                    cursor: 'pointer',
+                    color: state.isSelected ? '#ffffff' : '#000000',
+                    backgroundColor: state.isSelected ? '#0493CE' : '#ffffff',
+                    '&:hover': {
+                      backgroundColor: state.isSelected ? '#0493CE' : '#DDEBFF',
+                    },
+                  }),
+                  singleValue: (baseStyles, state) => ({
+                    ...baseStyles,
+                    color: '#0493CE',
+                  }),
+                  menu: (baseStyles) => ({
+                    ...baseStyles,
+                    width: '120px',
+                    zIndex: 999,
+                  }),
+                  menuList: (base) => ({
+                    ...base,
+                    '&::-webkit-scrollbar': {
+                      scrollbarWidth: 'thin',
+                      display: 'block',
+                      scrollbarColor: 'rgb(173, 173, 173) #fff',
+                      width: 8,
+                    },
+                    '&::-webkit-scrollbar-thumb': {
+                      background: 'rgb(173, 173, 173)',
+                      borderRadius: '30px',
+                    },
                   }),
                 }}
               />

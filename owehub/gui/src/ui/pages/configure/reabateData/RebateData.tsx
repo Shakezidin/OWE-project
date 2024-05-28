@@ -21,6 +21,13 @@ import DataNotFound from '../../../components/loader/DataNotFound';
 import { ROUTES } from '../../../../routes/routes';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import { RebeteDataColumn } from '../../../../resources/static_data/configureHeaderData/RebetDataColumn';
+import FilterHoc from '../../../components/FilterModal/FilterHoc';
+import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
+import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
+import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
+import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
+import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
+import MicroLoader from '../../../components/loader/MicroLoader';
 interface Column {
   name: string;
   displayName: string;
@@ -44,13 +51,14 @@ const RebeteData: React.FC = () => {
   const [editMode, setEditMode] = useState(false);
   const [editedCommission, setEditedCommission] =
     useState<CommissionModel | null>(null);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
   const currentPage = useAppSelector(
     (state) => state.paginationType.currentPage
   );
   const [viewArchived, setViewArchived] = useState<boolean>(false);
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [filters, setFilters] = useState<FilterModel[]>([]);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -124,18 +132,47 @@ const RebeteData: React.FC = () => {
       }
     });
   }
+  const fetchFunction = (req: any) => {
+    setCurrentPage(1);
+    setFilters(req.filters);
+  };
+
+  const handleArchiveClick = async (record_id: any) => {
+    const confirmed = await showAlert(
+      'Are Your Sure',
+      'This Action will archive your data',
+      'Yes',
+      'No'
+    );
+    if (confirmed) {
+      const archived: number[] = [record_id];
+      let newValue = {
+        record_id: archived,
+        is_archived: true,
+      };
+      const pageNumber = {
+        page_number: currentPage,
+        page_size: itemsPerPage,
+      };
+      const res = await postCaller(
+        EndPoints.update_commission_archive,
+        newValue
+      );
+      if (res.status === HTTP_STATUS.OK) {
+        dispatch(fetchCommissions(pageNumber));
+        setSelectAllChecked(false);
+        setSelectedRows(new Set());
+        await successSwal('Archived', 'The data has been archived ');
+      } else {
+        await successSwal('Archived', 'The data has been archived ');
+      }
+    }
+  };
 
   if (error) {
     return (
       <div className="loader-container">
         <Loading />
-      </div>
-    );
-  }
-  if (loading) {
-    return (
-      <div className="loader-container">
-        <Loading /> {loading}
       </div>
     );
   }
@@ -172,11 +209,15 @@ const RebeteData: React.FC = () => {
             </CSVLink>
           </div>
         )}
-        {/* {filterOPen && <FilterCommission handleClose={filterClose}  
-            columns={columns} 
-             page_number = {currentPage}
-             page_size = {itemsPerPage}
-             />} */}
+        <FilterHoc
+          resetOnChange={viewArchived}
+          isOpen={filterOPen}
+          handleClose={filterClose}
+          columns={RebeteDataColumn}
+          fetchFunction={fetchFunction}
+          page_number={currentPage}
+          page_size={itemsPerPage}
+        />
         {open && (
           <CreateRebateData
             commission={editedCommission}
@@ -212,7 +253,7 @@ const RebeteData: React.FC = () => {
                 ))}
                 <th>
                   <div className="table-header">
-                    <p>Action</p>{' '}
+                    <p>Action</p>
                     <FaArrowDown
                       style={{ color: '#667085', fontSize: '12px' }}
                     />
@@ -221,7 +262,15 @@ const RebeteData: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {commissionList?.length > 0 ? (
+              {loading ? (
+                <tr>
+                  <td colSpan={commissionList.length}>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <MicroLoader />
+                    </div>
+                  </td>
+                </tr>
+              ) : commissionList?.length > 0 ? (
                 commissionList?.map((el: any, i: any) => (
                   <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
@@ -258,25 +307,47 @@ const RebeteData: React.FC = () => {
                     <td>{el.sale_price}</td>
                     <td>{el.rep_type}</td>
                     <td>{el.rl}</td>
-                    <td>{el.rate}</td> <td>{el.state}</td>
+                    <td>{el.rate}</td>
+                    <td>{el.state}</td>
                     <td>{el.sale_type}</td>
                     <td>{el.sale_price}</td>
                     <td>{el.rep_type}</td>
                     <td>{el.start_date}</td>
                     <td>{el.end_date}</td>
                     <td>
-                      <div className="action-icon">
-                        <div className="" style={{ cursor: 'pointer' }}>
-                          <img src={ICONS.ARCHIVE} alt="" />
+                      {selectedRows.size > 0 ? (
+                        <div className="action-icon">
+                          <div
+                            className="action-archive"
+                            style={{ cursor: 'not-allowed' }}
+                          >
+                            <img src={ICONS.ARCHIVE} alt="" />
+                          </div>
+                          <div
+                            className="action-archive"
+                            style={{ cursor: 'not-allowed' }}
+                          >
+                            <img src={ICONS.editIcon} alt="" />
+                          </div>
                         </div>
-                        <div
-                          className=""
-                          style={{ cursor: 'pointer' }}
-                          onClick={() => handleEditCommission(el)}
-                        >
-                          <img src={ICONS.editIcon} alt="" />
+                      ) : (
+                        <div className="action-icon">
+                          <div
+                            className="action-archive"
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => handleArchiveClick(el.record_id)}
+                          >
+                            <img src={ICONS.ARCHIVE} alt="" />
+                          </div>
+                          <div
+                            className="action-archive"
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => handleEditCommission(el)}
+                          >
+                            <img src={ICONS.editIcon} alt="" />
+                          </div>
                         </div>
-                      </div>
+                      )}
                     </td>
                   </tr>
                 ))
@@ -293,15 +364,14 @@ const RebeteData: React.FC = () => {
             </tbody>
           </table>
         </div>
-        {commissionList?.length > 0 ? (
+        {commissionList?.length > 0 && (
           <div className="page-heading-container">
             <p className="page-heading">
               {currentPage} - {dbCount} of {commissionList?.length} item
             </p>
-
             <Pagination
               currentPage={currentPage}
-              totalPages={totalPages} // You need to calculate total pages
+              totalPages={totalPages}
               paginate={paginate}
               currentPageData={currentPageData}
               goToNextPage={goToNextPage}
@@ -309,7 +379,7 @@ const RebeteData: React.FC = () => {
               perPage={itemsPerPage}
             />
           </div>
-        ) : null}
+        )}
       </div>
     </div>
   );

@@ -2,6 +2,7 @@ import {
   CreateUserModel,
   CreateUserParamModel,
 } from '../core/models/api_models/UserManagementModel';
+import { TYPE_OF_USER } from '../resources/static_data/Constant';
 
 // validationUtils.ts
 export const validateName = (name: string): boolean => {
@@ -13,8 +14,9 @@ export const validateEmail = (email: string): boolean => {
 };
 
 export const validateMobileNumber = (mobileNumber: string): boolean => {
-  return /^[0-9]{10,13}$/.test(mobileNumber.trim());
+  return /^\+?[0-9]{10,14}$/.test(mobileNumber.trim());
 };
+
 export const validateForm = (
   formData: CreateUserModel
 ): { [key: string]: boolean } => {
@@ -40,15 +42,15 @@ export const validateForm = (
   }
 
   if (
-    formData.role_name === 'Appointment Setter' ||
-    formData.role_name === 'Patner'
+    formData.role_name === TYPE_OF_USER.APPOINTMENT_SETTER ||
+    formData.role_name === TYPE_OF_USER.PARTNER
   ) {
     if (formData.assigned_dealer_name.length === 0) {
       errors.DealerOwner = true;
     }
   }
 
-  if (formData.role_name === 'Regional Manager') {
+  if (formData.role_name === TYPE_OF_USER.REGIONAL_MANGER) {
     if (formData.assigned_dealer_name.length === 0) {
       errors.DealerOwner = true;
     } else if (formData.add_region.length === 0) {
@@ -56,7 +58,7 @@ export const validateForm = (
     }
   }
 
-  if (formData.role_name === 'Sale Representative') {
+  if (formData.role_name === TYPE_OF_USER.SALES_REPRESENTATIVE) {
     if (formData.assigned_dealer_name.length === 0) {
       errors.DealerOwner = true;
     } else if (formData.report_to.length === 0) {
@@ -65,7 +67,7 @@ export const validateForm = (
       errors.Team_name = true;
     }
   }
-  if (formData.role_name === 'Sales Manager') {
+  if (formData.role_name === TYPE_OF_USER.SALE_MANAGER) {
     if (formData.assigned_dealer_name.length === 0) {
       errors.DealerOwner = true;
     } else if (formData.report_to.length === 0) {
@@ -90,8 +92,8 @@ export const createUserObject = (
     description: formData.description,
   };
   if (
-    formData.role_name === 'Appointment Setter' ||
-    formData.role_name === 'Patner'
+    formData.role_name === TYPE_OF_USER.APPOINTMENT_SETTER ||
+    formData.role_name === TYPE_OF_USER.PARTNER
   ) {
     createObject = {
       ...createObject,
@@ -99,7 +101,7 @@ export const createUserObject = (
     };
   }
 
-  if (formData.role_name === 'Regional Manager') {
+  if (formData.role_name === TYPE_OF_USER.REGIONAL_MANGER) {
     createObject = {
       ...createObject,
       dealer_owner: formData.assigned_dealer_name,
@@ -107,7 +109,7 @@ export const createUserObject = (
     };
   }
 
-  if (formData.role_name === 'Sale Representative') {
+  if (formData.role_name === TYPE_OF_USER.SALES_REPRESENTATIVE) {
     createObject = {
       ...createObject,
       dealer_owner: formData.assigned_dealer_name,
@@ -115,13 +117,13 @@ export const createUserObject = (
       team_name: formData.team_name,
     };
   }
-  if (formData.role_name === 'Sales Manager') {
+  if (formData.role_name === TYPE_OF_USER.SALE_MANAGER) {
     createObject = {
       ...createObject,
       dealer_owner: formData.assigned_dealer_name,
       reporting_manager: formData.report_to,
     };
   }
-  //console.log("createObject", createObject);
+
   return createObject;
 };

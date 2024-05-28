@@ -5,25 +5,24 @@ import {
   getleaderOverride,
   updateleaderOverride,
   ILeaderRow,
-} from '../../../apiActions/leaderOverrideAction';
+} from '../../../apiActions/config/leaderOverrideAction';
 interface IState {
-  isLoading: boolean,
-  isFormSubmitting: boolean,
-  error:string,
-  data: ILeaderRow[],
-  isSuccess:boolean,
-  count:number
-};
+  isLoading: boolean;
+  isFormSubmitting: boolean;
+  error: string;
+  data: ILeaderRow[];
+  isSuccess: boolean;
+  count: number;
+}
 
-  const initialState:IState = {
-    isLoading: false,
-    isFormSubmitting: false,
-    error: "",
-    data: [],
-    isSuccess:false,
-    count:0
-  };
-  
+const initialState: IState = {
+  isLoading: false,
+  isFormSubmitting: false,
+  error: '',
+  data: [],
+  isSuccess: false,
+  count: 0,
+};
 
 const leaderOverride = createSlice({
   name: 'leaderOverride',
@@ -41,11 +40,13 @@ const leaderOverride = createSlice({
       .addCase(getleaderOverride.fulfilled, (state, action) => {
         state.isLoading = false;
         state.data = action.payload.list;
+        state.error = '';
         state.count = action.payload.count;
       })
       .addCase(getleaderOverride.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
+        toast.error(action.payload as string);
       });
 
     builder
@@ -55,6 +56,7 @@ const leaderOverride = createSlice({
       .addCase(createleaderOverride.fulfilled, (state, action) => {
         state.isFormSubmitting = false;
         state.isSuccess = true;
+        toast.success('Form submission completed');
       })
       .addCase(createleaderOverride.rejected, (state, action) => {
         state.isFormSubmitting = false;
@@ -67,14 +69,14 @@ const leaderOverride = createSlice({
         state.isFormSubmitting = true;
       })
       .addCase(updateleaderOverride.fulfilled, (state, action) => {
+        toast.success('Form submission completed');
         state.isFormSubmitting = false;
         state.isSuccess = true;
-        toast.success('Form submission completed');
       })
       .addCase(updateleaderOverride.rejected, (state, action) => {
+        toast.error(action.payload as string);
         state.isFormSubmitting = false;
         state.error = action.payload as string;
-        toast.error(action.payload as string);
       });
   },
 });

@@ -91,9 +91,9 @@ type ProjectResponse struct {
 	PtoInProcess             string  `json:"pto_in_process"`
 	PtoSubmitted             string  `json:"pto_submitted"`
 	PtoCompleted             string  `json:"pto_completed"`
-	SystemSize               float64 `system_size`
+	SystemSize               float64 `json:"system_size"`
 	Adder                    string  `json:"adder"`
-	AJH                      string  `json:"ajh"`
+	AHJ                      string  `json:"ajh"`
 	Epc                      string  `json:"epc"`
 	State                    string  `json:"state"`
 	ContractAmount           float64 `json:"contract_amount"`
@@ -110,33 +110,33 @@ var ColumnToField = map[string]string{
 	"site_survey_scheduled_date":     "SiteSurveyScheduled",
 	"site_survey_rescheduled_date":   "SiteSurevyRescheduled",
 	"site_survey_completed_date":     "SiteSurveyCompleted",
-	"roofing_scheduled_date":         "RoofingPending",
-	"roofing_created_date":           "RoofingScheduled",
+	"roofing_created_date":           "RoofingPending",
+	"roofing_scheduled_date":         "RoofingScheduled",
 	"roofing_completed_date":         "RoofingCompleted",
-	"electrical_permit_created_date": "ElectricalPending",
-	"electrical_submitted_date":      "ElectricalScheduled",
-	"electrical_approved_date":       "ElectricalCompleted",
-	"pv_install_created_date":        "PvPermitPending",
-	"pv_install_scheduled_date":      "PvPermitScheduled",
-	"pv_install_completed_date":      "PvPermitCompleted",
+	"electrical_permit_created_date": "ElectricalPending",   // unsure value
+	"electrical_submitted_date":      "ElectricalScheduled", // unsure value
+	"electrical_approved_date":       "ElectricalCompleted", // unsure value
+	"permit_created":                 "PvPermitPending",
+	"permit_submitted_date":          "PvPermitScheduled",
+	"permit_approved_date":           "PvPermitCompleted",
 	"ic_created_date":                "IcPermitPending",
 	"ic_submitted_date":              "IcPermitScheduled",
 	"ic_approved_date":               "IcPermitCompleted",
-	"credit_expiration_date":         "InstallPending",
-	"install_ready_date":             "InstallReady",
-	"install_rescheduled_date":       "InstallScheduled",
-	"install_eta":                    "InstallCompleted",
-	"pto_fail_date":                  "FinalInspectionSubmitted",
-	"canceled_date":                  "FinalInspectionApproved",
+	"credit_expiration_date":         "InstallPending", // unsure value
+	"pv_install_created_date":        "InstallReady",
+	"pv_install_scheduled_date":      "InstallScheduled",
+	"pv_install_completed_date":      "InstallCompleted",
+	"fin_scheduled_date":             "FinalInspectionSubmitted",
+	"fin_pass_date":                  "FinalInspectionApproved",
 	"pto_created_date":               "PtoInProcess",
 	"pto_submitted_date":             "PtoSubmitted",
 	"pto_date":                       "PtoCompleted",
-	"system_size":                    "SystemSize", // float
-	"prospect":                       "Adder",
-	"installer":                      "AJH",
-	"project_status":                 "Epc",
+	"system_size":                    "SystemSize",
+	"prospect":                       "Adder", // unsure value
+	"ahj":                            "AHJ",
+	"project_status":                 "Epc", //unsure value
 	"state":                          "State",
-	"contract_total":                 "ContractAmount", // float
-	"finance_company":                "FinancePartner", //string
-	"net_epc":                        "NetEPC",         // float
+	"contract_total":                 "ContractAmount",
+	"finance_company":                "FinancePartner",
+	"net_epc":                        "NetEPC",
 }

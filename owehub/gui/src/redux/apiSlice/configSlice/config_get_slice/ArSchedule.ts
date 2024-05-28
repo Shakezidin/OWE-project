@@ -4,7 +4,7 @@ import {
   IARSchedule,
   createArSchedule,
   updateArchSchedule,
-} from '../../../apiActions/arScheduleAction';
+} from '../../../apiActions/config/arScheduleAction';
 import { toast } from 'react-toastify';
 
 interface IState {
@@ -58,6 +58,7 @@ const arSchedule = createSlice({
       .addCase(createArSchedule.rejected, (state, action) => {
         state.isFormSubmitting = false;
         state.error = action.payload as string;
+        toast.error(action.payload as string);
       })
       .addCase(updateArchSchedule.pending, (state, action) => {
         state.isFormSubmitting = true;
@@ -70,6 +71,7 @@ const arSchedule = createSlice({
       .addCase(updateArchSchedule.rejected, (state, action) => {
         state.isFormSubmitting = false;
         state.error = action.payload as string;
+        toast.error(action.payload as string);
       });
   },
 });

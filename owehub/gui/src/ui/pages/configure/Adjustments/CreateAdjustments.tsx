@@ -10,7 +10,7 @@ import {
   createAdjustments,
   updateAdjustments,
   IRateRow,
-} from '../../../../redux/apiActions/arAdjustmentsAction';
+} from '../../../../redux/apiActions/config/arAdjustmentsAction';
 import {
   installerOption,
   partnerOption,
@@ -20,6 +20,7 @@ import {
 import { format } from 'date-fns';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/arAdjusments';
+import { FormInput } from '../../../../core/models/data_models/typesModel';
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
@@ -45,7 +46,9 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({
   const [errors, setErrors] = useState<typeof newFormData>(
     {} as typeof newFormData
   );
-  const { isSuccess } = useAppSelector((state) => state.arAdjusments);
+  const { isSuccess, isFormSubmitting } = useAppSelector(
+    (state) => state.arAdjusments
+  );
 
   const handleValidation = () => {
     const error: typeof newFormData = {} as typeof newFormData;
@@ -70,7 +73,7 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({
     getNewFormData();
   }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: FormInput) => {
     const { value, name } = e.target;
     if (name === 'amount' || name === 'epc' || name === 'sysSize') {
       if (value === '' || value === '0' || Number(value)) {
@@ -141,7 +144,13 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({
                     onChange={handleChange}
                   />
                   {errors?.uniqueId && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.uniqueId}
                     </span>
                   )}
@@ -156,7 +165,13 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({
                     onChange={handleChange}
                   />
                   {errors?.date && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.date}
                     </span>
                   )}
@@ -168,10 +183,23 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({
                     value={newFormData.amount}
                     name="amount"
                     placeholder={'Enter'}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      const sanitizedValue = e.target.value.replace(
+                        /[^0-9.]/g,
+                        ''
+                      );
+                      e.target.value = sanitizedValue;
+                      handleChange(e);
+                    }}
                   />
                   {errors?.amount && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.amount}
                     </span>
                   )}
@@ -189,7 +217,13 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({
                     onChange={handleChange}
                   />
                   {errors?.notes && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.notes}
                     </span>
                   )}
@@ -207,6 +241,7 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({
           <ActionButton
             title={editMode === false ? 'Save' : 'Update'}
             type="submit"
+            disabled={isFormSubmitting}
             onClick={() => {}}
           />
         </div>

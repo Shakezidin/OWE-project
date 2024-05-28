@@ -12,16 +12,17 @@ import { TierLoanFeeModel } from '../../../../core/models/configuration/create/T
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 
 import Pagination from '../../../components/pagination/Pagination';
-import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import { TierLoanColumn } from '../../../../resources/static_data/configureHeaderData/TierLoanFeeColumn';
-import FilterModal from '../../../components/FilterModal/FilterModal';
-import Loading from '../../../components/loader/Loading';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import Swal from 'sweetalert2';
+import MicroLoader from '../../../components/loader/MicroLoader';
+import FilterHoc from '../../../components/FilterModal/FilterHoc';
+import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
+
 import { ROUTES } from '../../../../routes/routes';
 const TierLoanFee = () => {
   const dispatch = useAppDispatch();
@@ -47,6 +48,8 @@ const TierLoanFee = () => {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
+  const [filters, setFilters] = useState<FilterModel[]>([]);
+  const [refetch, setRefetch] = useState(1);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -54,7 +57,7 @@ const TierLoanFee = () => {
       archived: viewArchived ? true : undefined,
     };
     dispatch(fetchTearLoan(pageNumber));
-  }, [dispatch, currentPage, viewArchived]);
+  }, [dispatch, currentPage, viewArchived, filters, refetch]);
 
   const handleAddTierLoan = () => {
     setEditMode(false);
@@ -194,27 +197,15 @@ const TierLoanFee = () => {
   const handleViewArchiveToggle = () => {
     setViewArchived(!viewArchived);
     // When toggling, reset the selected rows
-    setCurrentPage(1)
+    setCurrentPage(1);
     setSelectedRows(new Set());
     setSelectAllChecked(false);
   };
   const fetchFunction = (req: any) => {
-    dispatch(fetchTearLoan(req));
+    setCurrentPage(1);
+    setFilters(req.filters);
   };
-  if (error) {
-    return (
-      <div className="loader-container">
-        <Loading />
-      </div>
-    );
-  }
-  if (loading) {
-    return (
-      <div className="loader-container">
-        <Loading /> {loading}
-      </div>
-    );
-  }
+
   return (
     <div className="comm">
       <Breadcrumb
@@ -236,20 +227,22 @@ const TierLoanFee = () => {
           viewArchive={viewArchived}
           onpressAddNew={() => handleAddTierLoan()}
         />
-        {filterOPen && (
-          <FilterModal
-            handleClose={filterClose}
-            columns={TierLoanColumn}
-            page_number={currentPage}
-            fetchFunction={fetchFunction}
-            page_size={itemsPerPage}
-          />
-        )}
+        <FilterHoc
+          resetOnChange={viewArchived}
+          isOpen={filterOPen}
+          handleClose={filterClose}
+          columns={TierLoanColumn}
+          fetchFunction={fetchFunction}
+          page_number={currentPage}
+          page_size={itemsPerPage}
+        />
+
         {open && (
           <CreateTierLoan
             editMode={editMode}
             tierEditedData={editedTierLoanfee}
             handleClose={handleClose}
+            setRefetch={setRefetch}
           />
         )}
         <div
@@ -288,7 +281,15 @@ const TierLoanFee = () => {
               </tr>
             </thead>
             <tbody>
-              {currentPageData?.length > 0 ? (
+              {loading ? (
+                <tr>
+                  <td colSpan={TierLoanColumn.length}>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <MicroLoader />
+                    </div>
+                  </td>
+                </tr>
+              ) : currentPageData?.length > 0 ? (
                 currentPageData?.map((el: any, i: any) => (
                   <tr key={i}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
@@ -315,7 +316,7 @@ const TierLoanFee = () => {
                     <td>{el.dlr_cost}</td>
                     <td>{el.start_date}</td>
                     <td>{el.end_date}</td>
-                    {viewArchived === true ? null : (
+                    {!viewArchived && selectedRows.size < 2 && (
                       <td>
                         <div className="action-icon">
                           <div
@@ -355,7 +356,8 @@ const TierLoanFee = () => {
         {tierloanList?.length > 0 ? (
           <div className="page-heading-container">
             <p className="page-heading">
-              {startIndex} - {endIndex>dbCount?dbCount:endIndex} of {dbCount} item
+              {startIndex} - {endIndex > dbCount ? dbCount : endIndex} of{' '}
+              {dbCount} item
             </p>
 
             <Pagination

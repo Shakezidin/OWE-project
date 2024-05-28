@@ -3,7 +3,7 @@ import {
   createAdjustments,
   getAdjustments,
   updateAdjustments,
-} from '../../../apiActions/arAdjustmentsAction';
+} from '../../../apiActions/config/arAdjustmentsAction';
 import { Adjustment } from '../../../../core/models/api_models/ArAdjustMentsModel';
 import { toast } from 'react-toastify';
 
@@ -59,11 +59,12 @@ const rateAdjustments = createSlice({
       .addCase(createAdjustments.fulfilled, (state) => {
         state.isFormSubmitting = false;
         state.isSuccess = true;
-        toast.success('form submitted');
+        toast.success('Form submitted successfully');
       })
       .addCase(createAdjustments.rejected, (state, action) => {
         state.isFormSubmitting = false;
         state.error = action.payload as string;
+        toast.error(action.payload as string);
       })
 
       .addCase(updateAdjustments.pending, (state, action) => {
@@ -72,7 +73,7 @@ const rateAdjustments = createSlice({
       .addCase(updateAdjustments.fulfilled, (state) => {
         state.isFormSubmitting = false;
         state.isSuccess = true;
-        toast.success('form submitted');
+        toast.success('Form submitted successfully');
       })
       .addCase(updateAdjustments.rejected, (state, action) => {
         state.isFormSubmitting = false;

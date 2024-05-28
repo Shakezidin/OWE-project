@@ -3,11 +3,10 @@ import { useState } from 'react';
 import './AccountSettings.css';
 import { ICONS } from '../../icons/Icons';
 import MyProfile from './MyProfile';
-import ResetPassword from '../resetPassword/ResetPassword';
 import ResetPasswordAccount from './ResetPasswordAccount';
 import { logout } from '../../../redux/apiSlice/authSlice/authSlice';
 import { useAppDispatch } from '../../../redux/hooks';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const AccountSettings = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -20,6 +19,11 @@ const AccountSettings = () => {
     dispatch(logout());
     navigate('/');
   };
+
+  const handleOpenNClose = () => {
+    handleLogout();
+  };
+
   return (
     <>
       <div className="account-container">
@@ -58,7 +62,7 @@ const AccountSettings = () => {
             )}
             {activeTab === 1 && (
               <div>
-                <ResetPasswordAccount />
+                <ResetPasswordAccount handleOpenNClose={handleOpenNClose} />
               </div>
             )}
           </div>

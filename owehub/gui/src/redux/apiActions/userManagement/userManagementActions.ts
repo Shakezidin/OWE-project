@@ -46,18 +46,22 @@ export const fetchUserOnboarding = createAsyncThunk(
         };
       }
     );
-    const userPerformanceList: OnboardingChartModel[] = [
-      {
-        name: 'Active SaleRep',
-        value: active_sale_rep,
-        fill: '#0181ff',
-      },
-      {
-        name: 'Inactive SaleRep',
-        value: Math.abs(inactive_sale_rep),
-        fill: '#fb7955',
-      },
-    ];
+
+    let userPerformanceList: OnboardingChartModel[] = [];
+    if (active_sale_rep !== 0 || inactive_sale_rep !== 0) {
+      userPerformanceList.push(
+        {
+          name: 'Active SaleRep',
+          value: active_sale_rep,
+          fill: '#0181ff',
+        },
+        {
+          name: 'Inactive SaleRep',
+          value: Math.abs(inactive_sale_rep),
+          fill: '#fb7955',
+        }
+      );
+    }
     return { mapList, userPerformanceList };
   }
 );

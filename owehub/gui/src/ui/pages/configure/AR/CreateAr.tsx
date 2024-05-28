@@ -18,12 +18,13 @@ import Select from 'react-select';
 import {
   createAr,
   updateAr,
-} from '../../../../redux/apiActions/arConfigAction';
+} from '../../../../redux/apiActions/config/arConfigAction';
 import { paySaleTypeData } from '../../../../resources/static_data/StaticData';
 import { PayScheduleModel } from '../../../../core/models/configuration/create/PayScheduleModel';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import { validateConfigForm } from '../../../../utiles/configFormValidation';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/arSlice';
+import { FormInput } from '../../../../core/models/data_models/typesModel';
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
@@ -36,7 +37,7 @@ const CreatedAr: React.FC<payScheduleProps> = ({
   editData,
 }) => {
   const dispatch = useAppDispatch();
-  const { isSuccess } = useAppSelector((state) => state.ar);
+  const { isSuccess, isFormSubmitting } = useAppSelector((state) => state.ar);
 
   const [createArData, setCreateArData] = useState({
     // customer_name:editData?.customer_name || "",
@@ -62,7 +63,7 @@ const CreatedAr: React.FC<payScheduleProps> = ({
     getNewFormData();
   }, []);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
     setCreateArData((prevData) => ({
       ...prevData,
@@ -105,7 +106,13 @@ const CreatedAr: React.FC<payScheduleProps> = ({
     }
 
     if (editMode) {
-      dispatch(updateAr({ ...createArData, record_id: editData?.record_id! }));
+      dispatch(
+        updateAr({
+          ...createArData,
+          record_id: editData?.record_id!,
+          amount: parseFloat(createArData.amount),
+        })
+      );
     } else {
       dispatch(
         createAr({
@@ -162,7 +169,14 @@ const CreatedAr: React.FC<payScheduleProps> = ({
                     value={createArData.amount}
                     name="amount"
                     placeholder={'Enter'}
-                    onChange={(e) => handleInputChange(e)}
+                    onChange={(e) => {
+                      const sanitizedValue = e.target.value.replace(
+                        /[^0-9.]/g,
+                        ''
+                      );
+                      e.target.value = sanitizedValue;
+                      handleInputChange(e);
+                    }}
                   />
                   {errors.amount && (
                     <span className="error">{errors.amount}</span>
@@ -233,6 +247,7 @@ const CreatedAr: React.FC<payScheduleProps> = ({
           <ActionButton
             title={editMode === false ? 'Save' : 'Update'}
             type="submit"
+            disabled={isFormSubmitting}
             onClick={() => {}}
           />
         </div>

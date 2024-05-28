@@ -5,25 +5,26 @@ import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import {
   getLoanFee,
   ILoanRow,
-} from '../../../../redux/apiActions/loanFeeActions';
+} from '../../../../redux/apiActions/config/loanFeeActions';
 // import CreateTimeLine from "./CreateTimeLine";
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import Pagination from '../../../components/pagination/Pagination';
-import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
-import { TimeLineSlaModel } from '../../../../core/models/configuration/create/TimeLineSlaModel';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
+import MicroLoader from '../../../components/loader/MicroLoader';
 
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import { LoanFeesColumn } from '../../../../resources/static_data/configureHeaderData/LoanFeeColumn';
-import FilterModal from '../../../components/FilterModal/FilterModal';
 import { ROUTES } from '../../../../routes/routes';
 import CreatedLoanFee from './CreateLoanFee';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
-import Loading from '../../../components/loader/Loading';
+import FilterHoc from '../../../components/FilterModal/FilterHoc';
+import DataNotFound from '../../../components/loader/DataNotFound';
+import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
+import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/loanFeeSlice';
 const LoanFee = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -34,7 +35,7 @@ const LoanFee = () => {
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
   const timelinesla_list = useAppSelector((state) => state.loanFeeSlice.data);
-  const { dbCount,isSuccess } = useAppSelector((state) => state.loanFeeSlice);
+  const { dbCount, isSuccess } = useAppSelector((state) => state.loanFeeSlice);
   //   const loading = useAppSelector((state) => state.timelineSla.loading);
   const error = useAppSelector((state) => state.timelineSla.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
@@ -48,26 +49,34 @@ const LoanFee = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [filters, setFilters] = useState<FilterModel[]>([]);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
       archived: viewArchived,
+      filters,
     };
     dispatch(getLoanFee(pageNumber));
-  }, [dispatch, currentPage, viewArchived]);
-
+  }, [dispatch, currentPage, viewArchived, filters]);
 
   useEffect(() => {
     if (isSuccess) {
       const pageNumber = {
         page_number: currentPage,
         page_size: itemsPerPage,
-        archived: viewArchived 
+        archived: viewArchived,
       };
+      dispatch(resetSuccess());
       dispatch(getLoanFee(pageNumber));
     }
   }, [isSuccess, viewArchived, currentPage]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      handleClose();
+    }
+  }, [isSuccess]);
 
   const filter = () => {
     setFilterOpen(true);
@@ -147,11 +156,12 @@ const LoanFee = () => {
         page_number: currentPage,
         page_size: itemsPerPage,
         archived: viewArchived,
+        filters,
       };
       const res = await postCaller('update_loan_fee_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
-        setSelectAllChecked(false)
-        setSelectedRows(new Set())
+        setSelectAllChecked(false);
+        setSelectedRows(new Set());
         dispatch(getLoanFee(pageNumber));
         await successSwal('Archived', 'The data has been archived ');
       } else {
@@ -166,20 +176,9 @@ const LoanFee = () => {
     handleOpen();
   };
   const fetchFunction = (req: any) => {
-    dispatch(getLoanFee(req));
+    setCurrentPage(1);
+    setFilters(req.filters);
   };
-  if (isLoading) {
-    return (
-      <div className="loader-container">
-        {' '}
-        <Loading />{' '}
-      </div>
-    );
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
 
   return (
     <div className="comm">
@@ -192,12 +191,11 @@ const LoanFee = () => {
       <div className="commissionContainer">
         <TableHeader
           title="Loan Fee"
-          onPressViewArchive={() =>{ 
-            setViewArchived((prev) => !prev)
-            setSelectAllChecked(false)
-            setSelectedRows(new Set())
-            setCurrentPage(1)
-
+          onPressViewArchive={() => {
+            setViewArchived((prev) => !prev);
+            setSelectAllChecked(false);
+            setSelectedRows(new Set());
+            setCurrentPage(1);
           }}
           onPressArchive={() =>
             handleArchiveClick(
@@ -214,15 +212,16 @@ const LoanFee = () => {
           onpressExport={() => {}}
           onpressAddNew={() => handleTimeLineSla()}
         />
-        {filterOPen && (
-          <FilterModal
-            handleClose={filterClose}
-            columns={LoanFeesColumn}
-            page_number={currentPage}
-            fetchFunction={fetchFunction}
-            page_size={itemsPerPage}
-          />
-        )}
+
+        <FilterHoc
+          resetOnChange={viewArchived}
+          isOpen={filterOPen}
+          handleClose={filterClose}
+          columns={LoanFeesColumn}
+          fetchFunction={fetchFunction}
+          page_number={currentPage}
+          page_size={itemsPerPage}
+        />
         {open && (
           <CreatedLoanFee
             editMode={editMode}
@@ -264,66 +263,86 @@ const LoanFee = () => {
               </tr>
             </thead>
             <tbody>
-              {currentPageData?.length > 0
-                ? currentPageData?.map((el: ILoanRow, i: number) => (
-                    <tr
-                      key={el.record_id}
-                      className={selectedRows.has(i) ? 'selected' : ''}
-                    >
-                      <td style={{ fontWeight: '500', color: 'black' }}>
-                        <div className="flex-check">
-                          <CheckBox
-                            checked={selectedRows.has(i)}
-                            onChange={() =>
-                              toggleRowSelection(
-                                i,
-                                selectedRows,
-                                setSelectedRows,
-                                setSelectAllChecked
-                              )
-                            }
-                          />
-                          {el.dealer}
-                        </div>
-                      </td>
-                      <td>{el.installer}</td>
-                      <td>{el.state}</td>
-                      <td>{el.loan_type}</td>
-                      <td>{el.owe_cost}</td>
-                      <td>{el.dlr_mu}</td>
-                      <td>{el.dlr_cost}</td>
-                      <td>{el.start_date}</td>
-                      <td>{el.end_date}</td>
-                      <td>
-                        {!viewArchived && (
-                          <div className="action-icon">
-                            <div
-                              className=""
-                              style={{ cursor: 'pointer' }}
-                              onClick={() => handleArchiveClick([el.record_id])}
-                            >
-                              <img src={ICONS.ARCHIVE} alt="" />
-                            </div>
-                            <div
-                              className=""
-                              onClick={() => handleEditTimeLineSla(el)}
-                              style={{ cursor: 'pointer' }}
-                            >
-                              <img src={ICONS.editIcon} alt="" />
-                            </div>
+              {isLoading ? (
+                <tr>
+                  <td colSpan={LoanFeesColumn.length}>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <MicroLoader />
+                    </div>
+                  </td>
+                </tr>
+              ) : currentPageData?.length > 0 ? (
+                currentPageData?.map((el: ILoanRow, i: number) => (
+                  <tr
+                    key={el.record_id}
+                    className={selectedRows.has(i) ? 'selected' : ''}
+                  >
+                    <td style={{ fontWeight: '500', color: 'black' }}>
+                      <div className="flex-check">
+                        <CheckBox
+                          checked={selectedRows.has(i)}
+                          onChange={() =>
+                            toggleRowSelection(
+                              i,
+                              selectedRows,
+                              setSelectedRows,
+                              setSelectAllChecked
+                            )
+                          }
+                        />
+                        {el.dealer}
+                      </div>
+                    </td>
+                    <td>{el.installer}</td>
+                    <td>{el.state}</td>
+                    <td>{el.loan_type}</td>
+                    <td>{el.owe_cost}</td>
+                    <td>{el.dlr_mu}</td>
+                    <td>{el.dlr_cost}</td>
+                    <td>{el.start_date}</td>
+                    <td>{el.end_date}</td>
+                    <td>
+                      {!viewArchived && (
+                        <div className="action-icon">
+                          <div
+                            className=""
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => handleArchiveClick([el.record_id])}
+                          >
+                            <img src={ICONS.ARCHIVE} alt="" />
                           </div>
-                        )}
-                      </td>
-                    </tr>
-                  ))
-                : null}
+                          <div
+                            className=""
+                            onClick={() => handleEditTimeLineSla(el)}
+                            style={{ cursor: 'pointer' }}
+                          >
+                            <img src={ICONS.editIcon} alt="" />
+                          </div>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr style={{ border: 0 }}>
+                  <td colSpan={10}>
+                    <div className="data-not-found">
+                      <DataNotFound />
+                      <h2>Data Not Found</h2>
+                    </div>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
         <div className="page-heading-container">
-        {!!dbCount &&  <p className="page-heading">
-            {startIndex} - {endIndex>dbCount?dbCount:endIndex} of {dbCount} item
-          </p>}
+          {!!dbCount && (
+            <p className="page-heading">
+              {startIndex} - {endIndex > dbCount ? dbCount : endIndex} of{' '}
+              {dbCount} item
+            </p>
+          )}
           {timelinesla_list?.length > 0 ? (
             <Pagination
               currentPage={currentPage}

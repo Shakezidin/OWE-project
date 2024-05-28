@@ -120,10 +120,6 @@ const ArImport = () => {
   //     return <div>Loading...</div>;
   //   }
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
   return (
     <div className="comm">
       <Breadcrumb

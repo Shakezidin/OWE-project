@@ -17,11 +17,18 @@ import FilterModal from '../../../components/FilterModal/FilterModal';
 import { ROUTES } from '../../../../routes/routes';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
-import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
+import {
+  errorSwal,
+  showAlert,
+  successSwal,
+} from '../../../components/alert/ShowAlert';
 import Loading from '../../../components/loader/Loading';
-import { fetchRateAdjustments } from '../../../../redux/apiActions/RateAdjustmentsAction';
+import { fetchRateAdjustments } from '../../../../redux/apiActions/config/RateAdjustmentsAction';
 import DataNotFound from '../../../components/loader/DataNotFound';
-
+import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
+import MicroLoader from '../../../components/loader/MicroLoader';
+import FilterHoc from '../../../components/FilterModal/FilterHoc';
+import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/rateAdjustmentsSlice';
 const RateAdjustments = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -31,49 +38,58 @@ const RateAdjustments = () => {
 
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const { data } = useAppSelector((state) => state.rateAdjustment);
-  const loading = useAppSelector((state) => state.timelineSla.loading);
-  const error = useAppSelector((state) => state.timelineSla.error);
+  const { data, totalCount, isLoading, isSuccess } = useAppSelector(
+    (state) => state.rateAdjustment
+  );
+  const [refetch, setRefetch] = useState(1);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
   const [editedRateAdjustment, setEditedRateAdjustment] = useState(null);
   const itemsPerPage = 10;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
-  const currentPage = useAppSelector(
-    (state) => state.paginationType.currentPage
-  );
+  const [currentPage, setCurrentPage] = useState(1);
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [filters, setFilters] = useState<FilterModel[]>([]);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
       archived: viewArchived ? true : undefined,
+      filters,
     };
     dispatch(fetchRateAdjustments(pageNumber));
-  }, [dispatch, currentPage, viewArchived]);
+  }, [dispatch, currentPage, viewArchived, filters, refetch]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      handleClose();
+      setRefetch((prev) => prev + 1);
+      dispatch(resetSuccess());
+    }
+  }, [isSuccess]);
 
   const filter = () => {
     setFilterOpen(true);
   };
 
   const paginate = (pageNumber: number) => {
-    dispatch(setCurrentPage(pageNumber));
+    setCurrentPage(pageNumber);
   };
 
   const goToNextPage = () => {
-    dispatch(setCurrentPage(currentPage + 1));
+    setCurrentPage(currentPage + 1);
   };
 
   const goToPrevPage = () => {
-    dispatch(setCurrentPage(currentPage - 1));
+    setCurrentPage(currentPage - 1);
   };
-  const totalPages = Math.ceil(data?.length / itemsPerPage);
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentPageData = data?.slice(startIndex, endIndex);
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
+  const endIndex = startIndex * itemsPerPage;
+  const currentPageData = data?.slice();
 
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === data?.length;
@@ -116,24 +132,13 @@ const RateAdjustments = () => {
     // When toggling, reset the selected rows
     setSelectedRows(new Set());
     setSelectAllChecked(false);
+    setCurrentPage(1);
   };
 
   const fetchFunction = (req: any) => {
-    dispatch(
-      fetchRateAdjustments({
-        ...req,
-        page_number: currentPage,
-        page_size: itemsPerPage,
-      })
-    );
+    setCurrentPage(1);
+    setFilters(req.filters);
   };
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
 
   const handleEdit = (data: any) => {
     setEditMode(true);
@@ -150,7 +155,7 @@ const RateAdjustments = () => {
     );
     if (confirmed) {
       const archivedRows = Array.from(selectedRows).map(
-        (index) => data[index].record_id
+        (index) => currentPageData[index].record_id
       );
       if (archivedRows.length > 0) {
         const newValue = {
@@ -161,6 +166,7 @@ const RateAdjustments = () => {
         const pageNumber = {
           page_number: currentPage,
           page_size: itemsPerPage,
+          filters,
         };
 
         const res = await postCaller(
@@ -170,21 +176,17 @@ const RateAdjustments = () => {
         if (res.status === HTTP_STATUS.OK) {
           // If API call is successful, refetch commissions
           dispatch(fetchRateAdjustments(pageNumber));
-          const remainingSelectedRows = Array.from(selectedRows).filter(
-            (index) => !archivedRows.includes(data[index].record_id)
-          );
-          const isAnyRowSelected = remainingSelectedRows.length > 0;
-          setSelectAllChecked(isAnyRowSelected);
+          setSelectAllChecked(false);
           setSelectedRows(new Set());
           await successSwal('Archived', 'The data has been archived ');
         } else {
-          await successSwal('Archived', 'The data has been archived ');
+          await errorSwal('Failed', 'Something went wrong');
         }
       }
     }
   };
 
-  const handleArchiveClick = async (record_id: any) => {
+  const handleArchiveClick = async (record_id: number[]) => {
     const confirmed = await showAlert(
       'Are Your Sure',
       'This Action will archive your data',
@@ -201,17 +203,18 @@ const RateAdjustments = () => {
         page_number: currentPage,
         page_size: itemsPerPage,
         archive: viewArchived,
+        filters,
       };
       const res = await postCaller('update_rateadjustments_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
         dispatch(fetchRateAdjustments(pageNumber));
+        setSelectedRows(new Set());
         await successSwal('Archived', 'The data has been archived ');
       } else {
-        await successSwal('Archived', 'The data has been archived ');
+        await errorSwal('Failed', 'Something went wrong');
       }
     }
   };
-  console.log(data, 'data');
 
   return (
     <div className="comm">
@@ -234,15 +237,17 @@ const RateAdjustments = () => {
           onpressExport={() => {}}
           onpressAddNew={() => handleTimeLineSla()}
         />
-        {filterOPen && (
-          <FilterModal
-            handleClose={filterClose}
-            columns={RateAdjustmentsColumns}
-            page_number={currentPage}
-            fetchFunction={fetchFunction}
-            page_size={itemsPerPage}
-          />
-        )}
+
+        <FilterHoc
+          isOpen={filterOPen}
+          resetOnChange={viewArchived}
+          handleClose={filterClose}
+          columns={RateAdjustmentsColumns}
+          page_number={currentPage}
+          fetchFunction={fetchFunction}
+          page_size={itemsPerPage}
+        />
+
         {open && (
           <CreateRateAdjustments
             editMode={editMode}
@@ -287,7 +292,15 @@ const RateAdjustments = () => {
               </tr>
             </thead>
             <tbody>
-              {currentPageData?.length > 0 ? (
+              {isLoading ? (
+                <tr>
+                  <td colSpan={RateAdjustmentsColumns.length}>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <MicroLoader />
+                    </div>
+                  </td>
+                </tr>
+              ) : currentPageData?.length > 0 ? (
                 currentPageData?.map((el: any, i: any) => (
                   <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
@@ -303,20 +316,21 @@ const RateAdjustments = () => {
                             )
                           }
                         />
-                        {el.pay_scale}
+                        {el.unique_id}
                       </div>
                     </td>
+                    <td> {el.pay_scale}</td>
                     <td>{el.position}</td>
                     <td>{el.adjustment}</td>
                     <td>{el.min_rate}</td>
                     <td>{el.max_rate}</td>
-                    {viewArchived === true ? null : (
-                      <td>
+                    <td>
+                      {!viewArchived && selectedRows.size < 2 && (
                         <div className="action-icon">
                           <div
                             className=""
                             style={{ cursor: 'pointer' }}
-                            onClick={() => handleArchiveClick(el.RecordId)}
+                            onClick={() => handleArchiveClick([el.record_id])}
                           >
                             <img src={ICONS.ARCHIVE} alt="" />
                           </div>
@@ -328,8 +342,8 @@ const RateAdjustments = () => {
                             <img src={ICONS.editIcon} alt="" />
                           </div>
                         </div>
-                      </td>
-                    )}
+                      )}
+                    </td>
                   </tr>
                 ))
               ) : (
@@ -346,20 +360,23 @@ const RateAdjustments = () => {
           </table>
         </div>
         <div className="page-heading-container">
-          <p className="page-heading">
-            {currentPage} - {totalPages} of {currentPageData?.length} item
-          </p>
-
           {data?.length > 0 ? (
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages} // You need to calculate total pages
-              paginate={paginate}
-              currentPageData={currentPageData}
-              goToNextPage={goToNextPage}
-              goToPrevPage={goToPrevPage}
-              perPage={itemsPerPage}
-            />
+            <>
+              <p className="page-heading">
+                {startIndex} - {endIndex > totalCount ? totalCount : endIndex}{' '}
+                of {totalCount} item
+              </p>
+
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages} // You need to calculate total pages
+                paginate={paginate}
+                currentPageData={currentPageData}
+                goToNextPage={goToNextPage}
+                goToPrevPage={goToPrevPage}
+                perPage={itemsPerPage}
+              />
+            </>
           ) : null}
         </div>
       </div>

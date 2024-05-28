@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import {
   getarAdderData,
   IAdderRowData,
-} from '../../../../redux/apiActions/arAdderDataAction';
+} from '../../../../redux/apiActions/config/arAdderDataAction';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import Pagination from '../../../components/pagination/Pagination';
 import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
@@ -23,6 +23,9 @@ import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoin
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import MicroLoader from '../../../components/loader/MicroLoader';
+import FilterHoc from '../../../components/FilterModal/FilterHoc';
+import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
+import DataNotFound from '../../../components/loader/DataNotFound';
 const AdderData = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -44,15 +47,17 @@ const AdderData = () => {
   const [viewArchived, setViewArchived] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortKey, setSortKey] = useState('');
+  const [filters, setFilters] = useState<FilterModel[]>([]);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
       archived: viewArchived,
+      filters,
     };
     dispatch(getarAdderData({ ...pageNumber }));
-  }, [dispatch, currentPage, viewArchived, currentPage]);
+  }, [dispatch, currentPage, viewArchived, currentPage, filters]);
   const {
     data: commissionList,
     isLoading,
@@ -66,10 +71,11 @@ const AdderData = () => {
         page_number: currentPage,
         page_size: itemsPerPage,
         archived: viewArchived,
+        filters,
       };
       dispatch(getarAdderData({ ...pageNumber }));
     }
-  }, [isSuccess, currentPage, viewArchived]);
+  }, [isSuccess, currentPage, viewArchived, filters]);
 
   const filter = () => {
     setFilterOpen(true);
@@ -92,7 +98,7 @@ const AdderData = () => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
 
-  const currentPageData = commissionList?.slice(startIndex, endIndex);
+  const currentPageData = commissionList?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === commissionList?.length;
   const handleSort = (key: any) => {
@@ -136,7 +142,8 @@ const AdderData = () => {
     handleOpen();
   };
   const fetchFunction = (req: any) => {
-    dispatch(getarAdderData(req));
+    setCurrentPage(1);
+    setFilters(req.filters);
   };
 
   const handleArchiveClick = async (record_id: number[]) => {
@@ -156,6 +163,7 @@ const AdderData = () => {
         page_number: currentPage,
         page_size: itemsPerPage,
         archived: viewArchived,
+        filters,
       };
       const res = await postCaller('update_adderdata_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
@@ -168,10 +176,6 @@ const AdderData = () => {
       }
     }
   };
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
 
   // update_adderdata_archive
 
@@ -207,15 +211,16 @@ const AdderData = () => {
           onpressExport={() => {}}
           onpressAddNew={() => handleTimeLineSla()}
         />
-        {filterOPen && (
-          <FilterModal
-            handleClose={filterClose}
-            columns={AdderDataColumn}
-            page_number={currentPage}
-            fetchFunction={fetchFunction}
-            page_size={itemsPerPage}
-          />
-        )}
+
+        <FilterHoc
+          isOpen={filterOPen}
+          resetOnChange={viewArchived}
+          handleClose={filterClose}
+          columns={AdderDataColumn}
+          page_number={currentPage}
+          fetchFunction={fetchFunction}
+          page_size={itemsPerPage}
+        />
 
         {open && (
           <CreateArAdderData
@@ -297,26 +302,37 @@ const AdderData = () => {
                     <td>{el.sys_size}</td>
                     <td>{el.adder_cal}</td>
                     <td>
-                      <div className="action-icon">
-                        <div
-                          className=""
-                          style={{ cursor: 'pointer' }}
-                          onClick={() => handleArchiveClick([el.record_id])}
-                        >
-                          <img src={ICONS.ARCHIVE} alt="" />
+                      {!viewArchived && selectedRows.size < 2 && (
+                        <div className="action-icon">
+                          <div
+                            className=""
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => handleArchiveClick([el.record_id])}
+                          >
+                            <img src={ICONS.ARCHIVE} alt="" />
+                          </div>
+                          <div
+                            className=""
+                            onClick={() => handleEditTimeLineSla(el)}
+                            style={{ cursor: 'pointer' }}
+                          >
+                            <img src={ICONS.editIcon} alt="" />
+                          </div>
                         </div>
-                        <div
-                          className=""
-                          onClick={() => handleEditTimeLineSla(el)}
-                          style={{ cursor: 'pointer' }}
-                        >
-                          <img src={ICONS.editIcon} alt="" />
-                        </div>
-                      </div>
+                      )}
                     </td>
                   </tr>
                 ))
-              ) : null}
+              ) : (
+                <tr style={{ border: 0 }}>
+                  <td colSpan={AdderDataColumn.length}>
+                    <div className="data-not-found">
+                      <DataNotFound />
+                      <h3>Data Not Found</h3>
+                    </div>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

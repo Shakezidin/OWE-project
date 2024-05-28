@@ -1,5 +1,6 @@
 CREATE OR REPLACE FUNCTION create_new_user(
     p_name VARCHAR(255),
+    p_db_username VARCHAR(255),
     p_mobile_number VARCHAR(20),
     p_email_id VARCHAR(255),
     p_password VARCHAR(255),
@@ -118,6 +119,7 @@ BEGIN
         -- Insert a new user into user_details table
         INSERT INTO user_details (
             name,
+            db_username,
             user_code,
             mobile_number,
             email_id,
@@ -139,6 +141,7 @@ BEGIN
         )
         VALUES (
             p_name,
+            p_db_username,
             v_new_user_code,
             p_mobile_number,
             p_email_id,

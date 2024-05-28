@@ -25,14 +25,14 @@ export const TierLoanColumn: Column[] = [
   {
     name: 'owe_cost',
     displayName: 'OWE Cost',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
-  { name: 'dlr_mu', displayName: 'DLR MU', type: 'string', isCheckbox: false },
+  { name: 'dlr_mu', displayName: 'DLR MU', type: 'number', isCheckbox: false },
   {
     name: 'dlr_cost',
     displayName: 'DLR Cost',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
   {

@@ -67,7 +67,7 @@ func main() {
 		panic("Failed to load config from DB")
 	}
 
-	err = datamgmt.SaleData.LoadSaleData(nil)
+	err = datamgmt.SaleData.LoadSaleData("", "")
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get sale data from DB err: %+v", err)
 		panic("Failed to load sale data from DB")

@@ -58,17 +58,48 @@ func HandleCreatePaymentScheduleRequest(resp http.ResponseWriter, req *http.Requ
 
 	if ((len(createPaymentSchedule.Partner) <= 0) || len(createPaymentSchedule.PartnerName) <= 0) ||
 		(len(createPaymentSchedule.InstallerName) <= 0) || (len(createPaymentSchedule.SaleType) <= 0) ||
-		(len(createPaymentSchedule.State) <= 0) || (len(createPaymentSchedule.Rl) <= 0) ||
-		(len(createPaymentSchedule.Draw) <= 0) || (len(createPaymentSchedule.DrawMax) <= 0) ||
-		(len(createPaymentSchedule.RepDraw) <= 0) || (len(createPaymentSchedule.RepDrawMax) <= 0) ||
-		(len(createPaymentSchedule.RepPay) <= 0) || (len(createPaymentSchedule.StartDate) <= 0) ||
-		(len(createPaymentSchedule.EndDate) <= 0) {
+		(len(createPaymentSchedule.State) <= 0) || (len(createPaymentSchedule.RepPay) <= 0) ||
+		(len(createPaymentSchedule.StartDate) <= 0) || (len(createPaymentSchedule.EndDate) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
+	if createPaymentSchedule.Rl <= float64(0) {
+		err = fmt.Errorf("Invalid rate list Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid rate list Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+
+	if createPaymentSchedule.Draw <= float64(0) {
+		err = fmt.Errorf("Invalid draw percentage Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Draw Percentage Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+
+	if createPaymentSchedule.DrawMax <= float64(0) {
+		err = fmt.Errorf("Invalid draw max Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Draw Max Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+
+	if createPaymentSchedule.RepDraw <= float64(0) {
+		err = fmt.Errorf("Invalid Rep Draw Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Rep Draw Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
+
+	if createPaymentSchedule.RepDrawMax <= float64(0) {
+		err = fmt.Errorf("Invalid Rep Draw Max Not Allowed")
+		log.FuncErrorTrace(0, "%v", err)
+		FormAndSendHttpResp(resp, "Invalid Rep Draw Max Not Allowed", http.StatusBadRequest, nil)
+		return
+	}
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, createPaymentSchedule.Partner)
 	queryParameters = append(queryParameters, createPaymentSchedule.PartnerName)

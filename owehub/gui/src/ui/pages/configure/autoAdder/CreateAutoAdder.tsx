@@ -17,6 +17,10 @@ import { updateForm } from '../../../../redux/apiSlice/configSlice/config_post_s
 import { CommissionModel } from '../../../../core/models/configuration/create/CommissionModel';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import { addDays, format } from 'date-fns';
+import {
+  FormEvent,
+  FormInput,
+} from '../../../../core/models/data_models/typesModel';
 
 interface ButtonProps {
   editMode: boolean;
@@ -68,7 +72,7 @@ const CreateAutoAdder: React.FC<ButtonProps> = ({
       [fieldName]: newValue ? newValue.value : '',
     }));
   };
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
     setCreateCommission((prevData) => ({
       ...prevData,
@@ -79,7 +83,7 @@ const CreateAutoAdder: React.FC<ButtonProps> = ({
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
       dispatch(updateForm(createCommission));
@@ -230,9 +234,11 @@ const CreateAutoAdder: React.FC<ButtonProps> = ({
                       name="start_date"
                       placeholder={'1/04/2004'}
                       onChange={(e) => {
-                        handleInputChange(e)
-                        setCreateCommission(prev=>({...prev,end_date:""}))
-
+                        handleInputChange(e);
+                        setCreateCommission((prev) => ({
+                          ...prev,
+                          end_date: '',
+                        }));
                       }}
                     />
                   </div>
@@ -241,7 +247,13 @@ const CreateAutoAdder: React.FC<ButtonProps> = ({
                       type={'date'}
                       label="End Date"
                       value={createCommission.end_date}
-                      min={createCommission.start_date && format(addDays(new Date(createCommission.start_date),1),"yyyy-MM-dd")}
+                      min={
+                        createCommission.start_date &&
+                        format(
+                          addDays(new Date(createCommission.start_date), 1),
+                          'yyyy-MM-dd'
+                        )
+                      }
                       disabled={!createCommission.start_date}
                       name="end_date"
                       placeholder={'10/04/2004'}

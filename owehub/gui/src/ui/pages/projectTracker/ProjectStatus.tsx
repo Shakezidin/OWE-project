@@ -454,6 +454,7 @@ const ProjectStatus = () => {
     },
   ];
   const [activePopups, setActivePopups] = useState<boolean>(false);
+  const refBtn = useRef<null | HTMLDivElement>(null);
 
   const [selectedProject, setSelectedProject] = useState<{
     label: string;
@@ -463,7 +464,13 @@ const ProjectStatus = () => {
 
   const handleClickOutside = (e: MouseEvent) => {
     const elm = e.target as HTMLElement;
-    if (!elm.closest('.popup') && !elm.classList.contains('view-flex')) {
+    if (
+      refBtn?.current &&
+      (elm === refBtn?.current || refBtn?.current?.contains(elm))
+    ) {
+      return;
+    }
+    if (!elm.closest('.popup')) {
       setActivePopups(false);
     }
   };
@@ -558,6 +565,7 @@ const ProjectStatus = () => {
                 {el.viewButton ? (
                   <div
                     className="view-flex"
+                    ref={refBtn}
                     onClick={() => setActivePopups((prev) => !prev)}
                   >
                     <p>View</p>
@@ -702,15 +710,22 @@ const ProjectStatus = () => {
                                     width: '35px',
                                   }}
                                 >
-                                 {!(el.key &&
+                                  {!(
+                                    el.key &&
                                     projectDetail[
                                       el.key as keyof typeof projectDetail
-                                    ]) &&<span
-                                    className="date-para"
-                                    style={{ color: el.color, fontSize: '9px' }}
-                                  >
-                                    ETA
-                                  </span>}
+                                    ]
+                                  ) && (
+                                    <span
+                                      className="date-para"
+                                      style={{
+                                        color: el.color,
+                                        fontSize: '9px',
+                                      }}
+                                    >
+                                      ETA
+                                    </span>
+                                  )}
                                   <p
                                     style={{ color: el.color, fontSize: '9px' }}
                                   >

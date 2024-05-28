@@ -36,7 +36,7 @@ BEGIN
     END IF;
 
 EXCEPTION
-    WHEN OTHERS THEN
-        RAISE EXCEPTION 'Error updating record in reconcile: %', SQLERRM;
+    WHEN others THEN
+            RAISE EXCEPTION 'An error occurred: %', SQLERRM;
 END;
 $$ LANGUAGE plpgsql;

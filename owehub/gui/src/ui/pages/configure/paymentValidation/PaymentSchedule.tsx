@@ -21,6 +21,9 @@ import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoin
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import Swal from 'sweetalert2';
 import { ROUTES } from '../../../../routes/routes';
+import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
+import FilterHoc from '../../../components/FilterModal/FilterHoc';
+import MicroLoader from '../../../components/loader/MicroLoader';
 
 const PaymentSchedule = () => {
   const dispatch = useAppDispatch();
@@ -34,8 +37,7 @@ const PaymentSchedule = () => {
   const payScheduleList = useAppSelector(
     (state) => state.paySchedule.payment_schedule_list
   );
-  const loading = useAppSelector((state) => state.paySchedule.loading);
-  const error = useAppSelector((state) => state.paySchedule.error);
+  const { loading, totalCount } = useAppSelector((state) => state.paySchedule);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
@@ -43,9 +45,9 @@ const PaymentSchedule = () => {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const itemsPerPage = 10;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
-  const currentPage = useAppSelector(
-    (state) => state.paginationType.currentPage
-  );
+  const [currentPage, setCurrentPage] = useState(1);
+  const [filters, setFilters] = useState<FilterModel[]>([]);
+  const [refetch, setRefetch] = useState(1);
   const [editedPaySchedule, setEditedPaySchedule] =
     useState<PayScheduleModel | null>(null);
   useEffect(() => {
@@ -53,24 +55,25 @@ const PaymentSchedule = () => {
       page_number: currentPage,
       page_size: itemsPerPage,
       archived: viewArchived ? true : undefined,
+      filters,
     };
     dispatch(fetchPaySchedule(pageNumber));
-  }, [dispatch, currentPage, viewArchived]);
+  }, [dispatch, currentPage, viewArchived, refetch,filters]);
   // Extract column names
 
   const filter = () => {
     setFilterOpen(true);
   };
   const paginate = (pageNumber: number) => {
-    dispatch(setCurrentPage(pageNumber));
+    setCurrentPage(pageNumber);
   };
 
   const goToNextPage = () => {
-    dispatch(setCurrentPage(currentPage + 1));
+    setCurrentPage(currentPage + 1);
   };
 
   const goToPrevPage = () => {
-    dispatch(setCurrentPage(currentPage - 1));
+    setCurrentPage(currentPage - 1);
   };
 
   const handleAddPaySchedule = () => {
@@ -84,11 +87,11 @@ const PaymentSchedule = () => {
     setEditedPaySchedule(payEditedData);
     handleOpen();
   };
-  const totalPages = Math.ceil(payScheduleList?.length / itemsPerPage);
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentPageData = payScheduleList?.slice(startIndex, endIndex);
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
+  const endIndex = startIndex * itemsPerPage;
+  const currentPageData = payScheduleList?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === payScheduleList.length;
   const handleSort = (key: any) => {
@@ -143,6 +146,7 @@ const PaymentSchedule = () => {
         const pageNumber = {
           page_number: currentPage,
           page_size: itemsPerPage,
+          filters,
         };
 
         const res = await postCaller(
@@ -152,11 +156,8 @@ const PaymentSchedule = () => {
         if (res.status === HTTP_STATUS.OK) {
           // If API call is successful, refetch commissions
           dispatch(fetchPaySchedule(pageNumber));
-          const remainingSelectedRows = Array.from(selectedRows).filter(
-            (index) => !archivedRows.includes(payScheduleList[index].record_id)
-          );
-          const isAnyRowSelected = remainingSelectedRows.length > 0;
-          setSelectAllChecked(isAnyRowSelected);
+
+          setSelectAllChecked(false);
           setSelectedRows(new Set());
           Swal.fire({
             title: 'Archived!',
@@ -186,6 +187,7 @@ const PaymentSchedule = () => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
+      filters,
     };
     const res = await postCaller(
       EndPoints.update_paymentschedule_archive,
@@ -193,6 +195,8 @@ const PaymentSchedule = () => {
     );
     if (res.status === HTTP_STATUS.OK) {
       dispatch(fetchPaySchedule(pageNumber));
+      setSelectedRows(new Set());
+      setSelectAllChecked(false);
     }
   };
 
@@ -200,25 +204,13 @@ const PaymentSchedule = () => {
     setViewArchived(!viewArchived);
     // When toggling, reset the selected rows
     setSelectedRows(new Set());
+    setCurrentPage(1);
     setSelectAllChecked(false);
   };
   const fetchFunction = (req: any) => {
-    dispatch(fetchPaySchedule(req));
+    setCurrentPage(1);
+    setFilters(req.filters);
   };
-  if (error) {
-    return (
-      <div className="loader-container">
-        <Loading />
-      </div>
-    );
-  }
-  if (loading) {
-    return (
-      <div className="loader-container">
-        <Loading /> {loading}
-      </div>
-    );
-  }
 
   return (
     <div className="comm">
@@ -226,11 +218,11 @@ const PaymentSchedule = () => {
         head="Commission"
         linkPara="Configure"
         route={ROUTES.CONFIG_PAGE}
-        linkparaSecond="Payment Scheduler"
+        linkparaSecond="Payment Schedule"
       />
       <div className="commissionContainer">
         <TableHeader
-          title="Payment Scheduler"
+          title="Payment Schedule"
           onPressViewArchive={() => handleViewArchiveToggle()}
           onPressArchive={() => handleArchiveAllClick()}
           viewArchive={viewArchived}
@@ -241,18 +233,21 @@ const PaymentSchedule = () => {
           onpressExport={() => {}}
           onpressAddNew={() => handleAddPaySchedule()}
         />
-        {filterOPen && (
-          <FilterModal
-            fetchFunction={fetchFunction}
-            handleClose={filterClose}
-            columns={PayScheduleColumns}
-            page_number={currentPage}
-            page_size={itemsPerPage}
-          />
-        )}
+
+        <FilterHoc
+          isOpen={filterOPen}
+          resetOnChange={viewArchived}
+          fetchFunction={fetchFunction}
+          handleClose={filterClose}
+          columns={PayScheduleColumns}
+          page_number={currentPage}
+          page_size={itemsPerPage}
+        />
+
         {open && (
           <CreatePaymentSchedule
             editMode={editMode}
+            setRefetch={setRefetch}
             payEditedData={editedPaySchedule}
             handleClose={handleClose}
           />
@@ -293,7 +288,15 @@ const PaymentSchedule = () => {
               </tr>
             </thead>
             <tbody>
-              {currentPageData?.length > 0 ? (
+              {loading ? (
+                <tr>
+                  <td colSpan={PayScheduleColumns.length}>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <MicroLoader />
+                    </div>
+                  </td>
+                </tr>
+              ) : currentPageData?.length > 0 ? (
                 currentPageData?.map((el: any, i: any) => (
                   <tr key={i}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
@@ -309,10 +312,11 @@ const PaymentSchedule = () => {
                             )
                           }
                         />
-                        {el.partner_name}
+                       {el.partner} 
+                       
                       </div>
                     </td>
-                    <td>{el.partner}</td>
+                    <td> {el.partner_name}</td>
                     <td>{el.installer_name}</td>
                     <td>{el.sale_type}</td>
                     <td>{el.state}</td>
@@ -324,7 +328,7 @@ const PaymentSchedule = () => {
                     <td>{el.rep_pay}</td>
                     <td>{el.start_date}</td>
                     <td>{el.end_date}</td>
-                    {viewArchived === true ? null : (
+                    {!viewArchived && selectedRows.size < 2 && (
                       <td>
                         <div className="action-icon">
                           <div
@@ -364,7 +368,8 @@ const PaymentSchedule = () => {
         {payScheduleList?.length > 0 ? (
           <div className="page-heading-container">
             <p className="page-heading">
-              {currentPage} - {totalPages} of {currentPageData?.length} item
+              {currentPage} - {endIndex > totalCount ? totalCount : endIndex} of{' '}
+              {totalCount} item
             </p>
 
             <Pagination
