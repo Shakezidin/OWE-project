@@ -44,7 +44,7 @@ export const createRepaySettings = createAsyncThunk(
       if (data instanceof Error) {
         return rejectWithValue((data as Error).message);
       }
-      await dispatch(fetchRepaySettings({ page_number: 1, page_size: 10 }));
+      
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -57,7 +57,7 @@ export const updateRepaySettings = createAsyncThunk(
   async (param: any, { rejectWithValue, dispatch }) => {
     try {
       const data = await postCaller('update_rep_pay_settings', param);
-      await dispatch(fetchRepaySettings({ page_number: 1, page_size: 10 }));
+      
       return data.data;
     } catch (error) {
       return rejectWithValue((error as Error).message);

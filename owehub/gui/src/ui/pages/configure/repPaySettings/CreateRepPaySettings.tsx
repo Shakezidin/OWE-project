@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { ReactComponent as CROSS_BUTTON } from '../../../../resources/assets/cross_button.svg';
 import Input from '../../../components/text_input/Input';
 import { ActionButton } from '../../../components/button/ActionButton';
@@ -30,12 +30,14 @@ interface createRepPayProps {
   handleClose: () => void;
   editMode: boolean;
   editData: RepayEditParams | null;
+  setRefetch:Dispatch<SetStateAction<number>>
 }
 
 const CreateRepPaySettings: React.FC<createRepPayProps> = ({
   handleClose,
   editMode,
   editData,
+  setRefetch
 }) => {
   const dispatch = useAppDispatch();
   const { isSuccess } = useAppSelector((state) => state.repaySettings);
@@ -125,11 +127,11 @@ const CreateRepPaySettings: React.FC<createRepPayProps> = ({
   useEffect(() => {
     if (isSuccess) {
       handleClose();
+      setRefetch(prev=>prev+1)
+      dispatch(resetSuccess());
     }
 
-    return () => {
-      isSuccess && dispatch(resetSuccess());
-    };
+   
   }, [isSuccess]);
   return (
     <div className="transparent-model">
@@ -202,7 +204,7 @@ const CreateRepPaySettings: React.FC<createRepPayProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={'date'}
-                    label="Start"
+                    label="Start Date"
                     value={createRePayData.start_date}
                     name="start_date"
                     placeholder={'Enter'}
@@ -215,7 +217,7 @@ const CreateRepPaySettings: React.FC<createRepPayProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={'date'}
-                    label="End"
+                    label="End Date"
                     value={createRePayData.end_date}
                     name="end_date"
                     min={createRePayData.start_date && format(addDays(new Date(createRePayData.start_date),1),"yyyy-MM-dd") }

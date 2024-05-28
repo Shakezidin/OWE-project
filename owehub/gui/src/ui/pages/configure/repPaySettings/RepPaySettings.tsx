@@ -23,6 +23,7 @@ import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
 import Loading from '../../../components/loader/Loading';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
+import FilterHoc from '../../../components/FilterModal/FilterHoc';
 
 const RepPaySettings = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -42,26 +43,27 @@ const RepPaySettings = () => {
     useState<RepayEditParams | null>(null);
   const itemsPerPage = 10;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
-  const [currentPage,setCurrentPage] = useState(1)
+  const [currentPage, setCurrentPage] = useState(1);
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
-  const [filters, setFilters] = useState<FilterModel[]>([])
+  const [filters, setFilters] = useState<FilterModel[]>([]);
+  const [refetch,setRefetch] = useState(1)
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
       archived: viewArchived ? true : undefined,
-      filters
+      filters,
     };
     dispatch(fetchRepaySettings(pageNumber));
-  }, [dispatch, currentPage, viewArchived,filters]);
+  }, [dispatch, currentPage, viewArchived, filters,refetch]);
 
   const filter = () => {
     setFilterOpen(true);
   };
 
   const paginate = (pageNumber: number) => {
-    setCurrentPage(pageNumber)
+    setCurrentPage(pageNumber);
   };
 
   const { repPaySettingsList, loading, dbCount } = useAppSelector(
@@ -69,11 +71,11 @@ const RepPaySettings = () => {
   );
 
   const goToNextPage = () => {
-    setCurrentPage(currentPage + 1)
+    setCurrentPage(currentPage + 1);
   };
 
   const goToPrevPage = () => {
-    setCurrentPage(currentPage - 1)
+    setCurrentPage(currentPage - 1);
   };
   const totalPages = Math.ceil(dbCount / itemsPerPage);
 
@@ -101,7 +103,7 @@ const RepPaySettings = () => {
   const handleViewArchiveToggle = () => {
     setViewArchived(!viewArchived);
     setSelectedRows(new Set());
-    setCurrentPage(1)
+    setCurrentPage(1);
     setSelectAllChecked(false);
   };
 
@@ -112,8 +114,8 @@ const RepPaySettings = () => {
   };
 
   const fetchFunction = (req: any) => {
-    setCurrentPage(1)
-    setFilters(req.filters)
+    setCurrentPage(1);
+    setFilters(req.filters);
   };
   const handleArchiveAllClick = async () => {
     const confirmed = await showAlert(
@@ -124,7 +126,7 @@ const RepPaySettings = () => {
     );
     if (confirmed) {
       const archivedRows = Array.from(selectedRows).map(
-        (index) => repPaySettingsList[index].RecordId
+        (index) => currentPageData[index].RecordId
       );
       if (archivedRows.length > 0) {
         const newValue = {
@@ -135,6 +137,7 @@ const RepPaySettings = () => {
         const pageNumber = {
           page_number: currentPage,
           page_size: itemsPerPage,
+          filters,
         };
 
         const res = await postCaller(
@@ -169,13 +172,13 @@ const RepPaySettings = () => {
       const pageNumber = {
         page_number: currentPage,
         page_size: itemsPerPage,
-        filters
+        filters,
       };
       const res = await postCaller('update_rep_pay_settings_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
         dispatch(fetchRepaySettings(pageNumber));
-        setSelectedRows(new Set())
-        setSelectAllChecked(false)
+        setSelectedRows(new Set());
+        setSelectAllChecked(false);
         await successSwal('Archived', 'The data has been archived ');
       } else {
         await successSwal('Archived', 'The data has been archived ');
@@ -204,20 +207,23 @@ const RepPaySettings = () => {
           onpressExport={() => {}}
           onpressAddNew={() => handleRepPaySettings()}
         />
-        {filterOPen && (
-          <FilterModal
-            handleClose={filterClose}
-            columns={RepPaySettingsColumns}
-            page_number={currentPage}
-            fetchFunction={fetchFunction}
-            page_size={itemsPerPage}
-          />
-        )}
+
+        <FilterHoc
+          isOpen={filterOPen}
+          resetOnChange={viewArchived}
+          handleClose={filterClose}
+          columns={RepPaySettingsColumns}
+          page_number={currentPage}
+          fetchFunction={fetchFunction}
+          page_size={itemsPerPage}
+        />
+
         {open && (
           <CreateRepPaySettings
             editMode={editMode}
             handleClose={handleClose}
             editData={editedRepPaySettings}
+            setRefetch={setRefetch}
           />
         )}
         <div
