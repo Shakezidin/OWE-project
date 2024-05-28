@@ -48,12 +48,12 @@ func HandleGetPerfomanceSalesRequest(resp http.ResponseWriter, req *http.Request
 	perfomanceData.PerfomanceCommissionMetrics.SalesPeriod = 0
 
 	query = `
-	SELECT SUM(system_size) AS sales_kw, COUNT(system_size) AS sales  FROM sales_metrics_schema`
+	SELECT SUM(system_size) AS sales_kw, COUNT(system_size) AS sales  FROM consolidated_data_view`
 
 	tableName := db.ViewName_ConsolidatedDataView
 	dataReq.Email = req.Context().Value("emailid").(string)
 	if dataReq.Email == "" {
-		FormAndSendHttpResp(resp, "No user exist in DB 1", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "No user exist in DB", http.StatusBadRequest, nil)
 		return
 	}
 

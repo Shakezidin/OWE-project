@@ -76,10 +76,10 @@ func main() {
 	/* Perform Initial AR Calcualtion*/
 	go arCalc.ExecArInitialCalculation(arCalcResult)
 
-	/* Perform Initial AR Calcualtion*/
+	/* Perform Initial DLR PAY Calcualtion*/
 	go dlrPayCalc.ExecDlrPayInitialCalculation(dlrPayResult)
 
-	/* Perform Initial AR Calcualtion*/
+	/* Perform Initial REP PAY Calcualtion*/
 	go repPayCalc.ExecRepPayInitialCalculation(repPayResult)
 
 	repPayRs := <-repPayResult

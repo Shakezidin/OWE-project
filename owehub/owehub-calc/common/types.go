@@ -23,5 +23,6 @@ const (
 )
 
 var (
-	Wc1FilterDate time.Time = time.Date(2021, time.April, 1, 0, 0, 0, 0, time.UTC)
+	ARWc1FilterDate     time.Time = time.Date(2021, time.April, 1, 0, 0, 0, 0, time.UTC)
+	DlrPayWc1FilterDate time.Time = time.Date(2021, time.July, 1, 0, 0, 0, 0, time.UTC)
 )
