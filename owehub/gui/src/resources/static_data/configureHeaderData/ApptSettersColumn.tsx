@@ -18,8 +18,8 @@ export const ApptSettersColumn: Column[] = [
   {
     name: 'start_date',
     displayName: 'Start Date',
-    type: 'data',
+    type: 'date',
     isCheckbox: false,
   },
-  { name: 'end_date', displayName: 'End Date', type: 'data', isCheckbox: false },
+  { name: 'end_date', displayName: 'End Date', type: 'date', isCheckbox: false },
 ];
