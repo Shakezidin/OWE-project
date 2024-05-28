@@ -80,9 +80,9 @@ const DbManagerDashboard = () => {
     { value: 'all', label: 'All' },
   ];
   const options1 = [
-    { value: 'today', label: 'Table1 Data' },
-    { value: 'this_week', label: 'Table2 Data' },
-    { value: 'all', label: 'Table3 Data' },
+    { value: 'today', label: 'Table 1 Data' },
+    { value: 'this_week', label: 'Table 2 Data' },
+    { value: 'all', label: 'Table 3 Data' },
   ];
 
   if (loading) {

@@ -323,7 +323,7 @@ const DashBoardTable: React.FC = () => {
                 </th>
                 <th>
                   <div className="table-header">
-                    <p>Sys. Size</p>{' '}
+                    <p>Sys Size</p>{' '}
                     <FaArrowDown style={{ color: '#667085' }} />
                   </div>
                 </th>

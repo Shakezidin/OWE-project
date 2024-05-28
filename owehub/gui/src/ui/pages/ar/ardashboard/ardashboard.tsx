@@ -41,7 +41,7 @@ export const ARDashboardPage: React.FC = () => {
     { value: 'N/A', label: 'N/A' },
   ];
   const options3 = [
-    { value: 'Select', label: 'Select' },
+    { value: 'All', label: 'All' },
     { value: 'Partner', label: 'Partner' },
     { value: 'Installer', label: 'Installer' },
     { value: 'Type', label: 'Type' },
