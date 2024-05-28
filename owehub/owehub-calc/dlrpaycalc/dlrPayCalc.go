@@ -41,6 +41,7 @@ func ExecDlrPayInitialCalculation(resultChan chan string) {
 			continue
 		}
 		if err != nil || dlrPayData == nil {
+			
 			if len(saleData.UniqueId) <= 0 {
 				log.FuncErrorTrace(0, "Failed to calculate DLR Pay Data for unique id : %+v err: %+v", saleData.UniqueId, err)
 			} else {
@@ -68,18 +69,18 @@ func ExecDlrPayInitialCalculation(resultChan chan string) {
 *****************************************************************************/
 func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[string]interface{}, err error) {
 	var (
-		uniqueId           string    // g
-		rep_1              string    // m
-		rep_2              string    // n
-		SysSize            float64   // p
-		contract           float64   // r
-		wc                 time.Time // u
-		ntp                time.Time // w
-		permSub            time.Time // x
-		hand               bool      // ab -- doubt
-		cancel             time.Time // ac
-		instSys            time.Time // ad
-		pto                time.Time // ag
+		// uniqueId           string    // g
+		rep_1   string  // m
+		rep_2   string  // n
+		SysSize float64 // p
+		// contract           float64   // r
+		// wc                 time.Time // u
+		// ntp                time.Time // w
+		// permSub            time.Time // x
+		// hand               bool      // ab -- doubt
+		// cancel             time.Time // ac
+		// instSys            time.Time // ad
+		// pto                time.Time // ag
 		payRateSubTotal    float64   // verify the column number
 		status             string    // aj
 		statusDate         time.Time // ak
@@ -182,9 +183,9 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 
 	status = saleData.ProjectStatus
 	dealer = saleData.Dealer
-	contract = saleData.ContractTotal
+	// contract = saleData.ContractTotal
 	SysSize = saleData.SystemSize
-	uniqueId = saleData.UniqueId
+	// uniqueId = saleData.UniqueId
 	rep_1 = saleData.PrimarySalesRep
 	rep_2 = saleData.SecondarySalesRep
 
@@ -206,8 +207,8 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	rl = dataMgmt.PayScheduleCfg.CalculateRL(saleData.Dealer, saleData.Partner, saleData.Installer, saleData.LoanType, saleData.State, saleData.WC1.Format("2006-01-02"))
 	log.FuncFuncTrace(0, "rl ->  %v", rl)
 
-	// credit = dataMgmt.PayScheduleCfg.CalculateCreaditForUniqueId(saleData.Dealer, saleData.UniqueId)
-	// log.FuncFuncTrace(0, "credit ->  %v", credit)
+	credit = dataMgmt.DealerCreditCfg.CalculateCreaditForUniqueId(saleData.Dealer, saleData.UniqueId)
+	log.FuncFuncTrace(0, "credit ->  %v", credit)
 
 	repPay = dataMgmt.ApRepCfg.CalculateApRepForUniqueId(dealer, saleData.UniqueId)
 	log.FuncFuncTrace(0, "repPay ->  %v", repPay)
@@ -261,7 +262,7 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	log.FuncFuncTrace(0, "commTotal ->  %v", commTotal)
 
 	// status = CalculateStatus(uniqueId, hand, pto, instSys, cancel, ntp, permSub, wc)
-	// log.FuncFuncTrace(0, "status ->  %v", status)                  
+	// log.FuncFuncTrace(0, "status ->  %v", status)
 
 	statusCheck = calculateStatusCheck(dealer, status, expense, commTotal, credit, repPay)
 	log.FuncFuncTrace(0, "statusCheck ->  %v", statusCheck)
@@ -273,7 +274,7 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	log.FuncFuncTrace(0, "overdTotal ->  %v", overdTotal)
 
 	DlrDrawPerc = dataMgmt.PayScheduleCfg.CalculateDlrDrawPerc(saleData.Dealer, saleData.Partner, saleData.Installer, saleData.LoanType, saleData.State, saleData.StartDate.Format("2006-01-02"), saleData.EndDate.Format("2006-01-02"), saleData.WC1.Format("2006-01-02"))
-	log.FuncFuncTrace(0, "DlrDrawPerc ->  %v", DlrDrawPerc) // converted string to float in CalculateDlrDrawPerc 
+	log.FuncFuncTrace(0, "DlrDrawPerc ->  %v", DlrDrawPerc) // converted string to float in CalculateDlrDrawPerc
 
 	r1DrawAmt = CalculateR1DrawAmt(statusCheck, DlrDrawMax, DlrDrawPerc) // DlrDrawMax
 	log.FuncFuncTrace(0, "r1DrawAmt ->  %v", r1DrawAmt)
@@ -304,7 +305,7 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 
 	perTeamSales = calculatePerTeamSales(rep1Team, rep2Team, credit, repPay)
 	log.FuncFuncTrace(0, "perTeamSales ->  %v", perTeamSales)
-	
+
 	perTeamKw = calculatePerTeamKw(rep1Team, rep2Team, credit, repPay, SysSize)
 	log.FuncFuncTrace(0, "perTeamKw ->  %v", perTeamKw)
 
@@ -324,11 +325,11 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	log.FuncFuncTrace(0, "r1AdderPerKw ->  %v", r1AdderPerKw)
 
 	r1PayRateSubTotal = calculateRPayRateSubTotal(rep_1, dealerPaymentBonus, r1DrawAmt) // dealerPaymentBonus
-	log.FuncFuncTrace(0, "r1PayRateSubTotal ->  %v", r1PayRateSubTotal) 
-	
+	log.FuncFuncTrace(0, "r1PayRateSubTotal ->  %v", r1PayRateSubTotal)
+
 	r1NetEpc = calculateRNetEpc(epcCalc, overdTotal, overdTotal, overdTotal, rl, SysSize) // verify eq
 	log.FuncFuncTrace(0, "r1NetEpc ->  %v", r1NetEpc)
-	
+
 	r1MinmaxCorrect = calculateRminmaxCorrect(rep_1, r1DrawPaid, adderPerKw, payRateSubTotal) // verify eq, r1DrawPaid
 	log.FuncFuncTrace(0, "r1MinmaxCorrect ->  %v", r1MinmaxCorrect)
 
@@ -342,32 +343,31 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	log.FuncFuncTrace(0, "r2Name ->  %v", r2Name)
 
 	r2PayRateSemi = calculateR2PayRateSemi(rep_1, repCount, perRepSales, perRepkW, epcCalc, 0.0) // verify eq, dlrdba is string, but adding
-	log.FuncFuncTrace(0, "r2PayRateSemi ->  %v", r2PayRateSemi) //  problem mention in sheet
+	log.FuncFuncTrace(0, "r2PayRateSemi ->  %v", r2PayRateSemi)                                  //  problem mention in sheet
 
 	r2Rr = calculateRRR(rep_2, DlrDrawPerc, DlrDrawPerc) // verify eq
 	log.FuncFuncTrace(0, "r2Rr ->  %v", r2Rr)
-	
+
 	r2AdderTotal = calculateRAdderTotal(rep_2, teamCount, perTeamSales, perTeamKw, perTeamKw, perTeamKw) // verify eq
 	log.FuncFuncTrace(0, "r2AdderTotal ->  %v", r2AdderTotal)
-	
+
 	r2AdderPerKw = calculateRAdderPerKw(rep_2, r1PayScale, epcCalc) // r1PayScale verify eq
 	log.FuncFuncTrace(0, "r2AdderPerKw ->  %v", r2AdderPerKw)
-	
+
 	r2PayRateSubTotal = calculateRPayRateSubTotal(rep_2, position, position) // verify eq
 	log.FuncFuncTrace(0, "r2PayRateSubTotal ->  %v", r2PayRateSubTotal)
-	
+
 	r2NetEpc = calculateRNetEpc(ovrdBalance, r1PayScale, r1PayScale, perTeamKw, rl, SysSize) // verify eq, r1PayScale
 	log.FuncFuncTrace(0, "r2NetEpc ->  %v", r2NetEpc)
-	
+
 	r2MinmaxCorrect = calculateRminmaxCorrect(rep_2, rl, contractCalc, contractCalc) // veridy eq
 	log.FuncFuncTrace(0, "r2MinmaxCorrect ->  %v", r2MinmaxCorrect)
 
 	r2CommTotal = calculateRCommTotal(rep_2, epcCalc, epcCalc, loanFee2) // verify eq
 	log.FuncFuncTrace(0, "r2CommTotal ->  %v", r2CommTotal)
-	
+
 	r2CommStatusCheck = calculateRStatusCommCheck(rep_2, status, contractCalc) // verify eq
 	log.FuncFuncTrace(0, "r2CommStatusCheck ->  %v", r2CommStatusCheck)
-
 
 	log.FuncFuncTrace(0, "===================================================================================")
 	log.FuncFuncTrace(0, "===================================================================================")
@@ -402,6 +402,8 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	outData["status_check"] = statusCheck
 
 	// this is for 2nd sheet
+	DlrDrawMax = 0.0
+	r1Balance = 0.0
 	outData["dlr_draw_max"] = DlrDrawMax // nocal
 	outData["r1_draw_amt"] = r1DrawAmt
 	outData["amt_check"] = amtCheck
@@ -414,7 +416,6 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	outData["per_rep_kw"] = perRepkW
 	outData["contract_calc"] = contractCalc
 	outData["epc_calc"] = epcCalc
-	outData["rl"] = rl
 	outData["pay_rate_semi"] = payRateSemi
 	outData["expence"] = expense
 	outData["loan_fee"] = loanFee
