@@ -320,7 +320,7 @@ var apiRoutes = ApiRoutes{
 		"/owe-commisions-service/v1/get_newformdata",
 		apiHandler.HandleGetNewFormDataRequest,
 		true,
-		[]types.UserGroup{types.GroupAdmin},
+		[]types.UserGroup{types.GroupEveryOne},
 	},
 	{
 		strings.ToUpper("POST"),
