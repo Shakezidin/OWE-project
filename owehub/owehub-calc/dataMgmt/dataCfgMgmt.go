@@ -38,5 +38,6 @@ func LoadConfigurations() (err error) {
 		return err
 	}
 
+	log.FuncErrorTrace(0, "===== adder data : %+v", AdderDataCfg.AdderDataList.AdderDataList)
 	return err
 }

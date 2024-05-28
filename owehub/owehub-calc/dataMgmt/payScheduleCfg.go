@@ -196,7 +196,7 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateRL(dealer, partner, install
 * RETURNS:         drawPerc
 *****************************************************************************/
 
-func (PayScheduleCfg *PayScheduleCfgStruct) CalculateDlrDrawPerc(dealer, partner, installer, loanType, state, startDate, endDate, wc string) (drawPerc string) {
+func (PayScheduleCfg *PayScheduleCfgStruct) CalculateDlrDrawPerc(dealer, partner, installer, loanType, state, startDate, endDate, wc string) (drawPerc float64) {
 
 	log.EnterFn(0, "CalculateDlrDrawPerc")
 	defer func() { log.ExitFn(0, "CalculateDlrDrawPerc", nil) }()
@@ -204,7 +204,7 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateDlrDrawPerc(dealer, partner
 	if len(dealer) > 0 {
 		for _, data := range PayScheduleCfg.PayScheduleList.PaymentScheduleList {
 			if data.Partner == dealer && data.PartnerName == partner && data.InstallerName == installer && data.SaleType == loanType && data.State == state && data.StartDate <= wc && data.EndDate >= wc {
-				drawPerc = data.Draw
+				drawPerc, _ = strconv.ParseFloat(data.Draw, 64)
 			}
 		}
 	}
