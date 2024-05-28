@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { ReactComponent as CROSS_BUTTON } from '../../../../resources/assets/cross_button.svg';
 import Input from '../../../components/text_input/Input';
 import { ActionButton } from '../../../components/button/ActionButton';
@@ -31,6 +31,7 @@ interface ButtonProps {
   editMode: boolean;
   handleClose: () => void;
   commission: INonCommRowDLR | null;
+  setRefetch:Dispatch<SetStateAction<number>>
 }
 
 interface IError {
@@ -41,6 +42,7 @@ const CreateNonComm: React.FC<ButtonProps> = ({
   handleClose,
   commission,
   editMode,
+  setRefetch
 }) => {
   const dispatch = useAppDispatch();
   const { isSuccess } = useAppSelector((state) => state.nonComm);
@@ -167,6 +169,7 @@ const CreateNonComm: React.FC<ButtonProps> = ({
     if (isSuccess) {
       handleClose();
       dispatch(resetSuccess());
+      setRefetch(prev=>prev+1)
     }
   }, [isSuccess]);
   return (

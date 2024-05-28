@@ -49,9 +49,7 @@ export const createNonComm = createAsyncThunk(
       if (data instanceof Error || data.status > 201) {
         return rejectWithValue((data as Error).message);
       }
-      await dispatch(
-        getNonComm({ page_number: 1, page_size: 10, archived: false })
-      );
+      
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -67,9 +65,7 @@ export const updateNoncom = createAsyncThunk(
       if (data instanceof Error || data.status > 201) {
         return rejectWithValue((data as Error).message);
       }
-      await dispatch(
-        getNonComm({ page_number: 1, page_size: 10, archived: false })
-      );
+    
       return data;
     } catch (error) {
       return rejectWithValue((error as Error).message);

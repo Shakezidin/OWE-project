@@ -218,11 +218,11 @@ const AdderResponsibility = () => {
         head=""
         linkPara="Configure"
         route={ROUTES.CONFIG_PAGE}
-        linkparaSecond="Adder Responsibilty"
+        linkparaSecond="Adder Responsibility"
       />
       <div className="commissionContainer">
         <TableHeader
-          title="Adder Responsibilty"
+          title="Adder Responsibility"
           onPressViewArchive={() => handleViewArchiveToggle()}
           onPressArchive={() => handleArchiveAllClick()}
           onPressFilter={() => filter()}

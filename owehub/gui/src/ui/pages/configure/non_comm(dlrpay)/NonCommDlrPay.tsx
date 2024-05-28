@@ -58,6 +58,7 @@ const NonCommDlrPay: React.FC = () => {
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [filters, setFilters] = useState<FilterModel[]>([]);
+  const [refetch, setRefetch] = useState(1)
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -66,7 +67,7 @@ const NonCommDlrPay: React.FC = () => {
       filters,
     };
     dispatch(getNonComm(pageNumber));
-  }, [dispatch, currentPage, viewArchived, filters]);
+  }, [dispatch, currentPage, viewArchived, filters,refetch]);
 
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
@@ -218,6 +219,7 @@ const NonCommDlrPay: React.FC = () => {
             commission={editedCommission}
             editMode={editMode}
             handleClose={handleClose}
+            setRefetch={setRefetch}
           />
         )}
 
