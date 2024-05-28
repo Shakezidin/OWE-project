@@ -60,6 +60,10 @@ const ConfigurePage: React.FC = () => {
           title: 'Adder Responsibility',
           route: ROUTES.CONFIG_ADDER_RESPONSIBILITY,
         },
+        {
+          title: 'AP Rep',
+          route: ROUTES.CONFIG_APREP,
+        },
         { title: 'Adder Credit', route: ROUTES.CONFIG_ADDER_CREDITS },
         { title: 'Marketing Fees', route: ROUTES.CONFIG_MARKETING },
         { title: 'Loan Fee', route: ROUTES.CONFIG_LOAN_FEES },
