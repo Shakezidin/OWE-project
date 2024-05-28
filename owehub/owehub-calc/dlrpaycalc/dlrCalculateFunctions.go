@@ -1,9 +1,9 @@
 /**************************************************************************
- * File            : dlrPayInitCalc.go
- * DESCRIPTION     : This file contains functions to perform
- *							Calculations for DealerPay
- * DATE            : 28-April-2024
- **************************************************************************/
+* File            : dlrPayInitCalc.go
+* DESCRIPTION     : This file contains functions to perform
+*                          Calculations for DealerPay
+* DATE            : 28-April-2024
+**************************************************************************/
 
 package arcalc
 
@@ -14,10 +14,10 @@ import (
 )
 
 /******************************************************************************
- * FUNCTION:        calculateAdderTotal
- * DESCRIPTION:     calculates the "gross_rev" value based on the provided data
- * RETURNS:        	gross revenue
- *****************************************************************************/
+* FUNCTION:        calculateAdderTotal
+* DESCRIPTION:     calculates the "gross_rev" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
 func calculateAdderTotal(dealer string, adder, autoAdder, rebate, referral float64) (totalSum float64) {
 
 	log.EnterFn(0, "CalculateAdderTotal")
@@ -30,10 +30,10 @@ func calculateAdderTotal(dealer string, adder, autoAdder, rebate, referral float
 }
 
 /******************************************************************************
- * FUNCTION:        calculateEpcCalc
- * DESCRIPTION:     calculates the "epc_total" value based on the provided data
- * RETURNS:        	gross revenue
- *****************************************************************************/
+* FUNCTION:        calculateEpcCalc
+* DESCRIPTION:     calculates the "epc_total" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
 func calculateEpcCalc(epcCalc, contract, adderLF, sysSize float64) float64 {
 	if epcCalc != 0 {
 		netEPC := ((contract - adderLF) / sysSize) / 1000
@@ -44,10 +44,10 @@ func calculateEpcCalc(epcCalc, contract, adderLF, sysSize float64) float64 {
 }
 
 /******************************************************************************
- * FUNCTION:        calculateAdderPerKW
- * DESCRIPTION:     calculates the "adder_pw" value based on the provided data
- * RETURNS:        	gross revenue
- *****************************************************************************/
+* FUNCTION:        calculateAdderPerKW
+* DESCRIPTION:     calculates the "adder_pw" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
 func calculateAdderPerKW(dealer string, adderLF, sysSize float64) float64 {
 	if len(dealer) > 0 {
 		adderPerKW := adderLF / sysSize
@@ -57,10 +57,10 @@ func calculateAdderPerKW(dealer string, adderLF, sysSize float64) float64 {
 }
 
 /******************************************************************************
- * FUNCTION:        calculatePayRateSubTotal
- * DESCRIPTION:     calculates the "pay_rate_sub_total" value based on the provided data
- * RETURNS:        	gross revenue
- *****************************************************************************/
+* FUNCTION:        calculatePayRateSubTotal
+* DESCRIPTION:     calculates the "pay_rate_sub_total" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
 func calculatePayRateSubTotal(dealer string, payRateSemi, adderPer float64) float64 {
 	if len(dealer) > 0 {
 		return (payRateSemi - adderPer)
@@ -69,10 +69,10 @@ func calculatePayRateSubTotal(dealer string, payRateSemi, adderPer float64) floa
 }
 
 /******************************************************************************
- * FUNCTION:        calculateCommTotal
- * DESCRIPTION:     calculates the "comm_total" value based on the provided data
- * RETURNS:        	gross revenue
- *****************************************************************************/
+* FUNCTION:        calculateCommTotal
+* DESCRIPTION:     calculates the "comm_total" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
 func calculateCommTotal(dealer string, payRate, sysSize, dealerPaymentBonus float64) float64 {
 	if len(dealer) > 0 {
 		commTotal := (payRate * sysSize) + dealerPaymentBonus
@@ -82,10 +82,10 @@ func calculateCommTotal(dealer string, payRate, sysSize, dealerPaymentBonus floa
 }
 
 /******************************************************************************
- * FUNCTION:        calculateOVRDTotal
- * DESCRIPTION:     calculates the "ovrd_total" value based on the provided data
- * RETURNS:        	gross revenue
- *****************************************************************************/
+* FUNCTION:        calculateOVRDTotal
+* DESCRIPTION:     calculates the "ovrd_total" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
 func calculateOVRDTotal(dealer string, payRate, sysSize float64) float64 {
 	if len(dealer) > 0 {
 		ovrdTotal := payRate * sysSize * 1000
@@ -96,10 +96,10 @@ func calculateOVRDTotal(dealer string, payRate, sysSize float64) float64 {
 }
 
 /******************************************************************************
- * FUNCTION:        calculateStatusCheck
- * DESCRIPTION:     calculates the "status_total" value based on the provided data
- * RETURNS:        	gross revenue
- *****************************************************************************/
+* FUNCTION:        calculateStatusCheck
+* DESCRIPTION:     calculates the "status_total" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
 func calculateStatusCheck(dealer, status string, expense, commTotal, credit, repPay float64) float64 {
 	var statusCheck float64
 
@@ -117,10 +117,10 @@ func calculateStatusCheck(dealer, status string, expense, commTotal, credit, rep
 }
 
 /******************************************************************************
- * FUNCTION:        calculateR1Balance
- * DESCRIPTION:     calculates the "r1_balance" value based on the provided data
- * RETURNS:        	gross revenue
- *****************************************************************************/
+* FUNCTION:        calculateR1Balance
+* DESCRIPTION:     calculates the "r1_balance" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
 func calculateR1Balance(dealerStrings string, statusCheckValues, r1CommPaidValues float64) float64 {
 	var balance float64
 	if len(dealerStrings) > 0 {
@@ -134,10 +134,10 @@ func calculateR1Balance(dealerStrings string, statusCheckValues, r1CommPaidValue
 }
 
 /******************************************************************************
- * FUNCTION:        CalculateR1DrawAmt
- * DESCRIPTION:     calculates the "r1_draw_amt" value based on the provided data
- * RETURNS:        	gross revenue
- *****************************************************************************/
+* FUNCTION:        CalculateR1DrawAmt
+* DESCRIPTION:     calculates the "r1_draw_amt" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
 func CalculateR1DrawAmt(statusCheck float64, DlrDrawMax float64, DlrDrawPerc float64) (result float64) {
 
 	if statusCheck > 0 {
@@ -154,10 +154,10 @@ func CalculateR1DrawAmt(statusCheck float64, DlrDrawMax float64, DlrDrawPerc flo
 }
 
 /******************************************************************************
- * FUNCTION:        CalculateAmtCheck
- * DESCRIPTION:     calculates the "amt_check" value based on the provided data
- * RETURNS:        	gross revenue
- *****************************************************************************/
+* FUNCTION:        CalculateAmtCheck
+* DESCRIPTION:     calculates the "amt_check" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
 func CalculateAmtCheck(r1DrawPaid float64, r1DrawAmt float64) (amtCheck float64) {
 
 	if r1DrawPaid == 0 {
@@ -170,10 +170,10 @@ func CalculateAmtCheck(r1DrawPaid float64, r1DrawAmt float64) (amtCheck float64)
 }
 
 /******************************************************************************
- * FUNCTION:        CalculateOvrdBalance
- * DESCRIPTION:     calculates the "ovrd_balance" value based on the provided data
- * RETURNS:        	gross revenue
- *****************************************************************************/
+* FUNCTION:        CalculateOvrdBalance
+* DESCRIPTION:     calculates the "ovrd_balance" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
 func CalculateOvrdBalance(dealer string, overdTotal float64, ovrdPaid float64) (ovrdBalance float64) {
 
 	if len(dealer) > 0 {
@@ -187,10 +187,10 @@ func CalculateOvrdBalance(dealer string, overdTotal float64, ovrdPaid float64) (
 }
 
 /******************************************************************************
- * FUNCTION:        CalculateStatus
- * DESCRIPTION:     calculates the "status" value based on the provided data
- * RETURNS:        	gross revenue
- *****************************************************************************/
+* FUNCTION:        CalculateStatus
+* DESCRIPTION:     calculates the "status" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
 func CalculateStatus(uniqueId string, hand bool, pto, instSys, cancel, ntp, permits, wc time.Time) string {
 	status := ""
 	if len(uniqueId) > 0 {
@@ -217,10 +217,10 @@ func CalculateStatus(uniqueId string, hand bool, pto, instSys, cancel, ntp, perm
 }
 
 /******************************************************************************
- * FUNCTION:        CalculateStatusDate
- * DESCRIPTION:     calculates the "status_date" value based on the provided data
- * RETURNS:        	gross revenue
- *****************************************************************************/
+* FUNCTION:        CalculateStatusDate
+* DESCRIPTION:     calculates the "status_date" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
 func CalculateStatusDate(uniqueID string, hand bool, pto time.Time, instSys time.Time, cancel time.Time, ntp time.Time, permSub time.Time, wc time.Time) time.Time {
 	var statusDate time.Time
 
@@ -247,10 +247,10 @@ func CalculateStatusDate(uniqueID string, hand bool, pto time.Time, instSys time
 }
 
 /******************************************************************************
- * FUNCTION:        calculateRepCount
- * DESCRIPTION:     calculates the "rep_count" value based on the provided data
- * RETURNS:        	gross revenue
- *****************************************************************************/
+* FUNCTION:        calculateRepCount
+* DESCRIPTION:     calculates the "rep_count" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
 func calculateRepCount(rep string, netEpc float64, adderPerKw float64) float64 {
 	if len(rep) == 0 {
 		return 0
@@ -267,10 +267,10 @@ func calculateRepCount(rep string, netEpc float64, adderPerKw float64) float64 {
 }
 
 /******************************************************************************
- * FUNCTION:        calculateRepSales
- * DESCRIPTION:     calculates the "rep_sales" value based on the provided data
- * RETURNS:        	gross revenue
- *****************************************************************************/
+* FUNCTION:        calculateRepSales
+* DESCRIPTION:     calculates the "rep_sales" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
 func calculateRepSales(rep string, netEpc float64, adderPerKw float64) float64 {
 	if len(rep) == 0 {
 		return 0
@@ -287,10 +287,10 @@ func calculateRepSales(rep string, netEpc float64, adderPerKw float64) float64 {
 }
 
 /******************************************************************************
- * FUNCTION:        calculateRepKw
- * DESCRIPTION:     calculates the "rep_kw" value based on the provided data
- * RETURNS:        	gross revenue
- *****************************************************************************/
+* FUNCTION:        calculateRepKw
+* DESCRIPTION:     calculates the "rep_kw" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
 func calculateRepKw(rep string, netEpc, SysSize, adderPerKw float64) float64 {
 	if len(rep) == 0 {
 		return 0
@@ -307,10 +307,10 @@ func calculateRepKw(rep string, netEpc, SysSize, adderPerKw float64) float64 {
 }
 
 /******************************************************************************
- * FUNCTION:        calculateContractCalc
- * DESCRIPTION:     calculates the "contract_calc" value based on the provided data
- * RETURNS:        	gross revenue
- *****************************************************************************/
+* FUNCTION:        calculateContractCalc
+* DESCRIPTION:     calculates the "contract_calc" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
 func calculateContractCalc(epc, contract, sysSize float64) float64 {
 	if epc > 0 {
 		if contract > 0 {
@@ -323,10 +323,10 @@ func calculateContractCalc(epc, contract, sysSize float64) float64 {
 }
 
 /******************************************************************************
- * FUNCTION:        calculateEPCCalc
- * DESCRIPTION:     calculates the "epc_calc" value based on the provided data
- * RETURNS:        	gross revenue
- *****************************************************************************/
+* FUNCTION:        calculateEPCCalc
+* DESCRIPTION:     calculates the "epc_calc" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
 func calculateEPCCalc(dealer string, wc, epc, sysSize float64) float64 {
 	if len(dealer) > 0 {
 		if wc < 44287 {
@@ -339,10 +339,10 @@ func calculateEPCCalc(dealer string, wc, epc, sysSize float64) float64 {
 }
 
 /******************************************************************************
- * FUNCTION:        calculateTeamCount
- * DESCRIPTION:     calculates the "team_count" value based on the provided data
- * RETURNS:        	gross revenue
- *****************************************************************************/
+* FUNCTION:        calculateTeamCount
+* DESCRIPTION:     calculates the "team_count" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
 func calculateTeamCount(rep1Team, rep2Team string, credit float64, repPay float64) (result float64) {
 	if credit > 0 {
 		if len(rep1Team) > 0 && len(rep2Team) > 0 {
@@ -357,10 +357,10 @@ func calculateTeamCount(rep1Team, rep2Team string, credit float64, repPay float6
 }
 
 /******************************************************************************
- * FUNCTION:        calculatePerTeamSales
- * DESCRIPTION:     calculates the "per_team_Sales" value based on the provided data
- * RETURNS:        	gross revenue
- *****************************************************************************/
+* FUNCTION:        calculatePerTeamSales
+* DESCRIPTION:     calculates the "per_team_Sales" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
 func calculatePerTeamSales(rep1Team, rep2Team string, credit, repPay float64) float64 {
 	if credit > 0 {
 		if len(rep1Team) > 0 && len(rep2Team) > 0 {
@@ -375,10 +375,10 @@ func calculatePerTeamSales(rep1Team, rep2Team string, credit, repPay float64) fl
 }
 
 /******************************************************************************
- * FUNCTION:        calculatePerTeamKw
- * DESCRIPTION:     calculates the "per_team_kw" value based on the provided data
- * RETURNS:        	gross revenue
- *****************************************************************************/
+* FUNCTION:        calculatePerTeamKw
+* DESCRIPTION:     calculates the "per_team_kw" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
 func calculatePerTeamKw(rep1Team, rep2Team string, credit, repPay, sysSize float64) float64 {
 	if credit > 0 {
 		if len(rep1Team) > 0 && len(rep2Team) > 0 {
@@ -395,10 +395,10 @@ func calculatePerTeamKw(rep1Team, rep2Team string, credit, repPay, sysSize float
 }
 
 /******************************************************************************
- * FUNCTION:        calculateRRR
- * DESCRIPTION:     calculates the "r_rr" value based on the provided data
- * RETURNS:        	gross revenue
- *****************************************************************************/
+* FUNCTION:        calculateRRR
+* DESCRIPTION:     calculates the "r_rr" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
 func calculateRRR(repName string, val1, val2 float64) (result float64) {
 	if len(repName) > 0 {
 		return val1 + val2
@@ -407,10 +407,10 @@ func calculateRRR(repName string, val1, val2 float64) (result float64) {
 }
 
 /******************************************************************************
- * FUNCTION:        calculateRAdderTotal
- * DESCRIPTION:     calculates the "r_adder_total" value based on the provided data
- * RETURNS:        	gross revenue
- *****************************************************************************/
+* FUNCTION:        calculateRAdderTotal
+* DESCRIPTION:     calculates the "r_adder_total" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
 func calculateRAdderTotal(repName string, val1, val2, val3, val4, val5 float64) (result float64) {
 	if len(repName) > 0 {
 		return val1 + val2 + val2 + val3 + val4 + val5
@@ -419,10 +419,10 @@ func calculateRAdderTotal(repName string, val1, val2, val3, val4, val5 float64) 
 }
 
 /******************************************************************************
- * FUNCTION:        calculateRAdderPerKw
- * DESCRIPTION:     calculates the "r_adder_per_kw" value based on the provided data
- * RETURNS:        	gross revenue
- *****************************************************************************/
+* FUNCTION:        calculateRAdderPerKw
+* DESCRIPTION:     calculates the "r_adder_per_kw" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
 func calculateRAdderPerKw(repName string, val1, val2 float64) (result float64) {
 	if len(repName) > 0 {
 		return val1 / val2
@@ -431,10 +431,10 @@ func calculateRAdderPerKw(repName string, val1, val2 float64) (result float64) {
 }
 
 /******************************************************************************
- * FUNCTION:        calculateRPayRateSubTotal
- * DESCRIPTION:     calculates the "r_pay_rate_sub_total" value based on the provided data
- * RETURNS:        	gross revenue
- *****************************************************************************/
+* FUNCTION:        calculateRPayRateSubTotal
+* DESCRIPTION:     calculates the "r_pay_rate_sub_total" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
 func calculateRPayRateSubTotal(repName string, val1, val2 float64) (result float64) {
 	if len(repName) > 0 {
 		return val1 - val2
@@ -443,10 +443,10 @@ func calculateRPayRateSubTotal(repName string, val1, val2 float64) (result float
 }
 
 /******************************************************************************
- * FUNCTION:        calculateRNetEpc
- * DESCRIPTION:     calculates the "r_net_epc" value based on the provided data
- * RETURNS:        	gross revenue
- *****************************************************************************/
+* FUNCTION:        calculateRNetEpc
+* DESCRIPTION:     calculates the "r_net_epc" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
 func calculateRNetEpc(epcCalc, val1, val2, val3, val4, val5 float64) (result float64) {
 	if epcCalc > 0 {
 		result = (val1 - (val2 - val3 + val4)) / val5
@@ -456,10 +456,10 @@ func calculateRNetEpc(epcCalc, val1, val2, val3, val4, val5 float64) (result flo
 }
 
 /******************************************************************************
- * FUNCTION:        calculateRminmaxCorrect
- * DESCRIPTION:     calculates the "r_min_max_connect" value based on the provided data
- * RETURNS:        	gross revenue
- *****************************************************************************/
+* FUNCTION:        calculateRminmaxCorrect
+* DESCRIPTION:     calculates the "r_min_max_connect" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
 func calculateRminmaxCorrect(repName string, val1, val2, val3 float64) (result float64) {
 	if len(repName) > 0 {
 		if val1 < val2 {
@@ -474,10 +474,10 @@ func calculateRminmaxCorrect(repName string, val1, val2, val3 float64) (result f
 }
 
 /******************************************************************************
- * FUNCTION:        calculateRCommTotal
- * DESCRIPTION:     calculates the "r_comm_total" value based on the provided data
- * RETURNS:        	gross revenue
- *****************************************************************************/
+* FUNCTION:        calculateRCommTotal
+* DESCRIPTION:     calculates the "r_comm_total" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
 func calculateRCommTotal(repName string, val1, val2, val3 float64) (result float64) {
 	if len(repName) > 0 {
 		result = (val1 * val2) + val3
@@ -487,10 +487,10 @@ func calculateRCommTotal(repName string, val1, val2, val3 float64) (result float
 }
 
 /******************************************************************************
- * FUNCTION:        calculateRStatusCommCheck
- * DESCRIPTION:     calculates the "r_status_comm_check" value based on the provided data
- * RETURNS:        	gross revenue
- *****************************************************************************/
+* FUNCTION:        calculateRStatusCommCheck
+* DESCRIPTION:     calculates the "r_status_comm_check" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
 func calculateRStatusCommCheck(repName, val1 string, val2 float64) (result float64) {
 	if len(repName) > 0 {
 		if val1 == "Cancel" {
@@ -505,19 +505,68 @@ func calculateRStatusCommCheck(repName, val1 string, val2 float64) (result float
 }
 
 /******************************************************************************
- * FUNCTION:        calculateRPayRateSemi
- * DESCRIPTION:     calculates the "r_pay_rate_semi" value based on the provided data
- * RETURNS:        	gross revenue
- *****************************************************************************/
-func calculateRPayRateSemi(repName, val1 string, val2 float64) (result float64) {
-	if len(repName) > 0 {
-		if val1 == "Cancel" {
-			return 0
-		} else if val1 == "Shaky" {
-			return 0
+* FUNCTION:        calculateRPayRateSemi
+* DESCRIPTION:     calculates the "r_pay_rate_semi" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
+func calculateRPayRateSemi(rep_1 string, adderLf, epc, netEpc, commTotal, dealerDBA float64) (result float64) {
+	if len(rep_1) > 0 {
+		if rep_1 == "-NONE-" {
+			result = 0.0
+		} else if adderLf == 0.0 {
+			result = epc + netEpc + commTotal
+		} else if epc == 0 {
+			result = ((dealerDBA - adderLf) * 1000) + netEpc + commTotal
 		} else {
-			return val2
+			result = 0.0
 		}
 	}
+
+	return result
+}
+
+/******************************************************************************
+* FUNCTION:        calculateR2PayRateSemi
+* DESCRIPTION:     calculates the "r_pay_rate_semi" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
+func calculateR2PayRateSemi(rep_1 string, repCount, perRepSales, perRepkW, epcCalc, dealerDba float64) (result float64) {
+	if len(rep_1) > 0 {
+		if repCount == 0.0 {
+			result = perRepSales + perRepkW + epcCalc
+		} else if perRepSales == 0.0 {
+			result = ((dealerDba - repCount) * 1000) + perRepkW + epcCalc
+		} else {
+			result = 0.0
+		}
+	}
+
+	return result
+}
+
+func CalculatePayRateSemi(dealer string, epcCalc, rl float64) (payRateSemi float64) {
+	if len(dealer) > 0 {
+		return (epcCalc - rl) * 1000
+	}
+
 	return 0
+}
+
+func CalculateAdderLf(dealer string, addr, expence, autoadder, loanfee, rebate, referral float64) (adderlf float64) {
+	if len(dealer) > 0 {
+		return addr + expence + autoadder + loanfee + rebate + referral
+	}
+	return adderlf
+}
+
+func CalculateAdderEPC(epcCalc, contract, loanfee, sys_size float64) (epc float64) {
+	if epcCalc > 0 {
+		result := ((contract - loanfee) / sys_size) / 1000
+
+		// Round to 3 decimal places
+		epc := math.Round(result*1000) / 1000
+
+		return epc
+	}
+	return epc
 }

@@ -1,9 +1,9 @@
 /**************************************************************************
- * File            : dealerCredit.go
- * DESCRIPTION     : This file contains the model and data form dealer
-					 credit config
- * DATE            : 19-May-2024
- **************************************************************************/
+* File            : dealerCredit.go
+* DESCRIPTION     : This file contains the model and data form dealer
+                     credit config
+* DATE            : 19-May-2024
+**************************************************************************/
 
 package datamgmt
 
@@ -32,10 +32,10 @@ func (DealerCreditCfg *DealerCreditCfgStruct) LoadDlrCreditCfg() (err error) {
 	defer func() { log.ExitFn(0, "LoadDlrCreditCfg", err) }()
 
 	query = `SELECT dc.id AS record_id, dc.unique_id, dc.customer, dc.start_date,
-		dc.end_date, vd.dealer_name , dc.dealer_dba, dc.exact_amount, dc.per_kw_amount,
-		dc.approved_by, dc.notes, dc.total_amount, dc.sys_size
-		FROM` + db.TableName_dealer_credit + `dc
-		JOIN v_dealer vd ON vd.id = dc.dealer_id`
+        dc.end_date, vd.dealer_name , dc.dealer_dba, dc.exact_amount, dc.per_kw_amount,
+        dc.approved_by, dc.notes, dc.total_amount, dc.sys_size
+        FROM` + db.TableName_dealer_credit + `dc
+        JOIN v_dealer vd ON vd.id = dc.dealer_id`
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if (err != nil) || (data == nil) {
@@ -123,19 +123,19 @@ func (DealerCreditCfg *DealerCreditCfgStruct) LoadDlrCreditCfg() (err error) {
 		}
 
 		DealerCreditData := models.GetDealerCredit{
-			RecordId:    RecordId,
-			UniqueID:    UniqueID,
-			Customer:    Customer,
-			DealerName:  DealerName,
-			DealerDBA:   DealerDBA,
-			ExactAmount: ExactAmount,
+			RecordId: RecordId,
+			UniqueID: UniqueID,
+			// Customer:    Customer,
+			// DealerName:  DealerName,
+			// DealerDBA:   DealerDBA,
+			// ExactAmount: ExactAmount,
 			PerKWAmount: PerKWAmount,
 			ApprovedBy:  ApprovedBy,
 			Notes:       Notes,
 			TotalAmount: TotalAmount,
 			SysSize:     SysSize,
-			StartDate:   StartDate,
-			EndDate:     EndDate,
+			// StartDate:   StartDate,
+			// EndDate:     EndDate,
 		}
 		DealerCreditCfg.DealerCreditList.DealerCreditList = append(DealerCreditCfg.DealerCreditList.DealerCreditList, DealerCreditData)
 	}
@@ -144,10 +144,10 @@ func (DealerCreditCfg *DealerCreditCfgStruct) LoadDlrCreditCfg() (err error) {
 }
 
 /******************************************************************************
- * FUNCTION:        CalculateCreaditForUniqueId
- * DESCRIPTION:     calculates the credit value based on the unique Id
- * RETURNS:         credit
- *****************************************************************************/
+* FUNCTION:        CalculateCreaditForUniqueId
+* DESCRIPTION:     calculates the credit value based on the unique Id
+* RETURNS:         credit
+*****************************************************************************/
 func (DealerCreditCfg *DealerCreditCfgStruct) CalculateCreaditForUniqueId(dealer string, uniqueId string) (credit float64) {
 
 	log.EnterFn(0, "LoadDlrCreditCfg")

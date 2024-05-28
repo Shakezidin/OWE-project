@@ -28,130 +28,7 @@ CREATE TABLE dlr_pay_pr_data(
     Contract_Date Date 
 );
 
-CREATE TABLE dlr_pay_calc(
-    Dealer   text,
-    Partner   text,
-    Instl   text,
-    Source   text,
-    Type   text, 
-    Loan_Type   text, 
-    Unique_ID   text  primary key, 
-    Home_Owner   text, 
-    Street_Address      text,
-    City   text,  
-    ST      text,
-    ZIP      int,
-    Rep_1      text,
-    Rep_2      text,
-    Appt_Setter      text,
-    Sys_Size      float,
-    KWH      float,
-    Contract_Value    float,
-    EPC    float,
-    Created      date,
-    WC      date,
-    PP    date,
-    NTP      date,
-    Perm_Sub      date,
-    Perm_App      date,
-    Ic_Sub      date,
-    Ic_App      date,
-    Cancel      Date,
-    Inst_Sys      date,
-    Inst_Elec      date,
-    FCA      Date,
-    PTO     Date,
-    Status     text,
-    Status_Date     Date,
-    EPC_Calc      float,
-    Dealer_Dba     text,
-    RL_1      float,
-    Credit      float,
-    Rep_Pay      float,
-    Payrate_Semi      float,
-    Addr      float,
-    Expense      float,
-    Auto_Addr      float,
-    Loan_Fee      float,
-    Rebate      float,
-    Referral      float,
-    Adder_Total      float,
-    Adder_lf      float,
-    Net_Epc      float,
-    Adder_Per_KW      float,
-    Pay_Rate_Sub_Total      float,
-    Comm_Total      float,
-    Status_Check      float,
-    Dealer_Repayment_Bonus      float,
-    Parent_dlr      text,
-    Pay_Rate      float,
-    Ovrd_Total      float,
-    Dlr_Draw      float,
-    Dlr_Draw_Max      float,
-    R1_Draw_Amt      float,
-    R1_Draw_Paid      float,
-    Amt_Check      Float,
-    R1_Comm_Paid      float,
-    R1_Balance      Float,
-    Ovrd_Paid      Float,
-    Ovrd_Balance      Float,
-    Rep_Count      INT,
-    Per_Rep_Sales      float,
-    Per_Rep_Kw      Float,
-    Rep_1_Team      text,
-    Rep_2_Team      text,
-    Team_Count      INT,
-    Per_Team_Sales      Float,
-    Per_Team_KW      Float,
-    R1_Name      text,
-    Rep_1_Dba      text,
-    Pay_Scale      Float,
-    position    INT,
-    RL_2      float,
-    R1_Rate      float,
-    value1      float,
-    R1_Incentive      float,
-    R1_Credit      Float,
-    R1_Payrate_Semi      Float,
-    R1_Addr_Resp      Float,
-    R1_Addr      Float,
-    R1_Auto_Addr      Float,
-    R1_Loan_Fee      Float,
-    R1_Rebate      Float,
-    R1_Referral      Float,
-    R1_RR      Float,
-    R1_Adder_Total      Float,
-    R1_Adder_Per_Kw      Float,
-    R1_Pay_Rate_Sub_Total      Float,
-    R1_Net_Epc      Float,
-    R1_Min_Max_Correct      float,
-    R1_Comm_Total      float,
-    R1_Comm_Status_Check   Float,
-    R2_name      text,
-    Rep_2_Dba      text,
-    R2_Pay_Scale      float,
-    RL_3      Float,
-    R2_Rate      Float,
-    Value2     Float,
-    R2_Incentive      Float,
-    R2_Credit      Float,
-    R2_Payrate_semi      float,
-    R2_Addr_Resp      Float,
-    R2_Addr      Float,
-    R2_auto_addr      Float,
-    R2_Loan_Fee      Float,
-    R2_Rebate      Float,
-    R2_Referral      Float,
-    R2_RR      Float,
-    R2_Adder_Total      Float,
-    R2_Adder_Per_KW      Float,
-    R2_Pay_Rate_Sub_Total      Float,
-    R2_Min_Max_Correct      Float,
-    R2_Comm_Total      Float,
-    R2_Comm_Status_Check      Float
-);
-
-CREATE TABLE ap_calc_dealer_pay_calc ( 
+CREATE TABLE dealer_pay_calc_standard (
     -- this is from sales data
     dealer text,
     partner text,
@@ -177,8 +54,19 @@ CREATE TABLE ap_calc_dealer_pay_calc (
     cancel date,
     inst_sys date,
     pto date,
-
+ 
     -- calculated fields
+    pay_rate_sub_total float,
+    rl float,
+    credit float,
+    pay_rate_semi float,
+    addr float,
+    expense float,
+    auto_adder float,
+    loan_fee float,
+    rebate float,
+    referral float,
+    parent_dlr float,
     rep_pay float,
     adder_total float,
     net_epc   float,
@@ -186,7 +74,7 @@ CREATE TABLE ap_calc_dealer_pay_calc (
     comm_total float,
     ovrd_total float,
     status_check float,
-    pay_rate float64,
+    pay_rate float,
     dlr_draw_max float,
     r1_draw_amt float,
     amt_check float,
@@ -212,7 +100,7 @@ CREATE TABLE ap_calc_dealer_pay_calc (
     r1_min_max_correct   float,
     r1_comm_total   float,
     r1_comm_status_check   float,
-
+    
     r2_name   text,
     r2_pay_rate_semi float64,
     r2_r_r   float,
@@ -224,7 +112,7 @@ CREATE TABLE ap_calc_dealer_pay_calc (
     r2_comm_total   float,
     r2_comm_status_check   float,
     
-
+ 
 --  we need to sort where the following data comes from
     type text,
     zip int,
@@ -240,7 +128,6 @@ CREATE TABLE ap_calc_dealer_pay_calc (
     rep_2_team   text,
     rate   float,
     adjustment   float,
-    pay_rate_sub_total float,
     min_rate   float,
     max_rate   float,
     r1_incentive   float,
@@ -266,6 +153,126 @@ CREATE TABLE ap_calc_dealer_pay_calc (
     appt_set_total   float,
     appt_set_status_check   float,
     sales_rep_type   text
+);
+ 
+CREATE VIEW pr_dlr_d_standard AS
+SELECT
+    dealer_pay_calc_standard.home_owner AS home_owner,
+    dealer_pay_calc_standard.status AS current_status,
+    dealer_pay_calc_standard.status_date AS status_date,    --not required
+    dealer_pay_calc_standard.unique_id AS unique_id,
+    dealer_pay_calc_standard.dealer AS dealer,
+    dealer_pay_calc_standard.r1_draw_amt AS amount,
+    dealer_pay_calc_standard.loan_type AS type,
+    dealer_pay_calc_standard.sys_size AS sys_size,
+    dealer_pay_calc_standard.contract_calc AS contract_calc,
+    dealer_pay_calc_standard.loan_fee AS loan_fee,              --TODO
+    dealer_pay_calc_standard.adder_total AS other_adders,
+    dealer_pay_calc_standard.epc AS epc,
+    dealer_pay_calc_standard.net_epc AS net_epc,
+    dealer_pay_calc_standard.rl AS rl,
+    dealer_pay_calc_standard.credit AS credit,                  --Done Later By Shushank
+    dealer_pay_calc_standard.rep_1 AS rep_1,
+    dealer_pay_calc_standard.rep_2 AS rep_2,
+    dealer_pay_calc_standard.rep_pay AS rep_pay,
+    dealer_pay_calc_standard.status_check AS net_rev,
+    dealer_pay_calc_standard.r1_draw_amt AS draw_amt,
+    dealer_pay_calc_standard.r1_comm_paid AS amt_paid,          --TODO
+    dealer_pay_calc_standard.r1_balance AS balance,
+    dealer_pay_calc_standard.st AS st,
+    dealer_pay_calc_standard.wc AS contract_date
+FROM
+    dealer_pay_calc_standard
+WHERE
+(
+    dealer_pay_calc_standard.wc > '2019-04-01'    AND
+    dealer_pay_calc_standard.dealer <> 'House'  AND
+    dealer_pay_calc_standard.r1_balance <> 0    AND
+    dealer_pay_calc_standard.r1_draw_paid <> 0  AND
+    dealer_pay_calc_standard.ntp <> ''          AND
+    dealer_pay_calc_standard.inst_sys <> ''
+);
+
+CREATE VIEW pr_dlr_f_standard AS
+SELECT
+    dealer_pay_calc_standard.home_owner AS home_owner,
+    dealer_pay_calc_standard.status AS current_status,
+    dealer_pay_calc_standard.status_date AS status_date,    --not required
+    dealer_pay_calc_standard.unique_id AS unique_id,
+    dealer_pay_calc_standard.dealer AS dealer,
+    dealer_pay_calc_standard.r1_balance AS amount,
+    dealer_pay_calc_standard.loan_type AS type,
+    dealer_pay_calc_standard.sys_size AS sys_size,
+    dealer_pay_calc_standard.contract_calc AS contract_calc,
+    dealer_pay_calc_standard.loan_fee AS loan_fee,              --TODO
+    dealer_pay_calc_standard.adder_total AS other_adders,
+    dealer_pay_calc_standard.epc AS epc,
+    dealer_pay_calc_standard.net_epc AS net_epc,
+    dealer_pay_calc_standard.rl AS rl,
+    dealer_pay_calc_standard.credit AS credit,                  --Later done by Shushank
+    dealer_pay_calc_standard.rep_1 AS rep_1,
+    dealer_pay_calc_standard.rep_2 AS rep_2,
+    dealer_pay_calc_standard.rep_pay AS rep_pay,
+    dealer_pay_calc_standard.status_check AS net_rev,
+    dealer_pay_calc_standard.r1_draw_amt AS draw_amt,
+    dealer_pay_calc_standard.r1_comm_paid AS amt_paid,          --TODO
+    dealer_pay_calc_standard.r1_balance AS balance,
+    dealer_pay_calc_standard.st AS st,
+    dealer_pay_calc_standard.wc AS contract_date
+FROM
+    dealer_pay_calc_standard
+WHERE
+(
+    dealer_pay_calc_standard.wc > '2019-04-01'    AND
+    dealer_pay_calc_standard.dealer <> 'House'  AND
+    dealer_pay_calc_standard.r1_balance <> 0    AND
+    (
+        --HandSign = TRUE                             OR            --TODO
+        dealer_pay_calc_standard.cancel <> ''       OR
+        (
+            dealer_pay_calc_standard.inst_sys <> ''          AND
+            dealer_pay_calc_standard.ntp <> ''
+        )
+    )
+);
+
+CREATE VIEW pr_dlr_or_standard AS
+SELECT
+    --dealer_pay_calc_standard.dealer_dba AS dealer_dba,    --TODO
+    dealer_pay_calc_standard.status AS current_status,
+    dealer_pay_calc_standard.status_date AS status_date,    --not required
+    dealer_pay_calc_standard.unique_id AS unique_id,
+    dealer_pay_calc_standard.parent_dlr AS dealer_code,
+    dealer_pay_calc_standard.ovrd_balance AS amount,
+    dealer_pay_calc_standard.loan_type AS type,
+    dealer_pay_calc_standard.sys_size AS sys_size,
+    dealer_pay_calc_standard.contract_calc AS contract_calc,
+    dealer_pay_calc_standard.loan_fee AS loan_fee,              --TODO
+    dealer_pay_calc_standard.adder_total AS other_adders,
+    dealer_pay_calc_standard.epc AS epc,
+    dealer_pay_calc_standard.net_epc AS net_epc,
+    dealer_pay_calc_standard.rl AS rl,
+    dealer_pay_calc_standard.credit AS credit,                  --Later done by Shushank
+    dealer_pay_calc_standard.rep_1 AS rep_1,
+    dealer_pay_calc_standard.rep_2 AS rep_2,
+    dealer_pay_calc_standard.rep_pay AS rep_pay,
+    dealer_pay_calc_standard.status_check AS net_rev,
+    dealer_pay_calc_standard.r1_draw_amt AS draw_amt,
+    dealer_pay_calc_standard.ovrd_paid AS amt_paid,             --TODO
+    dealer_pay_calc_standard.ovrd_balance AS balance,
+    dealer_pay_calc_standard.st AS st,
+    dealer_pay_calc_standard.wc AS contract_date
+FROM
+    dealer_pay_calc_standard
+WHERE
+(
+    dealer_pay_calc_standard.wc > '2019-04-01'      AND
+    dealer_pay_calc_standard.dealer <> 'House'      AND
+    dealer_pay_calc_standard.ovrd_balance <> 0      AND
+    (
+        dealer_pay_calc_standard.inst_sys <> ''     AND
+        dealer_pay_calc_standard.ntp <> ''
+    )
 );
 
 CREATE TABLE ap_calc_dealer_80_20_pay_calc (
