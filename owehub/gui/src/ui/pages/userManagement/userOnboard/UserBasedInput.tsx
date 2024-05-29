@@ -46,13 +46,20 @@ const UserBasedInput: React.FC<inputSelectProps> = ({
             />
           </div>
           <div className="create-input-field">
-            <Input
+          <Input
               type={'text'}
               label="Team Name"
               value={formData.team_name}
               placeholder={'Team Name'}
-              onChange={(e) => onChange(e)}
+              onChange={(e) => {
+                const inputValue = e.target.value;
+                // Allow only letters and spaces
+                if (/^[a-zA-Z\s]*$/.test(inputValue)) {
+                  onChange(e);
+                }
+              }}
               name={'team_name'}
+              maxLength={150}
             />
           </div>
         </>

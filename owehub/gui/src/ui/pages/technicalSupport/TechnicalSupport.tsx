@@ -19,6 +19,7 @@ const TechnicalSupport: React.FC = () => {
   const [message, setMessage] = useState('');
 
   const [selectedFileName, setSelectedFileName] = useState('');
+  const [fileSizeError, setFileSizeError] = useState('');
 
   const [errors, setErrors] = useState({
     firstName: '',
@@ -46,6 +47,11 @@ const TechnicalSupport: React.FC = () => {
     };
     setErrors(newErrors);
     if (form.current && Object.values(newErrors).every((err) => !err)) {
+      const file = fileInputRef.current?.files?.[0];
+      const formData = new FormData(form.current);
+      if (file) {
+        formData.append('attachment', file);
+      }
       emailjs
         .sendForm('service_nof7okz', 'template_y3qbqr8', form.current, {
           publicKey: 'iVTsTUymXutcfakaX',
@@ -71,6 +77,8 @@ const TechnicalSupport: React.FC = () => {
     }
   };
 
+
+
   const handleStateChange = (selectedOption: any) => {
     setSelectedIssue(selectedOption.value);
   };
@@ -83,16 +91,40 @@ const TechnicalSupport: React.FC = () => {
 
   const handleFileInputChange = (e: FormInput) => {
     const file = e.target.files?.[0];
+    const maxSize = 20 * 1024 * 1024; // 20 MB in bytes
+
     if (file) {
-      setSelectedFileName(file.name);
+      if (file.size <= maxSize) {
+        setSelectedFileName(file.name);
+        setFileSizeError('');
+        // Perform further actions with the selected file
+      } else {
+        setSelectedFileName('');
+        setFileSizeError('File size exceeds the limit of 20 MB');
+      }
     } else {
       setSelectedFileName('');
+      setFileSizeError('');
     }
   };
 
   const handleButtonClick = () => {
     fileInputRef.current?.click(); // Trigger file input click event
   };
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    if (name === 'email') {
+      setEmail(value);
+
+      if (!emailRegex.test(value)) {
+        setErrors({ ...errors, email: 'Please enter a valid email address.' });
+      } else {
+        setErrors({ ...errors, email: '' });
+      }
+    }
+  };
+
 
   return (
     <>
@@ -126,16 +158,14 @@ const TechnicalSupport: React.FC = () => {
                   value={firstName}
                   name="user_name"
                   placeholder={'Enter'}
+                  maxLength={100}
                   onChange={(e) => {
                     const inputValue = e.target.value;
                     if (/^[a-zA-Z\s]*$/.test(inputValue)) {
                       setFirstName(inputValue);
                       setErrors({ ...errors, firstName: '' });
                     } else {
-                      setErrors({
-                        ...errors,
-                        firstName: 'Only letters are allowed',
-                      });
+                      setErrors({ ...errors, firstName: 'Only letters are allowed' });
                     }
                   }}
                 />
@@ -149,6 +179,7 @@ const TechnicalSupport: React.FC = () => {
                   label="Last Name"
                   value={lastName}
                   name="lastName"
+                  maxLength={100}
                   placeholder={'Enter'}
                   onChange={(e) => {
                     const inputValue = e.target.value;
@@ -176,10 +207,7 @@ const TechnicalSupport: React.FC = () => {
                   value={email}
                   name="email"
                   placeholder={'Enter'}
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                    setErrors({ ...errors, email: '' });
-                  }}
+                  onChange={handleInputChange}
                 />
                 {errors.email && <span className="error">{errors.email}</span>}
               </div>
@@ -191,9 +219,14 @@ const TechnicalSupport: React.FC = () => {
                   name="phoneNum"
                   placeholder={'Enter'}
                   onChange={(e) => {
-                    setPhoneNumber(e.target.value);
-                    setErrors({ ...errors, phoneNumber: '' });
+                    // Convert the input value to a string to check the length
+                    const inputValue = e.target.value.toString();
+                    if (inputValue.length <= 16) {
+                      setPhoneNumber(e.target.value);
+                      setErrors({ ...errors, phoneNumber: '' });
+                    }
                   }}
+                  max={99999999999999999}
                 />
                 {errors.phoneNumber && (
                   <span className="error">{errors.phoneNumber}</span>
@@ -230,24 +263,17 @@ const TechnicalSupport: React.FC = () => {
                     <span className="file-input-placeholder">
                       {selectedFileName || 'Select File'}
                     </span>
-                    <button
-                      className="custom-button"
-                      onClick={handleButtonClick}
-                    >
+                    <button className="custom-button" onClick={handleButtonClick}>
                       Browse
                     </button>
                   </div>
                 </div>
+                {fileSizeError && <span className="error">{fileSizeError}</span>}
               </div>
             </div>
 
-            <div
-              className="create-input-field-note-support"
-              style={{ marginTop: '0.3rem' }}
-            >
-              <label htmlFor="" className="inputLabel-support">
-                Message
-              </label>
+            <div className="create-input-field-note-support" style={{ marginTop: '0.3rem' }}>
+              <label htmlFor="" className="inputLabel-support">Message</label>
               <br />
               <textarea
                 name="message"
@@ -256,14 +282,19 @@ const TechnicalSupport: React.FC = () => {
                 value={message}
                 placeholder="Type here..."
                 style={{ marginTop: '0.3rem' }}
+                maxLength={300}
                 onChange={(e) => {
-                  setMessage(e.target.value);
+                  const trimmedValue = e.target.value.trimStart();
+                  setMessage(trimmedValue);
                   setErrors({ ...errors, message: '' });
                 }}
               ></textarea>
-              {errors.message && (
-                <span className="error">{errors.message}</span>
-              )}
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: message.length === 300 ? 'red' : 'inherit' }}>
+                  {message.length}/300 characters
+                </span>
+                {errors.message && <span className="error">{errors.message}</span>}
+              </div>
             </div>
 
             <div className="reset-Update-support">
