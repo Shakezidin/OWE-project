@@ -48,7 +48,7 @@ export const RateAdjustmentsColumns: Column[] = [
   },
   {
     name: 'min_rate',
-    displayName: 'MIN Rate',
+    displayName: 'Min Rate',
     type: 'number',
     isCheckbox: false,
   },

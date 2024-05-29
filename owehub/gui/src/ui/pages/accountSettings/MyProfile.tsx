@@ -51,7 +51,7 @@ const MyProfile = () => {
       setStreet(userDetail?.street_address || '');
       setState(userDetail?.state || '');
       setCity(userDetail?.city || '');
-      setZipCode(userDetail?.zipcode || '');
+      // setZipCode(userDetail?.zipcode || '');
       setCountry(userDetail?.country || '');
     }
   }, [userDetail]);
@@ -76,7 +76,7 @@ const MyProfile = () => {
       user_code: userDetail.user_code,
       name: userDetail.name,
       street_address: street,
-      zipcode: zipCode,
+      // zipcode: zipCode,
       country: country,
       city: city,
       state: state,
@@ -88,11 +88,11 @@ const MyProfile = () => {
   };
  
   const handleReset = () => {
-    setCity('');
-    setStreet('');
-    setZipCode('');
-    setCountry('');
-    setState('');
+    setCity(userDetail.city);
+    setStreet(userDetail.street_address);
+    // setZipCode('');
+    setCountry(userDetail.country);
+    setState(userDetail.state);
   };
  
   const fetchStateOptions = async () => {
@@ -107,7 +107,7 @@ const MyProfile = () => {
  
   const [city, setCity] = useState(userDetail?.city || '');
   const [street, setStreet] = useState(userDetail?.street_address || '');
-  const [zipCode, setZipCode] = useState(userDetail?.zipcode || '');
+  // const [zipCode, setZipCode] = useState(userDetail?.zipcode || '');
   const [country, setCountry] = useState(userDetail?.country || '');
   const [state, setState] = useState(userDetail?.state || '');
  
@@ -210,12 +210,11 @@ const MyProfile = () => {
                 <p>Address Detail</p>
               </div>
               <div
-                className="edit-section"
+                className={`edit-section ${!isEditMode ? 'active-edit-section' : ''}`}
                 onClick={() => {
                   setIsEditMode(!isEditMode);
                   setErrors({
                     street: '',
-             
                     country: '',
                     city: '',
                     state: '',
