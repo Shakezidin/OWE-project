@@ -49,6 +49,7 @@ const Input: FC<InputProps> = ({
           type={type}
           name={name}
           placeholder={placeholder}
+          autoComplete="off"
           value={value}
           onChange={(e) =>
             typeof onChange !== 'undefined' && !e.target.value.startsWith(' ')

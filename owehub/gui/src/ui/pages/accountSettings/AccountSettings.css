@@ -126,6 +126,13 @@
   border: 1px solid #d5d5d5;
   cursor: pointer;
 }
+.edit-section:hover{
+  border: 1px solid #3083e5;
+}
+.active-edit-section{
+  border: none;
+  background: #ddebff;
+}
 .edit-section p {
   font-size: 12px;
   font-weight: 500;

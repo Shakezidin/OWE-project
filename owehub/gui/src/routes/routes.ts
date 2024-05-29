@@ -38,6 +38,8 @@ export const ROUTES = {
   CONFIG_RECONCILE: '/config/reconcile',
   CONFIG_APPSETTERS: '/config/app-setter',
   CONFIG_ADDERDATA: '/config/adder-data',
+  CONFIG_APREP: "/config/ap-rep",
+
   // other routes
   REPORT: '/report',
   DATABASE_CONTROLLER: '/databaseController',

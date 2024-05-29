@@ -22,8 +22,6 @@ IF NOT FOUND THEN
 
     -- No need for a RETURN statement when using OUT parameters
 EXCEPTION
-    WHEN unique_violation THEN
-            RAISE EXCEPTION 'Unique constraint violation: unique_id % already exists.', p_unique_id;
     WHEN OTHERS THEN
         -- Handle the exception, you can log or re-raise as needed
         RAISE EXCEPTION 'Error updating record in adder_responsibility: %', SQLERRM;

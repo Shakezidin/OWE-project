@@ -61,8 +61,8 @@ const CreateAdderCredit: React.FC<payScheduleProps> = ({
             unique_id: createAdderCreditData.unique_id,
             pay_scale: createAdderCreditData.pay_scale,
             type: createAdderCreditData.type,
-            max_rate: parseInt(createAdderCreditData.max_rate), // Parsing string to integer
-            min_rate: parseInt(createAdderCreditData.min_rate), // Parsing string to integer
+            max_rate: parseFloat(createAdderCreditData.max_rate), // Parsing string to integer
+            min_rate: parseFloat(createAdderCreditData.min_rate), // Parsing string to integer
             record_id: editData?.record_id!,
           })
         );
@@ -72,8 +72,8 @@ const CreateAdderCredit: React.FC<payScheduleProps> = ({
             unique_id: createAdderCreditData.unique_id,
             pay_scale: createAdderCreditData.pay_scale,
             type: createAdderCreditData.type,
-            max_rate: parseInt(createAdderCreditData.max_rate), // Parsing string to integer
-            min_rate: parseInt(createAdderCreditData.min_rate), // Parsing string to integer
+            max_rate: parseFloat(createAdderCreditData.max_rate), // Parsing string to integer
+            min_rate: parseFloat(createAdderCreditData.min_rate), // Parsing string to integer
           })
         );
       }
@@ -81,7 +81,17 @@ const CreateAdderCredit: React.FC<payScheduleProps> = ({
   };
 
   const handleInputChange = (e: FormInput) => {
-    const { name, value } = e.target;
+    let { name, value } = e.target;
+
+    if (name === 'min_rate' || name === 'max_rate') {
+      const sanitizedValue = value.replace(/[^0-9.]/g, '');
+      value = sanitizedValue;
+      setAdderCreditData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+      return;
+    }
     setAdderCreditData((prevData) => ({
       ...prevData,
       [name]: value,

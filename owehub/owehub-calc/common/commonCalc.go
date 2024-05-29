@@ -9,6 +9,8 @@ package Common
 
 import (
 	log "OWEApp/shared/logger"
+	"fmt"
+	"strconv"
 	"time"
 )
 
@@ -177,13 +179,13 @@ func CalculateContractAmount(netEPC float64, contractTotal float64, systemSize f
  * DESCRIPTION:    calculates the EPC based on the provided data
  * RETURNS:         contact amount
  *****************************************************************************/
-func CalculateEPCCalc(contractCalc float64, wc1 time.Time, netEPC float64, systemSize float64) float64 {
+func CalculateEPCCalc(contractCalc float64, wc1 time.Time, netEPC float64, systemSize float64, wc1Filterdate time.Time) float64 {
 
 	log.EnterFn(0, "CalculateEPCCalc")
 	defer func() { log.ExitFn(0, "CalculateEPCCalc", nil) }()
 
 	if contractCalc > 0.0 {
-		if wc1.Equal(Wc1FilterDate) {
+		if wc1.Equal(wc1Filterdate) {
 			/* Use net_epc if wc_1 is less than 44287*/
 			if netEPC != 0.0 {
 				return netEPC
@@ -217,4 +219,21 @@ func CalculateInstallPay(status string, grossRev, netRev float64, installPayM2 f
 		}
 	}
 	return installPay
+}
+
+/******************************************************************************
+ * FUNCTION:        CalculatePayRateSemi
+ * DESCRIPTION:     calculates the "installPay" value based on the provided data
+ * RETURNS:         float or error string
+ *****************************************************************************/
+
+func CalculatePayRateSemi(anValue, arValue string) string {
+	anFloat, errAn := strconv.ParseFloat(anValue, 64)
+	arFloat, errAr := strconv.ParseFloat(arValue, 64)
+
+	if errAn == nil && errAr == nil {
+		result := (anFloat - arFloat) * 1000
+		return fmt.Sprintf("%.2f", result)
+	}
+	return "ERROR"
 }

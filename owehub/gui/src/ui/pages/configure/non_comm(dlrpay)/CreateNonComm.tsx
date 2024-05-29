@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { ReactComponent as CROSS_BUTTON } from '../../../../resources/assets/cross_button.svg';
 import Input from '../../../components/text_input/Input';
 import { ActionButton } from '../../../components/button/ActionButton';
@@ -27,10 +27,12 @@ import {
   FormEvent,
   FormInput,
 } from '../../../../core/models/data_models/typesModel';
+import { addDays, format } from 'date-fns';
 interface ButtonProps {
   editMode: boolean;
   handleClose: () => void;
   commission: INonCommRowDLR | null;
+  setRefetch: Dispatch<SetStateAction<number>>;
 }
 
 interface IError {
@@ -41,6 +43,7 @@ const CreateNonComm: React.FC<ButtonProps> = ({
   handleClose,
   commission,
   editMode,
+  setRefetch,
 }) => {
   const dispatch = useAppDispatch();
   const { isSuccess } = useAppSelector((state) => state.nonComm);
@@ -61,7 +64,7 @@ const CreateNonComm: React.FC<ButtonProps> = ({
   const [errors, setErrors] = useState<IError>({} as IError);
   const [newFormData, setNewFormData] = useState<any>([]);
   const tableData = {
-    tableNames: ['dbas', 'dealers'],
+    tableNames: ['dbas', 'dealer'],
   };
   const getNewFormData = async () => {
     const res = await postCaller(EndPoints.get_newFormData, tableData);
@@ -95,14 +98,13 @@ const CreateNonComm: React.FC<ButtonProps> = ({
   const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
 
-    if (name === 'end_date') {
-      if (createCommission.start_date && value < createCommission.start_date) {
-        setErrors((prevErrors) => ({
-          ...prevErrors,
-          end_date: 'End date cannot be before the start date',
-        }));
-        return;
-      }
+    if (name === 'start_date') {
+      setCreateCommission((prev) => ({
+        ...prev,
+        end_date: '',
+        [name]:value
+      }));
+      return;
     }
 
     if (name === 'balance' || name === 'paid_amount') {
@@ -167,6 +169,7 @@ const CreateNonComm: React.FC<ButtonProps> = ({
     if (isSuccess) {
       handleClose();
       dispatch(resetSuccess());
+      setRefetch((prev) => prev + 1);
     }
   }, [isSuccess]);
   return (
@@ -232,18 +235,13 @@ const CreateNonComm: React.FC<ButtonProps> = ({
                   )}
                 </div>
                 <div className="create-input-field">
-                  <label className="inputLabel-select">DBA</label>
-                  <SelectOption
-                    options={dbaOption(newFormData)}
-                    onChange={(newValue) => {
-                      setCreateCommission((prev) => ({
-                        ...prev,
-                        dba: newValue?.value!,
-                      }));
-                    }}
-                    value={dealerOption(newFormData)?.find(
-                      (option) => option.value === createCommission.dba
-                    )}
+                  <Input
+                    type={'text'}
+                    label="DBA"
+                    value={createCommission.dba}
+                    name="dba"
+                    placeholder={'Enter'}
+                    onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.dba && (
                     <span
@@ -328,7 +326,15 @@ const CreateNonComm: React.FC<ButtonProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={'date'}
+                    disabled={!createCommission.start_date}
                     label="End Date"
+                    min={
+                      createCommission.start_date &&
+                      format(
+                        addDays(new Date(createCommission.start_date), 1),
+                        'yyyy-MM-dd'
+                      )
+                    }
                     value={createCommission.end_date}
                     name="end_date"
                     placeholder={'10/04/2004'}
@@ -424,7 +430,7 @@ const CreateNonComm: React.FC<ButtonProps> = ({
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
-                  {errors?.dealer_dba && (
+                  {errors?.approved_by && (
                     <span
                       style={{
                         display: 'block',
@@ -432,7 +438,7 @@ const CreateNonComm: React.FC<ButtonProps> = ({
                         textTransform: 'capitalize',
                       }}
                     >
-                      {errors.dealer_dba}
+                      {errors.approved_by}
                     </span>
                   )}
                 </div>

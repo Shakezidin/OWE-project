@@ -320,7 +320,7 @@ var apiRoutes = ApiRoutes{
 		"/owe-commisions-service/v1/get_newformdata",
 		apiHandler.HandleGetNewFormDataRequest,
 		true,
-		[]types.UserGroup{types.GroupAdmin},
+		[]types.UserGroup{types.GroupEveryOne},
 	},
 	{
 		strings.ToUpper("POST"),
@@ -1213,6 +1213,13 @@ var apiRoutes = ApiRoutes{
 		strings.ToUpper("POST"),
 		"/owe-commisions-service/v1/get_vdealer",
 		apiHandler.HandleGetVDealerDataRequest,
+		true,
+		[]types.UserGroup{types.GroupAdmin},
+	},
+	{
+		strings.ToUpper("POST"),
+		"/owe-commisions-service/v1/get_dealerpay",
+		apiHandler.HandleGetDealerPayDataRequest,
 		true,
 		[]types.UserGroup{types.GroupAdmin},
 	},

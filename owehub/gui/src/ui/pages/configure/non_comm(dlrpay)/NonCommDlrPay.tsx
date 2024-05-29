@@ -15,21 +15,18 @@ import {
   toggleRowSelection,
 } from '../../../components/chekbox/checkHelper';
 import Pagination from '../../../components/pagination/Pagination';
-import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
-import { CommissionModel } from '../../../../core/models/configuration/create/CommissionModel';
-import { FaArrowDown } from 'react-icons/fa6';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
-import Loading from '../../../components/loader/Loading';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import { ROUTES } from '../../../../routes/routes';
 import { NonCommDlrColumn } from '../../../../resources/static_data/configureHeaderData/NonCommDlrColumn';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import CreateNonComm from './CreateNonComm';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
-import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
-import FilterModal from '../../../components/FilterModal/FilterModal';
+import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
+import FilterHoc from '../../../components/FilterModal/FilterHoc';
+import MicroLoader from '../../../components/loader/MicroLoader';
 interface Column {
   name: string;
   displayName: string;
@@ -55,32 +52,33 @@ const NonCommDlrPay: React.FC = () => {
   const [editMode, setEditMode] = useState(false);
   const [editedCommission, setEditedCommission] =
     useState<INonCommRowDLR | null>(null);
-  const itemsPerPage = 5;
-  const currentPage = useAppSelector(
-    (state) => state.paginationType.currentPage
-  );
+  const itemsPerPage = 10;
+  const [currentPage, setCurrentPage] = useState(1);
   const [viewArchived, setViewArchived] = useState<boolean>(false);
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [filters, setFilters] = useState<FilterModel[]>([]);
+  const [refetch, setRefetch] = useState(1)
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
       archived: viewArchived,
+      filters,
     };
     dispatch(getNonComm(pageNumber));
-  }, [dispatch, currentPage, viewArchived]);
+  }, [dispatch, currentPage, viewArchived, filters,refetch]);
 
   const paginate = (pageNumber: number) => {
-    dispatch(setCurrentPage(pageNumber));
+    setCurrentPage(pageNumber);
   };
 
   const goToNextPage = () => {
-    dispatch(setCurrentPage(currentPage + 1));
+    setCurrentPage(currentPage + 1);
   };
 
   const goToPrevPage = () => {
-    dispatch(setCurrentPage(currentPage - 1));
+    setCurrentPage(currentPage - 1);
   };
 
   const filter = () => {
@@ -90,7 +88,7 @@ const NonCommDlrPay: React.FC = () => {
   const totalPages = Math.ceil(dbCount / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage + 1;
-
+  const endIndex = startIndex * currentPage;
   const handleAddCommission = () => {
     setEditMode(false);
     setEditedCommission(null);
@@ -138,7 +136,8 @@ const NonCommDlrPay: React.FC = () => {
   //
 
   const fetchFunction = (req: any) => {
-    dispatch(getNonComm(req));
+    setCurrentPage(1);
+    setFilters(req.filters);
   };
 
   const handleArchiveClick = async (record_id: any) => {
@@ -158,9 +157,12 @@ const NonCommDlrPay: React.FC = () => {
         page_number: currentPage,
         page_size: itemsPerPage,
         archived: viewArchived,
+        filters,
       };
       const res = await postCaller('update_noncommdlrpay_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
+        setSelectAllChecked(false);
+        setSelectedRows(new Set());
         dispatch(getNonComm(pageNumber));
         await successSwal('Archived', 'The data has been archived ');
       } else {
@@ -168,13 +170,7 @@ const NonCommDlrPay: React.FC = () => {
       }
     }
   };
-  if (loading) {
-    return (
-      <div className="loader-container">
-        <Loading /> {loading}
-      </div>
-    );
-  }
+
   return (
     <div className="comm">
       <Breadcrumb
@@ -186,7 +182,12 @@ const NonCommDlrPay: React.FC = () => {
       <div className="commissionContainer">
         <TableHeader
           title="NON-Comm"
-          onPressViewArchive={() => setViewArchived((prev) => !prev)}
+          onPressViewArchive={() =>{ 
+            setViewArchived((prev) => !prev)
+            setCurrentPage(1)
+            setSelectedRows(new Set())
+            setSelectAllChecked(false)
+          }}
           onPressArchive={() =>
             handleArchiveClick(
               Array.from(selectedRows).map(
@@ -223,17 +224,20 @@ const NonCommDlrPay: React.FC = () => {
             commission={editedCommission}
             editMode={editMode}
             handleClose={handleClose}
+            setRefetch={setRefetch}
           />
         )}
-        {filterOPen && (
-          <FilterModal
-            handleClose={filterClose}
-            columns={NonCommDlrColumn}
-            fetchFunction={fetchFunction}
-            page_number={currentPage}
-            page_size={itemsPerPage}
-          />
-        )}
+
+        <FilterHoc
+          isOpen={filterOPen}
+          resetOnChange={viewArchived}
+          handleClose={filterClose}
+          columns={NonCommDlrColumn}
+          fetchFunction={fetchFunction}
+          page_number={currentPage}
+          page_size={itemsPerPage}
+        />
+
         <div
           className="TableContainer"
           style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}
@@ -268,7 +272,15 @@ const NonCommDlrPay: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {currentPageData?.length > 0 ? (
+              {loading ? (
+                <tr>
+                  <td colSpan={NonCommDlrColumn.length}>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <MicroLoader />
+                    </div>
+                  </td>
+                </tr>
+              ) : currentPageData?.length > 0 ? (
                 currentPageData?.map((el: INonCommRowDLR, i: number) => (
                   <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
@@ -298,7 +310,7 @@ const NonCommDlrPay: React.FC = () => {
                     <td>{el.start_date}</td>
                     <td>{el.end_date}</td>
                     <td>
-                      {!viewArchived && (
+                      {!viewArchived && selectedRows.size < 2 && (
                         <div className="action-icon">
                           <div
                             className=""
@@ -335,7 +347,8 @@ const NonCommDlrPay: React.FC = () => {
         {commissionList?.length > 0 ? (
           <div className="page-heading-container">
             <p className="page-heading">
-              {startIndex} - {totalPages} of {commissionList?.length} item
+              {startIndex} - {endIndex > dbCount ? dbCount : endIndex} of{' '}
+              {dbCount} item
             </p>
 
             <Pagination

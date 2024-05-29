@@ -306,7 +306,7 @@ func PrepareNonCommDlrPayFilters(tableName string, dataFilter models.DataRequest
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY ndp.id, ndp.unique_id, ndp.customer, ndp.start_date, ndp.end_date, ndp.dealer_dba, ud.name, ndp.exact_amount, ndp.approved_by, ndp.notes, ndp.balance, ndp.paid_amount, ndp.dba")
+		filtersBuilder.WriteString(" GROUP BY ndp.id, ndp.unique_id, ndp.customer, ndp.start_date, ndp.end_date, ndp.dealer_dba, vd.dealer_name, ndp.exact_amount, ndp.approved_by, ndp.notes, ndp.balance, ndp.paid_amount, ndp.dba")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {

@@ -23,6 +23,7 @@ import {
   FormEvent,
   FormInput,
 } from '../../../../core/models/data_models/typesModel';
+import { addDays, format } from 'date-fns';
 
 interface ButtonProps {
   editMode: boolean;
@@ -108,14 +109,8 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
   const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
 
-    if (name === 'end_date') {
-      if (createCommission.start_date && value < createCommission.start_date) {
-        setErrors((prevErrors) => ({
-          ...prevErrors,
-          end_date: 'End date cannot be before the start date',
-        }));
-        return;
-      }
+    if (name === 'start_date') {
+      setCreateCommission((prev) => ({ ...prev, [name]: value, end_date: '' }));
     }
 
     if (
@@ -127,12 +122,7 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
       const sanitizedValue = value.replace(/[^0-9]/g, '');
       if (sanitizedValue === '' || Number(sanitizedValue) >= 0) {
         setCreateCommission((prev) => ({ ...prev, [name]: sanitizedValue }));
-        setErrors((prevErrors) => ({ ...prevErrors, [name]: '' }));
-      } else {
-        setErrors((prevErrors) => ({
-          ...prevErrors,
-          [name]: 'Invalid input. Please enter a non-negative number.',
-        }));
+        return;
       }
     } else {
       setCreateCommission((prev) => ({ ...prev, [name]: value }));
@@ -321,6 +311,8 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                     label="End Date"
                     value={createCommission.end_date}
                     name="end_date"
+                    min={createCommission.start_date && format(addDays(new Date(createCommission.start_date),1),"yyyy-MM-dd")}
+                    disabled={!createCommission.start_date}
                     placeholder={'10/04/2004'}
                     onChange={(e) => handleInputChange(e)}
                   />
@@ -343,6 +335,7 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                     label="Paid Amount"
                     value={createCommission.paid_amount}
                     name="paid_amount"
+                  
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />

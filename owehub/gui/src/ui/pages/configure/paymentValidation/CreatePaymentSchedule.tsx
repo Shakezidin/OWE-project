@@ -98,16 +98,29 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
     }));
   };
   const handlePayInputChange = (e: FormInput) => {
-    const { name, value } = e.target;
+    let { name, value } = e.target;
     if (name === 'start_Date') {
-      if (createPayData.start_date && value < createPayData.start_date) {
-        setCreatePayData((prevData) => ({
-          ...prevData,
-          [name]: value,
-          end_date: '',
-        }));
-        return;
-      }
+      setCreatePayData((prevData) => ({
+        ...prevData,
+        [name]: value,
+        end_date: '',
+      }));
+      return;
+    }
+    if (
+      name === 'rl' ||
+      name === 'draw' ||
+      name === 'draw_max' ||
+      name === 'rep_draw' ||
+      name === 'rep_draw_max'
+    ) {
+      const sanitizedValue = value.replace(/[^0-9.]/g, '');
+      value = sanitizedValue;
+      setCreatePayData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+      return;
     }
     setCreatePayData((prevData) => ({
       ...prevData,
@@ -120,32 +133,51 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
     try {
       if (handleValidation()) {
         setIsPending(true);
-        dispatch(updatePayForm(createPayData));
+        dispatch(
+          updatePayForm({
+            ...createPayData,
+            rl: parseFloat(createPayData.rl as string),
+            draw: parseFloat(createPayData.draw as string),
+            draw_max: parseFloat(createPayData.draw_max as string),
+            rep_draw: parseFloat(createPayData.rep_draw as string),
+            rep_draw_max: parseFloat(createPayData.rep_draw_max as string),
+          })
+        );
         if (createPayData.record_id) {
-          const res = await postCaller(
-            EndPoints.update_paymentschedule,
-            createPayData
-          );
+          const res = await postCaller(EndPoints.update_paymentschedule, {
+            ...createPayData,
+            rl: parseFloat(createPayData.rl as string),
+            draw: parseFloat(createPayData.draw as string),
+            draw_max: parseFloat(createPayData.draw_max as string),
+            rep_draw: parseFloat(createPayData.rep_draw as string),
+            rep_draw_max: parseFloat(createPayData.rep_draw_max as string),
+          });
           if ((await res?.status) === 200) {
             handleClose();
-            toast.success(res.message)
+            toast.success(res.message);
             setIsPending(false);
             setRefetch((prev) => prev + 1);
           } else {
+            setIsPending(false);
             toast.error(res.message);
           }
         } else {
           const { record_id, ...cleanedFormData } = createPayData;
-          const res = await postCaller(
-            EndPoints.create_paymentschedule,
-            cleanedFormData
-          );
+          const res = await postCaller(EndPoints.create_paymentschedule, {
+            ...cleanedFormData,
+            rl: parseFloat(createPayData.rl as string),
+            draw: parseFloat(createPayData.draw as string),
+            draw_max: parseFloat(createPayData.draw_max as string),
+            rep_draw: parseFloat(createPayData.rep_draw as string),
+            rep_draw_max: parseFloat(createPayData.rep_draw_max as string),
+          });
           if ((await res?.status) === 200) {
             handleClose();
-            toast.success(res.message)
+            toast.success(res.message);
             setIsPending(false);
             setRefetch((prev) => prev + 1);
           } else {
+            setIsPending(false);
             toast.error('Error', res.message);
           }
         }
