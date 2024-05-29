@@ -41,7 +41,7 @@ func ExecDlrPayInitialCalculation(resultChan chan string) {
 			dlrPayDataList = append(dlrPayDataList, dlrPayData)
 		}
 
-		// break
+		break
 		/* Update Calculated and Fetched data AR.Data Table */
 		if (i+1)%1000 == 0 && len(dlrPayDataList) > 0 {
 			err = db.AddMultipleRecordInDB(db.OweHubDbIndex, db.TableName_DLR_PAY_APCALC, dlrPayDataList)

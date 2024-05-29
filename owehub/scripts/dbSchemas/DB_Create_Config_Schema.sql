@@ -574,7 +574,7 @@ CREATE TABLE rebate_data (
 
 CREATE TABLE referral_data (
     id serial NOT NULL,
-    unique_id varchar NOT NULL UNIQUE,
+    unique_id varchar NOT NULL,
     new_customer text,
     referrer_serial text,
     referrer_name text,
@@ -597,7 +597,8 @@ CREATE TABLE referral_data (
     r2_referral_credit_$ text,
     r2_referral_credit_perc text,
     r2_addr_resp text,
-    start_date character varying NOT NULL,
+    adder_amount float,
+    start_date character varying,
     end_date character varying,
     is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
