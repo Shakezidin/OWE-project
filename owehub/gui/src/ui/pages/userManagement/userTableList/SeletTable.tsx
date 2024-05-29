@@ -22,7 +22,6 @@ const SelectTable: React.FC<ButtonProps> = ({
 }) => {
   const dispatch = useAppDispatch();
   const { option } = useAppSelector((state) => state.dataTableSlice);
-  const [sortType, setSortType] = useState('asc');
   function handleOptionChange(type: string, table: string, ind: number) {
     if (selected.has(ind)) {
       setTablePermissions((permissions: any) => {
@@ -36,19 +35,6 @@ const SelectTable: React.FC<ButtonProps> = ({
   const [tables, setTables] = useState(() =>
     option.map((option: { table_name: string }) => option.table_name)
   );
-  const handleSort = () => {
-    console.log('woringgg');
-
-    if (sortType === 'asc') {
-      setSortType('desc');
-      const table = tables.sort((a: string, b: string) => b.localeCompare(a));
-      setTables(table);
-    } else {
-      setSortType('asc');
-      const table = tables.sort((a: string, b: string) => a.localeCompare(b));
-      setTables(table);
-    }
-  };
 
   return (
     <>
@@ -97,17 +83,8 @@ const SelectTable: React.FC<ButtonProps> = ({
                   </th>
 
                   <th>
-                    <div
-                      onClick={handleSort}
-                      className="table-header"
-                      style={{ cursor: 'pointer' }}
-                    >
+                    <div className="table-header" style={{ cursor: 'pointer' }}>
                       <p>Table Name</p>
-                      {sortType === 'asc' ? (
-                        <FaArrowDown style={{ color: '#667085' }} />
-                      ) : (
-                        <FaArrowDown style={{ color: '#667085' }} />
-                      )}
                     </div>
                   </th>
                   <th>
