@@ -57,7 +57,7 @@ func HandleUpdateNonCommDlrPayRequest(resp http.ResponseWriter, req *http.Reques
 
 	// Validate string fields
 	if len(UpdateNonCommDlrPay.UniqueID) <= 0 || len(UpdateNonCommDlrPay.Customer) <= 0 ||
-		len(UpdateNonCommDlrPay.Dealer) <= 0 || len(UpdateNonCommDlrPay.DealerDBA) <= 0 ||
+		len(UpdateNonCommDlrPay.DealerName) <= 0 || len(UpdateNonCommDlrPay.DealerDBA) <= 0 ||
 		len(UpdateNonCommDlrPay.ExactAmount) <= 0 || len(UpdateNonCommDlrPay.ApprovedBy) <= 0 ||
 		len(UpdateNonCommDlrPay.Notes) <= 0 || len(UpdateNonCommDlrPay.DBA) <= 0 ||
 		len(UpdateNonCommDlrPay.StartDate) <= 0 {
@@ -94,7 +94,7 @@ func HandleUpdateNonCommDlrPayRequest(resp http.ResponseWriter, req *http.Reques
 	queryParameters = append(queryParameters, UpdateNonCommDlrPay.RecordId)
 	queryParameters = append(queryParameters, UpdateNonCommDlrPay.UniqueID)
 	queryParameters = append(queryParameters, UpdateNonCommDlrPay.Customer)
-	queryParameters = append(queryParameters, UpdateNonCommDlrPay.Dealer)
+	queryParameters = append(queryParameters, UpdateNonCommDlrPay.DealerName)
 	queryParameters = append(queryParameters, UpdateNonCommDlrPay.DealerDBA)
 	queryParameters = append(queryParameters, UpdateNonCommDlrPay.ExactAmount)
 	queryParameters = append(queryParameters, UpdateNonCommDlrPay.ApprovedBy)

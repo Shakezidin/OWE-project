@@ -539,7 +539,7 @@ CREATE TABLE loan_fee_adder (
 
 CREATE TABLE rebate_data (
     id serial NOT NULL,
-    unique_id varchar NOT NULL UNIQUE,
+    unique_id varchar NOT NULL,
     customer_verf text,
     type_rd_mktg text,
     item text,
@@ -563,7 +563,8 @@ CREATE TABLE rebate_data (
     r1_rebate_credit_perc text,
     r2_rebate_credit_$ text,
     r2_rebate_credit_perc text,
-    start_date character varying NOT NULL,
+    adder_amount float,
+    start_date character varying,
     end_date character varying,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
@@ -574,7 +575,7 @@ CREATE TABLE rebate_data (
 
 CREATE TABLE referral_data (
     id serial NOT NULL,
-    unique_id varchar NOT NULL UNIQUE,
+    unique_id varchar NOT NULL,
     new_customer text,
     referrer_serial text,
     referrer_name text,
@@ -597,7 +598,8 @@ CREATE TABLE referral_data (
     r2_referral_credit_$ text,
     r2_referral_credit_perc text,
     r2_addr_resp text,
-    start_date character varying NOT NULL,
+    adder_amount float,
+    start_date character varying,
     end_date character varying,
     is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
@@ -609,7 +611,7 @@ CREATE TABLE referral_data (
 
 CREATE TABLE dealer_credit (
     id serial NOT NULL,
-    unique_id varchar NOT NULL UNIQUE,
+    unique_id varchar NOT NULL,
     date date,
     exact_amount float,
     per_kw_amount float,
@@ -639,7 +641,7 @@ CREATE TABLE noncomm_dlrpay (
     is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
-    FOREIGN KEY (dealer_id) REFERENCES user_details(user_id)
+    FOREIGN KEY (dealer_id) REFERENCES v_dealer(id)
 );
 
 CREATE TABLE dlr_oth(
