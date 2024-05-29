@@ -27,6 +27,7 @@ import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import MicroLoader from '../../../components/loader/MicroLoader';
+import { Tooltip as ReactTooltip } from 'react-tooltip';
 interface Column {
   name: string;
   displayName: string;
@@ -58,7 +59,8 @@ const NonCommDlrPay: React.FC = () => {
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [filters, setFilters] = useState<FilterModel[]>([]);
-  const [refetch, setRefetch] = useState(1)
+  const [refetch, setRefetch] = useState(1);
+  const [selected, setSelected] = useState(-1);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -67,7 +69,26 @@ const NonCommDlrPay: React.FC = () => {
       filters,
     };
     dispatch(getNonComm(pageNumber));
-  }, [dispatch, currentPage, viewArchived, filters,refetch]);
+  }, [dispatch, currentPage, viewArchived, filters, refetch]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        selected !== null &&
+        !(event.target as HTMLElement).closest(
+          `[data-tooltip-id="tooltip-${selected}"]`
+        )
+      ) {
+        setSelected(-1);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [selected]);
 
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
@@ -182,11 +203,11 @@ const NonCommDlrPay: React.FC = () => {
       <div className="commissionContainer">
         <TableHeader
           title="NON-Comm"
-          onPressViewArchive={() =>{ 
-            setViewArchived((prev) => !prev)
-            setCurrentPage(1)
-            setSelectedRows(new Set())
-            setSelectAllChecked(false)
+          onPressViewArchive={() => {
+            setViewArchived((prev) => !prev);
+            setCurrentPage(1);
+            setSelectedRows(new Set());
+            setSelectAllChecked(false);
           }}
           onPressArchive={() =>
             handleArchiveClick(
@@ -305,7 +326,35 @@ const NonCommDlrPay: React.FC = () => {
                     <td>{el.exact_amount}</td>
                     <td>{el.balance}</td>
                     <td>{el.approved_by}</td>
-                    <td>{el.notes}</td>
+                    <td style={{ display: 'flex' }}>
+                      <p style={{ width: 'max-content' }}>
+                        {el.notes?.trim().length > 40
+                          ? el.notes.slice(0, 20) + '...'
+                          : el.notes || 'N/A'}
+                      </p>
+                      {el.notes?.trim().length > 40 && (
+                        <span
+                          role="button"
+                          style={{
+                            cursor: 'pointer',
+                            color: selected === i ? '#F82C2C' : '#3083e5',
+                          }}
+                          data-tooltip-id={`tooltip-${i}`}
+                          data-tooltip-content={el.notes}
+                          data-tooltip-place="bottom"
+                          onClick={() => setSelected(selected === i ? -1 : i)}
+                        >
+                          {i === selected ? 'Show Less' : 'Show More'}
+                        </span>
+                      )}
+
+                      <ReactTooltip
+                        id={`tooltip-${i}`}
+                        className="custom-tooltip"
+                        isOpen={selected === i}
+                        style={{zIndex:20}}
+                      />
+                    </td>
                     <td>{el.paid_amount}</td>
                     <td>{el.start_date}</td>
                     <td>{el.end_date}</td>

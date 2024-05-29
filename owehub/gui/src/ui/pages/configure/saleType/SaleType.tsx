@@ -28,7 +28,7 @@ import Swal from 'sweetalert2';
 import { ROUTES } from '../../../../routes/routes';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import MicroLoader from '../../../components/loader/MicroLoader';
-
+import { Tooltip as ReactTooltip } from 'react-tooltip';
 const SaleType = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -37,10 +37,12 @@ const SaleType = () => {
   const handleClose = () => setOpen(false);
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const {saletype_list:salesTypeList,totalCount,loading} = useAppSelector(
-    (state) => state.salesType
-  );
- 
+  const {
+    saletype_list: salesTypeList,
+    totalCount,
+    loading,
+  } = useAppSelector((state) => state.salesType);
+
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
@@ -54,6 +56,7 @@ const SaleType = () => {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [filters, setFilters] = useState<FilterModel[]>([]);
   const [refetch, setRefetch] = useState(1);
+  const [selected, setSelected] = useState(-1);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -63,6 +66,26 @@ const SaleType = () => {
     };
     dispatch(fetchSalesType(pageNumber));
   }, [dispatch, currentPage, viewArchived, filters, refetch]);
+
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        selected !== null &&
+        !(event.target as HTMLElement).closest(
+          `[data-tooltip-id="tooltip-${selected}"]`
+        )
+      ) {
+        setSelected(-1);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [selected]);
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
@@ -151,10 +174,7 @@ const SaleType = () => {
           archived: viewArchived,
         };
 
-        const res = await postCaller(
-          "update_saletype_archive",
-          newValue
-        );
+        const res = await postCaller('update_saletype_archive', newValue);
         if (res.status === HTTP_STATUS.OK) {
           // If API call is successful, refetch commissions
           dispatch(fetchSalesType(pageNumber));
@@ -180,7 +200,6 @@ const SaleType = () => {
     }
   };
   const handleArchiveClick = async (record_id: any) => {
-
     const confirmationResult = await Swal.fire({
       title: 'Are you sure?',
       text: 'This action will archive your data.',
@@ -190,7 +209,7 @@ const SaleType = () => {
       cancelButtonColor: '#d33',
       confirmButtonText: 'Yes, archive',
     });
-    if (confirmationResult.isConfirmed){
+    if (confirmationResult.isConfirmed) {
       const archived: number[] = [record_id];
       let newValue = {
         record_id: archived,
@@ -202,7 +221,7 @@ const SaleType = () => {
         filters,
         archived: viewArchived,
       };
-      const res = await postCaller("update_saletype_archive", newValue);
+      const res = await postCaller('update_saletype_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
         dispatch(fetchSalesType(pageNumber));
       }
@@ -214,7 +233,7 @@ const SaleType = () => {
     // When toggling, reset the selected rows
     setSelectedRows(new Set());
     setSelectAllChecked(false);
-    setCurrentPage(1)
+    setCurrentPage(1);
   };
   const fetchFunction = (req: any) => {
     setCurrentPage(1);
@@ -298,19 +317,17 @@ const SaleType = () => {
               </tr>
             </thead>
             <tbody>
-              {
-                loading?
+              {loading ? (
                 <tr>
-                  <td colSpan={SalesTypeColumn.length}>
-                  <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  <td colSpan={SalesTypeColumn.length+1}>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
                       <MicroLoader />
                     </div>
                   </td>
                 </tr>
-              
-             : currentPageData?.length > 0 ? (
+              ) : currentPageData?.length > 0 ? (
                 currentPageData?.map((el: any, i: any) => (
-                  <tr key={i}>
+                  <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
                       <div className="flex-check">
                         <CheckBox
@@ -328,10 +345,37 @@ const SaleType = () => {
                       </div>
                     </td>
 
-                    <td>{el.description || "N/A"}</td>
+                    <td style={{ display: 'flex' }}>
+                      <p style={{ width: 'max-content' }}>
+                        {el.description?.trim().length > 40
+                          ? el.description.slice(0, 20) + '...'
+                          : el.description || 'N/A'}
+                      </p>
+                      {el.description?.trim().length > 40 && (
+                        <span
+                          role="button"
+                          style={{ cursor: 'pointer', color:
+                          selected === i
+                            ? '#F82C2C'
+                            : '#3083e5', }}
+                          data-tooltip-id={`tooltip-${i}`}
+                          data-tooltip-content={el.description}
+                          data-tooltip-place="bottom"
+                          onClick={() => setSelected(selected === i ? -1 : i)}
+                        >
+                          {i === selected ? 'Show Less' : 'Show More'}
+                        </span>
+                      )}
 
-                    {!viewArchived && selectedRows.size < 2 && (
-                      <td>
+                      <ReactTooltip
+                        id={`tooltip-${i}`}
+                        className="custom-tooltip"
+                        isOpen={selected === i}
+                      />
+                    </td>
+
+                    <td>
+                      {!viewArchived && selectedRows.size < 2 && (
                         <div className="action-icon">
                           <div
                             className="action-archive"
@@ -349,8 +393,8 @@ const SaleType = () => {
                             <img src={ICONS.editIcon} alt="" />
                           </div>
                         </div>
-                      </td>
-                    )}
+                      )}
+                    </td>
                   </tr>
                 ))
               ) : (
@@ -369,7 +413,8 @@ const SaleType = () => {
         {salesTypeList?.length > 0 ? (
           <div className="page-heading-container">
             <p className="page-heading">
-              {startIndex} - {endIndex>totalCount?totalCount:endIndex} of {currentPageData?.length} item
+              {startIndex} - {endIndex > totalCount ? totalCount : endIndex} of{' '}
+              {totalCount} item
             </p>
 
             <Pagination

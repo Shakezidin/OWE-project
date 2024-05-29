@@ -81,7 +81,7 @@ const CreateNonComm: React.FC<ButtonProps> = ({
         continue;
       }
       if (!createCommission[key as keyof typeof createCommission]) {
-        error[key as keyof IError] = `${key.toLocaleLowerCase()} is required`;
+        error[key as keyof IError] = `${key.replaceAll("_"," ")} is required`;
       }
     }
     setErrors({ ...error });
@@ -102,7 +102,7 @@ const CreateNonComm: React.FC<ButtonProps> = ({
       setCreateCommission((prev) => ({
         ...prev,
         end_date: '',
-        [name]:value
+        [name]: value,
       }));
       return;
     }
@@ -127,42 +127,37 @@ const CreateNonComm: React.FC<ButtonProps> = ({
         [name]: value,
       }));
     }
-
-    // Clear the error for the specific field
-    setErrors((prevErrors) => ({
-      ...prevErrors,
-      [name]: '',
-    }));
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (editMode) {
-      dispatch(
-        updateNoncom({
-          ...createCommission,
-          paid_amount: parseFloat(createCommission.paid_amount),
-          balance: parseFloat(createCommission.balance),
-          record_id: commission?.record_id!,
-          dba: createCommission.dba || 'XYZ Motors',
-          dealer_dba: createCommission.dealer_dba || 'XYZ Motors',
-          dealer_name: createCommission.dealer_name || 'M Asif',
-        })
-      );
-    } else {
-      dispatch(
-        createNonComm({
-          ...createCommission,
-          paid_amount: parseFloat(createCommission.paid_amount),
-          balance: parseFloat(createCommission.balance),
-          dba: createCommission.dba || 'XYZ Motors',
-          dealer_dba: createCommission.dealer_dba || 'XYZ Motors',
-          dealer_name: createCommission.dealer_name || 'M Asif',
-        })
-      );
+
+    if (handleValidation()) {
+      if (editMode) {
+        dispatch(
+          updateNoncom({
+            ...createCommission,
+            paid_amount: parseFloat(createCommission.paid_amount),
+            balance: parseFloat(createCommission.balance),
+            record_id: commission?.record_id!,
+            dba: createCommission.dba || 'XYZ Motors',
+            dealer_dba: createCommission.dealer_dba || 'XYZ Motors',
+            dealer_name: createCommission.dealer_name || 'M Asif',
+          })
+        );
+      } else {
+        dispatch(
+          createNonComm({
+            ...createCommission,
+            paid_amount: parseFloat(createCommission.paid_amount),
+            balance: parseFloat(createCommission.balance),
+            dba: createCommission.dba || 'XYZ Motors',
+            dealer_dba: createCommission.dealer_dba || 'XYZ Motors',
+            dealer_name: createCommission.dealer_name || 'M Asif',
+          })
+        );
+      }
     }
-    // if (handleValidation()) {
-    //   }
   };
 
   useEffect(() => {
