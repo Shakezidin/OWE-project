@@ -28,7 +28,7 @@ func ExecDlrPayInitialCalculation(resultChan chan string) {
 	log.EnterFn(0, "ExecDlrPayInitialCalculation")
 	defer func() { log.ExitFn(0, "ExecDlrPayInitialCalculation", err) }()
 
-	for _, saleData := range dataMgmt.SaleData.SaleDataList {
+	for i, saleData := range dataMgmt.SaleData.SaleDataList {
 		var dlrPayData map[string]interface{}
 		dlrPayData, err = CalculateDlrPayProject(saleData)
 		if err != nil || dlrPayData == nil {
@@ -40,13 +40,16 @@ func ExecDlrPayInitialCalculation(resultChan chan string) {
 		} else {
 			dlrPayDataList = append(dlrPayDataList, dlrPayData)
 		}
-	}
-	/* Update Calculated and Fetched data AR.Data Table */
-	err = db.AddMultipleRecordInDB(db.OweHubDbIndex, db.TableName_DLR_PAY_APCALC, dlrPayDataList)
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to insert initial AR Data in DB err: %v", err)
-	}
 
+		// break
+		/* Update Calculated and Fetched data AR.Data Table */
+		if (i+1)%1000 == 0 && len(dlrPayDataList) > 0 {
+			err = db.AddMultipleRecordInDB(db.OweHubDbIndex, db.TableName_DLR_PAY_APCALC, dlrPayDataList)
+			if err != nil {
+				log.FuncErrorTrace(0, "Failed to insert initial AR Data in DB err: %v", err)
+			}
+		}
+	}
 	resultChan <- "SUCCESS"
 }
 
