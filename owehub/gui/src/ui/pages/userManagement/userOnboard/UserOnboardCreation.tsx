@@ -51,6 +51,8 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const [selectTable, setSelectTable] = useState<boolean>(false);
   const tables = useAppSelector((state) => state.dataTableSlice.option);
+  const [emailError, setEmailError] = useState('');
+
 
   /** handle change for role */
   const handleChange = (newValue: any, fieldName: string) => {
@@ -77,23 +79,29 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
     const { value } = newValue;
     dispatch(updateUserForm({ field: fieldName, value }));
   };
+  const validateEmail = (email: string) => {
+    // Simple email validation regex pattern
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailPattern.test(email);
+  };
 
-  const handleInputChange = (
-    e: FormInput | React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
+  const handleInputChange = (e: FormInput | React.ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = e.target;
+
     if (name === 'first_name' || name === 'last_name') {
-      dispatch(updateUserForm({ field: name, value }));
-    } else if (name === 'mobile_number') {
-      const numericValue = value.replace(/[^0-9]/g, '').slice(0, 16);
-      if (numericValue.length < 7) {
-        setPhoneNumberError('Phone Number should be at least 7 digits');
-      } else if (numericValue.length > 16) {
-        setPhoneNumberError('Phone Number should not exceed 16 digits');
+      const sanitizedValue = value.replace(/[^a-zA-Z\s]/g, '');
+      dispatch(updateUserForm({ field: name, value: sanitizedValue }));
+    } else if (name === 'email_id') {
+      const isValidEmail = validateEmail(value);
+      if (!isValidEmail) {
+        setEmailError('Please enter a valid email address.');
       } else {
-        setPhoneNumberError('');
+        setEmailError('');
       }
-      dispatch(updateUserForm({ field: name, value: numericValue }));
+      dispatch(updateUserForm({ field: name, value }));
+    } else if (name === 'description') {
+      const trimmedValue = value.trimStart();
+      dispatch(updateUserForm({ field: name, value: trimmedValue }));
     } else {
       dispatch(updateUserForm({ field: name, value }));
     }
@@ -123,7 +131,6 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
 
   /** render ui */
 
-  console.log('jhg', formData.mobile_number);
 
   return (
     <div className="transparent-model">
@@ -156,6 +163,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                       placeholder={'Enter First Name'}
                       onChange={(e) => handleInputChange(e)}
                       name={'first_name'}
+                      maxLength={100}
                     />
                   </div>
                   <div className="create-input-field">
@@ -166,6 +174,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                       placeholder={'Enter Last Name'}
                       onChange={(e) => handleInputChange(e)}
                       name={'last_name'}
+                      maxLength={100}
                     />
                   </div>
                   <div className="create-input-field">
@@ -213,9 +222,10 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                       name={'email_id'}
                       disabled={formData.isEdit}
                     />
+                    {emailError && <div className="error-message">{emailError}</div>}
                   </div>
 
-                  <div className="create-input-field" style={{marginTop:'-5px'}}>
+                  <div className="create-input-field" style={{ marginTop: '-5px' }}>
                     <label className="inputLabel">Phone Number</label>
                     <PhoneInput
                       international
@@ -228,6 +238,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                         );
                       }}
                       placeholder="Enter phone number"
+                      maxLength={16}
                     />
                     {phoneNumberError && (
                       <p className="error-message">{phoneNumberError}</p>
@@ -235,10 +246,10 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                   </div>
 
                   {formData.role_name === 'Admin' ||
-                  formData.role_name === 'SubDealer Owner' ||
-                  formData.role_name === 'DB User' ||
-                  formData.role_name === 'Dealer Owner' ||
-                  formData.role_name === 'Finance Admin' ? null : (
+                    formData.role_name === 'SubDealer Owner' ||
+                    formData.role_name === 'DB User' ||
+                    formData.role_name === 'Dealer Owner' ||
+                    formData.role_name === 'Finance Admin' ? null : (
                     <div className="create-input-field">
                       <label className="inputLabel-select selected-fields-onboard">
                         Dealer Owner
@@ -359,9 +370,8 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                     placeholder="Type"
                   ></textarea>
                   <p
-                    className={`character-count ${
-                      formData.description.length >= 255 ? 'exceeded' : ''
-                    }`}
+                    className={`character-count ${formData.description.length >= 255 ? 'exceeded' : ''
+                      }`}
                   >
                     {formData.description.length}/255 characters
                   </p>
@@ -376,7 +386,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
             onClick={handleClose}
             type={'button'}
           />
-          <ActionButton title={'Create'} onClick={() => {}} type={'submit'} />
+          <ActionButton title={'Create'} onClick={() => { }} type={'submit'} />
         </div>
       </form>
     </div>

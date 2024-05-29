@@ -62,7 +62,7 @@ const UserActivity: React.FC = () => {
     setCurrentPage(currentPage - 1);
   };
 
-  const filter = () => {};
+  const filter = () => { };
 
   const countWords = (str: string): number => {
     return str.trim().split(/\s+/).length;
@@ -148,18 +148,15 @@ const UserActivity: React.FC = () => {
                         </td>
                         <td style={{ textAlign: 'left' }}>{el.db_name}</td>
                         <td style={{ textAlign: 'left' }}>{el.time_date}</td>
+                    
                         <td style={{ textAlign: 'left' }}>
-                          {wordCount <= 5
-                            ? el.query_details
-                            : truncatedQueryDetails}
-                          {wordCount > 5 && (
+                          {el.query_details.length > 50 ? (
                             <>
+                              <span style={{ maxWidth: '250px',marginBottom:"-5px", display: 'inline-block', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                {el.query_details}
+                              </span>
                               <button
-                                onClick={() =>
-                                  setOpenTooltipIndex(
-                                    openTooltipIndex === index ? null : index
-                                  )
-                                }
+                                onClick={() => setOpenTooltipIndex(openTooltipIndex === index ? null : index)}
                                 data-tooltip-id={tooltipId}
                                 data-tooltip-content={el.query_details}
                                 data-tooltip-place="bottom"
@@ -167,23 +164,17 @@ const UserActivity: React.FC = () => {
                                   marginLeft: '5px',
                                   border: 'none',
                                   background: 'none',
-                                  color:
-                                    openTooltipIndex === index
-                                      ? '#F82C2C'
-                                      : '#3083e5',
+                                  color: openTooltipIndex === index ? '#F82C2C' : '#3083e5',
                                   cursor: 'pointer',
+                                  fontSize: "12px"
                                 }}
                               >
-                                {openTooltipIndex === index
-                                  ? 'Show less'
-                                  : 'Show more'}
+                                {openTooltipIndex === index ? 'Show less' : 'Show more'}
                               </button>
-                              <ReactTooltip
-                                id={tooltipId}
-                                className="custom-tooltip"
-                                isOpen={openTooltipIndex === index}
-                              />
+                              <ReactTooltip id={tooltipId} className="custom-tooltip" isOpen={openTooltipIndex === index} />
                             </>
+                          ) : (
+                            el.query_details
                           )}
                         </td>
                       </tr>
