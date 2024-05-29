@@ -22,6 +22,7 @@ const SelectTable: React.FC<ButtonProps> = ({
 }) => {
   const dispatch = useAppDispatch();
   const { option } = useAppSelector((state) => state.dataTableSlice);
+  const [sortType, setSortType] = useState('asc');
   function handleOptionChange(type: string, table: string, ind: number) {
     if (selected.has(ind)) {
       setTablePermissions((permissions: any) => {
@@ -35,6 +36,21 @@ const SelectTable: React.FC<ButtonProps> = ({
   const [tables, setTables] = useState(() =>
     option.map((option: { table_name: string }) => option.table_name)
   );
+  const handleSort = () => {
+    console.log('woringgg');
+
+    if (sortType === 'asc') {
+      setSortType('desc');
+      const table = tables.sort((a: string, b: string) => b.localeCompare(a));
+      setTables(table);
+    } else {
+      setSortType('asc');
+      const table = tables.sort((a: string, b: string) => a.localeCompare(b));
+      setTables(table);
+    }
+  };
+
+  console.log(tablePermissions, 'permission', tables);
 
   return (
     <>
@@ -83,8 +99,17 @@ const SelectTable: React.FC<ButtonProps> = ({
                   </th>
 
                   <th>
-                    <div className="table-header" style={{ cursor: 'pointer' }}>
+                    <div
+                      onClick={handleSort}
+                      className="table-header"
+                      style={{ cursor: 'pointer' }}
+                    >
                       <p>Table Name</p>
+                      {sortType === 'asc' ? (
+                        <FaArrowDown style={{ color: '#667085' }} />
+                      ) : (
+                        <FaArrowDown style={{ color: '#667085' }} />
+                      )}
                     </div>
                   </th>
                   <th>
@@ -106,7 +131,7 @@ const SelectTable: React.FC<ButtonProps> = ({
               </thead>
               <tbody>
                 {tables.map((table: string, ind: number) => (
-                  <tr>
+                  <tr key={ind}>
                     <td>
                       <div>
                         <CheckBox
@@ -138,9 +163,7 @@ const SelectTable: React.FC<ButtonProps> = ({
                           <input
                             type="radio"
                             className="user-radio"
-                            name={table}
                             disabled={!selected.has(ind)}
-                            id={table}
                             checked={tablePermissions[table] === 'View'}
                             onChange={(e) =>
                               handleOptionChange('View', table, ind)
@@ -155,9 +178,7 @@ const SelectTable: React.FC<ButtonProps> = ({
                           <input
                             type="radio"
                             className="user-radio"
-                            name={table}
                             disabled={!selected.has(ind)}
-                            id={table}
                             checked={tablePermissions[table] === 'Edit'}
                             onChange={(e) =>
                               handleOptionChange('Edit', table, ind)
@@ -172,9 +193,7 @@ const SelectTable: React.FC<ButtonProps> = ({
                           <input
                             type="radio"
                             className="user-radio"
-                            name={table}
                             disabled={!selected.has(ind)}
-                            id={table}
                             // value={"1"}
                             checked={tablePermissions[table] === 'Full'}
                             onChange={(e) =>
@@ -182,6 +201,7 @@ const SelectTable: React.FC<ButtonProps> = ({
                             }
                           />
                         </div>
+                       
                       </div>
                     </td>
                   </tr>
