@@ -51,11 +51,16 @@ const Input: FC<InputProps> = ({
           placeholder={placeholder}
           autoComplete="off"
           value={value}
-          onChange={(e) =>
-            typeof onChange !== 'undefined' && !e.target.value.startsWith(' ')
+          onChange={(e) => {
+            if (name.includes('unique')) {
+              const trim = e.target.value.trim();
+              e.target.value = trim;
+            }
+            return typeof onChange !== 'undefined' &&
+              !e.target.value.startsWith(' ')
               ? onChange(e)
-              : undefined
-          }
+              : undefined;
+          }}
           className="input"
           disabled={disabled}
           {...rest}

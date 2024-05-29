@@ -692,109 +692,121 @@ const ProjectStatus = () => {
                                 {item.name}
                               </p>
                             </div>
-                            {item.childStatusData.map((el: any, index: any) => (
-                              <div
-                                className="notch-corner"
-                                style={{
-                                  background: el.bgColor,
-                                  color: '#101828',
-                                }}
-                              >
-                                <div className="child-corner"></div>
-                                <div
-                                  className=""
-                                  style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    alignItems: 'center',
-                                    width: '35px',
-                                  }}
-                                >
-                                  {!(
-                                    el.key &&
-                                    projectDetail[
-                                      el.key as keyof typeof projectDetail
-                                    ]
-                                  ) && (
-                                    <span
-                                      className="date-para"
+                            {item.childStatusData.map(
+                              (el: any, index: any) =>
+                                el.key &&
+                                projectDetail[
+                                  el.key as keyof typeof projectDetail
+                                ] && (
+                                  <div
+                                    className="notch-corner"
+                                    style={{
+                                      background: el.bgColor,
+                                      color: '#101828',
+                                    }}
+                                  >
+                                    <div className="child-corner"></div>
+                                    <div
+                                      className=""
                                       style={{
-                                        color: el.color,
-                                        fontSize: '9px',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        width: '35px',
                                       }}
                                     >
-                                      ETA
-                                    </span>
-                                  )}
-                                  <p
-                                    style={{ color: el.color, fontSize: '9px' }}
-                                  >
-                                    {el.key &&
-                                    projectDetail[
-                                      el.key as keyof typeof projectDetail
-                                    ]
-                                      ? format(
-                                          new Date(
-                                            projectDetail[
-                                              el.key as keyof typeof projectDetail
-                                            ]
-                                          ),
-                                          'dd MMMM'
-                                        ).slice(0, 6)
-                                      : 'N/A'}
-                                  </p>
-                                  {el.key &&
-                                    projectDetail[
-                                      el.key as keyof typeof projectDetail
-                                    ] && (
+                                      {!(
+                                        el.key &&
+                                        projectDetail[
+                                          el.key as keyof typeof projectDetail
+                                        ]
+                                      ) && (
+                                        <span
+                                          className="date-para"
+                                          style={{
+                                            color: el.color,
+                                            fontSize: '9px',
+                                          }}
+                                        >
+                                          ETA
+                                        </span>
+                                      )}
+                                      <p
+                                        style={{
+                                          color: el.color,
+                                          fontSize: '9px',
+                                        }}
+                                      >
+                                        {el.key &&
+                                        projectDetail[
+                                          el.key as keyof typeof projectDetail
+                                        ]
+                                          ? format(
+                                              new Date(
+                                                projectDetail[
+                                                  el.key as keyof typeof projectDetail
+                                                ]
+                                              ),
+                                              'dd MMMM'
+                                            ).slice(0, 6)
+                                          : 'N/A'}
+                                      </p>
+                                      {el.key &&
+                                        projectDetail[
+                                          el.key as keyof typeof projectDetail
+                                        ] && (
+                                          <p
+                                            className="stage-1-para"
+                                            style={{
+                                              color: el.color,
+                                              fontSize: '10px',
+                                            }}
+                                          >
+                                            {' '}
+                                            {format(
+                                              new Date(
+                                                projectDetail[
+                                                  el.key as keyof typeof projectDetail
+                                                ]
+                                              ),
+                                              'yyyy'
+                                            )}
+                                          </p>
+                                        )}
+                                    </div>
+                                    <div
+                                      className="border-notch"
+                                      style={{
+                                        border: '0.5px solid ',
+                                        borderColor: el.borderColor,
+                                      }}
+                                    ></div>
+                                    <div
+                                      className=""
+                                      style={{ width: '115px' }}
+                                    >
                                       <p
                                         className="stage-1-para"
                                         style={{
                                           color: el.color,
-                                          fontSize: '10px',
+                                          fontSize: '12px',
                                         }}
                                       >
-                                        {' '}
-                                        {format(
-                                          new Date(
-                                            projectDetail[
-                                              el.key as keyof typeof projectDetail
-                                            ]
-                                          ),
-                                          'yyyy'
-                                        )}
+                                        {el.process}
                                       </p>
-                                    )}
-                                </div>
-                                <div
-                                  className="border-notch"
-                                  style={{
-                                    border: '0.5px solid ',
-                                    borderColor: el.borderColor,
-                                  }}
-                                ></div>
-                                <div className="" style={{ width: '115px' }}>
-                                  <p
-                                    className="stage-1-para"
-                                    style={{
-                                      color: el.color,
-                                      fontSize: '12px',
-                                    }}
-                                  >
-                                    {el.process}
-                                  </p>
-                                  <p
-                                    className=""
-                                    style={{
-                                      color: el.color,
-                                      fontSize: '11px',
-                                    }}
-                                  >
-                                    {el.data}
-                                  </p>
-                                </div>
-                              </div>
-                            ))}
+                                      <p
+                                        className=""
+                                        style={{
+                                          color: el.color,
+                                          fontSize: '11px',
+                                        }}
+                                      >
+                                        {el.data}
+                                      </p>
+                                    </div>
+                                  </div>
+                                )
+                            )}
                           </div>
                           {i === 9 ? null : (
                             <div className="dotted-border"></div>
