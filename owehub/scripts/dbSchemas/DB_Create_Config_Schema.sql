@@ -746,7 +746,7 @@ CREATE TABLE leader_override (
 
 CREATE TABLE adder_responsibility (
     id serial NOT NULL,
-    unique_id varchar NOT NULL UNIQUE,
+    unique_id varchar NOT NULL,
     pay_scale text,
     percentage float,
     is_archived BOOLEAN DEFAULT FALSE,
@@ -770,7 +770,7 @@ CREATE TABLE adder_credit (
 
 CREATE TABLE adder_data (
     id serial NOT NULL,
-    unique_id varchar NOT NULL UNIQUE,
+    unique_id varchar NOT NULL,
     date date,
     type_ad_mktg text,
     gc text,
