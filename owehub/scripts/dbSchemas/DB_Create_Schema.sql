@@ -61,6 +61,8 @@ INSERT INTO loan_type (product_code,active,adder,description) VALUES ('P123',1,1
 \copy ar_schedule(partner,installer,sale_type_id,state_id,red_line,calc_date,permit_pay,permit_max,install_pay,pto_pay,start_date,end_date) FROM '/docker-entrypoint-initdb.d/ar_schedule.csv' DELIMITER ',' CSV;
 \copy install_cost(cost,start_date,end_date) FROM '/docker-entrypoint-initdb.d/install_cost.csv' DELIMITER ',' CSV;
 \copy reconcile(unique_id,start_date,amount,notes) FROM '/docker-entrypoint-initdb.d/reconcile.csv' DELIMITER ',' CSV;
+\copy adder_data(unique_id,date,type_ad_mktg,gc,exact_amount,type1,per_kw_amt,rep_percent,description,notes,sys_size,adder_cal) FROM '/docker-entrypoint-initdb.d/adder_data.csv' DELIMITER '^' CSV;
+
 /******************************SETTINGS DB TABLE END  ***********************************************/
 
 
