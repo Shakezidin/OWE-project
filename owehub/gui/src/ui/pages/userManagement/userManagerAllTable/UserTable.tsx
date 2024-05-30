@@ -42,6 +42,7 @@ const UserTable: React.FC<UserTableProps> = ({
   };
 
   let sortedData = [...data]; // Create a shallow copy of the original data array
+console.log(data.length,selectedRows);
 
   if (sortKey) {
     sortedData.sort((a: any, b: any) => {
@@ -122,17 +123,14 @@ const UserTable: React.FC<UserTableProps> = ({
                       disabled={el.email_id === email}
                       onChange={() => {
                         // If there's only one row of data and the user clicks its checkbox, select all rows
-                        if (data?.length === 1) {
-                          setSelectAllChecked(true);
-                          setSelectedRows(new Set([0]));
-                        } else {
+                       
                           toggleRowSelection(
                             i,
                             selectedRows,
                             setSelectedRows,
                             setSelectAllChecked
                           );
-                        }
+                        
                       }}
                     />
                     {el.user_code}

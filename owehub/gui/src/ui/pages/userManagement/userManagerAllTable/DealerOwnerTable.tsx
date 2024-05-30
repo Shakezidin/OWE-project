@@ -108,17 +108,12 @@ const DealerOwnerTable: React.FC<DealerProps> = ({
                         checked={selectedRows.has(i)}
                         onChange={() => {
                           // If there's only one row of data and the user clicks its checkbox, select all rows
-                          if (data?.length === 1) {
-                            setSelectAllChecked(true);
-                            setSelectedRows(new Set([0]));
-                          } else {
-                            toggleRowSelection(
-                              i,
-                              selectedRows,
-                              setSelectedRows,
-                              setSelectAllChecked
-                            );
-                          }
+                          toggleRowSelection(
+                            i,
+                            selectedRows,
+                            setSelectedRows,
+                            setSelectAllChecked
+                          );
                         }}
                       />
                       {el.user_code}
