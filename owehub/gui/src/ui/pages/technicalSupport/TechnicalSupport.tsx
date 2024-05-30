@@ -273,7 +273,7 @@ const TechnicalSupport: React.FC = () => {
                   />
                   <div className="custom-button-container">
                     <span className="file-input-placeholder">
-                      {selectedFileName || 'Select File'}
+                      {selectedFileName || '.jpg .jpeg .png .pdf'}
                     </span>
                     <button className="custom-button" onClick={handleButtonClick}>
                       Browse
@@ -297,8 +297,8 @@ const TechnicalSupport: React.FC = () => {
                 maxLength={300}
                 onChange={(e) => {
                   const trimmedValue = e.target.value.trimStart();
-                  const singleSpaceValue = trimmedValue.replace(/\s+/g, ' ');
-                  setMessage(singleSpaceValue);
+                  // const singleSpaceValue = trimmedValue.replace(/\s+/g, ' ');
+                  setMessage(trimmedValue);
                   setErrors({ ...errors, message: '' });
                 }}
               ></textarea>

@@ -84,9 +84,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
     return emailPattern.test(email);
   };
 
-  function removeExtraSpaces(str: string) {
-    return str.replace(/\s{2,}/g, ' ');
-  }
+
   const handleInputChange = (
     e: FormInput | React.ChangeEvent<HTMLTextAreaElement>
   ) => {
@@ -104,10 +102,10 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
       }
       const trimmedValue = value.replace(/\s/g, '');
       dispatch(updateUserForm({ field: name, value: trimmedValue }));
-    } else if (name === 'description') {
-      const trimmedValue = removeExtraSpaces(value);
+    }  else if (name === 'description') {
+      const trimmedValue = value.replace(/^\s+/, '');
       dispatch(updateUserForm({ field: name, value: trimmedValue }));
-    } else {
+    }  else {
       dispatch(updateUserForm({ field: name, value }));
     }
   };
