@@ -48,7 +48,10 @@ const Input: FC<InputProps> = ({
       const pattern = new RegExp(customRegex, 'g');
       e.target.value = e.target.value.replaceAll(pattern, '');
     } else {
-      if (type === 'text' && !name.includes('email')) {
+      if (
+        type === 'text' &&
+        !(name.includes('email') || isTypePassword)
+      ) {
         e.target.value = e.target.value.replaceAll(
           /[^a-zA-Z0-9\u00C0-\u024F\u1E00-\u1EFF_\- $,\.]| {2,}/g,
           ''
