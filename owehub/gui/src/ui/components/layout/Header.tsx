@@ -86,7 +86,7 @@ const Header: React.FC<Toggleprops> = ({
       <div className="header-icon">
         <div
           className="header-logo"
-          style={{ marginLeft: toggleOpen ? '17px' : '' }}
+          style={{ marginLeft: toggleOpen ? '17px' : '17px' }}
         >
           <object
             type="image/svg+xml"
