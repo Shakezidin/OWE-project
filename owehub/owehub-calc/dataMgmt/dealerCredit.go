@@ -11,6 +11,7 @@ import (
 	db "OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	"OWEApp/shared/models"
+	"time"
 )
 
 type DealerCreditCfgStruct struct {
@@ -31,111 +32,89 @@ func (DealerCreditCfg *DealerCreditCfgStruct) LoadDlrCreditCfg() (err error) {
 	log.EnterFn(0, "LoadDlrCreditCfg")
 	defer func() { log.ExitFn(0, "LoadDlrCreditCfg", err) }()
 
-	query = `SELECT dc.id AS record_id, dc.unique_id, dc.customer, dc.start_date,
-        dc.end_date, vd.dealer_name , dc.dealer_dba, dc.exact_amount, dc.per_kw_amount,
-        dc.approved_by, dc.notes, dc.total_amount, dc.sys_size
-        FROM` + db.TableName_dealer_credit + `dc
-        JOIN v_dealer vd ON vd.id = dc.dealer_id`
+	query = `SELECT dc.id AS record_id, dc.unique_id, dc.date,
+    dc.exact_amount, dc.per_kw_amount , dc.approved_by, dc.notes, dc.total_amount, dc.sys_size
+	FROM dealer_credit dc`
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if (err != nil) || (data == nil) {
-		log.FuncErrorTrace(0, "Failed to get dealer credit data from DB err: %v", err)
+		// log.FuncErrorTrace(0, "Failed to get dealer credit data from DB err: %v", err)
 		return err
 	}
 
 	for _, item := range data {
 		RecordId, ok := item["record_id"].(int64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
 			continue
 		}
-
+		// unique_id
 		UniqueID, ok := item["unique_id"].(string)
 		if !ok || UniqueID == "" {
-			log.FuncErrorTrace(0, "Failed to get unique_id for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get unique_id for Record ID %v. Item: %+v\n", RecordId, item)
 			UniqueID = ""
 		}
 
-		Customer, ok := item["customer"].(string)
-		if !ok || Customer == "" {
-			log.FuncErrorTrace(0, "Failed to get customer for Record ID %v. Item: %+v\n", RecordId, item)
-			Customer = ""
+		// exact_amount
+		ExactAmount, ok := item["exact_amount"].(float64)
+		if !ok {
+			// log.FuncErrorTrace(0, "Failed to get exact amount for Record ID %v. Item: %+v\n", RecordId, item)
+			ExactAmount = 0.0
 		}
 
-		DealerName, nameOk := item["dealer_name"].(string)
-		if !nameOk || DealerName == "" {
-			log.FuncErrorTrace(0, "Failed to get dealer name for Record ID %v. Item: %+v\n", RecordId, item)
-			DealerName = ""
-		}
-
-		DealerDBA, ok := item["dealer_dba"].(string)
-		if !ok || DealerDBA == "" {
-			log.FuncErrorTrace(0, "Failed to get dealer dba for Record ID %v. Item: %+v\n", RecordId, item)
-			DealerDBA = ""
-		}
-
-		ExactAmount, ok := item["exact_amount"].(string)
-		if !ok || ExactAmount == "" {
-			log.FuncErrorTrace(0, "Failed to get exact amount for Record ID %v. Item: %+v\n", RecordId, item)
-			ExactAmount = ""
-		}
-
+		// per_kw_amount
 		PerKWAmount, ok := item["per_kw_amount"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get per_kw_amount for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get per_kw_amount for Record ID %v. Item: %+v\n", RecordId, item)
 			PerKWAmount = 0.0
 		}
 
+		// approved_by
 		ApprovedBy, ok := item["approved_by"].(string)
 		if !ok || ApprovedBy == "" {
-			log.FuncErrorTrace(0, "Failed to get approved by for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get approved by for Record ID %v. Item: %+v\n", RecordId, item)
 			ApprovedBy = ""
 		}
 
+		// notes
 		Notes, ok := item["notes"].(string)
 		if !ok || Notes == "" {
-			log.FuncErrorTrace(0, "Failed to get notes for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get notes for Record ID %v. Item: %+v\n", RecordId, item)
 			Notes = ""
 		}
 
+		// total_amount
 		TotalAmount, ok := item["total_amount"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get total amount for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get total amount for Record ID %v. Item: %+v\n", RecordId, item)
 			TotalAmount = 0.0
 		}
 
+		// sys_size
 		SysSize, ok := item["sys_size"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get sys size for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get sys size for Record ID %v. Item: %+v\n", RecordId, item)
 			SysSize = 0.0
 		}
 
-		StartDate, ok := item["start_date"].(string)
-		if !ok || StartDate == "" {
-			log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
-			StartDate = ""
+		// start_date
+		Date, ok := item["date"].(time.Time)
+		if !ok {
+			// log.FuncErrorTrace(0, "Failed to get Date for Record ID %v. Item: %+v\n", RecordId, item)
+			Date = time.Time{}
 		}
 
-		EndDate, ok := item["end_date"].(*string)
-		if !ok || EndDate == nil {
-			log.FuncErrorTrace(0, "Failed to get end date for Record ID %v. Item: %+v\n", RecordId, item)
-			EndDate = nil
-		}
-
+		dateString := Date.Format("2006-01-02")
 		DealerCreditData := models.GetDealerCredit{
-			RecordId: RecordId,
-			UniqueID: UniqueID,
-			// Customer:    Customer,
-			// DealerName:  DealerName,
-			// DealerDBA:   DealerDBA,
-			// ExactAmount: ExactAmount,
+			RecordId:    RecordId,
+			UniqueID:    UniqueID,
+			ExactAmount: ExactAmount,
 			PerKWAmount: PerKWAmount,
 			ApprovedBy:  ApprovedBy,
 			Notes:       Notes,
 			TotalAmount: TotalAmount,
 			SysSize:     SysSize,
-			// StartDate:   StartDate,
-			// EndDate:     EndDate,
+			Date:        dateString,
 		}
 		DealerCreditCfg.DealerCreditList.DealerCreditList = append(DealerCreditCfg.DealerCreditList.DealerCreditList, DealerCreditData)
 	}

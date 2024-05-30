@@ -11,6 +11,7 @@ import (
 	log "OWEApp/shared/logger"
 	"fmt"
 	"strings"
+	"time"
 )
 
 type AutoAdder struct {
@@ -91,114 +92,176 @@ func calculateExactAmount(uniqueId string, systemType string) (excatAmt float64)
 	}
 }
 
-func (AutoAdderCfg *AutoAdderCfgStruct) LoadAutoAdderCfg() (err error) {
+func (AutoAdderCfg *AutoAdderCfgStruct) LoadAutoAdderCfg() (errr error) {
 	var (
-		data         []map[string]interface{}
-		whereEleList []interface{}
-		query        string
+		err                   error
+		data                  []map[string]interface{}
+		whereEleList          []interface{}
+		query                 string
+		DescriptionRepVisible string
+		ExactAmount           float64
+		AdderType             string
+		PerKWAmount           float64
 	)
 	log.EnterFn(0, "LoadAutoAdderCfg")
 	defer func() { log.ExitFn(0, "LoadAutoAdderCfg", err) }()
 
 	query = `
-     SELECT oa.id as record_id, oa.unique_id as uniqueId, oa.date, oa.type,
-    oa.gc, oa.exact_amt, oa.Per_KW_Amt, oa.rep_percentage, oa.Description_Repvisibale, oa.Notes_No_Repvisibale,
-    oa.Adder_Type
-     FROM ` + db.TableName_auto_adder + ` oa`
+			SELECT 
+			ad.unique_id, 
+			ad.wc_1 AS date, 
+			ad.installer AS gc, 
+			ad.system_size as sys_size,
+			ad.net_epc as rep_percentage,
+			ad.primary_sales_rep as notes_no_repvisible,
+			(SELECT 
+				CASE 
+					WHEN system_size <= 3 THEN 
+						CASE 
+							WHEN state ILIKE 'CA' THEN 'SM-CA2' 
+							ELSE 'SM-UNI2' 
+						END
+					WHEN system_size > 3 AND system_size <= 4 THEN
+						CASE
+							WHEN state NOT ILIKE 'CA' THEN 'SM-UNI3' 
+							ELSE NULL
+						END
+					ELSE NULL 
+				END 
+			FROM consolidated_data_view cdv 
+			WHERE cdv.unique_id = ad.unique_id) AS type
+		FROM consolidated_data_view ad`
 
-	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
-	if err != nil || len(data) == 0 {
-		log.FuncErrorTrace(0, "Failed to get reconcile from DB err: %v", err)
-		err = fmt.Errorf("Failed to get AutoAdder cfg data from DB")
-		return err
+	// for _, filtr := range dataReq.Filters {
+	// 	if filtr.Column == "per_kw_amount" {
+	// 		filter, whereEleList = PrepareAutoAdderFilters(tableName, dataReq, false)
+	// 		if filter != "" {
+	// 			queryWithFiler = query + filter
+	// 		}
+	// 	}
+	// }
+
+	data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get auto adder data from DB err: %v", err)
+		return
 	}
 
+	autoAdderList := AutoAdderCfg.AutoAdderList
 	for _, item := range data {
-		RecordId, ok := item["record_id"].(int64)
+		Unique_id, ok := item["unique_id"].(string)
+		if !ok || Unique_id == "" {
+			// log.FuncErrorTrace(0, "Failed to get unique_id for Record ID %v. Item: %+v\n", Unique_id, item)
+			Unique_id = ""
+		}
+
+		// Date
+		Date, ok := item["date"].(time.Time)
 		if !ok {
-			log.ConfWarnTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
-			continue
+			// log.FuncErrorTrace(0, "Failed to get date for Record ID %v. Item: %+v\n", Unique_id, item)
+			Date = time.Time{}
 		}
 
-		UniqueId, ok := item["unique_id"].(string)
-		if !ok || UniqueId == "" {
-			log.ConfWarnTrace(0, "Failed to get unique id for Record ID %v. Item: %+v\n", RecordId, item)
-			UniqueId = ""
+		Gc, ok := item["gc"].(string)
+		if !ok || Gc == "" {
+			// log.FuncErrorTrace(0, "Failed to get gc for Record ID %v. Item: %+v\n", Unique_id, item)
+			Gc = ""
 		}
 
-		date, ok := item["date"].(string)
-		if !ok || date == "" {
-			log.ConfWarnTrace(0, "Failed to get date for Record ID %v. Item: %+v\n", RecordId, item)
-			date = ""
-		}
-
-		type1, ok := item["type"].(string)
-		if !ok || type1 == "" {
-			log.ConfWarnTrace(0, "Failed to get type name for Record ID %v. Item: %+v\n", RecordId, item)
-			type1 = ""
-		}
-
-		gc, ok := item["gc"].(string)
-		if !ok || gc == "" {
-			log.ConfWarnTrace(0, "Failed to get gc name for Record ID %v. Item: %+v\n", RecordId, item)
-			gc = ""
-		}
-
-		exactAmt, ok := item["exact_amt"].(float64)
+		RepPercentage, ok := item["rep_percentage"].(float64)
 		if !ok {
-			log.ConfWarnTrace(0, "Failed to get exact_amt for Record ID %v. Item: %+v\n", RecordId, item)
-			exactAmt = 0.0 // Default sys size value of 0.0
+			// log.FuncErrorTrace(0, "Failed to get rep_doll_divby_per for Record ID %v. Item: %+v\n", Unique_id, item)
+			RepPercentage = 0.0
+		}
+
+		SysSize, ok := item["sys_size"].(float64)
+		if !ok {
+			// log.FuncErrorTrace(0, "Failed to get system size for Record ID %v. Item: %+v\n", Unique_id, item)
+			RepPercentage = 0.0
+		}
+
+		// notes_not_rep_visible
+		NotesNoRepVisible, ok := item["notes_no_repvisible"].(string)
+		if !ok {
+			// log.FuncErrorTrace(0, "Failed to get notes_no_repvisible for Record ID %v. Item: %+v\n", Unique_id, item)
+			NotesNoRepVisible = ""
+		}
+
+		// type
+		Type, ok := item["type"].(string)
+		if !ok || Type == "" {
+			// log.FuncErrorTrace(0, "Failed to get type for Record ID %v. Item: %+v\n", Unique_id, item)
+			Type = ""
+		}
+
+		if strings.HasPrefix(Type, "MK") {
+			ExactAmount = 0.0
 		} else {
-			log.ConfDebugTrace(0, "Exact amount fetched %v", exactAmt)
+			switch Type {
+			case "SM-UNI2":
+				ExactAmount = 1200
+			case "SM-UNI3":
+				ExactAmount = 600
+			case "SM-CA2":
+				ExactAmount = 600
+			}
 		}
 
-		perKwAmt, ok := item["Per_KW_Amt"].(float64)
-		if !ok {
-			log.ConfWarnTrace(0, "Failed to get Per_KW_Amt for Record ID %v. Item: %+v\n", RecordId, item)
-			perKwAmt = 0.0
+		if strings.HasPrefix(Type, "MK") {
+			qry := `select fee_rate from marketing fee where state ilike 'MK'`
+			data3, err := db.ReteriveFromDB(db.OweHubDbIndex, qry, whereEleList)
+			if err != nil {
+				log.FuncErrorTrace(0, "Failed to get auto adder data from DB err: %v", err)
+				return
+			}
+			PerKWAmount, ok = data3[0]["fee_rate"].(float64)
+			if !ok || Unique_id == "" {
+				log.FuncErrorTrace(0, "Failed to get unique_id for Record ID %v. Item: %+v\n", Unique_id, item)
+				Unique_id = ""
+			}
 		} else {
-			log.ConfDebugTrace(0, "per kw  amount fetched %v", perKwAmt)
+			switch Type {
+			case "SM-UNI2":
+				PerKWAmount = 0.0
+			case "SM-UNI3":
+				PerKWAmount = 0.0
+			case "SM-CA2":
+				PerKWAmount = 0.0
+			}
 		}
 
-		repPercentage, ok := item["rep_percentage"].(float64)
-		if !ok {
-			log.ConfWarnTrace(0, "Failed to get rep_percentage for Unique ID %v. Item: %+v\n", UniqueId, item)
-			repPercentage = 0.0
+		if strings.HasPrefix(Type, "MK") {
+			DescriptionRepVisible = fmt.Sprintf("Marketing Fee %s", Type[11:18])
 		} else {
-			log.ConfDebugTrace(0, "rep_percentage fetched %v", repPercentage)
+			switch Type {
+			case "SM-UNI2":
+				DescriptionRepVisible = "Small System Size"
+			case "SM-UNI3":
+				DescriptionRepVisible = "Small System Size"
+			case "SM-CA2":
+				DescriptionRepVisible = "Small System Size"
+			}
 		}
 
-		descRepvisibale, ok := item["Description_Repvisibale"].(string)
-		if !ok && descRepvisibale == "" {
-			log.ConfWarnTrace(0, "Failed to get Description_Repvisibale for Record ID %v. Item: %+v\n", RecordId, item)
-			descRepvisibale = ""
-		}
+		AdderType = "Adder"
 
-		NotesRepvisibale, ok := item["Notes_No_Repvisibale"].(string)
-		if !ok || NotesRepvisibale == "" {
-			log.ConfWarnTrace(0, "Failed to get NotesRepvisibale for Record ID %v. Item: %+v\n", RecordId, item)
-			NotesRepvisibale = ""
-		}
-		AdderType, ok := item["Adder_Type"].(string)
-		if !ok || AdderType == "" {
-			log.ConfWarnTrace(0, "Failed to get AdderType for Record ID %v. Item: %+v\n", RecordId, item)
-			AdderType = ""
-		}
+		DateStr := Date.Format("2006-01-02")
 
-		autoAdderData := AutoAdder{
-			RecordId:               RecordId,
-			UniqueId:               UniqueId,
-			Date:                   date,
-			Type1:                  type1,
-			Gc:                     gc,
-			ExactAmt:               exactAmt,
-			PerKwAmt:               perKwAmt,
-			RepPercentage:          repPercentage,
-			DescriptionRepvisibale: descRepvisibale,
-			NotesNoRepvisibale:     NotesRepvisibale,
+		AutoAdderData := AutoAdder{
+			UniqueId:               Unique_id,
+			Date:                   DateStr,
+			Type1:                  Type,
+			Gc:                     Gc,
+			ExactAmt:               ExactAmount,
+			PerKwAmt:               PerKWAmount,
+			RepPercentage:          RepPercentage,
+			DescriptionRepvisibale: DescriptionRepVisible,
+			NotesNoRepvisibale:     NotesNoRepVisible,
 			AdderType:              AdderType,
+			SysSize:                SysSize,
 		}
-		AutoAdderCfg.AutoAdderList = append(AutoAdderCfg.AutoAdderList, autoAdderData)
+
+		autoAdderList = append(autoAdderList, AutoAdderData)
 	}
 
 	return err

@@ -287,7 +287,7 @@ CREATE TABLE payment_schedule (
     FOREIGN KEY (sale_type_id) REFERENCES sale_type(id),
     FOREIGN KEY (installer_id) REFERENCES partners(partner_id),
     FOREIGN KEY (partner_id) REFERENCES partners(partner_id),
-    FOREIGN KEY (rep_id) REFERENCES user_details(user_id),
+    FOREIGN KEY (rep_id) REFERENCES v_dealer(id),
     PRIMARY KEY (id)
 );
 
@@ -920,7 +920,7 @@ CREATE TABLE adder_data_cfg_schema (
 
 CREATE TABLE ap_rep (
     id serial NOT NULL,
-	unique_id varchar NOT NULL UNIQUE,
+	unique_id varchar NOT NULL,
     rep varchar,
     dba varchar,
     type varchar,

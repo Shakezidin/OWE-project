@@ -44,8 +44,6 @@ func LoadConfigurations() (err error) {
 	err = ApRepCfg.LoadApRepCfg()
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get AP-Rep Config from DB err: %+v", err)
-		log.FuncErrorTrace(0, "++++++++++++++++++++++=======================+++++++++++++++++++++++++++++=============++++++++++++++++++++++++++++++++++++=========================+++++++++++++++:")
-
 		return err
 	}
 	log.FuncErrorTrace(0, "===== ApRepCfg : %+v", ApRepCfg.ApRepList.ApRepList[0])
@@ -56,20 +54,49 @@ func LoadConfigurations() (err error) {
 		return err
 	}
 	log.FuncErrorTrace(0, "===== RebateCfg : %+v", RebateCfg.RebateList.RebateDataList[0])
-
-	err = PayScheduleCfg.LoadPayScheduleCfg()
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get Rebate Config from DB err: %+v", err)
-		return err
-	}
-	log.FuncErrorTrace(0, "===== PayScheduleCfg : %+v", PayScheduleCfg.PayScheduleList.PaymentScheduleList[0])
-
+	
 	err = DealerCreditCfg.LoadDlrCreditCfg()
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get Rebate Config from DB err: %+v", err)
 		return err
 	}
 	log.FuncErrorTrace(0, "===== DealerCreditCfg : %+v", DealerCreditCfg.DealerCreditList.DealerCreditList[0])
+	
+	
+	err = LoanFeeAdderCfg.LoadLoanFeeAdderCfg()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get Rebate Config from DB err: %+v", err)
+		return err
+	}
+	log.FuncErrorTrace(0, "===== LoanFeeAdderCfg : %+v", LoanFeeAdderCfg.LoanFeeAdderList.LoanFeeAdderList[0])
+	
+	err = PayScheduleCfg.LoadPayScheduleCfg()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get Rebate Config from DB err: %+v", err)
+		return err
+	}
+	log.FuncErrorTrace(0, "===== PayScheduleCfg : %+v", PayScheduleCfg.PayScheduleList.PaymentScheduleList[0])
+	
+	err = ReferralDataConfig.LoadReferralCfg()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get Rebate Config from DB err: %+v", err)
+		return err
+	}
+	log.FuncErrorTrace(0, "===== ReferralDataConfig : %+v", ReferralDataConfig.ReferralDataList.ReferralDataList[0])
+	
+	err = DealerOverrideConfig.LoadRDealerOverrideCfg()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get Rebate Config from DB err: %+v", err)
+		return err
+	}
+	log.FuncErrorTrace(0, "===== DealerOverrideConfig : %+v", DealerOverrideConfig.DealerOverrideList.DealersList[0])
+	
+	err = PayScheduleCfg.LoadPayScheduleCfg()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get Rebate Config from DB err: %+v", err)
+		return err
+	}
+	log.FuncErrorTrace(0, "===== PayScheduleCfg : %+v", PayScheduleCfg.PayScheduleList.PaymentScheduleList[0])
 
 	err = AutoAdderCfg.LoadAutoAdderCfg()
 	if err != nil {
@@ -78,33 +105,6 @@ func LoadConfigurations() (err error) {
 	}
 	log.FuncErrorTrace(0, "===== AutoAdderCfg : %+v", AutoAdderCfg.AutoAdderList[0])
 
-	err = LoanFeeAdderCfg.LoadLoanFeeAdderCfg()
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get Rebate Config from DB err: %+v", err)
-		return err
-	}
-	log.FuncErrorTrace(0, "===== LoanFeeAdderCfg : %+v", LoanFeeAdderCfg.LoanFeeAdderList.LoanFeeAdderList[0])
-
-	err = ReferralDataConfig.LoadReferralCfg()
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get Rebate Config from DB err: %+v", err)
-		return err
-	}
-	log.FuncErrorTrace(0, "===== ReferralDataConfig : %+v", ReferralDataConfig.ReferralDataList.ReferralDataList[0])
-
-	err = DealerOverrideConfig.LoadRDealerOverrideCfg()
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get Rebate Config from DB err: %+v", err)
-		return err
-	}
-	log.FuncErrorTrace(0, "===== DealerOverrideConfig : %+v", DealerOverrideConfig.DealerOverrideList.DealersList[0])
-
-	err = PayScheduleCfg.LoadPayScheduleCfg()
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get Rebate Config from DB err: %+v", err)
-		return err
-	}
-	log.FuncErrorTrace(0, "===== PayScheduleCfg : %+v", PayScheduleCfg.PayScheduleList.PaymentScheduleList[0])
 
 	return err
 }

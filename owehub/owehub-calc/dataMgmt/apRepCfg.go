@@ -41,77 +41,77 @@ func (pApRepCfg *ApRepCfgStruct) LoadApRepCfg() (err error) {
 	for _, item := range data {
 		RecordId, ok := item["record_id"].(int64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
 			continue
 		}
 
 		// UniqueId
 		UniqueId, ok := item["unique_id"].(string)
 		if !ok || UniqueId == "" {
-			log.FuncErrorTrace(0, "Failed to get unique id for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get unique id for Record ID %v. Item: %+v\n", RecordId, item)
 			UniqueId = ""
 		}
 
 		// Rep
 		Rep, ok := item["rep"].(string)
 		if !ok || Rep == "" {
-			log.FuncErrorTrace(0, "Failed to get rep for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get rep for Record ID %v. Item: %+v\n", RecordId, item)
 			Rep = ""
 		}
 
 		// Dba
 		Dba, ok := item["dba"].(string)
 		if !ok || Dba == "" {
-			log.FuncErrorTrace(0, "Failed to get dba for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get dba for Record ID %v. Item: %+v\n", RecordId, item)
 			Dba = ""
 		}
 
 		//Type
 		Type, ok := item["type"].(string)
 		if !ok || Type == "" {
-			log.FuncErrorTrace(0, "Failed to get type for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get type for Record ID %v. Item: %+v\n", RecordId, item)
 			Type = ""
 		}
 
 		// Date
 		Date, ok := item["date"].(time.Time)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get date for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get date for Record ID %v. Item: %+v\n", RecordId, item)
 			Date = time.Time{} // Default sale price of 0.0
 		}
 
 		// Amount
 		Amount, ok := item["amount"].(float64)
 		if !ok || Amount == 0.0 {
-			log.FuncErrorTrace(0, "Failed to get Amount for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get Amount for Record ID %v. Item: %+v\n", RecordId, item)
 			Amount = 0.0
 		}
 
 		// Method
 		Method, ok := item["method"].(string)
 		if !ok || Method == "" {
-			log.FuncErrorTrace(0, "Failed to get method for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get method for Record ID %v. Item: %+v\n", RecordId, item)
 			Method = ""
 		}
 
 		// Cbiz
 		Cbiz, ok := item["cbiz"].(string)
 		if !ok || Cbiz == "" {
-			log.FuncErrorTrace(0, "Failed to get Cbiz for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get Cbiz for Record ID %v. Item: %+v\n", RecordId, item)
 			Cbiz = ""
 		}
 
 		// Transaction
 		Transaction, ok := item["transaction"].(string)
 		if !ok || Transaction == "" {
-			log.FuncErrorTrace(0, "Failed to get Transaction for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get Transaction for Record ID %v. Item: %+v\n", RecordId, item)
 			Transaction = ""
 		}
 
 		// Notes
 		Notes, ok := item["notes"].(string)
 		if !ok || Notes == "" {
-			log.FuncErrorTrace(0, "Failed to get Notes for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get Notes for Record ID %v. Item: %+v\n", RecordId, item)
 			Notes = ""
 		}
 
