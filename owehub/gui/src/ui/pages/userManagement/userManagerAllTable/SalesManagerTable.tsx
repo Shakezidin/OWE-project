@@ -85,7 +85,7 @@ const SalesManagerTable: React.FC<SaleManagerProps> = ({
                   selectedRows={selectedRows}
                   setSelectedRows={setSelectedRows}
                   sortKey={item.name}
-                  sortDirection={'desc'}
+                  sortDirection={sortKey === item.name ? sortDirection : undefined}
                   onClick={() => () => handleSort(item.name)}
                 />
               ))}

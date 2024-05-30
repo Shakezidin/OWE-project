@@ -85,7 +85,7 @@ const SalesRepresentativeTable: React.FC<SalesRepresentativeProps> = ({
                   selectedRows={selectedRows}
                   setSelectedRows={setSelectedRows}
                   sortKey={item.name}
-                  sortDirection={'desc'}
+                  sortDirection={sortKey === item.name ? sortDirection : undefined}
                   onClick={() => () => handleSort(item.name)}
                 />
               ))}
