@@ -273,7 +273,7 @@ const TechnicalSupport: React.FC = () => {
                   />
                   <div className="custom-button-container">
                     <span className="file-input-placeholder">
-                      {selectedFileName || 'Select File'}
+                      {selectedFileName || 'choose .jpg .jpeg .png .pdf files'}
                     </span>
                     <button className="custom-button" onClick={handleButtonClick}>
                       Browse
