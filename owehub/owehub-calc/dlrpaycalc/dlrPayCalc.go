@@ -84,6 +84,7 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 		payRateSubTotal    float64   // verify the column number
 		status             string    // aj
 		statusDate         time.Time // ak
+		contractDolDol     float64   //am
 		dealer             string    // ap
 		credit             float64   // as
 		repPay             float64   // at
@@ -204,6 +205,7 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	log.FuncFuncTrace(0, "===================================================================================")
 
 	//first sheet calculation
+	contractDolDol = CalculateContractDolDol(saleData.NetEpc, saleData.ContractTotal, saleData.SystemSize)
 	rl = dataMgmt.PayScheduleCfg.CalculateRL(saleData.Dealer, saleData.Partner, saleData.Installer, saleData.LoanType, saleData.State, saleData.WC1.Format("2006-01-02"))
 	log.FuncFuncTrace(0, "rl ->  %v", rl)
 
@@ -231,7 +233,7 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	autoAdder = dataMgmt.AutoAdderCfg.CalculateAutoAddr(saleData.Dealer, saleData.UniqueId, saleData.ChargeDlr, saleData.SystemSize)
 	log.FuncFuncTrace(0, "autoAdder ->  %v", autoAdder)
 
-	loanFee = dataMgmt.LoanFeeAdderCfg.CalculateLoanFee(saleData.Dealer, saleData.UniqueId)
+	loanFee = CalculateLoanFee(saleData.UniqueId)
 	log.FuncFuncTrace(0, "loanFee ->  %v", loanFee)
 
 	rebate = dataMgmt.RebateCfg.CalculateRebate(saleData.Dealer, saleData.UniqueId)
@@ -400,6 +402,7 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	outData["comm_total"] = commTotal
 	outData["ovrd_total"] = overdTotal
 	outData["status_check"] = statusCheck
+	outData["contract$$"] = contractDolDol
 
 	// this is for 2nd sheet
 	DlrDrawMax = 0.0

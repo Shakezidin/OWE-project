@@ -8,6 +8,7 @@
 package arcalc
 
 import (
+	datamgmt "OWEApp/owehub-calc/dataMgmt"
 	log "OWEApp/shared/logger"
 	"math"
 	"time"
@@ -569,4 +570,26 @@ func CalculateAdderEPC(epcCalc, contract, loanfee, sys_size float64) (epc float6
 		return epc
 	}
 	return epc
+}
+
+func CalculateContractDolDol(netEpc float64, contract float64, sysSize float64) (contractdoldol float64) {
+	if netEpc > 0 {
+		if contract <= 0 {
+			contractdoldol = netEpc * 1000 * sysSize
+		} else {
+			contractdoldol = contract
+		}
+	}
+	return contractdoldol
+}
+
+func CalculateLoanFee(uniqueId string) float64 {
+	var saleData datamgmt.SaleDataList
+	var loanfee float64
+	for _, data := range saleData.SaleDataList {
+		if data.UniqueId == uniqueId {
+			loanfee += CalculateContractDolDol(data.NetEpc, data.ContractTotal, data.SystemSize)
+		}
+	}
+	return loanfee
 }
