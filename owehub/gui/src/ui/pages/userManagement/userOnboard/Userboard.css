@@ -79,7 +79,7 @@
   padding: 1px;
 }
 
-.PhoneInput select {
+.country-list {
   margin-right: 8px;
   border: none;
   outline: none;
@@ -91,26 +91,26 @@
   scrollbar-color: #888 #f1f1f1;
 }
 
-.PhoneInput select::-webkit-scrollbar {
+.country-list::-webkit-scrollbar {
   width: 10px;
   height: 10px;
 }
-.PhoneInput select::-webkit-scrollbar {
+.country-list::-webkit-scrollbar {
   display: initial;
 }
 
-.PhoneInput select::-webkit-scrollbar-thumb {
+.country-list::-webkit-scrollbar-thumb {
   background-color: rgb(173, 173, 173);
   border-radius: 30px;
 }
-.PhoneInput select::-webkit-scrollbar-button {
+.country-list::-webkit-scrollbar-button {
   display: initial;
 }
-.PhoneInput select::-webkit-scrollbar {
+.country-list::-webkit-scrollbar {
   -ms-overflow-style: initial;
   scrollbar-width: thin;
 }
-.PhoneInput select::-webkit-scrollbar-corner {
+.country-list::-webkit-scrollbar-corner {
   background-color: transparent;
 }
 
