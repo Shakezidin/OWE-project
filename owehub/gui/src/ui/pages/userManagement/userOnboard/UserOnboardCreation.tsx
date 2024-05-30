@@ -85,6 +85,9 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
     return emailPattern.test(email);
   };
 
+  function removeExtraSpaces(str:string) {
+    return str.replace(/\s{2,}/g, ' ');
+}
   const handleInputChange = (e: FormInput | React.ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = e.target;
 
@@ -100,7 +103,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
       }
       dispatch(updateUserForm({ field: name, value }));
     } else if (name === 'description') {
-      const trimmedValue = value.trimStart();
+      const trimmedValue = removeExtraSpaces(value);
       dispatch(updateUserForm({ field: name, value: trimmedValue }));
     } else {
       dispatch(updateUserForm({ field: name, value }));
@@ -367,7 +370,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                     rows={3}
                     maxLength={255}
                     value={formData.description}
-                    onChange={(e) => handleInputChange(e)}
+                    onChange={(e) =>  handleInputChange(e)}
                     placeholder="Type"
                   ></textarea>
                   <p
