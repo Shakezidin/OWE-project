@@ -29,8 +29,8 @@ func (DealerCreditCfg *DealerCreditCfgStruct) LoadDlrCreditCfg() (err error) {
 		query        string
 	)
 
-	log.EnterFn(0, "LoadDlrCreditCfg")
-	defer func() { log.ExitFn(0, "LoadDlrCreditCfg", err) }()
+	// log.EnterFn(0, "LoadDlrCreditCfg")
+	// defer func() { log.ExitFn(0, "LoadDlrCreditCfg", err) }()
 
 	query = `SELECT dc.id AS record_id, dc.unique_id, dc.date,
     dc.exact_amount, dc.per_kw_amount , dc.approved_by, dc.notes, dc.total_amount, dc.sys_size

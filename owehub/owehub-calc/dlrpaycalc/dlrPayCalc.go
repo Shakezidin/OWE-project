@@ -37,6 +37,7 @@ func ExecDlrPayInitialCalculation(resultChan chan string) {
 		var dlrPayData map[string]interface{}
 		if saleData.UniqueId == "OUR11347" {
 			dlrPayData, err = CalculateDlrPayProject(saleData)
+			log.FuncErrorTrace(0, "dealer data ====> : %+v", dlrPayData)
 		} else {
 			continue
 		}
@@ -204,6 +205,8 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	log.FuncFuncTrace(0, "===================================================================================")
 	log.FuncFuncTrace(0, "===================================================================================")
 
+	log.FuncFuncTrace(0, "========================== UNIQUE ID -> %v ===============================", saleData.UniqueId)
+
 	//first sheet calculation
 	contractDolDol = CalculateContractDolDol(saleData.NetEpc, saleData.ContractTotal, saleData.SystemSize)
 	rl = dataMgmt.PayScheduleCfg.CalculateRL(saleData.Dealer, saleData.Partner, saleData.Installer, saleData.LoanType, saleData.State, saleData.WC1.Format("2006-01-02"))
@@ -218,6 +221,7 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	contractCalc = common.CalculateContractAmount(saleData.NetEpc, outData["contract"].(float64), outData["sys_size"].(float64))
 	log.FuncFuncTrace(0, "contractCalc ->  %v", contractCalc)
 
+	// correct value
 	epcCalc = common.CalculateEPCCalc(contractCalc, saleData.WC1, saleData.NetEpc, saleData.SystemSize, common.DlrPayWc1FilterDate) // verify equation
 	log.FuncFuncTrace(0, "epcCalc ->  %v", epcCalc)
 

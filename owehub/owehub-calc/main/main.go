@@ -21,6 +21,7 @@ import (
 	// arCalc "OWEApp/owehub-calc/arcalc"
 	datamgmt "OWEApp/owehub-calc/dataMgmt"
 	// repPayCalc "OWEApp/owehub-calc/reppaycalc"
+	dlrPayCalc "OWEApp/owehub-calc/dlrpaycalc"
 	log "OWEApp/shared/logger"
 
 	"github.com/gorilla/mux"
@@ -78,7 +79,7 @@ func main() {
 	// go arCalc.ExecArInitialCalculation(arCalcResult)
 
 	/* Perform Initial DLR PAY Calcualtion*/
-	// dlrPayCalc.ExecDlrPayInitialCalculation(dlrPayResult)
+	dlrPayCalc.ExecDlrPayInitialCalculation(dlrPayResult)
 
 	/* Perform Initial REP PAY Calcualtion*/
 	// go repPayCalc.ExecRepPayInitialCalculation(repPayResult)

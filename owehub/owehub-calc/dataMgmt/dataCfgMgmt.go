@@ -53,7 +53,7 @@ func LoadConfigurations() (err error) {
 	log.FuncErrorTrace(0, "===== ApRepCfg : %+v", ApRepCfg.ApRepList.ApRepList[0])
 
 	//* rebate data is working
-	// err = RebateCfg.LoadRebateCfg()
+	err = RebateCfg.LoadRebateCfg()
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get Rebate Config from DB err: %+v", err)
 		return err
@@ -85,12 +85,12 @@ func LoadConfigurations() (err error) {
 	log.FuncErrorTrace(0, "===== PayScheduleCfg : %+v", PayScheduleCfg.PayScheduleList[0])
 
 	//* loan fee is working
-	err = LoanFeeAdderCfg.LoadLoanFeeAdderCfg()
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get Rebate Config from DB err: %+v", err)
-		return err
-	}
-	log.FuncErrorTrace(0, "===== LoanFeeAdderCfg : %+v", LoanFeeAdderCfg.LoanFeeAdderList.LoanFeeAdderList[0])
+	// err = LoanFeeAdderCfg.LoadLoanFeeAdderCfg()
+	// if err != nil {
+	// 	log.FuncErrorTrace(0, "Failed to get Rebate Config from DB err: %+v", err)
+	// 	return err
+	// }
+	// log.FuncErrorTrace(0, "===== LoanFeeAdderCfg : %+v", LoanFeeAdderCfg.LoanFeeAdderList.LoanFeeAdderList[0])
 
 	//* dealer override data is working
 	err = DealerOverrideConfig.LoadRDealerOverrideCfg()

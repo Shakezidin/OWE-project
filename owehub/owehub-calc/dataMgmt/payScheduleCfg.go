@@ -65,97 +65,97 @@ func (paymentScheduleCfg *PayScheduleCfgStruct) LoadPayScheduleCfg() (err error)
 	for _, item := range data {
 		RecordId, ok := item["record_id"].(int64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
 			continue
 		}
 		// Partner
 		Partner, ok := item["partner"].(string)
 		if !ok || Partner == "" {
-			log.FuncErrorTrace(0, "Failed to get partner for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get partner for Record ID %v. Item: %+v\n", RecordId, item)
 			Partner = ""
 		}
 
 		// PartnerName
 		PartnerName, ok := item["partner_name"].(string)
 		if !ok || PartnerName == "" {
-			log.FuncErrorTrace(0, "Failed to get partner name for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get partner name for Record ID %v. Item: %+v\n", RecordId, item)
 			PartnerName = ""
 		}
 
 		// Installer
 		Installer, ok := item["installer_name"].(string)
 		if !ok || Installer == "" {
-			log.FuncErrorTrace(0, "Failed to get installer for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get installer for Record ID %v. Item: %+v\n", RecordId, item)
 			Installer = ""
 		}
 
 		// State
 		State, ok := item["state"].(string)
 		if !ok || State == "" {
-			log.FuncErrorTrace(0, "Failed to get state for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get state for Record ID %v. Item: %+v\n", RecordId, item)
 			State = ""
 		}
 
 		// Sale
 		Sale, ok := item["sale_type"].(string)
 		if !ok || Sale == "" {
-			log.FuncErrorTrace(0, "Failed to get sale for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get sale for Record ID %v. Item: %+v\n", RecordId, item)
 			Sale = ""
 		}
 
 		// Rl
 		Rl, ok := item["rl"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get Rl for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get Rl for Record ID %v. Item: %+v\n", RecordId, item)
 			Rl = 0
 		}
 
 		// Draw
 		Draw, ok := item["draw"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get draw for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get draw for Record ID %v. Item: %+v\n", RecordId, item)
 			Draw = 0
 		}
 
 		// DrawMax
 		DrawMax, ok := item["draw_max"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get draw max for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get draw max for Record ID %v. Item: %+v\n", RecordId, item)
 			DrawMax = 0
 		}
 
 		// RepDraw
 		RepDraw, ok := item["rep_draw"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get rep draw for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get rep draw for Record ID %v. Item: %+v\n", RecordId, item)
 			RepDraw = 0
 		}
 
 		// RepDrawMax
 		RepDrawMax, ok := item["rep_draw_max"].(float64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get rep_draw_max for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get rep_draw_max for Record ID %v. Item: %+v\n", RecordId, item)
 			RepDrawMax = 0
 		}
 
 		// RepPay
 		RepPay, ok := item["rep_pay"].(string)
 		if !ok || RepPay == "" {
-			log.FuncErrorTrace(0, "Failed to get rep pay for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get rep pay for Record ID %v. Item: %+v\n", RecordId, item)
 			RepPay = ""
 		}
 
 		// StartDate
 		StartDate, ok := item["start_date"].(string)
 		if !ok || StartDate == "" {
-			log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
 			StartDate = ""
 		}
 
 		// EndDate
 		EndDate, ok := item["end_date"].(string)
 		if !ok || EndDate == "" {
-			log.FuncErrorTrace(0, "Failed to get end date for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get end date for Record ID %v. Item: %+v\n", RecordId, item)
 			EndDate = ""
 		}
 
@@ -212,8 +212,8 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateRL(dealer, partner, install
 
 func (PayScheduleCfg *PayScheduleCfgStruct) CalculateDlrDrawPerc(dealer, partner, installer, loanType, state, startDate, endDate, wc string) (drawPerc float64) {
 
-	log.EnterFn(0, "CalculateDlrDrawPerc")
-	defer func() { log.ExitFn(0, "CalculateDlrDrawPerc", nil) }()
+	// log.EnterFn(0, "CalculateDlrDrawPerc")
+	// defer func() { log.ExitFn(0, "CalculateDlrDrawPerc", nil) }()
 
 	if len(dealer) > 0 {
 		for _, data := range PayScheduleCfg.PayScheduleList {
