@@ -626,7 +626,7 @@ CREATE TABLE dealer_credit (
 
 CREATE TABLE noncomm_dlrpay (
     id serial NOT NULL,
-    unique_id varchar NOT NULL UNIQUE,
+    unique_id varchar NOT NULL,
     customer text,
     dealer_id INT,
     dealer_dba text,
@@ -679,7 +679,7 @@ CREATE TABLE rep_pay_settings (
 
 CREATE TABLE rate_adjustments(
     id serial NOT NULL,
-    unique_id varchar NOT NULL UNIQUE,
+    unique_id varchar NOT NULL,
     pay_scale text,
     position text,
     adjustment text,
@@ -847,7 +847,7 @@ CREATE TABLE ar (
 
 CREATE TABLE appt_setters (
     id serial NOT NULL,
-    unique_id varchar NOT NULL UNIQUE,
+    unique_id varchar NOT NULL,
     name character varying,
     team_id INT,
     pay_rate character varying,
