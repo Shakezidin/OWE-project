@@ -2,7 +2,6 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { ReactComponent as CROSS_BUTTON } from '../../../../resources/assets/cross_button.svg';
 import Input from '../../../components/text_input/Input';
 import { ActionButton } from '../../../components/button/ActionButton';
-import { useDispatch } from 'react-redux';
 import { updateUserForm } from '../../../../redux/apiSlice/userManagementSlice/createUserSlice';
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { ICONS } from '../../../icons/Icons';
@@ -10,11 +9,16 @@ import SelectTable from '../userTableList/SeletTable';
 import UserBasedInput from './UserBasedInput';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import { CreateUserModel } from '../../../../core/models/api_models/UserManagementModel';
-import { useAppSelector } from '../../../../redux/hooks';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import Loading from '../../../components/loader/Loading';
 import { ALL_USER_ROLE_LIST } from '../../../../resources/static_data/Constant';
 import './Userboard.css';
 import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
+import { FormInput } from '../../../../core/models/data_models/typesModel';
+import { getDataTableName } from '../../../../redux/apiActions/dataTableAction';
+import 'react-phone-number-input/style.css';
+import PhoneInput from 'react-phone-number-input';
+
 interface createUserProps {
   editMode: boolean;
   handleClose: () => void;
@@ -38,7 +42,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
   tablePermissions,
   setTablePermissions,
 }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [phoneNumberError, setPhoneNumberError] = useState('');
   const [dbAccess, setDbAcess] = useState(false);
   const { loading, formData } = useAppSelector(
@@ -47,6 +51,8 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const [selectTable, setSelectTable] = useState<boolean>(false);
   const tables = useAppSelector((state) => state.dataTableSlice.option);
+  const [emailError, setEmailError] = useState('');
+
 
   /** handle change for role */
   const handleChange = (newValue: any, fieldName: string) => {
@@ -73,38 +79,39 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
     const { value } = newValue;
     dispatch(updateUserForm({ field: fieldName, value }));
   };
+  const validateEmail = (email: string) => {
+    // Simple email validation regex pattern
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailPattern.test(email);
+  };
 
-  const handleInputChange = (
-    e:
-      | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
+  const handleInputChange = (e: FormInput | React.ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = e.target;
+
     if (name === 'first_name' || name === 'last_name') {
-      dispatch(updateUserForm({ field: name, value }));
-    } else if (name === 'mobile_number') {
-      const numericValue = value.replace(/[^0-9]/g, '').slice(0, 16);
-      if (numericValue.length < 7) {
-        setPhoneNumberError('Phone Number should be at least 7 digits');
-      } else if (numericValue.length > 16) {
-        setPhoneNumberError('Phone Number should not exceed 16 digits');
+      const sanitizedValue = value.replace(/[^a-zA-Z\s]/g, '');
+      dispatch(updateUserForm({ field: name, value: sanitizedValue }));
+    } else if (name === 'email_id') {
+      const isValidEmail = validateEmail(value);
+      if (!isValidEmail) {
+        setEmailError('Please enter a valid email address.');
       } else {
-        setPhoneNumberError('');
+        setEmailError('');
       }
-      dispatch(updateUserForm({ field: name, value: numericValue }));
+      dispatch(updateUserForm({ field: name, value }));
+    } else if (name === 'description') {
+      const trimmedValue = value.trimStart();
+      dispatch(updateUserForm({ field: name, value: trimmedValue }));
     } else {
       dispatch(updateUserForm({ field: name, value }));
     }
   };
 
   useEffect(() => {
-   
-    if (
-      selectedOption.value === TYPE_OF_USER.ADMIN 
-    ) {
+    if (selectedOption.value === TYPE_OF_USER.ADMIN) {
       setDbAcess(true);
       const set = new Set(
-        Array.from({ length: tables.length }).map((_, i: number) => i)
+        Array.from({ length: tables?.length }).map((_, i: number) => i)
       );
       setSelected(set);
       const obj: { [key: string]: string } = {};
@@ -116,9 +123,15 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
       setTablePermissions({});
       setDbAcess(false);
     }
-  }, [selectedOption]);
+  }, [selectedOption, tables]);
+
+  useEffect(() => {
+    dispatch(getDataTableName({ get_all_table: true }));
+  }, []);
 
   /** render ui */
+
+
   return (
     <div className="transparent-model">
       {loading && (
@@ -150,6 +163,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                       placeholder={'Enter First Name'}
                       onChange={(e) => handleInputChange(e)}
                       name={'first_name'}
+                      maxLength={100}
                     />
                   </div>
                   <div className="create-input-field">
@@ -160,6 +174,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                       placeholder={'Enter Last Name'}
                       onChange={(e) => handleInputChange(e)}
                       name={'last_name'}
+                      maxLength={100}
                     />
                   </div>
                   <div className="create-input-field">
@@ -173,12 +188,14 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                         if (newValue?.value !== TYPE_OF_USER.ADMIN) {
                           setTablePermissions({});
                           setSelected(new Set());
-                          setDbAcess(false)
+                          setDbAcess(false);
                         }
-                        if(newValue?.value===TYPE_OF_USER.ADMIN){
-                          setDbAcess(true)
+                        if (newValue?.value === TYPE_OF_USER.ADMIN) {
+                          setDbAcess(true);
                           const set = new Set(
-                            Array.from({ length: tables.length }).map((_, i: number) => i)
+                            Array.from({ length: tables.length }).map(
+                              (_, i: number) => i
+                            )
                           );
                           setSelected(set);
                           const obj: { [key: string]: string } = {};
@@ -205,25 +222,34 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                       name={'email_id'}
                       disabled={formData.isEdit}
                     />
+                    {emailError && <div className="error-message">{emailError}</div>}
                   </div>
-                  <div className="create-input-field">
-                    <Input
-                      type={'text'}
-                      label="Phone Number"
+
+                  <div className="create-input-field" style={{ marginTop: '-5px' }}>
+                    <label className="inputLabel">Phone Number</label>
+                    <PhoneInput
+                      international
+                      defaultCountry="US"
                       value={formData.mobile_number}
-                      placeholder={'Phone Number'}
-                      onChange={(e) => handleInputChange(e)}
-                      name={'mobile_number'}
+                      onChange={(value: any) => {
+                        console.log('date', value);
+                        dispatch(
+                          updateUserForm({ field: 'mobile_number', value })
+                        );
+                      }}
+                      placeholder="Enter phone number"
+                      maxLength={16}
                     />
                     {phoneNumberError && (
                       <p className="error-message">{phoneNumberError}</p>
                     )}
                   </div>
+
                   {formData.role_name === 'Admin' ||
-                  formData.role_name === 'SubDealer Owner' ||
-                  formData.role_name === 'DB User' ||
-                  formData.role_name === 'Dealer Owner' ||
-                  formData.role_name === 'Finance Admin' ? null : (
+                    formData.role_name === 'SubDealer Owner' ||
+                    formData.role_name === 'DB User' ||
+                    formData.role_name === 'Dealer Owner' ||
+                    formData.role_name === 'Finance Admin' ? null : (
                     <div className="create-input-field">
                       <label className="inputLabel-select selected-fields-onboard">
                         Dealer Owner
@@ -344,9 +370,8 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                     placeholder="Type"
                   ></textarea>
                   <p
-                    className={`character-count ${
-                      formData.description.length >= 255 ? 'exceeded' : ''
-                    }`}
+                    className={`character-count ${formData.description.length >= 255 ? 'exceeded' : ''
+                      }`}
                   >
                     {formData.description.length}/255 characters
                   </p>
@@ -361,7 +386,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
             onClick={handleClose}
             type={'button'}
           />
-          <ActionButton title={'Create'} onClick={() => {}} type={'submit'} />
+          <ActionButton title={'Create'} onClick={() => { }} type={'submit'} />
         </div>
       </form>
     </div>

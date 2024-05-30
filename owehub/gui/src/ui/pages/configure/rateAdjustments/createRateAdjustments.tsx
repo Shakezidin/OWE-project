@@ -21,9 +21,10 @@ import SelectOption from '../../../components/selectOption/SelectOption';
 import {
   createRateAdjustments,
   updateRateAdjustment,
-} from '../../../../redux/apiActions/RateAdjustmentsAction';
+} from '../../../../redux/apiActions/config/RateAdjustmentsAction';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/rateAdjustmentsSlice';
+
+import { FormInput } from '../../../../core/models/data_models/typesModel';
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
@@ -38,48 +39,40 @@ const CreateRateAdjustments: React.FC<payScheduleProps> = ({
   editData,
 }) => {
   const dispatch = useAppDispatch();
-  const { isSuccess } = useAppSelector((state) => state.rateAdjustment);
-  function generateRandomId(length: number): string {
-    const characters =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const charactersLength = characters.length;
-    let result = '';
-
-    for (let i = 0; i < length; i++) {
-      const randomIndex = Math.floor(Math.random() * charactersLength);
-      result += characters.charAt(randomIndex);
-    }
-
-    return result;
-  }
-
+  const { isFormSubmitting } = useAppSelector((state) => state.rateAdjustment);
   const [createRateAdjustmentData, setCreateRateAdjustmentPayData] =
     useState<rateAdjustmentModel>({
-      unique_id: editData?.unique_id || generateRandomId(6),
+      unique_id: editData?.unique_id || '',
       pay_scale: editData?.pay_scale || '',
       position: editData?.position || '',
       adjustment: editData?.adjustment || '',
       min_rate: editData?.min_rate || '',
       max_rate: editData?.max_rate || '',
-      start_date: '04-05-2024',
-      end_date: '05-05-2024',
     });
 
-  const [newFormData, setNewFormData] = useState<any>([]);
+  const [errors, setErrors] = useState<rateAdjustmentModel>(
+    {} as rateAdjustmentModel
+  );
 
-  const tableData = {
-    tableNames: ['partners', 'states', 'installers', 'sale_type'],
+  const handleValidation = () => {
+    const error: rateAdjustmentModel = {} as rateAdjustmentModel;
+    for (const key in createRateAdjustmentData) {
+      if (
+        !createRateAdjustmentData[key as keyof typeof createRateAdjustmentData]
+      ) {
+        error[key as keyof typeof createRateAdjustmentData] =
+          `${key.replaceAll('_', ' ')} is required`;
+      }
+    }
+    setErrors({ ...error });
+    return Object.keys(error).length ? false : true;
   };
-  const getNewFormData = async () => {
-    const res = await postCaller(EndPoints.get_newFormData, tableData);
-    setNewFormData(res.data);
-  };
-  useEffect(() => {
-    getNewFormData();
-  }, []);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+  const handleInputChange = (e: FormInput) => {
+    let { name, value } = e.target;
+    if (name === 'min_rate' || name === 'max_rate') {
+      const sanitizedValue = value.replace(/[^0-9.]/g, '');
+      value = sanitizedValue;
+    }
     setCreateRateAdjustmentPayData((prevData) => ({
       ...prevData,
       [name]: value,
@@ -88,45 +81,33 @@ const CreateRateAdjustments: React.FC<payScheduleProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setViewArchived(false);
-    if (editMode) {
-      dispatch(
-        updateRateAdjustment({
-          unique_id: createRateAdjustmentData.unique_id,
-          pay_scale: createRateAdjustmentData.pay_scale,
-          position: createRateAdjustmentData.position,
-          adjustment: createRateAdjustmentData.adjustment,
-          min_rate: parseInt(createRateAdjustmentData.min_rate),
-          max_rate: parseInt(createRateAdjustmentData.max_rate),
-          start_date: createRateAdjustmentData.start_date,
-          end_date: createRateAdjustmentData.end_date,
-          record_id: editData?.record_id!,
-        })
-      );
-    } else {
-      dispatch(
-        createRateAdjustments({
-          unique_id: createRateAdjustmentData.unique_id,
-          pay_scale: createRateAdjustmentData.pay_scale,
-          position: createRateAdjustmentData.position,
-          adjustment: createRateAdjustmentData.adjustment,
-          min_rate: parseInt(createRateAdjustmentData.min_rate),
-          max_rate: parseInt(createRateAdjustmentData.max_rate),
-          start_date: createRateAdjustmentData.start_date,
-          end_date: createRateAdjustmentData.end_date,
-        })
-      );
+    if (handleValidation()) {
+      if (editMode) {
+        dispatch(
+          updateRateAdjustment({
+            unique_id: createRateAdjustmentData.unique_id,
+            pay_scale: createRateAdjustmentData.pay_scale,
+            position: createRateAdjustmentData.position,
+            adjustment: createRateAdjustmentData.adjustment,
+            min_rate: parseFloat(createRateAdjustmentData.min_rate),
+            max_rate: parseFloat(createRateAdjustmentData.max_rate),
+            record_id: editData?.record_id!,
+          })
+        );
+      } else {
+        dispatch(
+          createRateAdjustments({
+            unique_id: createRateAdjustmentData.unique_id,
+            pay_scale: createRateAdjustmentData.pay_scale,
+            position: createRateAdjustmentData.position,
+            adjustment: createRateAdjustmentData.adjustment,
+            min_rate: parseFloat(createRateAdjustmentData.min_rate),
+            max_rate: parseFloat(createRateAdjustmentData.max_rate),
+          })
+        );
+      }
     }
   };
-  useEffect(() => {
-    if (isSuccess) {
-      handleClose();
-    }
-
-    return () => {
-      isSuccess && dispatch(resetSuccess());
-    };
-  }, [isSuccess]);
 
   return (
     <div className="transparent-model">
@@ -148,13 +129,26 @@ const CreateRateAdjustments: React.FC<payScheduleProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={'text'}
-                    label="Pay Scale"
-                    value={createRateAdjustmentData.pay_scale}
-                    name="pay_scale"
+                    label="Unique Id"
+                    value={createRateAdjustmentData.unique_id}
+                    name="unique_id"
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
+
+                  {errors?.unique_id && (
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.unique_id}
+                    </span>
+                  )}
                 </div>
+
                 <div className="create-input-field">
                   <Input
                     type={'text'}
@@ -164,6 +158,17 @@ const CreateRateAdjustments: React.FC<payScheduleProps> = ({
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
+                  {errors?.position && (
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.position}
+                    </span>
+                  )}
                 </div>
                 <div className="create-input-field">
                   <Input
@@ -174,10 +179,42 @@ const CreateRateAdjustments: React.FC<payScheduleProps> = ({
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
+                  {errors?.adjustment && (
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.adjustment}
+                    </span>
+                  )}
                 </div>
               </div>
 
               <div className="create-input-container">
+                <div className="create-input-field">
+                  <Input
+                    type={'text'}
+                    label="Pay Scale"
+                    value={createRateAdjustmentData.pay_scale}
+                    name="pay_scale"
+                    placeholder={'Enter'}
+                    onChange={(e) => handleInputChange(e)}
+                  />
+                  {errors?.pay_scale && (
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.pay_scale}
+                    </span>
+                  )}
+                </div>
                 <div className="create-input-field">
                   <Input
                     type={'text'}
@@ -187,6 +224,17 @@ const CreateRateAdjustments: React.FC<payScheduleProps> = ({
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
+                  {errors?.min_rate && (
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.min_rate}
+                    </span>
+                  )}
                 </div>
                 <div className="create-input-field">
                   <Input
@@ -197,6 +245,17 @@ const CreateRateAdjustments: React.FC<payScheduleProps> = ({
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
+                  {errors?.max_rate && (
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.max_rate}
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
@@ -211,6 +270,7 @@ const CreateRateAdjustments: React.FC<payScheduleProps> = ({
           <ActionButton
             title={editMode === false ? 'Save' : 'Update'}
             type="submit"
+            disabled={isFormSubmitting}
             onClick={() => {}}
           />
         </div>

@@ -41,7 +41,7 @@ func ExecDlrPayInitialCalculation(resultChan chan string) {
 			continue
 		}
 		if err != nil || dlrPayData == nil {
-			
+
 			if len(saleData.UniqueId) <= 0 {
 				log.FuncErrorTrace(0, "Failed to calculate DLR Pay Data for unique id : %+v err: %+v", saleData.UniqueId, err)
 			} else {
@@ -56,7 +56,7 @@ func ExecDlrPayInitialCalculation(resultChan chan string) {
 	/* Update Calculated and Fetched data AR.Data Table */
 	// err = db.AddMultipleRecordInDB(db.OweHubDbIndex, db.TableName_DLR_PAY_APCALC, dlrPayDataList)
 	// if err != nil {
-	// 	log.FuncErrorTrace(0, "Failed to insert initial AR Data in DB err: %v", err)
+	//  log.FuncErrorTrace(0, "Failed to insert initial AR Data in DB err: %v", err)
 	// }
 
 	resultChan <- "SUCCESS"
@@ -449,9 +449,9 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 
 	// func replaceNaN(data map[string]interface{}) {
 	// for key, value := range outData {
-	// 	if math.IsNaN(value.(float64)) {
-	// 		outData[key] = nil
-	// 	}
+	//  if math.IsNaN(value.(float64)) {
+	//    outData[key] = nil
+	//  }
 	// }
 	// }
 

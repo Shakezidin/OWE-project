@@ -18,21 +18,21 @@ export const LoanFeesColumn: Column[] = [
   {
     name: 'owe_cost',
     displayName: 'Owe Cost',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
-  { name: 'dlr_mu', displayName: 'DLR MU', type: 'string', isCheckbox: false },
+  { name: 'dlr_mu', displayName: 'DLR MU', type: 'number', isCheckbox: false },
   {
     name: 'dlr_cost',
     displayName: 'DLR Cost',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
   {
     name: 'start_date',
     displayName: 'Start',
-    type: 'string',
+    type: 'date',
     isCheckbox: false,
   },
-  { name: 'end_date', displayName: 'End', type: 'string', isCheckbox: false },
+  { name: 'end_date', displayName: 'End', type: 'date', isCheckbox: false },
 ];

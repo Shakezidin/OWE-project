@@ -22,7 +22,13 @@ import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoin
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import Swal from 'sweetalert2';
 import { ROUTES } from '../../../../routes/routes';
-import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
+import {
+  errorSwal,
+  showAlert,
+  successSwal,
+} from '../../../components/alert/ShowAlert';
+import MicroLoader from '../../../components/loader/MicroLoader';
+import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 
 const MarketingFees: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -36,8 +42,7 @@ const MarketingFees: React.FC = () => {
   const marketingFeesList = useAppSelector(
     (state) => state.marketing.marketing_fees_list
   );
-  const loading = useAppSelector((state) => state.marketing.loading);
-  const error = useAppSelector((state) => state.marketing.error);
+  const { loading, totalCount } = useAppSelector((state) => state.marketing);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
@@ -47,17 +52,17 @@ const MarketingFees: React.FC = () => {
   const [viewArchived, setViewArchived] = useState<boolean>(false);
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
-  const currentPage = useAppSelector(
-    (state) => state.paginationType.currentPage
-  );
+  const [currentPage, setCurrentPage] = useState(1);
+  const [filters, setFilters] = useState<FilterModel[]>([]);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
       archived: viewArchived ? true : undefined,
+      filters,
     };
     dispatch(fetchmarketingFees(pageNumber));
-  }, [dispatch, currentPage, viewArchived]);
+  }, [dispatch, currentPage, viewArchived, filters]);
 
   const handleAddMarketing = () => {
     setEditMode(false);
@@ -71,25 +76,25 @@ const MarketingFees: React.FC = () => {
     handleOpen();
   };
   const paginate = (pageNumber: number) => {
-    dispatch(setCurrentPage(pageNumber));
+    setCurrentPage(pageNumber);
   };
 
   const goToNextPage = () => {
-    dispatch(setCurrentPage(currentPage + 1));
+    setCurrentPage(currentPage + 1);
   };
 
   const goToPrevPage = () => {
-    dispatch(setCurrentPage(currentPage - 1));
+    setCurrentPage(currentPage - 1);
   };
 
   const filter = () => {
     setFilterOpen(true);
   };
-  const totalPages = Math.ceil(marketingFeesList?.length / itemsPerPage);
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentPageData = marketingFeesList?.slice(startIndex, endIndex);
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
+  const endIndex = startIndex * itemsPerPage;
+  const currentPageData = marketingFeesList?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === marketingFeesList?.length;
   const handleSort = (key: any) => {
@@ -124,13 +129,13 @@ const MarketingFees: React.FC = () => {
   const handleArchiveAllClick = async () => {
     const confirmed = await showAlert(
       'Are Your Sure',
-      'This Action will archive your data',
+      'This Action will archive your selected rows.',
       'Yes',
       'No'
     );
     if (confirmed) {
       const archivedRows = Array.from(selectedRows).map(
-        (index) => marketingFeesList[index].record_id
+        (index) => currentPageData[index].record_id
       );
       if (archivedRows.length > 0) {
         const newValue = {
@@ -141,22 +146,20 @@ const MarketingFees: React.FC = () => {
         const pageNumber = {
           page_number: currentPage,
           page_size: itemsPerPage,
+          filters,
+          archived: viewArchived,
         };
 
-        const res = await postCaller(EndPoints.update_dealer_archive, newValue);
+        const res = await postCaller("update_marketingfee_archive", newValue);
         if (res.status === HTTP_STATUS.OK) {
           // If API call is successful, refetch commissions
           dispatch(fetchmarketingFees(pageNumber));
-          const remainingSelectedRows = Array.from(selectedRows).filter(
-            (index) =>
-              !archivedRows.includes(marketingFeesList[index].record_id)
-          );
-          const isAnyRowSelected = remainingSelectedRows.length > 0;
-          setSelectAllChecked(isAnyRowSelected);
+
+          setSelectAllChecked(false);
           setSelectedRows(new Set());
           await successSwal('Archived', 'The data has been archived ');
         } else {
-          await successSwal('Archived', 'The data has been archived ');
+          await errorSwal('Failed', 'Something went wrong');
         }
       }
     }
@@ -177,13 +180,18 @@ const MarketingFees: React.FC = () => {
       const pageNumber = {
         page_number: currentPage,
         page_size: itemsPerPage,
+        filters,
+        archived: viewArchived 
+
       };
-      const res = await postCaller(EndPoints.update_dealer_archive, newValue);
+      const res = await postCaller("update_marketingfee_archive", newValue);
       if (res.status === HTTP_STATUS.OK) {
         dispatch(fetchmarketingFees(pageNumber));
+        setSelectedRows(new Set())
+        setSelectAllChecked(false);
         await successSwal('Archived', 'The data has been archived ');
       } else {
-        await successSwal('Archived', 'The data has been archived ');
+        await errorSwal('Failed', 'Something went wrong');
       }
     }
   };
@@ -193,25 +201,12 @@ const MarketingFees: React.FC = () => {
     // When toggling, reset the selected rows
     setSelectedRows(new Set());
     setSelectAllChecked(false);
+    setCurrentPage(1);
   };
 
   const fetchFunction = (req: any) => {
     dispatch(fetchmarketingFees(req));
   };
-  if (error) {
-    return (
-      <div className="loader-container">
-        <Loading />
-      </div>
-    );
-  }
-  if (loading) {
-    return (
-      <div className="loader-container">
-        <Loading /> {loading}
-      </div>
-    );
-  }
 
   return (
     <div className="comm">
@@ -289,9 +284,17 @@ const MarketingFees: React.FC = () => {
             </thead>
 
             <tbody>
-              {currentPageData?.length > 0 ? (
+              {loading ? (
+                <tr>
+                  <td colSpan={MarketingFeesColumn.length}>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <MicroLoader />
+                    </div>
+                  </td>
+                </tr>
+              ) : currentPageData?.length > 0 ? (
                 currentPageData?.map((el: any, i: any) => (
-                  <tr key={i}>
+                  <tr key={i} className={ selectedRows.has(i)? `selected`:""}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
                       <div className="flex-check">
                         <CheckBox
@@ -321,8 +324,9 @@ const MarketingFees: React.FC = () => {
                     <td>{el.description}</td>
                     <td>{el.start_date}</td>
                     <td>{el.end_date} </td>
-                    {viewArchived === true ? null : (
-                      <td>
+                    <td>
+                      
+                    {!viewArchived && selectedRows.size<2 && (
                         <div className="action-icon">
                           <div
                             className="action-archive"
@@ -341,8 +345,9 @@ const MarketingFees: React.FC = () => {
                             {/* <span className="tooltiptext">Edit</span> */}
                           </div>
                         </div>
-                      </td>
+                      
                     )}
+                      </td>
                   </tr>
                 ))
               ) : (
@@ -361,7 +366,8 @@ const MarketingFees: React.FC = () => {
         {marketingFeesList?.length > 0 ? (
           <div className="page-heading-container">
             <p className="page-heading">
-              {currentPage} - {totalPages} of {currentPageData?.length} item
+              {startIndex} - {endIndex > totalCount ? totalCount : endIndex} of{' '}
+              {currentPageData?.length} item
             </p>
 
             <Pagination

@@ -236,10 +236,10 @@ func PrepareReconcileFilters(tableName string, dataFilter models.DataRequestBody
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(re.customer) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "partner_name":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(re.partner_name) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(pt.partner_name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "state_name":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(re.state_name) %s LOWER($%d)", operator, len(whereEleList)+1))
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(st.name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "sys_size":
 				filtersBuilder.WriteString(fmt.Sprintf("re.sys_size %s $%d", operator, len(whereEleList)+1))

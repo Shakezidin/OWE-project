@@ -24,6 +24,9 @@ import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import Swal from 'sweetalert2';
 import { ROUTES } from '../../../../routes/routes';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
+import MicroLoader from '../../../components/loader/MicroLoader';
+import FilterHoc from '../../../components/FilterModal/FilterHoc';
+import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 
 const LoanType = () => {
   const dispatch = useAppDispatch();
@@ -35,7 +38,7 @@ const LoanType = () => {
   const handleClose = () => setOpen(false);
 
   const filterClose = () => setFilterOpen(false);
-  const {loantype_list:loanTypeList,count} = useAppSelector(
+  const { loantype_list: loanTypeList, count } = useAppSelector(
     (state) => state?.loanType
   );
   const loading = useAppSelector((state) => state.loanType.loading);
@@ -47,28 +50,30 @@ const LoanType = () => {
     null
   );
   const itemsPerPage = 10;
-  const [currentPage,setCurrentPage] = useState(1)
+  const [currentPage, setCurrentPage] = useState(1);
   const [sortKey, setSortKey] = useState('');
   const [viewArchived, setViewArchived] = useState<boolean>(false);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [filters, setFilters] = useState<FilterModel[]>([]);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
       archived: viewArchived ? true : undefined,
+      filters,
     };
     dispatch(fetchLoanType(pageNumber));
-  }, [dispatch, currentPage, viewArchived]);
+  }, [dispatch, currentPage, viewArchived, filters]);
   const paginate = (pageNumber: number) => {
-    setCurrentPage(pageNumber)
+    setCurrentPage(pageNumber);
   };
 
   const goToNextPage = () => {
-   setCurrentPage(currentPage + 1)
+    setCurrentPage(currentPage + 1);
   };
 
   const goToPrevPage = () => {
-   setCurrentPage(currentPage - 1)
+    setCurrentPage(currentPage - 1);
   };
   const handleAddLoan = () => {
     setEditMode(false);
@@ -81,7 +86,7 @@ const LoanType = () => {
   };
   const totalPages = Math.ceil(count / itemsPerPage);
 
-  const startIndex = (currentPage - 1) * itemsPerPage+1;
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
   const endIndex = currentPage * itemsPerPage;
   const handleEditLoan = (loanData: LoanTypeModel) => {
     setEditMode(true);
@@ -140,6 +145,7 @@ const LoanType = () => {
         const pageNumber = {
           page_number: currentPage,
           page_size: itemsPerPage,
+          filters,
         };
 
         const res = await postCaller(EndPoints.update_dealer_archive, newValue);
@@ -149,7 +155,7 @@ const LoanType = () => {
           const remainingSelectedRows = Array.from(selectedRows).filter(
             (index) => !archivedRows.includes(loanTypeList[index].record_id)
           );
-      
+
           setSelectAllChecked(false);
           setSelectedRows(new Set());
           await successSwal('Archived', 'The data has been archived ');
@@ -175,6 +181,7 @@ const LoanType = () => {
       const pageNumber = {
         page_number: currentPage,
         page_size: itemsPerPage,
+        filters,
       };
       const res = await postCaller(EndPoints.update_dealer_archive, newValue);
       if (res.status === HTTP_STATUS.OK) {
@@ -193,25 +200,12 @@ const LoanType = () => {
     // When toggling, reset the selected rows
     setSelectedRows(new Set());
     setSelectAllChecked(false);
-    setCurrentPage(1)
+    setCurrentPage(1);
   };
   const fetchFunction = (req: any) => {
-    dispatch(fetchLoanType(req));
+    setCurrentPage(1);
+    setFilters(req.filters);
   };
-  if (error) {
-    return (
-      <div className="loader-container">
-        <Loading />
-      </div>
-    );
-  }
-  if (loading) {
-    return (
-      <div className="loader-container">
-        <Loading /> {loading}
-      </div>
-    );
-  }
 
   return (
     <div className="comm">
@@ -234,20 +228,32 @@ const LoanType = () => {
           viewArchive={viewArchived}
           onpressAddNew={() => handleAddLoan()}
         />
-        {filterOPen && (
-          <FilterModal
-            handleClose={filterClose}
-            columns={LoanTypeColumns}
-            page_number={currentPage}
-            fetchFunction={fetchFunction}
-            page_size={itemsPerPage}
-          />
-        )}
+
+        <FilterHoc
+          isOpen={filterOPen}
+          resetOnChange={viewArchived}
+          handleClose={filterClose}
+          columns={LoanTypeColumns}
+          page_number={currentPage}
+          fetchFunction={fetchFunction}
+          page_size={itemsPerPage}
+        />
+
+        <FilterHoc
+          resetOnChange={viewArchived}
+          isOpen={filterOPen}
+          handleClose={filterClose}
+          columns={LoanTypeColumns}
+          fetchFunction={fetchFunction}
+          page_number={currentPage}
+          page_size={itemsPerPage}
+        />
         {open && (
           <CreateLoanType
             loanData={editedLoanData}
             editMode={editMode}
             page_number={currentPage}
+            filters={filters}
             page_size={itemsPerPage}
             handleClose={handleClose}
           />
@@ -288,7 +294,15 @@ const LoanType = () => {
               </tr>
             </thead>
             <tbody>
-              {currentPageData?.length > 0 ? (
+              {loading ? (
+                <tr>
+                  <td colSpan={LoanTypeColumns.length}>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <MicroLoader />
+                    </div>
+                  </td>
+                </tr>
+              ) : currentPageData?.length > 0 ? (
                 currentPageData?.map((el: any, i: any) => (
                   <tr key={i}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
@@ -354,7 +368,8 @@ const LoanType = () => {
         {loanTypeList?.length > 0 ? (
           <div className="page-heading-container">
             <p className="page-heading">
-              {startIndex} - {endIndex>count?count:endIndex} of {count} item
+              {startIndex} - {endIndex > count ? count : endIndex} of {count}{' '}
+              item
             </p>
             <Pagination
               currentPage={currentPage}

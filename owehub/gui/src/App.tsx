@@ -65,6 +65,7 @@ import { ARDashboardPage } from './ui/pages/ar/ardashboard/ardashboard';
 import { useAppDispatch, useAppSelector } from './redux/hooks';
 import { TYPE_OF_USER } from './resources/static_data/Constant';
 import AdderData from './ui/pages/configure/adderData/AdderData';
+import ApRep from './ui/pages/configure/apRep/ApRep';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -135,6 +136,7 @@ function App() {
         <Route path={ROUTES.CONFIG_ADDERDATA} element={<AdderData />} />
 
         <Route path={ROUTES.USER_MANAEMENT} element={<UserManagement />} />
+        <Route path = {ROUTES.CONFIG_APREP} element={<ApRep/>}/>
       </Route>
     );
   };

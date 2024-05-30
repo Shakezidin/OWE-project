@@ -51,12 +51,16 @@ import DBManagerSlice from './apiSlice/dbManagerSlice/DBManagerSlice';
 import projectManagement from './apiSlice/projectManagement';
 import dataTableSlice from './apiSlice/DbManager/dataTableSlice';
 import filterSlice from './apiSlice/filterSlice/filterSlice';
+import userExistSlice from './apiSlice/authSlice/checkuserslice';
+import userSlice from './apiSlice/UserSlice/userSlice';
+
 export const store = configureStore({
   reducer: {
     appState: appStateSlice,
     auth: authReducer,
 
     resetPassword: resetPasswordSlice,
+    checkUser: userExistSlice,
     changePassword: ChangePasswordSlice,
     comm: commissionReducer,
     dealer: dealerReducer,
@@ -107,7 +111,8 @@ export const store = configureStore({
     dbManager: DBManagerSlice,
     projectManagement,
     dataTableSlice,
-    filterSlice
+    filterSlice,
+    userSlice,
   },
 });
 

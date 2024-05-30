@@ -82,10 +82,8 @@ export const DashboardPage: React.FC = () => {
     <>
       <div className="Dashboard-section-container">
         <div className="DashboardPage-container">
-          {/* <div className="DashboardPage-wel">
-            <h3>Dashboard</h3>
-          </div> */}
-          <div className="dashboard-payroll">
+          <div className="rep-manage-user">
+
             <div className="dash-head-input">
               <label className="inputLabel" style={{ color: '#344054' }}>
                 Commission Model
@@ -113,9 +111,9 @@ export const DashboardPage: React.FC = () => {
                   }),
                   dropdownIndicator: (baseStyles, state) => ({
                     ...baseStyles,
-                    color: '#0493CE',
+                    color: '#333333',
                     '&:hover': {
-                      color: '#0493CE',
+                      color: '#333333',
                     },
                   }),
                   indicatorSeparator: () => ({
@@ -145,10 +143,6 @@ export const DashboardPage: React.FC = () => {
               <label className="inputLabel" style={{ color: '#344054' }}>
                 Payroll Date
               </label>
-              {/* <label className="payroll-label">Start:</label>
-              <input type="date" className="payroll-date" />
-              <label className="payroll-label">End:</label>
-              <input type="date" className="payroll-date" /> */}
               <div
                 style={{
                   position: 'relative',
@@ -198,24 +192,25 @@ export const DashboardPage: React.FC = () => {
                 Chart View
               </label>
             </div>
+          </div>
+          
+          <div className="dashboard-payroll">
             <div className="Line-container">
               <div className="line-graph">
                 <div
-                  className={`filter-line ${
-                    active === 0 ? 'active-filter-line' : ''
-                  }`}
+                  className={`filter-line ${active === 0 ? 'active-filter-line' : ''
+                    }`}
                   onClick={() => setActive(0)}
                 >
                   {active === 0 ? (
-                    <img src={ICONS.dashActive} alt="" />
+                    <img src={ICONS.dashHead} alt="" />
                   ) : (
                     <img src={ICONS.dashHead} alt="" />
                   )}
                 </div>
                 <div
-                  className={`filter-disable ${
-                    active === 1 ? 'active-filter-line' : ''
-                  }`}
+                  className={`filter-disable ${active === 1 ? 'active-filter-line' : ''
+                    }`}
                   // onClick={() => setActive(1)}
                   style={{ border: '1px solid #0493CE' }}
                 >
@@ -246,7 +241,7 @@ export const DashboardPage: React.FC = () => {
             columns={[]}
             page_number={1}
             page_size={10}
-            fetchFunction={() => {}}
+            fetchFunction={() => { }}
           />
         )}
 

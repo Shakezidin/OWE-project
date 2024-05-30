@@ -41,7 +41,7 @@ export const ARDashboardPage: React.FC = () => {
     { value: 'N/A', label: 'N/A' },
   ];
   const options3 = [
-    { value: 'Select', label: 'Select' },
+    { value: 'All', label: 'All' },
     { value: 'Partner', label: 'Partner' },
     { value: 'Installer', label: 'Installer' },
     { value: 'Type', label: 'Type' },
@@ -113,9 +113,8 @@ export const ARDashboardPage: React.FC = () => {
     <>
       <div className="ar-Dashboard-section-container">
         <div className="ar-Dashboard-container">
-          <div className=""></div>
-          <div className="dashboard-payroll">
-            <div className="ar-dash-head-input">
+          <div className="rep-manage-user">
+          <div className="ar-dash-head-input">
               <label className="inputLabel" style={{ color: '#344054' }}>
                 Report Types
               </label>
@@ -188,7 +187,6 @@ export const ARDashboardPage: React.FC = () => {
                 }}
               />
             </div>
-
             <div className="ar-dash-head-input">
               <label className="inputLabel" style={{ color: '#344054' }}>
                 Sales Partner
@@ -209,7 +207,7 @@ export const ARDashboardPage: React.FC = () => {
                     borderRadius: '.40rem',
                     border: 'none',
                     outline: 'none',
-                    width: '6rem',
+                    width: '5rem',
                     minHeight: 'unset',
                     height: '30px',
                     alignContent: 'center',
@@ -348,6 +346,9 @@ export const ARDashboardPage: React.FC = () => {
               </label>
               <ArDropdownWithCheckboxes options={options} />
             </div>
+          </div>
+
+          <div className="dashboard-payroll">
 
             <div className="Line-container">
               <div className="ar-line-graph">
@@ -358,9 +359,9 @@ export const ARDashboardPage: React.FC = () => {
                   onClick={() => setActive(0)}
                 >
                   {active === 0 ? (
-                    <img src={ICONS.dashActive} alt="" />
-                  ) : (
                     <img src={ICONS.dashHead} alt="" />
+                  ) : (
+                    <img src={ICONS.dashActive} alt="" />
                   )}
                 </div>
                 <div
@@ -368,7 +369,7 @@ export const ARDashboardPage: React.FC = () => {
                     active === 1 ? 'rep-active-filter-line' : ''
                   }`}
                   // onClick={() => setActive(1)}
-                  style={{ border: '1px solid #0493CE' }}
+                  // style={{ border: '1px solid #0493CE' }}
                 >
                   {active === 1 ? (
                     <img src={ICONS.viewActive} alt="" />
@@ -379,7 +380,7 @@ export const ARDashboardPage: React.FC = () => {
                 <div
                   className="rep-filter-line"
                   onClick={() => setFilterModal(true)}
-                  style={{ border: '1px solid #0493CE' }}
+                  // style={{ border: '1px solid #0493CE' }}
                 >
                   <img src={ICONS.FILTER} alt="" />
                 </div>

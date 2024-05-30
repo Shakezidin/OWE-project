@@ -7,11 +7,13 @@ interface payScheduleState {
   payment_schedule_list: PayScheduleModel[];
   loading: boolean;
   error: string | null;
+  totalCount: number;
 }
 const initialState: payScheduleState = {
   payment_schedule_list: [],
   loading: false,
   error: null,
+  totalCount: 0,
 };
 
 export const fetchPaySchedule = createAsyncThunk(
@@ -46,6 +48,7 @@ const payScheduleSlice = createSlice({
         } else {
           state.payment_schedule_list = [];
         }
+        state.totalCount = action.payload.dbRecCount;
       })
       .addCase(fetchPaySchedule.rejected, (state, action) => {
         state.loading = false;

@@ -6,12 +6,12 @@ import { ActionButton } from '../../../components/button/ActionButton';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-import { createAdjustments } from '../../../../redux/apiActions/arAdjustmentsAction';
+import { createAdjustments } from '../../../../redux/apiActions/config/arAdjustmentsAction';
 import {
   createLoanFee,
   ILoanRow,
   updateLoanFee,
-} from '../../../../redux/apiActions/loanFeeActions';
+} from '../../../../redux/apiActions/config/loanFeeActions';
 import {
   installerOption,
   stateOption,
@@ -20,7 +20,7 @@ import {
 } from '../../../../core/models/data_models/SelectDataModel';
 import { addDays, format } from 'date-fns';
 import SelectOption from '../../../components/selectOption/SelectOption';
-import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/loanFeeSlice';
+import { FormInput } from '../../../../core/models/data_models/typesModel';
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
@@ -49,7 +49,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
     {} as typeof newFormData
   );
 
-  const { isSuccess } = useAppSelector((state) => state.loanFeeSlice);
+  const { isFormSubmitting } = useAppSelector((state) => state.loanFeeSlice);
 
   const tableData = {
     tableNames: [
@@ -57,7 +57,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
       'states',
       'installers',
       'sale_type',
-      'dealers',
+      'dealer',
       'loan_type',
     ],
   };
@@ -73,8 +73,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
         continue;
       }
       if (!newFormData[key as keyof typeof newFormData]) {
-        error[key as keyof typeof newFormData] =
-          `${key.toLocaleLowerCase()} is required`;
+        error[key as keyof typeof newFormData] = `${key} is required`;
       }
     }
     setErrors({ ...error });
@@ -98,7 +97,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
 
   //   const loanTypes = (newFormData["loan_types"]   ).map()
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: FormInput) => {
     const { value, name } = e.target;
     if (name === 'endDate') {
       if (newFormData.startDate && value < newFormData.startDate) {
@@ -162,13 +161,6 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
     }
   };
 
-  useEffect(() => {
-    if (isSuccess) {
-      handleClose();
-      dispatch(resetSuccess());
-    }
-  }, [isSuccess]);
-
   return (
     <div className="transparent-model">
       <form className="modal" onSubmit={handleSubmit}>
@@ -194,22 +186,40 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     onChange={handleChange}
                   />
                   {errors?.dlrMu && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.dlrMu}
                     </span>
                   )}
                 </div>
                 <div className="create-input-field">
-                  <Input
-                    type={'text'}
-                    label="Dealer"
-                    value={newFormData.dealerName}
-                    name="dealerName"
-                    placeholder={'Enter'}
-                    onChange={handleChange}
+                  <label className="inputLabel-select">Dealer</label>
+
+                  <SelectOption
+                    options={dealerOption(newFormData)}
+                    onChange={(newValue) => {
+                      setNewFormData((prev) => ({
+                        ...prev,
+                        dealerName: newValue?.value!,
+                      }));
+                    }}
+                    value={dealerOption(newFormData)?.find(
+                      (option) => option.value === newFormData.dealerName
+                    )}
                   />
                   {errors?.dealerName && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.dealerName}
                     </span>
                   )}
@@ -230,8 +240,14 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     )}
                   />
                   {errors?.stateName && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
-                      {errors.stateName}
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.stateName.replace('stateName', 'state')}
                     </span>
                   )}
                 </div>
@@ -253,7 +269,13 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     )}
                   />
                   {errors?.loanType && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.loanType}
                     </span>
                   )}
@@ -277,7 +299,13 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     )}
                   />
                   {errors?.installerName && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.installerName}
                     </span>
                   )}
@@ -290,10 +318,23 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     value={newFormData.dlrCost}
                     name="dlrCost"
                     placeholder={'Enter'}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      const sanitizedValue = e.target.value.replace(
+                        /[^0-9.]/g,
+                        ''
+                      );
+                      e.target.value = sanitizedValue;
+                      handleChange(e);
+                    }}
                   />
                   {errors?.dlrCost && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.dlrCost}
                     </span>
                   )}
@@ -308,10 +349,23 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     value={newFormData.oweCost}
                     name="oweCost"
                     placeholder={'Enter'}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      const sanitizedValue = e.target.value.replace(
+                        /[^0-9.]/g,
+                        ''
+                      );
+                      e.target.value = sanitizedValue;
+                      handleChange(e);
+                    }}
                   />
                   {errors?.oweCost && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.oweCost}
                     </span>
                   )}
@@ -320,21 +374,27 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={'date'}
-                    label="Start "
+                    label="Start Date"
                     value={newFormData.startDate}
                     name="startDate"
                     placeholder={'Enter'}
-                    onChange={(e)=>{
-                      handleChange(e)
+                    onChange={(e) => {
+                      handleChange(e);
                       setNewFormData((prev) => ({
-                       ...prev,
-                        endDate:"",
+                        ...prev,
+                        endDate: '',
                       }));
                     }}
                   />
                   {errors?.startDate && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
-                      {errors.startDate}
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.startDate.replace('startDate', 'start date')}
                     </span>
                   )}
                 </div>
@@ -342,8 +402,14 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={'date'}
-                    label="End"
-                    min={newFormData.startDate && format(addDays(new Date(newFormData.startDate),1),"yyyy-MM-dd")}
+                    label="End Date"
+                    min={
+                      newFormData.startDate &&
+                      format(
+                        addDays(new Date(newFormData.startDate), 1),
+                        'yyyy-MM-dd'
+                      )
+                    }
                     value={newFormData.endDate}
                     disabled={!newFormData.startDate}
                     name="endDate"
@@ -351,8 +417,14 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                     onChange={handleChange}
                   />
                   {errors?.endDate && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
-                      {errors.endDate}
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.endDate.replace('endDate', 'end date')}
                     </span>
                   )}
                 </div>
@@ -369,6 +441,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
           <ActionButton
             title={editMode === false ? 'Save' : 'Update'}
             type="submit"
+            disabled={isFormSubmitting}
             onClick={() => {}}
           />
         </div>

@@ -10,7 +10,7 @@
   justify-content: center;
 }
 .container {
-  width: 1440px;
+  width: 100%;
   display: flex;
 }
 .overlay {
@@ -164,6 +164,7 @@ input:checked + .slider:before {
   justify-content: center;
   z-index: 4;
   position: relative;
+  padding: 2rem;
 }
 
 .loginTextView {

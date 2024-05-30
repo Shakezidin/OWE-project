@@ -23,6 +23,7 @@ import PaginationComponent from '../../../components/pagination/PaginationCompon
 import { fetchUserListBasedOnRole } from '../../../../redux/apiActions/userManagement/userManagementActions';
 import DBUserTable from '../userManagerAllTable/DBUserTable';
 import { getDataTableName } from '../../../../redux/apiActions/dataTableAction';
+import { resetOpt } from '../../../../redux/apiSlice/DbManager/dataTableSlice';
 interface UserTableProos {
   userDropdownData: UserDropdownModel[];
   userRoleBasedList: UserRoleBasedListModel[];
@@ -66,11 +67,10 @@ const UserManagementTable: React.FC<UserTableProos> = ({
       ],
     };
     dispatch(fetchUserListBasedOnRole(data));
+    return () => {
+      dispatch(resetOpt());
+    };
   }, [dispatch, currentPage1, pageSize1]);
-
-  useEffect(() => {
-    dispatch(getDataTableName());
-  }, []);
 
   const handlePageChange = (page: number) => {
     setCurrentPage1(page);
@@ -271,7 +271,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
               value={selectedOption}
               onChange={(data: any) => {
                 handleSelectChange(data);
-                setSelectedRows(new Set())
+                setSelectedRows(new Set());
                 setSelectAllChecked(false);
               }}
             />

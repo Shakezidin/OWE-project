@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -23,12 +24,16 @@ import (
  * INPUT:			resp, req
  * RETURNS:    		void
  ******************************************************************************/
+
 func HandleCreateDealerCreditRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err                error
-		createDealerCredit models.CreateDealerCredit
-		queryParameters    []interface{}
-		result             []interface{}
+		err             error
+		createDealerReq models.CreateDealerCredit
+		queryParameters []interface{}
+		result          []interface{}
+		totalAmount     float64
+		sysSize         float64
+		whereEleList    []interface{}
 	)
 
 	log.EnterFn(0, "HandleCreateDealerCreditRequest")
@@ -48,58 +53,67 @@ func HandleCreateDealerCreditRequest(resp http.ResponseWriter, req *http.Request
 		return
 	}
 
-	err = json.Unmarshal(reqBody, &createDealerCredit)
+	err = json.Unmarshal(reqBody, &createDealerReq)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to unmarshal create dealer credit request err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to unmarshal create dealer credit request", http.StatusBadRequest, nil)
 		return
 	}
 
-	if (len(createDealerCredit.UniqueID) <= 0) || (len(createDealerCredit.Customer) <= 0) ||
-		(len(createDealerCredit.DealerName) <= 0) || (len(createDealerCredit.DealerDBA) <= 0) ||
-		(len(createDealerCredit.ExactAmount) <= 0) || (len(createDealerCredit.ApprovedBy) <= 0) ||
-		(len(createDealerCredit.Notes) <= 0) || (len(createDealerCredit.StartDate) <= 0) ||
-		(createDealerCredit.EndDate != nil && len(*createDealerCredit.EndDate) <= 0) {
+	if (len(createDealerReq.UniqueId) <= 0) || (len(createDealerReq.Date) <= 0) ||
+		(len(createDealerReq.ApprovedBy) <= 0) || (len(createDealerReq.Notes) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
-	if createDealerCredit.PerKWAmount <= float64(0) {
-		err = fmt.Errorf("Invalid per kw amount Not Allowed")
+	if createDealerReq.ExactAmount <= float64(0) {
+		err = fmt.Errorf("Invalid ExactAmount Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Per KW Amount Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid ExactAmount Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
-	if createDealerCredit.TotalAmount <= float64(0) {
-		err = fmt.Errorf("Invalid TotalAmount value: %f, Not Allowed", createDealerCredit.TotalAmount)
+	if createDealerReq.PerKwAmount <= float64(0) {
+		err = fmt.Errorf("Invalid PerKwAmount Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid TotalAmount value Not Allowed", http.StatusBadRequest, nil)
+		FormAndSendHttpResp(resp, "Invalid PerKwAmount Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
-	if createDealerCredit.SysSize <= float64(0) {
-		err = fmt.Errorf("Invalid SysSize value: %f, Not Allowed", createDealerCredit.SysSize)
-		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid SysSize value Not Allowed", http.StatusBadRequest, nil)
+	Date, err := time.Parse("2006-01-02", createDealerReq.Date)
+	if err != nil {
+		fmt.Println("Error parsing date:", err)
 		return
+	}
+	query := `
+		SELECT system_size FROM consolidated_data_view WHERE unique_id = $1`
+	whereEleList = append(whereEleList, createDealerReq.UniqueId)
+
+	data, err := db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
+	if err != nil || len(data) <= 0 {
+		log.FuncErrorTrace(0, "Failed to get new form data for table name from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get Data", http.StatusBadRequest, nil)
+		return
+	}
+
+	sysSize = data[0]["system_size"].(float64)
+	if createDealerReq.ExactAmount > 0 {
+		totalAmount = createDealerReq.ExactAmount
+	} else if createDealerReq.PerKwAmount > 0 {
+		totalAmount = (sysSize * createDealerReq.PerKwAmount)
 	}
 
 	// Populate query parameters in the correct order
-	queryParameters = append(queryParameters, createDealerCredit.UniqueID)
-	queryParameters = append(queryParameters, createDealerCredit.Customer)
-	queryParameters = append(queryParameters, createDealerCredit.DealerName)
-	queryParameters = append(queryParameters, createDealerCredit.DealerDBA)
-	queryParameters = append(queryParameters, createDealerCredit.ExactAmount)
-	queryParameters = append(queryParameters, createDealerCredit.PerKWAmount)
-	queryParameters = append(queryParameters, createDealerCredit.ApprovedBy)
-	queryParameters = append(queryParameters, createDealerCredit.Notes)
-	queryParameters = append(queryParameters, createDealerCredit.TotalAmount)
-	queryParameters = append(queryParameters, createDealerCredit.SysSize)
-	queryParameters = append(queryParameters, createDealerCredit.StartDate)
-	queryParameters = append(queryParameters, createDealerCredit.EndDate)
+	queryParameters = append(queryParameters, createDealerReq.UniqueId)
+	queryParameters = append(queryParameters, Date)
+	queryParameters = append(queryParameters, createDealerReq.ExactAmount)
+	queryParameters = append(queryParameters, createDealerReq.PerKwAmount)
+	queryParameters = append(queryParameters, createDealerReq.ApprovedBy)
+	queryParameters = append(queryParameters, createDealerReq.Notes)
+	queryParameters = append(queryParameters, totalAmount)
+	queryParameters = append(queryParameters, sysSize)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateDealerCreditFunction, queryParameters)
@@ -109,8 +123,8 @@ func HandleCreateDealerCreditRequest(resp http.ResponseWriter, req *http.Request
 		return
 	}
 
-	data := result[0].(map[string]interface{})
+	resultData := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "New dealer credit created with Id: %+v", data["result"])
+	log.DBTransDebugTrace(0, "New dealer credit created with Id: %+v", resultData["result"])
 	FormAndSendHttpResp(resp, "Dealer Credit Created Successfully", http.StatusOK, nil)
 }

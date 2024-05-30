@@ -17,7 +17,7 @@ import { ROUTES } from '../../../../routes/routes';
 import {
   getArscheduleList,
   IARSchedule,
-} from '../../../../redux/apiActions/arScheduleAction';
+} from '../../../../redux/apiActions/config/arScheduleAction';
 import CreatedArSchedule from './CreateArSchedeul';
 import Loading from '../../../components/loader/Loading';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
@@ -27,6 +27,7 @@ import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
+import DataNotFound from '../../../components/loader/DataNotFound';
 const ARSchedule = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -49,8 +50,7 @@ const ARSchedule = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
-  const [filters, setFilters] = useState<FilterModel[]>([
-  ]);
+  const [filters, setFilters] = useState<FilterModel[]>([]);
   const {
     data: commissionList,
     isLoading,
@@ -61,10 +61,10 @@ const ARSchedule = () => {
       page_number: currentPage,
       page_size: itemsPerPage,
       archived: viewArchived,
-      filters
+      filters,
     };
     dispatch(getArscheduleList(pageNumber));
-  }, [dispatch, currentPage, viewArchived, currentPage,filters]);
+  }, [dispatch, currentPage, viewArchived, currentPage, filters]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -72,11 +72,11 @@ const ARSchedule = () => {
         page_number: currentPage,
         page_size: itemsPerPage,
         archived: viewArchived,
-        filters
+        filters,
       };
       dispatch(getArscheduleList({ ...pageNumber }));
     }
-  }, [isSuccess, currentPage, viewArchived,filters]);
+  }, [isSuccess, currentPage, viewArchived, filters]);
   const filter = () => {
     setFilterOpen(true);
   };
@@ -142,8 +142,8 @@ const ARSchedule = () => {
     handleOpen();
   };
   const fetchFunction = (req: any) => {
-    setCurrentPage(1)
-    setFilters(req.filters)
+    setCurrentPage(1);
+    setFilters(req.filters);
   };
 
   const handleArchiveClick = async (record_id: number[]) => {
@@ -163,7 +163,7 @@ const ARSchedule = () => {
         page_number: currentPage,
         page_size: itemsPerPage,
         archived: viewArchived,
-        filters
+        filters,
       };
       const res = await postCaller('update_arschedule_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
@@ -177,9 +177,6 @@ const ARSchedule = () => {
     }
   };
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
   console.log(selectedRows, 'rorrrrr');
 
   return (
@@ -329,14 +326,26 @@ const ARSchedule = () => {
                     </td>
                   </tr>
                 ))
-              ) : null}
+              ) : (
+                <tr>
+                  <td colSpan={ARScheduleColumns.length}>
+                    <div className="data-not-found">
+                      <DataNotFound />
+                      <h3>Data Not Found</h3>
+                    </div>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
         <div className="page-heading-container">
-          <p className="page-heading">
-            {startIndex} - {endIndex > count ? count : endIndex} of {count} item
-          </p>
+          {!!count && (
+            <p className="page-heading">
+              {startIndex} - {endIndex > count ? count : endIndex} of {count}{' '}
+              item
+            </p>
+          )}
 
           {data?.length > 0 ? (
             <Pagination

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import { ReactComponent as CROSS_BUTTON } from '../../../../resources/assets/cross_button.svg';
 import Input from '../../../components/text_input/Input';
 import { ActionButton } from '../../../components/button/ActionButton';
@@ -7,17 +7,20 @@ import { updateSalesForm } from '../../../../redux/apiSlice/configSlice/config_p
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { SalesTypeModel } from '../../../../core/models/configuration/create/SalesTypeModel';
-
+import { FormEvent } from '../../../../core/models/data_models/typesModel';
+import { toast } from 'react-toastify';
 interface salesProps {
   handleClose: () => void;
   salesTypeData: SalesTypeModel | null;
   editMode: boolean;
+  setRefetch:Dispatch<SetStateAction<number>>
 }
 
 const CreateSaleType: React.FC<salesProps> = ({
   handleClose,
   salesTypeData,
   editMode,
+  setRefetch
 }) => {
   const dispatch = useDispatch();
   console.log(salesTypeData);
@@ -26,7 +29,24 @@ const CreateSaleType: React.FC<salesProps> = ({
     type_name: salesTypeData ? salesTypeData?.type_name : '',
     description: salesTypeData ? salesTypeData?.description : '',
   });
+  const [isPending, setIsPending] = useState(false)
+  const [errors,setErrors] = useState<SalesTypeModel>({} as SalesTypeModel)
 
+  const handleValidation = () => {
+    const error:SalesTypeModel  = {} as SalesTypeModel;
+    for (const key in createSales) {
+      if (key==="record_id") {
+        continue;
+      }
+      if (!createSales[key as keyof typeof createSales]) {
+        // @ts-ignore
+        error[key as keyof SalesTypeModel] =
+          `${key.replace('_', ' ')} is required`;
+      }
+    }
+    setErrors({ ...error });
+    return Object.keys(error).length ? false : true;
+  };
   const handleSalesChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -37,35 +57,42 @@ const CreateSaleType: React.FC<salesProps> = ({
     }));
   };
 
-  const submitSalesType = async (e: React.FormEvent<HTMLFormElement>) => {
+  const submitSalesType = async (e: FormEvent) => {
     e.preventDefault();
-    try {
-      dispatch(updateSalesForm(createSales));
-      if (createSales.record_id) {
-        const res = await postCaller(EndPoints.update_saletype, createSales);
-        if (res.status === 200) {
-          alert(res.message);
-          handleClose();
-          window.location.reload();
+    if (handleValidation()) {
+      setIsPending(true)
+      try {
+        dispatch(updateSalesForm(createSales));
+        if (createSales.record_id) {
+          const res = await postCaller(EndPoints.update_saletype, createSales);
+          if (res.status === 200) {
+            toast.success(res.message);
+            handleClose();
+            setIsPending(false)
+            setRefetch(prev=>prev+1)
+          } else {
+            setIsPending(false)
+            toast.error(res.message);
+          }
         } else {
-          alert(res.message);
+          const { record_id, ...cleanedFormData } = createSales;
+          const res = await postCaller(
+            EndPoints.create_saletype,
+            {description:cleanedFormData.description.trim(),type_name:cleanedFormData.type_name.trim()}
+          );
+          if (res.status === 200) {
+            toast.success(res.message);
+            handleClose();
+            setIsPending(false)
+            setRefetch(prev=>prev+1)
+          } else {
+            setIsPending(false)
+            toast.error(res.message);
+          }
         }
-      } else {
-        const { record_id, ...cleanedFormData } = createSales;
-        const res = await postCaller(
-          EndPoints.create_saletype,
-          cleanedFormData
-        );
-        if (res.status === 200) {
-          alert(res.message);
-          handleClose();
-          window.location.reload();
-        } else {
-          alert(res.message);
-        }
+      } catch (error) {
+        console.error('Error submitting form:', error);
       }
-    } catch (error) {
-      console.error('Error submitting form:', error);
     }
   };
   return (
@@ -91,6 +118,17 @@ const CreateSaleType: React.FC<salesProps> = ({
                       placeholder={'Name'}
                       onChange={(e) => handleSalesChange(e)}
                     />
+                    {errors?.type_name && (
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.type_name}
+                    </span>
+                  )}
                   </div>
                 </div>
                 <div className="create-input-field-note">
@@ -103,9 +141,20 @@ const CreateSaleType: React.FC<salesProps> = ({
                     id=""
                     rows={4}
                     value={createSales.description}
-                    onChange={(e) => handleSalesChange(e)}
+                    onChange={(e) => !e.target.value.startsWith(" ") && handleSalesChange(e)}
                     placeholder="Type"
                   ></textarea>
+                  {errors?.description && (
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.description}
+                    </span>
+                  )}
                 </div>
               </div>
               <div
@@ -120,6 +169,7 @@ const CreateSaleType: React.FC<salesProps> = ({
                 <ActionButton
                   title={editMode === false ? 'Create' : 'Update'}
                   type="submit"
+                  disabled={isPending}
                   onClick={() => {}}
                 />
               </div>

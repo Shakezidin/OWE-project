@@ -84,8 +84,10 @@ import rep3 from '../../resources/assets/rep3.png';
 import per2 from '../../resources/assets/per2.png';
 import per3 from '../../resources/assets/per3.png';
 import pmshadedgraph from '../../resources/assets/pmshadedgraph.png';
+import includes_icon from '../../resources/assets/includes_icon.png';
 // import browserIcon from '../../resources/assets/Cloud-upload.svg'
 // import whiteCross from '../../resources/assets/w'
+import lable_img from '../../resources/assets/Lablel_Img.png';
 import dashboardSidebar from '../../resources/assets/sidebar-dashboard.png';
 import dataSidebar from '../../resources/assets/sidebar-data.png';
 import activitySidebar from '../../resources/assets/sidebar-activity.png';
@@ -192,4 +194,6 @@ export const ICONS = {
   per3: per3,
   per2: per2,
   pmshadedgraph: pmshadedgraph,
+  lable_img: lable_img,
+  includes_icon:includes_icon
 };

@@ -10,7 +10,8 @@ import {
   createInstallCost,
   ICost,
   updateInstallCost,
-} from '../../../../redux/apiActions/installCostAction';
+} from '../../../../redux/apiActions/config/installCostAction';
+import { FormInput } from '../../../../core/models/data_models/typesModel';
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
@@ -40,7 +41,9 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
     startDate: editData?.start_date || '',
     endDate: editData?.end_date || '',
   });
-  const { isSuccess } = useAppSelector((state) => state.installConstSlice);
+  const { isSuccess, isFormSubmitting } = useAppSelector(
+    (state) => state.installConstSlice
+  );
   function capitalizeWords(str: string) {
     return str.replace(/\b\w/g, function (char) {
       return char.toUpperCase();
@@ -59,7 +62,7 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
     return Object.keys(error).length ? false : true;
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: FormInput) => {
     const { value, name } = e.target;
     if (name === 'cost') {
       if (value === '' || value === '0' || Number(value)) {
@@ -124,11 +127,25 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
                     value={newFormData.cost}
                     name="cost"
                     placeholder={'Enter'}
-                    onChange={handleChange}
+                    // onChange={handleChange}
+                    onChange={(e) => {
+                      const sanitizedValue = e.target.value.replace(
+                        /[^0-9.]/g,
+                        ''
+                      );
+                      e.target.value = sanitizedValue;
+                      handleChange(e);
+                    }}
                   />
 
                   {errors?.cost && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.cost}
                     </span>
                   )}
@@ -146,7 +163,13 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
                     }}
                   />
                   {errors?.startDate && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.startDate}
                     </span>
                   )}
@@ -170,7 +193,13 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
                     onChange={handleChange}
                   />
                   {errors?.endDate && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.endDate}
                     </span>
                   )}
@@ -188,6 +217,7 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
           <ActionButton
             title={editMode === false ? 'Save' : 'Update'}
             type="submit"
+            disabled={isFormSubmitting}
             onClick={() => {}}
           />
         </div>

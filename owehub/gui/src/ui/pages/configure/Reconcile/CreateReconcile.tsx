@@ -4,34 +4,22 @@ import { ReactComponent as CROSS_BUTTON } from '../../../../resources/assets/cro
 import Input from '../../../components/text_input/Input';
 
 import { ActionButton } from '../../../components/button/ActionButton';
-import { updatePayForm } from '../../../../redux/apiSlice/configSlice/config_post_slice/createPayScheduleSlice';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
-import { useDispatch } from 'react-redux';
 import {
-  installerOption,
   partnerOption,
-  salesTypeOption,
   stateOption,
 } from '../../../../core/models/data_models/SelectDataModel';
-import Select from 'react-select';
-import {
-  partners,
-  paySaleTypeData,
-} from '../../../../resources/static_data/StaticData';
-import { ReconcileModel } from '../../../../core/models/configuration/create/ReconcileModel';
+
 import SelectOption from '../../../components/selectOption/SelectOption';
 import {
   createReconcile,
   updateReconcile,
-} from '../../../../redux/apiActions/reconcileAction';
+} from '../../../../redux/apiActions/config/reconcileAction';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-import {
-  fetchRepaySettings,
-  RepayEditParams,
-} from '../../../../redux/apiActions/repPayAction';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/reconcileSlice';
 import { addDays, format } from 'date-fns';
+import { FormInput } from '../../../../core/models/data_models/typesModel';
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
@@ -44,7 +32,9 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
   editData,
 }) => {
   const dispatch = useAppDispatch();
-  const { isSuccess } = useAppSelector((state) => state.reconcile);
+  const { isSuccess, isFormSubmitting } = useAppSelector(
+    (state) => state.reconcile
+  );
 
   const [createReconcileData, setCreateReconcileData] = useState({
     unique_id: editData?.unique_id || '',
@@ -74,7 +64,7 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
     getNewFormData();
   }, []);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
     if (name === 'end_date') {
       if (
@@ -133,11 +123,11 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
         customer: createReconcileData?.customer,
         partner_name: createReconcileData?.partner_name,
         state_name: createReconcileData.state,
-        sys_size: parseInt(createReconcileData.sys_size),
+        sys_size: parseFloat(createReconcileData.sys_size),
         status: createReconcileData.status,
         start_date: createReconcileData.start_date,
         end_date: createReconcileData.end_date,
-        amount: parseInt(createReconcileData.amount),
+        amount: parseFloat(createReconcileData.amount),
         notes: createReconcileData.notes,
       };
 
@@ -181,7 +171,13 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.unique_id && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.unique_id}
                     </span>
                   )}
@@ -196,7 +192,13 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.customer && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.customer}
                     </span>
                   )}
@@ -214,7 +216,13 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
                     )}
                   />
                   {errors?.partner_name && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.partner_name}
                     </span>
                   )}
@@ -235,7 +243,13 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
                     )}
                   />
                   {errors?.state && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.state}
                     </span>
                   )}
@@ -250,7 +264,13 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.sys_size && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.sys_size}
                     </span>
                   )}
@@ -266,7 +286,13 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.status && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.status}
                     </span>
                   )}
@@ -290,7 +316,13 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
                     }}
                   />
                   {errors?.start_date && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.start_date}
                     </span>
                   )}
@@ -313,7 +345,13 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.end_date && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.end_date}
                     </span>
                   )}
@@ -329,7 +367,13 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.amount && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.amount}
                     </span>
                   )}
@@ -345,7 +389,13 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
                     onChange={(e) => handleInputChange(e)}
                   />
                   {errors?.notes && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.notes}
                     </span>
                   )}
@@ -364,6 +414,7 @@ const CreateReconcile: React.FC<payScheduleProps> = ({
           <ActionButton
             title={editMode === false ? 'Save' : 'Update'}
             type="submit"
+            disabled={isFormSubmitting}
             onClick={() => {}}
           />
         </div>

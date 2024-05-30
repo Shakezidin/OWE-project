@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { fetchAutoAdder } from '../../../apiActions/AutoAdderAction';
+import { fetchAutoAdder } from '../../../apiActions/config/AutoAdderAction';
 import { toast } from 'react-toastify';
 
 interface IState {

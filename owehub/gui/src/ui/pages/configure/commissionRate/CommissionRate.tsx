@@ -20,8 +20,14 @@ import Loading from '../../../components/loader/Loading';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import { ROUTES } from '../../../../routes/routes';
 import PaginationComponent from '../../../components/pagination/PaginationComponent';
-import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
+import {
+  errorSwal,
+  showAlert,
+  successSwal,
+} from '../../../components/alert/ShowAlert';
 import CommissionRowComponent from './CommissionRowComponent';
+import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
+import FilterHoc from '../../../components/FilterModal/FilterHoc';
 
 const CommissionRate: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -46,13 +52,11 @@ const CommissionRate: React.FC = () => {
     useState<CommissionModel | null>(null);
   const itemsPerPage = 10;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
-  const currentPage = useAppSelector(
-    (state: any) => state.paginationType.currentPage
-  );
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [pageSize1, setPageSize1] = useState(10); // Set your desired page size here
   const [currentPage1, setCurrentPage1] = useState(1);
+  const [filters, setFilters] = useState<FilterModel[]>([]);
 
   // api call in useEffect
   useEffect(() => {
@@ -60,9 +64,10 @@ const CommissionRate: React.FC = () => {
       page_number: currentPage1,
       page_size: pageSize1,
       archived: viewArchived ? true : undefined,
+      filters,
     };
     dispatch(fetchCommissions(pageNumber));
-  }, [dispatch, currentPage1, pageSize1, viewArchived]);
+  }, [dispatch, currentPage1, pageSize1, viewArchived, filters]);
 
   // pagination funtion
   const handlePageChange = (page: number) => {
@@ -75,8 +80,8 @@ const CommissionRate: React.FC = () => {
   };
 
   const totalPages1 = Math.ceil(dbCount / pageSize1);
-  const startIndex = (currentPage - 1) * pageSize1;
-  const endIndex = startIndex + pageSize1;
+  const startIndex = (currentPage1 - 1) * pageSize1 + 1;
+  const endIndex = startIndex * pageSize1;
 
   // toggle modal
   const filter = () => {
@@ -95,12 +100,14 @@ const CommissionRate: React.FC = () => {
   };
 
   //  pagination slice
-  const currentPageData = commissionList?.slice(startIndex, endIndex);
+  const currentPageData = commissionList?.slice();
   const isAnyRowSelected = selectedRows?.size > 0;
   const isAllRowsSelected = selectedRows?.size === commissionList?.length;
   const pageNumber = {
-    page_number: currentPage,
+    page_number: currentPage1,
     page_size: itemsPerPage,
+    filters,
+    archived: viewArchived ? true : undefined,
   };
 
   // acrhived function
@@ -113,7 +120,7 @@ const CommissionRate: React.FC = () => {
     );
     if (confirmed) {
       const archivedRows = Array.from(selectedRows).map(
-        (index) => commissionList[index].record_id
+        (index) => currentPageData[index].record_id
       );
       if (archivedRows.length > 0) {
         const newValue = {
@@ -126,15 +133,11 @@ const CommissionRate: React.FC = () => {
         );
         if (res.status === HTTP_STATUS.OK) {
           dispatch(fetchCommissions(pageNumber));
-          const remainingSelectedRows = Array.from(selectedRows).filter(
-            (index) => !archivedRows.includes(commissionList[index].record_id)
-          );
-          const isAnyRowSelected = remainingSelectedRows.length > 0;
-          setSelectAllChecked(isAnyRowSelected);
+          setSelectAllChecked(false);
           setSelectedRows(new Set());
           await successSwal('Archived', 'The data has been archived ');
         } else {
-          await successSwal(
+          await errorSwal(
             'Error',
             'Failed to archive selected rows. Please try again later.'
           );
@@ -145,7 +148,7 @@ const CommissionRate: React.FC = () => {
   const handleArchiveClick = async (record_id: any) => {
     const confirmed = await showAlert(
       'Are Your Sure',
-      'This action will archive selected rows?',
+      'This action will archive selected data?',
       'Yes',
       'No'
     );
@@ -161,9 +164,11 @@ const CommissionRate: React.FC = () => {
       );
       if (res.status === HTTP_STATUS.OK) {
         dispatch(fetchCommissions(pageNumber));
+        setSelectAllChecked(false);
+        setSelectedRows(new Set());
         await successSwal('Archived', 'Selected rows have been archived');
       } else {
-        await successSwal(
+        await errorSwal(
           'Error',
           'Failed to archive selected rows. Please try again later.'
         );
@@ -175,6 +180,7 @@ const CommissionRate: React.FC = () => {
     setViewArchived(!viewArchived);
     // When toggling, reset the selected rows
     setSelectedRows(new Set());
+    setCurrentPage1(1);
     setSelectAllChecked(false);
   };
 
@@ -211,22 +217,9 @@ const CommissionRate: React.FC = () => {
 
   // filter function
   const fetchFunction = (req: any) => {
-    dispatch(fetchCommissions(req));
+    setCurrentPage1(1);
+    setFilters(req.filters);
   };
-  if (error) {
-    return (
-      <div className="loader-container">
-        <Loading />
-      </div>
-    );
-  }
-  if (loading) {
-    return (
-      <div className="loader-container">
-        <Loading /> {loading}
-      </div>
-    );
-  }
 
   return (
     <div className="comm">
@@ -250,15 +243,16 @@ const CommissionRate: React.FC = () => {
           onpressAddNew={() => handleAddCommission()}
         />
 
-        {filterOPen && (
-          <FilterModal
-            handleClose={filterClose}
-            columns={Commissioncolumns}
-            page_number={currentPage}
-            page_size={itemsPerPage}
-            fetchFunction={fetchFunction}
-          />
-        )}
+        <FilterHoc
+          isOpen={filterOPen}
+          resetOnChange={viewArchived}
+          handleClose={filterClose}
+          columns={Commissioncolumns}
+          page_number={currentPage1}
+          page_size={itemsPerPage}
+          fetchFunction={fetchFunction}
+        />
+
         {open && (
           <CreateCommissionRate
             commission={editedCommission}
@@ -285,10 +279,11 @@ const CommissionRate: React.FC = () => {
         />
 
         {/* pagination component  */}
-        {commissionList?.length > 0 ? (
+        {currentPageData?.length > 0 ? (
           <div className="page-heading-container">
             <p className="page-heading">
-              {currentPage} - {totalPages1} of {currentPageData?.length} item
+              {startIndex} - {endIndex > dbCount ? dbCount : endIndex} of{' '}
+              {dbCount} item
             </p>
             <PaginationComponent
               currentPage={currentPage1}

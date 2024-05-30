@@ -4,7 +4,7 @@ import {
   createarAdderData,
   IAdderRowData,
   updatearAdderData,
-} from '../../../apiActions/arAdderDataAction';
+} from '../../../apiActions/config/arAdderDataAction';
 import { toast } from 'react-toastify';
 
 interface IState {
@@ -71,6 +71,7 @@ const adderData = createSlice({
       .addCase(updatearAdderData.rejected, (state, action) => {
         state.isFormSubmitting = false;
         state.error = action.payload as string;
+        toast.error(action.payload as string);
       });
   },
 });

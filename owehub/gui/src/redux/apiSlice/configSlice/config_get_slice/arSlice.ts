@@ -3,7 +3,7 @@ import {
   createAr,
   fetchAr,
   updateAr,
-} from '../../../apiActions/arConfigAction';
+} from '../../../apiActions/config/arConfigAction';
 import { RateAdjustment } from '../../../../core/models/api_models/RateAdjustmentModel';
 import { toast } from 'react-toastify';
 
@@ -61,6 +61,7 @@ const ar = createSlice({
       .addCase(createAr.rejected, (state, action) => {
         state.isFormSubmitting = false;
         state.error = action.payload as string;
+        toast.error(action.payload as string);
       })
       .addCase(updateAr.pending, (state, action) => {
         state.isFormSubmitting = true;
@@ -68,10 +69,13 @@ const ar = createSlice({
       .addCase(updateAr.fulfilled, (state, action) => {
         state.isFormSubmitting = false;
         state.isSuccess = 1;
+        state.error = '';
+        toast.success('Details updated Successfully');
       })
       .addCase(updateAr.rejected, (state, action) => {
         state.isFormSubmitting = false;
         state.error = action.payload as string;
+        toast.error(action.payload as string);
       });
   },
 });

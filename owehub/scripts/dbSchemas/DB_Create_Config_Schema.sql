@@ -54,6 +54,7 @@ CREATE TABLE IF NOT EXISTS user_roles (
 CREATE TABLE IF NOT EXISTS user_details(
     user_id SERIAL,
     name VARCHAR(255) NOT NULL,
+    db_username VARCHAR(255),
     user_code VARCHAR(255),
     mobile_number VARCHAR(20) NOT NULL UNIQUE,
     email_id VARCHAR(255) NOT NULL UNIQUE,
@@ -145,6 +146,7 @@ CREATE TABLE v_dealer (
     dealer_code character varying,
     dealer_name character varying,
     description character varying,
+    is_archived BOOLEAN DEFAULT FALSE, 
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     PRIMARY KEY (id)
@@ -270,11 +272,11 @@ CREATE TABLE payment_schedule (
     installer_id INT,
     sale_type_id INT,
     state_id INT,
-    rl character varying,
-    draw character varying,
-    draw_max character varying,
-    rep_draw character varying,
-    rep_draw_max character varying,
+    rl float,
+    draw float,
+    draw_max float,
+    rep_draw float,
+    rep_draw_max float,
     rep_pay character varying,
     start_date character varying NOT NULL,
     end_date character varying,
@@ -537,7 +539,7 @@ CREATE TABLE loan_fee_adder (
 
 CREATE TABLE rebate_data (
     id serial NOT NULL,
-    unique_id varchar NOT NULL UNIQUE,
+    unique_id varchar NOT NULL,
     customer_verf text,
     type_rd_mktg text,
     item text,
@@ -561,7 +563,8 @@ CREATE TABLE rebate_data (
     r1_rebate_credit_perc text,
     r2_rebate_credit_$ text,
     r2_rebate_credit_perc text,
-    start_date character varying NOT NULL,
+    adder_amount float,
+    start_date character varying,
     end_date character varying,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
@@ -572,7 +575,7 @@ CREATE TABLE rebate_data (
 
 CREATE TABLE referral_data (
     id serial NOT NULL,
-    unique_id varchar NOT NULL UNIQUE,
+    unique_id varchar NOT NULL,
     new_customer text,
     referrer_serial text,
     referrer_name text,
@@ -595,7 +598,8 @@ CREATE TABLE referral_data (
     r2_referral_credit_$ text,
     r2_referral_credit_perc text,
     r2_addr_resp text,
-    start_date character varying NOT NULL,
+    adder_amount float,
+    start_date character varying,
     end_date character varying,
     is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
@@ -607,22 +611,17 @@ CREATE TABLE referral_data (
 
 CREATE TABLE dealer_credit (
     id serial NOT NULL,
-    unique_id varchar NOT NULL UNIQUE,
-    customer text,
-    dealer_id INT,
-    dealer_dba text,
-    exact_amount text,
+    unique_id varchar NOT NULL,
+    date date,
+    exact_amount float,
     per_kw_amount float,
     approved_by text,
     notes text,
     total_amount float,
     sys_size float,
-    start_date character varying NOT NULL,
-    end_date character varying,
     is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
-    updated_at timestamp without time zone,
-    FOREIGN KEY (dealer_id) REFERENCES user_details(user_id)
+    updated_at timestamp without time zone
 );
 
 CREATE TABLE noncomm_dlrpay (
@@ -642,7 +641,7 @@ CREATE TABLE noncomm_dlrpay (
     is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
-    FOREIGN KEY (dealer_id) REFERENCES user_details(user_id)
+    FOREIGN KEY (dealer_id) REFERENCES v_dealer(id)
 );
 
 CREATE TABLE dlr_oth(
@@ -749,7 +748,7 @@ CREATE TABLE leader_override (
 
 CREATE TABLE adder_responsibility (
     id serial NOT NULL,
-    unique_id varchar NOT NULL UNIQUE,
+    unique_id varchar NOT NULL,
     pay_scale text,
     percentage float,
     is_archived BOOLEAN DEFAULT FALSE,
@@ -760,7 +759,7 @@ CREATE TABLE adder_responsibility (
 
 CREATE TABLE adder_credit (
     id serial NOT NULL,
-    unique_id varchar NOT NULL UNIQUE,
+    unique_id varchar NOT NULL,
     pay_scale text,
     type text,
     min_rate float,
@@ -773,7 +772,7 @@ CREATE TABLE adder_credit (
 
 CREATE TABLE adder_data (
     id serial NOT NULL,
-    unique_id varchar NOT NULL UNIQUE,
+    unique_id varchar NOT NULL,
     date date,
     type_ad_mktg text,
     gc text,
@@ -917,6 +916,23 @@ CREATE TABLE adder_data_cfg_schema (
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     PRIMARY KEY (id)
+);
+
+CREATE TABLE ap_rep (
+    id serial NOT NULL,
+	unique_id varchar NOT NULL UNIQUE,
+    rep varchar,
+    dba varchar,
+    type varchar,
+    date date,
+    amount float,
+    method varchar,
+    cbiz varchar,
+    transaction varchar,
+    notes character varying,
+    is_archived BOOLEAN DEFAULT FALSE,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone
 );
 
 /*

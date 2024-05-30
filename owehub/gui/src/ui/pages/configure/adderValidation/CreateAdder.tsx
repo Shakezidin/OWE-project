@@ -14,6 +14,7 @@ import SelectOption from '../../../components/selectOption/SelectOption';
 import { validateConfigForm } from '../../../../utiles/configFormValidation';
 import { errorSwal, successSwal } from '../../../components/alert/ShowAlert';
 import { fetchAdderV } from '../../../../redux/apiSlice/configSlice/config_get_slice/adderVSlice';
+import { FormEvent } from '../../../../core/models/data_models/typesModel';
 interface vadderProps {
   editMode: boolean;
   handleClose: () => void;
@@ -82,7 +83,7 @@ const CreateAdder: React.FC<vadderProps> = ({
     page_number: pageNumber,
     page_size: pageSize,
   };
-  const submitMarketingFees = async (e: React.FormEvent<HTMLFormElement>) => {
+  const submitMarketingFees = async (e: FormEvent) => {
     e.preventDefault();
     const validationRules = {
       adder_name: [

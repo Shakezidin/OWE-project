@@ -23,8 +23,9 @@ import {
   IARSchedule,
   createArSchedule,
   updateArchSchedule,
-} from '../../../../redux/apiActions/arScheduleAction';
+} from '../../../../redux/apiActions/config/arScheduleAction';
 import { addDays, format } from 'date-fns';
+import { FormInput } from '../../../../core/models/data_models/typesModel';
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
@@ -39,7 +40,9 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
   setViewArchived,
 }) => {
   const dispatch = useAppDispatch();
-  const { isSuccess } = useAppSelector((state) => state.ArSchedule);
+  const { isSuccess, isFormSubmitting } = useAppSelector(
+    (state) => state.ArSchedule
+  );
   const [formData, setFormData] = useState({
     partner: editData?.partner_name || '',
     saleType: editData?.sale_type_name || '',
@@ -68,7 +71,7 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
     getnewformData();
   }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: FormInput) => {
     const { name, value } = e.target;
     if (
       name === 'installPay' ||
@@ -77,7 +80,7 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
       name === 'ptoPay' ||
       name === 'permitPay'
     ) {
-      if (/^\d+(\.\d*)?$/.test(value)||value==="") {
+      if (/^\d+(\.\d*)?$/.test(value) || value === '') {
         setFormData((prev) => ({ ...prev, [name]: value }));
       } else {
         return;
@@ -89,20 +92,19 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
 
   const handleValidation = () => {
     const error: typeof formData = {} as typeof formData;
-  
+
     for (const key in formData) {
       if (!formData[key as keyof typeof formData]) {
-        // Capitalize the first letter of the key
+        // Capitalize the first letter of the key'
         const capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
         // Assign an error message with the capitalized key
         error[key as keyof typeof formData] = `${capitalizedKey} is required`;
       }
     }
-  
+
     setErrors({ ...error });
     return Object.keys(error).length ? false : true;
   };
-  
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -122,6 +124,7 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
         red_line: parseFloat(formData.redline),
         pto_pay: parseFloat(formData.ptoPay),
       };
+
       if (editMode) {
         dispatch(
           updateArchSchedule({ ...data, record_id: editData?.record_id! })
@@ -138,7 +141,7 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
     }
   }, [isSuccess]);
 
-  console.log(errors, "error")
+  console.log(errors, 'error');
 
   return (
     <div className="transparent-model">
@@ -155,7 +158,6 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
           <div className="createProfileInputView">
             <div className="createProfileTextView">
               <div className="create-input-container">
-             
                 <div className="create-input-field">
                   <label className="inputLabel-select select-type-label">
                     Partners
@@ -173,7 +175,13 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                     )}
                   />
                   {errors?.partner && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.partner}
                     </span>
                   )}
@@ -195,7 +203,13 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                     )}
                   />
                   {errors?.saleType && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.saleType}
                     </span>
                   )}
@@ -211,7 +225,13 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                     onChange={handleChange}
                   />
                   {errors?.ptoPay && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.ptoPay}
                     </span>
                   )}
@@ -219,8 +239,6 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
               </div>
 
               <div className="create-input-container">
-                
-
                 <div className="create-input-field">
                   <Input
                     type={'text'}
@@ -231,7 +249,13 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                     onChange={handleChange}
                   />
                   {errors?.redline && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.redline}
                     </span>
                   )}
@@ -247,7 +271,13 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                     onChange={handleChange}
                   />
                   {errors?.permitMax && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.permitMax}
                     </span>
                   )}
@@ -272,7 +302,13 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                   />
 
                   {errors?.state && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.state}
                     </span>
                   )}
@@ -280,8 +316,6 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
               </div>
 
               <div className="create-input-container">
-               
-
                 <div className="create-input-field">
                   <Input
                     type={'text'}
@@ -293,7 +327,13 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                   />
 
                   {errors?.permitPay && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.permitPay}
                     </span>
                   )}
@@ -310,19 +350,24 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                   />
 
                   {errors?.installPay && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.installPay}
                     </span>
                   )}
                 </div>
-
 
                 <div className="create-input-field">
                   <label className="inputLabel-select select-type-label">
                     Installer
                   </label>
                   <SelectOption
-                    menuListStyles={{ height: '85px' }}
+                    menuListStyles={{ height: '150px' }}
                     options={installerOption(formData)}
                     onChange={(newValue) => {
                       setFormData((prev) => ({
@@ -335,7 +380,13 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                     )}
                   />
                   {errors?.installer && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.installer}
                     </span>
                   )}
@@ -343,7 +394,6 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
               </div>
 
               <div className="create-input-container">
-                
                 <div className="create-input-field">
                   <Input
                     type={'date'}
@@ -355,7 +405,13 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                   />
 
                   {errors?.calcDate && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.calcDate}
                     </span>
                   )}
@@ -374,8 +430,14 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                     }}
                   />
                   {errors?.start && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
-                      {errors.start.replace('start', 'start date')}
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.start.replace('Start', 'Start date')}
                     </span>
                   )}
                 </div>
@@ -395,13 +457,18 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
                     onChange={handleChange}
                   />
                   {errors?.end && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
-                      {errors.end.replace('end', 'end date')}
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.end.replace('End', 'end date')}
                     </span>
                   )}
                 </div>
               </div>
-
             </div>
           </div>
         </div>
@@ -414,6 +481,7 @@ const CreatedArSchedule: React.FC<payScheduleProps> = ({
           <ActionButton
             title={editMode === false ? 'Save' : 'Update'}
             type="submit"
+            disabled={isFormSubmitting}
             onClick={() => {}}
           />
         </div>

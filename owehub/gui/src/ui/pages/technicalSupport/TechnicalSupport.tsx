@@ -3,17 +3,13 @@ import Input from '../../components/text_input/Input';
 import { ICONS } from '../../icons/Icons';
 import './support.css';
 import emailjs from '@emailjs/browser';
-
-import Select from 'react-select';
-import { ActionButton } from '../../components/button/ActionButton';
 import SelectOption from '../../components/selectOption/SelectOption';
 import { toast } from 'react-toastify';
+import { FormInput } from '../../../core/models/data_models/typesModel';
 
 const TechnicalSupport: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [selectedOption, setSelectedOption] = useState(null);
-  const [selectedState, setSelectedState] = useState<string | null>(null);
-  const [stateOptions, setStateOptions] = useState<any[]>([]);
+  const [selectedIssue, setSelectedIssue] = useState<string | null>(null);
   const form = useRef<HTMLFormElement>(null);
 
   const [firstName, setFirstName] = useState('');
@@ -21,6 +17,9 @@ const TechnicalSupport: React.FC = () => {
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [message, setMessage] = useState('');
+
+  const [selectedFileName, setSelectedFileName] = useState('');
+  const [fileSizeError, setFileSizeError] = useState('');
 
   const [errors, setErrors] = useState({
     firstName: '',
@@ -47,10 +46,12 @@ const TechnicalSupport: React.FC = () => {
       message: message ? '' : 'Message is required',
     };
     setErrors(newErrors);
-    // if (!Object.values(newErrors).some((error) => error)) {
-    //   console.log("Form submitted successfully");
-    // }
     if (form.current && Object.values(newErrors).every((err) => !err)) {
+      const file = fileInputRef.current?.files?.[0];
+      const formData = new FormData(form.current);
+      if (file) {
+        formData.append('attachment', file);
+      }
       emailjs
         .sendForm('service_nof7okz', 'template_y3qbqr8', form.current, {
           publicKey: 'iVTsTUymXutcfakaX',
@@ -64,6 +65,10 @@ const TechnicalSupport: React.FC = () => {
             setEmail('');
             setPhoneNumber('');
             setMessage('');
+            setSelectedFileName(''); // Clear the selected file name
+            if (fileInputRef.current) {
+              fileInputRef.current.value = ''; // Clear the file input value
+            }
           },
           (error: any) => {
             console.error('FAILED...', error);
@@ -72,8 +77,10 @@ const TechnicalSupport: React.FC = () => {
     }
   };
 
+
+
   const handleStateChange = (selectedOption: any) => {
-    setSelectedState(selectedOption.value);
+    setSelectedIssue(selectedOption.value);
   };
 
   const options = [
@@ -81,17 +88,43 @@ const TechnicalSupport: React.FC = () => {
     { value: 'option2', label: 'OWE 2' },
     { value: 'option3', label: 'OWE 3' },
   ];
-  const handleSelectChange = (selectedOption: any) => {
-    setSelectedOption(selectedOption);
-  };
-  const handleFileInputChange = (e: any) => {
+
+  const handleFileInputChange = (e: FormInput) => {
     const file = e.target.files?.[0];
-    console.log(file);
+    const maxSize = 20 * 1024 * 1024; // 20 MB in bytes
+
+    if (file) {
+      if (file.size <= maxSize) {
+        setSelectedFileName(file.name);
+        setFileSizeError('');
+        // Perform further actions with the selected file
+      } else {
+        setSelectedFileName('');
+        setFileSizeError('File size exceeds the limit of 20 MB');
+      }
+    } else {
+      setSelectedFileName('');
+      setFileSizeError('');
+    }
   };
 
   const handleButtonClick = () => {
     fileInputRef.current?.click(); // Trigger file input click event
   };
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    if (name === 'email') {
+      setEmail(value);
+
+      if (!emailRegex.test(value)) {
+        setErrors({ ...errors, email: 'Please enter a valid email address.' });
+      } else {
+        setErrors({ ...errors, email: '' });
+      }
+    }
+  };
+
 
   return (
     <>
@@ -102,7 +135,6 @@ const TechnicalSupport: React.FC = () => {
               <h3>Support</h3>
             </div>
             <div className="supportImage">
-              {/* <img src={ICONS.supportImage} alt="" /> */}
               <object
                 type="image/svg+xml"
                 data={ICONS.supportImage}
@@ -126,9 +158,15 @@ const TechnicalSupport: React.FC = () => {
                   value={firstName}
                   name="user_name"
                   placeholder={'Enter'}
+                  maxLength={100}
                   onChange={(e) => {
-                    setFirstName(e.target.value);
-                    setErrors({ ...errors, firstName: '' });
+                    const inputValue = e.target.value;
+                    if (/^[a-zA-Z\s]*$/.test(inputValue)) {
+                      setFirstName(inputValue);
+                      setErrors({ ...errors, firstName: '' });
+                    } else {
+                      setErrors({ ...errors, firstName: 'Only letters are allowed' });
+                    }
                   }}
                 />
                 {errors.firstName && (
@@ -141,10 +179,19 @@ const TechnicalSupport: React.FC = () => {
                   label="Last Name"
                   value={lastName}
                   name="lastName"
+                  maxLength={100}
                   placeholder={'Enter'}
                   onChange={(e) => {
-                    setLastName(e.target.value);
-                    setErrors({ ...errors, lastName: '' });
+                    const inputValue = e.target.value;
+                    if (/^[a-zA-Z\s]*$/.test(inputValue)) {
+                      setLastName(inputValue);
+                      setErrors({ ...errors, lastName: '' });
+                    } else {
+                      setErrors({
+                        ...errors,
+                        lastName: 'Only letters are allowed',
+                      });
+                    }
                   }}
                 />
                 {errors.lastName && (
@@ -160,10 +207,7 @@ const TechnicalSupport: React.FC = () => {
                   value={email}
                   name="email"
                   placeholder={'Enter'}
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                    setErrors({ ...errors, email: '' });
-                  }}
+                  onChange={handleInputChange}
                 />
                 {errors.email && <span className="error">{errors.email}</span>}
               </div>
@@ -175,9 +219,14 @@ const TechnicalSupport: React.FC = () => {
                   name="phoneNum"
                   placeholder={'Enter'}
                   onChange={(e) => {
-                    setPhoneNumber(e.target.value);
-                    setErrors({ ...errors, phoneNumber: '' });
+                    // Convert the input value to a string to check the length
+                    const inputValue = e.target.value.toString();
+                    if (inputValue.length <= 16) {
+                      setPhoneNumber(e.target.value);
+                      setErrors({ ...errors, phoneNumber: '' });
+                    }
                   }}
+                  max={99999999999999999}
                 />
                 {errors.phoneNumber && (
                   <span className="error">{errors.phoneNumber}</span>
@@ -187,11 +236,15 @@ const TechnicalSupport: React.FC = () => {
 
             <div className="create-input-container-support">
               <div className="create-input-field-support">
-                <label className="inputLabel-select select-type-label">Issue</label>
+                <label className="inputLabel-select select-type-label">
+                  Issue
+                </label>
                 <SelectOption
                   onChange={handleStateChange}
-                  options={stateOptions}
-                  value={stateOptions?.find((option) => option.value === ' ')}
+                  options={options}
+                  value={options?.find(
+                    (option) => option.value === selectedIssue
+                  )}
                 />
               </div>
 
@@ -207,26 +260,20 @@ const TechnicalSupport: React.FC = () => {
                     className="file-input"
                   />
                   <div className="custom-button-container">
-                    <span className="file-input-placeholder">Select File</span>
-                    <button
-                      className="custom-button"
-                      onClick={handleButtonClick}
-                    >
-                      {/* <img src={ICONS.browserIcon} alt="" /> */}
+                    <span className="file-input-placeholder">
+                      {selectedFileName || 'Select File'}
+                    </span>
+                    <button className="custom-button" onClick={handleButtonClick}>
                       Browse
                     </button>
                   </div>
                 </div>
+                {fileSizeError && <span className="error">{fileSizeError}</span>}
               </div>
             </div>
 
-            <div
-              className="create-input-field-note-support"
-              style={{ marginTop: '0.3rem' }}
-            >
-              <label htmlFor="" className="inputLabel-support">
-                Message
-              </label>
+            <div className="create-input-field-note-support" style={{ marginTop: '0.3rem' }}>
+              <label htmlFor="" className="inputLabel-support">Message</label>
               <br />
               <textarea
                 name="message"
@@ -235,14 +282,19 @@ const TechnicalSupport: React.FC = () => {
                 value={message}
                 placeholder="Type here..."
                 style={{ marginTop: '0.3rem' }}
+                maxLength={300}
                 onChange={(e) => {
-                  setMessage(e.target.value);
+                  const trimmedValue = e.target.value.trimStart();
+                  setMessage(trimmedValue);
                   setErrors({ ...errors, message: '' });
                 }}
               ></textarea>
-              {errors.message && (
-                <span className="error">{errors.message}</span>
-              )}
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: message.length === 300 ? 'red' : 'inherit' }}>
+                  {message.length}/300 characters
+                </span>
+                {errors.message && <span className="error">{errors.message}</span>}
+              </div>
             </div>
 
             <div className="reset-Update-support">

@@ -236,7 +236,7 @@ func PrepareLoanFeeFilters(tableName string, dataFilter models.DataRequestBody, 
 			case "installer":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(pt.partner_name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-			case "state_name":
+			case "state":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(st.name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "loan_type":

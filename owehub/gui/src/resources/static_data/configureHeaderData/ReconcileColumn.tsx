@@ -28,22 +28,22 @@ export const ReconcileColumns: Column[] = [
   {
     name: 'sys_size',
     displayName: 'Sys. Size',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
   { name: 'status', displayName: 'Status', type: 'string', isCheckbox: false },
   {
     name: 'start_date',
     displayName: 'Start Date',
-    type: 'string',
+    type: 'date',
     isCheckbox: false,
   },
   {
     name: 'end_date',
     displayName: 'End Date',
-    type: 'string',
+    type: 'date',
     isCheckbox: false,
   },
-  { name: 'amount', displayName: 'Amount', type: 'string', isCheckbox: false },
-  { name: 'note', displayName: 'Notes', type: 'string', isCheckbox: false },
+  { name: 'amount', displayName: 'Amount', type: 'number', isCheckbox: false },
+  { name: 'notes', displayName: 'Notes', type: 'string', isCheckbox: false },
 ];

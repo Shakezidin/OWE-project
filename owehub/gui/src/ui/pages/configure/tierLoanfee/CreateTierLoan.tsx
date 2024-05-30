@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { ReactComponent as CROSS_BUTTON } from '../../../../resources/assets/cross_button.svg';
 import Input from '../../../components/text_input/Input';
 import { ActionButton } from '../../../components/button/ActionButton';
@@ -17,10 +17,17 @@ import {
 import { TierLoanFeeModel } from '../../../../core/models/configuration/create/TierLoanFeeModel';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import { addDays, format } from 'date-fns';
+import { toast } from 'react-toastify';
+import {
+  FormEvent,
+  FormInput,
+} from '../../../../core/models/data_models/typesModel';
+import { useAppSelector } from '../../../../redux/hooks';
 interface tierLoanProps {
   handleClose: () => void;
   tierEditedData: TierLoanFeeModel | null;
   editMode: boolean;
+  setRefetch: Dispatch<SetStateAction<number>>;
 }
 interface IError {
   [key: string]: string;
@@ -29,9 +36,12 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
   handleClose,
   tierEditedData,
   editMode,
+  setRefetch,
 }) => {
   const dispatch = useDispatch();
   const [errors, setErrors] = useState<IError>({} as IError);
+  const [isPending, setIsPending] = useState(false);
+  const { loading } = useAppSelector((state) => state.tierLoan);
 
   const [createTier, setCreateTier] = useState<TierLoanFeeModel>({
     record_id: tierEditedData ? tierEditedData?.record_id : 0,
@@ -45,6 +55,20 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
     start_date: tierEditedData ? tierEditedData?.start_date : '',
     end_date: tierEditedData ? tierEditedData?.end_date : '',
   });
+
+  const handleValidation = () => {
+    const error: IError = {};
+    for (const key in createTier) {
+      if (key === 'record_id') {
+        continue;
+      }
+      if (!createTier[key as keyof typeof createTier]) {
+        error[key] = `${key.replaceAll('_', ' ')} is required`;
+      }
+    }
+    setErrors({ ...error });
+    return Object.keys(error).length ? false : true;
+  };
   const [newFormData, setNewFormData] = useState<any>([]);
   const tableData = {
     tableNames: [
@@ -70,7 +94,7 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
       [fieldName]: newValue ? newValue.value : '',
     }));
   };
-  const handleTierChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTierChange = (e: FormInput) => {
     const { name, value } = e.target;
     if (name === 'end_date') {
       if (createTier.start_date && value < createTier.start_date) {
@@ -87,51 +111,65 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
     }));
   };
 
-  const submitTierLoad = async (e: React.FormEvent<HTMLFormElement>) => {
+  const submitTierLoad = async (e: FormEvent) => {
     e.preventDefault();
-    try {
-      dispatch(
-        updateTierLoanForm({
-          ...createTier,
-          owe_cost: parseInt(createTier.owe_cost as string),
-          dlr_cost: parseInt(createTier.dlr_cost as string),
-          dlr_mu: parseInt(createTier.dlr_mu as string),
-        })
-      );
-      if (createTier.record_id) {
-        const res = await postCaller(EndPoints.update_tierloanfee, {
-          ...createTier,
-          owe_cost: parseInt(createTier.owe_cost as string),
-          dlr_cost: parseInt(createTier.dlr_cost as string),
-          dlr_mu: parseInt(createTier.dlr_mu as string),
-        });
-        if (res?.status === 200) {
-          console.log(res?.message);
-          handleClose();
-          window.location.reload();
+    if (isPending || loading) {
+      return;
+    }
+    if (handleValidation()) {
+      setIsPending(true);
+      try {
+        dispatch(
+          updateTierLoanForm({
+            ...createTier,
+            owe_cost: parseFloat(createTier.owe_cost as string),
+            dlr_cost: parseFloat(createTier.dlr_cost as string),
+            dlr_mu: parseFloat(createTier.dlr_mu as string),
+          })
+        );
+
+        if (createTier.record_id) {
+          const res = await postCaller(EndPoints.update_tierloanfee, {
+            ...createTier,
+            owe_cost: parseFloat(createTier.owe_cost as string),
+            dlr_cost: parseFloat(createTier.dlr_cost as string),
+            dlr_mu: parseFloat(createTier.dlr_mu as string),
+          });
+          if ((await res?.status) === 200) {
+            toast.success(res?.message);
+            handleClose();
+            setIsPending(false);
+            setRefetch((prev) => prev + 1);
+          } else {
+            toast.error(res?.message);
+            console.log(res.message);
+          }
         } else {
-          console.log(res.message);
+          const { record_id, ...cleanedFormData } = createTier;
+          const res = await postCaller(EndPoints.create_tierloanfee, {
+            ...cleanedFormData,
+            owe_cost: parseFloat(createTier.owe_cost as string),
+            dlr_cost: parseFloat(createTier.dlr_cost as string),
+            dlr_mu: parseFloat(createTier.dlr_mu as string),
+          });
+          if ((await res?.status) === 200) {
+            console.log(res?.message);
+            toast.success(res?.message);
+            handleClose();
+            setIsPending(false);
+            setRefetch((prev) => prev + 1);
+          } else {
+            toast.error(res?.message);
+            console.log(res.message);
+          }
         }
-      } else {
-        const { record_id, ...cleanedFormData } = createTier;
-        const res = await postCaller(EndPoints.create_tierloanfee, {
-          ...cleanedFormData,
-          owe_cost: parseInt(createTier.owe_cost as string),
-          dlr_cost: parseInt(createTier.dlr_cost as string),
-          dlr_mu: parseInt(createTier.dlr_mu as string),
-        });
-        if (res?.status === 200) {
-          console.log(res?.message);
-          handleClose();
-          window.location.reload();
-        } else {
-          console.log(res.message);
-        }
+      } catch (error) {
+        console.error('Error submitting form:', error);
       }
-    } catch (error) {
-      console.error('Error submitting form:', error);
     }
   };
+  console.log(isPending);
+
   return (
     <div className="transparent-model">
       <form onSubmit={(e) => submitTierLoad(e)} className="modal">
@@ -158,6 +196,17 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
                       (option) => option.value === createTier.dealer_tier
                     )}
                   />
+                  {errors?.dealer_tier && (
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.dealer_tier}
+                    </span>
+                  )}
                 </div>
                 <div className="create-input-field">
                   <label className="inputLabel-select">Installer</label>
@@ -168,6 +217,17 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
                       (option) => option.value === createTier.installer
                     )}
                   />
+                  {errors?.installer && (
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.installer}
+                    </span>
+                  )}
                 </div>
                 <div className="create-input-field">
                   <label className="inputLabel-select">State</label>
@@ -178,6 +238,17 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
                       (option) => option.value === createTier.state
                     )}
                   />
+                  {errors?.state && (
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.state}
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -194,19 +265,46 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
                       (option) => option.value === createTier.loan_type
                     )}
                   />
+                  {errors?.loan_type && (
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.loan_type}
+                    </span>
+                  )}
                 </div>
                 <div className="create-input-field">
-                  <label className="inputLabel-select select-type-label">
-                    OWE Cost
-                  </label>
-                  <SelectOption
-                    menuListStyles={{ height: '230px' }}
-                    options={oweCostOption(newFormData)}
-                    onChange={(newValue) => handleChange(newValue, 'owe_cost')}
-                    value={oweCostOption(newFormData)?.find(
-                      (option) => option.value === createTier.owe_cost
-                    )}
+                  <Input
+                    type={'text'}
+                    label="OWE Cost"
+                    value={createTier.owe_cost}
+                    name="owe_cost"
+                    placeholder={'Enter'}
+                    // onChange={(e) => handleTierChange(e)}
+                    onChange={(e) => {
+                      const sanitizedValue = e.target.value.replace(
+                        /[^0-9.]/g,
+                        ''
+                      );
+                      e.target.value = sanitizedValue;
+                      handleTierChange(e);
+                    }}
                   />
+                  {errors?.owe_cost && (
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.owe_cost}
+                    </span>
+                  )}
                 </div>
                 <div className="create-input-field">
                   <Input
@@ -215,8 +313,26 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
                     value={createTier.dlr_mu}
                     name="dlr_mu"
                     placeholder={'Enter'}
-                    onChange={(e) => handleTierChange(e)}
+                    onChange={(e) => {
+                      const sanitizedValue = e.target.value.replace(
+                        /[^0-9.]/g,
+                        ''
+                      );
+                      e.target.value = sanitizedValue;
+                      handleTierChange(e);
+                    }}
                   />
+                  {errors?.dlr_mu && (
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.dlr_mu}
+                    </span>
+                  )}
                 </div>
               </div>
               <div className="create-input-container">
@@ -227,8 +343,27 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
                     value={createTier.dlr_cost}
                     name="dlr_cost"
                     placeholder={'Enter'}
-                    onChange={(e) => handleTierChange(e)}
+                    onChange={(e) => {
+                      const sanitizedValue = e.target.value.replace(
+                        /[^0-9.]/g,
+                        ''
+                      );
+                      e.target.value = sanitizedValue;
+                      handleTierChange(e);
+                    }}
                   />
+
+                  {errors?.dlr_cost && (
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.dlr_cost}
+                    </span>
+                  )}
                 </div>
                 <div className="create-input-field">
                   <Input
@@ -238,22 +373,50 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
                     name="start_date"
                     placeholder={'1/04/2004'}
                     onChange={(e) => {
-                      handleTierChange(e)
-                      setCreateTier(prev=>({...prev,end_date:""}))
-
+                      handleTierChange(e);
+                      setCreateTier((prev) => ({ ...prev, end_date: '' }));
                     }}
                   />
+                  {errors?.start_date && (
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.start_date}
+                    </span>
+                  )}
                 </div>
                 <div className="create-input-field">
                   <Input
                     type={'date'}
                     label="End Date"
                     value={createTier.end_date}
-                    min={createTier.end_date && format(addDays(new Date(createTier.start_date),1),"yyyy-MM-dd")}
+                    min={
+                      createTier.start_date &&
+                      format(
+                        addDays(new Date(createTier.start_date), 1),
+                        'yyyy-MM-dd'
+                      )
+                    }
+                    disabled={!createTier.start_date}
                     name="end_date"
                     placeholder={'10/04/2004'}
                     onChange={(e) => handleTierChange(e)}
                   />
+                  {errors?.end_date && (
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.end_date}
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
@@ -265,9 +428,11 @@ const CreateTierLoan: React.FC<tierLoanProps> = ({
             type="reset"
             onClick={() => handleClose()}
           />
+
           <ActionButton
             title={editMode === false ? 'Save' : 'Update'}
             type="submit"
+            disabled={loading || isPending}
             onClick={() => {}}
           />
         </div>

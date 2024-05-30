@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { ReactComponent as CROSS_BUTTON } from '../../../../resources/assets/cross_button.svg';
 import Input from '../../../components/text_input/Input';
 import { ActionButton } from '../../../components/button/ActionButton';
@@ -16,25 +16,28 @@ import Select from 'react-select';
 import { paySaleTypeData } from '../../../../resources/static_data/StaticData';
 import { repPaySettingModel } from '../../../../core/models/configuration/create/repPaySettingModel';
 import SelectOption from '../../../components/selectOption/SelectOption';
-import { format } from 'date-fns';
+import { addDays, format } from 'date-fns';
 import {
   createRepaySettings,
   RepayEditParams,
   updateRepaySettings,
-} from '../../../../redux/apiActions/repPayAction';
+} from '../../../../redux/apiActions/config/repPayAction';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/repPaySettingsSlice';
+import { FormInput } from '../../../../core/models/data_models/typesModel';
 
 interface createRepPayProps {
   handleClose: () => void;
   editMode: boolean;
   editData: RepayEditParams | null;
+  setRefetch:Dispatch<SetStateAction<number>>
 }
 
 const CreateRepPaySettings: React.FC<createRepPayProps> = ({
   handleClose,
   editMode,
   editData,
+  setRefetch
 }) => {
   const dispatch = useAppDispatch();
   const { isSuccess } = useAppSelector((state) => state.repaySettings);
@@ -71,22 +74,21 @@ const CreateRepPaySettings: React.FC<createRepPayProps> = ({
       [fieldName]: newValue ? newValue.value : '',
     }));
   };
-  const handlePayInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePayInputChange = (e: FormInput) => {
     const { name, value } = e.target;
+    if (name==="start_date") {
+      setCreatePayData((prevData) => ({
+        ...prevData,
+        [name]: value,
+        end_date:""
+      }));
+      return;
+    }
     setCreatePayData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
   };
-  const [viewArchived, setViewArchived] = useState<boolean>(false);
-
-  const handleViewArchiveToggle = () => {
-    setViewArchived(!viewArchived);
-    // When toggling, reset the selected rows
-    setSelectedRows(new Set());
-    setSelectAllChecked(false);
-  };
-
   const tableData = {
     tableNames: ['partners', 'states', 'installers', 'sale_type'],
   };
@@ -125,11 +127,11 @@ const CreateRepPaySettings: React.FC<createRepPayProps> = ({
   useEffect(() => {
     if (isSuccess) {
       handleClose();
+      setRefetch(prev=>prev+1)
+      dispatch(resetSuccess());
     }
 
-    return () => {
-      isSuccess && dispatch(resetSuccess());
-    };
+   
   }, [isSuccess]);
   return (
     <div className="transparent-model">
@@ -202,7 +204,7 @@ const CreateRepPaySettings: React.FC<createRepPayProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={'date'}
-                    label="Start"
+                    label="Start Date"
                     value={createRePayData.start_date}
                     name="start_date"
                     placeholder={'Enter'}
@@ -215,9 +217,11 @@ const CreateRepPaySettings: React.FC<createRepPayProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={'date'}
-                    label="End"
+                    label="End Date"
                     value={createRePayData.end_date}
                     name="end_date"
+                    min={createRePayData.start_date && format(addDays(new Date(createRePayData.start_date),1),"yyyy-MM-dd") }
+                    disabled={!createRePayData.start_date}
                     placeholder={'Enter'}
                     onChange={(e) => handlePayInputChange(e)}
                   />

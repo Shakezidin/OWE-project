@@ -47,17 +47,16 @@ const DealerOverRides: React.FC = () => {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [currentPage, setCurrentPage] = useState(1);
   const [editedDealer, setEditDealer] = useState<DealerModel | null>(null);
-  const [filters, setFilters] = useState<FilterModel[]>([
-  ]);
+  const [filters, setFilters] = useState<FilterModel[]>([]);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
       archived: viewArchived ? true : undefined,
-      filters
+      filters,
     };
     dispatch(fetchDealer(pageNumber));
-  }, [dispatch, currentPage, viewArchived,filters]);
+  }, [dispatch, currentPage, viewArchived, filters]);
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
@@ -196,8 +195,8 @@ const DealerOverRides: React.FC = () => {
     setSelectAllChecked(false);
   };
   const fetchFunction = (req: any) => {
-    setCurrentPage(1)
-    setFilters(req.filters)
+    setCurrentPage(1);
+    setFilters(req.filters);
   };
   if (error) {
     return (
@@ -235,7 +234,7 @@ const DealerOverRides: React.FC = () => {
         />
 
         <FilterHoc
-        resetOnChange={viewArchived}
+          resetOnChange={viewArchived}
           isOpen={filterOPen}
           handleClose={filterClose}
           columns={DealerTableData}

@@ -7,6 +7,7 @@
 }
 .account-section-main {
   width: 100%;
+  margin-top: 15px;
 }
 .titlehed {
   background-color: #333333;
@@ -38,7 +39,18 @@
   background-color: white;
   border-radius: 16px;
 }
-
+.profile-img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #8fcd02;
+  color: #fff;
+  font-size: 2rem;
+  font-weight: 400;
+}
 .tab-links {
   display: flex;
   flex-direction: column;
@@ -77,7 +89,7 @@
   font-weight: 500;
   text-align: left;
   padding: 1rem;
-  margin-right: 2rem;
+  /* margin-right: 2rem; */
 }
 .admin-section {
   display: flex;
@@ -114,18 +126,27 @@
   border: 1px solid #d5d5d5;
   cursor: pointer;
 }
+.edit-section:hover{
+  border: 1px solid #3083e5;
+}
+.active-edit-section{
+  border: none;
+  background: #ddebff;
+}
 .edit-section p {
   font-size: 12px;
   font-weight: 500;
   line-height: 18px;
 }
 .Personal-container {
-  margin-top: 1rem;
-  /* width: 800px; */
+  margin-top: 2rem;
   height: 250px;
   opacity: 0px;
   border: 1px solid #e0e0e0;
   border-radius: 16px;
+}
+.per-info-pad {
+  padding: 20px;
 }
 .create-input-container {
   width: 100%;
@@ -142,11 +163,7 @@
   padding: 1rem;
   align-items: center;
 }
-.reset-Update {
-  display: flex;
-  justify-content: right;
-  padding: 1rem;
-}
+
 .reset-Update button {
   /* width: 280px; */
   width: 28%;
@@ -313,7 +330,7 @@
 }
 
 .Personal-container-detail {
-  margin-top: 1rem;
+  margin-top: 2rem;
   /* width: 800px; */
   height: 270px;
   opacity: 0px;
@@ -323,11 +340,25 @@
 
 .create-input-field-profile-password {
   width: 31.5%;
-  padding: 1rem;
 }
 
 .prof-fields-onboard {
   position: static !important;
   display: block;
   margin-bottom: -15px;
+}
+
+.reset-profile-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.reset-pass-fields {
+  display: flex;
+  justify-content: space-between;
+}
+.reset-Update {
+  display: flex;
+  justify-content: right;
+  padding: 1rem;
 }

@@ -11,7 +11,6 @@ import (
 	db "OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	"OWEApp/shared/models"
-	"strconv"
 )
 
 type PayScheduleCfgStruct struct {
@@ -151,14 +150,14 @@ func (paymentScheduleCfg *PayScheduleCfgStruct) LoadPayScheduleCfg() (err error)
 			InstallerName: Installer,
 			State:         State,
 			SaleType:      Sale,
-			Rl:            Rl,
-			Draw:          Draw,
-			DrawMax:       DrawMax,
-			RepDraw:       RepDraw,
-			RepDrawMax:    RepDrawMax,
-			RepPay:        RepPay,
-			StartDate:     StartDate,
-			EndDate:       EndDate,
+			// Rl:            Rl,
+			// Draw:          Draw,
+			// DrawMax:       DrawMax,
+			// RepDraw:       RepDraw,
+			// RepDrawMax:    RepDrawMax,
+			RepPay:    RepPay,
+			StartDate: StartDate,
+			EndDate:   EndDate,
 		}
 
 		PayScheduleCfg.PayScheduleList.PaymentScheduleList = append(PayScheduleCfg.PayScheduleList.PaymentScheduleList, paySchData)
@@ -181,8 +180,7 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateRL(dealer, partner, install
 		for _, data := range PayScheduleCfg.PayScheduleList.PaymentScheduleList {
 			if data.Partner == dealer && data.PartnerName == partner && data.InstallerName == installer && data.SaleType == types && data.State == state &&
 				data.StartDate <= wc && data.EndDate >= wc {
-				val, _ := strconv.Atoi(data.Rl)
-				return float64(val)
+				return float64(data.Rl)
 			}
 		}
 	}
@@ -204,7 +202,7 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateDlrDrawPerc(dealer, partner
 	if len(dealer) > 0 {
 		for _, data := range PayScheduleCfg.PayScheduleList.PaymentScheduleList {
 			if data.Partner == dealer && data.PartnerName == partner && data.InstallerName == installer && data.SaleType == loanType && data.State == state && data.StartDate <= wc && data.EndDate >= wc {
-				drawPerc, _ = strconv.ParseFloat(data.Draw, 64)
+				drawPerc = data.Draw
 			}
 		}
 	}

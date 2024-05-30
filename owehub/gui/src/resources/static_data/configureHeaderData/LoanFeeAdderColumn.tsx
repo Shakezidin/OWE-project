@@ -52,7 +52,7 @@ export const LoanFeeAdderColumns: Column[] = [
   {
     name: 'sys_size',
     displayName: 'Sys Size',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
   {

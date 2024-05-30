@@ -524,32 +524,22 @@ const RepDashBoardTable = () => {
       isCheckbox: false,
     },
     {
-      name: 'sale_type',
-      displayName: 'Stat Date',
-      type: 'string',
-      isCheckbox: false,
-    },
-    {
-      name: 'sale_price',
-      displayName: 'Owe Contr',
-      type: 'number',
-      isCheckbox: false,
-    },
-    { name: 'rep_type', displayName: 'DBA', type: 'string', isCheckbox: false },
-    {
-      name: 'rl',
-      displayName: 'Comm Model',
-      type: 'number',
-      isCheckbox: false,
-    },
-    { name: 'rate', displayName: 'Percent', type: 'number', isCheckbox: false },
-    {
-      name: 'start_date',
-      displayName: 'Type',
+      name: 'sub_total',
+      displayName: 'Sub Total',
       type: 'date',
       isCheckbox: false,
     },
-    { name: 'end_date', displayName: 'Today', type: 'date', isCheckbox: false },
+
+    {
+      name: 'rep_type',
+      displayName: 'Draw AMT',
+      type: 'string',
+      isCheckbox: false,
+    },
+    { name: 'rl', displayName: 'Amt Paid', type: 'number', isCheckbox: false },
+    { name: 'rate', displayName: 'Bal', type: 'number', isCheckbox: false },
+
+    { name: 'rate', displayName: 'Percent', type: 'number', isCheckbox: false },
 
     {
       name: 'installer',
@@ -557,6 +547,15 @@ const RepDashBoardTable = () => {
       type: 'string',
       isCheckbox: false,
     },
+    { name: 'end_date', displayName: 'Today', type: 'date', isCheckbox: false },
+
+    {
+      name: 'start_date',
+      displayName: 'Type',
+      type: 'date',
+      isCheckbox: false,
+    },
+
     {
       name: 'state',
       displayName: 'Fin Type',
@@ -610,14 +609,21 @@ const RepDashBoardTable = () => {
       type: 'number',
       isCheckbox: false,
     },
+
     {
-      name: 'rep_type',
-      displayName: 'Draw AMT',
-      type: 'string',
+      name: 'sale_price',
+      displayName: 'Owe Contr',
+      type: 'number',
       isCheckbox: false,
     },
-    { name: 'rl', displayName: 'Amt Paid', type: 'number', isCheckbox: false },
-    { name: 'rate', displayName: 'Bal', type: 'number', isCheckbox: false },
+    { name: 'rep_type', displayName: 'DBA', type: 'string', isCheckbox: false },
+    {
+      name: 'rl',
+      displayName: 'Comm Model',
+      type: 'number',
+      isCheckbox: false,
+    },
+
     {
       name: 'start_date',
       displayName: 'DLR Code',
@@ -637,10 +643,11 @@ const RepDashBoardTable = () => {
       type: 'date',
       isCheckbox: false,
     },
+
     {
-      name: 'end_date',
-      displayName: 'Sub Total',
-      type: 'date',
+      name: 'stat_date',
+      displayName: 'Stat Date',
+      type: 'string',
       isCheckbox: false,
     },
   ];
@@ -728,14 +735,17 @@ const RepDashBoardTable = () => {
                         </td>
                       </div>
 
-                      <td>{el.sale_type}</td>
-                      <td>{el.sale_price}</td>
-                      <td>{el.rep_type}</td>
-                      <td>{el.rl}</td>
+                      <td>{el.sub_total}</td>
+
+                      <td>{el.draw_amt}</td>
+                      <td>{el.amt_paid}</td>
+                      <td>{el.balance}</td>
+
                       <td>{el.rate}</td>
+                      <td style={{ color: '#0096D3' }}>${el.amount}</td>
                       <td>{el.start_date}</td>
                       <td>{el.end_date}</td>
-                      <td style={{ color: '#0096D3' }}>${el.amount}</td>
+                   
                       <td>{el.fin_type}</td>
                       <td>{el.sys_size}</td>
                       <td>{el.contract}</td>
@@ -748,13 +758,13 @@ const RepDashBoardTable = () => {
                       <td>{el.credit}</td>
                       <td>{el.rep_2}</td>
                       <td>{el.net_comm}</td>
-                      <td>{el.draw_amt}</td>
-                      <td>{el.amt_paid}</td>
-                      <td>{el.balance}</td>
+                      <td>{el.sale_price}</td>
+                      <td>{el.rep_type}</td>
+                      <td>{el.rl}</td>
                       <td>{el.dealer_code}</td>
                       <td>{el.contr_date}</td>
                       <td>{el.state}</td>
-                      <td>{el.sub_total}</td>
+                      <td>{el.status_date}</td>
                       <td className="zoom-out-help">
                         <MdOutlineHelp
                           onClick={() => handleIconOpen()}

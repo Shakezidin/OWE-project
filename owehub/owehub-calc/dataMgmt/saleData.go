@@ -10,6 +10,7 @@ package datamgmt
 import (
 	db "OWEApp/shared/db"
 	log "OWEApp/shared/logger"
+	"strings"
 	"time"
 )
 
@@ -52,7 +53,7 @@ var (
 	SaleData SaleDataList
 )
 
-func (saleDataList *SaleDataList) LoadSaleData(uniqueIDs []string) (err error) {
+func (saleDataList *SaleDataList) LoadSaleData(uniqueID string, hookType string) (err error) {
 	var (
 		query    string
 		dataList []map[string]interface{}
@@ -60,17 +61,28 @@ func (saleDataList *SaleDataList) LoadSaleData(uniqueIDs []string) (err error) {
 
 	// log.EnterFn(0, "LoadSaleData")
 	// defer func() { log.ExitFn(0, "LoadSaleData", err) }()
+	log.EnterFn(0, "LoadSaleData")
+	defer func() { log.ExitFn(0, "LoadSaleData", err) }()
+	log.FuncDebugTrace(0, "In LoadSaleData for uniqueID: %v, hookType: %v", uniqueID, hookType)
 	query = "SELECT * from " + db.ViewName_ConsolidatedDataView
-	if (uniqueIDs != nil) && (len(uniqueIDs) > 0) {
-		query += "WHERE unique_id IN ("
-		for i, id := range uniqueIDs {
-			if i != 0 {
-				query += ","
-			}
-			query += "'" + id + "'"
-		}
-		query += ")"
+	if uniqueID != "" {
+
+		//query += " WHERE unique_id='" + uniqueID + "'"
+		query += " WHERE UPPER(unique_id)='" + strings.ToUpper(uniqueID) + "'"
+
 	}
+	/*
+		if (uniqueIDs != nil) && (len(uniqueIDs) > 0) {
+			query += "WHERE unique_id IN ("
+			for i, id := range uniqueIDs {
+				if i != 0 {
+					query += ","
+				}
+				query += "'" + id + "'"
+			}
+			query += ")"
+		}
+	*/
 
 	dataList, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
 	if err != nil || len(dataList) == 0 {

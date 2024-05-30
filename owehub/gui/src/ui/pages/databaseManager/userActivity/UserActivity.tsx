@@ -10,7 +10,7 @@ import { DBManagerUserActivityModel } from '../../../../core/models/api_models/D
 import DataNotFound from '../../../components/loader/DataNotFound';
 import Pagination from '../../../components/pagination/Pagination';
 import { Tooltip as ReactTooltip } from 'react-tooltip';
-import './Useractivity.css'
+import './Useractivity.css';
 import MicroLoader from '../../../components/loader/MicroLoader';
 
 const UserActivity: React.FC = () => {
@@ -23,7 +23,12 @@ const UserActivity: React.FC = () => {
   const [openTooltipIndex, setOpenTooltipIndex] = useState<number | null>(null);
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (openTooltipIndex !== null && !(event.target as HTMLElement).closest(`[data-tooltip-id="tooltip-${openTooltipIndex}"]`)) {
+      if (
+        openTooltipIndex !== null &&
+        !(event.target as HTMLElement).closest(
+          `[data-tooltip-id="tooltip-${openTooltipIndex}"]`
+        )
+      ) {
         setOpenTooltipIndex(null);
       }
     };
@@ -113,26 +118,21 @@ const UserActivity: React.FC = () => {
             </thead>
 
             <tbody>
-            
-  
-              {
-              loading?
-              <tr >
-                <td colSpan={7}>
-                    <div style={{display:"flex",justifyContent:"center"}}>
-                      <MicroLoader/>
+              {loading ? (
+                <tr>
+                  <td colSpan={7}>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <MicroLoader />
                     </div>
-                </td>
-              </tr>:
-              userActivityList && userActivityList?.length > 0 ? (
-                userActivityList
-                  ?.filter((el: DBManagerUserActivityModel) => el.query_details !== ';') // Filter out rows where query_details is ';'
-                  ?.map((el: DBManagerUserActivityModel, index: number) => {
+                  </td>
+                </tr>
+              ) : userActivityList && userActivityList?.length > 0 ? (
+                userActivityList?.map(
+                  (el: DBManagerUserActivityModel, index: number) => {
                     const tooltipId = `tooltip-${index}`;
-                    const truncatedQueryDetails = el.query_details.slice(0, 50) + '...';
+                    const truncatedQueryDetails =
+                      el.query_details.slice(0, 50) + '...';
                     const wordCount = countWords(el.query_details);
-
-
 
                     return (
                       <tr key={el.time_date}>
@@ -148,10 +148,13 @@ const UserActivity: React.FC = () => {
                         </td>
                         <td style={{ textAlign: 'left' }}>{el.db_name}</td>
                         <td style={{ textAlign: 'left' }}>{el.time_date}</td>
+                    
                         <td style={{ textAlign: 'left' }}>
-                          {wordCount <= 5 ? el.query_details : truncatedQueryDetails}
-                          {wordCount > 5 && (
+                          {el.query_details.length > 50 ? (
                             <>
+                              <span style={{ maxWidth: '250px',marginBottom:"-5px", display: 'inline-block', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                {el.query_details}
+                              </span>
                               <button
                                 onClick={() => setOpenTooltipIndex(openTooltipIndex === index ? null : index)}
                                 data-tooltip-id={tooltipId}
@@ -163,21 +166,21 @@ const UserActivity: React.FC = () => {
                                   background: 'none',
                                   color: openTooltipIndex === index ? '#F82C2C' : '#3083e5',
                                   cursor: 'pointer',
+                                  fontSize: "12px"
                                 }}
                               >
                                 {openTooltipIndex === index ? 'Show less' : 'Show more'}
                               </button>
-                              <ReactTooltip
-                                id={tooltipId}
-                                className="custom-tooltip"
-                                isOpen={openTooltipIndex === index}
-                              />
+                              <ReactTooltip id={tooltipId} className="custom-tooltip" isOpen={openTooltipIndex === index} />
                             </>
+                          ) : (
+                            el.query_details
                           )}
                         </td>
                       </tr>
                     );
-                  })
+                  }
+                )
               ) : (
                 <tr style={{ border: 0 }}>
                   <td colSpan={10}>
@@ -189,13 +192,13 @@ const UserActivity: React.FC = () => {
                 </tr>
               )}
             </tbody>
-
           </table>
         </div>
 
         <div className="page-heading-container">
           <p className="page-heading">
-            {startIndex} - {endIndex>totalCount?totalCount:endIndex} of {totalCount} item
+            {startIndex} - {endIndex > totalCount ? totalCount : endIndex} of{' '}
+            {totalCount} item
           </p>
 
           {userActivityList && userActivityList?.length > 0 ? (

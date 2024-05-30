@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import {
   IRateRow,
   getAdjustments,
-} from '../../../../redux/apiActions/arAdjustmentsAction';
+} from '../../../../redux/apiActions/config/arAdjustmentsAction';
 
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
@@ -29,6 +29,7 @@ import Loading from '../../../components/loader/Loading';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
+import DataNotFound from '../../../components/loader/DataNotFound';
 const Adjustments = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -138,6 +139,7 @@ const Adjustments = () => {
     setEditedTimeLineSla(null);
     handleOpen();
   };
+  console.log(currentPageData, currentPageData.length, 'data');
 
   const handleArchiveClick = async (record_id: number[]) => {
     const confirmed = await showAlert(
@@ -179,10 +181,6 @@ const Adjustments = () => {
     setCurrentPage(1);
     setFilters(req.filters);
   };
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
 
   return (
     <div className="comm">
@@ -277,10 +275,10 @@ const Adjustments = () => {
                     </div>
                   </td>
                 </tr>
-              ) : (
-                arAdjustmentsList.map((item: Adjustment, ind: number) => {
+              ) : currentPageData?.length ? (
+                currentPageData.map((item: Adjustment, ind: number) => {
                   return (
-                    <tr key={item.unique_id}>
+                    <tr key={item.record_id}>
                       <td style={{ paddingRight: 0, textAlign: 'left' }}>
                         <div className="flex-check">
                           <td style={{ paddingInline: 0 }}>
@@ -302,7 +300,7 @@ const Adjustments = () => {
                       <td>{item.customer || 'N/A'}</td>
                       <td>{item.partner_name || 'N/A'}</td>
                       <td>{item.installer_name || 'N/A'}</td>
-                      <td> {item.state_name} </td>
+                      <td> {item.state_name || 'N/A'} </td>
                       <td> {item.sys_size} </td>
                       <td> {item.bl} </td>
                       <td> {item.epc} </td>
@@ -343,16 +341,28 @@ const Adjustments = () => {
                     </tr>
                   );
                 })
+              ) : (
+                <tr>
+                  <td colSpan={AdjustmentsColumns.length}>
+                    <div className="data-not-found">
+                      <DataNotFound />
+                      <h3>Data Not Found</h3>
+                    </div>
+                  </td>
+                </tr>
               )}
             </tbody>
           </table>
         </div>
         <div className="page-heading-container">
-          <p className="page-heading">
-            {startIndex} - {endIndex > count ? count : endIndex} of {count} item
-          </p>
+          {!!count && (
+            <p className="page-heading">
+              {startIndex} - {endIndex > count ? count : endIndex} of {count}{' '}
+              item
+            </p>
+          )}
 
-          {arAdjustmentsList?.length > 0 ? (
+          {currentPageData?.length > 0 ? (
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages} // You need to calculate total pages

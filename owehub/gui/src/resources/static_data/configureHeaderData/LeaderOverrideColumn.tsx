@@ -1,20 +1,19 @@
 import { Column } from '../../../core/models/data_models/FilterSelectModel';
-
 export const LeaderOverrideColumns: Column[] = [
   {
-    name: 'teamname',
+    name: 'team_name',
     displayName: 'Team Name',
     type: 'string',
     isCheckbox: true,
   },
   {
-    name: 'uniqeid',
+    name: 'unique_id',
     displayName: 'Unique Id',
     type: 'string',
     isCheckbox: false,
   },
   {
-    name: 'leadername',
+    name: 'leader_name',
     displayName: 'Leader Name',
     type: 'string',
     isCheckbox: false,
@@ -25,13 +24,13 @@ export const LeaderOverrideColumns: Column[] = [
   {
     name: 'sales_q',
     displayName: 'Sales Q',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
   {
     name: 'team_kw_q',
     displayName: 'Team kW Q',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
   {
@@ -40,6 +39,16 @@ export const LeaderOverrideColumns: Column[] = [
     type: 'string',
     isCheckbox: false,
   },
-  { name: 'start', displayName: 'Start', type: 'string', isCheckbox: false },
-  { name: 'end', displayName: 'End', type: 'string', isCheckbox: false },
+  {
+    name: 'start_date',
+    displayName: 'Start Date',
+    type: 'string',
+    isCheckbox: false,
+  },
+  {
+    name: 'end_date',
+    displayName: 'End Date',
+    type: 'string',
+    isCheckbox: false,
+  },
 ];

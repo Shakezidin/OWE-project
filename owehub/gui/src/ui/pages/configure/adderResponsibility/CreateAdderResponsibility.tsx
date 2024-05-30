@@ -1,61 +1,65 @@
-import React, { useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
 import { ReactComponent as CROSS_BUTTON } from '../../../../resources/assets/cross_button.svg';
 import Input from '../../../components/text_input/Input';
-
 import { ActionButton } from '../../../components/button/ActionButton';
-import { updatePayForm } from '../../../../redux/apiSlice/configSlice/config_post_slice/createPayScheduleSlice';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import {
-  installerOption,
-  partnerOption,
-  salesTypeOption,
-  stateOption,
-} from '../../../../core/models/data_models/SelectDataModel';
-import Select from 'react-select';
-import { paySaleTypeData } from '../../../../resources/static_data/StaticData';
-import { PayScheduleModel } from '../../../../core/models/configuration/create/PayScheduleModel';
-import SelectOption from '../../../components/selectOption/SelectOption';
-import {
   createAdderResponsibility,
   updateAdderResponsibility,
-} from '../../../../redux/apiActions/adderResponsbilityAction';
+} from '../../../../redux/apiActions/config/adderResponsbilityAction';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/adderResponsbilitySlice';
+import { FormInput } from '../../../../core/models/data_models/typesModel';
 
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
-  editData: any;
+  editData: {
+    unique_id: string;
+    pay_scale: string;
+    percentage: string;
+    record_id: number;
+  } | null;
+  setRefetch: Dispatch<SetStateAction<number>>;
 }
 
 const CreateAdderResponsibility: React.FC<payScheduleProps> = ({
   handleClose,
   editMode,
   editData,
+  setRefetch,
 }) => {
   const dispatch = useAppDispatch();
-  const { isSuccess } = useAppSelector((state) => state.adderresponsbility);
-  function generateRandomId(length: number): string {
-    const characters =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const charactersLength = characters.length;
-    let result = '';
+  const { isSuccess, isFormSubmitting } = useAppSelector(
+    (state) => state.adderresponsbility
+  );
 
-    for (let i = 0; i < length; i++) {
-      const randomIndex = Math.floor(Math.random() * charactersLength);
-      result += characters.charAt(randomIndex);
-    }
-
-    return result;
-  }
   const [createAdderResponsbilityData, setAdderResponsbilityData] = useState({
-    unique_id: editData?.unique_id || generateRandomId(6),
-    pay_scale: editData?.pay_scale || 0,
-    percentage: editData?.percentage || 0,
+    unique_id: editData ? editData?.unique_id : '',
+    pay_scale: editData ? editData?.pay_scale : '',
+    percentage: editData ? editData?.percentage : '',
+    record_id: editData ? editData?.record_id : 0,
   });
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  type TError = typeof createAdderResponsbilityData;
+  const [errors, setErrors] = useState<TError>({} as TError);
+
+  const handleValidation = () => {
+    const error: TError = {} as TError;
+    for (const key in createAdderResponsbilityData) {
+      if (key === 'record_id') {
+        continue;
+      }
+      if (!createAdderResponsbilityData[key as keyof TError]) {
+        // @ts-ignore
+        error[key as keyof TError] = `${key.replaceAll('_', ' ')} is required`;
+      }
+    }
+    setErrors({ ...error });
+    return Object.keys(error).length ? false : true;
+  };
+  const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
     setAdderResponsbilityData((prevData) => ({
       ...prevData,
@@ -63,45 +67,34 @@ const CreateAdderResponsibility: React.FC<payScheduleProps> = ({
     }));
   };
 
-  const [newFormData, setNewFormData] = useState<any>([]);
-
-  const tableData = {
-    tableNames: ['partners', 'states', 'installers', 'sale_type'],
-  };
-  const getNewFormData = async () => {
-    const res = await postCaller(EndPoints.get_newFormData, tableData);
-    setNewFormData(res.data);
-  };
-  useEffect(() => {
-    getNewFormData();
-  }, []);
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (editMode) {
-      dispatch(
-        updateAdderResponsibility({
-          unique_id: createAdderResponsbilityData.unique_id,
-          pay_scale: createAdderResponsbilityData.pay_scale,
-          percentage: parseInt(createAdderResponsbilityData.percentage, 10),
-          record_id: editData?.record_id!,
-        })
-      );
-    } else {
-      dispatch(
-        createAdderResponsibility({
-          unique_id: createAdderResponsbilityData.unique_id,
-          pay_scale: createAdderResponsbilityData.pay_scale,
-          percentage: parseInt(createAdderResponsbilityData.percentage, 10),
-        })
-      );
+    if (handleValidation()) {
+      if (editMode) {
+        dispatch(
+          updateAdderResponsibility({
+            unique_id: createAdderResponsbilityData.unique_id,
+            pay_scale: createAdderResponsbilityData.pay_scale,
+            percentage: parseInt(createAdderResponsbilityData.percentage, 10),
+            record_id: editData?.record_id!,
+          })
+        );
+      } else {
+        dispatch(
+          createAdderResponsibility({
+            unique_id: createAdderResponsbilityData.unique_id,
+            pay_scale: createAdderResponsbilityData.pay_scale,
+            percentage: parseInt(createAdderResponsbilityData.percentage, 10),
+          })
+        );
+      }
     }
   };
 
   useEffect(() => {
     if (isSuccess) {
       handleClose();
+      setRefetch((prev) => prev + 1);
     }
     return () => {
       isSuccess && dispatch(resetSuccess());
@@ -128,12 +121,45 @@ const CreateAdderResponsibility: React.FC<payScheduleProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={'text'}
+                    label="Unique Id"
+                    value={createAdderResponsbilityData.unique_id}
+                    name="unique_id"
+                    placeholder={'Enter'}
+                    onChange={(e) => handleInputChange(e)}
+                  />
+                  {errors?.unique_id && (
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.unique_id}
+                    </span>
+                  )}
+                </div>
+                <div className="create-input-field">
+                  <Input
+                    type={'text'}
                     label="Pay Scale"
                     value={createAdderResponsbilityData.pay_scale}
                     name="pay_scale"
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
+
+                  {errors?.pay_scale && (
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.pay_scale}
+                    </span>
+                  )}
                 </div>
                 <div className="create-input-field">
                   <Input
@@ -144,6 +170,18 @@ const CreateAdderResponsibility: React.FC<payScheduleProps> = ({
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
+
+                  {errors?.percentage && (
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.percentage}
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
@@ -158,6 +196,7 @@ const CreateAdderResponsibility: React.FC<payScheduleProps> = ({
           <ActionButton
             title={editMode === false ? 'Save' : 'Update'}
             type="submit"
+            disabled={isFormSubmitting}
             onClick={() => {}}
           />
         </div>

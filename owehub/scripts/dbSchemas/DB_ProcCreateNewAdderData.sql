@@ -49,7 +49,7 @@ BEGIN
         RETURNING id INTO v_adder_data_id;
     EXCEPTION
         WHEN others THEN
-            RAISE NOTICE 'Error: %', SQLERRM;
+            RAISE EXCEPTION 'An error occurred: %', SQLERRM;
     END;
 END;
 $$ LANGUAGE plpgsql;

@@ -4,7 +4,7 @@ import {
   createNonComm,
   updateNoncom,
   INonCommRowDLR,
-} from '../../../apiActions/nocCommAction';
+} from '../../../apiActions/config/nocCommAction';
 import { toast } from 'react-toastify';
 
 interface IState {
@@ -59,6 +59,7 @@ const nonComm = createSlice({
       .addCase(createNonComm.rejected, (state, action) => {
         state.isFormSubmitting = false;
         state.error = action.payload as string;
+        toast.error(action.payload as string)
       })
       .addCase(updateNoncom.pending, (state, action) => {
         state.isFormSubmitting = true;

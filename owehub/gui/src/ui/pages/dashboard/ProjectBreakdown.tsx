@@ -4,7 +4,6 @@ import { CommissionModel } from '../../../core/models/configuration/create/Commi
 import { ICONS } from '../../icons/Icons';
 import { SlArrowDown, SlArrowUp } from 'react-icons/sl';
 
-
 interface ButtonProps {
   editMode: boolean;
   handleClose: () => void;
@@ -16,7 +15,9 @@ const BreakdownAccordion = () => {
   return (
     <>
       <tr style={{ backgroundColor: '#DDEBFF' }}>
-        <td colSpan={2} style={{ paddingLeft: '70px' }}>Adder content goes here</td>
+        <td colSpan={2} style={{ paddingLeft: '70px' }}>
+          Adder content goes here
+        </td>
       </tr>
       <tr style={{ backgroundColor: '#DDEBFF' }}>
         <td style={{ paddingLeft: '70px' }}>Small System Size</td>

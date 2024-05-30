@@ -31,10 +31,11 @@ func HandleDataUpdateHandler(resp http.ResponseWriter, req *http.Request) {
 	)
 
 	log.EnterFn(0, "HandleDataUpdateHandler")
+
 	defer func() { log.ExitFn(0, "HandleDataUpdateHandler", err) }()
 
 	if req.Body == nil {
-		err = fmt.Errorf("HTTP Request body is null in Login request")
+		err = fmt.Errorf("HTTP Request body is null in Update Data Handler")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "HTTP Request body is null", http.StatusBadRequest, nil)
 		return
@@ -42,21 +43,22 @@ func HandleDataUpdateHandler(resp http.ResponseWriter, req *http.Request) {
 
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to read HTTP Request body from Login request err: %v", err)
+		log.FuncErrorTrace(0, "Failed to read HTTP Request body from Update Data Handler err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to read HTTP Request body", http.StatusBadRequest, nil)
 		return
 	}
+
 	err = json.Unmarshal(reqBody, &data)
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to unmarshal Login request err: %v", err)
-		FormAndSendHttpResp(resp, "Failed to unmarshal Login request", http.StatusBadRequest, nil)
+		log.FuncErrorTrace(0, "Failed to unmarshal Update Data Handler request err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to unmarshal Update Data Handler request", http.StatusBadRequest, nil)
 		return
 	} else {
-		log.FuncDebugTrace(0, "Data udpate notification recieved for unique_id: %+v", data.UniqueIDs)
+		log.FuncDebugTrace(0, "Data udpate notification recieved for unique_id: %v, hookType: %v", data.UniqueID, data.HookType)
 	}
 
 	/* Load Sale Data for which event received */
-	err = datamgmt.SaleData.LoadSaleData(data.UniqueIDs)
+	err = datamgmt.SaleData.LoadSaleData(data.UniqueID, data.HookType)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get sale data from DB err: %+v", err)
 		panic("Failed to load sale data from DB")

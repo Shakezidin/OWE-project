@@ -12,6 +12,7 @@ interface Endpoints {
   login: string;
   resetPassword: string;
   changePassword: string;
+  checkUser: string;
   // get config
   commission: string;
   dealer: string;
@@ -82,6 +83,7 @@ export const EndPoints: Endpoints = {
   login: `login`,
   resetPassword: 'forgot_password',
   changePassword: 'change_password',
+  checkUser: 'user_exists',
   // get config endpoints
   commission: 'get_commissions',
   active: 'active',

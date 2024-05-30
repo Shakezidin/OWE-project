@@ -39,5 +39,17 @@ func LoadConfigurations() (err error) {
 	}
 
 	log.FuncErrorTrace(0, "===== adder data : %+v", AdderDataCfg.AdderDataList.AdderDataList)
+	err = ApRepCfg.LoadApRepCfg()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get AP-Rep Config from DB err: %+v", err)
+		return err
+	}
+
+	err = RebateCfg.LoadRebateCfg()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get Rebate Config from DB err: %+v", err)
+		return err
+	}
+
 	return err
 }

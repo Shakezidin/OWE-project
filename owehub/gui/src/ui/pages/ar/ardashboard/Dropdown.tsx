@@ -22,7 +22,9 @@ const ArDropdownWithCheckboxes: React.FC<ArDropdownWithCheckboxesProps> = ({
   options,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+  const [selectedOptions, setSelectedOptions] = useState<string[]>(
+    options.map((o) => o.value)
+  );
   const dropdownRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
 
@@ -80,10 +82,22 @@ const ArDropdownWithCheckboxes: React.FC<ArDropdownWithCheckboxesProps> = ({
   console.log(selectedOptions);
   return (
     <div className="ar-dropdown-container" ref={dropdownRef}>
-      <div className="ar-dropdown-toggle" onClick={toggleDropdown}>
-        {/* {selectedOptions.length > 0 ? `(${selectedOptions})` : 'Select'} */}
-        Select
-        <FiChevronDown className="ar-drop-icon" />
+      <div className="dropdown-toggle" onClick={toggleDropdown}>
+        <span className="toggle-text">
+          {selectedOptions.length > 0 ? (
+            selectedOptions.includes('All') ? (
+              'All'
+            ) : (
+              ''
+            )
+          ) : (
+            'Select'
+          )}
+        </span>
+        {selectedOptions.length > 0 && !selectedOptions.includes('All') && (
+          <span className="selected-count">{selectedOptions.length}</span>
+        )}
+        <FiChevronDown className="drop-icon" />
       </div>
       {isOpen && (
         <div className="ar-dropdown-menu">

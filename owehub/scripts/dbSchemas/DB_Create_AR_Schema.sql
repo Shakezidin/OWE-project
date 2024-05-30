@@ -7,7 +7,7 @@ CREATE TABLE sales_ar_calc (
     source text,
     type text,
     loan_type text,
-    unique_id text primary key,
+    unique_id text, --primary key,
     home_owner text,
     street_address text,
     city text,

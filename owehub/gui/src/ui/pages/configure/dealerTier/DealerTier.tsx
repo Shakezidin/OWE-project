@@ -25,7 +25,14 @@ import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoin
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import Swal from 'sweetalert2';
 import { ROUTES } from '../../../../routes/routes';
-import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
+import {
+  errorSwal,
+  showAlert,
+  successSwal,
+} from '../../../components/alert/ShowAlert';
+import FilterHoc from '../../../components/FilterModal/FilterHoc';
+import MicroLoader from '../../../components/loader/MicroLoader';
+import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 const DealerTier = () => {
   const dispatch = useAppDispatch();
   // const getData = useAppSelector(state=>state.comm.data)
@@ -52,14 +59,16 @@ const DealerTier = () => {
   const itemsPerPage = 10;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [filters, setFilters] = useState<FilterModel[]>([]);
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
       archived: viewArchived ? true : undefined,
+      filters,
     };
     dispatch(fetchDealerTier(pageNumber));
-  }, [dispatch, currentPage, viewArchived]);
+  }, [dispatch, currentPage, viewArchived, filters]);
   console.log(dealerTierList);
 
   const filter = () => {
@@ -132,7 +141,7 @@ const DealerTier = () => {
     );
     if (confirmed) {
       const archivedRows = Array.from(selectedRows).map(
-        (index) => dealerTierList[index].record_id
+        (index) => currentPageData[index].record_id
       );
       if (archivedRows.length > 0) {
         const newValue = {
@@ -143,20 +152,15 @@ const DealerTier = () => {
         const pageNumber = {
           page_number: currentPage,
           page_size: itemsPerPage,
+          filters,
         };
 
-        const res = await postCaller(EndPoints.update_dealer_archive, newValue);
+        const res = await postCaller('update_dealertier_archive', newValue);
         if (res.status === HTTP_STATUS.OK) {
           // If API call is successful, refetch commissions
-            setSelectAllChecked(false);
-            setSelectedRows(new Set());
-          dispatch(fetchDealerTier(pageNumber));
-          const remainingSelectedRows = Array.from(selectedRows).filter(
-            (index) => !archivedRows.includes(dealerTierList[index].record_id)
-          );
-          const isAnyRowSelected = remainingSelectedRows.length > 0;
-          setSelectAllChecked(isAnyRowSelected);
+          setSelectAllChecked(false);
           setSelectedRows(new Set());
+          dispatch(fetchDealerTier(pageNumber));
           await successSwal('Archived', 'The data has been archived ');
         } else {
           await successSwal('Archived', 'The data has been archived ');
@@ -180,15 +184,16 @@ const DealerTier = () => {
       const pageNumber = {
         page_number: currentPage,
         page_size: itemsPerPage,
+        filters,
       };
-      const res = await postCaller(EndPoints.update_dealer_archive, newValue);
+      const res = await postCaller('update_dealertier_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
-            setSelectAllChecked(false);
-            setSelectedRows(new Set());
+        setSelectAllChecked(false);
+        setSelectedRows(new Set());
         dispatch(fetchDealerTier(pageNumber));
         await successSwal('Archived', 'The data has been archived ');
       } else {
-        await successSwal('Archived', 'The data has been archived ');
+        await errorSwal('Archived', 'Something went wrong');
       }
     }
   };
@@ -200,19 +205,13 @@ const DealerTier = () => {
     setSelectAllChecked(false);
   };
   const fetchFunction = (req: any) => {
-    dispatch(fetchDealerTier(req));
+    setCurrentPage(1);
+    setFilters(req.filters);
   };
   if (error) {
     return (
       <div className="loader-container">
         <Loading />
-      </div>
-    );
-  }
-  if (loading) {
-    return (
-      <div className="loader-container">
-        <Loading /> {loading}
       </div>
     );
   }
@@ -229,11 +228,10 @@ const DealerTier = () => {
         <TableHeader
           title="Dealer Tier"
           onPressViewArchive={() => {
-            handleViewArchiveToggle()
+            handleViewArchiveToggle();
             setCurrentPage(1);
             setSelectAllChecked(false);
             setSelectedRows(new Set());
-
           }}
           onPressArchive={() => handleArchiveAllClick()}
           checked={isAllRowsSelected}
@@ -244,15 +242,17 @@ const DealerTier = () => {
           onpressExport={() => {}}
           onpressAddNew={() => handleAddDealerTier()}
         />
-        {filterOPen && (
-          <FilterModal
-            handleClose={filterClose}
-            columns={DealerTierColumn}
-            fetchFunction={fetchFunction}
-            page_number={currentPage}
-            page_size={itemsPerPage}
-          />
-        )}
+
+        <FilterHoc
+          isOpen={filterOPen}
+          resetOnChange={viewArchived}
+          handleClose={filterClose}
+          columns={DealerTierColumn}
+          fetchFunction={fetchFunction}
+          page_number={currentPage}
+          page_size={itemsPerPage}
+        />
+
         {open && (
           <CreateDealerTier
             handleClose={handleClose}
@@ -298,7 +298,15 @@ const DealerTier = () => {
               </tr>
             </thead>
             <tbody>
-              {currentPageData?.length > 0 ? (
+              {loading ? (
+                <tr>
+                  <td colSpan={DealerTierColumn.length}>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <MicroLoader />
+                    </div>
+                  </td>
+                </tr>
+              ) : currentPageData?.length > 0 ? (
                 currentPageData?.map((el: any, i: any) => (
                   <tr key={i}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
@@ -320,7 +328,7 @@ const DealerTier = () => {
                     <td>{el.tier}</td>
                     <td>{el.start_date}</td>
                     <td>{el.end_date}</td>
-                    {viewArchived === true ? null : (
+                    {!viewArchived && selectedRows.size < 2 && (
                       <td>
                         <div className="action-icon">
                           <div
@@ -362,7 +370,8 @@ const DealerTier = () => {
         {dealerTierList?.length > 0 ? (
           <div className="page-heading-container">
             <p className="page-heading">
-              {startIndex} - {endIndex>dbCount?dbCount:endIndex} of {dbCount} item
+              {startIndex} - {endIndex > dbCount ? dbCount : endIndex} of{' '}
+              {dbCount} item
             </p>
             <Pagination
               currentPage={currentPage}

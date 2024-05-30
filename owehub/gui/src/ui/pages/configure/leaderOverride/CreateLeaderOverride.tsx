@@ -2,19 +2,11 @@ import React, { useEffect, useState } from 'react';
 
 import { ReactComponent as CROSS_BUTTON } from '../../../../resources/assets/cross_button.svg';
 import Input from '../../../components/text_input/Input';
-import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/leaderOverride';
 import { ActionButton } from '../../../components/button/ActionButton';
 import { updatePayForm } from '../../../../redux/apiSlice/configSlice/config_post_slice/createPayScheduleSlice';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
-import { useDispatch } from 'react-redux';
-import {
-  installerOption,
-  partnerOption,
-  salesTypeOption,
-  stateOption,
-  teamsOption,
-} from '../../../../core/models/data_models/SelectDataModel';
+import { teamsOption } from '../../../../core/models/data_models/SelectDataModel';
 import Select from 'react-select';
 import { paySaleTypeData } from '../../../../resources/static_data/StaticData';
 import { PayScheduleModel } from '../../../../core/models/configuration/create/PayScheduleModel';
@@ -25,7 +17,8 @@ import {
   createleaderOverride,
   ILeaderRow,
   updateleaderOverride,
-} from '../../../../redux/apiActions/leaderOverrideAction';
+} from '../../../../redux/apiActions/config/leaderOverrideAction';
+import { FormInput } from '../../../../core/models/data_models/typesModel';
 
 interface payScheduleProps {
   handleClose: () => void;
@@ -70,7 +63,7 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
     uniqueId: editData?.unique_id || '',
   });
   const [newFormData, setNewFormData] = useState<any>([]);
-  const { isSuccess } = useAppSelector((state) => state.leaderOverride);
+  const { isFormSubmitting } = useAppSelector((state) => state.leaderOverride);
 
   const tableData = {
     tableNames: ['partners', 'states', 'installers', 'sale_type', 'teams'],
@@ -92,7 +85,7 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
     return Object.keys(error).length ? false : true;
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: FormInput) => {
     const { value, name } = e.target;
     if (name === 'salesQ' || name === 'teamKwQ') {
       if (value === '' || value === '0' || Number(value)) {
@@ -134,15 +127,6 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
     getNewFormData();
   }, []);
 
-  useEffect(() => {
-    if (isSuccess) {
-      handleClose();
-    }
-    return () => {
-      isSuccess && dispatch(resetSuccess());
-    };
-  }, [isSuccess]);
-
   return (
     <div className="transparent-model">
       <form className="modal" onSubmit={handleSubmit}>
@@ -175,7 +159,13 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     )}
                   />
                   {errors?.teamName && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.teamName}
                     </span>
                   )}
@@ -190,7 +180,13 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     onChange={handleChange}
                   />
                   {errors?.leaderName && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.leaderName}
                     </span>
                   )}
@@ -205,7 +201,13 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     onChange={handleChange}
                   />
                   {errors?.type && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.type}
                     </span>
                   )}
@@ -223,7 +225,13 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     onChange={handleChange}
                   />
                   {errors?.term && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.type}
                     </span>
                   )}
@@ -238,7 +246,13 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     onChange={handleChange}
                   />
                   {errors?.qual && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.qual}
                     </span>
                   )}
@@ -250,10 +264,23 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     value={formData.salesQ}
                     name="salesQ"
                     placeholder={'Enter'}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      const sanitizedValue = e.target.value.replace(
+                        /[^0-9.]/g,
+                        ''
+                      );
+                      e.target.value = sanitizedValue;
+                      handleChange(e);
+                    }}
                   />
                   {errors?.salesQ && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.salesQ}
                     </span>
                   )}
@@ -268,10 +295,23 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     value={formData.teamKwQ}
                     name="teamKwQ"
                     placeholder={'Enter'}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      const sanitizedValue = e.target.value.replace(
+                        /[^0-9.]/g,
+                        ''
+                      );
+                      e.target.value = sanitizedValue;
+                      handleChange(e);
+                    }}
                   />
                   {errors?.teamKwQ && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.teamKwQ}
                     </span>
                   )}
@@ -283,11 +323,19 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     value={formData.payRate}
                     name="payRate"
                     placeholder={'Enter'}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      handleChange(e);
+                    }}
                   />
 
                   {errors?.payRate && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.payRate}
                     </span>
                   )}
@@ -299,17 +347,22 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     value={formData.start}
                     name="start"
                     placeholder={'Enter'}
-                    onChange={(e)=>{
-                      handleChange(e)
+                    onChange={(e) => {
+                      handleChange(e);
                       setFormData((prev) => ({
-                       ...prev,
-                        end: "",
-                      }))
-
+                        ...prev,
+                        end: '',
+                      }));
                     }}
                   />
                   {errors?.start && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.start.replace('start', 'start date')}
                     </span>
                   )}
@@ -320,13 +373,22 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     label="End"
                     value={formData.end}
                     name="end"
-                    min={formData.start && format(addDays(new Date(formData.start),1),"yyyy-MM-dd")}
+                    min={
+                      formData.start &&
+                      format(addDays(new Date(formData.start), 1), 'yyyy-MM-dd')
+                    }
                     disabled={!formData.start}
                     placeholder={'Enter'}
                     onChange={handleChange}
                   />
                   {errors?.end && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.end.replace('end', 'end date')}
                     </span>
                   )}
@@ -342,7 +404,13 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
                     onChange={handleChange}
                   />
                   {errors?.uniqueId && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.uniqueId}
                     </span>
                   )}
@@ -358,6 +426,7 @@ const CreateLeaderOverride: React.FC<payScheduleProps> = ({
             onClick={() => handleClose()}
           />
           <ActionButton
+            disabled={isFormSubmitting}
             title={editMode === false ? 'Save' : 'Update'}
             type="submit"
             onClick={() => {}}

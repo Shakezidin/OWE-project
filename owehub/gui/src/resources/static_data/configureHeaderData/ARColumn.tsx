@@ -12,9 +12,14 @@ export const ARColumns: Column[] = [
     type: 'string',
     isCheckbox: false,
   },
-  { name: 'state_name', displayName: 'State', type: 'string', isCheckbox: false },
-  { name: 'date', displayName: 'Date', type: 'string', isCheckbox: false },
-  { name: 'amount', displayName: 'Amount', type: 'string', isCheckbox: false },
+  {
+    name: 'state_name',
+    displayName: 'State',
+    type: 'string',
+    isCheckbox: false,
+  },
+  { name: 'date', displayName: 'Date', type: 'date', isCheckbox: false },
+  { name: 'amount', displayName: 'Amount', type: 'number', isCheckbox: false },
   {
     name: 'payment_type',
     displayName: 'Payment Type',
@@ -22,7 +27,7 @@ export const ARColumns: Column[] = [
     isCheckbox: false,
   },
   { name: 'bank', displayName: 'Bank', type: 'string', isCheckbox: false },
-  { name: 'ced', displayName: 'CED', type: 'string', isCheckbox: false },
+  { name: 'ced', displayName: 'CED', type: 'date', isCheckbox: false },
   {
     name: 'partner_name',
     displayName: 'Partner',
@@ -32,7 +37,7 @@ export const ARColumns: Column[] = [
   {
     name: 'total_paid',
     displayName: 'Total Paid',
-    type: 'string',
+    type: 'number',
     isCheckbox: false,
   },
 ];

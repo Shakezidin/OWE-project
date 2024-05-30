@@ -17,13 +17,14 @@ import { ActionButton } from '../../components/button/ActionButton';
 import { Credentials } from '../../../core/models/api_models/AuthModel';
 import { ROUTES } from '../../../routes/routes';
 import { toast } from 'react-toastify';
-import { loginAction } from '../../../redux/apiActions/authActions';
+import { loginAction } from '../../../redux/apiActions/auth/authActions';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { HTTP_STATUS } from '../../../core/models/api_models/RequestModel';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { RootState } from '../../../redux/store';
 import Loading from '../../components/loader/Loading';
 import { TYPE_OF_USER } from '../../../resources/static_data/Constant';
+import { FormEvent } from '../../../core/models/data_models/typesModel';
 
 export const LoginPage = () => {
   const navigate = useNavigate();
@@ -65,7 +66,7 @@ export const LoginPage = () => {
     return emailPattern.test(email);
   };
 
-  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (e: FormEvent) => {
     try {
       e.preventDefault();
 
