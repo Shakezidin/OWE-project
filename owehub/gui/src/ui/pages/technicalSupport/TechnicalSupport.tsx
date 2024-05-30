@@ -91,7 +91,7 @@ const TechnicalSupport: React.FC = () => {
 
   const handleFileInputChange = (e: FormInput) => {
     const file = e.target.files?.[0];
-    const maxSize = 20 * 1024 * 1024; // 20 MB in bytes
+    const maxSize = 10 * 1024 * 1024; // 20 MB in bytes
 
     if (file) {
       if (file.size <= maxSize) {
@@ -100,7 +100,7 @@ const TechnicalSupport: React.FC = () => {
         // Perform further actions with the selected file
       } else {
         setSelectedFileName('');
-        setFileSizeError('File size exceeds the limit of 20 MB');
+        setFileSizeError('File size exceeds the limit of 10 MB');
       }
     } else {
       setSelectedFileName('');
