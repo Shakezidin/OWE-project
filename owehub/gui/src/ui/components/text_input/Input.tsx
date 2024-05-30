@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, HTMLAttributes, InputHTMLAttributes } from 'react';
+import { ChangeEvent, FC, InputHTMLAttributes } from 'react';
 import './Input.css';
 import { ReactComponent as EYE_ICON } from '../../../resources/assets/eye-icon.svg';
 import { ReactComponent as EYE_OFF_ICON } from '../../../resources/assets/eye-off-icon.svg';
@@ -6,26 +6,21 @@ import { ICONS } from '../../icons/Icons';
 import { FormInput } from '../../../core/models/data_models/typesModel';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-  type:
-    | 'text'
-    | 'number'
-    | 'email'
-    | 'password'
-    | 'date'
-    | 'datetime-local'
-    | 'file';
+  type: 'text' | 'number' | 'email' | 'password' | 'date' | 'datetime-local' | 'file';
   value: string | number;
   placeholder: string;
   label?: string;
   name: string;
   error?: boolean;
   disabled?: boolean;
-
   onChange: (e: FormInput) => void;
   onClickEyeIcon?: () => void;
   isTypePassword?: boolean;
   isTypeSearch?: boolean;
   customRegex?: string;
+  onMouseDown?: () => void;
+  onMouseUp?: () => void;
+  onMouseLeave?: () => void;
 }
 
 const Input: FC<InputProps> = ({
@@ -41,18 +36,18 @@ const Input: FC<InputProps> = ({
   isTypePassword,
   isTypeSearch,
   customRegex,
+  onMouseDown,
+  onMouseUp,
+  onMouseLeave,
   ...rest
 }) => {
   const validationRules = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (customRegex) {
       const pattern = new RegExp(customRegex, 'g');
-      e.target.value = e.target.value.replaceAll(pattern, '');
+      e.target.value = e.target.value.replace(pattern, '');
     } else {
-      if (
-        type === 'text' &&
-        !(name.includes('email') || isTypePassword)
-      ) {
-        e.target.value = e.target.value.replaceAll(
+      if (type === 'text' && !name.includes('email')) {
+        e.target.value = e.target.value.replace(
           /[^a-zA-Z0-9\u00C0-\u024F\u1E00-\u1EFF_\- $,\.]| {2,}/g,
           ''
         );
@@ -62,6 +57,7 @@ const Input: FC<InputProps> = ({
       onChange(e);
     }
   };
+
   return (
     <div className="input-wrapper">
       {label && <label className="inputLabel">{label}</label>}
@@ -77,8 +73,7 @@ const Input: FC<InputProps> = ({
               const trim = e.target.value.trim();
               e.target.value = trim;
             }
-            return typeof onChange !== 'undefined' &&
-              !e.target.value.startsWith(' ')
+            return typeof onChange !== 'undefined' && !e.target.value.startsWith(' ')
               ? validationRules(e)
               : undefined;
           }}
@@ -90,20 +85,20 @@ const Input: FC<InputProps> = ({
           <EYE_ICON
             className="eyeIcon"
             style={{ marginRight: '0.5rem' }}
-            onClick={onClickEyeIcon}
+            onMouseDown={onMouseDown}
+            onMouseUp={onMouseUp}
+            onMouseLeave={onMouseLeave}
           />
-        ) : (
-          <></>
-        )}
+        ) : null}
         {isTypePassword && type === 'password' ? (
           <EYE_OFF_ICON
             className="eyeIcon"
             style={{ marginRight: '0.5rem' }}
-            onClick={onClickEyeIcon}
+            onMouseDown={onMouseDown}
+            onMouseUp={onMouseUp}
+            onMouseLeave={onMouseLeave}
           />
-        ) : (
-          <></>
-        )}
+        ) : null}
         {isTypeSearch ? (
           <img
             className="eyeIcon"
@@ -112,11 +107,9 @@ const Input: FC<InputProps> = ({
             onClick={onClickEyeIcon}
             alt=""
           />
-        ) : (
-          <></>
-        )}
+        ) : null}
       </div>
-      {error && <p className="error">Input filed can't be empty!</p>}
+      {error && <p className="error">Input field can't be empty!</p>}
     </div>
   );
 };

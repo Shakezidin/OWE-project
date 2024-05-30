@@ -170,7 +170,9 @@ export const LoginPage = () => {
                   placeholder={'Enter Email'}
                   onChange={(e) => {
                     const { name, value } = e.target;
-                    handleInputChange(name, value);
+                    if (name === 'email_id' && !/\s/.test(value)) {
+                      handleInputChange(name, value);
+                    }
                   }}
                 />
                 <Input
@@ -180,12 +182,21 @@ export const LoginPage = () => {
                   placeholder={'Enter Password'}
                   onChange={(e) => {
                     const { name, value } = e.target;
-                    handleInputChange(name, value);
+                    if (name === 'password' && !/\s/.test(value)) {
+                      handleInputChange(name, value);
+                    }
                   }}
                   isTypePassword={true}
-                  onClickEyeIcon={() => {
-                    setShowPassword(!showPassword);
+                  onMouseDown={() => {
+                    setShowPassword(true);
                   }}
+                  onMouseUp={() => {
+                    setShowPassword(false);
+                  }}
+                  onMouseLeave={() => {
+                    setShowPassword(false);
+                  }}
+                  maxLength={50}
                 />
               </div>
 
