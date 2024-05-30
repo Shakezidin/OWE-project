@@ -371,14 +371,14 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                     name="description"
                     id=""
                     rows={3}
-                    maxLength={255}
+                    maxLength={500}
                     value={formData.description}
                     onChange={(e) => handleInputChange(e)}
                     placeholder="Type"
                   ></textarea>
                   <p
                     className={`character-count ${
-                      formData.description.length >= 255 ? 'exceeded' : ''
+                      formData.description.trim().length >= 500 ? 'exceeded' : ''
                     }`}
                   >
                     {formData.description.trim().length}/500 characters
