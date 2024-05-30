@@ -6,6 +6,8 @@ import emailjs from '@emailjs/browser';
 import SelectOption from '../../components/selectOption/SelectOption';
 import { toast } from 'react-toastify';
 import { FormInput } from '../../../core/models/data_models/typesModel';
+import PhoneInput from 'react-phone-input-2'
+import 'react-phone-input-2/lib/style.css'
 
 const TechnicalSupport: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -15,7 +17,7 @@ const TechnicalSupport: React.FC = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState<any>('');
   const [message, setMessage] = useState('');
 
   const [selectedFileName, setSelectedFileName] = useState('');
@@ -42,7 +44,7 @@ const TechnicalSupport: React.FC = () => {
       firstName: firstName ? '' : 'First name is required',
       lastName: lastName ? '' : 'Last name is required',
       email: emailRegex.test(email) ? '' : 'Invalid email address',
-      phoneNumber: phoneRegex.test(phoneNumber) ? '' : 'Invalid phone number',
+      phoneNumber: phoneNumber ? '' : 'Phone number required',
       message: message ? '' : 'Message is required',
     };
     setErrors(newErrors);
@@ -91,9 +93,18 @@ const TechnicalSupport: React.FC = () => {
 
   const handleFileInputChange = (e: FormInput) => {
     const file = e.target.files?.[0];
-    const maxSize = 10 * 1024 * 1024; // 20 MB in bytes
+    const maxSize = 10 * 1024 * 1024; // 10 MB in bytes
 
     if (file) {
+      const allowedExtensions = ['.png', '.jpg', '.jpeg', '.pdf'];
+      const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'));
+
+      if (!allowedExtensions.includes(fileExtension)) {
+        setSelectedFileName('');
+        setFileSizeError('Only PNG, JPG, and PDF files are allowed');
+        return;
+      }
+
       if (file.size <= maxSize) {
         setSelectedFileName(file.name);
         setFileSizeError('');
@@ -208,29 +219,29 @@ const TechnicalSupport: React.FC = () => {
                   name="email"
                   placeholder={'Enter'}
                   onChange={handleInputChange}
+                  onKeyPress={(e) => {
+                    if (e.key === ' ') {
+                      e.preventDefault();
+                    }
+                  }}
                 />
                 {errors.email && <span className="error">{errors.email}</span>}
               </div>
-              <div className="create-input-field-support">
-                <Input
-                  type={'number'}
-                  label="Phone Number"
+
+              <div className="create-input-field-support" style={{ marginTop: '-5px' }}>
+                <label className="inputLabel">Phone Number</label>
+                <PhoneInput
+                  countryCodeEditable={false}
+                  enableSearch
+                  country={"us"}
                   value={phoneNumber}
-                  name="phoneNum"
-                  placeholder={'Enter'}
-                  onChange={(e) => {
-                    // Convert the input value to a string to check the length
-                    const inputValue = e.target.value.toString();
-                    if (inputValue.length <= 16) {
-                      setPhoneNumber(e.target.value);
-                      setErrors({ ...errors, phoneNumber: '' });
-                    }
+                  onChange={(value) => {
+                    setPhoneNumber(value || '');
+                    setErrors({ ...errors, phoneNumber: '' });
                   }}
-                  max={99999999999999999}
+                  placeholder="Enter phone number"
                 />
-                {errors.phoneNumber && (
-                  <span className="error">{errors.phoneNumber}</span>
-                )}
+                {errors.phoneNumber && <span className="error">{errors.phoneNumber}</span>}
               </div>
             </div>
 
@@ -258,6 +269,7 @@ const TechnicalSupport: React.FC = () => {
                     ref={fileInputRef}
                     onChange={handleFileInputChange}
                     className="file-input"
+                    accept=".png, .jpg, .jpeg, .pdf"
                   />
                   <div className="custom-button-container">
                     <span className="file-input-placeholder">
@@ -285,7 +297,8 @@ const TechnicalSupport: React.FC = () => {
                 maxLength={300}
                 onChange={(e) => {
                   const trimmedValue = e.target.value.trimStart();
-                  setMessage(trimmedValue);
+                  const singleSpaceValue = trimmedValue.replace(/\s+/g, ' ');
+                  setMessage(singleSpaceValue);
                   setErrors({ ...errors, message: '' });
                 }}
               ></textarea>
