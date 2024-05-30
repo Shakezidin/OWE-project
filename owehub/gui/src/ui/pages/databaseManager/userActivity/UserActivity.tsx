@@ -79,16 +79,29 @@ const UserActivity: React.FC = () => {
   const countWords = (str: string): number => {
     return str.trim().split(/\s+/).length;
   };
+console.log([...slicedData].sort((a,b)=>a.query_details.trim().localeCompare(b.query_details.trim())),"sorted")
 
   const sortRows = (key: string) => {
     setSortKey((prev) => (prev === key ? '' : key));
-    const sorted = [...slicedData]?.sort((a: any, b: any) => {
+    const sorted = [...slicedData]?.sort((a, b) => {
       if (sortOrder === 'asc') {
         setSortOrder('desc');
-        return b[key].localeCompare(a[key]);
+        if (key==="query_details") {
+          return a.query_details.trim().localeCompare(b.query_details.trim())
+        }
+        return b[key as keyof DBManagerUserActivityModel] <
+          a[key as keyof DBManagerUserActivityModel]
+          ? -1
+          : 1;
       } else {
         setSortOrder('asc');
-        return a[key].localeCompare(b[key]);
+        if (key==="query_details") {
+          return b.query_details.trim().localeCompare(a.query_details.trim())
+        }
+        return a[key as keyof DBManagerUserActivityModel] >
+          b[key as keyof DBManagerUserActivityModel]
+          ? 1
+          : -1;
       }
     });
     setSlicedData(sorted);
