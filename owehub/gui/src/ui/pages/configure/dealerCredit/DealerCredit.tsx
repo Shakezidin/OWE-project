@@ -23,13 +23,16 @@ import { FaArrowDown } from 'react-icons/fa6';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 import CreateDealerCredit from './CreateDealerCredit';
 import Loading from '../../../components/loader/Loading';
-import DataNotFound from '../../../components/loader/DataNotFound';
 import { ROUTES } from '../../../../routes/routes';
 import { DealerCreditColumn } from '../../../../resources/static_data/configureHeaderData/dealerCreditColumn';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
+import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
+import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
+import DataNotFound from '../../../components/loader/DataNotFound';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
+import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 interface Column {
   name: string;
   displayName: string;
@@ -45,15 +48,15 @@ const DealerCredit: React.FC = () => {
   const handleExportOpen = () => setExportOpen(!exportOPen);
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const commissionList = useAppSelector((state) => state.comm.commissionsList);
-  const { loading, dbCount } = useAppSelector((state) => state.comm);
+  const {data, dbCount} = useAppSelector((state) => state.dealerCredit);
+  
   const error = useAppSelector((state) => state.comm.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
-  const [editedCommission, setEditedCommission] =
+  const [editData, setEditData] =
     useState<CommissionModel | null>(null);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const [viewArchived, setViewArchived] = useState<boolean>(false);
   const [sortKey, setSortKey] = useState('');
@@ -67,7 +70,7 @@ const DealerCredit: React.FC = () => {
       filters,
     };
     dispatch(getDealerCredit(pageNumber));
-  }, [dispatch, currentPage, viewArchived, filters]);
+  }, [ dispatch, currentPage, viewArchived, filters]);
 
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
@@ -91,19 +94,21 @@ const DealerCredit: React.FC = () => {
   const endIndex = startIndex + itemsPerPage;
   const handleAddCommission = () => {
     setEditMode(false);
-    setEditedCommission(null);
+    setEditData(null);
     handleOpen();
   };
 
-  const handleEditCommission = (commission: CommissionModel) => {
+  const handleEditDealer = (dealerData:any) => {
     setEditMode(true);
-    setEditedCommission(commission);
+    setEditData(dealerData);
     handleOpen();
   };
 
-  const currentPageData = commissionList?.slice(startIndex, endIndex);
+ 
+
+  const currentPageData = data?.slice(startIndex, endIndex);
   const isAnyRowSelected = selectedRows.size > 0;
-  const isAllRowsSelected = selectedRows.size === commissionList.length;
+  const isAllRowsSelected = selectedRows.size === data.length;
   const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
@@ -137,6 +142,82 @@ const DealerCredit: React.FC = () => {
     setCurrentPage(1);
     setFilters(req.filters);
   };
+  const handleArchiveAllClick = async () => {
+    const confirmed = await showAlert(
+      'Are Your Sure',
+      'This Action will archive your data',
+      'Yes',
+      'No'
+    );
+    if (confirmed) {
+      const archivedRows = Array.from(selectedRows).map(
+        (index) => data[index].record_id
+      );
+      if (archivedRows.length > 0) {
+        const newValue = {
+          record_id: archivedRows,
+          is_archived: true,
+        };
+
+        const pageNumber = {
+          page_number: currentPage,
+          page_size: itemsPerPage,
+          filters,
+        };
+
+        const res = await postCaller('update_dealercredit_archive', newValue);
+        if (res.status === HTTP_STATUS.OK) {
+          setSelectedRows(new Set());
+          setSelectAllChecked(false);
+          // If API call is successful, refetch commissions
+       
+
+          setSelectAllChecked(false);
+          setSelectedRows(new Set());
+          await successSwal('Archived', 'The data has been archived ');
+        } else {
+          await successSwal('Archived', 'The data has been archived ');
+        }
+      }
+    }
+  };
+  const handleArchiveClick = async (record_id: any) => {
+    const confirmed = await showAlert(
+      'Are Your Sure',
+      'This Action will archive your data',
+      'Yes',
+      'No'
+    );
+    if (confirmed) {
+      const archived: number[] = [record_id];
+      let newValue = {
+        record_id: archived,
+        is_archived: true,
+      };
+      const pageNumber = {
+        page_number: currentPage,
+        page_size: itemsPerPage,
+        filters,
+      };
+      const res = await postCaller('update_dealercredit_archive', newValue);
+      if (res.status === HTTP_STATUS.OK) {
+        setSelectedRows(new Set());
+        setSelectAllChecked(false);
+       
+        await successSwal('Archived', 'The data has been archived ');
+      } else {
+        await successSwal('Archived', 'The data has been archived ');
+      }
+    }
+  };
+
+  const handleViewArchiveToggle = () => {
+    setViewArchived(!viewArchived);
+    // When toggling, reset the selected rows
+    setSelectedRows(new Set());
+    setSelectAllChecked(false);
+  };
+  console.log(data, "data")
   return (
     <div className="comm">
       <Breadcrumb
@@ -148,8 +229,13 @@ const DealerCredit: React.FC = () => {
       <div className="commissionContainer">
         <TableHeader
           title="Dealer Credit"
-          onPressViewArchive={() => {}}
-          onPressArchive={() => {}}
+          onPressViewArchive={() => {
+            handleViewArchiveToggle();
+            setCurrentPage(1);
+            setSelectAllChecked(false);
+            setSelectedRows(new Set());
+          }}
+          onPressArchive={() => handleArchiveAllClick()}
           checked={isAllRowsSelected}
           isAnyRowSelected={isAnyRowSelected}
           onPressFilter={() => filter()}
@@ -173,13 +259,16 @@ const DealerCredit: React.FC = () => {
             columns={columns} 
              page_number = {currentPage}
              page_size = {itemsPerPage}
+
              />} */}
         {open && (
           <CreateDealerCredit
             editMode={editMode}
             setViewArchived={setViewArchived}
-            editData={editedCommission}
+            editData={editData}
             handleClose={handleClose}
+            page_number={currentPage}
+            page_size={itemsPerPage}
           />
         )}
 
@@ -205,7 +294,7 @@ const DealerCredit: React.FC = () => {
                     key={key}
                     isCheckbox={item.isCheckbox}
                     titleName={item.displayName}
-                    data={commissionList}
+                    data={data}
                     isAllRowsSelected={isAllRowsSelected}
                     isAnyRowSelected={isAnyRowSelected}
                     selectAllChecked={selectAllChecked}
@@ -227,8 +316,8 @@ const DealerCredit: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {commissionList?.length > 0 ? (
-                commissionList?.map((el: any, i: any) => (
+              {data?.length > 0 ? (
+                data?.map((el: any, i: any) => (
                   <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
                       <div className="flex-check">
@@ -243,33 +332,60 @@ const DealerCredit: React.FC = () => {
                             )
                           }
                         />
-                        {el.partner}
+                        {el.unique_id}
                       </div>
                     </td>
 
-                    <td>{el.installer}</td>
-                    <td>{el.state}</td>
-                    <td>{el.sale_type}</td>
-                    <td>{el.sale_price}</td>
-                    <td>{el.rep_type}</td>
-                    <td>{el.rl}</td>
-                    <td>{el.rl}</td>
-                    <td>{el.rate}</td>
+                    <td>{el.date}</td>
+                    <td>{el.exact_amount}</td>
+                    <td>{el.per_kw_amount}</td>
+                    <td>{el.approved_by}</td>
+                    <td>{el.notes}</td>
+                    <td>{el.total_amount}</td>
+                    <td>{el.sys_size}</td>
+                    
 
-                    <td>
-                      <div className="action-icon">
-                        <div className="" style={{ cursor: 'pointer' }}>
-                          <img src={ICONS.ARCHIVE} alt="" />
-                        </div>
-                        <div
-                          className=""
-                          style={{ cursor: 'pointer' }}
-                          onClick={() => handleEditCommission(el)}
-                        >
-                          <img src={ICONS.editIcon} alt="" />
-                        </div>
-                      </div>
-                    </td>
+                    {viewArchived === true ? null : (
+                      <td>
+                        {selectedRows.size > 0 ? (
+                          <div className="action-icon">
+                            <div
+                              className="action-archive"
+                              style={{ cursor: 'not-allowed' }}
+                            >
+                              <img src={ICONS.ARCHIVE} alt="" />
+                              {/* <span className="tooltiptext">Archive</span> */}
+                            </div>
+                            <div
+                              className="action-archive"
+                              style={{ cursor: 'not-allowed' }}
+                            >
+                              <img src={ICONS.editIcon} alt="" />
+                              {/* <span className="tooltiptext">Edit</span> */}
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="action-icon">
+                            <div
+                              className="action-archive"
+                              style={{ cursor: 'pointer' }}
+                              onClick={() => handleArchiveClick(el.record_id)}
+                            >
+                              <img src={ICONS.ARCHIVE} alt="" />
+                              {/* <span className="tooltiptext">Archive</span> */}
+                            </div>
+                            <div
+                              className="action-archive"
+                              style={{ cursor: 'pointer' }}
+                              onClick={() => handleEditDealer(el)}
+                            >
+                              <img src={ICONS.editIcon} alt="" />
+                              {/* <span className="tooltiptext">Edit</span> */}
+                            </div>
+                          </div>
+                        )}
+                      </td>
+                    )}
                   </tr>
                 ))
               ) : (
@@ -285,10 +401,12 @@ const DealerCredit: React.FC = () => {
             </tbody>
           </table>
         </div>
-        {commissionList?.length > 0 ? (
+        {data?.length > 0 ? (
           <div className="page-heading-container">
-            <p className="page-heading">
-              {currentPage} - {totalPages} of {commissionList?.length} item
+              <p className="page-heading">
+              Showing {startIndex} -{' '}
+              {endIndex > dbCount ? dbCount : endIndex} of {dbCount}{' '}
+              item
             </p>
 
             <Pagination

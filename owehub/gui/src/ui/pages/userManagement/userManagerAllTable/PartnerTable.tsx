@@ -88,7 +88,7 @@ const PartnerTable: React.FC<PartnerProps> = ({
                   selectedRows={selectedRows}
                   setSelectedRows={setSelectedRows}
                   sortKey={item.name}
-                  sortDirection={'desc'}
+                  sortDirection={sortKey === item.name ? sortDirection : undefined}
                   onClick={() => handleSort(item.name)}
                 />
               ))}

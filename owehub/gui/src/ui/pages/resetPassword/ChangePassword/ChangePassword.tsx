@@ -218,7 +218,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({
                 if (!/\s/.test(inputValue)) {
                   setConfirmPassword(inputValue);
                   setError({
-                    confirmPassword: validatePassword(inputValue),
+                    confirmPassword: inputValue !== newPassword ? 'Confirm password does not match with New password' : '',
                   });
                 }
               }}

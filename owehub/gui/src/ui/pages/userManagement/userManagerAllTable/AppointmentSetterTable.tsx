@@ -85,7 +85,7 @@ const AppointmentSetterTable: React.FC<AppointmentSetterProps> = ({
                   selectedRows={selectedRows}
                   setSelectedRows={setSelectedRows}
                   sortKey={item.name}
-                  sortDirection={'desc'}
+                  sortDirection={sortKey === item.name ? sortDirection : undefined}
                   onClick={() => handleSort(item.name)}
                 />
               ))}
