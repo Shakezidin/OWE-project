@@ -50,6 +50,8 @@ const SelectTable: React.FC<ButtonProps> = ({
     }
   };
 
+  console.log(tablePermissions, 'permission', tables);
+
   return (
     <>
       <div className="transparent-model">
@@ -129,7 +131,7 @@ const SelectTable: React.FC<ButtonProps> = ({
               </thead>
               <tbody>
                 {tables.map((table: string, ind: number) => (
-                  <tr>
+                  <tr key={ind}>
                     <td>
                       <div>
                         <CheckBox
@@ -161,9 +163,7 @@ const SelectTable: React.FC<ButtonProps> = ({
                           <input
                             type="radio"
                             className="user-radio"
-                            name={table}
                             disabled={!selected.has(ind)}
-                            id={table}
                             checked={tablePermissions[table] === 'View'}
                             onChange={(e) =>
                               handleOptionChange('View', table, ind)
@@ -178,9 +178,7 @@ const SelectTable: React.FC<ButtonProps> = ({
                           <input
                             type="radio"
                             className="user-radio"
-                            name={table}
                             disabled={!selected.has(ind)}
-                            id={table}
                             checked={tablePermissions[table] === 'Edit'}
                             onChange={(e) =>
                               handleOptionChange('Edit', table, ind)
@@ -195,9 +193,7 @@ const SelectTable: React.FC<ButtonProps> = ({
                           <input
                             type="radio"
                             className="user-radio"
-                            name={table}
                             disabled={!selected.has(ind)}
-                            id={table}
                             // value={"1"}
                             checked={tablePermissions[table] === 'Full'}
                             onChange={(e) =>
@@ -205,6 +201,7 @@ const SelectTable: React.FC<ButtonProps> = ({
                             }
                           />
                         </div>
+                       
                       </div>
                     </td>
                   </tr>

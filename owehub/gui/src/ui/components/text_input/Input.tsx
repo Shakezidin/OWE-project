@@ -25,6 +25,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   onClickEyeIcon?: () => void;
   isTypePassword?: boolean;
   isTypeSearch?: boolean;
+  customRegex?: string;
 }
 
 const Input: FC<InputProps> = ({
@@ -39,8 +40,25 @@ const Input: FC<InputProps> = ({
   onClickEyeIcon,
   isTypePassword,
   isTypeSearch,
+  customRegex,
   ...rest
 }) => {
+  const validationRules = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (customRegex) {
+      const pattern = new RegExp(customRegex, 'g');
+      e.target.value = e.target.value.replaceAll(pattern, '');
+    } else {
+      if (type === 'text' && !name.includes('email')) {
+        e.target.value = e.target.value.replaceAll(
+          /[^a-zA-Z0-9\u00C0-\u024F\u1E00-\u1EFF_\- $,\.]| {2,}/g,
+          ''
+        );
+      }
+    }
+    if (e.target.value.length < 100) {
+      onChange(e);
+    }
+  };
   return (
     <div className="input-wrapper">
       {label && <label className="inputLabel">{label}</label>}
@@ -58,7 +76,7 @@ const Input: FC<InputProps> = ({
             }
             return typeof onChange !== 'undefined' &&
               !e.target.value.startsWith(' ')
-              ? onChange(e)
+              ? validationRules(e)
               : undefined;
           }}
           className="input"
