@@ -117,3 +117,7 @@
 .phoneParentView {
   width: 30%;
 }
+
+.react-tel-input .form-control{
+  width: 100%  !important;
+}

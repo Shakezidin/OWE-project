@@ -17,7 +17,7 @@ const MyProfile = () => {
   const [stateOptions, setStateOptions] = useState<any[]>([]);
   const [selectedState, setSelectedState] = useState<string | null>(null);
   const dispatch = useAppDispatch();
-  const { userDetail, userUpdate } = useAppSelector((state) => state.userSlice);
+  const { userDetail, userUpdate,isFormSubmitting } = useAppSelector((state) => state.userSlice);
   const [name, setName] = useState<String>(userDetail?.name);
   const userRole = userDetail?.role_name;
   const userName = userDetail?.name;
@@ -359,6 +359,7 @@ const MyProfile = () => {
               <ActionButton
                 title={'Update'}
                 type="submit"
+                disabled={isFormSubmitting}
                 onClick={() => {
                 }}
               />

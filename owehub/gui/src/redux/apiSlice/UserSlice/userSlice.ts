@@ -50,14 +50,14 @@ const updateData = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(updateUser.pending, (state) => {
-        state.isLoading = true;
+        state.isFormSubmitting = true;
       })
       .addCase(updateUser.fulfilled, (state, action) => {
-        state.isLoading = false;
+        state.isFormSubmitting = false;
         state.userUpdate = action.payload;
       })
       .addCase(updateUser.rejected, (state, action) => {
-        state.isLoading = false;
+        state.isFormSubmitting = false;
         state.error = action.payload as string;
       });
   },
