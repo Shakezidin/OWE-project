@@ -20,7 +20,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-
+  const [error, setError] = useState<{ [key: string]: string }>({});
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -157,12 +157,24 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({
               type={showCurrentPassword ? 'text' : 'password'}
               name={'currentPassword'}
               value={currentPassword}
-              onChange={(e) => setCurrentPassword(e.target.value)}
+              onChange={(e) => {
+                const inputValue = e.target.value;
+                if (!/\s/.test(inputValue)) {
+                  setCurrentPassword(inputValue);
+                }
+              }}
               placeholder="Current Password"
               isTypePassword={true}
-              onClickEyeIcon={() => {
-                setShowCurrentPassword(!showCurrentPassword);
+              onMouseDown={() => {
+                setShowCurrentPassword(true);
               }}
+              onMouseUp={() => {
+                setShowCurrentPassword(false);
+              }}
+              onMouseLeave={() => {
+                setShowCurrentPassword(false);
+              }}
+              maxLength={50}
             />
           </div>
           <div className="changepass-form-group">
@@ -170,26 +182,62 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({
               type={showNewPassword ? 'text' : 'password'}
               name={'newPassword'}
               value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
+              onChange={(e) => {
+                const inputValue = e.target.value;
+                if (!/\s/.test(inputValue)) {
+                  setNewPassword(inputValue);
+                  setError({
+                    newPassword: validatePassword(inputValue),
+                  });
+                }
+              }}
               placeholder="New Password"
               isTypePassword={true}
-              onClickEyeIcon={() => {
-                setShowNewPassword(!showNewPassword);
+              onMouseDown={() => {
+                setShowNewPassword(true);
               }}
+              onMouseUp={() => {
+                setShowNewPassword(false);
+              }}
+              onMouseLeave={() => {
+                setShowNewPassword(false);
+              }}
+              maxLength={50}
             />
+             {error.newPassword && (
+                    <span className="error">{error.newPassword}</span>
+                  )}
           </div>
           <div className="changepass-form-group">
             <Input
               type={showConfirmPassword ? 'text' : 'password'}
               name={'confirmPassword'}
               value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              onChange={(e) => {
+                const inputValue = e.target.value;
+                if (!/\s/.test(inputValue)) {
+                  setConfirmPassword(inputValue);
+                  setError({
+                    confirmPassword: validatePassword(inputValue),
+                  });
+                }
+              }}
               placeholder="Confirm Password"
               isTypePassword={true}
-              onClickEyeIcon={() => {
-                setShowConfirmPassword(!showConfirmPassword);
+              onMouseDown={() => {
+                setShowConfirmPassword(true);
               }}
+              onMouseUp={() => {
+                setShowConfirmPassword(false);
+              }}
+              onMouseLeave={() => {
+                setShowConfirmPassword(false);
+              }}
+              maxLength={50}
             />
+            {error.confirmPassword && (
+                    <span className="error">{error.confirmPassword}</span>
+                  )}
           </div>
           <button
             className="changepass-button"
