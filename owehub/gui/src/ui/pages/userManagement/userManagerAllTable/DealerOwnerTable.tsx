@@ -32,7 +32,7 @@ const DealerOwnerTable: React.FC<DealerProps> = ({
 
   const isAnyRowSelected = selectedRows?.size > 0;
   const isAllRowsSelected = selectedRows?.size === data?.length;
-
+  let sortedData = [...data]
   const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
@@ -43,7 +43,7 @@ const DealerOwnerTable: React.FC<DealerProps> = ({
   };
 
   if (sortKey) {
-    data?.sort((a: any, b: any) => {
+    sortedData?.sort((a: any, b: any) => {
       const aValue = a[sortKey];
       const bValue = b[sortKey];
       if (typeof aValue === 'string' && typeof bValue === 'string') {
@@ -87,7 +87,7 @@ const DealerOwnerTable: React.FC<DealerProps> = ({
                   setSelectedRows={setSelectedRows}
                   sortKey={item.name}
                   sortDirection={'desc'}
-                  onClick={() => {}}
+                  onClick={() => handleSort(item.name)}
                 />
               ))}
               <th>
@@ -99,8 +99,8 @@ const DealerOwnerTable: React.FC<DealerProps> = ({
           </thead>
 
           <tbody>
-            {data?.length > 0 ? (
-              data?.map((el: UserRoleBasedListModel, i: number) => (
+            {sortedData?.length > 0 ? (
+              sortedData?.map((el: UserRoleBasedListModel, i: number) => (
                 <tr key={el.email_id}>
                   <td>
                     <div className="flex-check">
