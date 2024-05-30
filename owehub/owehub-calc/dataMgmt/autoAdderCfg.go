@@ -9,24 +9,19 @@ package datamgmt
 import (
 	db "OWEApp/shared/db"
 	log "OWEApp/shared/logger"
-	"fmt"
 	"strings"
-	"time"
 )
 
+// type
+// unique_id
+// PerKwAmt
+
 type AutoAdder struct {
-	RecordId               int64
-	UniqueId               string
-	Date                   string
-	Type1                  string
-	Gc                     string
-	ExactAmt               float64
-	PerKwAmt               float64
-	RepPercentage          float64
-	SysSize                float64
-	DescriptionRepvisibale string
-	NotesNoRepvisibale     string
-	AdderType              string
+	RecordId int64
+	UniqueId string
+	SysSize  float64 // this
+	PerKwAmt float64
+	Type1    string
 }
 
 type AutoAdderCfgStruct struct {
@@ -94,52 +89,49 @@ func calculateExactAmount(uniqueId string, systemType string) (excatAmt float64)
 
 func (AutoAdderCfg *AutoAdderCfgStruct) LoadAutoAdderCfg() (errr error) {
 	var (
-		err                   error
-		data                  []map[string]interface{}
-		whereEleList          []interface{}
-		query                 string
-		DescriptionRepVisible string
-		ExactAmount           float64
-		AdderType             string
-		PerKWAmount           float64
+		err          error
+		data         []map[string]interface{}
+		whereEleList []interface{}
+		query        string
+		PerKWAmount  float64
+		// ExactAmount  float64
 	)
 	log.EnterFn(0, "LoadAutoAdderCfg")
 	defer func() { log.ExitFn(0, "LoadAutoAdderCfg", err) }()
 
+	// query = `
+	// 		SELECT
+	// 		ad.unique_id,
+	// 		ad.wc_1 AS date,
+	// 		ad.installer AS gc,
+	// 		ad.system_size as sys_size,
+	// 		ad.net_epc as rep_percentage,
+	// 		ad.primary_sales_rep as notes_no_repvisible,
+	// 		(SELECT
+	// 			CASE
+	// 				WHEN system_size <= 3 THEN
+	// 					CASE
+	// 						WHEN state ILIKE 'CA' THEN 'SM-CA2'
+	// 						ELSE 'SM-UNI2'
+	// 					END
+	// 				WHEN system_size > 3 AND system_size <= 4 THEN
+	// 					CASE
+	// 						WHEN state NOT ILIKE 'CA' THEN 'SM-UNI3'
+	// 						ELSE NULL
+	// 					END
+	// 				ELSE NULL
+	// 			END
+	// 		FROM consolidated_data_view cdv
+	// 		WHERE cdv.unique_id = ad.unique_id) AS type
+	// 	FROM consolidated_data_view ad`
+
 	query = `
 			SELECT 
-			ad.unique_id, 
-			ad.wc_1 AS date, 
-			ad.installer AS gc, 
+			ad.unique_id,
 			ad.system_size as sys_size,
-			ad.net_epc as rep_percentage,
-			ad.primary_sales_rep as notes_no_repvisible,
-			(SELECT 
-				CASE 
-					WHEN system_size <= 3 THEN 
-						CASE 
-							WHEN state ILIKE 'CA' THEN 'SM-CA2' 
-							ELSE 'SM-UNI2' 
-						END
-					WHEN system_size > 3 AND system_size <= 4 THEN
-						CASE
-							WHEN state NOT ILIKE 'CA' THEN 'SM-UNI3' 
-							ELSE NULL
-						END
-					ELSE NULL 
-				END 
-			FROM consolidated_data_view cdv 
-			WHERE cdv.unique_id = ad.unique_id) AS type
-		FROM consolidated_data_view ad`
-
-	// for _, filtr := range dataReq.Filters {
-	// 	if filtr.Column == "per_kw_amount" {
-	// 		filter, whereEleList = PrepareAutoAdderFilters(tableName, dataReq, false)
-	// 		if filter != "" {
-	// 			queryWithFiler = query + filter
-	// 		}
-	// 	}
-	// }
+			ad.state as state
+			FROM consolidated_data_view ad
+			`
 
 	data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
 	if err != nil {
@@ -147,7 +139,6 @@ func (AutoAdderCfg *AutoAdderCfgStruct) LoadAutoAdderCfg() (errr error) {
 		return
 	}
 
-	autoAdderList := AutoAdderCfg.AutoAdderList
 	for _, item := range data {
 		Unique_id, ok := item["unique_id"].(string)
 		if !ok || Unique_id == "" {
@@ -155,116 +146,96 @@ func (AutoAdderCfg *AutoAdderCfgStruct) LoadAutoAdderCfg() (errr error) {
 			Unique_id = ""
 		}
 
-		// Date
-		Date, ok := item["date"].(time.Time)
-		if !ok {
-			// log.FuncErrorTrace(0, "Failed to get date for Record ID %v. Item: %+v\n", Unique_id, item)
-			Date = time.Time{}
-		}
-
-		Gc, ok := item["gc"].(string)
-		if !ok || Gc == "" {
-			// log.FuncErrorTrace(0, "Failed to get gc for Record ID %v. Item: %+v\n", Unique_id, item)
-			Gc = ""
-		}
-
-		RepPercentage, ok := item["rep_percentage"].(float64)
-		if !ok {
-			// log.FuncErrorTrace(0, "Failed to get rep_doll_divby_per for Record ID %v. Item: %+v\n", Unique_id, item)
-			RepPercentage = 0.0
-		}
-
 		SysSize, ok := item["sys_size"].(float64)
 		if !ok {
-			// log.FuncErrorTrace(0, "Failed to get system size for Record ID %v. Item: %+v\n", Unique_id, item)
-			RepPercentage = 0.0
-		}
-
-		// notes_not_rep_visible
-		NotesNoRepVisible, ok := item["notes_no_repvisible"].(string)
-		if !ok {
-			// log.FuncErrorTrace(0, "Failed to get notes_no_repvisible for Record ID %v. Item: %+v\n", Unique_id, item)
-			NotesNoRepVisible = ""
-		}
-
-		// type
-		Type, ok := item["type"].(string)
-		if !ok || Type == "" {
 			// log.FuncErrorTrace(0, "Failed to get type for Record ID %v. Item: %+v\n", Unique_id, item)
-			Type = ""
+			SysSize = 0
 		}
 
-		if strings.HasPrefix(Type, "MK") {
-			ExactAmount = 0.0
-		} else {
-			switch Type {
-			case "SM-UNI2":
-				ExactAmount = 1200
-			case "SM-UNI3":
-				ExactAmount = 600
-			case "SM-CA2":
-				ExactAmount = 600
-			}
+		State, ok := item["sys_size"].(string)
+		if !ok || State == "" {
+			// log.FuncErrorTrace(0, "Failed to get type for Record ID %v. Item: %+v\n", Unique_id, item)
+			State = ""
 		}
 
-		if strings.HasPrefix(Type, "MK") {
-			qry := `select fee_rate from marketing fee where state ilike 'MK'`
-			data3, err := db.ReteriveFromDB(db.OweHubDbIndex, qry, whereEleList)
-			if err != nil {
-				log.FuncErrorTrace(0, "Failed to get auto adder data from DB err: %v", err)
-				return
-			}
-			PerKWAmount, ok = data3[0]["fee_rate"].(float64)
-			if !ok || Unique_id == "" {
-				log.FuncErrorTrace(0, "Failed to get unique_id for Record ID %v. Item: %+v\n", Unique_id, item)
-				Unique_id = ""
-			}
-		} else {
-			switch Type {
-			case "SM-UNI2":
-				PerKWAmount = 0.0
-			case "SM-UNI3":
-				PerKWAmount = 0.0
-			case "SM-CA2":
-				PerKWAmount = 0.0
-			}
+		Type := calculateType(SysSize, State)
+
+		switch Type {
+		case "SM-UNI2":
+			PerKWAmount = 0.0
+		case "SM-UNI3":
+			PerKWAmount = 0.0
+		case "SM-CA2":
+			PerKWAmount = 0.0
 		}
-
-		if strings.HasPrefix(Type, "MK") {
-			DescriptionRepVisible = fmt.Sprintf("Marketing Fee %s", Type[11:18])
-		} else {
-			switch Type {
-			case "SM-UNI2":
-				DescriptionRepVisible = "Small System Size"
-			case "SM-UNI3":
-				DescriptionRepVisible = "Small System Size"
-			case "SM-CA2":
-				DescriptionRepVisible = "Small System Size"
-			}
-		}
-
-		AdderType = "Adder"
-
-		DateStr := Date.Format("2006-01-02")
 
 		AutoAdderData := AutoAdder{
-			UniqueId:               Unique_id,
-			Date:                   DateStr,
-			Type1:                  Type,
-			Gc:                     Gc,
-			ExactAmt:               ExactAmount,
-			PerKwAmt:               PerKWAmount,
-			RepPercentage:          RepPercentage,
-			DescriptionRepvisibale: DescriptionRepVisible,
-			NotesNoRepvisibale:     NotesNoRepVisible,
-			AdderType:              AdderType,
-			SysSize:                SysSize,
+			UniqueId: Unique_id,
+			SysSize:  SysSize,
+			PerKwAmt: PerKWAmount,
+			Type1:    Type,
 		}
 
-		autoAdderList = append(autoAdderList, AutoAdderData)
+		AutoAdderCfg.AutoAdderList = append(AutoAdderCfg.AutoAdderList, AutoAdderData)
+
+		// if strings.HasPrefix(Type, "MK") {
+		// 	qry := `select fee_rate from marketing fee where state ilike 'MK'`
+		// 	data3, err := db.ReteriveFromDB(db.OweHubDbIndex, qry, whereEleList)
+		// 	if err != nil {
+		// 		log.FuncErrorTrace(0, "Failed to get auto adder data from DB err: %v", err)
+		// 		return
+		// 	}
+		// 	PerKWAmount, ok = data3[0]["fee_rate"].(float64)
+		// 	if !ok || Unique_id == "" {
+		// 		log.FuncErrorTrace(0, "Failed to get unique_id for Record ID %v. Item: %+v\n", Unique_id, item)
+		// 		Unique_id = ""
+		// 	}
+		// } else {
+		// 	switch Type {
+		// 	case "SM-UNI2":
+		// 		PerKWAmount = 0.0
+		// 	case "SM-UNI3":
+		// 		PerKWAmount = 0.0
+		// 	case "SM-CA2":
+		// 		PerKWAmount = 0.0
+		// 	}
+		// }
+
+		// if strings.HasPrefix(Type, "MK") {
+		// 	DescriptionRepVisible = fmt.Sprintf("Marketing Fee %s", Type[11:18])
+		// } else {
+		// 	switch Type {
+		// 	case "SM-UNI2":
+		// 		DescriptionRepVisible = "Small System Size"
+		// 	case "SM-UNI3":
+		// 		DescriptionRepVisible = "Small System Size"
+		// 	case "SM-CA2":
+		// 		DescriptionRepVisible = "Small System Size"
+		// 	}
+		// }
+
+		// AdderType = "Adder"
 	}
 
 	return err
+}
+
+func calculateType(sysSize float64, state string) string {
+	if sysSize <= 3 {
+		if strings.HasPrefix(strings.ToUpper(state), "CA") {
+			return "SM-CA2"
+		} else {
+			return "SM-UNI2"
+		}
+	} else if sysSize > 3 && sysSize <= 4 {
+		if !strings.HasPrefix(strings.ToUpper(state), "CA") {
+			return "SM-UNI3"
+		} else {
+			return ""
+		}
+	} else {
+		return ""
+	}
 }
 
 /******************************************************************************
@@ -272,7 +243,7 @@ func (AutoAdderCfg *AutoAdderCfgStruct) LoadAutoAdderCfg() (errr error) {
 * DESCRIPTION:     calculates the "autoaddr" value based on the provided data
 * RETURNS:         autoAdder
 *****************************************************************************/
-func (AutoAdderCfg *AutoAdderCfgStruct) CalculateAutoAddr(dealer string, uniqueId string, chargeDlr string) (autoAdder float64) {
+func (AutoAdderCfg *AutoAdderCfgStruct) CalculateAutoAddr(dealer string, uniqueId string, chargeDlr string, sysSize float64) (autoAdder float64) {
 	log.EnterFn(0, "CalculateAutoAddr")
 	defer func() { log.ExitFn(0, "CalculateAutoAddr", nil) }()
 
@@ -284,7 +255,7 @@ func (AutoAdderCfg *AutoAdderCfgStruct) CalculateAutoAddr(dealer string, uniqueI
 					if addramount > 0 {
 						autoAdder = addramount
 					} else if data.PerKwAmt > 0 {
-						autoAdder = data.PerKwAmt * data.SysSize
+						autoAdder = data.PerKwAmt * sysSize
 					}
 				}
 			}

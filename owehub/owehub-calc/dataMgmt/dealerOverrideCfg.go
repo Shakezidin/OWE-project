@@ -46,48 +46,48 @@ func (pDealer *DealerOverrideStruct) LoadRDealerOverrideCfg() (err error) {
 
 		RecordId, ok := item["record_id"].(int64)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
 			continue
 		}
 
 		// SubDealer
 		SubDealer, ok := item["sub_dealer"].(string)
 		if !ok || SubDealer == "" {
-			log.FuncErrorTrace(0, "Failed to get sub dealer for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get sub dealer for Record ID %v. Item: %+v\n", RecordId, item)
 			SubDealer = ""
 		}
 
 		StateName, ok := item["state_name"].(string)
 		if !ok || StateName == "" {
-			log.FuncErrorTrace(0, "Failed to get sale type for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get sale type for Record ID %v. Item: %+v\n", RecordId, item)
 			StateName = ""
 		}
 
 		// Dealer
 		Dealer, ok := item["dealer_name"].(string)
 		if !ok || Dealer == "" {
-			log.FuncErrorTrace(0, "Failed to get dealer name for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get dealer name for Record ID %v. Item: %+v\n", RecordId, item)
 			Dealer = ""
 		}
 
 		// PayRate
 		PayRate, ok := item["pay_rate"].(string)
 		if !ok || PayRate == "" {
-			log.FuncErrorTrace(0, "Failed to get pay rate for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get pay rate for Record ID %v. Item: %+v\n", RecordId, item)
 			PayRate = ""
 		}
 
 		// StartDate
 		StartDate, ok := item["start_date"].(time.Time)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
 			StartDate = time.Time{}
 		}
 
 		// EndDate
 		EndDate, ok := item["end_date"].(time.Time)
 		if !ok {
-			log.FuncErrorTrace(0, "Failed to get end date for Record ID %v. Item: %+v\n", RecordId, item)
+			// log.FuncErrorTrace(0, "Failed to get end date for Record ID %v. Item: %+v\n", RecordId, item)
 			EndDate = time.Time{}
 		}
 

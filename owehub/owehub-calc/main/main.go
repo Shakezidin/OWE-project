@@ -72,6 +72,8 @@ func main() {
 		panic("Failed to load sale data from DB")
 	}
 
+	// log.FuncErrorTrace(0, "sales data ======== %v", dataMgmt.SaleDataStruct)
+
 	/* Perform Initial AR Calcualtion*/
 	// go arCalc.ExecArInitialCalculation(arCalcResult)
 

@@ -10,11 +10,27 @@ package datamgmt
 import (
 	db "OWEApp/shared/db"
 	log "OWEApp/shared/logger"
-	"OWEApp/shared/models"
 )
 
+type GetPaymentScheduleDataTemp struct {
+	RecordId      int64   `json:"record_id"`
+	Partner       string  `json:"partner"`
+	PartnerName   string  `json:"partner_name"`
+	InstallerName string  `json:"installer_name"`
+	SaleType      string  `json:"sale_type"`
+	State         string  `json:"state"`
+	Rl            float64 `json:"rl"`
+	Draw          float64 `json:"draw"`
+	DrawMax       float64 `json:"draw_max"`
+	RepDraw       float64 `json:"rep_draw"`
+	RepDrawMax    float64 `json:"rep_draw_max"`
+	RepPay        string  `json:"rep_pay"`
+	StartDate     string  `json:"start_date"`
+	EndDate       string  `json:"end_date"`
+}
+
 type PayScheduleCfgStruct struct {
-	PayScheduleList models.GetPaymentScheduleList
+	PayScheduleList []GetPaymentScheduleDataTemp
 }
 
 var (
@@ -88,38 +104,38 @@ func (paymentScheduleCfg *PayScheduleCfgStruct) LoadPayScheduleCfg() (err error)
 		}
 
 		// Rl
-		Rl, ok := item["rl"].(string)
-		if !ok || Rl == "" {
+		Rl, ok := item["rl"].(float64)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get Rl for Record ID %v. Item: %+v\n", RecordId, item)
-			Rl = ""
+			Rl = 0
 		}
 
 		// Draw
-		Draw, ok := item["draw"].(string)
-		if !ok || Draw == "" {
+		Draw, ok := item["draw"].(float64)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get draw for Record ID %v. Item: %+v\n", RecordId, item)
-			Draw = ""
+			Draw = 0
 		}
 
 		// DrawMax
-		DrawMax, ok := item["draw_max"].(string)
-		if !ok || DrawMax == "" {
+		DrawMax, ok := item["draw_max"].(float64)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get draw max for Record ID %v. Item: %+v\n", RecordId, item)
-			DrawMax = ""
+			DrawMax = 0
 		}
 
 		// RepDraw
-		RepDraw, ok := item["rep_draw"].(string)
-		if !ok || RepDraw == "" {
+		RepDraw, ok := item["rep_draw"].(float64)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get rep draw for Record ID %v. Item: %+v\n", RecordId, item)
-			RepDraw = ""
+			RepDraw = 0
 		}
 
 		// RepDrawMax
-		RepDrawMax, ok := item["rep_draw_max"].(string)
-		if !ok || RepDrawMax == "" {
+		RepDrawMax, ok := item["rep_draw_max"].(float64)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get rep_draw_max for Record ID %v. Item: %+v\n", RecordId, item)
-			RepDrawMax = ""
+			RepDrawMax = 0
 		}
 
 		// RepPay
@@ -143,24 +159,24 @@ func (paymentScheduleCfg *PayScheduleCfgStruct) LoadPayScheduleCfg() (err error)
 			EndDate = ""
 		}
 
-		paySchData := models.GetPaymentScheduleData{
+		paySchData := GetPaymentScheduleDataTemp{
 			RecordId:      RecordId,
 			Partner:       Partner,
 			PartnerName:   PartnerName,
 			InstallerName: Installer,
 			State:         State,
 			SaleType:      Sale,
-			// Rl:            Rl,
-			// Draw:          Draw,
-			// DrawMax:       DrawMax,
-			// RepDraw:       RepDraw,
-			// RepDrawMax:    RepDrawMax,
-			RepPay:    RepPay,
-			StartDate: StartDate,
-			EndDate:   EndDate,
+			Rl:            Rl,
+			Draw:          Draw,
+			DrawMax:       DrawMax,
+			RepDraw:       RepDraw,
+			RepDrawMax:    RepDrawMax,
+			RepPay:        RepPay,
+			StartDate:     StartDate,
+			EndDate:       EndDate,
 		}
 
-		PayScheduleCfg.PayScheduleList.PaymentScheduleList = append(PayScheduleCfg.PayScheduleList.PaymentScheduleList, paySchData)
+		PayScheduleCfg.PayScheduleList = append(PayScheduleCfg.PayScheduleList, paySchData)
 	}
 	return err
 }
@@ -177,7 +193,7 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateRL(dealer, partner, install
 	defer func() { log.ExitFn(0, "CalculateRL", nil) }()
 
 	if len(dealer) > 0 {
-		for _, data := range PayScheduleCfg.PayScheduleList.PaymentScheduleList {
+		for _, data := range PayScheduleCfg.PayScheduleList {
 			if data.Partner == dealer && data.PartnerName == partner && data.InstallerName == installer && data.SaleType == types && data.State == state &&
 				data.StartDate <= wc && data.EndDate >= wc {
 				return float64(data.Rl)
@@ -200,7 +216,7 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateDlrDrawPerc(dealer, partner
 	defer func() { log.ExitFn(0, "CalculateDlrDrawPerc", nil) }()
 
 	if len(dealer) > 0 {
-		for _, data := range PayScheduleCfg.PayScheduleList.PaymentScheduleList {
+		for _, data := range PayScheduleCfg.PayScheduleList {
 			if data.Partner == dealer && data.PartnerName == partner && data.InstallerName == installer && data.SaleType == loanType && data.State == state && data.StartDate <= wc && data.EndDate >= wc {
 				drawPerc = data.Draw
 			}
