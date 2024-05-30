@@ -39,11 +39,22 @@ const userData = createSlice({
       .addCase(getUser.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
-      });
+      })
+      .addCase(updateUser.pending, (state) => {
+        state.isFormSubmitting = true;
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.isFormSubmitting = false;
+        state.userUpdate = action.payload;
+      })
+      .addCase(updateUser.rejected, (state, action) => {
+        state.isFormSubmitting = false;
+        state.error = action.payload as string;
+      })
   },
 });
 
-const updateData = createSlice({
+export const updateData = createSlice({
   name: 'UPDATE DATA',
   initialState,
   reducers: {},
