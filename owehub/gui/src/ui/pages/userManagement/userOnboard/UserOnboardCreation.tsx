@@ -16,8 +16,8 @@ import './Userboard.css';
 import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
 import { FormInput } from '../../../../core/models/data_models/typesModel';
 import { getDataTableName } from '../../../../redux/apiActions/dataTableAction';
-import 'react-phone-number-input/style.css';
-import PhoneInput from 'react-phone-number-input';
+import PhoneInput from 'react-phone-input-2'
+import 'react-phone-input-2/lib/style.css'
 
 interface createUserProps {
   editMode: boolean;
@@ -228,8 +228,9 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                   <div className="create-input-field" style={{ marginTop: '-5px' }}>
                     <label className="inputLabel">Phone Number</label>
                     <PhoneInput
-                      international
-                      defaultCountry="US"
+                      countryCodeEditable={false}
+                      enableSearch
+                      country={"us"}
                       value={formData.mobile_number}
                       onChange={(value: any) => {
                         console.log('date', value);
@@ -238,7 +239,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                         );
                       }}
                       placeholder="Enter phone number"
-                      maxLength={16}
+                     
                     />
                     {phoneNumberError && (
                       <p className="error-message">{phoneNumberError}</p>
@@ -373,7 +374,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                     className={`character-count ${formData.description.length >= 255 ? 'exceeded' : ''
                       }`}
                   >
-                    {formData.description.length}/255 characters
+                    {formData.description.trim().length}/500 characters
                   </p>
                 </div>
               </div>

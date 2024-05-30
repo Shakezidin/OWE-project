@@ -83,7 +83,7 @@ const TableHeader = (props: TableProps) => {
           </button>
         </div> */}
         <div className="iconsSection2">
-          <button type="button" onClick={onpressExport}>
+          <button type="button" disabled onClick={onpressExport}>
             <img src={ICONS.exportIcon} alt="" />
             Export
           </button>

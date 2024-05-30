@@ -53,6 +53,10 @@
   cursor: pointer;
 }
 
+.iconsSection2 button:disabled{
+  background-color: var(--row-bg-color);
+}
+
 .iconsSection2 .hover-btn:hover {
   background-color: var(--active-text-color) !important;
   border: 1px solid var(--active-text-color) !important;
