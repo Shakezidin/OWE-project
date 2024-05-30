@@ -206,7 +206,7 @@ const ResetPasswordAccount: React.FC<ChangePasswordProps> = ({
                       if (!/\s/.test(inputValue)) {
                         setConfirmPassword(inputValue);
                         setError({
-                          confirmPassword: validatePassword(inputValue),
+                          confirmPassword: newPassword!==inputValue ? 'Confirm password does not match with New password' : '',
                         });
                       }
                     }}

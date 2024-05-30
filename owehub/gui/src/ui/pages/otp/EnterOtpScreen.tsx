@@ -233,7 +233,7 @@ const EnterOtpScreen = () => {
                   }));
                   setError((prevState) => ({
                     ...prevState,
-                    [name]: validatePassword(trimmedValue),
+                    [name]: trimmedValue !== otpCred.new_password ? 'Confirm password does not match with New password' : '',
                   }));
                 }}
               />
