@@ -84,7 +84,6 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
     return emailPattern.test(email);
   };
 
-
   const handleInputChange = (
     e: FormInput | React.ChangeEvent<HTMLTextAreaElement>
   ) => {
@@ -102,10 +101,10 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
       }
       const trimmedValue = value.replace(/\s/g, '');
       dispatch(updateUserForm({ field: name, value: trimmedValue }));
-    }  else if (name === 'description') {
+    } else if (name === 'description') {
       const trimmedValue = value.replace(/^\s+/, '');
       dispatch(updateUserForm({ field: name, value: trimmedValue }));
-    }  else {
+    } else {
       dispatch(updateUserForm({ field: name, value }));
     }
   };
@@ -236,8 +235,9 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                     <label className="inputLabel">Phone Number</label>
                     <PhoneInput
                       countryCodeEditable={false}
-                      enableSearch
                       country={'us'}
+                      disableCountryGuess={true}
+                      enableSearch
                       value={formData.mobile_number}
                       onChange={(value: any) => {
                         console.log('date', value);
@@ -378,7 +378,9 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                   ></textarea>
                   <p
                     className={`character-count ${
-                      formData.description.trim().length >= 500 ? 'exceeded' : ''
+                      formData.description.trim().length >= 500
+                        ? 'exceeded'
+                        : ''
                     }`}
                   >
                     {formData.description.trim().length}/500 characters
