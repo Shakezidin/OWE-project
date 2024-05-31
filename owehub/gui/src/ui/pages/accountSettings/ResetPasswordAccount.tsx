@@ -20,10 +20,11 @@ const ResetPasswordAccount: React.FC<ChangePasswordProps> = ({
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-
+  const [error, setError] = useState<{ [key: string]: string }>({});
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -33,6 +34,7 @@ const ResetPasswordAccount: React.FC<ChangePasswordProps> = ({
     const hasLowercase = /[a-z]/.test(password);
     const hasNumber = /\d/.test(password);
     const hasSpecialChar = /[!@#$%^&*]/.test(password);
+    const hasNoSpaces = /^\S*$/.test(password);
 
     if (password.length < minLength) {
       return 'Password must be at least 8 characters long.';
@@ -48,6 +50,9 @@ const ResetPasswordAccount: React.FC<ChangePasswordProps> = ({
     }
     if (!hasSpecialChar) {
       return 'Password must contain at least one special character (!@#$%^&*).';
+    }
+    if (!hasNoSpaces) {
+      return 'Password must not contain any whitespace characters.';
     }
 
     return '';
@@ -132,12 +137,27 @@ const ResetPasswordAccount: React.FC<ChangePasswordProps> = ({
                     type={showCurrentPassword ? 'text' : 'password'}
                     name={'currentPassword'}
                     value={currentPassword}
-                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    onChange={(e) => {
+                      const inputValue = e.target.value;
+                      if (!/\s/.test(inputValue)) {
+                        setCurrentPassword(inputValue);
+                      }
+                    }}
                     placeholder="Enter"
                     isTypePassword={true}
-                    onClickEyeIcon={() => {
-                      setShowCurrentPassword(!showCurrentPassword);
+                    // onClickEyeIcon={() => {
+                    //   setShowCurrentPassword(!showCurrentPassword);
+                    // }}
+                    onMouseDown={() => {
+                      setShowCurrentPassword(true);
                     }}
+                    onMouseUp={() => {
+                      setShowCurrentPassword(false);
+                    }}
+                    onMouseLeave={() => {
+                      setShowCurrentPassword(false);
+                    }}
+                    maxLength={50}
                   />
                 </div>
                 <div className="create-input-field-profile-password">
@@ -146,13 +166,34 @@ const ResetPasswordAccount: React.FC<ChangePasswordProps> = ({
                     type={showNewPassword ? 'text' : 'password'}
                     name={'newPassword'}
                     value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
+                    onChange={(e) => {
+                      const inputValue = e.target.value;
+                      if (!/\s/.test(inputValue)) {
+                        setNewPassword(inputValue);
+                        setError({
+                          newPassword: validatePassword(inputValue),
+                        });
+                      }
+                    }}
                     placeholder="Enter"
                     isTypePassword={true}
-                    onClickEyeIcon={() => {
-                      setShowNewPassword(!showNewPassword);
+                    // onClickEyeIcon={() => {
+                    //   setShowNewPassword(!showNewPassword);
+                    // }}
+                    onMouseDown={() => {
+                      setShowNewPassword(true);
                     }}
+                    onMouseUp={() => {
+                      setShowNewPassword(false);
+                    }}
+                    onMouseLeave={() => {
+                      setShowNewPassword(false);
+                    }}
+                    maxLength={50}
                   />
+                  {error.newPassword && (
+                    <span className="error">{error.newPassword}</span>
+                  )}
                 </div>
                 <div className="create-input-field-profile-password">
                   <label className="inputLabel">Confirm Password</label>
@@ -160,13 +201,34 @@ const ResetPasswordAccount: React.FC<ChangePasswordProps> = ({
                     type={showConfirmPassword ? 'text' : 'password'}
                     name={'confirmPassword'}
                     value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    onChange={(e) => {
+                      const inputValue = e.target.value;
+                      if (!/\s/.test(inputValue)) {
+                        setConfirmPassword(inputValue);
+                        setError({
+                          confirmPassword: newPassword!==inputValue ? 'Confirm password does not match with New password' : '',
+                        });
+                      }
+                    }}
                     placeholder="Enter"
                     isTypePassword={true}
-                    onClickEyeIcon={() => {
-                      setShowConfirmPassword(!showConfirmPassword);
+                    // onClickEyeIcon={() => {
+                    //   setShowConfirmPassword(!showConfirmPassword);
+                    // }}
+                    onMouseDown={() => {
+                      setShowConfirmPassword(true);
                     }}
+                    onMouseUp={() => {
+                      setShowConfirmPassword(false);
+                    }}
+                    onMouseLeave={() => {
+                      setShowConfirmPassword(false);
+                    }}
+                    maxLength={50}
                   />
+                  {error.confirmPassword && (
+                    <span className="error">{error.confirmPassword}</span>
+                  )}
                 </div>
               </div>
               <div className="reset-Update">

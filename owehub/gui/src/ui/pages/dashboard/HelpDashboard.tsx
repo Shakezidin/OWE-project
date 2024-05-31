@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import '../dashboard/dasboard.css';
 import { ICONS } from '../../icons/Icons';
 import Input from '../../components/text_input/Input';
@@ -19,6 +19,26 @@ const HelpDashboard: React.FC<ButtonProps> = ({
   const handleFileInputChange = (e: any) => {
     const file = e.target.files?.[0];
     console.log(file);
+  };
+
+  const [state, setState] = useState({
+    project_id: '',
+    dealer_name: '',
+    sale_rep: '',
+    customer_name: '',
+    amount_prepaid: '',
+    pipeline_remaining: '',
+    current_date: '',
+    project_status: '',
+    state: '',
+    message: '',
+  });
+  
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setState((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }));
   };
 
   const handleButtonClick = () => {
@@ -46,10 +66,10 @@ const HelpDashboard: React.FC<ButtonProps> = ({
                   <Input
                     type={'text'}
                     label="Project ID"
-                    value={''}
-                    name="fee_rate"
+                    value={state.project_id}
+                    name="project_id"
                     placeholder={'Enter'}
-                    onChange={(e) => {}}
+                    onChange={handleChange}
                   />
                 </div>
               </div>
@@ -59,10 +79,10 @@ const HelpDashboard: React.FC<ButtonProps> = ({
                   <Input
                     type={'text'}
                     label="Dealer Name"
-                    value={''}
-                    name="fee_rate"
+                    value={state.dealer_name}
+                    name="dealer_name"
                     placeholder={'Enter'}
-                    onChange={(e) => {}}
+                    onChange={handleChange}
                   />
                 </div>
 
@@ -70,20 +90,20 @@ const HelpDashboard: React.FC<ButtonProps> = ({
                   <Input
                     type={'text'}
                     label="Sale Rep."
-                    value={''}
-                    name="pay_src"
+                    value={state.sale_rep}
+                    name="sale_rep"
                     placeholder={'Enter'}
-                    onChange={(e) => {}}
+                    onChange={handleChange}
                   />
                 </div>
                 <div className="create-input-field-help">
                   <Input
                     type={'text'}
                     label="Customer Name"
-                    value={''}
-                    name="pay_src"
+                    value={state.customer_name}
+                    name="customer_name"
                     placeholder={'Enter'}
-                    onChange={(e) => {}}
+                    onChange={handleChange}
                   />
                 </div>
               </div>
@@ -93,10 +113,10 @@ const HelpDashboard: React.FC<ButtonProps> = ({
                   <Input
                     type={'text'}
                     label="Amount Prepaid"
-                    value={''}
-                    name="fee_rate"
+                    value={state.amount_prepaid}
+                    name="amount_prepaid"
                     placeholder={'Enter'}
-                    onChange={(e) => {}}
+                    onChange={handleChange}
                   />
                 </div>
 
@@ -104,20 +124,20 @@ const HelpDashboard: React.FC<ButtonProps> = ({
                   <Input
                     type={'text'}
                     label="Pipeline Remaining"
-                    value={''}
-                    name="pay_src"
+                    value={state.pipeline_remaining}
+                    name="pipeline_remaining"
                     placeholder={'Enter'}
-                    onChange={(e) => {}}
+                    onChange={handleChange}
                   />
                 </div>
                 <div className="create-input-field-help">
                   <Input
                     type={'text'}
                     label="Current Date"
-                    value={''}
-                    name="pay_src"
+                    value={state.current_date}
+                    name="current_date"
                     placeholder={'Enter'}
-                    onChange={(e) => {}}
+                    onChange={handleChange}
                   />
                 </div>
               </div>
@@ -126,10 +146,10 @@ const HelpDashboard: React.FC<ButtonProps> = ({
                   <Input
                     type={'text'}
                     label="Project Status"
-                    value={''}
-                    name="fee_rate"
+                    value={state.project_status}
+                    name="project_status"
                     placeholder={'Enter'}
-                    onChange={(e) => {}}
+                    onChange={handleChange}
                   />
                 </div>
 
@@ -137,10 +157,10 @@ const HelpDashboard: React.FC<ButtonProps> = ({
                   <Input
                     type={'text'}
                     label="State"
-                    value={''}
-                    name="pay_src"
+                    value={state.state}
+                    name="state"
                     placeholder={'Enter'}
-                    onChange={(e) => {}}
+                    onChange={handleChange}
                   />
                 </div>
 
@@ -180,7 +200,7 @@ const HelpDashboard: React.FC<ButtonProps> = ({
                   name={''}
                   id=""
                   rows={4}
-                  onChange={(e) => {}}
+                  onChange={handleChange}
                   value={''}
                   placeholder="Type here..."
                 ></textarea>

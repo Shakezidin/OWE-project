@@ -2,6 +2,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { loginAction } from '../../apiActions/auth/authActions';
 import { HTTP_STATUS } from '../../../core/models/api_models/RequestModel';
+import { toast } from 'react-toastify';
 
 interface AuthState {
   loading: boolean;
@@ -66,6 +67,9 @@ const authSlice = createSlice({
 
         const { status, data } = action.payload;
         if (status === HTTP_STATUS.OK) {
+          // on succesfull login dismiss previous toasters
+          toast.dismiss()
+
           state.email_id = data.email_id;
           state.role_name = data.role_name;
           state.access_token = data.access_token;
@@ -76,6 +80,8 @@ const authSlice = createSlice({
       .addCase(loginAction.rejected, (state: AuthState, action) => {
         state.loading = false;
         state.error = action.error.message ?? 'Unable to login User';
+         // on succesfull logout dismiss previous toasters
+         toast.dismiss()
       });
   },
 });

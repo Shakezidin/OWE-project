@@ -16,8 +16,8 @@ import './Userboard.css';
 import { TYPE_OF_USER } from '../../../../resources/static_data/Constant';
 import { FormInput } from '../../../../core/models/data_models/typesModel';
 import { getDataTableName } from '../../../../redux/apiActions/dataTableAction';
-import 'react-phone-number-input/style.css';
-import PhoneInput from 'react-phone-number-input';
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
 
 interface createUserProps {
   editMode: boolean;
@@ -53,7 +53,6 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
   const tables = useAppSelector((state) => state.dataTableSlice.option);
   const [emailError, setEmailError] = useState('');
 
-
   /** handle change for role */
   const handleChange = (newValue: any, fieldName: string) => {
     dispatch(updateUserForm({ field: 'assigned_dealer_name', value: '' }));
@@ -85,7 +84,9 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
     return emailPattern.test(email);
   };
 
-  const handleInputChange = (e: FormInput | React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: FormInput | React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
 
     if (name === 'first_name' || name === 'last_name') {
@@ -98,9 +99,10 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
       } else {
         setEmailError('');
       }
-      dispatch(updateUserForm({ field: name, value }));
+      const trimmedValue = value.replace(/\s/g, '');
+      dispatch(updateUserForm({ field: name, value: trimmedValue }));
     } else if (name === 'description') {
-      const trimmedValue = value.trimStart();
+      const trimmedValue = value.replace(/^\s+/, '');
       dispatch(updateUserForm({ field: name, value: trimmedValue }));
     } else {
       dispatch(updateUserForm({ field: name, value }));
@@ -130,7 +132,6 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
   }, []);
 
   /** render ui */
-
 
   return (
     <div className="transparent-model">
@@ -222,14 +223,21 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                       name={'email_id'}
                       disabled={formData.isEdit}
                     />
-                    {emailError && <div className="error-message">{emailError}</div>}
+                    {emailError && (
+                      <div className="error-message">{emailError}</div>
+                    )}
                   </div>
 
-                  <div className="create-input-field" style={{ marginTop: '-5px' }}>
+                  <div
+                    className="create-input-field"
+                    style={{ marginTop: '-5px' }}
+                  >
                     <label className="inputLabel">Phone Number</label>
                     <PhoneInput
-                      international
-                      defaultCountry="US"
+                      countryCodeEditable={false}
+                      country={'us'}
+                      disableCountryGuess={true}
+                      enableSearch
                       value={formData.mobile_number}
                       onChange={(value: any) => {
                         console.log('date', value);
@@ -238,7 +246,6 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                         );
                       }}
                       placeholder="Enter phone number"
-                      maxLength={16}
                     />
                     {phoneNumberError && (
                       <p className="error-message">{phoneNumberError}</p>
@@ -246,10 +253,10 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                   </div>
 
                   {formData.role_name === 'Admin' ||
-                    formData.role_name === 'SubDealer Owner' ||
-                    formData.role_name === 'DB User' ||
-                    formData.role_name === 'Dealer Owner' ||
-                    formData.role_name === 'Finance Admin' ? null : (
+                  formData.role_name === 'SubDealer Owner' ||
+                  formData.role_name === 'DB User' ||
+                  formData.role_name === 'Dealer Owner' ||
+                  formData.role_name === 'Finance Admin' ? null : (
                     <div className="create-input-field">
                       <label className="inputLabel-select selected-fields-onboard">
                         Dealer Owner
@@ -364,16 +371,19 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
                     name="description"
                     id=""
                     rows={3}
-                    maxLength={255}
+                    maxLength={500}
                     value={formData.description}
                     onChange={(e) => handleInputChange(e)}
                     placeholder="Type"
                   ></textarea>
                   <p
-                    className={`character-count ${formData.description.length >= 255 ? 'exceeded' : ''
-                      }`}
+                    className={`character-count ${
+                      formData.description.trim().length >= 500
+                        ? 'exceeded'
+                        : ''
+                    }`}
                   >
-                    {formData.description.length}/255 characters
+                    {formData.description.trim().length}/500 characters
                   </p>
                 </div>
               </div>
@@ -386,7 +396,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
             onClick={handleClose}
             type={'button'}
           />
-          <ActionButton title={'Create'} onClick={() => { }} type={'submit'} />
+          <ActionButton title={'Create'} onClick={() => {}} type={'submit'} />
         </div>
       </form>
     </div>

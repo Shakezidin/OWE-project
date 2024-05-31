@@ -16,6 +16,7 @@ import { respTypeData } from '../../../../resources/static_data/StaticData';
 import { updateForm } from '../../../../redux/apiSlice/configSlice/config_post_slice/createCommissionSlice';
 import { CommissionModel } from '../../../../core/models/configuration/create/CommissionModel';
 import SelectOption from '../../../components/selectOption/SelectOption';
+import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/dealerCreditSlice';
 import {
   createDealerCredit,
   updateDealerCredit,
@@ -26,6 +27,8 @@ interface ButtonProps {
   handleClose: () => void;
   editData: any;
   setViewArchived: React.Dispatch<React.SetStateAction<boolean>>;
+  page_number: number;
+  page_size: number;
 }
 
 interface IError {
@@ -37,17 +40,20 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
   editMode,
   editData,
   setViewArchived,
+  page_number,
+  page_size,
 }) => {
   const dispatch = useAppDispatch();
 
   const [dealerCredit, setDealerCredit] = useState({
-    unique_id: '',
-    date: '',
-    exact_amt: '',
-    per_kw_amt: '',
-    approved: '',
-    notes: '',
+    unique_id: editData ? editData.unique_id : '',
+    date: editData ? editData.date : '',
+    exact_amt: editData ?editData.exact_amount : '',
+    per_kw_amt: editData ? editData.per_kw_amount : '',
+    approved:editData ?editData.approved_by: '',
+    notes: editData ? editData.notes : '',
   });
+  const { isSuccess, isFormSubmitting } = useAppSelector((state) => state.dealerCredit);
   const [errors, setErrors] = useState<IError>({} as IError);
   const [newFormData, setNewFormData] = useState<any>([]);
   const tableData = {
@@ -96,16 +102,40 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const data = {
-      unique_id: dealerCredit.unique_id,
-      date: dealerCredit.date,
-      exact_amount: parseInt(dealerCredit.exact_amt),
-      per_kw_amount: parseInt(dealerCredit.per_kw_amt),
-      approved_by: dealerCredit.approved,
-      notes: dealerCredit.notes,
-    };
+   
+    if(editMode){
+      const data = {
+        unique_id:dealerCredit.unique_id,
+        date:dealerCredit.date,
+        exact_amount : parseInt(dealerCredit.exact_amt),
+        per_kw_amount:parseInt(dealerCredit.per_kw_amt),
+        approved_by:dealerCredit.approved,
+        notes:dealerCredit.notes,
+        record_id:editData.record_id,
+        
+      }
+      dispatch(updateDealerCredit(data))
+    } else {
+      const data = {
+        unique_id: dealerCredit.unique_id,
+        date: dealerCredit.date,
+        exact_amount: parseInt(dealerCredit.exact_amt),
+        per_kw_amount: parseInt(dealerCredit.per_kw_amt),
+        approved_by: dealerCredit.approved,
+        notes: dealerCredit.notes,
+      };
     dispatch(createDealerCredit(data));
+    }
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      handleClose();
+    }
+    return () => {
+      isSuccess && dispatch(resetSuccess());
+    };
+  }, [isSuccess]);
 
   return (
     <div className="transparent-model">

@@ -32,7 +32,7 @@ const RegionalManagerTable: React.FC<RegionalManagerProps> = ({
 
   const isAnyRowSelected = selectedRows?.size > 0;
   const isAllRowsSelected = selectedRows?.size === data?.length;
-
+  let sortedData = [...data]
   const handleSort = (key: any) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
@@ -43,7 +43,7 @@ const RegionalManagerTable: React.FC<RegionalManagerProps> = ({
   };
 
   if (sortKey) {
-    data?.sort((a: any, b: any) => {
+    sortedData?.sort((a: any, b: any) => {
       const aValue = a[sortKey];
       const bValue = b[sortKey];
       if (typeof aValue === 'string' && typeof bValue === 'string') {
@@ -86,8 +86,8 @@ const RegionalManagerTable: React.FC<RegionalManagerProps> = ({
                   selectedRows={selectedRows}
                   setSelectedRows={setSelectedRows}
                   sortKey={item.name}
-                  sortDirection={'desc'}
-                  onClick={() => {}}
+                  sortDirection={sortKey === item.name ? sortDirection : undefined}
+                  onClick={() => handleSort(item.name)}
                 />
               ))}
               <th>
@@ -99,8 +99,8 @@ const RegionalManagerTable: React.FC<RegionalManagerProps> = ({
           </thead>
 
           <tbody>
-            {data?.length > 0 ? (
-              data?.map((el: UserRoleBasedListModel, i: number) => (
+            {sortedData?.length > 0 ? (
+              sortedData?.map((el: UserRoleBasedListModel, i: number) => (
                 <tr key={el.email_id}>
                   <td>
                     <div className="flex-check">
@@ -108,17 +108,14 @@ const RegionalManagerTable: React.FC<RegionalManagerProps> = ({
                         checked={selectedRows.has(i)}
                         onChange={() => {
                           // If there's only one row of data and the user clicks its checkbox, select all rows
-                          if (data?.length === 1) {
-                            setSelectAllChecked(true);
-                            setSelectedRows(new Set([0]));
-                          } else {
+                         
                             toggleRowSelection(
                               i,
                               selectedRows,
                               setSelectedRows,
                               setSelectAllChecked
                             );
-                          }
+                          
                         }}
                       />
                       {el.user_code}

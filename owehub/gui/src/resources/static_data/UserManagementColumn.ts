@@ -81,7 +81,7 @@ export const UserDealerTableColumn: Column[] = [
     isCheckbox: false,
   },
   {
-    name: 'phone_number',
+    name: 'mobile_number',
     displayName: 'Phone Number',
     type: 'string',
     isCheckbox: false,
@@ -117,7 +117,7 @@ export const UserRegionalTableColumn: Column[] = [
     isCheckbox: false,
   },
   {
-    name: 'phone_number',
+    name: 'mobile_number',
     displayName: 'Phone Number',
     type: 'string',
     isCheckbox: false,
@@ -153,7 +153,7 @@ export const UserSaleMangerTableColumn: Column[] = [
     isCheckbox: false,
   },
   {
-    name: 'phone_number',
+    name: 'mobile_number',
     displayName: 'Phone Number',
     type: 'string',
     isCheckbox: false,
@@ -195,7 +195,7 @@ export const UserSaleRepresentTableColumn: Column[] = [
     isCheckbox: false,
   },
   {
-    name: 'phone_number',
+    name: 'mobile_number',
     displayName: 'Phone Number',
     type: 'string',
     isCheckbox: false,

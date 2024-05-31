@@ -12,6 +12,7 @@ import Pagination from '../../../components/pagination/Pagination';
 import { Tooltip as ReactTooltip } from 'react-tooltip';
 import './Useractivity.css';
 import MicroLoader from '../../../components/loader/MicroLoader';
+import { FaArrowUp } from 'react-icons/fa';
 
 const UserActivity: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -19,8 +20,13 @@ const UserActivity: React.FC = () => {
     (state) => state.dbManager
   );
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortKey, setSortKey] = useState('');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const itemsPerPage = 10;
   const [openTooltipIndex, setOpenTooltipIndex] = useState<number | null>(null);
+  const [slicedData, setSlicedData] = useState<DBManagerUserActivityModel[]>(
+    []
+  );
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -50,6 +56,12 @@ const UserActivity: React.FC = () => {
     dispatch(fetchDBManagerUserActivity(pageNumber));
   }, [dispatch, currentPage]);
 
+  useEffect(() => {
+    if (userActivityList) {
+      setSlicedData(userActivityList);
+    }
+  }, [userActivityList]);
+
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
@@ -62,10 +74,37 @@ const UserActivity: React.FC = () => {
     setCurrentPage(currentPage - 1);
   };
 
-  const filter = () => { };
+  const filter = () => {};
 
   const countWords = (str: string): number => {
     return str.trim().split(/\s+/).length;
+  };
+console.log([...slicedData].sort((a,b)=>a.query_details.trim().localeCompare(b.query_details.trim())),"sorted")
+
+  const sortRows = (key: string) => {
+    setSortKey((prev) => (prev === key ? '' : key));
+    const sorted = [...slicedData]?.sort((a, b) => {
+      if (sortOrder === 'asc') {
+        setSortOrder('desc');
+        if (key==="query_details") {
+          return a.query_details.trim().localeCompare(b.query_details.trim())
+        }
+        return b[key as keyof DBManagerUserActivityModel] <
+          a[key as keyof DBManagerUserActivityModel]
+          ? -1
+          : 1;
+      } else {
+        setSortOrder('asc');
+        if (key==="query_details") {
+          return b.query_details.trim().localeCompare(a.query_details.trim())
+        }
+        return a[key as keyof DBManagerUserActivityModel] >
+          b[key as keyof DBManagerUserActivityModel]
+          ? 1
+          : -1;
+      }
+    });
+    setSlicedData(sorted);
   };
 
   const totalPages = Math.ceil(totalCount / itemsPerPage);
@@ -81,7 +120,7 @@ const UserActivity: React.FC = () => {
         linkparaSecond="User Activity"
       />
       <div className="commissionContainer">
-        <div className="commissionSection">
+        <div className="commissionSection" style={{marginLeft: "15px"}}>
           <h3>Activity List</h3>
         </div>
         <div
@@ -91,27 +130,56 @@ const UserActivity: React.FC = () => {
           <table>
             <thead>
               <tr>
-                <th style={{ paddingLeft: '10px' }}>
-                  <div className="table-header">
+                <th style={{ paddingLeft: '30px' }}>
+                  <div
+                    className="table-header"
+                    onClick={() => sortRows('username')}
+                  >
                     <p>User Name</p>{' '}
-                    <FaArrowDown style={{ color: '#667085' }} />
+                    {sortKey === 'username' ? (
+                      <FaArrowUp style={{ color: '#667085' }} />
+                    ) : (
+                      <FaArrowDown style={{ color: '#667085' }} />
+                    )}
                   </div>
                 </th>
                 <th>
-                  <div className="table-header">
-                    <p>DB Name</p> <FaArrowDown style={{ color: '#667085' }} />
+                  <div
+                    className="table-header"
+                    onClick={() => sortRows('db_name')}
+                  >
+                    <p>DB Name</p>{' '}
+                    {sortKey === 'db_name' ? (
+                      <FaArrowUp style={{ color: '#667085' }} />
+                    ) : (
+                      <FaArrowDown style={{ color: '#667085' }} />
+                    )}
                   </div>
                 </th>
                 <th>
-                  <div className="table-header">
+                  <div
+                    className="table-header"
+                    onClick={() => sortRows('time_date')}
+                  >
                     <p>Time & Date</p>{' '}
-                    <FaArrowDown style={{ color: '#667085' }} />
+                    {sortKey === 'time_date' ? (
+                      <FaArrowUp style={{ color: '#667085' }} />
+                    ) : (
+                      <FaArrowDown style={{ color: '#667085' }} />
+                    )}
                   </div>
                 </th>
                 <th>
-                  <div className="table-header">
+                  <div
+                    className="table-header"
+                    onClick={() => sortRows('query_details')}
+                  >
                     <p>Query Details</p>{' '}
-                    <FaArrowDown style={{ color: '#667085' }} />
+                    {sortKey === 'query_details' ? (
+                      <FaArrowUp style={{ color: '#667085' }} />
+                    ) : (
+                      <FaArrowDown style={{ color: '#667085' }} />
+                    )}
                   </div>
                 </th>
               </tr>
@@ -126,8 +194,8 @@ const UserActivity: React.FC = () => {
                     </div>
                   </td>
                 </tr>
-              ) : userActivityList && userActivityList?.length > 0 ? (
-                userActivityList?.map(
+              ) : slicedData && slicedData?.length > 0 ? (
+                slicedData?.map(
                   (el: DBManagerUserActivityModel, index: number) => {
                     const tooltipId = `tooltip-${index}`;
                     const truncatedQueryDetails =
@@ -135,12 +203,12 @@ const UserActivity: React.FC = () => {
                     const wordCount = countWords(el.query_details);
 
                     return (
-                      <tr key={el.time_date}>
+                      <tr key={index}>
                         <td
                           style={{
                             fontWeight: '500',
                             color: 'black',
-                            paddingLeft: '10px',
+                            paddingLeft: '30px',
                             textAlign: 'left',
                           }}
                         >
@@ -148,15 +216,28 @@ const UserActivity: React.FC = () => {
                         </td>
                         <td style={{ textAlign: 'left' }}>{el.db_name}</td>
                         <td style={{ textAlign: 'left' }}>{el.time_date}</td>
-                    
+
                         <td style={{ textAlign: 'left' }}>
                           {el.query_details.length > 50 ? (
                             <>
-                              <span style={{ maxWidth: '250px',marginBottom:"-5px", display: 'inline-block', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                              <span
+                                style={{
+                                  maxWidth: '250px',
+                                  marginBottom: '-5px',
+                                  display: 'inline-block',
+                                  whiteSpace: 'nowrap',
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis',
+                                }}
+                              >
                                 {el.query_details}
                               </span>
                               <button
-                                onClick={() => setOpenTooltipIndex(openTooltipIndex === index ? null : index)}
+                                onClick={() =>
+                                  setOpenTooltipIndex(
+                                    openTooltipIndex === index ? null : index
+                                  )
+                                }
                                 data-tooltip-id={tooltipId}
                                 data-tooltip-content={el.query_details}
                                 data-tooltip-place="bottom"
@@ -164,14 +245,23 @@ const UserActivity: React.FC = () => {
                                   marginLeft: '5px',
                                   border: 'none',
                                   background: 'none',
-                                  color: openTooltipIndex === index ? '#F82C2C' : '#3083e5',
+                                  color:
+                                    openTooltipIndex === index
+                                      ? '#F82C2C'
+                                      : '#3083e5',
                                   cursor: 'pointer',
-                                  fontSize: "12px"
+                                  fontSize: '12px',
                                 }}
                               >
-                                {openTooltipIndex === index ? 'Show less' : 'Show more'}
+                                {openTooltipIndex === index
+                                  ? 'Show less'
+                                  : 'Show more'}
                               </button>
-                              <ReactTooltip id={tooltipId} className="custom-tooltip" isOpen={openTooltipIndex === index} />
+                              <ReactTooltip
+                                id={tooltipId}
+                                className="custom-tooltip"
+                                isOpen={openTooltipIndex === index}
+                              />
                             </>
                           ) : (
                             el.query_details
@@ -201,12 +291,12 @@ const UserActivity: React.FC = () => {
             {totalCount} item
           </p>
 
-          {userActivityList && userActivityList?.length > 0 ? (
+          {slicedData && slicedData?.length > 0 ? (
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages} // You need to calculate total pages
               paginate={paginate}
-              currentPageData={userActivityList.slice(startIndex, endIndex)}
+              currentPageData={slicedData.slice(startIndex, endIndex)}
               goToNextPage={goToNextPage}
               goToPrevPage={goToPrevPage}
               perPage={itemsPerPage}

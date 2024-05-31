@@ -32,9 +32,13 @@ const ResetPassword = () => {
 
   const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
+    let trimmedValue = value;
+    if (name === 'email_id') {
+        trimmedValue = value.replace(/\s/g, '');
+    }
     setCredentials((prevState) => ({
-      ...prevState,
-      [name]: value,
+        ...prevState,
+        [name]: trimmedValue,
     }));
   };
   /** on submit  */

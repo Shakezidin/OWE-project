@@ -33,7 +33,7 @@ export const getDealerCredit = createAsyncThunk(
     try {
       const data = await postCaller('get_dealercredit', param);
       const count = data.dbRecCount;
-      const list = data.data.install_cost_list || ([] as DCredit[]);
+      const list = data.data.dealer_credit_data_list || ([] as DCredit[]);
       return { count, list };
     } catch (error) {
       return rejectWithValue((error as Error).message);
