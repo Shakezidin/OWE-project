@@ -626,7 +626,7 @@ CREATE TABLE dealer_credit (
 
 CREATE TABLE noncomm_dlrpay (
     id serial NOT NULL,
-    unique_id varchar NOT NULL UNIQUE,
+    unique_id varchar NOT NULL,
     customer text,
     dealer_id INT,
     dealer_dba text,
@@ -679,7 +679,7 @@ CREATE TABLE rep_pay_settings (
 
 CREATE TABLE rate_adjustments(
     id serial NOT NULL,
-    unique_id varchar NOT NULL UNIQUE,
+    unique_id varchar NOT NULL,
     pay_scale text,
     position text,
     adjustment text,
@@ -847,7 +847,7 @@ CREATE TABLE ar (
 
 CREATE TABLE appt_setters (
     id serial NOT NULL,
-    unique_id varchar NOT NULL UNIQUE,
+    unique_id varchar NOT NULL,
     name character varying,
     team_id INT,
     pay_rate character varying,
@@ -934,6 +934,28 @@ CREATE TABLE ap_rep (
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone
 );
+
+create TABLE ap_dealer (
+    id serial NOT NULL,
+	unique_id varchar NOT NULL,
+    dealer_id INT,
+    dba varchar,
+    type varchar,
+    date date,
+    amount float,
+    method varchar,
+    transaction varchar,
+    notes character varying,
+    dealer character varying,
+    home_owner character varying,
+    state_id INT,
+    is_archived BOOLEAN DEFAULT FALSE,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
+    FOREIGN KEY (dealer_id) REFERENCES v_dealer(id),
+    FOREIGN KEY (state_id) REFERENCES states(state_id),
+    PRIMARY KEY(id)
+)
 
 /*
 CREATE TABLE AR_Schedule (

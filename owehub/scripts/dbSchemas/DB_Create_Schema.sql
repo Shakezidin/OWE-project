@@ -67,6 +67,7 @@ INSERT INTO loan_type (product_code,active,adder,description) VALUES ('P123',1,1
 \copy dealer_credit(unique_id,date,exact_amount,per_kw_amount,approved_by,notes,total_amount,sys_size) FROM '/docker-entrypoint-initdb.d/dealer_credit.csv' DELIMITER '^' CSV;
 \copy ap_rep(unique_id,rep,dba,type,date,amount) FROM '/docker-entrypoint-initdb.d/ap_rep.csv' DELIMITER '^' CSV;
 \copy payment_schedule(rep_id,partner_id,installer_id,sale_type_id,state_id,rl,draw,draw_max,rep_draw,rep_draw_max,rep_pay,start_date,end_date) FROM '/docker-entrypoint-initdb.d/pay_schedule.csv' DELIMITER '^' CSV;
+\copy ap_dealer(unique_id,dealer_id,dba,type,date,amount,method,transaction,notes) FROM '/docker-entrypoint-initdb.d/ap_dealer.csv' DELIMITER '^' CSV;
 
 /******************************SETTINGS DB TABLE END  ***********************************************/
 
