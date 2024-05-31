@@ -32,9 +32,7 @@ const TechnicalSupport: React.FC = () => {
     message: '',
   });
 
-  const phoneRegex =
-    /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
-
+ 
   const emailRegex =
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -44,7 +42,7 @@ const TechnicalSupport: React.FC = () => {
     const newErrors = {
       firstName: firstName ? '' : 'First name is required',
       lastName: lastName ? '' : 'Last name is required',
-      email: emailRegex.test(email) ? '' : 'Invalid email address',
+      email: emailRegex.test(email) ? '' : 'Email address required',
       phoneNumber: phoneNumber ? '' : 'Phone number required',
       message: message ? '' : 'Message is required',
     };
