@@ -201,7 +201,7 @@ const CreateAppSetters: React.FC<payScheduleProps> = ({
                 </div>
                 <div className="create-input-field">
                   <Input
-                    type={'number'}
+                    type={'text'}
                     label="Pay Rate"
                     value={createAppSettersData.pay_rate}
                     name="pay_rate"
