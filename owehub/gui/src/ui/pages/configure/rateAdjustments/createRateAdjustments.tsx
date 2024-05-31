@@ -218,7 +218,7 @@ const CreateRateAdjustments: React.FC<payScheduleProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={'text'}
-                    label="MIN Rate"
+                    label="Min Rate"
                     value={createRateAdjustmentData.min_rate}
                     name="min_rate"
                     placeholder={'Enter'}
