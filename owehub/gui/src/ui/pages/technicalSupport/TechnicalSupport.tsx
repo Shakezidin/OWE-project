@@ -36,6 +36,9 @@ const TechnicalSupport: React.FC = () => {
   const emailRegex =
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
+
+  const [prevCont, setPrevCont] = useState('us')
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Validation logic
@@ -43,7 +46,7 @@ const TechnicalSupport: React.FC = () => {
       firstName: firstName ? '' : 'First name is required',
       lastName: lastName ? '' : 'Last name is required',
       email: emailRegex.test(email) ? '' : 'Email address required',
-      phoneNumber: phoneNumber ? '' : 'Phone number required',
+      phoneNumber: phoneNumber.slice(prevCont.length).trim()  ? '' : 'Phone number required',
       message: message ? '' : 'Message is required',
     };
     setErrors(newErrors);
@@ -65,7 +68,7 @@ const TechnicalSupport: React.FC = () => {
             setFirstName('');
             setLastName('');
             setEmail('');
-            setPhoneNumber('+1');
+            setPhoneNumber(prevCont);
             setMessage('');
             setSelectedFileName(''); // Clear the selected file name
             setSelectedIssue(null); // Clear the selected issue
@@ -239,8 +242,10 @@ const TechnicalSupport: React.FC = () => {
                   enableSearch
                   country={"us"}
                   value={phoneNumber}
-                  onChange={(value) => {
+                  onChange={(value, prevCont) => {
                     setPhoneNumber(value || '');
+                    //@ts-ignore
+                    setPrevCont(prevCont.dialCode as string)
                     setErrors({ ...errors, phoneNumber: '' });
                   }}
                   placeholder="Enter phone number"
