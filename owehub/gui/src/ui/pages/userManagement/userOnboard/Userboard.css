@@ -94,6 +94,7 @@
   scrollbar-width: thin;
   display: initial;
   background-color: transparent;
+  width: 10px;
 }
 .country-list::-webkit-scrollbar-thumb {
   background-color: rgb(173, 173, 173);

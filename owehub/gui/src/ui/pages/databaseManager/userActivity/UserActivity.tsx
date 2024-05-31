@@ -120,7 +120,7 @@ console.log([...slicedData].sort((a,b)=>a.query_details.trim().localeCompare(b.q
         linkparaSecond="User Activity"
       />
       <div className="commissionContainer">
-        <div className="commissionSection">
+        <div className="commissionSection" style={{marginLeft: "15px"}}>
           <h3>Activity List</h3>
         </div>
         <div
@@ -130,7 +130,7 @@ console.log([...slicedData].sort((a,b)=>a.query_details.trim().localeCompare(b.q
           <table>
             <thead>
               <tr>
-                <th style={{ paddingLeft: '10px' }}>
+                <th style={{ paddingLeft: '30px' }}>
                   <div
                     className="table-header"
                     onClick={() => sortRows('username')}
@@ -208,7 +208,7 @@ console.log([...slicedData].sort((a,b)=>a.query_details.trim().localeCompare(b.q
                           style={{
                             fontWeight: '500',
                             color: 'black',
-                            paddingLeft: '10px',
+                            paddingLeft: '30px',
                             textAlign: 'left',
                           }}
                         >
