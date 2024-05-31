@@ -225,6 +225,7 @@ func CalculateStatus(uniqueId string, hand bool, pto, instSys, cancel, ntp, perm
 func CalculateStatusDate(uniqueID string, hand bool, pto time.Time, instSys time.Time, cancel time.Time, ntp time.Time, permSub time.Time, wc time.Time) time.Time {
 	var statusDate time.Time
 
+	if len(uniqueID) > 0 {
 	switch {
 	case !pto.IsZero():
 		statusDate = pto
@@ -243,7 +244,7 @@ func CalculateStatusDate(uniqueID string, hand bool, pto time.Time, instSys time
 	default:
 		statusDate = time.Time{}
 	}
-
+	}
 	return statusDate
 }
 
@@ -562,6 +563,12 @@ func CalculateContractDolDol(netEpc float64, contract float64, sysSize float64) 
 	return contractdoldol
 }
 
+
+/******************************************************************************
+* FUNCTION:        CalculateContractDolDol
+* DESCRIPTION:     calculates the "contract$$" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
 func CalculatePayRateSemi(dealer string, epcCalc, rl float64) (payRateSemi float64) {
 	if len(dealer) > 0 {
 		return (epcCalc - rl) * 1000
@@ -570,6 +577,11 @@ func CalculatePayRateSemi(dealer string, epcCalc, rl float64) (payRateSemi float
 	return 0
 }
 
+/******************************************************************************
+* FUNCTION:        CalculateContractDolDol
+* DESCRIPTION:     calculates the "contract$$" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
 func CalculateAdderLf(dealer string, addr, expence, autoadder, loanfee, rebate, referral float64) (adderlf float64) {
 	if len(dealer) > 0 {
 		return addr + expence + autoadder + loanfee + rebate + referral
@@ -577,6 +589,11 @@ func CalculateAdderLf(dealer string, addr, expence, autoadder, loanfee, rebate, 
 	return adderlf
 }
 
+/******************************************************************************
+* FUNCTION:        CalculateContractDolDol
+* DESCRIPTION:     calculates the "contract$$" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
 func CalculateAdderEPC(epcCalc, contract, loanfee, sys_size float64) (epc float64) {
 	if epcCalc > 0 {
 		result := ((contract - loanfee) / sys_size) / 1000
@@ -589,7 +606,11 @@ func CalculateAdderEPC(epcCalc, contract, loanfee, sys_size float64) (epc float6
 	return epc
 }
 
-
+/******************************************************************************
+* FUNCTION:        CalculateLoanFee
+* DESCRIPTION:     calculates the "loan_fee" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
 func CalculateLoanFee(uniqueId string) float64 {
 	var saleData datamgmt.SaleDataList
 	var loanfee float64

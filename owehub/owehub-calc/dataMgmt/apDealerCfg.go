@@ -23,9 +23,6 @@ type ApDealerData struct {
 	Method      string  `json:"method"`
 	Transaction string  `json:"transaction"`
 	Notes       string  `json:"notes"`
-	DealerName  string  `json:"dealer_name"`
-	HomeOwner   string  `json:"home_owner"`
-	State       string  `json:"state"`
 }
 
 type ApDealerCfgStruct struct {
@@ -44,10 +41,10 @@ func (pApDealerCfg *ApDealerCfgStruct) LoadApDealerCfg() (err error) {
 	)
 
 	query = `
-	  SELECT ad.id as record_id, ad.unique_id, vd.dealer_name as dealer, ad.dba, ad.type, ad.date, ad.amount, ad.method, ad.transaction, ad.notes, ad.dealer as dealer_name, ad.home_owner, st.name as state
-	  FROM ap_dealer ad
-	  LEFT JOIN state st ON st.id = ad.state_id
-	  LEFT JOIN v_dealer vd ON vd.id = ad.dealer_id`
+      SELECT ad.id as record_id, ad.unique_id, vd.dealer_name as dealer, ad.dba, ad.type, ad.date, ad.amount, ad.method, ad.transaction, ad.notes, ad.dealer as dealer_name, ad.home_owner, st.name as state
+      FROM ap_dealer ad
+      LEFT JOIN states st ON st.state_id = ad.state_id
+      LEFT JOIN v_dealer vd ON vd.id = ad.dealer_id`
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {
@@ -125,27 +122,6 @@ func (pApDealerCfg *ApDealerCfgStruct) LoadApDealerCfg() (err error) {
 			Notes = ""
 		}
 
-		// DealerName
-		DealerName, ok := item["dealer_name"].(string)
-		if !ok || DealerName == "" {
-			// log.FuncErrorTrace(0, "Failed to get Notes for Record ID %v. Item: %+v\n", RecordId, item)
-			DealerName = ""
-		}
-
-		// HomeOwner
-		HomeOwner, ok := item["home_owner"].(string)
-		if !ok || HomeOwner == "" {
-			// log.FuncErrorTrace(0, "Failed to get Notes for Record ID %v. Item: %+v\n", RecordId, item)
-			HomeOwner = ""
-		}
-
-		// State
-		State, ok := item["state"].(string)
-		if !ok || State == "" {
-			// log.FuncErrorTrace(0, "Failed to get Notes for Record ID %v. Item: %+v\n", RecordId, item)
-			State = ""
-		}
-
 		apDealerData := ApDealerData{
 			RecordId:    RecordId,
 			UniqueId:    UniqueId,
@@ -157,12 +133,41 @@ func (pApDealerCfg *ApDealerCfgStruct) LoadApDealerCfg() (err error) {
 			Method:      Method,
 			Transaction: Transaction,
 			Notes:       Notes,
-			DealerName:  DealerName,
-			HomeOwner:   HomeOwner,
-			State:       State,
 		}
 		pApDealerCfg.ApDealerList = append(pApDealerCfg.ApDealerList, apDealerData)
 	}
 
 	return err
+}
+
+/******************************************************************************
+* FUNCTION:        CalculateR1CommPaid
+* DESCRIPTION:     calculates the "pr1_comm_paid" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
+func (pApDealerCfg *ApDealerCfgStruct) CalculateR1CommPaid(dealer, uniqueid string) (r1CommPaid float64) {
+	if len(dealer) > 0 {
+		for _, data := range pApDealerCfg.ApDealerList {
+			if data.UniqueId == uniqueid && data.Dealer == dealer && (data.Type != "Non-COMM" || data.Type != "DLR-OTHER") {
+				r1CommPaid += data.Amount
+			}
+		}
+	}
+	return r1CommPaid
+}
+
+/******************************************************************************
+* FUNCTION:        CalculateR1DrawPaid
+* DESCRIPTION:     calculates the "r1_draw_paid" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
+func (pApDealerCfg *ApDealerCfgStruct) CalculateR1DrawPaid(dealer, uniqueID string) (R1FrawPaid float64) {
+	if len(dealer) > 0 {
+		for _, data := range pApDealerCfg.ApDealerList {
+			if data.UniqueId == uniqueID && data.Dealer == dealer && (data.Type == "Sold" || data.Type == "NTP") {
+				R1FrawPaid += data.Amount
+			}
+		}
+	}
+	return R1FrawPaid
 }

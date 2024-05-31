@@ -295,8 +295,8 @@ func (pLoanFee *LoanFeeAdderCfgStruct) LoadLoanFeeAdderCfg() (err error) {
 * RETURNS:         loanFee
 *****************************************************************************/
 func (LoanFeeAdderCfg *LoanFeeAdderCfgStruct) CalculateLoanFee(dealer string, uniqueId string) (loanFee float64) {
-	log.EnterFn(0, "CalculateLoanFee")
-	defer func() { log.ExitFn(0, "CalculateLoanFee", nil) }()
+	// log.EnterFn(0, "CalculateLoanFee")
+	// defer func() { log.ExitFn(0, "CalculateLoanFee", nil) }()
 	if len(dealer) > 0 {
 		for _, data := range LoanFeeAdderCfg.LoanFeeAdderList.LoanFeeAdderList {
 			if data.UniqueID == uniqueId {
