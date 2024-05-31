@@ -87,32 +87,27 @@
   font-size: 14px;
   max-height: 200px;
   overflow-y: auto;
+}
+ 
+.country-list::-webkit-scrollbar {
+  -ms-overflow-style: initial;
   scrollbar-width: thin;
-  scrollbar-color: #888 #f1f1f1;
-}
-
-.country-list::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-.country-list::-webkit-scrollbar {
   display: initial;
+  background-color: transparent;
 }
-
 .country-list::-webkit-scrollbar-thumb {
   background-color: rgb(173, 173, 173);
   border-radius: 30px;
+  height: 100px;
 }
 .country-list::-webkit-scrollbar-button {
   display: initial;
 }
-.country-list::-webkit-scrollbar {
-  -ms-overflow-style: initial;
-  scrollbar-width: thin;
-}
+ 
 .country-list::-webkit-scrollbar-corner {
   background-color: transparent;
 }
+ 
 
 .phoneParentView {
   width: 30%;

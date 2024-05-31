@@ -8,17 +8,18 @@ import { toast } from 'react-toastify';
 import { FormInput } from '../../../core/models/data_models/typesModel';
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
+import MicroLoader from '../../components/loader/MicroLoader';
 
 const TechnicalSupport: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedIssue, setSelectedIssue] = useState<string | null>(null);
   const form = useRef<HTMLFormElement>(null);
-
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState<any>('');
   const [message, setMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [selectedFileName, setSelectedFileName] = useState('');
   const [fileSizeError, setFileSizeError] = useState('');
@@ -49,6 +50,7 @@ const TechnicalSupport: React.FC = () => {
     };
     setErrors(newErrors);
     if (form.current && Object.values(newErrors).every((err) => !err)) {
+      setIsSubmitting(true); 
       const file = fileInputRef.current?.files?.[0];
       const formData = new FormData(form.current);
       if (file) {
@@ -65,15 +67,18 @@ const TechnicalSupport: React.FC = () => {
             setFirstName('');
             setLastName('');
             setEmail('');
-            setPhoneNumber('');
+            setPhoneNumber('+1');
             setMessage('');
             setSelectedFileName(''); // Clear the selected file name
+            setSelectedIssue(null); // Clear the selected issue
             if (fileInputRef.current) {
               fileInputRef.current.value = ''; // Clear the file input value
             }
+            setIsSubmitting(false);
           },
           (error: any) => {
             console.error('FAILED...', error);
+            setIsSubmitting(false);
           }
         );
     }
@@ -232,6 +237,7 @@ const TechnicalSupport: React.FC = () => {
                 <label className="inputLabel">Phone Number</label>
                 <PhoneInput
                   countryCodeEditable={false}
+                  disableCountryGuess={true}
                   enableSearch
                   country={"us"}
                   value={phoneNumber}
@@ -311,7 +317,7 @@ const TechnicalSupport: React.FC = () => {
             </div>
 
             <div className="reset-Update-support">
-              <button type="submit">Submit</button>
+              <button type="submit" disabled={isSubmitting}>Submit</button>
               {/* <ActionButton title={"Submit"} type="submit" onClick={() => {handleSubmit}} /> */}
             </div>
           </div>
