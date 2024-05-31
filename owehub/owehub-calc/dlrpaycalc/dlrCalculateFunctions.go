@@ -545,6 +545,23 @@ func calculateR2PayRateSemi(rep_1 string, repCount, perRepSales, perRepkW, epcCa
 	return result
 }
 
+
+/******************************************************************************
+* FUNCTION:        CalculateContractDolDol
+* DESCRIPTION:     calculates the "contract$$" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
+func CalculateContractDolDol(netEpc float64, contract float64, sysSize float64) (contractdoldol float64) {
+	if netEpc > 0 {
+			if contract > 0 {
+					contractdoldol = contract
+			} else {
+					contractdoldol = netEpc * 1000 * sysSize
+			}
+	}
+	return contractdoldol
+}
+
 func CalculatePayRateSemi(dealer string, epcCalc, rl float64) (payRateSemi float64) {
 	if len(dealer) > 0 {
 		return (epcCalc - rl) * 1000
@@ -572,16 +589,6 @@ func CalculateAdderEPC(epcCalc, contract, loanfee, sys_size float64) (epc float6
 	return epc
 }
 
-func CalculateContractDolDol(netEpc float64, contract float64, sysSize float64) (contractdoldol float64) {
-	if netEpc > 0 {
-		if contract <= 0 {
-			contractdoldol = netEpc * 1000 * sysSize
-		} else {
-			contractdoldol = contract
-		}
-	}
-	return contractdoldol
-}
 
 func CalculateLoanFee(uniqueId string) float64 {
 	var saleData datamgmt.SaleDataList
@@ -593,3 +600,16 @@ func CalculateLoanFee(uniqueId string) float64 {
 	}
 	return loanfee
 }
+
+
+// This is for DBA
+// func (dba *DBA) calculateDealerDba(dealer string) (dealerDBA string) {
+//     if len(dealer) > 0 {
+//         for _, data := range dba {
+//             if data.dealer == dealer {
+//                 dealerDBA = data.name
+//             }
+//         }
+//     }
+//     return dealerDBA
+// }

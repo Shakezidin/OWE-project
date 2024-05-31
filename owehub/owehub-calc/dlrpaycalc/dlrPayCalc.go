@@ -68,8 +68,9 @@ func ExecDlrPayInitialCalculation(resultChan chan string) {
 * DESCRIPTION:     calculate the calculated data for DLR Pay
 * RETURNS:         outData
 *****************************************************************************/
-func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[string]interface{}, err error) {
+func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (finalData map[string]interface{}, err error) {
 	var (
+		outData map[string]interface{}
 		// uniqueId           string    // g
 		rep_1   string  // m
 		rep_2   string  // n
@@ -83,7 +84,7 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 		// instSys            time.Time // ad
 		// pto                time.Time // ag
 		payRateSubTotal    float64   // verify the column number
-		status             string    // aj
+		status             string    // aj //* required
 		statusDate         time.Time // ak
 		contractDolDol     float64   //am
 		dealer             string    // ap
@@ -99,7 +100,6 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 		adderTot           float64   // bb
 		adderLF            float64   // bc
 		epc                float64   // bd
-		netEpc             float64   // be
 		adderPerKw         float64   // bf
 		commTotal          float64   // bh
 		statusCheck        float64   // bi
@@ -109,7 +109,6 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 		overdTotal         float64   // bn
 		DlrDrawPerc        float64   // bp
 		DlrDrawMax         float64   // bq
-		r1DrawAmt          float64   // bs
 		r1DrawPaid         float64   // bt
 		amtCheck           float64   // bu
 		r1CommPaid         float64   // bv
@@ -151,10 +150,123 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 		r2MinmaxCorrect    float64   // eo
 		r2CommTotal        float64   // ep
 		r2CommStatusCheck  float64   // eq
+
+		// =====================
+		homeOwner     string
+		uniqueID      string
+		wc            time.Time
+		ntp           time.Time
+		pto           time.Time
+		cancel        time.Time
+		instSys       time.Time
+		permSub       time.Time
+		shakyHand     bool
+		loanType      string
+		dlrDrawMax    float64
+		dlrDrawPerc   float64
+		partner       string
+		installer     string
+		state         string
+		startDate     time.Time
+		endDate       time.Time
+		r1DrawAmt     float64
+		netEpc        float64
+		contractTotal float64
+		systemSize    float64
+		adderTotal    float64
+		chargeDlr     string
+		netEpc2       float64
+		rep1          string
+		rep2          string
 	)
 
-	// log.EnterFn(0, "CalculateDlrPayProject")
-	// defer func() { log.ExitFn(0, "CalculateDlrPayProject", err) }()
+	// * values coming in from sale data
+	uniqueID = saleData.UniqueId
+	wc = saleData.WC1
+	ntp = saleData.NtpDate
+	pto = saleData.PtoDate
+	cancel = saleData.CancelledDate
+	instSys = saleData.PvInstallCompletedDate
+	permSub = saleData.PermitSubmittedDate
+	homeOwner = saleData.HomeOwner
+	status = saleData.ProjectStatus
+	dealer = saleData.Dealer
+	loanType = saleData.LoanType
+	shakyHand = false
+	partner = saleData.Partner
+	state = saleData.State
+	installer = saleData.Installer
+	startDate = saleData.StartDate
+	endDate = saleData.EndDate
+	netEpc = saleData.NetEpc
+	contractTotal = saleData.ContractTotal
+	systemSize = saleData.SystemSize
+	chargeDlr = saleData.ChargeDlr
+	rep1 = saleData.PrimarySalesRep
+	rep2 = saleData.SecondarySalesRep
+
+	statusDate = CalculateStatusDate(uniqueID, shakyHand, pto, instSys, cancel, ntp, permSub, wc) //! shakyHand
+	dlrDrawPerc, dlrDrawMax = dataMgmt.PayScheduleCfg.CalculateDlrDrawPerc(dealer, partner, installer, loanType, state, startDate.Format("2006-01-02"), endDate.Format("2006-01-02"), wc.Format("2006-01-02"))
+	credit = dataMgmt.DealerCreditCfg.CalculateCreaditForUniqueId(dealer, uniqueID)
+	repPay = dataMgmt.ApRepCfg.CalculateApRepForUniqueId(dealer, uniqueID)
+	expense = dataMgmt.AdderDataCfg.CalculateExpence(dealer, uniqueID)
+	rl = dataMgmt.PayScheduleCfg.CalculateRL(dealer, partner, installer, loanType, state, wc.Format("2006-01-02"))
+	contractDolDol = CalculateContractDolDol(netEpc, contractTotal, systemSize)
+	epcCalc = common.CalculateEPCCalc(contractDolDol, wc, netEpc, systemSize, common.DlrPayWc1FilterDate)
+	payRateSemi = CalculatePayRateSemi(dealer, rl, epcCalc)
+	addr = dataMgmt.AdderDataCfg.CalculateAddr(dealer, uniqueID)
+	autoAdder = dataMgmt.AutoAdderCfg.CalculateAutoAddr(dealer, uniqueID, chargeDlr, systemSize)
+	loanFee = dataMgmt.LoanFeeAdderCfg.CalculateLoanFee(dealer, uniqueID)
+	rebate = dataMgmt.RebateCfg.CalculateRebate(dealer, uniqueID)
+	referral = dataMgmt.ReferralDataConfig.CalculateReferralForUniqueId(dealer, uniqueID)
+	adderLF = CalculateAdderLf(dealer, addr, expense, autoAdder, loanFee, rebate, referral)
+	adderPerKw = calculateAdderPerKW(dealer, adderLF, SysSize)
+	payRateSubTotal = calculatePayRateSubTotal(dealer, payRateSemi, adderPerKw)
+	commTotal = calculateCommTotal(dealer, payRateSubTotal, systemSize, dealerPaymentBonus) // dealerPaymentBonus
+	statusCheck = calculateStatusCheck(dealer, status, expense, commTotal, credit, repPay)
+	r1DrawAmt = CalculateR1DrawAmt(statusCheck, dlrDrawMax, dlrDrawPerc) // DlrDrawMax
+	adderTotal = calculateAdderTotal(dealer, addr, autoAdder, rebate, referral)
+	epc = CalculateAdderEPC(epcCalc, contractDolDol, loanFee, SysSize)
+	netEpc2 = CalculateAdderEPC(epcCalc, contractDolDol, adderLF, SysSize)
+	r1Balance = calculateR1Balance(dealer, statusCheck, r1CommPaid) // r1CommPaid
+
+	finalData = make(map[string]interface{})
+
+	finalData["home_owner"] = homeOwner
+	finalData["status"] = status
+	finalData["status_date"] = statusDate
+	finalData["unique_id"] = uniqueID
+	finalData["dealer"] = dealer
+	finalData["dealer_dba"] = 0 //! this need input from GUI, so neglecting for now
+	finalData["r1_draw_amount"] = r1DrawAmt
+	finalData["type"] = loanType
+	finalData["contract$$"] = contractDolDol
+	finalData["loan_fee"] = loanFee
+	finalData["adder_total"] = adderTotal
+	finalData["epc"] = epc
+	finalData["net_epc"] = netEpc2
+	finalData["rl"] = rl
+	finalData["credit"] = credit
+	finalData["rep_1"] = rep1
+	finalData["rep_2"] = rep2
+	finalData["rep_pay"] = repPay
+	finalData["status_check"] = statusCheck
+	finalData["r1_comm_paid"] = 0       //! this need input from ap_dealer, so neglecting for now
+	finalData["r1_balance"] = r1Balance //! this needs r1_comm_paid that is not calculated
+	finalData["r1_draw_paid"] = 0       //! this need input from ap_dealer, so neglecting for now
+	finalData["ntp"] = ntp
+	finalData["inst_size"] = instSys
+	finalData["state"] = state
+	finalData["wc"] = wc
+
+	log.FuncFuncTrace(0, "=============================Latest Calc End Here =================================")
+	log.FuncFuncTrace(0, "===================================================================================")
+	log.FuncFuncTrace(0, "===================================================================================")
+	log.FuncFuncTrace(0, "===================================================================================")
+	log.FuncFuncTrace(0, "===================================================================================")
+	log.FuncFuncTrace(0, "===================================================================================")
+	log.FuncFuncTrace(0, "===================================================================================")
+	log.FuncFuncTrace(0, "===================================================================================")
 
 	outData = make(map[string]interface{})
 
@@ -165,7 +277,7 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	outData["source"] = saleData.Source
 	outData["loan_type"] = saleData.LoanType
 	outData["unique_id"] = saleData.UniqueId
-	outData["home_owner"] = saleData.HomeOwner
+	outData["home_owner"] = saleData.HomeOwner //* required
 	outData["street_address"] = saleData.Address
 	outData["st"] = saleData.State
 	outData["rep_1"] = saleData.PrimarySalesRep
@@ -183,20 +295,16 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	outData["inst_sys"] = saleData.PvInstallCompletedDate
 	outData["pto"] = saleData.PtoDate
 
-	status = saleData.ProjectStatus
+	status = saleData.ProjectStatus // required
 	dealer = saleData.Dealer
 	// contract = saleData.ContractTotal
 	SysSize = saleData.SystemSize
-	// uniqueId = saleData.UniqueId
+
 	rep_1 = saleData.PrimarySalesRep
 	rep_2 = saleData.SecondarySalesRep
 
-	// payRate = saleData.PayRate
-
-	// epcCalc = common.CalculateEPCCalc(contractCalc, saleData.WC1, saleData.NetEpc, saleData.SystemSize, common.DlrPayWc1FilterDate)
-
-	// loanFee2 = dataMgmt.LoanFeeAdder.CalculateLoanFee2(saleData.LoanType)
-	// r1Credit =
+	// log.EnterFn(0, "CalculateDlrPayProject")
+	// defer func() { log.ExitFn(0, "CalculateDlrPayProject", err) }()
 
 	log.FuncFuncTrace(0, "================================ Calculated Values ================================")
 	log.FuncFuncTrace(0, "===================================================================================")
@@ -204,74 +312,18 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	log.FuncFuncTrace(0, "===================================================================================")
 	log.FuncFuncTrace(0, "===================================================================================")
 	log.FuncFuncTrace(0, "===================================================================================")
-
 	log.FuncFuncTrace(0, "========================== UNIQUE ID -> %v ===============================", saleData.UniqueId)
 
 	//first sheet calculation
-	contractDolDol = CalculateContractDolDol(saleData.NetEpc, saleData.ContractTotal, saleData.SystemSize)
-	rl = dataMgmt.PayScheduleCfg.CalculateRL(saleData.Dealer, saleData.Partner, saleData.Installer, saleData.LoanType, saleData.State, saleData.WC1.Format("2006-01-02"))
-	log.FuncFuncTrace(0, "rl ->  %v", rl)
 
-	credit = dataMgmt.DealerCreditCfg.CalculateCreaditForUniqueId(saleData.Dealer, saleData.UniqueId)
-	log.FuncFuncTrace(0, "credit ->  %v", credit)
+	// epc = CalculateAdderEPC(epcCalc, contractCalc, loanFee, SysSize)
+	// log.FuncFuncTrace(0, "epc ->  %v", epc)
 
-	repPay = dataMgmt.ApRepCfg.CalculateApRepForUniqueId(dealer, saleData.UniqueId)
-	log.FuncFuncTrace(0, "repPay ->  %v", repPay)
-
-	contractCalc = common.CalculateContractAmount(saleData.NetEpc, outData["contract"].(float64), outData["sys_size"].(float64))
-	log.FuncFuncTrace(0, "contractCalc ->  %v", contractCalc)
-
-	// correct value
-	epcCalc = common.CalculateEPCCalc(contractCalc, saleData.WC1, saleData.NetEpc, saleData.SystemSize, common.DlrPayWc1FilterDate) // verify equation
-	log.FuncFuncTrace(0, "epcCalc ->  %v", epcCalc)
-
-	payRateSemi = CalculatePayRateSemi(saleData.Dealer, rl, epcCalc)
-	log.FuncFuncTrace(0, "payRateSemi ->  %v", payRateSemi)
-
-	addr = dataMgmt.AdderDataCfg.CalculateAddr(saleData.Dealer, saleData.UniqueId)
-	log.FuncFuncTrace(0, "addr ->  %v", addr)
-
-	expense = dataMgmt.AdderDataCfg.CalculateExpence(saleData.Dealer, saleData.UniqueId)
-	log.FuncFuncTrace(0, "expense ->  %v", expense)
-
-	autoAdder = dataMgmt.AutoAdderCfg.CalculateAutoAddr(saleData.Dealer, saleData.UniqueId, saleData.ChargeDlr, saleData.SystemSize)
-	log.FuncFuncTrace(0, "autoAdder ->  %v", autoAdder)
-
-	loanFee = CalculateLoanFee(saleData.UniqueId)
-	log.FuncFuncTrace(0, "loanFee ->  %v", loanFee)
-
-	rebate = dataMgmt.RebateCfg.CalculateRebate(saleData.Dealer, saleData.UniqueId)
-	log.FuncFuncTrace(0, "rebate ->  %v", rebate)
-
-	referral = dataMgmt.ReferralDataConfig.CalculateReferralForUniqueId(saleData.Dealer, saleData.UniqueId)
-	log.FuncFuncTrace(0, "referral ->  %v", referral)
-
-	adderTot = calculateAdderTotal(saleData.UniqueId, addr, autoAdder, rebate, referral)
-	log.FuncFuncTrace(0, "adderTot ->  %v", adderTot)
-
-	adderLF = CalculateAdderLf(saleData.Dealer, addr, expense, autoAdder, loanFee, rebate, referral)
-	log.FuncFuncTrace(0, "adderLF ->  %v", adderLF)
-
-	epc = CalculateAdderEPC(epcCalc, contractCalc, loanFee, SysSize)
-	log.FuncFuncTrace(0, "epc ->  %v", epc)
-
-	netEpc = calculateEpcCalc(epcCalc, contractCalc, adderLF, SysSize)
-	log.FuncFuncTrace(0, "netEpc ->  %v", netEpc)
-
-	adderPerKw = calculateAdderPerKW(dealer, adderLF, SysSize)
-	log.FuncFuncTrace(0, "adderPerKw ->  %v", adderPerKw)
-
-	payRateSubTotal = calculatePayRateSubTotal(dealer, payRateSemi, adderPerKw)
-	log.FuncFuncTrace(0, "payRateSubTotal ->  %v", payRateSubTotal)
-
-	commTotal = calculateCommTotal(dealer, payRateSubTotal, SysSize, dealerPaymentBonus) // payRate, dealerPaymentBonus
-	log.FuncFuncTrace(0, "commTotal ->  %v", commTotal)
+	// netEpc = calculateEpcCalc(epcCalc, contractCalc, adderLF, SysSize)
+	// log.FuncFuncTrace(0, "netEpc ->  %v", netEpc)
 
 	// status = CalculateStatus(uniqueId, hand, pto, instSys, cancel, ntp, permSub, wc)
 	// log.FuncFuncTrace(0, "status ->  %v", status)
-
-	statusCheck = calculateStatusCheck(dealer, status, expense, commTotal, credit, repPay)
-	log.FuncFuncTrace(0, "statusCheck ->  %v", statusCheck)
 
 	parentDlr = dataMgmt.DealerOverrideConfig.CalculateParentDealer(saleData.Dealer, saleData.WC1.Format("2006-01-02"))
 	log.FuncFuncTrace(0, "parentDlr ->  %v", parentDlr)
@@ -279,17 +331,11 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	overdTotal = calculateOVRDTotal(dealer, payRate, SysSize) // payrate value confused [BL]
 	log.FuncFuncTrace(0, "overdTotal ->  %v", overdTotal)
 
-	DlrDrawPerc = dataMgmt.PayScheduleCfg.CalculateDlrDrawPerc(saleData.Dealer, saleData.Partner, saleData.Installer, saleData.LoanType, saleData.State, saleData.StartDate.Format("2006-01-02"), saleData.EndDate.Format("2006-01-02"), saleData.WC1.Format("2006-01-02"))
-	log.FuncFuncTrace(0, "DlrDrawPerc ->  %v", DlrDrawPerc) // converted string to float in CalculateDlrDrawPerc
-
-	r1DrawAmt = CalculateR1DrawAmt(statusCheck, DlrDrawMax, DlrDrawPerc) // DlrDrawMax
-	log.FuncFuncTrace(0, "r1DrawAmt ->  %v", r1DrawAmt)
+	// DlrDrawPerc = dataMgmt.PayScheduleCfg.CalculateDlrDrawPerc(saleData.Dealer, saleData.Partner, saleData.Installer, saleData.LoanType, saleData.State, saleData.StartDate.Format("2006-01-02"), saleData.EndDate.Format("2006-01-02"), saleData.WC1.Format("2006-01-02"))
+	// log.FuncFuncTrace(0, "DlrDrawPerc ->  %v", DlrDrawPerc) // converted string to float in CalculateDlrDrawPerc
 
 	amtCheck = CalculateAmtCheck(r1DrawPaid, r1DrawAmt)
 	log.FuncFuncTrace(0, "amtCheck ->  %v", amtCheck) // r1DrawPaid [eqn present] // no schema
-
-	r1Balance = calculateR1Balance(dealer, statusCheck, r1CommPaid) // r1CommPaid [eqn present] // no schema
-	log.FuncFuncTrace(0, "r1Balance ->  %v", r1Balance)
 
 	ovrdBalance = CalculateOvrdBalance(dealer, overdTotal, ovrdPaid)
 	log.FuncFuncTrace(0, "ovrdBalance ->  %v", ovrdBalance) // ovrdPaid [eqn present] // no schema
@@ -409,8 +455,8 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	outData["contract$$"] = contractDolDol
 
 	// this is for 2nd sheet
-	DlrDrawMax = 0.0
-	r1Balance = 0.0
+	// DlrDrawMax = 0.0
+	// r1Balance = 0.0
 	outData["dlr_draw_max"] = DlrDrawMax // nocal
 	outData["r1_draw_amt"] = r1DrawAmt
 	outData["amt_check"] = amtCheck
@@ -454,26 +500,23 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	outData["r2_comm_total"] = r2CommTotal
 	outData["r2_comm_status_check"] = r2CommStatusCheck
 
-	// func replaceNaN(data map[string]interface{}) {
-	// for key, value := range outData {
-	//  if math.IsNaN(value.(float64)) {
-	//    outData[key] = nil
-	//  }
-	// }
-	// }
+	mapToJson(outData, outData["unique_id"].(string), "final")
+	mapToJson(outData, outData["unique_id"].(string), "out")
+	return outData, err
+}
 
+func mapToJson(outData map[string]interface{}, uid, fileName string) {
 	jsonData, err := json.MarshalIndent(outData, "", "    ")
 	if err != nil {
 		log.FuncFuncTrace(0, "Error writing JSON to file: %v", err)
-		return outData, err
+		return
 	}
 
-	fileName := fmt.Sprintf("%v_dlr_values.json", outData["unique_id"].(string))
+	fileName = fmt.Sprintf("%v_%v_dlr_values.json", uid, fileName)
 	err = os.WriteFile(fileName, jsonData, 0644)
 	if err != nil {
 		log.FuncFuncTrace(0, "Error writing JSON to file: %v", err)
-		return outData, err
+		return
 	}
 	log.FuncFuncTrace(0, "success file name %v", fileName)
-	return outData, err
 }

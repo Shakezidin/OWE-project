@@ -172,7 +172,7 @@ func (AdderDataCfg *AdderDataCfgStruct) CalculateExpence(dealer string, uniqueId
 
 	if len(dealer) > 0 {
 		for _, data := range AdderDataCfg.AdderDataList.AdderDataList {
-			if (data.UniqueId + data.Gc) == (uniqueId + "Expence") {
+			if (data.UniqueId + data.Gc) == (uniqueId + "Expense") {
 				Expence += data.AdderCal
 			}
 		}
