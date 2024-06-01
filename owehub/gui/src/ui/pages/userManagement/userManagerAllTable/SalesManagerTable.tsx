@@ -27,8 +27,8 @@ const SalesManagerTable: React.FC<SaleManagerProps> = ({
   setSelectedRows,
   setSelectAllChecked,
 }) => {
-  const [sortKey, setSortKey] = useState('');
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [sortKey, setSortKey] = useState('user_code');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
   const isAnyRowSelected = selectedRows?.size > 0;
   const isAllRowsSelected = selectedRows?.size === data?.length;
@@ -85,7 +85,7 @@ const SalesManagerTable: React.FC<SaleManagerProps> = ({
                   selectedRows={selectedRows}
                   setSelectedRows={setSelectedRows}
                   sortKey={item.name}
-                  sortDirection={sortKey === item.name ? sortDirection : undefined}
+                  sortDirection={sortKey === item.name ? sortDirection : 'asc'}
                   onClick={() => () => handleSort(item.name)}
                 />
               ))}

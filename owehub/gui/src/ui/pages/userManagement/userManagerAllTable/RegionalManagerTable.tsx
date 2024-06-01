@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { ICONS } from '../../../icons/Icons';
-import { FaArrowDown } from 'react-icons/fa6';
 import { UserRoleBasedListModel } from '../../../../core/models/api_models/UserManagementModel';
 import { UserRegionalTableColumn } from '../../../../resources/static_data/UserManagementColumn';
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
@@ -27,8 +26,8 @@ const RegionalManagerTable: React.FC<RegionalManagerProps> = ({
   setSelectedRows,
   setSelectAllChecked,
 }) => {
-  const [sortKey, setSortKey] = useState('');
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [sortKey, setSortKey] = useState('user_code');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
   const isAnyRowSelected = selectedRows?.size > 0;
   const isAllRowsSelected = selectedRows?.size === data?.length;
@@ -86,7 +85,7 @@ const RegionalManagerTable: React.FC<RegionalManagerProps> = ({
                   selectedRows={selectedRows}
                   setSelectedRows={setSelectedRows}
                   sortKey={item.name}
-                  sortDirection={sortKey === item.name ? sortDirection : undefined}
+                  sortDirection={sortKey === item.name ? sortDirection : 'asc'}
                   onClick={() => handleSort(item.name)}
                 />
               ))}

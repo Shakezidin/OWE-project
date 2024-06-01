@@ -28,9 +28,9 @@ const UserTable: React.FC<UserTableProps> = ({
 }) => {
   const isAnyRowSelected = selectedRows?.size > 0;
   const isAllRowsSelected = selectedRows?.size === data?.length;
-  const [sortKey, setSortKey] = useState('');
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
-
+  const [sortKey, setSortKey] = useState('user_code');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+ const [email, setEmail] = useState('');
   const handleSort = (key: string) => {
     console.log(key);
     if (sortKey === key) {
@@ -42,8 +42,6 @@ const UserTable: React.FC<UserTableProps> = ({
   };
 
   let sortedData = [...data]; // Create a shallow copy of the original data array
-console.log(data.length,selectedRows);
-
   if (sortKey) {
     sortedData.sort((a: any, b: any) => {
       const aValue = a[sortKey];
@@ -65,8 +63,6 @@ console.log(data.length,selectedRows);
       }
     });
   }
-
-  const [email, setEmail] = useState('');
 
   useEffect(() => {
     const storedEmail = localStorage.getItem('email');
@@ -99,7 +95,7 @@ console.log(data.length,selectedRows);
                 setSelectedRows={setSelectedRows}
                 sortKey={item.name}
                 sortDirection={
-                  sortKey === item.name ? sortDirection : undefined
+                  sortKey === item.name ? sortDirection : 'asc'
                 }
                 onClick={() => handleSort(item.name)}
               />
