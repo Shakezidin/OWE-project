@@ -63,8 +63,8 @@ func HandleGetNonCommDlrPayDataRequest(resp http.ResponseWriter, req *http.Reque
 
 	tableName := db.TableName_noncomm_dlr_pay
 	query = `
-			SELECT ndp.id AS record_id, ndp.unique_id, ndp.customer, ndp.start_date,
-    		ndp.end_date, ndp.dealer_dba, vd.dealer_name, ndp.exact_amount,
+			SELECT ndp.id AS record_id, ndp.unique_id, ndp.customer, ndp.date,
+    		ndp.dealer_dba, vd.dealer_name, ndp.exact_amount,
     		ndp.approved_by, ndp.notes, ndp.balance, ndp.paid_amount, ndp.dba
 			FROM noncomm_dlrpay ndp
 			JOIN v_dealer vd ON ndp.dealer_id = vd.id`
@@ -160,17 +160,10 @@ func HandleGetNonCommDlrPayDataRequest(resp http.ResponseWriter, req *http.Reque
 		}
 
 		// start_date
-		StartDate, ok := item["start_date"].(string)
-		if !ok || StartDate == "" {
-			log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
-			StartDate = ""
-		}
-
-		// end_date
-		EndDate, ok := item["end_date"].(string)
-		if !ok || EndDate == "" {
-			log.FuncErrorTrace(0, "Failed to get end date for Record ID %v. Item: %+v\n", RecordId, item)
-			EndDate = ""
+		Date, ok := item["date"].(string)
+		if !ok || Date == "" {
+			log.FuncErrorTrace(0, "Failed to get date for Record ID %v. Item: %+v\n", RecordId, item)
+			Date = ""
 		}
 
 		NonCommDlrPayData := models.GetNonCommDlrPay{
@@ -185,8 +178,7 @@ func HandleGetNonCommDlrPayDataRequest(resp http.ResponseWriter, req *http.Reque
 			Balance:     Balance,
 			PaidAmount:  PaidAmount,
 			DBA:         DBA,
-			StartDate:   StartDate,
-			EndDate:     EndDate,
+			Date:        Date,
 		}
 		NonCommDlrPayDataList.NonCommDlrPayList = append(NonCommDlrPayDataList.NonCommDlrPayList, NonCommDlrPayData)
 	}
@@ -275,11 +267,8 @@ func PrepareNonCommDlrPayFilters(tableName string, dataFilter models.DataRequest
 			case "dba":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ndp.dba) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
-			case "start_date":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ndp.start_date) %s LOWER($%d)", operator, len(whereEleList)+1))
-				whereEleList = append(whereEleList, value)
-			case "end_date":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ndp.end_date) %s LOWER($%d)", operator, len(whereEleList)+1))
+			case "date":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ndp.date) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			default:
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ndp.%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))

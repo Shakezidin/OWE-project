@@ -630,14 +630,13 @@ CREATE TABLE noncomm_dlrpay (
     customer text,
     dealer_id INT,
     dealer_dba text,
-    exact_amount text,
+    exact_amount float,
     approved_by text,
     notes text,
     balance float,
     paid_amount float,
     dba text,
-    start_date character varying NOT NULL,
-    end_date character varying,
+    date character varying NOT NULL,
     is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
@@ -934,6 +933,28 @@ CREATE TABLE ap_rep (
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone
 );
+
+create TABLE ap_dealer (
+    id serial NOT NULL,
+    unique_id varchar NOT NULL,
+    dealer_id INT,
+    dba varchar,
+    type varchar,
+    date date,
+    amount float,
+    method varchar,
+    transaction varchar,
+    notes character varying,
+    dealer character varying,
+    home_owner character varying,
+    state_id INT,
+    is_archived BOOLEAN DEFAULT FALSE,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
+    FOREIGN KEY (dealer_id) REFERENCES v_dealer(id),
+    FOREIGN KEY (state_id) REFERENCES states(state_id),
+    PRIMARY KEY(id)
+)
 
 /*
 CREATE TABLE AR_Schedule (

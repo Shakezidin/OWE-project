@@ -4,14 +4,13 @@ CREATE OR REPLACE FUNCTION update_non_comm_dlr_pay(
     p_customer         VARCHAR,
     p_dealer_name      VARCHAR,
     p_dealer_dba       VARCHAR,
-    p_exact_amount     VARCHAR,
+    p_exact_amount     DOUBLE PRECISION,
     p_approved_by      VARCHAR,
     p_notes            VARCHAR,
     p_balance          DOUBLE PRECISION,
     p_paid_amount      DOUBLE PRECISION,
     p_dba              VARCHAR,
-    p_start_date       VARCHAR,
-    p_end_date         VARCHAR,
+    p_date             VARCHAR,
     OUT v_non_comm_dlr_pay_id INT
 )
 RETURNS INT
@@ -24,10 +23,10 @@ BEGIN
     FROM v_dealer
     WHERE dealer_name = p_dealer_name;
 
-    -- Check if the dealer_id exists
-    IF v_dealer_id IS NULL THEN
-        RAISE EXCEPTION 'Dealer with name % not found', p_dealer_name;
-    END IF;
+    -- -- Check if the dealer_id exists
+    -- IF v_dealer_id IS NULL THEN
+    --     RAISE EXCEPTION 'Dealer with name % not found', p_dealer_name;
+    -- END IF;
 
     -- Update data in noncomm_dlrpay table
     UPDATE noncomm_dlrpay
@@ -42,8 +41,7 @@ BEGIN
         balance = p_balance,
         paid_amount = p_paid_amount,
         dba = p_dba,
-        start_date = p_start_date,
-        end_date = p_end_date
+        date = p_date
     WHERE
         id = p_id
     RETURNING id INTO v_non_comm_dlr_pay_id;
