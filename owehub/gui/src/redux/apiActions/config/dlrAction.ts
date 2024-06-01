@@ -13,10 +13,9 @@ interface IDLRCreateParams {
   payee: string;
   amount: string;
   description: string;
-  balance: number;
-  paid_amount: number;
-  start_date: string;
-  end_date: string;
+  balance ?: number;
+  paid_amount ?: number;
+  date: string;
 }
 
 export interface IRowDLR extends IDLRCreateParams {

@@ -303,8 +303,7 @@ const DlrOthPay: React.FC = () => {
                     <td>{el.description}</td>
                     <td>{el.balance}</td>
                     <td>{el.paid_amount}</td>
-                    <td>{el.start_date}</td>
-                    <td>{el.end_date}</td>
+                    <td>{el.date}</td>
                     <td>
                       {!viewArchived && selectedRows.size < 2 && (
                         <div className="action-icon">

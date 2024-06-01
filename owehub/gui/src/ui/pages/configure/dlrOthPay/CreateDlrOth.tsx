@@ -4,13 +4,6 @@ import Input from '../../../components/text_input/Input';
 import { ActionButton } from '../../../components/button/ActionButton';
 import { useDispatch } from 'react-redux';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
-import Select from 'react-select';
-import {
-  installerOption,
-  partnerOption,
-  repTypeOption,
-  stateOption,
-} from '../../../../core/models/data_models/SelectDataModel';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/dlrOth';
 import {
@@ -47,10 +40,9 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
     payee: commission?.payee || '',
     amount: commission?.amount || '',
     description: commission?.description || '',
-    balance: commission?.balance ? `${commission?.balance}` : '',
-    paid_amount: commission?.paid_amount ? `${commission?.balance}` : '',
-    start_date: commission?.start_date || '',
-    end_date: commission?.end_date || '',
+    // balance: commission?.balance ? `${commission?.balance}` : '',
+    // paid_amount: commission?.paid_amount ? `${commission?.balance}` : '',
+    date: commission?.date || '',
   });
   const [errors, setErrors] = useState<IError>({} as IError);
   const [newFormData, setNewFormData] = useState<any>([]);
@@ -86,30 +78,10 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
     }));
   };
 
-  // const handleInputChange = (e: FormInput) => {
-  //   const { name, value } = e.target;
-  //   if (name === 'end_date') {
-  //     if (createCommission.start_date && value < createCommission.start_date) {
-  //       setErrors((prevErrors) => ({
-  //         ...prevErrors,
-  //         end_date: 'End date cannot be before the start date',
-  //       }));
-  //       return;
-  //     }
-  //   }
-  //   if (name === 'balance' || name === 'paid_amount') {
-  //     if (value === '' || value === '0' || Number(value)) {
-  //       setCreateCommission((prev) => ({ ...prev, [name]: value }));
-  //     }
-  //   } else {
-  //     setCreateCommission((prev) => ({ ...prev, [name]: value }));
-  //   }
-  // };
-
   const handleInputChange = (e: FormInput) => {
     const { name, value } = e.target;
 
-    if (name === 'start_date') {
+    if (name === 'date') {
       setCreateCommission((prev) => ({ ...prev, [name]: value, end_date: '' }));
     }
 
@@ -136,8 +108,7 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
         dispatch(
           updateDlrOth({
             ...createCommission,
-            balance: parseFloat(createCommission.balance),
-            paid_amount: parseFloat(createCommission.paid_amount),
+            
             record_id: commission?.record_id!,
           })
         );
@@ -145,8 +116,7 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
         dispatch(
           createDlrOth({
             ...createCommission,
-            balance: parseFloat(createCommission.balance),
-            paid_amount: parseFloat(createCommission.paid_amount),
+            
           })
         );
       }
@@ -173,6 +143,9 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
         <div className="modal-body">
           <div className="createProfileInputView">
             <div className="createProfileTextView">
+
+
+
               <div className="create-input-container">
                 <div className="create-input-field">
                   <Input
@@ -238,28 +211,10 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                   )}
                 </div>
               </div>
+
+
+
               <div className="create-input-container">
-                <div className="create-input-field">
-                  <Input
-                    type={'number'}
-                    label="Balance"
-                    value={createCommission.balance}
-                    name="balance"
-                    placeholder={'Enter'}
-                    onChange={(e) => handleInputChange(e)}
-                  />
-                  {errors?.balance && (
-                    <span
-                      style={{
-                        display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
-                      }}
-                    >
-                      {errors.balance}
-                    </span>
-                  )}
-                </div>
 
                 <div className="create-input-field">
                   <Input
@@ -285,13 +240,13 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={'date'}
-                    label="Start Date"
-                    value={createCommission.start_date}
-                    name="start_date"
+                    label="Date"
+                    value={createCommission.date}
+                    name="date"
                     placeholder={'1/04/2004'}
                     onChange={(e) => handleInputChange(e)}
                   />
-                  {errors?.start_date && (
+                  {errors?.date && (
                     <span
                       style={{
                         display: 'block',
@@ -299,20 +254,18 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                         textTransform: 'capitalize',
                       }}
                     >
-                      {errors.start_date.replace('start_date', 'start date')}
+                      {errors.date.replace('date', 'start date')}
                     </span>
                   )}
                 </div>
-              </div>
-              <div className="create-input-container">
-                <div className="create-input-field">
+                {/* <div className="create-input-field">
                   <Input
                     type={'date'}
                     label="End Date"
                     value={createCommission.end_date}
                     name="end_date"
-                    min={createCommission.start_date && format(addDays(new Date(createCommission.start_date),1),"yyyy-MM-dd")}
-                    disabled={!createCommission.start_date}
+                    min={createCommission.date && format(addDays(new Date(createCommission.date),1),"yyyy-MM-dd")}
+                    disabled={!createCommission.date}
                     placeholder={'10/04/2004'}
                     onChange={(e) => handleInputChange(e)}
                   />
@@ -327,31 +280,12 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                       {errors.end_date.replace('end_date', 'end date')}
                     </span>
                   )}
-                </div>
-
-                <div className="create-input-field">
-                  <Input
-                    type={'number'}
-                    label="Paid Amount"
-                    value={createCommission.paid_amount}
-                    name="paid_amount"
-                  
-                    placeholder={'Enter'}
-                    onChange={(e) => handleInputChange(e)}
-                  />
-                  {errors?.amount && (
-                    <span
-                      style={{
-                        display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
-                      }}
-                    >
-                      {errors.paid_amount}
-                    </span>
-                  )}
-                </div>
+                </div> */}
               </div>
+
+
+
+
             </div>
           </div>
         </div>
