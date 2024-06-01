@@ -85,7 +85,7 @@ func HandleGetDbLogsRequest(resp http.ResponseWriter, req *http.Request) {
 
 	roleQuery = `
 		SELECT db_username
-		FROM user_details WHERE email_id = $1;
+		FROM user_details WHERE email_id = LOWER($1);
 	`
 
 	userEmailId = req.Context().Value("emailid").(string)
