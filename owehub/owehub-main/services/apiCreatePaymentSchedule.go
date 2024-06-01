@@ -56,7 +56,7 @@ func HandleCreatePaymentScheduleRequest(resp http.ResponseWriter, req *http.Requ
 		return
 	}
 
-	if ((len(createPaymentSchedule.Partner) <= 0) || len(createPaymentSchedule.PartnerName) <= 0) ||
+	if ((len(createPaymentSchedule.Dealer) <= 0) || len(createPaymentSchedule.PartnerName) <= 0) ||
 		(len(createPaymentSchedule.InstallerName) <= 0) || (len(createPaymentSchedule.SaleType) <= 0) ||
 		(len(createPaymentSchedule.State) <= 0) || (len(createPaymentSchedule.RepPay) <= 0) ||
 		(len(createPaymentSchedule.StartDate) <= 0) || (len(createPaymentSchedule.EndDate) <= 0) {
@@ -101,7 +101,7 @@ func HandleCreatePaymentScheduleRequest(resp http.ResponseWriter, req *http.Requ
 		return
 	}
 	// Populate query parameters in the correct order
-	queryParameters = append(queryParameters, createPaymentSchedule.Partner)
+	queryParameters = append(queryParameters, createPaymentSchedule.Dealer)
 	queryParameters = append(queryParameters, createPaymentSchedule.PartnerName)
 	queryParameters = append(queryParameters, createPaymentSchedule.InstallerName)
 	queryParameters = append(queryParameters, createPaymentSchedule.SaleType)

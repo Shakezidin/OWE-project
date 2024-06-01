@@ -62,14 +62,14 @@ func HandleGetPaymentSchedulesDataRequest(resp http.ResponseWriter, req *http.Re
 	}
 
 	tableName := db.TableName_payment_schedule
-	query = `SELECT ps.id as record_id, ud.name as partner, pt1.partner_name AS partner_name, pt2.partner_name AS installer_name, 
+	query = `SELECT ps.id as record_id, vd.dealer_name as dealer, pt1.partner_name AS partner_name, pt2.partner_name AS installer_name, 
 	st.name AS state, sl.type_name AS sale_type, ps.rl, ps.draw, ps.draw_max, ps.rep_draw, ps.rep_draw_max, ps.rep_pay, ps.start_date, ps.end_date
 	FROM payment_schedule ps 
 	JOIN states st ON st.state_id = ps.state_id 
 	JOIN partners pt1 ON pt1.partner_id = ps.partner_id 
 	JOIN partners pt2 ON pt2.partner_id = ps.installer_id 
 	JOIN sale_type sl ON sl.id = ps.sale_type_id 
-	JOIN user_details ud ON ud.user_id = ps.rep_id`
+	JOIN v_dealer vd ON vd.id = ps.dealer_id`
 
 	filter, whereEleList = PreparePaymentScheduleFilters(tableName, dataReq, false)
 	if filter != "" {
@@ -91,11 +91,11 @@ func HandleGetPaymentSchedulesDataRequest(resp http.ResponseWriter, req *http.Re
 			log.FuncErrorTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
 			continue
 		}
-		// Partner
-		Partner, ok := item["partner"].(string)
-		if !ok || Partner == "" {
-			log.FuncErrorTrace(0, "Failed to get partner for Record ID %v. Item: %+v\n", RecordId, item)
-			Partner = ""
+		// Dealer
+		Dealer, ok := item["dealer"].(string)
+		if !ok || Dealer == "" {
+			log.FuncErrorTrace(0, "Failed to get dealer for Record ID %v. Item: %+v\n", RecordId, item)
+			Dealer = ""
 		}
 
 		// PartnerName
@@ -184,7 +184,7 @@ func HandleGetPaymentSchedulesDataRequest(resp http.ResponseWriter, req *http.Re
 
 		paySchData := models.GetPaymentScheduleData{
 			RecordId:      RecordId,
-			Partner:       Partner,
+			Dealer:        Dealer,
 			PartnerName:   PartnerName,
 			InstallerName: Installer,
 			State:         State,
@@ -255,8 +255,8 @@ func PreparePaymentScheduleFilters(tableName string, dataFilter models.DataReque
 				filtersBuilder.WriteString(" AND ")
 			}
 			switch column {
-			case "partner":
-				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ud.name) %s LOWER($%d)", operator, len(whereEleList)+1))
+			case "dealer":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(vd.dealer_name) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
 			case "partner_name":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(pt1.partner_name) %s LOWER($%d)", operator, len(whereEleList)+1))

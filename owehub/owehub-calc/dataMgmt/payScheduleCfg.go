@@ -31,14 +31,14 @@ func (paymentScheduleCfg *PayScheduleCfgStruct) LoadPayScheduleCfg() (err error)
 	log.EnterFn(0, "LoadPayScheduleCfg")
 	defer func() { log.ExitFn(0, "LoadPayScheduleCfg", err) }()
 
-	query = `SELECT ps.id as record_id, ud.name as partner, pt1.partner_name AS partner_name, pt2.partner_name AS installer_name,
+	query = `SELECT ps.id as record_id, vd.dealer_name as dealer, pt1.partner_name AS partner_name, pt2.partner_name AS installer_name,
     st.name AS state, sl.type_name AS sale_type, ps.rl, ps.draw, ps.draw_max, ps.rep_draw, ps.rep_draw_max, ps.rep_pay, ps.start_date, ps.end_date
     FROM payment_schedule ps
     JOIN states st ON st.state_id = ps.state_id
     JOIN partners pt1 ON pt1.partner_id = ps.partner_id
     JOIN partners pt2 ON pt2.partner_id = ps.installer_id
     JOIN sale_type sl ON sl.id = ps.sale_type_id
-    JOIN user_details ud ON ud.user_id = ps.rep_id`
+    JOIN v_dealer vd ON ud.id = ps.dealer_id`
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {
@@ -52,11 +52,11 @@ func (paymentScheduleCfg *PayScheduleCfgStruct) LoadPayScheduleCfg() (err error)
 			log.FuncErrorTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
 			continue
 		}
-		// Partner
-		Partner, ok := item["partner"].(string)
-		if !ok || Partner == "" {
+		// Dealer
+		Dealer, ok := item["dealer"].(string)
+		if !ok || Dealer == "" {
 			log.FuncErrorTrace(0, "Failed to get partner for Record ID %v. Item: %+v\n", RecordId, item)
-			Partner = ""
+			Dealer = ""
 		}
 
 		// PartnerName
@@ -145,7 +145,7 @@ func (paymentScheduleCfg *PayScheduleCfgStruct) LoadPayScheduleCfg() (err error)
 
 		paySchData := models.GetPaymentScheduleData{
 			RecordId:      RecordId,
-			Partner:       Partner,
+			Dealer:        Dealer,
 			PartnerName:   PartnerName,
 			InstallerName: Installer,
 			State:         State,
@@ -178,7 +178,7 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateRL(dealer, partner, install
 
 	if len(dealer) > 0 {
 		for _, data := range PayScheduleCfg.PayScheduleList.PaymentScheduleList {
-			if data.Partner == dealer && data.PartnerName == partner && data.InstallerName == installer && data.SaleType == types && data.State == state &&
+			if data.Dealer == dealer && data.PartnerName == partner && data.InstallerName == installer && data.SaleType == types && data.State == state &&
 				data.StartDate <= wc && data.EndDate >= wc {
 				return float64(data.Rl)
 			}
@@ -201,7 +201,7 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateDlrDrawPerc(dealer, partner
 
 	if len(dealer) > 0 {
 		for _, data := range PayScheduleCfg.PayScheduleList.PaymentScheduleList {
-			if data.Partner == dealer && data.PartnerName == partner && data.InstallerName == installer && data.SaleType == loanType && data.State == state && data.StartDate <= wc && data.EndDate >= wc {
+			if data.Dealer == dealer && data.PartnerName == partner && data.InstallerName == installer && data.SaleType == loanType && data.State == state && data.StartDate <= wc && data.EndDate >= wc {
 				drawPerc = data.Draw
 			}
 		}
