@@ -27,8 +27,16 @@ func HandleCreateNonCommDlrPayRequest(resp http.ResponseWriter, req *http.Reques
 	var (
 		err                 error
 		createNonCommDlrPay models.CreateNonCommDlrPay
+		query               string
+		data                []map[string]interface{}
 		queryParameters     []interface{}
 		result              []interface{}
+		whereEleList        []interface{}
+		customer            string
+		dealerName          string
+		dealerDBA           string
+		balance             float64
+		paidAmount          float64
 	)
 
 	log.EnterFn(0, "HandleCreateNonCommDlrPayRequest")
@@ -55,50 +63,59 @@ func HandleCreateNonCommDlrPayRequest(resp http.ResponseWriter, req *http.Reques
 		return
 	}
 
-	// Validate float64 fields
-	if createNonCommDlrPay.Balance <= float64(0) {
-		err = fmt.Errorf("Invalid balance: %f, Not Allowed", createNonCommDlrPay.Balance)
-		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Balance Not Allowed", http.StatusBadRequest, nil)
-		return
-	}
-
-	if createNonCommDlrPay.PaidAmount <= float64(0) {
-		err = fmt.Errorf("Invalid paid amount value: %f, Not Allowed", createNonCommDlrPay.PaidAmount)
-		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Paid Amount value Not Allowed", http.StatusBadRequest, nil)
-		return
-	}
-
 	// Validate string fields
 	if len(createNonCommDlrPay.UniqueID) <= 0 ||
-		len(createNonCommDlrPay.Customer) <= 0 ||
-		len(createNonCommDlrPay.DealerName) <= 0 ||
-		len(createNonCommDlrPay.DealerDBA) <= 0 ||
-		len(createNonCommDlrPay.ExactAmount) <= 0 ||
 		len(createNonCommDlrPay.ApprovedBy) <= 0 ||
 		len(createNonCommDlrPay.Notes) <= 0 ||
-		len(createNonCommDlrPay.DBA) <= 0 ||
-		len(createNonCommDlrPay.StartDate) <= 0 {
+		len(createNonCommDlrPay.Date) <= 0 {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
+	if len(createNonCommDlrPay.UniqueID) > 0 {
+		query = `SELECT home_owner as customer, dealer as dealer_name FROM dealer_pay_calc_standard WHERE unique_id = $1`
+		whereEleList = append(whereEleList, createNonCommDlrPay.UniqueID)
+		data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get customer, dealer_name,dealerDba from DB err: %v", err)
+			FormAndSendHttpResp(resp, "Failed to get customer, dealer_name,dealerDba from DB", http.StatusBadRequest, nil)
+			return
+		}
+		customer = data[0]["customer"].(string)
+		dealerName = data[0]["dealer_name"].(string)
+		// dealerDBA = data[0]["dealerDBA"].(string)
+	}
+
+	if len(customer) > 0 {
+		query = fmt.Sprintf("SELECT SUM(ad.amount) as paid_amount FROM ap_dealer ad WHERE ad.unique_id = '%v' AND type = 'Non-COMM'", createNonCommDlrPay.UniqueID)
+
+		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get appt setters data from DB err: %v", err)
+			FormAndSendHttpResp(resp, "Failed to get appt setters data from DB", http.StatusBadRequest, nil)
+			return
+		}
+		// paidAmount = data[0]["paid_amount"].(float64)
+	}
+
+	if len(customer) > 0 {
+		balance = createNonCommDlrPay.ExactAmount - paidAmount
+	}
+
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, createNonCommDlrPay.UniqueID)
-	queryParameters = append(queryParameters, createNonCommDlrPay.Customer)
-	queryParameters = append(queryParameters, createNonCommDlrPay.DealerName)
-	queryParameters = append(queryParameters, createNonCommDlrPay.DealerDBA)
+	queryParameters = append(queryParameters, customer)
+	queryParameters = append(queryParameters, dealerName)
+	queryParameters = append(queryParameters, dealerDBA)
 	queryParameters = append(queryParameters, createNonCommDlrPay.ExactAmount)
 	queryParameters = append(queryParameters, createNonCommDlrPay.ApprovedBy)
 	queryParameters = append(queryParameters, createNonCommDlrPay.Notes)
-	queryParameters = append(queryParameters, createNonCommDlrPay.Balance)
-	queryParameters = append(queryParameters, createNonCommDlrPay.PaidAmount)
-	queryParameters = append(queryParameters, createNonCommDlrPay.DBA)
-	queryParameters = append(queryParameters, createNonCommDlrPay.StartDate)
-	queryParameters = append(queryParameters, createNonCommDlrPay.EndDate)
+	queryParameters = append(queryParameters, balance)
+	queryParameters = append(queryParameters, paidAmount)
+	queryParameters = append(queryParameters, dealerDBA)
+	queryParameters = append(queryParameters, createNonCommDlrPay.Date)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateNonCommDlrPayFunction, queryParameters)
@@ -108,8 +125,8 @@ func HandleCreateNonCommDlrPayRequest(resp http.ResponseWriter, req *http.Reques
 		return
 	}
 
-	data := result[0].(map[string]interface{})
+	responce := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "New non comm dealer pay created with Id: %+v", data["result"])
+	log.DBTransDebugTrace(0, "New non comm dealer pay created with Id: %+v", responce["result"])
 	FormAndSendHttpResp(resp, "Non Comm Dealer Pay Created Successfully", http.StatusOK, nil)
 }

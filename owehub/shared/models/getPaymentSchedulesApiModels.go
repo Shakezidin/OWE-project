@@ -8,7 +8,7 @@ package models
 
 type GetPaymentScheduleData struct {
 	RecordId      int64   `json:"record_id"`
-	Partner       string  `json:"partner"`
+	Dealer        string  `json:"dealer"`
 	PartnerName   string  `json:"partner_name"`
 	InstallerName string  `json:"installer_name"`
 	SaleType      string  `json:"sale_type"`

@@ -29,6 +29,14 @@ func HandleUpdateNonCommDlrPayRequest(resp http.ResponseWriter, req *http.Reques
 		UpdateNonCommDlrPay models.UpdateNonCommDlrPay
 		queryParameters     []interface{}
 		result              []interface{}
+		whereEleList        []interface{}
+		query               string
+		data                []map[string]interface{}
+		customer            string
+		dealerName          string
+		dealerDBA           string
+		balance             float64
+		paidAmount          float64
 	)
 
 	log.EnterFn(0, "HandleUpdateNonCommDlrPayRequest")
@@ -56,11 +64,10 @@ func HandleUpdateNonCommDlrPayRequest(resp http.ResponseWriter, req *http.Reques
 	}
 
 	// Validate string fields
-	if len(UpdateNonCommDlrPay.UniqueID) <= 0 || len(UpdateNonCommDlrPay.Customer) <= 0 ||
-		len(UpdateNonCommDlrPay.DealerName) <= 0 || len(UpdateNonCommDlrPay.DealerDBA) <= 0 ||
-		len(UpdateNonCommDlrPay.ExactAmount) <= 0 || len(UpdateNonCommDlrPay.ApprovedBy) <= 0 ||
-		len(UpdateNonCommDlrPay.Notes) <= 0 || len(UpdateNonCommDlrPay.DBA) <= 0 ||
-		len(UpdateNonCommDlrPay.StartDate) <= 0 {
+	if len(UpdateNonCommDlrPay.UniqueID) <= 0 ||
+		len(UpdateNonCommDlrPay.ApprovedBy) <= 0 ||
+		len(UpdateNonCommDlrPay.Notes) <= 0 ||
+		len(UpdateNonCommDlrPay.Date) <= 0 {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed, Update failed", http.StatusBadRequest, nil)
@@ -69,41 +76,55 @@ func HandleUpdateNonCommDlrPayRequest(resp http.ResponseWriter, req *http.Reques
 
 	// Validate float64 fields
 	if UpdateNonCommDlrPay.RecordId <= int64(0) {
-		err = fmt.Errorf("Invalid record_id: %f, Not Allowed", UpdateNonCommDlrPay.Balance)
+		err = fmt.Errorf("Invalid record_id: %f, Not Allowed", UpdateNonCommDlrPay.RecordId)
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Invalid record_id Not Allowed, Update failed", http.StatusBadRequest, nil)
 		return
 	}
 
-	// Validate float64 fields
-	if UpdateNonCommDlrPay.Balance <= float64(0) {
-		err = fmt.Errorf("Invalid balance value: %f, Not Allowed", UpdateNonCommDlrPay.Balance)
-		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Balance value Not Allowed, Update failed", http.StatusBadRequest, nil)
-		return
+	if len(UpdateNonCommDlrPay.UniqueID) > 0 {
+		query = `SELECT home_owner as customer, dealer as dealer_name FROM dealer_pay_calc_standard WHERE unique_id = $1`
+		whereEleList = append(whereEleList, UpdateNonCommDlrPay.UniqueID)
+		data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get customer, dealer_name,dealerDba from DB err: %v", err)
+			FormAndSendHttpResp(resp, "Failed to get customer, dealer_name,dealerDba from DB", http.StatusBadRequest, nil)
+			return
+		}
+		customer = data[0]["customer"].(string)
+		dealerName = data[0]["dealer_name"].(string)
+		// dealerDBA = data[0]["dealerDBA"].(string)
 	}
 
-	if UpdateNonCommDlrPay.PaidAmount <= float64(0) {
-		err = fmt.Errorf("Invalid paid amount value: %f, Not Allowed", UpdateNonCommDlrPay.PaidAmount)
-		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Paid Amount value Not Allowed, Update failed", http.StatusBadRequest, nil)
-		return
+	if len(customer) > 0 {
+		query = fmt.Sprintf("SELECT SUM(ad.amount) as paid_amount FROM ap_dealer ad WHERE ad.unique_id = '%v' AND type = 'Non-COMM'", UpdateNonCommDlrPay.UniqueID)
+
+		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get appt setters data from DB err: %v", err)
+			FormAndSendHttpResp(resp, "Failed to get appt setters data from DB", http.StatusBadRequest, nil)
+			return
+		}
+		// paidAmount = data[0]["paid_amount"].(float64)
+	}
+
+	if len(customer) > 0 {
+		balance = UpdateNonCommDlrPay.ExactAmount - paidAmount
 	}
 
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, UpdateNonCommDlrPay.RecordId)
 	queryParameters = append(queryParameters, UpdateNonCommDlrPay.UniqueID)
-	queryParameters = append(queryParameters, UpdateNonCommDlrPay.Customer)
-	queryParameters = append(queryParameters, UpdateNonCommDlrPay.DealerName)
-	queryParameters = append(queryParameters, UpdateNonCommDlrPay.DealerDBA)
+	queryParameters = append(queryParameters, customer)
+	queryParameters = append(queryParameters, dealerName)
+	queryParameters = append(queryParameters, dealerDBA)
 	queryParameters = append(queryParameters, UpdateNonCommDlrPay.ExactAmount)
 	queryParameters = append(queryParameters, UpdateNonCommDlrPay.ApprovedBy)
 	queryParameters = append(queryParameters, UpdateNonCommDlrPay.Notes)
-	queryParameters = append(queryParameters, UpdateNonCommDlrPay.Balance)
-	queryParameters = append(queryParameters, UpdateNonCommDlrPay.PaidAmount)
-	queryParameters = append(queryParameters, UpdateNonCommDlrPay.DBA)
-	queryParameters = append(queryParameters, UpdateNonCommDlrPay.StartDate)
-	queryParameters = append(queryParameters, UpdateNonCommDlrPay.EndDate)
+	queryParameters = append(queryParameters, balance)
+	queryParameters = append(queryParameters, paidAmount)
+	queryParameters = append(queryParameters, dealerDBA)
+	queryParameters = append(queryParameters, UpdateNonCommDlrPay.Date)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateNonCommDlrPayFunction, queryParameters)
@@ -113,8 +134,8 @@ func HandleUpdateNonCommDlrPayRequest(resp http.ResponseWriter, req *http.Reques
 		return
 	}
 
-	data := result[0].(map[string]interface{})
+	responce := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "non comm dealer pay Updated with Id: %+v", data["result"])
+	log.DBTransDebugTrace(0, "non comm dealer pay Updated with Id: %+v", responce["result"])
 	FormAndSendHttpResp(resp, "Non Comm Dealer Pay Updated Successfully", http.StatusOK, nil)
 }

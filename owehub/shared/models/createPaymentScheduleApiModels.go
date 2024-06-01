@@ -7,7 +7,7 @@
 package models
 
 type CreatePaymentSchedule struct {
-	Partner       string  `json:"partner"`
+	Dealer        string  `json:"dealer"`
 	PartnerName   string  `json:"partner_name"`
 	InstallerName string  `json:"installer_name"`
 	SaleType      string  `json:"sale_type"`
