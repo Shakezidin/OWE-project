@@ -92,7 +92,7 @@ func UpdatePassword(newPassword string, userEmailId string) (err error) {
 		return err
 	}
 
-	query = "UPDATE user_details SET password = $1, password_change_required =$2 where email_id = LOWER($3)"
+	query = "UPDATE user_details SET password = $1, password_change_required =$2 where email_id = $3"
 	whereEleList = append(whereEleList, string(hashedPassBytes))
 	whereEleList = append(whereEleList, isPasswordChnageReq)
 	whereEleList = append(whereEleList, userEmailId)
@@ -127,7 +127,7 @@ func GetUserInfo(emailId string) (data []map[string]interface{}, err error) {
 		`
 
 	if len(emailId) > 0 {
-		query += "WHERE LOWER(u.email_id) = LOWER($1)"
+		query += "WHERE u.email_id = $1"
 		whereEleList = append(whereEleList, emailId)
 	} else {
 		err = fmt.Errorf("Empty EmailId Received")
