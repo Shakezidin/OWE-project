@@ -159,7 +159,11 @@ const UserManagement: React.FC = () => {
   const createUserRequest = async (tablePermissions: any) => {
     let data = createUserObject(formData);
     const actionResult = await dispatch(
-      createUserOnboarding({ ...data, tables_permissions: tablePermissions })
+      createUserOnboarding({
+        ...data,
+        tables_permissions: tablePermissions,
+        description: formData.description.trim(),
+      })
     );
     const result = unwrapResult(actionResult);
 

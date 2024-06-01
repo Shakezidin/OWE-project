@@ -22,6 +22,19 @@ export interface ICommision {
   cancellation_period: number;
   installation_period: number;
 }
+
+const isSessionTimeout = () => {
+  const expirationTime = localStorage.getItem('expirationTime');
+  const currentTime = Date.now();
+  if (expirationTime) {
+    if (currentTime > parseInt(expirationTime, 10)) {
+      return true;
+    }
+  } else {
+    return false;
+  }
+};
+
 export const getPerfomance = createAsyncThunk(
   'get/perfomance',
   async (_, { rejectWithValue }) => {
@@ -102,11 +115,15 @@ const perfomanceSlice = createSlice({
         state.isLoading = false;
         state.perfomaceSale = action.payload.perfomaceSaleMetrics;
         state.commisionMetrics = action.payload.perfomaceCommisionMetrics;
+        console.log(isSessionTimeout(),"jbjhbghbghb");
       })
       .addCase(getPerfomance.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
-        toast.error(action.payload as string);
+        const session = isSessionTimeout();        
+        if (!session) {
+          toast.error(action.payload as string);
+        }
       })
 
       .addCase(getPerfomanceStatus.pending, (state, action) => {
@@ -120,7 +137,10 @@ const perfomanceSlice = createSlice({
       .addCase(getPerfomanceStatus.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
-        toast.error(action.payload as string);
+        const session = isSessionTimeout();
+        if (!session) {
+          toast.error(action.payload as string);
+        }
       });
   },
 });

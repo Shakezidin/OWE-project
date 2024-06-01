@@ -37,7 +37,16 @@ const PasswordInput = (props: {
       placeholder={props.placeholder}
       onChange={props.onChange}
       isTypePassword={true}
-      onClickEyeIcon={() => setShouldShow((v) => !v)}
+      onMouseDown={() => {
+        setShouldShow(true);
+      }}
+      onMouseUp={() => {
+        setShouldShow(false);
+      }}
+      onMouseLeave={() => {
+        setShouldShow(false);
+      }}
+      maxLength={50}
     />
   );
 };
@@ -46,6 +55,37 @@ const EnterOtpScreen = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { email, loading } = useAppSelector((state) => state.resetPassword);
+  const [error, setError] = useState<{ [key: string]: string }>({});
+
+  const validatePassword = (password: string) => {
+    const minLength = 8;
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasLowercase = /[a-z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    const hasSpecialChar = /[!@#$%^&*]/.test(password);
+    const hasNoSpaces = /^\S*$/.test(password);
+
+    if (password.length < minLength) {
+      return 'Password must be at least 8 characters long.';
+    }
+    if (!hasUppercase) {
+      return 'Password must contain at least one uppercase letter.';
+    }
+    if (!hasLowercase) {
+      return 'Password must contain at least one lowercase letter.';
+    }
+    if (!hasNumber) {
+      return 'Password must contain at least one number.';
+    }
+    if (!hasSpecialChar) {
+      return 'Password must contain at least one special character (!@#$%^&*).';
+    }
+    if (!hasNoSpaces) {
+      return 'Password must not contain any whitespace characters.';
+    }
+
+    return '';
+  };
 
   console.log('email', email);
   const [otpCred, setOtpCred] = useState<otpModel>({
@@ -54,13 +94,6 @@ const EnterOtpScreen = () => {
     new_password: '',
     confirm_password: '',
   });
-  const handleInputChange = (e: FormInput) => {
-    const { name, value } = e.target;
-    setOtpCred((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
 
   const resendOTP = async () => {
     const actionResult = await dispatch(generateOTP({ email_id: email }));
@@ -144,7 +177,15 @@ const EnterOtpScreen = () => {
                 name="otp"
                 value={otpCred.otp}
                 placeholder={'Enter OTP'}
-                onChange={handleInputChange}
+                onChange={(e) => {
+                  const { name, value } = e.target;
+                  const validValue = value.replace(/[^a-zA-Z0-9]/g, ''); 
+                  setOtpCred((prevState) => ({
+                    ...prevState,
+                    [name]: validValue,
+                  }));
+                }}
+                maxLength={20}
               />
 
               {/* if email not provided, dont show ResendOtpButton (incase of visit by url) */}
@@ -156,16 +197,49 @@ const EnterOtpScreen = () => {
                 value={otpCred.new_password}
                 name="new_password"
                 placeholder={'New Password'}
-                onChange={handleInputChange}
+                onChange={(e) => {
+                  const { name, value } = e.target;
+                  let trimmedValue = value;
+                  if (name === 'new_password') {
+                    trimmedValue = value.replace(/\s/g, '');
+                  }
+                  setOtpCred((prevState) => ({
+                    ...prevState,
+                    [name]: trimmedValue,
+                  }));
+                  setError((prevState) => ({
+                    ...prevState,
+                    [name]: validatePassword(trimmedValue),
+                  }));
+                }}
               />
+              {error.new_password && (
+                <span className="error">{error.new_password}</span>
+              )}
               <br />
               <PasswordInput
                 value={otpCred.confirm_password}
                 name="confirm_password"
                 placeholder={'Confirm Password'}
-                onChange={handleInputChange}
+                onChange={(e) => {
+                  const { name, value } = e.target;
+                  let trimmedValue = value;
+                  if (name === 'confirm_password') {
+                    trimmedValue = value.replace(/\s/g, '');
+                  }
+                  setOtpCred((prevState) => ({
+                    ...prevState,
+                    [name]: trimmedValue,
+                  }));
+                  setError((prevState) => ({
+                    ...prevState,
+                    [name]: trimmedValue !== otpCred.new_password ? 'Confirm password does not match with New password' : '',
+                  }));
+                }}
               />
-
+              {error.confirm_password && (
+                <span className="error">{error.confirm_password}</span>
+              )}
               <br />
               {/* <ActionButton  title="Submit" type="submit" onClick={() => {}} /> */}
               <button

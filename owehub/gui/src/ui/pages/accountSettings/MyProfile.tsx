@@ -17,7 +17,7 @@ const MyProfile = () => {
   const [stateOptions, setStateOptions] = useState<any[]>([]);
   const [selectedState, setSelectedState] = useState<string | null>(null);
   const dispatch = useAppDispatch();
-  const { userDetail, userUpdate } = useAppSelector((state) => state.userSlice);
+  const { userDetail, userUpdate,isFormSubmitting } = useAppSelector((state) => state.userSlice);
   const [name, setName] = useState<String>(userDetail?.name);
   const userRole = userDetail?.role_name;
   const userName = userDetail?.name;
@@ -93,6 +93,41 @@ const MyProfile = () => {
     // setZipCode('');
     setCountry(userDetail.country);
     setState(userDetail.state);
+  };
+
+  const handleStreetChange = (e:any) => {
+    const value = e.target.value;
+    const streetRegex = /^[a-zA-Z0-9\s,.'-]{0,100}$/
+    if(streetRegex.test(value)){
+      setStreet(value);
+      setErrors({...errors, street: ''})
+    }else{
+      setErrors({...errors, street: "Enter valid street"})
+    }
+  }
+
+  const handleCityChange = (e:any) => {
+    const value = e.target.value;
+    const cityRegex = /^[a-zA-Z\u0080-\u024F\s'-]{0,100}$/;
+
+    if (cityRegex.test(value)) {
+      setCity(value);
+      setErrors({ ...errors, city: '' });
+    } else {
+      setErrors({ ...errors, city: 'Enter valid city' });
+    }
+  };
+
+  const handleCountryChange = (e:any) => {
+    const value = e.target.value;
+    const countryRegex = /^[a-zA-Z\u0080-\u024F\s'-]{0,100}$/;
+
+    if (countryRegex.test(value)) {
+      setCountry(value);
+      setErrors({ ...errors, country: '' });
+    } else {
+      setErrors({ ...errors, country: 'Enter valid country' });
+    }
   };
  
   const fetchStateOptions = async () => {
@@ -236,10 +271,7 @@ const MyProfile = () => {
                   value={street}
                   name=""
                   placeholder={'Enter'}
-                  onChange={(e) => {
-                    setStreet(e.target.value);
-                    setErrors({ ...errors, street: '' });
-                  }}
+                  onChange={handleStreetChange}
                   disabled={isEditMode}
                 />
                 {errors.street && (
@@ -272,10 +304,7 @@ const MyProfile = () => {
                   value={city}
                   name=""
                   placeholder={'Enter'}
-                  onChange={(e) => {
-                    setCity(e.target.value);
-                    setErrors({ ...errors, city: ""});
-                  }}
+                  onChange={handleCityChange}
                   disabled={isEditMode}
                 />
                 {errors.city && <span className="error">{errors.city}</span>}
@@ -309,10 +338,7 @@ const MyProfile = () => {
                   value={country}
                   name=""
                   placeholder={'Enter'}
-                  onChange={(e) => {
-                    setCountry(e.target.value);
-                    setErrors({ ...errors, country: '' });
-                  }}
+                  onChange={handleCountryChange}
                   disabled={isEditMode}
                 />
                 {errors.country && (
@@ -333,6 +359,7 @@ const MyProfile = () => {
               <ActionButton
                 title={'Update'}
                 type="submit"
+                disabled={isFormSubmitting}
                 onClick={() => {
                 }}
               />

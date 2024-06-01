@@ -74,6 +74,8 @@ const UserManagementTable: React.FC<UserTableProos> = ({
 
   const handlePageChange = (page: number) => {
     setCurrentPage1(page);
+    setSelectAllChecked(false)
+    setSelectedRows(new Set())
   };
   const handleItemsPerPageChange = (e: any) => {
     const newItemsPerPage = parseInt(e.target.value, 10);

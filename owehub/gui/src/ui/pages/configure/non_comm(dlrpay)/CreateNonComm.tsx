@@ -276,7 +276,7 @@ const CreateNonComm: React.FC<ButtonProps> = ({
 
                 <div className="create-input-field">
                   <Input
-                    type={'text'}
+                    type={'number'}
                     label="Amount"
                     value={createCommission.exact_amount}
                     name="exact_amount"

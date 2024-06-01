@@ -28,8 +28,8 @@ const DBUserTable: React.FC<DBUserTableProps> = ({
 }) => {
   const isAnyRowSelected = selectedRows?.size > 0;
   const isAllRowsSelected = selectedRows?.size === data?.length;
-  const [sortKey, setSortKey] = useState('');
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [sortKey, setSortKey] = useState('user_code');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
   const handleSort = (key: string) => {
     console.log(key);
@@ -98,7 +98,7 @@ const DBUserTable: React.FC<DBUserTableProps> = ({
                 setSelectedRows={setSelectedRows}
                 sortKey={item.name}
                 sortDirection={
-                  sortKey === item.name ? sortDirection : undefined
+                  sortKey === item.name ? sortDirection : 'asc'
                 }
                 onClick={() => handleSort(item.name)}
               />

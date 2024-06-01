@@ -139,6 +139,19 @@ export const DashboardPage: React.FC = () => {
                 }}
               />
             </div>
+
+            <div className="dash-head-input">
+              <label className="inputLabel" style={{ color: '#344054' }}>
+                Set Default
+              </label>
+              <label
+                className="inputLabel dashboard-chart-view"
+                style={{ color: '#0493CE' }}
+              >
+                Chart View
+              </label>
+            </div>
+
             <div className="dash-head-input">
               <label className="inputLabel" style={{ color: '#344054' }}>
                 Payroll Date
@@ -180,18 +193,7 @@ export const DashboardPage: React.FC = () => {
                 )}
               </div>
             </div>
-
-            <div className="dash-head-input">
-              <label className="inputLabel" style={{ color: '#344054' }}>
-                Set Default
-              </label>
-              <label
-                className="inputLabel dashboard-chart-view"
-                style={{ color: '#0493CE' }}
-              >
-                Chart View
-              </label>
-            </div>
+            
           </div>
           
           <div className="dashboard-payroll">

@@ -53,7 +53,7 @@ import dataTableSlice from './apiSlice/DbManager/dataTableSlice';
 import filterSlice from './apiSlice/filterSlice/filterSlice';
 import userExistSlice from './apiSlice/authSlice/checkuserslice';
 import userSlice from './apiSlice/UserSlice/userSlice';
-
+import dealerCreditSlice from './apiSlice/configSlice/config_get_slice/dealerCreditSlice';
 export const store = configureStore({
   reducer: {
     appState: appStateSlice,
@@ -113,6 +113,7 @@ export const store = configureStore({
     dataTableSlice,
     filterSlice,
     userSlice,
+    dealerCredit:dealerCreditSlice
   },
 });
 

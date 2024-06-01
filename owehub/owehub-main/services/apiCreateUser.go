@@ -164,7 +164,7 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 	queryParameters = append(queryParameters, createUserReq.Name)
 	queryParameters = append(queryParameters, username)
 	queryParameters = append(queryParameters, createUserReq.MobileNumber)
-	queryParameters = append(queryParameters, createUserReq.EmailId)
+	queryParameters = append(queryParameters, strings.ToLower(createUserReq.EmailId))
 	queryParameters = append(queryParameters, string(hashedPassBytes))
 	queryParameters = append(queryParameters, createUserReq.PasswordChangeReq)
 	queryParameters = append(queryParameters, createUserReq.ReportingManager)

@@ -58,7 +58,7 @@ const PaymentSchedule = () => {
       filters,
     };
     dispatch(fetchPaySchedule(pageNumber));
-  }, [dispatch, currentPage, viewArchived, refetch,filters]);
+  }, [dispatch, currentPage, viewArchived, refetch, filters]);
   // Extract column names
 
   const filter = () => {
@@ -297,7 +297,7 @@ const PaymentSchedule = () => {
                   </td>
                 </tr>
               ) : currentPageData?.length > 0 ? (
-                currentPageData?.map((el: any, i: any) => (
+                currentPageData?.map((el: PayScheduleModel, i: any) => (
                   <tr key={i}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
                       <div className="flex-check">
@@ -312,8 +312,7 @@ const PaymentSchedule = () => {
                             )
                           }
                         />
-                       {el.partner} 
-                       
+                        {el.partner}
                       </div>
                     </td>
                     <td> {el.partner_name}</td>
@@ -326,6 +325,9 @@ const PaymentSchedule = () => {
                     <td>{el.rep_draw}</td>
                     <td>{el.rep_draw_max}</td>
                     <td>{el.rep_pay}</td>
+                    <td>{el.standard}</td>
+                    <td>{el.percentage}</td>
+                    <td>{el.start_date}</td>
                     <td>{el.start_date}</td>
                     <td>{el.end_date}</td>
                     {!viewArchived && selectedRows.size < 2 && (

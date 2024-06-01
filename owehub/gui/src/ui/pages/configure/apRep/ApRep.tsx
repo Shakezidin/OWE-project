@@ -8,13 +8,8 @@ import CreatedApRep from './CreateApRep';
 import CheckBox from '../../../components/chekbox/CheckBox';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import Pagination from '../../../components/pagination/Pagination';
-import { setCurrentPage } from '../../../../redux/apiSlice/paginationslice/paginationSlice';
-import { TimeLineSlaModel } from '../../../../core/models/configuration/create/TimeLineSlaModel';
-import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
-
 import SortableHeader from '../../../components/tableHeader/SortableHeader';
 import { ApRepColumns } from '../../../../resources/static_data/configureHeaderData/ApRepColumn';
-import FilterModal from '../../../components/FilterModal/FilterModal';
 import { ROUTES } from '../../../../routes/routes';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
@@ -23,6 +18,7 @@ import DataNotFound from '../../../components/loader/DataNotFound';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
+import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
 const ApRep = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -32,9 +28,6 @@ const ApRep = () => {
 
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-
-  //   const loading = useAppSelector((state) => state.timelineSla.loading);
-
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
@@ -44,9 +37,10 @@ const ApRep = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
-  const { data, count, isSuccess, isLoading } = useAppSelector(
-    (state) => state.ar
-  );
+  const { data, count, isSuccess, isLoading } = useAppSelector((state) => state.ar);
+
+  // const filterState = useAppDispatch((state)=> state.)
+
   const [filters, setFilters] = useState<FilterModel[]>([]);
   useEffect(() => {
     const pageNumber = {
@@ -69,6 +63,7 @@ const ApRep = () => {
       dispatch(fetchApRep({ ...pageNumber }));
     }
   }, [isSuccess, currentPage, viewArchived, filters]);
+
   const filter = () => {
     setFilterOpen(true);
   };

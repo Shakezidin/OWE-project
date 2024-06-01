@@ -9,6 +9,7 @@ import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { useDispatch } from 'react-redux';
 import {
+  dealerOption,
   installerOption,
   partnerOption,
   salesTypeOption,
@@ -57,6 +58,8 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
     rep_pay: payEditedData ? payEditedData?.rep_pay : '',
     start_date: payEditedData ? payEditedData?.start_date : '',
     end_date: payEditedData ? payEditedData?.end_date : '',
+    percentage:payEditedData?payEditedData?.percentage:"",
+    standard:payEditedData?payEditedData?.standard:""
   });
   const [newFormData, setNewFormData] = useState<any>([]);
 
@@ -65,7 +68,7 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
   );
 
   const tableData = {
-    tableNames: ['partners', 'states', 'installers', 'sale_type'],
+    tableNames: ['partners', 'states', 'installers', 'sale_type',"dealer"],
   };
   const getNewFormData = async () => {
     const res = await postCaller(EndPoints.get_newFormData, tableData);
@@ -112,7 +115,8 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
       name === 'draw' ||
       name === 'draw_max' ||
       name === 'rep_draw' ||
-      name === 'rep_draw_max'
+      name === 'rep_draw_max'||
+      name==="percentage"
     ) {
       const sanitizedValue = value.replace(/[^0-9.]/g, '');
       value = sanitizedValue;
@@ -151,6 +155,8 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
             draw_max: parseFloat(createPayData.draw_max as string),
             rep_draw: parseFloat(createPayData.rep_draw as string),
             rep_draw_max: parseFloat(createPayData.rep_draw_max as string),
+            standard:createPayData.standard ,
+            percentage: parseFloat(createPayData.percentage as string),
           });
           if ((await res?.status) === 200) {
             handleClose();
@@ -170,6 +176,10 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
             draw_max: parseFloat(createPayData.draw_max as string),
             rep_draw: parseFloat(createPayData.rep_draw as string),
             rep_draw_max: parseFloat(createPayData.rep_draw_max as string),
+            standard:createPayData.standard ,
+            percentage: parseFloat(createPayData.percentage as string),
+
+            
           });
           if ((await res?.status) === 200) {
             handleClose();
@@ -204,13 +214,13 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
             <div className="createProfileTextView">
               <div className="create-input-container">
                 <div className="create-input-field">
-                  <Input
-                    type={'text'}
-                    label="Partner Name"
-                    value={createPayData.partner}
-                    name="partner"
-                    placeholder={'Enter'}
-                    onChange={(e) => handlePayInputChange(e)}
+                  <label className="inputLabel-select">Partner Name</label>
+                  <SelectOption
+                    options={dealerOption(newFormData)}
+                    onChange={(newValue) => handleChange(newValue, 'partner')}
+                    value={dealerOption(newFormData)?.find(
+                      (option) => option.value === createPayData.partner
+                    )}
                   />
                   {errors?.partner && (
                     <span
@@ -502,6 +512,52 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
                       }}
                     >
                       {errors.end_date}
+                    </span>
+                  )}
+                </div>
+
+
+                <div className="create-input-field">
+                  <Input
+                    type={'text'}
+                    label="Satandard"
+                    value={createPayData.standard}
+                    name="standard"
+                    placeholder={'Enter'}
+                    onChange={(e) => handlePayInputChange(e)}
+                  />
+                  {errors?.standard && (
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.standard}
+                    </span>
+                  )}
+                </div>
+
+
+                <div className="create-input-field">
+                  <Input
+                    type={'text'}
+                    label="Percentage"
+                    value={createPayData.percentage}
+                    name="percentage"
+                    placeholder={'Enter'}
+                    onChange={(e) => handlePayInputChange(e)}
+                  />
+                  {errors?.percentage && (
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.percentage}
                     </span>
                   )}
                 </div>

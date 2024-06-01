@@ -107,7 +107,6 @@ export const ARDashboardPage: React.FC = () => {
   const handleChange = (name: string, value: string) => {
     dispatch(filterChange({ name, value }));
   };
-  console.log(filters, 'guhvjhg');
 
   return (
     <>
@@ -120,9 +119,7 @@ export const ARDashboardPage: React.FC = () => {
               </label>
               <Select
                 options={options1}
-                value={options1.find(
-                  (option) => option.value === filters.report_type
-                )}
+                value={{ value: filters.report_type, label: filters.report_type }}
                 onChange={(value) => handleChange('report_type', value?.value!)}
                 styles={{
                   control: (baseStyles, state) => ({
@@ -193,9 +190,7 @@ export const ARDashboardPage: React.FC = () => {
               </label>
               <Select
                 options={options2}
-                value={options2.find(
-                  (option) => option.value === filters.sale_partner
-                )}
+                value={{ value: filters.sale_partner, label: filters.sale_partner }}
                 onChange={(value) =>
                   handleChange('sale_partner', value?.value!)
                 }
@@ -269,9 +264,7 @@ export const ARDashboardPage: React.FC = () => {
               </label>
               <Select
                 options={options3}
-                value={options3.find(
-                  (option) => option.value === filters.sort_by
-                )}
+                value={{ value: filters.sort_by, label: filters.sort_by }}
                 onChange={(value) => handleChange('sort_by', value?.value!)}
                 styles={{
                   control: (baseStyles, state) => ({

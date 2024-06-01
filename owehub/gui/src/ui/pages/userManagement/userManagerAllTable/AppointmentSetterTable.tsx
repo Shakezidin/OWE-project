@@ -27,9 +27,9 @@ const AppointmentSetterTable: React.FC<AppointmentSetterProps> = ({
   setSelectedRows,
   setSelectAllChecked,
 }) => {
-  const [sortKey, setSortKey] = useState('');
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
-
+  const [sortKey, setSortKey] = useState('user_code');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  let sortedData = [...data]
   const isAnyRowSelected = selectedRows?.size > 0;
   const isAllRowsSelected = selectedRows?.size === data?.length;
 
@@ -43,7 +43,7 @@ const AppointmentSetterTable: React.FC<AppointmentSetterProps> = ({
   };
 
   if (sortKey) {
-    data?.sort((a: any, b: any) => {
+    sortedData?.sort((a: any, b: any) => {
       const aValue = a[sortKey];
       const bValue = b[sortKey];
       if (typeof aValue === 'string' && typeof bValue === 'string') {
@@ -85,8 +85,8 @@ const AppointmentSetterTable: React.FC<AppointmentSetterProps> = ({
                   selectedRows={selectedRows}
                   setSelectedRows={setSelectedRows}
                   sortKey={item.name}
-                  sortDirection={'desc'}
-                  onClick={() => {}}
+                  sortDirection={sortKey === item.name ? sortDirection : 'asc'}
+                  onClick={() => handleSort(item.name)}
                 />
               ))}
               <th>
@@ -98,8 +98,8 @@ const AppointmentSetterTable: React.FC<AppointmentSetterProps> = ({
           </thead>
 
           <tbody>
-            {data?.length > 0 ? (
-              data.map((el: UserRoleBasedListModel, i: number) => (
+            {sortedData?.length > 0 ? (
+              sortedData.map((el: UserRoleBasedListModel, i: number) => (
                 <tr key={el.email_id}>
                   <td>
                     <div className="flex-check">
