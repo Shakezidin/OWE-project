@@ -7,7 +7,10 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints';
 import { useAppDispatch } from '../../../redux/hooks';
-import { logout } from '../../../redux/apiSlice/authSlice/authSlice';
+import {
+  activeSessionTimeout,
+  logout,
+} from '../../../redux/apiSlice/authSlice/authSlice';
 import { toast } from 'react-toastify';
 import ChangePassword from '../../pages/resetPassword/ChangePassword/ChangePassword';
 import { checkUserExists } from '../../../redux/apiActions/auth/authActions';
@@ -36,6 +39,7 @@ const MainLayout = () => {
       if (currentTime < parseInt(expirationTime, 10)) {
         const timeout = setTimeout(
           () => {
+            dispatch(activeSessionTimeout());
             dispatch(logout());
             navigate('/login');
             toast.error('Session time expired. Please login again..');
@@ -46,8 +50,10 @@ const MainLayout = () => {
         return () => clearTimeout(timeout);
       } else {
         // Token has expired
+        dispatch(activeSessionTimeout());
         dispatch(logout());
         navigate('/login');
+
         toast.error('Session time expired. Please login again..');
       }
     }

@@ -13,6 +13,7 @@ interface AuthState {
   isAuthenticated: boolean;
   is_password_change_required: boolean;
   status: number | null;
+  sessionTimeout: boolean;
 }
 
 const initialState: AuthState = {
@@ -28,6 +29,7 @@ const initialState: AuthState = {
   )
     ? true
     : false,
+  sessionTimeout: false,
 };
 
 const authSlice = createSlice({
@@ -41,6 +43,13 @@ const authSlice = createSlice({
     //   state.access_token = access_token;
     //   state.isAuthenticated = true;
     // },
+    activeSessionTimeout: (state) => {
+      state.sessionTimeout = true;
+    },
+
+    diableSessionTimeout: (state) => {
+      state.sessionTimeout = false;
+    },
     logout(state) {
       state.email_id = null;
       state.role_name = null;
@@ -63,12 +72,13 @@ const authSlice = createSlice({
       .addCase(loginAction.fulfilled, (state: AuthState, action) => {
         state.loading = false;
         state.error = null;
+        state.sessionTimeout = false;
         console.log(' action.payload........', action.payload);
 
         const { status, data } = action.payload;
         if (status === HTTP_STATUS.OK) {
           // on succesfull login dismiss previous toasters
-          toast.dismiss()
+          toast.dismiss();
 
           state.email_id = data.email_id;
           state.role_name = data.role_name;
@@ -80,11 +90,16 @@ const authSlice = createSlice({
       .addCase(loginAction.rejected, (state: AuthState, action) => {
         state.loading = false;
         state.error = action.error.message ?? 'Unable to login User';
-         // on succesfull logout dismiss previous toasters
-         toast.dismiss()
+        // on succesfull logout dismiss previous toasters
+        toast.dismiss();
       });
   },
 });
 
-export const { logout, initializeAuth } = authSlice.actions;
+export const {
+  logout,
+  initializeAuth,
+  activeSessionTimeout,
+  diableSessionTimeout,
+} = authSlice.actions;
 export default authSlice.reducer;
