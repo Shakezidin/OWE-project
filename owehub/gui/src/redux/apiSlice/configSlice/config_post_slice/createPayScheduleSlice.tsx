@@ -18,6 +18,8 @@ const initialState: PayScheduleModel = {
   rep_pay: '',
   start_date: '',
   end_date: '',
+  percentage:'',
+  standard:""
 };
 
 const createPayScheduleSlice = createSlice({

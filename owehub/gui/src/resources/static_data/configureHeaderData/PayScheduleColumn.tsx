@@ -53,6 +53,19 @@ export const PayScheduleColumns: Column[] = [
     type: 'string',
     isCheckbox: false,
   },
+
+  {
+    name: 'standard',
+    displayName: 'Standard',
+    type: 'string',
+    isCheckbox: false,
+  },
+  {
+    name: 'percentage',
+    displayName: 'Percentage',
+    type: 'number',
+    isCheckbox: false,
+  },
   {
     name: 'start_date',
     displayName: 'Start Date',
@@ -65,4 +78,6 @@ export const PayScheduleColumns: Column[] = [
     type: 'date',
     isCheckbox: false,
   },
+
+
 ];

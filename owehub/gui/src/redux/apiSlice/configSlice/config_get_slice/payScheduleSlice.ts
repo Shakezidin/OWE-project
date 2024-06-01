@@ -3,6 +3,7 @@ import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { PayScheduleModel } from '../../../../core/models/configuration/create/PayScheduleModel';
 
+
 interface payScheduleState {
   payment_schedule_list: PayScheduleModel[];
   loading: boolean;
