@@ -7,15 +7,12 @@
 package models
 
 type UpdateDLR_OTHData struct {
-	Record_Id    int64   `json:"record_id"`
+	Record_Id   int64   `json:"record_id"`
 	Unique_Id   string  `json:"unique_id"`
 	Payee       string  `json:"payee"`
-	Amount      string  `json:"amount"`
+	Amount      float64 `json:"amount"`
 	Description string  `json:"description"`
-	Balance     float64 `json:"balance"`
-	Paid_Amount float64 `json:"paid_amount"`
-	StartDate   string  `json:"start_date"`
-	EndDate     string  `json:"end_date"`
+	Date        string  `json:"date"`
 }
 
 type UpdateDLR_OTHArchive struct {

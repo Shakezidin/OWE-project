@@ -652,8 +652,7 @@ CREATE TABLE dlr_oth(
     balance float,
     paid_amount float,
     is_archived BOOLEAN DEFAULT FALSE,
-    start_date character varying NOT NULL,
-    end_date character varying,
+    date character varying NOT NULL,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     PRIMARY KEY (id)
