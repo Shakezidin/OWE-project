@@ -32,13 +32,13 @@ func (paymentScheduleCfg *PayScheduleCfgStruct) LoadPayScheduleCfg() (err error)
 	defer func() { log.ExitFn(0, "LoadPayScheduleCfg", err) }()
 
 	query = `SELECT ps.id as record_id, vd.dealer_name as dealer, pt1.partner_name AS partner_name, pt2.partner_name AS installer_name,
-    st.name AS state, sl.type_name AS sale_type, ps.rl, ps.draw, ps.draw_max, ps.rep_draw, ps.rep_draw_max, ps.rep_pay, ps.start_date, ps.end_date
+    st.name AS state, sl.type_name AS sale_type, ps.rl, ps.draw, ps.draw_max, ps.rep_draw, ps.rep_draw_max, ps.rep_pay,ps.commission_model, ps.start_date, ps.end_date
     FROM payment_schedule ps
     JOIN states st ON st.state_id = ps.state_id
     JOIN partners pt1 ON pt1.partner_id = ps.partner_id
     JOIN partners pt2 ON pt2.partner_id = ps.installer_id
     JOIN sale_type sl ON sl.id = ps.sale_type_id
-    JOIN v_dealer vd ON ud.id = ps.dealer_id`
+    JOIN v_dealer vd ON vd.id = ps.dealer_id`
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {
@@ -129,6 +129,13 @@ func (paymentScheduleCfg *PayScheduleCfgStruct) LoadPayScheduleCfg() (err error)
 			RepPay = ""
 		}
 
+		// CommissionModel
+		CommissionModel, ok := item["commission_model"].(string)
+		if !ok || CommissionModel == "" {
+			log.FuncErrorTrace(0, "Failed to get CommissionModel for Record ID %v. Item: %+v\n", RecordId, item)
+			CommissionModel = ""
+		}
+
 		// StartDate
 		StartDate, ok := item["start_date"].(string)
 		if !ok || StartDate == "" {
@@ -155,9 +162,10 @@ func (paymentScheduleCfg *PayScheduleCfgStruct) LoadPayScheduleCfg() (err error)
 			// DrawMax:       DrawMax,
 			// RepDraw:       RepDraw,
 			// RepDrawMax:    RepDrawMax,
-			RepPay:    RepPay,
-			StartDate: StartDate,
-			EndDate:   EndDate,
+			RepPay:          RepPay,
+			CommissionModel: CommissionModel,
+			StartDate:       StartDate,
+			EndDate:         EndDate,
 		}
 
 		PayScheduleCfg.PayScheduleList.PaymentScheduleList = append(PayScheduleCfg.PayScheduleList.PaymentScheduleList, paySchData)

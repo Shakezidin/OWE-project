@@ -10,6 +10,7 @@ CREATE OR REPLACE FUNCTION create_new_payment_schedule(
     p_rep_draw DOUBLE PRECISION,
     p_rep_draw_max DOUBLE PRECISION,
     p_rep_pay VARCHAR,
+    p_commission_model VARCHAR,
     p_start_date VARCHAR,
     p_end_date VARCHAR,
     OUT v_schedule_id INT
@@ -86,6 +87,7 @@ BEGIN
         rep_draw,
         rep_draw_max,
         rep_pay,
+        commission_model,
         start_date,
         end_date,
         is_archived
@@ -102,6 +104,7 @@ BEGIN
         p_rep_draw,
         p_rep_draw_max,
         p_rep_pay,
+        p_commission_model,
         p_start_date,
         p_end_date,
         FALSE

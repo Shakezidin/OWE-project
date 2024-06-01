@@ -280,7 +280,7 @@ CREATE TABLE payment_schedule (
     rep_pay character varying,
     start_date character varying NOT NULL,
     end_date character varying,
-    commission_models character varying,
+    commission_model character varying,
     is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,

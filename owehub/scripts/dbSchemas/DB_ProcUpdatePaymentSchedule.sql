@@ -11,6 +11,7 @@ CREATE OR REPLACE FUNCTION update_payment_schedule(
     p_rep_draw DOUBLE PRECISION,
     p_rep_draw_max DOUBLE PRECISION,
     p_rep_pay VARCHAR,
+    p_commission_model VARCHAR,
     p_start_date VARCHAR,
     p_end_date VARCHAR,
     OUT v_payment_schedule_id INT
@@ -31,6 +32,7 @@ BEGIN
         rep_draw = p_rep_draw,
         rep_draw_max = p_rep_draw_max,
         rep_pay = p_rep_pay,
+        commission_model = p_commission_model,
         start_date = p_start_date,
         end_date = p_end_date,
         updated_at = CURRENT_TIMESTAMP

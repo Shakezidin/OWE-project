@@ -59,7 +59,8 @@ func HandleCreatePaymentScheduleRequest(resp http.ResponseWriter, req *http.Requ
 	if ((len(createPaymentSchedule.Dealer) <= 0) || len(createPaymentSchedule.PartnerName) <= 0) ||
 		(len(createPaymentSchedule.InstallerName) <= 0) || (len(createPaymentSchedule.SaleType) <= 0) ||
 		(len(createPaymentSchedule.State) <= 0) || (len(createPaymentSchedule.RepPay) <= 0) ||
-		(len(createPaymentSchedule.StartDate) <= 0) || (len(createPaymentSchedule.EndDate) <= 0) {
+		(len(createPaymentSchedule.StartDate) <= 0) || (len(createPaymentSchedule.EndDate) <= 0) ||
+		(len(createPaymentSchedule.CommissionModel) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
@@ -112,6 +113,7 @@ func HandleCreatePaymentScheduleRequest(resp http.ResponseWriter, req *http.Requ
 	queryParameters = append(queryParameters, createPaymentSchedule.RepDraw)
 	queryParameters = append(queryParameters, createPaymentSchedule.RepDrawMax)
 	queryParameters = append(queryParameters, createPaymentSchedule.RepPay)
+	queryParameters = append(queryParameters, createPaymentSchedule.CommissionModel)
 	queryParameters = append(queryParameters, createPaymentSchedule.StartDate)
 	queryParameters = append(queryParameters, createPaymentSchedule.EndDate)
 

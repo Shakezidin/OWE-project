@@ -7,20 +7,21 @@
 package models
 
 type UpdatePaymentSchedule struct {
-	RecordId      int64   `json:"record_id"`
-	Dealer        string  `json:"dealer"`
-	PartnerName   string  `json:"partner_name"`
-	InstallerName string  `json:"installer_name"`
-	SaleType      string  `json:"sale_type"`
-	State         string  `json:"state"`
-	Rl            float64 `json:"rl"`
-	Draw          float64 `json:"draw"`
-	DrawMax       float64 `json:"draw_max"`
-	RepDraw       float64 `json:"rep_draw"`
-	RepDrawMax    float64 `json:"rep_draw_max"`
-	RepPay        string  `json:"rep_pay"`
-	StartDate     string  `json:"start_date"`
-	EndDate       string  `json:"end_date"`
+	RecordId        int64   `json:"record_id"`
+	Dealer          string  `json:"dealer"`
+	PartnerName     string  `json:"partner_name"`
+	InstallerName   string  `json:"installer_name"`
+	SaleType        string  `json:"sale_type"`
+	State           string  `json:"state"`
+	Rl              float64 `json:"rl"`
+	Draw            float64 `json:"draw"`
+	DrawMax         float64 `json:"draw_max"`
+	RepDraw         float64 `json:"rep_draw"`
+	RepDrawMax      float64 `json:"rep_draw_max"`
+	RepPay          string  `json:"rep_pay"`
+	CommissionModel string  `json:"commission_model"`
+	StartDate       string  `json:"start_date"`
+	EndDate         string  `json:"end_date"`
 }
 
 type UpdatePaymentScheduleArchive struct {
