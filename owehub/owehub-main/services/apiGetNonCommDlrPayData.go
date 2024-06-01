@@ -118,10 +118,10 @@ func HandleGetNonCommDlrPayDataRequest(resp http.ResponseWriter, req *http.Reque
 		}
 
 		// exact_amount
-		ExactAmount, ok := item["exact_amount"].(string)
-		if !ok || ExactAmount == "" {
+		ExactAmount, ok := item["exact_amount"].(float64)
+		if !ok  {
 			log.FuncErrorTrace(0, "Failed to get exact amount for Record ID %v. Item: %+v\n", RecordId, item)
-			ExactAmount = ""
+			ExactAmount = 0.0
 		}
 
 		// approved_by
