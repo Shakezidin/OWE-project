@@ -63,7 +63,7 @@ func HandleCheckUserExists(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	query = `
-	  SELECT email_id FROM user_details WHERE email_id = $1`
+	  SELECT email_id FROM user_details WHERE email_id = LOWER($1)`
 	whereEleList = append(whereEleList, createAdderCreditReq.Email)
 
 	response := models.CheckUserExistsResp{}
