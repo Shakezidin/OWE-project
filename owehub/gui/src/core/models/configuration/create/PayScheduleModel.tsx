@@ -13,4 +13,6 @@ export interface PayScheduleModel {
   rep_pay: string;
   start_date: string;
   end_date: string;
+  percentage:number|string
+  standard:string
 }
