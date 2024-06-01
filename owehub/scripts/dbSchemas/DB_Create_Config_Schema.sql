@@ -267,7 +267,7 @@ CREATE TABLE tier_loan_fee (
 
 CREATE TABLE payment_schedule (
     id serial NOT NULL,
-    rep_id INT,
+    dealer_id INT,
     partner_id INT,
     installer_id INT,
     sale_type_id INT,
@@ -280,6 +280,7 @@ CREATE TABLE payment_schedule (
     rep_pay character varying,
     start_date character varying NOT NULL,
     end_date character varying,
+    commission_models character varying,
     is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
@@ -287,7 +288,7 @@ CREATE TABLE payment_schedule (
     FOREIGN KEY (sale_type_id) REFERENCES sale_type(id),
     FOREIGN KEY (installer_id) REFERENCES partners(partner_id),
     FOREIGN KEY (partner_id) REFERENCES partners(partner_id),
-    FOREIGN KEY (rep_id) REFERENCES user_details(user_id),
+    FOREIGN KEY (dealer_id) REFERENCES v_dealer(id),
     PRIMARY KEY (id)
 );
 

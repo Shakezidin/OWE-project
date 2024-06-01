@@ -1,6 +1,6 @@
 CREATE OR REPLACE FUNCTION update_payment_schedule(
     p_record_id INT,
-    p_partner VARCHAR,
+    p_dealer VARCHAR,
     p_partner_name VARCHAR,
     p_installer_name VARCHAR,
     p_sale_type VARCHAR,
@@ -20,6 +20,7 @@ AS $$
 BEGIN
     UPDATE payment_schedule
     SET 
+        dealer_id = (SELECT id FROM v_dealer WHERE LOWER(dealer_name) = LOWER(p_dealer) LIMIT 1),
         partner_id = (SELECT partner_id FROM partners WHERE LOWER(partner_name) = LOWER(p_partner_name) LIMIT 1),
         installer_id = (SELECT partner_id FROM partners WHERE LOWER(partner_name) = LOWER(p_installer_name) LIMIT 1),
         sale_type_id = (SELECT id FROM sale_type WHERE LOWER(type_name) = LOWER(p_sale_type) LIMIT 1),
