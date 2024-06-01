@@ -58,8 +58,7 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
     rep_pay: payEditedData ? payEditedData?.rep_pay : '',
     start_date: payEditedData ? payEditedData?.start_date : '',
     end_date: payEditedData ? payEditedData?.end_date : '',
-    percentage:payEditedData?payEditedData?.percentage:"",
-    standard:payEditedData?payEditedData?.standard:""
+    commission_model: payEditedData ? payEditedData?.commission_model : '',
   });
   const [newFormData, setNewFormData] = useState<any>([]);
 
@@ -68,7 +67,7 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
   );
 
   const tableData = {
-    tableNames: ['partners', 'states', 'installers', 'sale_type',"dealer"],
+    tableNames: ['partners', 'states', 'installers', 'sale_type', 'dealer'],
   };
   const getNewFormData = async () => {
     const res = await postCaller(EndPoints.get_newFormData, tableData);
@@ -115,8 +114,8 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
       name === 'draw' ||
       name === 'draw_max' ||
       name === 'rep_draw' ||
-      name === 'rep_draw_max'||
-      name==="percentage"
+      name === 'rep_draw_max' ||
+      name === 'percentage'
     ) {
       const sanitizedValue = value.replace(/[^0-9.]/g, '');
       value = sanitizedValue;
@@ -131,7 +130,10 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
       [name]: value,
     }));
   };
-
+const commisionOpt = [
+  { value: 'standard', label: 'Standard' },
+  { value: 'perecentage', label: 'Perecentage' },
+]
   const submitPaySchedule = async (e: FormEvent) => {
     e.preventDefault();
     try {
@@ -145,6 +147,7 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
             draw_max: parseFloat(createPayData.draw_max as string),
             rep_draw: parseFloat(createPayData.rep_draw as string),
             rep_draw_max: parseFloat(createPayData.rep_draw_max as string),
+            commission_model:createPayData.commission_model
           })
         );
         if (createPayData.record_id) {
@@ -155,8 +158,7 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
             draw_max: parseFloat(createPayData.draw_max as string),
             rep_draw: parseFloat(createPayData.rep_draw as string),
             rep_draw_max: parseFloat(createPayData.rep_draw_max as string),
-            standard:createPayData.standard ,
-            percentage: parseFloat(createPayData.percentage as string),
+            commission_model:createPayData.commission_model
           });
           if ((await res?.status) === 200) {
             handleClose();
@@ -176,10 +178,6 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
             draw_max: parseFloat(createPayData.draw_max as string),
             rep_draw: parseFloat(createPayData.rep_draw as string),
             rep_draw_max: parseFloat(createPayData.rep_draw_max as string),
-            standard:createPayData.standard ,
-            percentage: parseFloat(createPayData.percentage as string),
-
-            
           });
           if ((await res?.status) === 200) {
             handleClose();
@@ -516,17 +514,19 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
                   )}
                 </div>
 
-
                 <div className="create-input-field">
-                  <Input
-                    type={'text'}
-                    label="Satandard"
-                    value={createPayData.standard}
-                    name="standard"
-                    placeholder={'Enter'}
-                    onChange={(e) => handlePayInputChange(e)}
+                  <label className="inputLabel-select select-type-label">
+                    Commission model
+                  </label>
+                  <SelectOption
+                    menuListStyles={{ height: '230px' }}
+                    options={commisionOpt}
+                    onChange={(newValue) =>
+                      handleChange(newValue, 'commission_model')
+                    }
+                    value={commisionOpt.find((val)=>val.value===createPayData.commission_model) }
                   />
-                  {errors?.standard && (
+                  {errors?.commission_model && (
                     <span
                       style={{
                         display: 'block',
@@ -534,30 +534,7 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
                         textTransform: 'capitalize',
                       }}
                     >
-                      {errors.standard}
-                    </span>
-                  )}
-                </div>
-
-
-                <div className="create-input-field">
-                  <Input
-                    type={'text'}
-                    label="Percentage"
-                    value={createPayData.percentage}
-                    name="percentage"
-                    placeholder={'Enter'}
-                    onChange={(e) => handlePayInputChange(e)}
-                  />
-                  {errors?.percentage && (
-                    <span
-                      style={{
-                        display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
-                      }}
-                    >
-                      {errors.percentage}
+                      {errors.commission_model}
                     </span>
                   )}
                 </div>

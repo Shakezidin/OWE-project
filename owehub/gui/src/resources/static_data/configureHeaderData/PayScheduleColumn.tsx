@@ -55,15 +55,9 @@ export const PayScheduleColumns: Column[] = [
   },
 
   {
-    name: 'standard',
-    displayName: 'Standard',
+    name: 'commission_model',
+    displayName: 'Commission Model',
     type: 'string',
-    isCheckbox: false,
-  },
-  {
-    name: 'percentage',
-    displayName: 'Percentage',
-    type: 'number',
     isCheckbox: false,
   },
   {
