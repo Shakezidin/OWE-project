@@ -9,6 +9,7 @@ import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoints';
 import { useDispatch } from 'react-redux';
 import {
+  dealerOption,
   installerOption,
   partnerOption,
   salesTypeOption,
@@ -65,7 +66,7 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
   );
 
   const tableData = {
-    tableNames: ['partners', 'states', 'installers', 'sale_type'],
+    tableNames: ['partners', 'states', 'installers', 'sale_type',"dealer"],
   };
   const getNewFormData = async () => {
     const res = await postCaller(EndPoints.get_newFormData, tableData);
@@ -204,13 +205,13 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
             <div className="createProfileTextView">
               <div className="create-input-container">
                 <div className="create-input-field">
-                  <Input
-                    type={'text'}
-                    label="Partner Name"
-                    value={createPayData.partner}
-                    name="partner"
-                    placeholder={'Enter'}
-                    onChange={(e) => handlePayInputChange(e)}
+                  <label className="inputLabel-select">Partner Name</label>
+                  <SelectOption
+                    options={dealerOption(newFormData)}
+                    onChange={(newValue) => handleChange(newValue, 'partner')}
+                    value={dealerOption(newFormData)?.find(
+                      (option) => option.value === createPayData.partner
+                    )}
                   />
                   {errors?.partner && (
                     <span
