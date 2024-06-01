@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION create_new_payment_schedule(
-    p_partner VARCHAR,
+    p_dealer VARCHAR,
     p_partner_name VARCHAR,
     p_installer_name VARCHAR,
     p_sale_type_name VARCHAR,
@@ -21,7 +21,7 @@ DECLARE
     v_installer_id INT;
     v_sale_type_id INT;
     v_state_id INT;
-    v_rep_id INT;
+    v_dealer_id INT;
 BEGIN
     -- Get the partner_id based on the provided partner_name
     SELECT partner_id INTO v_partner_id
@@ -64,18 +64,18 @@ BEGIN
     END IF;
 
     -- Get the rep_id based on the provided partner_name (assuming it's rep_id)
-    SELECT user_id INTO v_rep_id
-    FROM user_details
-    WHERE name = p_partner;
+    SELECT id INTO v_dealer_id
+    FROM v_dealer
+    WHERE dealer_name = p_dealer;
 
     -- Check if the rep exists
-    IF v_rep_id IS NULL THEN
-        RAISE EXCEPTION 'Rep % not found', p_partner;
+    IF v_dealer_id IS NULL THEN
+        RAISE EXCEPTION 'Rep % not found', p_dealer;
     END IF;
 
     -- Insert new record into payment_schedule table
     INSERT INTO payment_schedule (
-        rep_id,
+        dealer_id,
         partner_id,
         installer_id,
         sale_type_id,
@@ -91,7 +91,7 @@ BEGIN
         is_archived
     )
     VALUES (
-        v_rep_id,
+        v_dealer_id,
         v_partner_id,
         v_installer_id,
         v_sale_type_id,

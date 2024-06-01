@@ -6,8 +6,7 @@ CREATE OR REPLACE FUNCTION update_dlr_oth(
     p_description             VARCHAR,
     p_balance                 DOUBLE PRECISION,
     p_paid_amount             DOUBLE PRECISION,
-    p_start_date              VARCHAR,
-    p_end_date                VARCHAR,
+    p_date                    VARCHAR,
     OUT v_dlr_oth_id INT
 )
 RETURNS INT
@@ -22,8 +21,7 @@ BEGIN
         description = p_description,
         balance = p_balance,
         paid_amount = p_paid_amount,
-        start_date = p_start_date,
-        end_date = p_end_date
+        date = p_date
     WHERE
         id = p_id
     RETURNING id INTO v_dlr_oth_id;

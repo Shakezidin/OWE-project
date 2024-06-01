@@ -3,14 +3,13 @@ CREATE OR REPLACE FUNCTION create_new_non_comm_dlr_pay(
     p_customer   text,
     p_dealer_name text,
     p_dealer_dba  text,
-    p_exact_amount  text,
+    p_exact_amount  DOUBLE PRECISION,
     p_approved_by text,
     p_notes text,
     p_balance  float,
     p_paid_amount  float,
     p_dba  text,
-    p_start_date character varying,
-    p_end_date character varying,
+    p_date character varying,
     OUT v_non_comm_dlr_pay_id INT
 )
     RETURNS INT
@@ -23,10 +22,10 @@ BEGIN
     FROM v_dealer
     WHERE dealer_name = p_dealer_name;
 
-    -- Check if the dealer_id exists
-    IF v_dealer_id IS NULL THEN
-        RAISE EXCEPTION 'Dealer with name % not found', p_dealer_name;
-    END IF;
+    -- -- Check if the dealer_id exists
+    -- IF v_dealer_id IS NULL THEN
+    --     RAISE EXCEPTION 'Dealer with name % not found', p_dealer_name;
+    -- END IF;
 
     -- Insert data into noncomm_dlrpay table
     INSERT INTO noncomm_dlrpay (
@@ -40,8 +39,7 @@ BEGIN
         balance,
         paid_amount,
         dba,
-        start_date,
-        end_date
+        date
     )
     VALUES (
                p_unique_id,
@@ -54,8 +52,7 @@ BEGIN
                p_balance,
                p_paid_amount,
                p_dba,
-               p_start_date,
-               p_end_date
+               p_date
            )
     RETURNING id INTO v_non_comm_dlr_pay_id;
 END;

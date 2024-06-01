@@ -29,6 +29,10 @@ func HandleCreateDLROTHDataRequest(resp http.ResponseWriter, req *http.Request) 
 		createDLR_OTHReq models.CreateDLR_OTH
 		queryParameters  []interface{}
 		result           []interface{}
+		paid_Amount      float64
+		balance          float64
+		query            string
+		// data             []map[string]interface{}
 	)
 
 	log.EnterFn(0, "HandleCreateDLROTHDataRequest")
@@ -56,37 +60,47 @@ func HandleCreateDLROTHDataRequest(resp http.ResponseWriter, req *http.Request) 
 	}
 
 	if (len(createDLR_OTHReq.Unique_Id) <= 0) || (len(createDLR_OTHReq.Payee) <= 0) ||
-		(len(createDLR_OTHReq.Amount) <= 0) || (len(createDLR_OTHReq.Description) <= 0) ||
-		(len(createDLR_OTHReq.StartDate) <= 0) || (len(createDLR_OTHReq.EndDate) <= 0) {
+		(len(createDLR_OTHReq.Description) <= 0) ||
+		(len(createDLR_OTHReq.Date) <= 0) {
 		err = fmt.Errorf("Empty Input Fields in API is Not Allowed")
 		log.FuncErrorTrace(0, "%v", err)
 		FormAndSendHttpResp(resp, "Empty Input Fields in API is Not Allowed", http.StatusBadRequest, nil)
 		return
 	}
 
-	if createDLR_OTHReq.Balance <= float64(0) {
-		err = fmt.Errorf("Invalid balance Not Allowed")
-		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Balance Not Allowed", http.StatusBadRequest, nil)
-		return
+	if len(createDLR_OTHReq.Payee) > 0 {
+		query = fmt.Sprintf("SELECT amount from ap_dealer where unique_id = '%v' AND dealer = '%v' AND type = 'DLR-OTH'", createDLR_OTHReq.Unique_Id, createDLR_OTHReq.Payee)
+		_, err = db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to get amount from DB err: %v", err)
+			FormAndSendHttpResp(resp, "Failed to get amount from DB", http.StatusBadRequest, nil)
+			return
+		}
+
+		log.FuncErrorTrace(0, "******************************************************************!!!")
+
+		// paid_Amount, ok := data[0]["amount"].(float64)
+		// if !ok || paid_Amount == 0.0 {
+		// 	paid_Amount = 0.0
+		// }
 	}
 
-	if createDLR_OTHReq.Paid_Amount <= float64(0) {
-		err = fmt.Errorf("Invalid paid amount Not Allowed")
-		log.FuncErrorTrace(0, "%v", err)
-		FormAndSendHttpResp(resp, "Invalid Paid Amount Not Allowed", http.StatusBadRequest, nil)
-		return
+	log.FuncErrorTrace(0, "******************************************************************!!!")
+
+	if len(createDLR_OTHReq.Payee) > 0 {
+		balance = createDLR_OTHReq.Amount - paid_Amount
 	}
+
+	log.FuncErrorTrace(0, "******************************************************************!!!")
 
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, createDLR_OTHReq.Unique_Id)
 	queryParameters = append(queryParameters, createDLR_OTHReq.Payee)
 	queryParameters = append(queryParameters, createDLR_OTHReq.Amount)
 	queryParameters = append(queryParameters, createDLR_OTHReq.Description)
-	queryParameters = append(queryParameters, createDLR_OTHReq.Balance)
-	queryParameters = append(queryParameters, createDLR_OTHReq.Paid_Amount)
-	queryParameters = append(queryParameters, createDLR_OTHReq.StartDate)
-	queryParameters = append(queryParameters, createDLR_OTHReq.EndDate)
+	queryParameters = append(queryParameters, balance)
+	queryParameters = append(queryParameters, paid_Amount)
+	queryParameters = append(queryParameters, createDLR_OTHReq.Date)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateDLR_OTHFunction, queryParameters)
@@ -96,8 +110,8 @@ func HandleCreateDLROTHDataRequest(resp http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	data := result[0].(map[string]interface{})
+	responce := result[0].(map[string]interface{})
 
-	log.DBTransDebugTrace(0, "New dlr oth created with Id: %+v", data["result"])
+	log.DBTransDebugTrace(0, "New dlr oth created with Id: %+v", responce["result"])
 	FormAndSendHttpResp(resp, "Dlr_Oth Created Successfully", http.StatusOK, nil)
 }

@@ -63,7 +63,7 @@ func HandleGetDLROTHDataRequest(resp http.ResponseWriter, req *http.Request) {
 
 	tableName := db.TableName_Dlr_Oth
 	query = ` 
-	 SELECT dh.id as record_id, dh.unique_id, dh.payee, dh.amount, dh.description, dh.balance, dh.paid_amount, dh.is_archived, dh.start_date, dh.end_date
+	 SELECT dh.id as record_id, dh.unique_id, dh.payee, dh.amount, dh.description, dh.balance, dh.paid_amount, dh.is_archived, dh.date
 	 FROM dlr_oth dh`
 
 	filter, whereEleList = PrepareDLROTHFilters(tableName, dataReq, false)
@@ -101,10 +101,10 @@ func HandleGetDLROTHDataRequest(resp http.ResponseWriter, req *http.Request) {
 		}
 
 		// amount
-		Amount, amountOk := item["amount"].(string)
-		if !amountOk || Amount == "" {
+		Amount, amountOk := item["amount"].(float64)
+		if !amountOk || Amount == 0.0 {
 			log.FuncErrorTrace(0, "Failed to get amount for Record ID %v. Item: %+v\n", RecordId, item)
-			Amount = ""
+			Amount = 0.0
 		}
 
 		// description
@@ -128,11 +128,11 @@ func HandleGetDLROTHDataRequest(resp http.ResponseWriter, req *http.Request) {
 			Paid_amount = 0.0
 		}
 
-		// StartDate
-		StartDate, startOk := item["start_date"].(string)
-		if !startOk || StartDate == "" {
+		// Date
+		Date, startOk := item["date"].(string)
+		if !startOk || Date == "" {
 			log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
-			StartDate = ""
+			Date = ""
 		}
 
 		// EndDate
@@ -151,8 +151,7 @@ func HandleGetDLROTHDataRequest(resp http.ResponseWriter, req *http.Request) {
 			Description: Description,
 			Balance:     Balance,
 			Paid_Amount: Paid_amount,
-			StartDate:   StartDate,
-			EndDate:     EndDate,
+			Date:        Date,
 		}
 
 		// Append the new DLROTHData to the DLROTHList

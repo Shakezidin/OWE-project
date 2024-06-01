@@ -10,27 +10,11 @@ package datamgmt
 import (
 	db "OWEApp/shared/db"
 	log "OWEApp/shared/logger"
+	models "OWEApp/shared/models"
 )
 
-type GetPaymentScheduleDataTemp struct {
-	RecordId      int64   `json:"record_id"`
-	Partner       string  `json:"partner"`
-	PartnerName   string  `json:"partner_name"`
-	InstallerName string  `json:"installer_name"`
-	SaleType      string  `json:"sale_type"`
-	State         string  `json:"state"`
-	Rl            float64 `json:"rl"`
-	Draw          float64 `json:"draw"`
-	DrawMax       float64 `json:"draw_max"`
-	RepDraw       float64 `json:"rep_draw"`
-	RepDrawMax    float64 `json:"rep_draw_max"`
-	RepPay        string  `json:"rep_pay"`
-	StartDate     string  `json:"start_date"`
-	EndDate       string  `json:"end_date"`
-}
-
 type PayScheduleCfgStruct struct {
-	PayScheduleList []GetPaymentScheduleDataTemp
+	PayScheduleList []models.CreatePaymentSchedule
 }
 
 var (
@@ -47,14 +31,14 @@ func (paymentScheduleCfg *PayScheduleCfgStruct) LoadPayScheduleCfg() (err error)
 	log.EnterFn(0, "LoadPayScheduleCfg")
 	defer func() { log.ExitFn(0, "LoadPayScheduleCfg", err) }()
 
-	query = `SELECT ps.id as record_id, ud.name as partner, pt1.partner_name AS partner_name, pt2.partner_name AS installer_name,
+	query = `SELECT ps.id as record_id, vd.dealer_name as dealer, pt1.partner_name AS partner_name, pt2.partner_name AS installer_name,
     st.name AS state, sl.type_name AS sale_type, ps.rl, ps.draw, ps.draw_max, ps.rep_draw, ps.rep_draw_max, ps.rep_pay, ps.start_date, ps.end_date
     FROM payment_schedule ps
     JOIN states st ON st.state_id = ps.state_id
     JOIN partners pt1 ON pt1.partner_id = ps.partner_id
     JOIN partners pt2 ON pt2.partner_id = ps.installer_id
     JOIN sale_type sl ON sl.id = ps.sale_type_id
-    JOIN user_details ud ON ud.user_id = ps.rep_id`
+    JOIN v_dealer vd ON ud.id = ps.dealer_id`
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {
@@ -68,11 +52,12 @@ func (paymentScheduleCfg *PayScheduleCfgStruct) LoadPayScheduleCfg() (err error)
 			// log.FuncErrorTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
 			continue
 		}
-		// Partner
-		Partner, ok := item["partner"].(string)
-		if !ok || Partner == "" {
-			// log.FuncErrorTrace(0, "Failed to get partner for Record ID %v. Item: %+v\n", RecordId, item)
-			Partner = ""
+
+		// Dealer
+		Dealer, ok := item["dealer"].(string)
+		if !ok || Dealer == "" {
+			log.FuncErrorTrace(0, "Failed to get partner for Record ID %v. Item: %+v\n", RecordId, item)
+			Dealer = ""
 		}
 
 		// PartnerName
@@ -159,9 +144,8 @@ func (paymentScheduleCfg *PayScheduleCfgStruct) LoadPayScheduleCfg() (err error)
 			EndDate = ""
 		}
 
-		paySchData := GetPaymentScheduleDataTemp{
-			RecordId:      RecordId,
-			Partner:       Partner,
+		paySchData := models.CreatePaymentSchedule{
+			Dealer:        Dealer,
 			PartnerName:   PartnerName,
 			InstallerName: Installer,
 			State:         State,
@@ -186,7 +170,6 @@ func (paymentScheduleCfg *PayScheduleCfgStruct) LoadPayScheduleCfg() (err error)
 * DESCRIPTION:     calculates the addr value based on the provided data
 * RETURNS:         addr value
 *****************************************************************************/
-
 func (PayScheduleCfg *PayScheduleCfgStruct) CalculateRL(dealer, partner, installer, types, state, wc string) float64 {
 
 	log.EnterFn(0, "CalculateRL")
@@ -194,7 +177,7 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateRL(dealer, partner, install
 
 	if len(dealer) > 0 {
 		for _, data := range PayScheduleCfg.PayScheduleList {
-			if data.Partner == dealer && data.PartnerName == partner && data.InstallerName == installer && data.SaleType == types && data.State == state &&
+			if data.Dealer == dealer && data.PartnerName == partner && data.InstallerName == installer && data.SaleType == types && data.State == state &&
 				data.StartDate <= wc && data.EndDate >= wc {
 				return float64(data.Rl)
 			}
@@ -209,7 +192,6 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateRL(dealer, partner, install
 * DESCRIPTION:     calculates the addr value based on the provided data
 * RETURNS:         drawPerc
 *****************************************************************************/
-
 func (PayScheduleCfg *PayScheduleCfgStruct) CalculateDlrDrawPerc(dealer, partner, installer, loanType, state, startDate, endDate, wc string) (drawPerc, dlrDrawMax float64) {
 
 	log.EnterFn(0, "CalculateDlrDrawPerc")
@@ -217,7 +199,7 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateDlrDrawPerc(dealer, partner
 
 	if len(dealer) > 0 {
 		for _, data := range PayScheduleCfg.PayScheduleList {
-			if data.Partner == dealer && data.PartnerName == partner && data.InstallerName == installer && data.SaleType == loanType && data.State == state && data.StartDate <= wc && data.EndDate >= wc {
+			if data.Dealer == dealer && data.PartnerName == partner && data.InstallerName == installer && data.SaleType == loanType && data.State == state && data.StartDate <= wc && data.EndDate >= wc {
 				drawPerc = data.Draw
 				dlrDrawMax = data.DrawMax
 			}
