@@ -1,33 +1,3 @@
-CREATE TABLE dlr_pay_pr_data(
-    Home_Owne  Text,
-    Current_Status Text,
-    Status_Date  Date,
-    Unique_ID  Text PRIMARY KEY,
-    Dealer Text,
-    DBA  TExt,
-    Payment_Type Text,
-    Finace_Type Text,
-    Today  Date,
-    Amount  FLOAT,
-    Sys_Size  FLOAT,
-    Contract_Value FLOAT,
-    Loan_Fee FLOAT,
-    Other_Adders FLOAT,
-    EPC FLOAT,
-    Net_EPC FLOAT,
-    RL FLOAT,
-    Credit FLOAT,
-    Rep1  Text,
-    Rep2  Text,
-    Rep_Pay  FLOAT,
-    Net_Rev  FLOAT,
-    Draw_Amt  FLOAT,
-    Amt_Paid  FLOAT,
-    Balance FLOAT,
-    ST  Text,
-    Contract_Date Date
-);
-
 CREATE TABLE dealer_pay_calc_standard (
     -- Sales data
     dealer TEXT,
@@ -169,7 +139,7 @@ SELECT
     dealer_pay_calc_standard.r1_draw_amt AS amount,
     dealer_pay_calc_standard.loan_type AS type,
     dealer_pay_calc_standard.sys_size AS sys_size,
-    dealer_pay_calc_standard.contract_calc AS contract_calc,
+    dealer_pay_calc_standard.contract_$$ AS contract_$$,
     dealer_pay_calc_standard.loan_fee AS loan_fee,
     dealer_pay_calc_standard.adder_total AS other_adders,
     dealer_pay_calc_standard.epc AS epc,
@@ -207,7 +177,7 @@ SELECT
     dealer_pay_calc_standard.r1_balance AS amount,
     dealer_pay_calc_standard.loan_type AS type,
     dealer_pay_calc_standard.sys_size AS sys_size,
-    dealer_pay_calc_standard.contract_calc AS contract_calc,
+    dealer_pay_calc_standard.contract_$$ AS contract_$$,
     dealer_pay_calc_standard.loan_fee AS loan_fee,
     dealer_pay_calc_standard.adder_total AS other_adders,
     dealer_pay_calc_standard.epc AS epc,
@@ -231,7 +201,7 @@ WHERE
     dealer_pay_calc_standard.dealer <> 'House'      AND
     dealer_pay_calc_standard.r1_balance <> 0        AND
     (
-        -- The hand sign is marked as true if the project status of a project equals Hold or Jeopardy.
+        -- The hand sign is marked AS true if the project status of a project equals Hold or Jeopardy.
         (
             dealer_pay_calc_standard.status = 'Hold' OR
             dealer_pay_calc_standard.status = 'Jeopardy'
@@ -255,7 +225,7 @@ SELECT
     dealer_pay_calc_standard.ovrd_balance AS amount,
     dealer_pay_calc_standard.loan_type AS type,
     dealer_pay_calc_standard.sys_size AS sys_size,
-    dealer_pay_calc_standard.contract_calc AS contract_calc,
+    dealer_pay_calc_standard.contract_$$ AS contract_$$,
     dealer_pay_calc_standard.loan_fee AS loan_fee,
     dealer_pay_calc_standard.adder_total AS other_adders,
     dealer_pay_calc_standard.epc AS epc,
@@ -283,3 +253,145 @@ WHERE
         dealer_pay_calc_standard.ntp IS NOT NULL
     )
 );
+
+CREATE VIEW dlr_pay_pr_data AS
+    SELECT
+        home_owner AS home_owner,
+        current_status AS current_status,
+        status_date AS status_date,
+        unique_id AS unique_id,
+        dealer AS dealer,
+        amount AS amount,
+        type AS type,
+        sys_size AS sys_size,
+        contract_$$ AS contract_$$,
+        loan_fee AS loan_fee,
+        other_adders AS other_adders,
+        epc AS epc,
+        net_epc AS net_epc,
+        rl AS rl,
+        credit AS credit,
+        rep_1 AS rep_1,
+        rep_2 AS rep_2,
+        rep_pay AS rep_pay,
+        net_rev AS net_rev,
+        draw_amt AS draw_amt,
+        amt_paid AS amt_paid,
+        balance AS balance,
+        st AS st,
+        contract_date AS contract_date
+    FROM pr_dlr_d_standard
+    WHERE home_owner IS NOT NULL AND home_owner <> ''
+        UNION ALL
+    SELECT
+        home_owner AS home_owner,
+        current_status AS current_status,
+        status_date AS status_date,
+        unique_id AS unique_id,
+        dealer AS dealer,
+        amount AS amount,
+        type AS type,
+        sys_size AS sys_size,
+        contract_$$ AS contract_$$,
+        loan_fee AS loan_fee,
+        other_adders AS other_adders,
+        epc AS epc,
+        net_epc AS net_epc,
+        rl AS rl,
+        credit AS credit,
+        rep_1 AS rep_1,
+        rep_2 AS rep_2,
+        rep_pay AS rep_pay,
+        net_rev AS net_rev,
+        draw_amt AS draw_amt,
+        amt_paid AS amt_paid,
+        balance AS balance,
+        st AS st,
+        contract_date AS contract_date
+    FROM pr_dlr_f_standard
+    WHERE home_owner IS NOT NULL AND home_owner <> ''
+        UNION ALL
+    SELECT
+        dealer_dba AS home_owner,
+        current_status AS current_status,
+        status_date AS status_date,
+        unique_id AS unique_id,
+        dealer_code AS dealer,
+        amount AS amount,
+        NULL AS type,
+        sys_size AS sys_size,
+        NULL AS contract_$$,
+        NULL AS loan_fee,
+        NULL AS other_adders,
+        NULL AS epc,
+        NULL AS net_epc,
+        NULL AS rl,
+        NULL AS credit,
+        NULL AS rep_1,
+        NULL AS rep_2,
+        NULL AS rep_pay,
+        NULL AS net_rev,
+        NULL AS draw_amt,
+        amt_paid AS amt_paid,
+        balance AS balance,
+        st AS st,
+        contract_date AS contract_date
+    FROM pr_dlr_or_standard
+    WHERE dealer_dba IS NOT NULL AND dealer_dba <> ''
+        UNION ALL
+    SELECT
+        n.customer AS home_owner,
+        NULL AS current_status,
+        n.date AS status_date,
+        n.unique_id AS unique_id,
+        d.dealer_code AS dealer,
+        n.balance AS amount,
+        NULL AS type,
+        NULL AS sys_size,
+        NULL AS contract_$$,
+        NULL AS loan_fee,
+        NULL AS other_adders,
+        NULL AS epc,
+        NULL AS net_epc,
+        NULL AS rl,
+        NULL AS credit,
+        NULL AS rep_1,
+        NULL AS rep_2,
+        NULL AS rep_pay,
+        NULL AS net_rev,
+        NULL AS draw_amt,
+        n.paid_amount AS amt_paid,
+        n.balance AS balance,
+        NULL AS st,
+        NULL AS contract_date
+    FROM noncomm_dlrpay n
+    JOIN v_dealer d ON n.dealer_id = d.id
+    WHERE n.unique_id IS NOT NULL AND n.unique_id <> '' AND n.balance <> 0
+        UNION ALL
+    SELECT
+        NULL AS home_owner,
+        NULL AS current_status,
+        date AS status_date,
+        unique_id AS unique_id,
+        payee AS dealer,
+        balance AS amount,
+        NULL AS type,
+        NULL AS sys_size,
+        NULL AS contract_$$,
+        NULL AS loan_fee,
+        NULL AS other_adders,
+        NULL AS epc,
+        NULL AS net_epc,
+        NULL AS rl,
+        NULL AS credit,
+        NULL AS rep_1,
+        NULL AS rep_2,
+        NULL AS rep_pay,
+        NULL AS net_rev,
+        NULL AS draw_amt,
+        paid_amount AS amt_paid,
+        balance AS balance,
+        NULL AS st,
+        NULL AS contract_date
+    FROM dlr_oth
+    WHERE unique_id IS NOT NULL AND unique_id <> '' AND balance <> 0;

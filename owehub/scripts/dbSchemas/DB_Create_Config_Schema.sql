@@ -637,7 +637,7 @@ CREATE TABLE noncomm_dlrpay (
     balance float,
     paid_amount float,
     dba text,
-    date character varying NOT NULL,
+    date DATE NOT NULL,
     is_archived BOOLEAN DEFAULT FALSE,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
@@ -653,7 +653,7 @@ CREATE TABLE dlr_oth(
     balance float,
     paid_amount float,
     is_archived BOOLEAN DEFAULT FALSE,
-    date character varying NOT NULL,
+    date DATE NOT NULL,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     PRIMARY KEY (id)
