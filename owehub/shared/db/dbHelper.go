@@ -153,7 +153,7 @@ func AddMultipleRecordInDB(dbIdx uint8, tableName string, data []map[string]inte
 
 	query := fmt.Sprintf("INSERT INTO %v (%v) VALUES %v", tableName, col, strings.Join(placeholders, ", "))
 
-	log.FuncDebugTrace(0, "Shushank query = %v dataList = %v", query, dataList)
+	//log.FuncDebugTrace(0, "query = %v dataList = %v", query, dataList)
 
 	stmtIns, err := con.CtxH.Prepare(query)
 	if err != nil {
