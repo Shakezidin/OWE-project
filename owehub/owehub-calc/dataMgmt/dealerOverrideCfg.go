@@ -7,6 +7,7 @@
 package datamgmt
 
 import (
+	common "OWEApp/owehub-calc/common"
 	db "OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	"OWEApp/shared/models"
@@ -31,7 +32,7 @@ func (pDealer *DealerOverrideStruct) LoadRDealerOverrideCfg() (err error) {
 	defer func() { log.ExitFn(0, "LoadRDealerOverrideCfg", err) }()
 
 	query = `
-  SELECT dor.id as record_id, dor.sub_dealer, vd.dealer_name, dor.pay_rate, dor.start_date, dor.end_date, st.name AS state_name  
+  SELECT dor.id as record_id, dor.sub_dealer, vd.dealer_code, dor.pay_rate, dor.start_date, dor.end_date, st.name AS state_name  
   FROM dealer_override dor
   JOIN v_dealer vd ON vd.id = dor.dealer_id
   JOIN states st ON st.state_id = dor.state`
@@ -64,7 +65,7 @@ func (pDealer *DealerOverrideStruct) LoadRDealerOverrideCfg() (err error) {
 		}
 
 		// Dealer
-		Dealer, ok := item["dealer_name"].(string)
+		Dealer, ok := item["dealer_code"].(string)
 		if !ok || Dealer == "" {
 			// log.FuncErrorTrace(0, "Failed to get dealer name for Record ID %v. Item: %+v\n", RecordId, item)
 			Dealer = ""
@@ -91,36 +92,39 @@ func (pDealer *DealerOverrideStruct) LoadRDealerOverrideCfg() (err error) {
 			EndDate = time.Time{}
 		}
 
-		start := StartDate.Format("2006-01-02")
-		end := EndDate.Format("2006-01-02")
-
 		dealerData := models.GetDealerData{
 			RecordId:  RecordId,
 			SubDealer: SubDealer,
 			Dealer:    Dealer,
 			State:     StateName,
 			PayRate:   PayRate,
-			StartDate: start,
-			EndDate:   end,
+			StartDate: StartDate,
+			EndDate:   EndDate,
 		}
 		pDealer.DealerOverrideList.DealersList = append(pDealer.DealerOverrideList.DealersList, dealerData)
 	}
 	return err
 }
 
-func (pDealer *DealerOverrideStruct) CalculateParentDealer(dealer string, wc string) (respdealer string) {
-	log.EnterFn(0, "LoadDlrCreditCfg")
-	defer func() { log.ExitFn(0, "LoadDlrCreditCfg", nil) }()
+func (pDealer *DealerOverrideStruct) CalculateParentDealerAndPayRate(dealer string, wc time.Time) (respdealer string, payRate float64) {
+	log.EnterFn(0, "CalculateParentDealerAndPayRate")
+	defer func() { log.ExitFn(0, "CalculateParentDealerAndPayRate", nil) }()
+
+	log.FuncErrorTrace(0, "===Shushank %+v %v", dealer, wc)
 
 	respdealer = ""
+	payRate = 0.0
 	if len(dealer) > 0 {
 		for _, data := range pDealer.DealerOverrideList.DealersList {
-			if data.Dealer == dealer {
-				if data.StartDate <= wc && data.EndDate >= wc {
+			if data.SubDealer == dealer {
+				if (data.StartDate.Before(wc) || data.StartDate.Equal(wc)) &&
+					(data.EndDate.After(wc) || data.EndDate.Equal(wc)) {
 					respdealer = data.Dealer
+					payRate = *common.StrToFloat(data.PayRate)
+					break
 				}
 			}
 		}
 	}
-	return respdealer
+	return respdealer, payRate
 }

@@ -41,7 +41,7 @@ func (pApDealerCfg *ApDealerCfgStruct) LoadApDealerCfg() (err error) {
 	)
 
 	query = `
-      SELECT ad.id as record_id, ad.unique_id, vd.dealer_name as dealer, ad.dba, ad.type, ad.date, ad.amount, ad.method, ad.transaction, ad.notes, ad.dealer as dealer_name, ad.home_owner, st.name as state
+      SELECT ad.id as record_id, ad.unique_id, vd.dealer_code as dealer, ad.dba, ad.type, ad.date, ad.amount, ad.method, ad.transaction, ad.notes, ad.dealer as dealer_name, ad.home_owner, st.name as state
       FROM ap_dealer ad
       LEFT JOIN states st ON st.state_id = ad.state_id
       LEFT JOIN v_dealer vd ON vd.id = ad.dealer_id`
@@ -96,7 +96,7 @@ func (pApDealerCfg *ApDealerCfgStruct) LoadApDealerCfg() (err error) {
 
 		// Amount
 		Amount, ok := item["amount"].(float64)
-		if !ok || Amount == 0.0 {
+		if !ok {
 			// log.FuncErrorTrace(0, "Failed to get Amount for Record ID %v. Item: %+v\n", RecordId, item)
 			Amount = 0.0
 		}
@@ -146,9 +146,14 @@ func (pApDealerCfg *ApDealerCfgStruct) LoadApDealerCfg() (err error) {
 * RETURNS:         gross revenue
 *****************************************************************************/
 func (pApDealerCfg *ApDealerCfgStruct) CalculateR1CommPaid(dealer, uniqueid string) (r1CommPaid float64) {
+
+	log.FuncErrorTrace(0, "===Shushank dealer: %v uniqueid: %v", dealer, uniqueid)
+
+	r1CommPaid = 0
 	if len(dealer) > 0 {
 		for _, data := range pApDealerCfg.ApDealerList {
-			if data.UniqueId == uniqueid && data.Dealer == dealer && (data.Type != "Non-COMM" || data.Type != "DLR-OTHER") {
+			if data.UniqueId == uniqueid && data.Dealer == dealer && (data.Type != "Non-COMM" && data.Type != "DLR-OTHER") {
+				log.FuncErrorTrace(0, "===Shushank  %+v", data)
 				r1CommPaid += data.Amount
 			}
 		}
@@ -170,4 +175,22 @@ func (pApDealerCfg *ApDealerCfgStruct) CalculateR1DrawPaid(dealer, uniqueID stri
 		}
 	}
 	return R1FrawPaid
+}
+
+/******************************************************************************
+* FUNCTION:        CalculateR1DrawPaid
+* DESCRIPTION:     calculates the "r1_draw_paid" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
+func (pApDealerCfg *ApDealerCfgStruct) CalculateOvrdPaid(dealer, uniqueID, parentDlr string) (ovrdPaid float64) {
+
+	ovrdPaid = 0.0
+	if len(dealer) > 0 {
+		for _, data := range pApDealerCfg.ApDealerList {
+			if data.UniqueId == uniqueID && data.Dealer == parentDlr && data.Type == "DLR-OVRD" {
+				ovrdPaid += data.Amount
+			}
+		}
+	}
+	return ovrdPaid
 }

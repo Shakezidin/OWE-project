@@ -9,7 +9,6 @@ package datamgmt
 import (
 	db "OWEApp/shared/db"
 	log "OWEApp/shared/logger"
-	"strconv"
 )
 
 // this is in respect with the new columns as per google sheet
@@ -19,7 +18,7 @@ type GetReferralDataTemp struct {
 	NewCustomer     string  `json:"new_customer"`
 	ReferrerSerial  string  `json:"referrer_serial"`
 	ReferrerName    string  `json:"referrer_name"`
-	Amount          string  `json:"amount"`
+	Amount          float64 `json:"amount"`
 	RepDollDivbyPer float64 `json:"rep_doll_divby_per"`
 	Notes           string  `json:"notes"`
 	Type            string  `json:"type"`
@@ -58,7 +57,7 @@ func (pReferral *ReferralDataStruct) LoadReferralCfg() (err error) {
 		log.FuncErrorTrace(0, "Failed to get referral data from DB err: %v", err)
 		return err
 	}
-	
+
 	for _, item := range data {
 		RecordId, ok := item["record_id"].(int64)
 		if !ok {
@@ -94,10 +93,10 @@ func (pReferral *ReferralDataStruct) LoadReferralCfg() (err error) {
 		}
 
 		// amount
-		Amount, ok := item["amount"].(string)
-		if !ok || Amount == "" {
+		Amount, ok := item["amount"].(float64)
+		if !ok {
 			// log.FuncErrorTrace(0, "Failed to get amount for Record ID %v. Item: %+v\n", RecordId, item)
-			Amount = ""
+			Amount = 0
 		}
 
 		// rep_doll_divby_per
@@ -191,9 +190,8 @@ func (pReferral *ReferralDataStruct) CalculateReferralForUniqueId(dealer string,
 	if len(dealer) > 0 {
 		for _, data := range pReferral.ReferralDataList {
 			if data.UniqueID == uniqueId {
-				amnt, _ := strconv.Atoi(data.Amount)
-				if amnt > 0 { //need to change amount of type string to float64
-					referral += float64(amnt)
+				if data.Amount > 0 { //need to change amount of type string to float64
+					referral += data.Amount
 				}
 			}
 		}

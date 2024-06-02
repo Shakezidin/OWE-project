@@ -9,7 +9,6 @@ package datamgmt
 import (
 	db "OWEApp/shared/db"
 	log "OWEApp/shared/logger"
-	"strconv"
 )
 
 type GetRebateDataTemp struct {
@@ -119,7 +118,7 @@ func (RebateCfg *RebateCfgStruct) LoadRebateCfg() (err error) {
 		AdderAmount, ok := item["adder_amount"].(string)
 		if !ok {
 			// log.FuncErrorTrace(0, "Failed to get amount for Record ID %v. Item: %+v\n", RecordId, item)
-			Amount = 0
+			AdderAmount = ""
 		}
 
 		// rep_doll_divby_per
@@ -313,23 +312,20 @@ func (RebateCfg *RebateCfgStruct) LoadRebateCfg() (err error) {
 
 func (RebateCfg *RebateCfgStruct) CalculateRebate(dealer string, uniqueId string) (rebate float64) {
 
-	log.EnterFn(0, "LoadRebateCfg")
-	defer func() { log.ExitFn(0, "LoadRebateCfg", nil) }()
+	log.EnterFn(0, "CalculateRebate")
+	defer func() { log.ExitFn(0, "CalculateRebate", nil) }()
 
 	if len(dealer) > 0 {
 		for _, data := range RebateCfg.RebateList {
 			if data.UniqueId == uniqueId {
-				var addramount float64
-				amnt, _ := strconv.Atoi(data.AdderAmount)
-				log.FuncErrorTrace(0, "amount ========= %v", amnt)
-				if amnt > 0 { //need to change amoun of type string to float64
+				log.FuncErrorTrace(0, "amount ========= %v", data.Amount)
+				if data.Amount > 0 { //need to change amoun of type string to float64
 					if len(data.Type) >= 9 && data.Type[:9] == "Retention" {
-						addramount = 0
+						rebate += 0
 					} else {
-						addramount = float64(amnt)
+						rebate += data.Amount
 					}
 				}
-				rebate += addramount
 			}
 		}
 	}

@@ -7,7 +7,7 @@ create database owe_db;
 
 \i '/docker-entrypoint-initdb.d/DB_Create_OWEDB_Schema.sql';
 \i '/docker-entrypoint-initdb.d/DB_Create_Config_Schema.sql';
--- \i '/docker-entrypoint-initdb.d/DB_Create_DlrPay_Schema.sql';
+\i '/docker-entrypoint-initdb.d/DB_Create_DlrPay_Schema.sql';
 -- \i '/docker-entrypoint-initdb.d/DB_Create_AR_Schema.sql';
 \i '/docker-entrypoint-initdb.d/DB_Create_RepPay_Schema.sql';
 
@@ -51,7 +51,7 @@ INSERT INTO loan_type (product_code,active,adder,description) VALUES ('P123',1,1
 \copy commission_rates(partner_id, installer_id, state_id, sale_type_id, sale_price, rep_type, is_archived, rl, rate, start_date, end_date) FROM '/docker-entrypoint-initdb.d/commission_rates.csv' DELIMITER ',' CSV;
 \copy appointment_setters(team_id, first_name, last_name, pay_rate, start_date, end_date) FROM '/docker-entrypoint-initdb.d/appointment_setters.csv' DELIMITER ',' CSV;
 \copy loan_type (product_code,description,active,adder) FROM '/docker-entrypoint-initdb.d/loan_type.csv' DELIMITER ',' CSV;
-\copy v_dealer (dealer_code,dealer_name,description) FROM '/docker-entrypoint-initdb.d/vdealer.csv' DELIMITER ',' CSV;
+\copy v_dealer (id,dealer_code,dealer_name,description) FROM '/docker-entrypoint-initdb.d/vdealer.csv' DELIMITER ',' CSV;
 \copy dealer_override(sub_dealer,dealer_id,pay_rate,start_date,end_date,state) FROM '/docker-entrypoint-initdb.d/dealer_override.csv' DELIMITER ',' CSV;
 \copy dealer_tier(dealer_id,tier_id,start_date,end_date) FROM '/docker-entrypoint-initdb.d/dealer_tier.csv' DELIMITER ',' CSV;
 \copy loan_fee(dealer_id,installer,state_id,loan_type,owe_cost,dlr_mu,dlr_cost,start_date,end_date) FROM '/docker-entrypoint-initdb.d/loan_fee.csv' DELIMITER ',' CSV;
@@ -62,11 +62,11 @@ INSERT INTO loan_type (product_code,active,adder,description) VALUES ('P123',1,1
 \copy install_cost(cost,start_date,end_date) FROM '/docker-entrypoint-initdb.d/install_cost.csv' DELIMITER ',' CSV;
 \copy reconcile(unique_id,start_date,amount,notes) FROM '/docker-entrypoint-initdb.d/reconcile.csv' DELIMITER ',' CSV;
 \copy adder_data(unique_id,date,type_ad_mktg,gc,exact_amount,type1,per_kw_amt,rep_percent,description,notes,sys_size,adder_cal) FROM '/docker-entrypoint-initdb.d/adder_data.csv' DELIMITER '^' CSV;
-\copy referral_data(unique_id,new_customer,referrer_serial,referrer_name,amount,rep_doll_divby_per,notes,type,sys_size,state_id,adder_amount,start_date,end_date) FROM '/docker-entrypoint-initdb.d/referral_data.csv' DELIMITER '^' CSV;
-\copy rebate_data(unique_id,customer_verf,type_rd_mktg,item,amount,rep_doll_divby_per,notes,type,sys_size,state_id,adder_amount,start_date,end_date) FROM '/docker-entrypoint-initdb.d/rebate_data.csv' DELIMITER '^' CSV;
+\copy referral_data(unique_id,new_customer,referrer_serial,referrer_name,amount,rep_doll_divby_per,notes,type,sys_size,state_id,adder_amount,start_date,end_date) FROM '/docker-entrypoint-initdb.d/referral_data.csv' DELIMITER ',' CSV;
+\copy rebate_data(unique_id,customer_verf,type_rd_mktg,item,amount,rep_doll_divby_per,notes,type,sys_size,state_id,adder_amount,start_date,end_date) FROM '/docker-entrypoint-initdb.d/rebate_data.csv' DELIMITER ',' CSV;
 \copy dealer_credit(unique_id,date,exact_amount,per_kw_amount,approved_by,notes,total_amount,sys_size) FROM '/docker-entrypoint-initdb.d/dealer_credit.csv' DELIMITER '^' CSV;
 \copy ap_rep(unique_id,rep,dba,type,date,amount) FROM '/docker-entrypoint-initdb.d/ap_rep.csv' DELIMITER '^' CSV;
-\copy payment_schedule(rep_id,partner_id,installer_id,sale_type_id,state_id,rl,draw,draw_max,rep_draw,rep_draw_max,rep_pay,start_date,end_date) FROM '/docker-entrypoint-initdb.d/pay_schedule.csv' DELIMITER '^' CSV;
+\copy payment_schedule(dealer_id,partner_id,installer_id,sale_type_id,state_id,rl,draw,draw_max,rep_draw,rep_draw_max,rep_pay,start_date,end_date) FROM '/docker-entrypoint-initdb.d/pay_schedule.csv' DELIMITER ',' CSV;
 \copy ap_dealer(unique_id,dealer_id,dba,type,date,amount,method,transaction,notes) FROM '/docker-entrypoint-initdb.d/ap_dealer.csv' DELIMITER '^' CSV;
 
 /******************************SETTINGS DB TABLE END  ***********************************************/

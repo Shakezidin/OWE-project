@@ -8,7 +8,6 @@
 package arcalc
 
 import (
-	datamgmt "OWEApp/owehub-calc/dataMgmt"
 	log "OWEApp/shared/logger"
 	"math"
 	"time"
@@ -25,7 +24,7 @@ func calculateAdderTotal(dealer string, adder, autoAdder, rebate, referral float
 	defer func() { log.ExitFn(0, "CalculateAdderTotal", nil) }()
 
 	if len(dealer) > 0 {
-		totalSum += adder + autoAdder + rebate + rebate
+		totalSum += adder + autoAdder + rebate + referral
 	}
 	return totalSum
 }
@@ -49,12 +48,13 @@ func calculateEpcCalc(epcCalc, contract, adderLF, sysSize float64) float64 {
 * DESCRIPTION:     calculates the "adder_pw" value based on the provided data
 * RETURNS:         gross revenue
 *****************************************************************************/
-func calculateAdderPerKW(dealer string, adderLF, sysSize float64) float64 {
+func calculateAdderPerKW(dealer string, adderLF, sysSize float64) (adderPerKW float64) {
+
+	adderPerKW = 0
 	if len(dealer) > 0 {
-		adderPerKW := adderLF / sysSize
-		return adderPerKW
+		adderPerKW = adderLF / sysSize
 	}
-	return 0
+	return adderPerKW
 }
 
 /******************************************************************************
@@ -226,24 +226,24 @@ func CalculateStatusDate(uniqueID string, hand bool, pto time.Time, instSys time
 	var statusDate time.Time
 
 	if len(uniqueID) > 0 {
-	switch {
-	case !pto.IsZero():
-		statusDate = pto
-	case !instSys.IsZero():
-		statusDate = instSys
-	case !cancel.IsZero():
-		statusDate = cancel
-	case hand == true:
-		statusDate = time.Time{}
-	case !ntp.IsZero():
-		statusDate = ntp
-	case !permSub.IsZero():
-		statusDate = permSub
-	case !wc.IsZero():
-		statusDate = wc
-	default:
-		statusDate = time.Time{}
-	}
+		switch {
+		case !pto.IsZero():
+			statusDate = pto
+		case !instSys.IsZero():
+			statusDate = instSys
+		case !cancel.IsZero():
+			statusDate = cancel
+		case hand == true:
+			statusDate = time.Time{}
+		case !ntp.IsZero():
+			statusDate = ntp
+		case !permSub.IsZero():
+			statusDate = permSub
+		case !wc.IsZero():
+			statusDate = wc
+		default:
+			statusDate = time.Time{}
+		}
 	}
 	return statusDate
 }
@@ -546,7 +546,6 @@ func calculateR2PayRateSemi(rep_1 string, repCount, perRepSales, perRepkW, epcCa
 	return result
 }
 
-
 /******************************************************************************
 * FUNCTION:        CalculateContractDolDol
 * DESCRIPTION:     calculates the "contract$$" value based on the provided data
@@ -554,15 +553,14 @@ func calculateR2PayRateSemi(rep_1 string, repCount, perRepSales, perRepkW, epcCa
 *****************************************************************************/
 func CalculateContractDolDol(netEpc float64, contract float64, sysSize float64) (contractdoldol float64) {
 	if netEpc > 0 {
-			if contract > 0 {
-					contractdoldol = contract
-			} else {
-					contractdoldol = netEpc * 1000 * sysSize
-			}
+		if contract > 0 {
+			contractdoldol = contract
+		} else {
+			contractdoldol = netEpc * 1000 * sysSize
+		}
 	}
 	return contractdoldol
 }
-
 
 /******************************************************************************
 * FUNCTION:        CalculateContractDolDol
@@ -611,17 +609,11 @@ func CalculateAdderEPC(epcCalc, contract, loanfee, sys_size float64) (epc float6
 * DESCRIPTION:     calculates the "loan_fee" value based on the provided data
 * RETURNS:         gross revenue
 *****************************************************************************/
-func CalculateLoanFee(uniqueId string) float64 {
-	var saleData datamgmt.SaleDataList
+func CalculateLoanFee(uniqueId string, contractDolDol float64) float64 {
 	var loanfee float64
-	for _, data := range saleData.SaleDataList {
-		if data.UniqueId == uniqueId {
-			loanfee += CalculateContractDolDol(data.NetEpc, data.ContractTotal, data.SystemSize)
-		}
-	}
+
 	return loanfee
 }
-
 
 // This is for DBA
 // func (dba *DBA) calculateDealerDba(dealer string) (dealerDBA string) {

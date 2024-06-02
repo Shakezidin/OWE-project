@@ -11,6 +11,8 @@ import (
 	db "OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"strings"
+	"time"
 )
 
 type PayScheduleCfgStruct struct {
@@ -31,14 +33,14 @@ func (paymentScheduleCfg *PayScheduleCfgStruct) LoadPayScheduleCfg() (err error)
 	log.EnterFn(0, "LoadPayScheduleCfg")
 	defer func() { log.ExitFn(0, "LoadPayScheduleCfg", err) }()
 
-	query = `SELECT ps.id as record_id, vd.dealer_name as dealer, pt1.partner_name AS partner_name, pt2.partner_name AS installer_name,
+	query = `SELECT ps.id as record_id, vd.dealer_code as dealer, pt1.partner_name AS partner_name, pt2.partner_name AS installer_name,
     st.name AS state, sl.type_name AS sale_type, ps.rl, ps.draw, ps.draw_max, ps.rep_draw, ps.rep_draw_max, ps.rep_pay, ps.start_date, ps.end_date
     FROM payment_schedule ps
     JOIN states st ON st.state_id = ps.state_id
     JOIN partners pt1 ON pt1.partner_id = ps.partner_id
     JOIN partners pt2 ON pt2.partner_id = ps.installer_id
     JOIN sale_type sl ON sl.id = ps.sale_type_id
-    JOIN v_dealer vd ON ud.id = ps.dealer_id`
+    JOIN v_dealer vd ON vd.id = ps.dealer_id`
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil {
@@ -192,14 +194,46 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateRL(dealer, partner, install
 * DESCRIPTION:     calculates the addr value based on the provided data
 * RETURNS:         drawPerc
 *****************************************************************************/
-func (PayScheduleCfg *PayScheduleCfgStruct) CalculateDlrDrawPerc(dealer, partner, installer, loanType, state, startDate, endDate, wc string) (drawPerc, dlrDrawMax float64) {
+func (PayScheduleCfg *PayScheduleCfgStruct) CalculateDlrDrawPerc(dealer, partner, installer, loanType, state string, wc time.Time) (drawPerc, dlrDrawMax float64) {
+	var (
+		err       error
+		startDate time.Time
+		endDate   time.Time
+	)
 
 	log.EnterFn(0, "CalculateDlrDrawPerc")
 	defer func() { log.ExitFn(0, "CalculateDlrDrawPerc", nil) }()
 
 	if len(dealer) > 0 {
 		for _, data := range PayScheduleCfg.PayScheduleList {
-			if data.Dealer == dealer && data.PartnerName == partner && data.InstallerName == installer && data.SaleType == loanType && data.State == state && data.StartDate <= wc && data.EndDate >= wc {
+			if len(data.StartDate) > 0 {
+				startDate, err = time.Parse("01-02-06", data.StartDate)
+				if err != nil {
+					log.FuncErrorTrace(0, "Failed to convert data.StartDate:%+v to time.Time err: %+v", data.StartDate, err)
+				}
+			} else {
+				log.FuncWarnTrace(0, "Empty StartDate Received in data.StartDate config")
+				continue
+			}
+
+			if len(data.EndDate) > 0 {
+				endDate, err = time.Parse("01-02-06", data.EndDate)
+				if err != nil {
+					log.FuncErrorTrace(0, "Failed to convert data.EndDate:%+v to time.Time err: %+v", data.EndDate, err)
+				}
+			} else {
+				log.FuncWarnTrace(0, "Empty EndDate Received in data.EndDate config")
+				continue
+			}
+
+			if data.Dealer == dealer &&
+				strings.EqualFold(data.PartnerName, partner) &&
+				strings.EqualFold(data.InstallerName, installer) &&
+				data.SaleType == loanType &&
+				data.State == state &&
+				!startDate.After(wc) &&
+				!endDate.Before(wc) {
+
 				drawPerc = data.Draw
 				dlrDrawMax = data.DrawMax
 			}
