@@ -49,17 +49,10 @@ const CreateNonComm: React.FC<ButtonProps> = ({
   const { isSuccess } = useAppSelector((state) => state.nonComm);
   const [createCommission, setCreateCommission] = useState({
     unique_id: commission?.unique_id || '',
-    customer: commission?.customer || '',
-    dealer_name: commission?.dealer_name || '',
-    dealer_dba: commission?.dealer_dba || '',
     exact_amount: commission?.exact_amount || '',
     approved_by: commission?.approved_by || '',
     notes: commission?.notes || '',
-    balance: commission?.balance ? `${commission?.balance}` : '',
-    paid_amount: commission?.paid_amount ? `${commission?.paid_amount}` : '',
-    dba: commission?.dba || '',
-    start_date: commission?.start_date || '',
-    end_date: commission?.end_date || '',
+    date: commission?.date || '',
   });
   const [errors, setErrors] = useState<IError>({} as IError);
   const [newFormData, setNewFormData] = useState<any>([]);
@@ -81,7 +74,7 @@ const CreateNonComm: React.FC<ButtonProps> = ({
         continue;
       }
       if (!createCommission[key as keyof typeof createCommission]) {
-        error[key as keyof IError] = `${key.replaceAll("_"," ")} is required`;
+        error[key as keyof IError] = `${key.replaceAll('_', ' ')} is required`;
       }
     }
     setErrors({ ...error });
@@ -137,23 +130,15 @@ const CreateNonComm: React.FC<ButtonProps> = ({
         dispatch(
           updateNoncom({
             ...createCommission,
-            paid_amount: parseFloat(createCommission.paid_amount),
-            balance: parseFloat(createCommission.balance),
             record_id: commission?.record_id!,
-            dba: createCommission.dba || 'XYZ Motors',
-            dealer_dba: createCommission.dealer_dba || 'XYZ Motors',
-            dealer_name: createCommission.dealer_name || 'M Asif',
+            exact_amount: parseFloat(createCommission.exact_amount as string)
           })
         );
       } else {
         dispatch(
           createNonComm({
             ...createCommission,
-            paid_amount: parseFloat(createCommission.paid_amount),
-            balance: parseFloat(createCommission.balance),
-            dba: createCommission.dba || 'XYZ Motors',
-            dealer_dba: createCommission.dealer_dba || 'XYZ Motors',
-            dealer_name: createCommission.dealer_name || 'M Asif',
+            exact_amount: parseFloat(createCommission.exact_amount as string)
           })
         );
       }
@@ -204,84 +189,24 @@ const CreateNonComm: React.FC<ButtonProps> = ({
                   )}
                 </div>
                 <div className="create-input-field">
-                  <label className="inputLabel-select">Dealer</label>
-                  <SelectOption
-                    options={dealerOption(newFormData)}
-                    onChange={(newValue) => {
-                      setCreateCommission((prev) => ({
-                        ...prev,
-                        dealer_name: newValue?.value!,
-                      }));
-                    }}
-                    value={dealerOption(newFormData)?.find(
-                      (option) => option.value === createCommission.dealer_name
-                    )}
-                  />
-                  {errors?.dealer_name && (
-                    <span
-                      style={{
-                        display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
-                      }}
-                    >
-                      {errors.dealer_name}
-                    </span>
-                  )}
-                </div>
-                <div className="create-input-field">
-                  <Input
-                    type={'text'}
-                    label="DBA"
-                    value={createCommission.dba}
-                    name="dba"
-                    placeholder={'Enter'}
-                    onChange={(e) => handleInputChange(e)}
-                  />
-                  {errors?.dba && (
-                    <span
-                      style={{
-                        display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
-                      }}
-                    >
-                      {errors.dba}
-                    </span>
-                  )}
-                </div>
-              </div>
-              <div className="create-input-container">
-                <div className="create-input-field">
-                  <Input
-                    type={'number'}
-                    label="Balance"
-                    value={createCommission.balance}
-                    name="balance"
-                    placeholder={'Enter'}
-                    onChange={(e) => handleInputChange(e)}
-                  />
-                  {errors?.balance && (
-                    <span
-                      style={{
-                        display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
-                      }}
-                    >
-                      {errors.balance}
-                    </span>
-                  )}
-                </div>
-
-                <div className="create-input-field">
                   <Input
                     type={'number'}
                     label="Amount"
                     value={createCommission.exact_amount}
                     name="exact_amount"
                     placeholder={'Enter'}
-                    onChange={(e) => handleInputChange(e)}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      //@ts-ignore
+                      if(value === '' || value >= 0){
+                        handleInputChange(e)
+                      }
+                    }}
+                    onKeyDown={(e) => {
+                      if(e.key === '-'){
+                        e.preventDefault()
+                      }
+                    }}
                   />
                   {errors?.exact_amount && (
                     <span
@@ -295,127 +220,6 @@ const CreateNonComm: React.FC<ButtonProps> = ({
                     </span>
                   )}
                 </div>
-                <div className="create-input-field">
-                  <Input
-                    type={'date'}
-                    label="Start Date"
-                    value={createCommission.start_date}
-                    name="start_date"
-                    placeholder={'1/04/2004'}
-                    onChange={(e) => handleInputChange(e)}
-                  />
-                  {errors?.start_date && (
-                    <span
-                      style={{
-                        display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
-                      }}
-                    >
-                      {errors.start_date.replace('start_date', 'start date')}
-                    </span>
-                  )}
-                </div>
-              </div>
-              <div className="create-input-container">
-                <div className="create-input-field">
-                  <Input
-                    type={'date'}
-                    disabled={!createCommission.start_date}
-                    label="End Date"
-                    min={
-                      createCommission.start_date &&
-                      format(
-                        addDays(new Date(createCommission.start_date), 1),
-                        'yyyy-MM-dd'
-                      )
-                    }
-                    value={createCommission.end_date}
-                    name="end_date"
-                    placeholder={'10/04/2004'}
-                    onChange={(e) => handleInputChange(e)}
-                  />
-                  {errors?.end_date && (
-                    <span
-                      style={{
-                        display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
-                      }}
-                    >
-                      {errors.end_date.replace('end_date', 'end date')}
-                    </span>
-                  )}
-                </div>
-
-                <div className="create-input-field">
-                  <Input
-                    type={'text'}
-                    label="Dealer DBA"
-                    value={createCommission.dealer_dba}
-                    name="dealer_dba"
-                    placeholder={'Enter'}
-                    onChange={(e) => handleInputChange(e)}
-                  />
-                  {errors?.dealer_dba && (
-                    <span
-                      style={{
-                        display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
-                      }}
-                    >
-                      {errors.dealer_dba}
-                    </span>
-                  )}
-                </div>
-
-                <div className="create-input-field">
-                  <Input
-                    type={'number'}
-                    label="Paid Amount"
-                    value={createCommission.paid_amount}
-                    name="paid_amount"
-                    placeholder={'Enter'}
-                    onChange={(e) => handleInputChange(e)}
-                  />
-                  {errors?.balance && (
-                    <span
-                      style={{
-                        display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
-                      }}
-                    >
-                      {errors.balance}
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              <div className="create-input-container">
-                <div className="create-input-field">
-                  <Input
-                    type={'text'}
-                    label="Notes"
-                    value={createCommission.notes}
-                    name="notes"
-                    placeholder={'Enter'}
-                    onChange={(e) => handleInputChange(e)}
-                  />
-                  {errors?.notes && (
-                    <span
-                      style={{
-                        display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
-                      }}
-                    >
-                      {errors.notes}
-                    </span>
-                  )}
-                </div>
-
                 <div className="create-input-field">
                   <Input
                     type={'text'}
@@ -437,17 +241,16 @@ const CreateNonComm: React.FC<ButtonProps> = ({
                     </span>
                   )}
                 </div>
-
                 <div className="create-input-field">
                   <Input
                     type={'text'}
-                    label="Customer"
-                    value={createCommission.customer}
-                    name="customer"
+                    label="Notes"
+                    value={createCommission.notes}
+                    name="notes"
                     placeholder={'Enter'}
                     onChange={(e) => handleInputChange(e)}
                   />
-                  {errors?.customer && (
+                  {errors?.notes && (
                     <span
                       style={{
                         display: 'block',
@@ -455,7 +258,28 @@ const CreateNonComm: React.FC<ButtonProps> = ({
                         textTransform: 'capitalize',
                       }}
                     >
-                      {errors.customer}
+                      {errors.notes}
+                    </span>
+                  )}
+                </div>
+                <div className="create-input-field">
+                  <Input
+                    type={'date'}
+                    label="Date"
+                    value={createCommission.date}
+                    name="date"
+                    placeholder={'10/04/2004'}
+                    onChange={(e) => handleInputChange(e)}
+                  />
+                  {errors?.end_date && (
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.end_date.replace('end_date', 'end date')}
                     </span>
                   )}
                 </div>
