@@ -138,6 +138,8 @@ const DlrOthPay: React.FC = () => {
       const res = await postCaller('update_dlr_oth_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
         dispatch(getDlrOth(pageNumber));
+        setSelectAllChecked(false)
+        setSelectedRows(new Set())
         await successSwal('Archived', 'The data has been archived ');
       } else {
         await successSwal('Archived', 'The data has been archived ');
