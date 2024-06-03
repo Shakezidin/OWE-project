@@ -37,6 +37,7 @@ import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
+import { dateFormat } from '../../../../utiles/formatDate';
 interface Column {
   name: string;
   displayName: string;
@@ -304,7 +305,7 @@ const DlrOthPay: React.FC = () => {
                     <td>{el.description}</td>
                     <td>{el.balance}</td>
                     <td>{el.paid_amount}</td>
-                    <td>{el.date}</td>
+                    <td>{dateFormat(el.date)}</td>
                     <td>
                       {!viewArchived && selectedRows.size < 2 && (
                         <div className="action-icon">

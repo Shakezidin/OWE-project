@@ -24,6 +24,7 @@ import { ROUTES } from '../../../../routes/routes';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import MicroLoader from '../../../components/loader/MicroLoader';
+import { dateFormat } from '../../../../utiles/formatDate';
 
 const PaymentSchedule = () => {
   const dispatch = useAppDispatch();
@@ -327,8 +328,8 @@ const PaymentSchedule = () => {
                     <td>{el.rep_pay}</td>
                     <td>{el.commission_model}</td>
 
-                    <td>{el.start_date}</td>
-                    <td>{el.end_date}</td>
+                    <td>{dateFormat(el.start_date)}</td>
+                    <td>{dateFormat(el.end_date)}</td>
                     {!viewArchived && selectedRows.size < 2 && (
                       <td>
                         <div className="action-icon">

@@ -91,7 +91,7 @@ const DealerCredit: React.FC = () => {
 
   const totalPages = Math.ceil(dbCount / itemsPerPage);
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
   const endIndex = startIndex + itemsPerPage;
   const handleAddCommission = () => {
     setEditMode(false);
@@ -398,6 +398,7 @@ const DealerCredit: React.FC = () => {
                     </div>
                   </td>
                 </tr>
+
               )}
             </tbody>
           </table>
