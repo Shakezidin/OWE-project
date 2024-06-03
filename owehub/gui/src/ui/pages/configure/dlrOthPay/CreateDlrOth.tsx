@@ -87,11 +87,10 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
 
     if (
       name === 'balance' ||
-      name === 'payee' ||
       name === 'amount' ||
       name === 'paid_amount'
     ) {
-      const sanitizedValue = value.replace(/[^0-9]/g, '');
+      const sanitizedValue = value.replace(/[^0-9.]/g, '');
       if (sanitizedValue === '' || Number(sanitizedValue) >= 0) {
         setCreateCommission((prev) => ({ ...prev, [name]: sanitizedValue }));
         return;
@@ -190,7 +189,7 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                 </div>
                 <div className="create-input-field">
                   <Input
-                    type={'number'}
+                    type={'text'}
                     label="Amount"
                     value={createCommission.amount}
                     name="amount"
@@ -250,7 +249,7 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                         textTransform: 'capitalize',
                       }}
                     >
-                      {errors.date.replace('date', 'start date')}
+                      {errors.date}
                     </span>
                   )}
                 </div>
