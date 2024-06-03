@@ -312,7 +312,7 @@ const PaymentSchedule = () => {
                             )
                           }
                         />
-                        {el.partner}
+                        {el.dealer}
                       </div>
                     </td>
                     <td> {el.partner_name}</td>

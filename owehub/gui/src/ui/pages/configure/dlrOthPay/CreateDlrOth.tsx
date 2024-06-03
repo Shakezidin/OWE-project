@@ -82,7 +82,7 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
     const { name, value } = e.target;
 
     if (name === 'date') {
-      setCreateCommission((prev) => ({ ...prev, [name]: value, end_date: '' }));
+      setCreateCommission((prev) => ({ ...prev, [name]: value }));
     }
 
     if (
@@ -108,7 +108,7 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
         dispatch(
           updateDlrOth({
             ...createCommission,
-            
+            amount: parseFloat(createCommission.amount as string),
             record_id: commission?.record_id!,
           })
         );
@@ -116,7 +116,7 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
         dispatch(
           createDlrOth({
             ...createCommission,
-            
+            amount: parseFloat(createCommission.amount as string),
           })
         );
       }
@@ -129,6 +129,8 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
       dispatch(resetSuccess());
     }
   }, [isSuccess]);
+  console.log(errors, 'hfhfg');
+
   return (
     <div className="transparent-model">
       <form action="" onSubmit={(e) => handleSubmit(e)} className="modal">
@@ -143,9 +145,6 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
         <div className="modal-body">
           <div className="createProfileInputView">
             <div className="createProfileTextView">
-
-
-
               <div className="create-input-container">
                 <div className="create-input-field">
                   <Input
@@ -212,10 +211,7 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                 </div>
               </div>
 
-
-
               <div className="create-input-container">
-
                 <div className="create-input-field">
                   <Input
                     type={'text'}
@@ -282,10 +278,6 @@ const CreateDlrOth: React.FC<ButtonProps> = ({
                   )}
                 </div> */}
               </div>
-
-
-
-
             </div>
           </div>
         </div>

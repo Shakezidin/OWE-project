@@ -45,7 +45,7 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
   const [isPending, setIsPending] = useState(false);
   const [createPayData, setCreatePayData] = useState<PayScheduleModel>({
     record_id: payEditedData ? payEditedData?.record_id : 0,
-    partner: payEditedData ? payEditedData?.partner : '',
+    dealer: payEditedData ? payEditedData?.dealer : '',
     partner_name: payEditedData ? payEditedData?.partner_name : '',
     installer_name: payEditedData ? payEditedData?.installer_name : '',
     sale_type: payEditedData ? payEditedData?.sale_type : '',
@@ -212,15 +212,15 @@ const commisionOpt = [
             <div className="createProfileTextView">
               <div className="create-input-container">
                 <div className="create-input-field">
-                  <label className="inputLabel-select">Partner Name</label>
+                  <label className="inputLabel-select">Dealer</label>
                   <SelectOption
                     options={dealerOption(newFormData)}
-                    onChange={(newValue) => handleChange(newValue, 'partner')}
+                    onChange={(newValue) => handleChange(newValue, 'dealer')}
                     value={dealerOption(newFormData)?.find(
-                      (option) => option.value === createPayData.partner
+                      (option) => option.value === createPayData.dealer
                     )}
                   />
-                  {errors?.partner && (
+                  {errors?.dealer && (
                     <span
                       style={{
                         display: 'block',
@@ -228,7 +228,7 @@ const commisionOpt = [
                         textTransform: 'capitalize',
                       }}
                     >
-                      {errors.partner}
+                      {errors.dealer}
                     </span>
                   )}
                 </div>
@@ -519,7 +519,7 @@ const commisionOpt = [
                     Commission model
                   </label>
                   <SelectOption
-                    menuListStyles={{ height: '230px' }}
+                    
                     options={commisionOpt}
                     onChange={(newValue) =>
                       handleChange(newValue, 'commission_model')

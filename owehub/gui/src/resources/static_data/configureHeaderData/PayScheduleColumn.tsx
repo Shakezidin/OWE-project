@@ -7,7 +7,7 @@ import { Column } from '../../../core/models/data_models/FilterSelectModel';
 export const PayScheduleColumns: Column[] = [
   // { name: "record_id", displayName: "Record ID", type: "number" },
 
-  { name: 'partner', displayName: 'Partner', type: 'string', isCheckbox: true },
+  { name: 'dealer', displayName: 'Dealer', type: 'string', isCheckbox: true },
   {
     name: 'partner_name',
     displayName: 'Partner Name',

@@ -5,7 +5,7 @@ import { PayScheduleModel } from '../../../../core/models/configuration/create/P
 
 const initialState: PayScheduleModel = {
   record_id: 0,
-  partner: '',
+  dealer: '',
   partner_name: '',
   installer_name: '',
   sale_type: '',
