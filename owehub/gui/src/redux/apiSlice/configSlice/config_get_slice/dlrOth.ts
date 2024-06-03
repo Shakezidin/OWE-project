@@ -40,7 +40,7 @@ const dlrOth = createSlice({
       .addCase(getDlrOth.fulfilled, (state, action) => {
         state.isLoading = false;
         state.data = action.payload.list;
-        console.log(action.payload);
+        state.dbCount = action.payload.count
       })
       .addCase(getDlrOth.rejected, (state, action) => {
         state.isLoading = false;

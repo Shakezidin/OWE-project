@@ -101,6 +101,7 @@ const DlrOthPay: React.FC = () => {
 
   const totalPages = Math.ceil(dbCount / itemsPerPage);
 
+
   const startIndex = (currentPage - 1) * itemsPerPage + 1;
   const endIndex = startIndex * itemsPerPage;
   const handleAddCommission = () => {
@@ -339,11 +340,11 @@ const DlrOthPay: React.FC = () => {
             </tbody>
           </table>
         </div>
-        {commissionList?.length > 0 ? (
+        {currentPageData?.length > 0 ? (
           <div className="page-heading-container">
             <p className="page-heading">
               {startIndex} - {endIndex > dbCount ? dbCount : endIndex} of{' '}
-              {commissionList?.length} item
+              {dbCount} item
             </p>
 
             <Pagination
