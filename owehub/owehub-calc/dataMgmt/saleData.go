@@ -43,6 +43,7 @@ type SaleDataStruct struct {
 	StartDate              time.Time // added by zidhin
 	EndDate                time.Time //field added by zidhin
 	ChargeDlr              string    // field added by zidhiin
+	// SaleType               string    //field added by zidhin
 }
 
 type SaleDataList struct {
@@ -60,7 +61,7 @@ func (saleDataList *SaleDataList) LoadSaleData(uniqueID string, hookType string)
 	)
 
 	//Shushank
-	uniqueID = "OUR08977"
+	uniqueID = "OUR11347"
 
 	// log.EnterFn(0, "LoadSaleData")
 	// defer func() { log.ExitFn(0, "LoadSaleData", err) }()

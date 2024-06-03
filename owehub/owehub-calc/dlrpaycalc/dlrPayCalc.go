@@ -138,6 +138,7 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	status = saleData.ProjectStatus
 	dealer = saleData.Dealer
 	loanType = saleData.LoanType
+	// saleType = saleData.SaleType
 	partner = saleData.Partner
 	state = saleData.State
 	installer = saleData.Installer
@@ -180,12 +181,12 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	expense = dataMgmt.AdderDataCfg.CalculateExpence(dealer, uniqueID)
 	log.FuncFuncTrace(0, "Shushank credit: %v, repPay: %v expense: %v", credit, repPay, expense)
 
-	rl = dataMgmt.PayScheduleCfg.CalculateRL(dealer, partner, installer, loanType, state, wc.Format("2006-01-02"))
+	rl = dataMgmt.PayScheduleCfg.CalculateRL(dealer, partner, installer, state, wc)
 	contractDolDol = CalculateContractDolDol(netEpc, contractTotal, systemSize)
 	epcCalc = common.CalculateEPCCalc(contractDolDol, wc, netEpc, systemSize, common.DlrPayWc1FilterDate)
 	log.FuncFuncTrace(0, "Shushank rl: %v, contractDolDol: %v epcCalc: %v", rl, contractDolDol, epcCalc)
 
-	rl = 2.05 //Shushank
+	// rl = 2.05 //Shushank
 	payRateSemi = CalculatePayRateSemi(dealer, epcCalc, rl)
 	addr = dataMgmt.AdderDataCfg.CalculateAddr(dealer, uniqueID)
 	autoAdder = dataMgmt.AutoAdderCfg.CalculateAutoAddr(dealer, uniqueID, chargeDlr, systemSize)
@@ -196,14 +197,14 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	referral = dataMgmt.ReferralDataConfig.CalculateReferralForUniqueId(dealer, uniqueID)
 	log.FuncFuncTrace(0, "Shushank loanFee: %v, rebate: %v referral: %v", loanFee, rebate, referral)
 
-	loanFee = 20625 //Shushank
+	// loanFee = 20625 //Shushank
 	adderLF = CalculateAdderLf(dealer, addr, expense, autoAdder, loanFee, rebate, referral)
 	adderPerKw = calculateAdderPerKW(dealer, adderLF, SysSize)
 	payRateSubTotal = calculatePayRateSubTotal(dealer, payRateSemi, adderPerKw)
 	log.FuncFuncTrace(0, "Shushank adderLF: %v, adderPerKw: %v payRateSubTotal: %v", adderLF, adderPerKw, payRateSubTotal)
 
 	commTotal = calculateCommTotal(dealer, payRateSubTotal, systemSize, dealerPaymentBonus) // dealerPaymentBonus
-	commTotal = -2888.39                                                                    //Shushank
+	// commTotal = -2888.39                                                                    //Shushank
 	statusCheck = calculateStatusCheck(dealer, status, expense, commTotal, credit, repPay)
 	r1DrawAmt = CalculateR1DrawAmt(statusCheck, dlrDrawMax, dlrDrawPerc)
 	log.FuncFuncTrace(0, "Shushank commTotal: %v, statusCheck: %v r1DrawAmt: %v", commTotal, statusCheck, r1DrawAmt)
@@ -221,8 +222,8 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	parentDlr, payRate = dataMgmt.DealerOverrideConfig.CalculateParentDealerAndPayRate(saleData.Dealer, saleData.WC1)
 	log.FuncFuncTrace(0, "Shushank parentDlr: %v payRate: %v", parentDlr, payRate)
 
-	payRate = 0.04                       //Shushank
-	parentDlr = "OS Recruiting Partners" //Shushank
+	// payRate = 0.04                       //Shushank
+	// parentDlr = "OS Recruiting Partners" //Shushank
 	overdTotal = calculateOVRDTotal(dealer, payRate, SysSize)
 	ovrdPaid = dataMgmt.ApDealerCfg.CalculateOvrdPaid(dealer, uniqueID, parentDlr)
 	ovrdBalance = CalculateOvrdBalance(dealer, overdTotal, ovrdPaid)

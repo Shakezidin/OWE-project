@@ -172,20 +172,38 @@ func (paymentScheduleCfg *PayScheduleCfgStruct) LoadPayScheduleCfg() (err error)
 * DESCRIPTION:     calculates the addr value based on the provided data
 * RETURNS:         addr value
 *****************************************************************************/
-func (PayScheduleCfg *PayScheduleCfgStruct) CalculateRL(dealer, partner, installer, types, state, wc string) float64 {
+func (PayScheduleCfg *PayScheduleCfgStruct) CalculateRL(dealer, partner, installer, state string, wc time.Time) float64 {
 
 	log.EnterFn(0, "CalculateRL")
 	defer func() { log.ExitFn(0, "CalculateRL", nil) }()
 
 	if len(dealer) > 0 {
 		for _, data := range PayScheduleCfg.PayScheduleList {
-			if data.Dealer == dealer && data.PartnerName == partner && data.InstallerName == installer && data.SaleType == types && data.State == state &&
-				data.StartDate <= wc && data.EndDate >= wc {
+			timeLayout := "15:04:05"
+			startDate, _ := time.Parse(timeLayout, data.StartDate)
+			endDate, _ := time.Parse(timeLayout, data.EndDate)
+			if data.Dealer == dealer && data.PartnerName == partner {
+				log.FuncFuncTrace(0, "zidhin////// data.dealer : %v  ++++++++++ dealer: %v", data.Dealer, dealer)
+				log.FuncFuncTrace(0, "zidhin////// data.partner : %v ++++++++++partner: %v", data.PartnerName, partner)
+				log.FuncFuncTrace(0, "zidhin////// data.isntaller : %v ++++++++++ installer: %v", data.InstallerName, installer)
+				log.FuncFuncTrace(0, "zidhin////// data.state : %v ++++++++++ state: %v", data.State, state)
+				log.FuncFuncTrace(0, "zidhin////// data.startdate : %v ++++++++++ wc: %v", data.StartDate, wc)
+				log.FuncFuncTrace(0, "zidhin////// end date : %v ++++++++++ wc %v", data.EndDate, wc)
+				log.FuncFuncTrace(0, "zidhin////// rl : %v", data.Rl)
+				// log.FuncErrorTrace(0, "+++++++++++++++saletype", data.SaleType, "++++++++++", types)
+
+			}
+
+			if installer == "One World Energy" {
+				installer = "OWE"
+			}
+
+			if data.Dealer == dealer && data.PartnerName == partner && data.InstallerName == installer && data.State == state &&
+				startDate.Before(wc) && endDate.After(wc) {
 				return float64(data.Rl)
 			}
 		}
 	}
-
 	return 0
 }
 
