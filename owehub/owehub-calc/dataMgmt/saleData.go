@@ -43,6 +43,7 @@ type SaleDataStruct struct {
 	StartDate              time.Time // added by zidhin
 	EndDate                time.Time //field added by zidhin
 	ChargeDlr              string    // field added by zidhiin
+	// SaleType               string    //field added by zidhin
 }
 
 type SaleDataList struct {
