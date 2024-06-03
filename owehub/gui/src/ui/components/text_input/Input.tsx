@@ -6,7 +6,14 @@ import { ICONS } from '../../icons/Icons';
 import { FormInput } from '../../../core/models/data_models/typesModel';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-  type: 'text' | 'number' | 'email' | 'password' | 'date' | 'datetime-local' | 'file';
+  type:
+    | 'text'
+    | 'number'
+    | 'email'
+    | 'password'
+    | 'date'
+    | 'datetime-local'
+    | 'file';
   value: string | number;
   placeholder: string;
   label?: string;
@@ -68,12 +75,14 @@ const Input: FC<InputProps> = ({
           placeholder={placeholder}
           autoComplete="off"
           value={value}
+          max={'2050-01-01'}
           onChange={(e) => {
             if (name.includes('unique')) {
               const trim = e.target.value.trim();
               e.target.value = trim;
             }
-            return typeof onChange !== 'undefined' && !e.target.value.startsWith(' ')
+            return typeof onChange !== 'undefined' &&
+              !e.target.value.startsWith(' ')
               ? validationRules(e)
               : undefined;
           }}
