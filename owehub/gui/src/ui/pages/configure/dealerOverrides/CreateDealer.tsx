@@ -266,11 +266,7 @@ const CreateDealer: React.FC<dealerProps> = ({
 
                   {errors?.state && (
                     <span
-                      style={{
-                        display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
-                      }}
+                    className="error"
                     >
                       {errors.state}
                     </span>
