@@ -255,7 +255,7 @@ func PrepareDLROTHFilters(tableName string, dataFilter models.DataRequestBody, f
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY dh.id, dh.unique_id, dh.payee, dh.amount, dh.description, dh.balance, dh.paid_amount, dh.start_date, dh.end_date")
+		filtersBuilder.WriteString(" GROUP BY dh.id, dh.unique_id, dh.payee, dh.amount, dh.description, dh.balance, dh.paid_amount, dh.date")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {

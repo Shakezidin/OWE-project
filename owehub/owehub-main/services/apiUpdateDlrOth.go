@@ -30,9 +30,9 @@ func HandleUpdateDLROTHDataRequest(resp http.ResponseWriter, req *http.Request) 
 		queryParameters  []interface{}
 		result           []interface{}
 		query            string
-		data             []map[string]interface{}
-		paid_Amount      float64
-		balance          float64
+		// data             []map[string]interface{}
+		paid_Amount float64
+		balance     float64
 	)
 
 	log.EnterFn(0, "HandleUpdateDLROTHDataRequest")
@@ -77,13 +77,13 @@ func HandleUpdateDLROTHDataRequest(resp http.ResponseWriter, req *http.Request) 
 
 	if len(updateDLR_OTHReq.Payee) > 0 {
 		query = fmt.Sprintf("SELECT amount as amount from ap_dealer where unique_id = '%v' AND dealer = '%v' AND type = 'DLR-OTH'", updateDLR_OTHReq.Unique_Id, updateDLR_OTHReq.Payee)
-		data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
+		_, err = db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get customer, dealer_name,dealerDba from DB err: %v", err)
 			FormAndSendHttpResp(resp, "Failed to get customer, dealer_name,dealerDba from DB", http.StatusBadRequest, nil)
 			return
 		}
-		paid_Amount = data[0]["amount"].(float64)
+		// paid_Amount = data[0]["amount"].(float64)
 	}
 
 	if len(updateDLR_OTHReq.Payee) > 0 {
