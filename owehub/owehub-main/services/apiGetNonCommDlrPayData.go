@@ -67,7 +67,7 @@ func HandleGetNonCommDlrPayDataRequest(resp http.ResponseWriter, req *http.Reque
     		ndp.dealer_dba, vd.dealer_name, ndp.exact_amount,
     		ndp.approved_by, ndp.notes, ndp.balance, ndp.paid_amount, ndp.dba
 			FROM noncomm_dlrpay ndp
-			JOIN v_dealer vd ON ndp.dealer_id = vd.id`
+			LEFT JOIN v_dealer vd ON ndp.dealer_id = vd.id`
 
 	filter, whereEleList = PrepareNonCommDlrPayFilters(tableName, dataReq, false)
 	if filter != "" {
@@ -295,7 +295,7 @@ func PrepareNonCommDlrPayFilters(tableName string, dataFilter models.DataRequest
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY ndp.id, ndp.unique_id, ndp.customer, ndp.start_date, ndp.end_date, ndp.dealer_dba, vd.dealer_name, ndp.exact_amount, ndp.approved_by, ndp.notes, ndp.balance, ndp.paid_amount, ndp.dba")
+		filtersBuilder.WriteString(" GROUP BY ndp.id, ndp.unique_id, ndp.customer, ndp.date, ndp.dealer_dba, vd.dealer_name, ndp.exact_amount, ndp.approved_by, ndp.notes, ndp.balance, ndp.paid_amount, ndp.dba")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
