@@ -1,6 +1,7 @@
 // Utility function to format date string into "YYYY-MM-DD" format
 // Utility function to format date string into "YYYY-MM-DD" format
 // Utility function to format date string into "YYYY-MM-DD" format
+import { format } from 'date-fns';
 export const formatDate = (dateString: string, inputFormat: string) => {
   // Remove whitespace characters from the date string
   const trimmedDateString = dateString.trim();
@@ -47,4 +48,13 @@ export const getCurrentDateFormatted = (): string => {
   const day = String(date.getDate()).padStart(2, '0');
 
   return `${year}-${month}-${day}`;
+};
+
+export const dateFormat = (date: string) => {
+  const isValid = new Date(date);
+  if (isValid) {
+    return format(new Date(date), 'dd-MM-yyyy');
+  } else {
+    return 'N/A';
+  }
 };

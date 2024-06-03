@@ -5,7 +5,7 @@ import { PayScheduleModel } from '../../../../core/models/configuration/create/P
 
 const initialState: PayScheduleModel = {
   record_id: 0,
-  partner: '',
+  dealer: '',
   partner_name: '',
   installer_name: '',
   sale_type: '',
@@ -18,8 +18,7 @@ const initialState: PayScheduleModel = {
   rep_pay: '',
   start_date: '',
   end_date: '',
-  percentage:'',
-  standard:""
+commission_model:""
 };
 
 const createPayScheduleSlice = createSlice({

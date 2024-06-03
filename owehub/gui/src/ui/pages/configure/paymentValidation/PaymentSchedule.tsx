@@ -312,7 +312,7 @@ const PaymentSchedule = () => {
                             )
                           }
                         />
-                        {el.partner}
+                        {el.dealer}
                       </div>
                     </td>
                     <td> {el.partner_name}</td>
@@ -325,9 +325,8 @@ const PaymentSchedule = () => {
                     <td>{el.rep_draw}</td>
                     <td>{el.rep_draw_max}</td>
                     <td>{el.rep_pay}</td>
-                    <td>{el.standard}</td>
-                    <td>{el.percentage}</td>
-                    <td>{el.start_date}</td>
+                    <td>{el.commission_model}</td>
+
                     <td>{el.start_date}</td>
                     <td>{el.end_date}</td>
                     {!viewArchived && selectedRows.size < 2 && (

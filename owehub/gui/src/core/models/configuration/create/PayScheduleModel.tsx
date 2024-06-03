@@ -1,6 +1,6 @@
 export interface PayScheduleModel {
   record_id: number;
-  partner: string;
+  dealer: string;
   partner_name: string;
   installer_name: string;
   sale_type: string;
@@ -13,6 +13,5 @@ export interface PayScheduleModel {
   rep_pay: string;
   start_date: string;
   end_date: string;
-  percentage:number|string
-  standard:string
+  commission_model:string
 }
