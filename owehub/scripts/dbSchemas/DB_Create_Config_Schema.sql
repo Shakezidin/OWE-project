@@ -610,6 +610,28 @@ CREATE TABLE referral_data (
     FOREIGN KEY (rep_2) REFERENCES user_details(user_id)
 );
 
+CREATE TABLE dealer_repayment_bonus (
+    id serial NOT NULL,
+    unique_id varchar,
+    dealer_id INT,
+    partner INT,
+    installer INT,
+    loan_type INT,
+    home_owner varchar,
+    sys_size float,
+    contract_$$ float,
+    shaky_hand BOOLEAN,
+    repayment_bonus float,
+    remaining_repayment_bonus float,
+    FOREIGN KEY (loan_type) REFERENCES loan_type(id),
+    FOREIGN KEY (dealer_id) REFERENCES v_dealer(id),
+    FOREIGN KEY (partner) REFERENCES partners(partner_id),
+    FOREIGN KEY (installer) REFERENCES partners(partner_id),
+    is_archived BOOLEAN DEFAULT FALSE,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone
+);
+
 CREATE TABLE dealer_credit (
     id serial NOT NULL,
     unique_id varchar NOT NULL,

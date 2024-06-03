@@ -202,8 +202,12 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	payRateSubTotal = calculatePayRateSubTotal(dealer, payRateSemi, adderPerKw)
 	log.FuncFuncTrace(0, "Shushank adderLF: %v, adderPerKw: %v payRateSubTotal: %v", adderLF, adderPerKw, payRateSubTotal)
 
+	dealerPaymentBonus = dataMgmt.DealerRepayConfig.CalculateRepaymentBonus(uniqueID, homeOwner)
+	log.FuncFuncTrace(0, "RaedMajeed dealerPaymentBonus: %v", dealerPaymentBonus)
+
 	commTotal = calculateCommTotal(dealer, payRateSubTotal, systemSize, dealerPaymentBonus) // dealerPaymentBonus
-	commTotal = -2888.39                                                                    //Shushank
+	log.FuncFuncTrace(0, "RaedMajeed commTotal: %v payRateSubTotal -> %v systemSize -> %v", commTotal, payRateSubTotal, systemSize)
+	// commTotal = -2888.39             17644 -> commtotal = 6295                                                    //Shushank
 	statusCheck = calculateStatusCheck(dealer, status, expense, commTotal, credit, repPay)
 	r1DrawAmt = CalculateR1DrawAmt(statusCheck, dlrDrawMax, dlrDrawPerc)
 	log.FuncFuncTrace(0, "Shushank commTotal: %v, statusCheck: %v r1DrawAmt: %v", commTotal, statusCheck, r1DrawAmt)
