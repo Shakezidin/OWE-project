@@ -8,6 +8,7 @@ import { useAppSelector } from '../../../../redux/hooks';
 import { toggleRowSelection } from '../../../components/chekbox/checkHelper';
 import { CommissionModel } from '../../../../core/models/configuration/create/CommissionModel';
 import MicroLoader from '../../../components/loader/MicroLoader';
+import { dateFormat } from '../../../../utiles/formatDate';
 
 interface rowProps {
   selectAllChecked: boolean;
@@ -120,8 +121,8 @@ const CommissionRowComponent: React.FC<rowProps> = ({
                 <td>{el.rep_type}</td>
                 <td>{el.rl}</td>
                 <td>{el.rate}</td>
-                <td>{el.start_date}</td>
-                <td>{el.end_date}</td>
+                <td>{dateFormat(el.start_date)}</td>
+                <td>{dateFormat(el.end_date)}</td>
                 <td>
                   {!viewArchived && selectedRows.size < 2 && (
                     <div className="action-icon">

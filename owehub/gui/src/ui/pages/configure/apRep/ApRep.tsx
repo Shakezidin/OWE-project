@@ -19,6 +19,7 @@ import MicroLoader from '../../../components/loader/MicroLoader';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import Breadcrumb from '../../../components/breadcrumb/Breadcrumb';
+import { dateFormat } from '../../../../utiles/formatDate';
 const ApRep = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -318,11 +319,11 @@ const ApRep = () => {
                     <td>{el.customer_name || 'N/A'}</td>
                     <td>{el.state_name || 'N/A'}</td>
 
-                    <td>{el.date || 'N/A'}</td>
+                    <td>{dateFormat(el.date) || 'N/A'}</td>
                     <td>{el.amount || 'N/A'}</td>
                     <td>{el.payment_type || 'N/A'}</td>
                     <td>{el.bank || 'N/A'}</td>
-                    <td>{el.ced || 'N/A'}</td>
+                    <td>{dateFormat(el.ced) || 'N/A'}</td>
                     <td>{el.partner_name || 'N/A'}</td>
                     <td>{el.total_paid}</td>
                     {!viewArchived && selectedRows.size < 2 && (

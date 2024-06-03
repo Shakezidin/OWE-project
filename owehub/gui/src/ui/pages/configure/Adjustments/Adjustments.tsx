@@ -30,6 +30,7 @@ import MicroLoader from '../../../components/loader/MicroLoader';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import DataNotFound from '../../../components/loader/DataNotFound';
+import { dateFormat } from '../../../../utiles/formatDate';
 const Adjustments = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -307,7 +308,7 @@ const Adjustments = () => {
                       <td>
                         {' '}
                         {item.date &&
-                          format(new Date(item.date), 'yyyy-MM-dd')}{' '}
+                          dateFormat(item.date)}{' '}
                       </td>
                       <td>{item.amount}</td>
                       <td>

@@ -33,6 +33,7 @@ import MicroLoader from '../../../components/loader/MicroLoader';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
+import { dateFormat } from '../../../../utiles/formatDate';
 interface Column {
   name: string;
   displayName: string;
@@ -336,7 +337,7 @@ const DealerCredit: React.FC = () => {
                       </div>
                     </td>
 
-                    <td>{el.date}</td>
+                    <td>{dateFormat(el.date)}</td>
                     <td>{el.exact_amount}</td>
                     <td>{el.per_kw_amount}</td>
                     <td>{el.approved_by}</td>

@@ -23,6 +23,7 @@ import { FilterModel } from '../../../../core/models/data_models/FilterSelectMod
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import DataNotFound from '../../../components/loader/DataNotFound';
+import { dateFormat } from '../../../../utiles/formatDate';
 const ApptSetters = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -311,8 +312,8 @@ const ApptSetters = () => {
                     <td>{el.name}</td>
                     <td>{el.team_name}</td>
                     <td>{el.pay_rate}</td>
-                    <td>{el.start_date}</td>
-                    <td>{el.end_date}</td>
+                    <td>{dateFormat(el.start_date)}</td>
+                    <td>{dateFormat(el.end_date)}</td>
                     <td>
                       {!viewArchived && selectedRows.size < 2 && (
                         <div className="action-icon">
