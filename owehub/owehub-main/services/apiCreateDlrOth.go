@@ -32,7 +32,7 @@ func HandleCreateDLROTHDataRequest(resp http.ResponseWriter, req *http.Request) 
 		paid_Amount      float64
 		balance          float64
 		query            string
-		// data             []map[string]interface{}
+		data             []map[string]interface{}
 	)
 
 	log.EnterFn(0, "HandleCreateDLROTHDataRequest")
@@ -70,28 +70,24 @@ func HandleCreateDLROTHDataRequest(resp http.ResponseWriter, req *http.Request) 
 
 	if len(createDLR_OTHReq.Payee) > 0 {
 		query = fmt.Sprintf("SELECT amount from ap_dealer where unique_id = '%v' AND dealer = '%v' AND type = 'DLR-OTH'", createDLR_OTHReq.Unique_Id, createDLR_OTHReq.Payee)
-		_, err = db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
+		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get amount from DB err: %v", err)
 			FormAndSendHttpResp(resp, "Failed to get amount from DB", http.StatusBadRequest, nil)
 			return
 		}
 
-		log.FuncErrorTrace(0, "******************************************************************!!!")
-
-		// paid_Amount, ok := data[0]["amount"].(float64)
-		// if !ok || paid_Amount == 0.0 {
-		// 	paid_Amount = 0.0
-		// }
+		if len(data) > 0 {
+			paid_Amount, ok := data[0]["amount"].(float64)
+			if !ok || paid_Amount == 0.0 {
+				paid_Amount = 0.0
+			}
+		}
 	}
-
-	log.FuncErrorTrace(0, "******************************************************************!!!")
 
 	if len(createDLR_OTHReq.Payee) > 0 {
 		balance = createDLR_OTHReq.Amount - paid_Amount
 	}
-
-	log.FuncErrorTrace(0, "******************************************************************!!!")
 
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, createDLR_OTHReq.Unique_Id)

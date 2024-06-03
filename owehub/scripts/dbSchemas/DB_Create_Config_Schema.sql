@@ -646,9 +646,9 @@ CREATE TABLE noncomm_dlrpay (
 
 CREATE TABLE dlr_oth(
     id serial NOT NULL,
-    unique_id varchar NOT NULL UNIQUE,
+    unique_id varchar NOT NULL,
     payee text,
-    amount text,
+    amount float,
     description character varying,
     balance float,
     paid_amount float,

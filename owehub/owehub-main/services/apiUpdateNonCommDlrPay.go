@@ -85,15 +85,17 @@ func HandleUpdateNonCommDlrPayRequest(resp http.ResponseWriter, req *http.Reques
 	if len(UpdateNonCommDlrPay.UniqueID) > 0 {
 		query = `SELECT home_owner as customer, dealer as dealer_name FROM dealer_pay_calc_standard WHERE unique_id = $1`
 		whereEleList = append(whereEleList, UpdateNonCommDlrPay.UniqueID)
-		data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, whereEleList)
+		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get customer, dealer_name,dealerDba from DB err: %v", err)
 			FormAndSendHttpResp(resp, "Failed to get customer, dealer_name,dealerDba from DB", http.StatusBadRequest, nil)
 			return
 		}
-		customer = data[0]["customer"].(string)
-		dealerName = data[0]["dealer_name"].(string)
-		// dealerDBA = data[0]["dealerDBA"].(string)
+		if len(data) > 0 {
+			customer = data[0]["customer"].(string)
+			dealerName = data[0]["dealer_name"].(string)
+			// dealerDBA = data[0]["dealerDBA"].(string)
+		}
 	}
 
 	if len(customer) > 0 {
@@ -105,7 +107,9 @@ func HandleUpdateNonCommDlrPayRequest(resp http.ResponseWriter, req *http.Reques
 			FormAndSendHttpResp(resp, "Failed to get appt setters data from DB", http.StatusBadRequest, nil)
 			return
 		}
-		// paidAmount = data[0]["paid_amount"].(float64)
+		if len(data) > 0 {
+			paidAmount = data[0]["paid_amount"].(float64)
+		}
 	}
 
 	if len(customer) > 0 {
