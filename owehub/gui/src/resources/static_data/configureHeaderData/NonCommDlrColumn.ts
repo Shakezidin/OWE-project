@@ -52,14 +52,8 @@ export const NonCommDlrColumn: Column[] = [
     isCheckbox: false,
   },
   {
-    name: 'start_date',
-    displayName: 'Start Date',
-    type: 'date',
-    isCheckbox: false,
-  },
-  {
-    name: 'end_date',
-    displayName: 'End Date',
+    name: 'date',
+    displayName: 'Date',
     type: 'date',
     isCheckbox: false,
   },

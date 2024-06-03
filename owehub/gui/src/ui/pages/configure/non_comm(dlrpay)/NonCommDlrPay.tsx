@@ -107,9 +107,8 @@ const NonCommDlrPay: React.FC = () => {
   };
 
   const totalPages = Math.ceil(dbCount / itemsPerPage);
-
   const startIndex = (currentPage - 1) * itemsPerPage + 1;
-  const endIndex = startIndex * currentPage;
+  const endIndex = startIndex * itemsPerPage;
   const handleAddCommission = () => {
     setEditMode(false);
     setEditedCommission(null);
@@ -191,6 +190,8 @@ const NonCommDlrPay: React.FC = () => {
       }
     }
   };
+
+  console.log(endIndex, dbCount, "................................................")
 
   return (
     <div className="comm">
@@ -320,9 +321,9 @@ const NonCommDlrPay: React.FC = () => {
                         {el.unique_id}
                       </div>
                     </td>
-                    <td>{el.customer}</td>
-                    <td>{el.dealer_name}</td>
-                    <td>{el.dealer_dba}</td>
+                    <td>{el.customer || "N/A"}</td>
+                    <td>{el.dealer_name || "N/A"}</td>
+                    <td>{el.dealer_dba || "N/A"}</td>
                     <td>{el.exact_amount}</td>
                     <td>{el.balance}</td>
                     <td>{el.approved_by}</td>
@@ -356,8 +357,7 @@ const NonCommDlrPay: React.FC = () => {
                       />
                     </td>
                     <td>{el.paid_amount}</td>
-                    <td>{el.start_date}</td>
-                    <td>{el.end_date}</td>
+                    <td>{el.date}</td>
                     <td>
                       {!viewArchived && selectedRows.size < 2 && (
                         <div className="action-icon">
@@ -399,7 +399,6 @@ const NonCommDlrPay: React.FC = () => {
               {startIndex} - {endIndex > dbCount ? dbCount : endIndex} of{' '}
               {dbCount} item
             </p>
-
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages} // You need to calculate total pages

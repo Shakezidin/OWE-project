@@ -10,17 +10,16 @@ interface Ipaginate {
 
 interface INonCommCreateParams {
   unique_id: string;
-  customer: string;
-  dealer_name: string;
-  dealer_dba: string;
-  exact_amount: string;
+  customer?: string;
+  dealer_name?: string;
+  dealer_dba?: string;
+  exact_amount: string | number;
   approved_by: string;
   notes: string;
-  balance: number;
-  paid_amount: number;
-  dba: string;
-  start_date: string;
-  end_date: string;
+  balance?: number;
+  paid_amount?: number;
+  dba?: string;
+  date: string
 }
 
 export interface INonCommRowDLR extends INonCommCreateParams {
