@@ -4,6 +4,7 @@ import { ReactComponent as EYE_ICON } from '../../../resources/assets/eye-icon.s
 import { ReactComponent as EYE_OFF_ICON } from '../../../resources/assets/eye-off-icon.svg';
 import { ICONS } from '../../icons/Icons';
 import { FormInput } from '../../../core/models/data_models/typesModel';
+import { format } from 'date-fns';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   type:
@@ -76,6 +77,7 @@ const Input: FC<InputProps> = ({
           autoComplete="off"
           value={value}
           max={'2050-01-01'}
+          min={format(new Date(),"yyyy-MM-dd")}
           onChange={(e) => {
             if (name.includes('unique')) {
               const trim = e.target.value.trim();

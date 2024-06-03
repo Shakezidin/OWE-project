@@ -132,7 +132,7 @@ const CreatePaymentSchedule: React.FC<payScheduleProps> = ({
   };
 const commisionOpt = [
   { value: 'standard', label: 'Standard' },
-  { value: 'perecentage', label: 'Perecentage' },
+  { value: 'percentage', label: 'Percentage' },
 ]
   const submitPaySchedule = async (e: FormEvent) => {
     e.preventDefault();
