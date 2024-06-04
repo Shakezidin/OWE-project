@@ -4,7 +4,6 @@ import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { CSVLink } from 'react-csv';
 import { ICONS } from '../../../icons/Icons';
 import TableHeader from '../../../components/tableHeader/TableHeader';
-import { fetchCommissions } from '../../../../redux/apiSlice/configSlice/config_get_slice/commissionSlice';
 import CheckBox from '../../../components/chekbox/CheckBox';
 import {
   toggleAllRows,
@@ -28,11 +27,13 @@ import { EndPoints } from '../../../../infrastructure/web_api/api_client/EndPoin
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
 import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import MicroLoader from '../../../components/loader/MicroLoader';
+import { fetchRebateData } from '../../../../redux/apiActions/config/rebateDataAction';
 interface Column {
   name: string;
   displayName: string;
   type: string;
 }
+
 
 const RebeteData: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -59,13 +60,16 @@ const RebeteData: React.FC = () => {
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [filters, setFilters] = useState<FilterModel[]>([]);
+  const { data, isLoading,  isSuccess } = useAppSelector(
+    (state) => state.rebate
+  );
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
       page_size: itemsPerPage,
       archived: viewArchived,
     };
-    dispatch(fetchCommissions(pageNumber));
+    dispatch(fetchRebateData(pageNumber));
   }, [dispatch, currentPage, viewArchived]);
 
   const paginate = (pageNumber: number) => {
@@ -100,7 +104,7 @@ const RebeteData: React.FC = () => {
     handleOpen();
   };
 
-  const currentPageData = commissionList?.slice(startIndex, endIndex);
+  const currentPageData = data.slice();
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === commissionList.length;
   const handleSort = (key: any) => {
@@ -153,15 +157,13 @@ const RebeteData: React.FC = () => {
       const pageNumber = {
         page_number: currentPage,
         page_size: itemsPerPage,
+        filters,
       };
-      const res = await postCaller(
-        EndPoints.update_commission_archive,
-        newValue
-      );
+      const res = await postCaller('update_rebate_data_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
-        dispatch(fetchCommissions(pageNumber));
         setSelectAllChecked(false);
         setSelectedRows(new Set());
+        dispatch(fetchRebateData(pageNumber));
         await successSwal('Archived', 'The data has been archived ');
       } else {
         await successSwal('Archived', 'The data has been archived ');
@@ -264,14 +266,14 @@ const RebeteData: React.FC = () => {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={commissionList.length}>
+                  <td colSpan={currentPageData.length}>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                       <MicroLoader />
                     </div>
                   </td>
                 </tr>
-              ) : commissionList?.length > 0 ? (
-                commissionList?.map((el: any, i: any) => (
+              ) : currentPageData?.length > 0 ? (
+                currentPageData?.map((el: any, i: any) => (
                   <tr key={i} className={selectedRows.has(i) ? 'selected' : ''}>
                     <td style={{ fontWeight: '500', color: 'black' }}>
                       <div className="flex-check">
@@ -286,34 +288,20 @@ const RebeteData: React.FC = () => {
                             )
                           }
                         />
-                        {el.partner}
+                        {el.customer_verf}
                       </div>
                     </td>
-                    <td>{el.installer}</td>
-                    <td>{el.state}</td>
-                    <td>{el.sale_type}</td>
-                    <td>{el.sale_price}</td>
-                    <td>{el.rep_type}</td>
-                    <td>{el.rl}</td>
-                    <td>{el.rate}</td>
-                    <td>{el.state}</td>
-                    <td>{el.sale_type}</td>
-                    <td>{el.sale_price}</td>
-                    <td>{el.rep_type}</td>
-                    <td>{el.rl}</td>
-                    <td>{el.rate}</td>
-                    <td>{el.state}</td>
-                    <td>{el.sale_type}</td>
-                    <td>{el.sale_price}</td>
-                    <td>{el.rep_type}</td>
-                    <td>{el.rl}</td>
-                    <td>{el.rate}</td>
-                    <td>{el.state}</td>
-                    <td>{el.sale_type}</td>
-                    <td>{el.sale_price}</td>
-                    <td>{el.rep_type}</td>
-                    <td>{el.start_date}</td>
-                    <td>{el.end_date}</td>
+                    <td>{el.type}</td>
+                    <td>{el.item}</td>
+                    <td>{el.amount}</td>
+                    <td>{el.rep_doll_divby_per}</td>
+                    <td>{el.notes}</td>
+                    <td>{el.rep1_name}</td>
+                    <td>{el.rep2_name}</td>
+                    <td>{el.sys_size}</td>
+                    <td>{el.rep_count}</td>
+                    <td>{el.type_rd_mktg}</td>
+
                     <td>
                       {selectedRows.size > 0 ? (
                         <div className="action-icon">
