@@ -182,6 +182,8 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateRL(dealer, partner, install
 			timeLayout := "15:04:05"
 			startDate, _ := time.Parse(timeLayout, data.StartDate)
 			endDate, _ := time.Parse(timeLayout, data.EndDate)
+
+			
 			if data.Dealer == dealer && data.PartnerName == partner {
 				log.FuncFuncTrace(0, "zidhin////// data.dealer : %v  ++++++++++ dealer: %v", data.Dealer, dealer)
 				log.FuncFuncTrace(0, "zidhin////// data.partner : %v ++++++++++partner: %v", data.PartnerName, partner)
@@ -244,16 +246,36 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateDlrDrawPerc(dealer, partner
 				continue
 			}
 
-			if data.Dealer == dealer &&
-				strings.EqualFold(data.PartnerName, partner) &&
-				strings.EqualFold(data.InstallerName, installer) &&
-				data.SaleType == loanType &&
-				data.State == state &&
-				!startDate.After(wc) &&
-				!endDate.Before(wc) {
+			if installer == "One World Energy" {
+				installer = "OWE"
+			}
 
-				drawPerc = data.Draw
-				dlrDrawMax = data.DrawMax
+			if state == "AZ :: Arizona" {
+				state = "Arizona"
+			}
+
+			if state == "NM :: New Mexico" {
+				state = "New Mexico"
+			}
+			if data.Dealer == dealer && data.PartnerName == partner && data.InstallerName == installer {
+				log.FuncErrorTrace(0, "data.DealerName: %v paramDealerName : %v", data.Dealer, dealer)
+				log.FuncErrorTrace(0, "data.PartnerName: %v parampartnerName : %v", data.PartnerName, partner)
+				log.FuncErrorTrace(0, "data.InstallerName: %v paramInstallerName : %v", data.InstallerName, installer)
+				log.FuncErrorTrace(0, "data.saleType: %v paramLoanType : %v", data.SaleType, loanType)
+				log.FuncErrorTrace(0, "data.stateName: %v paramStateName : %v", data.State, state)
+				log.FuncErrorTrace(0, "data.InstallerName: %v paramInstallerName : %v, wc %v", data.StartDate, data.EndDate, wc)
+
+				if data.Dealer == dealer &&
+					strings.EqualFold(data.PartnerName, partner) &&
+					strings.EqualFold(data.InstallerName, installer) &&
+					// data.SaleType == loanType &&
+					data.State == state &&
+					!startDate.After(wc) &&
+					!endDate.Before(wc) {
+
+					drawPerc = data.Draw/100
+					dlrDrawMax = data.DrawMax
+				}
 			}
 		}
 	}

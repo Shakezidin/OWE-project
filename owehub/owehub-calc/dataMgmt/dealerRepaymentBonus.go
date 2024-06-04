@@ -109,11 +109,8 @@ func (pDealer *DealerRepaymentStruct) LoadDealerRepaymentCfg() (err error) {
 }
 
 func (pDealer *DealerRepaymentStruct) CalculateRepaymentBonus(uniqueid, homeOwner string) (dlrPayBonus float64) {
-	log.FuncErrorTrace(0, "------RAED %v ", uniqueid)
 	for _, data := range pDealer.DealerRepaymentList {
-		log.FuncErrorTrace(0, "------RAED %v ", uniqueid)
 		if data.UniqueId == uniqueid && homeOwner == data.HomeOwner {
-			log.FuncErrorTrace(0, "-----++++++++++-RAED %v %v", uniqueid, homeOwner)
 			dlrPayBonus += data.RepaymentBonus
 		}
 	}

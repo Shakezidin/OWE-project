@@ -152,9 +152,11 @@ func (pApDealerCfg *ApDealerCfgStruct) CalculateR1CommPaid(dealer, uniqueid stri
 	r1CommPaid = 0
 	if len(dealer) > 0 {
 		for _, data := range pApDealerCfg.ApDealerList {
-			if data.UniqueId == uniqueid && data.Dealer == dealer && (data.Type != "Non-COMM" && data.Type != "DLR-OTHER") {
-				log.FuncErrorTrace(0, "===Shushank  %+v", data)
-				r1CommPaid += data.Amount
+			if data.UniqueId == uniqueid {
+
+				if data.UniqueId == uniqueid && data.Dealer == dealer && (data.Type != "Non-COMM" && data.Type != "DLR-OTHER") {
+					r1CommPaid += data.Amount
+				}
 			}
 		}
 	}

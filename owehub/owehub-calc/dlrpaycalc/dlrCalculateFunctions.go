@@ -141,6 +141,7 @@ func calculateR1Balance(dealerStrings string, statusCheckValues, r1CommPaidValue
 *****************************************************************************/
 func CalculateR1DrawAmt(statusCheck float64, DlrDrawMax float64, DlrDrawPerc float64) (result float64) {
 
+	log.FuncErrorTrace(0, "****************%v******************%v*********************%v", statusCheck, DlrDrawMax, DlrDrawPerc)
 	if statusCheck > 0 {
 		maxDraw := statusCheck * DlrDrawPerc
 		if DlrDrawMax < maxDraw {
@@ -552,6 +553,7 @@ func calculateR2PayRateSemi(rep_1 string, repCount, perRepSales, perRepkW, epcCa
 * RETURNS:         gross revenue
 *****************************************************************************/
 func CalculateContractDolDol(netEpc float64, contract float64, sysSize float64) (contractdoldol float64) {
+	log.FuncErrorTrace(0, "netEpc %v  contract %v sysSize %v", netEpc, contract, sysSize)
 	if netEpc > 0 {
 		if contract > 0 {
 			contractdoldol = contract
@@ -603,26 +605,3 @@ func CalculateAdderEPC(epcCalc, contract, loanfee, sys_size float64) (epc float6
 	}
 	return epc
 }
-
-/******************************************************************************
-* FUNCTION:        CalculateLoanFee
-* DESCRIPTION:     calculates the "loan_fee" value based on the provided data
-* RETURNS:         gross revenue
-*****************************************************************************/
-func CalculateLoanFee(uniqueId string, contractDolDol float64) float64 {
-	var loanfee float64
-
-	return loanfee
-}
-
-// This is for DBA
-// func (dba *DBA) calculateDealerDba(dealer string) (dealerDBA string) {
-//     if len(dealer) > 0 {
-//         for _, data := range dba {
-//             if data.dealer == dealer {
-//                 dealerDBA = data.name
-//             }
-//         }
-//     }
-//     return dealerDBA
-// }

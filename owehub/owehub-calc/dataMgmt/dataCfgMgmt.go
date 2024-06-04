@@ -29,6 +29,14 @@ func LoadConfigurations() (err error) {
 		return err
 	}
 
+	//* dealer tier is working
+	err = DealerTierCfg.LoadDealerTierCfg()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get dealer tier Config from DB err: %+v", err)
+		return err
+	}
+	log.FuncErrorTrace(0, "===== dealer tier : %+v", DealerTierCfg.DealerTierList.DealersTierList[0])
+
 	//* adder data is working
 	err = AdderDataCfg.LoadAdderDataCfg()
 	if err != nil {
