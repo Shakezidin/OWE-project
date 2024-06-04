@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -68,6 +69,11 @@ func HandleCreateDLROTHDataRequest(resp http.ResponseWriter, req *http.Request) 
 		return
 	}
 
+	if createDLR_OTHReq.Amount < 0 {
+		FormAndSendHttpResp(resp, "Negative value not allowed", http.StatusBadRequest, nil)
+		return
+	}
+
 	if len(createDLR_OTHReq.Payee) > 0 {
 		query = fmt.Sprintf("SELECT amount from ap_dealer where unique_id = '%v' AND dealer = '%v' AND type = 'DLR-OTH'", createDLR_OTHReq.Unique_Id, createDLR_OTHReq.Payee)
 		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
@@ -89,6 +95,12 @@ func HandleCreateDLROTHDataRequest(resp http.ResponseWriter, req *http.Request) 
 		balance = createDLR_OTHReq.Amount - paid_Amount
 	}
 
+	date, err := time.Parse("2006-01-02", createDLR_OTHReq.Date)
+	if err != nil {
+		fmt.Println("Error parsing date:", err)
+		return
+	}
+
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, createDLR_OTHReq.Unique_Id)
 	queryParameters = append(queryParameters, createDLR_OTHReq.Payee)
@@ -96,7 +108,7 @@ func HandleCreateDLROTHDataRequest(resp http.ResponseWriter, req *http.Request) 
 	queryParameters = append(queryParameters, createDLR_OTHReq.Description)
 	queryParameters = append(queryParameters, balance)
 	queryParameters = append(queryParameters, paid_Amount)
-	queryParameters = append(queryParameters, createDLR_OTHReq.Date)
+	queryParameters = append(queryParameters, date)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateDLR_OTHFunction, queryParameters)

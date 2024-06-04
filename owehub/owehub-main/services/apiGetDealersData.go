@@ -132,8 +132,8 @@ func HandleGetDealersDataRequest(resp http.ResponseWriter, req *http.Request) {
 			EndDate = time.Time{}
 		}
 
-		start := StartDate.Format("2006-01-02")
-		end := EndDate.Format("2006-01-02")
+		// start := StartDate.Format("2006-01-02")
+		// end := EndDate.Format("2006-01-02")
 
 		dealerData := models.GetDealerData{
 			RecordId:  RecordId,
@@ -141,8 +141,8 @@ func HandleGetDealersDataRequest(resp http.ResponseWriter, req *http.Request) {
 			Dealer:    Dealer,
 			State:     StateName,
 			PayRate:   PayRate,
-			StartDate: start,
-			EndDate:   end,
+			StartDate: StartDate,
+			EndDate:   EndDate,
 		}
 
 		dealersList.DealersList = append(dealersList.DealersList, dealerData)

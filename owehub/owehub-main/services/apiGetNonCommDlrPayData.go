@@ -11,6 +11,7 @@ import (
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	"strings"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -119,7 +120,7 @@ func HandleGetNonCommDlrPayDataRequest(resp http.ResponseWriter, req *http.Reque
 
 		// exact_amount
 		ExactAmount, ok := item["exact_amount"].(float64)
-		if !ok  {
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get exact amount for Record ID %v. Item: %+v\n", RecordId, item)
 			ExactAmount = 0.0
 		}
@@ -160,12 +161,13 @@ func HandleGetNonCommDlrPayDataRequest(resp http.ResponseWriter, req *http.Reque
 		}
 
 		// start_date
-		Date, ok := item["date"].(string)
-		if !ok || Date == "" {
+		Date, ok := item["date"].(time.Time)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get date for Record ID %v. Item: %+v\n", RecordId, item)
-			Date = ""
+			Date = time.Time{}
 		}
-
+		date := Date.Format("2006-01-02")
+		
 		NonCommDlrPayData := models.GetNonCommDlrPay{
 			RecordId:    RecordId,
 			UniqueID:    UniqueID,
@@ -178,7 +180,7 @@ func HandleGetNonCommDlrPayDataRequest(resp http.ResponseWriter, req *http.Reque
 			Balance:     Balance,
 			PaidAmount:  PaidAmount,
 			DBA:         DBA,
-			Date:        Date,
+			Date:        date,
 		}
 		NonCommDlrPayDataList.NonCommDlrPayList = append(NonCommDlrPayDataList.NonCommDlrPayList, NonCommDlrPayData)
 	}
