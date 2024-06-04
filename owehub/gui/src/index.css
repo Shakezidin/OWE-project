@@ -37,6 +37,14 @@
   --project-icon-color-2: #e98045;
   --project-icon-color-3: #19b87e;
   --project-icon-color-4: #de2e2e;
+
+
+  --primary-color: #377CF6;
+  --secondary-color: #63ACA3;
+  --teritary-color: #8E81E0;
+  --orange-color: #EE824D;
+  --purpink-color: #C470C7;
+  --primary-light-color: #D5E4FF;
 }
 a {
   text-decoration: none;

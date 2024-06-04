@@ -68,6 +68,8 @@ const CreateReferalData: React.FC<ButtonProps> = ({
     per_rep_ovrd_share: '',
     r1_pay_scale: '',
     r1_referral_credit_$: '',
+    r1_referral_credit_perc: '',
+    r1_addr_resp: '',
     r2_pay_scale: '',
     r2_referral_credit_$: '',
     r2_referral_credit_perc: '',
@@ -153,10 +155,9 @@ const CreateReferalData: React.FC<ButtonProps> = ({
             sys_size: parseFloat(createCommission.sys_size),
             rep_count: parseFloat(createCommission.sys_size),
             r1_pay_scale: parseFloat(createCommission.r1_pay_scale),
-            r1_referral_credit_$: parseFloat(
-              createCommission.r1_referral_credit_$
-            ),
             r2_pay_scale: parseFloat(createCommission.r2_pay_scale),
+            per_rep_addr_share: parseFloat(createCommission.per_rep_addr_share),
+            per_rep_ovrd_share: parseFloat(createCommission.per_rep_ovrd_share),
           });
           if (res.status === 200) {
             handleClose();
@@ -172,14 +173,14 @@ const CreateReferalData: React.FC<ButtonProps> = ({
             sys_size: parseFloat(cleanedFormData.sys_size),
             rep_count: parseFloat(cleanedFormData.sys_size),
             r1_pay_scale: parseFloat(cleanedFormData.r1_pay_scale),
-            r1_referral_credit_$: parseFloat(
-              cleanedFormData.r1_referral_credit_$
-            ),
+            r2_pay_scale: parseFloat(cleanedFormData.r2_pay_scale),
+            per_rep_addr_share: parseFloat(createCommission.per_rep_addr_share),
+            per_rep_ovrd_share: parseFloat(createCommission.per_rep_ovrd_share),
           });
           if (res.status === 200) {
             handleClose();
-            window.location.reload()
-            toast.success(res.message)
+            window.location.reload();
+            toast.success(res.message);
           } else {
             toast.error(res.message);
           }
@@ -429,6 +430,28 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={'text'}
+                    label="R1 Adder Resp"
+                    value={createCommission.r1_addr_resp}
+                    name="r1_addr_resp"
+                    placeholder={'R1 Adder Resp'}
+                    onChange={(e) => handleInputChange(e)}
+                  />
+                  {errors?.r1_addr_resp && (
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.r1_addr_resp}
+                    </span>
+                  )}
+                </div>
+
+                <div className="create-input-field">
+                  <Input
+                    type={'text'}
                     label="Rep2 Name"
                     value={createCommission.rep_2_name}
                     name="rep_2_name"
@@ -576,6 +599,28 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                       }}
                     >
                       {errors.r1_referral_credit_$}
+                    </span>
+                  )}
+                </div>
+
+                <div className="create-input-field">
+                  <Input
+                    type={'text'}
+                    label="R1 Referral Credit Perc"
+                    value={createCommission.r1_referral_credit_perc}
+                    name="r1_referral_credit_perc"
+                    placeholder={'R1 Referral Credit Perc'}
+                    onChange={(e) => handleInputChange(e)}
+                  />
+                  {errors?.r1_referral_credit_perc && (
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.r1_referral_credit_perc}
                     </span>
                   )}
                 </div>
