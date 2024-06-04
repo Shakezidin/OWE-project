@@ -639,3 +639,14 @@
 .performance-milestone-table::-webkit-scrollbar-corner {
   background-color: transparent;
 }
+.rounded-8{
+  border-radius: 8px;
+}
+
+.rounded-16{
+  border-radius: 16px;
+}
+
+.project-card-wrapper{
+  width: 70%;
+}

@@ -9,16 +9,7 @@ import SelectOption from '../../components/selectOption/SelectOption';
 import { ICONS } from '../../icons/Icons';
 import { FaCheck } from 'react-icons/fa6';
 import { useLocation } from 'react-router-dom';
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from 'recharts';
+import project_management_chart from './lib/project_management_chart.png';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import {
   getProjectDetail,
@@ -79,13 +70,13 @@ const ProjectStatus = () => {
       number: <FaCheck />,
       color: 'white',
       numColor: '#0493CE',
-      bgColor: '#0493CE',
+      bgColor: '#4191C9',
       childStatusData: [
         {
           name: '10 Apr',
           process: 'Completed',
-          bgColor: projectDetail.sales_completed ? '#57B93A' : '#F2F4F6',
-          color: projectDetail.sales_completed ? 'white' : '#101828',
+          bgColor: projectDetail.sales_completed ? '#63ACA3' : '#EBEBEB',
+          color: projectDetail.sales_completed ? 'white' : '#858585',
           borderColor: projectDetail.sales_completed ? 'white' : '#A5AAB2',
           key: 'sales_completed',
         },
@@ -96,7 +87,7 @@ const ProjectStatus = () => {
       number: '2',
       color: 'white',
       numColor: '#0493CE',
-      bgColor: '#0493CE',
+      bgColor: '#4191C9',
       childStatusData: [
         {
           name: '10 Apr',
@@ -104,8 +95,8 @@ const ProjectStatus = () => {
           data: projectDetail.ntp_pending ? '' : 'data is not available',
           borderColor: projectDetail.ntp_pending ? 'white' : '#A5AAB2',
           key: 'ntp_pending',
-          bgColor: projectDetail.ntp_pending ? '#57B93A' : '#F2F4F6',
-          color: projectDetail.ntp_pending ? 'white' : '#101828',
+          bgColor: projectDetail.ntp_pending ? '#63ACA3' : '#EBEBEB',
+          color: projectDetail.ntp_pending ? 'white' : '#858585',
         },
         {
           name: '10 Apr',
@@ -113,15 +104,15 @@ const ProjectStatus = () => {
           data: projectDetail.ntp_completed ? '' : 'data is not available',
           borderColor: projectDetail.ntp_completed ? 'white' : '#A5AAB2',
           key: 'ntp_completed',
-          bgColor: projectDetail.ntp_completed ? '#57B93A' : '#F2F4F6',
-          color: projectDetail.ntp_completed ? 'white' : '#101828',
+          bgColor: projectDetail.ntp_completed ? '#63ACA3' : '#EBEBEB',
+          color: projectDetail.ntp_completed ? 'white' : '#858585',
         },
       ],
     },
     {
       name: 'Site Survey',
       number: '3',
-      bgColor: '#0493CE',
+      bgColor: '#4191C9',
       color: 'white',
       numColor: '#0493CE',
       childStatusData: [
@@ -136,8 +127,8 @@ const ProjectStatus = () => {
             ? 'white'
             : '#A5AAB2',
           key: 'site_survey_scheduled',
-          bgColor: projectDetail.site_survey_scheduled ? '#57B93A' : '#F2F4F6',
-          color: projectDetail.site_survey_scheduled ? 'white' : '#101828',
+          bgColor: projectDetail.site_survey_scheduled ? '#63ACA3' : '#EBEBEB',
+          color: projectDetail.site_survey_scheduled ? 'white' : '#858585',
         },
         {
           name: '10 Apr',
@@ -150,9 +141,9 @@ const ProjectStatus = () => {
             : '#A5AAB2',
           key: 'site_survey_rescheduled',
           bgColor: projectDetail.site_survey_rescheduled
-            ? '#57B93A'
-            : '#F2F4F6',
-          color: projectDetail.site_survey_rescheduled ? 'white' : '#101828',
+            ? '#63ACA3'
+            : '#EBEBEB',
+          color: projectDetail.site_survey_rescheduled ? 'white' : '#858585',
         },
         {
           name: '10 Apr',
@@ -164,8 +155,8 @@ const ProjectStatus = () => {
             ? 'white'
             : '#A5AAB2',
           key: 'site_survey_completed',
-          bgColor: projectDetail.site_survey_completed ? '#57B93A' : '#F2F4F6',
-          color: projectDetail.site_survey_completed ? 'white' : '#101828',
+          bgColor: projectDetail.site_survey_completed ? '#63ACA3' : '#EBEBEB',
+          color: projectDetail.site_survey_completed ? 'white' : '#858585',
         },
       ],
     },
@@ -174,7 +165,7 @@ const ProjectStatus = () => {
       number: '4',
       color: 'white',
       numColor: '#0493CE',
-      bgColor: '#0493CE',
+      bgColor: '#4191C9',
       childStatusData: [
         {
           name: '10 Apr',
@@ -182,8 +173,8 @@ const ProjectStatus = () => {
           data: projectDetail.roofing_pending ? '' : 'data is not available',
           borderColor: projectDetail.roofing_pending ? 'white' : '#A5AAB2',
           key: 'roofing_pending',
-          bgColor: projectDetail.roofing_pending ? '#57B93A' : '#F2F4F6',
-          color: projectDetail.roofing_pending ? 'white' : '#101828',
+          bgColor: projectDetail.roofing_pending ? '#63ACA3' : '#EBEBEB',
+          color: projectDetail.roofing_pending ? 'white' : '#858585',
         },
         {
           name: '10 Apr',
@@ -191,8 +182,8 @@ const ProjectStatus = () => {
           data: projectDetail.roofing_scheduled ? '' : 'data is not available',
           borderColor: projectDetail.roofing_scheduled ? 'white' : '#A5AAB2',
           key: 'roofing_scheduled',
-          bgColor: projectDetail.roofing_scheduled ? '#57B93A' : '#F2F4F6',
-          color: projectDetail.roofing_scheduled ? 'white' : '#101828',
+          bgColor: projectDetail.roofing_scheduled ? '#63ACA3' : '#EBEBEB',
+          color: projectDetail.roofing_scheduled ? 'white' : '#858585',
         },
         {
           name: '10 Apr',
@@ -200,8 +191,8 @@ const ProjectStatus = () => {
           data: projectDetail.roofing_completed ? '' : 'data is not available',
           borderColor: projectDetail.roofing_completed ? 'white' : '#A5AAB2',
           key: 'roofing_scheduled',
-          bgColor: projectDetail.roofing_completed ? '#57B93A' : '#F2F4F6',
-          color: projectDetail.roofing_completed ? 'white' : '#101828',
+          bgColor: projectDetail.roofing_completed ? '#63ACA3' : '#EBEBEB',
+          color: projectDetail.roofing_completed ? 'white' : '#858585',
         },
       ],
     },
@@ -211,7 +202,7 @@ const ProjectStatus = () => {
       color: 'white',
 
       numColor: '#0493CE',
-      bgColor: '#0493CE',
+      bgColor: '#4191C9',
       childStatusData: [
         {
           name: '10 Apr',
@@ -219,8 +210,8 @@ const ProjectStatus = () => {
           data: projectDetail.electrical_pending ? '' : 'data is not available',
           borderColor: projectDetail.electrical_pending ? 'white' : '#A5AAB2',
           key: 'electrical_pending',
-          bgColor: projectDetail.electrical_pending ? '#57B93A' : '#F2F4F6',
-          color: projectDetail.electrical_pending ? 'white' : '#101828',
+          bgColor: projectDetail.electrical_pending ? '#63ACA3' : '#EBEBEB',
+          color: projectDetail.electrical_pending ? 'white' : '#858585',
         },
         {
           name: '10 Apr',
@@ -230,8 +221,8 @@ const ProjectStatus = () => {
             : 'data is not available',
           borderColor: projectDetail.electrical_scheduled ? 'white' : '#A5AAB2',
           key: 'electrical_scheduled',
-          bgColor: projectDetail.electrical_scheduled ? '#57B93A' : '#F2F4F6',
-          color: projectDetail.electrical_scheduled ? 'white' : '#101828',
+          bgColor: projectDetail.electrical_scheduled ? '#63ACA3' : '#EBEBEB',
+          color: projectDetail.electrical_scheduled ? 'white' : '#858585',
         },
         {
           name: '10 Apr',
@@ -241,15 +232,15 @@ const ProjectStatus = () => {
             : 'data is not available',
           borderColor: projectDetail.electrical_completed ? 'white' : '#A5AAB2',
           key: 'electrical_completed',
-          bgColor: projectDetail.electrical_completed ? '#57B93A' : '#F2F4F6',
-          color: projectDetail.electrical_completed ? 'white' : '#101828',
+          bgColor: projectDetail.electrical_completed ? '#63ACA3' : '#EBEBEB',
+          color: projectDetail.electrical_completed ? 'white' : '#858585',
         },
       ],
     },
     {
       name: 'PV Permit ',
       number: '6',
-      bgColor: '#0493CE',
+      bgColor: '#4191C9',
       color: 'white',
 
       numColor: '#0493CE',
@@ -260,8 +251,8 @@ const ProjectStatus = () => {
           data: projectDetail.pv_permit_pending ? '' : 'data is not available',
           borderColor: projectDetail.pv_permit_pending ? 'white' : '#A5AAB2',
           key: 'pv_permit_pending',
-          bgColor: projectDetail.pv_permit_pending ? '#57B93A' : '#F2F4F6',
-          color: projectDetail.pv_permit_pending ? 'white' : '#101828',
+          bgColor: projectDetail.pv_permit_pending ? '#63ACA3' : '#EBEBEB',
+          color: projectDetail.pv_permit_pending ? 'white' : '#858585',
         },
         {
           name: '10 Apr',
@@ -271,8 +262,8 @@ const ProjectStatus = () => {
             : 'data is not available',
           borderColor: projectDetail.pv_permit_scehduled ? 'white' : '#A5AAB2',
           key: 'pv_permit_scehduled',
-          bgColor: projectDetail.pv_permit_scehduled ? '#57B93A' : '#F2F4F6',
-          color: projectDetail.pv_permit_scehduled ? 'white' : '#101828',
+          bgColor: projectDetail.pv_permit_scehduled ? '#63ACA3' : '#EBEBEB',
+          color: projectDetail.pv_permit_scehduled ? 'white' : '#858585',
         },
         {
           name: '10 Apr',
@@ -282,8 +273,8 @@ const ProjectStatus = () => {
             : 'data is not available',
           borderColor: projectDetail.pv_permit_completed ? 'white' : '#A5AAB2',
           key: 'pv_permit_completed',
-          bgColor: projectDetail.pv_permit_completed ? '#57B93A' : '#F2F4F6',
-          color: projectDetail.pv_permit_completed ? 'white' : '#101828',
+          bgColor: projectDetail.pv_permit_completed ? '#63ACA3' : '#EBEBEB',
+          color: projectDetail.pv_permit_completed ? 'white' : '#858585',
         },
       ],
     },
@@ -293,7 +284,7 @@ const ProjectStatus = () => {
       color: 'white',
 
       numColor: '#0493CE',
-      bgColor: '#0493CE',
+      bgColor: '#4191C9',
       childStatusData: [
         {
           name: '10 Apr',
@@ -301,8 +292,8 @@ const ProjectStatus = () => {
           data: projectDetail.ic_permit_pending ? '' : 'data is not available',
           borderColor: projectDetail.ic_permit_pending ? 'white' : '#A5AAB2',
           key: 'ic_permit_pending',
-          bgColor: projectDetail.ic_permit_pending ? '#57B93A' : '#F2F4F6',
-          color: projectDetail.ic_permit_pending ? 'white' : '#101828',
+          bgColor: projectDetail.ic_permit_pending ? '#63ACA3' : '#EBEBEB',
+          color: projectDetail.ic_permit_pending ? 'white' : '#858585',
         },
         {
           name: '10 Apr',
@@ -312,8 +303,8 @@ const ProjectStatus = () => {
             : 'data is not available',
           borderColor: projectDetail.ic_permit_scheduled ? 'white' : '#A5AAB2',
           key: 'ic_permit_scheduled',
-          bgColor: projectDetail.ic_permit_scheduled ? '#57B93A' : '#F2F4F6',
-          color: projectDetail.ic_permit_scheduled ? 'white' : '#101828',
+          bgColor: projectDetail.ic_permit_scheduled ? '#63ACA3' : '#EBEBEB',
+          color: projectDetail.ic_permit_scheduled ? 'white' : '#858585',
         },
         {
           name: '10 Apr',
@@ -323,14 +314,14 @@ const ProjectStatus = () => {
             : 'data is not available',
           borderColor: projectDetail.ic_permit_completed ? 'white' : '#A5AAB2',
           key: 'ic_permit_completed',
-          bgColor: projectDetail.ic_permit_completed ? '#57B93A' : '#F2F4F6',
-          color: projectDetail.ic_permit_completed ? 'white' : '#101828',
+          bgColor: projectDetail.ic_permit_completed ? '#63ACA3' : '#EBEBEB',
+          color: projectDetail.ic_permit_completed ? 'white' : '#858585',
         },
       ],
     },
     {
       name: 'Install',
-      bgColor: '#0493CE',
+      bgColor: '#4191C9',
       number: '8',
       color: 'white',
 
@@ -342,8 +333,8 @@ const ProjectStatus = () => {
           data: projectDetail.install_pending ? '' : 'data is not available',
           borderColor: projectDetail.install_pending ? 'white' : '#A5AAB2',
           key: 'install_pending',
-          bgColor: projectDetail.install_pending ? '#57B93A' : '#F2F4F6',
-          color: projectDetail.install_pending ? 'white' : '#101828',
+          bgColor: projectDetail.install_pending ? '#63ACA3' : '#EBEBEB',
+          color: projectDetail.install_pending ? 'white' : '#858585',
         },
 
         {
@@ -352,8 +343,8 @@ const ProjectStatus = () => {
           data: projectDetail.install_ready ? '' : 'data is not available',
           borderColor: projectDetail.install_ready ? 'white' : '#A5AAB2',
           key: 'install_ready',
-          bgColor: projectDetail.install_ready ? '#57B93A' : '#F2F4F6',
-          color: projectDetail.install_ready ? 'white' : '#101828',
+          bgColor: projectDetail.install_ready ? '#63ACA3' : '#EBEBEB',
+          color: projectDetail.install_ready ? 'white' : '#858585',
         },
         {
           name: '10 Apr',
@@ -361,8 +352,8 @@ const ProjectStatus = () => {
           data: projectDetail.install_scheduled ? '' : 'data is not available',
           borderColor: projectDetail.install_scheduled ? 'white' : '#A5AAB2',
           key: 'install_scheduled',
-          bgColor: projectDetail.install_scheduled ? '#57B93A' : '#F2F4F6',
-          color: projectDetail.install_scheduled ? 'white' : '#101828',
+          bgColor: projectDetail.install_scheduled ? '#63ACA3' : '#EBEBEB',
+          color: projectDetail.install_scheduled ? 'white' : '#858585',
         },
 
         {
@@ -371,8 +362,8 @@ const ProjectStatus = () => {
           data: projectDetail.install_completed ? '' : 'data is not available',
           borderColor: projectDetail.install_completed ? 'white' : '#A5AAB2',
           key: 'install_completed',
-          bgColor: projectDetail.install_completed ? '#57B93A' : '#F2F4F6',
-          color: projectDetail.install_completed ? 'white' : '#101828',
+          bgColor: projectDetail.install_completed ? '#63ACA3' : '#EBEBEB',
+          color: projectDetail.install_completed ? 'white' : '#858585',
         },
       ],
     },
@@ -382,7 +373,7 @@ const ProjectStatus = () => {
       color: 'white',
 
       numColor: '#0493CE',
-      bgColor: '#0493CE',
+      bgColor: '#4191C9',
       childStatusData: [
         {
           name: '10 Apr',
@@ -395,9 +386,9 @@ const ProjectStatus = () => {
             : '#A5AAB2',
           key: 'final_inspection_submitted',
           bgColor: projectDetail.final_inspection_submitted
-            ? '#57B93A'
-            : '#F2F4F6',
-          color: projectDetail.final_inspection_submitted ? 'white' : '#101828',
+            ? '#63ACA3'
+            : '#EBEBEB',
+          color: projectDetail.final_inspection_submitted ? 'white' : '#858585',
         },
         {
           name: '10 Apr',
@@ -408,9 +399,9 @@ const ProjectStatus = () => {
           borderColor: '#A5AAB2',
           key: 'final_inspection_approved',
           bgColor: projectDetail.final_inspection_approved
-            ? '#57B93A'
-            : '#F2F4F6',
-          color: projectDetail.final_inspection_approved ? 'white' : '#101828',
+            ? '#63ACA3'
+            : '#EBEBEB',
+          color: projectDetail.final_inspection_approved ? 'white' : '#858585',
         },
       ],
     },
@@ -420,7 +411,7 @@ const ProjectStatus = () => {
       color: 'white',
 
       numColor: '#0493CE',
-      bgColor: '#0493CE',
+      bgColor: '#4191C9',
       childStatusData: [
         {
           name: '10 Apr',
@@ -428,8 +419,8 @@ const ProjectStatus = () => {
           data: projectDetail.pto_in_process ? '' : 'data is not available',
           borderColor: projectDetail.pto_in_process ? 'white' : '#A5AAB2',
           key: 'pto_in_process',
-          bgColor: projectDetail.pto_in_process ? '#57B93A' : '#F2F4F6',
-          color: projectDetail.pto_in_process ? 'white' : '#101828',
+          bgColor: projectDetail.pto_in_process ? '#63ACA3' : '#EBEBEB',
+          color: projectDetail.pto_in_process ? 'white' : '#858585',
         },
         {
           name: '10 Apr',
@@ -437,8 +428,8 @@ const ProjectStatus = () => {
           data: projectDetail.pto_submitted ? '' : 'data is not available',
           borderColor: projectDetail.pto_submitted ? 'white' : '#A5AAB2',
           key: 'pto_submitted',
-          bgColor: projectDetail.pto_submitted ? '#57B93A' : '#F2F4F6',
-          color: projectDetail.pto_submitted ? 'white' : '#101828',
+          bgColor: projectDetail.pto_submitted ? '#63ACA3' : '#EBEBEB',
+          color: projectDetail.pto_submitted ? 'white' : '#858585',
         },
 
         {
@@ -447,8 +438,8 @@ const ProjectStatus = () => {
           data: projectDetail.pto_completed ? '' : 'data is not available',
           borderColor: projectDetail.pto_completed ? 'white' : '#A5AAB2',
           key: 'pto_completed',
-          bgColor: projectDetail.pto_completed ? '#57B93A' : '#F2F4F6',
-          color: projectDetail.pto_completed ? 'white' : '#101828',
+          bgColor: projectDetail.pto_completed ? '#63ACA3' : '#EBEBEB',
+          color: projectDetail.pto_completed ? 'white' : '#858585',
         },
       ],
     },
@@ -516,300 +507,323 @@ const ProjectStatus = () => {
 
   return (
     <div className="">
-      <Breadcrumb
+      {/* <Breadcrumb
         head="Project Tracking"
         linkPara="Project Management"
         route={''}
         linkparaSecond="Dashboard"
-      />
-      <div className="project-container" style={{ padding: '0px' }}>
-        <div
-          className="project-heading"
-          style={{
-            borderBottom: '1px solid #E1E1E1',
-            padding: '0 22px 15px 22px',
-          }}
-        >
-          <h3 style={{ marginTop: '1rem' }}>Project Status</h3>
-          <div className="" style={{ width: '25%' }}>
-            <div className="">
-              <SelectOption
-                options={projectOption}
-                value={selectedProject}
-                onChange={(val) => {
-                  if (val) {
-                    setSelectedProject(val);
-                    // dispatch(getProjectDetail(val.value))
-                  }
-                }}
+      /> */}
+      <div style={{ padding: '0px' }}>
+        <div className="flex mxn1">
+          <div
+            className="px1 project-card-wrapper  bg-white rounded-16"
+            style={{ paddingInline: 16, paddingBottom: 16 }}
+          >
+            <div className="project-heading mb3">
+              <h3 style={{ marginTop: '1rem' }}>Project Status</h3>
+              <div className="" style={{ width: '25%' }}>
+                <div className="">
+                  <SelectOption
+                    options={projectOption}
+                    value={selectedProject}
+                    onChange={(val) => {
+                      if (val) {
+                        setSelectedProject(val);
+                        // dispatch(getProjectDetail(val.value))
+                      }
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center flex-wrap mxn1">
+              {projectStatusHeadData.map((el, i) => (
+                <div
+                  key={i}
+                  className="col-6 md-col-3 px1"
+                  style={{ marginBottom: 10 }}
+                >
+                  <div
+                    className="rounded-8"
+                    style={{ padding: 3, border: `1px dashed ${el.bgColor}` }}
+                  >
+                    <div
+                      className=" flex items-center rounded-8 justify-center"
+                      style={{ background: el.bgColor, height: 83 }}
+                    >
+                      <div
+                        style={{
+                          width: '100%',
+                          textAlign: 'center',
+                          color: '#fff',
+                        }}
+                      >
+                        <p className="para-head text-white-color">{el.name}</p>
+                        <span className="span-para">
+                          {projectDetail[
+                            el.key as keyof typeof projectDetail
+                          ] || 'N/A'}
+                        </span>
+                      </div>
+                      {/* {el.viewButton ? (
+                      <div
+                        className="view-flex"
+                        ref={refBtn}
+                        onClick={() => setActivePopups((prev) => !prev)}
+                      >
+                        <p>View</p>
+
+                        <img src={ICONS.arrowDown} alt="" />
+                      </div>
+                    ) : null}
+
+                    {activePopups && i === 1 && (
+                      <div className="popup">
+                        <p className="pop-head">Adder Details</p>
+                        <ol className="order-list">
+                          <li className="order-list-name">Adders</li>
+                          <li className="order-list-name">Sub Adder</li>
+                          <li className="order-list-name">$20 Adder</li>
+                          <li className="order-list-name">$20 Sub Adder</li>
+                        </ol>
+                      </div>
+                    )} */}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="pl2 flex-auto">
+            <div
+              className="bg-white rounded-16 flex items-center justify-center"
+              style={{ height: '100%' }}
+            >
+              <img
+                className=" mx-auto"
+                style={{ objectFit: 'contain' }}
+                width={300}
+                height={231}
+                src={project_management_chart}
+                alt=""
               />
             </div>
           </div>
         </div>
 
-        <div className="project-status-head-card">
-          <div className="project-status-body">
-            {projectStatusHeadData.map((el, i) => (
-              <div
-                className="project-status-body-card"
-                key={i}
-                style={{ background: el.bgColor }}
-              >
-                <div className="">
-                  <p className="para-head">{el.name}</p>
-                  <span className="span-para">
-                    {projectDetail[el.key as keyof typeof projectDetail] ||
-                      'N/A'}
-                  </span>
-                </div>
-                {el.viewButton ? (
+        <div className="bg-white rounded-16">
+          <div className="project-heading   mt3" style={{ padding: '22px' }}>
+            <div className=" flex items-center ">
+              <h3>Project Stages</h3>
+              <div className="progress-box-container ml3">
+                <div className="progress-box-body mt0">
                   <div
-                    className="view-flex"
-                    ref={refBtn}
-                    onClick={() => setActivePopups((prev) => !prev)}
-                  >
-                    <p>View</p>
-
-                    <img src={ICONS.arrowDown} alt="" />
-                  </div>
-                ) : null}
-
-                {activePopups && i === 1 && (
-                  <div className="popup">
-                    <p className="pop-head">Adder Details</p>
-                    <ol className="order-list">
-                      <li className="order-list-name">Adders</li>
-                      <li className="order-list-name">Sub Adder</li>
-                      <li className="order-list-name">$20 Adder</li>
-                      <li className="order-list-name">$20 Sub Adder</li>
-                    </ol>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-          <div className="project-status-graph">
-            <div className="status-graph-heading">
-              <h2 className="percent-head">25%</h2>
-              <p>Overall Progress</p>
-            </div>
-            <div className="">
-              <div className="curve-graph-pos">
-                <div className="curve-head-pos">
-                  <p style={{ fontWeight: '600' }}>25%</p>
-                  <p>Apr 26th,2024</p>
+                    className="progress-box"
+                    style={{ background: '#4191C9' }}
+                  ></div>
+                  <p>Stages</p>
                 </div>
-                <img src={ICONS.curveGraph} alt="" />
-                {/* time */}
-              </div>
-              <div className="graph-pos"></div>
-              <img className="fade-graph" src={ICONS.pmshadedgraph} alt="" />
-            </div>
-          </div>
-        </div>
-
-        <div className="project-heading" style={{ padding: '22px' }}>
-          <div className="">
-            <h3>Project Stages</h3>
-            <div className="progress-box-container">
-              <div className="progress-box-body">
-                <div
-                  className="progress-box"
-                  style={{ background: '#0493CE' }}
-                ></div>
-                <p>Stages</p>
-              </div>
-              <div className="progress-box-body">
-                <div
-                  className="progress-box"
-                  style={{ background: '#57B93A' }}
-                ></div>
-                <p>Completed</p>
-              </div>
-              <div className="progress-box-body">
-                <div
-                  className="progress-box"
-                  style={{ background: '#E9E9E9' }}
-                ></div>
-                <p>Not Started yet</p>
+                <div className="progress-box-body mt0">
+                  <div
+                    className="progress-box"
+                    style={{ background: '#63ACA3' }}
+                  ></div>
+                  <p>Completed</p>
+                </div>
+                <div className="progress-box-body mt0">
+                  <div
+                    className="progress-box"
+                    style={{ background: '#E9E9E9' }}
+                  ></div>
+                  <p>Not Started yet</p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div className="project-management-table">
-          <table>
-            <tbody>
-              <tr style={{ borderBottom: 'none' }}>
-                <td style={{ padding: '0px' }}>
-                  <div className="project-staus-progress-container">
-                    {isLoading ? (
-                      <div
-                        style={{ display: 'flex', justifyContent: 'center' }}
-                      >
-                        <MicroLoader />
-                      </div>
-                    ) : !isLoading && Object.keys(projectDetail).length < 1 ? (
-                      <td colSpan={7} style={{ textAlign: 'center' }}>
+          <div className="project-management-table ">
+            <table>
+              <tbody>
+                <tr style={{ borderBottom: 'none' }}>
+                  <td style={{ padding: '0px' }}>
+                    <div className="project-staus-progress-container">
+                      {isLoading ? (
                         <div
                           style={{ display: 'flex', justifyContent: 'center' }}
                         >
-                          <DataNotFound />
+                          <MicroLoader />
                         </div>
-                        <span>No Data Found</span>
-                      </td>
-                    ) : (
-                      newStatusData.map((item: any, i: any) => (
-                        <>
-                          <div className="project-status-table">
-                            <div
-                              className="project-status-card"
-                              style={{
-                                marginTop: '0',
-                                background: item.bgColor,
-                              }}
-                            >
+                      ) : !isLoading &&
+                        Object.keys(projectDetail).length < 1 ? (
+                        <td colSpan={7} style={{ textAlign: 'center' }}>
+                          <div
+                            style={{
+                              display: 'flex',
+                              justifyContent: 'center',
+                            }}
+                          >
+                            <DataNotFound />
+                          </div>
+                          <span>No Data Found</span>
+                        </td>
+                      ) : (
+                        newStatusData.map((item: any, i: any) => (
+                          <>
+                            <div className="project-status-table">
                               <div
-                                className="status-number"
+                                className="project-status-card"
                                 style={{
-                                  background: '#FFFFF',
-                                  color: item.numColor,
+                                  marginTop: '0',
+                                  background: item.bgColor,
                                 }}
                               >
-                                {getStatus(
-                                  item.childStatusData.map(
-                                    (item: any) => item.key
-                                  )
-                                ) ? (
-                                  <FaCheck />
-                                ) : (
-                                  i + 1
-                                )}
-                              </div>
-                              <p
-                                className="stage-1-para"
-                                style={{ color: item.color }}
-                              >
-                                {item.name}
-                              </p>
-                            </div>
-                            {item.childStatusData.map((el: any, index: any) => (
-                              <div
-                                className="notch-corner"
-                                style={{
-                                  background: el.bgColor,
-                                  color: '#101828',
-                                }}
-                              >
-                                <div className="child-corner"></div>
                                 <div
-                                  className=""
+                                  className="status-number"
                                   style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    alignItems: 'center',
-                                    width: '35px',
+                                    background: '#FFFFF',
+                                    color: item.numColor,
                                   }}
                                 >
-                                  {!(
-                                    el.key &&
-                                    projectDetail[
-                                      el.key as keyof typeof projectDetail
-                                    ]
-                                  ) && (
-                                    <span
-                                      className="date-para"
-                                      style={{
-                                        color: el.color,
-                                        fontSize: '9px',
-                                      }}
-                                    >
-                                      ETA
-                                    </span>
+                                  {getStatus(
+                                    item.childStatusData.map(
+                                      (item: any) => item.key
+                                    )
+                                  ) ? (
+                                    <FaCheck />
+                                  ) : (
+                                    i + 1
                                   )}
-                                  <p
+                                </div>
+                                <p
+                                  className="stage-1-para"
+                                  style={{ color: item.color }}
+                                >
+                                  {item.name}
+                                </p>
+                              </div>
+                              {item.childStatusData.map(
+                                (el: any, index: any) => (
+                                  <div
+                                    className="notch-corner"
                                     style={{
-                                      color: el.color,
-                                      fontSize: '9px',
+                                      background: el.bgColor,
+                                      color: '#858585',
                                     }}
                                   >
-                                    {el.key &&
-                                    projectDetail[
-                                      el.key as keyof typeof projectDetail
-                                    ]
-                                      ? format(
-                                          new Date(
-                                            projectDetail[
-                                              el.key as keyof typeof projectDetail
-                                            ]
-                                          ),
-                                          'dd MMMM'
-                                        ).slice(0, 6)
-                                      : 'N/A'}
-                                  </p>
-                                  {el.key &&
-                                    projectDetail[
-                                      el.key as keyof typeof projectDetail
-                                    ] && (
+                                    <div className="child-corner"></div>
+                                    <div
+                                      className=""
+                                      style={{
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        width: '35px',
+                                      }}
+                                    >
+                                      {!(
+                                        el.key &&
+                                        projectDetail[
+                                          el.key as keyof typeof projectDetail
+                                        ]
+                                      ) && (
+                                        <span
+                                          className="date-para"
+                                          style={{
+                                            color: el.color,
+                                            fontSize: '9px',
+                                          }}
+                                        >
+                                          ETA
+                                        </span>
+                                      )}
+                                      <p
+                                        style={{
+                                          color: el.color,
+                                          fontSize: '9px',
+                                        }}
+                                      >
+                                        {el.key &&
+                                        projectDetail[
+                                          el.key as keyof typeof projectDetail
+                                        ]
+                                          ? format(
+                                              new Date(
+                                                projectDetail[
+                                                  el.key as keyof typeof projectDetail
+                                                ]
+                                              ),
+                                              'dd MMMM'
+                                            ).slice(0, 6)
+                                          : 'N/A'}
+                                      </p>
+                                      {el.key &&
+                                        projectDetail[
+                                          el.key as keyof typeof projectDetail
+                                        ] && (
+                                          <p
+                                            className="stage-1-para"
+                                            style={{
+                                              color: el.color,
+                                              fontSize: '10px',
+                                            }}
+                                          >
+                                            {' '}
+                                            {format(
+                                              new Date(
+                                                projectDetail[
+                                                  el.key as keyof typeof projectDetail
+                                                ]
+                                              ),
+                                              'yyyy'
+                                            )}
+                                          </p>
+                                        )}
+                                    </div>
+                                    <div
+                                      className="border-notch"
+                                      style={{
+                                        border: '0.5px solid ',
+                                        borderColor: el.borderColor,
+                                      }}
+                                    ></div>
+                                    <div
+                                      className=""
+                                      style={{ width: '115px' }}
+                                    >
                                       <p
                                         className="stage-1-para"
                                         style={{
                                           color: el.color,
-                                          fontSize: '10px',
+                                          fontSize: '12px',
                                         }}
                                       >
-                                        {' '}
-                                        {format(
-                                          new Date(
-                                            projectDetail[
-                                              el.key as keyof typeof projectDetail
-                                            ]
-                                          ),
-                                          'yyyy'
-                                        )}
+                                        {el.process}
                                       </p>
-                                    )}
-                                </div>
-                                <div
-                                  className="border-notch"
-                                  style={{
-                                    border: '0.5px solid ',
-                                    borderColor: el.borderColor,
-                                  }}
-                                ></div>
-                                <div className="" style={{ width: '115px' }}>
-                                  <p
-                                    className="stage-1-para"
-                                    style={{
-                                      color: el.color,
-                                      fontSize: '12px',
-                                    }}
-                                  >
-                                    {el.process}
-                                  </p>
-                                  <p
-                                    className=""
-                                    style={{
-                                      color: el.color,
-                                      fontSize: '11px',
-                                    }}
-                                  >
-                                    {el.data}
-                                  </p>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                          {i === 9 ? null : (
-                            <div className="dotted-border"></div>
-                          )}
-                        </>
-                      ))
-                    )}
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                                      <p
+                                        className=""
+                                        style={{
+                                          color: el.color,
+                                          fontSize: '11px',
+                                        }}
+                                      >
+                                        {el.data}
+                                      </p>
+                                    </div>
+                                  </div>
+                                )
+                              )}
+                            </div>
+                            {i === 9 ? null : (
+                              <div className="dotted-border"></div>
+                            )}
+                          </>
+                        ))
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
