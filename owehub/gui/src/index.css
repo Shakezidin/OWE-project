@@ -8,7 +8,7 @@
 }
 /* color config */
 :root {
-  --white-color: white;
+  --white-color: #fff;
   --children-bg-color: #f3f3f3;
   --border-color: #eaecf0;
   --btn-text-color: #344054;
@@ -384,4 +384,16 @@ br {
   position: static !important;
   display: block;
   margin-bottom: -15px !important;
+}
+
+.bg-white{
+  background-color: var(--white-color);
+}
+
+.bg-primary{
+  background-color: var(--primary-color);
+}
+
+.bg-secondary{
+  background-color: var(--secondary-color);
 }
