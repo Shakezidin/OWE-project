@@ -77,7 +77,6 @@ const Input: FC<InputProps> = ({
           autoComplete="off"
           value={value}
           max={'2050-01-01'}
-          min={format(new Date(),"yyyy-MM-dd")}
           onChange={(e) => {
             if (name.includes('unique')) {
               const trim = e.target.value.trim();
