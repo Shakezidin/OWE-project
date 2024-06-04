@@ -24,15 +24,10 @@
   text-align: left;
 }
 .supportImage {
-  margin-top: 3rem;
-  padding: 2rem;
   width: 100%;
-  height: 207px;
-  opacity: 0px;
-  /* padding: 2rem; */
-}
-.supportImage object {
-  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .create-input-field-support {
   /* width: 290px; */
