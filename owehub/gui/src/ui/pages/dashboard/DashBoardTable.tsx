@@ -11,6 +11,7 @@ import ProjectBreakdown from './ProjectBreakdown';
 import { BiSupport } from 'react-icons/bi';
 import Pagination from '../../components/pagination/Pagination';
 import { MdOutlineHelp } from 'react-icons/md';
+import { ICONS } from '../../icons/Icons';
 
 // import { installers, partners, respTypeData, statData } from "../../../../../core/models/data_models/SelectDataModel";
 
@@ -444,15 +445,16 @@ const DashBoardTable: React.FC = () => {
                         <BiSupport className="bi-support-icon" />
                       </td> */}
                       <td className="zoom-out-help">
-                        <MdOutlineHelp
-                          onClick={() => handleIconOpen()}
-                          style={{
-                            height: '16px',
-                            width: '16px',
-                            stroke: '0.2',
-                          }}
-                        />
-                      </td>
+                      <img src={ICONS.online} style={{
+                        height: '18px',
+                        width: '18px',
+                        stroke: '0.2',
+                      }}
+                      alt=""
+                      onClick={() => handleIconOpen()}
+                      />
+
+                    </td>
                     </tr>
                   ))
                 : null}

@@ -2,6 +2,7 @@
   width: 100%;
   height: 100%;
 }
+
 .rep-Dashboard-container {
   display: flex;
   justify-content: space-between;
@@ -24,13 +25,12 @@
 }
 .rep-dash-head-input {
   display: flex;
-  height: 36px;
+  height: 47px;
   background-color: #ffffff;
   padding: 0 3px 0 3px;   /*here change for reduce left space ***************/
   gap: 0.4rem;
   align-items: center;
   border-radius: 8px;
-  border: solid 1px #333333;
 }
 .rep-chart-view {
   background: #ffffff;
@@ -64,7 +64,7 @@
   justify-content: center;
 }
 .rep-active-filter-line {
-  background-color: #ffffff;
+  background-color: #377CF6;
 }
 .rep-active-filter-line img {
   fill: white;
@@ -182,23 +182,23 @@
   flex-direction: column;
   justify-content: center;
   border-radius: 12px;
+  background: rgba(255, 255, 255, .3);
 }
 
 .total-rep {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: white;
-  border-radius: 8px;
+  border-radius: 16px;
   padding: 1.2rem;
-  width: 32.3%;
+  width: 32%;
   height: 110px;
   margin-top: 5px;
   margin-bottom: 5px;
   transition: box-shadow 0.3s ease;
 }
 .total-rep:hover {
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 4px 4px 0px rgba(72, 72, 72, 0.25);
 }
 
 .rep-total-section h4 {
@@ -206,34 +206,53 @@
   font-weight: 700;
   line-height: 28px;
   text-align: left;
-  color: #231f20;
+  color: #FFFFFF;
 }
 .rep-total-section p {
   font-size: 14px;
   font-weight: 400;
   line-height: 28px;
   text-align: left;
-  color: #747782;
+  color: #FFFFFF;
 }
 .rep-manage-user{
   display: flex;
-  gap: 8px;
+  gap: 12px;
 }
 
 .rep-drop_label {
-  width: 30px;
-  height: 82%;
-  border-radius: 5px;
-  background-color: #F2F2F2;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 .rep-inputLabel {
   color: #000000;
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 14.5px;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 20px;
   /* text-align: left; */
-  width: 53px;
+  /* width: 45px; */
 }
+.rep-up {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.drop-d{
+  margin-bottom: 4px;
+  margin-right: 40px;
+}
+
+.rep-white-back{
+  background-color: white;
+  padding-left: 13px;
+  padding-right: 13px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-radius: 18px;
+}
+
