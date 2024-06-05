@@ -92,9 +92,9 @@ const TableHeader = (props: TableProps) => {
           <button
             type="button"
             style={{
-              background: `var(--active-text-color)`,
+              background: `var(--primary-color)`,
               color: 'white',
-              border: '1px solid var(--active-text-color)',
+              border: '1px solid var(--primary-color)',
             }}
             // className="hover-btn"
             onClick={onpressAddNew}

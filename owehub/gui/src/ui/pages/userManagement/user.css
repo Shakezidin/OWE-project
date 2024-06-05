@@ -82,13 +82,6 @@ opacity: 0px;
   text-align: left;
 } */
 
-.iconsSection-delete button {
-  display: flex;
-  padding: 0.5rem;
-  cursor: pointer;
-  background: white;
-  border: none;
-}
 .db-access {
   display: flex;
   align-items: center;
@@ -154,4 +147,13 @@ opacity: 0px;
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+.select-caret {
+  font-size: 10px;
+  position: absolute;
+  top: -1px;
+  z-index: 1;
+  display: block;
+  left: 1px;
 }

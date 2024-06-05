@@ -74,7 +74,7 @@ const PartnerTable: React.FC<PartnerProps> = ({
       >
         <table>
           <thead>
-            <tr style={{ backgroundColor: '#F5F5F5' }}>
+            <tr style={{ backgroundColor: 'var(--primary-light-color)' }}>
               {UserPatternTableColumn.map((item, key) => (
                 <SortableHeader
                   key={key}

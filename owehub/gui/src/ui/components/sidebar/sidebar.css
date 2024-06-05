@@ -176,15 +176,15 @@
 .side-icon-container a {
   color: unset;
 }
-.side-icon-container:hover {
+.side-icon-container.not-active-link:hover {
   background: #ddebff;
 }
-.side-icon-container:hover svg,
+/* .side-icon-container:hover svg,
 .side-icon-container:hover .side-icon-db,
 .side-icon-container:hover .tablinkk,
 .side-icon-container:hover p {
   color: var(--coloumn-text-color) !important;
-}
+} */
 .sidebar-small {
   display: flex;
   align-items: center;

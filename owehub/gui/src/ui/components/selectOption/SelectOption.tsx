@@ -1,6 +1,6 @@
 // SelectComponent.tsx
 import React, { useEffect, useRef } from 'react';
-import Select from 'react-select';
+import Select, { CSSObjectWithLabel } from 'react-select';
 import './drop.css';
 interface Option {
   value: string;
@@ -11,8 +11,13 @@ interface Props {
   options: Option[];
   value: Option | undefined;
   onChange: (newValue: Option | null) => void;
-  menuListStyles?: { [key: string]: string };
+  menuListStyles?: CSSObjectWithLabel;
   disabled?: boolean;
+  controlStyles?:CSSObjectWithLabel;
+  singleValueStyles?:CSSObjectWithLabel,
+  valueContainerStyles?:CSSObjectWithLabel,
+  menuStyles?:CSSObjectWithLabel,
+  dropdownIndicatorStyles?:CSSObjectWithLabel,
 }
 
 const SelectOption: React.FC<Props> = ({
@@ -21,6 +26,11 @@ const SelectOption: React.FC<Props> = ({
   onChange,
   menuListStyles = {},
   disabled = false,
+  controlStyles ={},
+  singleValueStyles ={},
+  valueContainerStyles={},
+  menuStyles={},
+  dropdownIndicatorStyles={}
 }) => {
   const scrollRef = useRef(null);
   useEffect(() => {
@@ -39,7 +49,7 @@ const SelectOption: React.FC<Props> = ({
         value={value ? value : { label: 'Select', value: 'Select' }}
         isDisabled={disabled}
         styles={{
-          control: (baseStyles: any, state: any) => ({
+          control: (baseStyles, state: any) => ({
             ...baseStyles,
             marginTop: '20px',
             borderRadius: '8px',
@@ -48,7 +58,9 @@ const SelectOption: React.FC<Props> = ({
             height: '2.25rem',
             border: '1px solid #d0d5dd',
             cursor: 'pointer',
+            ...controlStyles
           }),
+        
           indicatorSeparator: () => ({
             display: 'none',
           }),
@@ -60,6 +72,7 @@ const SelectOption: React.FC<Props> = ({
           menu: (base) => ({
             ...base,
             zIndex: 999,
+           ...menuStyles
           }),
           menuList: (base) => ({
             ...base,
@@ -76,6 +89,18 @@ const SelectOption: React.FC<Props> = ({
             },
             ...menuListStyles,
           }),
+          singleValue:(base)=>({
+            ...base,
+            ...singleValueStyles
+          }),
+          valueContainer: (base) => ({
+           ...base,
+           ...valueContainerStyles
+          }),
+          dropdownIndicator:(base)=>({
+            ...base,
+            ...dropdownIndicatorStyles
+          })
         }}
       />
     </div>
