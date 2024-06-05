@@ -14,7 +14,6 @@
 # production
 /build
 
-*.svg
 # misc
 .DS_Store
 .env
