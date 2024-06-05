@@ -36,7 +36,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
   loading,
 }) => {
   return (
-    <div className="chart-view" style={{marginTop:12}}>
+    <div className="chart-view" style={{ marginTop: 12 }}>
       <div
         className="pie-section"
         style={{
@@ -77,9 +77,13 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                       />
                     ))}
                   </Pie>
-                  <Tooltip cursor={false} content={(va) => {
-                    return va.payload?.[0]?.value
-                  }} wrapperClassName="pie-tooltip" />
+                  <Tooltip
+                    cursor={false}
+                    content={(va) => {
+                      return va.payload?.[0]?.value;
+                    }}
+                    wrapperClassName="pie-tooltip"
+                  />
                 </PieChart>
                 <img
                   src={onboarding_mask}
@@ -90,7 +94,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
               </ResponsiveContainer> */}
               </div>
             ) : (
-              <div className="data-not-found">
+              <div className="data-not-found " style={{width:"100%"}}>
                 <DataNotFound />
                 <h3>{loading ? 'Searching..' : 'No SaleRep Found'}</h3>
               </div>
@@ -167,7 +171,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                 <Tooltip
                   cursor={false}
                   content={(va) => {
-                    return va.payload?.[0]?.value
+                    return va.payload?.[0]?.value;
                   }}
                   wrapperClassName="pie-tooltip"
                 />
@@ -182,55 +186,57 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
           </div>
         )}
 
-        <div className="flex items-center justify-center pb2">
-          <div className="flex items-center">
+        {!!userPerformanceList.length && (
+          <div className="flex items-center justify-center pb2">
             <div className="flex items-center">
-              <div
-                className="flex items-center mr1"
-                style={{
-                  background: '#63ACA3',
-                  width: 18,
-                  height: 18,
-                  borderRadius: '50%',
-                  border: '3px solid #D2FFF9',
-                }}
-              />
+              <div className="flex items-center">
+                <div
+                  className="flex items-center mr1"
+                  style={{
+                    background: '#63ACA3',
+                    width: 18,
+                    height: 18,
+                    borderRadius: '50%',
+                    border: '3px solid #D2FFF9',
+                  }}
+                />
 
-              <span className="bold" style={{ color: '#263747' }}>
-                {userPerformanceList?.[1]?.value}
-              </span>
+                <span className="bold" style={{ color: '#263747' }}>
+                  {userPerformanceList?.[1]?.value}
+                </span>
+              </div>
+              <span className="mx1">-</span>
+
+              <h3 className="h4" style={{ fontWeight: '500' }}>
+                Active Users
+              </h3>
             </div>
-            <span className="mx1">-</span>
 
-            <h3 className="h4" style={{ fontWeight: '500' }}>
-              Active Users
-            </h3>
-          </div>
+            <div className="flex items-center ml3">
+              <div className="flex items-center">
+                <div
+                  className="flex items-center mr1"
+                  style={{
+                    background: '#EE824D',
+                    width: 18,
+                    height: 18,
+                    borderRadius: '50%',
+                    border: '3px solid #FFE2D4',
+                  }}
+                />
 
-          <div className="flex items-center ml3">
-            <div className="flex items-center">
-              <div
-                className="flex items-center mr1"
-                style={{
-                  background: '#EE824D',
-                  width: 18,
-                  height: 18,
-                  borderRadius: '50%',
-                  border: '3px solid #FFE2D4',
-                }}
-              />
+                <span className="bold" style={{ color: '#263747' }}>
+                  {userPerformanceList?.[0]?.value}
+                </span>
+              </div>
+              <span className="mx1">-</span>
 
-              <span className="bold" style={{ color: '#263747' }}>
-                {userPerformanceList?.[0]?.value}
-              </span>
+              <h3 className="h4" style={{ fontWeight: '500' }}>
+                Inactive Users
+              </h3>
             </div>
-            <span className="mx1">-</span>
-
-            <h3 className="h4" style={{ fontWeight: '500' }}>
-              Inactive Users
-            </h3>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
