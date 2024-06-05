@@ -514,7 +514,7 @@ const ProjectStatus = () => {
         linkparaSecond="Dashboard"
       /> */}
       <div style={{ padding: '0px' }}>
-        <div className="flex mt2">
+        <div className="flex mt1">
           <div
             className="px1 project-card-wrapper  bg-white rounded-16"
             style={{ paddingInline: 16, paddingBottom: 16 }}

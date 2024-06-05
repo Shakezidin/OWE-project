@@ -36,7 +36,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
   loading,
 }) => {
   return (
-    <div className="chart-view" style={{marginTop:20}}>
+    <div className="chart-view" style={{marginTop:12}}>
       <div
         className="pie-section"
         style={{
