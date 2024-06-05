@@ -349,7 +349,7 @@ const FilterModal: React.FC<TableProps> = ({
                   (filter) => filter.Operation || filter.Data || filter.Column
                 )
               }
-              style={{ color: '#0493ce' }}
+              style={{ color: '#377CF6' }}
             />
             <ActionButton
               title={'Apply'}

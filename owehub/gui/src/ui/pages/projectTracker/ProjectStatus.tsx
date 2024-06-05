@@ -619,21 +619,21 @@ const ProjectStatus = () => {
                 <div className="progress-box-body mt0">
                   <div
                     className="progress-box"
-                    style={{ background: '#4191C9',borderRadius:0,width:10,height:10 }}
+                    style={{ background: '#4191C9',borderRadius:0,width:14,height:14 }}
                   ></div>
                   <p>Stages</p>
                 </div>
                 <div className="progress-box-body mt0">
                   <div
                     className="progress-box"
-                    style={{ background: '#63ACA3',borderRadius:0,width:10,height:10 }}
+                    style={{ background: '#63ACA3',borderRadius:0,width:14,height:14 }}
                   ></div>
                   <p>Completed</p>
                 </div>
                 <div className="progress-box-body mt0">
                   <div
                     className="progress-box"
-                    style={{ background: '#E9E9E9',borderRadius:0,width:10,height:10 }}
+                    style={{ background: '#E9E9E9',borderRadius:0,width:14,height:14 }}
                   ></div>
                   <p>Not Started yet</p>
                 </div>
