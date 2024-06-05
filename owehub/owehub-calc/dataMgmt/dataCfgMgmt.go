@@ -15,12 +15,21 @@ func LoadConfigurations() (err error) {
 	defer func() { log.ExitFn(0, "LoadConfigurations", err) }()
 
 	/* Feth Config from DB */
-	//* ar config is working
-	err = ArCfgData.LoadARCfg()
+	//* reconcile is working
+	err = ReconcileCfgData.LoadReconcileCfg()
 	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get AR Config from DB err: %+v", err)
+		// log.FuncErrorTrace(0, "Failed to get AR Config from DB err: %+v", err)
 		return err
 	}
+	log.FuncErrorTrace(0, "=== ReconcileCfgData ->: %+v", ReconcileCfgData.ReconcileList.ReconcileList[0])
+
+	// ar config is working
+	err = ArCfgData.LoadARCfg()
+	if err != nil {
+		// log.FuncErrorTrace(0, "Failed to get AR Config from DB err: %+v", err)
+		return err
+	}
+	// log.FuncErrorTrace(0, "=== ArCfgData ->: %+v", ArCfgData.arCfgList[0])
 
 	//* ar schedule is working
 	err = ArSkdConfig.LoadArSkdCfg()
@@ -28,6 +37,7 @@ func LoadConfigurations() (err error) {
 		log.FuncErrorTrace(0, "Failed to get AR Skd Config from DB err: %+v", err)
 		return err
 	}
+	log.FuncErrorTrace(0, "=== ArSkdConfig ->: %+v", ArSkdConfig.ArSkdConfigList.ArScheduleList[0])
 
 	//* adder data is working
 	err = AdderDataCfg.LoadAdderDataCfg()
@@ -35,7 +45,7 @@ func LoadConfigurations() (err error) {
 		log.FuncErrorTrace(0, "Failed to get Adder Data Config from DB err: %+v", err)
 		return err
 	}
-	log.FuncErrorTrace(0, "===== adder data : %+v", AdderDataCfg.AdderDataList.AdderDataList[0])
+	log.FuncErrorTrace(0, "===== AdderDataCfg : %+v", AdderDataCfg.AdderDataList.AdderDataList[0])
 
 	//* adjustemnts is working
 	err = AdjustmentsConfig.LoadAdjustmentsCfg()
@@ -43,6 +53,7 @@ func LoadConfigurations() (err error) {
 		log.FuncErrorTrace(0, "Failed to get Adjustments Config from DB err: %+v", err)
 		return err
 	}
+	log.FuncErrorTrace(0, "=== AdjustmentsConfig ->: %+v", AdjustmentsConfig.AdjustmentsConfigList.AdjustmentsList[0])
 
 	//* ap rep is working
 	err = ApRepCfg.LoadApRepCfg()
@@ -85,11 +96,11 @@ func LoadConfigurations() (err error) {
 	log.FuncErrorTrace(0, "===== PayScheduleCfg : %+v", PayScheduleCfg.PayScheduleList[0])
 
 	//* loan fee is working
-	// err = LoanFeeAdderCfg.LoadLoanFeeAdderCfg()
-	// if err != nil {
-	// 	log.FuncErrorTrace(0, "Failed to get Rebate Config from DB err: %+v", err)
-	// 	return err
-	// }
+	err = LoanFeeAdderCfg.LoadLoanFeeAdderCfg()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get Rebate Config from DB err: %+v", err)
+		return err
+	}
 	// log.FuncErrorTrace(0, "===== LoanFeeAdderCfg : %+v", LoanFeeAdderCfg.LoanFeeAdderList.LoanFeeAdderList[0])
 
 	//* dealer override data is working
@@ -135,13 +146,13 @@ func LoadConfigurations() (err error) {
 	// }
 	// log.FuncErrorTrace(0, "===== LoadTierLoanFeeCfg : %+v", TierLoanFeeCfg.TierLoanFeeList.TierLoanFeeList[0])
 
-	//! dealer override data is not working, no need for now
-	// err = AutoAdderCfg.LoadAutoAdderCfg()
-	// if err != nil {
-	// 	log.FuncErrorTrace(0, "Failed to get Rebate Config from DB err: %+v", err)
-	// 	return err
-	// }
-	// log.FuncErrorTrace(0, "===== AutoAdderCfg : %+v", AutoAdderCfg.AutoAdderList[0])
+	err = AutoAdderCfg.LoadAutoAdderCfg()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get Rebate Config from DB err: %+v", err)
+		return err
+	}
+	log.FuncErrorTrace(0, "===== AutoAdderCfg : %+v", AutoAdderCfg.AutoAdderList[0])
+
 	err = DealerRepayConfig.LoadDealerRepaymentCfg()
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get DealerRepaymentConfig from DB err: %+v", err)

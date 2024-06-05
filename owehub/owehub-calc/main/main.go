@@ -18,10 +18,10 @@ import (
 	"os/signal"
 	"time"
 
-	// arCalc "OWEApp/owehub-calc/arcalc"
+	arCalc "OWEApp/owehub-calc/arcalc"
 	datamgmt "OWEApp/owehub-calc/dataMgmt"
 	// repPayCalc "OWEApp/owehub-calc/reppaycalc"
-	dlrPayCalc "OWEApp/owehub-calc/dlrpaycalc"
+
 	log "OWEApp/shared/logger"
 
 	"github.com/gorilla/mux"
@@ -76,10 +76,10 @@ func main() {
 	// log.FuncErrorTrace(0, "sales data ======== %v", dataMgmt.SaleDataStruct)
 
 	/* Perform Initial AR Calcualtion*/
-	// go arCalc.ExecArInitialCalculation(arCalcResult)
+	arCalc.ExecArInitialCalculation(arCalcResult)
 
 	/* Perform Initial DLR PAY Calcualtion*/
-	dlrPayCalc.ExecDlrPayInitialCalculation(dlrPayResult)
+	// dlrPayCalc.ExecDlrPayInitialCalculation(dlrPayResult)
 
 	/* Perform Initial REP PAY Calcualtion*/
 	// go repPayCalc.ExecRepPayInitialCalculation(repPayResult)

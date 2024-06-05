@@ -153,7 +153,23 @@ func (AdderDataCfg *AdderDataCfgStruct) CalculateAddrPtr(dealer string, uniqueId
 
 	if len(dealer) > 0 {
 		for _, data := range AdderDataCfg.AdderDataList.AdderDataList {
+			// RAED DLT
+			// if data.UniqueId == "OUR11354" {
+			// 	log.FuncInfoTrace(0, "RAED (((()))) data.Gc -> %+v ", data.AdderCal)
+			// }
+
+			
+			// if uniqueId == data.UniqueId && data.Gc == "Partner" && data.AdderCal != 0 {
+			// 	log.FuncInfoTrace(0, "============ADDER DATA================")
+			// 	log.FuncInfoTrace(0, "UNIQUE ID -> %+v", data.UniqueId)
+			// 	log.FuncInfoTrace(0, "UNIQUE ID -> %+v", data.UniqueId)
+			// 	log.FuncInfoTrace(0, "============ADDER DATA================")
+			// 	return 0
+			// }
+			
+
 			if (data.UniqueId + data.Gc) == (uniqueId + "Partner") {
+				log.FuncInfoTrace(0, "RAED (((()))) ADDERCAL -> %+v", data.AdderCal)
 				addrPtrSum += data.AdderCal
 			}
 		}

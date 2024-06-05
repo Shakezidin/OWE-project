@@ -73,6 +73,15 @@ func calculateExactAmount(uniqueId string, systemType string) (excatAmt float64)
 		return 0.0
 	}
 
+	if systemType == "SM-UNI2" || systemType == "SM-UNI3" || systemType == "SM-CA2" || len(systemType) >= 2 && strings.ToUpper(systemType[:2]) == "MK" {
+		log.FuncErrorTrace(0, "=======AUTO ADDER=========")
+		log.FuncErrorTrace(0, "UNIQUE ID -> %v", uniqueId)
+		log.FuncErrorTrace(0, "=======AUTO ADDER=========")
+		// return 0
+	}
+
+	log.FuncErrorTrace(0, "RAED systemType -> %v", systemType)
+
 	if len(systemType) >= 2 && strings.ToUpper(systemType[:2]) == "MK" {
 		return 0.0
 	}

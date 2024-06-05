@@ -30,6 +30,9 @@ func ExecArInitialCalculation(resultChan chan string) {
 	defer func() { log.ExitFn(0, "ExecArInitialCalculation", err) }()
 
 	for i, saleData := range dataMgmt.SaleData.SaleDataList {
+		// if saleData.UniqueId != "OUR11354" {
+		// 	continue
+		// }
 		var arData map[string]interface{}
 		arData, err = CalculateARProject(saleData)
 		if err != nil || arData == nil {
@@ -120,21 +123,86 @@ func CalculateARProject(saleData dataMgmt.SaleDataStruct) (outData map[string]in
 	outData["pto"] = saleData.PtoDate
 	/* Calculated Fields */
 	status = saleData.ProjectStatus
-	redLine, permitPayM1, permitMax, installPayM2 = dataMgmt.ArSkdConfig.GetArSkdForSaleData(&saleData)
+	var uid string
+
+	log.FuncErrorTrace(0, "==================================")
+	log.FuncErrorTrace(0, "==================================")
+	log.FuncErrorTrace(0, "==================================")
+	log.FuncErrorTrace(0, "==============UNIQUE ID %v=========", saleData.UniqueId)
+	log.FuncErrorTrace(0, "==================================")
+	log.FuncErrorTrace(0, "==================================")
+	log.FuncErrorTrace(0, "==================================")
+	redLine, permitPayM1, permitMax, installPayM2, uid = dataMgmt.ArSkdConfig.GetArSkdForSaleData(&saleData) //* ArSkdConfig
+
+	// if uid != "" {
+	// 	log.FuncErrorTrace(0, "UNIQUE ID 1 SUCCESS")
+	// 	saleData.UniqueId = uid
+	// } else {
+	// 	log.FuncErrorTrace(0, "UNIQUE ID NULL 1 RETURNING")
+	// 	return
+	// }
+
+	log.FuncErrorTrace(0, "RAED redline -> %v permitPayM1 -> %v permitMax -> %v installPayM2 -> %v", redLine, permitPayM1, permitMax, installPayM2)
+
+
 	contractCalc = common.CalculateContractAmount(saleData.NetEpc, outData["contract"].(float64), outData["sys_size"].(float64))
 	epcCalc = common.CalculateEPCCalc(contractCalc, saleData.WC1, saleData.NetEpc, saleData.SystemSize, common.ARWc1FilterDate)
-	grossRev = CalculateGrossRev(epcCalc, redLine, saleData.SystemSize)
-	addrPtr = dataMgmt.AdderDataCfg.CalculateAddrPtr(saleData.Dealer, saleData.UniqueId)
-	addrAuto = dataMgmt.AutoAdderCfg.CalculateAddrAuto(saleData.Dealer, saleData.UniqueId, saleData.SystemType)
-	loanFee = dataMgmt.LoanFeeAdderCfg.CalculateLoanFee(saleData.Dealer, saleData.UniqueId)
-	adjust = dataMgmt.AdjustmentsConfig.CalculateAdjust(saleData.Dealer, saleData.UniqueId)
-	netRev = CalculateNetRev(grossRev, addrPtr, addrAuto, loanFee, adjust)
-	permitPay = CalculatePermitPay(status, grossRev, netRev, permitPayM1, permitMax)
-	installPay = common.CalculateInstallPay(status, grossRev, netRev, installPayM2, permitPay)
-	reconcile = dataMgmt.ReconcileCfgData.CalculateReconcile(saleData.Dealer, saleData.UniqueId)
-	totalPaid = dataMgmt.ArCfgData.GetTotalPaidForUniqueId(saleData.UniqueId)
+	log.FuncErrorTrace(0, "RAED saleData.NetEpc -> %v contract -> %v sys_size -> %v", saleData.NetEpc, outData["contract"].(float64), outData["sys_size"].(float64))
+	log.FuncErrorTrace(0, "RAED saleData.WC1 -> %v saleData.SystemSize -> %v", saleData.WC1, saleData.SystemSize)
+
+	grossRev = CalculateGrossRev(epcCalc, redLine, saleData.SystemSize)                  //! 0 since redline is zero
+	addrPtr = dataMgmt.AdderDataCfg.CalculateAddrPtr(saleData.Dealer, saleData.UniqueId) //* AdderDataCfg
+
+	log.FuncErrorTrace(0, "RAED contractCalc -> %v epcCalc -> %v grossRev -> %v addrPtr -> %v", contractCalc, epcCalc, grossRev, addrPtr)
+
+	// if grossRev <= 0 || addrPtr <= 0 {
+	// 	log.FuncErrorTrace(0, "grossRev &  addrPtr NULL RETURNING")
+	// 	return
+	// }
+
+	// log.FuncErrorTrace(0, "===========UNIQUE ID================")
+	// log.FuncErrorTrace(0, "UNIQUE ID => %v", uid)
+	// log.FuncErrorTrace(0, "===========UNIQUE ID================")
+
+	// return
+
+	addrAuto = dataMgmt.AutoAdderCfg.CalculateAddrAuto(saleData.Dealer, saleData.UniqueId, saleData.SystemType) //* AutoAdderCfg
+	loanFee = dataMgmt.LoanFeeAdderCfg.CalculateLoanFee(saleData.Dealer, saleData.UniqueId)                     //~ LoanFeeAdderCfg need to verify
+	adjust = dataMgmt.AdjustmentsConfig.CalculateAdjust(saleData.Dealer, saleData.UniqueId)                     //* AdjustmentsConfig
+	netRev = CalculateNetRev(grossRev, addrPtr, addrAuto, loanFee, adjust)                                      //! 0 since grossRev is zero
+	log.FuncErrorTrace(0, "RAED addrAuto -> %v loanFee -> %v adjust -> %v netRev -> %v", addrAuto, loanFee, adjust, netRev)
+
+	permitPay = CalculatePermitPay(status, grossRev, netRev, permitPayM1, permitMax)                  //! 0 since grossRev is zero
+	installPay = common.CalculateInstallPay(status, grossRev, netRev, installPayM2, permitPay)        //! 0 since grossRev is zero
+	reconcile, uid = dataMgmt.ReconcileCfgData.CalculateReconcile(saleData.Dealer, saleData.UniqueId) // ReconcileCfgData
+	if uid != "" {
+		log.FuncErrorTrace(0, "UNIQUE ID 2 SUCCESS RETURNING UNIQUE ID -> %v RECONCILE %v", saleData.UniqueId, reconcile)
+		saleData.UniqueId = uid
+	} else {
+		log.FuncErrorTrace(0, "UNIQUE ID 2 NULL RETURNING UNIQUE ID -> %v RECONCILE %v", saleData.UniqueId, reconcile)
+		// return
+	}
+	totalPaid, uid = dataMgmt.ArCfgData.GetTotalPaidForUniqueId(saleData.UniqueId) //! need to add data for  sales_ar_cfg
+	if uid != "" {
+		log.FuncErrorTrace(0, "UNIQUE ID 3 SUCCESS RETURNING UNIQUE ID -> %v TOTALPAID %v", saleData.UniqueId, totalPaid)
+		saleData.UniqueId = uid
+	} else {
+		log.FuncErrorTrace(0, "UNIQUE ID 3 NULL RETURNING UNIQUE ID -> %v TOTALPAID %v", saleData.UniqueId, totalPaid)
+		// return
+	}
+	log.FuncErrorTrace(0, "RAED permitPay -> %v installPay -> %v reconcile -> %v totalPaid -> %v", permitPay, installPay, reconcile, totalPaid)
+
 	currentDue = CalculateCurrentDue(&saleData, netRev, totalPaid, permitPay, installPay, reconcile)
 	balance = CalculateBalance(saleData.UniqueId, status, saleData.Dealer, totalPaid, netRev, reconcile)
+	log.FuncErrorTrace(0, "RAED currentDue -> %v balance -> %v", currentDue, balance)
+
+	// if currentDue != 0 && balance != 0 {
+	// 	log.FuncErrorTrace(0, "UNIQUE ID SUCCESS -> %v %v %v", uid, currentDue, balance)
+	// } else if currentDue != 0 {
+	// 	log.FuncErrorTrace(0, "UNIQUE ID currentDue -> %v %v", uid, currentDue)
+	// } else {
+	// 	log.FuncErrorTrace(0, "UNIQUE ID balance -> %v %v", uid, balance)
+	// }
 
 	outData["status"] = status
 	/*outData["status_date"] = common.CalculateProjectStatusDate(saleData.UniqueId, saleData.PtoDate, saleData.PvInstallCompletedDate,

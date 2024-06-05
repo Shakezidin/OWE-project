@@ -9,13 +9,14 @@ package datamgmt
 import (
 	db "OWEApp/shared/db"
 	log "OWEApp/shared/logger"
+	"time"
 )
 
 type ArImportCfg struct {
 	RecordId int64
 	UniqueId string
 	Customer string
-	Date     string
+	Date     time.Time
 	Amount   float64
 	Notes    string
 }
@@ -38,8 +39,8 @@ func (arCfgData *ARCfgList) LoadARCfg() (err error) {
 	// defer func() { log.ExitFn(0, "LoadARCfg", err) }()
 
 	query = `
-	 SELECT ai.id as record_id, ai.unique_id, ai.customer, ai.date, ai.amount, ai.is_archived
-	 FROM ` + db.TableName_Ar + ` as ai WHERE ai.is_archived = FALSE`
+	 SELECT ai.id as record_id, ai.unique_id, ai.customer, ai.date, ai.amount
+	 FROM ` + db.TableName_Ar + ` as ai`
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil || len(data) == 0 {
@@ -69,10 +70,10 @@ func (arCfgData *ARCfgList) LoadARCfg() (err error) {
 			Customer = ""
 		}
 
-		Date, ok := item["date"].(string)
-		if !ok || Date == "" {
+		Date, ok := item["date"].(time.Time)
+		if !ok {
 			// log.ConfWarnTrace(0, "Failed to get date for Record ID %v. Item: %+v\n", RecordId, item)
-			Date = ""
+			Date = time.Time{}
 		}
 
 		Amount, ok := item["amount"].(float64)
@@ -96,7 +97,7 @@ func (arCfgData *ARCfgList) LoadARCfg() (err error) {
 	return err
 }
 
-func (arCfgData *ARCfgList) GetTotalPaidForUniqueId(UniqueId string) (totalPaid float64) {
+func (arCfgData *ARCfgList) GetTotalPaidForUniqueId(UniqueId string) (totalPaid float64, uid string) {
 	var (
 		err error
 	)
@@ -109,14 +110,15 @@ func (arCfgData *ARCfgList) GetTotalPaidForUniqueId(UniqueId string) (totalPaid 
 	if len(UniqueId) <= 0 {
 		// err = fmt.Errorf("empty unique id provided")
 		log.FuncErrorTrace(0, "%+v", err)
-		return totalPaid
+		return totalPaid, ""
 	}
-
 	for _, arCfg := range arCfgData.arCfgList {
 		if arCfg.UniqueId == UniqueId {
 			totalPaid += arCfg.Amount
 		}
 	}
-
-	return totalPaid
+	if totalPaid != 0 {
+		return totalPaid, UniqueId
+	}
+	return totalPaid, ""
 }

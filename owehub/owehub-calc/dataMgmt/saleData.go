@@ -61,7 +61,9 @@ func (saleDataList *SaleDataList) LoadSaleData(uniqueID string, hookType string)
 	)
 
 	//Shushank
-	uniqueID = "OUR11347"
+	uniqueID = "OUR21650"
+
+	// uis := []string{"OUR01017", "OUR25503", "OUR25439", "OUR03588", "OUR07858", "OUT06707", "OUR03883", "OUR21650", "OUR2"}
 
 	// log.EnterFn(0, "LoadSaleData")
 	// defer func() { log.ExitFn(0, "LoadSaleData", err) }()
