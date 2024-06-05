@@ -91,17 +91,14 @@ func (pDealer *DealerOverrideStruct) LoadRDealerOverrideCfg() (err error) {
 			EndDate = time.Time{}
 		}
 
-		start := StartDate.Format("2006-01-02")
-		end := EndDate.Format("2006-01-02")
-
 		dealerData := models.GetDealerData{
 			RecordId:  RecordId,
 			SubDealer: SubDealer,
 			Dealer:    Dealer,
 			State:     StateName,
 			PayRate:   PayRate,
-			StartDate: start,
-			EndDate:   end,
+			StartDate: StartDate,
+			EndDate:   EndDate,
 		}
 		pDealer.DealerOverrideList.DealersList = append(pDealer.DealerOverrideList.DealersList, dealerData)
 	}
@@ -116,9 +113,9 @@ func (pDealer *DealerOverrideStruct) CalculateParentDealer(dealer string, wc str
 	if len(dealer) > 0 {
 		for _, data := range pDealer.DealerOverrideList.DealersList {
 			if data.Dealer == dealer {
-				if data.StartDate <= wc && data.EndDate >= wc {
-					respdealer = data.Dealer
-				}
+				// if data.StartDate <= wc && data.EndDate >= wc {
+				// 	respdealer = data.Dealer
+				// }
 			}
 		}
 	}

@@ -51,6 +51,9 @@ export const getCurrentDateFormatted = (): string => {
 };
 
 export const dateFormat = (date: string) => {
+  if (!date) {
+    return 'N/A';
+  }
   const isValid = new Date(date);
   if (isValid) {
     return format(new Date(date), 'dd-MM-yyyy');

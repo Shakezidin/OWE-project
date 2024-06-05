@@ -9,16 +9,17 @@ import {
 import { EndPoints } from '../../../infrastructure/web_api/api_client/EndPoints';
 
 const COLORS = [
-  '#5e5ef0',
-  '#ff3f66',
-  '#fb7955',
-  '#ffa133',
-  '#5edd74',
+  '#8E81E0',
+  '#63ACA3',
+  '#F86D75',
+  '#CBCE3D',
+  '#57B3F1',
+  '#EE824D',
   '#52cafe',
-  '#0181ff',
-  '#58E9F0',
+  "#C470C7",
   '#9e84a0',
 ];
+const randomHsl = () => `hsla(${Math.random() * 360}, 100%, 50%, 1)`;
 /** get user onboadring users */
 export const fetchUserOnboarding = createAsyncThunk(
   'user/userOnboarding',
@@ -42,7 +43,7 @@ export const fetchUserOnboarding = createAsyncThunk(
         return {
           name: el.role_name,
           value: el.user_count,
-          fill: COLORS[index],
+          fill: COLORS[index] || randomHsl(),
         };
       }
     );
@@ -53,12 +54,12 @@ export const fetchUserOnboarding = createAsyncThunk(
         {
           name: 'Active SaleRep',
           value: active_sale_rep,
-          fill: '#0181ff',
+          fill: '#63ACA3',
         },
         {
           name: 'Inactive SaleRep',
           value: Math.abs(inactive_sale_rep),
-          fill: '#fb7955',
+          fill: '#EE824D',
         }
       );
     }

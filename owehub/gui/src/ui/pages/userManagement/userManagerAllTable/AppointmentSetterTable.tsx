@@ -71,7 +71,7 @@ const AppointmentSetterTable: React.FC<AppointmentSetterProps> = ({
       >
         <table>
           <thead>
-            <tr style={{ backgroundColor: '#F5F5F5' }}>
+            <tr style={{ backgroundColor: 'var(--primary-light-color)' }}>
               {UserAppointmentTableColumn.map((item, key) => (
                 <SortableHeader
                   key={key}

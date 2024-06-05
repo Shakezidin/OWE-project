@@ -71,7 +71,7 @@ const SalesManagerTable: React.FC<SaleManagerProps> = ({
       >
         <table>
           <thead>
-            <tr style={{ backgroundColor: '#F5F5F5' }}>
+            <tr style={{ backgroundColor: 'var(--primary-light-color)' }}>
               {UserSaleMangerTableColumn.map((item, key) => (
                 <SortableHeader
                   key={key}

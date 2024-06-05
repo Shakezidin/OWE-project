@@ -1,7 +1,7 @@
 .loginButton,
 .cancel {
   flex-shrink: 0;
-  background-color: #0493ce;
+  background-color: var(--primary-color);
   border: none;
   border-radius: 0.5rem;
   color: #fff;
@@ -15,10 +15,10 @@
   width: 150px;
 }
 .loginButton:hover {
-  background-color: #0493ce;
+  background-color: var(--primary-color);
 }
 .cancel {
-  border: 1px solid #0493ce;
+  border: 1px solid var(--primary-color);
   color: #000000;
   background-color: transparent !important;
 }

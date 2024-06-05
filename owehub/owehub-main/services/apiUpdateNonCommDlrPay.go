@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -116,6 +117,12 @@ func HandleUpdateNonCommDlrPayRequest(resp http.ResponseWriter, req *http.Reques
 		balance = UpdateNonCommDlrPay.ExactAmount - paidAmount
 	}
 
+	date, err := time.Parse("2006-01-02", UpdateNonCommDlrPay.Date)
+	if err != nil {
+		fmt.Println("Error parsing date:", err)
+		return
+	}
+
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, UpdateNonCommDlrPay.RecordId)
 	queryParameters = append(queryParameters, UpdateNonCommDlrPay.UniqueID)
@@ -128,7 +135,7 @@ func HandleUpdateNonCommDlrPayRequest(resp http.ResponseWriter, req *http.Reques
 	queryParameters = append(queryParameters, balance)
 	queryParameters = append(queryParameters, paidAmount)
 	queryParameters = append(queryParameters, dealerDBA)
-	queryParameters = append(queryParameters, UpdateNonCommDlrPay.Date)
+	queryParameters = append(queryParameters, date)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateNonCommDlrPayFunction, queryParameters)

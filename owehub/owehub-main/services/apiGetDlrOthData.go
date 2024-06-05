@@ -11,6 +11,7 @@ import (
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	"strings"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -128,19 +129,12 @@ func HandleGetDLROTHDataRequest(resp http.ResponseWriter, req *http.Request) {
 			Paid_amount = 0.0
 		}
 
-		// Date
-		Date, startOk := item["date"].(string)
-		if !startOk || Date == "" {
-			log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
-			Date = ""
+		Date, ok := item["date"].(time.Time)
+		if !ok {
+			log.FuncErrorTrace(0, "Failed to get date for Record ID %v. Item: %+v\n", RecordId, item)
+			Date = time.Time{}
 		}
-
-		// EndDate
-		EndDate, endOk := item["end_date"].(string)
-		if !endOk || EndDate == "" {
-			log.FuncErrorTrace(0, "Failed to get end date for Record ID %v. Item: %+v\n", RecordId, item)
-			EndDate = ""
-		}
+		date := Date.Format("2006-01-02")
 
 		// Create a new GetDLROTHData object
 		dlr_Oth_Data := models.GetDLR_OTHData{
@@ -151,7 +145,7 @@ func HandleGetDLROTHDataRequest(resp http.ResponseWriter, req *http.Request) {
 			Description: Description,
 			Balance:     Balance,
 			Paid_Amount: Paid_amount,
-			Date:        Date,
+			Date:        date,
 		}
 
 		// Append the new DLROTHData to the DLROTHList

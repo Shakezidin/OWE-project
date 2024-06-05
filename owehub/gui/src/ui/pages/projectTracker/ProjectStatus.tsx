@@ -514,7 +514,7 @@ const ProjectStatus = () => {
         linkparaSecond="Dashboard"
       /> */}
       <div style={{ padding: '0px' }}>
-        <div className="flex mxn1">
+        <div className="flex mt2">
           <div
             className="px1 project-card-wrapper  bg-white rounded-16"
             style={{ paddingInline: 16, paddingBottom: 16 }}
@@ -612,28 +612,28 @@ const ProjectStatus = () => {
         </div>
 
         <div className="bg-white rounded-16">
-          <div className="project-heading   mt3" style={{ padding: '22px' }}>
+          <div className="project-heading   mt2" style={{ padding: '22px' }}>
             <div className=" flex items-center ">
               <h3>Project Stages</h3>
               <div className="progress-box-container ml3">
                 <div className="progress-box-body mt0">
                   <div
                     className="progress-box"
-                    style={{ background: '#4191C9' }}
+                    style={{ background: '#4191C9',borderRadius:0,width:10,height:10 }}
                   ></div>
                   <p>Stages</p>
                 </div>
                 <div className="progress-box-body mt0">
                   <div
                     className="progress-box"
-                    style={{ background: '#63ACA3' }}
+                    style={{ background: '#63ACA3',borderRadius:0,width:10,height:10 }}
                   ></div>
                   <p>Completed</p>
                 </div>
                 <div className="progress-box-body mt0">
                   <div
                     className="progress-box"
-                    style={{ background: '#E9E9E9' }}
+                    style={{ background: '#E9E9E9',borderRadius:0,width:10,height:10 }}
                   ></div>
                   <p>Not Started yet</p>
                 </div>

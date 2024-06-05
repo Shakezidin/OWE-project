@@ -167,8 +167,8 @@ const Header: React.FC<Toggleprops> = ({
             </div>
             <div className="user-name">
               <div className="down-arrow">
-                <h4>{userName}</h4>
-                <p>{userRole}</p>
+                <h4>Hello,&nbsp;{userName}</h4>
+                <p className='admin-p'>{userRole}</p>
               </div>
 
               <div className="">
@@ -180,7 +180,6 @@ const Header: React.FC<Toggleprops> = ({
                   {openIcon ? (
                     <img
                       src={ICONS.upperIcon}
-                      style={{ width: '12px' }}
                       alt=""
                     />
                   ) : (

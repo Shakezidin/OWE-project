@@ -73,17 +73,13 @@
   align-items: center;
   gap: 0.5rem;
 }
-
 .down-circle {
-  width: 1.2rem;
-  height: 1.2rem;
+  width: 1.7rem;
   cursor: pointer;
   border-radius: 50%;
   padding: 0.2rem;
   display: flex;
-  align-items: center;
   justify-content: center;
-  background-color: #e8e8e8;
 }
 
 .header-modal {
@@ -106,13 +102,11 @@
   background-color: white;
   box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.1);
   transform: translate(-50%, -50);
-  top: 101%;
-  width: 14%;
-  right: 2.8%;
+  top: 53px;
+  width: 250px;
+  right: 0;
   display: flex;
   flex-direction: column;
-  /* gap: 1rem; */
-  /* padding: 1rem; */
   border-bottom-left-radius: 0.3rem;
   border-bottom-right-radius: 0.3rem;
 }
@@ -166,17 +160,20 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  background-color: 'red';
+  border: 1px solid #CCCCCC;
+  border-radius: 25px;
+  padding: 5px 10px ;
+  position: relative;
 }
 .user-img {
   /* border: 1px solid black; */
-  width: 2rem;
-  height: 2rem;
+  width: 29px;
+  height: 29px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #8fcd02;
+  background-color: #363636;
   color: #fff;
 }
 /* .user-img img {
@@ -193,10 +190,12 @@
   font-size: 12px;
   font-weight: 500;
 }
-
+.admin-p{
+  color: var(--primary-color);
+}
 .user-name p {
   font-size: 10px;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .menu-icon {

@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -97,6 +98,12 @@ func HandleUpdateDLROTHDataRequest(resp http.ResponseWriter, req *http.Request) 
 		balance = updateDLR_OTHReq.Amount - paid_Amount
 	}
 
+	date, err := time.Parse("2006-01-02", updateDLR_OTHReq.Date)
+	if err != nil {
+		fmt.Println("Error parsing date:", err)
+		return
+	}
+
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, updateDLR_OTHReq.Record_Id)
 	queryParameters = append(queryParameters, updateDLR_OTHReq.Unique_Id)
@@ -105,7 +112,7 @@ func HandleUpdateDLROTHDataRequest(resp http.ResponseWriter, req *http.Request) 
 	queryParameters = append(queryParameters, updateDLR_OTHReq.Description)
 	queryParameters = append(queryParameters, balance)
 	queryParameters = append(queryParameters, paid_Amount)
-	queryParameters = append(queryParameters, updateDLR_OTHReq.Date)
+	queryParameters = append(queryParameters, date)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateDLR_OTHFunction, queryParameters)

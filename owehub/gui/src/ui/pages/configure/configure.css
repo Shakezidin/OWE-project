@@ -201,8 +201,7 @@ table tbody {
 }
 
 table thead tr {
-  border-bottom: 1px solid var(--border-color);
-  background-color: var(--row-bg-color);
+  background-color:#D5E4FF;
   position: sticky;
   top: 0;
   z-index: 1;

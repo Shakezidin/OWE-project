@@ -78,7 +78,7 @@ const UserTable: React.FC<UserTableProps> = ({
     >
       <table>
         <thead>
-          <tr style={{ backgroundColor: '#F5F5F5' }}>
+          <tr style={{ backgroundColor: 'var(--primary-light-color)' }}>
             {UserManagementTableColumn.filter(
               (item) => item.displayName !== 'Reporting To'
             ).map((item, key) => (
