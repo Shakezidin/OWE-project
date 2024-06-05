@@ -4,6 +4,7 @@
   align-items: center;
   gap: 0.5rem;
 }
+
 .configure-header-icons {
   display: flex;
   justify-content: center;
@@ -33,9 +34,10 @@
 }
 .configure-cards {
   display: flex;
-  gap: 14px;
+  gap: 28px;
   flex-wrap: wrap;
-  padding: 14px 7px;
+  padding: 14px  7px;
+  padding-left: 12px;
   max-height: 0;
   overflow: hidden;
 }
@@ -48,9 +50,9 @@
 
 .card-heading {
   font-size: 14px;
-  font-weight: 500;
-  line-height: 16px;
-  width: 100px;
+  font-weight: 600;
+  line-height: 18px;
+  /* width: 100px; */
   color: var(--coloumn-text-color);
 }
 .card-p {
@@ -60,23 +62,34 @@
   flex: 1;
 }
 .arrow-right {
-  height: 24px;
-  width: 24px;
+  height: 16px;
+  width: 16px;
 }
 .arrow-wrapper {
   background: var(--white-color);
   height: 34px;
   width: 34px;
-  border-radius: 8px;
+  border-radius: 48px;
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.pay-card {
+
+
+
+
+
+
+
+
+
+
+ .pay-card {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 170px;
+  text-align: center;
+  width: 175px;
   height: 83px;
   border: none;
   border-radius: 8px;
@@ -84,10 +97,46 @@
   cursor: pointer;
   background: rgb(216, 216, 216);
 }
+
 .pay-card:hover {
   transform: scale(1.08);
   transition: transform 0.4s ease;
+} 
+.pay-card .view-text {
+  color: black;
+  font-size: 12px;
+  font-weight: 400;
+  display: none;
+  margin-right: 5px;
 }
+
+.pay-card:hover .view-text {
+  display: inline;
+}
+.pay-card:hover .arrow-wrapper{
+  width: 94px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 .configure-card-title {
   display: flex;
@@ -126,4 +175,11 @@
 }
 .configure-main::-webkit-scrollbar-corner {
   background-color: transparent;
+}
+.con-fle{
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+  text-align: center;
 }
