@@ -286,7 +286,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
               <SelectOption
                 options={userDropdownData}
                 value={selectedOption}
-                menuStyles={{ width: 'fit-content' }}
+                menuStyles={{ width: 'fit-content',left:-42 }}
                 controlStyles={{
                   boxShadow: 'none',
                   border: 'none',

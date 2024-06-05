@@ -18,49 +18,25 @@ interface UserPieChartProps {
   loading: boolean;
 }
 
-const renderCustomizedLabelPercentage = (data: any, total = 32000) => {
-  let percentageCalculated = data.value;
-  return `${percentageCalculated}`;
-};
+// const CustomTooltip = ({ active, payload, label }) => {
+//   if (active && payload && payload.length) {
+//     return (
+//       <div className="custom-tooltip">
+//         <p className="label">{`${label} : ${payload[0].value}`}</p>
+//         <p className="desc">Anything you want can be displayed here.</p>
+//       </div>
+//     );
+//   }
 
+//   return null;
+// };
 const UserPieChart: React.FC<UserPieChartProps> = ({
   onboardingList,
   userPerformanceList,
   loading,
 }) => {
-  const renderLabel = useCallback((piePiece: any) => {
-    return piePiece.name;
-  }, []);
-  const [active, setActive] = useState({ x: 0, y: 0, index: -1 });
-  console.log(userPerformanceList);
-  const tooltip = useRef<null | HTMLDivElement>(null);
-
-  const randomHsl = () => `hsla(${Math.random() * 360}, 100%, 50%, 1)`;
-  const total =
-    onboardingList?.reduce?.((accu, item) => (accu += item.value), 0) || 0;
-  const getPercentage = (val: number) => {
-    return Math.round((val / total) * 100);
-  };
-  const timer = useRef<null | NodeJS.Timeout>(null);
-  useEffect(() => {
-    const listener = (e: MouseEvent) => {
-      const elm = e.target as HTMLElement;
-      if (!(elm.closest('.dougnout') && elm.contains(tooltip.current))) {
-        timer.current = setTimeout(() => {
-          setActive({ x: 0, y: 0, index: -1 });
-        }, 1000);
-      }
-    };
-    window.addEventListener('mousemove', listener);
-    return () => {
-      if (timer.current) {
-        clearTimeout(timer.current);
-      }
-      window.removeEventListener('mousemove', listener);
-    };
-  }, []);
   return (
-    <div className="chart-view">
+    <div className="chart-view" style={{marginTop:20}}>
       <div
         className="pie-section"
         style={{
@@ -92,7 +68,6 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                     paddingAngle={0.1}
                     dataKey="value"
                     strokeWidth={3}
-                    // label={()=><img src={onboarding_mask} alt="" className='onboarding-mask-img' />}
                   >
                     {onboardingList.map((entry, index) => (
                       <Cell
@@ -102,6 +77,9 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                       />
                     ))}
                   </Pie>
+                  <Tooltip cursor={false} content={(va) => {
+                    return va.payload?.[0]?.value
+                  }} wrapperClassName="pie-tooltip" />
                 </PieChart>
                 <img
                   src={onboarding_mask}
@@ -180,24 +158,19 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                 >
                   {userPerformanceList.map((entry, index) => (
                     <Cell
-                      onMouseOver={(data) => {
-                        const elm = data.target as SVGElement;
-                        const cords = elm.getBoundingClientRect();
-                        if (timer.current) {
-                          clearTimeout(timer.current);
-                        }
-                        setActive({
-                          x: cords.x,
-                          y: cords.y,
-                          index: parseInt(elm.id),
-                        });
-                      }}
                       id={`${index}`}
                       key={`cell-${index}`}
                       fill={entry.fill}
                     />
                   ))}
                 </Pie>
+                <Tooltip
+                  cursor={false}
+                  content={(va) => {
+                    return va.payload?.[0]?.value
+                  }}
+                  wrapperClassName="pie-tooltip"
+                />
               </PieChart>
             </ResponsiveContainer>
             <img src={perfomance_mask} alt="" className="mask-chart-img" />
@@ -208,22 +181,6 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
             <h3>{loading ? 'Searching..' : 'No SaleRep Found'}</h3>
           </div>
         )}
-
-        <div
-          ref={tooltip}
-          className="fixed bg-white"
-          style={{
-            top:active.index === 1? active.y+40:active.y,
-            left: active.index === 1 ? active.x - 40 : active.x,
-            transition: 'opacity 1s',
-            borderRadius: 24,
-            padding: '5px 20px',
-            opacity: active.index >= 0 ? 1 : 0,
-            boxShadow:"0 4px 4px rgba(0, 0, 0, 0.25)"
-          }}
-        >
-          {userPerformanceList[active.index]?.value}
-        </div>
 
         <div className="flex items-center justify-center pb2">
           <div className="flex items-center">
