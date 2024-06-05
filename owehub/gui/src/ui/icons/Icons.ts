@@ -16,6 +16,10 @@ import trackerIcon from '../../resources/assets/trackerIcon.svg';
 import activityIcon from '../../resources/assets/activityIcon.svg';
 import report from '../../resources/assets/report.svg';
 import menu from '../../resources/assets/menu-icon.svg';
+import sales_per from '../../resources/assets/sales_new.svg';
+import ntp_per from '../../resources/assets/ntp_per.svg';
+import installed_per from '../../resources/assets/installed_per.svg';
+import cancelled_per from '../../resources/assets/cancelled_per.svg';
 import filter from '../../resources/assets/filter.svg';
 import filterActive from '../../resources/assets/filterActive.svg';
 import dashHead from '../../resources/assets/dashhead.svg';
@@ -41,7 +45,7 @@ import upperIcon from '../../resources/assets/arrow-up-s-line.svg';
 import logoutIconLeft from '../../resources/assets/logout-circle-r-line.svg';
 import userPic from '../../resources/assets/userPic.svg';
 import settingIconAcc from '../../resources/assets/settings-line.svg';
-import supportImage from '../../resources/assets/supportImage.svg';
+import supportImage from '../../resources/assets/support.svg';
 import sales from '../../resources/assets/sales.svg';
 import ntp from '../../resources/assets/ntp.svg';
 import install from '../../resources/assets/install.svg';
@@ -207,13 +211,8 @@ export const ICONS = {
   pmshadedgraph: pmshadedgraph,
   lable_img: lable_img,
   includes_icon:includes_icon,
-  tot1:tot1,
-  tot2:tot2,
-  tot3:tot3,
-  report1: report1,
-  element: element,
-  user: user,
-  vector: vector,
-  online: online,
-  fil_white:fil_white,
+  sales_per: sales_per,
+  ntp_per: ntp_per,
+  installed_per: installed_per,
+  cancelled_per: cancelled_per
 };

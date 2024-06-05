@@ -152,10 +152,11 @@ const TechnicalSupport: React.FC = () => {
               <h3>Support</h3>
             </div>
             <div className="supportImage">
-              <img
-                src={ICONS.supportImage}
-                alt="support-icon"
-              />
+                <object
+                type="image/svg+xml"
+                data={ICONS.supportImage}
+                aria-label="support-icon"
+              ></object>
             </div>
           </div>
 
