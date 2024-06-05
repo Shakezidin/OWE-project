@@ -89,7 +89,7 @@ import dashboardSidebar from '../../resources/assets/sidebar-dashboard.png';
 import dataSidebar from '../../resources/assets/sidebar-data.png';
 import activitySidebar from '../../resources/assets/sidebar-activity.png';
 import fil_white from '../../resources/assets/filter-white.png';
-import online from '../../resources/assets/online.svg';
+import online from '../../resources/assets/Online.svg';
 import tot1 from '../../resources/assets/reptot1.png';
 import tot2 from '../../resources/assets/reptot2.png';
 import tot3 from '../../resources/assets/reptot3.png';
