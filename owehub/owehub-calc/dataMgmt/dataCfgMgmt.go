@@ -90,7 +90,7 @@ func LoadConfigurations() (err error) {
 		log.FuncErrorTrace(0, "Failed to get Rebate Config from DB err: %+v", err)
 		return err
 	}
-	log.FuncErrorTrace(0, "===== PayScheduleCfg : %+v", PayScheduleCfg.PayScheduleList[0])
+	// log.FuncErrorTrace(0, "===== PayScheduleCfg : %+v", PayScheduleCfg.PayScheduleList[0])
 
 	//* loan fee is working
 	// err = LoanFeeAdderCfg.LoadLoanFeeAdderCfg()
@@ -113,7 +113,7 @@ func LoadConfigurations() (err error) {
 		log.FuncErrorTrace(0, "Failed to get AR Config from DB err: %+v", err)
 		return err
 	}
-	log.FuncErrorTrace(0, "===== ApDealerCfg : %+v", PayScheduleCfg.PayScheduleList[0])
+	// log.FuncErrorTrace(0, "===== ApDealerCfg : %+v", PayScheduleCfg.PayScheduleList[0])
 
 	err = LoanFeeCfg.LoadLoanFeeCfg()
 	if err != nil {

@@ -246,17 +246,18 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateDlrDrawPerc(dealer, partner
 				continue
 			}
 
-			if installer == "One World Energy" {
-				installer = "OWE"
-			}
+			// if installer == "One World Energy" {
+			// 	installer = "OWE"
+			// }
 
-			if state == "AZ :: Arizona" {
-				state = "Arizona"
-			}
+			// if state == "AZ :: Arizona" {
+			// 	state = "Arizona"
+			// }
 
-			if state == "NM :: New Mexico" {
-				state = "New Mexico"
-			}
+			// if state == "NM :: New Mexico" {
+			// 	state = "New Mexico"
+			// }
+			
 			if data.Dealer == dealer && data.PartnerName == partner && data.InstallerName == installer {
 				log.FuncErrorTrace(0, "data.DealerName: %v paramDealerName : %v", data.Dealer, dealer)
 				log.FuncErrorTrace(0, "data.PartnerName: %v parampartnerName : %v", data.PartnerName, partner)

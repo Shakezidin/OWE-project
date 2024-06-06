@@ -93,7 +93,6 @@ func (pDealerTier *DealerTierCfgStruct) LoadDealerTierCfg() (err error) {
 }
 
 func (pDealerTier *DealerTierCfgStruct) CalculateDlrTier(uniqueId, dealer string, date time.Time) (dlrtier string) {
-	log.FuncErrorTrace(0, "************************************************************************************")
 
 	bfrDateStr := "2022/06/15"
 	var (
@@ -133,6 +132,9 @@ func (pDealerTier *DealerTierCfgStruct) CalculateDlrTier(uniqueId, dealer string
 					continue
 				}
 
+				if dealer == "Energy Bros USA"{
+					dealer = "Energy Bros USA Inc"
+				}
 				if data.DealerName == dealer {
 					if data.DealerName == dealer && startDate.Before(date) && endDate.Before(date) {
 						dlrtier = data.Tier

@@ -66,35 +66,36 @@ func ExecDlrPayInitialCalculation(resultChan chan string) {
 func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[string]interface{}, err error) {
 	var (
 		SysSize            float64   // p
-		payRateSubTotal    float64   // verify the column number
-		status             string    // aj //* required
-		statusDate         time.Time // ak
-		contractDolDol     float64   //am
-		dealer             string    // ap
-		credit             float64   // as
-		repPay             float64   // at
-		payRateSemi        float64   // au
+		payRateSubTotal    float64   // BG             //defference in 80/20 calculation
+		payRateSemi        float64   // au             //defference in 8020 calculation
+		loanFee            float64   // ay //required  //defference in 80/20 calculation
+		parentDlr          string    // bk             //in 80/20 field name is changed to DLROV
+		status             string    // aj //required
+		statusDate         time.Time // ak //required
+		contractDolDol     float64   // am //required
+		dealer             string    // ap //required
+		// dealerDBA          string    // aq //required
+		credit             float64   // as //required
+		repPay             float64   // at //required
 		addr               float64   // av
 		expense            float64   // aw
 		autoAdder          float64   // ax
-		loanFee            float64   // ay
 		rebate             float64   // az
 		referral           float64   // ba
-		adderTot           float64   // bb
+		adderTot           float64   // bb //required
 		adderLF            float64   // bc
-		epc                float64   // bd
+		epc                float64   // bd //required
 		adderPerKw         float64   // bf
 		commTotal          float64   // bh
-		statusCheck        float64   // bi
+		statusCheck        float64   // BI //required
 		dealerPaymentBonus float64   // bj
-		parentDlr          string    // bk
 		payRate            float64   // bl
 		ovrdTotal          float64   // bn
 		DlrDrawMax         float64   // bq
-		r1DrawPaid         float64   // bt
+		r1DrawPaid         float64   // BT //required
 		amtCheck           float64   // bu
-		r1CommPaid         float64   // bv
-		r1Balance          float64   // bw
+		r1CommPaid         float64   // BV //required
+		r1Balance          float64   // BW //required
 		ovrdPaid           float64   // by
 		ovrdBalance        float64   // bz
 		repCount           float64   // cd
@@ -105,23 +106,26 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 		teamCount          float64   // cm
 		perTeamSales       float64   // cn
 		perTeamKw          float64   // co
-		rl                 float64   // cu
+		rl                 float64   // AR //required
+		r1DrawAmt          float64   // BS //required
+		// Type               string    // E  //required
+		netEpc             float64   // BE //required
+		// Rep1               string    // M  //required
+		// Rep2               string    // N  //required
 
-		homeOwner     string
-		uniqueID      string
-		wc            time.Time
-		ntp           time.Time
-		instSys       time.Time
+		homeOwner     string    // H //required
+		uniqueID      string    // G //required
+		wc            time.Time // U //required
+		ntp           time.Time // W //required
+		instSys       time.Time // AD //required
 		loanType      string
 		dlrDrawMax    float64
 		dlrDrawPerc   float64
 		partner       string
 		installer     string
-		state         string
-		r1DrawAmt     float64
-		netEpc        float64
+		state         string // K //required
 		contractTotal float64
-		systemSize    float64
+		systemSize    float64 //P //required
 		adderTotal    float64
 		netEpc2       float64
 	)

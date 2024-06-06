@@ -11,6 +11,8 @@ import (
 	log "OWEApp/shared/logger"
 	"OWEApp/shared/models"
 	"fmt"
+	"strconv"
+	"time"
 )
 
 type MarketingFeeCfgStruct struct {
@@ -76,19 +78,23 @@ func (pMarketingFee *MarketingFeeCfgStruct) LoadMarketingFeeCfg() (err error) {
 		}
 
 		// ChgDlr
-		ChgDlrVal, ok := item["chg_dlr"].(bool)
+		ChgDlrVal, ok := item["chg_dlr"].(int64)
+		ChgDlr := 0
 		if !ok {
-			fmt.Println(ChgDlrVal)
 			log.FuncErrorTrace(0, "Failed to get chg dlr for Record ID %v. Item: %+v\n", RecordId, item)
-			ChgDlrVal = false // Default ChgDlr value of 0
+			ChgDlr = 0 // Default ChgDlr value of 0
+		} else {
+			ChgDlr = int(ChgDlrVal)
 		}
 
 		// PaySrc
-		PaySrcVal, ok := item["pay_src"].(bool)
+		PaySrcVal, ok := item["pay_src"].(int64)
+		PaySrc := 0
 		if !ok {
-			fmt.Println(PaySrcVal)
 			log.FuncErrorTrace(0, "Failed to get pay src for Record ID %v. Item: %+v\n", RecordId, item)
-			PaySrcVal = false // Default PaySrc value of 0
+			PaySrc = 0 // Default PaySrc value of 0
+		} else {
+			PaySrc = int(PaySrcVal)
 		}
 
 		// StartDate
@@ -113,13 +119,13 @@ func (pMarketingFee *MarketingFeeCfgStruct) LoadMarketingFeeCfg() (err error) {
 		}
 
 		MarketingFeeData := models.GetMarketingFeesData{
-			RecordId: RecordId,
-			Source:   Source,
-			Dba:      Dba,
-			State:    State,
-			FeeRate:  FeeRate,
-			// ChgDlr:      ChgDlrVal,
-			// PaySrc:      PaySrcVal,
+			RecordId:    RecordId,
+			Source:      Source,
+			Dba:         Dba,
+			State:       State,
+			FeeRate:     FeeRate,
+			ChgDlr:      ChgDlr,
+			PaySrc:      PaySrc,
 			StartDate:   StartDate,
 			EndDate:     EndDate,
 			Description: Description,
@@ -130,14 +136,44 @@ func (pMarketingFee *MarketingFeeCfgStruct) LoadMarketingFeeCfg() (err error) {
 }
 
 func (pMarketingFee *MarketingFeeCfgStruct) CalculateChgDlr(Type string) (chgDlr bool) {
-	// var marketingCode string
+	var (
+		err           error
+		startDate     time.Time
+		marketingCode string
+	)
+
 	for _, data := range pMarketingFee.MarketingFeeCfg.MarketingFeesList {
 		if len(data.Source) > 0 {
-			
+			if len(data.StartDate) > 0 {
+				startDate, err = time.Parse("01-02-06", data.StartDate)
+				if err != nil {
+					log.FuncErrorTrace(0, "Failed to convert data.StartDate:%+v to time.Time err: %+v", data.StartDate, err)
+				}
+			} else {
+				log.FuncWarnTrace(0, "Empty StartDate Received in data.StartDate config")
+				continue
+			}
+			dateInt := excelDateFromTime(startDate)
+			dateIntStr := strconv.Itoa(dateInt)
+			marketingCode = fmt.Sprintf("MK-%v%v%v", data.State, dateIntStr, data.Source)
 		}
-		// if marketingCode == Type {
-		// 	chgDlr = data.ChgDlr
-		// }
+		if marketingCode == Type {
+			switch data.ChgDlr {
+			case 0:
+				chgDlr = false
+			case 1:
+				chgDlr = true
+			default:
+				chgDlr = false
+			}
+		}
 	}
 	return chgDlr
+}
+
+func excelDateFromTime(t time.Time) int {
+	const excelEpoch = "1899-12-30"
+	excelEpochDate, _ := time.Parse("2006-01-02", excelEpoch)
+	duration := t.Sub(excelEpochDate)
+	return int(duration.Hours() / 24)
 }
