@@ -214,5 +214,14 @@ export const ICONS = {
   sales_per: sales_per,
   ntp_per: ntp_per,
   installed_per: installed_per,
-  cancelled_per: cancelled_per
+  cancelled_per: cancelled_per,
+  tot1:tot1,
+  tot2:tot2,
+  tot3:tot3,
+  report1: report1,
+  element: element,
+  user: user,
+  vector: vector,
+  online: online,
+  fil_white:fil_white,
 };
