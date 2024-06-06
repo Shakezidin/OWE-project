@@ -13,7 +13,7 @@ import { logout } from '../../../redux/apiSlice/authSlice/authSlice';
 import { ROUTES } from '../../../routes/routes';
 import { FaUserCircle } from 'react-icons/fa';
 import { IoMdLogOut } from 'react-icons/io';
-
+import useMatchMedia from '../../../hooks/useMatchMedia';
 interface Toggleprops {
   toggleOpen: boolean;
   setToggleOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -34,6 +34,7 @@ const Header: React.FC<Toggleprops> = ({
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
+  const isTablet = useMatchMedia('(max-width: 1024px)');
 
   const handleLogout = () => {
     dispatch(logout());
@@ -94,7 +95,7 @@ const Header: React.FC<Toggleprops> = ({
             aria-label="login-icon"
           ></object>
         </div>
-        {toggleOpen && (
+        {toggleOpen && !isTablet && (
           <div
             className={`icon-shape ${toggleOpen ? 'icon-shape-active' : ''}`}
             onClick={() => setToggleOpen(!toggleOpen)}
@@ -168,7 +169,7 @@ const Header: React.FC<Toggleprops> = ({
             <div className="user-name">
               <div className="down-arrow">
                 <h4>Hello,&nbsp;{userName}</h4>
-                <p className='admin-p'>{userRole}</p>
+                <p className="admin-p">{userRole}</p>
               </div>
 
               <div className="">
@@ -178,10 +179,7 @@ const Header: React.FC<Toggleprops> = ({
                   onClick={() => setOPenIcon(!openIcon)}
                 >
                   {openIcon ? (
-                    <img
-                      src={ICONS.upperIcon}
-                      alt=""
-                    />
+                    <img src={ICONS.upperIcon} alt="" />
                   ) : (
                     <MdKeyboardArrowDown style={{ fontSize: '1.5rem' }} />
                   )}
