@@ -196,20 +196,26 @@ export const RepPayDashboardPage: React.FC = () => {
               <div className='rep-drop_label' style={{ backgroundColor: "#C470C7" }}>
                 <img src={ICONS.includes_icon} alt="" />
               </div>
+              
               <div className='rep-up'>
-                <label className="rep-inputLabel" style={{ color: '#344054', marginLeft: "6px" }}>
-                  Payroll Date
-                </label>
-
-
+              <label className="inputLabel" style=
+                    {{
+                      color: '#344054',
+                      position: 'absolute',
+                      left: '705px',
+                      top: '95px',
+                      whiteSpace: 'nowrap',
+                      zIndex: 999999
+                    }}>
+                    Payroll Date
+                  </label>
 
                 <div
                   style={{
                     position: 'relative',
-                    top: '-1px',
+                    top: '5px',
                     backgroundColor: 'white',
                     marginLeft: '6px',
-                    right: 0
                   }}
                   ref={datePickerRef}
                 >

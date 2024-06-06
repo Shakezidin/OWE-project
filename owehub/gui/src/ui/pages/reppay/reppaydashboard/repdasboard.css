@@ -256,3 +256,66 @@
   border-radius: 18px;
 }
 
+
+
+
+@media (max-width: 1024px) {
+ .total-rep{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 16px;
+  padding: 1.2rem;
+  width: 32.2%;
+  height: 132px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  transition: box-shadow 0.3s ease;
+ }
+ .rep-total-section h4 {
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 28px;
+  text-align: left;
+  color: #FFFFFF;
+  margin-right: 7px;
+}
+.rep-total-section p {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 28px;
+  text-align: left;
+  color: #FFFFFF;
+  margin-right: 7px;
+}
+.rep-teamImg{
+  width: 54px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, .3);
+}
+.rep-dash-head-input {
+  display: flex;
+  height: 47px;
+  background-color: #ffffff;
+  padding: 0 3px 0 3px;
+  gap: 0;
+  align-items: center;
+  border-radius: 8px;
+}
+.rep-manage-user{
+  display: flex;
+  gap: 0;
+}
+.rep-dashboard-payroll {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+}
+
+

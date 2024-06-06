@@ -544,3 +544,47 @@
   padding-bottom: 10px;
   border-radius: 18px;
 }
+
+
+
+@media (max-width: 1024px) {
+  .total-commisstion{
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   border-radius: 16px;
+   padding: 1.2rem;
+   width: 32.2%;
+   height: 132px;
+   margin-top: 5px;
+   margin-bottom: 5px;
+   transition: box-shadow 0.3s ease;
+  }
+  .total-section h4 {
+   font-size: 24px;
+   font-weight: 500;
+   line-height: 28px;
+   text-align: left;
+   color: #FFFFFF;
+   margin-right: 7px;
+ }
+ .total-section p {
+   font-size: 12px;
+   font-weight: 400;
+   line-height: 28px;
+   text-align: left;
+   color: #FFFFFF;
+   margin-right: 7px;
+ }
+ .teamImg{
+   width: 54px;
+   height: 54px;
+   display: flex;
+   align-items: center;
+   flex-direction: column;
+   justify-content: center;
+   border-radius: 12px;
+   background: rgba(255, 255, 255, .3);
+ }
+ 
+ }

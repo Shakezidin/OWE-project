@@ -178,15 +178,23 @@ export const DashboardPage: React.FC = () => {
                 <div className='rep-drop_label' style={{ backgroundColor: "#C470C7" }}>
                   <img src={ICONS.includes_icon} alt="" />
                 </div>
-                <div className='rep-up'>
-                  <label className="inputLabel" style={{ color: '#344054', marginLeft: "6px", textAlign: 'left' }}>
+                <div className='rep-up relative'>
+                  <label className="inputLabel" style=
+                    {{
+                      color: '#344054',
+                      position: 'absolute',
+                      left: '12px',
+                      top: '-7px',
+                      whiteSpace: 'nowrap',
+                      zIndex: 99
+                    }}>
                     Payroll Date
                   </label>
 
                   <div
                     style={{
                       position: 'relative',
-                      top: '-1px',
+                      top: '7px',
                       backgroundColor: 'white',
                       marginLeft: '6px',
 
