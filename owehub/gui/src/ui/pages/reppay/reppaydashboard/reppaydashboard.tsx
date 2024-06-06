@@ -95,29 +95,34 @@ export const RepPayDashboardPage: React.FC = () => {
 
       <div className="rep-Dashboard-section-container">
         <div className='rep-white-back'>
-        <div className="rep-Dashboard-container">
-          <div className="rep-manage-user">
+          <div className="rep-Dashboard-container">
+            <div className="rep-manage-user">
 
-            <div className="rep-dash-head-input">
-              
-              <div className='rep-drop_label' style={{ backgroundColor: "#8E81E0" }}>
-                <img src={ICONS.vector} alt="" />
-              </div>
-              <div className='rep-up'>
-                <label className="rep-inputLabel" style={{ color: '#344054', marginLeft: "-36px" }}>
-                  Includes
-                </label>
-                <div className='drop-d'> <DropdownWithCheckboxes /></div>
+              <div className="rep-dash-head-input">
 
-              </div>
-            </div>
+                <div className='rep-drop_label' style={{ backgroundColor: "#8E81E0" }}>
+                  <img src={ICONS.vector} alt="" />
+                </div>
+                <div className='rep-up'>
+                  <label className="rep-inputLabel" style={{ color: '#344054', marginLeft: "-36px" }}>
+                    Includes
+                  </label>
+                  <div className='drop-d'> <DropdownWithCheckboxes /></div>
 
-            <div className="rep-dash-head-input" style={{ width: "200px" }}>
-              <div className='rep-drop_label' style={{ backgroundColor: "#57B3F1" }}>
-                <img src={ICONS.lable_img} alt="" />
+                </div>
               </div>
-              <div className='rep-up'>
-                <label className="rep-inputLabel" style={{ color: '#344054', marginLeft: "6px" }}>
+
+              <div className="rep-dash-head-input"  style={{minWidth: '205px'}}>
+                <div className='rep-drop_label' style={{ backgroundColor: "#57B3F1" }}>
+                  <img src={ICONS.lable_img} alt="" />
+                </div>
+                <div className='rep-up relative'>
+                  <label className="rep-inputLabel" style=
+                  {{
+                    color: '#344054', position: 'absolute', left: '8px',
+                    top: '-10px',
+                    whiteSpace: 'nowrap'
+                    }}>
                   Commission Model
                 </label>
                 <Select
@@ -134,16 +139,18 @@ export const RepPayDashboardPage: React.FC = () => {
                       borderRadius: '.40rem',
                       border: 'none',
                       outline: 'none',
-                      width: '6rem',
+                      // width: '6rem',
+                      width: 'fit-content',
                       minHeight: 'unset',
-                      height: '19px',
+                      height: '8px',
                       alignContent: 'center',
                       backgroundColor: '#ffffff',
                       cursor: 'pointer',
                       marginRight: '32px',
-                      marginBottom: '2px',
+                      // marginBottom: '0px',
                       boxShadow: 'none',
-                      
+                      marginTop: '15px'
+
                     }),
                     indicatorSeparator: () => ({
                       display: 'none',
@@ -154,7 +161,7 @@ export const RepPayDashboardPage: React.FC = () => {
                       '&:hover': {
                         color: '#292929',
                       },
-                      marginRight: '12px'
+                      marginLeft: '-15px'
                     }),
                     option: (baseStyles, state) => ({
                       ...baseStyles,
@@ -216,7 +223,7 @@ export const RepPayDashboardPage: React.FC = () => {
                       : 'Select Date'}
                   </label>
                   {showDatePicker && (
-                    <div className="calender-container" style={{left:0}}>
+                    <div className="calender-container" style={{ left: 0 }}>
                       <DateRangePicker
                         ranges={[selectionRange]}
                         onChange={handleSelect}
@@ -294,23 +301,23 @@ export const RepPayDashboardPage: React.FC = () => {
           {/* <DonutChart /> */}
         </div>
 
-        </div>
-
-
-        {filterModal && (
-          <FilterModal
-            handleClose={filterClose}
-            columns={[]}
-            page_number={1}
-            page_size={10}
-            fetchFunction={() => { }}
-          />
-        )}
-        <div className="" style={{ marginTop: '20px' }}>
-          {active === 0 && <RepDashBoardTable />}
-          {active === 1 && <RepDashBoardChart />}
-        </div>
       </div>
+
+
+      {filterModal && (
+        <FilterModal
+          handleClose={filterClose}
+          columns={[]}
+          page_number={1}
+          page_size={10}
+          fetchFunction={() => { }}
+        />
+      )}
+      <div className="" style={{ marginTop: '20px' }}>
+        {active === 0 && <RepDashBoardTable />}
+        {active === 1 && <RepDashBoardChart />}
+      </div>
+    </div >
     </>
   );
 };

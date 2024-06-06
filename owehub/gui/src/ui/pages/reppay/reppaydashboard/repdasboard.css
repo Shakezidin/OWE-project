@@ -28,7 +28,7 @@
   height: 47px;
   background-color: #ffffff;
   padding: 0 3px 0 3px;   /*here change for reduce left space ***************/
-  gap: 0.4rem;
+  gap: 0;
   align-items: center;
   border-radius: 8px;
 }
@@ -192,7 +192,7 @@
   border-radius: 16px;
   padding: 1.2rem;
   width: 32%;
-  height: 110px;
+  height: 132px;
   margin-top: 5px;
   margin-bottom: 5px;
   transition: box-shadow 0.3s ease;

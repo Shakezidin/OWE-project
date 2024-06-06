@@ -115,12 +115,18 @@ export const ARDashboardPage: React.FC = () => {
         <div className="ar-Dashboard-container">
           <div className="rep-manage-user">
 
-            <div className="ar-dash-head-input">
+            <div className="ar-dash-head-input" style={{width: '159px'}}>
               <div className='rep-drop_label' style={{ backgroundColor: "#63ACA3" }}>
                 <img src={ICONS.report1} alt="" />
               </div>
-              <div className='rep-up'>
-                <label className="inputLabel" style={{ color: '#344054' }}>
+              <div className='rep-up relative'>
+                <label className="inputLabel" style={{
+                   color: '#344054',
+                   position: 'absolute',
+                    left: '9px',
+                    top: '-6px',
+                    whiteSpace: 'nowrap' 
+                   }}>
                   Report Types
                 </label>
 
@@ -136,13 +142,14 @@ export const ARDashboardPage: React.FC = () => {
                       borderRadius: '.40rem',
                       border: 'none',
                       outline: 'none',
-                      width: '6rem',
+                      width: 'fit-content',
                       minHeight: 'unset',
-                      height: '19px',
+                      height: '8px',
                       alignContent: 'center',
                       backgroundColor: '#ffffff',
                       cursor: 'pointer',
                       boxShadow: 'none',
+                      marginTop: '18px'
                     }),
                     placeholder: (baseStyles) => ({
                       ...baseStyles,
@@ -158,7 +165,7 @@ export const ARDashboardPage: React.FC = () => {
                       '&:hover': {
                         color: '#292929',
                       },
-                      marginRight: '12px'
+                      marginLeft: '-15px'
                     }),
                     option: (baseStyles, state) => ({
                       ...baseStyles,
@@ -201,8 +208,14 @@ export const ARDashboardPage: React.FC = () => {
             <div className='rep-drop_label' style={{ backgroundColor: "#C470C7" }}>
                 <img src={ICONS.user} alt="" />
               </div>
-              <div className='rep-up'>
-              <label className="inputLabel" style={{ color: '#344054', marginLeft: "6px" }}>
+              <div className='rep-up relative'>
+              <label className="inputLabel" style={{
+                 color: '#344054',
+                 position: 'absolute',
+                 left: '8px',
+                 top: '-6px',
+                 whiteSpace: 'nowrap'
+                 }}>
                 Sales Partner
               </label>
               <Select
@@ -219,14 +232,16 @@ export const ARDashboardPage: React.FC = () => {
                     borderRadius: '.40rem',
                     border: 'none',
                     outline: 'none',
-                    width: '5rem',
+                    width: 'fit-content',
                     minHeight: 'unset',
-                    height: '19px',
+                    height: '8px',
                     alignContent: 'center',
                     backgroundColor: '#ffffff',
                     cursor: 'pointer',
                     marginRight: '11px',
                     boxShadow: 'none',
+                    marginBottom: '2px',
+                    marginTop: '18px'
                   }),
                   placeholder: (baseStyles) => ({
                     ...baseStyles,
@@ -241,6 +256,7 @@ export const ARDashboardPage: React.FC = () => {
                     '&:hover': {
                       color: '#292929',
                     },
+                    marginLeft: '-15px'
                   }),
                   option: (baseStyles, state) => ({
                     ...baseStyles,
@@ -278,12 +294,30 @@ export const ARDashboardPage: React.FC = () => {
               </div>
             </div>
 
+            <div className="ar-dash-head-input" style={{ width: "120px" }}>
+            <div className='rep-drop_label' style={{ backgroundColor: "#8E81E0" }}>
+                <img src={ICONS.vector} alt="" />
+              </div>
+              <div className='rep-up'>
+              <label className="inputLabel" style={{ color: '#344054', marginLeft: '8px' }}>
+                Includes
+              </label>
+              <ArDropdownWithCheckboxes options={options} />
+              </div>
+            </div>
+
             <div className="ar-dash-head-input">
             <div className='rep-drop_label' style={{ backgroundColor: "#EE824D" }}>
                 <img src={ICONS.element} alt="" />
               </div>
-              <div className='rep-up'>
-              <label className="inputLabel" style={{ color: '#344054', marginRight: "20px" }}>
+              <div className='rep-up relative'>
+              <label className="inputLabel" style={{
+                 color: '#344054',
+                 position: 'absolute',
+                 left: '9px',
+                 top: '-6px',
+                 whiteSpace: 'nowrap' 
+                 }}>
                 Elements
               </label>
               <Select
@@ -298,13 +332,15 @@ export const ARDashboardPage: React.FC = () => {
                     borderRadius: '.40rem',
                     border: 'none',
                     outline: 'none',
-                    width: '6rem',
+                    width: 'fit-content',
                     minHeight: 'unset',
-                    height: '19px',
+                    height: '8px',
                     alignContent: 'center',
                     backgroundColor: '#ffffff',
                     cursor: 'pointer',
-                    boxShadow:'none'
+                    boxShadow:'none',
+                    marginBottom: '2px',
+                    marginTop: '18px'
                   }),
                   placeholder: (baseStyles) => ({
                     ...baseStyles,
@@ -320,6 +356,7 @@ export const ARDashboardPage: React.FC = () => {
                     '&:hover': {
                       color: '#292929',
                     },
+                    marginLeft: '-15px'
                   }),
                   option: (baseStyles, state) => ({
                     ...baseStyles,
@@ -360,17 +397,7 @@ export const ARDashboardPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="ar-dash-head-input">
-            <div className='rep-drop_label' style={{ backgroundColor: "#8E81E0" }}>
-                <img src={ICONS.vector} alt="" />
-              </div>
-              <div className='rep-up'>
-              <label className="inputLabel" style={{ color: '#344054', marginLeft: '8px' }}>
-                Includes
-              </label>
-              <ArDropdownWithCheckboxes options={options} />
-              </div>
-            </div>
+            
           </div>
 
           <div className="dashboard-payroll">

@@ -36,14 +36,14 @@ const DashboardTotal: React.FC = () => {
           {data.length > 0
             ? data.map((el, i) => (
                 <div
-                  className="total-commisstion "
+                  className="total-commisstion"
                   style={{
                     backgroundImage: `url(${el.background})`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                   }}
                 >
-                  <div className="total-section">
+                  <div className="total-section" style={{marginBottom: '8px'}}>
                     <p>{el.paid}</p>
                     <h4>{el.doller}</h4>
                   </div>
