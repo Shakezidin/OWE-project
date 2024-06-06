@@ -149,7 +149,7 @@ func (ArSkdConfig *ArSkdCfgStruct) LoadArSkdCfg() (err error) {
 	return err
 }
 
-func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct) (redLine float64, permitPayM1 float64, permitMax float64, installPayM2 float64, uid string) {
+func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct) (redLine float64, permitPayM1 float64, permitMax float64, installPayM2 float64) {
 	var (
 		err   error
 		today = time.Now().Truncate(24 * time.Hour)
@@ -165,7 +165,7 @@ func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct)
 		var startDate time.Time
 		var endDate time.Time
 
-		// 01-02-06 : MM-DD-YY
+		// 2006-01-02 : MM-DD-YY
 		// date Format("2006-01-02")
 		if len(arSkd.StartDate) > 0 {
 			startDate, err = time.Parse("2006-01-02", arSkd.StartDate)
@@ -177,7 +177,7 @@ func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct)
 			continue
 		}
 
-		// 01-02-06 : MM-DD-YY
+		// 2006-01-02 : MM-DD-YY
 		if len(arSkd.EndDate) > 0 {
 			endDate, err = time.Parse("2006-01-02", arSkd.EndDate)
 			if err != nil {
@@ -188,7 +188,6 @@ func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct)
 			// log.FuncWarnTrace(0, "Empty EndDate Received in arSkd config")
 			continue
 		}
-
 		// }
 		var st string
 		if len(saleData.State) > 0 {
@@ -207,36 +206,22 @@ func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct)
 			arSkd.CalcDate == "INSTALL" &&
 			(startDate.Before(saleData.PvInstallCompletedDate) || startDate.Equal(saleData.PvInstallCompletedDate)) &&
 			(endDate.After(saleData.PvInstallCompletedDate) || endDate.Equal(saleData.PvInstallCompletedDate)) {
-
-			// log.FuncErrorTrace(0, "RAED +++Partner -> %v  saledata_partner %v", arSkd.PartnerName, saleData.Partner)
-			// log.FuncErrorTrace(0, "RAED +++Partner -> %v  saleData.Installer %v", arSkd.InstallerName, saleData.Installer)
-			// log.FuncErrorTrace(0, "RAED +++Partner -> %v  saleData.State %v", arSkd.StateName, saleData.State)
-			// log.FuncErrorTrace(0, "RAED +++arSkd.CalcDate %v", arSkd.CalcDate)
-			// log.FuncErrorTrace(0, "RAED UNIQUE ID 1 %v", saleData.UniqueId)
 			redLine = arSkd.RedLine
 			permitPayM1 = arSkd.PermitPay
 			permitMax = arSkd.PermitMax
 			installPayM2 = arSkd.InstallPay
-			// if arSkd.RedLine > 0 && arSkd.PermitPay > 0 && arSkd.PermitMax > 0 && arSkd.InstallPay > 0 {
-			// 	log.FuncErrorTrace(0, "RAED UNIQUE ID 1 %v", saleData.UniqueId)
-			// 	return redLine, permitPayM1, permitMax, installPayM2, saleData.UniqueId
-			// }
 
-			// redLine = arSkd.RedLine
-			// permitPayM1 = arSkd.PermitPay
-			// permitMax = arSkd.PermitMax
-			// installPayM2 = arSkd.InstallPay
-			return redLine, permitPayM1, permitMax, installPayM2, ""
+			return redLine, permitPayM1, permitMax, installPayM2
 		}
 	}
 	if redLine <= 0 {
 		for _, arSkd := range ArSkdConfig.ArSkdConfigList.ArScheduleList {
-			/*var startDate time.Time
+			var startDate time.Time
 			var endDate time.Time
 
-			//01-02-06 : MM-DD-YY
+			//2006-01-02 : MM-DD-YY
 			if len(arSkd.StartDate) > 0 {
-				startDate, err = time.Parse("01-02-06", arSkd.StartDate)
+				startDate, err = time.Parse("2006-01-02", arSkd.StartDate)
 				if err != nil {
 					log.FuncErrorTrace(0, "Failed to convert arSkd.StartDate:%+v to time.Time err: %+v", arSkd.StartDate, err)
 				}
@@ -245,9 +230,9 @@ func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct)
 				continue
 			}
 
-			//01-02-06 : MM-DD-YY
+			//2006-01-02 : MM-DD-YY
 			if len(arSkd.EndDate) > 0 {
-				endDate, err = time.Parse("01-02-06", arSkd.EndDate)
+				endDate, err = time.Parse("2006-01-02", arSkd.EndDate)
 				if err != nil {
 					log.FuncErrorTrace(0, "Failed to convert arSkd.EndDate:%+v to time.Time err: %+v", arSkd.EndDate, err)
 					continue
@@ -255,7 +240,7 @@ func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct)
 			} else {
 				log.FuncWarnTrace(0, "Empty EndDate Received in arSkd config")
 				continue
-			}*/
+			}
 			var st string
 			if len(saleData.State) > 0 {
 				st = saleData.State[6:]
@@ -264,30 +249,26 @@ func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct)
 			if saleData.Installer == "One World Energy" {
 				saleData.Installer = "OWE"
 			}
+
+			if saleData.Partner == "Sunnova" {
+				saleData.Partner = "SOVA"
+			}
+
 			if arSkd.PartnerName == saleData.Partner &&
 				arSkd.InstallerName == saleData.Installer &&
-				//TODO: Need to check arSkd.SaleTypeName == "" &&
+				// arSkd.SaleTypeName == saleData.LoanType &&
+				arSkd.SaleTypeName == "LOAN" &&
 				arSkd.StateName == st &&
-				arSkd.CalcDate == "CREATED" {
-				/*(startDate.Before(saleData.PvInstallCompletedDate) || startDate.Equal(saleData.PvInstallCompletedDate)) &&
-				(endDate.After(saleData.PvInstallCompletedDate) || endDate.Equal(saleData.PvInstallCompletedDate)) { */
-
-				log.FuncErrorTrace(0, "RAED +++Partner -> %v  saledata_partner %v", arSkd.PartnerName, saleData.Partner)
-				log.FuncErrorTrace(0, "RAED +++Partner -> %v  saleData.Installer %v", arSkd.InstallerName, saleData.Installer)
-				log.FuncErrorTrace(0, "RAED +++Partner -> %v  saleData.State %v", arSkd.StateName, saleData.State)
-				log.FuncErrorTrace(0, "RAED +++arSkd.CalcDate %v", arSkd.CalcDate)
+				arSkd.CalcDate == "CREATED" &&
+				(startDate.Before(saleData.PvInstallCompletedDate) || startDate.Equal(saleData.PvInstallCompletedDate)) && //* need to change the date here
+				(endDate.After(saleData.PvInstallCompletedDate) || endDate.Equal(saleData.PvInstallCompletedDate)) {
 
 				redLine = arSkd.RedLine
 				permitPayM1 = arSkd.PermitPay
 				permitMax = arSkd.PermitMax
 				installPayM2 = arSkd.InstallPay
 
-				if (arSkd.RedLine > 0 || arSkd.RedLine < 0) && arSkd.PermitPay > 0 && arSkd.PermitMax > 0 && arSkd.InstallPay > 0 {
-					log.FuncErrorTrace(0, "RAED UNIQUE ID 1 %v", saleData.UniqueId)
-					return redLine, permitPayM1, permitMax, installPayM2, saleData.UniqueId
-				}
-
-				return redLine, permitPayM1, permitMax, installPayM2, saleData.UniqueId
+				return redLine, permitPayM1, permitMax, installPayM2
 			}
 		}
 	}
@@ -297,7 +278,7 @@ func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct)
 			var startDate time.Time
 			var endDate time.Time
 
-			//01-02-06 : MM-DD-YY
+			//2006-01-02 : MM-DD-YY
 			if len(arSkd.StartDate) > 0 {
 				startDate, err = time.Parse("2006-01-02", arSkd.StartDate)
 				if err != nil {
@@ -308,7 +289,7 @@ func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct)
 				continue
 			}
 
-			// //01-02-06 : MM-DD-YY
+			// //2006-01-02 : MM-DD-YY
 			if len(arSkd.EndDate) > 0 {
 				endDate, err = time.Parse("2006-01-02", arSkd.EndDate)
 				if err != nil {
@@ -329,25 +310,19 @@ func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct)
 			}
 			if arSkd.PartnerName == saleData.Partner &&
 				arSkd.InstallerName == saleData.Installer &&
-				//TODO: Need to check arSkd.SaleTypeName == ""
+				arSkd.SaleTypeName == "LOAN" &&
 				arSkd.StateName == st &&
 				arSkd.CalcDate == "INSTALL" &&
 				(startDate.Before(today) || startDate.Equal(today)) &&
 				(endDate.After(today) || endDate.Equal(today)) {
 
-				log.FuncErrorTrace(0, "RAED +++Partner -> %v  saledata_partner %v", arSkd.PartnerName, saleData.Partner)
-				log.FuncErrorTrace(0, "RAED +++Partner -> %v  saleData.Installer %v", arSkd.InstallerName, saleData.Installer)
-				log.FuncErrorTrace(0, "RAED +++Partner -> %v  saleData.State %v", arSkd.StateName, saleData.State)
-				log.FuncErrorTrace(0, "RAED +++arSkd.CalcDate %v", arSkd.CalcDate)
-
 				redLine = arSkd.RedLine
 				permitPayM1 = arSkd.PermitPay
 				permitMax = arSkd.PermitMax
 				installPayM2 = arSkd.InstallPay
-				return redLine, permitPayM1, permitMax, installPayM2, saleData.UniqueId
+				return redLine, permitPayM1, permitMax, installPayM2
 			}
 		}
 	}
-	log.FuncErrorTrace(0, "RAED +++ALL ARE EMPTY")
-	return redLine, permitPayM1, permitMax, installPayM2, ""
+	return redLine, permitPayM1, permitMax, installPayM2
 }

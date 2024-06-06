@@ -10,6 +10,12 @@ package arcalc
 import (
 	common "OWEApp/owehub-calc/common"
 	dataMgmt "OWEApp/owehub-calc/dataMgmt"
+	"encoding/json"
+	"fmt"
+	"os"
+	"strings"
+
+	dlrPay "OWEApp/owehub-calc/dlrpaycalc"
 	db "OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	"time"
@@ -96,6 +102,10 @@ func CalculateARProject(saleData dataMgmt.SaleDataStruct) (outData map[string]in
 	log.EnterFn(0, "CalculateARProject")
 	defer func() { log.ExitFn(0, "CalculateARProject", err) }()
 
+	// netEpc := saleData.NetEpc
+	contractTotal := saleData.ContractTotal
+	systemSize := saleData.SystemSize
+
 	outData = make(map[string]interface{})
 	//outData["serial_num"] = saleData.UniqueId
 	outData["dealer"] = saleData.Dealer
@@ -123,30 +133,19 @@ func CalculateARProject(saleData dataMgmt.SaleDataStruct) (outData map[string]in
 	outData["pto"] = saleData.PtoDate
 	/* Calculated Fields */
 	status = saleData.ProjectStatus
-	var uid string
 
-	log.FuncErrorTrace(0, "==================================")
-	log.FuncErrorTrace(0, "==================================")
-	log.FuncErrorTrace(0, "==================================")
-	log.FuncErrorTrace(0, "==============UNIQUE ID %v=========", saleData.UniqueId)
-	log.FuncErrorTrace(0, "==================================")
-	log.FuncErrorTrace(0, "==================================")
-	log.FuncErrorTrace(0, "==================================")
-	redLine, permitPayM1, permitMax, installPayM2, uid = dataMgmt.ArSkdConfig.GetArSkdForSaleData(&saleData) //* ArSkdConfig
+	redLine, permitPayM1, permitMax, installPayM2 = dataMgmt.ArSkdConfig.GetArSkdForSaleData(&saleData) //* ArSkdConfig
 
-	if uid != "" {
-		log.FuncErrorTrace(0, "UNIQUE ID 1 SUCCESS UNIQUEID -> %v", saleData.UniqueId)
-		saleData.UniqueId = uid
-		return
-	} else {
-		log.FuncErrorTrace(0, "UNIQUE ID NULL 1 RETURNING")
-		return
-	}
+	// redLine = -0.15
+	// permitPayM1 = 10
+	// permitMax = 25000
+	// installPayM2 = 90
 
 	log.FuncErrorTrace(0, "RAED redline -> %v permitPayM1 -> %v permitMax -> %v installPayM2 -> %v", redLine, permitPayM1, permitMax, installPayM2)
 
 	contractCalc = common.CalculateContractAmount(saleData.NetEpc, outData["contract"].(float64), outData["sys_size"].(float64))
 	epcCalc = common.CalculateEPCCalc(contractCalc, saleData.WC1, saleData.NetEpc, saleData.SystemSize, common.ARWc1FilterDate)
+	contractdoldol := dlrPay.CalculateContractDolDol(epcCalc, contractTotal, systemSize)
 	log.FuncErrorTrace(0, "RAED saleData.NetEpc -> %v contract -> %v sys_size -> %v", saleData.NetEpc, outData["contract"].(float64), outData["sys_size"].(float64))
 	log.FuncErrorTrace(0, "RAED saleData.WC1 -> %v saleData.SystemSize -> %v", saleData.WC1, saleData.SystemSize)
 
@@ -155,54 +154,22 @@ func CalculateARProject(saleData dataMgmt.SaleDataStruct) (outData map[string]in
 
 	log.FuncErrorTrace(0, "RAED contractCalc -> %v epcCalc -> %v grossRev -> %v addrPtr -> %v", contractCalc, epcCalc, grossRev, addrPtr)
 
-	// if grossRev <= 0 || addrPtr <= 0 {
-	// 	log.FuncErrorTrace(0, "grossRev &  addrPtr NULL RETURNING")
-	// 	return
-	// }
-
-	// log.FuncErrorTrace(0, "===========UNIQUE ID================")
-	// log.FuncErrorTrace(0, "UNIQUE ID => %v", uid)
-	// log.FuncErrorTrace(0, "===========UNIQUE ID================")
-
-	// return
-
-	addrAuto = dataMgmt.AutoAdderCfg.CalculateAddrAuto(saleData.Dealer, saleData.UniqueId, saleData.SystemType) //* AutoAdderCfg
-	loanFee = dataMgmt.LoanFeeAdderCfg.CalculateLoanFee(saleData.Dealer, saleData.UniqueId)                     //~ LoanFeeAdderCfg need to verify
-	adjust = dataMgmt.AdjustmentsConfig.CalculateAdjust(saleData.Dealer, saleData.UniqueId)                     //* AdjustmentsConfig
-	netRev = CalculateNetRev(grossRev, addrPtr, addrAuto, loanFee, adjust)                                      //! 0 since grossRev is zero
+	addrAuto = dataMgmt.AutoAdderCfg.CalculateAddrAuto(saleData.Dealer, saleData.UniqueId, saleData.SystemType)                                                                  //* AutoAdderCfg
+	loanFee = dataMgmt.LoanFeeAdderCfg.CalculateLoanFee(saleData.UniqueId, saleData.Dealer, saleData.Installer, saleData.State, saleData.LoanType, saleData.WC1, contractdoldol) //~ LoanFeeAdderCfg need to verify
+	// loanFee = 0
+	adjust = dataMgmt.AdjustmentsConfig.CalculateAdjust(saleData.Dealer, saleData.UniqueId) //* AdjustmentsConfig
+	netRev = CalculateNetRev(grossRev, addrPtr, addrAuto, loanFee, adjust)                  //! 0 since grossRev is zero
 	log.FuncErrorTrace(0, "RAED addrAuto -> %v loanFee -> %v adjust -> %v netRev -> %v", addrAuto, loanFee, adjust, netRev)
 
-	permitPay = CalculatePermitPay(status, grossRev, netRev, permitPayM1, permitMax)                  //! 0 since grossRev is zero
-	installPay = common.CalculateInstallPay(status, grossRev, netRev, installPayM2, permitPay)        //! 0 since grossRev is zero
-	reconcile, uid = dataMgmt.ReconcileCfgData.CalculateReconcile(saleData.Dealer, saleData.UniqueId) // ReconcileCfgData
-	if uid != "" {
-		log.FuncErrorTrace(0, "UNIQUE ID 2 SUCCESS RETURNING UNIQUE ID -> %v RECONCILE %v", saleData.UniqueId, reconcile)
-		saleData.UniqueId = uid
-	} else {
-		log.FuncErrorTrace(0, "UNIQUE ID 2 NULL RETURNING UNIQUE ID -> %v RECONCILE %v", saleData.UniqueId, reconcile)
-		// return
-	}
-	totalPaid, uid = dataMgmt.ArCfgData.GetTotalPaidForUniqueId(saleData.UniqueId) //! need to add data for  sales_ar_cfg
-	if uid != "" {
-		log.FuncErrorTrace(0, "UNIQUE ID 3 SUCCESS RETURNING UNIQUE ID -> %v TOTALPAID %v", saleData.UniqueId, totalPaid)
-		saleData.UniqueId = uid
-	} else {
-		log.FuncErrorTrace(0, "UNIQUE ID 3 NULL RETURNING UNIQUE ID -> %v TOTALPAID %v", saleData.UniqueId, totalPaid)
-		// return
-	}
+	permitPay = CalculatePermitPay(status, grossRev, netRev, permitPayM1, permitMax)             //! 0 since grossRev is zero
+	installPay = common.CalculateInstallPay(status, grossRev, netRev, installPayM2, permitPay)   //! 0 since grossRev is zero
+	reconcile = dataMgmt.ReconcileCfgData.CalculateReconcile(saleData.Dealer, saleData.UniqueId) // ReconcileCfgData
+	totalPaid = dataMgmt.ArCfgData.GetTotalPaidForUniqueId(saleData.UniqueId)                    //! need to add data for  sales_ar_cfg
 	log.FuncErrorTrace(0, "RAED permitPay -> %v installPay -> %v reconcile -> %v totalPaid -> %v", permitPay, installPay, reconcile, totalPaid)
 
 	currentDue = CalculateCurrentDue(&saleData, netRev, totalPaid, permitPay, installPay, reconcile)
 	balance = CalculateBalance(saleData.UniqueId, status, saleData.Dealer, totalPaid, netRev, reconcile)
 	log.FuncErrorTrace(0, "RAED currentDue -> %v balance -> %v", currentDue, balance)
-
-	// if currentDue != 0 && balance != 0 {
-	// 	log.FuncErrorTrace(0, "UNIQUE ID SUCCESS -> %v %v %v", uid, currentDue, balance)
-	// } else if currentDue != 0 {
-	// 	log.FuncErrorTrace(0, "UNIQUE ID currentDue -> %v %v", uid, currentDue)
-	// } else {
-	// 	log.FuncErrorTrace(0, "UNIQUE ID balance -> %v %v", uid, balance)
-	// }
 
 	outData["status"] = status
 	/*outData["status_date"] = common.CalculateProjectStatusDate(saleData.UniqueId, saleData.PtoDate, saleData.PvInstallCompletedDate,
@@ -223,7 +190,38 @@ func CalculateARProject(saleData dataMgmt.SaleDataStruct) (outData map[string]in
 	outData["current_due"] = currentDue
 	outData["balance"] = balance
 
+	mapToJson(outData, saleData.UniqueId, "outData")
 	return outData, err
+}
+
+/******************************************************************************
+ * FUNCTION:        CalculateOweAR
+ * DESCRIPTION:     calculates the "owe_ar" value based on the provided data
+ * RETURNS:        owe ar
+ *****************************************************************************/
+func mapToJson(outData map[string]interface{}, uid, fileName string) {
+	jsonData, err := json.MarshalIndent(outData, "", "    ")
+	if err != nil {
+		log.FuncFuncTrace(0, "Error writing JSON to file: %v", err)
+		return
+	}
+
+	fileName = fmt.Sprintf("%v_%v_dlr_values.json", uid, fileName)
+	err = os.WriteFile(fileName, jsonData, 0644)
+	if err != nil {
+		log.FuncFuncTrace(0, "Error writing JSON to file: %v", err)
+		return
+	}
+	log.FuncFuncTrace(0, "success file name %v", fileName)
+}
+
+/******************************************************************************
+ * FUNCTION:        CalculateOweAR
+ * DESCRIPTION:     calculates the "owe_ar" value based on the provided data
+ * RETURNS:        owe ar
+ *****************************************************************************/
+func logPrinter(key string, val interface{}) {
+	log.FuncErrorTrace(0, "VALUE FOR %v -> %v", key, val)
 }
 
 /******************************************************************************
@@ -257,10 +255,10 @@ func CalculateGrossRev(epcCalc float64, redLine float64, systemSize float64) flo
 	defer func() { log.ExitFn(0, "CalculateGrossRev", nil) }()
 
 	if epcCalc > 0.0 {
-		if redLine > 0.0 {
-			/* Calculate gross_rev */
-			return (epcCalc - redLine) * 1000 * systemSize
-		}
+		// if redLine > 0.0 {
+		/* Calculate gross_rev */
+		return (epcCalc - redLine) * 1000 * systemSize
+		// }
 	}
 	/* Return 0 if EPC Calc is empty or cannot be parsed */
 	return 0
@@ -291,15 +289,18 @@ func CalculatePermitPay(status string, grossRev, netRev float64, permitPayM1 flo
 	defer func() { log.ExitFn(0, "CalculatePermitPay", nil) }()
 
 	permitPay = 0
-	if status == string(common.Cancel) || status == string(common.Shaky) {
+
+	if strings.ToUpper(status) == strings.ToUpper(string(common.Cancel)) || strings.ToUpper(status) == strings.ToUpper(string(common.Shaky)) {
 		return permitPay
 	}
+
 	if grossRev > 0.0 {
 		if (permitPayM1 > 0.0) && (permitMax > 0.0) {
-			if netRev*(permitPayM1) > permitMax {
+			if (netRev * (permitPayM1 / 100)) > permitMax {
 				permitPay = common.Round(permitMax, 2)
 			} else {
-				permitPay = common.Round(netRev*(permitPayM1), 2)
+				permitPay = netRev * (permitPayM1 / 100)
+				// permitPay = common.Round((netRev * (permitPayM1/100)), 2)
 			}
 		}
 	}
@@ -336,7 +337,7 @@ func CalculateBalance(uniqueID string, status string, dealer string, totalPaid f
 
 	balance = 0
 	if len(uniqueID) > 0 {
-		if status == string(common.Cancel) || status == string(common.Shaky) {
+		if strings.ToUpper(status) == strings.ToUpper(string(common.Cancel)) || strings.ToUpper(status) == strings.ToUpper(string(common.Shaky)) {
 			balance = (0 - totalPaid) + reconcile
 		} else if len(dealer) > 0 {
 			balance = common.Round(netRev-totalPaid, 2) + reconcile
@@ -355,11 +356,12 @@ func CalculateCurrentDue(saleData *dataMgmt.SaleDataStruct, netRev, totalPaid, p
 		today = time.Now().Truncate(24 * time.Hour)
 	)
 
+
 	log.EnterFn(0, "CalculateCurrentDue")
 	defer func() { log.ExitFn(0, "CalculateCurrentDue", nil) }()
 
 	currentDue = 0.0
-	if saleData.CancelledDate.IsZero() || saleData.ProjectStatus == "Hold" || saleData.ProjectStatus == "Jeopardy" {
+	if saleData.CancelledDate.IsZero() && (saleData.ProjectStatus == "Hold" || saleData.ProjectStatus == "Jeopardy") {
 		currentDue = (0 - totalPaid)
 	} else {
 		if !saleData.PermitSubmittedDate.IsZero() &&
@@ -369,6 +371,7 @@ func CalculateCurrentDue(saleData *dataMgmt.SaleDataStruct, netRev, totalPaid, p
 				(saleData.PtoDate.Before(today) || saleData.PtoDate.Equal(today)) {
 
 				currentDue = common.Round(netRev-totalPaid, 2) + reconcile
+
 			} else if !saleData.PvInstallCompletedDate.IsZero() &&
 				(saleData.PvInstallCompletedDate.Before(today) || saleData.PvInstallCompletedDate.Equal(today)) {
 

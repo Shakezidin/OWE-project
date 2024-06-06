@@ -10,6 +10,7 @@ import (
 	db "OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	"OWEApp/shared/models"
+	"time"
 )
 
 type LoanFeeAdderCfgStruct struct {
@@ -294,15 +295,12 @@ func (pLoanFee *LoanFeeAdderCfgStruct) LoadLoanFeeAdderCfg() (err error) {
 * DESCRIPTION:     calculates the "loanFee" value based on the provided data
 * RETURNS:         loanFee
 *****************************************************************************/
-func (LoanFeeAdderCfg *LoanFeeAdderCfgStruct) CalculateLoanFee(dealer string, uniqueId string) (loanFee float64) {
+func (LoanFeeAdderCfg *LoanFeeAdderCfgStruct) CalculateLoanFee(uniqueId, dealer, installer, state, Type string, date time.Time, contractDol float64) (loanFeeAdder float64) {
 	// log.EnterFn(0, "CalculateLoanFee")
 	// defer func() { log.ExitFn(0, "CalculateLoanFee", nil) }()
 	if len(dealer) > 0 {
-		for _, data := range LoanFeeAdderCfg.LoanFeeAdderList.LoanFeeAdderList {
-			if data.UniqueID == uniqueId {
-				loanFee += data.AddrAmount
-			}
-		}
+		loanFeeAdder += (LoanFeeCfg.CalculateDlrCost(uniqueId, dealer, installer, state, Type, date) * contractDol)
 	}
-	return loanFee
+	log.FuncErrorTrace(0, "RAED LOANFEE -> %v CONTRACT DOL -> %v", loanFeeAdder, contractDol)
+	return loanFeeAdder
 }

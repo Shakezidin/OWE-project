@@ -40,7 +40,7 @@ func (arCfgData *ARCfgList) LoadARCfg() (err error) {
 
 	query = `
 	 SELECT ai.id as record_id, ai.unique_id, ai.customer, ai.date, ai.amount
-	 FROM ` + db.TableName_Ar + ` as ai`
+	 FROM ar as ai`
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil || len(data) == 0 {
@@ -97,7 +97,7 @@ func (arCfgData *ARCfgList) LoadARCfg() (err error) {
 	return err
 }
 
-func (arCfgData *ARCfgList) GetTotalPaidForUniqueId(UniqueId string) (totalPaid float64, uid string) {
+func (arCfgData *ARCfgList) GetTotalPaidForUniqueId(UniqueId string) (totalPaid float64) {
 	var (
 		err error
 	)
@@ -108,17 +108,13 @@ func (arCfgData *ARCfgList) GetTotalPaidForUniqueId(UniqueId string) (totalPaid 
 	totalPaid = 0
 
 	if len(UniqueId) <= 0 {
-		// err = fmt.Errorf("empty unique id provided")
 		log.FuncErrorTrace(0, "%+v", err)
-		return totalPaid, ""
+		return totalPaid
 	}
 	for _, arCfg := range arCfgData.arCfgList {
 		if arCfg.UniqueId == UniqueId {
 			totalPaid += arCfg.Amount
 		}
 	}
-	if totalPaid != 0 {
-		return totalPaid, UniqueId
-	}
-	return totalPaid, ""
+	return totalPaid
 }

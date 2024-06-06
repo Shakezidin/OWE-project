@@ -171,7 +171,6 @@ func CalculateContractAmount(netEPC float64, contractTotal float64, systemSize f
 		return netEPC * 1000 * systemSize
 	}
 	/* Return 0 if netEPC is empty or if contract_total is not available and netEPC cannot be parsed*/
-	return 0
 }
 
 /******************************************************************************
@@ -215,7 +214,8 @@ func CalculateInstallPay(status string, grossRev, netRev float64, installPayM2 f
 	}
 	if grossRev > 0 {
 		if installPayM2 > 0 {
-			installPay = Round(netRev*(installPayM2)-permitPay, 2)
+			installPay = netRev*(installPayM2/100) - permitPay
+			// installPay = Round(netRev*(installPayM2)-permitPay, 2)
 		}
 	}
 	return installPay

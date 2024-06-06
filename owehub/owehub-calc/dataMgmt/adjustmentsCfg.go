@@ -8,7 +8,6 @@ package datamgmt
 
 import (
 	db "OWEApp/shared/db"
-	log "OWEApp/shared/logger"
 	"OWEApp/shared/models"
 )
 
@@ -149,15 +148,7 @@ func (AdjustmentsConfig *AdjustmentsCfgStruct) CalculateAdjust(dealer string, un
 	adjust = 0.0
 	if len(dealer) > 0 {
 		for _, data := range AdjustmentsConfig.AdjustmentsConfigList.AdjustmentsList {
-
-			if uniqueId == data.UniqueId && data.Amount != 0 {
-				log.FuncErrorTrace(0, "=======ADJUSTMENT=========")
-				log.FuncErrorTrace(0, "UNIQUE ID -> %v", uniqueId)
-				log.FuncErrorTrace(0, "=======ADJUSTMENT=========")
-			}
-
 			if data.UniqueId == uniqueId {
-				log.FuncErrorTrace(0, "^^^^^ RAED AMOUNT-> %v", data.Amount)
 				adjust += data.Amount
 			}
 		}

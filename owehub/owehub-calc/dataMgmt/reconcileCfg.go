@@ -139,7 +139,7 @@ func (ReconcileCfgData *ReconcileCfgStruct) LoadReconcileCfg() (err error) {
 * DESCRIPTION:     calculates the "reconcile" value based on the provided data
 * RETURNS:         Reconsile
 *****************************************************************************/
-func (ReconcileCfgData *ReconcileCfgStruct) CalculateReconcile(dealer string, uniqueId string) (reconcile float64, uid string) {
+func (ReconcileCfgData *ReconcileCfgStruct) CalculateReconcile(dealer string, uniqueId string) (reconcile float64) {
 	log.EnterFn(0, "CalculateReconcile")
 	defer func() { log.ExitFn(0, "CalculateReconcile", nil) }()
 
@@ -152,8 +152,5 @@ func (ReconcileCfgData *ReconcileCfgStruct) CalculateReconcile(dealer string, un
 		}
 	}
 
-	if reconcile != 0 {
-		return reconcile, uniqueId
-	}
-	return reconcile, ""
+	return reconcile
 }
