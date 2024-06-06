@@ -18,6 +18,7 @@ import {
 import { format } from 'date-fns';
 import MicroLoader from '../../components/loader/MicroLoader';
 import DataNotFound from '../../components/loader/DataNotFound';
+import useMatchMedia from '../../../hooks/useMatchMedia';
 interface ActivePopups {
   [key: number]: number | null;
 }
@@ -446,7 +447,7 @@ const ProjectStatus = () => {
   ];
   const [activePopups, setActivePopups] = useState<boolean>(false);
   const refBtn = useRef<null | HTMLDivElement>(null);
-
+  const isTablet = useMatchMedia('(max-width:1024px)');
   const [selectedProject, setSelectedProject] = useState<{
     label: string;
     value: string;
@@ -521,7 +522,7 @@ const ProjectStatus = () => {
           >
             <div className="project-heading mb3">
               <h3 style={{ marginTop: '1rem' }}>Project Status</h3>
-              <div className="" style={{ width: '25%' }}>
+              <div className="" style={{minWidth:200}}>
                 <div className="">
                   <SelectOption
                     options={projectOption}
@@ -540,7 +541,7 @@ const ProjectStatus = () => {
               {projectStatusHeadData.map((el, i) => (
                 <div
                   key={i}
-                  className="col-6 md-col-3 px1"
+                  className={` ${isTablet ? 'col-6' : ' lg-col-3'} px1`}
                   style={{ marginBottom: 10 }}
                 >
                   <div
@@ -619,21 +620,36 @@ const ProjectStatus = () => {
                 <div className="progress-box-body mt0">
                   <div
                     className="progress-box"
-                    style={{ background: '#4191C9',borderRadius:0,width:14,height:14 }}
+                    style={{
+                      background: '#4191C9',
+                      borderRadius: 0,
+                      width: 14,
+                      height: 14,
+                    }}
                   ></div>
                   <p>Stages</p>
                 </div>
                 <div className="progress-box-body mt0">
                   <div
                     className="progress-box"
-                    style={{ background: '#63ACA3',borderRadius:0,width:14,height:14 }}
+                    style={{
+                      background: '#63ACA3',
+                      borderRadius: 0,
+                      width: 14,
+                      height: 14,
+                    }}
                   ></div>
                   <p>Completed</p>
                 </div>
                 <div className="progress-box-body mt0">
                   <div
                     className="progress-box"
-                    style={{ background: '#E9E9E9',borderRadius:0,width:14,height:14 }}
+                    style={{
+                      background: '#E9E9E9',
+                      borderRadius: 0,
+                      width: 14,
+                      height: 14,
+                    }}
                   ></div>
                   <p>Not Started yet</p>
                 </div>

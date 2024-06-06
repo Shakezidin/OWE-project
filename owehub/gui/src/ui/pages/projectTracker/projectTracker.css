@@ -645,3 +645,10 @@
 .project-card-wrapper{
   width: 70%;
 }
+
+
+@media (max-width: 1024px) {
+  .project-card-wrapper{
+    width: 50%;
+  }
+}

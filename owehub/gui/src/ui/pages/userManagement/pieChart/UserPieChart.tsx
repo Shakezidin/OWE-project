@@ -12,11 +12,14 @@ import { OnboardingChartModel } from '../../../../core/models/api_models/UserMan
 import DataNotFound from '../../../components/loader/DataNotFound';
 import perfomance_mask from '../lib/perfomance_mask.png';
 import onboarding_mask from '../lib/onboarding_mask.png';
+import useMatchMedia from '../../../../hooks/useMatchMedia';
 interface UserPieChartProps {
   onboardingList: OnboardingChartModel[];
   userPerformanceList: OnboardingChartModel[];
   loading: boolean;
 }
+
+
 
 // const CustomTooltip = ({ active, payload, label }) => {
 //   if (active && payload && payload.length) {
@@ -35,13 +38,12 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
   userPerformanceList,
   loading,
 }) => {
+  const isTablet = useMatchMedia('(max-width: 1024px)');
   return (
     <div className="chart-view" style={{ marginTop: 12 }}>
       <div
         className="pie-section"
         style={{
-          width: '50%',
-          height: '100%',
           background: 'white',
           borderRadius: '18px',
           padding: '1.5rem',
@@ -56,14 +58,17 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
           <div className="flex items-start">
             {!!onboardingList.length ? (
               <div style={{ width: 'fit-content' }} className="relative">
-                <PieChart width={360} height={300}>
+                <PieChart
+                  width={isTablet ? 210 : 360}
+                  height={isTablet ? 200 : 300}
+                >
                   <Pie
                     data={onboardingList}
                     cx="40%"
                     cy="50%"
                     className="onboarding-pie"
-                    innerRadius={90} // Adjust the inner radius for the doughnut thickness
-                    outerRadius={130}
+                    innerRadius={isTablet ? 60 : 90} // Adjust the inner radius for the doughnut thickness
+                    outerRadius={isTablet ? 85 : 130}
                     fill="#8884d8"
                     paddingAngle={0.1}
                     dataKey="value"
@@ -94,7 +99,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
               </ResponsiveContainer> */}
               </div>
             ) : (
-              <div className="data-not-found " style={{width:"100%"}}>
+              <div className="data-not-found " style={{ width: '100%' }}>
                 <DataNotFound />
                 <h3>{loading ? 'Searching..' : 'No SaleRep Found'}</h3>
               </div>
@@ -102,7 +107,13 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
 
             <div className="flex-auto">
               {!!onboardingList.length && (
-                <h4 className="h4 mb2 text-dark" style={{ fontWeight: '600' }}>
+                <h4
+                  className={`${isTablet ? '' : 'h4'} mb2 text-dark`}
+                  style={{
+                    fontWeight: '600',
+                    fontSize: isTablet ? 14 : undefined,
+                  }}
+                >
                   Number of users
                 </h4>
               )}
@@ -110,13 +121,19 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                 return (
                   <div key={user.fill} className="flex mb1 items-center">
                     <div
-                      className="pie-circle-denote mr1"
+                      className="pie-circle-denote  mr1"
                       style={{ backgroundColor: user.fill }}
                     />
-                    <div className="flex h5 text-dark items-center">
+                    <div
+                      style={{ fontSize: isTablet ? 12 : undefined }}
+                      className={`flex  text-dark items-center  ${isTablet ? '' : 'h5'}`}
+                    >
                       <span style={{ fontWeight: 600 }}> {user.value} </span>
                       <span className="mx1"> - </span>
-                      <span style={{ fontWeight: 500 }}> {user.name} </span>
+                      <span style={{ fontWeight: 500 }} className="nowrap">
+                        {' '}
+                        {user.name}{' '}
+                      </span>
                     </div>
                   </div>
                 );
@@ -127,9 +144,8 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
       </div>
 
       <div
-        className="pie-section"
+        className="pie-section flex-auto"
         style={{
-          width: '50%',
           height: '100%',
           background: 'white',
           borderRadius: '18px',
@@ -142,19 +158,16 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
           <h2>Performance</h2>
         </div>
         {userPerformanceList && userPerformanceList.length > 0 ? (
-          <div
-            style={{ width: '100%', height: '90%', outline: 'none' }}
-            className="pie-chart-container relative"
-          >
-            <ResponsiveContainer width={'100%'} height={300}>
+          <div className="pie-chart-container  relative">
+            <ResponsiveContainer width={'100%'} height="100%">
               <PieChart>
                 <Pie
                   data={userPerformanceList}
                   cx="50%"
                   className="dougnout"
                   cy="50%"
-                  innerRadius={90} // Adjust the inner radius for the doughnut thickness
-                  outerRadius={130}
+                  innerRadius={isTablet ? 60 : 90} // Adjust the inner radius for the doughnut thickness
+                  outerRadius={isTablet ? 90 : 130}
                   fill="#8884d8"
                   paddingAngle={2}
                   dataKey="value"
@@ -187,7 +200,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
         )}
 
         {!!userPerformanceList.length && (
-          <div className="flex items-center justify-center pb2">
+          <div className="flex stats-wrapper items-center justify-center pb2">
             <div className="flex items-center">
               <div className="flex items-center">
                 <div
@@ -198,6 +211,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                     height: 18,
                     borderRadius: '50%',
                     border: '3px solid #D2FFF9',
+                    flexShrink: 0,
                   }}
                 />
 
@@ -212,7 +226,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
               </h3>
             </div>
 
-            <div className="flex items-center ml3">
+            <div className="flex items-center ">
               <div className="flex items-center">
                 <div
                   className="flex items-center mr1"
@@ -222,6 +236,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                     height: 18,
                     borderRadius: '50%',
                     border: '3px solid #FFE2D4',
+                    flexShrink: 0,
                   }}
                 />
 
