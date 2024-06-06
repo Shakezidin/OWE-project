@@ -86,12 +86,19 @@ export const DashboardPage: React.FC = () => {
             <div className="rep-manage-user">
 
 
-              <div className="dash-head-input" style={{ width: "200px" }}>
+              <div className="dash-head-input" style={{ minWidth: '204px' }}>
                 <div className='rep-drop_label' style={{ backgroundColor: "#57B3F1" }}>
                   <img src={ICONS.lable_img} alt="" />
                 </div>
-                <div className='rep-up'>
-                  <label className="inputLabel" style={{ color: '#344054' }}>
+                <div className='rep-up relative'>
+                  <label className="inputLabel" style=
+                    {{
+                      color: '#344054',
+                      position: 'absolute',
+                      left: '8px',
+                      top: '-6px',
+                      whiteSpace: 'nowrap'
+                    }}>
                     Commission Model
                   </label>
                   <Select
@@ -108,18 +115,16 @@ export const DashboardPage: React.FC = () => {
                         borderRadius: '.40rem',
                         border: 'none',
                         outline: 'none',
-                        width: '6rem',
+                        width: 'fit-content',
                         minHeight: 'unset',
-                        height: '19px',
+                        height: '8px',
                         alignContent: 'center',
                         backgroundColor: '#ffffff',
                         cursor: 'pointer',
-                        marginRight: '32px',
+                        marginRight: '33px',
                         marginBottom: '2px',
                         boxShadow: 'none',
-                        '&:hover': {
-                          border: 'none'
-                        }
+                        marginTop: '18px'
                       }),
                       indicatorSeparator: () => ({
                         display: 'none',
@@ -130,7 +135,7 @@ export const DashboardPage: React.FC = () => {
                         '&:hover': {
                           color: '#292929',
                         },
-                        marginRight: '12px'
+                        marginLeft: '-15px'
                       }),
                       option: (baseStyles, state) => ({
                         ...baseStyles,
@@ -144,6 +149,7 @@ export const DashboardPage: React.FC = () => {
                       singleValue: (baseStyles, state) => ({
                         ...baseStyles,
                         color: '#292929',
+                        width: 'fit-content',
                       }),
                       menu: (baseStyles) => ({
                         ...baseStyles,
@@ -172,15 +178,23 @@ export const DashboardPage: React.FC = () => {
                 <div className='rep-drop_label' style={{ backgroundColor: "#C470C7" }}>
                   <img src={ICONS.includes_icon} alt="" />
                 </div>
-                <div className='rep-up'>
-                  <label className="inputLabel" style={{ color: '#344054', marginLeft: "6px", textAlign: 'left' }}>
+                <div className='rep-up relative'>
+                  <label className="inputLabel" style=
+                    {{
+                      color: '#344054',
+                      position: 'absolute',
+                      left: '12px',
+                      top: '-7px',
+                      whiteSpace: 'nowrap',
+                      zIndex: 99
+                    }}>
                     Payroll Date
                   </label>
 
                   <div
                     style={{
                       position: 'relative',
-                      top: '-1px',
+                      top: '7px',
                       backgroundColor: 'white',
                       marginLeft: '6px',
 

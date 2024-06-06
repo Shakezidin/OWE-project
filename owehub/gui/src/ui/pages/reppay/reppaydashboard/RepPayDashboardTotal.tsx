@@ -44,7 +44,7 @@ const RepPayDashboardTotal: React.FC = () => {
                     backgroundPosition: 'center',
                   }}
                 >
-                  <div className="rep-total-section">
+                  <div className="rep-total-section"  style={{marginBottom: '8px'}}>
                     <p>{el.paid}</p>
                     <h4>{el.doller}</h4>
                   </div>

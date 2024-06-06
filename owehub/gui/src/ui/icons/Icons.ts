@@ -88,7 +88,7 @@ import rep3 from '../../resources/assets/rep3.png';
 import per2 from '../../resources/assets/per2.png';
 import per3 from '../../resources/assets/per3.png';
 import pmshadedgraph from '../../resources/assets/pmshadedgraph.png';
-import includes_icon from '../../resources/assets/includes_icon.png';
+import includes_icon from '../../resources/assets/includes_icon.svg';
 import dashboardSidebar from '../../resources/assets/sidebar-dashboard.png';
 import dataSidebar from '../../resources/assets/sidebar-data.png';
 import activitySidebar from '../../resources/assets/sidebar-activity.png';
@@ -97,11 +97,11 @@ import online from '../../resources/assets/Online.svg';
 import tot1 from '../../resources/assets/reptot1.png';
 import tot2 from '../../resources/assets/reptot2.png';
 import tot3 from '../../resources/assets/reptot3.png';
-import report1 from '../../resources/assets/report.png';
-import element from '../../resources/assets/element.png';
-import user from '../../resources/assets/sales.png';
-import vector from '../../resources/assets/Vector.png';
-import lable_img from '../../resources/assets/lable_img.png';
+import report1 from '../../resources/assets/report3.svg';
+import element from '../../resources/assets/element.svg';
+import user from '../../resources/assets/sales.svg';
+import vector from '../../resources/assets/Vector1.svg';
+import lable_img from '../../resources/assets/lable_img.svg';
 
 
 export const ICONS = {
