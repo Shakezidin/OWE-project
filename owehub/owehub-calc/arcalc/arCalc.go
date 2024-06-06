@@ -134,16 +134,16 @@ func CalculateARProject(saleData dataMgmt.SaleDataStruct) (outData map[string]in
 	log.FuncErrorTrace(0, "==================================")
 	redLine, permitPayM1, permitMax, installPayM2, uid = dataMgmt.ArSkdConfig.GetArSkdForSaleData(&saleData) //* ArSkdConfig
 
-	// if uid != "" {
-	// 	log.FuncErrorTrace(0, "UNIQUE ID 1 SUCCESS")
-	// 	saleData.UniqueId = uid
-	// } else {
-	// 	log.FuncErrorTrace(0, "UNIQUE ID NULL 1 RETURNING")
-	// 	return
-	// }
+	if uid != "" {
+		log.FuncErrorTrace(0, "UNIQUE ID 1 SUCCESS UNIQUEID -> %v", saleData.UniqueId)
+		saleData.UniqueId = uid
+		return
+	} else {
+		log.FuncErrorTrace(0, "UNIQUE ID NULL 1 RETURNING")
+		return
+	}
 
 	log.FuncErrorTrace(0, "RAED redline -> %v permitPayM1 -> %v permitMax -> %v installPayM2 -> %v", redLine, permitPayM1, permitMax, installPayM2)
-
 
 	contractCalc = common.CalculateContractAmount(saleData.NetEpc, outData["contract"].(float64), outData["sys_size"].(float64))
 	epcCalc = common.CalculateEPCCalc(contractCalc, saleData.WC1, saleData.NetEpc, saleData.SystemSize, common.ARWc1FilterDate)

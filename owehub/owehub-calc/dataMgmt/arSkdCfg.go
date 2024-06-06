@@ -281,6 +281,12 @@ func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct)
 				permitPayM1 = arSkd.PermitPay
 				permitMax = arSkd.PermitMax
 				installPayM2 = arSkd.InstallPay
+
+				if (arSkd.RedLine > 0 || arSkd.RedLine < 0) && arSkd.PermitPay > 0 && arSkd.PermitMax > 0 && arSkd.InstallPay > 0 {
+					log.FuncErrorTrace(0, "RAED UNIQUE ID 1 %v", saleData.UniqueId)
+					return redLine, permitPayM1, permitMax, installPayM2, saleData.UniqueId
+				}
+
 				return redLine, permitPayM1, permitMax, installPayM2, saleData.UniqueId
 			}
 		}
