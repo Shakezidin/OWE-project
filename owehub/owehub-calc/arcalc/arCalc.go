@@ -361,7 +361,7 @@ func CalculateCurrentDue(saleData *dataMgmt.SaleDataStruct, netRev, totalPaid, p
 	defer func() { log.ExitFn(0, "CalculateCurrentDue", nil) }()
 
 	currentDue = 0.0
-	if saleData.CancelledDate.IsZero() && (saleData.ProjectStatus == "Hold" || saleData.ProjectStatus == "Jeopardy") {
+	if !saleData.CancelledDate.IsZero() || saleData.ProjectStatus == "Hold" || saleData.ProjectStatus == "Jeopardy" {
 		currentDue = (0 - totalPaid)
 	} else {
 		if !saleData.PermitSubmittedDate.IsZero() &&
