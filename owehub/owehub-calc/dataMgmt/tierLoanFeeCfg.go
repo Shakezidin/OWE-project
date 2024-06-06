@@ -133,3 +133,45 @@ func (pTierLoanFee *TierLoanFeeCfgStruct) LoadTierLoanFeeCfg() (err error) {
 	}
 	return err
 }
+
+func (pTierLoanFee *TierLoanFeeCfgStruct) CalculateDlrCost(dlrTier, installer, state, Type string, date time.Time) (dlrcost float64) {
+	var (
+		err       error
+		startDate time.Time
+		endDate   time.Time
+	)
+	for _, data := range pTierLoanFee.TierLoanFeeList.TierLoanFeeList {
+		if len(data.StartDate) > 0 {
+			startDate, err = time.Parse("2006-01-02", data.StartDate)
+			if err != nil {
+				log.FuncErrorTrace(0, "Failed to convert data.StartDate:%+v to time.Time err: %+v", data.StartDate, err)
+			}
+		} else {
+			log.FuncWarnTrace(0, "Empty StartDate Received in data.StartDate config")
+			continue
+		}
+
+		if len(data.EndDate) > 0 {
+			endDate, err = time.Parse("2006-01-02", data.EndDate)
+			if err != nil {
+				log.FuncErrorTrace(0, "Failed to convert data.EndDate:%+v to time.Time err: %+v", data.EndDate, err)
+			}
+		} else {
+			log.FuncWarnTrace(0, "Empty EndDate Received in data.EndDate config")
+			continue
+		}
+
+		if installer == "One World Energy" {
+			installer = "OWE"
+		}
+
+		if state == "NM :: New Mexico" {
+			state = "New Mexico"
+		}
+
+		if dlrTier == data.DealerTier && data.Installer == installer && data.State == state && data.LoanType == Type && startDate.Before(date) && endDate.After(date) {
+			dlrcost += data.DlrCost
+		}
+	}
+	return dlrcost
+}

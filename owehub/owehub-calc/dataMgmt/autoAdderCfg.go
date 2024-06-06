@@ -252,14 +252,21 @@ func calculateType(sysSize float64, state string) string {
 * DESCRIPTION:     calculates the "autoaddr" value based on the provided data
 * RETURNS:         autoAdder
 *****************************************************************************/
-func (AutoAdderCfg *AutoAdderCfgStruct) CalculateAutoAddr(dealer string, uniqueId string, chargeDlr string, sysSize float64) (autoAdder float64) {
+func (AutoAdderCfg *AutoAdderCfgStruct) CalculateAutoAddr(dealer string, uniqueId string, sysSize float64) (autoAdder float64) {
 	log.EnterFn(0, "CalculateAutoAddr")
 	defer func() { log.ExitFn(0, "CalculateAutoAddr", nil) }()
+	var (
+		chgDlr bool
+	)
 
 	if len(dealer) > 0 {
-		if chargeDlr == "true" {
-			for _, data := range AutoAdderCfg.AutoAdderList {
-				if data.UniqueId == uniqueId {
+		for _, data := range AutoAdderCfg.AutoAdderList {
+			if data.UniqueId == uniqueId {
+				if data.Type1[:2] == "MK" {
+					chgDlr = MarketingFeeCfg.CalculateChgDlr(data.Type1)
+				}
+
+				if chgDlr {
 					addramount := AutoAdderCfg.CalculateExactAmount(data.UniqueId)
 					if addramount > 0 {
 						autoAdder = addramount
@@ -268,9 +275,8 @@ func (AutoAdderCfg *AutoAdderCfgStruct) CalculateAutoAddr(dealer string, uniqueI
 					}
 				}
 			}
-		} else {
-			autoAdder = 0
 		}
+		autoAdder = 0
 	}
 	return autoAdder
 }

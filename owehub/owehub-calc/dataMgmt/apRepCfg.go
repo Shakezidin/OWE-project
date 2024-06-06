@@ -140,7 +140,7 @@ func (pApRepCfg *ApRepCfgStruct) LoadApRepCfg() (err error) {
  * RETURNS:         credit
  *****************************************************************************/
 
-func (pApRepCfg *ApRepCfgStruct) CalculateApRepForUniqueId(dealer string, uniqueId string) (apRep float64) {
+func (pApRepCfg *ApRepCfgStruct) CalculateRepPayForUniqueId(dealer string, uniqueId string) (apRep float64) {
 
 	log.EnterFn(0, "LoadApRepCfg")
 	defer func() { log.ExitFn(0, "LoadApRepCfg", nil) }()

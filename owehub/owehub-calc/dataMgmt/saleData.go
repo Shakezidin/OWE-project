@@ -61,9 +61,7 @@ func (saleDataList *SaleDataList) LoadSaleData(uniqueID string, hookType string)
 	)
 
 	//Shushank
-	uniqueID = "OUR11438"
-
-	// uis := []string{"OUR01017", "OUR25503", "OUR25439", "OUR03588", "OUR07858", "OUT06707", "OUR03883", "OUR21650", "OUR2"}
+	uniqueID = "OUR11347"
 
 	// log.EnterFn(0, "LoadSaleData")
 	// defer func() { log.ExitFn(0, "LoadSaleData", err) }()
@@ -265,4 +263,20 @@ func determineSystemType(sysSize float64, state string) string {
 		}
 	}
 	return "N//A"
+}
+
+/******************************************************************************
+* FUNCTION:        CalculateLoanFee
+* DESCRIPTION:     calculates the "loan_fee" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
+func (psaleDataList *SaleDataList) CalculateLoanFee(uniqueId string, contractdoldol float64) float64 {
+	var loanfee float64
+	for _, data := range psaleDataList.SaleDataList {
+		if data.UniqueId == uniqueId {
+			dlrCost := LoanFeeCfg.CalculateDlrCost(data.UniqueId, data.Dealer, data.Installer, data.State, data.LoanType, data.WC1)
+			loanfee = contractdoldol * dlrCost
+		}
+	}
+	return loanfee
 }

@@ -42,7 +42,7 @@ func (pLoanFee *LoanFeeCfgStruct) LoadLoanFeeCfg() (err error) {
 		log.FuncErrorTrace(0, "Failed to get loan fee data from DB err: %v", err)
 		return
 	}
-	
+
 	for _, item := range data {
 		RecordId, ok := item["record_id"].(int64)
 		if !ok {
@@ -131,4 +131,43 @@ func (pLoanFee *LoanFeeCfgStruct) LoadLoanFeeCfg() (err error) {
 		pLoanFee.LoanFeeCfg.LoanFeeList = append(pLoanFee.LoanFeeCfg.LoanFeeList, LoanFeeData)
 	}
 	return err
+}
+
+func (pLoanFee *LoanFeeCfgStruct) CalculateDlrCost(uniqueId, dealer, installer, state, Type string, date time.Time) (dlrcost float64) {
+	var (
+		err       error
+		startDate time.Time
+		endDate   time.Time
+	)
+	dlrTier := DealerTierCfg.CalculateDlrTier(uniqueId, dealer, date)
+	if dlrTier == "OLD" {
+		for _, data := range pLoanFee.LoanFeeCfg.LoanFeeList {
+			if len(data.StartDate) > 0 {
+				startDate, err = time.Parse("2006-01-02", data.StartDate)
+				if err != nil {
+					log.FuncErrorTrace(0, "Failed to convert data.StartDate:%+v to time.Time err: %+v", data.StartDate, err)
+				}
+			} else {
+				log.FuncWarnTrace(0, "Empty StartDate Received in data.StartDate config")
+				continue
+			}
+
+			if len(data.EndDate) > 0 {
+				endDate, err = time.Parse("2006-01-02", data.EndDate)
+				if err != nil {
+					log.FuncErrorTrace(0, "Failed to convert data.EndDate:%+v to time.Time err: %+v", data.EndDate, err)
+				}
+			} else {
+				log.FuncWarnTrace(0, "Empty EndDate Received in data.EndDate config")
+				continue
+			}
+
+			if data.Dealer == dealer && data.Installer == installer && data.State == state && data.LoanType == Type && startDate.Before(date) && endDate.After(date) {
+				dlrcost += data.DlrCost
+			}
+		}
+	} else {
+		dlrcost = TierLoanFeeCfg.CalculateDlrCost(dlrTier, installer, state, Type, date)
+	}
+	return dlrcost
 }

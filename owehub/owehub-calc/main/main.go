@@ -8,14 +8,17 @@
 package main
 
 import (
+	"OWEApp/shared/db"
 	"OWEApp/shared/types"
 	"crypto/tls"
 	"crypto/x509"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"time"
 
 	arCalc "OWEApp/owehub-calc/arcalc"
@@ -59,6 +62,19 @@ func main() {
 			startServiceServer("HTTPS", false, router)
 		}
 	}
+
+	// // create by zidhin ============
+	// arr := []string{}
+
+	// for _, data := range arr {
+	// 	GetUniqueIds(data)
+	// }
+	// GetUniqueIds("finish")
+	// return
+
+	// GetDefferenceFromCDVAndSchema()
+	// return
+	// create by zidhin ============
 
 	/* Load Raw data and Configurations */
 	err = datamgmt.LoadConfigurations()
@@ -285,3 +301,164 @@ func signalHandler() {
 	sig := <-sigChan
 	types.ExitChan <- fmt.Errorf("%+v signal", sig)
 }
+
+// func GetDefferenceFromCDVAndSchema() {
+
+// 	var (
+// 		CdvData       []string
+// 		ConfigeurData []string
+// 	)
+
+// 	query := `SELECT DISTINCT(loan_type) FROM consolidated_data_view ORDER BY loan_type`
+
+// 	data, err := db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
+// 	if err != nil {
+// 		log.FuncErrorTrace(0, "error occurred while retrieving from consolidated_data_view: %v", err)
+// 		return
+// 	}
+
+// 	for _, item := range data {
+
+// 		DealerName1, ok := item["loan_type"].(string)
+// 		if !ok {
+// 			continue
+// 		}
+
+// 		CdvData = append(CdvData, DealerName1)
+// 	}
+
+// 	query = `SELECT DISTINCT(product_code) FROM loan_type ORDER BY product_code`
+
+// 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
+// 	if err != nil {
+// 		log.FuncErrorTrace(0, "error occurred while retrieving from consolidated_data_view: %v", err)
+// 		return
+// 	}
+
+// 	for _, item := range data {
+
+// 		DealerName, ok := item["product_code"].(string)
+// 		if !ok {
+// 			continue
+// 		}
+
+// 		ConfigeurData = append(ConfigeurData, DealerName)
+// 	}
+
+// 	result := map[string][]string{
+// 		"CdvData":       CdvData,
+// 		"ConfigeurData": ConfigeurData,
+// 	}
+
+// 	// Creating JSON file
+// 	fileName := "loanType.json"
+// 	file, err := os.Create(fileName)
+// 	if err != nil {
+// 		log.FuncErrorTrace(0, "error occurred while creating file: %v", err)
+// 		return
+// 	}
+// 	log.FuncErrorTrace(0, "File created: %v", file.Name())
+
+// 	defer file.Close()
+
+// 	encoder := json.NewEncoder(file)
+// 	encoder.SetIndent("", "  ")
+
+// 	if err := encoder.Encode(result); err != nil {
+// 		log.FuncErrorTrace(0, "error occurred while encoding data to JSON: %v", err)
+// 		return
+// 	}
+
+// 	log.FuncErrorTrace(0, "Data successfully written to dealers.json")
+
+// 	// Get the current working directory
+// 	workingDir, err := os.Getwd()
+// 	if err != nil {
+// 		log.FuncErrorTrace(0, "error occurred while getting current working directory: %v", err)
+// 		return
+// 	}
+
+// 	// Construct the full path of the created file
+// 	fullPath := filepath.Join(workingDir, fileName)
+// 	log.FuncErrorTrace(0, "The file was created at: %s", fullPath)
+
+// 	// Check if file exists
+// 	if _, err := os.Stat(fileName); err == nil {
+// 		log.FuncErrorTrace(0, "File %s exists", fileName)
+// 	} else if os.IsNotExist(err) {
+// 		log.FuncErrorTrace(0, "File %s does not exist", fileName)
+// 	} else {
+// 		log.FuncErrorTrace(0, "Error checking file %s: %v", fileName, err)
+// 	}
+// }
+
+// var responce []map[string][]string
+
+// func GetUniqueIds(datas string) {
+// 	if datas != "finish" {
+// 		var UniqueIds []string
+
+// 		query := fmt.Sprintf("SELECT unique_id FROM consolidated_data_view WHERE loan_type = '%v' ORDER BY unique_id", datas)
+
+// 		data, err := db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
+// 		if err != nil {
+// 			log.FuncErrorTrace(0, "error occurred while retrieving from consolidated_data_view: %v", err)
+// 			return
+// 		}
+
+// 		for _, item := range data {
+// 			UniqueId, ok := item["unique_id"].(string)
+// 			if !ok {
+// 				continue
+// 			}
+// 			UniqueIds = append(UniqueIds, UniqueId)
+// 		}
+
+// 		result := map[string][]string{
+// 			datas: UniqueIds,
+// 		}
+
+// 		responce = append(responce, result)
+// 	} else {
+// 		// Creating JSON file
+// 		fileName := "loan_fee.json"
+// 		file, err := os.Create(fileName)
+// 		if err != nil {
+// 			log.FuncErrorTrace(0, "error occurred while creating file: %v", err)
+// 			return
+// 		}
+// 		log.FuncErrorTrace(0, "File created: %v", file.Name())
+
+// 		defer file.Close()
+
+// 		encoder := json.NewEncoder(file)
+// 		encoder.SetIndent("", "  ")
+
+// 		if err := encoder.Encode(responce); err != nil {
+// 			log.FuncErrorTrace(0, "error occurred while encoding data to JSON: %v", err)
+// 			return
+// 		}
+
+// 		log.FuncErrorTrace(0, "Data successfully written to %s", fileName)
+
+// 		// Get the current working directory
+// 		workingDir, err := os.Getwd()
+// 		if err != nil {
+// 			log.FuncErrorTrace(0, "error occurred while getting current working directory: %v", err)
+// 			return
+// 		}
+
+// 		// Construct the full path of the created file
+// 		fullPath := filepath.Join(workingDir, fileName)
+// 		log.FuncErrorTrace(0, "The file was created at: %s", fullPath)
+
+// 		// Check if file exists
+// 		if _, err := os.Stat(fileName); err == nil {
+// 			log.FuncErrorTrace(0, "File %s exists", fileName)
+// 		} else if os.IsNotExist(err) {
+// 			log.FuncErrorTrace(0, "File %s does not exist", fileName)
+// 		} else {
+// 			log.FuncErrorTrace(0, "Error checking file %s: %v", fileName, err)
+// 		}
+// 	}
+// }
