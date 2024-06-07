@@ -588,3 +588,11 @@
  }
  
  }
+
+
+ /*Responsive*/
+ @media screen and (max-width: 1024px) {
+  .children-container{
+    padding: 0.5rem 1rem;
+  }
+ }

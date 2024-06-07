@@ -298,3 +298,18 @@ button.loginResendOtp:disabled {
 p.loginResendOtp {
   color: var(--secondary-text-color);
 }
+
+/*Login Responsive*/
+@media screen and (max-width: 1024px){
+  .container{
+    flex-direction: column;
+    justify-content: center;
+    gap: 30px;
+  }
+  .loginBox{
+      flex: 0 0;
+  }
+  .mainContainer{
+    background-position: 25%;
+  }
+}
