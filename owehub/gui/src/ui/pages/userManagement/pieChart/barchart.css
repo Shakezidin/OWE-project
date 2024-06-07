@@ -79,10 +79,13 @@
     margin-inline: auto;
   }
 
-  .stats-wrapper > *,h3{
+  .stats-wrapper > *{
     font-size: 12px  !important;
   }
 
+  .stats-wrapper > h3{
+    font-size: 12px  !important;
+  }
   .pie-section{
     width: 60%;
   } 

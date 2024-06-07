@@ -52,7 +52,7 @@ a {
 .inputLabel-select {
   position: absolute;
   color: #000000;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   line-height: 14.5px;
 }
@@ -270,6 +270,7 @@ input[type='password']::-ms-clear {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
+  align-items: flex-end;
 }
 .createUserActionButton {
   display: flex;
@@ -373,8 +374,9 @@ br {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 15px;
+  margin-top: 24px;
   cursor: pointer;
+  align-self: center;
 }
 .fildelb-btn img {
   width: 19px;
@@ -396,4 +398,11 @@ br {
 
 .bg-secondary{
   background-color: var(--secondary-color);
+}
+
+
+@media (max-width:1024px) {
+  .modal {
+    max-width:750px;
+  }
 }

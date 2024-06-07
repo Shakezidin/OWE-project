@@ -53,7 +53,7 @@
   cursor: pointer;
 }
 
-.iconsSection2 button:disabled{
+.iconsSection2 button:disabled {
   background-color: var(--row-bg-color);
 }
 
@@ -201,7 +201,7 @@ table tbody {
 }
 
 table thead tr {
-  background-color:#D5E4FF;
+  background-color: #d5e4ff;
   position: sticky;
   top: 0;
   z-index: 1;
@@ -372,4 +372,17 @@ table tbody tr td {
 /* Remove hover background color for the specific row */
 table tbody tr:has(td[colspan='10'] .data-not-found):hover {
   background-color: transparent;
+}
+
+@media (max-width: 1024px) {
+  .fildelb-btn{
+    margin-right: -15px;
+  }
+  .iconsSection2 button > span {
+    display: none;
+  }
+
+  .commissionSection h3{
+    font-size: 14px;
+  }
 }

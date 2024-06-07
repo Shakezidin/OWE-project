@@ -3,7 +3,7 @@ import { Column } from '../../../core/models/data_models/FilterSelectModel';
 export const AdderResponsibilityColumns: Column[] = [
   {
     name: 'unique_id',
-    displayName: 'Unique id',
+    displayName: 'Unique ID',
     type: 'string',
     isCheckbox: true,
   },

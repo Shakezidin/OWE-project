@@ -4,7 +4,7 @@ export const DlrOthPayColumn: Column[] = [
   // { name: "record_id", displayName: "Record ID", type: "number" },
   {
     name: 'unique_id',
-    displayName: 'Unique Id',
+    displayName: 'Unique ID',
     type: 'string',
     isCheckbox: true,
   },

@@ -56,7 +56,7 @@ const TableHeader = (props: TableProps) => {
                 style={{ cursor: isAnyRowSelected ? 'pointer' : 'not-allowed' }}
               >
                 <img src={ICONS.ARCHIVE} alt="" />
-                Archive
+                <span>Archive</span>
               </button>
             </div>
           </>
