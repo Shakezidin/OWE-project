@@ -45,8 +45,8 @@ const TechnicalSupport: React.FC = () => {
     const newErrors = {
       firstName: firstName ? '' : 'First name is required',
       lastName: lastName ? '' : 'Last name is required',
-      email: emailRegex.test(email) ? '' : 'Email address required',
-      phoneNumber: phoneNumber.slice(prevCont.length).trim()  ? '' : 'Phone number required',
+      email: emailRegex.test(email) ? '' : 'Email address is required',
+      phoneNumber: phoneNumber.slice(prevCont.length).trim()  ? '' : 'Phone number is required',
       message: message ? '' : 'Message is required',
     };
     setErrors(newErrors);

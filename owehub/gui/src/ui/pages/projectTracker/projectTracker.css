@@ -134,6 +134,7 @@
   align-items: center;
   justify-content: center;
   background-color: var(--white-color);
+  box-shadow: 0 3px 10px rgb(0 0 0 / 0.1);
 }
 
 .project-ruppes-body {
@@ -646,9 +647,35 @@
   width: 70%;
 }
 
-
+/*Responsive*/
 @media (max-width: 1024px) {
   .project-card-wrapper{
     width: 50%;
+  }
+  .project-card-container-2{
+    margin-left: 0;
+  }
+  .performance-bars{
+    width: 200px;
+  }
+}
+@media (max-width: 1536px){
+  .project-card-container-1{
+    grid-template-columns: repeat(4, 1fr);
+    width: 100%;
+  }
+  .project-card{
+    width: unset !important;
+  }
+  .project-card-container-2{
+    margin-left: 0;
+  }
+}
+@media (max-width: 890px){
+  .performance-bars{
+    width: unset !important;
+  }
+  .per-sales{
+    font-size: 11px !important;
   }
 }

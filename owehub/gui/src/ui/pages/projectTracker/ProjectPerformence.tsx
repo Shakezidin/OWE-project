@@ -103,10 +103,6 @@ const ProjectPerformence = () => {
                   <div className="project-card-head">
                     <div
                       className="project-icon-img"
-                      style={{
-                        // backgroundColor: el.iconBgColor,
-                        // opacity: '0.3',
-                      }}
                     >
                       <object
                         type="image/svg+xml"
@@ -134,6 +130,7 @@ const ProjectPerformence = () => {
                         marginTop: '10px',
                         textAlign: 'center',
                       }}
+                      className='per-sales'
                     >
                       {' '}
                       Sales KW - {formatFloat(findSale?.sales_kw)}{' '}
