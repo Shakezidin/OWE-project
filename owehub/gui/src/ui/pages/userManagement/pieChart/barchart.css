@@ -66,6 +66,16 @@
 .pie-chart-container{
   height: 300px !important;
 }
+
+
+@media screen and (min-width: 1025px) and (max-width: 1400px) {
+  .pie-section {
+    width: 100%;
+  } 
+  .chart-view {
+    flex-direction: column;
+  }
+}
 @media (max-width: 1024px) {
 
   .pie-chart-container{
