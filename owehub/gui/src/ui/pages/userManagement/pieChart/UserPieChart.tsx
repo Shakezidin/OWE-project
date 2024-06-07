@@ -130,7 +130,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
                     >
                       <span style={{ fontWeight: 600 }}> {user.value} </span>
                       <span className="mx1"> - </span>
-                      <span style={{ fontWeight: 500 }} className="nowrap">
+                      <span style={{ fontWeight: 500 }} >
                         {' '}
                         {user.name}{' '}
                       </span>
@@ -146,7 +146,6 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
       <div
         className="pie-section flex-auto"
         style={{
-          height: '100%',
           background: 'white',
           borderRadius: '18px',
           padding: '1.5rem',
