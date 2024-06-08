@@ -62,8 +62,7 @@ func (saleDataList *SaleDataList) LoadSaleData(uniqueID string, hookType string)
 
 	//Shushank
 	// uniqueID = "OUR19865"
-	uniqueID = "OUR11354"
-
+	uniqueID = "OUR11347"
 
 	// log.EnterFn(0, "LoadSaleData")
 	// defer func() { log.ExitFn(0, "LoadSaleData", err) }()
@@ -89,7 +88,7 @@ func (saleDataList *SaleDataList) LoadSaleData(uniqueID string, hookType string)
 	// if uniqueID != "" {
 
 	// 	//query += " WHERE unique_id='" + uniqueID + "'"
-		// query += " WHERE UPPER(unique_id)='" + strings.ToUpper(uniqueID) + "'"
+	// query += " WHERE UPPER(unique_id)='" + strings.ToUpper(uniqueID) + "'"
 
 	// }
 	/*
@@ -299,7 +298,7 @@ func (psaleDataList *SaleDataList) CalculateLoanFee(uniqueId, commission_models 
 	var loanfee float64
 	for _, data := range psaleDataList.SaleDataList {
 		if data.UniqueId == uniqueId {
-			dlrCost := LoanFeeCfg.CalculateDlrCost(data.UniqueId, data.Dealer, data.Installer, data.State, data.LoanType, data.WC1)
+			dlrCost := LoanFeeCfg.CalculateDlrCost(data.UniqueId, data.Dealer, data.Installer, data.State, data.LoanType, data.ContractDate)
 			loanfee = contractdoldol * dlrCost
 		}
 	}

@@ -184,9 +184,9 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 
 	rl = dataMgmt.PayScheduleCfg.CalculateRL(dealer, partner, installer, state, wc)
 	log.FuncFuncTrace(0, "zidhin repPay: %v", repPay)
-	// repPay = 2815 //zidhin
+	repPay = 2815 //zidhin
 	log.FuncFuncTrace(0, "zidhin rl: %v", rl)
-	// rl = 2 //zidhin
+	rl = 2 //zidhin
 	log.FuncFuncTrace(0, "zidhin netepc:  %v", netEpc)
 	// netEpc = 4.536372851
 	log.FuncFuncTrace(0, "zidhin contractTotal: %v", contractTotal)

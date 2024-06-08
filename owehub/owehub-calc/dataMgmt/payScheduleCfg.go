@@ -192,10 +192,10 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateRL(dealer, partner, install
 
 			// Log any parsing errors
 			if errStart != nil {
-				log.FuncErrorTrace(0, "Error parsing start date:", errStart)
+				log.FuncErrorTrace(0, "**************************************Error parsing start date:", errStart)
 			}
 			if errEnd != nil {
-				log.FuncErrorTrace(0, "Error parsing end date:", errEnd)
+				log.FuncErrorTrace(0, "**************************************Error parsing end date:", errEnd)
 			}
 
 			// Convert wc to the same format
@@ -203,7 +203,7 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateRL(dealer, partner, install
 			wcParsed, errWc := time.Parse(dateLayout, wcStr)
 
 			if errWc != nil {
-				log.FuncErrorTrace(0, "Error parsing wc date:", errWc)
+				log.FuncErrorTrace(0, "**************************************Error parsing wc date:", errWc)
 			}
 			if installer == "OWE" {
 				installer = "One World Energy"
@@ -212,6 +212,18 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateRL(dealer, partner, install
 			var st string
 			if len(state) > 0 {
 				st = state[6:]
+			}
+
+			if data.Dealer == dealer && data.PartnerName == partner {
+				log.FuncFuncTrace(0, "zidhin////// data.dealer : %v  ++++++++++ dealer: %v", data.Dealer, dealer)
+				log.FuncFuncTrace(0, "zidhin////// data.partner : %v ++++++++++partner: %v", data.PartnerName, partner)
+				log.FuncFuncTrace(0, "zidhin////// data.isntaller : %v ++++++++++ installer: %v", data.InstallerName, installer)
+				log.FuncFuncTrace(0, "zidhin////// data.state : %v ++++++++++ state: %v", data.State, st)
+				log.FuncFuncTrace(0, "zidhin////// data.startdate : %v ++++++++++ wc: %v", data.StartDate, wcParsed)
+				log.FuncFuncTrace(0, "zidhin////// end date : %v ++++++++++ wc %v", data.EndDate, wcParsed)
+				log.FuncFuncTrace(0, "zidhin////// rl : %v", data.Rl)
+				// log.FuncErrorTrace(0, "+++++++++++++++saletype", data.SaleType, "++++++++++", types)
+
 			}
 
 			if data.Dealer == dealer && data.PartnerName == partner && data.InstallerName == installer && data.State == st &&
@@ -260,26 +272,34 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateDlrDrawPerc(dealer, partner
 				continue
 			}
 
+			// Convert wc to the same format
+			wcStr := wc.Format("01-02-06")
+			wcParsed, errWc := time.Parse("01-02-06", wcStr)
+
+			if errWc != nil {
+				log.FuncErrorTrace(0, "Error parsing wc date:", errWc)
+			}
+
+			var st string
+			if len(state) > 0 {
+				st = state[6:]
+			}
+
 			if data.Dealer == dealer && data.PartnerName == partner && data.InstallerName == installer {
 				log.FuncErrorTrace(0, "data.DealerName: %v paramDealerName : %v", data.Dealer, dealer)
 				log.FuncErrorTrace(0, "data.PartnerName: %v parampartnerName : %v", data.PartnerName, partner)
 				log.FuncErrorTrace(0, "data.InstallerName: %v paramInstallerName : %v", data.InstallerName, installer)
 				log.FuncErrorTrace(0, "data.saleType: %v paramLoanType : %v", data.SaleType, loanType)
-				log.FuncErrorTrace(0, "data.stateName: %v paramStateName : %v", data.State, state)
+				log.FuncErrorTrace(0, "data.stateName: %v paramStateName : %v", data.State, st)
 				log.FuncErrorTrace(0, "data.InstallerName: %v paramInstallerName : %v, wc %v", data.StartDate, data.EndDate, wc)
-
-				var st string
-				if len(state) > 0 {
-					st = state[6:]
-				}
 
 				if data.Dealer == dealer &&
 					strings.EqualFold(data.PartnerName, partner) &&
 					strings.EqualFold(data.InstallerName, installer) &&
 					// data.SaleType == loanType &&
 					data.State == st &&
-					!startDate.After(wc) &&
-					!endDate.Before(wc) {
+					!startDate.After(wcParsed) &&
+					!endDate.Before(wcParsed) {
 
 					drawPerc = data.Draw / 100
 					dlrDrawMax = data.DrawMax
