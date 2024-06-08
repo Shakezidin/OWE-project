@@ -35,10 +35,8 @@ func ExecArInitialCalculation(resultChan chan string) {
 	log.EnterFn(0, "ExecArInitialCalculation")
 	defer func() { log.ExitFn(0, "ExecArInitialCalculation", err) }()
 
-	for i, saleData := range dataMgmt.SaleData.SaleDataList {
-		// if saleData.UniqueId != "OUR11354" {
-		// 	continue
-		// }
+	count := 0
+	for _, saleData := range dataMgmt.SaleData.SaleDataList {
 		var arData map[string]interface{}
 		arData, err = CalculateARProject(saleData)
 		if err != nil || arData == nil {
@@ -51,14 +49,18 @@ func ExecArInitialCalculation(resultChan chan string) {
 			arDataList = append(arDataList, arData)
 		}
 
-		// Process and clear the batch every 1000 records
-		if (i+1)%1000 == 0 && len(arDataList) > 0 {
-			err = db.AddMultipleRecordInDB(db.OweHubDbIndex, db.TableName_SalesArCalc, arDataList)
-			if err != nil {
-				log.FuncErrorTrace(0, "Failed to insert initial AR Data in DB err: %v", err)
-			}
-			arDataList = nil // Clear the arDataList
+		if count > 20 {
+			break
 		}
+		// Process and clear the batch every 1000 records
+		// if (i+1)%1000 == 0 && len(arDataList) > 0 {
+		err = db.AddMultipleRecordInDB(db.OweHubDbIndex, db.TableName_SalesArCalc, arDataList)
+		if err != nil {
+			log.FuncErrorTrace(0, "Failed to insert initial AR Data in DB err: %v", err)
+		}
+		arDataList = nil // Clear the arDataList
+		// }
+		count++
 	}
 	/*
 		// Process remaining records if any
@@ -136,10 +138,10 @@ func CalculateARProject(saleData dataMgmt.SaleDataStruct) (outData map[string]in
 
 	redLine, permitPayM1, permitMax, installPayM2 = dataMgmt.ArSkdConfig.GetArSkdForSaleData(&saleData) //* ArSkdConfig
 
-	// redLine = -0.15
-	// permitPayM1 = 10
-	// permitMax = 25000
-	// installPayM2 = 90
+	// redLine = 0
+	// permitPayM1 = 30
+	// permitMax = 50000
+	// installPayM2 = 100
 
 	log.FuncErrorTrace(0, "RAED redline -> %v permitPayM1 -> %v permitMax -> %v installPayM2 -> %v", redLine, permitPayM1, permitMax, installPayM2)
 
@@ -149,14 +151,15 @@ func CalculateARProject(saleData dataMgmt.SaleDataStruct) (outData map[string]in
 	log.FuncErrorTrace(0, "RAED saleData.NetEpc -> %v contract -> %v sys_size -> %v", saleData.NetEpc, outData["contract"].(float64), outData["sys_size"].(float64))
 	log.FuncErrorTrace(0, "RAED saleData.WC1 -> %v saleData.SystemSize -> %v", saleData.WC1, saleData.SystemSize)
 
-	grossRev = CalculateGrossRev(epcCalc, redLine, saleData.SystemSize)                  //! 0 since redline is zero
-	addrPtr = dataMgmt.AdderDataCfg.CalculateAddrPtr(saleData.Dealer, saleData.UniqueId) //* AdderDataCfg
+	grossRev = CalculateGrossRev(epcCalc, redLine, saleData.SystemSize)                                       //! 0 since redline is zero
+	addrPtr = dataMgmt.AdderDataCfg.CalculateAddrPtr(saleData.Dealer, saleData.UniqueId, saleData.SystemSize) //* AdderDataCfg
 
 	log.FuncErrorTrace(0, "RAED contractCalc -> %v epcCalc -> %v grossRev -> %v addrPtr -> %v", contractCalc, epcCalc, grossRev, addrPtr)
 
-	addrAuto = dataMgmt.AutoAdderCfg.CalculateAddrAuto(saleData.Dealer, saleData.UniqueId, saleData.SystemType)                                                                  //* AutoAdderCfg
+	// addrAuto = dataMgmt.AutoAdderCfg.CalculateAddrAuto(saleData.Dealer, saleData.UniqueId, saleData.SystemType)
+	addrAuto = dataMgmt.AutoAdderCfg.CalculateArAddrAuto(saleData.Dealer, saleData.UniqueId, saleData.SystemSize, saleData.State, saleData.Installer)
 	loanFee = dataMgmt.LoanFeeAdderCfg.CalculateLoanFee(saleData.UniqueId, saleData.Dealer, saleData.Installer, saleData.State, saleData.LoanType, saleData.WC1, contractdoldol) //~ LoanFeeAdderCfg need to verify
-	// loanFee = 0
+	loanFee = 19346.6
 	adjust = dataMgmt.AdjustmentsConfig.CalculateAdjust(saleData.Dealer, saleData.UniqueId) //* AdjustmentsConfig
 	netRev = CalculateNetRev(grossRev, addrPtr, addrAuto, loanFee, adjust)                  //! 0 since grossRev is zero
 	log.FuncErrorTrace(0, "RAED addrAuto -> %v loanFee -> %v adjust -> %v netRev -> %v", addrAuto, loanFee, adjust, netRev)
@@ -172,8 +175,8 @@ func CalculateARProject(saleData dataMgmt.SaleDataStruct) (outData map[string]in
 	log.FuncErrorTrace(0, "RAED currentDue -> %v balance -> %v", currentDue, balance)
 
 	outData["status"] = status
-	/*outData["status_date"] = common.CalculateProjectStatusDate(saleData.UniqueId, saleData.PtoDate, saleData.PvInstallCompletedDate,
-	saleData.CancelledDate, saleData.PermitSubmittedDate, saleData.NtpDate, saleData.WC1)*/
+	// outData["status_date"] = dlrPay.CalculateStatusDate(saleData.UniqueId, hand, saleData.PtoDate, saleData.PvInstallCompletedDate,
+	// 	saleData.CancelledDate, saleData.NtpDate, saleData.PermitSubmittedDate, saleData.WC1)
 	outData["contract_calc"] = contractCalc
 	outData["loan_fee"] = loanFee
 	outData["owe_ar"] = CalculateOweAR(outData["contract_calc"].(float64), outData["loan_fee"].(float64))
@@ -290,7 +293,7 @@ func CalculatePermitPay(status string, grossRev, netRev float64, permitPayM1 flo
 
 	permitPay = 0
 
-	if strings.ToUpper(status) == strings.ToUpper(string(common.Cancel)) || strings.ToUpper(status) == strings.ToUpper(string(common.Shaky)) {
+	if strings.EqualFold(status, string(common.Cancel)) || strings.EqualFold(status, string(common.Shaky)) {
 		return permitPay
 	}
 
@@ -337,7 +340,7 @@ func CalculateBalance(uniqueID string, status string, dealer string, totalPaid f
 
 	balance = 0
 	if len(uniqueID) > 0 {
-		if strings.ToUpper(status) == strings.ToUpper(string(common.Cancel)) || strings.ToUpper(status) == strings.ToUpper(string(common.Shaky)) {
+		if strings.EqualFold(status, string(common.Cancel)) || strings.EqualFold(status, string(common.Shaky)) {
 			balance = (0 - totalPaid) + reconcile
 		} else if len(dealer) > 0 {
 			balance = common.Round(netRev-totalPaid, 2) + reconcile
@@ -355,7 +358,6 @@ func CalculateCurrentDue(saleData *dataMgmt.SaleDataStruct, netRev, totalPaid, p
 	var (
 		today = time.Now().Truncate(24 * time.Hour)
 	)
-
 
 	log.EnterFn(0, "CalculateCurrentDue")
 	defer func() { log.ExitFn(0, "CalculateCurrentDue", nil) }()

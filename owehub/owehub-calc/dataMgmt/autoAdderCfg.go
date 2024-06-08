@@ -34,6 +34,21 @@ var (
 
 /******************************************************************************
 * FUNCTION:        CalculateAddrAuto
+* DESCRIPTION:     calculates the addrAuto value for ar_Calc
+* RETURNS:         addrAuto
+*****************************************************************************/
+func (AutoAdderCfg *AutoAdderCfgStruct) CalculateArAddrAuto(dealer string, uniqueId string, systemSize float64, state, installer string) (addrAuto float64) {
+	systemType := calculateType(systemSize, state)
+	if (installer == "OWE" || installer == "OUR WORLD ENERGY") || systemType == "" {
+		return addrAuto
+	}
+	excatAmt := calculateExactAmount(uniqueId, systemType)
+	addrAuto = excatAmt
+	return addrAuto
+}
+
+/******************************************************************************
+* FUNCTION:        CalculateAddrAuto
 * DESCRIPTION:     calculates the addrAuto value based on the provided data
 * RETURNS:         addrAuto
 *****************************************************************************/
@@ -72,16 +87,6 @@ func calculateExactAmount(uniqueId string, systemType string) (excatAmt float64)
 	if len(uniqueId) <= 0 {
 		return 0.0
 	}
-
-	if systemType == "SM-UNI2" || systemType == "SM-UNI3" || systemType == "SM-CA2" || len(systemType) >= 2 && strings.ToUpper(systemType[:2]) == "MK" {
-		log.FuncErrorTrace(0, "=======AUTO ADDER=========")
-		log.FuncErrorTrace(0, "UNIQUE ID -> %v", uniqueId)
-		log.FuncErrorTrace(0, "=======AUTO ADDER=========")
-		// return 0
-	}
-
-	log.FuncErrorTrace(0, "RAED systemType -> %v", systemType)
-
 	if len(systemType) >= 2 && strings.ToUpper(systemType[:2]) == "MK" {
 		return 0.0
 	}

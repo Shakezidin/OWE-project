@@ -250,10 +250,19 @@ func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct)
 				saleData.Partner = "SOVA"
 			}
 
+			date, err := time.Parse("2006-01-02", "2023-10-01")
+			if err != nil {
+				log.FuncErrorTrace(0, "RAED Failed to parse Date: %v", err)
+				// FormAndSendHttpResp(resp, "Failed to parse Date", http.StatusInternalServerError, nil)
+				return
+			}
+			log.FuncErrorTrace(0, "RAED  Date: %v", date)
+
+			saleData.PvInstallCompletedDate = date
 			if arSkd.PartnerName == saleData.Partner &&
 				arSkd.InstallerName == saleData.Installer &&
 				// arSkd.SaleTypeName == saleData.LoanType &&
-				arSkd.SaleTypeName == "LOAN" &&
+				arSkd.SaleTypeName == "LEASE 1.9" &&
 				arSkd.StateName == st &&
 				arSkd.CalcDate == "CREATED" &&
 				(startDate.Before(saleData.PvInstallCompletedDate) || startDate.Equal(saleData.PvInstallCompletedDate)) && //* need to change the date here

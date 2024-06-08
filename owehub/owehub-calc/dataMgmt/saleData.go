@@ -70,13 +70,28 @@ func (saleDataList *SaleDataList) LoadSaleData(uniqueID string, hookType string)
 	log.EnterFn(0, "LoadSaleData")
 	defer func() { log.ExitFn(0, "LoadSaleData", err) }()
 	log.FuncDebugTrace(0, "In LoadSaleData for uniqueID: %v, hookType: %v", uniqueID, hookType)
-	query = "SELECT * from " + db.ViewName_ConsolidatedDataView
-	if uniqueID != "" {
 
-		//query += " WHERE unique_id='" + uniqueID + "'"
-		query += " WHERE UPPER(unique_id)='" + strings.ToUpper(uniqueID) + "'"
-
+	uidList := []string{"OUR11450"}
+	query = "SELECT * from " + db.ViewName_ConsolidatedDataView + " WHERE UPPER(unique_id) IN ("
+	for i, uid := range uidList {
+		query += "'" + strings.ToUpper(uid) + "'"
+		if len(uidList) == 1 {
+			break
+		} else if i < len(uidList)-2 {
+			query += ","
+		} else {
+			query += "," + "'" + strings.ToUpper(uidList[i+1]) + "'"
+			break
+		}
 	}
+
+	query += ");"
+	// if uniqueID != "" {
+
+	// 	//query += " WHERE unique_id='" + uniqueID + "'"
+		// query += " WHERE UPPER(unique_id)='" + strings.ToUpper(uniqueID) + "'"
+
+	// }
 	/*
 		if (uniqueIDs != nil) && (len(uniqueIDs) > 0) {
 			query += "WHERE unique_id IN ("
@@ -89,6 +104,8 @@ func (saleDataList *SaleDataList) LoadSaleData(uniqueID string, hookType string)
 			query += ")"
 		}
 	*/
+
+	log.FuncInfoTrace(0, "RQUERY ============ %+v", query)
 
 	dataList, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
 	if err != nil || len(dataList) == 0 {

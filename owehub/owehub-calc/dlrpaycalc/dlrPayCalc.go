@@ -101,7 +101,7 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 		repCount           float64 // cd
 		perRepSales        float64 // ce
 		perRepkW           float64 // cf
-		contractCalc       float64 // chcommTotal
+		contractCalc       float64 // ch
 		epcCalc            float64 // an
 		teamCount          float64 // cm
 		perTeamSales       float64 // cn
@@ -180,7 +180,7 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 
 	credit = dataMgmt.DealerCreditCfg.CalculateCreaditForUniqueId(dealer, uniqueID)
 	repPay = dataMgmt.ApRepCfg.CalculateRepPayForUniqueId(dealer, uniqueID)
-	expense = dataMgmt.AdderDataCfg.CalculateExpence(dealer, uniqueID)
+	expense = dataMgmt.AdderDataCfg.CalculateExpence(dealer, uniqueID, systemSize)
 
 	rl = dataMgmt.PayScheduleCfg.CalculateRL(dealer, partner, installer, state, wc)
 	log.FuncFuncTrace(0, "zidhin repPay: %v", repPay)
@@ -195,7 +195,7 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	epcCalc = common.CalculateEPCCalc(contractDolDol, wc, netEpc, systemSize, common.DlrPayWc1FilterDate)
 
 	payRateSemi = CalculatePayRateSemi(dealer, commission_models, saleData.PrimarySalesRep, epcCalc, rl, systemSize, netEpc, wc)
-	addr = dataMgmt.AdderDataCfg.CalculateAddr(dealer, uniqueID)
+	addr = dataMgmt.AdderDataCfg.CalculateAddr(dealer, uniqueID, systemSize)
 	autoAdder = dataMgmt.AutoAdderCfg.CalculateAutoAddr(dealer, uniqueID, systemSize)
 
 	loanFee = dataMgmt.SaleData.CalculateLoanFee(uniqueID, commission_models, contractDolDol)
