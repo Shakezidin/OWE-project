@@ -62,9 +62,16 @@ func calculateAdderPerKW(dealer string, adderLF, sysSize float64) (adderPerKW fl
 * DESCRIPTION:     calculates the "pay_rate_sub_total" value based on the provided data
 * RETURNS:         gross revenue
 *****************************************************************************/
-func calculatePayRateSubTotal(dealer string, payRateSemi, adderPer float64) float64 {
-	if len(dealer) > 0 {
-		return (payRateSemi - adderPer)
+func calculatePayRateSubTotal(dealer, commission_models string, payRateSemi, adderPer, contractdoldol, adderLF float64) float64 {
+	if commission_models == "standard" || commission_models == "" {
+		if len(dealer) > 0 {
+			return (payRateSemi - adderPer)
+		}
+		return 0
+	} else {
+		if len(dealer) > 0 {
+			return (contractdoldol - payRateSemi - adderLF)
+		}
 	}
 	return 0
 }
@@ -74,10 +81,29 @@ func calculatePayRateSubTotal(dealer string, payRateSemi, adderPer float64) floa
 * DESCRIPTION:     calculates the "comm_total" value based on the provided data
 * RETURNS:         gross revenue
 *****************************************************************************/
-func calculateCommTotal(dealer string, payRate, sysSize, dealerPaymentBonus float64) float64 {
-	if len(dealer) > 0 {
-		commTotal := (payRate * sysSize) + dealerPaymentBonus
-		return math.Round(commTotal*100) / 100
+func calculateCommTotal(dealer, commission_models, rep_1, source string, payRateSubTotal, sysSize, dealerPaymentBonus, contractTotal, baseCost, adderLF float64) float64 {
+	if commission_models == "standard" || commission_models == "" {
+		if len(dealer) > 0 {
+			commTotal := (payRateSubTotal * sysSize) + dealerPaymentBonus
+			return math.Round(commTotal*100) / 100
+		}
+		return 0
+	} else {
+		if len(dealer) > 0 && dealer == "Onyx D2D" && (rep_1 == "Ramon Roybal" || rep_1 == "Joshua Freitas") {
+			commTotal := ((contractTotal - (baseCost - adderLF)) + dealerPaymentBonus) * 0.25
+			return math.Round(commTotal*100) / 100
+		} else if rep_1 == "Theo Rosenberg" {
+			if source == "P&S" {
+				commTotal := ((contractTotal - (baseCost - adderLF)) + dealerPaymentBonus) * 0.4
+				return math.Round(commTotal*100) / 100
+			} else {
+				commTotal := ((contractTotal - (baseCost - adderLF)) + dealerPaymentBonus) * 0.15
+				return math.Round(commTotal*100) / 100
+			}
+		} else {
+			commTotal := ((contractTotal - (baseCost - adderLF)) + dealerPaymentBonus) * 0.8
+			return math.Round(commTotal*100) / 100
+		}
 	}
 	return 0
 }
@@ -569,11 +595,24 @@ func CalculateContractDolDol(netEpc float64, contract float64, sysSize float64) 
 * DESCRIPTION:     calculates the "contract$$" value based on the provided data
 * RETURNS:         gross revenue
 *****************************************************************************/
-func CalculatePayRateSemi(dealer string, epcCalc, rl float64) (payRateSemi float64) {
-	if len(dealer) > 0 {
-		return (epcCalc - rl) * 1000
+func CalculatePayRateSemi(dealer, commission_models, rep_1 string, epcCalc, rl, systemSize, netEpc float64, wc time.Time) (payRateSemi float64) {
+	date, _ := time.Parse("2006,01,02", "2023,12,20")
+	if commission_models == "standard" || commission_models == "" {
+		if len(dealer) > 0 {
+			return (epcCalc - rl) * 1000
+		}
+		return 0
+	} else {
+		if len(dealer) > 0 && systemSize > 0 {
+			if rep_1 == "Scott McCollester" && wc.After(date) {
+				return 1.88 * (systemSize * 1000)
+			} else if dealer == "Onyx D2D" {
+				return (netEpc - 1.98) * systemSize
+			} else {
+				return rl * (systemSize * 1000)
+			}
+		}
 	}
-
 	return 0
 }
 

@@ -66,9 +66,10 @@ func ExecDlrPayInitialCalculation(resultChan chan string) {
 func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[string]interface{}, err error) {
 	var (
 		SysSize         float64   // p
-		payRateSubTotal float64   // BG             //defference in 80/20 calculation
-		payRateSemi     float64   // au             //defference in 8020 calculation
-		loanFee         float64   // ay //required  //defference in 80/20 calculation
+		payRateSemi     float64   // au             //defference in 8020 calculation Done
+		payRateSubTotal float64   // BG             //defference in 80/20 calculation Done
+		loanFee         float64   // ay //required  //defference in 80/20 calculation Done
+		commTotal       float64   // bh             //defference in 80/20 calculation
 		parentDlr       string    // bk             //in 80/20 field name is changed to DLROV
 		status          string    // aj //required
 		statusDate      time.Time // ak //required
@@ -86,7 +87,6 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 		adderLF            float64 // bc
 		epc                float64 // bd //required
 		adderPerKw         float64 // bf
-		commTotal          float64 // bh
 		statusCheck        float64 // BI //required
 		dealerPaymentBonus float64 // bj
 		payRate            float64 // bl
@@ -108,33 +108,34 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 		perTeamKw          float64 // co
 		rl                 float64 // AR //required
 		r1DrawAmt          float64 // BS //required
+		netEpc             float64 // BE //required
 		// Type               string    // E  //required
-		netEpc float64 // BE //required
 		// Rep1               string    // M  //required
 		// Rep2               string    // N  //required
 
-		homeOwner     string    // H //required
-		uniqueID      string    // G //required
-		wc            time.Time // U //required
-		ntp           time.Time // W //required
-		instSys       time.Time // AD //required
-		loanType      string
-		dlrDrawMax    float64
-		dlrDrawPerc   float64
-		partner       string
-		installer     string
-		state         string // K //required
-		contractTotal float64
-		systemSize    float64 //P //required
-		adderTotal    float64
-		netEpc2       float64
+		homeOwner         string    // H //required
+		uniqueID          string    // G //required
+		wc                time.Time // U //required
+		ntp               time.Time // W //required
+		instSys           time.Time // AD //required
+		loanType          string
+		dlrDrawMax        float64 // BQ
+		dlrDrawPerc       float64 // BP
+		partner           string
+		installer         string
+		state             string // K //required
+		contractTotal     float64
+		systemSize        float64 //P //required
+		adderTotal        float64
+		netEpc2           float64
+		commission_models string
 	)
 
 	// this row data is from sales data
 	outData = make(map[string]interface{})
 
 	uniqueID = saleData.UniqueId
-	wc = saleData.WC1
+	wc = saleData.ContractDate
 	ntp = saleData.NtpDate
 	instSys = saleData.PvInstallCompletedDate
 	homeOwner = saleData.HomeOwner
@@ -145,10 +146,10 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	partner = saleData.Partner
 	state = saleData.State
 	installer = saleData.Installer
-	netEpc = saleData.NetEpc
-	contractTotal = saleData.ContractTotal
-	systemSize = saleData.SystemSize
 	SysSize = saleData.SystemSize
+	systemSize = saleData.SystemSize
+	netEpc = saleData.ContractTotal / (systemSize * 1000)
+	contractTotal = saleData.ContractTotal
 
 	outData["dealer"] = dealer
 	outData["partner"] = partner
@@ -174,41 +175,47 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	outData["inst_sys"] = instSys
 	outData["pto"] = saleData.PtoDate
 
-	//statusDate = CalculateStatusDate(uniqueID, shakyHand, pto, instSys, cancel, ntp, permSub, wc) //! shakyHand
-	dlrDrawPerc, dlrDrawMax = dataMgmt.PayScheduleCfg.CalculateDlrDrawPerc(dealer, partner, installer, loanType, state, wc)
+	// statusDate = CalculateStatusDate(uniqueID, shakyHand, pto, instSys, cancel, ntp, permSub, wc) //! shakyHand
+	dlrDrawPerc, dlrDrawMax, commission_models = dataMgmt.PayScheduleCfg.CalculateDlrDrawPerc(dealer, partner, installer, loanType, state, wc)
 
 	credit = dataMgmt.DealerCreditCfg.CalculateCreaditForUniqueId(dealer, uniqueID)
 	repPay = dataMgmt.ApRepCfg.CalculateRepPayForUniqueId(dealer, uniqueID)
 	expense = dataMgmt.AdderDataCfg.CalculateExpence(dealer, uniqueID, systemSize)
 
 	rl = dataMgmt.PayScheduleCfg.CalculateRL(dealer, partner, installer, state, wc)
+	log.FuncFuncTrace(0, "zidhin dlrDrawPerc: %v  dlrDrawMax : %v", dlrDrawPerc, dlrDrawMax)
+	// dlrDrawPerc = 0.5
+	// dlrDrawMax = 2000
 	log.FuncFuncTrace(0, "zidhin repPay: %v", repPay)
-	// repPay = 2815 //zidhin
+	// repPay = 0 //zidhin
 	log.FuncFuncTrace(0, "zidhin rl: %v", rl)
 	// rl = 2 //zidhin
 	log.FuncFuncTrace(0, "zidhin netepc:  %v", netEpc)
-	// netEpc = 4.536372851
+	// netEpc = 6.488366013
 	log.FuncFuncTrace(0, "zidhin contractTotal: %v", contractTotal)
-	// contractTotal = 50126.92 //zidhin
+	// contractTotal = 24818.00 //zidhin
+	log.FuncFuncTrace(0, "zidhin commission_models: %v", commission_models)
+
 	contractDolDol = CalculateContractDolDol(netEpc, contractTotal, systemSize)
 	epcCalc = common.CalculateEPCCalc(contractDolDol, wc, netEpc, systemSize, common.DlrPayWc1FilterDate)
 
-	payRateSemi = CalculatePayRateSemi(dealer, epcCalc, rl)
+	payRateSemi = CalculatePayRateSemi(dealer, commission_models, saleData.PrimarySalesRep, epcCalc, rl, systemSize, netEpc, wc)
 	addr = dataMgmt.AdderDataCfg.CalculateAddr(dealer, uniqueID, systemSize)
 	autoAdder = dataMgmt.AutoAdderCfg.CalculateAutoAddr(dealer, uniqueID, systemSize)
 
-	loanFee = dataMgmt.SaleData.CalculateLoanFee(uniqueID, contractDolDol)
+	loanFee = dataMgmt.SaleData.CalculateLoanFee(uniqueID, commission_models, contractDolDol)
 	// loanFee = 1253.17
 	rebate = dataMgmt.RebateCfg.CalculateRebate(dealer, uniqueID)
 	referral = dataMgmt.ReferralDataConfig.CalculateReferralForUniqueId(dealer, uniqueID)
 
 	adderLF = CalculateAdderLf(dealer, addr, expense, autoAdder, loanFee, rebate, referral)
 	adderPerKw = calculateAdderPerKW(dealer, adderLF, SysSize)
-	payRateSubTotal = calculatePayRateSubTotal(dealer, payRateSemi, adderPerKw)
+	payRateSubTotal = calculatePayRateSubTotal(dealer, commission_models, payRateSemi, adderPerKw, contractDolDol, adderLF)
+	// for 80/20 am-au-bc
 
 	dealerPaymentBonus = dataMgmt.DealerRepayConfig.CalculateRepaymentBonus(uniqueID, homeOwner)
 
-	commTotal = calculateCommTotal(dealer, payRateSubTotal, systemSize, dealerPaymentBonus) // dealerPaymentBonus
+	commTotal = calculateCommTotal(dealer, commission_models, saleData.PrimarySalesRep, saleData.Source, payRateSubTotal, systemSize, dealerPaymentBonus, contractTotal, payRateSemi, adderLF) // dealerPaymentBonus
 	// commTotal = -2888.39             17644 -> commtotal = 6295                                                    //Shushank
 	// commTotal = -2888.39                                                                    //Shushank
 	statusCheck = calculateStatusCheck(dealer, status, expense, commTotal, credit, repPay)

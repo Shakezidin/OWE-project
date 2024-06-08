@@ -23,9 +23,9 @@ var (
 
 func (pDealerTier *DealerTierCfgStruct) LoadDealerTierCfg() (err error) {
 	var (
-		data         []map[string]interface{}
+		data []map[string]interface{}
 		// whereEleList []interface{}
-		query        string
+		query string
 	)
 
 	query = `
@@ -75,8 +75,8 @@ func (pDealerTier *DealerTierCfgStruct) LoadDealerTierCfg() (err error) {
 			EndDate = time.Time{}
 		}
 
-		StartDateStr := Start_date.Format("2006-01-02")
-		EndDateStr := EndDate.Format("2006-01-02")
+		StartDateStr := Start_date.Format("01-02-2006")
+		EndDateStr := EndDate.Format("01-02-2006")
 
 		// Create a new GetDealerTierData object
 		vaddersData := models.GetDealerTierData{
@@ -92,28 +92,33 @@ func (pDealerTier *DealerTierCfgStruct) LoadDealerTierCfg() (err error) {
 	return err
 }
 
+/******************************************************************************
+* FUNCTION:        CalculateDlrTier
+* DESCRIPTION:     calculates the dlr tier value based on the provided data
+* RETURNS:         dlrtier float64
+*****************************************************************************/
 func (pDealerTier *DealerTierCfgStruct) CalculateDlrTier(uniqueId, dealer string, date time.Time) (dlrtier string) {
 
-	bfrDateStr := "2022/06/15"
+	bfrDateStr := "06-15-2022"
 	var (
 		err       error
 		startDate time.Time
 		endDate   time.Time
 	)
 
-
 	// Parse the date string into a time.Time object
-	bfrDate, err := time.Parse("2006/01/02", bfrDateStr)
+	bfrDate, err := time.Parse("01-02-2006", bfrDateStr)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to convert data.StartDate to time.Time err: %+v", err)
 	}
 	if len(uniqueId) > 0 {
 		if date.Before(bfrDate) {
+			log.FuncErrorTrace(0, "paramDate : %v checkDate : %v", date, bfrDate)
 			dlrtier = "OLD"
 		} else {
 			for _, data := range pDealerTier.DealerTierList.DealersTierList {
 				if len(data.StartDate) > 0 {
-					startDate, err = time.Parse("2006-01-02", data.StartDate)
+					startDate, err = time.Parse("01-02-2006", data.StartDate)
 					if err != nil {
 						log.FuncErrorTrace(0, "Failed to convert data.StartDate:%+v to time.Time err: %+v", data.StartDate, err)
 					}
@@ -123,7 +128,7 @@ func (pDealerTier *DealerTierCfgStruct) CalculateDlrTier(uniqueId, dealer string
 				}
 
 				if len(data.EndDate) > 0 {
-					endDate, err = time.Parse("2006-01-02", data.EndDate)
+					endDate, err = time.Parse("01-02-2006", data.EndDate)
 					if err != nil {
 						log.FuncErrorTrace(0, "Failed to convert data.EndDate:%+v to time.Time err: %+v", data.EndDate, err)
 					}
@@ -132,14 +137,10 @@ func (pDealerTier *DealerTierCfgStruct) CalculateDlrTier(uniqueId, dealer string
 					continue
 				}
 
-				if dealer == "Energy Bros USA"{
-					dealer = "Energy Bros USA Inc"
+				if data.DealerName == dealer && startDate.Before(date) && endDate.Before(date) {
+					dlrtier = data.Tier
 				}
-				if data.DealerName == dealer {
-					if data.DealerName == dealer && startDate.Before(date) && endDate.Before(date) {
-						dlrtier = data.Tier
-					}
-				}
+
 			}
 		}
 	}

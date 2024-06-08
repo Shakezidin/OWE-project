@@ -137,7 +137,7 @@ func (ReconcileCfgData *ReconcileCfgStruct) LoadReconcileCfg() (err error) {
 /******************************************************************************
 * FUNCTION:        CalculateReconcile
 * DESCRIPTION:     calculates the "reconcile" value based on the provided data
-* RETURNS:         Reconsile
+* RETURNS:         Reconsile float64
 *****************************************************************************/
 func (ReconcileCfgData *ReconcileCfgStruct) CalculateReconcile(dealer string, uniqueId string) (reconcile float64) {
 	log.EnterFn(0, "CalculateReconcile")
