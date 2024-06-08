@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -77,17 +78,30 @@ func HandleUpdateDLROTHDataRequest(resp http.ResponseWriter, req *http.Request) 
 
 	if len(updateDLR_OTHReq.Payee) > 0 {
 		query = fmt.Sprintf("SELECT amount as amount from ap_dealer where unique_id = '%v' AND dealer = '%v' AND type = 'DLR-OTH'", updateDLR_OTHReq.Unique_Id, updateDLR_OTHReq.Payee)
-		data, err = db.ReteriveFromDB(db.RowDataDBIndex, query, nil)
+		data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, nil)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get customer, dealer_name,dealerDba from DB err: %v", err)
 			FormAndSendHttpResp(resp, "Failed to get customer, dealer_name,dealerDba from DB", http.StatusBadRequest, nil)
 			return
 		}
-		paid_Amount = data[0]["amount"].(float64)
+
+		if len(data) > 0 {
+			paid_Amount, ok := data[0]["amount"].(float64)
+			if !ok || paid_Amount == 0.0 {
+				paid_Amount = 0.0
+			}
+		}
+
 	}
 
 	if len(updateDLR_OTHReq.Payee) > 0 {
 		balance = updateDLR_OTHReq.Amount - paid_Amount
+	}
+
+	date, err := time.Parse("2006-01-02", updateDLR_OTHReq.Date)
+	if err != nil {
+		fmt.Println("Error parsing date:", err)
+		return
 	}
 
 	// Populate query parameters in the correct order
@@ -98,7 +112,7 @@ func HandleUpdateDLROTHDataRequest(resp http.ResponseWriter, req *http.Request) 
 	queryParameters = append(queryParameters, updateDLR_OTHReq.Description)
 	queryParameters = append(queryParameters, balance)
 	queryParameters = append(queryParameters, paid_Amount)
-	queryParameters = append(queryParameters, updateDLR_OTHReq.Date)
+	queryParameters = append(queryParameters, date)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.UpdateDLR_OTHFunction, queryParameters)

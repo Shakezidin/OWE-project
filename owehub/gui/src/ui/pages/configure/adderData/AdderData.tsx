@@ -26,6 +26,7 @@ import MicroLoader from '../../../components/loader/MicroLoader';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import DataNotFound from '../../../components/loader/DataNotFound';
+import { dateFormat } from '../../../../utiles/formatDate';
 const AdderData = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -291,7 +292,7 @@ const AdderData = () => {
                         {el.unique_id}
                       </div>
                     </td>
-                    <td>{el.date}</td>
+                    <td>{dateFormat(el.date)}</td>
                     <td>{el.gc}</td>
                     <td>{el.exact_amount}</td>
                     <td>{el.per_kw_amt}</td>

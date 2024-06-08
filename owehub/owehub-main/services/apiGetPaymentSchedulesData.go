@@ -63,7 +63,7 @@ func HandleGetPaymentSchedulesDataRequest(resp http.ResponseWriter, req *http.Re
 
 	tableName := db.TableName_payment_schedule
 	query = `SELECT ps.id as record_id, vd.dealer_name as dealer, pt1.partner_name AS partner_name, pt2.partner_name AS installer_name, 
-	st.name AS state, sl.type_name AS sale_type, ps.rl, ps.draw, ps.draw_max, ps.rep_draw, ps.rep_draw_max, ps.rep_pay, ps.start_date, ps.end_date
+	st.name AS state, sl.type_name AS sale_type, ps.rl, ps.draw, ps.draw_max, ps.rep_draw, ps.rep_draw_max, ps.rep_pay, ps.commission_model, ps.start_date, ps.end_date
 	FROM payment_schedule ps 
 	JOIN states st ON st.state_id = ps.state_id 
 	JOIN partners pt1 ON pt1.partner_id = ps.partner_id 
@@ -168,6 +168,13 @@ func HandleGetPaymentSchedulesDataRequest(resp http.ResponseWriter, req *http.Re
 			RepPay = ""
 		}
 
+		// CommissionModel
+		CommissionModel, ok := item["commission_model"].(string)
+		if !ok || CommissionModel == "" {
+			log.FuncErrorTrace(0, "Failed to get CommissionModel for Record ID %v. Item: %+v\n", RecordId, item)
+			CommissionModel = ""
+		}
+
 		// StartDate
 		StartDate, ok := item["start_date"].(string)
 		if !ok || StartDate == "" {
@@ -183,20 +190,21 @@ func HandleGetPaymentSchedulesDataRequest(resp http.ResponseWriter, req *http.Re
 		}
 
 		paySchData := models.GetPaymentScheduleData{
-			RecordId:      RecordId,
-			Dealer:        Dealer,
-			PartnerName:   PartnerName,
-			InstallerName: Installer,
-			State:         State,
-			SaleType:      Sale,
-			Rl:            Rl,
-			Draw:          Draw,
-			DrawMax:       DrawMax,
-			RepDraw:       RepDraw,
-			RepDrawMax:    RepDrawMax,
-			RepPay:        RepPay,
-			StartDate:     StartDate,
-			EndDate:       EndDate,
+			RecordId:        RecordId,
+			Dealer:          Dealer,
+			PartnerName:     PartnerName,
+			InstallerName:   Installer,
+			State:           State,
+			SaleType:        Sale,
+			Rl:              Rl,
+			Draw:            Draw,
+			DrawMax:         DrawMax,
+			RepDraw:         RepDraw,
+			RepDrawMax:      RepDrawMax,
+			RepPay:          RepPay,
+			CommissionModel: CommissionModel,
+			StartDate:       StartDate,
+			EndDate:         EndDate,
 		}
 
 		paymentScheduleList.PaymentScheduleList = append(paymentScheduleList.PaymentScheduleList, paySchData)
@@ -288,6 +296,9 @@ func PreparePaymentScheduleFilters(tableName string, dataFilter models.DataReque
 			case "rep_pay":
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ps.rep_pay) %s LOWER($%d)", operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
+			case "commission_model":
+				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ps.commission_model) %s LOWER($%d)", operator, len(whereEleList)+1))
+				whereEleList = append(whereEleList, value)
 			default:
 				filtersBuilder.WriteString(fmt.Sprintf("LOWER(ps.%s) %s LOWER($%d)", column, operator, len(whereEleList)+1))
 				whereEleList = append(whereEleList, value)
@@ -313,7 +324,7 @@ func PreparePaymentScheduleFilters(tableName string, dataFilter models.DataReque
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY ps.id, ud.name, pt1.partner_name, pt2.partner_name, st.name, sl.type_name, ps.rl, ps.draw, ps.draw_max, ps.rep_draw, ps.rep_draw_max, ps.rep_pay, ps.start_date, ps.end_date")
+		filtersBuilder.WriteString(" GROUP BY ps.id, vd.dealer_name, pt1.partner_name, pt2.partner_name, st.name, sl.type_name, ps.rl, ps.draw, ps.draw_max, ps.rep_draw, ps.rep_draw_max, ps.rep_pay, ps.commission_model, ps.start_date, ps.end_date")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {

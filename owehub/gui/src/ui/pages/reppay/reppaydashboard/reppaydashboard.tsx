@@ -92,195 +92,232 @@ export const RepPayDashboardPage: React.FC = () => {
 
   return (
     <>
+
+
       <div className="rep-Dashboard-section-container">
-        <div className="rep-Dashboard-container">
-          <div className="rep-manage-user">
-            
-          <div className="rep-dash-head-input">
-            <div className='rep-drop_label'>
-            <img src={ICONS.includes_icon} alt="" />
-            </div>
-              <label className="rep-inputLabel" style={{ color: '#344054' }}>
-                Includes
-              </label>
-              <DropdownWithCheckboxes />
-            </div>
+        <div className='rep-white-back'>
+          <div className="rep-Dashboard-container">
+            <div className="rep-manage-user">
 
-            <div className="rep-dash-head-input">
-            <div className='rep-drop_label'>
-            <img src={ICONS.lable_img} alt="" />
-            </div>
-              <label className="inputLabel" style={{color: '#344054' }}>
-                Commission Model
-              </label>
-              <Select
-                options={comissionValueData}
-                value={comissionValueData.find(
-                  (option) => option.value === selectedOption2
-                )}
-                onChange={handleSelectChange2}
-                styles={{
-                  control: (baseStyles, state) => ({
-                    ...baseStyles,
-                    fontSize: '13px',
-                    fontWeight: '500',
-                    borderRadius: '.40rem',
-                    border: 'none',
-                    outline: 'none',
-                    width: '6rem',
-                    minHeight: 'unset',
-                    height: '30px',
-                    alignContent: 'center',
-                    backgroundColor: '#ffffff',
-                    cursor: 'pointer',
-                  }),
-                  indicatorSeparator: () => ({
-                    display: 'none',
-                  }),
-                  dropdownIndicator: (baseStyles, state) => ({
-                    ...baseStyles,
-                    color: '#292929',
-                    '&:hover': {
-                      color: '#292929',
-                    },
-                  }),
-                  option: (baseStyles, state) => ({
-                    ...baseStyles,
-                    fontSize: '13px',
-                    color: state.isSelected ? '#ffffff' : '#0000000',
-                    backgroundColor: state.isSelected ? '#0493CE' : '#ffffff',
-                    '&:hover': {
-                      backgroundColor: state.isSelected ? '#0493CE' : '#DDEBFF',
-                    },
-                  }),
-                  singleValue: (baseStyles, state) => ({
-                    ...baseStyles,
-                    color: '#0493CE',
-                  }),
-                  menu: (baseStyles) => ({
-                    ...baseStyles,
-                    width: '6rem',
-                  }),
-                }}
-              />
-            </div>
 
-            <div className="rep-dash-head-input">
-            <div className='rep-drop_label'>
-            <img src={ICONS.lable_img} alt="" />
-            </div>
-              <label className="inputLabel" style={{ color: '#344054' }}>
-                Payroll Date
-              </label>
+            <div className="rep-dash-head-input" >
+                <div className='rep-drop_label' style={{ backgroundColor: "#8E81E0" }}>
+                  <img  src={ICONS.vector} alt="" />
+                </div>
+                <div className='rep-up'>
+                  <label className="rep-inputLabel" style={{ color: '#344054', marginLeft: "-29px" }}>
+                    Includes
+                  </label>
+                  <div className='drop-d'> <DropdownWithCheckboxes /></div>
+                </div>
+              </div>
 
-              <div
-                style={{
-                  position: 'relative',
-                  top: '-1px',
-                  backgroundColor: 'white',
-                }}
-                ref={datePickerRef}
-              >
-                <label
-                  className="rep-date-button"
-                  onClick={handleToggleDatePicker}
-                  style={{ color: '#0493CE' }}
-                >
-                  Select Date
-                </label>
-                {showDatePicker && (
-                  <div className="calender-container">
-                    <DateRangePicker
-                      ranges={[selectionRange]}
-                      onChange={handleSelect}
-                    />
-                    <button
-                      className="reset-calender"
-                      onClick={handleResetDates}
-                    >
-                      Reset
-                    </button>
-                    <button
-                      className="close-calender"
+              <div className="rep-dash-head-input" style={{ minWidth: '185px' }}>
+                <div className='rep-drop_label' style={{ backgroundColor: "#57B3F1" }}>
+                  <img src={ICONS.lable_img} alt="" />
+                </div>
+                <div className='rep-up relative'>
+                  <label className="rep-inputLabel" style=
+                    {{
+                      color: '#344054', position: 'absolute', left: '8px',
+                      top: '-10px',
+                      whiteSpace: 'nowrap'
+                    }}>
+                    Commission Model
+                  </label>
+                  <Select
+                    options={comissionValueData}
+                    value={comissionValueData.find(
+                      (option) => option.value === selectedOption2
+                    )}
+                    onChange={handleSelectChange2}
+                    styles={{
+                      control: (baseStyles, state) => ({
+                        ...baseStyles,
+                        fontSize: '13px',
+                        fontWeight: '500',
+                        borderRadius: '.40rem',
+                        border: 'none',
+                        outline: 'none',
+                        // width: '4rem',
+                        width: 'fit-content',
+                        minHeight: 'unset',
+                        height: '8px',
+                        alignContent: 'center',
+                        backgroundColor: '#ffffff',
+                        cursor: 'pointer',
+                        marginRight: '32px',
+                        // marginBottom: '0px',
+                        boxShadow: 'none',
+                        marginTop: '15px'
+
+                      }),
+                      indicatorSeparator: () => ({
+                        display: 'none',
+                      }),
+                      dropdownIndicator: (baseStyles, state) => ({
+                        ...baseStyles,
+                        color: '#292929',
+                        '&:hover': {
+                          color: '#292929',
+                        },
+                        marginLeft: '-18px'
+                      }),
+                      option: (baseStyles, state) => ({
+                        ...baseStyles,
+                        fontSize: '13px',
+                        color: state.isSelected ? '#ffffff' : '#0000000',
+                        backgroundColor: state.isSelected ? '#0493CE' : '#ffffff',
+                        '&:hover': {
+                          backgroundColor: state.isSelected ? '#0493CE' : '#DDEBFF',
+                        },
+                      }),
+                      singleValue: (baseStyles, state) => ({
+                        ...baseStyles,
+                        color: '#292929',
+                      }),
+                      menu: (baseStyles) => ({
+                        ...baseStyles,
+                        width: '6rem',
+                      }),
+                      input: (baseStyles) => ({
+                        ...baseStyles,
+                        '&:focus': {
+                          border: 'none',
+                          outline: 'none'
+                        }
+                      })
+                    }}
+                  />
+                </div>
+               
+              </div>
+
+
+              <div className="rep-dash-head-input" style={{width: "210px" }}>
+
+
+
+                <div className='rep-drop_label' style={{ backgroundColor: "#C470C7" }}>
+                  <img src={ICONS.includes_icon} alt="" />
+                </div>
+                <div className='rep-up relative'>
+                  <label className="rep-inputLabel" style=
+                    {{
+                      color: '#344054',
+                      position: 'absolute',
+                      left: '12px',
+                      top: '-9px',
+                      whiteSpace: 'nowrap',
+                      zIndex: 99
+                    }}>
+                    Payroll Date
+                  </label>
+
+                  <div
+                    style={{
+                      position: 'relative',
+                      top: '7px',
+                      backgroundColor: 'white',
+                      marginLeft: '6px',
+
+                    }}
+                    ref={datePickerRef}
+                  >
+                    <label
+                      className="date-button"
                       onClick={handleToggleDatePicker}
+                      style={{ color: '#292929' }}
                     >
-                      Close
-                    </button>
+                      {selectionRange.startDate.toLocaleDateString() !== selectionRange.endDate.toLocaleDateString()
+                        ? `${selectionRange.startDate.toLocaleDateString()} - ${selectionRange.endDate.toLocaleDateString()}`
+                        : 'Select Date'}
+                    </label>
+                    {showDatePicker && (
+                      <div className="rep-calender-container">
+                        <DateRangePicker
+                          ranges={[selectionRange]}
+                          onChange={handleSelect}
+                        />
+                        <button
+                          className="reset-calender"
+                          onClick={handleResetDates}
+                        >
+                          Reset
+                        </button>
+                        <button
+                          className="close-calender"
+                          onClick={handleToggleDatePicker}
+                        >
+                          Close
+                        </button>
+                      </div>
+                    )}
                   </div>
-                )}
+                </div>
               </div>
+
             </div>
 
-            <div className="rep-dash-head-input">
-              <label className="inputLabel" style={{ color: '#344054' }}>
-                Set Default
-              </label>
-              <label
-                className="inputLabel rep-chart-view"
-                style={{ color: '#0493CE' }}
-              >
-                Chart View
-              </label>
-            </div>
-          </div>
-
-          <div className="rep-dashboard-payroll">
-            <div className="Line-container">
-              <div className="rep-line-graph">
-                <div
-                  className={`rep-filter-line ${
-                    active === 0 ? 'rep-active-filter-line' : ''
-                  }`}
-                  onClick={() => setActive(0)}
-                >
-                  {active === 0 ? (
-                    <img src={ICONS.dashHead} alt="" />
-                  ) : (
-                    <img src={ICONS.dashHead} alt="" />
-                  )}
-                </div>
-                <div
-                  className={`filter-disable ${
-                    active === 1 ? 'rep-active-filter-line' : ''
-                  }`}
-                  // onClick={() => setActive(1)}
-                  // style={{ border: '1px solid #0493CE' }}
-                >
-                  {active === 1 ? (
-                    <img src={ICONS.viewActive} alt="" />
-                  ) : (
-                    <img src={ICONS.viewChart} alt="" />
-                  )}
-                </div>
-                <div
-                  className="rep-filter-line"
-                  // style={{ border: '1px solid #0493CE' }}
-                  onClick={() => setFilterModal(true)}
-                >
-                  <img src={ICONS.FILTER} alt="" />
+            <div className="rep-dashboard-payroll">
+              <div className="Line-container">
+                <div className="rep-line-graph">
+                  <div
+                    className={`rep-filter-line ${active === 0 ? 'rep-active-filter-line' : ''
+                      }`}
+                    onClick={() => setActive(0)}
+                  >
+                    {active === 0 ? (
+                      <img src={ICONS.dashActive} alt="" />
+                    ) : (
+                      <img src={ICONS.dashActive} alt="" />
+                    )}
+                  </div>
+                  <div
+                    className={`filter-disable ${active === 1 ? 'rep-active-filter-line' : ''
+                      }`}
+                    // onClick={() => setActive(1)}
+                    style={{ backgroundColor: '#377CF6' }}
+                  >
+                    {active === 1 ? (
+                      <img src={ICONS.viewActive} alt="" />
+                    ) : (
+                      <img src={ICONS.viewActive} alt="" />
+                    )}
+                  </div>
+                  <div
+                    className="rep-filter-line"
+                    style={{ backgroundColor: '#377CF6' }}
+                    onClick={() => setFilterModal(true)}
+                  >
+                    <img src={ICONS.fil_white} alt="" style={{ height: '15px', width: '15px' }} />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+          <div className="">
+            <RepPayDashboardTotal />
+            {/* <DonutChart /> */}
+          </div>
+
         </div>
-        <div className="">
-          <RepPayDashboardTotal />
-          {/* <DonutChart /> */}
-        </div>
+
+
         {filterModal && (
           <FilterModal
             handleClose={filterClose}
             columns={[]}
             page_number={1}
             page_size={10}
-            fetchFunction={() => {}}
+            fetchFunction={() => { }}
           />
         )}
         <div className="" style={{ marginTop: '20px' }}>
           {active === 0 && <RepDashBoardTable />}
           {active === 1 && <RepDashBoardChart />}
         </div>
-      </div>
+      </div >
     </>
   );
 };

@@ -2,7 +2,7 @@ import { Column } from '../../../core/models/data_models/FilterSelectModel';
 export const AdderDataColumn: Column[] = [
   {
     name: 'unique_id',
-    displayName: 'Unique Id',
+    displayName: 'Unique ID',
     type: 'string',
     isCheckbox: true,
   },

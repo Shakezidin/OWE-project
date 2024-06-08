@@ -14,14 +14,14 @@ import {
 import { toast } from 'react-toastify';
 import ChangePassword from '../../pages/resetPassword/ChangePassword/ChangePassword';
 import { checkUserExists } from '../../../redux/apiActions/auth/authActions';
-
+import useMatchMedia from '../../../hooks/useMatchMedia';
 const MainLayout = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [isOpenChangePassword, setIsOpenChangePassword] = useState(
     localStorage.getItem('is_password_change_required') === 'true'
   );
-
+  const isTablet = useMatchMedia('(max-width: 1024px)');
   const [toggleOpen, setToggleOpen] = useState<boolean>(false);
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated
@@ -80,6 +80,10 @@ const MainLayout = () => {
         });
     }
   }, [dispatch, navigate]);
+
+  useEffect(() => {
+    setToggleOpen(isTablet);
+  }, [isTablet]);
 
   return isAuthenticated ? (
     <div className="main-container">

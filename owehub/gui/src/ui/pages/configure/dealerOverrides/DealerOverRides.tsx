@@ -26,6 +26,7 @@ import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
+import { dateFormat } from '../../../../utiles/formatDate';
 
 const DealerOverRides: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -318,8 +319,8 @@ const DealerOverRides: React.FC = () => {
                     <td>{el.dealer}</td>
                     <td>{el.pay_rate}</td>
                     <td>{el.state}</td>
-                    <td>{el.start_date}</td>
-                    <td>{el.end_date}</td>
+                    <td>{dateFormat(el.start_date)}</td>
+                    <td>{dateFormat(el.end_date)}</td>
                     {viewArchived === true ? null : (
                       <td>
                         {selectedRows.size > 0 ? (

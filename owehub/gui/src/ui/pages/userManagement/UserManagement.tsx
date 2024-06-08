@@ -206,19 +206,14 @@ const UserManagement: React.FC = () => {
   /** render UI */
   return (
     <>
-      <div className="management-section">
+      {/* <div className="management-section">
         <div className="manage-user">
           <p>Welcome, {userName}</p>
           <h3>User Management</h3>
         </div>
 
-        <AddNewButton
-          title={'Add New'}
-          onClick={() => {
-            handleOpen();
-          }}
-        />
-      </div>
+        
+      </div> */}
       {loading && (
         <div>
           <Loading /> {loading}
@@ -250,6 +245,14 @@ const UserManagement: React.FC = () => {
 
       <div className="onboardrow">
         <UserManagementTable
+          AddBtn={
+            <AddNewButton
+              title={'Add New'}
+              onClick={() => {
+                handleOpen();
+              }}
+            />
+          }
           selectedRows={selectedRows}
           selectAllChecked={selectAllChecked}
           setSelectedRows={setSelectedRows}

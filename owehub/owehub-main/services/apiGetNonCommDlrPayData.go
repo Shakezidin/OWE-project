@@ -11,6 +11,7 @@ import (
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	"strings"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -67,7 +68,7 @@ func HandleGetNonCommDlrPayDataRequest(resp http.ResponseWriter, req *http.Reque
     		ndp.dealer_dba, vd.dealer_name, ndp.exact_amount,
     		ndp.approved_by, ndp.notes, ndp.balance, ndp.paid_amount, ndp.dba
 			FROM noncomm_dlrpay ndp
-			JOIN v_dealer vd ON ndp.dealer_id = vd.id`
+			LEFT JOIN v_dealer vd ON ndp.dealer_id = vd.id`
 
 	filter, whereEleList = PrepareNonCommDlrPayFilters(tableName, dataReq, false)
 	if filter != "" {
@@ -119,7 +120,7 @@ func HandleGetNonCommDlrPayDataRequest(resp http.ResponseWriter, req *http.Reque
 
 		// exact_amount
 		ExactAmount, ok := item["exact_amount"].(float64)
-		if !ok  {
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get exact amount for Record ID %v. Item: %+v\n", RecordId, item)
 			ExactAmount = 0.0
 		}
@@ -160,12 +161,13 @@ func HandleGetNonCommDlrPayDataRequest(resp http.ResponseWriter, req *http.Reque
 		}
 
 		// start_date
-		Date, ok := item["date"].(string)
-		if !ok || Date == "" {
+		Date, ok := item["date"].(time.Time)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get date for Record ID %v. Item: %+v\n", RecordId, item)
-			Date = ""
+			Date = time.Time{}
 		}
-
+		date := Date.Format("2006-01-02")
+		
 		NonCommDlrPayData := models.GetNonCommDlrPay{
 			RecordId:    RecordId,
 			UniqueID:    UniqueID,
@@ -178,7 +180,7 @@ func HandleGetNonCommDlrPayDataRequest(resp http.ResponseWriter, req *http.Reque
 			Balance:     Balance,
 			PaidAmount:  PaidAmount,
 			DBA:         DBA,
-			Date:        Date,
+			Date:        date,
 		}
 		NonCommDlrPayDataList.NonCommDlrPayList = append(NonCommDlrPayDataList.NonCommDlrPayList, NonCommDlrPayData)
 	}
@@ -295,7 +297,7 @@ func PrepareNonCommDlrPayFilters(tableName string, dataFilter models.DataRequest
 	}
 
 	if forDataCount == true {
-		filtersBuilder.WriteString(" GROUP BY ndp.id, ndp.unique_id, ndp.customer, ndp.start_date, ndp.end_date, ndp.dealer_dba, vd.dealer_name, ndp.exact_amount, ndp.approved_by, ndp.notes, ndp.balance, ndp.paid_amount, ndp.dba")
+		filtersBuilder.WriteString(" GROUP BY ndp.id, ndp.unique_id, ndp.customer, ndp.date, ndp.dealer_dba, vd.dealer_name, ndp.exact_amount, ndp.approved_by, ndp.notes, ndp.balance, ndp.paid_amount, ndp.dba")
 	} else {
 		// Add pagination logic
 		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {

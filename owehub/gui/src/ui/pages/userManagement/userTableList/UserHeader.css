@@ -10,3 +10,9 @@
   padding: 1rem 1.875rem 1rem 1.875rem;
   background-color: white;
 }
+
+button.trash-btn{
+  background-color:#377CF6;
+  width: 32px;
+  height: 32px;
+}

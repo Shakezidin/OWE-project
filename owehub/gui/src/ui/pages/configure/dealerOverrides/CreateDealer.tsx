@@ -223,8 +223,9 @@ const CreateDealer: React.FC<dealerProps> = ({
                     value={
                       dealerOption(newFormData)?.find(
                         (option) => option.value === delaerVal
-                      ) || { label: delaerVal, value: delaerVal }
+                      ) || undefined
                     }
+                    
                   />
                   {errors.delaerVal && (
                     <span className="error">{errors.delaerVal}</span>
@@ -265,11 +266,7 @@ const CreateDealer: React.FC<dealerProps> = ({
 
                   {errors?.state && (
                     <span
-                      style={{
-                        display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
-                      }}
+                    className="error"
                     >
                       {errors.state}
                     </span>

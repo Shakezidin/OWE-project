@@ -2,7 +2,7 @@ import { Column } from '../../../core/models/data_models/FilterSelectModel';
 export const ARColumns: Column[] = [
   {
     name: 'unique_id',
-    displayName: 'UniqueID',
+    displayName: 'Unique ID',
     type: 'string',
     isCheckbox: true,
   },

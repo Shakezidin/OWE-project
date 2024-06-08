@@ -33,13 +33,12 @@
 }
 .ar-dash-head-input {
   display: flex;
-  height: 36px;
+  height: 47px;
   background-color: #ffffff;
-  padding: 0 3px 0 12px;
-  gap: 0.4rem;
+  padding: 0 3px 0 3px;   /*here change for reduce left space ***************/
+  gap: 0;
   align-items: center;
   border-radius: 8px;
-  border: solid 1px #333333;
 }
 
 .ar-chart-view {
@@ -151,6 +150,7 @@
   font-weight: 500;
   line-height: 14.5px;
 }
+
 .ar-calender-container {
   position: absolute;
   z-index: 999;
@@ -160,6 +160,7 @@
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4);
   border-radius: 0.4rem;
 }
+
 .ar-close-calender {
   background: #3d91ff;
   color: white;
@@ -184,3 +185,13 @@
   bottom: 10px;
   border: none;
 }
+
+.ar-white-back{
+  background-color: white;
+  padding-left: 13px;
+  padding-right: 13px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-radius: 18px;
+}
+

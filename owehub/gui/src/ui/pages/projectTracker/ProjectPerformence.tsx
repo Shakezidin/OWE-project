@@ -3,7 +3,11 @@ import { cardData, projectDashData } from './projectData';
 import { ICONS } from '../../icons/Icons';
 import '../projectTracker/projectTracker.css';
 import { IoMdInformationCircleOutline } from 'react-icons/io';
-import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import {
+  CircularProgressbar,
+  CircularProgressbarWithChildren,
+  buildStyles,
+} from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { projects } from './projectData';
 import Breadcrumb from '../../components/breadcrumb/Breadcrumb';
@@ -24,7 +28,7 @@ const ProjectPerformence = () => {
     if (!date) {
       return { backgroundColor: '#F2F4F6', color: '#7D7D7D' };
     } else if (new Date(date) <= new Date()) {
-      return { backgroundColor: '#57B93A', color: 'white' };
+      return { backgroundColor: '#63ACA3', color: 'white' };
     } else {
       return { backgroundColor: '#008DDA', color: 'white' };
     }
@@ -82,67 +86,88 @@ const ProjectPerformence = () => {
       />
       <div className="project-container">
         <div className="project-heading">
-          <h2>Performance</h2>
-
-          <div className="iconsSection-filter">
-            <button
-              type="button"
-              style={{ cursor: 'not-allowed', opacity: '0.5' }}
-            >
-              <img
-                src={ICONS.filtercomm}
-                alt=""
-                style={{ width: '15px', height: '15px' }}
-              />
-            </button>
-          </div>
+          <h2>Daily Performance</h2>
         </div>
-        <div className="project-card-container">
-          {cardData.map((el, i) => {
-            const findSale = perfomaceSale.find(
-              (s: (typeof perfomaceSale)[0]) => s.Type === el.type
-            );
-            return (
-              <div
-                className="project-card"
-                key={i}
-                style={{ backgroundColor: el.bgColor }}
-              >
-                <div className="project-card-head">
-                  <div
-                    className="project-icon-img"
-                    style={{ backgroundColor: el.iconBgColor }}
-                  >
-                    <object
-                      type="image/svg+xml"
-                      data={el.icon}
-                      aria-label="performance-icons"
-                    ></object>
+        <div className="flex flex-wrap">
+          <div className="project-card-container-1">
+            {cardData.map((el, i) => {
+              const findSale = perfomaceSale.find(
+                (s: (typeof perfomaceSale)[0]) => s.Type === el.type
+              );
+              return (
+                <div
+                  className="project-card"
+                  key={i}
+                  style={{ backgroundColor: el.bgColor }}
+                >
+                  <div className="project-card-head">
+                    <div
+                      className="project-icon-img"
+                    >
+                      <object
+                        type="image/svg+xml"
+                        data={el.icon}
+                        aria-label="performance-icons"
+                        width={30}
+                      ></object>
+                    </div>
+                    <div style={{ lineHeight: '20px' }}>
+                      <p style={{ color: el.color, fontSize: '12px' }}>
+                        {el.name}
+                      </p>
+                      <p style={{ color: '#fff', fontSize: '16px' }}>
+                        {' '}
+                        {formatFloat(findSale?.sales)}{' '}
+                      </p>
+                    </div>
                   </div>
-                  <h2 style={{ color: el.color }}>{el.name}</h2>
+                  <div>
+                    <p
+                      style={{
+                        color: '#fff',
+                        fontSize: '12px',
+                        fontWeight: '300',
+                        marginTop: '10px',
+                        textAlign: 'center',
+                      }}
+                      className='per-sales'
+                    >
+                      {' '}
+                      Sales KW - {formatFloat(findSale?.sales_kw)}{' '}
+                    </p>
+                  </div>
                 </div>
-                <div className="project-card-body">
-                  <div className="project-body-details">
-                    <h2 style={{ fontSize: '14px' }}>
-                      {' '}
-                      {formatFloat(findSale?.sales)}{' '}
-                    </h2>
-                    <p style={{ fontSize: '14px' }}>Sales</p>
-                  </div>
-                  <div className="project-body-details">
-                    <h2 style={{ fontSize: '14px' }}>
-                      {' '}
-                      {formatFloat(findSale?.sales_kw)}{' '}
-                    </h2>
-                    <p style={{ fontSize: '14px' }}>Sales KW</p>
-                  </div>
+              );
+            })}
+          </div>
+          <div className="project-card-container-2 flex-auto">
+            {projectDashData.map((item, i) => (
+              <div className="project-ruppes-card" key={i}>
+                <div className="performance-bars" style={{ height: "130px", width: '200px' }}>
+                  <CircularProgressbarWithChildren
+                    className="my-custom-progressbar"
+                    circleRatio={0.5}
+                    value={item.percent}
+                    strokeWidth={10}
+                    styles={buildStyles({
+                      pathColor: item.percentColor,
+                      textSize: '10px',
+                      textColor: '#0C0B18',
+                      rotation: 0.75,
+                      trailColor: "#F2F4F6"
+                    })}
+                  >
+                    <div className='flex flex-column items-center flex-center gap-20' style={{gap: '4px'}}>
+                      <p style={{ fontSize: '12px', color: '#646464', fontWeight: '300'}}>
+                        {item.para}
+                      </p>
+                      <p style={{ fontSize: '16px', color: "#0C0B18" }}>{item.ruppes}</p>
+                    </div>
+                  </CircularProgressbarWithChildren>
                 </div>
               </div>
-            );
-          })}
-        </div>
-        <div className="project-card-container">
-          {projectDashData.map((item, i) => (
+            ))}
+            {/* {projectDashData.map((item, i) => (
             <div className="project-ruppes-card" key={i}>
               <div className="project-ruppes-body">
                 <div
@@ -179,7 +204,8 @@ const ProjectPerformence = () => {
                 </div>
               </div>
             </div>
-          ))}
+          ))} */}
+          </div>
         </div>
       </div>
 
@@ -189,40 +215,30 @@ const ProjectPerformence = () => {
       >
         <div className="performance-table-heading">
           <div className="performance-project">
-            <div>
-              <h2>Projects</h2>
-
-              <div className="progress-box-container">
-                <div className="progress-box-body">
-                  <div
-                    className="progress-box"
-                    style={{ background: '#0493CE' }}
-                  ></div>
-                  <p>In Process</p>
-                </div>
-                <div className="progress-box-body">
-                  <div
-                    className="progress-box"
-                    style={{ background: '#57B93A' }}
-                  ></div>
-                  <p>Completed</p>
-                </div>
-                <div className="progress-box-body">
-                  <div
-                    className="progress-box"
-                    style={{ background: '#E9E9E9' }}
-                  ></div>
-                  <p>Not Started yet</p>
-                </div>
+            <h2>Projects</h2>
+            <div className="progress-box-container">
+              <div className="progress-box-body">
+                <div
+                  className="progress-box"
+                  style={{ background: '#377CF6' }}
+                ></div>
+                <p>In Progress</p>
+              </div>
+              <div className="progress-box-body">
+                <div
+                  className="progress-box"
+                  style={{ background: '#63ACA3' }}
+                ></div>
+                <p>Active</p>
+              </div>
+              <div className="progress-box-body">
+                <div
+                  className="progress-box"
+                  style={{ background: '#E9E9E9' }}
+                ></div>
+                <p>Not Started</p>
               </div>
             </div>
-            {/* <input
-              className="performance-search"
-              type="search"
-              placeholder="search "
-              disabled
-              onChange={() => {}}
-            /> */}
           </div>
 
           <div className="performance-milestone-table">
@@ -544,7 +560,7 @@ const ProjectPerformence = () => {
                                 <div style={{ width: '25px' }}>
                                   <CircularProgressbar
                                     styles={buildStyles({
-                                      pathColor: '#57B93A',
+                                      pathColor: '#63ACA3',
                                     })}
                                     strokeWidth={10}
                                     value={parseInt(

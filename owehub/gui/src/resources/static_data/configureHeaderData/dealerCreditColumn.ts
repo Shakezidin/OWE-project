@@ -4,7 +4,7 @@ export const DealerCreditColumn: Column[] = [
   // { name: "record_id", displayName: "Record ID", type: "number" },
   {
     name: 'unique_id',
-    displayName: 'uniqueId',
+    displayName: 'Unique ID',
     type: 'string',
     isCheckbox: true,
   },

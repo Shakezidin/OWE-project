@@ -26,6 +26,7 @@
   display: flex;
   justify-content: space-between;
   gap: 1rem;
+  align-items: center;
 }
 
 .iconsSection2 {
@@ -53,8 +54,12 @@
   cursor: pointer;
 }
 
-.iconsSection2 button:disabled{
+.iconsSection2 button:disabled {
   background-color: var(--row-bg-color);
+}
+
+.iconsSection2 button:disabled button > svg {
+  fill: #fefefe;
 }
 
 .iconsSection2 .hover-btn:hover {
@@ -72,13 +77,13 @@
   gap: 0.5rem;
   border: none;
   background-color: var(--white-color);
-  padding: 0.5rem;
-  border: 1px solid var(--button-border-color);
-  font-size: 13px;
+  width: 32px;
+  height: 32px;
   border-radius: 8px;
   font-weight: 500;
   color: var(--btn-text-color);
   cursor: pointer;
+  box-shadow: 2px 2px 10px rgba(148, 148, 148, 40);
 }
 
 /* .UserManageTable {
@@ -201,8 +206,7 @@ table tbody {
 }
 
 table thead tr {
-  border-bottom: 1px solid var(--border-color);
-  background-color: var(--row-bg-color);
+  background-color: #d5e4ff;
   position: sticky;
   top: 0;
   z-index: 1;
@@ -373,4 +377,17 @@ table tbody tr td {
 /* Remove hover background color for the specific row */
 table tbody tr:has(td[colspan='10'] .data-not-found):hover {
   background-color: transparent;
+}
+
+@media (max-width: 1024px) {
+  .fildelb-btn {
+    margin-right: -15px;
+  }
+  .iconsSection2 button > span {
+    display: none;
+  }
+
+  .commissionSection h3 {
+    font-size: 14px;
+  }
 }

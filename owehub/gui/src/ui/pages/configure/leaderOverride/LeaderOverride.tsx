@@ -28,6 +28,7 @@ import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_
 import CheckBox from '../../../components/chekbox/CheckBox';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
+import { dateFormat } from '../../../../utiles/formatDate';
 
 const LeaderOverride = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -305,8 +306,8 @@ const LeaderOverride = () => {
                     <td>{el.sales_q}</td>
                     <td>{el.team_kw_q}</td>
                     <td>{el.pay_rate}</td>
-                    <td>{el.start_date}</td>
-                    <td>{el.end_date}</td>
+                    <td>{dateFormat(el.start_date)}</td>
+                    <td>{dateFormat(el.end_date)}</td>
                     <td>
                       {!viewArchived && selectedRows.size < 2 && (
                         <div className="action-icon">

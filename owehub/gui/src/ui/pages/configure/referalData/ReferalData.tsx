@@ -59,9 +59,7 @@ const ReferalData: React.FC = () => {
   const [editedCommission, setEditedCommission] =
     useState<CommissionModel | null>(null);
   const itemsPerPage = 10;
-  const currentPage = useAppSelector(
-    (state) => state.paginationType.currentPage
-  );
+  const [currentPage, setCurrentPage] = useState(1);
   const [viewArchived, setViewArchived] = useState<boolean>(false);
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
@@ -71,20 +69,21 @@ const ReferalData: React.FC = () => {
       page_number: currentPage,
       page_size: itemsPerPage,
       archived: viewArchived,
+      filters,
     };
     dispatch(getrefralData(pageNumber));
-  }, [dispatch, currentPage, viewArchived]);
+  }, [dispatch, currentPage, viewArchived, filters]);
 
   const paginate = (pageNumber: number) => {
-    dispatch(setCurrentPage(pageNumber));
+    setCurrentPage(pageNumber);
   };
 
   const goToNextPage = () => {
-    dispatch(setCurrentPage(currentPage + 1));
+    setCurrentPage(currentPage + 1);
   };
 
   const goToPrevPage = () => {
-    dispatch(setCurrentPage(currentPage - 1));
+    setCurrentPage(currentPage - 1);
   };
 
   const filter = () => {
@@ -93,8 +92,8 @@ const ReferalData: React.FC = () => {
 
   const totalPages = Math.ceil(dbCount / itemsPerPage);
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
+  const endIndex = startIndex * itemsPerPage;
   const handleAddCommission = () => {
     setEditMode(false);
     setEditedCommission(null);
@@ -107,7 +106,7 @@ const ReferalData: React.FC = () => {
     handleOpen();
   };
 
-  const currentPageData = commissionList?.slice(startIndex, endIndex);
+  const currentPageData = commissionList?.slice();
   const isAnyRowSelected = selectedRows.size > 0;
   const isAllRowsSelected = selectedRows.size === commissionList.length;
   const handleSort = (key: any) => {
@@ -374,10 +373,11 @@ const ReferalData: React.FC = () => {
             </tbody>
           </table>
         </div>
-        {commissionList?.length > 0 ? (
+        {currentPageData?.length > 0 ? (
           <div className="page-heading-container">
             <p className="page-heading">
-              {currentPage} - {totalPages} of {currentPageData?.length} item
+              {startIndex} - {endIndex > dbCount ? dbCount : endIndex} of{' '}
+              {currentPageData?.length} item
             </p>
 
             <Pagination

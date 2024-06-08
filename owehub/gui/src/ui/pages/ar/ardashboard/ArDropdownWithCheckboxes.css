@@ -34,29 +34,18 @@
 .ar-dropdown-menu {
   position: absolute;
   top: 100%;
-  left: -78px;
+  left: -30px;
   z-index: 5;
   background-color: white;
   border: 1px solid #000000;
   border-radius: 8px;
   padding: 8px;
-  margin-top: 4px;
+  margin-top: 6px;
   overflow-y: auto;
-  width: 178px;
-  height: 180px;
+  width: 160px;
+  height: 220px;
   box-sizing: border-box;
   color: #000000;
-}
-
-.ar-dropdown-menu::-webkit-scrollbar {
-  scrollbar-width: thin;
-  display: block;
-  scrollbar-color: rgb(173, 173, 173) #fff;
-  width: 8px;
-}
-.ar-dropdown-menu::-webkit-scrollbar-thumb {
-  background: rgb(173, 173, 173);
-  border-radius: 30px;
 }
 
 .ar-dropdown-item {
@@ -124,7 +113,6 @@
   align-items: center;
   justify-content: center;
   font-size: 12px;
-  margin-right: -25px;
 }
 
 

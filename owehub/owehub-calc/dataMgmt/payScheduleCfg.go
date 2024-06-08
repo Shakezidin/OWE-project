@@ -132,6 +132,13 @@ func (paymentScheduleCfg *PayScheduleCfgStruct) LoadPayScheduleCfg() (err error)
 			RepPay = ""
 		}
 
+		// CommissionModel
+		CommissionModel, ok := item["commission_model"].(string)
+		if !ok || CommissionModel == "" {
+			log.FuncErrorTrace(0, "Failed to get CommissionModel for Record ID %v. Item: %+v\n", RecordId, item)
+			CommissionModel = ""
+		}
+
 		// StartDate
 		StartDate, ok := item["start_date"].(string)
 		if !ok || StartDate == "" {

@@ -24,6 +24,7 @@ import MicroLoader from '../../../components/loader/MicroLoader';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
+import { dateFormat } from '../../../../utiles/formatDate';
 
 const Reconcile = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -319,8 +320,8 @@ const Reconcile = () => {
                     <td>{el.state_name}</td>
                     <td>{el.sys_size}</td>
                     <td>{el.status}</td>
-                    <td>{el.start_date}</td>
-                    <td>{el.end_date}</td>
+                    <td>{dateFormat(el.start_date)}</td>
+                    <td>{dateFormat(el.end_date)}</td>
                     <td>{el.amount}</td>
                     <td>
                       {el.notes.length > 40
