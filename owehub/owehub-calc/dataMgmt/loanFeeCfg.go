@@ -133,6 +133,11 @@ func (pLoanFee *LoanFeeCfgStruct) LoadLoanFeeCfg() (err error) {
 	return err
 }
 
+/******************************************************************************
+* FUNCTION:        CalculateDlrCost
+* DESCRIPTION:     calculates the dlr cost value based on the provided data
+* RETURNS:         dlrcost float64
+*****************************************************************************/
 func (pLoanFee *LoanFeeCfgStruct) CalculateDlrCost(uniqueId, dealer, installer, state, Type string, date time.Time) (dlrcost float64) {
 	var (
 		err       error
@@ -141,7 +146,6 @@ func (pLoanFee *LoanFeeCfgStruct) CalculateDlrCost(uniqueId, dealer, installer, 
 	)
 
 	dlrTier := DealerTierCfg.CalculateDlrTier(uniqueId, dealer, date)
-	log.FuncErrorTrace(0, "*****************************%v", dlrTier)
 	if dlrTier == "OLD" {
 		for _, data := range pLoanFee.LoanFeeCfg.LoanFeeList {
 			if len(data.StartDate) > 0 {

@@ -135,6 +135,11 @@ func (pMarketingFee *MarketingFeeCfgStruct) LoadMarketingFeeCfg() (err error) {
 	return err
 }
 
+/******************************************************************************
+* FUNCTION:        CalculateChgDlr
+* DESCRIPTION:     calculates the chgDlr value based on the provided data
+* RETURNS:         chgdlr bool
+*****************************************************************************/
 func (pMarketingFee *MarketingFeeCfgStruct) CalculateChgDlr(Type string) (chgDlr bool) {
 	var (
 		err           error
@@ -171,6 +176,11 @@ func (pMarketingFee *MarketingFeeCfgStruct) CalculateChgDlr(Type string) (chgDlr
 	return chgDlr
 }
 
+/******************************************************************************
+* FUNCTION:        excelDateFromTime
+* DESCRIPTION:     calculates the date time.time to integer format in excel on the provided data
+* RETURNS:         Int
+*****************************************************************************/
 func excelDateFromTime(t time.Time) int {
 	const excelEpoch = "1899-12-30"
 	excelEpochDate, _ := time.Parse("2006-01-02", excelEpoch)

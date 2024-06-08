@@ -176,8 +176,8 @@ func (paymentScheduleCfg *PayScheduleCfgStruct) LoadPayScheduleCfg() (err error)
 
 /******************************************************************************
 * FUNCTION:        CalculateRL
-* DESCRIPTION:     calculates the addr value based on the provided data
-* RETURNS:         addr value
+* DESCRIPTION:     calculates the rl value based on the provided data
+* RETURNS:         rl
 *****************************************************************************/
 func (PayScheduleCfg *PayScheduleCfgStruct) CalculateRL(dealer, partner, installer, state string, wc time.Time) float64 {
 
@@ -221,7 +221,7 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateRL(dealer, partner, install
 /******************************************************************************
 * FUNCTION:        CalculateDlrDrawPerc
 * DESCRIPTION:     calculates the addr value based on the provided data
-* RETURNS:         drawPerc
+* RETURNS:         drawPerc,dlrDrawMax,commission_models
 *****************************************************************************/
 func (PayScheduleCfg *PayScheduleCfgStruct) CalculateDlrDrawPerc(dealer, partner, installer, loanType, state string, wc time.Time) (drawPerc, dlrDrawMax float64, commission_models string) {
 	var (

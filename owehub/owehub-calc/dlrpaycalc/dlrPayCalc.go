@@ -108,8 +108,8 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 		perTeamKw          float64 // co
 		rl                 float64 // AR //required
 		r1DrawAmt          float64 // BS //required
+		netEpc             float64 // BE //required
 		// Type               string    // E  //required
-		netEpc float64 // BE //required
 		// Rep1               string    // M  //required
 		// Rep2               string    // N  //required
 
@@ -177,15 +177,15 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 
 	// statusDate = CalculateStatusDate(uniqueID, shakyHand, pto, instSys, cancel, ntp, permSub, wc) //! shakyHand
 	dlrDrawPerc, dlrDrawMax, commission_models = dataMgmt.PayScheduleCfg.CalculateDlrDrawPerc(dealer, partner, installer, loanType, state, wc)
-	log.FuncFuncTrace(0, "zidhin dlrDrawPerc: %v  dlrDrawMax : %v", dlrDrawPerc, dlrDrawMax)
-	dlrDrawPerc = 0.5
-	dlrDrawMax = 2000
 
 	credit = dataMgmt.DealerCreditCfg.CalculateCreaditForUniqueId(dealer, uniqueID)
 	repPay = dataMgmt.ApRepCfg.CalculateRepPayForUniqueId(dealer, uniqueID)
 	expense = dataMgmt.AdderDataCfg.CalculateExpence(dealer, uniqueID, systemSize)
 
 	rl = dataMgmt.PayScheduleCfg.CalculateRL(dealer, partner, installer, state, wc)
+	log.FuncFuncTrace(0, "zidhin dlrDrawPerc: %v  dlrDrawMax : %v", dlrDrawPerc, dlrDrawMax)
+	// dlrDrawPerc = 0.5
+	// dlrDrawMax = 2000
 	log.FuncFuncTrace(0, "zidhin repPay: %v", repPay)
 	// repPay = 0 //zidhin
 	log.FuncFuncTrace(0, "zidhin rl: %v", rl)

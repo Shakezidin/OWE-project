@@ -108,6 +108,11 @@ func (pDealer *DealerRepaymentStruct) LoadDealerRepaymentCfg() (err error) {
 	return err
 }
 
+/******************************************************************************
+* FUNCTION:        CalculateRepaymentBonus
+* DESCRIPTION:     calculates the repayment bonus value based on the provided data
+* RETURNS:         dlrPayBonus float64
+*****************************************************************************/
 func (pDealer *DealerRepaymentStruct) CalculateRepaymentBonus(uniqueid, homeOwner string) (dlrPayBonus float64) {
 	for _, data := range pDealer.DealerRepaymentList {
 		if data.UniqueId == uniqueid && homeOwner == data.HomeOwner {

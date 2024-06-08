@@ -123,6 +123,11 @@ func (pDealer *DealerOverrideStruct) LoadRDealerOverrideCfg() (err error) {
 	return err
 }
 
+/******************************************************************************
+* FUNCTION:        CalculateParentDealerAndPayRate
+* DESCRIPTION:     calculates the parent dealer and payrate value based on the provided data
+* RETURNS:         respdealer string, payRate float64
+*****************************************************************************/
 func (pDealer *DealerOverrideStruct) CalculateParentDealerAndPayRate(dealer string, wc time.Time) (respdealer string, payRate float64) {
 	log.EnterFn(0, "CalculateParentDealerAndPayRate")
 	defer func() { log.ExitFn(0, "CalculateParentDealerAndPayRate", nil) }()

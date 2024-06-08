@@ -307,9 +307,8 @@ func (RebateCfg *RebateCfgStruct) LoadRebateCfg() (err error) {
 /******************************************************************************
 * FUNCTION:        CalculateRebate
 * DESCRIPTION:     calculates the ap rep value based on the unique Id
-* RETURNS:         credit
+* RETURNS:         rebate float64
 *****************************************************************************/
-
 func (RebateCfg *RebateCfgStruct) CalculateRebate(dealer string, uniqueId string) (rebate float64) {
 
 	log.EnterFn(0, "CalculateRebate")

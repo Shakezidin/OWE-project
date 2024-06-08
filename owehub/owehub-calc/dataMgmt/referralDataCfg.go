@@ -179,7 +179,7 @@ func (pReferral *ReferralDataStruct) LoadReferralCfg() (err error) {
 /******************************************************************************
 * FUNCTION:        CalculateReferralForUniqueId
 * DESCRIPTION:     calculates the credit value based on the unique Id
-* RETURNS:         credit
+* RETURNS:         referral float64
 *****************************************************************************/
 func (pReferral *ReferralDataStruct) CalculateReferralForUniqueId(dealer string, uniqueId string) (referral float64) {
 

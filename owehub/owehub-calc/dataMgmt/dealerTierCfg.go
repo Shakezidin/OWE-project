@@ -92,6 +92,11 @@ func (pDealerTier *DealerTierCfgStruct) LoadDealerTierCfg() (err error) {
 	return err
 }
 
+/******************************************************************************
+* FUNCTION:        CalculateDlrTier
+* DESCRIPTION:     calculates the dlr tier value based on the provided data
+* RETURNS:         dlrtier float64
+*****************************************************************************/
 func (pDealerTier *DealerTierCfgStruct) CalculateDlrTier(uniqueId, dealer string, date time.Time) (dlrtier string) {
 
 	bfrDateStr := "06-15-2022"
@@ -130,10 +135,6 @@ func (pDealerTier *DealerTierCfgStruct) CalculateDlrTier(uniqueId, dealer string
 				} else {
 					log.FuncWarnTrace(0, "Empty EndDate Received in data.EndDate config")
 					continue
-				}
-
-				if dealer == "Energy Bros USA" {
-					dealer = "Energy Bros USA Inc"
 				}
 
 				if data.DealerName == dealer && startDate.Before(date) && endDate.Before(date) {
