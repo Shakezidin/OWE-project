@@ -11,6 +11,7 @@ import (
 	log "OWEApp/shared/logger"
 	"fmt"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -209,7 +210,8 @@ func CalculateInstallPay(status string, grossRev, netRev float64, installPayM2 f
 	defer func() { log.ExitFn(0, "CalculateInstallPay", nil) }()
 
 	installPay = 0
-	if status == string(Cancel) || status == string(Shaky) {
+	
+	if strings.EqualFold(status,string(Cancel)) || strings.EqualFold(status,string(Shaky) ){
 		return installPay
 	}
 	if grossRev > 0 {

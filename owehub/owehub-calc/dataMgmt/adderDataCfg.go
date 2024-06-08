@@ -147,17 +147,17 @@ func (AdderDataCfg *AdderDataCfgStruct) LoadAdderDataCfg() (err error) {
 * DESCRIPTION:     calculates the "addr_ptr" value based on the provided data
 * RETURNS:         addrPtr
 *****************************************************************************/
-func (AdderDataCfg *AdderDataCfgStruct) CalculateAddrPtr(dealer string, uniqueId string) (addrPtrSum float64) {
+func (AdderDataCfg *AdderDataCfgStruct) CalculateAddrPtr(dealer string, uniqueId string, sysSize float64) (addrPtrSum float64) {
 	// log.EnterFn(0, "CalculateAddrPtr")
 	// defer func() { log.ExitFn(0, "CalculateAddrPtr", nil) }()
 
 	if len(dealer) > 0 {
-		for _, data := range AdderDataCfg.AdderDataList.AdderDataList {
-			if (data.UniqueId + data.Gc) == (uniqueId + "Partner") {
-				addrPtrSum += data.AdderCal
-			}
-		}
+		// for _, data := range AdderDataCfg.AdderDataList.AdderDataList {
+		// if (data.UniqueId + data.Gc) == (uniqueId + "Partner") {
+		addrPtrSum += AdderDataCfg.CalculateAddrPartnerExpense(dealer, uniqueId, sysSize, true)
+		// }
 	}
+	// }
 	return addrPtrSum
 }
 
@@ -166,17 +166,17 @@ func (AdderDataCfg *AdderDataCfgStruct) CalculateAddrPtr(dealer string, uniqueId
 * DESCRIPTION:     calculates the "addr_ptr" value based on the provided data
 * RETURNS:         addrPtr
 *****************************************************************************/
-func (AdderDataCfg *AdderDataCfgStruct) CalculateExpence(dealer string, uniqueId string) (Expence float64) {
+func (AdderDataCfg *AdderDataCfgStruct) CalculateExpence(dealer string, uniqueId string, sysSize float64) (Expence float64) {
 	// log.EnterFn(0, "CalculateExpence")
 	// defer func() { log.ExitFn(0, "CalculateExpence", nil) }()
 
 	if len(dealer) > 0 {
-		for _, data := range AdderDataCfg.AdderDataList.AdderDataList {
-			if (data.UniqueId + data.Gc) == (uniqueId + "Expense") {
-				Expence += data.AdderCal
-			}
-		}
+		// for _, data := range AdderDataCfg.AdderDataList.AdderDataList {
+		// if (data.UniqueId + data.Gc) == (uniqueId + "Expense") {
+		Expence += AdderDataCfg.CalculateAddrPartnerExpense(dealer, uniqueId, sysSize, false)
 	}
+	// }
+	// }
 	return Expence
 }
 
@@ -185,18 +185,49 @@ func (AdderDataCfg *AdderDataCfgStruct) CalculateExpence(dealer string, uniqueId
 * DESCRIPTION:     calculates the "addr_ptr" value based on the provided data
 * RETURNS:         addrPtr
 *****************************************************************************/
-func (AdderDataCfg *AdderDataCfgStruct) CalculateAddr(dealer string, uniqueId string) (addr float64) {
+func (AdderDataCfg *AdderDataCfgStruct) CalculateAddrPartnerExpense(dealer string, uniqueId string, sysSize float64, check bool) (addr float64) {
+	log.EnterFn(0, "CalculateAddrPtr")
+	defer func() { log.ExitFn(0, "CalculateAddrPtr", nil) }()
+	var compare string
+	if check {
+		compare = "Partner"
+	} else {
+		compare = "Expense"
+	}
+
+	if len(dealer) > 0 {
+		for _, data := range AdderDataCfg.AdderDataList.AdderDataList {
+			if (data.UniqueId + data.Gc) == (uniqueId + compare) {
+				var adderamount float64
+				if data.ExactAmount > 0 {
+					adderamount = data.ExactAmount
+				} else if data.PerKwAmt > 0 {
+					adderamount = data.PerKwAmt * sysSize
+				}
+				addr += adderamount
+			}
+		}
+	}
+	return addr
+}
+
+/******************************************************************************
+* FUNCTION:        CalculateAddrPtr
+* DESCRIPTION:     calculates the "addr_ptr" value based on the provided data
+* RETURNS:         addrPtr
+*****************************************************************************/
+func (AdderDataCfg *AdderDataCfgStruct) CalculateAddr(dealer string, uniqueId string, sysSize float64) (addr float64) {
 	log.EnterFn(0, "CalculateAddrPtr")
 	defer func() { log.ExitFn(0, "CalculateAddrPtr", nil) }()
 
 	if len(dealer) > 0 {
 		for _, data := range AdderDataCfg.AdderDataList.AdderDataList {
-			if (data.UniqueId) == (uniqueId) {
+			if (data.UniqueId) == uniqueId {
 				var adderamount float64
 				if data.ExactAmount > 0 {
 					adderamount = data.ExactAmount
 				} else if data.PerKwAmt > 0 {
-					adderamount = data.PerKwAmt * data.SysSize
+					adderamount = data.PerKwAmt * sysSize
 				}
 				addr += adderamount
 			}

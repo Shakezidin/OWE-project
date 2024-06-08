@@ -65,51 +65,51 @@ func ExecDlrPayInitialCalculation(resultChan chan string) {
 *****************************************************************************/
 func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[string]interface{}, err error) {
 	var (
-		SysSize            float64   // p
-		payRateSubTotal    float64   // BG             //defference in 80/20 calculation
-		payRateSemi        float64   // au             //defference in 8020 calculation
-		loanFee            float64   // ay //required  //defference in 80/20 calculation
-		parentDlr          string    // bk             //in 80/20 field name is changed to DLROV
-		status             string    // aj //required
-		statusDate         time.Time // ak //required
-		contractDolDol     float64   // am //required
-		dealer             string    // ap //required
+		SysSize         float64   // p
+		payRateSubTotal float64   // BG             //defference in 80/20 calculation
+		payRateSemi     float64   // au             //defference in 8020 calculation
+		loanFee         float64   // ay //required  //defference in 80/20 calculation
+		parentDlr       string    // bk             //in 80/20 field name is changed to DLROV
+		status          string    // aj //required
+		statusDate      time.Time // ak //required
+		contractDolDol  float64   // am //required
+		dealer          string    // ap //required
 		// dealerDBA          string    // aq //required
-		credit             float64   // as //required
-		repPay             float64   // at //required
-		addr               float64   // av
-		expense            float64   // aw
-		autoAdder          float64   // ax
-		rebate             float64   // az
-		referral           float64   // ba
-		adderTot           float64   // bb //required
-		adderLF            float64   // bc
-		epc                float64   // bd //required
-		adderPerKw         float64   // bf
-		commTotal          float64   // bh
-		statusCheck        float64   // BI //required
-		dealerPaymentBonus float64   // bj
-		payRate            float64   // bl
-		ovrdTotal          float64   // bn
-		DlrDrawMax         float64   // bq
-		r1DrawPaid         float64   // BT //required
-		amtCheck           float64   // bu
-		r1CommPaid         float64   // BV //required
-		r1Balance          float64   // BW //required
-		ovrdPaid           float64   // by
-		ovrdBalance        float64   // bz
-		repCount           float64   // cd
-		perRepSales        float64   // ce
-		perRepkW           float64   // cf
-		contractCalc       float64   // ch
-		epcCalc            float64   // an
-		teamCount          float64   // cm
-		perTeamSales       float64   // cn
-		perTeamKw          float64   // co
-		rl                 float64   // AR //required
-		r1DrawAmt          float64   // BS //required
+		credit             float64 // as //required
+		repPay             float64 // at //required
+		addr               float64 // av
+		expense            float64 // aw
+		autoAdder          float64 // ax
+		rebate             float64 // az
+		referral           float64 // ba
+		adderTot           float64 // bb //required
+		adderLF            float64 // bc
+		epc                float64 // bd //required
+		adderPerKw         float64 // bf
+		commTotal          float64 // bh
+		statusCheck        float64 // BI //required
+		dealerPaymentBonus float64 // bj
+		payRate            float64 // bl
+		ovrdTotal          float64 // bn
+		DlrDrawMax         float64 // bq
+		r1DrawPaid         float64 // BT //required
+		amtCheck           float64 // bu
+		r1CommPaid         float64 // BV //required
+		r1Balance          float64 // BW //required
+		ovrdPaid           float64 // by
+		ovrdBalance        float64 // bz
+		repCount           float64 // cd
+		perRepSales        float64 // ce
+		perRepkW           float64 // cf
+		contractCalc       float64 // ch
+		epcCalc            float64 // an
+		teamCount          float64 // cm
+		perTeamSales       float64 // cn
+		perTeamKw          float64 // co
+		rl                 float64 // AR //required
+		r1DrawAmt          float64 // BS //required
 		// Type               string    // E  //required
-		netEpc             float64   // BE //required
+		netEpc float64 // BE //required
 		// Rep1               string    // M  //required
 		// Rep2               string    // N  //required
 
@@ -179,7 +179,7 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 
 	credit = dataMgmt.DealerCreditCfg.CalculateCreaditForUniqueId(dealer, uniqueID)
 	repPay = dataMgmt.ApRepCfg.CalculateRepPayForUniqueId(dealer, uniqueID)
-	expense = dataMgmt.AdderDataCfg.CalculateExpence(dealer, uniqueID)
+	expense = dataMgmt.AdderDataCfg.CalculateExpence(dealer, uniqueID, systemSize)
 
 	rl = dataMgmt.PayScheduleCfg.CalculateRL(dealer, partner, installer, state, wc)
 	log.FuncFuncTrace(0, "zidhin repPay: %v", repPay)
@@ -194,7 +194,7 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	epcCalc = common.CalculateEPCCalc(contractDolDol, wc, netEpc, systemSize, common.DlrPayWc1FilterDate)
 
 	payRateSemi = CalculatePayRateSemi(dealer, epcCalc, rl)
-	addr = dataMgmt.AdderDataCfg.CalculateAddr(dealer, uniqueID)
+	addr = dataMgmt.AdderDataCfg.CalculateAddr(dealer, uniqueID, systemSize)
 	autoAdder = dataMgmt.AutoAdderCfg.CalculateAutoAddr(dealer, uniqueID, systemSize)
 
 	loanFee = dataMgmt.SaleData.CalculateLoanFee(uniqueID, contractDolDol)
