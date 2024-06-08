@@ -270,7 +270,7 @@ func determineSystemType(sysSize float64, state string) string {
 * DESCRIPTION:     calculates the "loan_fee" value based on the provided data
 * RETURNS:         gross revenue
 *****************************************************************************/
-func (psaleDataList *SaleDataList) CalculateLoanFee(uniqueId string, contractdoldol float64) float64 {
+func (psaleDataList *SaleDataList) CalculateLoanFee(uniqueId, commission_models string, contractdoldol float64) float64 {
 	var loanfee float64
 	for _, data := range psaleDataList.SaleDataList {
 		if data.UniqueId == uniqueId {
@@ -278,5 +278,6 @@ func (psaleDataList *SaleDataList) CalculateLoanFee(uniqueId string, contractdol
 			loanfee = contractdoldol * dlrCost
 		}
 	}
+
 	return loanfee
 }

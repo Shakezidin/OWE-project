@@ -162,7 +162,12 @@ func (pLoanFee *LoanFeeCfgStruct) CalculateDlrCost(uniqueId, dealer, installer, 
 				continue
 			}
 
-			if data.Dealer == dealer && data.Installer == installer && data.State == state && data.LoanType == Type && startDate.Before(date) && endDate.After(date) {
+			var st string
+			if len(state) > 0 {
+				st = state[6:]
+			}
+
+			if data.Dealer == dealer && data.Installer == installer && data.State == st && data.LoanType == Type && startDate.Before(date) && endDate.After(date) {
 				dlrcost += data.DlrCost
 			}
 		}

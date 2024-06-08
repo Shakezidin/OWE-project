@@ -1,9 +1,9 @@
 LF-CON-FLEX-20Y-1.49,"",1,0
 LF-DIV-LOAN-15y-4.99,DividendLoan15yr4.99,1,0
-LEASE-LightReach-0.00,LightReachLease0.0,1,0
-LEASE-LightReach-0.99,LightReachLease0.99,1,0
-LEASE-LightReach-1.99,LightReachLease1.99,1,0
-LEASE-LightReach-2.99,LightReachLease2.99,1,0
+Light Reach 0.00,LightReachLease0.0,1,0
+Light Reach 0.99,LightReachLease0.99,1,0
+Light Reach 1.99,LightReachLease1.99,1,0
+Light Reach 2.99,LightReachLease2.99,1,0
 LEASE-SOVA-0.0,LEASE-SOVA-0.0%,1,0
 LEASE-SOVA-1.9,LEASE-SOVA-1.9%,1,0
 LEASE-SOVA-2.9,LEASE-SOVA-2.9%,1,0
@@ -28,14 +28,14 @@ LF-CON-FLAT-25Y-4.99,LFConcertFlatrateloan25yr4.99,1,0
 LF-CON-FLAT-25Y-6.99,"",1,0
 LF-CON-FLAT-25Y-9.49,LFConcertflat25yr9.49,1,0
 LF-CON-FLAT-25Y-9.99,LFConcertFlat25yr9.99,1,0
-LF-CON-FLEX-12Y-1.49,"Concert,Loan,Flex12-3,12Years,1.49%",1,0
-LF-CON-FLEX-12Y-1.99,"",1,0
+Concert 12-3 Flex 1.49% - 12 Year,"Concert,Loan,Flex12-3,12Years,1.49%",1,0
+Concert 12-3 Flex 1.99% - 12 Year,"",1,0
 LF-GL-LOAN-10Y-3.49,"GoodLeap,Solar,10Years,3.49%",0,0
-LF-CON-FLEX-12Y-2.59,"",1,0
+Concert 12-3 Flex 2.59% - 12 Year,"",1,0
 LF-GL-LOAN-10Y-4.99,"GoodLeap,Solar,10Years,4.99%",0,0
 LF-GL-LOAN-10Y-5.99,"GoodLeap,Solar,10Years,5.99%",0,0
 LF-GL-LOAN-10Y-6.99,"GoodLeap,Solar,10Years,6.99%",0,0
-LF-CON-FLEX-12Y-2.99,"",1,0
+Concert 12-3 Flex 2.99% - 12 Year,"",1,0
 LF-GL-LOAN-12Y-2.99,"GoodLeap,Solar,12Years,2.99%",0,0
 LF-GL-LOAN-12Y-3.49,"GoodLeap,Solar,12Years,3.49%",0,0
 LF-GL-LOAN-12Y-3.99,"GoodLeap,Solar,12Years,3.99%",0,0
