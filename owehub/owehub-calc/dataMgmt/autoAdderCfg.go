@@ -278,7 +278,11 @@ func (AutoAdderCfg *AutoAdderCfgStruct) CalculateAutoAddr(dealer string, uniqueI
 					} else if data.PerKwAmt > 0 {
 						autoAdder = data.PerKwAmt * sysSize
 					}
+				} else {
+					return 0
 				}
+			} else {
+				return 0
 			}
 		}
 		autoAdder = 0

@@ -70,7 +70,7 @@ func (saleDataList *SaleDataList) LoadSaleData(uniqueID string, hookType string)
 	defer func() { log.ExitFn(0, "LoadSaleData", err) }()
 	log.FuncDebugTrace(0, "In LoadSaleData for uniqueID: %v, hookType: %v", uniqueID, hookType)
 
-	uidList := []string{"OUR11450"}
+	uidList := []string{"OUR11366"}
 	query = "SELECT * from " + db.ViewName_ConsolidatedDataView + " WHERE UPPER(unique_id) IN ("
 	for i, uid := range uidList {
 		query += "'" + strings.ToUpper(uid) + "'"
@@ -295,11 +295,14 @@ func determineSystemType(sysSize float64, state string) string {
 * RETURNS:         gross revenue
 *****************************************************************************/
 func (psaleDataList *SaleDataList) CalculateLoanFee(uniqueId, commission_models string, contractdoldol float64) float64 {
+	log.EnterFn(0, "CalculateLoanFee")
+	defer func() { log.ExitFn(0, "CalculateLoanFee", nil) }()
 	var loanfee float64
 	for _, data := range psaleDataList.SaleDataList {
 		if data.UniqueId == uniqueId {
 			dlrCost := LoanFeeCfg.CalculateDlrCost(data.UniqueId, data.Dealer, data.Installer, data.State, data.LoanType, data.ContractDate)
-			loanfee = contractdoldol * dlrCost
+			log.FuncErrorTrace(0, "*****************************************%v", dlrCost)
+			loanfee += contractdoldol * dlrCost
 		}
 	}
 

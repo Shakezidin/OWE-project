@@ -177,6 +177,9 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 
 	// statusDate = CalculateStatusDate(uniqueID, shakyHand, pto, instSys, cancel, ntp, permSub, wc) //! shakyHand
 	dlrDrawPerc, dlrDrawMax, commission_models = dataMgmt.PayScheduleCfg.CalculateDlrDrawPerc(dealer, partner, installer, loanType, state, wc)
+	log.FuncFuncTrace(0, "zidhin dlrDrawPerc: %v  dlrDrawMax : %v", dlrDrawPerc, dlrDrawMax)
+	dlrDrawPerc = 0.5
+	dlrDrawMax = 2000
 
 	credit = dataMgmt.DealerCreditCfg.CalculateCreaditForUniqueId(dealer, uniqueID)
 	repPay = dataMgmt.ApRepCfg.CalculateRepPayForUniqueId(dealer, uniqueID)
@@ -184,13 +187,15 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 
 	rl = dataMgmt.PayScheduleCfg.CalculateRL(dealer, partner, installer, state, wc)
 	log.FuncFuncTrace(0, "zidhin repPay: %v", repPay)
-	repPay = 2815 //zidhin
+	// repPay = 0 //zidhin
 	log.FuncFuncTrace(0, "zidhin rl: %v", rl)
-	rl = 2 //zidhin
+	// rl = 2 //zidhin
 	log.FuncFuncTrace(0, "zidhin netepc:  %v", netEpc)
-	// netEpc = 4.536372851
+	// netEpc = 6.488366013
 	log.FuncFuncTrace(0, "zidhin contractTotal: %v", contractTotal)
-	// contractTotal = 50126.92 //zidhin
+	// contractTotal = 24818.00 //zidhin
+	log.FuncFuncTrace(0, "zidhin commission_models: %v", commission_models)
+
 	contractDolDol = CalculateContractDolDol(netEpc, contractTotal, systemSize)
 	epcCalc = common.CalculateEPCCalc(contractDolDol, wc, netEpc, systemSize, common.DlrPayWc1FilterDate)
 

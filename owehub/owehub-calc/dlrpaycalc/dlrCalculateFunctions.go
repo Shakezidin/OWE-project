@@ -63,7 +63,7 @@ func calculateAdderPerKW(dealer string, adderLF, sysSize float64) (adderPerKW fl
 * RETURNS:         gross revenue
 *****************************************************************************/
 func calculatePayRateSubTotal(dealer, commission_models string, payRateSemi, adderPer, contractdoldol, adderLF float64) float64 {
-	if commission_models == "standard" {
+	if commission_models == "standard" || commission_models == "" {
 		if len(dealer) > 0 {
 			return (payRateSemi - adderPer)
 		}
@@ -82,7 +82,7 @@ func calculatePayRateSubTotal(dealer, commission_models string, payRateSemi, add
 * RETURNS:         gross revenue
 *****************************************************************************/
 func calculateCommTotal(dealer, commission_models, rep_1, source string, payRateSubTotal, sysSize, dealerPaymentBonus, contractTotal, baseCost, adderLF float64) float64 {
-	if commission_models == "standard" {
+	if commission_models == "standard" || commission_models == "" {
 		if len(dealer) > 0 {
 			commTotal := (payRateSubTotal * sysSize) + dealerPaymentBonus
 			return math.Round(commTotal*100) / 100
@@ -597,7 +597,7 @@ func CalculateContractDolDol(netEpc float64, contract float64, sysSize float64) 
 *****************************************************************************/
 func CalculatePayRateSemi(dealer, commission_models, rep_1 string, epcCalc, rl, systemSize, netEpc float64, wc time.Time) (payRateSemi float64) {
 	date, _ := time.Parse("2006,01,02", "2023,12,20")
-	if commission_models == "standard" {
+	if commission_models == "standard" || commission_models == "" {
 		if len(dealer) > 0 {
 			return (epcCalc - rl) * 1000
 		}
