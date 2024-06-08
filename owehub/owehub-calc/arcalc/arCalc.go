@@ -15,7 +15,7 @@ import (
 	"os"
 	"strings"
 
-	dlrPay "OWEApp/owehub-calc/dlrpaycalc"
+	// dlrPay "OWEApp/owehub-calc/dlrpaycalc"
 	db "OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	"time"
@@ -100,13 +100,14 @@ func CalculateARProject(saleData dataMgmt.SaleDataStruct) (outData map[string]in
 		totalPaid    float64
 		currentDue   float64
 		balance      float64
+		state        string
 	)
 	log.EnterFn(0, "CalculateARProject")
 	defer func() { log.ExitFn(0, "CalculateARProject", err) }()
 
 	// netEpc := saleData.NetEpc
-	contractTotal := saleData.ContractTotal
-	systemSize := saleData.SystemSize
+	// contractTotal := saleData.ContractTotal
+	// systemSize := saleData.SystemSize
 
 	outData = make(map[string]interface{})
 	//outData["serial_num"] = saleData.UniqueId
@@ -118,7 +119,6 @@ func CalculateARProject(saleData dataMgmt.SaleDataStruct) (outData map[string]in
 	outData["unique_id"] = saleData.UniqueId
 	outData["home_owner"] = saleData.HomeOwner
 	outData["street_address"] = saleData.Address
-	outData["st"] = saleData.State
 	outData["rep_1"] = saleData.PrimarySalesRep
 	outData["rep_2"] = saleData.SecondarySalesRep
 	outData["sys_size"] = saleData.SystemSize
@@ -134,22 +134,22 @@ func CalculateARProject(saleData dataMgmt.SaleDataStruct) (outData map[string]in
 	outData["inst_sys"] = saleData.PvInstallCompletedDate
 	outData["pto"] = saleData.PtoDate
 	/* Calculated Fields */
-	status = saleData.ProjectStatus
 
 	redLine, permitPayM1, permitMax, installPayM2 = dataMgmt.ArSkdConfig.GetArSkdForSaleData(&saleData) //* ArSkdConfig
 
-	// redLine = 0
+	// redLine = -0.15
 	// permitPayM1 = 30
 	// permitMax = 50000
 	// installPayM2 = 100
 
 	log.FuncErrorTrace(0, "RAED redline -> %v permitPayM1 -> %v permitMax -> %v installPayM2 -> %v", redLine, permitPayM1, permitMax, installPayM2)
 
-	contractCalc = common.CalculateContractAmount(saleData.NetEpc, outData["contract"].(float64), outData["sys_size"].(float64))
-	epcCalc = common.CalculateEPCCalc(contractCalc, saleData.WC1, saleData.NetEpc, saleData.SystemSize, common.ARWc1FilterDate)
-	contractdoldol := dlrPay.CalculateContractDolDol(epcCalc, contractTotal, systemSize)
-	log.FuncErrorTrace(0, "RAED saleData.NetEpc -> %v contract -> %v sys_size -> %v", saleData.NetEpc, outData["contract"].(float64), outData["sys_size"].(float64))
-	log.FuncErrorTrace(0, "RAED saleData.WC1 -> %v saleData.SystemSize -> %v", saleData.WC1, saleData.SystemSize)
+	epc := (outData["sys_size"].(float64) * 1000) / outData["contract"].(float64)
+	contractCalc = common.CalculateARContractAmount(epc, outData["contract"].(float64), outData["sys_size"].(float64))
+	epcCalc = common.CalculateAREPCCalc(contractCalc, saleData.ContractDate, epc, saleData.SystemSize, common.ARWc1FilterDate) //!&* calculate epc value
+	// contractdoldol := dlrPay.CalculateContractDolDol(epcCalc, contractTotal, systemSize)
+	// log.FuncErrorTrace(0, "RAED saleData.NetEpc -> %v contract -> %v sys_size -> %v", saleData.NetEpc, outData["contract"].(float64), outData["sys_size"].(float64))
+	// log.FuncErrorTrace(0, "RAED saleData.WC1 -> %v saleData.SystemSize -> %v", saleData.WC1, saleData.SystemSize)
 
 	grossRev = CalculateGrossRev(epcCalc, redLine, saleData.SystemSize)                                       //! 0 since redline is zero
 	addrPtr = dataMgmt.AdderDataCfg.CalculateAddrPtr(saleData.Dealer, saleData.UniqueId, saleData.SystemSize) //* AdderDataCfg
@@ -158,8 +158,8 @@ func CalculateARProject(saleData dataMgmt.SaleDataStruct) (outData map[string]in
 
 	// addrAuto = dataMgmt.AutoAdderCfg.CalculateAddrAuto(saleData.Dealer, saleData.UniqueId, saleData.SystemType)
 	addrAuto = dataMgmt.AutoAdderCfg.CalculateArAddrAuto(saleData.Dealer, saleData.UniqueId, saleData.SystemSize, saleData.State, saleData.Installer)
-	loanFee = dataMgmt.LoanFeeAdderCfg.CalculateLoanFee(saleData.UniqueId, saleData.Dealer, saleData.Installer, saleData.State, saleData.LoanType, saleData.ContractDate, contractdoldol) //~ LoanFeeAdderCfg need to verify
-	loanFee = 19346.6
+	// loanFee = dataMgmt.LoanFeeAdderCfg.CalculateLoanFee(saleData.UniqueId, saleData.Dealer, saleData.Installer, saleData.State, saleData.LoanType, saleData.ContractDate, contractdoldol) //~ LoanFeeAdderCfg need to verify
+	loanFee = 0
 	adjust = dataMgmt.AdjustmentsConfig.CalculateAdjust(saleData.Dealer, saleData.UniqueId) //* AdjustmentsConfig
 	netRev = CalculateNetRev(grossRev, addrPtr, addrAuto, loanFee, adjust)                  //! 0 since grossRev is zero
 	log.FuncErrorTrace(0, "RAED addrAuto -> %v loanFee -> %v adjust -> %v netRev -> %v", addrAuto, loanFee, adjust, netRev)
@@ -170,16 +170,23 @@ func CalculateARProject(saleData dataMgmt.SaleDataStruct) (outData map[string]in
 	totalPaid = dataMgmt.ArCfgData.GetTotalPaidForUniqueId(saleData.UniqueId)                    //! need to add data for  sales_ar_cfg
 	log.FuncErrorTrace(0, "RAED permitPay -> %v installPay -> %v reconcile -> %v totalPaid -> %v", permitPay, installPay, reconcile, totalPaid)
 
+	oweAr := CalculateOweAR(contractCalc, loanFee)
 	currentDue = CalculateCurrentDue(&saleData, netRev, totalPaid, permitPay, installPay, reconcile)
 	balance = CalculateBalance(saleData.UniqueId, status, saleData.Dealer, totalPaid, netRev, reconcile)
-	log.FuncErrorTrace(0, "RAED currentDue -> %v balance -> %v", currentDue, balance)
+	log.FuncErrorTrace(0, "RAED currentDue -> %v balance -> %v oweAr -> %v", currentDue, balance, oweAr)
+
+	if len(saleData.State) > 0 {
+		state = saleData.State[5:]
+	}
+	if saleData.ProjectStatus == "PTO'd" {
+		status = "PTO"
+	}
 
 	outData["status"] = status
-	// outData["status_date"] = dlrPay.CalculateStatusDate(saleData.UniqueId, hand, saleData.PtoDate, saleData.PvInstallCompletedDate,
-	// 	saleData.CancelledDate, saleData.NtpDate, saleData.PermitSubmittedDate, saleData.WC1)
+	outData["st"] = state
 	outData["contract_calc"] = contractCalc
 	outData["loan_fee"] = loanFee
-	outData["owe_ar"] = CalculateOweAR(outData["contract_calc"].(float64), outData["loan_fee"].(float64))
+	outData["owe_ar"] = oweAr
 	outData["total_paid"] = totalPaid
 	outData["epc_calc"] = epcCalc
 	outData["gross_rev"] = grossRev
@@ -238,10 +245,10 @@ func CalculateOweAR(contractCalc float64, loanFee float64) float64 {
 	defer func() { log.ExitFn(0, "CalculateOweAR", nil) }()
 
 	if contractCalc > 0.0 {
-		if loanFee != 0.0 {
-			/* Subtract loanFee from contractCalc */
-			return contractCalc - loanFee
-		}
+		// if loanFee != 0.0 {
+		/* Subtract loanFee from contractCalc */
+		return contractCalc - loanFee
+		// }
 	}
 	/* Return 0 if Contract $$ Calc is empty or cannot be parsed */
 	return 0

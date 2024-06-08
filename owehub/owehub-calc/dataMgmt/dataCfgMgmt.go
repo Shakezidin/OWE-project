@@ -37,7 +37,7 @@ func LoadConfigurations() (err error) {
 		log.FuncErrorTrace(0, "Failed to get AR Skd Config from DB err: %+v", err)
 		return err
 	}
-	log.FuncErrorTrace(0, "=== ArSkdConfig ->: %+v", ArSkdConfig.ArSkdConfigList.ArScheduleList[0])
+	log.FuncErrorTrace(0, "=== ArSkdConfig ->: %+v", ArSkdConfig.ArSkdConfigList[0])
 
 	//* dealer tier is working
 	err = DealerTierCfg.LoadDealerTierCfg()

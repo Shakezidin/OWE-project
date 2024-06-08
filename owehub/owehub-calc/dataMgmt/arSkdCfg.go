@@ -9,12 +9,29 @@ package datamgmt
 import (
 	db "OWEApp/shared/db"
 	log "OWEApp/shared/logger"
-	"OWEApp/shared/models"
+
+	// "OWEApp/shared/models"
 	"time"
 )
 
+type GetArScheduleTemp struct {
+	RecordId      int64   `json:"record_id"`
+	PartnerName   string  `json:"partner_name"`
+	InstallerName string  `json:"installer_name"`
+	SaleTypeName  string  `json:"sale_type_name"`
+	StateName     string  `json:"state_name"`
+	RedLine       float64 `json:"red_line"`
+	CalcDate      string  `json:"calc_date"`
+	PermitPay     float64 `json:"permit_pay"`
+	PermitMax     float64 `json:"permit_max"`
+	InstallPay    float64 `json:"install_pay"`
+	PtoPay        float64 `json:"pto_pay"`
+	StartDate     string  `json:"start_date"`
+	EndDate       string  `json:"end_date"`
+}
+
 type ArSkdCfgStruct struct {
-	ArSkdConfigList models.GetArScheduleList
+	ArSkdConfigList []GetArScheduleTemp
 }
 
 var (
@@ -46,7 +63,7 @@ func (ArSkdConfig *ArSkdCfgStruct) LoadArSkdCfg() (err error) {
 	}
 
 	/* Clean AR Config previous data before updatin new data in list */
-	ArSkdConfig.ArSkdConfigList.ArScheduleList = ArSkdConfig.ArSkdConfigList.ArScheduleList[:0]
+	ArSkdConfig.ArSkdConfigList = ArSkdConfig.ArSkdConfigList[:0]
 	for _, item := range data {
 		RecordId, ok := item["record_id"].(int64)
 		if !ok {
@@ -79,9 +96,9 @@ func (ArSkdConfig *ArSkdCfgStruct) LoadArSkdCfg() (err error) {
 		}
 
 		RedLine, ok := item["red_line"].(float64)
-		if !ok || RedLine <= 0.0 {
+		if !ok {
 			// log.FuncErrorTrace(0, "Failed to get red line for Record ID %v. Item: %+v\n", RecordId, item)
-			RedLine = 0.0
+			RedLine = 0
 		}
 
 		CalcDate, ok := item["calc_date"].(string)
@@ -128,7 +145,7 @@ func (ArSkdConfig *ArSkdCfgStruct) LoadArSkdCfg() (err error) {
 		StartDate := StDate.Format("2006-01-02")
 		EndDate := EdDate.Format("2006-01-02")
 
-		arSchedule := models.GetArSchedule{
+		arSchedule := GetArScheduleTemp{
 			RecordId:      RecordId,
 			PartnerName:   PartnerName,
 			InstallerName: InstallerName,
@@ -143,7 +160,7 @@ func (ArSkdConfig *ArSkdCfgStruct) LoadArSkdCfg() (err error) {
 			StartDate:     StartDate,
 			EndDate:       EndDate,
 		}
-		ArSkdConfig.ArSkdConfigList.ArScheduleList = append(ArSkdConfig.ArSkdConfigList.ArScheduleList, arSchedule)
+		ArSkdConfig.ArSkdConfigList = append(ArSkdConfig.ArSkdConfigList, arSchedule)
 	}
 
 	return err
@@ -161,7 +178,7 @@ func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct)
 	permitPayM1 = 0
 	permitMax = 0
 	installPayM2 = 0
-	for _, arSkd := range ArSkdConfig.ArSkdConfigList.ArScheduleList {
+	for _, arSkd := range ArSkdConfig.ArSkdConfigList {
 		var startDate time.Time
 		var endDate time.Time
 
@@ -215,7 +232,7 @@ func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct)
 		}
 	}
 	if redLine <= 0 {
-		for _, arSkd := range ArSkdConfig.ArSkdConfigList.ArScheduleList {
+		for _, arSkd := range ArSkdConfig.ArSkdConfigList {
 			var startDate time.Time
 			var endDate time.Time
 
@@ -254,39 +271,27 @@ func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct)
 				saleData.Partner = "SOVA"
 			}
 
-			// ContractDate, _ := time.Parse("2006-01-02", saleData.ContractDate)
-			log.FuncErrorTrace(0, "RAED PARTNER 3 %v", saleData.ContractDate)
+			ContractDate, err := time.Parse("2006-01-02", "2023-01-04")
+			if err != nil {
+				log.FuncWarnTrace(0, "DATE ERROR")
+				continue
+			}
+			// log.FuncErrorTrace(0, "RAED PARTNER 3 %v", saleData.ContractDate)
 
 			if arSkd.PartnerName == saleData.Partner &&
 				arSkd.InstallerName == saleData.Installer &&
-				// if arSkd.SaleTypeName == saleData.LoanType &&
-				arSkd.SaleTypeName == "LOAN" &&
+				// arSkd.SaleTypeName == saleData.LoanType &&
+				arSkd.SaleTypeName == "LEASE 1.9" &&
 				arSkd.StateName == st &&
 				arSkd.CalcDate == "CREATED" &&
-				(startDate.Before(saleData.ContractDate) || startDate.Equal(saleData.ContractDate)) && //* need to change the date here
-				(endDate.After(saleData.ContractDate) || endDate.Equal(saleData.ContractDate)) {
+				(startDate.Before(ContractDate) || startDate.Equal(ContractDate)) && //* need to change the date here
+				(endDate.After(ContractDate) || endDate.Equal(ContractDate)) {
 
-				log.FuncErrorTrace(0, "RAED PARTNER 7 %v %v", saleData.Partner, arSkd.PartnerName)
-				log.FuncErrorTrace(0, "RAED INSTALLER 7 %v %v", saleData.Installer, arSkd.InstallerName)
-
-				redLine = arSkd.RedLine
-				permitPayM1 = arSkd.PermitPay
-				permitMax = arSkd.PermitMax
-				installPayM2 = arSkd.InstallPay
-
-				return redLine, permitPayM1, permitMax, installPayM2
-			}
-			// if arSkd.PartnerName == saleData.Partner &&
-			// 	arSkd.InstallerName == saleData.Installer &&
-			// if arSkd.SaleTypeName == saleData.LoanType &&
-			if arSkd.SaleTypeName == "LOAN" &&
-				arSkd.StateName == st &&
-				arSkd.CalcDate == "CREATED" &&
-				(startDate.Before(saleData.ContractDate) || startDate.Equal(saleData.ContractDate)) && //* need to change the date here
-				(endDate.After(saleData.ContractDate) || endDate.Equal(saleData.ContractDate)) {
-
-				log.FuncErrorTrace(0, "RAED PARTNER %v %v", saleData.Partner, arSkd.PartnerName)
-				log.FuncErrorTrace(0, "RAED INSTALLER %v %v", saleData.Installer, arSkd.InstallerName)
+				// log.FuncErrorTrace(0, "RAED PARTNER 7 %v %v", saleData.Partner, arSkd.PartnerName)
+				// log.FuncErrorTrace(0, "RAED INSTALLER 7 %v %v", saleData.Installer, arSkd.InstallerName)
+				// log.FuncErrorTrace(0, "RAED REDLINE, PERMITPAY %v %v", arSkd.RedLine, arSkd.PermitPay)
+				// log.FuncErrorTrace(0, "RAED PERMITMAX, INSTALLPAY %v %v", arSkd.PermitMax, arSkd.InstallPay)
+				// log.FuncErrorTrace(0, "RAED CONTRACTDATE %v DATE %v", saleData.ContractDate, ContractDate)
 
 				redLine = arSkd.RedLine
 				permitPayM1 = arSkd.PermitPay
@@ -299,7 +304,7 @@ func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct)
 	}
 
 	if redLine <= 0 {
-		for _, arSkd := range ArSkdConfig.ArSkdConfigList.ArScheduleList {
+		for _, arSkd := range ArSkdConfig.ArSkdConfigList {
 			var startDate time.Time
 			var endDate time.Time
 
