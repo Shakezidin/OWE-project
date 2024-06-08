@@ -4,13 +4,13 @@
 
 .dropdown-toggle {
   cursor: pointer;
-  padding: 6px 12px;
-  font-size: 13px;
+  padding: 8px 14px;
+  font-size: 12px;
   font-weight: 500;
   border-radius: 0.4rem;
   border: none;
   outline: none;
-  width: 4.2rem;
+  width: 4rem;
   min-height: unset;
   height: 17px;
   align-content: center;
@@ -119,6 +119,23 @@
   align-items: center;
   justify-content: center;
   font-size: 12px;
+}
+
+@media (max-width: 1024px) {
+  .selected-count {
+    background-color: #377CF6;
+    color: #ffffff;
+    font-weight: 500;
+    border-radius: 50%;
+    width: 10px;
+    height: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 6px;
+    
+  }
+
 }
 
 

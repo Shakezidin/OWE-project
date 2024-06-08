@@ -586,6 +586,15 @@
    border-radius: 12px;
    background: rgba(255, 255, 255, .3);
  }
+ .calender-container {
+  position: absolute;
+  z-index: 999;
+  margin-left: -103px;
+  top: 130%;
+  background-color: #fff;
+  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.2);
+  max-height: 50px;
+}
  
  }
 

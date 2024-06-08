@@ -86,7 +86,7 @@ export const DashboardPage: React.FC = () => {
             <div className="rep-manage-user">
 
 
-              <div className="dash-head-input" style={{ minWidth: '204px' }}>
+              <div className="dash-head-input" style={{ minWidth: '185px' }}>
                 <div className='rep-drop_label' style={{ backgroundColor: "#57B3F1" }}>
                   <img src={ICONS.lable_img} alt="" />
                 </div>
@@ -135,7 +135,7 @@ export const DashboardPage: React.FC = () => {
                         '&:hover': {
                           color: '#292929',
                         },
-                        marginLeft: '-15px'
+                        marginLeft: '-18px'
                       }),
                       option: (baseStyles, state) => ({
                         ...baseStyles,
@@ -184,7 +184,7 @@ export const DashboardPage: React.FC = () => {
                       color: '#344054',
                       position: 'absolute',
                       left: '12px',
-                      top: '-7px',
+                      top: '-9px',
                       whiteSpace: 'nowrap',
                       zIndex: 99
                     }}>

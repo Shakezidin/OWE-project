@@ -155,14 +155,14 @@ const ArDashBoardTable = () => {
     { name: 'zip', displayName: 'Zip', type: 'string', isCheckbox: false },
     {
       name: 'sys-size',
-      displayName: 'SysSize',
+      displayName: 'Sys Size',
       type: 'string',
       isCheckbox: false,
     },
     { name: 'wc', displayName: 'WC', type: 'string', isCheckbox: false },
     {
       name: 'inst_sys',
-      displayName: 'InstSys',
+      displayName: 'Inst Sys',
       type: 'string',
       isCheckbox: false,
     },
@@ -180,11 +180,11 @@ const ArDashBoardTable = () => {
     },
     {
       name: 'contract_calc',
-      displayName: 'ContractCalc',
+      displayName: 'Contract Calc',
       type: 'string',
       isCheckbox: false,
     },
-    { name: 'owe_ar', displayName: 'OweAr', type: 'string', isCheckbox: false },
+    { name: 'owe_ar', displayName: 'Owe Ar', type: 'string', isCheckbox: false },
     {
       name: 'total_paid',
       displayName: 'Total Paid',

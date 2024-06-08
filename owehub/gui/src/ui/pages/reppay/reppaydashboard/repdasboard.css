@@ -143,7 +143,7 @@
 .rep-calender-container {
   position: absolute;
   z-index: 999;
-  right: -7%;
+  margin-left: -42px;
   top: 130%;
   background-color: #fff;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4);
@@ -217,7 +217,7 @@
 }
 .rep-manage-user{
   display: flex;
-  gap: 12px;
+  gap: 1px;
 }
 
 .rep-drop_label {
@@ -316,6 +316,49 @@
   align-items: center;
   gap: 0.2rem;
 }
+.rep-calender-container {
+  height: 20px;
+  position: absolute;
+  z-index: 999;
+  margin-left: -244px;
+  top: 130%;
+  background-color: #fff;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4);
+  border-radius: 0.4rem;
+}
+.rep-drop_label {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.rep-drop_label img{
+  width: 15px;
+  height: 17px;
+}
+
+.rep-active-filter-line {
+  width: 32px;
+  height: 32px;
+  
+  background-color: #377CF6;
+}
+.rep-active-filter-line img {
+  fill: white;
+  width: 18px;
+  height: 15px;
+}
+
+.rep-Dashboard-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0;
+  padding: 10px 0;
+}
+
 }
 
 
