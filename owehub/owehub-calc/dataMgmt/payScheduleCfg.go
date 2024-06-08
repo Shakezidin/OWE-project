@@ -186,29 +186,37 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateRL(dealer, partner, install
 
 	if len(dealer) > 0 {
 		for _, data := range PayScheduleCfg.PayScheduleList {
-			timeLayout := "15:04:05"
-			startDate, _ := time.Parse(timeLayout, data.StartDate)
-			endDate, _ := time.Parse(timeLayout, data.EndDate)
+			dateLayout := "01-02-06"
+			startDate, errStart := time.Parse(dateLayout, data.StartDate)
+			endDate, errEnd := time.Parse(dateLayout, data.EndDate)
 
-			if data.Dealer == dealer && data.PartnerName == partner {
-				log.FuncFuncTrace(0, "zidhin////// data.dealer : %v  ++++++++++ dealer: %v", data.Dealer, dealer)
-				log.FuncFuncTrace(0, "zidhin////// data.partner : %v ++++++++++partner: %v", data.PartnerName, partner)
-				log.FuncFuncTrace(0, "zidhin////// data.isntaller : %v ++++++++++ installer: %v", data.InstallerName, installer)
-				log.FuncFuncTrace(0, "zidhin////// data.state : %v ++++++++++ state: %v", data.State, state)
-				log.FuncFuncTrace(0, "zidhin////// data.startdate : %v ++++++++++ wc: %v", data.StartDate, wc)
-				log.FuncFuncTrace(0, "zidhin////// end date : %v ++++++++++ wc %v", data.EndDate, wc)
-				log.FuncFuncTrace(0, "zidhin////// rl : %v", data.Rl)
-				// log.FuncErrorTrace(0, "+++++++++++++++saletype", data.SaleType, "++++++++++", types)
-
+			// Log any parsing errors
+			if errStart != nil {
+				log.FuncErrorTrace(0, "Error parsing start date:", errStart)
+			}
+			if errEnd != nil {
+				log.FuncErrorTrace(0, "Error parsing end date:", errEnd)
 			}
 
-			if installer == "One World Energy" {
-				installer = "OWE"
+			// Convert wc to the same format
+			wcStr := wc.Format(dateLayout)
+			wcParsed, errWc := time.Parse(dateLayout, wcStr)
+
+			if errWc != nil {
+				log.FuncErrorTrace(0, "Error parsing wc date:", errWc)
+			}
+			if installer == "OWE" {
+				installer = "One World Energy"
 			}
 
-			if data.Dealer == dealer && data.PartnerName == partner && data.InstallerName == installer && data.State == state &&
-				startDate.Before(wc) && endDate.After(wc) {
-				return float64(data.Rl)
+			var st string
+			if len(state) > 0 {
+				st = state[6:]
+			}
+
+			if data.Dealer == dealer && data.PartnerName == partner && data.InstallerName == installer && data.State == st &&
+				startDate.Before(wcParsed) && endDate.After(wcParsed) {
+				return data.Rl
 			}
 		}
 	}

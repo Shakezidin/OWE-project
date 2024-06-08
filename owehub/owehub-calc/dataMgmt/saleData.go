@@ -43,7 +43,7 @@ type SaleDataStruct struct {
 	StartDate              time.Time // added by zidhin
 	EndDate                time.Time //field added by zidhin
 	ChargeDlr              string    // field added by zidhiin
-	// SaleType               string    //field added by zidhin
+	ContractDate           time.Time //field added by zidhin
 }
 
 type SaleDataList struct {
@@ -61,7 +61,9 @@ func (saleDataList *SaleDataList) LoadSaleData(uniqueID string, hookType string)
 	)
 
 	//Shushank
-	uniqueID = "OUR19865"
+	// uniqueID = "OUR19865"
+	uniqueID = "OUR11354"
+
 
 	// log.EnterFn(0, "LoadSaleData")
 	// defer func() { log.ExitFn(0, "LoadSaleData", err) }()
@@ -236,6 +238,12 @@ func (saleDataList *SaleDataList) LoadSaleData(uniqueID string, hookType string)
 			saleData.PtoDate = ptoDate.(time.Time)
 		} else {
 			// log.FuncWarnTrace(0, "Empty value received in ptoDate for Unique Id: %v", saleData.UniqueId)
+		}
+
+		if ContractDate, ok := data["contract_date"]; ok && ContractDate != nil {
+			saleData.ContractDate = ContractDate.(time.Time)
+		} else {
+			// log.FuncWarnTrace(0, "Empty value received in cancelledDate for Unique Id: %v", saleData.UniqueId)
 		}
 
 		saleData.SystemType = determineSystemType(saleData.SystemSize, saleData.State)

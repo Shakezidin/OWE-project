@@ -135,7 +135,7 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	outData = make(map[string]interface{})
 
 	uniqueID = saleData.UniqueId
-	wc = saleData.WC1
+	wc = saleData.ContractDate
 	ntp = saleData.NtpDate
 	instSys = saleData.PvInstallCompletedDate
 	homeOwner = saleData.HomeOwner
@@ -146,10 +146,10 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	partner = saleData.Partner
 	state = saleData.State
 	installer = saleData.Installer
-	netEpc = saleData.NetEpc
-	contractTotal = saleData.ContractTotal
-	systemSize = saleData.SystemSize
 	SysSize = saleData.SystemSize
+	systemSize = saleData.SystemSize
+	netEpc = saleData.ContractTotal / (systemSize * 1000)
+	contractTotal = saleData.ContractTotal
 
 	outData["dealer"] = dealer
 	outData["partner"] = partner
