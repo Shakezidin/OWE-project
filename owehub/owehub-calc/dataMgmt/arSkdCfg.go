@@ -254,23 +254,39 @@ func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct)
 				saleData.Partner = "SOVA"
 			}
 
-			date, err := time.Parse("2006-01-02", "2023-10-01")
-			if err != nil {
-				log.FuncErrorTrace(0, "RAED Failed to parse Date: %v", err)
-				// FormAndSendHttpResp(resp, "Failed to parse Date", http.StatusInternalServerError, nil)
-				return
-			}
-			log.FuncErrorTrace(0, "RAED  Date: %v", date)
+			// ContractDate, _ := time.Parse("2006-01-02", saleData.ContractDate)
+			log.FuncErrorTrace(0, "RAED PARTNER 3 %v", saleData.ContractDate)
 
-			saleData.PvInstallCompletedDate = date
 			if arSkd.PartnerName == saleData.Partner &&
 				arSkd.InstallerName == saleData.Installer &&
-				// arSkd.SaleTypeName == saleData.LoanType &&
-				arSkd.SaleTypeName == "LEASE 1.9" &&
+				// if arSkd.SaleTypeName == saleData.LoanType &&
+				arSkd.SaleTypeName == "LOAN" &&
 				arSkd.StateName == st &&
 				arSkd.CalcDate == "CREATED" &&
-				(startDate.Before(saleData.PvInstallCompletedDate) || startDate.Equal(saleData.PvInstallCompletedDate)) && //* need to change the date here
-				(endDate.After(saleData.PvInstallCompletedDate) || endDate.Equal(saleData.PvInstallCompletedDate)) {
+				(startDate.Before(saleData.ContractDate) || startDate.Equal(saleData.ContractDate)) && //* need to change the date here
+				(endDate.After(saleData.ContractDate) || endDate.Equal(saleData.ContractDate)) {
+
+				log.FuncErrorTrace(0, "RAED PARTNER 7 %v %v", saleData.Partner, arSkd.PartnerName)
+				log.FuncErrorTrace(0, "RAED INSTALLER 7 %v %v", saleData.Installer, arSkd.InstallerName)
+
+				redLine = arSkd.RedLine
+				permitPayM1 = arSkd.PermitPay
+				permitMax = arSkd.PermitMax
+				installPayM2 = arSkd.InstallPay
+
+				return redLine, permitPayM1, permitMax, installPayM2
+			}
+			// if arSkd.PartnerName == saleData.Partner &&
+			// 	arSkd.InstallerName == saleData.Installer &&
+			// if arSkd.SaleTypeName == saleData.LoanType &&
+			if arSkd.SaleTypeName == "LOAN" &&
+				arSkd.StateName == st &&
+				arSkd.CalcDate == "CREATED" &&
+				(startDate.Before(saleData.ContractDate) || startDate.Equal(saleData.ContractDate)) && //* need to change the date here
+				(endDate.After(saleData.ContractDate) || endDate.Equal(saleData.ContractDate)) {
+
+				log.FuncErrorTrace(0, "RAED PARTNER %v %v", saleData.Partner, arSkd.PartnerName)
+				log.FuncErrorTrace(0, "RAED INSTALLER %v %v", saleData.Installer, arSkd.InstallerName)
 
 				redLine = arSkd.RedLine
 				permitPayM1 = arSkd.PermitPay

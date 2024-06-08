@@ -297,9 +297,10 @@ func (pLoanFee *LoanFeeAdderCfgStruct) LoadLoanFeeAdderCfg() (err error) {
 *****************************************************************************/
 func (LoanFeeAdderCfg *LoanFeeAdderCfgStruct) CalculateLoanFee(uniqueId, dealer, installer, state, Type string, date time.Time, contractDol float64) (loanFeeAdder float64) {
 	//
-	
+
 	if len(dealer) > 0 {
-		loanFeeAdder = LoanFeeCfg.CalculateDlrCost(uniqueId, dealer, installer, state, Type, date) * contractDol
+		loanFee := LoanFeeCfg.CalculateDlrCost(uniqueId, dealer, installer, state, Type, date)
+		loanFeeAdder = (loanFee * contractDol) / 100
 	}
 	log.FuncErrorTrace(0, "RAED LOANFEE -> %v CONTRACT DOL -> %v", loanFeeAdder, contractDol)
 	return loanFeeAdder

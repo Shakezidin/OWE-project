@@ -38,6 +38,7 @@ type SaleDataStruct struct {
 	CancelledDate          time.Time
 	PvInstallCompletedDate time.Time
 	PtoDate                time.Time
+	ContractDate           time.Time
 	ProjectStatus          string
 	SystemType             string
 	StartDate              time.Time // added by zidhin
@@ -69,7 +70,7 @@ func (saleDataList *SaleDataList) LoadSaleData(uniqueID string, hookType string)
 	defer func() { log.ExitFn(0, "LoadSaleData", err) }()
 	log.FuncDebugTrace(0, "In LoadSaleData for uniqueID: %v, hookType: %v", uniqueID, hookType)
 
-	uidList := []string{"OUR11450"}
+	uidList := []string{"OUR12706"}
 	query = "SELECT * from " + db.ViewName_ConsolidatedDataView + " WHERE UPPER(unique_id) IN ("
 	for i, uid := range uidList {
 		query += "'" + strings.ToUpper(uid) + "'"
@@ -87,7 +88,7 @@ func (saleDataList *SaleDataList) LoadSaleData(uniqueID string, hookType string)
 	// if uniqueID != "" {
 
 	// 	//query += " WHERE unique_id='" + uniqueID + "'"
-		// query += " WHERE UPPER(unique_id)='" + strings.ToUpper(uniqueID) + "'"
+	// query += " WHERE UPPER(unique_id)='" + strings.ToUpper(uniqueID) + "'"
 
 	// }
 	/*
@@ -253,6 +254,12 @@ func (saleDataList *SaleDataList) LoadSaleData(uniqueID string, hookType string)
 			saleData.PtoDate = ptoDate.(time.Time)
 		} else {
 			// log.FuncWarnTrace(0, "Empty value received in ptoDate for Unique Id: %v", saleData.UniqueId)
+		}
+
+		if contractDate, ok := data["contract_date"]; ok && contractDate != nil {
+			saleData.ContractDate = contractDate.(time.Time)
+		} else {
+			// log.FuncWarnTrace(0, "Empty value received in CONTRACTDATE for Unique Id: %v", saleData.ContractDate)
 		}
 
 		saleData.SystemType = determineSystemType(saleData.SystemSize, saleData.State)
