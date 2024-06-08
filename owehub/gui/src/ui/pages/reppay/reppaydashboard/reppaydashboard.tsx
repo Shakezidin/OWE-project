@@ -167,9 +167,9 @@ export const RepPayDashboardPage: React.FC = () => {
                         ...baseStyles,
                         fontSize: '13px',
                         color: state.isSelected ? '#ffffff' : '#0000000',
-                        backgroundColor: state.isSelected ? '#0493CE' : '#ffffff',
+                        backgroundColor: state.isSelected ? '#377CF6' : '#ffffff',
                         '&:hover': {
-                          backgroundColor: state.isSelected ? '#0493CE' : '#DDEBFF',
+                          backgroundColor: state.isSelected ? '#377CF6' : '#DDEBFF',
                         },
                       }),
                       singleValue: (baseStyles, state) => ({
@@ -178,7 +178,8 @@ export const RepPayDashboardPage: React.FC = () => {
                       }),
                       menu: (baseStyles) => ({
                         ...baseStyles,
-                        width: '6rem',
+                        width: '131px',
+                        left: -31
                       }),
                       input: (baseStyles) => ({
                         ...baseStyles,

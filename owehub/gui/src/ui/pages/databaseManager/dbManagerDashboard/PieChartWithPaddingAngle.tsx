@@ -13,7 +13,7 @@ interface PieChartProps {
   data: DataItem[];
 }
 
-const COLORS = ['#FB7955', '#0088FE'];
+const COLORS = ['#63ACA3', '#EE824D'];
 
 const renderCustomizedLabelPercentage = (data: any, total = 32000) => {
   let percentageCalculated = data.value;

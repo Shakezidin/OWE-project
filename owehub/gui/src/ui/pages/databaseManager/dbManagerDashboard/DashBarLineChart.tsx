@@ -101,7 +101,7 @@ export default class BarChartComponent extends PureComponent {
               /> */}
               <Bar
                 dataKey="Total_Records"
-                fill="#FB7955"
+                fill="#EE824D"
                 label={{
                   position: 'top',
                   fill: '#565656',
@@ -112,7 +112,7 @@ export default class BarChartComponent extends PureComponent {
               />
               <Bar
                 dataKey="Historical_Records"
-                fill="#007AF5"
+                fill="#63ACA3"
                 label={{
                   position: 'top',
                   fill: '#565656',
