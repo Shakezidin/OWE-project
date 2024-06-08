@@ -3,6 +3,7 @@ import './layout.css';
 import '../layout/layout.css';
 import {
   MdKeyboardArrowDown,
+  MdKeyboardArrowLeft,
   MdKeyboardArrowRight,
   MdKeyboardArrowUp,
 } from 'react-icons/md';
@@ -14,6 +15,7 @@ import { ROUTES } from '../../../routes/routes';
 import { FaUserCircle } from 'react-icons/fa';
 import { IoMdLogOut } from 'react-icons/io';
 import useMatchMedia from '../../../hooks/useMatchMedia';
+import { IoMenu } from 'react-icons/io5';
 interface Toggleprops {
   toggleOpen: boolean;
   setToggleOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -86,31 +88,62 @@ const Header: React.FC<Toggleprops> = ({
     <div className={`${scrolled ? 'header-scrolled' : ''} header-content`}>
       <div className="header-icon">
         <div
-          className="header-logo"
-          style={{ marginLeft: toggleOpen ? '17px' : '17px' }}
+          className={`side-bar-logo ${toggleOpen ? 'side-bar-logo-active' : ''}`}
+          style={{
+            width: !toggleOpen && !isTablet ? 240 :  50,
+            paddingLeft: toggleOpen || isTablet ? 0 : undefined,
+          }}
+          onClick={() =>isTablet && setToggleOpen((prev) => !prev)}
         >
+          {isTablet ? (
+            <IoMenu
+              
+              size={22}
+              className="mx-auto"
+            />
+          ) : (
+            <img
+              src={ICONS.sidebarLogo}
+              alt=""
+              style={{
+                marginInline: toggleOpen ? 'auto' : undefined,
+              }}
+            />
+          )}
+          {toggleOpen || isTablet ? null : <h3 style={{ color: 'black' }}>OWE HUB</h3>}
+
+          {!isTablet && (
+            <div
+              className={`icon-shape ${toggleOpen ? 'icon-shape-active' : ''}`}
+              onClick={() => setToggleOpen(!toggleOpen)}
+              style={{
+                position: 'absolute',
+                right: toggleOpen ? -17 : 0,
+                top: '10px',
+                borderRadius: toggleOpen
+                  ? '0px 10px 10px 0px'
+                  : '10px 0 0 10px',
+              }}
+            >
+              {toggleOpen ? (
+                <MdKeyboardArrowRight
+                  style={{ fontSize: '1.2rem', color: '#23B364' }}
+                />
+              ) : (
+                <MdKeyboardArrowLeft
+                  style={{ fontSize: '1.2rem', color: '#23B364' }}
+                />
+              )}
+            </div>
+          )}
+        </div>
+        <div className="header-logo" style={{ marginLeft: 25 }}>
           <object
             type="image/svg+xml"
             data={ICONS.LOGO}
             aria-label="login-icon"
           ></object>
         </div>
-        {toggleOpen && !isTablet && (
-          <div
-            className={`icon-shape ${toggleOpen ? 'icon-shape-active' : ''}`}
-            onClick={() => setToggleOpen(!toggleOpen)}
-            style={{
-              position: 'absolute',
-              left: '0px',
-              top: '10px',
-              borderRadius: '0px 10px 10px 0px',
-            }}
-          >
-            <MdKeyboardArrowRight
-              style={{ fontSize: '1.2rem', color: '#23B364' }}
-            />
-          </div>
-        )}
       </div>
       <div className="search-container">
         <div className="user-container">
