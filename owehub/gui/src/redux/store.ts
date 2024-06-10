@@ -55,6 +55,7 @@ import userExistSlice from './apiSlice/authSlice/checkuserslice';
 import userSlice from './apiSlice/UserSlice/userSlice';
 import dealerCreditSlice from './apiSlice/configSlice/config_get_slice/dealerCreditSlice';
 import rebateDataSlice from './apiSlice/configSlice/config_get_slice/rebateDataSlice';
+import dealerPaySlice from './apiSlice/dealerPaySlice/dealerPaySlice';
 export const store = configureStore({
   reducer: {
     appState: appStateSlice,
@@ -115,7 +116,8 @@ export const store = configureStore({
     dataTableSlice,
     filterSlice,
     userSlice,
-    dealerCredit:dealerCreditSlice
+    dealerCredit:dealerCreditSlice,
+    dealerPaySlice
   },
 });
 
