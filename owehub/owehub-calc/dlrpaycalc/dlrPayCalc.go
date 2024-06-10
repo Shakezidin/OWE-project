@@ -205,7 +205,7 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 
 	loanFee = dataMgmt.SaleData.CalculateLoanFee(uniqueID, commission_models, contractDolDol)
 	log.FuncFuncTrace(0, "zidhin loanFee: %v", loanFee)
-	// loanFee = 0
+	// loanFee = 541.63
 	rebate = dataMgmt.RebateCfg.CalculateRebate(dealer, uniqueID)
 	referral = dataMgmt.ReferralDataConfig.CalculateReferralForUniqueId(dealer, uniqueID)
 

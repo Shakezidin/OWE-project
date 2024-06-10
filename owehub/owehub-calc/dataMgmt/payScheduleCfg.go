@@ -209,13 +209,6 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateRL(dealer, partner, install
 				st = state[6:]
 			}
 
-			log.FuncErrorTrace(0, "data.dealer: %v *********** dealer : %v", data.Dealer, dealer)
-			log.FuncErrorTrace(0, "data.partner: %v *********** partner : %v", data.PartnerName, partner)
-			log.FuncErrorTrace(0, "data.isntaller: %v *********** isntaller : %v", data.InstallerName, installer)
-			log.FuncErrorTrace(0, "data.state: %v *********** state : %v", data.State, state)
-			log.FuncErrorTrace(0, "data.date: %v *********** dealer : %v", data.StartDate, wc)
-			log.FuncErrorTrace(0, "data.rl: ****************************%v", data.Rl)
-
 			if data.Dealer == dealer && data.PartnerName == partner && data.InstallerName == installer && data.State == st &&
 				startDate.Before(wc) && endDate.After(wc) {
 				return data.Rl
