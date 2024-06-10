@@ -317,7 +317,6 @@ func (RebateCfg *RebateCfgStruct) CalculateRebate(dealer string, uniqueId string
 	if len(dealer) > 0 {
 		for _, data := range RebateCfg.RebateList {
 			if data.UniqueId == uniqueId {
-				log.FuncErrorTrace(0, "amount ========= %v", data.Amount)
 				if data.Amount > 0 { //need to change amoun of type string to float64
 					if len(data.Type) >= 9 && data.Type[:9] == "Retention" {
 						rebate += 0

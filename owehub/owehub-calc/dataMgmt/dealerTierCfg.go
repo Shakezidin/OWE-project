@@ -110,10 +110,11 @@ func (pDealerTier *DealerTierCfgStruct) CalculateDlrTier(uniqueId, dealer string
 	bfrDate, err := time.Parse("01-02-2006", bfrDateStr)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to convert data.StartDate to time.Time err: %+v", err)
+		return ""
 	}
+
 	if len(uniqueId) > 0 {
 		if date.Before(bfrDate) {
-			log.FuncErrorTrace(0, "paramDate : %v checkDate : %v", date, bfrDate)
 			dlrtier = "OLD"
 		} else {
 			for _, data := range pDealerTier.DealerTierList.DealersTierList {
@@ -137,10 +138,9 @@ func (pDealerTier *DealerTierCfgStruct) CalculateDlrTier(uniqueId, dealer string
 					continue
 				}
 
-				if data.DealerName == dealer && startDate.Before(date) && endDate.Before(date) {
+				if data.DealerName == dealer && !startDate.After(date) && !endDate.Before(date) {
 					dlrtier = data.Tier
 				}
-
 			}
 		}
 	}

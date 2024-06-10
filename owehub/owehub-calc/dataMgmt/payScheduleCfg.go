@@ -209,6 +209,13 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateRL(dealer, partner, install
 				st = state[6:]
 			}
 
+			log.FuncErrorTrace(0, "data.dealer: %v *********** dealer : %v", data.Dealer, dealer)
+			log.FuncErrorTrace(0, "data.partner: %v *********** partner : %v", data.PartnerName, partner)
+			log.FuncErrorTrace(0, "data.isntaller: %v *********** isntaller : %v", data.InstallerName, installer)
+			log.FuncErrorTrace(0, "data.state: %v *********** state : %v", data.State, state)
+			log.FuncErrorTrace(0, "data.date: %v *********** dealer : %v", data.StartDate, wc)
+			log.FuncErrorTrace(0, "data.rl: ****************************%v", data.Rl)
+
 			if data.Dealer == dealer && data.PartnerName == partner && data.InstallerName == installer && data.State == st &&
 				startDate.Before(wc) && endDate.After(wc) {
 				return data.Rl
@@ -223,7 +230,7 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateRL(dealer, partner, install
 * DESCRIPTION:     calculates the addr value based on the provided data
 * RETURNS:         drawPerc,dlrDrawMax,commission_models
 *****************************************************************************/
-func (PayScheduleCfg *PayScheduleCfgStruct) CalculateDlrDrawPerc(dealer, partner, installer, loanType, state string, wc time.Time) (drawPerc, dlrDrawMax float64, commission_models string) {
+func (PayScheduleCfg *PayScheduleCfgStruct) CalculateDlrDrawPerc(dealer, partner, installer, Type, state string, wc time.Time) (drawPerc, dlrDrawMax float64, commission_models string) {
 	var (
 		err       error
 		startDate time.Time
@@ -263,7 +270,7 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateDlrDrawPerc(dealer, partner
 			if data.Dealer == dealer &&
 				strings.EqualFold(data.PartnerName, partner) &&
 				strings.EqualFold(data.InstallerName, installer) &&
-				// data.SaleType == loanType &&
+				// data.SaleType == Type &&
 				data.State == st &&
 				!startDate.After(wc) &&
 				!endDate.Before(wc) {

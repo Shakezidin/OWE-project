@@ -204,7 +204,8 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	autoAdder = dataMgmt.AutoAdderCfg.CalculateAutoAddr(dealer, uniqueID, systemSize)
 
 	loanFee = dataMgmt.SaleData.CalculateLoanFee(uniqueID, commission_models, contractDolDol)
-	// loanFee = 1253.17
+	log.FuncFuncTrace(0, "zidhin loanFee: %v", loanFee)
+	// loanFee = 0
 	rebate = dataMgmt.RebateCfg.CalculateRebate(dealer, uniqueID)
 	referral = dataMgmt.ReferralDataConfig.CalculateReferralForUniqueId(dealer, uniqueID)
 
@@ -241,8 +242,8 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	log.FuncFuncTrace(0, "Shushank loanFee: %v, rebate: %v referral: %v", loanFee, rebate, referral)
 	log.FuncFuncTrace(0, "Shushank adderLF: %v, adderPerKw: %v payRateSubTotal: %v", adderLF, adderPerKw, payRateSubTotal)
 	log.FuncFuncTrace(0, "RaedMajeed dealerPaymentBonus: %v", dealerPaymentBonus)
-	log.FuncFuncTrace(0, "RaedMajeed commTotal: %v payRateSubTotal -> %v systemSize -> %v", commTotal, payRateSubTotal, systemSize)
-	log.FuncFuncTrace(0, "Shushank commTotal: %v, statusCheck: %v r1DrawAmt: %v", commTotal, statusCheck, r1DrawAmt)
+	log.FuncFuncTrace(0, "RaedMajeed commTotal: %v systemSize -> %v", commTotal, systemSize)
+	log.FuncFuncTrace(0, "Shushank statusCheck: %v r1DrawAmt: %v", statusCheck, r1DrawAmt)
 	log.FuncFuncTrace(0, "Shushank adderTotal: %v, epc: %v netEpc2: %v", adderTotal, epc, netEpc2)
 	log.FuncFuncTrace(0, "Shushank r1CommPaid: %v, r1Balance: %v r1DrawPaid: %v", r1CommPaid, r1Balance, r1DrawPaid)
 	log.FuncFuncTrace(0, "Shushank parentDlr: %v payRate: %v", parentDlr, payRate)

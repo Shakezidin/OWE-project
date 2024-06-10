@@ -257,35 +257,39 @@ func calculateType(sysSize float64, state string) string {
 * DESCRIPTION:     calculates the "autoaddr" value based on the provided data
 * RETURNS:         autoAdder
 *****************************************************************************/
-func (AutoAdderCfg *AutoAdderCfgStruct) CalculateAutoAddr(dealer string, uniqueId string, sysSize float64) (autoAdder float64) {
+func (AutoAdderCfg *AutoAdderCfgStruct) CalculateAutoAddr(dealer string, uniqueId string, sysSize float64) float64 {
 	log.EnterFn(0, "CalculateAutoAddr")
 	defer func() { log.ExitFn(0, "CalculateAutoAddr", nil) }()
-	var (
-		chgDlr bool
-	)
+	var autoAdder float64
 
 	if len(dealer) > 0 {
 		for _, data := range AutoAdderCfg.AutoAdderList {
 			if data.UniqueId == uniqueId {
-				if data.Type1[:2] == "MK" {
-					chgDlr = MarketingFeeCfg.CalculateChgDlr(data.Type1)
+				if len(data.Type1) == 0 {
+					continue
 				}
 
-				if chgDlr {
-					addramount := AutoAdderCfg.CalculateExactAmount(data.UniqueId)
-					if addramount > 0 {
-						autoAdder = addramount
+				if data.Type1[:2] == "MK" {
+					if MarketingFeeCfg.CalculateChgDlr(data.Type1) {
+						addramount := AutoAdderCfg.CalculateExactAmount(data.UniqueId)
+						if addramount > 0 {
+							autoAdder = addramount
+						} else if data.PerKwAmt > 0 {
+							autoAdder = data.PerKwAmt * sysSize
+						}
+					} else {
+						continue
+					}
+				} else {
+					Exactmount := AutoAdderCfg.CalculateExactAmount(data.UniqueId)
+					if Exactmount > 0 {
+						autoAdder = Exactmount
 					} else if data.PerKwAmt > 0 {
 						autoAdder = data.PerKwAmt * sysSize
 					}
-				} else {
-					return 0
 				}
-			} else {
-				return 0
 			}
 		}
-		autoAdder = 0
 	}
 	return autoAdder
 }

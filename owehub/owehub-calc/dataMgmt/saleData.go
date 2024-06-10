@@ -62,7 +62,7 @@ func (saleDataList *SaleDataList) LoadSaleData(uniqueID string, hookType string)
 
 	//Shushank
 	// uniqueID = "OUR19865"
-	uniqueID = "OUR11347"
+	// uniqueID = "OUR11347"
 
 	// log.EnterFn(0, "LoadSaleData")
 	// defer func() { log.ExitFn(0, "LoadSaleData", err) }()
@@ -70,7 +70,7 @@ func (saleDataList *SaleDataList) LoadSaleData(uniqueID string, hookType string)
 	defer func() { log.ExitFn(0, "LoadSaleData", err) }()
 	log.FuncDebugTrace(0, "In LoadSaleData for uniqueID: %v, hookType: %v", uniqueID, hookType)
 
-	uidList := []string{"OUR12706"}
+	uidList := []string{"OUR19893"}
 	query = "SELECT * from " + db.ViewName_ConsolidatedDataView + " WHERE UPPER(unique_id) IN ("
 	for i, uid := range uidList {
 		query += "'" + strings.ToUpper(uid) + "'"
