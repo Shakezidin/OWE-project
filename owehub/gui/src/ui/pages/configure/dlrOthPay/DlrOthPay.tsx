@@ -37,6 +37,7 @@ import { postCaller } from '../../../../infrastructure/web_api/services/apiUrl';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
+import { dateFormat } from '../../../../utiles/formatDate';
 interface Column {
   name: string;
   displayName: string;
@@ -101,6 +102,7 @@ const DlrOthPay: React.FC = () => {
 
   const totalPages = Math.ceil(dbCount / itemsPerPage);
 
+
   const startIndex = (currentPage - 1) * itemsPerPage + 1;
   const endIndex = startIndex * itemsPerPage;
   const handleAddCommission = () => {
@@ -136,6 +138,8 @@ const DlrOthPay: React.FC = () => {
       const res = await postCaller('update_dlr_oth_archive', newValue);
       if (res.status === HTTP_STATUS.OK) {
         dispatch(getDlrOth(pageNumber));
+        setSelectAllChecked(false)
+        setSelectedRows(new Set())
         await successSwal('Archived', 'The data has been archived ');
       } else {
         await successSwal('Archived', 'The data has been archived ');
@@ -303,8 +307,7 @@ const DlrOthPay: React.FC = () => {
                     <td>{el.description}</td>
                     <td>{el.balance}</td>
                     <td>{el.paid_amount}</td>
-                    <td>{el.start_date}</td>
-                    <td>{el.end_date}</td>
+                    <td>{dateFormat(el.date)}</td>
                     <td>
                       {!viewArchived && selectedRows.size < 2 && (
                         <div className="action-icon">
@@ -340,11 +343,11 @@ const DlrOthPay: React.FC = () => {
             </tbody>
           </table>
         </div>
-        {commissionList?.length > 0 ? (
+        {currentPageData?.length > 0 ? (
           <div className="page-heading-container">
             <p className="page-heading">
               {startIndex} - {endIndex > dbCount ? dbCount : endIndex} of{' '}
-              {commissionList?.length} item
+              {dbCount} item
             </p>
 
             <Pagination

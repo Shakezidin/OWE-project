@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION update_dlr_oth(
     p_id                      INT,
     p_unique_id               VARCHAR,
     p_payee                   VARCHAR,
-    p_amount                  VARCHAR,
+    p_amount                  DOUBLE PRECISION,
     p_description             VARCHAR,
     p_balance                 DOUBLE PRECISION,
     p_paid_amount             DOUBLE PRECISION,

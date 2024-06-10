@@ -25,6 +25,7 @@ import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import DataNotFound from '../../../components/loader/DataNotFound';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/loanFeeSlice';
+import { dateFormat } from '../../../../utiles/formatDate';
 const LoanFee = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -299,8 +300,8 @@ const LoanFee = () => {
                     <td>{el.owe_cost}</td>
                     <td>{el.dlr_mu}</td>
                     <td>{el.dlr_cost}</td>
-                    <td>{el.start_date}</td>
-                    <td>{el.end_date}</td>
+                    <td>{dateFormat(el.start_date)}</td>
+                    <td>{dateFormat(el.end_date)}</td>
                     <td>
                       {!viewArchived && (
                         <div className="action-icon">

@@ -8,7 +8,7 @@
 }
 /* color config */
 :root {
-  --white-color: white;
+  --white-color: #fff;
   --children-bg-color: #f3f3f3;
   --border-color: #eaecf0;
   --btn-text-color: #344054;
@@ -37,6 +37,14 @@
   --project-icon-color-2: #e98045;
   --project-icon-color-3: #19b87e;
   --project-icon-color-4: #de2e2e;
+
+
+  --primary-color: #377CF6;
+  --secondary-color: #63ACA3;
+  --teritary-color: #8E81E0;
+  --orange-color: #EE824D;
+  --purpink-color: #C470C7;
+  --primary-light-color: #D5E4FF;
 }
 a {
   text-decoration: none;
@@ -44,7 +52,7 @@ a {
 .inputLabel-select {
   position: absolute;
   color: #000000;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   line-height: 14.5px;
 }
@@ -262,6 +270,7 @@ input[type='password']::-ms-clear {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
+  align-items: flex-end;
 }
 .createUserActionButton {
   display: flex;
@@ -365,8 +374,9 @@ br {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 15px;
+  margin-top: 24px;
   cursor: pointer;
+  align-self: center;
 }
 .fildelb-btn img {
   width: 19px;
@@ -376,4 +386,23 @@ br {
   position: static !important;
   display: block;
   margin-bottom: -15px !important;
+}
+
+.bg-white{
+  background-color: var(--white-color);
+}
+
+.bg-primary{
+  background-color: var(--primary-color);
+}
+
+.bg-secondary{
+  background-color: var(--secondary-color);
+}
+
+
+@media (max-width:1024px) {
+  .modal {
+    max-width:750px;
+  }
 }

@@ -113,9 +113,9 @@ export const ReferalDataColumn: Column[] = [
   },
   {
     name: 'start_date',
-    displayName: 'Start',
+    displayName: 'Start Date',
     type: 'string',
     isCheckbox: false,
   },
-  { name: 'end_date', displayName: 'End', type: 'string', isCheckbox: false },
+  { name: 'end_date', displayName: 'End Date', type: 'string', isCheckbox: false },
 ];

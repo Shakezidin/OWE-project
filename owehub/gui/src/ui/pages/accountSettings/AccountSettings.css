@@ -46,7 +46,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #8fcd02;
+  background-color: #363636;
   color: #fff;
   font-size: 2rem;
   font-weight: 400;
@@ -165,7 +165,6 @@
 }
 
 .reset-Update button {
-  /* width: 280px; */
   width: 28%;
   height: 44px;
   font-size: 14px;
@@ -177,14 +176,13 @@
   text-decoration: none;
   margin-right: 0.4rem;
   cursor: pointer;
-  background-color: #0493ce;
   border-radius: 8px;
 }
 .reset-Update :hover {
   transition:
     background-color 0.5s ease,
     color 0.5s ease;
-  background-color: #0470a0;
+  background-color: #1d66e8;
 }
 
 .profile-reset {
@@ -194,7 +192,7 @@
   margin-top: 1rem;
 }
 .profile-reset :hover {
-  background-color: #0470a0;
+  background-color: #1d66e8;
 }
 
 .user-profile-container {
@@ -291,14 +289,13 @@
   display: inline-block;
   margin: 4px 2px;
   cursor: pointer;
-  background-color: #0493ce;
   border-radius: 8px;
   transition:
     background-color 0.5s ease,
     color 0.5s ease;
 }
 .reset-Update-support :hover {
-  background-color: #0470a0;
+  background-color: #1d66e8
 }
 
 .user-create-profile-section {

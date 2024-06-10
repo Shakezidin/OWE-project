@@ -16,6 +16,10 @@ import trackerIcon from '../../resources/assets/trackerIcon.svg';
 import activityIcon from '../../resources/assets/activityIcon.svg';
 import report from '../../resources/assets/report.svg';
 import menu from '../../resources/assets/menu-icon.svg';
+import sales_per from '../../resources/assets/sales_new.svg';
+import ntp_per from '../../resources/assets/ntp_per.svg';
+import installed_per from '../../resources/assets/installed_per.svg';
+import cancelled_per from '../../resources/assets/cancelled_per.svg';
 import filter from '../../resources/assets/filter.svg';
 import filterActive from '../../resources/assets/filterActive.svg';
 import dashHead from '../../resources/assets/dashhead.svg';
@@ -41,7 +45,7 @@ import upperIcon from '../../resources/assets/arrow-up-s-line.svg';
 import logoutIconLeft from '../../resources/assets/logout-circle-r-line.svg';
 import userPic from '../../resources/assets/userPic.svg';
 import settingIconAcc from '../../resources/assets/settings-line.svg';
-import supportImage from '../../resources/assets/supportImage.svg';
+import supportImage from '../../resources/assets/support.svg';
 import sales from '../../resources/assets/sales.svg';
 import ntp from '../../resources/assets/ntp.svg';
 import install from '../../resources/assets/install.svg';
@@ -84,13 +88,22 @@ import rep3 from '../../resources/assets/rep3.png';
 import per2 from '../../resources/assets/per2.png';
 import per3 from '../../resources/assets/per3.png';
 import pmshadedgraph from '../../resources/assets/pmshadedgraph.png';
-import includes_icon from '../../resources/assets/includes_icon.png';
-// import browserIcon from '../../resources/assets/Cloud-upload.svg'
-// import whiteCross from '../../resources/assets/w'
-import lable_img from '../../resources/assets/Lablel_Img.png';
+import includes_icon from '../../resources/assets/includes_icon.svg';
 import dashboardSidebar from '../../resources/assets/sidebar-dashboard.png';
 import dataSidebar from '../../resources/assets/sidebar-data.png';
 import activitySidebar from '../../resources/assets/sidebar-activity.png';
+import fil_white from '../../resources/assets/filter-white.png';
+import online from '../../resources/assets/Online.svg';
+import tot1 from '../../resources/assets/reptot1.png';
+import tot2 from '../../resources/assets/reptot2.png';
+import tot3 from '../../resources/assets/reptot3.png';
+import report1 from '../../resources/assets/report3.svg';
+import element from '../../resources/assets/element.svg';
+import user from '../../resources/assets/sales.svg';
+import vector from '../../resources/assets/Vector1.svg';
+import lable_img from '../../resources/assets/lable_img.svg';
+
+
 export const ICONS = {
   BACKGROUND: require('../../resources/assets/background.png'),
   LOGO: logo,
@@ -116,6 +129,7 @@ export const ICONS = {
   filter2: require('../../resources/assets/filter2.png'),
   groupIcon: require('../../resources/assets/Group2.png'),
   arrowNext: require('../../resources/assets/Vector.svg'),
+  
 
   groupActiveIcon: groupActive,
   viewChart: viewChart,
@@ -137,6 +151,7 @@ export const ICONS = {
   editIconUser: editIconUser,
   filtercomm: filtercomm,
   AddIcon: AddIcon,
+  
   exportIcon: exportIcon,
   importIcon: importIcon,
   BlackAddIcon: BlackAddIcon,
@@ -195,5 +210,18 @@ export const ICONS = {
   per2: per2,
   pmshadedgraph: pmshadedgraph,
   lable_img: lable_img,
-  includes_icon:includes_icon
+  includes_icon:includes_icon,
+  sales_per: sales_per,
+  ntp_per: ntp_per,
+  installed_per: installed_per,
+  cancelled_per: cancelled_per,
+  tot1:tot1,
+  tot2:tot2,
+  tot3:tot3,
+  report1: report1,
+  element: element,
+  user: user,
+  vector: vector,
+  online: online,
+  fil_white:fil_white,
 };

@@ -71,7 +71,7 @@ const RegionalManagerTable: React.FC<RegionalManagerProps> = ({
       >
         <table>
           <thead>
-            <tr style={{ backgroundColor: '#F5F5F5' }}>
+            <tr style={{ backgroundColor: 'var(--primary-light-color)' }}>
               {UserRegionalTableColumn.map((item, key) => (
                 <SortableHeader
                   key={key}

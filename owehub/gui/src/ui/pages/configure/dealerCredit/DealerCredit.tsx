@@ -33,6 +33,7 @@ import MicroLoader from '../../../components/loader/MicroLoader';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import { HTTP_STATUS } from '../../../../core/models/api_models/RequestModel';
+import { dateFormat } from '../../../../utiles/formatDate';
 interface Column {
   name: string;
   displayName: string;
@@ -90,8 +91,8 @@ const DealerCredit: React.FC = () => {
 
   const totalPages = Math.ceil(dbCount / itemsPerPage);
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
+  const endIndex = startIndex * itemsPerPage;
   const handleAddCommission = () => {
     setEditMode(false);
     setEditData(null);
@@ -336,7 +337,7 @@ const DealerCredit: React.FC = () => {
                       </div>
                     </td>
 
-                    <td>{el.date}</td>
+                    <td>{dateFormat(el.date)}</td>
                     <td>{el.exact_amount}</td>
                     <td>{el.per_kw_amount}</td>
                     <td>{el.approved_by}</td>
@@ -397,6 +398,7 @@ const DealerCredit: React.FC = () => {
                     </div>
                   </td>
                 </tr>
+
               )}
             </tbody>
           </table>

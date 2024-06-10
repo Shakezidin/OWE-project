@@ -29,6 +29,7 @@ import DataNotFound from '../../../components/loader/DataNotFound';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
+import { dateFormat } from '../../../../utiles/formatDate';
 const InstallCost = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -292,8 +293,8 @@ const InstallCost = () => {
                         {el.cost}
                       </div>
                     </td>
-                    <td>{el.start_date}</td>
-                    <td>{el.end_date}</td>
+                    <td>{dateFormat(el.start_date)}</td>
+                    <td>{dateFormat(el.end_date)}</td>
                     <td>
                       {!viewArchived && selectedRows.size < 2 && (
                         <div className="action-icon">

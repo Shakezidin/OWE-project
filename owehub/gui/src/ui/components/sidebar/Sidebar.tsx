@@ -14,6 +14,7 @@ import { LuWallet } from 'react-icons/lu';
 import { createSideMenuList } from '../../../routes/SideMenuOption';
 import { GrDocumentPerformance } from 'react-icons/gr';
 import { AiOutlineProject } from 'react-icons/ai';
+import useMatchMedia from '../../../hooks/useMatchMedia';
 
 interface Child {
   path: string;
@@ -41,7 +42,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
     child: Child[];
     id?: number;
   }>({ left: 0, top: 0, opacity: 0, text: '', child: [], id: -1 });
-
+  const isTablet = useMatchMedia('(max-width: 1024px)');
   const location = useLocation();
   const timeOut = useRef<NodeJS.Timeout | null>(null);
 
@@ -107,13 +108,13 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
         style={{ paddingInline: !toggleOpen ? 10 : '' }}
       >
         <div className="heading-container">
-          {!toggleOpen && (
+          {!isTablet && !toggleOpen && (
             <div
               className={`icon-shape ${toggleOpen ? 'icon-shape-active' : ''}`}
               onClick={() => setToggleOpen(!toggleOpen)}
               style={{ position: 'absolute', top: '10px', left: '223px' }}
             >
-              {toggleOpen ? (
+              {toggleOpen  ? (
                 <MdKeyboardArrowRight color="black" />
               ) : (
                 <MdKeyboardArrowLeft
@@ -141,9 +142,9 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                     }, 500);
                   }}
                   className={`side-icon-container ${
-                    location.pathname === oth.path && !toggleOpen
+                    location.pathname === oth.path
                       ? 'active-link-bg'
-                      : ''
+                      : 'not-active-link'
                   }`}
                 >
                   <div
@@ -247,9 +248,9 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                     }, 500);
                   }}
                   className={`side-icon-container ${
-                    location.pathname === oth.path && !toggleOpen
+                    location.pathname === oth.path
                       ? 'active-link-bg'
-                      : ''
+                      : 'not-active-link'
                   }`}
                 >
                   <div
@@ -353,7 +354,9 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                     }, 500);
                   }}
                   className={`side-icon-container ${
-                    location.pathname === oth.path ? 'active-link-bg' : ''
+                    location.pathname === oth.path
+                      ? 'active-link-bg'
+                      : 'not-active-link'
                   }`}
                 >
                   <div
@@ -455,7 +458,9 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                     }, 500);
                   }}
                   className={`side-icon-container ${
-                    location.pathname === oth.path ? 'active-link-bg' : ''
+                    location.pathname === oth.path
+                      ? 'active-link-bg'
+                      : 'not-active-link'
                   }`}
                 >
                   <div
@@ -690,7 +695,7 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                             className={`side-icon-container ${
                               location.pathname === accr.path
                                 ? 'active-link-bg'
-                                : ''
+                                : 'not-active-link'
                             }`}
                           >
                             <div>{accr.sidebarProps.icon}</div>
@@ -751,7 +756,9 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                     }, 500);
                   }}
                   className={`side-icon-container ${
-                    location.pathname === oth.path ? 'active-link-bg' : ''
+                    location.pathname === oth.path
+                      ? 'active-link-bg'
+                      : 'not-active-link'
                   }`}
                 >
                   <div
@@ -1105,7 +1112,9 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                     }, 500);
                   }}
                   className={`side-icon-container ${
-                    location.pathname === oth.path ? 'active-link-bg' : ''
+                    location.pathname === oth.path
+                      ? 'active-link-bg'
+                      : 'not-active-link'
                   }`}
                 >
                   <div
@@ -1208,7 +1217,9 @@ const Sidebar: React.FC<Toggleprops> = ({ toggleOpen, setToggleOpen }) => {
                     }, 500);
                   }}
                   className={`side-icon-container ${
-                    location.pathname === oth.path ? 'active-link-bg' : ''
+                    location.pathname === oth.path
+                      ? 'active-link-bg'
+                      : 'not-active-link'
                   }`}
                 >
                   <div

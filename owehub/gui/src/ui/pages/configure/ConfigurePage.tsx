@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FaPlus, FaMinus } from 'react-icons/fa6';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../../routes/routes';
-import { RiArrowRightUpLine } from 'react-icons/ri';
+import { RiArrowRightLine } from 'react-icons/ri';
 import './ConfigurePage.css';
 
 interface AccordionSection {
@@ -12,8 +12,9 @@ interface AccordionSection {
 }
 
 const ConfigurePage: React.FC = () => {
-  const cardColors = ['#E8EFF9', '#F6ECEF', '#E6F8EF', '#FBF6DA', '#EAE6F8'];
-  const arrowColors = ['#1963C6', '#D1275A', '#06BA63', '#EBAA04', '#5121FA'];
+  const cardColors = ['#FAD9CA', '#CDE8FB', '#EDD4EE', '#D0E6E3', '#DDD9F6'];
+  const arrowColors = ['#EE824D', '#57B3F1', '#C470C7', '#63ACA3', '#8E81E0'];
+
 
   const accordionSections: AccordionSection[] = [
     {
@@ -113,6 +114,8 @@ const ConfigurePage: React.FC = () => {
                       )}
                     </div>
                   </div>
+
+
                   <div className={`configure-cards ${isOpen ? 'open' : ''}`}>
                     {data.map((item, index) => {
                       const colorIndex =
@@ -124,20 +127,32 @@ const ConfigurePage: React.FC = () => {
                           <Link
                             to={item.route}
                             className="pay-card"
-                            style={{ backgroundColor: randomCardColor }}
+                            style={{
+                               backgroundColor: randomCardColor,
+                               outline: `1px dotted ${randomArrowColor}`,
+                               outlineOffset: '3px',
+                              }}
                           >
-                            <h4 className="card-heading">{item.title}</h4>
+
+                            <div className='con-fle'>
+                            <h1 className="card-heading">{item.title}</h1>
                             <div
                               className="arrow-wrapper"
                               style={{ color: randomArrowColor }}
                             >
-                              <RiArrowRightUpLine className="arrow-right" />
+                              <span className="view-text">View</span>
+                              <RiArrowRightLine className="arrow-right" />
                             </div>
+
+                            </div>
+
                           </Link>
                         </div>
+                        
                       );
                     })}
                   </div>
+                  
                 </div>
               );
             })}

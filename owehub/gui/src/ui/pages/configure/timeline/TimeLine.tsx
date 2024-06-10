@@ -25,6 +25,7 @@ import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
+import { dateFormat } from '../../../../utiles/formatDate';
 const TimeLine = () => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [filterOPen, setFilterOpen] = React.useState<boolean>(false);
@@ -344,8 +345,8 @@ const TimeLine = () => {
                     </td>
                     <td>{el.state}</td>
                     <td>{el.days}</td>
-                    <td>{el.start_date}</td>
-                    <td>{el.end_date}</td>
+                    <td>{dateFormat(el.start_date)}</td>
+                    <td>{dateFormat(el.end_date)}</td>
                     <td>
                       {!viewArchived && selectedRows.size < 2 && (
                         <div className="action-icon">

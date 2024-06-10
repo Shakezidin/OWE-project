@@ -24,6 +24,7 @@ import { showAlert, successSwal } from '../../../components/alert/ShowAlert';
 import Loading from '../../../components/loader/Loading';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 import FilterHoc from '../../../components/FilterModal/FilterHoc';
+import { dateFormat } from '../../../../utiles/formatDate';
 
 const RepPaySettings = () => {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -286,8 +287,8 @@ const RepPaySettings = () => {
 
                     <td>{el?.position}</td>
                     <td>{el?.b_e}</td>
-                    <td>{el?.start_date}</td>
-                    <td>{el?.end_date}</td>
+                    <td>{dateFormat(el?.start_date)}</td>
+                    <td>{dateFormat(el?.end_date)}</td>
                     <td>
                       {!viewArchived && selectedRows.size < 2 && (
                         <div className="action-icon">

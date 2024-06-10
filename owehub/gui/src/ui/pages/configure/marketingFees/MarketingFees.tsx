@@ -29,6 +29,7 @@ import {
 } from '../../../components/alert/ShowAlert';
 import MicroLoader from '../../../components/loader/MicroLoader';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
+import { dateFormat } from '../../../../utiles/formatDate';
 
 const MarketingFees: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -322,8 +323,8 @@ const MarketingFees: React.FC = () => {
                     </td>
                     <td>{el.pay_src}</td>
                     <td>{el.description}</td>
-                    <td>{el.start_date}</td>
-                    <td>{el.end_date} </td>
+                    <td>{dateFormat(el.start_date)}</td>
+                    <td>{dateFormat(el.end_date)} </td>
                     <td>
                       
                     {!viewArchived && selectedRows.size<2 && (

@@ -4,7 +4,7 @@ export const DlrOthPayColumn: Column[] = [
   // { name: "record_id", displayName: "Record ID", type: "number" },
   {
     name: 'unique_id',
-    displayName: 'Unique Id',
+    displayName: 'Unique ID',
     type: 'string',
     isCheckbox: true,
   },
@@ -29,15 +29,10 @@ export const DlrOthPayColumn: Column[] = [
     isCheckbox: false,
   },
   {
-    name: 'start_date',
-    displayName: 'Start Date',
+    name: 'date',
+    displayName: 'Date',
     type: 'date',
     isCheckbox: false,
   },
-  {
-    name: 'end_date',
-    displayName: 'End Date',
-    type: 'date',
-    isCheckbox: false,
-  },
+  
 ];

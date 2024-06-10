@@ -24,6 +24,7 @@ import FilterHoc from '../../../components/FilterModal/FilterHoc';
 import { FilterModel } from '../../../../core/models/data_models/FilterSelectModel';
 
 import { ROUTES } from '../../../../routes/routes';
+import { dateFormat } from '../../../../utiles/formatDate';
 const TierLoanFee = () => {
   const dispatch = useAppDispatch();
   const tierloanList = useAppSelector(
@@ -314,8 +315,8 @@ const TierLoanFee = () => {
                     <td>{el.owe_cost}</td>
                     <td>{el.dlr_mu}</td>
                     <td>{el.dlr_cost}</td>
-                    <td>{el.start_date}</td>
-                    <td>{el.end_date}</td>
+                    <td>{dateFormat(el.start_date)}</td>
+                    <td>{dateFormat(el.end_date)}</td>
                     {!viewArchived && selectedRows.size < 2 && (
                       <td>
                         <div className="action-icon">
