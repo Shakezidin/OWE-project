@@ -58,7 +58,7 @@ const data = [
 export default class BarChartComponent extends PureComponent {
   render() {
     return (
-      <div className="" style={{ width: '100%' }}>
+      <div className="dashbar-db" style={{ width: '100%' }}>
         <div className="dash-section" style={{ padding: '1rem' }}>
           <p>Total Table Record</p>
         </div>
@@ -77,7 +77,8 @@ export default class BarChartComponent extends PureComponent {
               <CartesianGrid vertical={false} />
               <Tooltip
                 contentStyle={{
-                  fontSize: '13px', // Set the desired font size here
+                  fontSize: '13px',
+                  borderRadius: 'none'
                 }}
               />
               <XAxis

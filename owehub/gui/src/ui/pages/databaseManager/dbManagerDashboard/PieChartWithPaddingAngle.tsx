@@ -38,6 +38,7 @@ function PieChartWithPaddingAngle({ data }: PieChartProps) {
         justifyContent: 'center',
         outline: 'none',
       }}
+      className='dashbar-db'
     >
       <div
         style={{
@@ -54,7 +55,6 @@ function PieChartWithPaddingAngle({ data }: PieChartProps) {
           height={400}
           style={{ outline: 'none', cursor: 'pointer' }}
         >
-          {/* <Tooltip formatter={(value: number, name: string, props: any) => [`${value} webhooks`, props]} /> */}
           <Tooltip
             content={({ payload }) => {
               if (payload && payload.length > 0) {

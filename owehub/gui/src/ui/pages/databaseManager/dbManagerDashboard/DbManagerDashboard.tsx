@@ -11,6 +11,7 @@ import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { fetchActive } from '../../../../redux/apiSlice/configSlice/config_get_slice/activeSlice';
 import moment from 'moment';
 import Loading from '../../../components/loader/Loading';
+import { ICONS } from '../../../icons/Icons';
 
 const DbManagerDashboard = () => {
   const navigate = useNavigate();
@@ -105,27 +106,39 @@ const DbManagerDashboard = () => {
 
       <div className="Db-manager-container">
         <div className="runner-section">
-          <h3>DB Status</h3>
-          <p>Application {!start_time && 'Not'} Running</p>
+          <div className='dbm-top'>
+            <img src={ICONS.dbm} alt='' className='dbm-img' />
+            <h3>DB Status</h3>
+            <p>Application {!start_time && 'Not'} Running</p>
+          </div>
           <div className="active-button">
             <div className="active-since-section">
               {!start_time ? (
                 <button type="button" style={{ background: '#CA0B00' }}>
+                  <span className="status-circle red"></span>
                   Inactive
                 </button>
               ) : (
-                <button type="button">Active</button>
+                <button type="button">
+                  <span className="status-circle green"></span>
+                  Active
+                </button>
               )}
             </div>
-
             {start_time && (
               <div className="since-section">
-                <h3>Active Since</h3>
+                <h3>Since:</h3>
                 <p>{moment(start_time).format('MM/DD/YYYY hh:mm A')}</p>
               </div>
             )}
           </div>
         </div>
+
+
+
+
+
+
         <div className="DashBarchart-section">
           <DashBarLineChart />
           <div className="identity1">
@@ -270,8 +283,8 @@ const DbManagerDashboard = () => {
             </div>
 
             <div className="identity">
-            <Boxes color="#63ACA3" borderColor="#D2FFF9" /> <p>30% Fail</p>
-            <Boxes color="#EE824D" borderColor="#FFE2D4" /> <p>70% Pass</p>
+              <Boxes color="#63ACA3" borderColor="#D2FFF9" /> <p>30% Fail</p>
+              <Boxes color="#EE824D" borderColor="#FFE2D4" /> <p>70% Pass</p>
             </div>
           </div>
 
@@ -349,8 +362,8 @@ const DbManagerDashboard = () => {
               </div>
             </div>
             <div className="identity">
-            <Boxes color="#63ACA3" borderColor="#D2FFF9" /> <p>30% Fail</p>
-            <Boxes color="#EE824D" borderColor="#FFE2D4" /> <p>70% Pass</p>
+              <Boxes color="#63ACA3" borderColor="#D2FFF9" /> <p>30% Fail</p>
+              <Boxes color="#EE824D" borderColor="#FFE2D4" /> <p>70% Pass</p>
             </div>
           </div>
 
@@ -428,8 +441,8 @@ const DbManagerDashboard = () => {
               </div>
             </div>
             <div className="identity">
-            <Boxes color="#63ACA3" borderColor="#D2FFF9" /> <p>30% Fail</p>
-            <Boxes color="#EE824D" borderColor="#FFE2D4" /> <p>70% Pass</p>
+              <Boxes color="#63ACA3" borderColor="#D2FFF9" /> <p>30% Fail</p>
+              <Boxes color="#EE824D" borderColor="#FFE2D4" /> <p>70% Pass</p>
             </div>
           </div>
         </div>
