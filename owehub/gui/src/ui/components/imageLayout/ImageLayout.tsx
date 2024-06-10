@@ -9,16 +9,17 @@ interface ImageLayoutProps {
 const ImageLayout: React.FC<ImageLayoutProps> = ({ images }) => {
   return (
     <div className="grid-container">
-      <div className="leftView">
-        {images.slice(0, 2).map((image, index) => (
-          <div style={{ position: 'relative' }}>
-            <object
+        {images.map((image, index) => (
+          <div style={{ position: 'relative', gridRow: index === 1 ? '1 / 3' : undefined, 
+          gridColumn: index === 1 ? '2 / 3' : undefined}}>
+            {/* <object
               key={index}
               className="leftView"
               type="image/svg+xml"
               data={image}
               aria-label={`Left ${index + 1}`}
-            ></object>
+              ></object> */}
+              <img style={{objectFit: "cover"}} className='leftView' src={image} alt={`Left ${index + 1}`} />
             <div className="bottamTextView">
               <div>
                 <span>
@@ -31,43 +32,6 @@ const ImageLayout: React.FC<ImageLayoutProps> = ({ images }) => {
           </div>
         ))}
       </div>
-      <div className="centerView">
-        <div style={{ position: 'relative' }}>
-          <object
-            type="image/svg+xml"
-            data={images[2]}
-            aria-label="Center"
-          ></object>
-          <div className="centerTextView">
-            <div>
-              <span>Best-in-Class Technology</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="rightView">
-        {images.slice(3, 5).map((image, index) => (
-          <div style={{ position: 'relative' }}>
-            <object
-              type="image/svg+xml"
-              className="rightView"
-              key={index}
-              data={image}
-              aria-label={`Right ${index + 1}`}
-            ></object>
-            <div className="bottamTextView">
-              <div>
-                <span>
-                  {index === 1
-                    ? 'Industry Leading Warranty'
-                    : 'Expert Installation'}
-                </span>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
   );
 };
 
