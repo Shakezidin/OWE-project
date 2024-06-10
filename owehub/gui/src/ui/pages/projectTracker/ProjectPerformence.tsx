@@ -20,6 +20,7 @@ import { format } from 'date-fns';
 import Pagination from '../../components/pagination/Pagination';
 import MicroLoader from '../../components/loader/MicroLoader';
 import DataNotFound from '../../components/loader/DataNotFound';
+import { Link } from 'react-router-dom';
 const ProjectPerformence = () => {
   const dispatch = useAppDispatch();
   const [page, setPage] = useState(1);
@@ -88,7 +89,7 @@ const ProjectPerformence = () => {
         <div className="project-heading">
           <h2>Daily Performance</h2>
         </div>
-        <div className="flex flex-wrap">
+        <div className="flex stats-card-wrapper">
           <div className="project-card-container-1">
             {cardData.map((el, i) => {
               const findSale = perfomaceSale.find(
@@ -128,7 +129,7 @@ const ProjectPerformence = () => {
                         fontSize: '12px',
                         fontWeight: '300',
                         marginTop: '10px',
-                        textAlign: 'center',
+                        textAlign: 'start',
                       }}
                       className='per-sales'
                     >
@@ -288,13 +289,13 @@ const ProjectPerformence = () => {
                         <tr key={index}>
                           <td style={{ padding: '0px' }}>
                             <div className="milestone-data">
-                              <a
-                                href={`/project-management?project_id=${project.unqiue_id}`}
+                              <Link
+                                to={`/project-management?project_id=${project.unqiue_id}`}
                               >
                                 <p className="install-update">
                                   {project.unqiue_id}
                                 </p>
-                              </a>
+                              </Link>
                               <div
                                 className="milestone-strips"
                                 style={getColorStyle(project.contract_date)}
@@ -484,7 +485,7 @@ const ProjectPerformence = () => {
                                           ),
                                           'dd MMMM'
                                         ).slice(0, 6)
-                                      : ''}
+                                      : 'No Data'}
                                   </p>
                                   <p>
                                     {project.install_completed_date

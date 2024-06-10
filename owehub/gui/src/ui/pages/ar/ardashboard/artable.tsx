@@ -35,9 +35,7 @@ const ArDashBoardTable = () => {
     useState<CommissionModel | null>(null);
   const itemsPerPage = 10;
   const [viewArchived, setViewArchived] = useState<boolean>(false);
-  const currentPage = useAppSelector(
-    (state) => state.paginationType.currentPage
-  );
+
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [currentPage1, setCurrentPage1] = useState(1);
@@ -57,7 +55,7 @@ const ArDashBoardTable = () => {
       install: filters.install,
       pto: filters.pto,
     };
-    dispatch(getAR(pageNumber));
+     dispatch(getAR(pageNumber));
   }, [dispatch, currentPage1, pageSize1, viewArchived, filters]);
   const handleItemsPerPageChange = (e: any) => {
     const newItemsPerPage = parseInt(e.target.value, 10);
@@ -69,10 +67,10 @@ const ArDashBoardTable = () => {
   };
 
   const totalPages1 = Math.ceil(count / pageSize1);
-  const startIndex = (currentPage - 1) * pageSize1;
-  const endIndex = startIndex + pageSize1;
+  const startIndex = (currentPage1 - 1) * pageSize1 + 1;
+  const endIndex = startIndex * pageSize1;
 
-  const currentPageData = data?.slice(startIndex, endIndex);
+  const currentPageData = data?.slice();
   const isAnyRowSelected = selectedRows?.size > 0;
   const isAllRowsSelected = selectedRows?.size === data?.length;
 
@@ -111,6 +109,8 @@ const ArDashBoardTable = () => {
   // if (loading) {
   //   return <div>Loading... {loading}</div>;
   // }
+
+  
 
   const Commissioncolumns = [
     {
@@ -184,7 +184,12 @@ const ArDashBoardTable = () => {
       type: 'string',
       isCheckbox: false,
     },
-    { name: 'owe_ar', displayName: 'Owe Ar', type: 'string', isCheckbox: false },
+    {
+      name: 'owe_ar',
+      displayName: 'Owe Ar',
+      type: 'string',
+      isCheckbox: false,
+    },
     {
       name: 'total_paid',
       displayName: 'Total Paid',
@@ -204,6 +209,8 @@ const ArDashBoardTable = () => {
       isCheckbox: false,
     },
   ];
+
+  
 
   const handleIconOpen = () => setOpenIcon(true);
   const handleIconClose = () => setOpenIcon(false);
@@ -277,23 +284,26 @@ const ArDashBoardTable = () => {
                             {el.unique_id}
                           </div>
                         </td>
-                        <td>{el.partner}</td>
-                        <td>{el.installer}</td>
-                        <td>{el.type}</td>
-                        <td>{el.home_owner}</td>
-                        <td>{el.street_address}</td>
-                        <td>{el.city}</td>
-                        <td>{el.st}</td>
-                        <td>{el.zip}</td>
-                        <td>{el.sys_size}</td>
-                        <td>{el.status}</td>
-                        <td>{el.status_date}</td>
-                        <td>{el.contract_calc}</td>
-                        <td>{el.owe_ar}</td>
-                        <td>{el.total_paid}</td>
-                        <td>{el.current_due}</td>
-                        <td>{el.balance}</td>
+                        <td>{el.partner || "N/A"}</td>
+                        <td>{el.installer || "N/A"}</td>
 
+                        
+                        <td>{el.type || "N/A"}</td>
+                        <td>{el.home_owner|| "N/A"}</td>
+                        <td>{el.street_address|| "N/A"}</td>
+                        <td>{el.city|| "N/A"}</td>
+                        <td>{el.st|| "N/A"}</td>
+                        <td>{el.zip|| "N/A"}</td>
+                        <td>{el.sys_size|| "N/A"}</td>
+                        <td>{el.wc|| "N/A"}</td>
+                        <td>{el.inst_sys|| "N/A"}</td>
+                        <td>{el.status|| "N/A"}</td>
+                        <td>{el.status_date|| "N/A"}</td>
+                        <td>{el.contract_calc|| "N/A"}</td>
+                        <td>{el.owe_ar|| "N/A"}</td>
+                        <td>{el.total_paid|| "N/A"}</td>
+                        <td>{el.current_due|| "N/A"}</td>
+                        <td>{el.balance|| "N/A"}</td>
                         <td
                           style={{
                             height: '14px',
@@ -314,7 +324,7 @@ const ArDashBoardTable = () => {
 
         <div className="page-heading-container">
           <p className="page-heading">
-            {currentPage} - {totalPages1} of {currentPageData?.length} item
+            {startIndex} - {endIndex>count?count:endIndex} of {currentPageData?.length} item
           </p>
 
           {/* {

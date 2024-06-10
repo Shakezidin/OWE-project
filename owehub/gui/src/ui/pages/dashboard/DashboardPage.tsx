@@ -10,6 +10,8 @@ import FilterModal from '../../components/FilterModal/FilterModal';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import { DateRangePicker } from 'react-date-range';
+import { useAppDispatch } from '../../../redux/hooks';
+import { getDealerPay } from '../../../redux/apiActions/dealerPayAction';
 
 export const DashboardPage: React.FC = () => {
   const [selectionRange, setSelectionRange] = useState({
@@ -18,6 +20,7 @@ export const DashboardPage: React.FC = () => {
     key: 'selection',
   });
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const dispatch = useAppDispatch();
 
   const handleSelect = (ranges: any) => {
     setSelectionRange(ranges.selection);
@@ -34,7 +37,8 @@ export const DashboardPage: React.FC = () => {
       key: 'selection',
     });
   };
-
+  const itemsPerPage = 10
+  const [currentPage, setCurrentPage] = useState(1);
   const [active, setActive] = React.useState<number>(0);
   const [filterModal, setFilterModal] = React.useState<boolean>(false);
 
@@ -61,6 +65,18 @@ export const DashboardPage: React.FC = () => {
 
   const datePickerRef = useRef<HTMLDivElement>(null);
 
+  useEffect(()=>{
+    dispatch(getDealerPay({
+      page_number:currentPage,
+      page_size:itemsPerPage,
+      pay_roll_start_date:"",
+      pay_roll_end_date:"",
+      use_cutoff:"",
+      dealer_name:"",
+      sort_by:""
+    }))
+  },[currentPage])
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -72,7 +88,7 @@ export const DashboardPage: React.FC = () => {
     };
 
     document.addEventListener('mousedown', handleClickOutside);
-
+ 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
