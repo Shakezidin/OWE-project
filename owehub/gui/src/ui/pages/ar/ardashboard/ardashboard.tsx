@@ -111,333 +111,334 @@ export const ARDashboardPage: React.FC = () => {
   return (
     <>
       <div className="ar-Dashboard-section-container">
-      <div className='ar-white-back'>
-        <div className="ar-Dashboard-container">
-          <div className="rep-manage-user">
+        <div className='ar-white-back'>
+          <div className="ar-Dashboard-container">
+            <div className="rep-manage-user">
 
-            <div className="ar-dash-head-input" style={{width: '159px'}}>
-              <div className='rep-drop_label' style={{ backgroundColor: "#63ACA3" }}>
-                <img src={ICONS.report1} alt="" />
-              </div>
-              <div className='rep-up relative'>
-                <label className="inputLabel" style={{
-                   color: '#344054',
-                   position: 'absolute',
+              <div className="ar-dash-head-input" style={{ width: '157px' }}>
+                <div className='rep-drop_label' style={{ backgroundColor: "#63ACA3" }}>
+                  <img src={ICONS.report1} alt="" />
+                </div>
+                <div className='rep-up relative'>
+                  <label className="inputLabel" style={{
+                    color: '#344054',
+                    position: 'absolute',
                     left: '9px',
                     top: '-6px',
-                    whiteSpace: 'nowrap' 
-                   }}>
-                  Report Types
-                </label>
+                    whiteSpace: 'nowrap'
+                  }}>
+                    Report Types
+                  </label>
 
-                <Select
-                  options={options1}
-                  value={{ value: filters.report_type, label: filters.report_type }}
-                  onChange={(value) => handleChange('report_type', value?.value!)}
-                  styles={{
-                    control: (baseStyles, state) => ({
-                      ...baseStyles,
-                      fontSize: '13px',
-                      fontWeight: '500',
-                      borderRadius: '.40rem',
-                      border: 'none',
-                      outline: 'none',
-                      width: 'fit-content',
-                      minHeight: 'unset',
-                      height: '8px',
-                      alignContent: 'center',
-                      backgroundColor: '#ffffff',
-                      cursor: 'pointer',
-                      boxShadow: 'none',
-                      marginTop: '18px'
-                    }),
-                    placeholder: (baseStyles) => ({
-                      ...baseStyles,
-                      color: '#0493CE', // Change the placeholder color here
-                    }),
-                    indicatorSeparator: () => ({
-                      display: 'none',
-                      
-                    }),
-                    dropdownIndicator: (baseStyles, state) => ({
-                      ...baseStyles,
-                      color: '#292929',
-                      '&:hover': {
+                  <Select
+                    options={options1}
+                    value={{ value: filters.report_type, label: filters.report_type }}
+                    onChange={(value) => handleChange('report_type', value?.value!)}
+                    styles={{
+                      control: (baseStyles, state) => ({
+                        ...baseStyles,
+                        fontSize: '13px',
+                        fontWeight: '500',
+                        borderRadius: '.40rem',
+                        border: 'none',
+                        outline: 'none',
+                        width: 'fit-content',
+                        minHeight: 'unset',
+                        height: '8px',
+                        alignContent: 'center',
+                        backgroundColor: '#ffffff',
+                        cursor: 'pointer',
+                        boxShadow: 'none',
+                        marginTop: '18px'
+                      }),
+                      placeholder: (baseStyles) => ({
+                        ...baseStyles,
+                        color: '#0493CE', // Change the placeholder color here
+                      }),
+                      indicatorSeparator: () => ({
+                        display: 'none',
+
+                      }),
+                      dropdownIndicator: (baseStyles, state) => ({
+                        ...baseStyles,
                         color: '#292929',
-                      },
-                      marginLeft: '-15px'
-                    }),
-                    option: (baseStyles, state) => ({
-                      ...baseStyles,
-                      fontSize: '13px',
-                      color: state.isSelected ? '#ffffff' : '#000000',
-                      backgroundColor: state.isSelected ? '#0493CE' : '#ffffff',
-                      '&:hover': {
-                        backgroundColor: state.isSelected ? '#0493CE' : '#DDEBFF',
-                      },
-                    }),
-                    singleValue: (baseStyles, state) => ({
-                      ...baseStyles,
-                      color: '#292929',
-                    }),
-                    menu: (baseStyles) => ({
-                      ...baseStyles,
-                      right: '0px',
-                      width: '7rem',
-                      zIndex: 999,
-                    }),
-                    menuList: (base) => ({
-                      ...base,
-                      '&::-webkit-scrollbar': {
-                        scrollbarWidth: 'thin',
-                        display: 'block',
-                        scrollbarColor: 'rgb(173, 173, 173) #fff',
-                        width: 8,
-                      },
-                      '&::-webkit-scrollbar-thumb': {
-                        background: 'rgb(173, 173, 173)',
-                        borderRadius: '30px',
-                      },
-                    }),
-                  }}
-                />
+                        '&:hover': {
+                          color: '#292929',
+                        },
+                        marginLeft: '-18px'
+                      }),
+                      option: (baseStyles, state) => ({
+                        ...baseStyles,
+                        fontSize: '13px',
+                        color: state.isSelected ? '#ffffff' : '#000000',
+                        backgroundColor: state.isSelected ? '#377CF6' : '#ffffff',
+                        '&:hover': {
+                          backgroundColor: state.isSelected ? '#377CF6' : '#DDEBFF',
+                        },
+                      }),
+                      singleValue: (baseStyles, state) => ({
+                        ...baseStyles,
+                        color: '#292929',
+                      }),
+                      menu: (baseStyles) => ({
+                        ...baseStyles,
+                        width: '7rem',
+                        zIndex: 999,
+                        marginLeft: '-31px'
+                      }),
+                      menuList: (base) => ({
+                        ...base,
+                        '&::-webkit-scrollbar': {
+                          scrollbarWidth: 'thin',
+                          display: 'block',
+                          scrollbarColor: 'rgb(173, 173, 173) #fff',
+                          width: 8,
+                        },
+                        '&::-webkit-scrollbar-thumb': {
+                          background: 'rgb(173, 173, 173)',
+                          borderRadius: '30px',
+                        },
+                      }),
+                    }}
+                  />
+                </div>
               </div>
+
+              <div className="ar-dash-head-input" style={{ width: "134px" }}>
+                <div className='rep-drop_label' style={{ backgroundColor: "#C470C7" }}>
+                  <img src={ICONS.user} alt="" />
+                </div>
+                <div className='rep-up relative'>
+                  <label className="inputLabel" style={{
+                    color: '#344054',
+                    position: 'absolute',
+                    left: '8px',
+                    top: '-6px',
+                    whiteSpace: 'nowrap'
+                  }}>
+                    Sales Partner
+                  </label>
+                  <Select
+                    options={options2}
+                    value={{ value: filters.sale_partner, label: filters.sale_partner }}
+                    onChange={(value) =>
+                      handleChange('sale_partner', value?.value!)
+                    }
+                    styles={{
+                      control: (baseStyles, state) => ({
+                        ...baseStyles,
+                        fontSize: '13px',
+                        fontWeight: '500',
+                        borderRadius: '.40rem',
+                        border: 'none',
+                        outline: 'none',
+                        width: 'fit-content',
+                        minHeight: 'unset',
+                        height: '8px',
+                        alignContent: 'center',
+                        backgroundColor: '#ffffff',
+                        cursor: 'pointer',
+                        marginRight: '11px',
+                        boxShadow: 'none',
+                        marginBottom: '2px',
+                        marginTop: '18px'
+                      }),
+                      placeholder: (baseStyles) => ({
+                        ...baseStyles,
+                        color: '#0493CE', // Change the placeholder color here
+                      }),
+                      indicatorSeparator: () => ({
+                        display: 'none',
+                      }),
+                      dropdownIndicator: (baseStyles, state) => ({
+                        ...baseStyles,
+                        color: '#292929',
+                        '&:hover': {
+                          color: '#292929',
+                        },
+                        marginLeft: '-18px'
+                      }),
+                      option: (baseStyles, state) => ({
+                        ...baseStyles,
+                        fontSize: '13px',
+                        color: state.isSelected ? '#ffffff' : '#000000',
+                        backgroundColor: state.isSelected ? '#377CF6' : '#ffffff',
+                        '&:hover': {
+                          backgroundColor: state.isSelected ? '#377CF6' : '#DDEBFF',
+                        },
+                      }),
+                      singleValue: (baseStyles, state) => ({
+                        ...baseStyles,
+                        color: '#292929',
+                      }),
+                      menu: (baseStyles) => ({
+                        ...baseStyles,
+                        width: '6rem',
+                        marginLeft: '-31px',
+                        zIndex: 999,
+                      }),
+                      menuList: (base) => ({
+                        ...base,
+                        '&::-webkit-scrollbar': {
+                          scrollbarWidth: 'thin',
+                          display: 'block',
+                          scrollbarColor: 'rgb(173, 173, 173) #fff',
+                          width: 8,
+                        },
+                        '&::-webkit-scrollbar-thumb': {
+                          background: 'rgb(173, 173, 173)',
+                          borderRadius: '30px',
+                        },
+                      }),
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div className="ar-dash-head-input" style={{ width: "115px" }}>
+                <div className='rep-drop_label' style={{ backgroundColor: "#8E81E0" }}>
+                  <img src={ICONS.vector} alt="" />
+                </div>
+                <div className='rep-up'>
+                  <label className="inputLabel" style={{ color: '#344054', marginLeft: '8px' }}>
+                    Includes
+                  </label>
+                  <ArDropdownWithCheckboxes options={options} />
+                </div>
+              </div>
+
+              <div className="ar-dash-head-input">
+                <div className='rep-drop_label' style={{ backgroundColor: "#EE824D" }}>
+                  <img src={ICONS.element} alt="" />
+                </div>
+                <div className='rep-up relative'>
+                  <label className="inputLabel" style={{
+                    color: '#344054',
+                    position: 'absolute',
+                    left: '9px',
+                    top: '-6px',
+                    whiteSpace: 'nowrap'
+                  }}>
+                    Elements
+                  </label>
+                  <Select
+                    options={options3}
+                    value={{ value: filters.sort_by, label: filters.sort_by }}
+                    onChange={(value) => handleChange('sort_by', value?.value!)}
+                    styles={{
+                      control: (baseStyles, state) => ({
+                        ...baseStyles,
+                        fontSize: '13px',
+                        fontWeight: '500',
+                        borderRadius: '.40rem',
+                        border: 'none',
+                        outline: 'none',
+                        width: 'fit-content',
+                        minHeight: 'unset',
+                        height: '8px',
+                        alignContent: 'center',
+                        backgroundColor: '#ffffff',
+                        cursor: 'pointer',
+                        boxShadow: 'none',
+                        marginBottom: '2px',
+                        marginTop: '18px'
+                      }),
+                      placeholder: (baseStyles) => ({
+                        ...baseStyles,
+                        color: '#292929', // Change the placeholder color here
+                      }),
+
+                      indicatorSeparator: () => ({
+                        display: 'none',
+                      }),
+                      dropdownIndicator: (baseStyles, state) => ({
+                        ...baseStyles,
+                        color: '#292929',
+                        '&:hover': {
+                          color: '#292929',
+                        },
+                        marginLeft: '-18px'
+                      }),
+                      option: (baseStyles, state) => ({
+                        ...baseStyles,
+                        fontSize: '13px',
+                        color: state.isSelected ? '#ffffff' : '#000000',
+                        backgroundColor: state.isSelected ? '#377CF6' : '#ffffff',
+                        '&:hover': {
+                          backgroundColor: state.isSelected ? '#377CF6' : '#DDEBFF',
+                        },
+                      }),
+                      singleValue: (baseStyles, state) => ({
+                        ...baseStyles,
+                        color: '#292929',
+                      }),
+                      menu: (baseStyles) => ({
+                        ...baseStyles,
+                        width: '8rem',
+                        // height: 'auto',
+                        // overflowY: 'auto',
+                        zIndex: 999,
+                        marginLeft: '-32px'
+                      }),
+                      menuList: (base) => ({
+                        ...base,
+                        '&::-webkit-scrollbar': {
+                          scrollbarWidth: 'thin',
+                          display: 'block',
+                          scrollbarColor: 'rgb(173, 173, 173) #fff',
+                          width: 8,
+                        },
+                        '&::-webkit-scrollbar-thumb': {
+                          background: 'rgb(173, 173, 173)',
+                          borderRadius: '30px',
+                        },
+                      }),
+                    }}
+                  />
+                </div>
+              </div>
+
+
             </div>
 
-            <div className="ar-dash-head-input" style={{ width: "150px" }}>
-            <div className='rep-drop_label' style={{ backgroundColor: "#C470C7" }}>
-                <img src={ICONS.user} alt="" />
-              </div>
-              <div className='rep-up relative'>
-              <label className="inputLabel" style={{
-                 color: '#344054',
-                 position: 'absolute',
-                 left: '8px',
-                 top: '-6px',
-                 whiteSpace: 'nowrap'
-                 }}>
-                Sales Partner
-              </label>
-              <Select
-                options={options2}
-                value={{ value: filters.sale_partner, label: filters.sale_partner }}
-                onChange={(value) =>
-                  handleChange('sale_partner', value?.value!)
-                }
-                styles={{
-                  control: (baseStyles, state) => ({
-                    ...baseStyles,
-                    fontSize: '13px',
-                    fontWeight: '500',
-                    borderRadius: '.40rem',
-                    border: 'none',
-                    outline: 'none',
-                    width: 'fit-content',
-                    minHeight: 'unset',
-                    height: '8px',
-                    alignContent: 'center',
-                    backgroundColor: '#ffffff',
-                    cursor: 'pointer',
-                    marginRight: '11px',
-                    boxShadow: 'none',
-                    marginBottom: '2px',
-                    marginTop: '18px'
-                  }),
-                  placeholder: (baseStyles) => ({
-                    ...baseStyles,
-                    color: '#0493CE', // Change the placeholder color here
-                  }),
-                  indicatorSeparator: () => ({
-                    display: 'none',
-                  }),
-                  dropdownIndicator: (baseStyles, state) => ({
-                    ...baseStyles,
-                    color: '#292929',
-                    '&:hover': {
-                      color: '#292929',
-                    },
-                    marginLeft: '-15px'
-                  }),
-                  option: (baseStyles, state) => ({
-                    ...baseStyles,
-                    fontSize: '13px',
-                    color: state.isSelected ? '#ffffff' : '#000000',
-                    backgroundColor: state.isSelected ? '#0493CE' : '#ffffff',
-                    '&:hover': {
-                      backgroundColor: state.isSelected ? '#0493CE' : '#DDEBFF',
-                    },
-                  }),
-                  singleValue: (baseStyles, state) => ({
-                    ...baseStyles,
-                    color: '#292929',
-                  }),
-                  menu: (baseStyles) => ({
-                    ...baseStyles,
-                    width: '6rem',
-                    zIndex: 999,
-                  }),
-                  menuList: (base) => ({
-                    ...base,
-                    '&::-webkit-scrollbar': {
-                      scrollbarWidth: 'thin',
-                      display: 'block',
-                      scrollbarColor: 'rgb(173, 173, 173) #fff',
-                      width: 8,
-                    },
-                    '&::-webkit-scrollbar-thumb': {
-                      background: 'rgb(173, 173, 173)',
-                      borderRadius: '30px',
-                    },
-                  }),
-                }}
-              />
+            <div className="dashboard-payroll">
+
+              <div className="Line-container">
+                <div className="ar-line-graph">
+                  <div
+                    className={`rep-filter-line ${active === 0 ? 'rep-active-filter-line' : ''
+                      }`}
+                    onClick={() => setActive(0)}
+                  >
+                    {active === 0 ? (
+                      <img src={ICONS.dashActive} alt="" />
+                    ) : (
+                      <img src={ICONS.dashActive} alt="" />
+                    )}
+                  </div>
+                  <div
+                    className={`filter-disable ${active === 1 ? 'rep-active-filter-line' : ''
+                      }`}
+                    // onClick={() => setActive(1)}
+                    style={{ backgroundColor: '#377CF6' }}
+                  >
+                    {active === 1 ? (
+                      <img src={ICONS.viewActive} alt="" />
+                    ) : (
+                      <img src={ICONS.viewActive} alt="" />
+                    )}
+                  </div>
+                  <div
+                    className="rep-filter-line"
+                    onClick={() => setFilterModal(true)}
+                    style={{ backgroundColor: '#377CF6' }}
+                  >
+                    <img src={ICONS.fil_white} alt="" style={{ height: '15px', width: '15px' }} />
+                  </div>
+                </div>
               </div>
             </div>
-
-            <div className="ar-dash-head-input" style={{ width: "120px" }}>
-            <div className='rep-drop_label' style={{ backgroundColor: "#8E81E0" }}>
-                <img src={ICONS.vector} alt="" />
-              </div>
-              <div className='rep-up'>
-              <label className="inputLabel" style={{ color: '#344054', marginLeft: '8px' }}>
-                Includes
-              </label>
-              <ArDropdownWithCheckboxes options={options} />
-              </div>
-            </div>
-
-            <div className="ar-dash-head-input">
-            <div className='rep-drop_label' style={{ backgroundColor: "#EE824D" }}>
-                <img src={ICONS.element} alt="" />
-              </div>
-              <div className='rep-up relative'>
-              <label className="inputLabel" style={{
-                 color: '#344054',
-                 position: 'absolute',
-                 left: '9px',
-                 top: '-6px',
-                 whiteSpace: 'nowrap' 
-                 }}>
-                Elements
-              </label>
-              <Select
-                options={options3}
-                value={{ value: filters.sort_by, label: filters.sort_by }}
-                onChange={(value) => handleChange('sort_by', value?.value!)}
-                styles={{
-                  control: (baseStyles, state) => ({
-                    ...baseStyles,
-                    fontSize: '13px',
-                    fontWeight: '500',
-                    borderRadius: '.40rem',
-                    border: 'none',
-                    outline: 'none',
-                    width: 'fit-content',
-                    minHeight: 'unset',
-                    height: '8px',
-                    alignContent: 'center',
-                    backgroundColor: '#ffffff',
-                    cursor: 'pointer',
-                    boxShadow:'none',
-                    marginBottom: '2px',
-                    marginTop: '18px'
-                  }),
-                  placeholder: (baseStyles) => ({
-                    ...baseStyles,
-                    color: '#292929', // Change the placeholder color here
-                  }),
-
-                  indicatorSeparator: () => ({
-                    display: 'none',
-                  }),
-                  dropdownIndicator: (baseStyles, state) => ({
-                    ...baseStyles,
-                    color: '#292929',
-                    '&:hover': {
-                      color: '#292929',
-                    },
-                    marginLeft: '-15px'
-                  }),
-                  option: (baseStyles, state) => ({
-                    ...baseStyles,
-                    fontSize: '13px',
-                    color: state.isSelected ? '#ffffff' : '#000000',
-                    backgroundColor: state.isSelected ? '#0493CE' : '#ffffff',
-                    '&:hover': {
-                      backgroundColor: state.isSelected ? '#0493CE' : '#DDEBFF',
-                    },
-                  }),
-                  singleValue: (baseStyles, state) => ({
-                    ...baseStyles,
-                    color: '#292929',
-                  }),
-                  menu: (baseStyles) => ({
-                    ...baseStyles,
-                    width: '8rem',
-                    // height: 'auto',
-                    // overflowY: 'auto',
-                    zIndex: 999,
-                    marginLeft: '-37px'
-                  }),
-                  menuList: (base) => ({
-                    ...base,
-                    '&::-webkit-scrollbar': {
-                      scrollbarWidth: 'thin',
-                      display: 'block',
-                      scrollbarColor: 'rgb(173, 173, 173) #fff',
-                      width: 8,
-                    },
-                    '&::-webkit-scrollbar-thumb': {
-                      background: 'rgb(173, 173, 173)',
-                      borderRadius: '30px',
-                    },
-                  }),
-                }}
-              />
-              </div>
-            </div>
-
-            
           </div>
-
-          <div className="dashboard-payroll">
-
-            <div className="Line-container">
-              <div className="ar-line-graph">
-                <div
-                  className={`rep-filter-line ${active === 0 ? 'rep-active-filter-line' : ''
-                    }`}
-                  onClick={() => setActive(0)}
-                >
-                  {active === 0 ? (
-                    <img src={ICONS.dashActive} alt="" />
-                  ) : (
-                    <img src={ICONS.dashActive} alt="" />
-                  )}
-                </div>
-                <div
-                  className={`filter-disable ${active === 1 ? 'rep-active-filter-line' : ''
-                    }`}
-                // onClick={() => setActive(1)}
-                style={{ backgroundColor: '#377CF6' }}
-                >
-                  {active === 1 ? (
-                    <img src={ICONS.viewActive} alt="" />
-                  ) : (
-                    <img src={ICONS.viewActive} alt="" />
-                  )}
-                </div>
-                <div
-                  className="rep-filter-line"
-                  onClick={() => setFilterModal(true)}
-                  style={{ backgroundColor: '#377CF6' }}
-                >
-                  <img src={ICONS.fil_white} alt="" style={{ height: '15px', width: '15px' }} />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
         </div>
 
         {filterModal && (

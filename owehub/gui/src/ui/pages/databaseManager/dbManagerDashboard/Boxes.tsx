@@ -4,7 +4,8 @@ interface BoxProps {
   width: number;
   height: number;
   color: string;
-  borderRadius?: number; // Added borderRadius prop
+  borderRadius?: number;
+  borderColor?: string; // Added optional borderColor prop
 }
 
 const Box: React.FC<BoxProps> = ({
@@ -12,12 +13,15 @@ const Box: React.FC<BoxProps> = ({
   height,
   color,
   borderRadius = 0,
+  borderColor, // Optional borderColor prop
 }) => {
   const boxStyle: React.CSSProperties = {
     width: `${width}px`,
     height: `${height}px`,
     backgroundColor: color,
-    borderRadius: `${borderRadius}px`, // Setting border radius
+    borderRadius: `${borderRadius}%`,
+    border: borderColor ? `3px solid ${borderColor}` : 'none',
+    flexShrink: 0,
   };
 
   return <div style={boxStyle}></div>;
@@ -25,12 +29,13 @@ const Box: React.FC<BoxProps> = ({
 
 interface BoxesProps {
   color: string;
+  borderColor?: string; // Added optional borderColor prop
 }
 
-const Boxes: React.FC<BoxesProps> = ({ color }) => {
+const Boxes: React.FC<BoxesProps> = ({ color, borderColor }) => {
   return (
     <div>
-      <Box width={15} height={15} color={color} borderRadius={3} />
+      <Box width={18} height={18} color={color} borderRadius={50} borderColor={borderColor} />
     </div>
   );
 };

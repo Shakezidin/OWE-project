@@ -102,6 +102,7 @@ import element from '../../resources/assets/element.svg';
 import user from '../../resources/assets/sales.svg';
 import vector from '../../resources/assets/Vector1.svg';
 import lable_img from '../../resources/assets/lable_img.svg';
+import dbm from '../../resources/assets/dbm.svg';
 
 
 export const ICONS = {
@@ -224,4 +225,5 @@ export const ICONS = {
   vector: vector,
   online: online,
   fil_white:fil_white,
+  dbm:dbm,
 };
