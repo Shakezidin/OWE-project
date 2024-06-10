@@ -1,9 +1,10 @@
 .grid-container {
-  grid-template-columns: repeat(5, 1fr); /* Five columns */
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Five columns */
   grid-gap: 10px; /* Gap between grid items */
-  display: flex;
   align-items: center;
   justify-content: center;
+  grid-template-rows: repeat(2, 268px);
 }
 
 .grid-container > div {
@@ -11,6 +12,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  height: 100%;
 }
 
 .left,
@@ -28,8 +31,8 @@
   height: auto;
 } */
 .leftView {
-  width: 320px;
-  height: 260px;
+  width: 100%;
+  height: 100%;
   margin: 5px;
 }
 
