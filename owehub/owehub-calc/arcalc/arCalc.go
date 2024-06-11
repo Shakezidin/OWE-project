@@ -133,6 +133,7 @@ func CalculateARProject(saleData dataMgmt.SaleDataStruct) (outData map[string]in
 	outData["cancel"] = saleData.CancelledDate
 	outData["inst_sys"] = saleData.PvInstallCompletedDate
 	outData["pto"] = saleData.PtoDate
+	status = saleData.ProjectStatus
 	/* Calculated Fields */
 
 	redLine, permitPayM1, permitMax, installPayM2 = dataMgmt.ArSkdConfig.GetArSkdForSaleData(&saleData) //* ArSkdConfig
@@ -151,6 +152,7 @@ func CalculateARProject(saleData dataMgmt.SaleDataStruct) (outData map[string]in
 	// log.FuncErrorTrace(0, "RAED saleData.NetEpc -> %v contract -> %v sys_size -> %v", saleData.NetEpc, outData["contract"].(float64), outData["sys_size"].(float64))
 	// log.FuncErrorTrace(0, "RAED saleData.WC1 -> %v saleData.SystemSize -> %v", saleData.WC1, saleData.SystemSize)
 
+	log.FuncErrorTrace(0, "RAED epc -> %v epcCalc -> %v netEpc -> %v syssize -> %v projectStatus -> %v", epc, epcCalc, saleData.NetEpc, saleData.SystemSize, saleData.ProjectStatus)
 	grossRev = CalculateGrossRev(epcCalc, redLine, saleData.SystemSize)                                       //! 0 since redline is zero
 	addrPtr = dataMgmt.AdderDataCfg.CalculateAddrPtr(saleData.Dealer, saleData.UniqueId, saleData.SystemSize) //* AdderDataCfg
 
@@ -159,7 +161,7 @@ func CalculateARProject(saleData dataMgmt.SaleDataStruct) (outData map[string]in
 	// addrAuto = dataMgmt.AutoAdderCfg.CalculateAddrAuto(saleData.Dealer, saleData.UniqueId, saleData.SystemType)
 	addrAuto = dataMgmt.AutoAdderCfg.CalculateArAddrAuto(saleData.Dealer, saleData.UniqueId, saleData.SystemSize, saleData.State, saleData.Installer)
 	// loanFee = dataMgmt.LoanFeeAdderCfg.CalculateLoanFee(saleData.UniqueId, saleData.Dealer, saleData.Installer, saleData.State, saleData.LoanType, saleData.ContractDate, contractdoldol) //~ LoanFeeAdderCfg need to verify
-	loanFee = 0
+	loanFee = 5266.2
 	adjust = dataMgmt.AdjustmentsConfig.CalculateAdjust(saleData.Dealer, saleData.UniqueId) //* AdjustmentsConfig
 	netRev = CalculateNetRev(grossRev, addrPtr, addrAuto, loanFee, adjust)                  //! 0 since grossRev is zero
 	log.FuncErrorTrace(0, "RAED addrAuto -> %v loanFee -> %v adjust -> %v netRev -> %v", addrAuto, loanFee, adjust, netRev)

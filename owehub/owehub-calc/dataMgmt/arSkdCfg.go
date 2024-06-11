@@ -271,24 +271,24 @@ func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct)
 				saleData.Partner = "SOVA"
 			}
 
-			ContractDate, err := time.Parse("2006-01-02", "2023-01-04")
+			ContractDate, err := time.Parse("2006-01-02", "2023-01-22")
 			if err != nil {
 				log.FuncWarnTrace(0, "DATE ERROR")
 				continue
 			}
 			// log.FuncErrorTrace(0, "RAED PARTNER 3 %v", saleData.ContractDate)
 
-			if arSkd.PartnerName == saleData.Partner &&
+			if arSkd.PartnerName == "EnFIn" &&
 				arSkd.InstallerName == saleData.Installer &&
 				// arSkd.SaleTypeName == saleData.LoanType &&
-				arSkd.SaleTypeName == "LEASE 1.9" &&
+				arSkd.SaleTypeName == "LOAN" &&
 				arSkd.StateName == st &&
 				arSkd.CalcDate == "CREATED" &&
 				(startDate.Before(ContractDate) || startDate.Equal(ContractDate)) && //* need to change the date here
 				(endDate.After(ContractDate) || endDate.Equal(ContractDate)) {
 
-				// log.FuncErrorTrace(0, "RAED PARTNER 7 %v %v", saleData.Partner, arSkd.PartnerName)
-				// log.FuncErrorTrace(0, "RAED INSTALLER 7 %v %v", saleData.Installer, arSkd.InstallerName)
+				log.FuncErrorTrace(0, "RAED PARTNER 7 %v 8 %v", saleData.Partner, arSkd.PartnerName)
+				log.FuncErrorTrace(0, "RAED INSTALLER 7 %v 9 %v", saleData.Installer, arSkd.InstallerName)
 				// log.FuncErrorTrace(0, "RAED REDLINE, PERMITPAY %v %v", arSkd.RedLine, arSkd.PermitPay)
 				// log.FuncErrorTrace(0, "RAED PERMITMAX, INSTALLPAY %v %v", arSkd.PermitMax, arSkd.InstallPay)
 				// log.FuncErrorTrace(0, "RAED CONTRACTDATE %v DATE %v", saleData.ContractDate, ContractDate)

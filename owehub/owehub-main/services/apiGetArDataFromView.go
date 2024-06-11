@@ -326,3 +326,6 @@ func GetARDataFromView(resp http.ResponseWriter, req *http.Request) {
 
 	fmt.Println(data)
 }
+
+
+
