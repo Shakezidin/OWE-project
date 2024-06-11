@@ -38,13 +38,12 @@ type SaleDataStruct struct {
 	CancelledDate          time.Time
 	PvInstallCompletedDate time.Time
 	PtoDate                time.Time
-	ContractDate           time.Time
 	ProjectStatus          string
 	SystemType             string
 	StartDate              time.Time // added by zidhin
 	EndDate                time.Time //field added by zidhin
 	ChargeDlr              string    // field added by zidhiin
-	// SaleType               string    //field added by zidhin
+	ContractDate           time.Time //field added by zidhin
 }
 
 type SaleDataList struct {
@@ -62,7 +61,8 @@ func (saleDataList *SaleDataList) LoadSaleData(uniqueID string, hookType string)
 	)
 
 	//Shushank
-	// uniqueID = "OUR11354"
+	// uniqueID = "OUR19865"
+	// uniqueID = "OUR11347"
 
 	// log.EnterFn(0, "LoadSaleData")
 	// defer func() { log.ExitFn(0, "LoadSaleData", err) }()
@@ -269,12 +269,9 @@ func (saleDataList *SaleDataList) LoadSaleData(uniqueID string, hookType string)
 }
 
 func determineSystemType(sysSize float64, state string) string {
-	// var (
-	// 	err error
-	// )
 
-	// log.EnterFn(0, "determineSystemType")
-	// defer func() { log.ExitFn(0, "determineSystemType", err) }()
+	log.EnterFn(0, "determineSystemType")
+	defer func() { log.ExitFn(0, "determineSystemType", nil) }()
 
 	if sysSize < 3 {
 		if state == "CA" {
@@ -294,13 +291,17 @@ func determineSystemType(sysSize float64, state string) string {
 * DESCRIPTION:     calculates the "loan_fee" value based on the provided data
 * RETURNS:         gross revenue
 *****************************************************************************/
-func (psaleDataList *SaleDataList) CalculateLoanFee(uniqueId string, contractdoldol float64) float64 {
+func (psaleDataList *SaleDataList) CalculateLoanFee(uniqueId, commission_models string, contractdoldol float64) float64 {
+	log.EnterFn(0, "CalculateLoanFee")
+	defer func() { log.ExitFn(0, "CalculateLoanFee", nil) }()
 	var loanfee float64
 	for _, data := range psaleDataList.SaleDataList {
 		if data.UniqueId == uniqueId {
-			dlrCost := LoanFeeCfg.CalculateDlrCost(data.UniqueId, data.Dealer, data.Installer, data.State, data.LoanType, data.WC1)
-			loanfee = contractdoldol * dlrCost
+			dlrCost := LoanFeeCfg.CalculateDlrCost(data.UniqueId, data.Dealer, data.Installer, data.State, data.LoanType, data.ContractDate)
+			log.FuncErrorTrace(0, "dlrCosttttttttttttttttttttttt %v", dlrCost)
+			loanfee += contractdoldol * dlrCost
 		}
 	}
+
 	return loanfee
 }

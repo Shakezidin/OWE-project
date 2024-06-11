@@ -34,7 +34,7 @@ func (paymentScheduleCfg *PayScheduleCfgStruct) LoadPayScheduleCfg() (err error)
 	defer func() { log.ExitFn(0, "LoadPayScheduleCfg", err) }()
 
 	query = `SELECT ps.id as record_id, vd.dealer_code as dealer, pt1.partner_name AS partner_name, pt2.partner_name AS installer_name,
-    st.name AS state, sl.type_name AS sale_type, ps.rl, ps.draw, ps.draw_max, ps.rep_draw, ps.rep_draw_max, ps.rep_pay, ps.start_date, ps.end_date
+    st.name AS state, sl.type_name AS sale_type, ps.rl, ps.draw, ps.draw_max, ps.rep_draw, ps.rep_draw_max, ps.rep_pay, ps.start_date, ps.end_date, commission_models
     FROM payment_schedule ps
     JOIN states st ON st.state_id = ps.state_id
     JOIN partners pt1 ON pt1.partner_id = ps.partner_id
@@ -153,6 +153,13 @@ func (paymentScheduleCfg *PayScheduleCfgStruct) LoadPayScheduleCfg() (err error)
 			EndDate = ""
 		}
 
+		// CommissionModels
+		CommissionModels, ok := item["commission_models"].(string)
+		if !ok || CommissionModels == "" {
+			// log.FuncErrorTrace(0, "Failed to get commission models for Record ID %v. Item: %+v\n", RecordId, item)
+			CommissionModels = ""
+		}
+
 		paySchData := models.CreatePaymentSchedule{
 			Dealer:        Dealer,
 			PartnerName:   PartnerName,
@@ -176,8 +183,8 @@ func (paymentScheduleCfg *PayScheduleCfgStruct) LoadPayScheduleCfg() (err error)
 
 /******************************************************************************
 * FUNCTION:        CalculateRL
-* DESCRIPTION:     calculates the addr value based on the provided data
-* RETURNS:         addr value
+* DESCRIPTION:     calculates the rl value based on the provided data
+* RETURNS:         rl
 *****************************************************************************/
 func (PayScheduleCfg *PayScheduleCfgStruct) CalculateRL(dealer, partner, installer, state string, wc time.Time) float64 {
 
@@ -186,30 +193,32 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateRL(dealer, partner, install
 
 	if len(dealer) > 0 {
 		for _, data := range PayScheduleCfg.PayScheduleList {
-			timeLayout := "15:04:05"
-			startDate, _ := time.Parse(timeLayout, data.StartDate)
-			endDate, _ := time.Parse(timeLayout, data.EndDate)
+			dateLayout := "01-02-06"
+			startDate, errStart := time.Parse(dateLayout, data.StartDate)
+			endDate, errEnd := time.Parse(dateLayout, data.EndDate)
 
-			
-			if data.Dealer == dealer && data.PartnerName == partner {
-				log.FuncFuncTrace(0, "zidhin////// data.dealer : %v  ++++++++++ dealer: %v", data.Dealer, dealer)
-				log.FuncFuncTrace(0, "zidhin////// data.partner : %v ++++++++++partner: %v", data.PartnerName, partner)
-				log.FuncFuncTrace(0, "zidhin////// data.isntaller : %v ++++++++++ installer: %v", data.InstallerName, installer)
-				log.FuncFuncTrace(0, "zidhin////// data.state : %v ++++++++++ state: %v", data.State, state)
-				log.FuncFuncTrace(0, "zidhin////// data.startdate : %v ++++++++++ wc: %v", data.StartDate, wc)
-				log.FuncFuncTrace(0, "zidhin////// end date : %v ++++++++++ wc %v", data.EndDate, wc)
-				log.FuncFuncTrace(0, "zidhin////// rl : %v", data.Rl)
-				// log.FuncErrorTrace(0, "+++++++++++++++saletype", data.SaleType, "++++++++++", types)
-
+			// Log any parsing errors
+			if errStart != nil {
+				log.FuncErrorTrace(0, "Error parsing start date:", errStart)
+				continue
+			}
+			if errEnd != nil {
+				log.FuncErrorTrace(0, "Error parsing end date:", errEnd)
+				continue
 			}
 
-			if installer == "One World Energy" {
-				installer = "OWE"
+			if installer == "OWE" {
+				installer = "One World Energy"
 			}
 
-			if data.Dealer == dealer && data.PartnerName == partner && data.InstallerName == installer && data.State == state &&
+			var st string
+			if len(state) > 0 {
+				st = state[6:]
+			}
+
+			if data.Dealer == dealer && data.PartnerName == partner && data.InstallerName == installer && data.State == st &&
 				startDate.Before(wc) && endDate.After(wc) {
-				return float64(data.Rl)
+				return data.Rl
 			}
 		}
 	}
@@ -219,9 +228,9 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateRL(dealer, partner, install
 /******************************************************************************
 * FUNCTION:        CalculateDlrDrawPerc
 * DESCRIPTION:     calculates the addr value based on the provided data
-* RETURNS:         drawPerc
+* RETURNS:         drawPerc,dlrDrawMax,commission_models
 *****************************************************************************/
-func (PayScheduleCfg *PayScheduleCfgStruct) CalculateDlrDrawPerc(dealer, partner, installer, loanType, state string, wc time.Time) (drawPerc, dlrDrawMax float64) {
+func (PayScheduleCfg *PayScheduleCfgStruct) CalculateDlrDrawPerc(dealer, partner, installer, Type, state string, wc time.Time) (drawPerc, dlrDrawMax float64, commission_models string) {
 	var (
 		err       error
 		startDate time.Time
@@ -253,39 +262,24 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateDlrDrawPerc(dealer, partner
 				continue
 			}
 
-			// if installer == "One World Energy" {
-			// 	installer = "OWE"
-			// }
+			var st string
+			if len(state) > 0 {
+				st = state[6:]
+			}
 
-			// if state == "AZ :: Arizona" {
-			// 	state = "Arizona"
-			// }
+			if data.Dealer == dealer &&
+				strings.EqualFold(data.PartnerName, partner) &&
+				strings.EqualFold(data.InstallerName, installer) &&
+				// data.SaleType == Type &&
+				data.State == st &&
+				!startDate.After(wc) &&
+				!endDate.Before(wc) {
 
-			// if state == "NM :: New Mexico" {
-			// 	state = "New Mexico"
-			// }
-			
-			if data.Dealer == dealer && data.PartnerName == partner && data.InstallerName == installer {
-				log.FuncErrorTrace(0, "data.DealerName: %v paramDealerName : %v", data.Dealer, dealer)
-				log.FuncErrorTrace(0, "data.PartnerName: %v parampartnerName : %v", data.PartnerName, partner)
-				log.FuncErrorTrace(0, "data.InstallerName: %v paramInstallerName : %v", data.InstallerName, installer)
-				log.FuncErrorTrace(0, "data.saleType: %v paramLoanType : %v", data.SaleType, loanType)
-				log.FuncErrorTrace(0, "data.stateName: %v paramStateName : %v", data.State, state)
-				log.FuncErrorTrace(0, "data.InstallerName: %v paramInstallerName : %v, wc %v", data.StartDate, data.EndDate, wc)
-
-				if data.Dealer == dealer &&
-					strings.EqualFold(data.PartnerName, partner) &&
-					strings.EqualFold(data.InstallerName, installer) &&
-					// data.SaleType == loanType &&
-					data.State == state &&
-					!startDate.After(wc) &&
-					!endDate.Before(wc) {
-
-					drawPerc = data.Draw/100
-					dlrDrawMax = data.DrawMax
-				}
+				drawPerc = data.Draw / 100
+				dlrDrawMax = data.DrawMax
+				commission_models = data.CommissionModel
 			}
 		}
 	}
-	return drawPerc, dlrDrawMax
+	return drawPerc, dlrDrawMax, commission_models
 }

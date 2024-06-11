@@ -211,10 +211,6 @@ func (ArSkdConfig *ArSkdCfgStruct) GetArSkdForSaleData(saleData *SaleDataStruct)
 			st = saleData.State[6:]
 		}
 
-		if saleData.Installer == "One World Energy" {
-			saleData.Installer = "OWE"
-		}
-
 		// log.FuncErrorTrace(0, "RAED +++REDLINE %v", arSkd.RedLine)
 		if arSkd.PartnerName == saleData.Partner &&
 			arSkd.InstallerName == saleData.Installer &&
