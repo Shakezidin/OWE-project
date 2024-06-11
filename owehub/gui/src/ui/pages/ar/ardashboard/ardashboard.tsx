@@ -137,7 +137,7 @@ export const ARDashboardPage: React.FC = () => {
                     styles={{
                       control: (baseStyles, state) => ({
                         ...baseStyles,
-                        fontSize: '13px',
+                        fontSize: '12px',
                         fontWeight: '500',
                         borderRadius: '.40rem',
                         border: 'none',
@@ -169,7 +169,7 @@ export const ARDashboardPage: React.FC = () => {
                       }),
                       option: (baseStyles, state) => ({
                         ...baseStyles,
-                        fontSize: '13px',
+                        fontSize: '12px',
                         color: state.isSelected ? '#ffffff' : '#000000',
                         backgroundColor: state.isSelected ? '#377CF6' : '#ffffff',
                         '&:hover': {
@@ -227,7 +227,7 @@ export const ARDashboardPage: React.FC = () => {
                     styles={{
                       control: (baseStyles, state) => ({
                         ...baseStyles,
-                        fontSize: '13px',
+                        fontSize: '12px',
                         fontWeight: '500',
                         borderRadius: '.40rem',
                         border: 'none',
@@ -260,7 +260,7 @@ export const ARDashboardPage: React.FC = () => {
                       }),
                       option: (baseStyles, state) => ({
                         ...baseStyles,
-                        fontSize: '13px',
+                        fontSize: '12px',
                         color: state.isSelected ? '#ffffff' : '#000000',
                         backgroundColor: state.isSelected ? '#377CF6' : '#ffffff',
                         '&:hover': {
@@ -328,7 +328,7 @@ export const ARDashboardPage: React.FC = () => {
                     styles={{
                       control: (baseStyles, state) => ({
                         ...baseStyles,
-                        fontSize: '13px',
+                        fontSize: '12px',
                         fontWeight: '500',
                         borderRadius: '.40rem',
                         border: 'none',
@@ -361,7 +361,7 @@ export const ARDashboardPage: React.FC = () => {
                       }),
                       option: (baseStyles, state) => ({
                         ...baseStyles,
-                        fontSize: '13px',
+                        fontSize: '12px',
                         color: state.isSelected ? '#ffffff' : '#000000',
                         backgroundColor: state.isSelected ? '#377CF6' : '#ffffff',
                         '&:hover': {

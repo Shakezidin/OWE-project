@@ -37,7 +37,7 @@
   left: -32px;
   z-index: 5;
   background-color: white;
-  border: 1px solid #000000;
+  /* border: 1px solid #000000; */
   border-radius: 8px;
   padding: 8px;
   margin-top: 7px;
@@ -46,8 +46,8 @@
   height: 285px;
   box-sizing: border-box;
   color: #0493ce;
+  box-shadow: 5px 5px 5px rgba(43, 42, 42, 0.3); /* Add this line */
 }
-
 
 .dropdown-item {
   display: flex;

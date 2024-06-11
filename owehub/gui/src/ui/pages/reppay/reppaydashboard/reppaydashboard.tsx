@@ -134,7 +134,7 @@ export const RepPayDashboardPage: React.FC = () => {
                     styles={{
                       control: (baseStyles, state) => ({
                         ...baseStyles,
-                        fontSize: '13px',
+                        fontSize: '12px',
                         fontWeight: '500',
                         borderRadius: '.40rem',
                         border: 'none',

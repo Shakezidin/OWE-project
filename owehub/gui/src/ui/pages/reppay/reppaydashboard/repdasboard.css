@@ -317,7 +317,6 @@
   gap: 0.2rem;
 }
 .rep-calender-container {
-  height: 20px;
   position: absolute;
   z-index: 999;
   margin-left: -212px;

@@ -231,7 +231,7 @@ const CommissionRate: React.FC = () => {
       />
       <div className="commissionContainer">
         <TableHeader
-          title="Commisstion Rate"
+          title="Commission Rate"
           onPressViewArchive={() => handleViewArchiveToggle()}
           onPressArchive={handleArchiveAllClick}
           checked={isAllRowsSelected}
