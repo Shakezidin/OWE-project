@@ -406,3 +406,9 @@ br {
     max-width:750px;
   }
 }
+
+
+.main-container{
+  max-width: 1900px;
+  margin-inline: auto;
+}

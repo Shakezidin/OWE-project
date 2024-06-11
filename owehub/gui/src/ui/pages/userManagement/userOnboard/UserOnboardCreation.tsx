@@ -93,7 +93,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
       const sanitizedValue = value.replace(/[^a-zA-Z\s]/g, '');
       dispatch(updateUserForm({ field: name, value: sanitizedValue }));
     } else if (name === 'email_id') {
-      const isValidEmail = validateEmail(value);
+      const isValidEmail = validateEmail(value.trim());
       if (!isValidEmail) {
         setEmailError('Please enter a valid email address.');
       } else {
