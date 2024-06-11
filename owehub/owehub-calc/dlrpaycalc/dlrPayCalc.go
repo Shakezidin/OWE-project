@@ -177,6 +177,7 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 
 	// statusDate = CalculateStatusDate(uniqueID, shakyHand, pto, instSys, cancel, ntp, permSub, wc) //! shakyHand
 	dlrDrawPerc, dlrDrawMax, commission_models = dataMgmt.PayScheduleCfg.CalculateDlrDrawPerc(dealer, partner, installer, loanType, state, wc)
+	commission_models = "standard" // temporary
 
 	credit = dataMgmt.DealerCreditCfg.CalculateCreaditForUniqueId(dealer, uniqueID)
 	repPay = dataMgmt.ApRepCfg.CalculateRepPayForUniqueId(dealer, uniqueID)
@@ -187,13 +188,13 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	// dlrDrawPerc = 0.5
 	// dlrDrawMax = 2000
 	log.FuncFuncTrace(0, "zidhin repPay: %v", repPay)
-	// repPay = 0 //zidhin
+	// repPay = 4461.56 //zidhin
 	log.FuncFuncTrace(0, "zidhin rl: %v", rl)
 	// rl = 2 //zidhin
 	log.FuncFuncTrace(0, "zidhin netepc:  %v", netEpc)
 	// netEpc = 6.488366013
 	log.FuncFuncTrace(0, "zidhin contractTotal: %v", contractTotal)
-	// contractTotal = 24818.00 //zidhin
+	// contractTotal = 38865 //zidhin
 	log.FuncFuncTrace(0, "zidhin commission_models: %v", commission_models)
 
 	contractDolDol = CalculateContractDolDol(netEpc, contractTotal, systemSize)
@@ -203,9 +204,9 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	addr = dataMgmt.AdderDataCfg.CalculateAddr(dealer, uniqueID, systemSize)
 	autoAdder = dataMgmt.AutoAdderCfg.CalculateAutoAddr(dealer, uniqueID, systemSize)
 
-	loanFee = dataMgmt.SaleData.CalculateLoanFee(uniqueID, commission_models, contractDolDol)
+	loanFee = dataMgmt.SaleData.CalculateLoanFee(uniqueID, contractDolDol)
 	log.FuncFuncTrace(0, "zidhin loanFee: %v", loanFee)
-	// loanFee = 541.63
+	// loanFee = 637.18
 	rebate = dataMgmt.RebateCfg.CalculateRebate(dealer, uniqueID)
 	referral = dataMgmt.ReferralDataConfig.CalculateReferralForUniqueId(dealer, uniqueID)
 
@@ -292,6 +293,7 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	outData["team_count"] = teamCount
 	outData["per_team_sales"] = perTeamSales
 	outData["per_team_kw"] = perTeamKw
+	outData["commission_model"] = commission_models
 
 	//first sheet calculation
 

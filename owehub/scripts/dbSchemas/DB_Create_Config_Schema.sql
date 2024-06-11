@@ -661,6 +661,7 @@ CREATE TABLE noncomm_dlrpay (
     dba text,
     date DATE NOT NULL,
     is_archived BOOLEAN DEFAULT FALSE,
+    commission_model text,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     FOREIGN KEY (dealer_id) REFERENCES v_dealer(id)
@@ -675,6 +676,7 @@ CREATE TABLE dlr_oth(
     balance float,
     paid_amount float,
     is_archived BOOLEAN DEFAULT FALSE,
+    commission_model text,
     date DATE NOT NULL,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
