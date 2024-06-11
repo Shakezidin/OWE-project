@@ -122,7 +122,8 @@ CREATE TABLE dealer_pay_calc_standard (
     appt_set_status_check FLOAT,
     sales_rep_type TEXT,
     r1_comm_paid FLOAT,
-    r1_draw_paid FLOAT
+    r1_draw_paid FLOAT,
+    commission_model TEXT
 );
  
 CREATE VIEW pr_dlr_d_standard AS
@@ -150,7 +151,8 @@ SELECT
     dealer_pay_calc_standard.r1_comm_paid AS amt_paid,
     dealer_pay_calc_standard.r1_balance AS balance,
     dealer_pay_calc_standard.st AS st,
-    dealer_pay_calc_standard.wc AS contract_date
+    dealer_pay_calc_standard.wc AS contract_date,
+    dealer_pay_calc_standard.commission_model AS commission_model
 FROM
     dealer_pay_calc_standard
 WHERE
@@ -188,7 +190,8 @@ SELECT
     dealer_pay_calc_standard.r1_comm_paid AS amt_paid,
     dealer_pay_calc_standard.r1_balance AS balance,
     dealer_pay_calc_standard.st AS st,
-    dealer_pay_calc_standard.wc AS contract_date
+    dealer_pay_calc_standard.wc AS contract_date,
+    dealer_pay_calc_standard.commission_model AS commission_model
 FROM
     dealer_pay_calc_standard
 WHERE
@@ -236,7 +239,8 @@ SELECT
     dealer_pay_calc_standard.ovrd_paid AS amt_paid,
     dealer_pay_calc_standard.ovrd_balance AS balance,
     dealer_pay_calc_standard.st AS st,
-    dealer_pay_calc_standard.wc AS contract_date
+    dealer_pay_calc_standard.wc AS contract_date,
+    dealer_pay_calc_standard.commission_model AS commission_model
 FROM
     dealer_pay_calc_standard
 WHERE
@@ -275,7 +279,8 @@ CREATE VIEW dlr_pay_pr_data AS
         amt_paid AS amt_paid,
         balance AS balance,
         st AS st,
-        contract_date AS contract_date
+        contract_date AS contract_date,
+        commission_model AS commission_model
     FROM pr_dlr_d_standard
     WHERE home_owner IS NOT NULL AND home_owner <> ''
         UNION ALL
@@ -303,7 +308,8 @@ CREATE VIEW dlr_pay_pr_data AS
         amt_paid AS amt_paid,
         balance AS balance,
         st AS st,
-        contract_date AS contract_date
+        contract_date AS contract_date,
+        commission_model AS commission_model
     FROM pr_dlr_f_standard
     WHERE home_owner IS NOT NULL AND home_owner <> ''
         UNION ALL
@@ -331,7 +337,8 @@ CREATE VIEW dlr_pay_pr_data AS
         amt_paid AS amt_paid,
         balance AS balance,
         st AS st,
-        contract_date AS contract_date
+        contract_date AS contract_date,
+        commission_model AS commission_model
     FROM pr_dlr_or_standard
     WHERE dealer_dba IS NOT NULL AND dealer_dba <> ''
         UNION ALL
@@ -359,7 +366,8 @@ CREATE VIEW dlr_pay_pr_data AS
         n.paid_amount AS amt_paid,
         n.balance AS balance,
         NULL AS st,
-        NULL AS contract_date
+        NULL AS contract_date,
+        commission_model AS commission_model
     FROM noncomm_dlrpay n
     JOIN v_dealer d ON n.dealer_id = d.id
     WHERE n.unique_id IS NOT NULL AND n.unique_id <> '' AND n.balance <> 0
@@ -388,6 +396,7 @@ CREATE VIEW dlr_pay_pr_data AS
         paid_amount AS amt_paid,
         balance AS balance,
         NULL AS st,
-        NULL AS contract_date
+        NULL AS contract_date,
+        commission_model AS commission_model
     FROM dlr_oth
     WHERE unique_id IS NOT NULL AND unique_id <> '' AND balance <> 0;

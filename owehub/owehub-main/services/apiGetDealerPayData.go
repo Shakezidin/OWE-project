@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"strings"
 	"time"
 
 	"encoding/json"
@@ -27,13 +28,17 @@ import (
 
 func HandleGetDealerPayDataRequest(resp http.ResponseWriter, req *http.Request) {
 	var (
-		err          error
-		dataReq      models.GetDealerPay
-		data         []map[string]interface{}
-		whereEleList []interface{}
-		query        string
-		// filter string
-		// RecordCount     int64
+		err             error
+		dataReq         models.GetDealerPay
+		data            []map[string]interface{}
+		whereEleList    []interface{}
+		query           string
+		queryForAlldata string
+		filter          string
+		RecordCount     int64
+		queryWithFiler  string
+		filter2         string
+		aurguments      string
 	)
 
 	log.EnterFn(0, "GetARDataFromView")
@@ -86,20 +91,29 @@ func HandleGetDealerPayDataRequest(resp http.ResponseWriter, req *http.Request) 
 		dataReq.PayRollEndDate = adjustedDate.Format(dateFormat)
 	}
 
+	tableName := db.TableName_DLR_PAY_APCALC
 	if dataReq.DealerName == "ALL" {
-		query = `SELECT * FROM dlr_pay_pr_data dlrpay WHERE dlrpay.dealer NOT in('HOUSE') ORDER BY $1 ASC`
-		// whereEleList = append(whereEleList, dataReq.PayRollStartDate)
-		// whereEleList = append(whereEleList, dataReq.PayRollEndDate)
-		whereEleList = append(whereEleList, dataReq.SortBy)
+		query = `SELECT unique_id, home_owner, current_status, status_date, dealer, type, amount, sys_size, rl, contract_$$, 
+			loan_fee, epc, net_epc, other_adders, credit, rep_1, rep_2, rep_pay, net_rev, draw_amt, amt_paid, balance, st, 
+			contract_date, commission_model FROM dlr_pay_pr_data dlrpay WHERE dlrpay.dealer NOT IN ('HOUSE')`
+		aurguments = " AND commission_model = $1 ORDER BY $2"
+		filter = PrepareDealerPayFilters(tableName, dataReq, false)
+		whereEleList = append(whereEleList, dataReq.CommissionModel, dataReq.SortBy)
 	} else {
-		query = `SELECT * FROM dlr_pay_pr_data dlrpay WHERE dlrpay.dealer = $1 ORDER BY $2 ASC`
-		whereEleList = append(whereEleList, dataReq.DealerName)
-		// whereEleList = append(whereEleList, startDate)
-		// whereEleList = append(whereEleList, endDate)
-		whereEleList = append(whereEleList, dataReq.SortBy)
+		query = `SELECT unique_id, home_owner, current_status, status_date, dealer, type, amount, sys_size, rl, contract_$$, 
+			loan_fee, epc, net_epc, other_adders, credit, rep_1, rep_2, rep_pay, net_rev, draw_amt, amt_paid, balance, st, 
+			contract_date, commission_model FROM dlr_pay_pr_data dlrpay`
+		aurguments = " WHERE dlrpay.dealer = $1 AND commission_model = $2 ORDER BY $3"
+		filter = PrepareDealerPayFilters(tableName, dataReq, false)
+		whereEleList = append(whereEleList, dataReq.DealerName, dataReq.CommissionModel, dataReq.SortBy)
 	}
 
-	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
+	if filter != "" {
+		queryWithFiler = query + aurguments + filter
+	}
+	log.FuncErrorTrace(0, queryWithFiler)
+	// Append sorting and pagination filters
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryWithFiler, whereEleList)
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get dealer pay data from DB err: %v", err)
 		FormAndSendHttpResp(resp, "Failed to get dealer pay data from DB", http.StatusBadRequest, nil)
@@ -130,7 +144,7 @@ func HandleGetDealerPayDataRequest(resp http.ResponseWriter, req *http.Request) 
 		}
 
 		// StatusDate
-		StatusDate, statusDateok := item["status_Date"].(time.Time)
+		StatusDate, statusDateok := item["status_date"].(time.Time)
 		if !statusDateok {
 			log.FuncErrorTrace(0, "Failed to get status date for Record ID %v. Item: %+v\n", UniqueId, item)
 			StatusDate = time.Time{}
@@ -185,10 +199,9 @@ func HandleGetDealerPayDataRequest(resp http.ResponseWriter, req *http.Request) 
 		}
 
 		// Rl
-		Rl, rlok := item["rl"].(float64)
-		if !rlok {
-			log.FuncErrorTrace(0, "Failed to get Rl for Record ID %v. Item: %+v\n", UniqueId, item)
-			Rl = 0.0
+		Rl, ok := item["rl"].(float64)
+		if !ok {
+			Rl = 0.0 // or another default value if appropriate
 		}
 
 		// ContractValue
@@ -251,7 +264,7 @@ func HandleGetDealerPayDataRequest(resp http.ResponseWriter, req *http.Request) 
 		repPay, repPayok := item["rep_pay"].(float64)
 		if !repPayok || repPay == 0.0 {
 			log.FuncErrorTrace(0, "Failed to get rep pay for Record ID %v. Item: %+v\n", UniqueId, item)
-			Rl = 0.0
+			repPay = 0.0
 		}
 
 		// NetRev
@@ -331,7 +344,41 @@ func HandleGetDealerPayDataRequest(resp http.ResponseWriter, req *http.Request) 
 		}
 		dealerpayDataList.DealerPayList = append(dealerpayDataList.DealerPayList, dealerpayData)
 	}
+
+	filter2 = PrepareDealerPayFilters(tableName, dataReq, true)
+	if filter2 != "" {
+		queryForAlldata = query + filter2
+	}
+
+	data, err = db.ReteriveFromDB(db.OweHubDbIndex, queryForAlldata, nil)
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get dealer credit data from DB err: %v", err)
+		FormAndSendHttpResp(resp, "Failed to get dealer credit data from DB", http.StatusBadRequest, nil)
+		return
+	}
+	RecordCount = int64(len(data))
 	// Send the response
 	log.FuncInfoTrace(0, "Number of ar data List fetched : %v list %+v", len(dealerpayDataList.DealerPayList), dealerpayDataList)
-	FormAndSendHttpResp(resp, "Ar  Data", http.StatusOK, dealerpayDataList)
+	FormAndSendHttpResp(resp, "Ar  Data", http.StatusOK, dealerpayDataList, RecordCount)
+}
+
+func PrepareDealerPayFilters(tableName string, dataFilter models.GetDealerPay, forDataCount bool) (filters string) {
+	log.EnterFn(0, "PrepareDealerCreditFilters")
+	defer func() { log.ExitFn(0, "PrepareDealerCreditFilters", nil) }()
+
+	var filtersBuilder strings.Builder
+
+	if forDataCount {
+		filtersBuilder.WriteString(" GROUP BY unique_id, home_owner, current_status, status_date, dealer, type, amount, sys_size, rl, contract_$$, loan_fee, epc, net_epc, other_adders, credit, rep_1, rep_2, rep_pay, net_rev, draw_amt, amt_paid, balance, st, contract_date, commission_model")
+	} else {
+		// Add pagination logic
+		if dataFilter.PageNumber > 0 && dataFilter.PageSize > 0 {
+			offset := (dataFilter.PageNumber - 1) * dataFilter.PageSize
+			filtersBuilder.WriteString(fmt.Sprintf(" OFFSET %d LIMIT %d", offset, dataFilter.PageSize))
+		}
+	}
+
+	filters = filtersBuilder.String()
+	log.FuncDebugTrace(0, "filters for table name : %s : %s", tableName, filters)
+	return filters
 }

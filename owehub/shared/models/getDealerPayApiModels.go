@@ -12,6 +12,9 @@ type GetDealerPay struct {
 	UseCutoff        string `json:"use_cutoff"`
 	DealerName       string `json:"dealer_name"`
 	SortBy           string `json:"sort_by"`
+	PageNumber       int    `json:"page_number"`
+	PageSize         int    `json:"page_size"`
+	CommissionModel  string `json:"commission_model"`
 }
 
 type GetDealerPayPRData struct {
