@@ -20,7 +20,7 @@ interface timeLineProps {
   handleClose: () => void;
   editMode: boolean;
   timeLineSlaData: TimeLineSlaModel | null;
-  setRefetch:Dispatch<SetStateAction<number>>
+  setRefetch: Dispatch<SetStateAction<number>>;
 }
 
 interface IError {
@@ -34,7 +34,7 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
   handleClose,
   editMode,
   timeLineSlaData,
-  setRefetch
+  setRefetch,
 }) => {
   const dispatch = useDispatch();
   const [createTimeLine, setCreateTimeLine] = useState<TimeLineSlaModel>({
@@ -47,7 +47,7 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
   });
   const [errors, setErrors] = useState<IError>({} as IError);
   const [newFormData, setNewFormData] = useState<any>([]);
-  const [isPending,setIsPending] = useState(false)
+  const [isPending, setIsPending] = useState(false);
   const tableData = {
     tableNames: ['states'],
   };
@@ -81,14 +81,14 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
   };
   const handleTimeLineInput = (e: FormInput) => {
     const { name, value } = e.target;
-    if (name==="days") {
+    if (name === 'days') {
       if (value === '' || /^\d*\.?\d*$/.test(value)) {
         setCreateTimeLine((prevData) => ({
           ...prevData,
           [name]: value,
         }));
-      }else{
-        return 
+      } else {
+        return;
       }
     }
 
@@ -106,9 +106,17 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
     }));
   };
 
+  const formatDate = (date: string) => {
+    const isValid = new Date(date);
+    if (!isNaN(isValid.getTime())) {
+      return format(isValid, 'yyyy-MM-dd');
+    }
+    return '';
+  };
+
   const submitTimeLineSla = async (e: FormEvent) => {
     e.preventDefault();
-    
+
     if (handleValidation()) {
       setIsPending(true);
       try {
@@ -122,7 +130,7 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
             toast.success(res.message);
             handleClose();
             setIsPending(false);
-            setRefetch(prev=>prev+1)
+            setRefetch((prev) => prev + 1);
           } else {
             setIsPending(false);
             toast.error(res.message);
@@ -137,13 +145,12 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
             toast.success(res.message);
             handleClose();
             setIsPending(false);
-            setRefetch(prev=>prev+1)
+            setRefetch((prev) => prev + 1);
           } else {
             setIsPending(false);
             toast.error(res.message);
           }
         }
-       
       } catch (error) {
         console.error('Error submitting form:', error);
       }
@@ -234,7 +241,7 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
                   <Input
                     type={'date'}
                     label="Start Date"
-                    value={createTimeLine.start_date}
+                    value={formatDate(createTimeLine.start_date)}
                     name="start_date"
                     placeholder={'1/04/2004'}
                     onChange={(e) => handleTimeLineInput(e)}
@@ -255,11 +262,17 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
                   <Input
                     type={'date'}
                     label="End Date"
-                    value={createTimeLine.end_date}
+                    value={formatDate(createTimeLine.end_date)}
                     name="end_date"
                     placeholder={'10/04/2004'}
                     onChange={(e) => handleTimeLineInput(e)}
-                    min={createTimeLine.start_date && format(addDays(new Date(createTimeLine.start_date),1),"yyyy-MM-dd") }
+                    min={
+                      createTimeLine.start_date &&
+                      format(
+                        addDays(new Date(createTimeLine.start_date), 1),
+                        'yyyy-MM-dd'
+                      )
+                    }
                     disabled={!createTimeLine.start_date}
                   />
                   {errors?.end_date && (

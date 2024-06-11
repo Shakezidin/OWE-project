@@ -35,10 +35,9 @@ const CreateDealer: React.FC<dealerProps> = ({
   const [createDealer, setCreateDealer] = useState({
     record_id: dealerData ? dealerData?.record_id : 0,
     sub_dealers: dealerData ? dealerData?.sub_dealer : '',
-
     pay_rate: dealerData ? dealerData?.pay_rate : '',
     start_date: dealerData ? dealerData?.start_date : '',
-    end_date: dealerData ? dealerData?.end_date : '',
+    end_date: dealerData ? dealerData?.end_date: '',
     state: dealerData ? dealerData?.state : '',
   });
   const [delaerVal, setDealerVal] = useState(dealerData?.dealer || '');
@@ -47,6 +46,13 @@ const CreateDealer: React.FC<dealerProps> = ({
   const [newFormData, setNewFormData] = useState<any>([]);
   const tableData = {
     tableNames: ['sub_dealer', 'dealer', 'states'],
+  };
+  const formatDate = (date: string) => {
+    const isValid = new Date(date);
+    if (!isNaN(isValid.getTime())) {
+      return format(isValid, 'yyyy-MM-dd');
+    }
+    return '';
   };
 
   const userType = {
@@ -276,7 +282,7 @@ const CreateDealer: React.FC<dealerProps> = ({
                   <Input
                     type={'date'}
                     label="Start Date"
-                    value={createDealer.start_date}
+                    value={formatDate(createDealer.start_date)}
                     name="start_date"
                     placeholder={'Enter'}
                     onChange={(e) => {
@@ -293,7 +299,7 @@ const CreateDealer: React.FC<dealerProps> = ({
                     type={'date'}
                     label="End Date"
                     name="end_date"
-                    value={createDealer.end_date}
+                    value={formatDate(createDealer.end_date)}
                     min={
                       createDealer.start_date &&
                       format(
