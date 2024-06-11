@@ -12,7 +12,7 @@
 }
 
 .welcomeBannerView {
-  background: url('../../../resources/assets/banner.jpg');
+  background: url('../../../resources/assets/landingBanner.svg');
   background-repeat: no-repeat;
   background-size: cover;
   position: relative;
@@ -130,6 +130,7 @@
   display: inline-flex;
   height: 42px;
   padding: 1rem;
+  margin-bottom: 15px;
 }
 
 .welcome-phone-text {
@@ -468,6 +469,7 @@
   }
   .welcome-text-black{
     text-align: center;
+    margin-top: 2.2rem;
   }
   .welcome-our-text{
     text-align: center;
@@ -508,6 +510,7 @@
     left: 50%;
   }
   .welcomeWorkEaseView{
+    margin: 59px 53px;
     margin-top: 300px;
   }
   #welcomeFooterLowerView{
@@ -520,5 +523,18 @@
     overflow-x: scroll;
     width: 100vw;
     padding-right: 100px;
+  }
+  .welcomeInnerBannerView{
+    margin: 0 35px;
+  }
+  .welcomeBannerView{
+    background-position: 94%;
+  }
+  .welcomeHeaderView object {
+    width: 300px;
+  }
+  .welcomeOverProcessContainer{
+    margin: 0;
+    margin-bottom: 50px;
   }
 }
