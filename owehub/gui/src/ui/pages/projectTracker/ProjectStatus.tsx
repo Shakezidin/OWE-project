@@ -93,7 +93,7 @@ const ProjectStatus = () => {
         {
           name: '10 Apr',
           process: 'Pending',
-          data: projectDetail.ntp_pending ? '' : 'data is not available',
+          data: projectDetail.ntp_pending ? '' : 'Data not available',
           borderColor: projectDetail.ntp_pending ? 'white' : '#A5AAB2',
           key: 'ntp_pending',
           bgColor: projectDetail.ntp_pending ? '#63ACA3' : '#EBEBEB',
@@ -102,7 +102,7 @@ const ProjectStatus = () => {
         {
           name: '10 Apr',
           process: 'Completed',
-          data: projectDetail.ntp_completed ? '' : 'data is not available',
+          data: projectDetail.ntp_completed ? '' : 'Data not available',
           borderColor: projectDetail.ntp_completed ? 'white' : '#A5AAB2',
           key: 'ntp_completed',
           bgColor: projectDetail.ntp_completed ? '#63ACA3' : '#EBEBEB',
@@ -123,7 +123,7 @@ const ProjectStatus = () => {
 
           data: projectDetail.site_survey_scheduled
             ? ''
-            : 'data is not available',
+            : 'Data not available',
           borderColor: projectDetail.site_survey_scheduled
             ? 'white'
             : '#A5AAB2',
@@ -136,7 +136,7 @@ const ProjectStatus = () => {
           process: 'Re-Scheduled',
           data: projectDetail.site_survey_rescheduled
             ? ''
-            : 'data is not available',
+            : 'Data not available',
           borderColor: projectDetail.site_survey_rescheduled
             ? 'white'
             : '#A5AAB2',
@@ -151,7 +151,7 @@ const ProjectStatus = () => {
           process: 'Completed',
           data: projectDetail.site_survey_completed
             ? ''
-            : 'data is not available',
+            : 'Data not available',
           borderColor: projectDetail.site_survey_completed
             ? 'white'
             : '#A5AAB2',
@@ -171,7 +171,7 @@ const ProjectStatus = () => {
         {
           name: '10 Apr',
           process: 'Pending',
-          data: projectDetail.roofing_pending ? '' : 'data is not available',
+          data: projectDetail.roofing_pending ? '' : 'Data not available',
           borderColor: projectDetail.roofing_pending ? 'white' : '#A5AAB2',
           key: 'roofing_pending',
           bgColor: projectDetail.roofing_pending ? '#63ACA3' : '#EBEBEB',
@@ -180,7 +180,7 @@ const ProjectStatus = () => {
         {
           name: '10 Apr',
           process: 'Scheduled',
-          data: projectDetail.roofing_scheduled ? '' : 'data is not available',
+          data: projectDetail.roofing_scheduled ? '' : 'Data not available',
           borderColor: projectDetail.roofing_scheduled ? 'white' : '#A5AAB2',
           key: 'roofing_scheduled',
           bgColor: projectDetail.roofing_scheduled ? '#63ACA3' : '#EBEBEB',
@@ -189,7 +189,7 @@ const ProjectStatus = () => {
         {
           name: '10 Apr',
           process: 'Completed',
-          data: projectDetail.roofing_completed ? '' : 'data is not available',
+          data: projectDetail.roofing_completed ? '' : 'Data not available',
           borderColor: projectDetail.roofing_completed ? 'white' : '#A5AAB2',
           key: 'roofing_scheduled',
           bgColor: projectDetail.roofing_completed ? '#63ACA3' : '#EBEBEB',
@@ -208,7 +208,7 @@ const ProjectStatus = () => {
         {
           name: '10 Apr',
           process: 'Pending',
-          data: projectDetail.electrical_pending ? '' : 'data is not available',
+          data: projectDetail.electrical_pending ? '' : 'Data not available',
           borderColor: projectDetail.electrical_pending ? 'white' : '#A5AAB2',
           key: 'electrical_pending',
           bgColor: projectDetail.electrical_pending ? '#63ACA3' : '#EBEBEB',
@@ -219,7 +219,7 @@ const ProjectStatus = () => {
           process: 'Scheduled',
           data: projectDetail.electrical_scheduled
             ? ''
-            : 'data is not available',
+            : 'Data not available',
           borderColor: projectDetail.electrical_scheduled ? 'white' : '#A5AAB2',
           key: 'electrical_scheduled',
           bgColor: projectDetail.electrical_scheduled ? '#63ACA3' : '#EBEBEB',
@@ -230,7 +230,7 @@ const ProjectStatus = () => {
           process: 'Completed',
           data: projectDetail.electrical_completed
             ? ''
-            : 'data is not available',
+            : 'Data not available',
           borderColor: projectDetail.electrical_completed ? 'white' : '#A5AAB2',
           key: 'electrical_completed',
           bgColor: projectDetail.electrical_completed ? '#63ACA3' : '#EBEBEB',
@@ -249,7 +249,7 @@ const ProjectStatus = () => {
         {
           name: '10 Apr',
           process: 'Pending',
-          data: projectDetail.pv_permit_pending ? '' : 'data is not available',
+          data: projectDetail.pv_permit_pending ? '' : 'Data not available',
           borderColor: projectDetail.pv_permit_pending ? 'white' : '#A5AAB2',
           key: 'pv_permit_pending',
           bgColor: projectDetail.pv_permit_pending ? '#63ACA3' : '#EBEBEB',
@@ -260,7 +260,7 @@ const ProjectStatus = () => {
           process: 'Submitted',
           data: projectDetail.pv_permit_scehduled
             ? ''
-            : 'data is not available',
+            : 'Data not available',
           borderColor: projectDetail.pv_permit_scehduled ? 'white' : '#A5AAB2',
           key: 'pv_permit_scehduled',
           bgColor: projectDetail.pv_permit_scehduled ? '#63ACA3' : '#EBEBEB',
@@ -271,7 +271,7 @@ const ProjectStatus = () => {
           process: 'Approved',
           data: projectDetail.pv_permit_completed
             ? ''
-            : 'data is not available',
+            : 'Data not available',
           borderColor: projectDetail.pv_permit_completed ? 'white' : '#A5AAB2',
           key: 'pv_permit_completed',
           bgColor: projectDetail.pv_permit_completed ? '#63ACA3' : '#EBEBEB',
@@ -290,7 +290,7 @@ const ProjectStatus = () => {
         {
           name: '10 Apr',
           process: 'Pending',
-          data: projectDetail.ic_permit_pending ? '' : 'data is not available',
+          data: projectDetail.ic_permit_pending ? '' : 'Data not available',
           borderColor: projectDetail.ic_permit_pending ? 'white' : '#A5AAB2',
           key: 'ic_permit_pending',
           bgColor: projectDetail.ic_permit_pending ? '#63ACA3' : '#EBEBEB',
@@ -301,7 +301,7 @@ const ProjectStatus = () => {
           process: 'Submitted',
           data: projectDetail.ic_permit_scheduled
             ? ''
-            : 'data is not available',
+            : 'Data not available',
           borderColor: projectDetail.ic_permit_scheduled ? 'white' : '#A5AAB2',
           key: 'ic_permit_scheduled',
           bgColor: projectDetail.ic_permit_scheduled ? '#63ACA3' : '#EBEBEB',
@@ -312,7 +312,7 @@ const ProjectStatus = () => {
           process: 'Approved',
           data: projectDetail.ic_permit_completed
             ? ''
-            : 'data is not available',
+            : 'Data not available',
           borderColor: projectDetail.ic_permit_completed ? 'white' : '#A5AAB2',
           key: 'ic_permit_completed',
           bgColor: projectDetail.ic_permit_completed ? '#63ACA3' : '#EBEBEB',
@@ -331,7 +331,7 @@ const ProjectStatus = () => {
         {
           name: '10 Apr',
           process: 'Pending',
-          data: projectDetail.install_pending ? '' : 'data is not available',
+          data: projectDetail.install_pending ? '' : 'Data not available',
           borderColor: projectDetail.install_pending ? 'white' : '#A5AAB2',
           key: 'install_pending',
           bgColor: projectDetail.install_pending ? '#63ACA3' : '#EBEBEB',
@@ -341,7 +341,7 @@ const ProjectStatus = () => {
         {
           name: '10 Apr',
           process: 'Ready',
-          data: projectDetail.install_ready ? '' : 'data is not available',
+          data: projectDetail.install_ready ? '' : 'Data not available',
           borderColor: projectDetail.install_ready ? 'white' : '#A5AAB2',
           key: 'install_ready',
           bgColor: projectDetail.install_ready ? '#63ACA3' : '#EBEBEB',
@@ -350,7 +350,7 @@ const ProjectStatus = () => {
         {
           name: '10 Apr',
           process: 'Scheduled',
-          data: projectDetail.install_scheduled ? '' : 'data is not available',
+          data: projectDetail.install_scheduled ? '' : 'Data not available',
           borderColor: projectDetail.install_scheduled ? 'white' : '#A5AAB2',
           key: 'install_scheduled',
           bgColor: projectDetail.install_scheduled ? '#63ACA3' : '#EBEBEB',
@@ -360,7 +360,7 @@ const ProjectStatus = () => {
         {
           name: '10 Apr',
           process: 'Completed',
-          data: projectDetail.install_completed ? '' : 'data is not available',
+          data: projectDetail.install_completed ? '' : 'Data not available',
           borderColor: projectDetail.install_completed ? 'white' : '#A5AAB2',
           key: 'install_completed',
           bgColor: projectDetail.install_completed ? '#63ACA3' : '#EBEBEB',
@@ -381,7 +381,7 @@ const ProjectStatus = () => {
           process: 'Scheduled',
           data: projectDetail.final_inspection_submitted
             ? ''
-            : 'data is not available',
+            : 'Data not available',
           borderColor: projectDetail.final_inspection_submitted
             ? 'white'
             : '#A5AAB2',
@@ -396,7 +396,7 @@ const ProjectStatus = () => {
           process: 'Approved',
           data: projectDetail.final_inspection_approved
             ? ''
-            : 'data is not available',
+            : 'Data not available',
           borderColor: '#A5AAB2',
           key: 'final_inspection_approved',
           bgColor: projectDetail.final_inspection_approved
@@ -417,7 +417,7 @@ const ProjectStatus = () => {
         {
           name: '10 Apr',
           process: 'In Process',
-          data: projectDetail.pto_in_process ? '' : 'data is not available',
+          data: projectDetail.pto_in_process ? '' : 'Data not available',
           borderColor: projectDetail.pto_in_process ? 'white' : '#A5AAB2',
           key: 'pto_in_process',
           bgColor: projectDetail.pto_in_process ? '#63ACA3' : '#EBEBEB',
@@ -426,7 +426,7 @@ const ProjectStatus = () => {
         {
           name: '10 Apr',
           process: 'Submitted',
-          data: projectDetail.pto_submitted ? '' : 'data is not available',
+          data: projectDetail.pto_submitted ? '' : 'Data not available',
           borderColor: projectDetail.pto_submitted ? 'white' : '#A5AAB2',
           key: 'pto_submitted',
           bgColor: projectDetail.pto_submitted ? '#63ACA3' : '#EBEBEB',
@@ -436,7 +436,7 @@ const ProjectStatus = () => {
         {
           name: '10 Apr',
           process: 'Approved',
-          data: projectDetail.pto_completed ? '' : 'data is not available',
+          data: projectDetail.pto_completed ? '' : 'Data not available',
           borderColor: projectDetail.pto_completed ? 'white' : '#A5AAB2',
           key: 'pto_completed',
           bgColor: projectDetail.pto_completed ? '#63ACA3' : '#EBEBEB',

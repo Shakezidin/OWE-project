@@ -26,7 +26,7 @@
   cursor: pointer;
   text-wrap: nowrap;
   color: rgb(52, 64, 84);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   line-height: 14.5px;
   user-select: none;
@@ -593,7 +593,6 @@
   top: 130%;
   background-color: #fff;
   box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.2);
-  max-height: 50px;
 }
 
 .modal-down-break {
