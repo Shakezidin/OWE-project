@@ -67,29 +67,20 @@
 }
 .arrow-wrapper {
   background: var(--white-color);
-  height: 34px;
-  width: 34px;
+  height: 30px;
+  width: 30px;
   border-radius: 48px;
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: 0.4s ease-out;
 }
-
-
-
-
-
-
-
-
-
-
  .pay-card {
   display: flex;
   justify-content: space-between;
   align-items: center;
   text-align: center;
-  width: 175px;
+  width: 167px;
   height: 83px;
   border: none;
   border-radius: 8px;
@@ -179,7 +170,7 @@
 .con-fle{
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   width: 100%;
   align-items: center;
   text-align: center;

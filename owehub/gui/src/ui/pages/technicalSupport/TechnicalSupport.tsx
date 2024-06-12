@@ -174,7 +174,7 @@ const TechnicalSupport: React.FC = () => {
                   label="First Name"
                   value={firstName}
                   name="user_name"
-                  placeholder={'Enter'}
+                  placeholder={'Enter First Name'}
                   maxLength={100}
                   onChange={(e) => {
                     const inputValue = e.target.value;
@@ -197,7 +197,7 @@ const TechnicalSupport: React.FC = () => {
                   value={lastName}
                   name="lastName"
                   maxLength={100}
-                  placeholder={'Enter'}
+                  placeholder={'Enter Last Name'}
                   onChange={(e) => {
                     const inputValue = e.target.value;
                     if (/^[a-zA-Z\s]*$/.test(inputValue)) {
@@ -223,7 +223,7 @@ const TechnicalSupport: React.FC = () => {
                   label="Email"
                   value={email}
                   name="email"
-                  placeholder={'Enter'}
+                  placeholder={'email@mymail.com'}
                   onChange={handleInputChange}
                   onKeyPress={(e) => {
                     if (e.key === ' ') {

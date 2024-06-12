@@ -271,7 +271,7 @@ const CreateNonComm: React.FC<ButtonProps> = ({
                     placeholder={'10/04/2004'}
                     onChange={(e) => handleInputChange(e)}
                   />
-                  {errors?.end_date && (
+                  {errors?.date && (
                     <span
                       style={{
                         display: 'block',
@@ -279,7 +279,7 @@ const CreateNonComm: React.FC<ButtonProps> = ({
                         textTransform: 'capitalize',
                       }}
                     >
-                      {errors.end_date.replace('end_date', 'end date')}
+                      {errors.date}
                     </span>
                   )}
                 </div>
