@@ -83,7 +83,7 @@ const ConfigurePage: React.FC = () => {
           route: ROUTES.CONFIG_ADDER_RESPONSIBILITY,
         },
         {
-          title: 'AR Rep',
+          title: 'AP Rep',
           route: ROUTES.CONFIG_APREP,
         },
         { title: 'Adder Credit', route: ROUTES.CONFIG_ADDER_CREDITS },
