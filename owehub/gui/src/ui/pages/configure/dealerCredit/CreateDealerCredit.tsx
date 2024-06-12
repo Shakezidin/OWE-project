@@ -68,17 +68,19 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
   }, []);
 
   const handleValidation = () => {
-    const error: IError = {} as IError;
-    for (const key in setDealerCredit) {
-      if (key === 'record_id') {
-        continue;
-      }
-      if (!CreateDealerCredit[key as keyof typeof CreateDealerCredit]) {
-        error[key as keyof IError] = `${key.replaceAll("_"," ")} is required`;
+    const error: typeof dealerCredit = {} as typeof dealerCredit;
+
+    for (const key in dealerCredit) {
+      if (!dealerCredit[key as keyof typeof dealerCredit]) {
+        // Capitalize the first letter of the key'
+        const capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
+        // Assign an error message with the capitalized key
+        error[key as keyof typeof dealerCredit] = `${capitalizedKey} is required`;
       }
     }
+
     setErrors({ ...error });
-    return Object.keys(error).length === 0;
+    return Object.keys(error).length ? false : true;
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -102,7 +104,7 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-   
+    if (handleValidation()) {
     if(editMode){
       const data = {
         unique_id:dealerCredit.unique_id,
@@ -126,6 +128,7 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
       };
     dispatch(createDealerCredit(data));
     }
+  }
   };
 
   useEffect(() => {
@@ -161,9 +164,15 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
                     placeholder={'Unique Id'}
                     onChange={handleChange}
                   />
-                  {errors?.unique_id && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
-                      {errors.unique_id.replace('sale_type', 'sale type')}
+                   {errors?.unique_id && (
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.unique_id}
                     </span>
                   )}
                 </div>
@@ -176,9 +185,15 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
                     placeholder={'Date'}
                     onChange={handleChange}
                   />
-                  {errors?.date && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
-                      {errors.date.replace('sale_price', 'sale pricee')}
+                   {errors?.date && (
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.date}
                     </span>
                   )}
                 </div>
@@ -192,9 +207,15 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
                     placeholder={'Exact Amt'}
                     onChange={handleChange}
                   />
-                  {errors?.exact_amt && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
-                      {errors.date.replace('sale_price', 'sale pricee')}
+                      {errors?.exact_amt && (
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.exact_amt}
                     </span>
                   )}
                 </div>
@@ -209,8 +230,14 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
                     placeholder={'Per Kw Amt'}
                     onChange={handleChange}
                   />
-                  {errors?.per_kw_amt && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
+                   {errors?.per_kw_amt && (
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
                       {errors.per_kw_amt}
                     </span>
                   )}
@@ -224,11 +251,17 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
                     placeholder={'Approved By'}
                     onChange={handleChange}
                   />
-                  {errors?.approve && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
-                      {errors.approve.replace('approve', 'approve')}
+                   {errors?.approved && (
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.approved}
                     </span>
-                  )}
+                  )} 
                 </div>
                 <div className="create-input-field">
                   <Input
@@ -239,9 +272,15 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
                     placeholder={'notes'}
                     onChange={handleChange}
                   />
-                  {errors?.notes && (
-                    <span style={{ display: 'block', color: '#FF204E' }}>
-                      {errors.start_date.replace('notes', 'Notes')}
+                     {errors?.notes && (
+                    <span
+                      style={{
+                        display: 'block',
+                        color: '#FF204E',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {errors.notes}
                     </span>
                   )}
                 </div>
