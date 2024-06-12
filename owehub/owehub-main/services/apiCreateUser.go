@@ -10,6 +10,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"strconv"
 	"strings"
 
 	"encoding/json"
@@ -30,9 +31,10 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		createUserReq         models.CreateUserReq
 		queryParameters       []interface{}
 		tablesPermissionsJSON []byte
-		whereEleList          []interface{}
-		username              string
-		usernamePrefix        string
+		// whereEleList          []interface{}
+		username          string
+		usernamePrefix    string
+		nameAssignedCheck bool
 	)
 
 	log.EnterFn(0, "HandleCreateUserRequest")
@@ -59,9 +61,9 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	nameQuery := `
-			select count(name) from user_details where name = $1
-		`
+	// nameQuery := `
+	// 		select count(name) from user_details where name = $1
+	// 	`
 
 	if (len(createUserReq.Name) <= 0) || (len(createUserReq.EmailId) <= 0) ||
 		(len(createUserReq.MobileNumber) <= 0) ||
@@ -107,20 +109,51 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 
 	// If the user role is "DB User", create the database user and grant privileges
 	if createUserReq.RoleName == "DB User" || createUserReq.RoleName == "Admin" {
-		whereEleList = append(whereEleList, createUserReq.Name)
-		data, err := db.ReteriveFromDB(db.OweHubDbIndex, nameQuery, whereEleList)
+		// whereEleList = append(whereEleList, createUserReq.Name)
+		// data, err := db.ReteriveFromDB(db.OweHubDbIndex, nameQuery, whereEleList)
+		// if err != nil {
+		// 	log.FuncErrorTrace(0, "Failed to get new form data for table name from DB err: %v", err)
+		// 	FormAndSendHttpResp(resp, "Failed to get Data", http.StatusBadRequest, nil)
+		// 	return
+		// }
+
+		// here we get the count of users having the same name and create a
+		// unique username for every coming user
+		// count := data[0]["count"].(int64)
+		usernamePrefix = strings.Join(strings.Fields(createUserReq.Name)[0:2], "_")
+		// username = fmt.Sprintf("%s_%d", usernamePrefix, count+1)
+		// username = strings.ToLower(username)
+
+		dbQuery := `select * from pg_user order by usename desc`
+		data, err := db.ReteriveFromDB(db.RowDataDBIndex, dbQuery, nil)
 		if err != nil {
 			log.FuncErrorTrace(0, "Failed to get new form data for table name from DB err: %v", err)
 			FormAndSendHttpResp(resp, "Failed to get Data", http.StatusBadRequest, nil)
 			return
 		}
 
-		// here we get the count of users having the same name and create a
-		// unique username for every coming user
-		count := data[0]["count"].(int64)
-		usernamePrefix = strings.Join(strings.Fields(createUserReq.Name)[0:2], "_")
-		username = fmt.Sprintf("%s_%d", usernamePrefix, count+1)
-		username = strings.ToLower(username)
+		for _, item := range data {
+			Nam, ok := item["usename"].([]byte)
+			if !ok {
+				continue
+			}
+			Name := string(Nam)
+			dbName := getNameWithoutNumber(Name)
+			
+			usernamePrefix = strings.ToLower(usernamePrefix)
+			if dbName == usernamePrefix {
+				no, _ := getNumberAfterSecondUnderscore(Name)
+				username = fmt.Sprintf("%s_%d", usernamePrefix, no+1)
+				username = strings.ToLower(username)
+				nameAssignedCheck = true
+				break
+			}
+		}
+
+		if !nameAssignedCheck {
+			username = fmt.Sprintf("%s_%d", usernamePrefix, 1)
+			username = strings.ToLower(username)
+		}
 
 		sqlStatement := fmt.Sprintf("CREATE USER %s WITH LOGIN PASSWORD '%s';", username, createUserReq.Password)
 		err = db.ExecQueryDB(db.RowDataDBIndex, sqlStatement)
@@ -214,4 +247,25 @@ func HandleCreateUserRequest(resp http.ResponseWriter, req *http.Request) {
 
 	// Send HTTP response
 	FormAndSendHttpResp(resp, "User Created Successfully", http.StatusOK, nil)
+}
+
+func getNumberAfterSecondUnderscore(s string) (int, error) {
+	parts := strings.Split(s, "_")
+	if len(parts) < 3 {
+		return 0, fmt.Errorf("string doesn't contain at least two underscores")
+	}
+	numStr := parts[2]
+	num, err := strconv.Atoi(numStr)
+	if err != nil {
+		return 0, err
+	}
+	return num, nil
+}
+
+func getNameWithoutNumber(s string) string {
+	parts := strings.Split(s, "_")
+	if len(parts) < 3 {
+		return s // Return original string if it doesn't contain at least two underscores
+	}
+	return strings.Join(parts[:2], "_")
 }
