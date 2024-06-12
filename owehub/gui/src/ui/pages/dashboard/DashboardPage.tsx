@@ -164,7 +164,8 @@ export const DashboardPage: React.FC = () => {
                       }),
                       singleValue: (baseStyles, state) => ({
                         ...baseStyles,
-                        color: '#292929',
+                  
+                        color:selectedOption2? '#292929' : '#8b8484' ,
                         width: 'fit-content',
                       }),
                       menu: (baseStyles) => ({

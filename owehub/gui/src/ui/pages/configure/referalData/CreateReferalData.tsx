@@ -22,6 +22,7 @@ import {
 } from '../../../../core/models/data_models/typesModel';
 import { addDays, format } from 'date-fns';
 import { toast } from 'react-toastify';
+import { firstCapitalize } from '../../../../utiles';
 
 interface IError {
   // partner?: string;
@@ -98,7 +99,7 @@ const CreateReferalData: React.FC<ButtonProps> = ({
         continue;
       }
       if (!createCommission[key as keyof typeof createCommission]) {
-        error[key as string] = `${key.replaceAll('_', ' ')} is required`;
+        error[key as string] = firstCapitalize(`${key.replaceAll('_', ' ')} is required`);
       }
     }
     setErrors({ ...error });
@@ -220,9 +221,10 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.unique_id}
                     </span>
@@ -242,9 +244,10 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.new_customer}
                     </span>
@@ -264,9 +267,10 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.state}
                     </span>
@@ -286,9 +290,10 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.referrer_serial}
                     </span>
@@ -308,9 +313,10 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.referrer_name}
                     </span>
@@ -330,9 +336,10 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.amount}
                     </span>
@@ -352,9 +359,10 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.rep_doll_divby_per}
                     </span>
@@ -374,9 +382,10 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.notes}
                     </span>
@@ -396,9 +405,10 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.type}
                     </span>
@@ -418,9 +428,10 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.rep_1_name}
                     </span>
@@ -440,9 +451,10 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.r1_addr_resp}
                     </span>
@@ -462,9 +474,10 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.rep_2_name}
                     </span>
@@ -484,9 +497,10 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.rep_2_name}
                     </span>
@@ -506,9 +520,10 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.rep_count}
                     </span>
@@ -528,9 +543,10 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.per_rep_addr_share}
                     </span>
@@ -550,9 +566,10 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.per_rep_ovrd_share}
                     </span>
@@ -572,9 +589,10 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.r1_pay_scale}
                     </span>
@@ -594,9 +612,10 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.r1_referral_credit_$}
                     </span>
@@ -616,9 +635,10 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.r1_referral_credit_perc}
                     </span>
@@ -638,9 +658,10 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.r2_pay_scale}
                     </span>
@@ -660,9 +681,10 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.r2_referral_credit_$}
                     </span>
@@ -682,9 +704,10 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.r2_addr_resp}
                     </span>
@@ -704,9 +727,10 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.r2_referral_credit_perc}
                     </span>
@@ -726,9 +750,10 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.start_date}
                     </span>
@@ -756,9 +781,10 @@ const CreateReferalData: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.start_date}
                     </span>

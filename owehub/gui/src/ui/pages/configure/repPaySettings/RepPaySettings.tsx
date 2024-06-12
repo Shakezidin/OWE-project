@@ -279,9 +279,10 @@ const RepPaySettings = () => {
                             )
                           }
                         />
-                        {el?.name}
+                        {el?.unique_id}
                       </div>
                     </td>
+                    <td>{el?.name}</td>
                     <td>{el?.state}</td>
                     <td>{el?.pay_scale}</td>
 

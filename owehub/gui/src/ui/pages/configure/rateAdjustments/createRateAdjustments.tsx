@@ -25,6 +25,7 @@ import {
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 
 import { FormInput } from '../../../../core/models/data_models/typesModel';
+import { firstCapitalize } from '../../../../utiles';
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
@@ -61,7 +62,7 @@ const CreateRateAdjustments: React.FC<payScheduleProps> = ({
         !createRateAdjustmentData[key as keyof typeof createRateAdjustmentData]
       ) {
         error[key as keyof typeof createRateAdjustmentData] =
-          `${key.replaceAll('_', ' ')} is required`;
+          firstCapitalize(`${key.replaceAll('_', ' ')} is required`);
       }
     }
     setErrors({ ...error });
@@ -140,9 +141,10 @@ const CreateRateAdjustments: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.unique_id}
                     </span>
@@ -162,9 +164,10 @@ const CreateRateAdjustments: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.position}
                     </span>
@@ -183,9 +186,10 @@ const CreateRateAdjustments: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.adjustment}
                     </span>
@@ -207,9 +211,10 @@ const CreateRateAdjustments: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.pay_scale}
                     </span>
@@ -228,9 +233,10 @@ const CreateRateAdjustments: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.min_rate}
                     </span>
@@ -249,9 +255,10 @@ const CreateRateAdjustments: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.max_rate}
                     </span>

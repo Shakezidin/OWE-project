@@ -74,7 +74,7 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
         continue;
       }
       if (!CreateDealerCredit[key as keyof typeof CreateDealerCredit]) {
-        error[key as keyof IError] = `${key.toLocaleLowerCase()} is required`;
+        error[key as keyof IError] = `${key.replaceAll("_"," ")} is required`;
       }
     }
     setErrors({ ...error });

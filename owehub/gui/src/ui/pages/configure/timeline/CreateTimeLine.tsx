@@ -16,6 +16,7 @@ import {
   FormInput,
 } from '../../../../core/models/data_models/typesModel';
 import { addDays, format } from 'date-fns';
+import { firstCapitalize } from '../../../../utiles';
 interface timeLineProps {
   handleClose: () => void;
   editMode: boolean;
@@ -66,7 +67,7 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
         continue;
       }
       if (!createTimeLine[key as keyof IError]) {
-        error[key as keyof IError] = `${key.toLocaleLowerCase()} is required`;
+        error[key as keyof IError] = firstCapitalize(`${key.replaceAll("_"," ")} is required`);
       }
     }
     setErrors({ ...error });
@@ -184,9 +185,10 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.type_m2m}
                     </span>
@@ -205,9 +207,10 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.state}
                     </span>
@@ -226,9 +229,10 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.days}
                     </span>
@@ -250,9 +254,10 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.start_date.replace('start_date', 'start date')}
                     </span>
@@ -279,9 +284,10 @@ const CreateTimeLine: React.FC<timeLineProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.end_date.replace('end_date', 'end date')}
                     </span>

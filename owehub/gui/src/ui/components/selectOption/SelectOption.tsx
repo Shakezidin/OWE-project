@@ -90,8 +90,9 @@ const SelectOption: React.FC<Props> = ({
             },
             ...menuListStyles,
           }),
-          singleValue: (base) => ({
+          singleValue: (base, state) => ({
             ...base,
+            color: value ? undefined : '#8b8484',
             ...singleValueStyles,
           }),
           valueContainer: (base) => ({
@@ -101,6 +102,10 @@ const SelectOption: React.FC<Props> = ({
           dropdownIndicator: (base) => ({
             ...base,
             ...dropdownIndicatorStyles,
+          }),
+          placeholder: (base) => ({
+            ...base,
+            color: '#8b8484',
           }),
         }}
       />

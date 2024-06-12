@@ -152,6 +152,7 @@ export const RepPayDashboardPage: React.FC = () => {
                         marginTop: '15px'
 
                       }),
+                      
                       indicatorSeparator: () => ({
                         display: 'none',
                       }),
@@ -174,7 +175,7 @@ export const RepPayDashboardPage: React.FC = () => {
                       }),
                       singleValue: (baseStyles, state) => ({
                         ...baseStyles,
-                        color: '#292929',
+                        color:selectedOption2? '#292929' : '#8b8484' ,
                       }),
                       menu: (baseStyles) => ({
                         ...baseStyles,

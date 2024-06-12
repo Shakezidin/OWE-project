@@ -28,6 +28,7 @@ import {
   FormInput,
 } from '../../../../core/models/data_models/typesModel';
 import { addDays, format } from 'date-fns';
+import { firstCapitalize } from '../../../../utiles';
 interface ButtonProps {
   editMode: boolean;
   handleClose: () => void;
@@ -74,7 +75,7 @@ const CreateNonComm: React.FC<ButtonProps> = ({
         continue;
       }
       if (!createCommission[key as keyof typeof createCommission]) {
-        error[key as keyof IError] = `${key.replaceAll('_', ' ')} is required`;
+        error[key as keyof IError] = firstCapitalize(`${key.replaceAll('_', ' ')} is required`);
       }
     }
     setErrors({ ...error });
@@ -180,9 +181,10 @@ const CreateNonComm: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.unique_id.replace('unique_id', 'unique id')}
                     </span>
@@ -212,9 +214,10 @@ const CreateNonComm: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.exact_amount.replace('exact amount', 'amount')}
                     </span>
@@ -233,9 +236,10 @@ const CreateNonComm: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.approved_by}
                     </span>
@@ -254,9 +258,10 @@ const CreateNonComm: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.notes}
                     </span>
@@ -275,9 +280,10 @@ const CreateNonComm: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.date}
                     </span>

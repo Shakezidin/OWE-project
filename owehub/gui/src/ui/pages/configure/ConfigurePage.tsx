@@ -14,6 +14,27 @@ interface AccordionSection {
 const ConfigurePage: React.FC = () => {
   const cardColors = ['#FAD9CA', '#CDE8FB', '#EDD4EE', '#D0E6E3', '#DDD9F6'];
   const arrowColors = ['#EE824D', '#57B3F1', '#C470C7', '#63ACA3', '#8E81E0'];
+ 
+
+  const hoverSwithClass = (color:string) =>{
+    switch(color){
+      case"#FAD9CA":
+      return"bg-salmon"
+      case"#CDE8FB":
+      return "bg-light-blue"
+      case"#EDD4EE":
+      return "bg-purple"
+
+      case"#D0E6E3":
+      return "bg-light-green"
+
+      case "#DDD9F6":
+      return "bg-dark-blue"
+     
+      default:
+        return""
+    }
+  }
 
 
   const accordionSections: AccordionSection[] = [
@@ -126,7 +147,7 @@ const ConfigurePage: React.FC = () => {
                         <div key={index}>
                           <Link
                             to={item.route}
-                            className="pay-card"
+                            className={`pay-card ${hoverSwithClass(randomCardColor)}`}
                             style={{
                                backgroundColor: randomCardColor,
                                outline: `1px dotted ${randomArrowColor}`,

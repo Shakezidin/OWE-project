@@ -12,6 +12,7 @@ import {
   updateInstallCost,
 } from '../../../../redux/apiActions/config/installCostAction';
 import { FormInput } from '../../../../core/models/data_models/typesModel';
+import { firstCapitalize } from '../../../../utiles';
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
@@ -44,16 +45,12 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
   const { isSuccess, isFormSubmitting } = useAppSelector(
     (state) => state.installConstSlice
   );
-  function capitalizeWords(str: string) {
-    return str.replace(/\b\w/g, function (char) {
-      return char.toUpperCase();
-    });
-  }
+
   const handleValidation = () => {
     const error: IErrors = {};
     for (const key in newFormData) {
       if (!newFormData[key as keyof typeof newFormData]) {
-        error[key as keyof typeof newFormData] = capitalizeWords(
+        error[key as keyof typeof newFormData] = firstCapitalize(
           `${key} is required`
         );
       }
@@ -142,9 +139,10 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.cost}
                     </span>
@@ -166,9 +164,10 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.startDate}
                     </span>
@@ -196,9 +195,10 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.endDate}
                     </span>

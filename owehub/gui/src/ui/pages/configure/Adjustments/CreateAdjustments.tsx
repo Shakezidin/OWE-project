@@ -21,6 +21,7 @@ import { format } from 'date-fns';
 import SelectOption from '../../../components/selectOption/SelectOption';
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/arAdjusments';
 import { FormInput } from '../../../../core/models/data_models/typesModel';
+import { firstCapitalize } from '../../../../utiles';
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
@@ -55,7 +56,7 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({
     for (const key in newFormData) {
       if (!newFormData[key as keyof typeof newFormData]) {
         error[key as keyof typeof newFormData] =
-          `${key.toLocaleLowerCase()} is required`;
+          firstCapitalize(`${key.replaceAll("_"," ")} is required`);
       }
     }
     setErrors({ ...error });
@@ -147,9 +148,10 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                       
                       }}
+className="error"
                     >
                       {errors.uniqueId}
                     </span>
@@ -168,9 +170,10 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                       
                       }}
+className="error"
                     >
                       {errors.date}
                     </span>
@@ -196,9 +199,10 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                       
                       }}
+className="error"
                     >
                       {errors.amount}
                     </span>
@@ -220,9 +224,10 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                       
                       }}
+className="error"
                     >
                       {errors.notes}
                     </span>

@@ -20,6 +20,7 @@ import {
   FormEvent,
   FormInput,
 } from '../../../../core/models/data_models/typesModel';
+import { firstCapitalize } from '../../../../utiles';
 
 interface ButtonProps {
   editMode: boolean;
@@ -87,7 +88,7 @@ const CreateRebateData: React.FC<ButtonProps> = ({
         continue;
       }
       if (!createCommission[key as keyof IError]) {
-        error[key as keyof IError] = `${key.toLocaleLowerCase()} is required`;
+        error[key as keyof IError] = firstCapitalize(`${key.replaceAll("_"," ")} is required`);
       }
     }
     setErrors({ ...error });
@@ -184,9 +185,10 @@ const CreateRebateData: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.partner}
                     </span>
@@ -208,8 +210,8 @@ const CreateRebateData: React.FC<ButtonProps> = ({
                       <span
                         style={{
                           display: 'block',
-                          color: '#FF204E',
-                          textTransform: 'capitalize',
+                    
+                          
                         }}
                       >
                         {errors.installer}
@@ -230,9 +232,10 @@ const CreateRebateData: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.state}
                     </span>
@@ -254,9 +257,10 @@ const CreateRebateData: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.sale_type.replace('sale_type', 'sale type')}
                     </span>
@@ -275,9 +279,10 @@ const CreateRebateData: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.sale_price.replace('sale_price', 'sale price')}
                     </span>
@@ -298,9 +303,10 @@ const CreateRebateData: React.FC<ButtonProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.rep_type.replace(
                         'rep_type',
@@ -325,8 +331,8 @@ const CreateRebateData: React.FC<ButtonProps> = ({
                       <span
                         style={{
                           display: 'block',
-                          color: '#FF204E',
-                          textTransform: 'capitalize',
+                    
+                          
                         }}
                       >
                         {errors.rate}
@@ -346,8 +352,8 @@ const CreateRebateData: React.FC<ButtonProps> = ({
                       <span
                         style={{
                           display: 'block',
-                          color: '#FF204E',
-                          textTransform: 'capitalize',
+                    
+                          
                         }}
                       >
                         {errors.rl.replace('rl', 'Rate List')}
@@ -369,8 +375,8 @@ const CreateRebateData: React.FC<ButtonProps> = ({
                       <span
                         style={{
                           display: 'block',
-                          color: '#FF204E',
-                          textTransform: 'capitalize',
+                    
+                          
                         }}
                       >
                         {errors.start_date.replace('start_date', 'start date ')}
@@ -391,8 +397,8 @@ const CreateRebateData: React.FC<ButtonProps> = ({
                       <span
                         style={{
                           display: 'block',
-                          color: '#FF204E',
-                          textTransform: 'capitalize',
+                    
+                          
                         }}
                       >
                         {errors.end_date.replace('end_date', 'end date ')}

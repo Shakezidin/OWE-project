@@ -21,6 +21,7 @@ import {
 import { resetSuccess } from '../../../../redux/apiSlice/configSlice/config_get_slice/apptSetterSlice';
 import { FormInput } from '../../../../core/models/data_models/typesModel';
 import { addDays, format } from 'date-fns';
+import { firstCapitalize } from '../../../../utiles';
 
 interface payScheduleProps {
   handleClose: () => void;
@@ -55,7 +56,7 @@ const CreateAppSetters: React.FC<payScheduleProps> = ({
     for (const key in createAppSettersData) {
       if (!createAppSettersData[key as keyof typeof createAppSettersData]) {
         error[key as keyof typeof createAppSettersData] =
-          `${key.replaceAll('_', ' ')} is required`;
+          firstCapitalize(`${key.replaceAll('_', ' ')} is required`);
       }
     }
     setErrors({ ...error });
@@ -143,9 +144,10 @@ const CreateAppSetters: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.unique_id}
                     </span>
@@ -164,9 +166,10 @@ const CreateAppSetters: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.name}
                     </span>
@@ -191,9 +194,10 @@ const CreateAppSetters: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.team_name}
                     </span>
@@ -212,9 +216,10 @@ const CreateAppSetters: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.pay_rate}
                     </span>
@@ -234,9 +239,10 @@ const CreateAppSetters: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.start_date}
                     </span>
@@ -263,9 +269,10 @@ const CreateAppSetters: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                        
                       }}
+className="error"
                     >
                       {errors.end_date}
                     </span>

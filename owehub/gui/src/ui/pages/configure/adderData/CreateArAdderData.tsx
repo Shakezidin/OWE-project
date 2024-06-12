@@ -12,6 +12,7 @@ import {
   updatearAdderData,
 } from '../../../../redux/apiActions/config/arAdderDataAction';
 import { FormInput } from '../../../../core/models/data_models/typesModel';
+import { firstCapitalize } from '../../../../utiles';
 interface payScheduleProps {
   handleClose: () => void;
   editMode: boolean;
@@ -50,7 +51,8 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
     for (const key in newFormData) {
       if (!newFormData[key as keyof typeof newFormData]) {
         error[key as keyof typeof newFormData] =
-          `${key.replaceAll('_', ' ').toLocaleLowerCase()} is required`;
+          firstCapitalize
+          (`${key.replaceAll('_', ' ')} is required`);
       }
     }
     setErrors({ ...error });
@@ -138,9 +140,10 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                 
                       }}
+className="error"
                     >
                       {errors.unique_id}
                     </span>
@@ -159,9 +162,10 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                 
                       }}
+className="error"
                     >
                       {errors.type}
                     </span>
@@ -180,9 +184,10 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                 
                       }}
+className="error"
                     >
                       {errors.date}
                     </span>
@@ -211,9 +216,10 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                 
                       }}
+className="error"
                     >
                       {errors.gc}
                     </span>
@@ -239,9 +245,10 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                 
                       }}
+className="error"
                     >
                       {errors.exact_amount}
                     </span>
@@ -267,9 +274,10 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                 
                       }}
+className="error"
                     >
                       {errors.per_kw_amt}
                     </span>
@@ -299,9 +307,10 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                 
                       }}
+className="error"
                     >
                       {errors.rep_percent}
                     </span>
@@ -321,9 +330,10 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                 
                       }}
+className="error"
                     >
                       {errors.description}
                     </span>
@@ -343,9 +353,10 @@ const CreateArAdderData: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                        color: '#FF204E',
-                        textTransform: 'capitalize',
+                  
+                 
                       }}
+className="error"
                     >
                       {errors.notes}
                     </span>
