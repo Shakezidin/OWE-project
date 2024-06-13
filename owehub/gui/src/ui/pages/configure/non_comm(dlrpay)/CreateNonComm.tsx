@@ -47,7 +47,7 @@ const CreateNonComm: React.FC<ButtonProps> = ({
   setRefetch,
 }) => {
   const dispatch = useAppDispatch();
-  const { isSuccess } = useAppSelector((state) => state.nonComm);
+  const { isSuccess,isFormSubmitting } = useAppSelector((state) => state.nonComm);
   const [createCommission, setCreateCommission] = useState({
     unique_id: commission?.unique_id || '',
     exact_amount: commission?.exact_amount || '',
@@ -296,6 +296,7 @@ className="error"
         <div className="createUserActionButton">
           <ActionButton title={'Cancel'} type="button" onClick={handleClose} />
           <ActionButton
+          disabled={isFormSubmitting}
             title={editMode === false ? 'Save' : 'Update'}
             type="submit"
             onClick={() => {}}
