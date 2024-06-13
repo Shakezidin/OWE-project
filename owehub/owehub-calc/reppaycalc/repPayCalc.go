@@ -110,9 +110,9 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 		payScale           string
 		position           string
 		kwh                float64
-		contractCalc float64
-		epcCalc      float64
-		grossRev     float64
+		contractCalc       float64
+		epcCalc            float64
+		grossRev           float64
 		// redLine      float64
 		// permitPayM1  float64
 		// installPayM2 float64
@@ -212,28 +212,28 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	netEpc = saleData.ContractTotal / (saleData.SystemSize * 1000)
 	/* Calculated Fields */
 
-	R1Rebate = dataMgmt.RebateCfg.CalculateR1Rebate(saleData.PrimarySalesRep, saleData.UniqueId)                                          //BO
-	R1Referral = dataMgmt.ReferralDataConfig.CalculateR1Referral(saleData.PrimarySalesRep, saleData.UniqueId)                             //BP
-	R1R_R = calculateR1RR(saleData.PrimarySalesRep, R1Rebate, R1Referral)                                                                 //BQ
-	PayScale, Position = dataMgmt.RepPayCfg.CalculatePayScaleAndPosition(saleData.PrimarySalesRep, saleData.State, saleData.ContractDate) //BA
-	R1Credit = dataMgmt.RepCreditCfg.CalculateR1Credit(saleData.UniqueId)                                                                 //BI  there is no schema and get endpoint in main for repcredit
-	rl = 0                                                                                                                                //BC
-	rate = 0                                                                                                                              //BD
-	adjustment = 0                                                                                                                        //BE
-	r1Incentive = 0                                                                                                                       //BH
-	epcCalc = 0                                                                                                                           //AQ
-	PerRepKw = 0                                                                                                                          //AN  will calculate by raed
-	payRateSemi = CalculatePayRateSemi(saleData.PrimarySalesRep, rl, rate, adjustment, r1Incentive, epcCalc)                              //BJ (BC, BD, BE, BH, AQ)
-	r1Addr = dataMgmt.AdderDataCfg.CalculateR1Addr(saleData.UniqueId, saleData.PrimarySalesRep, saleData.SecondarySalesRep)               //BL
-	r1AutoAdder = 0                                                                                                                       //BM
-	r1LoanFee = 0                                                                                                                         //BN
-	r1AdderTotal = calculateRAdderTotal(saleData.PrimarySalesRep, r1Addr, r1AutoAdder, r1LoanFee, R1Rebate, R1Referral)                   //BR (BL, BM, BN, BO, BP)
-	r1AdderPerKw = calculateRAdderPerKw(saleData.PrimarySalesRep, r1AdderTotal, PerRepKw)                                                 //BS (BR, AN)
-	r1PayRateSubTotal = calculateR1PayRateSubTotal(saleData.PrimarySalesRep, payRateSemi, r1AdderPerKw)                                   //BT (BJ, BS)
-	Adjustment, minRate, maxRate = dataMgmt.RateAdjustmentsCfg.CalculateAdjustmentMinRateMaxRate(PayScale, Position)                      //BE BF BG
-	R1MinOrMax = calculateR1MinOrMax(saleData.PrimarySalesRep, r1PayRateSubTotal, minRate, maxRate)                                       //BV (BT, BF, BG)
-	R1CommTotal = calculateR1CommTotal(saleData.PrimarySalesRep, saleData.Source, R1MinOrMax, PerRepKw, R1Credit)                         //BW (BV, AN, BI)
-	r1CommStatusCheck = calculateRCommStatudCheck(saleData.PrimarySalesRep, "Sales Rep 2", saleData.ProjectStatus, R1CommTotal)           //BX (DG, AJ, BW)
+	R1Rebate = dataMgmt.RebateCfg.CalculateR1Rebate(saleData.PrimarySalesRep, saleData.UniqueId)                                 //BO
+	R1Referral = dataMgmt.ReferralDataConfig.CalculateR1Referral(saleData.PrimarySalesRep, saleData.UniqueId)                    //BP
+	R1R_R = calculateR1RR(saleData.PrimarySalesRep, R1Rebate, R1Referral)                                                        //BQ
+	PayScale, Position = dataMgmt.RepPayCfg.CalculateR1PayScale(saleData.PrimarySalesRep, saleData.State, saleData.ContractDate) //BA
+	R1Credit = dataMgmt.RepCreditCfg.CalculateR1Credit(saleData.UniqueId)                                                        //BI  there is no schema and get endpoint in main for repcredit
+	rl = 0                                                                                                                       //BC
+	rate = 0                                                                                                                     //BD
+	adjustment = 0                                                                                                               //BE
+	r1Incentive = 0                                                                                                              //BH
+	epcCalc = 0                                                                                                                  //AQ
+	PerRepKw = 0                                                                                                                 //AN  will calculate by raed
+	payRateSemi = CalculatePayRateSemi(saleData.PrimarySalesRep, rl, rate, adjustment, r1Incentive, epcCalc)                     //BJ (BC, BD, BE, BH, AQ)
+	r1Addr = dataMgmt.AdderDataCfg.CalculateR1Addr(saleData.UniqueId, saleData.PrimarySalesRep, saleData.SecondarySalesRep)      //BL
+	r1AutoAdder = 0                                                                                                              //BM
+	r1LoanFee = 0                                                                                                                //BN
+	r1AdderTotal = calculateRAdderTotal(saleData.PrimarySalesRep, r1Addr, r1AutoAdder, r1LoanFee, R1Rebate, R1Referral)          //BR (BL, BM, BN, BO, BP)
+	r1AdderPerKw = calculateRAdderPerKw(saleData.PrimarySalesRep, r1AdderTotal, PerRepKw)                                        //BS (BR, AN)
+	r1PayRateSubTotal = calculateR1PayRateSubTotal(saleData.PrimarySalesRep, payRateSemi, r1AdderPerKw)                          //BT (BJ, BS)
+	Adjustment, minRate, maxRate = dataMgmt.RateAdjustmentsCfg.CalculateAdjustmentMinRateMaxRate(PayScale, Position)             //BE BF BG
+	R1MinOrMax = calculateR1MinOrMax(saleData.PrimarySalesRep, r1PayRateSubTotal, minRate, maxRate)                              //BV (BT, BF, BG)
+	R1CommTotal = calculateR1CommTotal(saleData.PrimarySalesRep, saleData.Source, R1MinOrMax, PerRepKw, R1Credit)                //BW (BV, AN, BI)
+	r1CommStatusCheck = calculateRCommStatudCheck(saleData.PrimarySalesRep, "Sales Rep 2", saleData.ProjectStatus, R1CommTotal)  //BX (DG, AJ, BW)
 	// redLine = -0.15
 	// permitPayM1 = 30
 	// permitMax = 50000
