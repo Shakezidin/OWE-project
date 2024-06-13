@@ -107,7 +107,7 @@ func (RepPayCfg *RepPaySettingsCfgStruct) LoadRepPayCfg() (err error) {
 	return err
 }
 
-func (RepPayCfg *RepPaySettingsCfgStruct) CalculateR1PayScale(Rep1, state string, date time.Time) (payScale string) {
+func (RepPayCfg *RepPaySettingsCfgStruct) CalculateR1PayScale(Rep1, state string, date time.Time) (payScale, position string) {
 	var (
 		err       error
 		startDate time.Time
@@ -140,9 +140,9 @@ func (RepPayCfg *RepPaySettingsCfgStruct) CalculateR1PayScale(Rep1, state string
 				st = state[6:]
 			}
 			if data.Name == Rep1 && data.State == st && startDate.Before(date) && endDate.After(date) {
-				return data.PayScale
+				return data.PayScale, data.Position
 			}
 		}
 	}
-	return payScale
+	return payScale, position
 }

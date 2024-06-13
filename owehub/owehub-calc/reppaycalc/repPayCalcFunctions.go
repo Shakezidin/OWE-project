@@ -182,3 +182,18 @@ func calculatePerTeamKw(rep1, rep2 string, date time.Time, sysSize float64) floa
 	}
 	return sysSize / balance
 }
+
+/******************************************************************************
+* FUNCTION:        calculatePerRepKw
+* DESCRIPTION:     calculates the "per_rep_kw" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
+func calculatePerRepKw(rep1, rep2 string, sysSize float64) (perRepKw float64) {
+	if len(rep1) > 0 && len(rep2) > 0 {
+		return sysSize / 2
+	} else if len(rep1) > 0 || len(rep2) > 0 {
+		return sysSize / 1
+	} else {
+		return perRepKw
+	}
+}
