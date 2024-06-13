@@ -347,3 +347,19 @@
   padding: 0 !important;
   border: 0 !important;
 }
+
+@media screen and (max-width: 1024px) {
+  .Create-section{
+    padding: 0.7rem;
+  }
+  .Create-section p {
+    font-size: 13px;
+  }
+  .identity{
+    padding-left: 0;
+    justify-content: center;
+  }
+  .PieBarchart-section{
+    margin-top: 0;
+  }
+}

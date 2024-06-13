@@ -359,3 +359,16 @@
   justify-content: right;
   padding: 1rem;
 }
+
+@media screen and (max-width: 1024px){
+  .profile-section{
+    gap: 0.5rem;
+  }
+  .tab-links{
+    width: 0;
+    min-width: fit-content;
+  }
+  .reset-pass-fields{
+    flex-wrap: wrap;
+  }
+}

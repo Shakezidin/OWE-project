@@ -1,6 +1,7 @@
 import React from 'react';
 import { PieChart, Pie, Cell, Label, LabelList, Tooltip } from 'recharts';
 import { useNavigate } from 'react-router-dom';
+import useMatchMedia from '../../../../hooks/useMatchMedia';
 
 interface DataItem {
   name: string;
@@ -15,6 +16,7 @@ interface PieChartProps {
 
 const COLORS = ['#63ACA3', '#EE824D'];
 
+
 const renderCustomizedLabelPercentage = (data: any, total = 32000) => {
   let percentageCalculated = data.value;
   return `${percentageCalculated}`;
@@ -23,6 +25,9 @@ const renderCustomizedLabelPercentage = (data: any, total = 32000) => {
 function PieChartWithPaddingAngle({ data }: PieChartProps) {
   // Destructure data from props
   const navigate = useNavigate();
+  
+  const isTablet = useMatchMedia('(max-width: 1024px)');
+
 
   const handleClick = (entry: DataItem, index: number) => {
     navigate(`/dbManager/webhooks`);
@@ -80,8 +85,8 @@ function PieChartWithPaddingAngle({ data }: PieChartProps) {
             data={data}
             cx={120}
             cy={200}
-            innerRadius={80}
-            outerRadius={125}
+            innerRadius={ isTablet ? 70 : 80}
+            outerRadius={isTablet ? 105 : 125}
             fill="#8884d8"
             paddingAngle={0}
             dataKey="value"

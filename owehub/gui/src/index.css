@@ -405,6 +405,10 @@ br {
   .modal {
     max-width:750px;
   }
+  .create-input-container{
+    gap: 15px;
+    margin-left: 0.5rem !important;
+  }
 }
 
 
