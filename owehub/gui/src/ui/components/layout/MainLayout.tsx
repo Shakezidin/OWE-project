@@ -15,6 +15,7 @@ import { toast } from 'react-toastify';
 import ChangePassword from '../../pages/resetPassword/ChangePassword/ChangePassword';
 import { checkUserExists } from '../../../redux/apiActions/auth/authActions';
 import useMatchMedia from '../../../hooks/useMatchMedia';
+import { cancelAllRequests } from '../../../http';
 const MainLayout = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -73,6 +74,7 @@ const MainLayout = () => {
             dispatch(logout());
             navigate('/login');
             toast.error('User does not exist. Please register..');
+            cancelAllRequests()
           }
         })
         .catch((error: any) => {
