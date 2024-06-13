@@ -203,3 +203,15 @@ func calculateR1DrawAmount(r1CommStatusCheck, drawMax, perRepSales, drawPerentag
 	}
 	return r1CommStatusCheck
 }
+
+func calculatePerRepSales(rep1, rep2 string) (perRepsales float64) {
+	if len(rep1) > 0 {
+		if len(rep2) > 0 {
+			return 0.5
+		} else {
+			return 1
+		}
+	} else {
+		return 0
+	}
+}
