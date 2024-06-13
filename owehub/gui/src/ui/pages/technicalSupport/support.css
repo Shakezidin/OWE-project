@@ -6,6 +6,7 @@
   flex: 1;
 }
 .support-container {
+  position: relative;
   padding: 2rem;
   width: 45%;
 }
@@ -189,12 +190,10 @@
     display: none;
     margin-top: 0rem;
   }
+
   .support-section h3 {
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 21px;
-    text-align: left;
-    right: 180px;
+    /* position: absolute;
+    left: -50px; */
   }
   .touch-info p {
     color: #848484;
@@ -224,4 +223,14 @@
     background-color: var(--primary-color);
     border-radius: 8px;
   }
+  .supportImage {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .support-container {
+    width: 100%;
+  }
 }
+

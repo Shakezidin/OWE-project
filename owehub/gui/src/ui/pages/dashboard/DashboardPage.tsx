@@ -307,7 +307,7 @@ export const DashboardPage: React.FC = () => {
           />
         )}
 
-        <div className="" style={{ marginTop: '20px' }}>
+        <div className="" style={{ marginTop: '8px' }}>
           {active === 0 && <DashBoardTable />}
           {active === 1 && <DashBoardChart />}
         </div>

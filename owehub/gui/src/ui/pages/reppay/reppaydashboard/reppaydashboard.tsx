@@ -315,7 +315,7 @@ export const RepPayDashboardPage: React.FC = () => {
             fetchFunction={() => { }}
           />
         )}
-        <div className="" style={{ marginTop: '20px' }}>
+        <div className="" style={{ marginTop: '8px' }}>
           {active === 0 && <RepDashBoardTable />}
           {active === 1 && <RepDashBoardChart />}
         </div>
