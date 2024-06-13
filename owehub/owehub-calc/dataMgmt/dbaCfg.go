@@ -67,11 +67,11 @@ func (DBACfg *DBACfgStruct) LoadDBACfg() (err error) {
 }
 
 /******************************************************************************
-* FUNCTION:        CalculateDBA
+* FUNCTION:        CalculateReprep1Dba
 * DESCRIPTION:     calculates the repayment bonus value based on the provided data
 * RETURNS:         dlrPayBonus float64
 *****************************************************************************/
-func (DBACfg *DBACfgStruct) CalculateDBA(rep string) (dba string) {
+func (DBACfg *DBACfgStruct) CalculateReprep1Dba(rep string) (dba string) {
 	for _, data := range DBACfg.DBAList {
 		if len(rep) > 0 {
 			if rep == "" {
