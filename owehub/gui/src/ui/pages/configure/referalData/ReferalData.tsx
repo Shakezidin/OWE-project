@@ -64,6 +64,7 @@ const ReferalData: React.FC = () => {
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [filters, setFilters] = useState<FilterModel[]>([]);
+  const [refresh,setRefresh] = useState(1)
   useEffect(() => {
     const pageNumber = {
       page_number: currentPage,
@@ -72,7 +73,7 @@ const ReferalData: React.FC = () => {
       filters,
     };
     dispatch(getrefralData(pageNumber));
-  }, [dispatch, currentPage, viewArchived, filters]);
+  }, [dispatch, currentPage, viewArchived, filters,refresh]);
 
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
@@ -157,7 +158,7 @@ const ReferalData: React.FC = () => {
         page_size: itemsPerPage,
       };
       const res = await postCaller(
-        EndPoints.update_commission_archive,
+        "update_referraldata_archive",
         newValue
       );
       if (res.status === HTTP_STATUS.OK) {
@@ -229,6 +230,7 @@ const ReferalData: React.FC = () => {
           <CreateReferalData
             commission={editedCommission}
             editMode={editMode}
+            setRefresh={setRefresh}
             handleClose={handleClose}
           />
         )}

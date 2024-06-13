@@ -17,7 +17,7 @@ import activityIcon from '../../resources/assets/activityIcon.svg';
 import report from '../../resources/assets/report.svg';
 import menu from '../../resources/assets/menu-icon.svg';
 import sales_per from '../../resources/assets/sales_new.svg';
-import ntp_per from '../../resources/assets/ntp_per.svg';
+import ntp_per from '../../resources/assets/pay.svg';
 import installed_per from '../../resources/assets/installed_per.svg';
 import cancelled_per from '../../resources/assets/cancelled_per.svg';
 import filter from '../../resources/assets/filter.svg';
