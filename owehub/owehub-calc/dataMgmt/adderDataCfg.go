@@ -235,3 +235,64 @@ func (AdderDataCfg *AdderDataCfgStruct) CalculateAddr(dealer string, uniqueId st
 	}
 	return addr
 }
+
+func (AdderDataCfg *AdderDataCfgStruct) CalculatePerRepOvrdShare(uniqueId string, repCount float64) (perRepOvrdShare float64) {
+	if len(uniqueId) > 0 {
+		for _, data := range AdderDataCfg.AdderDataList.AdderDataList {
+			if data.UniqueId == uniqueId {
+				if data.RepPercent <= 1 {
+					return (data.ExactAmount * data.RepPercent) / repCount
+				} else if data.RepPercent > 1 {
+					return data.RepPercent / repCount
+				}
+			}
+		}
+	}
+	return perRepOvrdShare
+}
+
+func (AdderDataCfg *AdderDataCfgStruct) CalculatePerRepAddrShare(exactAmount, perKwAmt, sysSize, repCount float64) (perRepAddrShare float64) {
+	if exactAmount > 0 {
+		return exactAmount / repCount
+	} else if perKwAmt > 0 {
+		return (perKwAmt * sysSize) / repCount
+	} else {
+		return perRepAddrShare
+	}
+}
+
+func (AdderDataCfg *AdderDataCfgStruct) CalculateR1AddrResp(uniqueId, rep1 string, repCount, exactAmount, perKwAmt, sysSize float64) (r1AddrResp float64) {
+	var r1PayScale float64
+	perRepOvrdshare := AdderDataCfg.CalculatePerRepOvrdShare(uniqueId, repCount)
+	if perRepOvrdshare > 0 {
+		return perRepOvrdshare
+	} else if len(rep1) > 0 {
+		perRepAddrShare := AdderDataCfg.CalculatePerRepAddrShare(exactAmount, perKwAmt, sysSize, repCount)
+		rep1DefResp := AdderDataCfg.CalculateRep1DefResp()
+		return perRepAddrShare * rep1DefResp
+	} else {
+		return r1AddrResp
+	}
+}
+
+func (AdderDataCfg *AdderDataCfgStruct) CalculateRepCount(rep1, rep2 string) (repCount float64) {
+	if len(rep1) > 0 && len(rep2) > 0 {
+		return 2
+	}
+	return 1
+}
+
+func (AdderDataCfg *AdderDataCfgStruct) CalculateR1Addr(uniqueId, rep1, rep2 string) (R1Addr float64) {
+	var repCount float64
+	if len(uniqueId) > 0 {
+		for _, data := range AdderDataCfg.AdderDataList.AdderDataList {
+			if data.UniqueId == uniqueId {
+				if len(rep1) > 0 {
+					repCount = AdderDataCfg.CalculateRepCount(rep1, rep2)
+				}
+				R1Addr += AdderDataCfg.CalculateR1AddrResp(uniqueId, rep1, repCount, data.ExactAmount, data.PerKwAmt, data.SysSize)
+			}
+		}
+	}
+	return R1Addr
+}

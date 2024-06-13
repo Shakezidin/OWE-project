@@ -422,18 +422,6 @@ func calculatePerTeamKw(rep1Team, rep2Team string, credit, repPay, sysSize float
 }
 
 /******************************************************************************
-* FUNCTION:        calculateRRR
-* DESCRIPTION:     calculates the "r_rr" value based on the provided data
-* RETURNS:         gross revenue
-*****************************************************************************/
-func calculateRRR(repName string, val1, val2 float64) (result float64) {
-	if len(repName) > 0 {
-		return val1 + val2
-	}
-	return 0
-}
-
-/******************************************************************************
 * FUNCTION:        calculateRAdderTotal
 * DESCRIPTION:     calculates the "r_adder_total" value based on the provided data
 * RETURNS:         gross revenue

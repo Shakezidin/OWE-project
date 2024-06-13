@@ -9,6 +9,7 @@ package datamgmt
 import (
 	db "OWEApp/shared/db"
 	log "OWEApp/shared/logger"
+	"time"
 )
 
 // this is in respect with the new columns as per google sheet
@@ -197,4 +198,73 @@ func (pReferral *ReferralDataStruct) CalculateReferralForUniqueId(dealer string,
 		}
 	}
 	return referral
+}
+
+func (pReferral *ReferralDataStruct) CalculatePerRepOvrdShare(uniqueId string, repCount float64) (PerRepOvrdShare float64) {
+	var RepCount float64
+	if len(uniqueId) > 0 {
+		for _, data := range RebateCfg.RebateList {
+			if data.UniqueId == uniqueId && data.RepDollDivbyPer <= 1 {
+				PerRepOvrdShare += (data.Amount * data.RepDollDivbyPer) / RepCount
+			} else if data.UniqueId == uniqueId && data.RepDollDivbyPer > 1 {
+				PerRepOvrdShare += data.RepDollDivbyPer / RepCount
+			}
+		}
+	}
+	return PerRepOvrdShare
+}
+
+func (pReferral *ReferralDataStruct) CalculatePerRepAddrShare(uniqueId string, repCount float64) (perRepAddrShare float64) {
+	if len(uniqueId) > 0 {
+		for _, data := range RebateCfg.RebateList {
+			if data.UniqueId == uniqueId {
+				if data.Amount > 0 {
+					perRepAddrShare += data.Amount / repCount
+				} else {
+					perRepAddrShare += 0
+				}
+			}
+		}
+	}
+	return perRepAddrShare
+}
+
+func (pReferral *ReferralDataStruct) CalculateR1AddrResp(uniqueId, rep1, rep2, state, Type string, date time.Time) (R1AddrResp float64) {
+	var repCount float64
+	if len(rep1) > 0 {
+		repCount = RebateCfg.CalculateRepCount(rep1, rep2)
+	}
+	PerRepOvrdShare := pReferral.CalculatePerRepOvrdShare(uniqueId, repCount)
+	PerRepAddrShare := pReferral.CalculatePerRepAddrShare(uniqueId, repCount)
+	R1PayScale := RepPayCfg.CalculateR1PayScale(rep1, state, date)
+	R1ReferralCreditPercentage := AdderCreditCfg.CalculateR1RebateCreditPercentage(R1PayScale, Type)
+	R1ReferralCreditDol := R1ReferralCreditPercentage / repCount
+	if PerRepOvrdShare > 0 {
+		return PerRepOvrdShare
+	} else if PerRepAddrShare > 0 {
+		if len(rep1) > 0 {
+			if (PerRepAddrShare * R1ReferralCreditPercentage) < R1ReferralCreditDol {
+				PerRepAddrShare -= PerRepAddrShare * R1ReferralCreditPercentage
+			} else {
+				PerRepAddrShare -= R1ReferralCreditDol
+			}
+		}
+	} else {
+		return R1AddrResp
+	}
+	return R1AddrResp
+}
+
+func (pReferral *ReferralDataStruct) CalculateR1Referral(rep1, uniqueId string) (R1Referral float64) {
+	log.EnterFn(0, "CalculateR1Referral")
+	defer func() { log.ExitFn(0, "CalculateR1Referral", nil) }()
+
+	if len(rep1) > 0 {
+		for _, data := range RebateCfg.RebateList {
+			if data.UniqueId == uniqueId {
+				R1Referral += pReferral.CalculateR1AddrResp(data.UniqueId, data.Rep_1_Name, data.Rep_2_Name, data.State, data.Type, data.Date)
+			}
+		}
+	}
+	return R1Referral
 }

@@ -9,36 +9,38 @@ package datamgmt
 import (
 	db "OWEApp/shared/db"
 	log "OWEApp/shared/logger"
+	"time"
 )
 
 type GetRebateDataTemp struct {
-	RecordId           int64   `json:"record_id"`
-	UniqueId           string  `json:"unique_id"`
-	CustomerVerf       string  `json:"customer_verf"`
-	TypeRdMktg         string  `json:"type_rd_mktg"`
-	Item               string  `json:"item"`
-	Amount             float64 `json:"amount"`
-	RepDollDivbyPer    float64 `json:"rep_doll_divby_per"`
-	Notes              string  `json:"notes"`
-	Type               string  `json:"type"`
-	Rep_1_Name         string  `json:"rep1_name"`
-	Rep_2_Name         string  `json:"rep2_name"`
-	SysSize            float64 `json:"sys_size"`
-	RepCount           float64 `json:"rep_count"`
-	State              string  `json:"state"`
-	PerRepAddrShare    float64 `json:"per_rep_addr_share"`
-	PerRepOvrdShare    float64 `json:"per_rep_ovrd_share"`
-	R1PayScale         float64 `json:"r1_pay_scale"`
-	Rep1DefResp        string  `json:"rep1_def_resp"`
-	R1AddrResp         string  `json:"r1_addr_resp"`
-	R2PayScale         float64 `json:"r2_pay_scale"`
-	PerRepDefOvrd      string  `json:"per_rep_def_ovrd"`
-	R1RebateCredit     string  `json:"r1_rebate_credit"`
-	R1RebateCreditPerc string  `json:"r1_rebate_credit_perc"`
-	R2RebateCredit     string  `json:"r2_rebate_credit"`
-	R2RebateCreditPerc string  `json:"r2_rebate_credit_perc"`
-	StartDate          string  `json:"start_date"`
-	EndDate            string  `json:"end_date"`
+	RecordId           int64     `json:"record_id"`
+	UniqueId           string    `json:"unique_id"`
+	CustomerVerf       string    `json:"customer_verf"`
+	TypeRdMktg         string    `json:"type_rd_mktg"`
+	Item               string    `json:"item"`
+	Amount             float64   `json:"amount"`
+	RepDollDivbyPer    float64   `json:"rep_doll_divby_per"`
+	Notes              string    `json:"notes"`
+	Type               string    `json:"type"`
+	Rep_1_Name         string    `json:"rep1_name"`
+	Rep_2_Name         string    `json:"rep2_name"`
+	Date               time.Time `json:"date"`
+	SysSize            float64   `json:"sys_size"`
+	RepCount           float64   `json:"rep_count"`
+	State              string    `json:"state"`
+	PerRepAddrShare    float64   `json:"per_rep_addr_share"`
+	PerRepOvrdShare    float64   `json:"per_rep_ovrd_share"`
+	R1PayScale         float64   `json:"r1_pay_scale"`
+	Rep1DefResp        string    `json:"rep1_def_resp"`
+	R1AddrResp         string    `json:"r1_addr_resp"`
+	R2PayScale         float64   `json:"r2_pay_scale"`
+	PerRepDefOvrd      string    `json:"per_rep_def_ovrd"`
+	R1RebateCredit     string    `json:"r1_rebate_credit"`
+	R1RebateCreditPerc string    `json:"r1_rebate_credit_perc"`
+	R2RebateCredit     string    `json:"r2_rebate_credit"`
+	R2RebateCreditPerc string    `json:"r2_rebate_credit_perc"`
+	StartDate          string    `json:"start_date"`
+	EndDate            string    `json:"end_date"`
 	AdderAmount        string
 }
 
@@ -328,4 +330,100 @@ func (RebateCfg *RebateCfgStruct) CalculateRebate(dealer string, uniqueId string
 		}
 	}
 	return rebate
+}
+func (RebateCfg *RebateCfgStruct) CalculateRepCount(rep1, rep2 string) (repCount float64) {
+	if len(rep1) > 0 && len(rep2) > 0 {
+		return 2
+	}
+	return 1
+}
+
+func (RebateCfg *RebateCfgStruct) CalculatePerRepOvrdShare(uniqueId string, repCount float64) (PerRepOvrdShare float64) {
+	if len(uniqueId) > 0 {
+		for _, data := range RebateCfg.RebateList {
+			if data.UniqueId == uniqueId && data.RepDollDivbyPer <= 1 {
+				PerRepOvrdShare += (data.Amount * data.RepDollDivbyPer) / repCount
+			} else if data.UniqueId == uniqueId && data.RepDollDivbyPer > 1 {
+				PerRepOvrdShare += data.RepDollDivbyPer / repCount
+			}
+		}
+	}
+	return PerRepOvrdShare
+}
+
+func (RebateCfg *RebateCfgStruct) CalculatePerRepDefOvrd(uniqueId string) (PerRepOvrdDed float64) {
+	log.EnterFn(0, "CalculatePerRepDefOvrd")
+	defer func() { log.ExitFn(0, "CalculatePerRepDefOvrd", nil) }()
+
+	if len(uniqueId) > 0 {
+		for _, data := range RebateCfg.RebateList {
+			if data.UniqueId == uniqueId {
+				if len(data.Type) >= 9 && data.Type[:9] == "Retention" {
+					PerRepOvrdDed = 0
+				} else if data.Type == "Promo" {
+					PerRepOvrdDed = 0
+				} else {
+					PerRepOvrdDed = 0
+				}
+			}
+		}
+	}
+	return PerRepOvrdDed
+}
+
+func (RebateCfg *RebateCfgStruct) CalculatePerRepAddrShare(uniqueId string, repCount float64) (perRepAddrShare float64) {
+	if len(uniqueId) > 0 {
+		for _, data := range RebateCfg.RebateList {
+			if data.UniqueId == uniqueId {
+				if data.Amount > 0 {
+					perRepAddrShare += data.Amount / repCount
+				} else {
+					perRepAddrShare += 0
+				}
+			}
+		}
+	}
+	return perRepAddrShare
+}
+
+func (RebateCfg *RebateCfgStruct) CalculateR1AddrResp(uniqueId, rep1, rep2, state, Type string, date time.Time) (R1AddrResp float64) {
+	var repCount float64
+	if len(rep1) > 0 {
+		repCount = RebateCfg.CalculateRepCount(rep1, rep2)
+	}
+	PerRepOverSHare := RebateCfg.CalculatePerRepOvrdShare(uniqueId, repCount)
+	PerRepDefOvrd := RebateCfg.CalculatePerRepDefOvrd(uniqueId)
+	PerRepAddrShare := RebateCfg.CalculatePerRepAddrShare(uniqueId, repCount)
+	R1PayScale := RepPayCfg.CalculateR1PayScale(rep1, state, date)
+	R1RebateCreditPercentage := AdderCreditCfg.CalculateR1RebateCreditPercentage(R1PayScale, Type)
+	R1RebateCreditDol := R1RebateCreditPercentage / repCount
+	if PerRepOverSHare > 0 {
+		return PerRepOverSHare
+	} else if PerRepDefOvrd > 0 {
+		return PerRepDefOvrd
+	} else if len(rep1) > 0 {
+		if (PerRepAddrShare * R1RebateCreditPercentage) < R1RebateCreditDol {
+			PerRepAddrShare -= PerRepAddrShare * R1RebateCreditPercentage
+		} else {
+			PerRepAddrShare -= R1RebateCreditDol
+		}
+
+	} else {
+		return R1AddrResp
+	}
+	return R1AddrResp
+}
+
+func (RebateCfg *RebateCfgStruct) CalculateR1Rebate(rep1, uniqueId string) (R1Rebate float64) {
+	log.EnterFn(0, "CalculateR1Rebate")
+	defer func() { log.ExitFn(0, "CalculateR1Rebate", nil) }()
+
+	if len(rep1) > 0 {
+		for _, data := range RebateCfg.RebateList {
+			if data.UniqueId == uniqueId {
+				R1Rebate += RebateCfg.CalculateR1AddrResp(data.UniqueId, data.Rep_1_Name, data.Rep_2_Name, data.State, data.Type, data.Date)
+			}
+		}
+	}
+	return R1Rebate
 }
