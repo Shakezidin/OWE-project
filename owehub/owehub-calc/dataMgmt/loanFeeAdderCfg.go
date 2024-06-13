@@ -296,12 +296,83 @@ func (pLoanFee *LoanFeeAdderCfgStruct) LoadLoanFeeAdderCfg() (err error) {
 * RETURNS:         loanFee
 *****************************************************************************/
 func (LoanFeeAdderCfg *LoanFeeAdderCfgStruct) CalculateLoanFee(uniqueId, dealer, installer, state, Type string, date time.Time, contractDol float64) (loanFeeAdder float64) {
-	//
 
 	if len(dealer) > 0 {
 		loanFee := LoanFeeCfg.CalculateDlrCost(uniqueId, dealer, installer, state, Type, date)
 		loanFeeAdder = (loanFee * contractDol) / 100
 	}
-	log.FuncErrorTrace(0, "RAED LOANFEE -> %v CONTRACT DOL -> %v", loanFeeAdder, contractDol)
 	return loanFeeAdder
+}
+
+func (LoanFeeAdderCfg *LoanFeeAdderCfgStruct) CalculateRepPerRepOvrdShare(uniqueId, dealer, installer, state, Type string, date time.Time, contractDolDol, repDolDivByPer, repCount float64) (perRepOvrdShare float64) {
+	if repDolDivByPer <= 1 {
+		oweCost := LoanFeeCfg.CalculateDlrCost(uniqueId, dealer, installer, state, Type, date)
+		adderAmount := contractDolDol * oweCost
+		return (adderAmount * repDolDivByPer) / repCount
+	} else {
+		return repDolDivByPer / repCount
+	}
+}
+
+func (LoanFeeAdderCfg *LoanFeeAdderCfgStruct) CalculaterepRep1DefResp(r1PayScale string) (rep1DefResp float64) {
+	if len(r1PayScale) > 0 {
+		return adderRespCfg.CalculateAdderResp(r1PayScale)
+	}
+	return rep1DefResp
+}
+
+func (LoanFeeAdderCfg *LoanFeeAdderCfgStruct) CalculateRepPerRepAddrShare(adderAmount, repCount, PerKwAmt, sysSize float64) (perRepAddrShare float64) {
+	if adderAmount > 0 {
+		return adderAmount / repCount
+	} else if PerKwAmt > 0 {
+		return (PerKwAmt * sysSize) / repCount
+	}
+	return perRepAddrShare
+}
+
+func (LoanFeeAdderCfg *LoanFeeAdderCfgStruct) CalculaterepR1AdderResp(rep1, uniqueId, dealer, installer, state, Type string, date time.Time, contractDolDol, repDolDivByPer, repCount, adderAmount, PerKwAmt, sysSize float64) (r1AdderResp float64) {
+	perRepOvrdShare := LoanFeeAdderCfg.CalculateRepPerRepOvrdShare(uniqueId, dealer, installer, state, Type, date, contractDolDol, repDolDivByPer, repCount)
+	if perRepOvrdShare > 0 {
+		return perRepOvrdShare
+	} else if len(rep1) > 0 {
+		if Type[:2] == "LF" {
+			return LoanFeeAdderCfg.CalculateRepPerRepAddrShare(adderAmount, repCount, PerKwAmt, sysSize)
+		} else {
+			r1PayScale, _ := RepPayCfg.CalculateR1PayScale(rep1, state, date)
+			return LoanFeeAdderCfg.CalculateRepPerRepAddrShare(adderAmount, repCount, PerKwAmt, sysSize) * LoanFeeAdderCfg.CalculaterepRep1DefResp(r1PayScale)
+		}
+	} else {
+		return r1AdderResp
+	}
+}
+
+/******************************************************************************
+* FUNCTION:        CalculateRepR1LoanFee
+* DESCRIPTION:     calculates the "R1LoanFee" value based on the provided data
+* RETURNS:         r1loanFee
+*****************************************************************************/
+func (LoanFeeAdderCfg *LoanFeeAdderCfgStruct) CalculateRepR1LoanFee(rep1, uniqueId string) (r1LoanFee float64) {
+	var (
+		err       error
+		startDate time.Time
+	)
+
+	if len(rep1) > 0 {
+		for _, data := range LoanFeeAdderCfg.LoanFeeAdderList.LoanFeeAdderList {
+			if data.UniqueID == uniqueId {
+				if len(data.StartDate) > 0 {
+					startDate, err = time.Parse("01-02-2006", data.StartDate)
+					if err != nil {
+						log.FuncErrorTrace(0, "Failed to convert data.StartDate:%+v to time.Time err: %+v", data.StartDate, err)
+					}
+				} else {
+					log.FuncWarnTrace(0, "Empty StartDate Received in data.StartDate config")
+					continue
+				}
+				r1AdderResp := LoanFeeAdderCfg.CalculaterepR1AdderResp(rep1, uniqueId, data.Dealer, data.Installer, data.State, data.Type, startDate, data.Contract, data.RepDollDivbyPer, data.RepCount, data.AddrAmount, data.PerKwAmount, data.SysSize)
+				r1LoanFee += r1AdderResp
+			}
+		}
+	}
+	return r1LoanFee
 }

@@ -283,3 +283,53 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateDlrDrawPerc(dealer, partner
 	}
 	return drawPerc, dlrDrawMax, commission_models
 }
+
+/******************************************************************************
+* FUNCTION:        CalculateRepDrawPerc
+* DESCRIPTION:     calculates the addr value based on the provided data
+* RETURNS:         drawPerc,dlrDrawMax,commission_models
+*****************************************************************************/
+func (PayScheduleCfg *PayScheduleCfgStruct) CalculateRepDrawPerc(uniqueId, dealer, partner, installer, types, state string, wc time.Time) (RepDrawPercentage, repDrawMax float64) {
+	var (
+		err       error
+		startDate time.Time
+		endDate   time.Time
+	)
+
+	if len(uniqueId) > 0 {
+		for _, data := range PayScheduleCfg.PayScheduleList {
+			if len(data.StartDate) > 0 {
+				startDate, err = time.Parse("01-02-06", data.StartDate)
+				if err != nil {
+					log.FuncErrorTrace(0, "Failed to convert data.StartDate:%+v to time.Time err: %+v", data.StartDate, err)
+				}
+			} else {
+				log.FuncWarnTrace(0, "Empty StartDate Received in data.StartDate config")
+				continue
+			}
+
+			if len(data.EndDate) > 0 {
+				endDate, err = time.Parse("01-02-06", data.EndDate)
+				if err != nil {
+					log.FuncErrorTrace(0, "Failed to convert data.EndDate:%+v to time.Time err: %+v", data.EndDate, err)
+				}
+			} else {
+				log.FuncWarnTrace(0, "Empty EndDate Received in data.EndDate config")
+				continue
+			}
+			var st string
+			if len(state) > 0 {
+				st = state[6:]
+			}
+			if data.Dealer == dealer && data.PartnerName == partner && data.InstallerName == installer &&
+				// data.SaleType == types &&
+				data.State == st &&
+				!startDate.After(wc) &&
+				!endDate.Before(wc) {
+				RepDrawPercentage = data.RepDraw
+				repDrawMax = data.RepDrawMax
+			}
+		}
+	}
+	return RepDrawPercentage, repDrawMax
+}

@@ -63,59 +63,66 @@ func ExecRepPayInitialCalculation(resultChan chan string) {
  *****************************************************************************/
 func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[string]interface{}, err error) {
 	var (
-		rep1Dba           string
-		status            string
-		rep1              string
-		r1Balance         float64
-		dealer            string
-		uniqueID          string
-		systemSize        float64
-		partner           string
-		installer         string
-		state             string
-		wc                time.Time
-		loanFee           float64
-		payRateSemi       float64
-		epcCalc           float64
-		rl                float64
-		r1CommPaid        float64
-		rep2              string
-		perTeamKw         float64
-		perRepKw          float64
-		types             string
-		repRl             float64
-		repRate           float64
-		payScale          string
-		position          string
-		kwh               float64
-		R1Rebate          float64
-		R1Referral        float64
-		PayScale          string
-		Position          string
-		R1Credit          float64
-		R1CommTotal       float64
-		R1MinOrMax        float64
-		PerRepKw          float64
-		r1PayRateSubTotal float64
-		r1AdderPerKw      float64
-		repR1Addr         float64
-		minRate           float64
-		maxRate           float64
-		adjustment        float64
-		r1Incentive       float64
-		r1AdderTotal      float64
-		r1AutoAdder       float64
-		r1LoanFee         float64
-		loanType          string
-		netEpc            float64
-		contractTotal     float64
-		homeOwner         string
-		R1R_R             float64
-		Adjustment        float64
-		r1CommStatusCheck float64
-		contractDate      time.Time
-		epc               float64
-		contractCalc      float64
+		rep1Dba              string
+		status               string
+		rep1                 string
+		r1Balance            float64
+		dealer               string
+		uniqueID             string
+		systemSize           float64
+		partner              string
+		installer            string
+		state                string
+		wc                   time.Time
+		loanFee              float64
+		payRateSemi          float64
+		epcCalc              float64
+		rl                   float64
+		r1CommPaid           float64
+		rep2                 string
+		perTeamKw            float64
+		perRepKw             float64
+		types                string
+		repRl                float64
+		repRate              float64
+		payScale             string
+		position             string
+		kwh                  float64
+		R1Rebate             float64
+		R1Referral           float64
+		PayScale             string
+		Position             string
+		R1Credit             float64
+		R1CommTotal          float64
+		R1MinOrMax           float64
+		PerRepKw             float64
+		r1PayRateSubTotal    float64
+		r1AdderPerKw         float64
+		repR1Addr            float64
+		minRate              float64
+		maxRate              float64
+		adjustment           float64
+		r1Incentive          float64
+		r1AdderTotal         float64
+		r1AutoAdder          float64
+		r1LoanFee            float64
+		loanType             string
+		netEpc               float64
+		contractTotal        float64
+		homeOwner            string
+		R1R_R                float64
+		Adjustment           float64
+		r1CommStatusCheck    float64
+		contractDate         time.Time
+		epc                  float64
+		contractCalc         float64
+		repR1LoanFee         float64
+		repR1CommStatusCheck float64
+		RepPerRepSales       float64
+		RepDrawPercentage    float64
+		repDrawMax           float64
+		repR1DrawAmount      float64
+		repR1DrawPaid        float64
 	)
 	log.EnterFn(0, "CalculateARProject")
 	defer func() { log.ExitFn(0, "CalculateARProject", err) }()
@@ -142,7 +149,7 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	types = "" //* not received from Colten yet
 	kwh = 0.0  //* confirm with shushank
 
-	rep1Dba = dataMgmt.DBACfg.CalculateDBA(outData["rep_1"].(string))
+	rep1Dba = dataMgmt.DBACfg.CalculateReprep1Dba(outData["rep_1"].(string))
 	repR1Addr = dataMgmt.AdderDataCfg.CalculateR1AddrResp(dealer, rep1, rep2, uniqueID, state, systemSize)
 	perTeamKw = calculatePerTeamKw(rep1, rep2, wc, systemSize)
 	perRepKw = calculatePerRepKw(rep1, rep2, systemSize)
@@ -155,16 +162,26 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	Adjustment, minRate, maxRate = dataMgmt.RateAdjustmentsCfg.CalculateAdjustmentMinRateMaxRate(PayScale, Position)             //BE BF BG
 	r1Incentive = dataMgmt.RepIncentCfg.CalculateRepR1Incentive(rep1, wc)                                                        //BH
 	contractCalc = CalculateRepContractCalc(epc, contractTotal, systemSize)
-	epcCalc = common.CalculateAREPCCalc(contractCalc, contractDate, epc, systemSize, common.ARWc1FilterDate)           //AQ
+	epcCalc = common.CalculateAREPCCalc(contractCalc, contractDate, epc, systemSize, common.ARWc1FilterDate)                    //AQ
 	payRateSemi = CalculatePayRateSemi(saleData.PrimarySalesRep, repRl, repRate, adjustment, r1Incentive, epcCalc)              //BJ (BC, BD, BE, BH, AQ)
-	r1AutoAdder = dataMgmt.AutoAdderCfg.CalculateRepR1AutoAddr(rep1, rep2, uniqueID, state, systemSize, wc)                                                                                                           //BM
-	r1LoanFee = 0                                                                                                               //BN
+	r1AutoAdder = dataMgmt.AutoAdderCfg.CalculateRepR1AutoAddr(rep1, rep2, uniqueID, state, systemSize, wc)                     //BM
+	repR1LoanFee = dataMgmt.LoanFeeAdderCfg.CalculateRepR1LoanFee(saleData.PrimarySalesRep, saleData.UniqueId)                  //BN                                                                                              //BN                                                                                                              //BN
 	r1AdderTotal = calculateRAdderTotal(saleData.PrimarySalesRep, repR1Addr, r1AutoAdder, r1LoanFee, R1Rebate, R1Referral)      //BR (BL, BM, BN, BO, BP)
 	r1AdderPerKw = calculateRAdderPerKw(saleData.PrimarySalesRep, r1AdderTotal, PerRepKw)                                       //BS (BR, AN)
 	r1PayRateSubTotal = calculateR1PayRateSubTotal(saleData.PrimarySalesRep, payRateSemi, r1AdderPerKw)                         //BT (BJ, BS)
 	R1MinOrMax = calculateR1MinOrMax(saleData.PrimarySalesRep, r1PayRateSubTotal, minRate, maxRate)                             //BV (BT, BF, BG)
 	R1CommTotal = calculateR1CommTotal(saleData.PrimarySalesRep, saleData.Source, R1MinOrMax, PerRepKw, R1Credit)               //BW (BV, AN, BI)
 	r1CommStatusCheck = calculateRCommStatudCheck(saleData.PrimarySalesRep, "Sales Rep 2", saleData.ProjectStatus, R1CommTotal) //BX (DG, AJ, BW)
+	rep1Dba = dataMgmt.DBACfg.CalculateReprep1Dba(outData["rep_1"].(string))
+	repR1Addr = dataMgmt.AdderDataCfg.CalculateR1AddrResp(dealer, rep1, rep2, uniqueID, state, systemSize) //BL
+	perTeamKw = calculatePerTeamKw(rep1, rep2, wc, systemSize)
+	perRepKw = calculatePerRepKw(rep1, rep2, systemSize)
+	repRl, repRate = dataMgmt.CmmsnRatesCfg.CalculateRepRl(partner, installer, state, types, payScale, kwh, wc) //! kwh, types value not set
+	repR1CommStatusCheck = calculateRCommStatudCheck(saleData.PrimarySalesRep, "Sales Rep 2", saleData.ProjectStatus, R1CommTotal)       //BX (DG, AJ, BW)
+	RepPerRepSales = calculatePerRepSales(rep1, rep2)                                                                                    //AM
+	RepDrawPercentage, repDrawMax = dataMgmt.PayScheduleCfg.CalculateRepDrawPerc(uniqueID, dealer, partner, installer, types, state, wc) //DH DI
+	repR1DrawAmount = calculateR1DrawAmount(repR1CommStatusCheck, repDrawMax, RepPerRepSales, RepDrawPercentage)                         //DL
+	repR1DrawPaid = dataMgmt.ApRepCfg.CalculateRepR1DrawPaid(saleData.UniqueId, saleData.PrimarySalesRep)                                //DM
 
 	outData["rep_1_dba"] = rep1Dba
 	outData["status"] = status

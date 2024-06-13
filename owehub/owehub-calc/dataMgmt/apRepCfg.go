@@ -155,3 +155,14 @@ func (pApRepCfg *ApRepCfgStruct) CalculateRepPayForUniqueId(dealer string, uniqu
 	}
 	return apRep
 }
+
+func (pApRepCfg *ApRepCfgStruct) CalculateRepR1DrawPaid(rep1, uniqueId string) (r1DrawPaid float64) {
+	if len(rep1) > 0 {
+		for _, data := range pApRepCfg.ApRepList.ApRepList {
+			if data.UniqueId == uniqueId && data.Rep == rep1 && (data.Type == "Advance" || data.Type == "Draw" || data.Type == "Shaky" || data.Type == "Cancel") {
+				r1DrawPaid += data.Amount
+			}
+		}
+	}
+	return r1DrawPaid
+}
