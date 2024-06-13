@@ -128,20 +128,28 @@ const TechnicalSupport: React.FC = () => {
   const handleButtonClick = () => {
     fileInputRef.current?.click(); // Trigger file input click event
   };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+  const { name, value } = e.target;
+  const trimmedValue = value.replace(/\s/g, ''); // Trim the input value
 
-    if (name === 'email') {
-      setEmail(value);
+  if (name === 'email') {
+    if (trimmedValue.length > 0) {
+      setEmail(trimmedValue); // Update the email state with the trimmed value
 
-      if (!emailRegex.test(value)) {
+      if (!emailRegex.test(trimmedValue)) {
         setErrors({ ...errors, email: 'Please enter a valid email address.' });
       } else {
         setErrors({ ...errors, email: '' });
       }
+    } else {
+      setEmail(''); // Clear the email state if the trimmed value is empty
+      setErrors({ ...errors, email: 'Please enter an email address.' });
     }
-  };
+  }
+};
 
+  
 
   return (
     <>
