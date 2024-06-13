@@ -268,6 +268,6 @@
     transform: translateX(-100%);
   }
   .show{
-    transform: translateX(0);
+    transform: translateX(-4%);
   }
 }

@@ -137,7 +137,7 @@ const Header: React.FC<Toggleprops> = ({
             </div>
           )}
         </div>
-        <div className="header-logo" style={{ marginLeft: 25 }}>
+        <div className="header-logo flex items-center" style={{ marginLeft:isTablet? 0:25,height:"100%" }}>
           <object
             type="image/svg+xml"
             data={ICONS.LOGO}
