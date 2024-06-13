@@ -10,6 +10,7 @@ import (
 	db "OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	"strings"
+	"time"
 )
 
 // type
@@ -17,11 +18,12 @@ import (
 // PerKwAmt
 
 type AutoAdder struct {
-	RecordId int64
-	UniqueId string
-	SysSize  float64 // this
-	PerKwAmt float64
-	Type1    string
+	RecordId   int64
+	UniqueId   string
+	SysSize    float64 // this
+	PerKwAmt   float64
+	Type1      string
+	RepPercent float64
 }
 
 type AutoAdderCfgStruct struct {
@@ -171,6 +173,11 @@ func (AutoAdderCfg *AutoAdderCfgStruct) LoadAutoAdderCfg() (errr error) {
 			// log.FuncErrorTrace(0, "Failed to get type for Record ID %v. Item: %+v\n", Unique_id, item)
 			State = ""
 		}
+		RepPercent, ok := item["rep_percent"].(float64)
+		if !ok {
+			// log.FuncErrorTrace(0, "Failed to get type for Record ID %v. Item: %+v\n", Unique_id, item)
+			RepPercent = 0
+		}
 
 		Type := calculateType(SysSize, State)
 
@@ -184,10 +191,11 @@ func (AutoAdderCfg *AutoAdderCfgStruct) LoadAutoAdderCfg() (errr error) {
 		}
 
 		AutoAdderData := AutoAdder{
-			UniqueId: Unique_id,
-			SysSize:  SysSize,
-			PerKwAmt: PerKWAmount,
-			Type1:    Type,
+			UniqueId:   Unique_id,
+			SysSize:    SysSize,
+			PerKwAmt:   PerKWAmount,
+			Type1:      Type,
+			RepPercent: RepPercent,
 		}
 
 		AutoAdderCfg.AutoAdderList = append(AutoAdderCfg.AutoAdderList, AutoAdderData)
@@ -314,4 +322,190 @@ func (AutoAdderCfg *AutoAdderCfgStruct) CalculateExactAmount(uniqueId string) (E
 		}
 	}
 	return ExactAmount
+}
+
+/******************************************************************************
+* FUNCTION:        CalculateAutoAddr
+* DESCRIPTION:     calculates the "autoaddr" value based on the provided data
+* RETURNS:         autoAdder
+*****************************************************************************/
+func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepR1AutoAddr(rep1, rep2, uniqueId, state string, sysSize float64, wc time.Time) float64 {
+	return AutoAdderCfg.CalculateRepR1AddrResp(rep1, rep2, uniqueId, state, sysSize, wc)
+}
+
+/******************************************************************************
+* FUNCTION:        CalculateAutoAddr
+* DESCRIPTION:     calculates the "autoaddr" value based on the provided data
+* RETURNS:         autoAdder
+*****************************************************************************/
+func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepR1AddrResp(rep1, rep2, uniqueId, state string, sysSize float64, wc time.Time) (r1AddrResp float64) {
+	for _, data := range AutoAdderCfg.AutoAdderList {
+		if data.UniqueId == uniqueId {
+			perRepOvrdShare := AutoAdderCfg.CalculateRepPerRepOvrdShare(rep1, rep2, uniqueId)
+			if perRepOvrdShare > 0 {
+				if perRepOvrdShare > 0 {
+					return perRepOvrdShare
+				} else {
+					return r1AddrResp
+				}
+			} else if len(rep1) > 0 {
+				perRepAddrShare := AutoAdderCfg.CalculateRepPerRepAddrShare(rep1, rep2, uniqueId, state, sysSize, wc)
+				rep1DefResp := AutoAdderCfg.CalculateRepRep1DefResp(rep1, uniqueId, state, wc)
+				if data.Type1[:2] == "MK" {
+					return perRepAddrShare
+				} else {
+					return perRepAddrShare * rep1DefResp
+				}
+			}
+		}
+	}
+	return r1AddrResp
+}
+
+/******************************************************************************
+* FUNCTION:        CalculateAutoAddr
+* DESCRIPTION:     calculates the "autoaddr" value based on the provided data
+* RETURNS:         autoAdder
+*****************************************************************************/
+func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepPerRepOvrdShare(rep1, rep2, uniqueId string) (perRepOvrdShare float64) {
+	for _, data := range AutoAdderCfg.AutoAdderList {
+		if uniqueId == data.UniqueId {
+			if data.RepPercent > 0 {
+				exactAmt := AutoAdderCfg.CalculateRepExactAmount(rep1, uniqueId)
+				repCount := AutoAdderCfg.CalculateRepRepCount(rep1, rep2, uniqueId)
+				if data.RepPercent <= 1 {
+					return (exactAmt * (data.RepPercent / 100)) / repCount
+				} else if data.RepPercent > 1 {
+					return (data.RepPercent / 100) / repCount
+				}
+			}
+		}
+	}
+	return perRepOvrdShare
+}
+
+/******************************************************************************
+* FUNCTION:        CalculateAutoAddr
+* DESCRIPTION:     calculates the "autoaddr" value based on the provided data
+* RETURNS:         autoAdder
+*****************************************************************************/
+func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepExactAmount(rep1, uniqueId string) (ExactAmount float64) {
+	for _, data := range AutoAdderCfg.AutoAdderList {
+		if data.UniqueId == uniqueId {
+			switch {
+			case data.Type1[10:] == "BPN: SETTER":
+				ExactAmount = 500
+			case data.Type1[:2] == "MK":
+				ExactAmount = 0
+			case data.Type1 == "SM-UNI2":
+				ExactAmount = 1200
+			case data.Type1 == "SM-UNI3":
+				ExactAmount = 600
+			case data.Type1 == "SM-CA2":
+				ExactAmount = 600
+			default:
+				ExactAmount = 0
+			}
+		}
+	}
+	return ExactAmount
+}
+
+/******************************************************************************
+* FUNCTION:        CalculateAutoAddr
+* DESCRIPTION:     calculates the "autoaddr" value based on the provided data
+* RETURNS:         autoAdder
+*****************************************************************************/
+func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepRepCount(rep1, rep2, uniqueId string) float64 {
+	for _, data := range AutoAdderCfg.AutoAdderList {
+		if data.UniqueId == uniqueId {
+			if len(rep1) > 0 && len(rep2) > 0 {
+				return 2
+			} else if len(rep1) > 0 || len(rep2) > 0 {
+				return 1
+			}
+		}
+	}
+	return 0
+}
+
+/******************************************************************************
+* FUNCTION:        CalculateAutoAddr
+* DESCRIPTION:     calculates the "autoaddr" value based on the provided data
+* RETURNS:         autoAdder
+*****************************************************************************/
+func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepPerRepAddrShare(rep1, rep2, uniqueId, state string, sysSize float64, wc time.Time) (perRepAddrShare float64) {
+	for _, data := range AutoAdderCfg.AutoAdderList {
+		if uniqueId == data.UniqueId {
+			exactAmnt := AutoAdderCfg.CalculateRepExactAmount(rep1, uniqueId)
+			repCount := AutoAdderCfg.CalculateRepRepCount(rep1, rep2, uniqueId)
+			perKwAmt := AutoAdderCfg.CalculateRepPerKwAmount(rep1, uniqueId)
+			if exactAmnt > 0 {
+				perRepAddrShare = exactAmnt / repCount
+			} else if strings.Contains(data.Type1, "FR SET") {
+				perRepAddrShare = perKwAmt / repCount
+			} else if perKwAmt > 0 {
+				perRepAddrShare = (perKwAmt * sysSize) / repCount
+			}
+		}
+	}
+	return perRepAddrShare
+}
+
+/******************************************************************************
+* FUNCTION:        CalculateAutoAddr
+* DESCRIPTION:     calculates the "autoaddr" value based on the provided data
+* RETURNS:         autoAdder
+*****************************************************************************/
+func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepPerKwAmount(rep1, uniqueId string) (PerKwAmount float64) {
+	for _, data := range AutoAdderCfg.AutoAdderList {
+		if data.UniqueId == uniqueId {
+			switch {
+			case data.Type1[:2] == "MK":
+				PerKwAmount = mktgFeeCfg.CalculateRepFeeRate(data.Type1)
+			case data.Type1 == "SM-UNI2":
+				PerKwAmount = 0
+			case data.Type1 == "SM-UNI3":
+				PerKwAmount = 0
+			case data.Type1 == "SM-CA2":
+				PerKwAmount = 0
+			default:
+				PerKwAmount = 0
+			}
+		}
+	}
+	return PerKwAmount
+}
+
+/******************************************************************************
+* FUNCTION:        CalculateAutoAddr
+* DESCRIPTION:     calculates the "autoaddr" value based on the provided data
+* RETURNS:         autoAdder
+*****************************************************************************/
+func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepRep1DefResp(rep1, uniqueId, state string, wc time.Time) (defResp float64) {
+	for _, data := range AutoAdderCfg.AutoAdderList {
+		if data.UniqueId == uniqueId {
+			payScale := AutoAdderCfg.CalculateRepR1PayScale(rep1, uniqueId, state, wc)
+			if len(payScale) > 0 {
+				defResp = adderRespCfg.CalculateAdderResp(payScale)
+			}
+		}
+	}
+	return defResp
+}
+
+/******************************************************************************
+* FUNCTION:        CalculateAutoAddr
+* DESCRIPTION:     calculates the "autoaddr" value based on the provided data
+* RETURNS:         autoAdder
+*****************************************************************************/
+func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepR1PayScale(rep1, uniqueId, state string, wc time.Time) (payscale string) {
+	for _, data := range AutoAdderCfg.AutoAdderList {
+		if data.UniqueId == uniqueId {
+			if len(rep1) > 0 {
+				payscale, _ = RepPayCfg.CalculateR1PayScale(rep1, state, wc)
+			}
+		}
+	}
+	return payscale
 }

@@ -155,9 +155,9 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	Adjustment, minRate, maxRate = dataMgmt.RateAdjustmentsCfg.CalculateAdjustmentMinRateMaxRate(PayScale, Position)             //BE BF BG
 	r1Incentive = dataMgmt.RepIncentCfg.CalculateRepR1Incentive(rep1, wc)                                                        //BH
 	contractCalc = CalculateRepContractCalc(epc, contractTotal, systemSize)
-	epcCalc = common.CalculateAREPCCalc(contractCalc, saleData.ContractDate, epc, systemSize, common.ARWc1FilterDate)           //AQ
+	epcCalc = common.CalculateAREPCCalc(contractCalc, contractDate, epc, systemSize, common.ARWc1FilterDate)           //AQ
 	payRateSemi = CalculatePayRateSemi(saleData.PrimarySalesRep, repRl, repRate, adjustment, r1Incentive, epcCalc)              //BJ (BC, BD, BE, BH, AQ)
-	r1AutoAdder = 0                                                                                                             //BM
+	r1AutoAdder = dataMgmt.AutoAdderCfg.CalculateRepR1AutoAddr(rep1, rep2, uniqueID, state, systemSize, wc)                                                                                                           //BM
 	r1LoanFee = 0                                                                                                               //BN
 	r1AdderTotal = calculateRAdderTotal(saleData.PrimarySalesRep, repR1Addr, r1AutoAdder, r1LoanFee, R1Rebate, R1Referral)      //BR (BL, BM, BN, BO, BP)
 	r1AdderPerKw = calculateRAdderPerKw(saleData.PrimarySalesRep, r1AdderTotal, PerRepKw)                                       //BS (BR, AN)
