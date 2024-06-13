@@ -70,6 +70,7 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	status := saleData.ProjectStatus
 	rep1 := saleData.PrimarySalesRep
 	dealer := saleData.Dealer
+	source := saleData.Source
 	uniqueID := saleData.UniqueId
 	systemSize := saleData.SystemSize
 	partner := saleData.Partner
@@ -78,11 +79,9 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	state := saleData.State
 	wc := saleData.ContractDate
 	contractTotal := saleData.ContractTotal
-	netEpc := contractTotal / (systemSize * 1000)
 	epc := (systemSize * 1000) / contractTotal
 	homeOwner := saleData.HomeOwner
 	rep2 := saleData.SecondarySalesRep
-	contractDate := saleData.ContractDate
 	types := "" //* not received from Colten yet
 	kwh := 0.0  //* confirm with shushank
 
@@ -91,31 +90,31 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	perRepKw := calculatePerRepKw(rep1, rep2, systemSize)
 	RepPerRepSales := calculatePerRepSales(rep1, rep2)
 	contractCalc := CalculateRepContractCalc(epc, contractTotal, systemSize)
-	epcCalc := common.CalculateAREPCCalc(contractCalc, contractDate, epc, systemSize, common.ARWc1FilterDate)                             //AQ
+	epcCalc := common.CalculateAREPCCalc(contractCalc, wc, epc, systemSize, common.ARWc1FilterDate)                             //AQ
 	RepDrawPercentage, repDrawMax := dataMgmt.PayScheduleCfg.CalculateRepDrawPerc(uniqueID, dealer, partner, installer, types, state, wc) //DH DI
 
 	//==================== REP 1 ==========================/
-	rep1Referral := dataMgmt.ReferralDataConfig.CalculateR1Referral(saleData.PrimarySalesRep, saleData.UniqueId) //BP
-	rep1Rebate := dataMgmt.RebateCfg.CalculateR1Rebate(saleData.PrimarySalesRep, saleData.UniqueId)              //BO
-	rep1Dba := dataMgmt.DBACfg.CalculateReprep1Dba(outData["rep_1"].(string))                                    // AZ
-	rep1Credit := dataMgmt.RepCreditCfg.CalculateR1Credit(saleData.UniqueId)                                     //BI  there is no schema and get endpoint in main for repcredit
+	rep1Referral := dataMgmt.ReferralDataConfig.CalculateR1Referral(rep1, uniqueID) //BP
+	rep1Rebate := dataMgmt.RebateCfg.CalculateR1Rebate(rep1, uniqueID)              //BO
+	rep1Dba := dataMgmt.DBACfg.CalculateReprep1Dba(rep1)                                    // AZ
+	rep1Credit := dataMgmt.RepCreditCfg.CalculateR1Credit(uniqueID)                                     //BI  there is no schema and get endpoint in main for repcredit
 	rep1Addr := dataMgmt.AdderDataCfg.CalculateR1AddrResp(dealer, rep1, rep2, uniqueID, state, systemSize)
-	rep1PayScale, rep1Position := dataMgmt.RepPayCfg.CalculateR1PayScale(saleData.PrimarySalesRep, saleData.State, saleData.ContractDate) //BA
+	rep1PayScale, rep1Position := dataMgmt.RepPayCfg.CalculateR1PayScale(rep1, saleData.State, wc) //BA
 	rep1Rl, rep1Rate := dataMgmt.CmmsnRatesCfg.CalculateRepRl(partner, installer, state, types, rep1PayScale, kwh, wc)                    //! kwh, types value not set
 	rep1Adjustment, rep1minRate, rep1maxRate := dataMgmt.RateAdjustmentsCfg.CalculateAdjustmentMinRateMaxRate(rep1PayScale, rep1Position) //BE BF BG
-	rep1R_R := calculateR1RR(saleData.PrimarySalesRep, rep1Rebate, rep1Referral)
+	rep1R_R := calculateR1RR(rep1, rep1Rebate, rep1Referral)
 	rep1Incentive := dataMgmt.RepIncentCfg.CalculateRepR1Incentive(rep1, wc)                                                         //BH
-	rep1payRateSemi := CalculatePayRateSemi(saleData.PrimarySalesRep, rep1Rl, rep1Rate, rep1Adjustment, rep1Incentive, epcCalc)      //BJ (BC, BD, BE, BH, AQ)
+	rep1payRateSemi := CalculatePayRateSemi(rep1, rep1Rl, rep1Rate, rep1Adjustment, rep1Incentive, epcCalc)      //BJ (BC, BD, BE, BH, AQ)
 	rep1AutoAdder := dataMgmt.AutoAdderCfg.CalculateRepR1AutoAddr(rep1, rep2, uniqueID, state, systemSize, wc)                       //BM
-	rep1LoanFee := dataMgmt.LoanFeeAdderCfg.CalculateRepR1LoanFee(saleData.PrimarySalesRep, saleData.UniqueId)                       //BN                                                                                              //BN                                                                                                              //BN
-	rep1AdderTotal := calculateRAdderTotal(saleData.PrimarySalesRep, rep1Addr, rep1AutoAdder, rep1LoanFee, rep1Rebate, rep1Referral) //BR (BL, BM, BN, BO, BP)
-	rep1AdderPerKw := calculateRAdderPerKw(saleData.PrimarySalesRep, rep1AdderTotal, perRepKw)                                       //BS (BR, AN)
-	rep1PayRateSubTotal := calculateR1PayRateSubTotal(saleData.PrimarySalesRep, rep1payRateSemi, rep1AdderPerKw)                     //BT (BJ, BS)
-	rep1MinOrMax := calculateR1MinOrMax(saleData.PrimarySalesRep, rep1PayRateSubTotal, rep1minRate, rep1maxRate)                     //BV (BT, BF, BG)
-	rep1CommTotal := calculateR1CommTotal(saleData.PrimarySalesRep, saleData.Source, rep1MinOrMax, perRepKw, rep1Credit)             //BW (BV, AN, BI)
-	rep1CommStatusCheck := calculateRCommStatudCheck(saleData.PrimarySalesRep, "Sales Rep 2", saleData.ProjectStatus, rep1CommTotal) //BX (DG, AJ, BW)
+	rep1LoanFee := dataMgmt.LoanFeeAdderCfg.CalculateRepR1LoanFee(rep1, uniqueID)                       //BN                                                                                              //BN                                                                                                              //BN
+	rep1AdderTotal := calculateRAdderTotal(rep1, rep1Addr, rep1AutoAdder, rep1LoanFee, rep1Rebate, rep1Referral) //BR (BL, BM, BN, BO, BP)
+	rep1AdderPerKw := calculateRAdderPerKw(rep1, rep1AdderTotal, perRepKw)                                       //BS (BR, AN)
+	rep1PayRateSubTotal := calculateR1PayRateSubTotal(rep1, rep1payRateSemi, rep1AdderPerKw)                     //BT (BJ, BS)
+	rep1MinOrMax := calculateR1MinOrMax(rep1, rep1PayRateSubTotal, rep1minRate, rep1maxRate)                     //BV (BT, BF, BG)
+	rep1CommTotal := calculateR1CommTotal(rep1, source, rep1MinOrMax, perRepKw, rep1Credit)             //BW (BV, AN, BI)
+	rep1CommStatusCheck := calculateRCommStatudCheck(rep1, "Sales Rep 2", status, rep1CommTotal) //BX (DG, AJ, BW)
 	rep1DrawAmount := calculateR1DrawAmount(rep1CommStatusCheck, repDrawMax, RepPerRepSales, RepDrawPercentage)                      //DL
-	rep1DrawPaid := dataMgmt.ApRepCfg.CalculateRepR1DrawPaid(saleData.UniqueId, saleData.PrimarySalesRep)                            //DM
+	rep1DrawPaid := dataMgmt.ApRepCfg.CalculateRepR1DrawPaid(uniqueID, rep1)                            //DM
 
 	//==================== REP 2 ==========================/
 
@@ -133,7 +132,7 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	// outData["rate"] = repRate
 	// outData["position"] = position
 
-	mapToJson(outData, saleData.UniqueId, "outData")
+	mapToJson(outData, uniqueID, "outData")
 	return outData, err
 }
 
