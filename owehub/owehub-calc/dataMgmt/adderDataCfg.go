@@ -297,6 +297,21 @@ func (AdderDataCfg *AdderDataCfgStruct) CalculateR1AddrResp(dealer, rep1, rep2, 
 	return r1addrresp
 }
 
+func (AdderDataCfg *AdderDataCfgStruct) CalculatePerRepOvrdShare(uniqueId string, repCount float64) (perRepOvrdShare float64) {
+	if len(uniqueId) > 0 {
+		for _, data := range AdderDataCfg.AdderDataList {
+			if data.UniqueId == uniqueId {
+				if data.RepPercent <= 1 {
+					return (data.ExactAmount * data.RepPercent) / repCount
+				} else if data.RepPercent > 1 {
+					return data.RepPercent / repCount
+				}
+			}
+		}
+	}
+	return perRepOvrdShare
+}
+
 /******************************************************************************
 * FUNCTION:        CalculatePerRepOvrd
 * DESCRIPTION:     calculates the "CalculateAddrAmount" value based on the provided data
@@ -373,7 +388,7 @@ func (AdderDataCfg *AdderDataCfgStruct) CalculateR1DfResp(rep1, rep2, uniqueId, 
 		if uniqueId != data.UniqueId {
 			continue
 		}
-		r1PayScale := RepPayCfg.CalculateR1PayScale(rep1, state, data.Date)
+		r1PayScale, _ := RepPayCfg.CalculateR1PayScale(rep1, state, data.Date)
 		if len(r1PayScale) > 0 {
 			return adderRespCfg.CalculateAdderResp(r1PayScale) //*
 		}
