@@ -257,21 +257,6 @@ func (AdderDataCfg *AdderDataCfgStruct) CalculateAddr(dealer string, uniqueId st
 * DESCRIPTION:     calculates the "CalculateAddrAmount" value based on the provided data
 * RETURNS:         addrPtr
 *****************************************************************************/
-func (AdderDataCfg *AdderDataCfgStruct) CalculateR1Addr(dealer, rep1, rep2, uniqueId, state string, sysSize float64) (r1addr float64) {
-	log.EnterFn(0, "CalculateAddrAmount")
-	defer func() { log.ExitFn(0, "CalculateAddrAmount", nil) }()
-
-	if len(uniqueId) > 0 {
-		return AdderDataCfg.CalculateR1AddrResp(dealer, rep1, rep2, uniqueId, state, sysSize)
-	}
-	return r1addr
-}
-
-/******************************************************************************
-* FUNCTION:        CalculateAddrAmount
-* DESCRIPTION:     calculates the "CalculateAddrAmount" value based on the provided data
-* RETURNS:         addrPtr
-*****************************************************************************/
 func (AdderDataCfg *AdderDataCfgStruct) CalculateR1AddrResp(dealer, rep1, rep2, uniqueId, state string, sysSize float64) (r1addrresp float64) {
 	log.EnterFn(0, "CalculateAddrAmount")
 	defer func() { log.ExitFn(0, "CalculateAddrAmount", nil) }()
