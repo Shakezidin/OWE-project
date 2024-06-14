@@ -19,6 +19,7 @@ import { format } from 'date-fns';
 import MicroLoader from '../../components/loader/MicroLoader';
 import DataNotFound from '../../components/loader/DataNotFound';
 import useMatchMedia from '../../../hooks/useMatchMedia';
+import { toast } from 'react-toastify';
 interface ActivePopups {
   [key: number]: number | null;
 }
@@ -469,6 +470,8 @@ const ProjectStatus = () => {
 
   useEffect(() => {
     dispatch(getProjects());
+
+    return (()=>toast.dismiss())
   }, []);
   const projectOption: Option[] = projects?.map?.(
     (item: (typeof projects)[0]) => ({

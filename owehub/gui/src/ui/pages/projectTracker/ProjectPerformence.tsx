@@ -21,6 +21,7 @@ import Pagination from '../../components/pagination/Pagination';
 import MicroLoader from '../../components/loader/MicroLoader';
 import DataNotFound from '../../components/loader/DataNotFound';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 const ProjectPerformence = () => {
   const dispatch = useAppDispatch();
   const [page, setPage] = useState(1);
@@ -46,6 +47,7 @@ const ProjectPerformence = () => {
   useEffect(() => {
     const current = format(new Date(), 'yyyy-MM-dd');
     dispatch(getPerfomance());
+    return (()=>toast.dismiss())
   }, []);
 
   useEffect(() => {
