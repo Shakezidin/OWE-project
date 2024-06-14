@@ -230,7 +230,7 @@ const UserOnboardingCreation: React.FC<createUserProps> = ({
 
                   <div
                     className="create-input-field"
-                    style={{ marginTop: '-5px' }}
+                    style={{marginTop:3}}
                   >
                     <label className="inputLabel">Phone Number</label>
                     <PhoneInput

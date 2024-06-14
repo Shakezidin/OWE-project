@@ -55,6 +55,7 @@ a {
   font-size: 12px;
   font-weight: 400;
   line-height: 14.5px;
+  top: 4px;
 }
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -270,7 +271,6 @@ input[type='password']::-ms-clear {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  align-items: flex-end;
 }
 .createUserActionButton {
   display: flex;

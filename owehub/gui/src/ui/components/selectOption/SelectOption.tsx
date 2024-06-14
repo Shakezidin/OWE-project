@@ -51,7 +51,7 @@ const SelectOption: React.FC<Props> = ({
         styles={{
           control: (baseStyles, state: any) => ({
             ...baseStyles,
-            marginTop: '20px',
+            marginTop: '25px',
             borderRadius: '8px',
             outline: 'none',
             fontSize: '13px',
