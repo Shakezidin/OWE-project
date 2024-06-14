@@ -450,7 +450,7 @@ export const ARDashboardPage: React.FC = () => {
             fetchFunction={() => { }}
           />
         )}
-        <div className="" style={{ marginTop: '20px' }}>
+        <div className="" style={{ marginTop: '8px' }}>
           {active === 0 && <ArDashBoardTable />}
         </div>
       </div>

@@ -93,7 +93,7 @@ const ConfigurePage: React.FC = () => {
         { title: 'Dealer Tier', route: ROUTES.CONFIG_DEALER_TIER },
         { title: 'Adder Data', route: ROUTES.CONFIG_ADDERDATA },
         // { title: "Auto Adder", route: ROUTES.CONFIG_AUTO_ADDER },
-        { title: 'Commision Rates', route: ROUTES.CONFIG_COMMISSION_RATE },
+        { title: 'Commission Rates', route: ROUTES.CONFIG_COMMISSION_RATE },
         { title: 'Sales Types', route: ROUTES.CONFIG_SALE },
         { title: 'Loan Type', route: ROUTES.CONFIG_LOAN },
       ],
