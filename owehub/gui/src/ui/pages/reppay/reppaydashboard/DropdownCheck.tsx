@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, SetStateAction } from 'react';
 import { FiChevronDown } from 'react-icons/fi';
 import './DropdownWithCheckboxes.css';
 
@@ -18,8 +18,8 @@ const options: Option[] = [
   { value: 'LEADER', label: 'LEADER' },
 ];
 
-const DropdownWithCheckboxes = () => {
-  const [isOpen, setIsOpen] = useState(false);
+const DropdownWithCheckboxes = ({isOpen,setIsOpen}:{isOpen:boolean,setIsOpen:React.Dispatch<SetStateAction<boolean>>}) => {
+
   // const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [selectedOptions, setSelectedOptions] = useState<string[]>(
     options.map((o) => o.value)

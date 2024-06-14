@@ -24,6 +24,7 @@ export const RepPayDashboardPage: React.FC = () => {
     endDate: new Date(),
     key: 'selection',
   });
+  const [isOpen, setIsOpen] = useState(false);
   const [selectedOption2, setSelectedOption2] = useState<string>(
     comissionValueData[0].label
   );
@@ -108,7 +109,7 @@ export const RepPayDashboardPage: React.FC = () => {
                   <label className="rep-inputLabel" style={{ color: '#344054', marginLeft: "-29px" }}>
                     Includes
                   </label>
-                  <div className='drop-d'> <DropdownWithCheckboxes /></div>
+                  <div className='drop-d'> <DropdownWithCheckboxes isOpen={isOpen} setIsOpen={setIsOpen} /></div>
                 </div>
               </div>
 
@@ -130,6 +131,7 @@ export const RepPayDashboardPage: React.FC = () => {
                     value={comissionValueData.find(
                       (option) => option.value === selectedOption2
                     )}
+                    onFocus={()=>setIsOpen(false)}
                     onChange={handleSelectChange2}
                     styles={{
                       control: (baseStyles, state) => ({

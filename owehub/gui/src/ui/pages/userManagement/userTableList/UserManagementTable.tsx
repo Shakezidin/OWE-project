@@ -323,6 +323,7 @@ const UserManagementTable: React.FC<UserTableProos> = ({
             <button
               className="trash-btn rounded-8 border-none flex items-center justify-center"
               type="button"
+              style={{cursor:"pointer"}}
             >
               <svg
                 width="24"

@@ -146,8 +146,8 @@ const Header: React.FC<Toggleprops> = ({
         </div>
       </div>
       <div className="search-container">
-        <div className="user-container">
-          <div className="user-img-container" ref={dropdownRef} onClick={() => setOPenIcon(!openIcon)}>
+        <div className="user-container" ref={dropdownRef} onClick={() => setOPenIcon(!openIcon)}>
+          <div className="user-img-container"  >
             <div className="user-img">
               <span>{name}</span>
             </div>

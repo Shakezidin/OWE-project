@@ -30,8 +30,8 @@ const initialState: IState = {
   isSuccess: 0,
   count: 0,
   filters: {
-    report_type: 'ALL',
-    sale_partner: 'ALL',
+    report_type: 'All',
+    sale_partner: 'All',
     sort_by: 'partner',
     shaky: false,
     cancel: false,
