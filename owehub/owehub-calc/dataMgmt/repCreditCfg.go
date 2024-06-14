@@ -159,13 +159,13 @@ func (pReferral *RepCreditStruct) LoadReferralCfg() (err error) {
 	return err
 }
 
-func (pReferral *RepCreditStruct) CalculateR1Credit(uniqueId string) (R1Credit float64) {
-	if len(uniqueId) > 0 {
+func (pReferral *RepCreditStruct) CalculateRCredit(rep, uniqueId string) (RCredit float64) {
+	if len(rep) > 0 {
 		for _, data := range pReferral.RepCreditList {
 			if data.UniqueID == uniqueId {
-				R1Credit += data.PerRepAmt
+				RCredit += data.PerRepAmt
 			}
 		}
 	}
-	return R1Credit
+	return RCredit
 }

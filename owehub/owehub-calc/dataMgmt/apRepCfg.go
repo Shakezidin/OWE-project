@@ -155,15 +155,22 @@ func (pApRepCfg *ApRepCfgStruct) CalculateRepPayForUniqueId(dealer string, uniqu
 	return apRep
 }
 
-/******************************************************************************
- * FUNCTION:        CalculateRepR1DrawPaid
- * DESCRIPTION:     calculates the r1 draw paid value based on the
- * RETURNS:         r1DrawPaid
- *****************************************************************************/
-func (pApRepCfg *ApRepCfgStruct) CalculateRepR1DrawPaid(rep1, uniqueId string) (r1DrawPaid float64) {
-	if len(rep1) > 0 {
+func (pApRepCfg *ApRepCfgStruct) CalculateRepRDrawPaid(uniqueId, rep string) (r1DrawPaid float64) {
+	if len(rep) > 0 {
 		for _, data := range pApRepCfg.ApRepList.ApRepList {
-			if data.UniqueId == uniqueId && data.Rep == rep1 && (data.Type == "Advance" || data.Type == "Draw" || data.Type == "Shaky" || data.Type == "Cancel") {
+			if data.UniqueId == uniqueId && data.Rep == rep && (data.Type == "Advance" || data.Type == "Draw" || data.Type == "Shaky" || data.Type == "Cancel") {
+				r1DrawPaid += data.Amount
+			}
+		}
+	}
+	return r1DrawPaid
+}
+
+func (pApRepCfg *ApRepCfgStruct) CalculateRepRCommPaid(uniqueId, rep string) (r1DrawPaid float64) {
+	if len(rep) > 0 {
+		for _, data := range pApRepCfg.ApRepList.ApRepList {
+			if data.UniqueId == uniqueId && data.Rep == rep && (data.Type == "Advance" || data.Type == "Draw" ||
+				data.Type == "Shaky" || data.Type == "Cancel" || data.Type == "Final" || data.Type == "Adjustment") {
 				r1DrawPaid += data.Amount
 			}
 		}

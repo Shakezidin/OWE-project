@@ -11,7 +11,7 @@ import (
 * DESCRIPTION:     calculates the "r_rr" value based on the provided data
 * RETURNS:         gross revenue
 *****************************************************************************/
-func calculateR1RR(repName string, val1, val2 float64) (result float64) {
+func calculateRR(repName string, val1, val2 float64) (result float64) {
 	if len(repName) > 0 {
 		return val1 + val2
 	}
@@ -23,7 +23,7 @@ func calculateR1RR(repName string, val1, val2 float64) (result float64) {
 * DESCRIPTION:     calculates the "r_status_comm_check" value based on the provided data
 * RETURNS:         gross revenue
 *****************************************************************************/
-func calculateRCommStatudCheck(repName, salesRepType, status string, R1CommTotal float64) (result float64) {
+func calculateRCommStatudCheck(repName, salesRepType, status string, RCommTotal float64) (result float64) {
 	if len(repName) > 0 {
 		if salesRepType == "Sales Rep 2" {
 			return 0
@@ -32,7 +32,7 @@ func calculateRCommStatudCheck(repName, salesRepType, status string, R1CommTotal
 		} else if status == "Shaky" {
 			return 0
 		} else {
-			return R1CommTotal
+			return RCommTotal
 		}
 	}
 	return 0
@@ -63,7 +63,7 @@ func calculateRepKw(rep string, netEpc, SysSize, adderPerKw float64) float64 {
 * DESCRIPTION:     calculates the "r_pay_rate_sub_total" value based on the provided data
 * RETURNS:         gross revenue
 *****************************************************************************/
-func calculateR1PayRateSubTotal(repName string, val1, val2 float64) (result float64) {
+func calculateRPayRateSubTotal(repName string, val1, val2 float64) (result float64) {
 	if len(repName) > 0 {
 		return val1 - val2
 	}
@@ -75,8 +75,8 @@ func calculateR1PayRateSubTotal(repName string, val1, val2 float64) (result floa
 * DESCRIPTION:     calculates the "contract$$" value based on the provided data
 * RETURNS:         gross revenue
 *****************************************************************************/
-func CalculatePayRateSemi(Rep1 string, rl, rate, adjustment, r1Incentive, epcCalc float64) (payRateSemi float64) {
-	if len(Rep1) > 0 && Rep1 != "" {
+func CalculatePayRateSemi(Rep string, rl, rate, adjustment, r1Incentive, epcCalc float64) (payRateSemi float64) {
+	if len(Rep) > 0 && Rep != "" {
 		if rl <= 0 {
 			return rate + adjustment + r1Incentive
 		} else if rate <= 0 {
@@ -159,12 +159,12 @@ func calculateRAdderTotal(repName string, val1, val2, val3, val4, val5 float64) 
 * DESCRIPTION:     calculates the "calculateR1CommTotal" value based on the provided data
 * RETURNS:         r1CommTotal
 *****************************************************************************/
-func calculateR1CommTotal(rep1, source string, r1MinOrMax, perRepKw, r1Credit float64) (r1CommTotal float64) {
+func calculateRCommTotal(rep1, source string, rMinOrMax, perRepKw, rCredit float64) (r1CommTotal float64) {
 	if len(rep1) > 0 {
 		if source == "BPN: SETTER" {
-			return math.Round(((r1MinOrMax * perRepKw) + r1Credit) * 0.6)
+			return math.Round(((rMinOrMax * perRepKw) + rCredit) * 0.6)
 		} else {
-			math.Round((r1MinOrMax * perRepKw) + r1Credit)
+			math.Round((rMinOrMax * perRepKw) + rCredit)
 		}
 	}
 	return r1CommTotal
@@ -175,17 +175,17 @@ func calculateR1CommTotal(rep1, source string, r1MinOrMax, perRepKw, r1Credit fl
 * DESCRIPTION:     calculates the "calculateR1MinOrMax" value based on the provided data
 * RETURNS:         r1MinOrMax
 *****************************************************************************/
-func calculateR1MinOrMax(rep1 string, r1PayRateSubTotal, minRate, maxRate float64) (r1MinOrMax float64) {
+func calculateRMinOrMax(rep1 string, rPayRateSubTotal, minRate, maxRate float64) (rMinOrMax float64) {
 	if len(rep1) > 0 {
-		if r1PayRateSubTotal < minRate {
+		if rPayRateSubTotal < minRate {
 			return minRate
-		} else if r1PayRateSubTotal > maxRate {
+		} else if rPayRateSubTotal > maxRate {
 			return maxRate
 		} else {
-			return r1PayRateSubTotal
+			return rPayRateSubTotal
 		}
 	}
-	return r1MinOrMax
+	return rMinOrMax
 }
 
 /******************************************************************************
@@ -193,15 +193,15 @@ func calculateR1MinOrMax(rep1 string, r1PayRateSubTotal, minRate, maxRate float6
 * DESCRIPTION:     calculates the "r1 draw amount" value based on the provided data
 * RETURNS:         r1DrawAmount
 *****************************************************************************/
-func calculateR1DrawAmount(r1CommStatusCheck, drawMax, perRepSales, drawPerentage float64) (r1DrawAmount float64) {
-	if r1CommStatusCheck > 0 {
-		if (drawMax * perRepSales) < (r1CommStatusCheck * drawPerentage) {
+func calculateRDrawAmount(rCommStatusCheck, drawMax, perRepSales, drawPerentage float64) (r1DrawAmount float64) {
+	if rCommStatusCheck > 0 {
+		if (drawMax * perRepSales) < (rCommStatusCheck * drawPerentage) {
 			return math.Round(drawMax * perRepSales)
 		} else {
-			return math.Round(r1CommStatusCheck * drawPerentage)
+			return math.Round(rCommStatusCheck * drawPerentage)
 		}
 	}
-	return r1CommStatusCheck
+	return rCommStatusCheck
 }
 
 /******************************************************************************
@@ -277,4 +277,47 @@ func calculateApptSetTotal(apptSetter, source string, rep1CommStatusCheck, payRa
 		}
 	}
 	return apptSetTotal
+}
+
+/***************************************************************************
+* FUNCTION:        calculateR1DrawAmount
+* DESCRIPTION:     calculates the "r1 draw amount" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
+func calculateRNetEpc(rep string, contractCalc, adderTotal, RloanFee, loanFee, systemSize float64) (netEpc float64) {
+	if len(rep) > 0 {
+		netEpc = math.Round(((contractCalc-(adderTotal-RloanFee+loanFee))/systemSize/1000)*1000) / 1000
+	}
+	return netEpc
+}
+
+/******************************************************************************
+* FUNCTION:        CalculateStatusDate
+* DESCRIPTION:     calculates the "status_date" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
+func CalculateStatusDate(uniqueID string, shaky bool, pto, instSys, cancel, ntp, permSub, wc time.Time) time.Time {
+	var statusDate time.Time
+
+	if len(uniqueID) > 0 {
+		switch {
+		case !pto.IsZero():
+			statusDate = pto
+		case !instSys.IsZero():
+			statusDate = instSys
+		case !cancel.IsZero():
+			statusDate = cancel
+		case shaky == true:
+			statusDate = time.Time{}
+		case !ntp.IsZero():
+			statusDate = ntp
+		case !permSub.IsZero():
+			statusDate = permSub
+		case !wc.IsZero():
+			statusDate = wc
+		default:
+			statusDate = time.Time{}
+		}
+	}
+	return statusDate
 }

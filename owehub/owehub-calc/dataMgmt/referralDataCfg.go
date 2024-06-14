@@ -229,20 +229,25 @@ func (pReferral *ReferralDataStruct) CalculatePerRepAddrShare(uniqueId string, r
 	return perRepAddrShare
 }
 
-func (pReferral *ReferralDataStruct) CalculateR1AddrResp(uniqueId, rep1, rep2, state, Type string, date time.Time) (R1AddrResp float64) {
+func (pReferral *ReferralDataStruct) CalculateR1AddrResp(uniqueId, rep1, rep2, state, Type string, date time.Time, r1r2check bool) (R1AddrResp float64) {
+	rep := rep1
+	if !r1r2check {
+		rep = rep2
+	}
+	
 	var repCount float64
-	if len(rep1) > 0 {
+	if len(rep) > 0 {
 		repCount = RebateCfg.CalculateRepCount(rep1, rep2)
 	}
 	PerRepOvrdShare := pReferral.CalculatePerRepOvrdShare(uniqueId, repCount)
 	PerRepAddrShare := pReferral.CalculatePerRepAddrShare(uniqueId, repCount)
-	R1PayScale, _ := RepPayCfg.CalculateR1PayScale(rep1, state, date)
+	R1PayScale, _ := RepPayCfg.CalculateRPayScale(rep, state, date)
 	R1ReferralCreditPercentage := AdderCreditCfg.CalculateR1RebateCreditPercentage(R1PayScale, Type)
 	R1ReferralCreditDol := R1ReferralCreditPercentage / repCount
 	if PerRepOvrdShare > 0 {
 		return PerRepOvrdShare
 	} else if PerRepAddrShare > 0 {
-		if len(rep1) > 0 {
+		if len(rep) > 0 {
 			if (PerRepAddrShare * R1ReferralCreditPercentage) < R1ReferralCreditDol {
 				PerRepAddrShare -= PerRepAddrShare * R1ReferralCreditPercentage
 			} else {
@@ -255,14 +260,14 @@ func (pReferral *ReferralDataStruct) CalculateR1AddrResp(uniqueId, rep1, rep2, s
 	return R1AddrResp
 }
 
-func (pReferral *ReferralDataStruct) CalculateR1Referral(rep1, uniqueId string) (R1Referral float64) {
+func (pReferral *ReferralDataStruct) CalculateRReferral(rep, uniqueId string, r1r2check bool) (R1Referral float64) {
 	log.EnterFn(0, "CalculateR1Referral")
 	defer func() { log.ExitFn(0, "CalculateR1Referral", nil) }()
 
-	if len(rep1) > 0 {
+	if len(rep) > 0 {
 		for _, data := range RebateCfg.RebateList {
 			if data.UniqueId == uniqueId {
-				R1Referral += pReferral.CalculateR1AddrResp(data.UniqueId, data.Rep_1_Name, data.Rep_2_Name, data.State, data.Type, data.Date)
+				R1Referral += pReferral.CalculateR1AddrResp(data.UniqueId, data.Rep_1_Name, data.Rep_2_Name, data.State, data.Type, data.Date, r1r2check)
 			}
 		}
 	}

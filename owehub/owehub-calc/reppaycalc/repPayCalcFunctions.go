@@ -3,6 +3,7 @@ package arcalc
 import (
 	datamgmt "OWEApp/owehub-calc/dataMgmt"
 	log "OWEApp/shared/logger"
+	"math"
 	"time"
 )
 
@@ -84,4 +85,16 @@ func CalculateRepContractCalc(epc float64, contractTotal float64, systemSize flo
 		/* Return 0 if netEPC is empty or if contract_total is not available and netEPC cannot be parsed*/
 	}
 	return 0
+}
+
+/******************************************************************************
+ * FUNCTION:        CalculateRepRBalance
+ * DESCRIPTION:     Calculate Contract Ammount
+ * RETURNS:         contact amount
+ *****************************************************************************/
+func CalculateRepRBalance(rep string, commStatusCheck, commPaid float64) (balance float64) {
+	if len(rep) > 0 {
+		balance = math.Round((commStatusCheck-commPaid)*100) / 200
+	}
+	return balance
 }

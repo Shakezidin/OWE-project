@@ -338,7 +338,7 @@ func (LoanFeeAdderCfg *LoanFeeAdderCfgStruct) CalculaterepR1AdderResp(rep1, uniq
 		if Type[:2] == "LF" {
 			return LoanFeeAdderCfg.CalculateRepPerRepAddrShare(adderAmount, repCount, PerKwAmt, sysSize)
 		} else {
-			r1PayScale, _ := RepPayCfg.CalculateR1PayScale(rep1, state, date)
+			r1PayScale, _ := RepPayCfg.CalculateRPayScale(rep1, state, date)
 			return LoanFeeAdderCfg.CalculateRepPerRepAddrShare(adderAmount, repCount, PerKwAmt, sysSize) * LoanFeeAdderCfg.CalculaterepRep1DefResp(r1PayScale)
 		}
 	} else {
@@ -351,13 +351,13 @@ func (LoanFeeAdderCfg *LoanFeeAdderCfgStruct) CalculaterepR1AdderResp(rep1, uniq
 * DESCRIPTION:     calculates the "R1LoanFee" value based on the provided data
 * RETURNS:         r1loanFee
 *****************************************************************************/
-func (LoanFeeAdderCfg *LoanFeeAdderCfgStruct) CalculateRepR1LoanFee(rep1, uniqueId string) (r1LoanFee float64) {
+func (LoanFeeAdderCfg *LoanFeeAdderCfgStruct) CalculateRepRLoanFee(rep, uniqueId string) (r1LoanFee float64) {
 	var (
 		err       error
 		startDate time.Time
 	)
 
-	if len(rep1) > 0 {
+	if len(rep) > 0 {
 		for _, data := range LoanFeeAdderCfg.LoanFeeAdderList.LoanFeeAdderList {
 			if data.UniqueID == uniqueId {
 				if len(data.StartDate) > 0 {
@@ -369,7 +369,7 @@ func (LoanFeeAdderCfg *LoanFeeAdderCfgStruct) CalculateRepR1LoanFee(rep1, unique
 					log.FuncWarnTrace(0, "Empty StartDate Received in data.StartDate config")
 					continue
 				}
-				r1AdderResp := LoanFeeAdderCfg.CalculaterepR1AdderResp(rep1, uniqueId, data.Dealer, data.Installer, data.State, data.Type, startDate, data.Contract, data.RepDollDivbyPer, data.RepCount, data.AddrAmount, data.PerKwAmount, data.SysSize)
+				r1AdderResp := LoanFeeAdderCfg.CalculaterepR1AdderResp(rep, uniqueId, data.Dealer, data.Installer, data.State, data.Type, startDate, data.Contract, data.RepDollDivbyPer, data.RepCount, data.AddrAmount, data.PerKwAmount, data.SysSize)
 				r1LoanFee += r1AdderResp
 			}
 		}
