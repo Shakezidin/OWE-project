@@ -145,7 +145,7 @@ func calculateRAdderPerKw(repName string, val1, val2 float64) (result float64) {
 /******************************************************************************
 * FUNCTION:        calculateRAdderTotal
 * DESCRIPTION:     calculates the "r_adder_total" value based on the provided data
-* RETURNS:         gross revenue
+* RETURNS:         result
 *****************************************************************************/
 func calculateRAdderTotal(repName string, val1, val2, val3, val4, val5 float64) (result float64) {
 	if len(repName) > 0 {
@@ -157,7 +157,7 @@ func calculateRAdderTotal(repName string, val1, val2, val3, val4, val5 float64) 
 /******************************************************************************
 * FUNCTION:        calculateR1CommTotal
 * DESCRIPTION:     calculates the "calculateR1CommTotal" value based on the provided data
-* RETURNS:         gross revenue
+* RETURNS:         r1CommTotal
 *****************************************************************************/
 func calculateR1CommTotal(rep1, source string, r1MinOrMax, perRepKw, r1Credit float64) (r1CommTotal float64) {
 	if len(rep1) > 0 {
@@ -173,7 +173,7 @@ func calculateR1CommTotal(rep1, source string, r1MinOrMax, perRepKw, r1Credit fl
 /******************************************************************************
 * FUNCTION:        calculateR1MinOrMax
 * DESCRIPTION:     calculates the "calculateR1MinOrMax" value based on the provided data
-* RETURNS:         gross revenue
+* RETURNS:         r1MinOrMax
 *****************************************************************************/
 func calculateR1MinOrMax(rep1 string, r1PayRateSubTotal, minRate, maxRate float64) (r1MinOrMax float64) {
 	if len(rep1) > 0 {
@@ -191,7 +191,7 @@ func calculateR1MinOrMax(rep1 string, r1PayRateSubTotal, minRate, maxRate float6
 /******************************************************************************
 * FUNCTION:        calculateR1DrawAmount
 * DESCRIPTION:     calculates the "r1 draw amount" value based on the provided data
-* RETURNS:         gross revenue
+* RETURNS:         r1DrawAmount
 *****************************************************************************/
 func calculateR1DrawAmount(r1CommStatusCheck, drawMax, perRepSales, drawPerentage float64) (r1DrawAmount float64) {
 	if r1CommStatusCheck > 0 {
@@ -204,6 +204,11 @@ func calculateR1DrawAmount(r1CommStatusCheck, drawMax, perRepSales, drawPerentag
 	return r1CommStatusCheck
 }
 
+/******************************************************************************
+* FUNCTION:        calculatePerRepSales
+* DESCRIPTION:     calculates the "per rep sales" value based on the provided data
+* RETURNS:         perRepsales
+*****************************************************************************/
 func calculatePerRepSales(rep1, rep2 string) (perRepsales float64) {
 	if len(rep1) > 0 {
 		if len(rep2) > 0 {
@@ -214,4 +219,62 @@ func calculatePerRepSales(rep1, rep2 string) (perRepsales float64) {
 	} else {
 		return 0
 	}
+}
+
+/******************************************************************************
+* FUNCTION:        calculateApptBalance
+* DESCRIPTION:     calculates the "appt balance" value based on the provided data
+* RETURNS:         apptBalance
+*****************************************************************************/
+func calculateApptBalance(apptSetter string, apptAmount, apptPaid float64) (apptBalance float64) {
+	if len(apptSetter) > 0 {
+		return math.Round(apptAmount - apptPaid)
+	}
+	return apptBalance
+}
+
+/******************************************************************************
+* FUNCTION:        calculateApptAmount
+* DESCRIPTION:     calculates the "appt amount" value based on the provided data
+* RETURNS:         apptAmount
+*****************************************************************************/
+func calculateApptAmount(apptSetStatusCheck float64) (apptAmount float64) {
+	if apptSetStatusCheck > 0 {
+		return apptSetStatusCheck
+	}
+	return 0
+}
+
+/******************************************************************************
+* FUNCTION:        calculateApptSetStatusCheck
+* DESCRIPTION:     calculates the "appt set status check" value based on the provided data
+* RETURNS:         apptSetStatusCheck
+*****************************************************************************/
+func calculateApptSetStatusCheck(apptSetter, status string, apptSetTotal float64) (apptSetStatusCheck float64) {
+	if len(apptSetter) > 0 {
+		if status == "Cancel" {
+			apptSetStatusCheck = 0.0
+		} else if status == "Shaky" {
+			apptSetStatusCheck = 0.0
+		} else {
+			apptSetStatusCheck = apptSetTotal
+		}
+	}
+	return apptSetStatusCheck
+}
+
+/******************************************************************************
+* FUNCTION:        calculateApptSetTotal
+* DESCRIPTION:     calculates the "appt set total" value based on the provided data
+* RETURNS:         apptSetStatusCheck
+*****************************************************************************/
+func calculateApptSetTotal(apptSetter, source string, rep1CommStatusCheck, payRate, systemSize float64) (apptSetTotal float64) {
+	if len(apptSetter) > 0 {
+		if source == "BPN: SETTER" {
+			return rep1CommStatusCheck * 0.8
+		} else {
+			return math.Round(payRate * systemSize)
+		}
+	}
+	return apptSetTotal
 }

@@ -83,3 +83,19 @@ func (DBACfg *DBACfgStruct) CalculateReprep1Dba(rep string) (dba string) {
 	}
 	return dba
 }
+
+/******************************************************************************
+* FUNCTION:        CalculateApptSetDba
+* DESCRIPTION:     calculates the appt set dba value based on the provided data
+* RETURNS:         dlrPayBonus float64
+*****************************************************************************/
+func (DBACfg *DBACfgStruct) CalculateApptSetDba(apptSetter string) (apptSetDba string) {
+	if len(apptSetter) > 0 {
+		for _, data := range DBACfg.DBAList {
+			if data.PreferredName == apptSetter {
+				apptSetDba = data.Dba
+			}
+		}
+	}
+	return apptSetDba
+}

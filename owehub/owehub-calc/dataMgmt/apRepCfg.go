@@ -137,9 +137,8 @@ func (pApRepCfg *ApRepCfgStruct) LoadApRepCfg() (err error) {
 /******************************************************************************
  * FUNCTION:        CalculateApRepForUniqueId
  * DESCRIPTION:     calculates the ap rep value based on the unique Id
- * RETURNS:         credit
+ * RETURNS:         apRep
  *****************************************************************************/
-
 func (pApRepCfg *ApRepCfgStruct) CalculateRepPayForUniqueId(dealer string, uniqueId string) (apRep float64) {
 
 	log.EnterFn(0, "LoadApRepCfg")
@@ -156,6 +155,11 @@ func (pApRepCfg *ApRepCfgStruct) CalculateRepPayForUniqueId(dealer string, uniqu
 	return apRep
 }
 
+/******************************************************************************
+ * FUNCTION:        CalculateRepR1DrawPaid
+ * DESCRIPTION:     calculates the r1 draw paid value based on the
+ * RETURNS:         r1DrawPaid
+ *****************************************************************************/
 func (pApRepCfg *ApRepCfgStruct) CalculateRepR1DrawPaid(rep1, uniqueId string) (r1DrawPaid float64) {
 	if len(rep1) > 0 {
 		for _, data := range pApRepCfg.ApRepList.ApRepList {
@@ -165,4 +169,20 @@ func (pApRepCfg *ApRepCfgStruct) CalculateRepR1DrawPaid(rep1, uniqueId string) (
 		}
 	}
 	return r1DrawPaid
+}
+
+/******************************************************************************
+ * FUNCTION:        CalculateApptPaid
+ * DESCRIPTION:     calculates the appt paid paid value based on the
+ * RETURNS:         apptPaid
+ *****************************************************************************/
+func (pApRepCfg *ApRepCfgStruct) CalculateApptPaid(apptSetter, uniqueId string) (apptPaid float64) {
+	if len(apptSetter) > 0 {
+		for _, data := range pApRepCfg.ApRepList.ApRepList {
+			if data.UniqueId == uniqueId && data.Rep == apptSetter && data.Type == "Appt-Set" {
+				apptPaid += data.Amount
+			}
+		}
+	}
+	return apptPaid
 }
