@@ -90,7 +90,6 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	shaky := false   //* confirm with shushank
 	types := ""      //* not received from Colten yet
 	kwh := 0.0       //* confirm with shushank
-	loanFee := 0.0   //* yet to be calculated
 	apptSetter := "" //* confirm with shushank // O
 
 	//==================== COMMON ==========================/
@@ -99,8 +98,10 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	perRepKw := calculatePerRepKw(rep1, rep2, systemSize)
 	RepPerRepSales := calculatePerRepSales(rep1, rep2)
 	contractCalc := CalculateRepContractCalc(epc, contractTotal, systemSize)
-	epcCalc := common.CalculateAREPCCalc(contractCalc, wc, epc, systemSize, common.ARWc1FilterDate)                                       //AQ
-	RepDrawPercentage, repDrawMax := dataMgmt.PayScheduleCfg.CalculateRepDrawPerc(uniqueID, dealer, partner, installer, types, state, wc) //DH DI
+	epcCalc := common.CalculateAREPCCalc(contractCalc, wc, epc, systemSize, common.ARWc1FilterDate)                                               //AQ
+	RepDrawPercentage, repDrawMax, repPay := dataMgmt.PayScheduleCfg.CalculateRepDrawPerc(uniqueID, dealer, partner, installer, types, state, wc) //DH DI DJ
+	payRate := dataMgmt.ApptSettersCfg.CalculatePayRate(apptSetter, wc)                                                                           //DC (O, U)
+	loanFee := dataMgmt.SaleData.CalculateLoanFee(uniqueID, contractTotal)                                                                        //AR
 
 	//==================== REP 1 ==========================/
 	rep1Name := rep1
@@ -129,9 +130,7 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	rep1Balance := CalculateRepRBalance(rep1, rep1CommStatusCheck, rep1CommPaid) //DM
 
 	//==================== Appt ===========================/
-
-	apptSetDba := dataMgmt.DBACfg.CalculateApptSetDba(apptSetter)                                       //DB
-	payRate := dataMgmt.ApptSettersCfg.CalculatePayRate(apptSetter, wc)                                 //DC (O, U)
+	apptSetDba := dataMgmt.DBACfg.CalculateApptSetDba(apptSetter)                                       //DB (O)
 	apptSetTotal := calculateApptSetTotal(apptSetter, source, rep1CommStatusCheck, payRate, systemSize) //DD (O, D, BX, DC, P)
 	apptSetStatusCheck := calculateApptSetStatusCheck(apptSetter, status, apptSetTotal)                 //DE (O, AJ, DD)
 	apptAmount := calculateApptAmount(apptSetStatusCheck)                                               //DX (DE)
@@ -139,7 +138,6 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	apptBalance := calculateApptBalance(apptSetter, apptAmount, apptPaid)                               //DZ (O, DX, DY)
 
 	//==================== REP 2 ==========================/
-
 	rep2Dba := dataMgmt.DBACfg.CalculateReprepDba(rep2)
 	rep2Referral := dataMgmt.ReferralDataConfig.CalculateRReferral(rep2, uniqueID, false)
 	rep2Rebate := dataMgmt.RebateCfg.CalculateRRebate(rep2, uniqueID, false)

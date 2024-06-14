@@ -172,7 +172,7 @@ func (pTierLoanFee *TierLoanFeeCfgStruct) CalculateDlrCost(dlrTier, installer, s
 		}
 
 		if dlrTier == data.DealerTier && data.Installer == installer && data.State == st &&
-			// data.LoanType == Type &&
+			data.LoanType == Type &&
 			startDate.Before(date) && endDate.After(date) {
 			dlrcost += data.DlrCost
 		}

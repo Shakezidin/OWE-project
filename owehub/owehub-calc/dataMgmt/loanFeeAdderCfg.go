@@ -290,19 +290,36 @@ func (pLoanFee *LoanFeeAdderCfgStruct) LoadLoanFeeAdderCfg() (err error) {
 	return err
 }
 
-/******************************************************************************
-* FUNCTION:        CalculateLoanFee
-* DESCRIPTION:     calculates the "loanFee" value based on the provided data
-* RETURNS:         loanFee
-*****************************************************************************/
-func (LoanFeeAdderCfg *LoanFeeAdderCfgStruct) CalculateLoanFee(uniqueId, dealer, installer, state, Type string, date time.Time, contractDol float64) (loanFeeAdder float64) {
-
-	if len(dealer) > 0 {
-		loanFee := LoanFeeCfg.CalculateDlrCost(uniqueId, dealer, installer, state, Type, date)
-		loanFeeAdder = (loanFee * contractDol) / 100
-	}
-	return loanFeeAdder
-}
+// /******************************************************************************
+// * FUNCTION:        CalculateLoanFee
+// * DESCRIPTION:     calculates the "loanFee" value based on the provided data
+// * RETURNS:         loanFee
+// *****************************************************************************/
+// func (LoanFeeAdderCfg *LoanFeeAdderCfgStruct) CalculateLoanFee(val1, uniqueId string) (loanFee float64) {
+// 	var (
+// 		date time.Time
+// 		err  error
+// 	)
+// 	if len(val1) > 0 {
+// 		for _, data := range LoanFeeAdderCfg.LoanFeeAdderList.LoanFeeAdderList {
+// 			if data.UniqueID == uniqueId {
+// 				if len(data.Date) > 0 {
+// 					date, err = time.Parse("01-02-2006", data.StartDate)
+// 					if err != nil {
+// 						log.FuncErrorTrace(0, "Failed to convert data.StartDate:%+v to time.Time err: %+v", data.StartDate, err)
+// 					}
+// 				} else {
+// 					log.FuncWarnTrace(0, "Empty StartDate Received in data.StartDate config")
+// 					continue
+// 				}
+// 				dlrCost := LoanFeeCfg.CalculateDlrCost(uniqueId, data.Dealer, data.Installer, data.State, data.Type, date)
+// 				adderAmount := data.Contract * dlrCost
+// 				loanFee += adderAmount
+// 			}
+// 		}
+// 	}
+// 	return loanFee
+// }
 
 func (LoanFeeAdderCfg *LoanFeeAdderCfgStruct) CalculateRepPerRepOvrdShare(uniqueId, dealer, installer, state, Type string, date time.Time, contractDolDol, repDolDivByPer, repCount float64) (perRepOvrdShare float64) {
 	if repDolDivByPer <= 1 {

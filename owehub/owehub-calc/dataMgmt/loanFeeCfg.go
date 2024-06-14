@@ -174,7 +174,7 @@ func (pLoanFee *LoanFeeCfgStruct) CalculateDlrCost(uniqueId, dealer, installer, 
 			}
 
 			if data.Dealer == dealer && data.Installer == installer && data.State == st &&
-				// data.LoanType == "Type" &&
+				data.LoanType == Type &&
 				startDate.Before(date) && endDate.After(date) {
 				dlrcost += data.DlrCost
 			}

@@ -289,7 +289,7 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateDlrDrawPerc(dealer, partner
 * DESCRIPTION:     calculates the addr value based on the provided data
 * RETURNS:         drawPerc,dlrDrawMax,commission_models
 *****************************************************************************/
-func (PayScheduleCfg *PayScheduleCfgStruct) CalculateRepDrawPerc(uniqueId, dealer, partner, installer, types, state string, wc time.Time) (RepDrawPercentage, repDrawMax float64) {
+func (PayScheduleCfg *PayScheduleCfgStruct) CalculateRepDrawPerc(uniqueId, dealer, partner, installer, types, state string, wc time.Time) (RepDrawPercentage, repDrawMax float64, repPay string) {
 	var (
 		err       error
 		startDate time.Time
@@ -328,8 +328,9 @@ func (PayScheduleCfg *PayScheduleCfgStruct) CalculateRepDrawPerc(uniqueId, deale
 				!endDate.Before(wc) {
 				RepDrawPercentage = data.RepDraw
 				repDrawMax = data.RepDrawMax
+				repPay = data.RepPay
 			}
 		}
 	}
-	return RepDrawPercentage, repDrawMax
+	return RepDrawPercentage, repDrawMax, repPay
 }
