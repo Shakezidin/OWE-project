@@ -109,7 +109,7 @@ const ProjectPerformence = () => {
                         type="image/svg+xml"
                         data={el.icon}
                         aria-label="performance-icons"
-                        width={30}
+                        width={24}
                       ></object>
                     </div>
                     <div style={{ lineHeight: '20px' }}>

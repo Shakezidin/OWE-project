@@ -43,8 +43,11 @@
   flex-shrink: 0;
   border-radius: 50%;
 }
-.pie-section {
-  width: 50%;
+.pie-section-1 {
+  width: 55%;
+}
+.pie-section-2 {
+  width: 45%;
 }
 
 .recharts-tooltip-wrapper {
@@ -69,7 +72,7 @@
 
 
 @media screen and (min-width: 1025px) and (max-width: 1400px) {
-  .pie-section {
+  .pie-section-1, .pie-section-2{
     width: 100%;
   } 
   .chart-view {
@@ -96,9 +99,13 @@
   .stats-wrapper > h3{
     font-size: 12px  !important;
   }
-  .pie-section{
+  .pie-section-1{
     width: 60%;
   } 
+
+  .pie-section-2{
+    width: 40%;
+  }
 
   .onboarding-mask-img{
     width: 124px;

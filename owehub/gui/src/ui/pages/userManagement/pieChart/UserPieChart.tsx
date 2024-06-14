@@ -42,7 +42,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
   return (
     <div className="chart-view" style={{ marginTop: 12 }}>
       <div
-        className="pie-section"
+        className="pie-section-1"
         style={{
           background: 'white',
           borderRadius: '18px',
@@ -144,7 +144,7 @@ const UserPieChart: React.FC<UserPieChartProps> = ({
       </div>
 
       <div
-        className="pie-section flex-auto"
+        className="pie-section-2 flex-auto"
         style={{
           background: 'white',
           borderRadius: '18px',
