@@ -55,7 +55,7 @@
   display: flex;
   flex-direction: column;
   padding: 1rem;
-  width: 15%;
+  width: fit-content;
 }
 .tab {
   padding: 0.5rem;
@@ -329,7 +329,7 @@
 .Personal-container-detail {
   margin-top: 2rem;
   /* width: 800px; */
-  height: 270px;
+  height: 290px;
   opacity: 0px;
   border: 1px solid #e0e0e0;
   border-radius: 16px;
@@ -370,5 +370,26 @@
   }
   .reset-pass-fields{
     flex-wrap: wrap;
+  }
+  .create-input-field-address, .create-input-field-profile-password{
+    width: 47%;
+  }
+  .reset-pass-fields{
+    justify-content: unset;
+    gap: 15px;
+  }
+  .reset-Update{
+    justify-content: unset;
+    padding: 0;
+    padding-top: 1rem;
+  }
+  .reset-Update button{
+    width: 47%;
+  }
+  .Personal-container{
+    height: 300px;
+  } 
+  .active-profile{
+    padding: 0.5rem 1rem;
   }
 }
