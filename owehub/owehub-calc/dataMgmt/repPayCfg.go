@@ -107,7 +107,7 @@ func (RepPayCfg *RepPaySettingsCfgStruct) LoadRepPayCfg() (err error) {
 	return err
 }
 
-func (RepPayCfg *RepPaySettingsCfgStruct) CalculateR1PayScale(Rep1, state string, date time.Time) (payScale, position string) {
+func (RepPayCfg *RepPaySettingsCfgStruct) CalculateRPayScale(Rep1, state string, date time.Time) (payScale, position string) {
 	var (
 		err       error
 		startDate time.Time

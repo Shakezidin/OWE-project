@@ -257,9 +257,14 @@ func (AdderDataCfg *AdderDataCfgStruct) CalculateAddr(dealer string, uniqueId st
 * DESCRIPTION:     calculates the "CalculateAddrAmount" value based on the provided data
 * RETURNS:         addrPtr
 *****************************************************************************/
-func (AdderDataCfg *AdderDataCfgStruct) CalculateR1AddrResp(dealer, rep1, rep2, uniqueId, state string, sysSize float64) (r1addrresp float64) {
+func (AdderDataCfg *AdderDataCfgStruct) CalculateRAddrResp(dealer, rep1, rep2, uniqueId, state string, sysSize float64, r1r2Check bool) (r1addrresp float64) {
 	log.EnterFn(0, "CalculateAddrAmount")
 	defer func() { log.ExitFn(0, "CalculateAddrAmount", nil) }()
+
+	rep := rep1
+	if !r1r2Check {
+		rep = rep2
+	}
 
 	if len(uniqueId) > 0 {
 		for _, data := range AdderDataCfg.AdderDataList {
@@ -273,7 +278,7 @@ func (AdderDataCfg *AdderDataCfgStruct) CalculateR1AddrResp(dealer, rep1, rep2, 
 					}
 				} else if len(rep1) > 0 {
 					perRepAddrShare := AdderDataCfg.CalculatePerRepAddrShare(rep1, rep2, uniqueId, sysSize) //*
-					r1DefResp := AdderDataCfg.CalculateR1DfResp(rep1, rep2, uniqueId, state, sysSize)       //*
+					r1DefResp := AdderDataCfg.CalculateR1DfResp(rep, uniqueId, state, sysSize)              //*
 					return perRepAddrShare * r1DefResp
 				}
 			}
@@ -366,14 +371,14 @@ func (AdderDataCfg *AdderDataCfgStruct) CalculatePerRepAddrShare(rep1, rep2, uni
 * DESCRIPTION:     calculates the "CalculatePerRepAddrShare" value based on the provided data
 * RETURNS:         addrPtr
 *****************************************************************************/
-func (AdderDataCfg *AdderDataCfgStruct) CalculateR1DfResp(rep1, rep2, uniqueId, state string, sysSize float64) (r1DfResp float64) {
+func (AdderDataCfg *AdderDataCfgStruct) CalculateR1DfResp(rep, uniqueId, state string, sysSize float64) (r1DfResp float64) {
 	log.EnterFn(0, "CalculatePerRepAddrShare")
 	defer func() { log.ExitFn(0, "CalculatePerRepAddrShare", nil) }()
 	for _, data := range AdderDataCfg.AdderDataList {
 		if uniqueId != data.UniqueId {
 			continue
 		}
-		r1PayScale, _ := RepPayCfg.CalculateR1PayScale(rep1, state, data.Date)
+		r1PayScale, _ := RepPayCfg.CalculateRPayScale(rep, state, data.Date)
 		if len(r1PayScale) > 0 {
 			return adderRespCfg.CalculateAdderResp(r1PayScale) //*
 		}

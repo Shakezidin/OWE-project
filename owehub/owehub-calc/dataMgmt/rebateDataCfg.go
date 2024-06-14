@@ -386,22 +386,28 @@ func (RebateCfg *RebateCfgStruct) CalculatePerRepAddrShare(uniqueId string, repC
 	return perRepAddrShare
 }
 
-func (RebateCfg *RebateCfgStruct) CalculateR1AddrResp(uniqueId, rep1, rep2, state, Type string, date time.Time) (R1AddrResp float64) {
+func (RebateCfg *RebateCfgStruct) CalculateR1AddrResp(uniqueId, rep1, rep2, state, Type string, date time.Time, r1r2check bool) (R1AddrResp float64) {
 	var repCount float64
-	if len(rep1) > 0 {
+
+	rep := rep1
+	if !r1r2check {
+		rep = rep2
+	}
+
+	if len(rep) > 0 {
 		repCount = RebateCfg.CalculateRepCount(rep1, rep2)
 	}
 	PerRepOverSHare := RebateCfg.CalculatePerRepOvrdShare(uniqueId, repCount)
 	PerRepDefOvrd := RebateCfg.CalculatePerRepDefOvrd(uniqueId)
 	PerRepAddrShare := RebateCfg.CalculatePerRepAddrShare(uniqueId, repCount)
-	R1PayScale, _ := RepPayCfg.CalculateR1PayScale(rep1, state, date)
+	R1PayScale, _ := RepPayCfg.CalculateRPayScale(rep, state, date)
 	R1RebateCreditPercentage := AdderCreditCfg.CalculateR1RebateCreditPercentage(R1PayScale, Type)
 	R1RebateCreditDol := R1RebateCreditPercentage / repCount
 	if PerRepOverSHare > 0 {
 		return PerRepOverSHare
 	} else if PerRepDefOvrd > 0 {
 		return PerRepDefOvrd
-	} else if len(rep1) > 0 {
+	} else if len(rep) > 0 {
 		if (PerRepAddrShare * R1RebateCreditPercentage) < R1RebateCreditDol {
 			PerRepAddrShare -= PerRepAddrShare * R1RebateCreditPercentage
 		} else {
@@ -414,14 +420,14 @@ func (RebateCfg *RebateCfgStruct) CalculateR1AddrResp(uniqueId, rep1, rep2, stat
 	return R1AddrResp
 }
 
-func (RebateCfg *RebateCfgStruct) CalculateR1Rebate(rep1, uniqueId string) (R1Rebate float64) {
+func (RebateCfg *RebateCfgStruct) CalculateRRebate(rep, uniqueId string, r1r2check bool) (R1Rebate float64) {
 	log.EnterFn(0, "CalculateR1Rebate")
 	defer func() { log.ExitFn(0, "CalculateR1Rebate", nil) }()
 
-	if len(rep1) > 0 {
+	if len(rep) > 0 {
 		for _, data := range RebateCfg.RebateList {
 			if data.UniqueId == uniqueId {
-				R1Rebate += RebateCfg.CalculateR1AddrResp(data.UniqueId, data.Rep_1_Name, data.Rep_2_Name, data.State, data.Type, data.Date)
+				R1Rebate += RebateCfg.CalculateR1AddrResp(data.UniqueId, data.Rep_1_Name, data.Rep_2_Name, data.State, data.Type, data.Date, r1r2check)
 			}
 		}
 	}

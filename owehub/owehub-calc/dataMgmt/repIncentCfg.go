@@ -80,7 +80,7 @@ func (RepIncentCfg *repIncentCfgStruct) LoadRepIncentCfg() (err error) {
 	return err
 }
 
-func (RepIncentCfg *repIncentCfgStruct) CalculateRepR1Incentive(Rep1 string, wc time.Time) (incentive float64) {
+func (RepIncentCfg *repIncentCfgStruct) CalculateRepR1Incentive(Rep string, wc time.Time) (incentive float64) {
 
 	wcYear := wc.Year()
 	wcMonth := strings.ToLower(wc.Month().String())
@@ -92,7 +92,7 @@ func (RepIncentCfg *repIncentCfgStruct) CalculateRepR1Incentive(Rep1 string, wc 
 		}
 		month := strings.ToLower(monthSplit[0])
 		year, _ := strconv.Atoi(strings.ToLower(monthSplit[1]))
-		if data.Name == Rep1 && strings.Contains(wcMonth, month) && wcYear == year {
+		if data.Name == Rep && strings.Contains(wcMonth, month) && wcYear == year {
 			incentive += data.Kw
 		}
 	}
