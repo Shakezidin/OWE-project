@@ -147,55 +147,7 @@ const Header: React.FC<Toggleprops> = ({
       </div>
       <div className="search-container">
         <div className="user-container">
-          {/* <button className="app-btn" onClick={() => setOpenModal(!openModal)}>
-            {
-              openModal ? <img src={ICONS.groupActiveIcon} alt="" /> : <img src={ICONS.groupIcon} alt="" />
-            }
-          </button> */}
-          {/* {
-            openModal && (<div className="header-modal">
-              <div className="select-head">
-                <p>Select Option</p>
-              </div>
-              <div className="image-box-container" >
-                <div className="image-icon" style={{ backgroundColor: "#DDF3FF" }}>
-                  <img src={ICONS.commIconHead} alt="" />
-                </div>
-                <p className="" >
-                  Commission
-                </p>
-              </div>
-              <div className="image-box-container" onClick={() => setSidebarChange(1)}>
-                <div className="image-icon" style={{ backgroundColor: "#FFE6E6" }}>
-                  <img src={ICONS.dbIconManag} alt="" />
-                </div>
-                <p className="">
-                  Database Manger
-                </p>
-              </div>
-              <div className="image-box-container">
-                <div className="image-icon" style={{ backgroundColor: "#DDDFFF" }}>
-                  <img src={ICONS.projIcon} alt="" />
-                </div>
-                <p className="">
-                  Project Manager
-                </p>
-              </div>
-              <div className="image-box-container">
-                <div className="image-icon" style={{ backgroundColor: "#DDF3FF" }}>
-                  <img src={ICONS.teamManag} alt="" />
-                </div>
-                <p className="">
-                  Team Management
-                </p>
-              </div>
-            </div>
-            )
-          } */}
-          {/* <div className="notification">
-            <img src={ICONS.NOTIFICATION} alt="" />
-          </div> */}
-          <div className="user-img-container">
+          <div className="user-img-container" ref={dropdownRef} onClick={() => setOPenIcon(!openIcon)}>
             <div className="user-img">
               <span>{name}</span>
             </div>
@@ -208,8 +160,6 @@ const Header: React.FC<Toggleprops> = ({
               <div className="">
                 <div
                   className="down-circle"
-                  ref={dropdownRef}
-                  onClick={() => setOPenIcon(!openIcon)}
                 >
                   {openIcon ? (
                     <img src={ICONS.upperIcon} alt="" />
@@ -235,19 +185,12 @@ const Header: React.FC<Toggleprops> = ({
 
                       <div
                         className="image-box-container "
-                        // style={{ paddingLeft: toggleOpen ? ".8rem" : "" }}
                         onClick={handleLogout}
                       >
                         <div className="image-icon">
                           <IoMdLogOut />
                         </div>
-
                         <div
-                          style={
-                            {
-                              // color: "black",
-                            }
-                          }
                         >
                           <p style={{ fontSize: '12px', fontWeight: '500' }}>
                             Logout
