@@ -194,6 +194,11 @@ func (pApRepCfg *ApRepCfgStruct) CalculateApptPaid(apptSetter, uniqueId string) 
 	return apptPaid
 }
 
+/******************************************************************************
+ * FUNCTION:        CalculateR2DmPaid
+ * DESCRIPTION:     calculates the r2 dm paid value based on the
+ * RETURNS:         r2DmPaid
+ *****************************************************************************/
 func (pApRepCfg *ApRepCfgStruct) CalculateR2DmPaid(r2DmName, uniqueId string) (r2DmPaid float64) {
 	if len(r2DmName) > 0 {
 		for _, data := range pApRepCfg.ApRepList.ApRepList {
@@ -205,13 +210,77 @@ func (pApRepCfg *ApRepCfgStruct) CalculateR2DmPaid(r2DmName, uniqueId string) (r
 	return r2DmPaid
 }
 
-func (pApRepCfg *ApRepCfgStruct) CalculateR2DirPaid(r2DmName, uniqueId string) (r2DmPaid float64) {
+/******************************************************************************
+ * FUNCTION:        CalculateR2DirPaid
+ * DESCRIPTION:     calculates the r2 dir paid value based on the
+ * RETURNS:         r2DirPaid
+ *****************************************************************************/
+func (pApRepCfg *ApRepCfgStruct) CalculateR2DirPaid(r2DmName, uniqueId string) (r2DirPaid float64) {
 	if len(r2DmName) > 0 {
 		for _, data := range pApRepCfg.ApRepList.ApRepList {
 			if data.UniqueId == uniqueId && data.Rep == r2DmName && data.Type == "DIR-OVRD" {
-				r2DmPaid += data.Amount
+				r2DirPaid += data.Amount
 			}
 		}
 	}
-	return r2DmPaid
+	return r2DirPaid
+}
+
+/******************************************************************************
+ * FUNCTION:        CalculateApRepForUniqueId
+ * DESCRIPTION:     calculates the ap rep value based on the unique Id
+ * RETURNS:         apRep
+ *****************************************************************************/
+func (pApRepCfg *ApRepCfgStruct) CalculateAmountApOth(uniqueId, payee string) (amount float64) {
+	for _, data := range pApRepCfg.ApRepList.ApRepList {
+		if data.UniqueId == uniqueId && data.Rep == payee && data.Type == "AP-OTHER" {
+			amount += data.Amount
+		}
+	}
+	return amount
+}
+
+/******************************************************************************
+ * FUNCTION:        CalculateApptPaid
+ * DESCRIPTION:     calculates the appt paid paid value based on the
+ * RETURNS:         apptPaid
+ *****************************************************************************/
+func (pApRepCfg *ApRepCfgStruct) CalculateApPdaTotalPaid(uniqueId, payee string) (amount, clawAmount float64) {
+	for _, data := range pApRepCfg.ApRepList.ApRepList {
+		if data.Amount > 0 && data.UniqueId == uniqueId && data.Rep == payee && data.Type == "AP-PDA" {
+			amount += data.Amount
+		}
+		if data.Amount < 0 && data.UniqueId == uniqueId && data.Rep == payee && data.Type == "AP-PDA" {
+			clawAmount += data.Amount
+		}
+	}
+	return amount, clawAmount
+}
+
+/******************************************************************************
+ * FUNCTION:        CalculateApptPaid
+ * DESCRIPTION:     calculates the appt paid paid value based on the
+ * RETURNS:         apptPaid
+ *****************************************************************************/
+func (pApRepCfg *ApRepCfgStruct) CalculateApAdvTotalPaid(uniqueId, payee string) (amount float64) {
+	for _, data := range pApRepCfg.ApRepList.ApRepList {
+		if data.UniqueId == uniqueId && data.Rep == payee && data.Type == "Advance" {
+			amount += data.Amount
+		}
+	}
+	return amount
+}
+
+/******************************************************************************
+ * FUNCTION:        CalculateApptPaid
+ * DESCRIPTION:     calculates the appt paid paid value based on the
+ * RETURNS:         apptPaid
+ *****************************************************************************/
+func (pApRepCfg *ApRepCfgStruct) CalculateApDedTotalPaid(uniqueId, payee string) (amount float64) {
+	for _, data := range pApRepCfg.ApRepList.ApRepList {
+		if data.UniqueId == uniqueId && data.Rep == payee && data.Type == "AP-DEDUCT" {
+			amount += data.Amount
+		}
+	}
+	return amount
 }

@@ -74,9 +74,7 @@ func (DBACfg *DBACfgStruct) LoadDBACfg() (err error) {
 func (DBACfg *DBACfgStruct) CalculateReprepDba(rep string) (dba string) {
 	for _, data := range DBACfg.DBAList {
 		if len(rep) > 0 {
-			if rep == "" {
-				return ""
-			} else if data.PreferredName == rep {
+			if data.PreferredName == rep {
 				return data.Dba
 			}
 		}
