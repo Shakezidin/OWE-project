@@ -321,3 +321,59 @@ func CalculateStatusDate(uniqueID string, shaky bool, pto, instSys, cancel, ntp,
 	}
 	return statusDate
 }
+
+/******************************************************************************
+* FUNCTION:        calculateR2DmBal
+* DESCRIPTION:     calculates the "r2 dm balance" value based on the provided data
+* RETURNS:         r2DmBal
+*****************************************************************************/
+func calculateR2DmBal(R2DmName string, r2DmCOmm, r2DmPaid float64) (r2DmBal float64) {
+	if len(R2DmName) > 0 {
+		return math.Round(r2DmCOmm - r2DmPaid)
+	}
+
+	return r2DmBal
+}
+
+/******************************************************************************
+* FUNCTION:        calculateR2DmComm
+* DESCRIPTION:     calculates the "r2 dm comm" value based on the provided data
+* RETURNS:         r2DmComm
+*****************************************************************************/
+func calculateR2DmComm(r2DmName string, r2DmRate, perTeamKw float64) (r2DmComm float64) {
+	if len(r2DmName) > 0 {
+		return math.Round(r2DmRate * perTeamKw)
+	}
+	return r2DmComm
+}
+
+/******************************************************************************
+* FUNCTION:        calculateR2DirComm
+* DESCRIPTION:     calculates the "r2 dm comm" value based on the provided data
+* RETURNS:         r2DirComm
+*****************************************************************************/
+func calculateR2DirComm(r2DirName string, r2DirRate, perTeamKw float64) (r2DmComm float64) {
+	if len(r2DirName) > 0 {
+		return math.Round(r2DirRate * perTeamKw)
+	}
+	return r2DmComm
+}
+
+func calculateTeamCount(rep1Team, rep2Team string) (teamCount float64) {
+	if len(rep1Team) > 0 {
+		if len(rep2Team) > 0 && rep1Team != rep2Team {
+			return 2
+		} else {
+			return 1
+		}
+	} else {
+		return 1
+	}
+}
+
+func calculateR2DirBal(r2DirName string, r2DirComm, R2DirPaid float64) (r2DirBal float64) {
+	if len(r2DirName) > 0 {
+		return r2DirComm - R2DirPaid
+	}
+	return r2DirBal
+}

@@ -99,3 +99,38 @@ func (DBACfg *DBACfgStruct) CalculateApptSetDba(apptSetter string) (apptSetDba s
 	}
 	return apptSetDba
 }
+
+/******************************************************************************
+* FUNCTION:        CalculateR2DbDba
+* DESCRIPTION:     calculates the r2 db dba value based on the provided data
+* RETURNS:         dlrPayBonus float64
+*****************************************************************************/
+func (DBACfg *DBACfgStruct) CalculateR2DmDba(r2Dmname string) string {
+	if len(r2Dmname) > 0 {
+		if r2Dmname == "~~~" {
+			return ""
+		} else {
+			for _, data := range DBACfg.DBAList {
+				if data.Dba == r2Dmname {
+					return data.PreferredName
+				}
+			}
+		}
+	}
+	return ""
+}
+
+func (DBACfg *DBACfgStruct) CalculateR2DirDba(r2DirName string) string {
+	if len(r2DirName) > 0 {
+		if r2DirName == "~~~" {
+			return ""
+		} else {
+			for _, data := range DBACfg.DBAList {
+				if data.Dba == r2DirName {
+					return data.PreferredName
+				}
+			}
+		}
+	}
+	return ""
+}

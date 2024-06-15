@@ -193,3 +193,25 @@ func (pApRepCfg *ApRepCfgStruct) CalculateApptPaid(apptSetter, uniqueId string) 
 	}
 	return apptPaid
 }
+
+func (pApRepCfg *ApRepCfgStruct) CalculateR2DmPaid(r2DmName, uniqueId string) (r2DmPaid float64) {
+	if len(r2DmName) > 0 {
+		for _, data := range pApRepCfg.ApRepList.ApRepList {
+			if data.UniqueId == uniqueId && data.Rep == r2DmName && data.Type == "DM-OVRD" {
+				r2DmPaid += data.Amount
+			}
+		}
+	}
+	return r2DmPaid
+}
+
+func (pApRepCfg *ApRepCfgStruct) CalculateR2DirPaid(r2DmName, uniqueId string) (r2DmPaid float64) {
+	if len(r2DmName) > 0 {
+		for _, data := range pApRepCfg.ApRepList.ApRepList {
+			if data.UniqueId == uniqueId && data.Rep == r2DmName && data.Type == "DIR-OVRD" {
+				r2DmPaid += data.Amount
+			}
+		}
+	}
+	return r2DmPaid
+}

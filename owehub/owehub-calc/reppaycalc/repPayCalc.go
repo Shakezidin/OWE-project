@@ -107,7 +107,7 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	rep1Name := rep1
 	rep1Referral := dataMgmt.ReferralDataConfig.CalculateRReferral(rep1, uniqueID, true) //BP
 	rep1Rebate := dataMgmt.RebateCfg.CalculateRRebate(rep1, uniqueID, true)              //BO
-	rep1Dba := dataMgmt.DBACfg.CalculateReprepDba(rep1)                                  // AZ
+	rep1Dba := dataMgmt.DBACfg.CalculateReprepDba(rep1)                                  //AZ
 	rep1Credit := dataMgmt.RepCreditCfg.CalculateRCredit(rep1, uniqueID)                 //BI  there is no schema and get endpoint in main for repcredit
 	rep1Addr := dataMgmt.AdderDataCfg.CalculateRAddrResp(dealer, rep1, rep2, uniqueID, state, systemSize, true)
 	rep1PayScale, rep1Position := dataMgmt.RepPayCfg.CalculateRPayScale(rep1, saleData.State, wc)                                         //BA
@@ -163,6 +163,20 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	rep2CommPaid := dataMgmt.ApRepCfg.CalculateRepRCommPaid(uniqueID, rep2)
 	rep2Balance := CalculateRepRBalance(rep2, rep2CommStatusCheck, rep2CommPaid)
 
+	//==================== OvrdCalc ==========================/
+	rep1Team := dataMgmt.TeamDataCfg.CalculateRTeamName(rep1, wc)                                  //AS
+	rep2Team := dataMgmt.TeamDataCfg.CalculateRTeamName(rep2, wc)                                  //AT (N, U)
+	teamCount := calculateTeamCount(rep1Team, rep2Team)                                            //AU
+	R2DmName, r2DmRate := dataMgmt.LeaderOverrideCfg.CalculateR2DmName(teamCount, rep2Team, wc)    //BP BQ (AT, AU, U)
+	R2DmComm := calculateR2DmComm(R2DmName, r2DmRate, perTeamKw)                                   //BS (BP, BQ, AW)
+	R2DmPaid := dataMgmt.ApRepCfg.CalculateR2DmPaid(R2DmName, uniqueID)                            //CL (BP, G,)
+	R2DmBal := calculateR2DmBal(R2DmName, R2DmComm, R2DmPaid)                                      //CM (BP, BS, CL)
+	r2DirName, r2DirRate := dataMgmt.LeaderOverrideCfg.CalculateR2DirName(teamCount, rep2Team, wc) //BT BU
+	r2DirComm := calculateR2DirComm(r2DirName, r2DirRate, perTeamKw)                               //BW (BT,BU, AW)
+	R2DirPaid := dataMgmt.ApRepCfg.CalculateR2DirPaid(r2DirName, uniqueID)                         //CO (BT, G)
+	r2DirBal := calculateR2DirBal(r2DirName, r2DirComm, R2DirPaid)                                 //CP
+	r2DmDba := dataMgmt.DBACfg.CalculateR2DmDba(R2DmName)                                          //BR
+	r2DirDba := dataMgmt.DBACfg.CalculateR2DirDba(r2DirName)                                       //BV
 	// outData["rep_1_dba"] = rep1Dba
 	// outData["status"] = status
 	// outData["rep_1"] = rep1
