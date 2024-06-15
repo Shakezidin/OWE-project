@@ -62,10 +62,10 @@
   /* font-family: Poppins; */
   font-weight: 300;
   font-size: 18px;
-  height: 5vh;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding-block: 5px;
 }
 
 
@@ -115,11 +115,10 @@
   .bottamTextView div span {
     color: #fff;
     font-weight: 300;
-    font-size: 72%;
+    font-size: 12px;
     height: 3vh;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    padding: 15px 10px;
   }
 
 }
