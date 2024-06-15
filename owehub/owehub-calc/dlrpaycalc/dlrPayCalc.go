@@ -151,6 +151,8 @@ func CalculateDlrPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	netEpc = saleData.ContractTotal / (systemSize * 1000)
 	contractTotal = saleData.ContractTotal
 
+
+
 	outData["dealer"] = dealer
 	outData["partner"] = partner
 	outData["instl"] = installer
