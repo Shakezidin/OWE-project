@@ -193,3 +193,62 @@ func (pApRepCfg *ApRepCfgStruct) CalculateApptPaid(apptSetter, uniqueId string) 
 	}
 	return apptPaid
 }
+
+/******************************************************************************
+ * FUNCTION:        CalculateApRepForUniqueId
+ * DESCRIPTION:     calculates the ap rep value based on the unique Id
+ * RETURNS:         apRep
+ *****************************************************************************/
+func (pApRepCfg *ApRepCfgStruct) CalculateAmountApOth(uniqueId, payee string) (amount float64) {
+	for _, data := range pApRepCfg.ApRepList.ApRepList {
+		if data.UniqueId == uniqueId && data.Rep == payee && data.Type == "AP-OTHER" {
+			amount += data.Amount
+		}
+	}
+	return amount
+}
+
+/******************************************************************************
+ * FUNCTION:        CalculateApptPaid
+ * DESCRIPTION:     calculates the appt paid paid value based on the
+ * RETURNS:         apptPaid
+ *****************************************************************************/
+func (pApRepCfg *ApRepCfgStruct) CalculateApPdaTotalPaid(uniqueId, payee string) (amount, clawAmount float64) {
+	for _, data := range pApRepCfg.ApRepList.ApRepList {
+		if data.Amount > 0 && data.UniqueId == uniqueId && data.Rep == payee && data.Type == "AP-PDA" {
+			amount += data.Amount
+		}
+		if data.Amount < 0 && data.UniqueId == uniqueId && data.Rep == payee && data.Type == "AP-PDA" {
+			clawAmount += data.Amount
+		}
+	}
+	return amount, clawAmount
+}
+
+/******************************************************************************
+ * FUNCTION:        CalculateApptPaid
+ * DESCRIPTION:     calculates the appt paid paid value based on the
+ * RETURNS:         apptPaid
+ *****************************************************************************/
+func (pApRepCfg *ApRepCfgStruct) CalculateApAdvTotalPaid(uniqueId, payee string) (amount float64) {
+	for _, data := range pApRepCfg.ApRepList.ApRepList {
+		if data.UniqueId == uniqueId && data.Rep == payee && data.Type == "Advance" {
+			amount += data.Amount
+		}
+	}
+	return amount
+}
+
+/******************************************************************************
+ * FUNCTION:        CalculateApptPaid
+ * DESCRIPTION:     calculates the appt paid paid value based on the
+ * RETURNS:         apptPaid
+ *****************************************************************************/
+func (pApRepCfg *ApRepCfgStruct) CalculateApDedTotalPaid(uniqueId, payee string) (amount float64) {
+	for _, data := range pApRepCfg.ApRepList.ApRepList {
+		if data.UniqueId == uniqueId && data.Rep == payee && data.Type == "AP-DEDUCT" {
+			amount += data.Amount
+		}
+	}
+	return amount
+}
