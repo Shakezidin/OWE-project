@@ -73,7 +73,7 @@ export const WelcomePage = () => {
   ];
 
   return (
-    <div className="welcomeMainContainer">
+    <div className="welcomeMainContainer scrollbar">
       <div className="welcomeContainer">
         <header className="welcomeBannerView">
           <div className="welcomeInnerBannerView">

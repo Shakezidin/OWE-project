@@ -168,15 +168,15 @@ input[type='password']::-ms-clear {
   border-radius: 1.5rem;
   margin-top: 0.5rem;
 }
-::-webkit-scrollbar {
+ ::-webkit-scrollbar {
   display: none;
 }
 
 /* Hide scrollbar for IE, Edge and Firefox */
-::-webkit-scrollbar {
+/* ::-webkit-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
-}
+}  */
 
 /* modal style  */
 .transparent-model {
@@ -386,6 +386,34 @@ br {
   position: static !important;
   display: block;
   margin-bottom: -15px !important;
+}
+
+.scrollbar{
+  overflow: auto;
+  height: 100vh;
+}
+
+.scrollbar::-webkit-scrollbar {
+  display: initial !important;
+  width: 10px !important;
+  height: auto !important;;
+  scrollbar-width: thin !important;
+  -ms-overflow-style: auto  !important;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgb(173, 173, 173);
+  border-radius: 30px;
+}
+.scrollbar::-webkit-scrollbar-button {
+  display: initial;
+}
+.scrollbar::-webkit-scrollbar {
+  -ms-overflow-style: initial;
+  scrollbar-width: thin;
+}
+.scrollbar::-webkit-scrollbar-corner {
+  background-color: transparent;
 }
 
 .bg-white{
