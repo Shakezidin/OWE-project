@@ -158,7 +158,7 @@ const CreateDealerCredit: React.FC<ButtonProps> = ({
                 <div className="create-input-field">
                   <Input
                     type={'text'}
-                    label="Unqiue Id"
+                    label="Unique Id"
                     value={dealerCredit.unique_id}
                     name="unique_id"
                     placeholder={'Unique Id'}
