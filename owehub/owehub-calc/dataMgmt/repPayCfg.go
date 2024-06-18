@@ -33,9 +33,11 @@ func (RepPayCfg *RepPaySettingsCfgStruct) LoadRepPayCfg() (err error) {
 	defer func() { log.ExitFn(0, "LoadRepPayCfg", err) }()
 
 	query = ` SELECT rs.id AS record_id, rs.unique_id, rs.name, st.name AS state_name, rs.pay_scale, rs.position,
-	rs.b_e, rs.start_date, rs.end_date
+	rs.b_e, rs.start_date, rs.end_date, rt.rep_type as pay_scale
 	FROM rep_pay_settings rs
-	JOIN states st ON st.state_id = rs.state_id`
+	LEFT JOIN states st ON st.state_id = rs.state_id
+	LEFT JOIN rep_type rt ON rt.id = rs.pay_scale
+	`
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if (err != nil) || (data == nil) {

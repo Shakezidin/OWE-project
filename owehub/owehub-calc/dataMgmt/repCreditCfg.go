@@ -9,24 +9,13 @@ package datamgmt
 import (
 	db "OWEApp/shared/db"
 	log "OWEApp/shared/logger"
-	"time"
 )
 
 // this is in respect with the new columns as per google sheet
 type GetRepCreditTemp struct {
-	RecordId    int64     `json:"record_id"`
-	UniqueID    string    `json:"unique_id"`
-	Customer    string    `json:"customer"`
-	Rep1        string    `json:"rep1"`
-	Rep2        string    `json:"Rep2"`
-	Date        time.Time `json:"date"`
-	ExactAmount float64   `json:"exact_amount"`
-	PerKwAmount string    `json:"per_kw_amount"`
-	ApprovedBy  string    `json:"approved_by"`
-	Notes       string    `json:"notes"`
-	PerRepAmt   float64   `json:"per_rep_amt"`
-	RepCount    float64   `json:"rep_count"`
-	SysSize     float64   `json:"sys_size"`
+	UniqueID     string  `json:"unique_id"`
+	ExactAmount  float64 `json:"exact_amount"`
+	PerRepAmount float64
 }
 
 type RepCreditStruct struct {
@@ -37,7 +26,7 @@ var (
 	RepCreditCfg RepCreditStruct
 )
 
-func (pReferral *RepCreditStruct) LoadReferralCfg() (err error) {
+func (pReferral *RepCreditStruct) LoadRepCreditlCfg() (err error) {
 	var (
 		data         []map[string]interface{}
 		whereEleList []interface{}
@@ -46,9 +35,7 @@ func (pReferral *RepCreditStruct) LoadReferralCfg() (err error) {
 	log.EnterFn(0, "LoadReferralCfg")
 	defer func() { log.ExitFn(0, "LoadReferralCfg", err) }()
 
-	query = `SELECT rc.id as record_id, rc.unique_id, rc.customer, rc.rep_1, rc.rep_2,
-	rc.date, rc.exact_amount, rc.approved_by, rc.notes, rc.per_rep_amt, rc.rep_count,
-	rc.sys_size
+	query = `SELECT *
 	FROM rep_credit rc`
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
@@ -58,11 +45,6 @@ func (pReferral *RepCreditStruct) LoadReferralCfg() (err error) {
 	}
 
 	for _, item := range data {
-		RecordId, ok := item["record_id"].(int64)
-		if !ok {
-			// log.FuncErrorTrace(0, "Failed to get record id for Record ID %v. Item: %+v\n", RecordId, item)
-			// continue
-		}
 		// unique_id
 		UniqueID, ok := item["unique_id"].(string)
 		if !ok || UniqueID == "" {
@@ -71,31 +53,10 @@ func (pReferral *RepCreditStruct) LoadReferralCfg() (err error) {
 		}
 
 		// customer
-		Customer, ok := item["customer"].(string)
-		if !ok || Customer == "" {
-			// log.FuncErrorTrace(0, "Failed to get new customer for Record ID %v. Item: %+v\n", RecordId, item)
-			Customer = ""
-		}
-
-		// Rep1
-		Rep1, ok := item["rep_1"].(string)
-		if !ok || Rep1 == "" {
-			// log.FuncErrorTrace(0, "Failed to get referrer serial for Record ID %v. Item: %+v\n", RecordId, item)
-			Rep1 = ""
-		}
-
-		// Rep2
-		Rep2, ok := item["rep_2"].(string)
-		if !ok || Rep2 == "" {
-			// log.FuncErrorTrace(0, "Failed to get referrer name for Record ID %v. Item: %+v\n", RecordId, item)
-			Rep2 = ""
-		}
-
-		// Date
-		Date, ok := item["date"].(time.Time)
+		PerRepAmount, ok := item["per_rep_amt"].(float64)
 		if !ok {
-			// log.FuncErrorTrace(0, "Failed to get amount for Record ID %v. Item: %+v\n", RecordId, item)
-			Date = time.Time{}
+			// log.FuncErrorTrace(0, "Failed to get new customer for Record ID %v. Item: %+v\n", RecordId, item)
+			PerRepAmount = 0.0
 		}
 
 		// ExactAmount
@@ -105,53 +66,10 @@ func (pReferral *RepCreditStruct) LoadReferralCfg() (err error) {
 			ExactAmount = 0.0
 		}
 
-		// ApprovedBy
-		ApprovedBy, ok := item["approved_by"].(string)
-		if !ok || ApprovedBy == "" {
-			// log.FuncErrorTrace(0, "Failed to get notes for Record ID %v. Item: %+v\n", RecordId, item)
-			ApprovedBy = ""
-		}
-
-		// Notes
-		Notes, ok := item["notes"].(string)
-		if !ok || Notes == "" {
-			// log.FuncErrorTrace(0, "Failed to get type for Record ID %v. Item: %+v\n", RecordId, item)
-			Notes = ""
-		}
-
-		// PerRepAmt
-		PerRepAmt, ok := item["per_rep_amt"].(float64)
-		if !ok {
-			// log.FuncErrorTrace(0, "Failed to get sys size for Record ID %v. Item: %+v\n", RecordId, item)
-			PerRepAmt = 0.0
-		}
-
-		RepCount, ok := item["rep_count"].(float64)
-		if !ok {
-			// log.FuncErrorTrace(0, "Failed to get state for Record ID %v. Item: %+v\n", RecordId, item)
-			RepCount = 0
-		}
-
-		// SysSize
-		SysSize, ok := item["sys_size"].(float64)
-		if !ok || SysSize == 0.0 {
-			// log.FuncErrorTrace(0, "Failed to get state for Record ID %v. Item: %+v\n", RecordId, item)
-			SysSize = 0.0
-		}
-
 		RepCredit := GetRepCreditTemp{
-			RecordId:    RecordId,
-			UniqueID:    UniqueID,
-			Customer:    Customer,
-			Rep1:        Rep1,
-			Rep2:        Rep2,
-			Date:        Date,
-			ExactAmount: ExactAmount,
-			ApprovedBy:  ApprovedBy,
-			Notes:       Notes,
-			PerRepAmt:   PerRepAmt,
-			RepCount:    RepCount,
-			SysSize:     SysSize,
+			UniqueID:     UniqueID,
+			ExactAmount:  ExactAmount,
+			PerRepAmount: PerRepAmount,
 		}
 
 		RepCreditCfg.RepCreditList = append(RepCreditCfg.RepCreditList, RepCredit)
@@ -163,7 +81,7 @@ func (pReferral *RepCreditStruct) CalculateRCredit(rep, uniqueId string) (RCredi
 	if len(rep) > 0 {
 		for _, data := range pReferral.RepCreditList {
 			if data.UniqueID == uniqueId {
-				RCredit += data.PerRepAmt
+				RCredit += data.PerRepAmount
 			}
 		}
 	}

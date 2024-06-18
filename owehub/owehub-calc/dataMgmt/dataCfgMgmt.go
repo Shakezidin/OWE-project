@@ -87,14 +87,6 @@ func LoadConfigurations() (err error) {
 	}
 	// log.FuncErrorTrace(0, "===== DealerCreditCfg : %+v", DealerCreditCfg.DealerCreditList.DealerCreditList[0])
 
-	//* referral data is working
-	err = ReferralDataConfig.LoadReferralCfg()
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get Rebate Config from DB err: %+v", err)
-		return err
-	}
-	// log.FuncErrorTrace(0, "===== ReferralDataConfig : %+v", ReferralDataConfig.ReferralDataList[0])
-
 	//* pay schedule data is working
 	err = PayScheduleCfg.LoadPayScheduleCfg()
 	if err != nil {
@@ -154,11 +146,11 @@ func LoadConfigurations() (err error) {
 	// }
 	// log.FuncErrorTrace(0, "===== LoadTierLoanFeeCfg : %+v", TierLoanFeeCfg.TierLoanFeeList.TierLoanFeeList[0])
 
-	err = AutoAdderCfg.LoadAutoAdderCfg()
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get Rebate Config from DB err: %+v", err)
-		return err
-	}
+	// err = AutoAdderCfg.LoadAutoAdderCfg()
+	// if err != nil {
+	// 	log.FuncErrorTrace(0, "Failed to get Rebate Config from DB err: %+v", err)
+	// 	return err
+	// }
 	// log.FuncErrorTrace(0, "===== AutoAdderCfg : %+v", AutoAdderCfg.AutoAdderList[0])
 
 	err = DealerRepayConfig.LoadDealerRepaymentCfg()
@@ -167,6 +159,96 @@ func LoadConfigurations() (err error) {
 		return err
 	}
 	// log.FuncErrorTrace(0, "===== DealerRepaymentConfig : %+v", DealerRepayConfig.DealerRepaymentList[0])
+
+	//* REP PAY CONFIGS
+
+	//! adder data
+	err = AdderDataCfg.LoadAdderDataCfg()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get Adder Data Config from DB err: %+v", err)
+		return err
+	}
+	log.FuncErrorTrace(0, "===== AdderDataCfg : %+v", AdderDataCfg.AdderDataList[0])
+
+	//! auto adder
+	err = AutoAdderCfg.LoadAutoAdderCfg()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get Auto Adder Data Config from DB err: %+v", err)
+		return err
+	}
+	log.FuncErrorTrace(0, "===== AutoAdder : %+v", AdderDataCfg.AdderDataList[0])
+
+	//! comm rate
+	err = CmmsnRatesCfg.LoadcmmsnRatesCfg()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get Comm Rate Data Config from DB err: %+v", err)
+		return err
+	}
+	log.FuncErrorTrace(0, "===== CommRate : %+v", CmmsnRatesCfg.cmmsnRatesList[0])
+
+	//! DBA
+	err = DBACfg.LoadDBACfg()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get DBA Data Config from DB err: %+v", err)
+		return err
+	}
+	log.FuncErrorTrace(0, "===== DBA : %+v", DBACfg.DBAList[0])
+
+	//! loan fee adder
+	err = LoanFeeAdderCfg.LoadLoanFeeAdderCfg()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get Loan Fee Adder Config from DB err: %+v", err)
+		return err
+	}
+	log.FuncErrorTrace(0, "===== LoanFeeAdder : %+v", LoanFeeAdderCfg.LoanFeeAdderList[0])
+
+	//! rate adjustments
+	err = RateAdjustmentsCfg.LoadRateAdjustmentsCfg()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get Rate Adjustments Config from DB err: %+v", err)
+		return err
+	}
+	log.FuncErrorTrace(0, "===== RateAdjustments : %+v", RateAdjustmentsCfg.RateAdjustmentsList[0])
+
+	//! rebate data
+	err = RebateCfg.LoadRebateCfg()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get Rebate Config from DB err: %+v", err)
+		return err
+	}
+	log.FuncErrorTrace(0, "===== RebateCfg : %+v", RebateCfg.RebateList[0])
+
+	//! referral data
+	err = ReferralDataConfig.LoadReferralCfg()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get Referral Config from DB err: %+v", err)
+		return err
+	}
+	log.FuncErrorTrace(0, "===== ReferralDataConfig : %+v", ReferralDataConfig.ReferralDataList[0])
+
+	//! rep credit
+	err = RepCreditCfg.LoadRepCreditlCfg()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get rep credit Config from DB err: %+v", err)
+		return err
+	}
+	log.FuncErrorTrace(0, "===== RepCredit : %+v", RepCreditCfg.RepCreditList[0])
+
+	//! rep incent
+	err = RepIncentCfg.LoadRepIncentCfg()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get rep incent Config from DB err: %+v", err)
+		return err
+	}
+	log.FuncErrorTrace(0, "===== RepIncent : %+v", RepIncentCfg.RepIncentList[0])
+
+	//! rep pay
+	err = RepPayCfg.LoadRepPayCfg()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get rep pay Config from DB err: %+v", err)
+		return err
+	}
+	log.FuncErrorTrace(0, "===== RepPay : %+v", RepPayCfg.RepPayList.RepPaySettingsList[0])
 
 	return err
 }

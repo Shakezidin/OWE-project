@@ -61,7 +61,7 @@ INSERT INTO loan_type (product_code,active,adder,description) VALUES ('P123',1,1
 \copy ar_schedule(partner,installer,sale_type_id,state_id,red_line,calc_date,permit_pay,permit_max,install_pay,pto_pay,start_date,end_date) FROM '/docker-entrypoint-initdb.d/ar_schedule.csv' DELIMITER ',' CSV;
 \copy install_cost(cost,start_date,end_date) FROM '/docker-entrypoint-initdb.d/install_cost.csv' DELIMITER ',' CSV;
 \copy reconcile(unique_id,start_date,amount,notes) FROM '/docker-entrypoint-initdb.d/reconcile.csv' DELIMITER ',' CSV;
-\copy adder_data(unique_id,date,type_ad_mktg,gc,exact_amount,type1,per_kw_amt,rep_percent,description,notes,sys_size,adder_cal) FROM '/docker-entrypoint-initdb.d/adder_data.csv' DELIMITER '^' CSV;
+\copy adder_data(unique_id,date,gc,exact_amount,per_kw_amt,rep_percent) FROM '/docker-entrypoint-initdb.d/adder_data.csv' DELIMITER ',' CSV;
 \copy referral_data(unique_id,new_customer,referrer_serial,referrer_name,amount,rep_doll_divby_per,notes,type,sys_size,state_id,adder_amount,start_date,end_date) FROM '/docker-entrypoint-initdb.d/referral_data.csv' DELIMITER ',' CSV;
 \copy rebate_data(unique_id,customer_verf,type_rd_mktg,item,amount,rep_doll_divby_per,notes,type,sys_size,state_id,adder_amount,start_date,end_date) FROM '/docker-entrypoint-initdb.d/rebate_data.csv' DELIMITER ',' CSV;
 \copy dealer_credit(unique_id,date,exact_amount,per_kw_amount,approved_by,notes,total_amount,sys_size) FROM '/docker-entrypoint-initdb.d/dealer_credit.csv' DELIMITER '^' CSV;
@@ -69,6 +69,13 @@ INSERT INTO loan_type (product_code,active,adder,description) VALUES ('P123',1,1
 \copy payment_schedule(dealer_id,partner_id,installer_id,sale_type_id,state_id,rl,draw,draw_max,rep_draw,rep_draw_max,rep_pay,start_date,end_date) FROM '/docker-entrypoint-initdb.d/pay_schedule.csv' DELIMITER ',' CSV;
 \copy ap_dealer(unique_id,dealer_id,dba,type,date,amount,method,transaction,notes) FROM '/docker-entrypoint-initdb.d/ap_dealer.csv' DELIMITER '^' CSV;
 \copy dealer_repayment_bonus(unique_id,home_owner,sys_size,contract_$$,shaky_hand,repayment_bonus,remaining_repayment_bonus) FROM '/docker-entrypoint-initdb.d/dealer_repayment_bonus.csv' DELIMITER ',' CSV;
+\copy auto_adder(rep_percentage,unique_id) FROM '/docker-entrypoint-initdb.d/auto_adder.csv' DELIMITER ',' CSV;
+\copy dba(rep_percentage,unique_id) FROM '/docker-entrypoint-initdb.d/dba.csv' DELIMITER ',' CSV;
+\copy loan_fee_adder(unique_id,per_kw_amount,rep_doll_divby_per,type,date,contract_dol_dol) FROM '/docker-entrypoint-initdb.d/loan_fee_adder.csv' DELIMITER ',' CSV;
+\copy rate_adjustments(pay_scale,position,adjustment,min_rate,max_rate) FROM '/docker-entrypoint-initdb.d/rate_adjustments.csv' DELIMITER ',' CSV;
+\copy rep_credit(unique_id,per_rep_amt,exact_amt) FROM '/docker-entrypoint-initdb.d/rep_credit.csv' DELIMITER ',' CSV;
+\copy rep_incent(name,month,doll_div_kw) FROM '/docker-entrypoint-initdb.d/rep_incent.csv' DELIMITER ',' CSV;
+\copy rep_pay_settings(name,state_id,pay_scale,position,b_e,start_date,end_Date) FROM '/docker-entrypoint-initdb.d/rep_pay_settings.csv' DELIMITER ',' CSV;
 
 /******************************SETTINGS DB TABLE END  ***********************************************/
 

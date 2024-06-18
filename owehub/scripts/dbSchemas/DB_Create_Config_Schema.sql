@@ -526,6 +526,7 @@ CREATE TABLE loan_fee_adder (
     r2_pay_scale float,
     rep_2_def_resp text,
     r2_addr_resp text,
+    date date,
     start_date character varying NOT NULL,
     end_date character varying,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
@@ -688,7 +689,7 @@ CREATE TABLE rep_pay_settings (
     unique_id varchar NOT NULL UNIQUE,
     name character varying,
     state_id INT,
-    pay_scale text,
+    pay_scale INT,
     position text,
     b_e text,
     is_archived BOOLEAN DEFAULT FALSE,
@@ -978,7 +979,37 @@ create TABLE ap_dealer (
     FOREIGN KEY (dealer_id) REFERENCES v_dealer(id),
     FOREIGN KEY (state_id) REFERENCES states(state_id),
     PRIMARY KEY(id)
-)
+);
+
+CREATE TABLE dba (
+    id serial NOT NULL,
+    preferred_name varchar,
+    dba varchar,
+    is_archived BOOLEAN DEFAULT FALSE,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone
+);
+
+CREATE TABLE rep_credit (
+    id serial NOT NULL,
+    unique_id varchar,
+    per_rep_amt float,
+    exact_amt float,
+    is_archived BOOLEAN DEFAULT FALSE,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone
+);
+
+CREATE TABLE rep_incent (
+    id serial NOT NULL,
+    name varchar,
+    doll_div_kw float,
+    month varchar,
+    comment varchar,
+    is_archived BOOLEAN DEFAULT FALSE,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone
+);
 
 /*
 CREATE TABLE AR_Schedule (
