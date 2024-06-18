@@ -91,7 +91,8 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	types := ""                                //* not received from Colten yet //E
 	kwh := 0.0                                 //* confirm with shushank //Q
 	apptSetter := ""                           //* confirm with shushank //O
-	commissionModels := "standard"
+	commissionModels := "standard"             //* confirm with sushank
+	salesRepType := "Sales Rep 2"              //DG need to confirm with sushank
 
 	//*==================== COMMON ==========================/
 	statusDate := CalculateStatusDate(uniqueID, shaky, pto, instSys, cancel, ntp, permSub, wc)                                                    //AK
@@ -124,7 +125,7 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	rep1PayRateSubTotal := calculateR1PayRateSubTotal(commissionModels, rep1, source, rep1payRateSemi, rep1AdderPerKw, rep1AdderTotal, contractCalc)                          //BT (BJ, BS)
 	rep1MinOrMaxCorrect := calculateRMinOrMax(rep1, rep1PayRateSubTotal, rep1minRate, rep1maxRate)                                                                            //BV (BT, BF, BG)
 	rep1CommTotal := calculateR1CommTotal(commissionModels, rep1, source, rep1MinOrMaxCorrect, perRepKw, rep1Credit, wc)                                                      //BW (BV, AN, BI)
-	rep1CommStatusCheck := calculateR1CommStatudCheck(commissionModels, rep1, "Sales Rep 2", status, rep1CommTotal)                                                           //BX (DG, AJ, BW)
+	rep1CommStatusCheck := calculateR1CommStatudCheck(commissionModels, rep1, salesRepType, status, rep1CommTotal)                                                            //BX (DG, AJ, BW)
 	rep1DrawAmount := calculateRDrawAmount(rep1CommStatusCheck, repDrawMax, RepPerRepSales, RepDrawPercentage)                                                                //DL
 	rep1DrawPaid := dataMgmt.ApRepCfg.CalculateRepRDrawPaid(uniqueID, rep1)                                                                                                   //DM
 	rep1CommPaid := dataMgmt.ApRepCfg.CalculateRepRCommPaid(uniqueID, rep1)                                                                                                   //DO
