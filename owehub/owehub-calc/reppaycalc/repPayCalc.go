@@ -118,7 +118,7 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	rep1Incentive := dataMgmt.RepIncentCfg.CalculateRepR1Incentive(rep1, wc)                                        //BH
 	rep1payRateSemi := CalculatePayRateSemi(rep1, rep1Rl, rep1Rate, rep1Adjustment, rep1Incentive, epcCalc)         //BJ (BC, BD, BE, BH, AQ)
 	rep1AutoAdder := dataMgmt.AutoAdderCfg.CalculateRepRAutoAddr(rep1, rep2, uniqueID, state, systemSize, wc, true) //BM
-	rep1LoanFee := dataMgmt.LoanFeeAdderCfg.CalculateRepRLoanFee(rep1, uniqueID)                                    //BN                                                                                              //BN                                                                                                              //BN
+	rep1LoanFee := dataMgmt.LoanFeeAdderCfg.CalculateRepRLoanFee(rep1, uniqueID, dealer, installer, state)                                    //BN                                                                                              //BN                                                                                                              //BN
 	rep1AdderTotal := calculateRAdderTotal(rep1, rep1Addr, rep1AutoAdder, rep1LoanFee, rep1Rebate, rep1Referral)    //BR (BL, BM, BN, BO, BP)
 	rep1AdderPerKw := calculateRAdderPerKw(rep1, rep1AdderTotal, perRepKw)                                          //BS (BR, AN)
 	rep1PayRateSubTotal := calculateRPayRateSubTotal(rep1, rep1payRateSemi, rep1AdderPerKw)                         //BT (BJ, BS)
