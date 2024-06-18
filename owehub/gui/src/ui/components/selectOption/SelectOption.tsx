@@ -18,6 +18,7 @@ interface Props {
   valueContainerStyles?: CSSObjectWithLabel;
   menuStyles?: CSSObjectWithLabel;
   dropdownIndicatorStyles?: CSSObjectWithLabel;
+  marginTop?: string | number;
 }
 
 const SelectOption: React.FC<Props> = ({
@@ -31,6 +32,7 @@ const SelectOption: React.FC<Props> = ({
   valueContainerStyles = {},
   menuStyles = {},
   dropdownIndicatorStyles = {},
+  marginTop = '25px',
 }) => {
   const scrollRef = useRef(null);
   useEffect(() => {
@@ -51,7 +53,7 @@ const SelectOption: React.FC<Props> = ({
         styles={{
           control: (baseStyles, state: any) => ({
             ...baseStyles,
-            marginTop: '25px',
+            marginTop: marginTop,
             borderRadius: '8px',
             outline: 'none',
             fontSize: '13px',

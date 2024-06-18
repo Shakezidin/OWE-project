@@ -262,12 +262,13 @@ const TechnicalSupport: React.FC = () => {
               </div>
             </div>
 
-            <div className="create-input-container-support">
+            <div className="create-input-container-support" >
               <div className="create-input-field-support">
-                <label className="inputLabel-select select-type-label">
+                <label className="inputLabel-select select-type-label" style={{marginTop:"1px"}}>
                   Issue
                 </label>
                 <SelectOption
+                  marginTop="17px"
                   onChange={handleStateChange}
                   options={options}
                   value={options?.find(
@@ -301,7 +302,7 @@ const TechnicalSupport: React.FC = () => {
               </div>
             </div>
 
-            <div className="create-input-field-note-support" style={{ marginTop: '0.3rem' }}>
+            <div className="create-input-field-note-support">
               <label htmlFor="" className="inputLabel-support">Message</label>
               <br />
               <textarea
