@@ -104,10 +104,10 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	loanFee := dataMgmt.SaleData.CalculateLoanFee(uniqueID, contractTotal)                                                                        //AR
 
 	//*==================== REP 1 ==========================/
-	rep1Name := rep1
-	rep1Referral := dataMgmt.ReferralDataConfig.CalculateRReferral(rep1, uniqueID, true) //BP
-	rep1Rebate := dataMgmt.RebateCfg.CalculateRRebate(rep1, uniqueID, true)              //BO
-	rep1Dba := dataMgmt.DBACfg.CalculateReprepDba(rep1)                                  //AZ
+	// rep1Name := rep1
+	rep1Referral := dataMgmt.ReferralDataConfig.CalculateRReferral(rep1, uniqueID, true) //~BP
+	rep1Rebate := dataMgmt.RebateCfg.CalculateRRebate(rep1, uniqueID, true)              //&BO
+	rep1Dba := dataMgmt.DBACfg.CalculateReprepDba(rep1)                                  //?AZ
 	rep1Credit := dataMgmt.RepCreditCfg.CalculateRCredit(rep1, uniqueID)                 //BI  there is no schema and get endpoint in main for repcredit
 	rep1Addr := dataMgmt.AdderDataCfg.CalculateRAddrResp(dealer, rep1, rep2, uniqueID, state, systemSize, true)
 	rep1PayScale, rep1Position := dataMgmt.RepPayCfg.CalculateRPayScale(rep1, saleData.State, wc)                                         //BA
@@ -163,7 +163,7 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	rep2CommPaid := dataMgmt.ApRepCfg.CalculateRepRCommPaid(uniqueID, rep2)
 	rep2Balance := CalculateRepRBalance(rep2, rep2CommStatusCheck, rep2CommPaid)
 
-	//==================== OvrdCalc ==========================/
+	//*==================== OvrdCalc ==========================/
 	rep1Team := dataMgmt.TeamDataCfg.CalculateRTeamName(rep1, wc)                                  //AS
 	rep2Team := dataMgmt.TeamDataCfg.CalculateRTeamName(rep2, wc)                                  //AT (N, U)
 	teamCount := calculateTeamCount(rep1Team, rep2Team)                                            //AU
@@ -186,13 +186,13 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	apPdaRcmdAmnt := dataMgmt.ApPdaData.GetApPdaRcmdAmount(uniqueID, "", rep1, rep2, rep1DrawAmount, rep2DrawAmount)
 	apdPdaAmnt := dataMgmt.ApPdaData.GetApPdaAmount(uniqueID, "", apPdaRcmdAmnt)
 	apdPdaPaidAmnt, apdPaidClawAmnt := dataMgmt.ApPdaData.GetApPdaPaidAmount(uniqueID, "")
-	apdPdaPaidBalance, adpPdaDba := dataMgmt.ApPdaData.GetApPdaBalance(uniqueID, "", apdPdaPaidAmnt, apdPdaAmnt, apdPaidClawAmnt)
+	apdPdaPaidBalance, apdPdaDba := dataMgmt.ApPdaData.GetApPdaBalance(uniqueID, "", apdPdaPaidAmnt, apdPdaAmnt, apdPaidClawAmnt)
 
 	//*==================== AP-ADV ==========================/
 	apAdvRcmdAmnt := dataMgmt.ApAdvData.GetApAdvRcmdAmount(uniqueID, "", rep1, rep2, rep1DrawAmount, rep2DrawAmount)
 	apdAdvAmnt := dataMgmt.ApAdvData.GetApAdvAmount(uniqueID, "", apAdvRcmdAmnt)
 	apdAdvPaidAmnt := dataMgmt.ApAdvData.GetApAdvPaidAmount(uniqueID, "")
-	apdAdvPaidBalance, adpAdvDba := dataMgmt.ApAdvData.GetApAdvBalance(uniqueID, "", apdAdvPaidAmnt, apdAdvAmnt)
+	apdAdvPaidBalance, apdAdvDba := dataMgmt.ApAdvData.GetApAdvBalance(uniqueID, "", apdAdvPaidAmnt, apdAdvAmnt)
 
 	//*==================== AP-DED ==========================/
 	apDedPaidAmnt := dataMgmt.ApDedData.GetApDedPaidAmount(uniqueID, "") //* what is payee corresponding value
@@ -228,7 +228,7 @@ func mapToJson(outData map[string]interface{}, uid, fileName string) {
 		return
 	}
 
-	fileName = fmt.Sprintf("%v_%v_dlr_values.json", uid, fileName)
+	fileName = fmt.Sprintf("%v_%v_rep_pay_values.json", uid, fileName)
 	err = os.WriteFile(fileName, jsonData, 0644)
 	if err != nil {
 		log.FuncFuncTrace(0, "Error writing JSON to file: %v", err)
