@@ -291,6 +291,7 @@ const MyProfile = () => {
                   value={stateOption(newFormData)?.find(
                     (option) => option.value === state
                   )}
+                  singleValueStyles={{fontWeight:400}}
                   disabled={isEditMode}
                 />
                 {errors.state && (

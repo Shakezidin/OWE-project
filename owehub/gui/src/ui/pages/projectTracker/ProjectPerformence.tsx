@@ -43,11 +43,18 @@ const ProjectPerformence = () => {
     projectsCount,
     isLoading,
   } = useAppSelector((state) => state.perfomanceSlice);
+  const { sessionTimeout } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
     const current = format(new Date(), 'yyyy-MM-dd');
     dispatch(getPerfomance());
-    return (()=>toast.dismiss())
+    return () => {
+      const expirationTime = localStorage.getItem('expirationTime');
+      const currentTime = Date.now();
+      if (expirationTime && currentTime < parseInt(expirationTime, 10)) {
+        toast.dismiss();
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -104,9 +111,7 @@ const ProjectPerformence = () => {
                   style={{ backgroundColor: el.bgColor }}
                 >
                   <div className="project-card-head">
-                    <div
-                      className="project-icon-img"
-                    >
+                    <div className="project-icon-img">
                       <object
                         type="image/svg+xml"
                         data={el.icon}
@@ -133,7 +138,7 @@ const ProjectPerformence = () => {
                         marginTop: '10px',
                         textAlign: 'start',
                       }}
-                      className='per-sales'
+                      className="per-sales"
                     >
                       {' '}
                       Sales KW - {formatFloat(findSale?.sales_kw)}{' '}
@@ -146,7 +151,10 @@ const ProjectPerformence = () => {
           <div className="project-card-container-2 flex-auto">
             {projectDashData.map((item, i) => (
               <div className="project-ruppes-card" key={i}>
-                <div className="performance-bars" style={{ height: "130px", width: '200px' }}>
+                <div
+                  className="performance-bars"
+                  style={{ height: '130px', width: '200px' }}
+                >
                   <CircularProgressbarWithChildren
                     className="my-custom-progressbar"
                     circleRatio={0.5}
@@ -157,14 +165,25 @@ const ProjectPerformence = () => {
                       textSize: '10px',
                       textColor: '#0C0B18',
                       rotation: 0.75,
-                      trailColor: "#F2F4F6"
+                      trailColor: '#F2F4F6',
                     })}
                   >
-                    <div className='flex flex-column items-center flex-center gap-20' style={{gap: '4px'}}>
-                      <p style={{ fontSize: '12px', color: '#646464', fontWeight: '300'}}>
+                    <div
+                      className="flex flex-column items-center flex-center gap-20"
+                      style={{ gap: '4px' }}
+                    >
+                      <p
+                        style={{
+                          fontSize: '12px',
+                          color: '#646464',
+                          fontWeight: '300',
+                        }}
+                      >
                         {item.para}
                       </p>
-                      <p style={{ fontSize: '16px', color: "#0C0B18" }}>{item.ruppes}</p>
+                      <p style={{ fontSize: '16px', color: '#0C0B18' }}>
+                        {item.ruppes}
+                      </p>
                     </div>
                   </CircularProgressbarWithChildren>
                 </div>
