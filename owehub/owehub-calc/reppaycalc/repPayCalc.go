@@ -121,7 +121,7 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	rep1NetEpc := calculateR1NetEpc(perRepKw, contractCalc, rep1AdderTotal, rep1LoanFee, loanFee, systemSize)                                                                 //BU
 	rep1payRateSemi := CalculateR1PayRateSemi(commissionModels, rep1, source, rep1Rl, rep1Rate, rep1Adjustment, rep1Incentive, epcCalc, systemSize, perRepKw, rep1NetEpc, wc) //BJ (BC, BD, BE, BH, AQ) (filed name in 8020 is project base cost)
 	rep1AdderPerKw := calculateRAdderPerKw(rep1, rep1AdderTotal, perRepKw)                                                                                                    //BS (BR, AN)
-	rep1PayRateSubTotal := calculateRPayRateSubTotal(rep1, rep1payRateSemi, rep1AdderPerKw)                                                                                   //BT (BJ, BS)
+	rep1PayRateSubTotal := calculateR1PayRateSubTotal(commissionModels, rep1, source, rep1payRateSemi, rep1AdderPerKw, rep1AdderTotal, contractCalc)                          //BT (BJ, BS)
 	rep1MinOrMaxCorrect := calculateRMinOrMax(rep1, rep1PayRateSubTotal, rep1minRate, rep1maxRate)                                                                            //BV (BT, BF, BG)
 	rep1CommTotal := calculateR1CommTotal(commissionModels, rep1, source, rep1MinOrMaxCorrect, perRepKw, rep1Credit, wc)                                                      //BW (BV, AN, BI)
 	rep1CommStatusCheck := calculateR1CommStatudCheck(commissionModels, rep1, "Sales Rep 2", status, rep1CommTotal)                                                           //BX (DG, AJ, BW)

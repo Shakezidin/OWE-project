@@ -103,6 +103,28 @@ func calculateRPayRateSubTotal(repName string, val1, val2 float64) (result float
 }
 
 /******************************************************************************
+* FUNCTION:        calculateRPayRateSubTotal
+* DESCRIPTION:     calculates the "r_pay_rate_sub_total" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
+func calculateR1PayRateSubTotal(commissionModels, repName, source string, val1, val2, val3, val4 float64) (result float64) {
+	if commissionModels == "standard" {
+		if len(repName) > 0 {
+			return val1 - val2
+		}
+	} else {
+		if len(repName) > 0 {
+			if source == "Onyx D2D" {
+				return val1 - val3
+			} else {
+				return val4 - val1 - val3
+			}
+		}
+	}
+	return 0
+}
+
+/******************************************************************************
 * FUNCTION:        CalculateContractDolDol
 * DESCRIPTION:     calculates the "contract$$" value based on the provided data
 * RETURNS:         gross revenue
