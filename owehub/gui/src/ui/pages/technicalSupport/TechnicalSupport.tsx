@@ -242,7 +242,7 @@ const TechnicalSupport: React.FC = () => {
                 {errors.email && <span className="error">{errors.email}</span>}
               </div>
 
-              <div className="create-input-field-support" style={{ marginTop: '-5px' }}>
+              <div className="create-input-field-support" style={{ marginTop: '-10px' }}>
                 <label className="inputLabel">Phone Number</label>
                 <PhoneInput
                   countryCodeEditable={false}
@@ -303,7 +303,7 @@ const TechnicalSupport: React.FC = () => {
             </div>
 
             <div className="create-input-field-note-support">
-              <label htmlFor="" className="inputLabel-support">Message</label>
+              <label htmlFor="" className="inputLabel-support" >Message</label>
               <br />
               <textarea
                 name="message"
