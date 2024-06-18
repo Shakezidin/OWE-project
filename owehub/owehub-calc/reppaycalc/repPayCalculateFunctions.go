@@ -124,7 +124,6 @@ func calculateR1PayRateSubTotal(commissionModels, repName, source string, val1, 
 	return 0
 }
 
-
 /******************************************************************************
 * FUNCTION:        CalculateContractDolDol
 * DESCRIPTION:     calculates the "contract$$" value based on the provided data
