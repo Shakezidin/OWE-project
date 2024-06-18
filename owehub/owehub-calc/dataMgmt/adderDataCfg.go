@@ -265,7 +265,6 @@ func (AdderDataCfg *AdderDataCfgStruct) CalculateRAddrResp(dealer, rep1, rep2, u
 	if !r1r2Check {
 		rep = rep2
 	}
-
 	if len(uniqueId) > 0 {
 		for _, data := range AdderDataCfg.AdderDataList {
 			if data.UniqueId == uniqueId {
@@ -280,6 +279,62 @@ func (AdderDataCfg *AdderDataCfgStruct) CalculateRAddrResp(dealer, rep1, rep2, u
 					perRepAddrShare := AdderDataCfg.CalculatePerRepAddrShare(rep1, rep2, uniqueId, sysSize) //*
 					r1DefResp := AdderDataCfg.CalculateR1DfResp(rep, uniqueId, state, sysSize)              //*
 					return perRepAddrShare * r1DefResp
+				}
+			}
+		}
+	}
+	return r1addrresp
+}
+
+/******************************************************************************
+* FUNCTION:        CalculateAddrAmount
+* DESCRIPTION:     calculates the "CalculateAddrAmount" value based on the provided data
+* RETURNS:         addrPtr
+*****************************************************************************/
+func (AdderDataCfg *AdderDataCfgStruct) CalculateR1AddrResp(commissionModels, dealer, rep1, rep2, uniqueId, state string, sysSize float64, r1r2Check bool) (r1addrresp float64) {
+	log.EnterFn(0, "CalculateAddrAmount")
+	defer func() { log.ExitFn(0, "CalculateAddrAmount", nil) }()
+
+	rep := rep1
+	if !r1r2Check {
+		rep = rep2
+	}
+
+	if commissionModels == "standard" {
+		if len(uniqueId) > 0 {
+			for _, data := range AdderDataCfg.AdderDataList {
+				if data.UniqueId == uniqueId {
+					perRepOverd := AdderDataCfg.CalculatePerRepOvrd(rep1, rep2, uniqueId) //*
+					if perRepOverd > 0 {
+						if perRepOverd != 0 {
+							return perRepOverd
+						} else {
+							return 0
+						}
+					} else if len(rep1) > 0 {
+						perRepAddrShare := AdderDataCfg.CalculatePerRepAddrShare(rep1, rep2, uniqueId, sysSize) //*
+						r1DefResp := AdderDataCfg.CalculateR1DfResp(rep, uniqueId, state, sysSize)              //*
+						return perRepAddrShare * r1DefResp
+					}
+				}
+			}
+		}
+	} else {
+		if len(rep1) > 0 {
+			for _, data := range AdderDataCfg.AdderDataList {
+				if data.UniqueId == uniqueId {
+					perRepOverd := AdderDataCfg.CalculatePerRepOvrd(rep1, rep2, uniqueId) //*
+					if perRepOverd > 0 {
+						if perRepOverd != 0 {
+							return perRepOverd
+						} else {
+							return 0
+						}
+					} else if len(rep1) > 0 {
+						perRepAddrShare := AdderDataCfg.CalculatePerRepAddrShare(rep1, rep2, uniqueId, sysSize) //*
+						r1DefResp := AdderDataCfg.CalculateR1DfResp(rep, uniqueId, state, sysSize)              //*
+						return perRepAddrShare * r1DefResp
+					}
 				}
 			}
 		}

@@ -39,6 +39,38 @@ func calculateRCommStatudCheck(repName, salesRepType, status string, RCommTotal 
 }
 
 /******************************************************************************
+* FUNCTION:        calculateRStatusCommCheck
+* DESCRIPTION:     calculates the "r_status_comm_check" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
+func calculateR1CommStatudCheck(commissionModel, repName, salesRepType, status string, RCommTotal float64) (result float64) {
+	if commissionModel == "standard" {
+		if len(repName) > 0 {
+			if salesRepType == "Sales Rep 2" {
+				return 0
+			} else if status == "Cancel" {
+				return 0
+			} else if status == "Shaky" {
+				return 0
+			} else {
+				return RCommTotal
+			}
+		}
+	} else {
+		if len(repName) > 0 {
+			if status == "Cancel" {
+				return 0
+			} else if status == "Shaky" {
+				return 0
+			} else {
+				return RCommTotal
+			}
+		}
+	}
+	return 0
+}
+
+/******************************************************************************
 * FUNCTION:        calculateRepKw
 * DESCRIPTION:     calculates the "rep_kw" value based on the provided data
 * RETURNS:         gross revenue
@@ -84,6 +116,39 @@ func CalculatePayRateSemi(Rep string, rl, rate, adjustment, r1Incentive, epcCalc
 		} else {
 			return payRateSemi
 		}
+	}
+	return payRateSemi
+}
+
+/******************************************************************************
+* FUNCTION:        CalculateContractDolDol
+* DESCRIPTION:     calculates the "contract$$" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
+func CalculateR1PayRateSemi(commissionModels, Rep, source string, rl, rate, adjustment, r1Incentive, epcCalc, sysSize, perRepKw, netEpc float64, wc time.Time) (payRateSemi float64) {
+	date, _ := time.Parse("2006-01-02", "2023-12-20")
+	if commissionModels == "standard" {
+		if len(Rep) > 0 && Rep != "" {
+			if rl <= 0 {
+				return rate + adjustment + r1Incentive
+			} else if rate <= 0 {
+				return ((epcCalc - rl) * 1000) + adjustment + r1Incentive
+			} else {
+				return payRateSemi
+			}
+		}
+	} else {
+		payRateSemi = rl * (perRepKw * 1000)
+
+		if len(Rep) > 0 && sysSize != 0 {
+			if Rep == "Scott McCollester" && wc.After(date) {
+				payRateSemi = 1.88 * (perRepKw * 1000)
+			} else if source == "Onyx D2D" {
+				payRateSemi = math.Round((netEpc - 1.98) * sysSize)
+			}
+		}
+
+		return payRateSemi
 	}
 	return payRateSemi
 }
@@ -155,6 +220,24 @@ func calculateRAdderTotal(repName string, val1, val2, val3, val4, val5 float64) 
 }
 
 /******************************************************************************
+* FUNCTION:        calculateRAdderTotal
+* DESCRIPTION:     calculates the "r_adder_total" value based on the provided data
+* RETURNS:         result
+*****************************************************************************/
+func calculateR1AdderTotal(repName, commissionModel string, val1, val2, val3, val4, val5 float64) (result float64) {
+	if commissionModel == "standard" {
+		if len(repName) > 0 {
+			return val1 + val2 + val3 + val4 + val5
+		}
+	} else {
+		if len(repName) > 0 {
+			return val1 + val3 + val4 + val5
+		}
+	}
+	return 0
+}
+
+/******************************************************************************
 * FUNCTION:        calculateR1CommTotal
 * DESCRIPTION:     calculates the "calculateR1CommTotal" value based on the provided data
 * RETURNS:         r1CommTotal
@@ -165,6 +248,62 @@ func calculateRCommTotal(rep1, source string, rMinOrMax, perRepKw, rCredit float
 			return math.Round(((rMinOrMax * perRepKw) + rCredit) * 0.6)
 		} else {
 			math.Round((rMinOrMax * perRepKw) + rCredit)
+		}
+	}
+	return r1CommTotal
+}
+
+/******************************************************************************
+* FUNCTION:        calculateR1CommTotal
+* DESCRIPTION:     calculates the "calculateR1CommTotal" value based on the provided data
+* RETURNS:         r1CommTotal
+*****************************************************************************/
+func calculateR1CommTotal(commissionModel, rep1, source string, rMinOrMax, perRepKw, rCredit float64, wc time.Time) (r1CommTotal float64) {
+	var multiplier float64
+	if commissionModel == "standard" {
+		if len(rep1) > 0 {
+			if source == "BPN: SETTER" {
+				return math.Round(((rMinOrMax * perRepKw) + rCredit) * 0.6)
+			} else {
+				math.Round((rMinOrMax * perRepKw) + rCredit)
+			}
+		}
+	} else {
+		if len(rep1) > 0 {
+			switch source {
+			case "REP at 1.88 RL":
+				multiplier = 0.8
+			case "P&S":
+				multiplier = 0.2
+			case "Onyx D2D":
+				if rep1 == "Ramon Roybal" {
+					multiplier = 0.75
+				} else if rep1 == "Joshua Freitas" {
+					multiplier = 0.9
+				} else if rep1 == "Custom Construction" {
+					multiplier = 0.4
+				}
+			case "Onyx Solar":
+				if rep1 == "Theo Rosenberg" {
+					if source != "P&S" {
+						multiplier = 0.65
+					} else {
+						multiplier = 0.3
+					}
+				} else {
+					dateThreshold, _ := time.Parse("2006-01-02", "2024-04-22")
+					if wc.Before(dateThreshold) {
+						multiplier = 0.5
+					} else {
+						multiplier = 0.6
+					}
+				}
+			default:
+				multiplier = 0.0
+			}
+
+			return math.Round(rMinOrMax+rCredit) * multiplier
+
 		}
 	}
 	return r1CommTotal
@@ -238,9 +377,15 @@ func calculateApptBalance(apptSetter string, apptAmount, apptPaid float64) (appt
 * DESCRIPTION:     calculates the "appt amount" value based on the provided data
 * RETURNS:         apptAmount
 *****************************************************************************/
-func calculateApptAmount(apptSetStatusCheck float64) (apptAmount float64) {
-	if apptSetStatusCheck > 0 {
-		return apptSetStatusCheck
+func calculateApptAmount(commissionModels string, apptSetStatusCheck, apptsetTotal float64) (apptAmount float64) {
+	if commissionModels == "standard" {
+		if apptSetStatusCheck > 0 {
+			return apptSetStatusCheck
+		}
+	} else {
+		if apptsetTotal > 0 {
+			return apptsetTotal
+		}
 	}
 	return 0
 }
@@ -268,12 +413,18 @@ func calculateApptSetStatusCheck(apptSetter, status string, apptSetTotal float64
 * DESCRIPTION:     calculates the "appt set total" value based on the provided data
 * RETURNS:         apptSetStatusCheck
 *****************************************************************************/
-func calculateApptSetTotal(apptSetter, source string, rep1CommStatusCheck, payRate, systemSize float64) (apptSetTotal float64) {
-	if len(apptSetter) > 0 {
-		if source == "BPN: SETTER" {
-			return rep1CommStatusCheck * 0.8
-		} else {
-			return math.Round(payRate * systemSize)
+func calculateApptSetTotal(commissionModel, apptSetter, source string, rep1CommStatusCheck, payRate, systemSize float64) (apptSetTotal float64) {
+	if commissionModel == "standard" {
+		if len(apptSetter) > 0 {
+			if source == "BPN: SETTER" {
+				return rep1CommStatusCheck * 0.8
+			} else {
+				return math.Round(payRate * systemSize)
+			}
+		}
+	} else {
+		if len(apptSetter) > 0 {
+			return payRate * systemSize
 		}
 	}
 	return apptSetTotal
@@ -286,6 +437,18 @@ func calculateApptSetTotal(apptSetter, source string, rep1CommStatusCheck, payRa
 *****************************************************************************/
 func calculateRNetEpc(rep string, contractCalc, adderTotal, RloanFee, loanFee, systemSize float64) (netEpc float64) {
 	if len(rep) > 0 {
+		netEpc = math.Round(((contractCalc-(adderTotal-RloanFee+loanFee))/systemSize/1000)*1000) / 1000
+	}
+	return netEpc
+}
+
+/***************************************************************************
+* FUNCTION:        calculateR1DrawAmount
+* DESCRIPTION:     calculates the "r1 draw amount" value based on the provided data
+* RETURNS:         gross revenue
+*****************************************************************************/
+func calculateR1NetEpc(perRepKw, contractCalc, adderTotal, RloanFee, loanFee, systemSize float64) (netEpc float64) {
+	if perRepKw > 0 {
 		netEpc = math.Round(((contractCalc-(adderTotal-RloanFee+loanFee))/systemSize/1000)*1000) / 1000
 	}
 	return netEpc

@@ -149,17 +149,97 @@ func (cmmsnRatesCfg *cmmsnRatesCfgStruct) LoadcmmsnRatesCfg() (err error) {
 * DESCRIPTION:     calculates the repayment bonus value based on the provided data
 * RETURNS:         dlrPayBonus float64
 *****************************************************************************/
-func (cmmsnRatesCfg *cmmsnRatesCfgStruct) CalculateRepRl(partner, installer, state, types, payScale string, kwh float64, wc time.Time) (rl, rate float64) {
-	for _, data := range cmmsnRatesCfg.cmmsnRatesList {
-		if partner == data.Partner &&
-			installer == data.Installer &&
-			state == data.State &&
-			types == data.SaleType &&
-			kwh == data.SalePrice &&
-			payScale == data.RepType &&
-			(data.StartDate.Before(wc) || data.StartDate.Equal(wc)) &&
-			(data.EndDate.After(wc) || data.EndDate.Equal(wc)) {
-			return data.RL, data.Rate
+func (cmmsnRatesCfg *cmmsnRatesCfgStruct) CalculateRepRl(dealer, rep1, partner, installer, state, types, payScale string, kwh float64, wc time.Time) (rl, rate float64) {
+	if len(rep1) > 0 {
+		for _, data := range cmmsnRatesCfg.cmmsnRatesList {
+			if partner == data.Partner &&
+				installer == data.Installer &&
+				state == data.State &&
+				types == data.SaleType &&
+				kwh == data.SalePrice &&
+				payScale == data.RepType &&
+				(data.StartDate.Before(wc) || data.StartDate.Equal(wc)) &&
+				(data.EndDate.After(wc) || data.EndDate.Equal(wc)) {
+				return data.RL, data.Rate
+			}
+		}
+	} else {
+		for _, data := range cmmsnRatesCfg.cmmsnRatesList {
+			if partner == data.Partner &&
+				installer == data.Installer &&
+				state == data.State &&
+				types == data.SaleType &&
+				payScale == data.RepType &&
+				(data.StartDate.Before(wc) || data.StartDate.Equal(wc)) &&
+				(data.EndDate.After(wc) || data.EndDate.Equal(wc)) {
+				return data.RL, data.Rate
+			}
+		}
+	}
+	return rl, rate
+}
+
+/******************************************************************************
+* FUNCTION:        CalculatecmmsnRates
+* DESCRIPTION:     calculates the repayment bonus value based on the provided data
+* RETURNS:         dlrPayBonus float64
+*****************************************************************************/
+func (cmmsnRatesCfg *cmmsnRatesCfgStruct) CalculateRep1Rl(commissionModels, dealer, rep1, partner, installer, state, types, payScale string, kwh float64, wc time.Time) (rl, rate float64) {
+	if commissionModels == "standard" {
+		if len(rep1) > 0 {
+			for _, data := range cmmsnRatesCfg.cmmsnRatesList {
+				if partner == data.Partner &&
+					installer == data.Installer &&
+					state == data.State &&
+					types == data.SaleType &&
+					kwh == data.SalePrice &&
+					payScale == data.RepType &&
+					(data.StartDate.Before(wc) || data.StartDate.Equal(wc)) &&
+					(data.EndDate.After(wc) || data.EndDate.Equal(wc)) {
+					return data.RL, data.Rate
+				}
+			}
+		} else {
+			for _, data := range cmmsnRatesCfg.cmmsnRatesList {
+				if partner == data.Partner &&
+					installer == data.Installer &&
+					state == data.State &&
+					types == data.SaleType &&
+					payScale == data.RepType &&
+					(data.StartDate.Before(wc) || data.StartDate.Equal(wc)) &&
+					(data.EndDate.After(wc) || data.EndDate.Equal(wc)) {
+					return data.RL, data.Rate
+				}
+			}
+		}
+		return rl, rate
+	} else {
+		rl = PayScheduleCfg.CalculateRL(dealer, partner, types, state, wc)
+		if len(rep1) > 0 {
+			for _, data := range cmmsnRatesCfg.cmmsnRatesList {
+				if partner == data.Partner &&
+					installer == data.Installer &&
+					state == data.State &&
+					types == data.SaleType &&
+					kwh == data.SalePrice &&
+					payScale == data.RepType &&
+					(data.StartDate.Before(wc) || data.StartDate.Equal(wc)) &&
+					(data.EndDate.After(wc) || data.EndDate.Equal(wc)) {
+					rate = data.Rate
+				}
+			}
+		} else {
+			for _, data := range cmmsnRatesCfg.cmmsnRatesList {
+				if partner == data.Partner &&
+					installer == data.Installer &&
+					state == data.State &&
+					types == data.SaleType &&
+					payScale == data.RepType &&
+					(data.StartDate.Before(wc) || data.StartDate.Equal(wc)) &&
+					(data.EndDate.After(wc) || data.EndDate.Equal(wc)) {
+					rate = data.Rate
+				}
+			}
 		}
 	}
 	return rl, rate
