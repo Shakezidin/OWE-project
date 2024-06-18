@@ -112,13 +112,13 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	rep1Credit := dataMgmt.RepCreditCfg.CalculateRCredit(rep1, uniqueID)                 //BI  there is no schema and get endpoint in main for repcredit
 	rep1Addr := dataMgmt.AdderDataCfg.CalculateRAddrResp(dealer, rep1, rep2, uniqueID, state, systemSize, true)
 	rep1PayScale, rep1Position := dataMgmt.RepPayCfg.CalculateRPayScale(rep1, saleData.State, wc)                                         //BA
-	rep1Rl, rep1Rate := dataMgmt.CmmsnRatesCfg.CalculateRepRl(partner, installer, state, types, rep1PayScale, kwh, wc)                    //! kwh, types value not set
+	rep1Rl, rep1Rate := dataMgmt.CmmsnRatesCfg.CalculateRepRl(dealer, rep1, partner, installer, state, types, rep1PayScale, kwh, wc)                    //! kwh, types value not set
 	rep1Adjustment, rep1minRate, rep1maxRate := dataMgmt.RateAdjustmentsCfg.CalculateAdjustmentMinRateMaxRate(rep1PayScale, rep1Position) //BE BF BG
 	rep1R_R := calculateRR(rep1, rep1Rebate, rep1Referral)
 	rep1Incentive := dataMgmt.RepIncentCfg.CalculateRepR1Incentive(rep1, wc)                                        //BH
 	rep1payRateSemi := CalculatePayRateSemi(rep1, rep1Rl, rep1Rate, rep1Adjustment, rep1Incentive, epcCalc)         //BJ (BC, BD, BE, BH, AQ)
 	rep1AutoAdder := dataMgmt.AutoAdderCfg.CalculateRepRAutoAddr(rep1, rep2, uniqueID, state, systemSize, wc, true) //BM
-	rep1LoanFee := dataMgmt.LoanFeeAdderCfg.CalculateRepRLoanFee(rep1, uniqueID, dealer, installer, state)                                    //BN                                                                                              //BN                                                                                                              //BN
+	rep1LoanFee := dataMgmt.LoanFeeAdderCfg.CalculateRepRLoanFee(rep1, uniqueID, dealer, installer, state)          //BN                                                                                              //BN                                                                                                              //BN
 	rep1AdderTotal := calculateRAdderTotal(rep1, rep1Addr, rep1AutoAdder, rep1LoanFee, rep1Rebate, rep1Referral)    //BR (BL, BM, BN, BO, BP)
 	rep1AdderPerKw := calculateRAdderPerKw(rep1, rep1AdderTotal, perRepKw)                                          //BS (BR, AN)
 	rep1PayRateSubTotal := calculateRPayRateSubTotal(rep1, rep1payRateSemi, rep1AdderPerKw)                         //BT (BJ, BS)
@@ -143,7 +143,7 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	rep2Referral := dataMgmt.ReferralDataConfig.CalculateRReferral(rep2, uniqueID, false)                                                 //CQ
 	rep2Rebate := dataMgmt.RebateCfg.CalculateRRebate(rep2, uniqueID, false)                                                              //CP
 	rep2R_R := calculateRR(rep2, rep2Rebate, rep2Referral)                                                                                //CR
-	rep2LoanFee := dataMgmt.LoanFeeAdderCfg.CalculateRepRLoanFee(rep2, uniqueID)                                                          //CO                                                                                              //BN                                                                                                              //BN
+	rep2LoanFee := dataMgmt.LoanFeeAdderCfg.CalculateRepRLoanFee(rep2, uniqueID, dealer, installer, state)                                //CO                                                                                              //BN                                                                                                              //BN
 	rep2AutoAdder := dataMgmt.AutoAdderCfg.CalculateRepRAutoAddr(rep1, rep2, uniqueID, state, systemSize, wc, false)                      //CN
 	rep2Addr := dataMgmt.AdderDataCfg.CalculateRAddrResp(dealer, rep1, rep2, uniqueID, state, systemSize, false)                          //CM
 	rep2AdderTotal := calculateRAdderTotal(rep2, rep2Addr, rep2AutoAdder, rep2LoanFee, rep2Rebate, rep2Referral)                          //CS (N, CM, CN, CO, CP, CQ)
@@ -187,13 +187,13 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	apPdaRcmdAmnt := dataMgmt.ApPdaData.GetApPdaRcmdAmount(uniqueID, "", rep1, rep2, rep1DrawAmount, rep2DrawAmount)
 	apdPdaAmnt := dataMgmt.ApPdaData.GetApPdaAmount(uniqueID, "", apPdaRcmdAmnt)
 	apdPdaPaidAmnt, apdPaidClawAmnt := dataMgmt.ApPdaData.GetApPdaPaidAmount(uniqueID, "")
-	apdPdaPaidBalance, apdPdaDba := dataMgmt.ApPdaData.GetApPdaBalance(uniqueID, "", apdPdaPaidAmnt, apdPdaAmnt, apdPaidClawAmnt)
+	apdPdaPaidBalance, apPdaDba := dataMgmt.ApPdaData.GetApPdaBalance(uniqueID, "", apdPdaPaidAmnt, apdPdaAmnt, apdPaidClawAmnt)
 
 	//*==================== AP-ADV ==========================/
 	apAdvRcmdAmnt := dataMgmt.ApAdvData.GetApAdvRcmdAmount(uniqueID, "", rep1, rep2, rep1DrawAmount, rep2DrawAmount)
 	apdAdvAmnt := dataMgmt.ApAdvData.GetApAdvAmount(uniqueID, "", apAdvRcmdAmnt)
 	apdAdvPaidAmnt := dataMgmt.ApAdvData.GetApAdvPaidAmount(uniqueID, "")
-	apdAdvPaidBalance, apdAdvDba := dataMgmt.ApAdvData.GetApAdvBalance(uniqueID, "", apdAdvPaidAmnt, apdAdvAmnt)
+	apdAdvPaidBalance, apAdvDba := dataMgmt.ApAdvData.GetApAdvBalance(uniqueID, "", apdAdvPaidAmnt, apdAdvAmnt)
 
 	//*==================== AP-DED ==========================/
 	apDedPaidAmnt := dataMgmt.ApDedData.GetApDedPaidAmount(uniqueID, "") //* what is payee corresponding value
@@ -317,12 +317,12 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	outData["ap_pda_paid_amnt"] = apdPdaPaidAmnt
 	outData["ap_paid_claw_amnt"] = apdPaidClawAmnt
 	outData["ap_pda_paid_balance"] = apdPdaPaidBalance
-	outData["ap_pda_dba"] = adpPdaDba
+	outData["ap_pda_dba"] = apPdaDba
 	outData["ap_adv_rc_amnt"] = apAdvRcmdAmnt
 	outData["ap_adv_amnt"] = apdAdvAmnt
 	outData["ap_adv_paid_amnt"] = apdAdvPaidAmnt
 	outData["ap_adv_paid_balance"] = apdAdvPaidBalance
-	outData["ap_adv_dba"] = adpAdvDba
+	outData["ap_adv_dba"] = apAdvDba
 	outData["ap_ded_paid_amnt"] = apDedPaidAmnt
 	outData["ap_ded_balance"] = apDedBalance
 
