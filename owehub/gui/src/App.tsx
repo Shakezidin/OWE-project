@@ -66,6 +66,7 @@ import { useAppDispatch, useAppSelector } from './redux/hooks';
 import { TYPE_OF_USER } from './resources/static_data/Constant';
 import AdderData from './ui/pages/configure/adderData/AdderData';
 import ApRep from './ui/pages/configure/apRep/ApRep';
+import BatteryBackup from "./ui/pages/batterBackupCalculator"
 
 function App() {
   const dispatch = useAppDispatch();
@@ -137,6 +138,7 @@ function App() {
 
         <Route path={ROUTES.USER_MANAEMENT} element={<UserManagement />} />
         <Route path = {ROUTES.CONFIG_APREP} element={<ApRep/>}/>
+      
       </Route>
     );
   };
@@ -258,6 +260,7 @@ function App() {
             path={ROUTES.TECHNICAL_SUPPORT}
             element={<TechnicalSupport />}
           />
+            <Route path={ROUTES.BATTERY_BACK_UP} element={<BatteryBackup/>}/>
         </Route>
       </Routes>
     </BrowserRouter>
