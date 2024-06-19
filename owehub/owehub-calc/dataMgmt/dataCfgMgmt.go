@@ -160,16 +160,6 @@ func LoadConfigurations() (err error) {
 	}
 	log.FuncErrorTrace(0, "===== DealerRepaymentConfig : %+v", DealerRepayConfig.DealerRepaymentList[0])
 
-	//* REP PAY CONFIGS
-
-	//! adder data
-	err = AdderDataCfg.LoadAdderDataCfg()
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get Adder Data Config from DB err: %+v", err)
-		return err
-	}
-	log.FuncErrorTrace(0, "===== AdderDataCfg : %+v", AdderDataCfg.AdderDataList[0])
-
 	//! auto adder
 	err = AutoAdderCfg.LoadAutoAdderCfg()
 	if err != nil {

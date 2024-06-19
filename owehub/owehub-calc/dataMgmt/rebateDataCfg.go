@@ -406,12 +406,8 @@ func (RebateCfg *RebateCfgStruct) CalculateR1AddrResp(uniqueId, rep1, rep2, stat
 		repCount = RebateCfg.CalculateRepCount(rep1, rep2)
 	}
 	PerRepOverSHare := RebateCfg.CalculatePerRepOvrdShare(uniqueId, repCount)
-	log.FuncErrorTrace(0, "perrepOvrdShare+++++++=====================%v", PerRepOverSHare)
 	PerRepDefOvrd := RebateCfg.CalculatePerRepDefOvrd(uniqueId)
-	log.FuncErrorTrace(0, "PerRepDefOvrd+++++++=====================%v", PerRepDefOvrd)
-
 	PerRepAddrShare := RebateCfg.CalculatePerRepAddrShare(uniqueId, repCount)
-	log.FuncErrorTrace(0, "PerRepAddrShare+++++++=====================%v", PerRepAddrShare)
 
 	R1PayScale, _ := RepPayCfg.CalculateRPayScale(rep, state, date)
 	R1RebateCreditPercentage := AdderCreditCfg.CalculateR1RebateCreditPercentage(R1PayScale, Type)

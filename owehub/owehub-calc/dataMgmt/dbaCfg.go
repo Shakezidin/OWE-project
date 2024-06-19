@@ -72,8 +72,8 @@ func (DBACfg *DBACfgStruct) LoadDBACfg() (err error) {
 * RETURNS:         dlrPayBonus float64
 *****************************************************************************/
 func (DBACfg *DBACfgStruct) CalculateReprepDba(rep string) (dba string) {
-	for _, data := range DBACfg.DBAList {
-		if len(rep) > 0 {
+	if len(rep) > 0 {
+		for _, data := range DBACfg.DBAList {
 			if data.PreferredName == rep {
 				return data.Dba
 			}
