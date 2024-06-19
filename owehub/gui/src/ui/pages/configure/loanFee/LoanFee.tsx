@@ -257,9 +257,9 @@ const LoanFee = () => {
                   />
                 ))}
                 <th>
-                  <div className="action-header">
+                  {(!viewArchived && selectedRows.size<2) &&<div className="action-header">
                     <p>Action</p>
-                  </div>
+                  </div>}
                 </th>
               </tr>
             </thead>
@@ -303,7 +303,7 @@ const LoanFee = () => {
                     <td>{dateFormat(el.start_date)}</td>
                     <td>{dateFormat(el.end_date)}</td>
                     <td>
-                      {!viewArchived && (
+                      {(!viewArchived && selectedRows.size<2)  && (
                         <div className="action-icon">
                           <div
                             className=""
