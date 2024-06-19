@@ -279,13 +279,13 @@ const ApRep = () => {
                     onClick={() => handleSort(item.name)}
                   />
                 ))}
-                {viewArchived === true ? null : (
+                
                   <th>
-                    <div className="action-header">
+                    {(!viewArchived && selectedRows.size<2) &&<div className="action-header">
                       <p>Action</p>
-                    </div>
+                    </div>}
                   </th>
-                )}
+           
               </tr>
             </thead>
             <tbody>
@@ -326,9 +326,9 @@ const ApRep = () => {
                     <td>{dateFormat(el.ced) || 'N/A'}</td>
                     <td>{el.partner_name || 'N/A'}</td>
                     <td>{el.total_paid}</td>
-                    {!viewArchived && selectedRows.size < 2 && (
+             
                       <td>
-                        <div className="action-icon">
+                        {(!viewArchived && selectedRows.size<2) &&<div className="action-icon">
                           <div
                             className=""
                             style={{ cursor: 'pointer' }}
@@ -343,9 +343,9 @@ const ApRep = () => {
                           >
                             <img src={ICONS.editIcon} alt="" />
                           </div>
-                        </div>
+                        </div>}
                       </td>
-                    )}
+                 
                   </tr>
                 ))
               ) : (
