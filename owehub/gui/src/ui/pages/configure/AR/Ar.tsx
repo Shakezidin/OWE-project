@@ -285,9 +285,9 @@ const AR = () => {
                   />
                 ))}
                 {viewArchived === true ? null : (
-                  <th>
+                  <th className={!viewArchived && selectedRows.size < 2 ? '' : 'd-none'}>
                     <div className="action-header">
-                      <p>Action</p>
+                      {!viewArchived && selectedRows.size < 2 && <p>Action</p>}
                     </div>
                   </th>
                 )}

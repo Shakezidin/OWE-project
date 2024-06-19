@@ -153,7 +153,7 @@ const CreatedAdjustments: React.FC<payScheduleProps> = ({
                       }}
 className="error"
                     >
-                      {errors.uniqueId}
+                      {"Unique Id is required"}
                     </span>
                   )}
                 </div>

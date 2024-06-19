@@ -14,7 +14,7 @@
   display: flex;
   gap: 20px;
   justify-content: space-between;
-  margin-top: 0.5rem;
+  margin-top: 1rem;
   flex: 1;
 }
 
@@ -201,12 +201,14 @@
     font-size: 16px;
     font-weight: 600;
     line-height: 27px;
-    text-align: left;
+    text-align: center;
+    margin-top: -70px;
   }
   .reset-Update-support {
+    margin-left: 400px;
     display: flex;
-    margin-top: 1rem;
-    margin-left: 251px;
+    justify-content: flex-end;
+    margin-top: 0;
   }
   .reset-Update-support button {
     width: 178px;
