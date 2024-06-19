@@ -48,13 +48,14 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
 
   const handleValidation = () => {
     const error: IErrors = {};
+    
     for (const key in newFormData) {
       if (!newFormData[key as keyof typeof newFormData]) {
-        error[key as keyof typeof newFormData] = firstCapitalize(
-          `${key} is required`
-        );
+        const formattedKey = key.split(/(?=[A-Z])/).map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+        error[key as keyof typeof newFormData] = `${formattedKey} is required`;
       }
     }
+    
     setErrors({ ...error });
     return Object.keys(error).length ? false : true;
   };
@@ -139,10 +140,8 @@ const CreateInstallCost: React.FC<payScheduleProps> = ({
                     <span
                       style={{
                         display: 'block',
-                  
-                        
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.cost}
                     </span>
@@ -164,10 +163,10 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
+
+
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.startDate}
                     </span>
@@ -195,10 +194,10 @@ className="error"
                     <span
                       style={{
                         display: 'block',
-                  
-                        
+
+
                       }}
-className="error"
+                      className="error"
                     >
                       {errors.endDate}
                     </span>
@@ -218,7 +217,7 @@ className="error"
             title={editMode === false ? 'Save' : 'Update'}
             type="submit"
             disabled={isFormSubmitting}
-            onClick={() => {}}
+            onClick={() => { }}
           />
         </div>
       </form>
