@@ -100,7 +100,7 @@ func (pAdderCredit *AdderCreditCfgStruct) CalculateR1RebateCreditPercentage(R1Pa
 	if len(R1PayScale) > 0 {
 		for _, data := range pAdderCredit.AdderCreditCfg.AdderCreditList {
 			if R1PayScale+Type == data.Pay_Scale+data.Type {
-				R1RebateCreditPercentage += data.Max_Rate
+				return data.Max_Rate
 			}
 		}
 	}
