@@ -267,11 +267,13 @@ const DlrOthPay: React.FC = () => {
                     onClick={() => handleSort(item.name)}
                   />
                 ))}
-                <th>
-                  <div className="action-header">
-                    <p>Action</p>
-                  </div>
-                </th>
+                {viewArchived === true || selectedRows.size >= 2 ? null : (
+                  <th>
+                    <div className="action-header">
+                      <p>Action</p>
+                    </div>
+                  </th>
+                )}
               </tr>
             </thead>
             <tbody>

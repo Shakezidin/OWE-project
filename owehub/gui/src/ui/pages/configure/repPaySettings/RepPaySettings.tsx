@@ -253,7 +253,7 @@ const RepPaySettings = () => {
                     onClick={() => handleSort(item.name)}
                   />
                 ))}
-                {viewArchived === true ? null : (
+                 {viewArchived === true || selectedRows.size >= 2 ? null : (
                   <th>
                     <div className="action-header">
                       <p>Action</p>

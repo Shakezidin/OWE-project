@@ -219,7 +219,7 @@ const NonCommDlrPay: React.FC = () => {
           }
           viewArchive={viewArchived}
           onPressFilter={() => filter()}
-          onPressImport={() => {}}
+          onPressImport={() => { }}
           checked={isAllRowsSelected}
           isAnyRowSelected={isAnyRowSelected}
           onpressExport={() => handleExportOpen()}
@@ -286,11 +286,13 @@ const NonCommDlrPay: React.FC = () => {
                     onClick={() => handleSort(item.name)}
                   />
                 ))}
-                <th>
-                  <div className="action-header">
-                    <p>Action</p>
-                  </div>
-                </th>
+                {viewArchived === true || selectedRows.size >= 2 ? null : (
+                  <th>
+                    <div className="action-header">
+                      <p>Action</p>
+                    </div>
+                  </th>
+                )}
               </tr>
             </thead>
             <tbody>
@@ -353,7 +355,7 @@ const NonCommDlrPay: React.FC = () => {
                         id={`tooltip-${i}`}
                         className="custom-tooltip"
                         isOpen={selected === i}
-                        style={{zIndex:20}}
+                        style={{ zIndex: 20 }}
                       />
                     </td>
                     <td>{el.paid_amount}</td>
