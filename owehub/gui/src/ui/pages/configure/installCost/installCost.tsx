@@ -257,7 +257,7 @@ const InstallCost = () => {
                 ))}
                 <th>
                   <div className="action-header">
-                    <p>Action</p>
+                    {!viewArchived && selectedRows.size < 2 && (<p>Action</p>)}
                   </div>
                 </th>
               </tr>

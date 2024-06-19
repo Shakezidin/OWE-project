@@ -212,7 +212,7 @@ className="error"
                       }}
 className="error"
                     >
-                      {errors.saleType}
+                      {"Sale type is required"}
                     </span>
                   )}
                 </div>
@@ -235,7 +235,7 @@ className="error"
                       }}
 className="error"
                     >
-                      {errors.ptoPay}
+                      {"PTO pay is required"}
                     </span>
                   )}
                 </div>
@@ -260,7 +260,7 @@ className="error"
                       }}
 className="error"
                     >
-                      {errors.redline}
+                      {"Red line is required"}
                     </span>
                   )}
                 </div>
@@ -283,7 +283,7 @@ className="error"
                       }}
 className="error"
                     >
-                      {errors.permitMax}
+                      {"Permit max is required"}
                     </span>
                   )}
                 </div>
@@ -341,7 +341,7 @@ className="error"
                       }}
 className="error"
                     >
-                      {errors.permitPay}
+                      {"Permit pay is required"}
                     </span>
                   )}
                 </div>
@@ -365,7 +365,7 @@ className="error"
                       }}
 className="error"
                     >
-                      {errors.installPay}
+                      {"Install pay is required"}
                     </span>
                   )}
                 </div>
@@ -422,7 +422,7 @@ className="error"
                       }}
 className="error"
                     >
-                      {errors.calcDate}
+                      {"Calc date is required"}
                     </span>
                   )}
                 </div>

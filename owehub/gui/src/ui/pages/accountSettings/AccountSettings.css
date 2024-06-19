@@ -328,11 +328,11 @@
 
 .Personal-container-detail {
   margin-top: 2rem;
-  /* width: 800px; */
-  height: 290px;
+  height: auto;
   opacity: 0px;
   border: 1px solid #e0e0e0;
   border-radius: 16px;
+  padding-bottom: 20px;
 }
 
 .create-input-field-profile-password {
