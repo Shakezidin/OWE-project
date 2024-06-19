@@ -128,13 +128,13 @@ const Index = () => {
                     placeholder=""
                     label="Continuous Current"
                   />
-                  <span
+                  {/* <span
                     className="error block right-align"
                     style={{ color: '#EF1515' }}
                   >
                     {' '}
                     Enter the unit{' '}
-                  </span>
+                  </span> */}
                 </div>
               </div>
             </div>
