@@ -527,8 +527,8 @@ CREATE TABLE loan_fee_adder (
     rep_2_def_resp text,
     r2_addr_resp text,
     date date,
-    start_date character varying NOT NULL,
-    end_date character varying,
+    -- start_date character varying NOT NULL,
+    -- end_date character varying,
     created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone,
     FOREIGN KEY (state_id) REFERENCES states(state_id),
@@ -686,7 +686,7 @@ CREATE TABLE dlr_oth(
 
 CREATE TABLE rep_pay_settings (
     id serial NOT NULL,
-    unique_id varchar NOT NULL UNIQUE,
+    -- unique_id varchar NOT NULL,
     name character varying,
     state_id INT,
     pay_scale INT,
@@ -703,7 +703,7 @@ CREATE TABLE rep_pay_settings (
 
 CREATE TABLE rate_adjustments(
     id serial NOT NULL,
-    unique_id varchar NOT NULL,
+    -- unique_id varchar NOT NULL,
     pay_scale text,
     position text,
     adjustment text,
