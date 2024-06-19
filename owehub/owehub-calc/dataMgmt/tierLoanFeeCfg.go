@@ -140,6 +140,8 @@ func (pTierLoanFee *TierLoanFeeCfgStruct) LoadTierLoanFeeCfg() (err error) {
 * RETURNS:         dlrcost float64
 *****************************************************************************/
 func (pTierLoanFee *TierLoanFeeCfgStruct) CalculateDlrCost(dlrTier, installer, state, Type string, date time.Time) (dlrcost float64) {
+	log.EnterFn(0, "CalculateDlrCost")
+	defer func() { log.ExitFn(0, "CalculateDlrCost", nil) }()
 	var (
 		err       error
 		startDate time.Time
@@ -171,6 +173,14 @@ func (pTierLoanFee *TierLoanFeeCfgStruct) CalculateDlrCost(dlrTier, installer, s
 			st = state[6:]
 		}
 
+		if data.DealerTier == dlrTier {
+			log.FuncErrorTrace(0, "data.Dealer: %v ============== dealer %v", data.DealerTier, dlrTier)
+			log.FuncErrorTrace(0, "data.installer: %v ============== installer %v", data.Installer, installer)
+			log.FuncErrorTrace(0, "data.saleType: %v ============== type %v", data.LoanType, Type)
+			log.FuncErrorTrace(0, "data.state: %v ============== state %v", data.State, st)
+			log.FuncErrorTrace(0, "data.startDate: %v ============== wc %v", data.StartDate, date)
+			log.FuncErrorTrace(0, "data.endDate: %v ============== wc %v", data.EndDate, date)
+		}
 		if dlrTier == data.DealerTier && data.Installer == installer && data.State == st &&
 			data.LoanType == Type &&
 			startDate.Before(date) && endDate.After(date) {

@@ -79,6 +79,8 @@ func (RepIncentCfg *repIncentCfgStruct) LoadRepIncentCfg() (err error) {
 }
 
 func (RepIncentCfg *repIncentCfgStruct) CalculateRepR1Incentive(Rep string, wc time.Time) (incentive float64) {
+	log.EnterFn(0, "CalculateRepR1Incentive")
+	defer func() { log.ExitFn(0, "CalculateRepR1Incentive", nil) }()
 
 	wcYear := wc.Year()
 	wcMonth := strings.ToLower(wc.Month().String())

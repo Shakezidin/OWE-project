@@ -156,6 +156,8 @@ func (pApRepCfg *ApRepCfgStruct) CalculateRepPayForUniqueId(dealer string, uniqu
 }
 
 func (pApRepCfg *ApRepCfgStruct) CalculateRepRDrawPaid(uniqueId, rep string) (r1DrawPaid float64) {
+	log.EnterFn(0, "CalculateRepRDrawPaid")
+	defer func() { log.ExitFn(0, "CalculateRepRDrawPaid", nil) }()
 	if len(rep) > 0 {
 		for _, data := range pApRepCfg.ApRepList.ApRepList {
 			if data.UniqueId == uniqueId && data.Rep == rep && (data.Type == "Advance" || data.Type == "Draw" || data.Type == "Shaky" || data.Type == "Cancel") {
@@ -167,6 +169,8 @@ func (pApRepCfg *ApRepCfgStruct) CalculateRepRDrawPaid(uniqueId, rep string) (r1
 }
 
 func (pApRepCfg *ApRepCfgStruct) CalculateRepRCommPaid(uniqueId, rep string) (r1DrawPaid float64) {
+	log.EnterFn(0, "CalculateRepRCommPaid")
+	defer func() { log.ExitFn(0, "CalculateRepRCommPaid", nil) }()
 	if len(rep) > 0 {
 		for _, data := range pApRepCfg.ApRepList.ApRepList {
 			if data.UniqueId == uniqueId && data.Rep == rep && (data.Type == "Advance" || data.Type == "Draw" ||

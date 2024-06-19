@@ -95,6 +95,8 @@ func (pAdderCredit *AdderCreditCfgStruct) LoadAdderCreditCfg() (err error) {
 }
 
 func (pAdderCredit *AdderCreditCfgStruct) CalculateR1RebateCreditPercentage(R1PayScale, Type string) (R1RebateCreditPercentage float64) {
+	log.EnterFn(0, "CalculateR1RebateCreditPercentage")
+	defer func() { log.ExitFn(0, "CalculateR1RebateCreditPercentage", nil) }()
 	if len(R1PayScale) > 0 {
 		for _, data := range pAdderCredit.AdderCreditCfg.AdderCreditList {
 			if R1PayScale+Type == data.Pay_Scale+data.Type {

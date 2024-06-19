@@ -32,7 +32,7 @@ func (RepPayCfg *RepPaySettingsCfgStruct) LoadRepPayCfg() (err error) {
 	log.EnterFn(0, "LoadRepPayCfg")
 	defer func() { log.ExitFn(0, "LoadRepPayCfg", err) }()
 
-	query = ` SELECT rs.id AS record_id, rs.unique_id, rs.name, st.name AS state_name, rs.pay_scale, rs.position,
+	query = ` SELECT rs.id AS record_id, rs.name, st.name AS state_name, rs.pay_scale, rs.position,
 	rs.b_e, rs.start_date, rs.end_date, rt.rep_type as pay_scale
 	FROM rep_pay_settings rs
 	LEFT JOIN states st ON st.state_id = rs.state_id
@@ -110,6 +110,8 @@ func (RepPayCfg *RepPaySettingsCfgStruct) LoadRepPayCfg() (err error) {
 }
 
 func (RepPayCfg *RepPaySettingsCfgStruct) CalculateRPayScale(Rep1, state string, date time.Time) (payScale, position string) {
+	log.EnterFn(0, "CalculateRPayScale")
+	defer func() { log.ExitFn(0, "CalculateRPayScale", nil) }()
 	var (
 		err       error
 		startDate time.Time
@@ -118,7 +120,7 @@ func (RepPayCfg *RepPaySettingsCfgStruct) CalculateRPayScale(Rep1, state string,
 	if len(Rep1) > 0 {
 		for _, data := range RepPayCfg.RepPayList.RepPaySettingsList {
 			if len(data.StartDate) > 0 {
-				startDate, err = time.Parse("01-02-2006", data.StartDate)
+				startDate, err = time.Parse("01-02-06", data.StartDate)
 				if err != nil {
 					log.FuncErrorTrace(0, "Failed to convert data.StartDate:%+v to time.Time err: %+v", data.StartDate, err)
 				}
@@ -128,7 +130,7 @@ func (RepPayCfg *RepPaySettingsCfgStruct) CalculateRPayScale(Rep1, state string,
 			}
 
 			if len(data.EndDate) > 0 {
-				endDate, err = time.Parse("01-02-2006", data.EndDate)
+				endDate, err = time.Parse("01-02-06", data.EndDate)
 				if err != nil {
 					log.FuncErrorTrace(0, "Failed to convert data.EndDate:%+v to time.Time err: %+v", data.EndDate, err)
 				}

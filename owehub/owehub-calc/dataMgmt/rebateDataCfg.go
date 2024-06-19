@@ -332,6 +332,8 @@ func (RebateCfg *RebateCfgStruct) CalculateRebate(dealer string, uniqueId string
 	return rebate
 }
 func (RebateCfg *RebateCfgStruct) CalculateRepCount(rep1, rep2 string) (repCount float64) {
+	log.EnterFn(0, "CalculateRepCount")
+	defer func() { log.ExitFn(0, "CalculateRepCount", nil) }()
 	if len(rep1) > 0 && len(rep2) > 0 {
 		return 2
 	}
@@ -339,6 +341,8 @@ func (RebateCfg *RebateCfgStruct) CalculateRepCount(rep1, rep2 string) (repCount
 }
 
 func (RebateCfg *RebateCfgStruct) CalculatePerRepOvrdShare(uniqueId string, repCount float64) (PerRepOvrdShare float64) {
+	log.EnterFn(0, "CalculatePerRepOvrdShare")
+	defer func() { log.ExitFn(0, "CalculatePerRepOvrdShare", nil) }()
 	if len(uniqueId) > 0 {
 		for _, data := range RebateCfg.RebateList {
 			if data.UniqueId == uniqueId && data.RepDollDivbyPer <= 1 {
@@ -372,6 +376,8 @@ func (RebateCfg *RebateCfgStruct) CalculatePerRepDefOvrd(uniqueId string) (PerRe
 }
 
 func (RebateCfg *RebateCfgStruct) CalculatePerRepAddrShare(uniqueId string, repCount float64) (perRepAddrShare float64) {
+	log.EnterFn(0, "CalculatePerRepAddrShare")
+	defer func() { log.ExitFn(0, "CalculatePerRepAddrShare", nil) }()
 	if len(uniqueId) > 0 {
 		for _, data := range RebateCfg.RebateList {
 			if data.UniqueId == uniqueId {
@@ -387,6 +393,8 @@ func (RebateCfg *RebateCfgStruct) CalculatePerRepAddrShare(uniqueId string, repC
 }
 
 func (RebateCfg *RebateCfgStruct) CalculateR1AddrResp(uniqueId, rep1, rep2, state, Type string, date time.Time, r1r2check bool) (R1AddrResp float64) {
+	log.EnterFn(0, "CalculateR1AddrResp")
+	defer func() { log.ExitFn(0, "CalculateR1AddrResp", nil) }()
 	var repCount float64
 
 	rep := rep1
@@ -398,8 +406,13 @@ func (RebateCfg *RebateCfgStruct) CalculateR1AddrResp(uniqueId, rep1, rep2, stat
 		repCount = RebateCfg.CalculateRepCount(rep1, rep2)
 	}
 	PerRepOverSHare := RebateCfg.CalculatePerRepOvrdShare(uniqueId, repCount)
+	log.FuncErrorTrace(0, "perrepOvrdShare+++++++=====================%v", PerRepOverSHare)
 	PerRepDefOvrd := RebateCfg.CalculatePerRepDefOvrd(uniqueId)
+	log.FuncErrorTrace(0, "PerRepDefOvrd+++++++=====================%v", PerRepDefOvrd)
+
 	PerRepAddrShare := RebateCfg.CalculatePerRepAddrShare(uniqueId, repCount)
+	log.FuncErrorTrace(0, "PerRepAddrShare+++++++=====================%v", PerRepAddrShare)
+
 	R1PayScale, _ := RepPayCfg.CalculateRPayScale(rep, state, date)
 	R1RebateCreditPercentage := AdderCreditCfg.CalculateR1RebateCreditPercentage(R1PayScale, Type)
 	R1RebateCreditDol := R1RebateCreditPercentage / repCount

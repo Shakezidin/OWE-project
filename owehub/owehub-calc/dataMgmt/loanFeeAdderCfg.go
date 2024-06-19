@@ -121,6 +121,8 @@ func (pLoanFee *LoanFeeAdderCfgStruct) LoadLoanFeeAdderCfg() (err error) {
 // *****************************************************************************/
 
 func (LoanFeeAdderCfg *LoanFeeAdderCfgStruct) CalculateRepPerRepOvrdShare(uniqueId, dealer, installer, state, Type string, date time.Time, contractDolDol, repDolDivByPer, repCount float64) (perRepOvrdShare float64) {
+	log.EnterFn(0, "CalculateRepPerRepOvrdShare")
+	defer func() { log.ExitFn(0, "CalculateRepPerRepOvrdShare", nil) }()
 	if repDolDivByPer <= 1 {
 		oweCost := LoanFeeCfg.CalculateDlrCost(uniqueId, dealer, installer, state, Type, date)
 		adderAmount := contractDolDol * oweCost
@@ -131,6 +133,8 @@ func (LoanFeeAdderCfg *LoanFeeAdderCfgStruct) CalculateRepPerRepOvrdShare(unique
 }
 
 func (LoanFeeAdderCfg *LoanFeeAdderCfgStruct) CalculaterepRep1DefResp(r1PayScale string) (rep1DefResp float64) {
+	log.EnterFn(0, "CalculaterepRep1DefResp")
+	defer func() { log.ExitFn(0, "CalculaterepRep1DefResp", nil) }()
 	if len(r1PayScale) > 0 {
 		return adderRespCfg.CalculateAdderResp(r1PayScale)
 	}
@@ -138,6 +142,8 @@ func (LoanFeeAdderCfg *LoanFeeAdderCfgStruct) CalculaterepRep1DefResp(r1PayScale
 }
 
 func (LoanFeeAdderCfg *LoanFeeAdderCfgStruct) CalculateRepPerRepAddrShare(adderAmount, repCount, PerKwAmt, sysSize float64) (perRepAddrShare float64) {
+	log.EnterFn(0, "CalculateRepPerRepAddrShare")
+	defer func() { log.ExitFn(0, "CalculateRepPerRepAddrShare", nil) }()
 	if adderAmount > 0 {
 		return adderAmount / repCount
 	} else if PerKwAmt > 0 {
@@ -147,6 +153,8 @@ func (LoanFeeAdderCfg *LoanFeeAdderCfgStruct) CalculateRepPerRepAddrShare(adderA
 }
 
 func (LoanFeeAdderCfg *LoanFeeAdderCfgStruct) CalculaterepR1AdderResp(rep1, uniqueId, dealer, installer, state, Type string, date time.Time, contractDolDol, repDolDivByPer, repCount, adderAmount, PerKwAmt, sysSize float64) (r1AdderResp float64) {
+	log.EnterFn(0, "CalculaterepR1AdderResp")
+	defer func() { log.ExitFn(0, "CalculaterepR1AdderResp", nil) }()
 	perRepOvrdShare := LoanFeeAdderCfg.CalculateRepPerRepOvrdShare(uniqueId, dealer, installer, state, Type, date, contractDolDol, repDolDivByPer, repCount)
 	if perRepOvrdShare > 0 {
 		return perRepOvrdShare
@@ -168,6 +176,8 @@ func (LoanFeeAdderCfg *LoanFeeAdderCfgStruct) CalculaterepR1AdderResp(rep1, uniq
 * RETURNS:         r1loanFee
 *****************************************************************************/
 func (LoanFeeAdderCfg *LoanFeeAdderCfgStruct) CalculateRepRLoanFee(rep, uniqueId, dealer, installer, state string) (r1LoanFee float64) {
+	log.EnterFn(0, "CalculateRepRLoanFee")
+	defer func() { log.ExitFn(0, "CalculateRepRLoanFee", nil) }()
 	if len(rep) > 0 {
 		for _, data := range LoanFeeAdderCfg.LoanFeeAdderList {
 			if data.UniqueID == uniqueId {

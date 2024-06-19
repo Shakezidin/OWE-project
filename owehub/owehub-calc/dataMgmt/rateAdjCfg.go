@@ -32,7 +32,7 @@ func (RateAdjustmentsCfg *RateAdjustmentsCfgStruct) LoadRateAdjustmentsCfg() (er
 	log.EnterFn(0, "LoadRateAdjustmentsCfg")
 	defer func() { log.ExitFn(0, "LoadRateAdjustmentsCfg", err) }()
 
-	query = `SELECT ra.id as record_id, ra.unique_id, ra.pay_scale, ra.position, ra.adjustment, ra.min_rate, ra.max_rate
+	query = `SELECT ra.id as record_id, ra.pay_scale, ra.position, ra.adjustment, ra.min_rate, ra.max_rate
 	FROM rate_adjustments ra`
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
@@ -99,6 +99,8 @@ func (RateAdjustmentsCfg *RateAdjustmentsCfgStruct) LoadRateAdjustmentsCfg() (er
 }
 
 func (RateAdjustmentsCfg *RateAdjustmentsCfgStruct) CalculateAdjustmentMinRateMaxRate(payScale, Position string) (adjustment, minRate, MaxRate float64) {
+	log.EnterFn(0, "CalculateAdjustmentMinRateMaxRate")
+	defer func() { log.ExitFn(0, "CalculateAdjustmentMinRateMaxRate", nil) }()
 	for _, data := range RateAdjustmentsCfg.RateAdjustmentsList {
 		if data.PayScale+data.Position == payScale+Position {
 			adjustmentNum, _ := strconv.Atoi(data.Adjustment)

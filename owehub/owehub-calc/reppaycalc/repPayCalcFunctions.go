@@ -13,6 +13,8 @@ import (
 * RETURNS:         gross revenue
 *****************************************************************************/
 func calculatePerTeamKw(rep1, rep2 string, date time.Time, sysSize float64) float64 {
+	log.EnterFn(0, "calculatePerTeamKw")
+	defer func() { log.ExitFn(0, "calculatePerTeamKw", nil) }()
 	var balance float64
 	r1Team := datamgmt.TeamDataCfg.CalculateRTeamName(rep1, date)
 	r2Team := datamgmt.TeamDataCfg.CalculateRTeamName(rep2, date)
@@ -30,6 +32,8 @@ func calculatePerTeamKw(rep1, rep2 string, date time.Time, sysSize float64) floa
 * RETURNS:         gross revenue
 *****************************************************************************/
 func calculatePerRepKw(rep1, rep2 string, sysSize float64) (perRepKw float64) {
+	log.EnterFn(0, "calculatePerRepKw")
+	defer func() { log.ExitFn(0, "calculatePerRepKw", nil) }()
 	if len(rep1) > 0 && len(rep2) > 0 {
 		return sysSize / 2
 	} else if len(rep1) > 0 || len(rep2) > 0 {
@@ -73,8 +77,8 @@ func excelDateFromTime(t time.Time) int {
  *****************************************************************************/
 func CalculateRepContractCalc(epc float64, contractTotal float64, systemSize float64) float64 {
 
-	log.EnterFn(0, "CalculateARContractAmount")
-	defer func() { log.ExitFn(0, "CalculateARContractAmount", nil) }()
+	log.EnterFn(0, "CalculateRepContractCalc")
+	defer func() { log.ExitFn(0, "CalculateRepContractCalc", nil) }()
 
 	if epc > 0.0 {
 		if contractTotal > 0 {
@@ -93,6 +97,8 @@ func CalculateRepContractCalc(epc float64, contractTotal float64, systemSize flo
  * RETURNS:         contact amount
  *****************************************************************************/
 func CalculateRepRBalance(rep string, commStatusCheck, commPaid float64) (balance float64) {
+	log.EnterFn(0, "CalculateRepRBalance")
+	defer func() { log.ExitFn(0, "CalculateRepRBalance", nil) }()
 	if len(rep) > 0 {
 		balance = math.Round((commStatusCheck-commPaid)*100) / 200
 	}

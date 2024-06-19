@@ -9,6 +9,7 @@ package datamgmt
 
 import (
 	db "OWEApp/shared/db"
+	log "OWEApp/shared/logger"
 	"time"
 )
 
@@ -185,6 +186,8 @@ func (cmmsnRatesCfg *cmmsnRatesCfgStruct) CalculateRepRl(dealer, rep1, partner, 
 * RETURNS:         dlrPayBonus float64
 *****************************************************************************/
 func (cmmsnRatesCfg *cmmsnRatesCfgStruct) CalculateRep1Rl(commissionModels, dealer, rep1, partner, installer, state, types, payScale string, kwh float64, wc time.Time) (rl, rate float64) {
+	log.EnterFn(0, "CalculateRep1Rl")
+	defer func() { log.ExitFn(0, "CalculateRep1Rl", nil) }()
 	if commissionModels == "standard" {
 		if len(rep1) > 0 {
 			for _, data := range cmmsnRatesCfg.cmmsnRatesList {

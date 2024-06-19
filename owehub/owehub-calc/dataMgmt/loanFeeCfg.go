@@ -139,6 +139,8 @@ func (pLoanFee *LoanFeeCfgStruct) LoadLoanFeeCfg() (err error) {
 * RETURNS:         dlrcost float64
 *****************************************************************************/
 func (pLoanFee *LoanFeeCfgStruct) CalculateDlrCost(uniqueId, dealer, installer, state, Type string, date time.Time) (dlrcost float64) {
+	log.EnterFn(0, "CalculateDlrCost")
+	defer func() { log.ExitFn(0, "CalculateDlrCost", nil) }()
 	var (
 		err       error
 		startDate time.Time

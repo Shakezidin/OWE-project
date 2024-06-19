@@ -230,6 +230,8 @@ func (pReferral *ReferralDataStruct) CalculatePerRepAddrShare(uniqueId string, r
 }
 
 func (pReferral *ReferralDataStruct) CalculateR1AddrResp(uniqueId, rep1, rep2, state, Type string, date time.Time, r1r2check bool) (R1AddrResp float64) {
+	log.EnterFn(0, "CalculateR1AddrResp")
+	defer func() { log.ExitFn(0, "CalculateR1AddrResp", nil) }()
 	rep := rep1
 	if !r1r2check {
 		rep = rep2
@@ -261,8 +263,8 @@ func (pReferral *ReferralDataStruct) CalculateR1AddrResp(uniqueId, rep1, rep2, s
 }
 
 func (pReferral *ReferralDataStruct) CalculateRReferral(rep, uniqueId string, r1r2check bool) (R1Referral float64) {
-	log.EnterFn(0, "CalculateR1Referral")
-	defer func() { log.ExitFn(0, "CalculateR1Referral", nil) }()
+	log.EnterFn(0, "CalculateRReferral")
+	defer func() { log.ExitFn(0, "CalculateRReferral", nil) }()
 
 	if len(rep) > 0 {
 		for _, data := range RebateCfg.RebateList {

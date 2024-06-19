@@ -12,6 +12,8 @@ import (
 * RETURNS:         gross revenue
 *****************************************************************************/
 func calculateRR(repName string, val1, val2 float64) (result float64) {
+	log.EnterFn(0, "calculateRR")
+	defer func() { log.ExitFn(0, "calculateRR", nil) }()
 	if len(repName) > 0 {
 		return val1 + val2
 	}
@@ -24,6 +26,8 @@ func calculateRR(repName string, val1, val2 float64) (result float64) {
 * RETURNS:         gross revenue
 *****************************************************************************/
 func calculateRCommStatudCheck(repName, salesRepType, status string, RCommTotal float64) (result float64) {
+	log.EnterFn(0, "calculateRCommStatudCheck")
+	defer func() { log.ExitFn(0, "calculateRCommStatudCheck", nil) }()
 	if len(repName) > 0 {
 		if salesRepType == "Sales Rep 2" {
 			return 0
@@ -44,6 +48,8 @@ func calculateRCommStatudCheck(repName, salesRepType, status string, RCommTotal 
 * RETURNS:         gross revenue
 *****************************************************************************/
 func calculateR1CommStatudCheck(commissionModel, repName, salesRepType, status string, RCommTotal float64) (result float64) {
+	log.EnterFn(0, "calculateR1CommStatudCheck")
+	defer func() { log.ExitFn(0, "calculateR1CommStatudCheck", nil) }()
 	if commissionModel == "standard" {
 		if len(repName) > 0 {
 			if salesRepType == "Sales Rep 2" {
@@ -76,6 +82,8 @@ func calculateR1CommStatudCheck(commissionModel, repName, salesRepType, status s
 * RETURNS:         gross revenue
 *****************************************************************************/
 func calculateRepKw(rep string, netEpc, SysSize, adderPerKw float64) float64 {
+	log.EnterFn(0, "calculateRepKw")
+	defer func() { log.ExitFn(0, "calculateRepKw", nil) }()
 	if len(rep) == 0 {
 		return 0
 	}
@@ -96,6 +104,8 @@ func calculateRepKw(rep string, netEpc, SysSize, adderPerKw float64) float64 {
 * RETURNS:         gross revenue
 *****************************************************************************/
 func calculateRPayRateSubTotal(repName string, val1, val2 float64) (result float64) {
+	log.EnterFn(0, "calculateRPayRateSubTotal")
+	defer func() { log.ExitFn(0, "calculateRPayRateSubTotal", nil) }()
 	if len(repName) > 0 {
 		return val1 - val2
 	}
@@ -108,6 +118,8 @@ func calculateRPayRateSubTotal(repName string, val1, val2 float64) (result float
 * RETURNS:         gross revenue
 *****************************************************************************/
 func calculateR1PayRateSubTotal(commissionModels, repName, source string, val1, val2, val3, val4 float64) (result float64) {
+	log.EnterFn(0, "calculateR1PayRateSubTotal")
+	defer func() { log.ExitFn(0, "calculateR1PayRateSubTotal", nil) }()
 	if commissionModels == "standard" {
 		if len(repName) > 0 {
 			return val1 - val2
@@ -130,6 +142,8 @@ func calculateR1PayRateSubTotal(commissionModels, repName, source string, val1, 
 * RETURNS:         gross revenue
 *****************************************************************************/
 func CalculatePayRateSemi(Rep string, rl, rate, adjustment, r1Incentive, epcCalc float64) (payRateSemi float64) {
+	log.EnterFn(0, "CalculatePayRateSemi")
+	defer func() { log.ExitFn(0, "CalculatePayRateSemi", nil) }()
 	if len(Rep) > 0 && Rep != "" {
 		if rl <= 0 {
 			return rate + adjustment + r1Incentive
@@ -148,6 +162,8 @@ func CalculatePayRateSemi(Rep string, rl, rate, adjustment, r1Incentive, epcCalc
 * RETURNS:         gross revenue
 *****************************************************************************/
 func CalculateR1PayRateSemi(commissionModels, Rep, source string, rl, rate, adjustment, r1Incentive, epcCalc, sysSize, perRepKw, netEpc float64, wc time.Time) (payRateSemi float64) {
+	log.EnterFn(0, "CalculateR1PayRateSemi")
+	defer func() { log.ExitFn(0, "CalculateR1PayRateSemi", nil) }()
 	date, _ := time.Parse("2006-01-02", "2023-12-20")
 	if commissionModels == "standard" {
 		if len(Rep) > 0 && Rep != "" {
@@ -206,7 +222,8 @@ func CalculateEPCCalc(contractCalc float64, wc1 time.Time, netEPC float64, syste
 * RETURNS:         gross revenue
 *****************************************************************************/
 func CalculateContractDolDol(netEpc float64, contract float64, sysSize float64) (contractdoldol float64) {
-	log.FuncErrorTrace(0, "netEpc %v  contract %v sysSize %v", netEpc, contract, sysSize)
+	log.EnterFn(0, "CalculateContractDolDol")
+	defer func() { log.ExitFn(0, "CalculateContractDolDol", nil) }()
 	if netEpc > 0 {
 		if contract > 0 {
 			contractdoldol = contract
@@ -223,6 +240,8 @@ func CalculateContractDolDol(netEpc float64, contract float64, sysSize float64) 
 * RETURNS:         gross revenue
 *****************************************************************************/
 func calculateRAdderPerKw(repName string, val1, val2 float64) (result float64) {
+	log.EnterFn(0, "calculateRAdderPerKw")
+	defer func() { log.ExitFn(0, "calculateRAdderPerKw", nil) }()
 	if len(repName) > 0 {
 		return val1 / val2
 	}
@@ -235,6 +254,8 @@ func calculateRAdderPerKw(repName string, val1, val2 float64) (result float64) {
 * RETURNS:         result
 *****************************************************************************/
 func calculateRAdderTotal(repName string, val1, val2, val3, val4, val5 float64) (result float64) {
+	log.EnterFn(0, "calculateRAdderTotal")
+	defer func() { log.ExitFn(0, "calculateRAdderTotal", nil) }()
 	if len(repName) > 0 {
 		return val1 + val2 + val3 + val4 + val5
 	}
@@ -247,6 +268,8 @@ func calculateRAdderTotal(repName string, val1, val2, val3, val4, val5 float64) 
 * RETURNS:         result
 *****************************************************************************/
 func calculateR1AdderTotal(repName, commissionModel string, val1, val2, val3, val4, val5 float64) (result float64) {
+	log.EnterFn(0, "calculateR1AdderTotal")
+	defer func() { log.ExitFn(0, "calculateR1AdderTotal", nil) }()
 	if commissionModel == "standard" {
 		if len(repName) > 0 {
 			return val1 + val2 + val3 + val4 + val5
@@ -265,6 +288,8 @@ func calculateR1AdderTotal(repName, commissionModel string, val1, val2, val3, va
 * RETURNS:         r1CommTotal
 *****************************************************************************/
 func calculateRCommTotal(rep1, source string, rMinOrMax, perRepKw, rCredit float64) (r1CommTotal float64) {
+	log.EnterFn(0, "calculateRCommTotal")
+	defer func() { log.ExitFn(0, "calculateRCommTotal", nil) }()
 	if len(rep1) > 0 {
 		if source == "BPN: SETTER" {
 			return math.Round(((rMinOrMax * perRepKw) + rCredit) * 0.6)
@@ -281,6 +306,8 @@ func calculateRCommTotal(rep1, source string, rMinOrMax, perRepKw, rCredit float
 * RETURNS:         r1CommTotal
 *****************************************************************************/
 func calculateR1CommTotal(commissionModel, rep1, source string, rMinOrMax, perRepKw, rCredit float64, wc time.Time) (r1CommTotal float64) {
+	log.EnterFn(0, "calculateR1CommTotal")
+	defer func() { log.ExitFn(0, "calculateR1CommTotal", nil) }()
 	var multiplier float64
 	if commissionModel == "standard" {
 		if len(rep1) > 0 {
@@ -337,6 +364,8 @@ func calculateR1CommTotal(commissionModel, rep1, source string, rMinOrMax, perRe
 * RETURNS:         r1MinOrMax
 *****************************************************************************/
 func calculateRMinOrMax(rep1 string, rPayRateSubTotal, minRate, maxRate float64) (rMinOrMax float64) {
+	log.EnterFn(0, "calculateRMinOrMax")
+	defer func() { log.ExitFn(0, "calculateRMinOrMax", nil) }()
 	if len(rep1) > 0 {
 		if rPayRateSubTotal < minRate {
 			return minRate
@@ -355,6 +384,8 @@ func calculateRMinOrMax(rep1 string, rPayRateSubTotal, minRate, maxRate float64)
 * RETURNS:         r1DrawAmount
 *****************************************************************************/
 func calculateRDrawAmount(rCommStatusCheck, drawMax, perRepSales, drawPerentage float64) (r1DrawAmount float64) {
+	log.EnterFn(0, "calculateRDrawAmount")
+	defer func() { log.ExitFn(0, "calculateRDrawAmount", nil) }()
 	if rCommStatusCheck > 0 {
 		if (drawMax * perRepSales) < (rCommStatusCheck * drawPerentage) {
 			return math.Round(drawMax * perRepSales)
@@ -371,6 +402,8 @@ func calculateRDrawAmount(rCommStatusCheck, drawMax, perRepSales, drawPerentage 
 * RETURNS:         perRepsales
 *****************************************************************************/
 func calculatePerRepSales(rep1, rep2 string) (perRepsales float64) {
+	log.EnterFn(0, "calculatePerRepSales")
+	defer func() { log.ExitFn(0, "calculatePerRepSales", nil) }()
 	if len(rep1) > 0 {
 		if len(rep2) > 0 {
 			return 0.5
@@ -388,6 +421,8 @@ func calculatePerRepSales(rep1, rep2 string) (perRepsales float64) {
 * RETURNS:         apptBalance
 *****************************************************************************/
 func calculateApptBalance(apptSetter string, apptAmount, apptPaid float64) (apptBalance float64) {
+	log.EnterFn(0, "calculateApptBalance")
+	defer func() { log.ExitFn(0, "calculateApptBalance", nil) }()
 	if len(apptSetter) > 0 {
 		return math.Round(apptAmount - apptPaid)
 	}
@@ -400,6 +435,8 @@ func calculateApptBalance(apptSetter string, apptAmount, apptPaid float64) (appt
 * RETURNS:         apptAmount
 *****************************************************************************/
 func calculateApptAmount(commissionModels string, apptSetStatusCheck, apptsetTotal float64) (apptAmount float64) {
+	log.EnterFn(0, "calculateApptAmount")
+	defer func() { log.ExitFn(0, "calculateApptAmount", nil) }()
 	if commissionModels == "standard" {
 		if apptSetStatusCheck > 0 {
 			return apptSetStatusCheck
@@ -418,6 +455,8 @@ func calculateApptAmount(commissionModels string, apptSetStatusCheck, apptsetTot
 * RETURNS:         apptSetStatusCheck
 *****************************************************************************/
 func calculateApptSetStatusCheck(apptSetter, status string, apptSetTotal float64) (apptSetStatusCheck float64) {
+	log.EnterFn(0, "calculateApptSetStatusCheck")
+	defer func() { log.ExitFn(0, "calculateApptSetStatusCheck", nil) }()
 	if len(apptSetter) > 0 {
 		if status == "Cancel" {
 			apptSetStatusCheck = 0.0
@@ -436,6 +475,8 @@ func calculateApptSetStatusCheck(apptSetter, status string, apptSetTotal float64
 * RETURNS:         apptSetStatusCheck
 *****************************************************************************/
 func calculateApptSetTotal(commissionModel, apptSetter, source string, rep1CommStatusCheck, payRate, systemSize float64) (apptSetTotal float64) {
+	log.EnterFn(0, "calculateApptSetTotal")
+	defer func() { log.ExitFn(0, "calculateApptSetTotal", nil) }()
 	if commissionModel == "standard" {
 		if len(apptSetter) > 0 {
 			if source == "BPN: SETTER" {
@@ -458,6 +499,8 @@ func calculateApptSetTotal(commissionModel, apptSetter, source string, rep1CommS
 * RETURNS:         gross revenue
 *****************************************************************************/
 func calculateRNetEpc(rep string, contractCalc, adderTotal, RloanFee, loanFee, systemSize float64) (netEpc float64) {
+	log.EnterFn(0, "calculateRNetEpc")
+	defer func() { log.ExitFn(0, "calculateRNetEpc", nil) }()
 	if len(rep) > 0 {
 		netEpc = math.Round(((contractCalc-(adderTotal-RloanFee+loanFee))/systemSize/1000)*1000) / 1000
 	}
@@ -470,6 +513,8 @@ func calculateRNetEpc(rep string, contractCalc, adderTotal, RloanFee, loanFee, s
 * RETURNS:         gross revenue
 *****************************************************************************/
 func calculateR1NetEpc(perRepKw, contractCalc, adderTotal, RloanFee, loanFee, systemSize float64) (netEpc float64) {
+	log.EnterFn(0, "calculateR1NetEpc")
+	defer func() { log.ExitFn(0, "calculateR1NetEpc", nil) }()
 	if perRepKw > 0 {
 		netEpc = math.Round(((contractCalc-(adderTotal-RloanFee+loanFee))/systemSize/1000)*1000) / 1000
 	}
@@ -482,6 +527,8 @@ func calculateR1NetEpc(perRepKw, contractCalc, adderTotal, RloanFee, loanFee, sy
 * RETURNS:         gross revenue
 *****************************************************************************/
 func CalculateStatusDate(uniqueID string, shaky bool, pto, instSys, cancel, ntp, permSub, wc time.Time) time.Time {
+	log.EnterFn(0, "CalculateStatusDate")
+	defer func() { log.ExitFn(0, "CalculateStatusDate", nil) }()
 	var statusDate time.Time
 
 	if len(uniqueID) > 0 {
@@ -513,6 +560,8 @@ func CalculateStatusDate(uniqueID string, shaky bool, pto, instSys, cancel, ntp,
 * RETURNS:         r2DmBal
 *****************************************************************************/
 func calculateR2DmBal(R2DmName string, r2DmCOmm, r2DmPaid float64) (r2DmBal float64) {
+	log.EnterFn(0, "calculateR2DmBal")
+	defer func() { log.ExitFn(0, "calculateR2DmBal", nil) }()
 	if len(R2DmName) > 0 {
 		return math.Round(r2DmCOmm - r2DmPaid)
 	}
@@ -526,6 +575,8 @@ func calculateR2DmBal(R2DmName string, r2DmCOmm, r2DmPaid float64) (r2DmBal floa
 * RETURNS:         r2DmComm
 *****************************************************************************/
 func calculateR2DmComm(r2DmName string, r2DmRate, perTeamKw float64) (r2DmComm float64) {
+	log.EnterFn(0, "calculateR2DmComm")
+	defer func() { log.ExitFn(0, "calculateR2DmComm", nil) }()
 	if len(r2DmName) > 0 {
 		return math.Round(r2DmRate * perTeamKw)
 	}
@@ -538,13 +589,22 @@ func calculateR2DmComm(r2DmName string, r2DmRate, perTeamKw float64) (r2DmComm f
 * RETURNS:         r2DirComm
 *****************************************************************************/
 func calculateR2DirComm(r2DirName string, r2DirRate, perTeamKw float64) (r2DmComm float64) {
+	log.EnterFn(0, "calculateR2DirComm")
+	defer func() { log.ExitFn(0, "calculateR2DirComm", nil) }()
 	if len(r2DirName) > 0 {
 		return math.Round(r2DirRate * perTeamKw)
 	}
 	return r2DmComm
 }
 
+/******************************************************************************
+* FUNCTION:        calculateTeamCount
+* DESCRIPTION:     calculates the "team count" value based on the provided data
+* RETURNS:         teamCount
+*****************************************************************************/
 func calculateTeamCount(rep1Team, rep2Team string) (teamCount float64) {
+	log.EnterFn(0, "calculateTeamCount")
+	defer func() { log.ExitFn(0, "calculateTeamCount", nil) }()
 	if len(rep1Team) > 0 {
 		if len(rep2Team) > 0 && rep1Team != rep2Team {
 			return 2
@@ -556,7 +616,14 @@ func calculateTeamCount(rep1Team, rep2Team string) (teamCount float64) {
 	}
 }
 
+/******************************************************************************
+* FUNCTION:        calculateR2DirBal
+* DESCRIPTION:     calculates the "r2 dir bal" value based on the provided data
+* RETURNS:         r2DirBal
+*****************************************************************************/
 func calculateR2DirBal(r2DirName string, r2DirComm, R2DirPaid float64) (r2DirBal float64) {
+	log.EnterFn(0, "calculateR2DirBal")
+	defer func() { log.ExitFn(0, "calculateR2DirBal", nil) }()
 	if len(r2DirName) > 0 {
 		return r2DirComm - R2DirPaid
 	}

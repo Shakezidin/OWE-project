@@ -105,6 +105,8 @@ func (pApptSettersCfg *ApptSettersCfgStruct) LoadApptSettersCfg() (err error) {
 }
 
 func (pApptSettersCfg *ApptSettersCfgStruct) CalculatePayRate(apptSetter string, wc time.Time) (payRate float64) {
+	log.EnterFn(0, "CalculatePayRate")
+	defer func() { log.ExitFn(0, "CalculatePayRate", nil) }()
 	var (
 		err       error
 		startDate time.Time

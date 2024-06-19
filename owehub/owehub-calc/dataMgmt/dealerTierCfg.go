@@ -98,7 +98,8 @@ func (pDealerTier *DealerTierCfgStruct) LoadDealerTierCfg() (err error) {
 * RETURNS:         dlrtier float64
 *****************************************************************************/
 func (pDealerTier *DealerTierCfgStruct) CalculateDlrTier(uniqueId, dealer string, date time.Time) (dlrtier string) {
-
+	log.EnterFn(0, "CalculateDlrTier")
+	defer func() { log.ExitFn(0, "CalculateDlrTier", nil) }()
 	bfrDateStr := "06-15-2022"
 	var (
 		err       error
