@@ -49,8 +49,8 @@ const DealerCredit: React.FC = () => {
   const handleExportOpen = () => setExportOpen(!exportOPen);
   const filterClose = () => setFilterOpen(false);
   const dispatch = useAppDispatch();
-  const {data, dbCount} = useAppSelector((state) => state.dealerCredit);
-  
+  const { data, dbCount } = useAppSelector((state) => state.dealerCredit);
+
   const error = useAppSelector((state) => state.comm.error);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
@@ -71,7 +71,7 @@ const DealerCredit: React.FC = () => {
       filters,
     };
     dispatch(getDealerCredit(pageNumber));
-  }, [ dispatch, currentPage, viewArchived, filters]);
+  }, [dispatch, currentPage, viewArchived, filters]);
 
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
@@ -99,13 +99,13 @@ const DealerCredit: React.FC = () => {
     handleOpen();
   };
 
-  const handleEditDealer = (dealerData:any) => {
+  const handleEditDealer = (dealerData: any) => {
     setEditMode(true);
     setEditData(dealerData);
     handleOpen();
   };
 
- 
+
 
   const currentPageData = data?.slice(startIndex, endIndex);
   const isAnyRowSelected = selectedRows.size > 0;
@@ -171,7 +171,7 @@ const DealerCredit: React.FC = () => {
           setSelectedRows(new Set());
           setSelectAllChecked(false);
           // If API call is successful, refetch commissions
-       
+
 
           setSelectAllChecked(false);
           setSelectedRows(new Set());
@@ -204,7 +204,7 @@ const DealerCredit: React.FC = () => {
       if (res.status === HTTP_STATUS.OK) {
         setSelectedRows(new Set());
         setSelectAllChecked(false);
-       
+
         await successSwal('Archived', 'The data has been archived ');
       } else {
         await successSwal('Archived', 'The data has been archived ');
@@ -240,7 +240,7 @@ const DealerCredit: React.FC = () => {
           checked={isAllRowsSelected}
           isAnyRowSelected={isAnyRowSelected}
           onPressFilter={() => filter()}
-          onPressImport={() => {}}
+          onPressImport={() => { }}
           viewArchive={viewArchived}
           onpressExport={() => handleExportOpen()}
           onpressAddNew={() => handleAddCommission()}
@@ -311,7 +311,7 @@ const DealerCredit: React.FC = () => {
                 ))}
                 <th>
                   <div className="action-header">
-                    <p>Action</p>
+                    {!viewArchived && selectedRows.size < 2 && (<p>Action</p>)}                  
                   </div>
                 </th>
               </tr>
@@ -344,28 +344,11 @@ const DealerCredit: React.FC = () => {
                     <td>{el.notes}</td>
                     <td>{el.total_amount}</td>
                     <td>{el.sys_size}</td>
-                    
+
 
                     {viewArchived === true ? null : (
                       <td>
-                        {selectedRows.size > 0 ? (
-                          <div className="action-icon">
-                            <div
-                              className="action-archive"
-                              style={{ cursor: 'not-allowed' }}
-                            >
-                              <img src={ICONS.ARCHIVE} alt="" />
-                              {/* <span className="tooltiptext">Archive</span> */}
-                            </div>
-                            <div
-                              className="action-archive"
-                              style={{ cursor: 'not-allowed' }}
-                            >
-                              <img src={ICONS.editIcon} alt="" />
-                              {/* <span className="tooltiptext">Edit</span> */}
-                            </div>
-                          </div>
-                        ) : (
+                        {selectedRows.size >= 2 ? null : (
                           <div className="action-icon">
                             <div
                               className="action-archive"
@@ -405,7 +388,7 @@ const DealerCredit: React.FC = () => {
         </div>
         {data?.length > 0 ? (
           <div className="page-heading-container">
-              <p className="page-heading">
+            <p className="page-heading">
               Showing {startIndex} -{' '}
               {endIndex > dbCount ? dbCount : endIndex} of {dbCount}{' '}
               item
