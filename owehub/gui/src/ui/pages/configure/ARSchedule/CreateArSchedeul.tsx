@@ -212,7 +212,7 @@ className="error"
                       }}
 className="error"
                     >
-                      {"Sale type is required"}
+                      {"Sale Type is required"}
                     </span>
                   )}
                 </div>
@@ -235,7 +235,7 @@ className="error"
                       }}
 className="error"
                     >
-                      {"PTO pay is required"}
+                      {"PTO Pay is required"}
                     </span>
                   )}
                 </div>
@@ -260,7 +260,7 @@ className="error"
                       }}
 className="error"
                     >
-                      {"Red line is required"}
+                      {"Red Line is required"}
                     </span>
                   )}
                 </div>
@@ -283,7 +283,7 @@ className="error"
                       }}
 className="error"
                     >
-                      {"Permit max is required"}
+                      {"Permit Max is required"}
                     </span>
                   )}
                 </div>
@@ -341,7 +341,7 @@ className="error"
                       }}
 className="error"
                     >
-                      {"Permit pay is required"}
+                      {"Permit Pay is required"}
                     </span>
                   )}
                 </div>
@@ -365,7 +365,7 @@ className="error"
                       }}
 className="error"
                     >
-                      {"Install pay is required"}
+                      {"Install Pay is required"}
                     </span>
                   )}
                 </div>
@@ -422,7 +422,7 @@ className="error"
                       }}
 className="error"
                     >
-                      {"Calc date is required"}
+                      {"Calc Date is required"}
                     </span>
                   )}
                 </div>
@@ -448,7 +448,7 @@ className="error"
                       }}
 className="error"
                     >
-                      {errors.start.replace('Start', 'Start date')}
+                      {errors.start.replace('Start', 'Start Date')}
                     </span>
                   )}
                 </div>
@@ -476,7 +476,7 @@ className="error"
                       }}
 className="error"
                     >
-                      {errors.end.replace('End', 'End date')}
+                      {errors.end.replace('End', 'End Date')}
                     </span>
                   )}
                 </div>
