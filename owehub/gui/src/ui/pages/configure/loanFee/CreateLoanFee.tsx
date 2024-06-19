@@ -195,7 +195,7 @@ const CreatedLoanFee: React.FC<payScheduleProps> = ({
                       }}
 className="error"
                     >
-                      {errors.dlrMu}
+                      {"DLR MU is required"}
                     </span>
                   )}
                 </div>
@@ -223,7 +223,7 @@ className="error"
                       }}
 className="error"
                     >
-                      {errors.dealerName}
+                      {"Dealer Name is required"}
                     </span>
                   )}
                 </div>
@@ -251,7 +251,7 @@ className="error"
                       }}
 className="error"
                     >
-                      {errors.stateName.replace('stateName', 'state')}
+                      {"State is required"}
                     </span>
                   )}
                 </div>
@@ -281,7 +281,7 @@ className="error"
                       }}
 className="error"
                     >
-                      {errors.loanType}
+                      {"Loan Type is required"}
                     </span>
                   )}
                 </div>
@@ -312,7 +312,7 @@ className="error"
                       }}
 className="error"
                     >
-                      {errors.installerName}
+                      {"Installer is required"}
                     </span>
                   )}
                 </div>
@@ -342,7 +342,7 @@ className="error"
                       }}
 className="error"
                     >
-                      {errors.dlrCost}
+                      {"DLR Cost is required"}
                     </span>
                   )}
                 </div>
@@ -374,7 +374,7 @@ className="error"
                       }}
 className="error"
                     >
-                      {errors.oweCost}
+                      {"Owe Cost is required"}
                     </span>
                   )}
                 </div>
@@ -403,7 +403,7 @@ className="error"
                       }}
 className="error"
                     >
-                      {errors.startDate.replace('startDate', 'start date')}
+                      {"Start Date is required"}
                     </span>
                   )}
                 </div>
@@ -434,7 +434,7 @@ className="error"
                       }}
 className="error"
                     >
-                      {errors.endDate.replace('endDate', 'end date')}
+                      {"End Date is required"}
                     </span>
                   )}
                 </div>
