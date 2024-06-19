@@ -70,7 +70,7 @@ INSERT INTO loan_type (product_code,active,adder,description) VALUES ('P123',1,1
 \copy ap_dealer(unique_id,dealer_id,dba,type,date,amount,method,transaction,notes) FROM '/docker-entrypoint-initdb.d/ap_dealer.csv' DELIMITER '^' CSV;
 \copy dealer_repayment_bonus(unique_id,home_owner,sys_size,contract_$$,shaky_hand,repayment_bonus,remaining_repayment_bonus) FROM '/docker-entrypoint-initdb.d/dealer_repayment_bonus.csv' DELIMITER ',' CSV;
 \copy auto_adder(rep_percentage,unique_id) FROM '/docker-entrypoint-initdb.d/auto_adder.csv' DELIMITER ',' CSV;
-\copy dba(rep_percentage,unique_id) FROM '/docker-entrypoint-initdb.d/dba.csv' DELIMITER ',' CSV;
+\copy dba(preferred_name,dba) FROM '/docker-entrypoint-initdb.d/dba.csv' DELIMITER ',' CSV;
 \copy loan_fee_adder(unique_id,per_kw_amount,rep_doll_divby_per,type,date,contract_dol_dol) FROM '/docker-entrypoint-initdb.d/loan_fee_adder.csv' DELIMITER ',' CSV;
 \copy rate_adjustments(pay_scale,position,adjustment,min_rate,max_rate) FROM '/docker-entrypoint-initdb.d/rate_adjustments.csv' DELIMITER ',' CSV;
 \copy rep_credit(unique_id,per_rep_amt,exact_amt) FROM '/docker-entrypoint-initdb.d/rep_credit.csv' DELIMITER ',' CSV;

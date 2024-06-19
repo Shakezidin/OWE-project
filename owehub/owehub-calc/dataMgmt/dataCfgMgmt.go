@@ -21,7 +21,7 @@ func LoadConfigurations() (err error) {
 		// log.FuncErrorTrace(0, "Failed to get AR Config from DB err: %+v", err)
 		return err
 	}
-	// log.FuncErrorTrace(0, "=== ReconcileCfgData ->: %+v", ReconcileCfgData.ReconcileList.ReconcileList[0])
+	log.FuncErrorTrace(0, "=== ReconcileCfgData ->: %+v", ReconcileCfgData.ReconcileList.ReconcileList[0])
 
 	// ar config is working
 	err = ArCfgData.LoadARCfg()
@@ -29,7 +29,7 @@ func LoadConfigurations() (err error) {
 		// log.FuncErrorTrace(0, "Failed to get AR Config from DB err: %+v", err)
 		return err
 	}
-	// log.FuncErrorTrace(0, "=== ArCfgData ->: %+v", ArCfgData.arCfgList[0])
+	log.FuncErrorTrace(0, "=== ArCfgData ->: %+v", ArCfgData.arCfgList[0])
 
 	//* ar schedule is working
 	err = ArSkdConfig.LoadArSkdCfg()
@@ -37,7 +37,7 @@ func LoadConfigurations() (err error) {
 		log.FuncErrorTrace(0, "Failed to get AR Skd Config from DB err: %+v", err)
 		return err
 	}
-	// log.FuncErrorTrace(0, "=== ArSkdConfig ->: %+v", ArSkdConfig.ArSkdConfigList.ArScheduleList[0])
+	log.FuncErrorTrace(0, "=== ArSkdConfig ->: %+v", ArSkdConfig.ArSkdConfigList[0])
 
 	//* dealer tier is working
 	err = DealerTierCfg.LoadDealerTierCfg()
@@ -45,7 +45,7 @@ func LoadConfigurations() (err error) {
 		log.FuncErrorTrace(0, "Failed to get dealer tier Config from DB err: %+v", err)
 		return err
 	}
-	// log.FuncErrorTrace(0, "===== dealer tier : %+v", DealerTierCfg.DealerTierList.DealersTierList[0])
+	log.FuncErrorTrace(0, "===== dealer tier : %+v", DealerTierCfg.DealerTierList.DealersTierList[0])
 
 	//* adder data is working
 	err = AdderDataCfg.LoadAdderDataCfg()
@@ -53,7 +53,7 @@ func LoadConfigurations() (err error) {
 		log.FuncErrorTrace(0, "Failed to get Adder Data Config from DB err: %+v", err)
 		return err
 	}
-	// log.FuncErrorTrace(0, "===== AdderDataCfg : %+v", AdderDataCfg.AdderDataList.AdderDataList[0])
+	log.FuncErrorTrace(0, "===== AdderDataCfg : %+v", AdderDataCfg.AdderDataList[0])
 
 	//* adjustemnts is working
 	err = AdjustmentsConfig.LoadAdjustmentsCfg()
@@ -61,7 +61,7 @@ func LoadConfigurations() (err error) {
 		log.FuncErrorTrace(0, "Failed to get Adjustments Config from DB err: %+v", err)
 		return err
 	}
-	// log.FuncErrorTrace(0, "=== AdjustmentsConfig ->: %+v", AdjustmentsConfig.AdjustmentsConfigList.AdjustmentsList[0])
+	log.FuncErrorTrace(0, "=== AdjustmentsConfig ->: %+v", AdjustmentsConfig.AdjustmentsConfigList.AdjustmentsList[0])
 
 	//* ap rep is working
 	err = ApRepCfg.LoadApRepCfg()
@@ -69,7 +69,7 @@ func LoadConfigurations() (err error) {
 		log.FuncErrorTrace(0, "Failed to get AP-Rep Config from DB err: %+v", err)
 		return err
 	}
-	// log.FuncErrorTrace(0, "===== ApRepCfg : %+v", ApRepCfg.ApRepList.ApRepList[0])
+	log.FuncErrorTrace(0, "===== ApRepCfg : %+v", ApRepCfg.ApRepList.ApRepList[0])
 
 	//* rebate data is working
 	err = RebateCfg.LoadRebateCfg()
@@ -77,7 +77,7 @@ func LoadConfigurations() (err error) {
 		log.FuncErrorTrace(0, "Failed to get Rebate Config from DB err: %+v", err)
 		return err
 	}
-	// log.FuncErrorTrace(0, "===== RebateCfg : %+v", RebateCfg.RebateList[0])
+	log.FuncErrorTrace(0, "===== RebateCfg : %+v", RebateCfg.RebateList[0])
 
 	//* dealer credit data is working
 	err = DealerCreditCfg.LoadDlrCreditCfg()
@@ -85,7 +85,7 @@ func LoadConfigurations() (err error) {
 		log.FuncErrorTrace(0, "Failed to get Rebate Config from DB err: %+v", err)
 		return err
 	}
-	// log.FuncErrorTrace(0, "===== DealerCreditCfg : %+v", DealerCreditCfg.DealerCreditList.DealerCreditList[0])
+	log.FuncErrorTrace(0, "===== DealerCreditCfg : %+v", DealerCreditCfg.DealerCreditList.DealerCreditList[0])
 
 	//* pay schedule data is working
 	err = PayScheduleCfg.LoadPayScheduleCfg()
@@ -93,7 +93,7 @@ func LoadConfigurations() (err error) {
 		log.FuncErrorTrace(0, "Failed to get Rebate Config from DB err: %+v", err)
 		return err
 	}
-	// log.FuncErrorTrace(0, "===== PayScheduleCfg : %+v", PayScheduleCfg.PayScheduleList[0])
+	log.FuncErrorTrace(0, "===== PayScheduleCfg : %+v", PayScheduleCfg.PayScheduleList[0])
 
 	//* loan fee is working
 	err = LoanFeeAdderCfg.LoadLoanFeeAdderCfg()
@@ -101,7 +101,7 @@ func LoadConfigurations() (err error) {
 		log.FuncErrorTrace(0, "Failed to get Rebate Config from DB err: %+v", err)
 		return err
 	}
-	// log.FuncErrorTrace(0, "===== LoanFeeAdderCfg : %+v", LoanFeeAdderCfg.LoanFeeAdderList.LoanFeeAdderList[0])
+	log.FuncErrorTrace(0, "===== LoanFeeAdderCfg : %+v", LoanFeeAdderCfg.LoanFeeAdderList[0])
 
 	//* dealer override data is working
 	err = DealerOverrideConfig.LoadRDealerOverrideCfg()
@@ -109,28 +109,28 @@ func LoadConfigurations() (err error) {
 		log.FuncErrorTrace(0, "Failed to get Rebate Config from DB err: %+v", err)
 		return err
 	}
-	// log.FuncErrorTrace(0, "===== DealerOverrideConfig : %+v", DealerOverrideConfig.DealerOverrideList[0])
+	log.FuncErrorTrace(0, "===== DealerOverrideConfig : %+v", DealerOverrideConfig.DealerOverrideList[0])
 
 	err = ApDealerCfg.LoadApDealerCfg()
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get AR Config from DB err: %+v", err)
 		return err
 	}
-	// log.FuncErrorTrace(0, "===== ApDealerCfg : %+v", PayScheduleCfg.PayScheduleList[0])
+	log.FuncErrorTrace(0, "===== ApDealerCfg : %+v", ApDealerCfg.ApDealerList[0])
 
 	err = LoanFeeCfg.LoadLoanFeeCfg()
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get LoanFeeCfg from DB err: %+v", err)
 		return err
 	}
-	// log.FuncErrorTrace(0, "===== LoadLoanFeeCfg : %+v", LoanFeeCfg.LoanFeeCfg.LoanFeeList[0])
+	log.FuncErrorTrace(0, "===== LoadLoanFeeCfg : %+v", LoanFeeCfg.LoanFeeCfg.LoanFeeList[0])
 
 	err = TierLoanFeeCfg.LoadTierLoanFeeCfg()
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get LoadTierLoanFeeCfg from DB err: %+v", err)
 		return err
 	}
-	// log.FuncErrorTrace(0, "===== LoadTierLoanFeeCfg : %+v", TierLoanFeeCfg.TierLoanFeeList.TierLoanFeeList[0])
+	log.FuncErrorTrace(0, "===== LoadTierLoanFeeCfg : %+v", TierLoanFeeCfg.TierLoanFeeList.TierLoanFeeList[0])
 
 	// err = TierLoanFeeCfg.LoadTierLoanFeeCfg()
 	// if err != nil {
@@ -158,7 +158,7 @@ func LoadConfigurations() (err error) {
 		log.FuncErrorTrace(0, "Failed to get DealerRepaymentConfig from DB err: %+v", err)
 		return err
 	}
-	// log.FuncErrorTrace(0, "===== DealerRepaymentConfig : %+v", DealerRepayConfig.DealerRepaymentList[0])
+	log.FuncErrorTrace(0, "===== DealerRepaymentConfig : %+v", DealerRepayConfig.DealerRepaymentList[0])
 
 	//* REP PAY CONFIGS
 

@@ -482,7 +482,7 @@ CREATE TABLE referral_bonus (
 
 CREATE TABLE auto_adder (
     id serial NOT NULL,
-    unique_id varchar NOT NULL UNIQUE,
+    unique_id varchar NOT NULL,
     date date,
     type text,
     gc text,
