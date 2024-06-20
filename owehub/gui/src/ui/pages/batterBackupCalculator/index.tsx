@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './index.css';
 import dummy from './lib/dummy_img.png';
 import Input from '../../components/text_input/Input';
-
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 import { TbMinus, TbPlus } from 'react-icons/tb';
 import { TfiTrash } from 'react-icons/tfi';
+import BatteryAmp from './components/BatteryAmp';
 const apms = [
   '15 AMP',
   '20 AMP',
@@ -23,7 +25,10 @@ const Index = () => {
     lra: '',
     continuousCurrent: '',
   });
+  type TError = typeof inputDetails;
+  const [errors, setErrors] = useState<TError>({} as TError);
   const [isOpen, setIsOpen] = useState(false);
+  const [step, setStep] = useState(0);
   const [batter, setBattery] = useState<
     {
       quantity: number;
@@ -31,7 +36,20 @@ const Index = () => {
       note: string;
     }[]
   >([]);
-
+  const form = useRef<HTMLDivElement | null>(null);
+  const exportPdf = () => {
+    if (form.current) {
+      html2canvas(form.current).then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF();
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        let imgWidth = pdfWidth;
+        let imgHeight = pdfWidth / 2;
+        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+        pdf.save('download.pdf');
+      });
+    }
+  };
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       const elm = e.target as HTMLElement;
@@ -45,6 +63,17 @@ const Index = () => {
       window.removeEventListener('click', handler);
     };
   }, []);
+  const handleValidation = () => {
+    const error: TError = {} as TError;
+    for (const key in inputDetails) {
+      if (!inputDetails[key as keyof typeof inputDetails]) {
+        error[key as keyof typeof inputDetails] =
+          `${key} is required`;
+      }
+    }
+    setErrors({ ...error });
+    return Object.keys(error).length ? false : true;
+  };
   const inputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     let { name, value } = e.target;
     if (name === 'continuousCurrent') {
@@ -64,8 +93,11 @@ const Index = () => {
     }
     setBattery(battery);
   };
+  if (step === 1) return <BatteryAmp battery={batter} />;
+  console.log(errors);
+  
   return (
-    <div className="bg-white battery-wrapper p3">
+    <div className="bg-white battery-wrapper p3" ref={form}>
       <div className="wrapper-header">
         <h4 className="h4" style={{ fontWeight: 500 }}>
           Breakers Details Form
@@ -106,6 +138,15 @@ const Index = () => {
                     placeholder=""
                     label="Prospect name"
                   />
+                  {errors.prospectName && (
+                    <span className="error">
+                      {' '}
+                      {errors.prospectName.replaceAll(
+                        'prospectName',
+                        'Prospect name'
+                      )}{' '}
+                    </span>
+                  )}
                 </div>
 
                 <div className="mb3 calc-input">
@@ -117,6 +158,16 @@ const Index = () => {
                     placeholder=""
                     label="Locked Rotor Amps (LRA)"
                   />
+
+                  {errors.lra && (
+                    <span className="error">
+                      {' '}
+                      {errors.lra.replaceAll(
+                        'lra',
+                        'Locked Rotor Amps (LRA)'
+                      )}{' '}
+                    </span>
+                  )}
                 </div>
 
                 <div className="mb3 calc-input">
@@ -128,13 +179,15 @@ const Index = () => {
                     placeholder=""
                     label="Continuous Current"
                   />
-                  {/* <span
-                    className="error block right-align"
-                    style={{ color: '#EF1515' }}
-                  >
-                    {' '}
-                    Enter the unit{' '}
-                  </span> */}
+                  {errors.continuousCurrent && (
+                    <span className="error">
+                      {' '}
+                      {errors.continuousCurrent.replaceAll(
+                        'continuousCurrent',
+                        'Continuous Current'
+                      )}{' '}
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
@@ -245,7 +298,17 @@ const Index = () => {
         >
           Reset All
         </button>
-        <button className="calc-btn text-white pointer calc-green-btn">
+        <button
+          className="calc-btn text-white pointer text-white calc-yellow-btn"
+          onClick={exportPdf}
+        >
+          Export PDF
+        </button>
+
+        <button
+          onClick={() => handleValidation() && setStep((prev) => prev + 1)}
+          className="calc-btn text-white pointer calc-green-btn"
+        >
           Generate
         </button>
       </div>

@@ -97,11 +97,11 @@
   text-align: center;
 }
 
-.calc-btn-wrapper{
+.calc-btn-wrapper {
   gap: 19px;
 }
 
-.calc-btn{
+.calc-btn {
   width: 100%;
   text-align: center;
   max-width: 297px;
@@ -112,11 +112,108 @@
   padding-block: 12px;
 }
 
-.calc-green-btn{
+.calc-green-btn {
   background-color: #129537;
   color: #fff;
 }
 
-.calc-grey-btn{
-  background-color: #F1F1F1;
+.calc-grey-btn {
+  background-color: #f1f1f1;
+}
+.calc-yellow-btn{
+  background-color: #E7AE1C;
+  color: #fff;
+}
+
+.battery-amp-wrapper {
+  padding: 48px 46px;
+  background-color: #172935;
+  max-width: 600px;
+  border-radius: 20px;
+}
+
+.home-battery {
+  max-width: 311px;
+  width: 100%;
+  margin-inline: auto;
+  transform: translateX(10px);
+}
+
+.battery-amp {
+  background-color: #fff;
+  padding-block: 12px;
+  outline: 4px solid #d1d1d1;
+  padding-left: 10px;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.battery-chip {
+  position: absolute;
+  left: -55.9px;
+  top: -9px;
+}
+.batter-amp-switch {
+  outline: 4px solid #d1d1d1;
+  width: 62px;
+  height: 67px;
+  background-color: #fff;
+}
+
+.flex-grow-1 {
+  flex: 1;
+}
+
+.bg-navy-dark {
+  background-color: #0b1922;
+  max-width: 500px;
+  border-radius: 10px;
+  padding-block: 28px;
+  filter: drop-shadow(0 3.47px 6px rgba(0, 0, 0, 0.12));
+}
+
+.flex-149 {
+  flex-basis: 160px;
+}
+
+.translate-28{
+  transform: translateX(28px);
+}
+
+
+.sm-switch {
+  width: 43px;
+  height: 46px;
+}
+
+.sm-amp {
+  padding-block: 4px;
+  font-size: 12px;
+}
+
+.sm-battery-chip {
+  left: -38px;
+  top: -5px;
+}
+.screw-top{
+  position: absolute;
+  left: 10px;
+  top: 10px;
+}
+.screw-top-right{
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+
+.screw-bottom-right{
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+}
+
+.screw-bottom-left{
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
 }
