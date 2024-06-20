@@ -316,7 +316,7 @@ func calculateR1CommTotal(commissionModel, rep1, source string, rMinOrMax, perRe
 			if source == "BPN: SETTER" {
 				return math.Round(((rMinOrMax * perRepKw) + rCredit) * 0.6)
 			} else {
-				math.Round((rMinOrMax * perRepKw) + rCredit)
+				return math.Round((rMinOrMax * perRepKw) + rCredit)
 			}
 		}
 	} else {

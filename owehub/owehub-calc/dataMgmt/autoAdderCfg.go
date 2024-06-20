@@ -360,6 +360,7 @@ func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepRAddrResp(rep1, rep2, unique
 					return r1AddrResp
 				}
 			} else if len(rep1) > 0 {
+				log.FuncErrorTrace(0, "==================================hello============================")
 				perRepAddrShare := AutoAdderCfg.CalculateRepPerRepAddrShare(rep1, rep2, uniqueId, state, sysSize, wc)
 				rep1DefResp := AutoAdderCfg.CalculateRepRep1DefResp(rep, uniqueId, state, wc)
 				if data.Type1[:2] == "MK" {
@@ -391,6 +392,8 @@ func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepPerRepOvrdShare(rep1, rep2, 
 				} else if data.RepPercent > 1 {
 					return (data.RepPercent / 100) / repCount
 				}
+			} else {
+				return perRepOvrdShare
 			}
 		}
 	}
@@ -457,6 +460,7 @@ func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepPerRepAddrShare(rep1, rep2, 
 	for _, data := range AutoAdderCfg.AutoAdderList {
 		if uniqueId == data.UniqueId {
 			exactAmnt := AutoAdderCfg.CalculateRepExactAmount(rep1, uniqueId)
+			log.FuncErrorTrace(0, "==================================%v", exactAmnt)
 			repCount := AutoAdderCfg.CalculateRepRepCount(rep1, rep2, uniqueId)
 			perKwAmt := AutoAdderCfg.CalculateRepPerKwAmount(rep1, uniqueId)
 			if exactAmnt > 0 {
