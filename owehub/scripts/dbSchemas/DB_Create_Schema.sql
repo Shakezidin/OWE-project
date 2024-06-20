@@ -76,6 +76,7 @@ INSERT INTO loan_type (product_code,active,adder,description) VALUES ('P123',1,1
 \copy rep_credit(unique_id,per_rep_amt,exact_amt) FROM '/docker-entrypoint-initdb.d/rep_credit.csv' DELIMITER ',' CSV;
 \copy rep_incent(name,month,doll_div_kw) FROM '/docker-entrypoint-initdb.d/rep_incent.csv' DELIMITER '^' CSV;
 \copy rep_pay_settings(name,state_id,pay_scale,position,b_e,start_date,end_Date) FROM '/docker-entrypoint-initdb.d/rep_pay_settings.csv' DELIMITER ',' CSV;
+\copy adder_credit(pay_scale,type,max_rate,min_rate) FROM '/docker-entrypoint-initdb.d/adder_credit.csv' DELIMITER ',' CSV;
 
 /******************************SETTINGS DB TABLE END  ***********************************************/
 

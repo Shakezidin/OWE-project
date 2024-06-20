@@ -310,6 +310,7 @@ func calculateR1CommTotal(commissionModel, rep1, source string, rMinOrMax, perRe
 	log.EnterFn(0, "calculateR1CommTotal")
 	defer func() { log.ExitFn(0, "calculateR1CommTotal", nil) }()
 	var multiplier float64
+	log.FuncErrorTrace(0, "rep1 : %v, source %v, rMinOrMax: %v perRepKw:%v, rCredit: %v", rep1, source, rMinOrMax, perRepKw, rCredit)
 	if commissionModel == "standard" {
 		if len(rep1) > 0 {
 			if source == "BPN: SETTER" {

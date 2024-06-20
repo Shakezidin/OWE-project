@@ -784,7 +784,7 @@ CREATE TABLE adder_responsibility (
 
 CREATE TABLE adder_credit (
     id serial NOT NULL,
-    unique_id varchar NOT NULL,
+    unique_id varchar,
     pay_scale text,
     type text,
     min_rate float,

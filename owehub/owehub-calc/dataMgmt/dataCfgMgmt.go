@@ -200,14 +200,6 @@ func LoadConfigurations() (err error) {
 	}
 	log.FuncErrorTrace(0, "===== RateAdjustments : %+v", RateAdjustmentsCfg.RateAdjustmentsList[0])
 
-	//! rebate data
-	err = RebateCfg.LoadRebateCfg()
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get Rebate Config from DB err: %+v", err)
-		return err
-	}
-	log.FuncErrorTrace(0, "===== RebateCfg : %+v", RebateCfg.RebateList[0])
-
 	//! referral data
 	err = ReferralDataConfig.LoadReferralCfg()
 	if err != nil {

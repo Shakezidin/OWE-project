@@ -125,77 +125,65 @@ func (RebateCfg *RebateCfgStruct) CalculateRepCount(rep1, rep2 string) (repCount
 	return 1
 }
 
-func (RebateCfg *RebateCfgStruct) CalculatePerRepOvrdShare(uniqueId string, repCount float64, count int) (PerRepOvrdShare float64) {
+func (RebateCfg *RebateCfgStruct) CalculatePerRepOvrdShare(uniqueId string, repCount float64) (PerRepOvrdShare float64) {
 	log.EnterFn(0, "CalculatePerRepOvrdShare")
 	defer func() { log.ExitFn(0, "CalculatePerRepOvrdShare", nil) }()
 	if len(uniqueId) > 0 {
-		countCurr := 0
 		for _, data := range RebateCfg.RebateList {
 			if data.UniqueId == uniqueId {
-				if countCurr == count {
-					if (data.RepDollDivbyPer / 100) <= 1 {
-						return (data.Amount * (data.RepDollDivbyPer / 100)) / repCount
-					} else if (data.RepDollDivbyPer / 100) > 1 {
-						return (data.RepDollDivbyPer / 100) / repCount
-					} else {
-						return 0.0
-					}
+				if (data.RepDollDivbyPer / 100) <= 1 {
+					return (data.Amount * (data.RepDollDivbyPer / 100)) / repCount
+				} else if (data.RepDollDivbyPer / 100) > 1 {
+					return (data.RepDollDivbyPer / 100) / repCount
+				} else {
+					return 0.0
 				}
-				countCurr++
 			}
 		}
 	}
 	return PerRepOvrdShare
 }
 
-func (RebateCfg *RebateCfgStruct) CalculatePerRepDefOvrd(uniqueId string, count int) (PerRepOvrdDed float64) {
+func (RebateCfg *RebateCfgStruct) CalculatePerRepDefOvrd(uniqueId string) (PerRepOvrdDed float64) {
 	log.EnterFn(0, "CalculatePerRepDefOvrd")
 	defer func() { log.ExitFn(0, "CalculatePerRepDefOvrd", nil) }()
 
 	if len(uniqueId) > 0 {
-		currCount := 0
 		for _, data := range RebateCfg.RebateList {
 			if data.UniqueId == uniqueId {
-				if currCount == count {
-					if len(data.Types) >= 9 && data.Types[:9] == "Retention" {
-						return 0
-					} else if data.Types == "Promo" {
-						return 0
-					} else {
-						return 0
-					}
+				if len(data.Types) >= 9 && data.Types[:9] == "Retention" {
+					return 0
+				} else if data.Types == "Promo" {
+					return 0
+				} else {
+					return 0
 				}
-				currCount++
 			}
 		}
 	}
 	return PerRepOvrdDed
 }
 
-func (RebateCfg *RebateCfgStruct) CalculatePerRepAddrShare(uniqueId string, repCount float64, count int) (perRepAddrShare float64) {
+func (RebateCfg *RebateCfgStruct) CalculatePerRepAddrShare(uniqueId string, repCount float64) (perRepAddrShare float64) {
 	log.EnterFn(0, "CalculatePerRepAddrShare")
 	defer func() { log.ExitFn(0, "CalculatePerRepAddrShare", nil) }()
 	if len(uniqueId) > 0 {
-		countCurr := 0
 		for _, data := range RebateCfg.RebateList {
 			if data.UniqueId == uniqueId {
-				if countCurr == count {
-					if data.Amount > 0 {
-						log.FuncErrorTrace(0, "AMOUNT 1+++++++=====================%v", data.Amount)
-						return data.Amount / repCount
-					} else {
-						log.FuncErrorTrace(0, "AMOUNT 1+++++++=====================%v", data.Amount)
-						return perRepAddrShare
-					}
+				if data.Amount > 0 {
+					log.FuncErrorTrace(0, "AMOUNT 1+++++++=====================%v", data.Amount)
+					return data.Amount / repCount
+				} else {
+					log.FuncErrorTrace(0, "AMOUNT 1+++++++=====================%v", data.Amount)
+					return perRepAddrShare
 				}
-				countCurr++
 			}
 		}
 	}
 	return perRepAddrShare
 }
 
-func (RebateCfg *RebateCfgStruct) CalculateR1AddrResp(uniqueId, rep1, rep2, state, Type string, date time.Time, r1r2check bool, count int) (R1AddrResp float64) {
+func (RebateCfg *RebateCfgStruct) CalculateR1AddrResp(uniqueId, rep1, rep2, state, Type string, date time.Time, r1r2check bool) (R1AddrResp float64) {
 	log.EnterFn(0, "CalculateR1AddrResp")
 	defer func() { log.ExitFn(0, "CalculateR1AddrResp", nil) }()
 	var repCount float64
@@ -209,19 +197,19 @@ func (RebateCfg *RebateCfgStruct) CalculateR1AddrResp(uniqueId, rep1, rep2, stat
 		repCount = RebateCfg.CalculateRepCount(rep1, rep2)
 	}
 
-	repCount = 2
-	PerRepOverSHare := RebateCfg.CalculatePerRepOvrdShare(uniqueId, repCount, count)
-	log.FuncErrorTrace(0, "perrepOvrdShare+++++++=====================%v count- > %v", PerRepOverSHare, count)
+	PerRepOverSHare := RebateCfg.CalculatePerRepOvrdShare(uniqueId, repCount)
+	log.FuncErrorTrace(0, "perrepOvrdShare+++++++=====================%v count- > %v", PerRepOverSHare)
 	// log.FuncErrorTrace(0, "repCount+++++++=====================%v %v", repCount, uniqueId)
-	PerRepDefOvrd := RebateCfg.CalculatePerRepDefOvrd(uniqueId, count)
-	log.FuncErrorTrace(0, "PerRepDefOvrd+++++++=====================%v count- > %v", PerRepDefOvrd, count)
+	PerRepDefOvrd := RebateCfg.CalculatePerRepDefOvrd(uniqueId)
+	log.FuncErrorTrace(0, "PerRepDefOvrd+++++++=====================%v count- > %v", PerRepDefOvrd)
 
-	PerRepAddrShare := RebateCfg.CalculatePerRepAddrShare(uniqueId, repCount, count)
-	log.FuncErrorTrace(0, "PerRepAddrShare+++++++=====================%v count -> %v", PerRepAddrShare, count)
+	PerRepAddrShare := RebateCfg.CalculatePerRepAddrShare(uniqueId, repCount)
+	log.FuncErrorTrace(0, "PerRepAddrShare+++++++=====================%v count -> %v", PerRepAddrShare)
 
 	R1PayScale, _ := RepPayCfg.CalculateRPayScale(rep, state, date)
-	log.FuncErrorTrace(0, "R1PayScale+++++++=====================%v count -> %v rep -> %v", R1PayScale, count, rep)
+	log.FuncErrorTrace(0, "R1PayScale+++++++=====================%v count -> %v rep -> %v", R1PayScale, rep)
 	R1RebateCreditPercentage := AdderCreditCfg.CalculateR1RebateCreditPercentage(R1PayScale, Type)
+	log.FuncErrorTrace(0, ",R1RebateCreditPercentage+++++++++++++++++++%v", R1RebateCreditPercentage)
 	R1RebateCreditDol := R1RebateCreditPercentage / repCount
 	if PerRepOverSHare > 0 {
 		return PerRepOverSHare
@@ -231,7 +219,7 @@ func (RebateCfg *RebateCfgStruct) CalculateR1AddrResp(uniqueId, rep1, rep2, stat
 		if (PerRepAddrShare * R1RebateCreditPercentage) < R1RebateCreditDol {
 			PerRepAddrShare -= PerRepAddrShare * R1RebateCreditPercentage
 		} else {
-			PerRepAddrShare -= R1RebateCreditDol
+			return PerRepAddrShare - R1RebateCreditDol
 		}
 
 	} else {
@@ -244,12 +232,10 @@ func (RebateCfg *RebateCfgStruct) CalculateRRebate(rep1, rep2, state, uniqueId s
 	log.EnterFn(0, "CalculateR1Rebate")
 	defer func() { log.ExitFn(0, "CalculateR1Rebate", nil) }()
 
-	count := 0
 	if len(rep1) > 0 || len(rep2) > 0 {
 		for _, data := range RebateCfg.RebateList {
 			if data.UniqueId == uniqueId {
-				R1Rebate += RebateCfg.CalculateR1AddrResp(data.UniqueId, rep1, rep2, state, data.Types, data.Date, r1r2check, count)
-				count++
+				R1Rebate += RebateCfg.CalculateR1AddrResp(data.UniqueId, rep1, rep2, state, data.Types, data.Date, r1r2check)
 			}
 		}
 	}

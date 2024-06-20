@@ -69,7 +69,7 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	outData = make(map[string]interface{})
 
 	// status := saleData.ProjectStatus           //AJ
-	// rep1 := saleData.PrimarySalesRep           //M
+	// rep1 := saleData.PrimarySalesRep //M
 	// dealer := saleData.Dealer                  //A
 	// source := saleData.Source                  //D
 	// uniqueID := saleData.UniqueId //G
@@ -82,7 +82,7 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	// contractTotal := saleData.ContractTotal    //S (miss match)
 	// epc := (systemSize * 1000) / contractTotal //S
 	// homeOwner := saleData.HomeOwner            //H
-	// rep2 := saleData.SecondarySalesRep         //N
+	// rep2 := saleData.SecondarySalesRep //N
 	// pto := saleData.PtoDate                    //AG
 	// instSys := saleData.PvInstallCompletedDate //AD
 	// cancel := saleData.CancelledDate           //AC
@@ -113,7 +113,7 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	contractTotal := 59000.0                             //S (miss match)
 	epc := (systemSize * 1000) / contractTotal           //S
 	homeOwner := "Chris Hill"                            //H
-	rep2 := "raed"                                       //N
+	rep2 := ""                                           //N
 	pto, _ := time.Parse("01-02-2006", "02-24-2023")     //AG
 	instSys, _ := time.Parse("01-02-2006", "01-26-2023") //AD
 	cancel := time.Time{}                                //AC
@@ -131,6 +131,8 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	salesRepType := "Sales Rep"                          //DG need to confirm with sushank
 	payee := ""                                          //confirm with sushank
 
+	log.FuncErrorTrace(0, "rep1 : %v rep2: %v ", rep1, rep2)
+
 	//*==================== COMMON ==========================/
 	statusDate := CalculateStatusDate(uniqueID, shaky, pto, instSys, cancel, ntp, permSub, wc)                                                    //AK
 	perTeamKw := calculatePerTeamKw(rep1, rep2, wc, systemSize)                                                                                   //AW
@@ -144,10 +146,8 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	log.FuncErrorTrace(0, "loanfee = %v", loanFee)
 	loanFee = 21535
 	//*==================== REP 1 ==========================/
-	rep1Referral := dataMgmt.ReferralDataConfig.CalculateRReferral(rep1, uniqueID, rep1, rep2, state, true) //BP
-	rep1Rebate := dataMgmt.RebateCfg.CalculateRRebate(rep1, rep2, state, uniqueID, true)                    //BO
-	log.FuncErrorTrace(0, "rep1Rebate ========: %v", rep1Rebate)
-	rep1Rebate = 2400
+	rep1Referral := dataMgmt.ReferralDataConfig.CalculateRReferral(rep1, uniqueID, rep1, rep2, state, true)                                             //BP
+	rep1Rebate := dataMgmt.RebateCfg.CalculateRRebate(rep1, rep2, state, uniqueID, true)                                                                //BO
 	rep1Dba := dataMgmt.DBACfg.CalculateReprepDba(rep1)                                                                                                 //AZ
 	rep1Credit := dataMgmt.RepCreditCfg.CalculateRCredit(rep1, uniqueID)                                                                                //BI  there is no schema and get endpoint in main for repcredit
 	rep1Addr := dataMgmt.AdderDataCfg.CalculateR1AddrResp(commissionModels, dealer, rep1, rep2, uniqueID, state, systemSize, true)                      //BL
