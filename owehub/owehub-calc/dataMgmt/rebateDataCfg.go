@@ -232,7 +232,12 @@ func (RebateCfg *RebateCfgStruct) CalculateRRebate(rep1, rep2, state, uniqueId s
 	log.EnterFn(0, "CalculateR1Rebate")
 	defer func() { log.ExitFn(0, "CalculateR1Rebate", nil) }()
 
-	if len(rep1) > 0 || len(rep2) > 0 {
+	rep := rep1
+	if !r1r2check {
+		rep = rep2
+	}
+
+	if len(rep) > 0 {
 		for _, data := range RebateCfg.RebateList {
 			if data.UniqueId == uniqueId {
 				R1Rebate += RebateCfg.CalculateR1AddrResp(data.UniqueId, rep1, rep2, state, data.Types, data.Date, r1r2check)

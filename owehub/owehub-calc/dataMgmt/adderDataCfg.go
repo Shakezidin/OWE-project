@@ -269,20 +269,22 @@ func (AdderDataCfg *AdderDataCfgStruct) CalculateRAddrResp(dealer, rep1, rep2, u
 	if len(rep1) > 0 {
 		repCount = AdderDataCfg.CalculateRepCount(rep1, rep2)
 	}
-	if len(uniqueId) > 0 {
-		for _, data := range AdderDataCfg.AdderDataList {
-			if data.UniqueId == uniqueId {
-				perRepOverd := AdderDataCfg.CalculatePerRepOvrd(rep1, rep2, uniqueId, data.RepPercent, repCount, data.ExactAmount) //*
-				if perRepOverd > 0 {
-					if perRepOverd != 0 {
-						return perRepOverd
-					} else {
-						return 0
+	if len(rep) > 0 {
+		if len(uniqueId) > 0 {
+			for _, data := range AdderDataCfg.AdderDataList {
+				if data.UniqueId == uniqueId {
+					perRepOverd := AdderDataCfg.CalculatePerRepOvrd(rep1, rep2, uniqueId, data.RepPercent, repCount, data.ExactAmount) //*
+					if perRepOverd > 0 {
+						if perRepOverd != 0 {
+							r1addrresp += perRepOverd
+						} else {
+							r1addrresp += 0
+						}
+					} else if len(rep1) > 0 {
+						perRepAddrShare := AdderDataCfg.CalculatePerRepAddrShare(rep1, rep2, uniqueId, sysSize) //*
+						r1DefResp := AdderDataCfg.CalculateR1DfResp(rep, uniqueId, state, sysSize)              //*
+						r1addrresp += perRepAddrShare * r1DefResp
 					}
-				} else if len(rep1) > 0 {
-					perRepAddrShare := AdderDataCfg.CalculatePerRepAddrShare(rep1, rep2, uniqueId, sysSize) //*
-					r1DefResp := AdderDataCfg.CalculateR1DfResp(rep, uniqueId, state, sysSize)              //*
-					return perRepAddrShare * r1DefResp
 				}
 			}
 		}
