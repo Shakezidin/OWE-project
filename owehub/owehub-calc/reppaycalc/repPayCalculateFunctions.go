@@ -272,6 +272,7 @@ func calculateR1AdderTotal(repName, commissionModel string, val1, val2, val3, va
 	defer func() { log.ExitFn(0, "calculateR1AdderTotal", nil) }()
 	if commissionModel == "standard" {
 		if len(repName) > 0 {
+			log.FuncErrorTrace(0, "BL : %v, BM: %v, BN : %v, BO : %v BP : %v", val1, val2, val3, val4, val5)
 			return val1 + val2 + val3 + val4 + val5
 		}
 	} else {

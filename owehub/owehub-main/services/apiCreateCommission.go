@@ -11,6 +11,7 @@ import (
 	"OWEApp/shared/db"
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -85,6 +86,20 @@ func HandleCreateCommissionRequest(resp http.ResponseWriter, req *http.Request) 
 		return
 	}
 
+	startDate, err := time.Parse("2006-01-02", createCommissionReq.StartDate)
+	if err != nil {
+		err = fmt.Errorf("Error parsing date:", err)
+		FormAndSendHttpResp(resp, "Invalid date not allowed", http.StatusBadRequest, nil)
+		return
+	}
+
+	endDate, err := time.Parse("2006-01-02", createCommissionReq.EndDate)
+	if err != nil {
+		err = fmt.Errorf("Error parsing date:", err)
+		FormAndSendHttpResp(resp, "Invalid end date not allowed", http.StatusBadRequest, nil)
+		return
+	}
+
 	// Populate query parameters in the correct order
 	queryParameters = append(queryParameters, createCommissionReq.Partner)
 	queryParameters = append(queryParameters, createCommissionReq.Installer)
@@ -94,8 +109,8 @@ func HandleCreateCommissionRequest(resp http.ResponseWriter, req *http.Request) 
 	queryParameters = append(queryParameters, createCommissionReq.RepType)
 	queryParameters = append(queryParameters, createCommissionReq.RL)
 	queryParameters = append(queryParameters, createCommissionReq.Rate)
-	queryParameters = append(queryParameters, createCommissionReq.StartDate)
-	queryParameters = append(queryParameters, createCommissionReq.EndDate)
+	queryParameters = append(queryParameters, startDate)
+	queryParameters = append(queryParameters, endDate)
 
 	// Call the database function
 	result, err = db.CallDBFunction(db.OweHubDbIndex, db.CreateCommissionFunction, queryParameters)

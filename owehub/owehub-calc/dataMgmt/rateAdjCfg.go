@@ -101,12 +101,20 @@ func (RateAdjustmentsCfg *RateAdjustmentsCfgStruct) LoadRateAdjustmentsCfg() (er
 func (RateAdjustmentsCfg *RateAdjustmentsCfgStruct) CalculateAdjustmentMinRateMaxRate(payScale, Position string) (adjustment, minRate, MaxRate float64) {
 	log.EnterFn(0, "CalculateAdjustmentMinRateMaxRate")
 	defer func() { log.ExitFn(0, "CalculateAdjustmentMinRateMaxRate", nil) }()
+	var minrate, maxrate float64
 	for _, data := range RateAdjustmentsCfg.RateAdjustmentsList {
 		if data.PayScale+data.Position == payScale+Position {
-			adjustmentNum, _ := strconv.Atoi(data.Adjustment)
-			adjustment += float64(adjustmentNum)
-			minRate += data.MinRate
-			MaxRate += data.MaxRate
+			adjustmentNum, _ := strconv.ParseFloat(data.Adjustment, 64)
+			adjustment += adjustmentNum
+			if data.MaxRate == 0 {
+				minrate = -99999
+			}
+
+			if data.MaxRate == 0 {
+				maxrate = 99999
+			}
+			minRate += minrate
+			MaxRate += maxrate
 		}
 	}
 	return adjustment, minRate, MaxRate

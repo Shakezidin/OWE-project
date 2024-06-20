@@ -11,6 +11,7 @@ import (
 	log "OWEApp/shared/logger"
 	models "OWEApp/shared/models"
 	"strings"
+	"time"
 
 	"encoding/json"
 	"fmt"
@@ -149,19 +150,21 @@ func HandleGetCommissionsDataRequest(resp http.ResponseWriter, req *http.Request
 		}
 
 		// StartDate
-		StartDate, ok := item["start_date"].(string)
-		if !ok || StartDate == "" {
+		StartDate, ok := item["start_date"].(time.Time)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get start date for Record ID %v. Item: %+v\n", RecordId, item)
-			StartDate = ""
+			StartDate = time.Time{}
 		}
 
 		// EndDate
-		EndDate, ok := item["end_date"].(string)
-		if !ok || EndDate == "" {
+		EndDate, ok := item["end_date"].(time.Time)
+		if !ok {
 			log.FuncErrorTrace(0, "Failed to get end date for Record ID %v. Item: %+v\n", RecordId, item)
-			EndDate = ""
+			EndDate = time.Time{}
 		}
 
+		startdate := StartDate.Format("2006-01-02")
+		endDate := EndDate.Format("2006-01-02")
 		commissionData := models.GetCommissionData{
 			RecordId:  RecordId,
 			Partner:   Partner,
@@ -172,8 +175,8 @@ func HandleGetCommissionsDataRequest(resp http.ResponseWriter, req *http.Request
 			RepType:   RepType,
 			RL:        RL,
 			Rate:      Rate,
-			StartDate: StartDate,
-			EndDate:   EndDate,
+			StartDate: startdate,
+			EndDate:   endDate,
 		}
 		commissionsList.CommissionsList = append(commissionsList.CommissionsList, commissionData)
 	}
