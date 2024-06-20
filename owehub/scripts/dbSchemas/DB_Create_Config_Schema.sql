@@ -546,6 +546,7 @@ CREATE TABLE rebate_data (
     type_rd_mktg text,
     item text,
     amount float,
+    date date,
     rep_doll_divby_per float,
     notes text,
     type text,

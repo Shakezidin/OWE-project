@@ -236,7 +236,7 @@ func (pReferral *ReferralDataStruct) CalculateR1AddrResp(uniqueId, rep1, rep2, s
 	if !r1r2check {
 		rep = rep2
 	}
-	
+
 	var repCount float64
 	if len(rep) > 0 {
 		repCount = RebateCfg.CalculateRepCount(rep1, rep2)
@@ -262,14 +262,14 @@ func (pReferral *ReferralDataStruct) CalculateR1AddrResp(uniqueId, rep1, rep2, s
 	return R1AddrResp
 }
 
-func (pReferral *ReferralDataStruct) CalculateRReferral(rep, uniqueId string, r1r2check bool) (R1Referral float64) {
+func (pReferral *ReferralDataStruct) CalculateRReferral(rep, uniqueId, rep1, rep2, state string, r1r2check bool) (R1Referral float64) {
 	log.EnterFn(0, "CalculateRReferral")
 	defer func() { log.ExitFn(0, "CalculateRReferral", nil) }()
 
 	if len(rep) > 0 {
 		for _, data := range RebateCfg.RebateList {
 			if data.UniqueId == uniqueId {
-				R1Referral += pReferral.CalculateR1AddrResp(data.UniqueId, data.Rep_1_Name, data.Rep_2_Name, data.State, data.Type, data.Date, r1r2check)
+				R1Referral += pReferral.CalculateR1AddrResp(data.UniqueId, rep1, rep2, state, data.Types, data.Date, r1r2check)
 			}
 		}
 	}

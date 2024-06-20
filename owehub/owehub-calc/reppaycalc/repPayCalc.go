@@ -72,12 +72,12 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	// rep1 := saleData.PrimarySalesRep           //M
 	// dealer := saleData.Dealer                  //A
 	// source := saleData.Source                  //D
-	// uniqueID := saleData.UniqueId              //G
+	// uniqueID := saleData.UniqueId //G
 	// systemSize := saleData.SystemSize          //P
 	// partner := saleData.Partner                //B
 	// installer := saleData.Installer            //C
 	// loanType := saleData.LoanType              //F
-	// state := saleData.State                    //K
+	// state := saleData.State //K
 	// wc := saleData.ContractDate                //U
 	// contractTotal := saleData.ContractTotal    //S (miss match)
 	// epc := (systemSize * 1000) / contractTotal //S
@@ -113,7 +113,7 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	contractTotal := 59000.0                             //S (miss match)
 	epc := (systemSize * 1000) / contractTotal           //S
 	homeOwner := "Chris Hill"                            //H
-	rep2 := ""                                           //N
+	rep2 := "raed"                                       //N
 	pto, _ := time.Parse("01-02-2006", "02-24-2023")     //AG
 	instSys, _ := time.Parse("01-02-2006", "01-26-2023") //AD
 	cancel := time.Time{}                                //AC
@@ -129,6 +129,7 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	apptSetter := ""                                     //* confirm with shushank //O
 	commissionModels := "standard"                       //* confirm with sushank
 	salesRepType := "Sales Rep"                          //DG need to confirm with sushank
+	payee := ""                                          //confirm with sushank
 
 	//*==================== COMMON ==========================/
 	statusDate := CalculateStatusDate(uniqueID, shaky, pto, instSys, cancel, ntp, permSub, wc)                                                    //AK
@@ -143,9 +144,9 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	log.FuncErrorTrace(0, "loanfee = %v", loanFee)
 	loanFee = 21535
 	//*==================== REP 1 ==========================/
-	rep1Referral := dataMgmt.ReferralDataConfig.CalculateRReferral(rep1, uniqueID, true) //BP
-	rep1Rebate := dataMgmt.RebateCfg.CalculateRRebate(rep1, uniqueID, true)              //BO
-	log.FuncErrorTrace(0, "rep1Rebate : %v", rep1Rebate)
+	rep1Referral := dataMgmt.ReferralDataConfig.CalculateRReferral(rep1, uniqueID, rep1, rep2, state, true) //BP
+	rep1Rebate := dataMgmt.RebateCfg.CalculateRRebate(rep1, rep2, state, uniqueID, true)                    //BO
+	log.FuncErrorTrace(0, "rep1Rebate ========: %v", rep1Rebate)
 	rep1Rebate = 2400
 	rep1Dba := dataMgmt.DBACfg.CalculateReprepDba(rep1)                                                                                                 //AZ
 	rep1Credit := dataMgmt.RepCreditCfg.CalculateRCredit(rep1, uniqueID)                                                                                //BI  there is no schema and get endpoint in main for repcredit
@@ -209,9 +210,10 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	apptBalance := calculateApptBalance(apptSetter, apptAmount, apptPaid)                                                 //DZ (O, DX, DY)
 
 	//*==================== REP 2 ==========================/
-	rep2Dba := dataMgmt.DBACfg.CalculateReprepDba(rep2)                                                                                   //CA
-	rep2Referral := dataMgmt.ReferralDataConfig.CalculateRReferral(rep2, uniqueID, false)                                                 //CQ
-	rep2Rebate := dataMgmt.RebateCfg.CalculateRRebate(rep2, uniqueID, false)                                                              //CP
+	rep2Dba := dataMgmt.DBACfg.CalculateReprepDba(rep2)                                                      //CA
+	rep2Referral := dataMgmt.ReferralDataConfig.CalculateRReferral(rep2, uniqueID, rep1, rep2, state, false) //CQ
+	// rep2Rebate := dataMgmt.RebateCfg.CalculateRRebate(rep1, rep2, state, uniqueID, false)                                                 //CP
+	rep2Rebate := 0.0
 	rep2R_R := calculateRR(rep2, rep2Rebate, rep2Referral)                                                                                //CR
 	rep2LoanFee := dataMgmt.LoanFeeAdderCfg.CalculateRepRLoanFee(rep2, uniqueID, dealer, installer, state)                                //CO                                                                                              //BN                                                                                                              //BN
 	rep2AutoAdder := dataMgmt.AutoAdderCfg.CalculateRepRAutoAddr(rep1, rep2, uniqueID, state, systemSize, wc, false)                      //CN
@@ -250,24 +252,24 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	r2DirDba := dataMgmt.DBACfg.CalculateR2DirDba(r2DirName)                                       //BV
 
 	//*==================== AP-OTH ==========================/
-	apOthPaidAmnt := dataMgmt.ApOthData.CalculatePaidAmount(uniqueID, "") //* what is payee corresponding value
-	aptOthBalance := dataMgmt.ApOthData.CalculateBalance(uniqueID, "", apOthPaidAmnt)
+	apOthPaidAmnt := dataMgmt.ApOthData.CalculatePaidAmount(uniqueID, payee) //* what is payee corresponding value
+	aptOthBalance := dataMgmt.ApOthData.CalculateBalance(uniqueID, payee, apOthPaidAmnt)
 
 	//*==================== AP-PDA ==========================/
-	apPdaRcmdAmnt := dataMgmt.ApPdaData.GetApPdaRcmdAmount(uniqueID, "", rep1, rep2, rep1DrawAmount, rep2DrawAmount)
-	apdPdaAmnt := dataMgmt.ApPdaData.GetApPdaAmount(uniqueID, "", apPdaRcmdAmnt)
-	apdPdaPaidAmnt, apdPaidClawAmnt := dataMgmt.ApPdaData.GetApPdaPaidAmount(uniqueID, "")
-	apdPdaPaidBalance, adpPdaDba := dataMgmt.ApPdaData.GetApPdaBalance(uniqueID, "", apdPdaPaidAmnt, apdPdaAmnt, apdPaidClawAmnt)
+	apPdaRcmdAmnt := dataMgmt.ApPdaData.GetApPdaRcmdAmount(uniqueID, payee, rep1, rep2, rep1DrawAmount, rep2DrawAmount)
+	apdPdaAmnt := dataMgmt.ApPdaData.GetApPdaAmount(uniqueID, payee, apPdaRcmdAmnt)
+	apdPdaPaidAmnt, apdPaidClawAmnt := dataMgmt.ApPdaData.GetApPdaPaidAmount(uniqueID, payee)
+	apdPdaPaidBalance, adpPdaDba := dataMgmt.ApPdaData.GetApPdaBalance(uniqueID, payee, apdPdaPaidAmnt, apdPdaAmnt, apdPaidClawAmnt)
 
 	//*==================== AP-ADV ==========================/
-	apAdvRcmdAmnt := dataMgmt.ApAdvData.GetApAdvRcmdAmount(uniqueID, "", rep1, rep2, rep1DrawAmount, rep2DrawAmount)
-	apdAdvAmnt := dataMgmt.ApAdvData.GetApAdvAmount(uniqueID, "", apAdvRcmdAmnt)
-	apdAdvPaidAmnt := dataMgmt.ApAdvData.GetApAdvPaidAmount(uniqueID, "")
-	apdAdvPaidBalance, adpAdvDba := dataMgmt.ApAdvData.GetApAdvBalance(uniqueID, "", apdAdvPaidAmnt, apdAdvAmnt)
+	apAdvRcmdAmnt := dataMgmt.ApAdvData.GetApAdvRcmdAmount(uniqueID, payee, rep1, rep2, rep1DrawAmount, rep2DrawAmount)
+	apdAdvAmnt := dataMgmt.ApAdvData.GetApAdvAmount(uniqueID, payee, apAdvRcmdAmnt)
+	apdAdvPaidAmnt := dataMgmt.ApAdvData.GetApAdvPaidAmount(uniqueID, payee)
+	apdAdvPaidBalance, adpAdvDba := dataMgmt.ApAdvData.GetApAdvBalance(uniqueID, payee, apdAdvPaidAmnt, apdAdvAmnt)
 
 	//*==================== AP-DED ==========================/
-	apDedPaidAmnt := dataMgmt.ApDedData.GetApDedPaidAmount(uniqueID, "") //* what is payee corresponding value
-	apDedBalance := dataMgmt.ApDedData.CalculateBalance(uniqueID, "", apDedPaidAmnt)
+	apDedPaidAmnt := dataMgmt.ApDedData.GetApDedPaidAmount(uniqueID, payee) //* what is payee corresponding value
+	apDedBalance := dataMgmt.ApDedData.CalculateBalance(uniqueID, payee, apDedPaidAmnt)
 
 	outData["status"] = status
 	outData["rep_1"] = rep1
