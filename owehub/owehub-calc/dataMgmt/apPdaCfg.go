@@ -8,12 +8,15 @@ package datamgmt
 
 import (
 	db "OWEApp/shared/db"
+	"strings"
+	"time"
 )
 
 type ApPdaCfg struct {
 	AmntOverdue float64
 	UniqueId    string
 	Payee       string
+	Date        time.Time
 }
 
 type ApPdaCfgStruct struct {
@@ -34,8 +37,7 @@ func (pApPdaData *ApPdaCfgStruct) LoadApPdaCfg() (err error) {
 	// defer func() { log.ExitFn(0, "LoadARCfg", err) }()
 
 	query = `
-		 SELECT ai.id as record_id, ai.unique_id, ai.customer, ai.date, ai.amount
-		 FROM ar as ai`
+		 SELECT * FROM ap_pda`
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil || len(data) == 0 {
@@ -51,8 +53,29 @@ func (pApPdaData *ApPdaCfgStruct) LoadApPdaCfg() (err error) {
 			continue
 		}
 
+		date, ok := item["date"].(time.Time)
+		if !ok {
+			// log.ConfWarnTrace(0, "Failed to get record_id for Record ID %v. Item: %+v\n", RecordId, item)
+			continue
+		}
+
+		uniqueId, ok := item["unique_id"].(string)
+		if !ok {
+			// log.ConfWarnTrace(0, "Failed to get record_id for Record ID %v. Item: %+v\n", RecordId, item)
+			continue
+		}
+
+		amount, ok := item["amount_ovrd"].(float64)
+		if !ok {
+			// log.ConfWarnTrace(0, "Failed to get record_id for Record ID %v. Item: %+v\n", RecordId, item)
+			continue
+		}
+
 		ApPdaDatas := ApPdaCfg{
-			Payee: Payee,
+			Payee:       Payee,
+			Date:        date,
+			AmntOverdue: amount,
+			UniqueId:    uniqueId,
 		}
 
 		pApPdaData.ApPdaList = append(pApPdaData.ApPdaList, ApPdaDatas)
@@ -67,13 +90,14 @@ func (pApPdaData *ApPdaCfgStruct) LoadApPdaCfg() (err error) {
 * RETURNS:         dlrPayBonus float64
 *****************************************************************************/
 func (pApPdaData *ApPdaCfgStruct) GetApPdaBalance(UniqueId, payee string, paidAmount, amount, clawAmnt float64) (balance float64, dba string) {
-	// for _, data := range pApPdaData.ApPdaList {
-	if len(UniqueId) > 0 {
-		dba = DBACfg.CalculateReprepDba(payee)
-		if paidAmount < amount {
-			balance = amount - paidAmount
-		} else {
-			balance = 0 - paidAmount - clawAmnt
+	for _, data := range pApPdaData.ApPdaList {
+		if UniqueId == data.UniqueId {
+			dba = DBACfg.CalculateReprepDba(data.Payee)
+			if paidAmount < amount {
+				balance = amount - paidAmount
+			} else {
+				balance = 0 - paidAmount - clawAmnt
+			}
 		}
 	}
 	return balance, dba
@@ -85,8 +109,10 @@ func (pApPdaData *ApPdaCfgStruct) GetApPdaBalance(UniqueId, payee string, paidAm
 * RETURNS:         dlrPayBonus float64
 *****************************************************************************/
 func (pApPdaData *ApPdaCfgStruct) GetApPdaPaidAmount(UniqueId, payee string) (PaidAmnt, clawAmnt float64) {
-	if len(UniqueId) > 0 {
-		PaidAmnt, clawAmnt = ApRepCfg.CalculateApPdaTotalPaid(UniqueId, payee)
+	for _, data := range pApPdaData.ApPdaList {
+		if UniqueId == data.UniqueId {
+			PaidAmnt, clawAmnt = ApRepCfg.CalculateApPdaTotalPaid(UniqueId, data.Payee)
+		}
 	}
 	return PaidAmnt, clawAmnt
 }
@@ -98,8 +124,10 @@ func (pApPdaData *ApPdaCfgStruct) GetApPdaPaidAmount(UniqueId, payee string) (Pa
 *****************************************************************************/
 func (pApPdaData *ApPdaCfgStruct) GetApPdaAmount(UniqueId, payee string, rcmdAmnt float64) (balance float64) {
 	for _, data := range pApPdaData.ApPdaList {
-		if data.UniqueId == UniqueId && payee == data.Payee {
-			if data.AmntOverdue > 0 {
+		if data.UniqueId == UniqueId {
+			if rcmdAmnt == 0 {
+				return 0
+			} else if data.AmntOverdue > 0 {
 				return data.AmntOverdue
 			} else if rcmdAmnt > 0 {
 				return rcmdAmnt
@@ -116,15 +144,19 @@ func (pApPdaData *ApPdaCfgStruct) GetApPdaAmount(UniqueId, payee string, rcmdAmn
 *****************************************************************************/
 func (pApPdaData *ApPdaCfgStruct) GetApPdaRcmdAmount(UniqueId, payee, rep1, rep2 string, r1DrawAmt, r2DrawAmount float64) (balance float64) {
 	for _, data := range pApPdaData.ApPdaList {
-		if data.UniqueId == UniqueId && (rep1 == data.Payee || rep2 == data.Payee) {
+		if data.UniqueId == UniqueId {
 			if UniqueId[:3] == "PDA" {
 				return 0
-			} else if data.Payee == rep1 {
+			} else if ConvertToLower(rep1) == ConvertToLower(data.Payee) {
 				return r1DrawAmt
-			} else if data.Payee == rep2 {
+			} else if ConvertToLower(rep2) == ConvertToLower(data.Payee) {
 				return r2DrawAmount
 			}
 		}
 	}
 	return 0
+}
+
+func ConvertToLower(str1 string) (result string) {
+	return strings.ToLower(str1)
 }

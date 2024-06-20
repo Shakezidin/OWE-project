@@ -31,26 +31,26 @@ func ExecRepPayInitialCalculation(resultChan chan string) {
 	log.EnterFn(0, "ExecRepPayInitialCalculation")
 	defer func() { log.ExitFn(0, "ExecRepPayInitialCalculation", err) }()
 
-	var repPayCalc map[string]interface{}
-	saleData := dataMgmt.SaleDataStruct{}
-	repPayCalc, err = CalculateRepPayProject(saleData)
-	// for _, saleData := range dataMgmt.SaleData.SaleDataList {
-	// 	log.FuncErrorTrace(0, "rep pay ====> : %+v", repPayCalc)
+	// saleData := dataMgmt.SaleDataStruct{}
+	for _, saleData := range dataMgmt.SaleData.SaleDataList {
+		var repPayCalc map[string]interface{}
+		log.FuncErrorTrace(0, "rep pay ====> : %+v", repPayCalc)
+		repPayCalc, err = CalculateRepPayProject(saleData)
 
-	// 	if err != nil || repPayCalc == nil {
-	// 		if len(saleData.UniqueId) > 0 {
-	// 			log.FuncErrorTrace(0, "Failed to calculate DLR Pay Data for unique id : %+v err: %+v", saleData.UniqueId, err)
-	// 		} else {
-	// 			log.FuncErrorTrace(0, "Failed to calculate DLR Pay Data err : %+v", err)
-	// 		}
-	// 	} else {
-	// 		repPayCalcList = append(repPayCalcList, repPayCalc)
-	// 	}
-	// }
+		if err != nil || repPayCalc == nil {
+			if len(saleData.UniqueId) > 0 {
+				log.FuncErrorTrace(0, "Failed to calculate DLR Pay Data for unique id : %+v err: %+v", saleData.UniqueId, err)
+			} else {
+				log.FuncErrorTrace(0, "Failed to calculate DLR Pay Data err : %+v", err)
+			}
+		} else {
+			// repPayCalcList = append(repPayCalcList, repPayCalc)
+		}
+	}
 	// /* Update Calculated and Fetched data PR.Data Table */
 	// err = db.AddMultipleRecordInDB(db.OweHubDbIndex, db.TableName_DLR_PAY_APCALC, repPayCalcList)
 	// if err != nil {
-	log.FuncErrorTrace(0, "Failed to insert initial DLR Pay Data in DB err, because there is no schema right now: %v, %v", err, repPayCalc)
+	// log.FuncErrorTrace(0, "Failed to insert initial DLR Pay Data in DB err, because there is no schema right now: %v, %v", err, repPayCalc)
 	// }
 
 	resultChan <- "SUCCESS"
@@ -69,10 +69,10 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	outData = make(map[string]interface{})
 
 	// status := saleData.ProjectStatus           //AJ
-	// rep1 := saleData.PrimarySalesRep //M
+	rep1 := saleData.PrimarySalesRep //M
 	// dealer := saleData.Dealer                  //A
 	// source := saleData.Source                  //D
-	// uniqueID := saleData.UniqueId //G
+	uniqueID := saleData.UniqueId //G
 	// systemSize := saleData.SystemSize          //P
 	// partner := saleData.Partner                //B
 	// installer := saleData.Installer            //C
@@ -95,11 +95,11 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	// commissionModels := "standard"             //* confirm with sushank
 	// salesRepType := "Sales Rep 2"              //DG need to confirm with sushank
 
-	status := "PTO"                                   //AJ
-	rep1 := "Adrian Bobbitt"                          //M
-	dealer := "OWE-AZ-22"                             //A
-	source := "REP"                                   //D
-	uniqueID := "OUR11442"                            //G
+	status := "PTO" //AJ
+	// rep1 := "Adrian Bobbitt" //M
+	dealer := "OWE-AZ-22" //A
+	source := "REP"       //D
+	// uniqueID := "PDA-00419"                           //G
 	systemSize := 13.2                                //P
 	partner := "Dividend"                             //B
 	installer := "One World Energy"                   //C
@@ -199,7 +199,7 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	log.FuncFuncTrace(0, "Zidhin rep1payRateSemi: %v, rep1AdderPerKw: %v rep1PayRateSubTotal: %v", rep1payRateSemi, rep1AdderPerKw, rep1PayRateSubTotal)
 	log.FuncFuncTrace(0, "Zidhin rep1MinOrMaxCorrect: %v rep1CommTotal: %v, rep1CommStatusCheck : %v", rep1MinOrMaxCorrect, rep1CommTotal, rep1CommStatusCheck)
 	log.FuncFuncTrace(0, "Zidhin rep1DrawAmount: %v rep1DrawPaid: %v rep1CommPaid: %v, rep1Balance : %v", rep1DrawAmount, rep1DrawPaid, rep1CommPaid, rep1Balance)
-	return
+	// return
 
 	//*==================== Appt ===========================/
 	apptSetDba := dataMgmt.DBACfg.CalculateApptSetDba(apptSetter)                                                         //DB (O)
@@ -214,9 +214,10 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	rep2Referral := dataMgmt.ReferralDataConfig.CalculateRReferral(rep2, uniqueID, rep1, rep2, state, false) //CQ
 	// rep2Rebate := dataMgmt.RebateCfg.CalculateRRebate(rep1, rep2, state, uniqueID, false)                                                 //CP
 	rep2Rebate := 0.0
-	rep2R_R := calculateRR(rep2, rep2Rebate, rep2Referral)                                                                                //CR
-	rep2LoanFee := dataMgmt.LoanFeeAdderCfg.CalculateRepRLoanFee(rep2, uniqueID, dealer, installer, state)                                //CO                                                                                              //BN                                                                                                              //BN
-	rep2AutoAdder := dataMgmt.AutoAdderCfg.CalculateRepRAutoAddr(rep1, rep2, uniqueID, state, systemSize, wc, false)                      //CN
+	rep2R_R := calculateRR(rep2, rep2Rebate, rep2Referral)                                                 //CR
+	rep2LoanFee := dataMgmt.LoanFeeAdderCfg.CalculateRepRLoanFee(rep2, uniqueID, dealer, installer, state) //CO                                                                                              //BN                                                                                                              //BN
+	// rep2AutoAdder := dataMgmt.AutoAdderCfg.CalculateRepRAutoAddr(rep1, rep2, uniqueID, state, systemSize, wc, false)
+	rep2AutoAdder := 0.0
 	rep2Addr := dataMgmt.AdderDataCfg.CalculateRAddrResp(dealer, rep1, rep2, uniqueID, state, systemSize, false)                          //CM
 	rep2AdderTotal := calculateRAdderTotal(rep2, rep2Addr, rep2AutoAdder, rep2LoanFee, rep2Rebate, rep2Referral)                          //CS (N, CM, CN, CO, CP, CQ)
 	rep2NetEpc := calculateRNetEpc(rep2, contractCalc, rep2AdderTotal, rep2LoanFee, loanFee, systemSize)                                  //CV
@@ -256,20 +257,43 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	aptOthBalance := dataMgmt.ApOthData.CalculateBalance(uniqueID, payee, apOthPaidAmnt)
 
 	//*==================== AP-PDA ==========================/
+	log.FuncFuncTrace(0, "Zidhin + rep1DrawAmount: %v, rep2DrawAmount: %v", rep1DrawAmount, rep2DrawAmount)
+	// rep1DrawAmount = 800
+	payee = saleData.PrimarySalesRep //* for now assigning payee as rep1, on what condition it should be rep2
+	rep1 = saleData.PrimarySalesRep
+	rep2 = saleData.SecondarySalesRep
 	apPdaRcmdAmnt := dataMgmt.ApPdaData.GetApPdaRcmdAmount(uniqueID, payee, rep1, rep2, rep1DrawAmount, rep2DrawAmount)
 	apdPdaAmnt := dataMgmt.ApPdaData.GetApPdaAmount(uniqueID, payee, apPdaRcmdAmnt)
 	apdPdaPaidAmnt, apdPaidClawAmnt := dataMgmt.ApPdaData.GetApPdaPaidAmount(uniqueID, payee)
 	apdPdaPaidBalance, adpPdaDba := dataMgmt.ApPdaData.GetApPdaBalance(uniqueID, payee, apdPdaPaidAmnt, apdPdaAmnt, apdPaidClawAmnt)
 
+	log.FuncFuncTrace(0, "Zidhin + Payee: %v", payee)
+	log.FuncFuncTrace(0, "Zidhin + apPdaRcmdAmnt: %v", apPdaRcmdAmnt)
+	log.FuncFuncTrace(0, "Zidhin + apdPdaAmnt: %v", apdPdaAmnt)
+	log.FuncFuncTrace(0, "Zidhin + apdPdaPaidAmnt: %v, apdPaidClawAmnt: %v", apdPdaPaidAmnt, apdPaidClawAmnt)
+	log.FuncFuncTrace(0, "Zidhin + apdPdaPaidBalance: %v, adpPdaDba: %v", apdPdaPaidBalance, adpPdaDba)
+
 	//*==================== AP-ADV ==========================/
+	// rep2DrawAmount =
+	// payee = "Maria Lopez"
+	// rep2 = "Maria Lopez"
 	apAdvRcmdAmnt := dataMgmt.ApAdvData.GetApAdvRcmdAmount(uniqueID, payee, rep1, rep2, rep1DrawAmount, rep2DrawAmount)
 	apdAdvAmnt := dataMgmt.ApAdvData.GetApAdvAmount(uniqueID, payee, apAdvRcmdAmnt)
 	apdAdvPaidAmnt := dataMgmt.ApAdvData.GetApAdvPaidAmount(uniqueID, payee)
 	apdAdvPaidBalance, adpAdvDba := dataMgmt.ApAdvData.GetApAdvBalance(uniqueID, payee, apdAdvPaidAmnt, apdAdvAmnt)
 
+	log.FuncFuncTrace(0, "Zidhin + Payee: %v", payee)
+	log.FuncFuncTrace(0, "Zidhin + apAdvRcmdAmnt: %v", apAdvRcmdAmnt)
+	log.FuncFuncTrace(0, "Zidhin + apdAdvAmnt: %v", apdAdvAmnt)
+	log.FuncFuncTrace(0, "Zidhin + apdAdvPaidAmnt: %v", apdAdvPaidAmnt)
+	log.FuncFuncTrace(0, "Zidhin + apdAdvPaidBalance: %v, adpAdvDba: %v", apdAdvPaidBalance, adpAdvDba)
+
 	//*==================== AP-DED ==========================/
 	apDedPaidAmnt := dataMgmt.ApDedData.GetApDedPaidAmount(uniqueID, payee) //* what is payee corresponding value
 	apDedBalance := dataMgmt.ApDedData.CalculateBalance(uniqueID, payee, apDedPaidAmnt)
+
+	log.FuncFuncTrace(0, "Zidhin + apDedPaidAmnt: %v", apDedPaidAmnt)
+	log.FuncFuncTrace(0, "Zidhin + apDedBalance: %v", apDedBalance)
 
 	outData["status"] = status
 	outData["rep_1"] = rep1

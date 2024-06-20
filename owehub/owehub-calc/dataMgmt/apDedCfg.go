@@ -8,12 +8,14 @@ package datamgmt
 
 import (
 	db "OWEApp/shared/db"
+	"time"
 )
 
 type ApDedCfg struct {
-	Amount float64
-	UniqueId    string
-	Payee       string
+	Amount   float64
+	UniqueId string
+	Payee    string
+	Date     time.Time
 }
 
 type ApDedCfgStruct struct {
@@ -34,8 +36,7 @@ func (pApDedData *ApDedCfgStruct) LoadApDedCfg() (err error) {
 	// defer func() { log.ExitFn(0, "LoadARCfg", err) }()
 
 	query = `
-		 SELECT ai.id as record_id, ai.unique_id, ai.customer, ai.date, ai.amount
-		 FROM ar as ai`
+		 SELECT * FROM ap_ded`
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil || len(data) == 0 {
@@ -51,8 +52,29 @@ func (pApDedData *ApDedCfgStruct) LoadApDedCfg() (err error) {
 			continue
 		}
 
+		date, ok := item["date"].(time.Time)
+		if !ok {
+			// log.ConfWarnTrace(0, "Failed to get record_id for Record ID %v. Item: %+v\n", RecordId, item)
+			continue
+		}
+
+		uniqueId, ok := item["unique_id"].(string)
+		if !ok {
+			// log.ConfWarnTrace(0, "Failed to get record_id for Record ID %v. Item: %+v\n", RecordId, item)
+			continue
+		}
+
+		amount, ok := item["amount"].(float64)
+		if !ok {
+			// log.ConfWarnTrace(0, "Failed to get record_id for Record ID %v. Item: %+v\n", RecordId, item)
+			continue
+		}
+
 		ApDedDatas := ApDedCfg{
-			Payee: Payee,
+			Payee:    Payee,
+			Amount:   amount,
+			UniqueId: uniqueId,
+			Date:     date,
 		}
 
 		pApDedData.ApDedList = append(pApDedData.ApDedList, ApDedDatas)
@@ -67,8 +89,10 @@ func (pApDedData *ApDedCfgStruct) LoadApDedCfg() (err error) {
 * RETURNS:         dlrPayBonus float64
 *****************************************************************************/
 func (ApDedData *ApDedCfgStruct) GetApDedPaidAmount(UniqueId, payee string) (PaidAmnt float64) {
-	if len(UniqueId) > 0 {
-		PaidAmnt = ApRepCfg.CalculateApDedTotalPaid(UniqueId, payee)
+	for _, data := range ApDedData.ApDedList {
+		if UniqueId == data.UniqueId {
+			PaidAmnt = ApRepCfg.CalculateAmountApOth(data.UniqueId, data.Payee)
+		}
 	}
 	return PaidAmnt
 }
@@ -80,7 +104,7 @@ func (ApDedData *ApDedCfgStruct) GetApDedPaidAmount(UniqueId, payee string) (Pai
  *****************************************************************************/
 func (ApDedData *ApDedCfgStruct) CalculateBalance(UniqueId, payee string, totalPaid float64) (balance float64) {
 	for _, data := range ApDedData.ApDedList {
-		if UniqueId == data.UniqueId && payee == data.Payee {
+		if UniqueId == data.UniqueId {
 			balance = data.Amount - totalPaid
 		}
 	}
