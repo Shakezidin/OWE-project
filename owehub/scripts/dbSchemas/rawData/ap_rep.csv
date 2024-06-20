@@ -18589,7 +18589,7 @@ AP-02268^Zach McCleskey^Zach McCleskey^AP-OTHER^04-09-24^1000.0
 OUR22410^Adrian Bonham^^Draw^04-10-24^1000.0
 OUR22342^Adrian Bonham^^Final^04-10-24^4396.0
 OUR20390^Adrian Bonham^^Adjustment^04-10-24^1000.0
-OUR22342^Adrian Bonham^^AP-DEDUCT^04-10-24^87.5
+OUR22342^Adrian Bonham^^AP-DEDUCT^04-10-24^-87.5
 OUR22034^Caesar Abril^^Final^04-10-24^112.5
 OUR21807^Emily Smith^^Appt-Set^04-10-24^1520.0
 AP-02299^Hershell Hudson^^AP-OTHER^04-10-24^50.0
@@ -18607,7 +18607,7 @@ OUR23496^Mike Woods^^Draw^04-10-24^2000.0
 AP-02280^Mike Woods^^AP-OTHER^04-10-24^1000.0
 OUR22410^Nate Brammer^^Draw^04-10-24^1000.0
 OUR22342^Nate Brammer^^Final^04-10-24^5916.0
-OUR22342^Nate Brammer^^AP-DEDUCT^04-10-24^87.5
+OUR22342^Nate Brammer^^AP-DEDUCT^04-10-24^-87.5
 OUR21807^Ryan Kadnuck^^Final^04-10-24^6214.0
 AP-02295^Wessel Persijn^^AP-OTHER^04-10-24^50.0
 AP-02296^Wessel Persijn^^AP-OTHER^04-10-24^50.0
@@ -19593,7 +19593,7 @@ OUR24288^Darion Lycksell^Darion Lycksell^Draw^05-21-24^1011.55
 OUR24825^Tai Navares^Tai Navares^Draw^05-21-24^1123.75
 OUR24626^Nate Brammer^Nate Brammer^Final^05-21-24^6710.0
 OUR24626^Nate Brammer^Nate Brammer^AP-DEDUCT^05-21-24^175.0
-OUR22342^Nate Brammer^Nate Brammer^Adjustment^05-21-24^500.0
+OUR22342^Nate Brammer^Nate Brammer^Adjustment^05-21-24^-500.0
 OUR21301^Brian Nowlin^Brian Nowlin^Final^05-21-24^3012.51
 OUR21301^Brian Nowlin^Brian Nowlin^AP-DEDUCT^05-21-24^3012.51
 OUR21246^Brian Nowlin^Brian Nowlin^Final^05-21-24^987.5

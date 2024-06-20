@@ -288,15 +288,11 @@ func calculateR1AdderTotal(repName, commissionModel string, val1, val2, val3, va
 * DESCRIPTION:     calculates the "calculateR1CommTotal" value based on the provided data
 * RETURNS:         r1CommTotal
 *****************************************************************************/
-func calculateRCommTotal(rep1, source string, rMinOrMax, perRepKw, rCredit float64) (r1CommTotal float64) {
+func calculateR2CommTotal(rep2, source string, rMinOrMax, perRepKw, rCredit float64) (r1CommTotal float64) {
 	log.EnterFn(0, "calculateRCommTotal")
 	defer func() { log.ExitFn(0, "calculateRCommTotal", nil) }()
-	if len(rep1) > 0 {
-		if source == "BPN: SETTER" {
-			return math.Round(((rMinOrMax * perRepKw) + rCredit) * 0.6)
-		} else {
-			math.Round((rMinOrMax * perRepKw) + rCredit)
-		}
+	if len(rep2) > 0 {
+		return math.Round((rMinOrMax * perRepKw) + rCredit)
 	}
 	return r1CommTotal
 }
@@ -517,6 +513,7 @@ func calculateRNetEpc(rep string, contractCalc, adderTotal, RloanFee, loanFee, s
 func calculateR1NetEpc(perRepKw, contractCalc, adderTotal, RloanFee, loanFee, systemSize float64) (netEpc float64) {
 	log.EnterFn(0, "calculateR1NetEpc")
 	defer func() { log.ExitFn(0, "calculateR1NetEpc", nil) }()
+	log.FuncErrorTrace(0, "perRepKw: %v, contractCalc : %v, AdderTotal : %v, RLoanFee : %v, loanFee : %v, systemSize : %v", perRepKw, contractCalc, adderTotal, RloanFee, loanFee, systemSize)
 	if perRepKw > 0 {
 		netEpc = math.Round(((contractCalc-(adderTotal-RloanFee+loanFee))/systemSize/1000)*1000) / 1000
 	}

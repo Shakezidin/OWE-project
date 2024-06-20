@@ -100,7 +100,7 @@ func CalculateRepRBalance(rep string, commStatusCheck, commPaid float64) (balanc
 	log.EnterFn(0, "CalculateRepRBalance")
 	defer func() { log.ExitFn(0, "CalculateRepRBalance", nil) }()
 	if len(rep) > 0 {
-		balance = math.Round((commStatusCheck-commPaid)*100) / 200
+		balance = math.Round(commStatusCheck - commPaid)
 	}
 	return balance
 }
