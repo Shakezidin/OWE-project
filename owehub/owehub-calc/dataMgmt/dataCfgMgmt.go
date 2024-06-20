@@ -232,5 +232,37 @@ func LoadConfigurations() (err error) {
 	}
 	log.FuncErrorTrace(0, "===== RepPay : %+v", RepPayCfg.RepPayList.RepPaySettingsList[0])
 
+	//! Ap Adv Data
+	err = ApAdvData.LoadApAdvCfg()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get ad adv Config from DB err: %+v", err)
+		return err
+	}
+	log.FuncErrorTrace(0, "===== ApAdvData : %+v", ApAdvData.ApAdvList[0])
+
+	//! Ap Pda Date
+	err = ApPdaData.LoadApPdaCfg()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get ap pda Config from DB err: %+v", err)
+		return err
+	}
+	log.FuncErrorTrace(0, "===== ApPdaData : %+v", ApPdaData.ApPdaList[0])
+
+	//! Ap Oth Date
+	err = ApOthData.LoadApOthCfg()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get ap oth Config from DB err: %+v", err)
+		return err
+	}
+	log.FuncErrorTrace(0, "===== ApOthData : %+v", ApOthData.ApOthList[0])
+
+	//! Ap Ded Date
+	err = ApDedData.LoadApDedCfg()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get ap ded Config from DB err: %+v", err)
+		return err
+	}
+	log.FuncErrorTrace(0, "===== ApDedData : %+v", ApDedData.ApDedList[0])
+
 	return err
 }

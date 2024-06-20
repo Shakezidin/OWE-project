@@ -8,12 +8,15 @@ package datamgmt
 
 import (
 	db "OWEApp/shared/db"
+	log "OWEApp/shared/logger"
+	"time"
 )
 
 type ApAdvCfg struct {
 	AmntOverdue float64
 	UniqueId    string
 	Payee       string
+	Date        time.Time
 }
 
 type ApAdvCfgStruct struct {
@@ -34,8 +37,7 @@ func (pApAdvData *ApAdvCfgStruct) LoadApAdvCfg() (err error) {
 	// defer func() { log.ExitFn(0, "LoadARCfg", err) }()
 
 	query = `
-		 SELECT ai.id as record_id, ai.unique_id, ai.customer, ai.date, ai.amount
-		 FROM ar as ai`
+		 SELECT * FROM ap_adv`
 
 	data, err = db.ReteriveFromDB(db.OweHubDbIndex, query, whereEleList)
 	if err != nil || len(data) == 0 {
@@ -51,8 +53,29 @@ func (pApAdvData *ApAdvCfgStruct) LoadApAdvCfg() (err error) {
 			continue
 		}
 
+		date, ok := item["date"].(time.Time)
+		if !ok {
+			// log.ConfWarnTrace(0, "Failed to get record_id for Record ID %v. Item: %+v\n", RecordId, item)
+			continue
+		}
+
+		uniqueId, ok := item["unique_id"].(string)
+		if !ok {
+			// log.ConfWarnTrace(0, "Failed to get record_id for Record ID %v. Item: %+v\n", RecordId, item)
+			continue
+		}
+
+		amount, ok := item["amount_ovrd"].(float64)
+		if !ok {
+			// log.ConfWarnTrace(0, "Failed to get record_id for Record ID %v. Item: %+v\n", RecordId, item)
+			continue
+		}
+
 		ApAdvDatas := ApAdvCfg{
-			Payee: Payee,
+			Payee:       Payee,
+			Date:        date,
+			UniqueId:    uniqueId,
+			AmntOverdue: amount,
 		}
 
 		pApAdvData.ApAdvList = append(pApAdvData.ApAdvList, ApAdvDatas)
@@ -67,8 +90,10 @@ func (pApAdvData *ApAdvCfgStruct) LoadApAdvCfg() (err error) {
 * RETURNS:         dlrPayBonus float64
 *****************************************************************************/
 func (pApAdvData *ApAdvCfgStruct) GetApAdvPaidAmount(UniqueId, payee string) (PaidAmnt float64) {
-	if len(UniqueId) > 0 {
-		PaidAmnt = ApRepCfg.CalculateApAdvTotalPaid(UniqueId, payee)
+	for _, data := range pApAdvData.ApAdvList {
+		if data.UniqueId == UniqueId {
+			PaidAmnt = ApRepCfg.CalculateApAdvTotalPaid(UniqueId, data.Payee)
+		}
 	}
 	return PaidAmnt
 }
@@ -80,8 +105,11 @@ func (pApAdvData *ApAdvCfgStruct) GetApAdvPaidAmount(UniqueId, payee string) (Pa
 *****************************************************************************/
 func (pApAdvData *ApAdvCfgStruct) GetApAdvAmount(UniqueId, payee string, rcmdAmnt float64) (balance float64) {
 	for _, data := range pApAdvData.ApAdvList {
-		if data.UniqueId == UniqueId && payee == data.Payee {
-			if data.AmntOverdue > 0 {
+		if data.UniqueId == UniqueId {
+			log.FuncFuncTrace(0, "Zidhin ++ Amount: %v", data.AmntOverdue)
+			if rcmdAmnt == 0 {
+				return 0
+			} else if data.AmntOverdue > 0 {
 				return data.AmntOverdue
 			} else if rcmdAmnt > 0 {
 				return rcmdAmnt
@@ -98,7 +126,7 @@ func (pApAdvData *ApAdvCfgStruct) GetApAdvAmount(UniqueId, payee string, rcmdAmn
 *****************************************************************************/
 func (pApAdvData *ApAdvCfgStruct) GetApAdvRcmdAmount(UniqueId, payee, rep1, rep2 string, r1DrawAmt, r2DrawAmount float64) (rcmdAmnt float64) {
 	for _, data := range pApAdvData.ApAdvList {
-		if data.UniqueId == UniqueId && (rep1 == data.Payee || rep2 == data.Payee) {
+		if data.UniqueId == UniqueId {
 			if data.Payee == rep1 {
 				return r1DrawAmt
 			} else if data.Payee == rep2 {
@@ -116,8 +144,8 @@ func (pApAdvData *ApAdvCfgStruct) GetApAdvRcmdAmount(UniqueId, payee, rep1, rep2
 *****************************************************************************/
 func (pApAdvData *ApAdvCfgStruct) GetApAdvBalance(UniqueId, payee string, paidAmount, amount float64) (balance float64, dba string) {
 	for _, data := range pApAdvData.ApAdvList {
-		if UniqueId == data.UniqueId && data.Payee == payee {
-			dba = DBACfg.CalculateReprepDba(payee)
+		if UniqueId == data.UniqueId {
+			dba = DBACfg.CalculateReprepDba(data.Payee)
 			balance = amount - paidAmount
 			return balance, dba
 		}
