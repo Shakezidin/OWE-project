@@ -65,7 +65,7 @@ INSERT INTO loan_type (product_code,active,adder,description) VALUES ('P123',1,1
 \copy referral_data(unique_id,new_customer,referrer_serial,referrer_name,amount,rep_doll_divby_per,notes,type,sys_size,state_id,adder_amount,start_date,end_date) FROM '/docker-entrypoint-initdb.d/referral_data.csv' DELIMITER ',' CSV;
 \copy rebate_data(unique_id,rep_doll_divby_per,amount,type,date) FROM '/docker-entrypoint-initdb.d/rebate_data.csv' DELIMITER ',' CSV;
 \copy dealer_credit(unique_id,date,exact_amount,per_kw_amount,approved_by,notes,total_amount,sys_size) FROM '/docker-entrypoint-initdb.d/dealer_credit.csv' DELIMITER '^' CSV;
-\copy ap_rep(unique_id,rep,dba,type,date,amount) FROM '/docker-entrypoint-initdb.d/ap_rep.csv' DELIMITER '^' CSV;
+\copy ap_rep(unique_id,rep,type,amount) FROM '/docker-entrypoint-initdb.d/ap_rep.csv' DELIMITER ',' CSV;
 \copy payment_schedule(dealer_id,partner_id,installer_id,sale_type_id,state_id,rl,draw,draw_max,rep_draw,rep_draw_max,rep_pay,start_date,end_date) FROM '/docker-entrypoint-initdb.d/pay_schedule.csv' DELIMITER ',' CSV;
 \copy ap_dealer(unique_id,dealer_id,dba,type,date,amount,method,transaction,notes) FROM '/docker-entrypoint-initdb.d/ap_dealer.csv' DELIMITER '^' CSV;
 \copy dealer_repayment_bonus(unique_id,home_owner,sys_size,contract_$$,shaky_hand,repayment_bonus,remaining_repayment_bonus) FROM '/docker-entrypoint-initdb.d/dealer_repayment_bonus.csv' DELIMITER ',' CSV;
@@ -77,6 +77,10 @@ INSERT INTO loan_type (product_code,active,adder,description) VALUES ('P123',1,1
 \copy rep_incent(name,month,doll_div_kw) FROM '/docker-entrypoint-initdb.d/rep_incent.csv' DELIMITER '^' CSV;
 \copy rep_pay_settings(name,state_id,pay_scale,position,b_e,start_date,end_Date) FROM '/docker-entrypoint-initdb.d/rep_pay_settings.csv' DELIMITER ',' CSV;
 \copy adder_credit(pay_scale,type,max_rate,min_rate) FROM '/docker-entrypoint-initdb.d/adder_credit.csv' DELIMITER ',' CSV;
+\copy ap_oth(unique_id,payee,amount,date) FROM '/docker-entrypoint-initdb.d/ap_oth.csv' DELIMITER ',' CSV;
+\copy ap_pda(unique_id,payee,amount_ovrd,date) FROM '/docker-entrypoint-initdb.d/ap_pda.csv' DELIMITER ',' CSV;
+\copy ap_ded(unique_id,payee,amount,date) FROM '/docker-entrypoint-initdb.d/ap_ded.csv' DELIMITER ',' CSV;
+\copy ap_adv(unique_id,payee,amount_ovrd,date) FROM '/docker-entrypoint-initdb.d/ap_adv.csv' DELIMITER ',' CSV;
 
 /******************************SETTINGS DB TABLE END  ***********************************************/
 

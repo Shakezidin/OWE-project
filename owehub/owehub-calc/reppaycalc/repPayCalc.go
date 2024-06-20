@@ -264,26 +264,49 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	log.FuncFuncTrace(0, "Zidhin R2DmPaid (CL): %v, R2DmBal (CM): %v, r2DirName (BT): %v", R2DmPaid, R2DmBal, r2DirName)
 	log.FuncFuncTrace(0, "Zidhin r2DirRate(BU): %v, r2DirComm (BW): %v, R2DirPaid (CO): %v", r2DirComm, R2DirPaid, r2DirBal)
 	log.FuncFuncTrace(0, "Zidhin r2DirBal (CP): %v, r2DmDba (BR): %v, r2DirDba (BV): %v", r2DirRate, r2DmDba, r2DirDba)
-	return
+
 	//*==================== AP-OTH ==========================/
 	apOthPaidAmnt := dataMgmt.ApOthData.CalculatePaidAmount(uniqueID, payee) //* what is payee corresponding value
 	aptOthBalance := dataMgmt.ApOthData.CalculateBalance(uniqueID, payee, apOthPaidAmnt)
 
 	//*==================== AP-PDA ==========================/
+	log.FuncFuncTrace(0, "Zidhin + rep1DrawAmount: %v, rep2DrawAmount: %v", rep1DrawAmount, rep2DrawAmount)
+	// rep1DrawAmount = 2000
+	payee = saleData.PrimarySalesRep //* for now assigning payee as rep1, on what condition it should be rep2
+	rep1 = saleData.PrimarySalesRep
+	rep2 = saleData.SecondarySalesRep
 	apPdaRcmdAmnt := dataMgmt.ApPdaData.GetApPdaRcmdAmount(uniqueID, payee, rep1, rep2, rep1DrawAmount, rep2DrawAmount)
 	apdPdaAmnt := dataMgmt.ApPdaData.GetApPdaAmount(uniqueID, payee, apPdaRcmdAmnt)
 	apdPdaPaidAmnt, apdPaidClawAmnt := dataMgmt.ApPdaData.GetApPdaPaidAmount(uniqueID, payee)
 	apdPdaPaidBalance, adpPdaDba := dataMgmt.ApPdaData.GetApPdaBalance(uniqueID, payee, apdPdaPaidAmnt, apdPdaAmnt, apdPaidClawAmnt)
 
+	log.FuncFuncTrace(0, "Zidhin + Payee: %v", payee)
+	log.FuncFuncTrace(0, "Zidhin + apPdaRcmdAmnt: %v", apPdaRcmdAmnt)
+	log.FuncFuncTrace(0, "Zidhin + apdPdaAmnt: %v", apdPdaAmnt)
+	log.FuncFuncTrace(0, "Zidhin + apdPdaPaidAmnt: %v, apdPaidClawAmnt: %v", apdPdaPaidAmnt, apdPaidClawAmnt)
+	log.FuncFuncTrace(0, "Zidhin + apdPdaPaidBalance: %v, adpPdaDba: %v", apdPdaPaidBalance, adpPdaDba)
+
 	//*==================== AP-ADV ==========================/
+	// rep2DrawAmount =
+	// payee = "Maria Lopez"
+	// rep2 = "Maria Lopez"
 	apAdvRcmdAmnt := dataMgmt.ApAdvData.GetApAdvRcmdAmount(uniqueID, payee, rep1, rep2, rep1DrawAmount, rep2DrawAmount)
 	apdAdvAmnt := dataMgmt.ApAdvData.GetApAdvAmount(uniqueID, payee, apAdvRcmdAmnt)
 	apdAdvPaidAmnt := dataMgmt.ApAdvData.GetApAdvPaidAmount(uniqueID, payee)
 	apdAdvPaidBalance, adpAdvDba := dataMgmt.ApAdvData.GetApAdvBalance(uniqueID, payee, apdAdvPaidAmnt, apdAdvAmnt)
 
+	log.FuncFuncTrace(0, "Zidhin + Payee: %v", payee)
+	log.FuncFuncTrace(0, "Zidhin + apAdvRcmdAmnt: %v", apAdvRcmdAmnt)
+	log.FuncFuncTrace(0, "Zidhin + apdAdvAmnt: %v", apdAdvAmnt)
+	log.FuncFuncTrace(0, "Zidhin + apdAdvPaidAmnt: %v", apdAdvPaidAmnt)
+	log.FuncFuncTrace(0, "Zidhin + apdAdvPaidBalance: %v, adpAdvDba: %v", apdAdvPaidBalance, adpAdvDba)
+
 	//*==================== AP-DED ==========================/
 	apDedPaidAmnt := dataMgmt.ApDedData.GetApDedPaidAmount(uniqueID, payee) //* what is payee corresponding value
 	apDedBalance := dataMgmt.ApDedData.CalculateBalance(uniqueID, payee, apDedPaidAmnt)
+
+	log.FuncFuncTrace(0, "Zidhin + apDedPaidAmnt: %v", apDedPaidAmnt)
+	log.FuncFuncTrace(0, "Zidhin + apDedBalance: %v", apDedBalance)
 
 	outData["status"] = status
 	outData["rep_1"] = rep1

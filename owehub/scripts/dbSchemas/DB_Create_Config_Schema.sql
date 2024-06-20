@@ -1012,6 +1012,87 @@ CREATE TABLE rep_incent (
     updated_at timestamp without time zone
 );
 
+CREATE TABLE ap_oth (
+    id serial NOT NULL,
+    unique_id varchar,
+    dealer_id int,
+    payee varchar,
+    amount float,
+    date date,
+    short_code varchar,
+    description varchar,
+    notes varchar,
+    balance float,
+    paid_amount float,
+    FOREIGN KEY (dealer_id) REFERENCES v_dealer(id),
+    is_archived BOOLEAN DEFAULT FALSE,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone
+);
+
+CREATE TABLE ap_ded (
+    id serial NOT NULL,
+    unique_id varchar,
+    dealer_id int,
+    payee varchar,
+    amount float,
+    date date,
+    short_code varchar,
+    description varchar,
+    notes varchar,
+    balance float,
+    paid_amount float,
+    FOREIGN KEY (dealer_id) REFERENCES v_dealer(id),
+    is_archived BOOLEAN DEFAULT FALSE,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone
+);
+
+CREATE TABLE ap_adv (
+    id serial NOT NULL,
+    unique_id varchar,
+    dealer_id int,
+    customer varchar,
+    rcmd_amount float,
+    payee varchar,
+    amount_ovrd float,
+    approved_bt varchar,
+    date date,
+    notes varchar,
+    balance float,
+    paid_amount float,
+    amount float,
+    status varchar,
+    dba varchar,
+    FOREIGN KEY (dealer_id) REFERENCES v_dealer(id),
+    is_archived BOOLEAN DEFAULT FALSE,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone
+);
+
+CREATE TABLE ap_pda (
+    id serial NOT NULL,
+    unique_id varchar,
+    dealer_id int,
+    customer varchar,
+    rcmd_amount float,
+    payee varchar,
+    amount_ovrd float,
+    approved_bt varchar,
+    date date,
+    description varchar,
+    notes varchar,
+    balance float,
+    paid_amount float,
+    amount float,
+    status varchar,
+    dba varchar,
+    FOREIGN KEY (dealer_id) REFERENCES v_dealer(id),
+    is_archived BOOLEAN DEFAULT FALSE,
+    created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone
+);
+
 /*
 CREATE TABLE AR_Schedule (
     Partner text,
