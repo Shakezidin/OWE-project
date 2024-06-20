@@ -392,7 +392,7 @@ func (AdderDataCfg *AdderDataCfgStruct) CalculatePerRepOvrd(rep1, rep2, uniqueId
 * RETURNS:         addrPtr
 *****************************************************************************/
 func (AdderDataCfg *AdderDataCfgStruct) CalculateRepCount(rep1, rep2 string) (repCount float64) {
-	log.EnterFn(0, "CalculateRepCount")
+	log.EnterFn(0, "CalculateRepCount 2")
 	defer func() { log.ExitFn(0, "CalculateRepCount", nil) }()
 
 	if len(rep1) > 0 && len(rep2) > 0 {
@@ -412,8 +412,8 @@ func (AdderDataCfg *AdderDataCfgStruct) CalculateRepCount(rep1, rep2 string) (re
 func (AdderDataCfg *AdderDataCfgStruct) CalculatePerRepAddrShare(rep1, rep2, uniqueId string, sysSize float64) (perRepAddrShare float64) {
 	log.EnterFn(0, "CalculatePerRepAddrShare")
 	defer func() { log.ExitFn(0, "CalculatePerRepAddrShare", nil) }()
+	repCount := AdderDataCfg.CalculateRepCount(rep1, rep2)
 	for _, data := range AdderDataCfg.AdderDataList {
-		repCount := AdderDataCfg.CalculateRepCount(rep1, rep2)
 		if uniqueId == data.UniqueId {
 			if data.ExactAmount > 0 {
 				perRepAddrShare = data.ExactAmount / repCount

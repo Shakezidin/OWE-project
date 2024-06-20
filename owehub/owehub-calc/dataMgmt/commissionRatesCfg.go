@@ -152,6 +152,21 @@ func (cmmsnRatesCfg *cmmsnRatesCfgStruct) LoadcmmsnRatesCfg() (err error) {
 *****************************************************************************/
 func (cmmsnRatesCfg *cmmsnRatesCfgStruct) CalculateRepRl(dealer, rep1, partner, installer, state, types, payScale string, kwh float64, wc time.Time) (rl, rate float64) {
 	if len(rep1) > 0 {
+		if installer == "Our World Energy" {
+			installer = "OWE"
+		}
+
+		types = "LOAN" //* type
+		kwh = 4.5      //* kwh
+		partner = "Concert"
+		installer = "OWE"
+
+		if len(state) > 0 {
+			state = state[6:]
+		}
+		log.FuncErrorTrace(0, "data.payScale: %v ============", payScale)
+		log.FuncErrorTrace(0, "data.state: %v ============", state)
+
 		for _, data := range cmmsnRatesCfg.cmmsnRatesList {
 			if partner == data.Partner &&
 				installer == data.Installer &&
@@ -161,18 +176,7 @@ func (cmmsnRatesCfg *cmmsnRatesCfgStruct) CalculateRepRl(dealer, rep1, partner, 
 				payScale == data.RepType &&
 				(data.StartDate.Before(wc) || data.StartDate.Equal(wc)) &&
 				(data.EndDate.After(wc) || data.EndDate.Equal(wc)) {
-				return data.RL, data.Rate
-			}
-		}
-	} else {
-		for _, data := range cmmsnRatesCfg.cmmsnRatesList {
-			if partner == data.Partner &&
-				installer == data.Installer &&
-				state == data.State &&
-				types == data.SaleType &&
-				payScale == data.RepType &&
-				(data.StartDate.Before(wc) || data.StartDate.Equal(wc)) &&
-				(data.EndDate.After(wc) || data.EndDate.Equal(wc)) {
+				log.FuncErrorTrace(0, "data.RL: %v ============ data.Rate %v", data.RL, data.Rate)
 				return data.RL, data.Rate
 			}
 		}

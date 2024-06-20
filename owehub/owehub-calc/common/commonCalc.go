@@ -80,7 +80,7 @@ func CalculateProjectStatusDate(uniqueID, ptoDate, installDate, cancelDate, perm
  * RETURNS:         Reps count
  *****************************************************************************/
 func CalculateRepCount(primarySalesRep, secondarySalesRep string) int {
-	log.EnterFn(0, "CalculateRepCount")
+	log.EnterFn(0, "CalculateRepCount 1")
 	defer func() { log.ExitFn(0, "CalculateRepCount", "") }()
 
 	repCount := 0

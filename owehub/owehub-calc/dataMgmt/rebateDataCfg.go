@@ -117,7 +117,7 @@ func (RebateCfg *RebateCfgStruct) CalculateRebate(dealer string, uniqueId string
 	return rebate
 }
 func (RebateCfg *RebateCfgStruct) CalculateRepCount(rep1, rep2 string) (repCount float64) {
-	log.EnterFn(0, "CalculateRepCount")
+	log.EnterFn(0, "CalculateRepCount 3")
 	defer func() { log.ExitFn(0, "CalculateRepCount", nil) }()
 	if len(rep1) > 0 && len(rep2) > 0 {
 		return 2
