@@ -117,5 +117,13 @@ func (RateAdjustmentsCfg *RateAdjustmentsCfgStruct) CalculateAdjustmentMinRateMa
 			MaxRate += maxrate
 		}
 	}
+
+	if minRate == 0 {
+		minRate = -99999
+	}
+
+	if MaxRate == 0 {
+		MaxRate = 99999
+	}
 	return adjustment, minRate, MaxRate
 }

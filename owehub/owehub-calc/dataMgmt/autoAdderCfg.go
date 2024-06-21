@@ -155,6 +155,7 @@ func (AutoAdderCfg *AutoAdderCfgStruct) LoadAutoAdderCfg() (errr error) {
 		return
 	}
 
+	log.FuncErrorTrace(0, "data %v:", data)
 	for _, item := range data {
 		Unique_id, ok := item["unique_id"].(string)
 		if !ok || Unique_id == "" {
@@ -305,6 +306,7 @@ func (AutoAdderCfg *AutoAdderCfgStruct) CalculateAutoAddr(dealer string, uniqueI
 func (AutoAdderCfg *AutoAdderCfgStruct) CalculateExactAmount(uniqueId string) (ExactAmount float64) {
 	log.EnterFn(0, "CalculateExactAmount")
 	defer func() { log.ExitFn(0, "CalculateExactAmount", nil) }()
+	ExactAmount = 0.0
 	if len(uniqueId) > 0 {
 		for _, data := range AutoAdderCfg.AutoAdderList {
 			if data.UniqueId == uniqueId {
@@ -331,10 +333,14 @@ func (AutoAdderCfg *AutoAdderCfgStruct) CalculateExactAmount(uniqueId string) (E
 * DESCRIPTION:     calculates the "autoaddr" value based on the provided data
 * RETURNS:         autoAdder
 *****************************************************************************/
-func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepRAutoAddr(rep1, rep2, uniqueId, state string, sysSize float64, wc time.Time, r1r2check bool) float64 {
+func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepRAutoAddr(rep1, rep2, uniqueId, state, types string, sysSize float64, wc time.Time, r1r2check bool) float64 {
 	log.EnterFn(0, "CalculateRepRAutoAddr")
 	defer func() { log.ExitFn(0, "CalculateRepRAutoAddr", nil) }()
-	return AutoAdderCfg.CalculateRepRAddrResp(rep1, rep2, uniqueId, state, sysSize, wc, r1r2check)
+	if r1r2check {
+		return AutoAdderCfg.CalculateRep1AddrResp(rep1, rep2, uniqueId, state, types, sysSize, wc, r1r2check)
+	} else {
+		return AutoAdderCfg.CalculateRep2AddrResp(rep1, rep2, uniqueId, state, types, sysSize, wc, r1r2check)
+	}
 }
 
 /******************************************************************************
@@ -342,7 +348,7 @@ func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepRAutoAddr(rep1, rep2, unique
 * DESCRIPTION:     calculates the "autoaddr" value based on the provided data
 * RETURNS:         autoAdder
 *****************************************************************************/
-func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepRAddrResp(rep1, rep2, uniqueId, state string, sysSize float64, wc time.Time, r1r2check bool) (r1AddrResp float64) {
+func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRep1AddrResp(rep1, rep2, uniqueId, state, types string, sysSize float64, wc time.Time, r1r2check bool) (r1AddrResp float64) {
 	log.EnterFn(0, "CalculateRepRAddrResp")
 	defer func() { log.ExitFn(0, "CalculateRepRAddrResp", nil) }()
 	rep := rep1
@@ -350,18 +356,18 @@ func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepRAddrResp(rep1, rep2, unique
 		rep = rep2
 	}
 
+	r1AddrResp = 0.0
 	for _, data := range AutoAdderCfg.AutoAdderList {
 		if data.UniqueId == uniqueId {
-			perRepOvrdShare := AutoAdderCfg.CalculateRepPerRepOvrdShare(rep1, rep2, uniqueId)
+			perRepOvrdShare := AutoAdderCfg.CalculateRepPerRepOvrdShare(rep1, rep2, uniqueId, types)
 			if perRepOvrdShare > 0 {
 				if perRepOvrdShare > 0 {
 					return perRepOvrdShare
 				} else {
 					return r1AddrResp
 				}
-			} else if len(rep1) > 0 {
-				log.FuncErrorTrace(0, "==================================hello============================")
-				perRepAddrShare := AutoAdderCfg.CalculateRepPerRepAddrShare(rep1, rep2, uniqueId, state, sysSize, wc)
+			} else if len(rep) > 0 {
+				perRepAddrShare := AutoAdderCfg.CalculateRepPerRepAddrShare(rep1, rep2, uniqueId, state, types, sysSize, wc)
 				rep1DefResp := AutoAdderCfg.CalculateRepRep1DefResp(rep, uniqueId, state, wc)
 				if data.Type1[:2] == "MK" {
 					return perRepAddrShare
@@ -375,22 +381,61 @@ func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepRAddrResp(rep1, rep2, unique
 }
 
 /******************************************************************************
+* FUNCTION:        CalculateRep2AddrResp
+* DESCRIPTION:     calculates the "rep 2 adder resp" value based on the provided data
+* RETURNS:         autoAdder
+*****************************************************************************/
+func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRep2AddrResp(rep1, rep2, uniqueId, state, types string, sysSize float64, wc time.Time, r1r2check bool) (r1AddrResp float64) {
+	log.EnterFn(0, "CalculateRep2RAddrResp")
+	defer func() { log.ExitFn(0, "CalculateRep2RAddrResp", nil) }()
+	rep := rep1
+	if !r1r2check {
+		rep = rep2
+	}
+
+	r1AddrResp = 0.0
+	for _, data := range AutoAdderCfg.AutoAdderList {
+		if data.UniqueId == uniqueId {
+			perRepOvrdShare := AutoAdderCfg.CalculateRepPerRepOvrdShare(rep1, rep2, uniqueId, types)
+			if perRepOvrdShare > 0 {
+				if perRepOvrdShare > 0 {
+					return perRepOvrdShare
+				} else {
+					return r1AddrResp
+				}
+			} else if len(rep) > 0 {
+				perRepAddrShare := AutoAdderCfg.CalculateRepPerRepAddrShare(rep1, rep2, uniqueId, state, types, sysSize, wc)
+				rep2DefResp := AutoAdderCfg.CalculateRepRep1DefResp(rep, uniqueId, state, wc)
+				if data.Type1[:2] == "MK" {
+					return perRepAddrShare
+				} else {
+					return perRepAddrShare * rep2DefResp
+				}
+			}
+		}
+	}
+	return r1AddrResp
+}
+
+/******************************************************************************
 * FUNCTION:        CalculateAutoAddr
 * DESCRIPTION:     calculates the "autoaddr" value based on the provided data
 * RETURNS:         autoAdder
 *****************************************************************************/
-func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepPerRepOvrdShare(rep1, rep2, uniqueId string) (perRepOvrdShare float64) {
+func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepPerRepOvrdShare(rep1, rep2, uniqueId, types string) (perRepOvrdShare float64) {
 	log.EnterFn(0, "CalculateRepPerRepOvrdShare")
 	defer func() { log.ExitFn(0, "CalculateRepPerRepOvrdShare", nil) }()
+	var repPercent float64
 	for _, data := range AutoAdderCfg.AutoAdderList {
 		if uniqueId == data.UniqueId {
-			if data.RepPercent > 0 {
-				exactAmt := AutoAdderCfg.CalculateRepExactAmount(rep1, uniqueId)
+			repPercent = data.RepPercent / 100
+			if repPercent > 0 {
+				exactAmt := AutoAdderCfg.CalculateRepExactAmount(uniqueId, types)
 				repCount := AutoAdderCfg.CalculateRepRepCount(rep1, rep2, uniqueId)
 				if data.RepPercent <= 1 {
-					return (exactAmt * (data.RepPercent / 100)) / repCount
+					return (exactAmt * repPercent) / repCount
 				} else if data.RepPercent > 1 {
-					return (data.RepPercent / 100) / repCount
+					return repPercent / repCount
 				}
 			} else {
 				return perRepOvrdShare
@@ -405,27 +450,24 @@ func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepPerRepOvrdShare(rep1, rep2, 
 * DESCRIPTION:     calculates the "autoaddr" value based on the provided data
 * RETURNS:         autoAdder
 *****************************************************************************/
-func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepExactAmount(rep1, uniqueId string) (ExactAmount float64) {
+func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepExactAmount(uniqueId, types string) (ExactAmount float64) {
 	log.EnterFn(0, "CalculateRepExactAmount")
 	defer func() { log.ExitFn(0, "CalculateRepExactAmount", nil) }()
-	for _, data := range AutoAdderCfg.AutoAdderList {
-		if data.UniqueId == uniqueId {
-			switch {
-			case data.Type1[10:] == "BPN: SETTER":
-				ExactAmount = 500
-			case data.Type1[:2] == "MK":
-				ExactAmount = 0
-			case data.Type1 == "SM-UNI2":
-				ExactAmount = 1200
-			case data.Type1 == "SM-UNI3":
-				ExactAmount = 600
-			case data.Type1 == "SM-CA2":
-				ExactAmount = 600
-			default:
-				ExactAmount = 0
-			}
-		}
+
+	if len(types) > 10 && types[10:] == "BPN: SETTER" {
+		ExactAmount = 500
+	} else if len(types) >= 2 && types[:2] == "MK" {
+		ExactAmount = 0
+	} else if types == "SM-UNI2" {
+		ExactAmount = 1200
+	} else if types == "SM-UNI3" {
+		ExactAmount = 600
+	} else if types == "SM-CA2" {
+		ExactAmount = 600
+	} else {
+		ExactAmount = 0
 	}
+
 	return ExactAmount
 }
 
@@ -441,7 +483,7 @@ func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepRepCount(rep1, rep2, uniqueI
 		if data.UniqueId == uniqueId {
 			if len(rep1) > 0 && len(rep2) > 0 {
 				return 2
-			} else if len(rep1) > 0 || len(rep2) > 0 {
+			} else if len(rep1) > 0 {
 				return 1
 			}
 		}
@@ -454,13 +496,12 @@ func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepRepCount(rep1, rep2, uniqueI
 * DESCRIPTION:     calculates the "autoaddr" value based on the provided data
 * RETURNS:         autoAdder
 *****************************************************************************/
-func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepPerRepAddrShare(rep1, rep2, uniqueId, state string, sysSize float64, wc time.Time) (perRepAddrShare float64) {
+func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepPerRepAddrShare(rep1, rep2, uniqueId, state, types string, sysSize float64, wc time.Time) (perRepAddrShare float64) {
 	log.EnterFn(0, "CalculateRepPerRepAddrShare")
 	defer func() { log.ExitFn(0, "CalculateRepPerRepAddrShare", nil) }()
 	for _, data := range AutoAdderCfg.AutoAdderList {
 		if uniqueId == data.UniqueId {
-			exactAmnt := AutoAdderCfg.CalculateRepExactAmount(rep1, uniqueId)
-			log.FuncErrorTrace(0, "==================================%v", exactAmnt)
+			exactAmnt := AutoAdderCfg.CalculateRepExactAmount(uniqueId, types)
 			repCount := AutoAdderCfg.CalculateRepRepCount(rep1, rep2, uniqueId)
 			perKwAmt := AutoAdderCfg.CalculateRepPerKwAmount(rep1, uniqueId)
 			if exactAmnt > 0 {
@@ -512,9 +553,9 @@ func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepRep1DefResp(rep1, uniqueId, 
 	defer func() { log.ExitFn(0, "CalculateRepRep1DefResp", nil) }()
 	for _, data := range AutoAdderCfg.AutoAdderList {
 		if data.UniqueId == uniqueId {
-			payScale := AutoAdderCfg.CalculateRepR1PayScale(rep1, uniqueId, state, wc)
-			if len(payScale) > 0 {
-				defResp = adderRespCfg.CalculateAdderResp(payScale)
+			payscale, _ := RepPayCfg.CalculateRPayScale(rep1, state, wc)
+			if len(payscale) > 0 {
+				defResp = adderRespCfg.CalculateAdderResp(payscale)
 			}
 		}
 	}
@@ -526,15 +567,15 @@ func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepRep1DefResp(rep1, uniqueId, 
 * DESCRIPTION:     calculates the "autoaddr" value based on the provided data
 * RETURNS:         autoAdder
 *****************************************************************************/
-func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepR1PayScale(rep1, uniqueId, state string, wc time.Time) (payscale string) {
-	log.EnterFn(0, "CalculateRepR1PayScale")
-	defer func() { log.ExitFn(0, "CalculateRepR1PayScale", nil) }()
-	for _, data := range AutoAdderCfg.AutoAdderList {
-		if data.UniqueId == uniqueId {
-			if len(rep1) > 0 {
-				payscale, _ = RepPayCfg.CalculateRPayScale(rep1, state, wc)
-			}
-		}
-	}
-	return payscale
-}
+// func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepR1PayScale(rep1, uniqueId, state string, wc time.Time) (payscale string) {
+// 	log.EnterFn(0, "CalculateRepR1PayScale")
+// 	defer func() { log.ExitFn(0, "CalculateRepR1PayScale", nil) }()
+// 	for _, data := range AutoAdderCfg.AutoAdderList {
+// 		if data.UniqueId == uniqueId {
+// 			if len(rep1) > 0 {
+// 				payscale, _ = RepPayCfg.CalculateRPayScale(rep1, state, wc)
+// 			}
+// 		}
+// 	}
+// 	return payscale
+// }

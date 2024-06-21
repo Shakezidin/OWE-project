@@ -146,12 +146,12 @@ func LoadConfigurations() (err error) {
 	// }
 	// log.FuncErrorTrace(0, "===== LoadTierLoanFeeCfg : %+v", TierLoanFeeCfg.TierLoanFeeList.TierLoanFeeList[0])
 
-	// err = AutoAdderCfg.LoadAutoAdderCfg()
-	// if err != nil {
-	// 	log.FuncErrorTrace(0, "Failed to get Rebate Config from DB err: %+v", err)
-	// 	return err
-	// }
-	// log.FuncErrorTrace(0, "===== AutoAdderCfg : %+v", AutoAdderCfg.AutoAdderList[0])
+	err = AutoAdderCfg.LoadAutoAdderCfg()
+	if err != nil {
+		log.FuncErrorTrace(0, "Failed to get Rebate Config from DB err: %+v", err)
+		return err
+	}
+	log.FuncErrorTrace(0, "===== AutoAdderCfg : %+v", AutoAdderCfg.AutoAdderList[0])
 
 	err = DealerRepayConfig.LoadDealerRepaymentCfg()
 	if err != nil {
