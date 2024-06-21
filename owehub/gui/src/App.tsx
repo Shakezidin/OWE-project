@@ -260,8 +260,9 @@ function App() {
             path={ROUTES.TECHNICAL_SUPPORT}
             element={<TechnicalSupport />}
           />
-            <Route path={ROUTES.BATTERY_BACK_UP} element={<BatteryBackup/>}/>
+           
         </Route>
+        <Route path={ROUTES.BATTERY_BACK_UP} element={<BatteryBackup/>}/>
       </Routes>
     </BrowserRouter>
   );

@@ -94,9 +94,10 @@ const Index = () => {
     setBattery(battery);
   };
   if (step === 1) return <BatteryAmp battery={batter} />;
-  console.log(errors);
+ 
   
   return (
+    <div className="p3" style={{backgroundColor:"#F2F2F2",minHeight:"100vh"}}>
     <div className="bg-white battery-wrapper p3" ref={form}>
       <div className="wrapper-header">
         <h4 className="h4" style={{ fontWeight: 500 }}>
@@ -312,6 +313,7 @@ const Index = () => {
           Generate
         </button>
       </div>
+    </div>
     </div>
   );
 };

@@ -44,7 +44,7 @@ const BatteryAmp = ({
     }
   }, [batteryPower]);
   return (
-    <div>
+    <div  className='p3' style={{backgroundColor:"#F2F2F2" ,minHeight:"100vh"}}>
       <div
         className="bg-white p3 relative"
         style={{ maxWidth: 600, borderRadius: 20 }}
