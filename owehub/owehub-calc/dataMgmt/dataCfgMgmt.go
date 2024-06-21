@@ -132,27 +132,6 @@ func LoadConfigurations() (err error) {
 	}
 	log.FuncErrorTrace(0, "===== LoadTierLoanFeeCfg : %+v", TierLoanFeeCfg.TierLoanFeeList.TierLoanFeeList[0])
 
-	// err = TierLoanFeeCfg.LoadTierLoanFeeCfg()
-	// if err != nil {
-	// 	log.FuncErrorTrace(0, "Failed to get LoadTierLoanFeeCfg from DB err: %+v", err)
-	// 	return err
-	// }
-	// log.FuncErrorTrace(0, "===== LoadTierLoanFeeCfg : %+v", TierLoanFeeCfg.TierLoanFeeList.TierLoanFeeList[0])
-
-	// err = TierLoanFeeCfg.LoadTierLoanFeeCfg()
-	// if err != nil {
-	// 	log.FuncErrorTrace(0, "Failed to get DealerRepaymentBonus from DB err: %+v", err)
-	// 	return err
-	// }
-	// log.FuncErrorTrace(0, "===== LoadTierLoanFeeCfg : %+v", TierLoanFeeCfg.TierLoanFeeList.TierLoanFeeList[0])
-
-	err = AutoAdderCfg.LoadAutoAdderCfg()
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get Rebate Config from DB err: %+v", err)
-		return err
-	}
-	log.FuncErrorTrace(0, "===== AutoAdderCfg : %+v", AutoAdderCfg.AutoAdderList[0])
-
 	err = DealerRepayConfig.LoadDealerRepaymentCfg()
 	if err != nil {
 		log.FuncErrorTrace(0, "Failed to get DealerRepaymentConfig from DB err: %+v", err)
@@ -183,14 +162,6 @@ func LoadConfigurations() (err error) {
 		return err
 	}
 	log.FuncErrorTrace(0, "===== DBA : %+v", DBACfg.DBAList[0])
-
-	//! loan fee adder
-	err = LoanFeeAdderCfg.LoadLoanFeeAdderCfg()
-	if err != nil {
-		log.FuncErrorTrace(0, "Failed to get Loan Fee Adder Config from DB err: %+v", err)
-		return err
-	}
-	log.FuncErrorTrace(0, "===== LoanFeeAdder : %+v", LoanFeeAdderCfg.LoanFeeAdderList[0])
 
 	//! rate adjustments
 	err = RateAdjustmentsCfg.LoadRateAdjustmentsCfg()

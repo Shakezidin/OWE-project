@@ -9,6 +9,7 @@ package datamgmt
 
 import (
 	db "OWEApp/shared/db"
+	log "OWEApp/shared/logger"
 )
 
 type GetDBAList struct {
@@ -90,6 +91,7 @@ func (DBACfg *DBACfgStruct) CalculateReprepDba(rep string) (dba string) {
 func (DBACfg *DBACfgStruct) CalculateApptSetDba(apptSetter string) (apptSetDba string) {
 	if len(apptSetter) > 0 {
 		for _, data := range DBACfg.DBAList {
+			log.FuncErrorTrace(0, data.Dba)
 			if data.PreferredName == apptSetter {
 				apptSetDba = data.Dba
 			}

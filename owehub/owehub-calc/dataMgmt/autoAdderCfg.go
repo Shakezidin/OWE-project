@@ -155,7 +155,7 @@ func (AutoAdderCfg *AutoAdderCfgStruct) LoadAutoAdderCfg() (errr error) {
 		return
 	}
 
-	log.FuncErrorTrace(0, "data %v:", data)
+	log.FuncErrorTrace(0, "autoadder data : %v", data[0])
 	for _, item := range data {
 		Unique_id, ok := item["unique_id"].(string)
 		if !ok || Unique_id == "" {
@@ -351,32 +351,34 @@ func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepRAutoAddr(rep1, rep2, unique
 func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRep1AddrResp(rep1, rep2, uniqueId, state, types string, sysSize float64, wc time.Time, r1r2check bool) (r1AddrResp float64) {
 	log.EnterFn(0, "CalculateRepRAddrResp")
 	defer func() { log.ExitFn(0, "CalculateRepRAddrResp", nil) }()
+
 	rep := rep1
 	if !r1r2check {
 		rep = rep2
 	}
 
 	r1AddrResp = 0.0
+
 	for _, data := range AutoAdderCfg.AutoAdderList {
 		if data.UniqueId == uniqueId {
 			perRepOvrdShare := AutoAdderCfg.CalculateRepPerRepOvrdShare(rep1, rep2, uniqueId, types)
+
 			if perRepOvrdShare > 0 {
-				if perRepOvrdShare > 0 {
-					return perRepOvrdShare
-				} else {
-					return r1AddrResp
-				}
+				r1AddrResp = perRepOvrdShare
 			} else if len(rep) > 0 {
 				perRepAddrShare := AutoAdderCfg.CalculateRepPerRepAddrShare(rep1, rep2, uniqueId, state, types, sysSize, wc)
 				rep1DefResp := AutoAdderCfg.CalculateRepRep1DefResp(rep, uniqueId, state, wc)
-				if data.Type1[:2] == "MK" {
-					return perRepAddrShare
+
+				if len(data.Type1) >= 2 && data.Type1[:2] == "MK" {
+					r1AddrResp = perRepAddrShare
 				} else {
-					return perRepAddrShare * rep1DefResp
+					r1AddrResp = perRepAddrShare * rep1DefResp
 				}
 			}
+			break
 		}
 	}
+
 	return r1AddrResp
 }
 
@@ -499,11 +501,24 @@ func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepRepCount(rep1, rep2, uniqueI
 func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepPerRepAddrShare(rep1, rep2, uniqueId, state, types string, sysSize float64, wc time.Time) (perRepAddrShare float64) {
 	log.EnterFn(0, "CalculateRepPerRepAddrShare")
 	defer func() { log.ExitFn(0, "CalculateRepPerRepAddrShare", nil) }()
+
+	perRepAddrShare = 0.0
+
 	for _, data := range AutoAdderCfg.AutoAdderList {
 		if uniqueId == data.UniqueId {
+			log.FuncErrorTrace(0, "Matching uniqueId found: %v", uniqueId)
+
 			exactAmnt := AutoAdderCfg.CalculateRepExactAmount(uniqueId, types)
 			repCount := AutoAdderCfg.CalculateRepRepCount(rep1, rep2, uniqueId)
 			perKwAmt := AutoAdderCfg.CalculateRepPerKwAmount(rep1, uniqueId)
+
+			log.FuncErrorTrace(0, "exactAmnt: %v, repCount: %v, perKwAmt: %v", exactAmnt, repCount, perKwAmt)
+
+			if repCount == 0 {
+				log.FuncErrorTrace(0, "repCount is zero, cannot divide by zero")
+				continue
+			}
+
 			if exactAmnt > 0 {
 				perRepAddrShare = exactAmnt / repCount
 			} else if strings.Contains(data.Type1, "FR SET") {
@@ -511,6 +526,8 @@ func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepPerRepAddrShare(rep1, rep2, 
 			} else if perKwAmt > 0 {
 				perRepAddrShare = (perKwAmt * sysSize) / repCount
 			}
+
+			log.FuncErrorTrace(0, "perRepAddrShare calculated as: %v", perRepAddrShare)
 		}
 	}
 	return perRepAddrShare
@@ -524,10 +541,12 @@ func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepPerRepAddrShare(rep1, rep2, 
 func (AutoAdderCfg *AutoAdderCfgStruct) CalculateRepPerKwAmount(rep1, uniqueId string) (PerKwAmount float64) {
 	log.EnterFn(0, "CalculateRepPerKwAmount")
 	defer func() { log.ExitFn(0, "CalculateRepPerKwAmount", nil) }()
+	PerKwAmount = 0.0
 	for _, data := range AutoAdderCfg.AutoAdderList {
+
 		if data.UniqueId == uniqueId {
 			switch {
-			case data.Type1[:2] == "MK":
+			case len(data.Type1) >= 2 && data.Type1[:2] == "MK":
 				PerKwAmount = mktgFeeCfg.CalculateRepFeeRate(data.Type1)
 			case data.Type1 == "SM-UNI2":
 				PerKwAmount = 0
