@@ -151,12 +151,12 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	rep1Referral := dataMgmt.ReferralDataConfig.CalculateRReferral(rep1, uniqueID, rep1, rep2, state, true) //BP (mistake)
 	log.FuncErrorTrace(0, "rep1Referral = %v", rep1Referral)
 	rep1Referral = 0
-	rep1Rebate := dataMgmt.RebateCfg.CalculateRRebate(rep1, rep2, state, uniqueID, true)                                                                //BO
-	rep1Dba := dataMgmt.DBACfg.CalculateReprepDba(rep1)                                                                                                 //AZ
-	rep1Credit := dataMgmt.RepCreditCfg.CalculateRCredit(rep1, uniqueID)                                                                                //BI  there is no schema and get endpoint in main for repcredit
-	rep1Addr := dataMgmt.AdderDataCfg.CalculateR1AddrResp(commissionModels, dealer, rep1, rep2, uniqueID, state, systemSize, true)                      //BL
-	rep1PayScale, rep1Position := dataMgmt.RepPayCfg.CalculateRPayScale(rep1, state, wc)                                                                //BA //BB
-	rep1Rl, rep1Rate := dataMgmt.CmmsnRatesCfg.CalculateRep1Rl(commissionModels, dealer, rep1, partner, installer, state, types, rep1PayScale, kwh, wc) //BC BD ! kwh, types value not set
+	rep1Rebate := dataMgmt.RebateCfg.CalculateRRebate(rep1, rep2, state, uniqueID, true)                                             //BO
+	rep1Dba := dataMgmt.DBACfg.CalculateReprepDba(rep1)                                                                              //AZ
+	rep1Credit := dataMgmt.RepCreditCfg.CalculateRCredit(rep1, uniqueID)                                                             //BI  there is no schema and get endpoint in main for repcredit
+	rep1Addr := dataMgmt.AdderDataCfg.CalculateR1AddrResp(commissionModels, dealer, rep1, rep2, uniqueID, state, systemSize, true)   //BL
+	rep1PayScale, rep1Position := dataMgmt.RepPayCfg.CalculateRPayScale(rep1, state, wc)                                             //BA //BB
+	rep1Rl, rep1Rate := dataMgmt.CmmsnRatesCfg.CalculateRepRl(dealer, rep1, partner, installer, state, types, rep1PayScale, kwh, wc) //BC BD ! kwh, types value not set
 	log.FuncErrorTrace(0, "rep1Rl : %v, rep1Rate : %v", rep1Rl, rep1Rate)
 	// rep1Rl, rep1Rate = 2.7, 0
 	rep1Adjustment, rep1minRate, rep1maxRate := dataMgmt.RateAdjustmentsCfg.CalculateAdjustmentMinRateMaxRate(rep1PayScale, rep1Position) //BE BF BG
@@ -180,6 +180,7 @@ func CalculateRepPayProject(saleData dataMgmt.SaleDataStruct) (outData map[strin
 	rep1CommPaid := dataMgmt.ApRepCfg.CalculateRepRCommPaid(uniqueID, rep1)                                                                                                   //DO
 	rep1Balance := CalculateRepRBalance(rep1, rep1CommStatusCheck, rep1CommPaid)                                                                                              //DP
 
+	// log.FuncFuncTrace(0, "Zidhin kwh %v", saleData.)
 	log.FuncFuncTrace(0, "Zidhin statusDate(AK): %v, perteamKw (AW): %v", statusDate, perTeamKw)
 	log.FuncFuncTrace(0, "Zidhin perrepkw (AN): %v, perrepsales (AM): %v, contractcalc (AP): %v", perRepKw, RepPerRepSales, contractCalc)
 	log.FuncFuncTrace(0, "Zidhin epcCalc (AQ): %v , RepDrawPercentage (DH): %v, repdrawMax (DI): %v", epcCalc, RepDrawPercentage, repDrawMax)
