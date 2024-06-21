@@ -97,7 +97,7 @@ const Index = () => {
     }
     setBattery(battery);
   };
-  if (step === 1) return <BatteryAmp battery={batter} />;
+  if (step === 1) return <BatteryAmp setStep={setStep} battery={batter} />;
 
   return (
     <div
