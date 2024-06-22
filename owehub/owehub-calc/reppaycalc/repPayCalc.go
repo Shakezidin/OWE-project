@@ -34,6 +34,9 @@ func ExecRepPayInitialCalculation(resultChan chan string) {
 	var repPayCalc map[string]interface{}
 	for _, saleData := range dataMgmt.SaleData.SaleDataList {
 		log.FuncErrorTrace(0, "rep pay ====> : %+v", repPayCalc)
+		if saleData.ContractDate.After(21) {
+			
+		}
 		repPayCalc, err = CalculateRepPayProject(saleData)
 
 		if err != nil || repPayCalc == nil {
