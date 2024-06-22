@@ -6,8 +6,7 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { TbMinus, TbPlus } from 'react-icons/tb';
 import { TfiTrash } from 'react-icons/tfi';
-import BatteryAmp from './components/BatteryAmp';
-import { useHref, useLocation, useParams } from 'react-router-dom';
+import { useHref, useLocation, useNavigate, useParams } from 'react-router-dom';
 const apms = [
   '15 AMP',
   '20 AMP',
@@ -21,10 +20,16 @@ const apms = [
   '70+ AMP',
 ];
 const Index = () => {
-  const [inputDetails, setInputDetails] = useState({
+  const [inputDetails, setInputDetails] = useState<{
+    prospectName: string;
+    lra: string;
+    continuousCurrent: number | string;
+    avgCapacity: number | string;
+  }>({
     prospectName: '',
     lra: '',
     continuousCurrent: '',
+    avgCapacity: '',
   });
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -33,6 +38,7 @@ const Index = () => {
   const [errors, setErrors] = useState<TError>({} as TError);
   const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState(0);
+  const navigate = useNavigate()
   const [batter, setBattery] = useState<
     {
       quantity: number;
@@ -42,19 +48,19 @@ const Index = () => {
   >([]);
   const form = useRef<HTMLDivElement | null>(null);
 
-  const exportPdf = () => {
-    if (form.current) {
-      html2canvas(form.current).then((canvas) => {
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF();
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        let imgWidth = pdfWidth;
-        let imgHeight = pdfWidth / 2;
-        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-        pdf.save('download.pdf');
-      });
-    }
-  };
+  // const exportPdf = () => {
+  //   if (form.current) {
+  //     html2canvas(form.current).then((canvas) => {
+  //       const imgData = canvas.toDataURL('image/png');
+  //       const pdf = new jsPDF();
+  //       const pdfWidth = pdf.internal.pageSize.getWidth();
+  //       let imgWidth = pdfWidth;
+  //       let imgHeight = pdfWidth / 2;
+  //       pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+  //       pdf.save('download.pdf');
+  //     });
+  //   }
+  // };
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       const elm = e.target as HTMLElement;
@@ -80,8 +86,21 @@ const Index = () => {
   };
   const inputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     let { name, value } = e.target;
-    if (name === 'continuousCurrent') {
+    if (
+      name === 'continuousCurrent' ||
+      name === 'lra' ||
+      name === 'avgCapacity'
+    ) {
       value = value.replace(/[^0-9.]/g, '');
+    }
+    if (name === 'avgCapacity') {
+      const perecentage = (60 / 100) * parseFloat(value);
+      const calc = (parseFloat(value) * perecentage) / 365 / 24;
+      setInputDetails((prev) => ({
+        ...prev,
+        avgCapacity: value,
+        continuousCurrent: calc ? (calc as number).toFixed(2) : '',
+      }));
     }
     setInputDetails((prev) => ({ ...prev, [name]: value }));
   };
@@ -97,7 +116,7 @@ const Index = () => {
     }
     setBattery(battery);
   };
-  if (step === 1) return <BatteryAmp setStep={setStep} battery={batter} />;
+
 
   return (
     <div
@@ -120,8 +139,12 @@ const Index = () => {
 
         <div className="flex  ">
           <div className="col-3 pr3 ">
-            <div className="inline-block mt3" style={{width:"100%"}}>
-              <img src={queryParamValue || dummy} alt="" style={{maxWidth:"100%"}} />
+            <div className="inline-block mt3" style={{ width: '100%' }}>
+              <img
+                src={queryParamValue || dummy}
+                alt=""
+                style={{ maxWidth: '100%' }}
+              />
               <p
                 style={{ fontSize: 12, color: '#919191', textAlign: 'center' }}
               >
@@ -182,6 +205,29 @@ const Index = () => {
                   <div className="mb3 calc-input">
                     <Input
                       onChange={inputHandler}
+                      value={inputDetails.avgCapacity}
+                      name="avgCapacity"
+                      type="text"
+                      placeholder=""
+                      label="Average Capacity"
+                    />
+
+                    {errors.avgCapacity && (
+                      <span className="error">
+                        {' '}
+                        {(errors.avgCapacity as string).replaceAll(
+                          'avgCapacity',
+                          'Average Capacity'
+                        )}{' '}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="mb3 calc-input">
+                    <Input
+                      onChange={() => null}
+                      disabled
+                      readOnly
                       value={inputDetails.continuousCurrent}
                       name="continuousCurrent"
                       type="text"
@@ -191,7 +237,7 @@ const Index = () => {
                     {errors.continuousCurrent && (
                       <span className="error">
                         {' '}
-                        {errors.continuousCurrent.replaceAll(
+                        {(errors.continuousCurrent as string).replaceAll(
                           'continuousCurrent',
                           'Continuous Current'
                         )}{' '}
@@ -307,15 +353,15 @@ const Index = () => {
           >
             Reset All
           </button>
-          <button
+          {/* <button
             className="calc-btn text-white pointer text-white calc-yellow-btn"
             onClick={exportPdf}
           >
             Export PDF
-          </button>
+          </button> */}
 
           <button
-            onClick={() => handleValidation() && setStep((prev) => prev + 1)}
+            onClick={() => handleValidation() && navigate("/battery-ui-generator")}
             className="calc-btn text-white pointer calc-green-btn"
           >
             Generate
